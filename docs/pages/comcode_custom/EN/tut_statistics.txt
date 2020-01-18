@@ -293,6 +293,11 @@ Note there are some discrepancies:
 
 Tracking is useful for many things, including:
  - Evaluating the success of marketing campaigns
+  - On social media
+  - In printed media
+  - In newsletters
+  - From partner websites
+  - (and so on)
  - Split testing different page versions to see which performs best (when combined with events)
  - Rewarding users for referring new members to the website
 
@@ -411,6 +416,12 @@ Access Real-time analytics from:
 Admin Zone > Audit > What's happening now (RTR)
 
 It is a good way to visualise how people are using the site. This works best when the site has multiple online users performing options, but you can move the timeline back to when stuff was happening previously (i.e. view activity from a historic viewpoint).
+
+[title="3"]Browsing basic logs[/title]
+
+You can use the "Investigate user" feature (from the [tt]securitylogging[/tt] addon) to view all the hits from particular members and IP addresses. You just do a search from that module.
+
+You can also do a blank search to just see miscellaneous logged hits, which will give you a sense for general traffic patterns.
 [/surround]
 
 [concepts

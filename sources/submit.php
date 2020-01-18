@@ -177,12 +177,12 @@ function wrap_probe_ip($ip)
     $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
 
     $member_ids = [];
-    foreach (array_unique(array_merge($a, $b, $c)) as $x) {
+    foreach (array_merge($a, $b, $c) as $x) {
         if ($x['id'] != $guest_id) {
-            $member_ids[] = $x;
+            $member_ids[] = $x['id'];
         }
     }
-    return $member_ids;
+    return array_unique($member_ids);
 }
 
 /**

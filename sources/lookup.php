@@ -78,7 +78,7 @@ function lookup_user($param, &$username, &$member_id, &$ip)
         if (empty($member_ids)) {
             return [];
         } else {
-            $member_id = $member_ids[0]['id'];
+            $member_id = $member_ids[0];
         }
         if (count($member_ids) != 1) {
             $also = new Tempcode();
@@ -87,13 +87,13 @@ function lookup_user($param, &$username, &$member_id, &$ip)
                     if (!$also->is_empty()) {
                         $also->attach(do_lang('LIST_SEP'));
                     }
-                    $also->attach($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_id['id'], '', false));
+                    $also->attach($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_id, '', false));
                 }
             }
             attach_message(do_lang_tempcode('MEMBERS_ALSO_ON_IP', $also), 'inform');
         }
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-    } else {
+    } elseif ($param != '') {
         // From name
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($param);
         $username = $param;
@@ -136,12 +136,21 @@ function find_page_stats_for($member_id, $ip, $start = 0, $max = 50, $sortable =
 
     $query = '';
     if (!is_guest($member_id)) {
-        $query .= 'member_id=' . strval($member_id) . ' OR ';
+        $query .= 'member_id=' . strval($member_id);
     }
-    if (strpos($ip, '*') === false) {
-        $query .= db_string_equal_to('ip', $ip);
-    } else {
-        $query .= 'ip LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\'';
+    if ($ip != '') {
+        if (!is_guest($member_id)) {
+            $query .= ' OR ';
+        }
+
+        if (strpos($ip, '*') === false) {
+            $query .= db_string_equal_to('ip', $ip);
+        } else {
+            $query .= 'ip LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\'';
+        }
+    }
+    if ($query == '') {
+        $query = '1=1';
     }
     $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE ' . $query, false, true);
     $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'stats WHERE ' . $query . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start, false, true);
@@ -157,13 +166,15 @@ function find_page_stats_for($member_id, $ip, $start = 0, $max = 50, $sortable =
     ];
     $header_row = results_header_row($header_row_fields, $sortables, 'sort', $sortable . ' ' . $sort_order);
     foreach ($rows as $myrow) {
-        $url = build_url(['page' => 'admin_lookup', 'type' => 'view', 'id' => $myrow['id'], 'param' => get_param_string('param', null)], get_module_zone('admin_lookup'));
+        $details_url = build_url(['page' => 'admin_lookup', 'type' => 'view', 'id' => $myrow['id'], 'param' => get_param_string('param', null)], get_module_zone('admin_lookup'));
+        $ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $myrow['ip']], get_module_zone('admin_lookup'));
+        $member_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $myrow['member_id']], get_module_zone('admin_lookup'));
 
         $results_row = [
-            hyperlink($url, get_timezoned_date_time($myrow['date_and_time']), false, true, do_lang_tempcode('VIEW_REQUEST')),
+            hyperlink($details_url, get_timezoned_date_time($myrow['date_and_time']), false, true, do_lang_tempcode('VIEW_REQUEST')),
             protect_from_escaping(str_replace(':', ':&#8203;', escape_html($myrow['page_link']))),
-            $myrow['ip'],
-            $GLOBALS['FORUM_DRIVER']->get_username($myrow['member_id']),
+            hyperlink($ip_url, $myrow['ip'], false, true),
+            hyperlink($member_url, $GLOBALS['FORUM_DRIVER']->get_username($myrow['member_id']), false, true),
             $myrow['tracking_code'],
         ];
         $out->attach(results_entry($results_row, false));

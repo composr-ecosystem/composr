@@ -286,7 +286,7 @@ class Module_admin_lookup
 
         // Generate appropriate follow-up links to find more (noting that member profiles are the primary place for member links)...
 
-        $points_url = addon_installed('points') ? build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')) : null;
+        $points_url = ((addon_installed('points')) && (!is_guest($member_id))) ? build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')) : null;
         if (addon_installed('authors')) {
             $author_url = ($username == do_lang('UNKNOWN')) ? null : build_url(['page' => 'authors', 'author' => $username], get_module_zone('authors'));
         } else {
@@ -409,9 +409,11 @@ class Module_admin_lookup
         list($zone, $attributes) = page_link_decode($row['page_link']);
         $fields['URL'] = static_evaluate_tempcode(build_url($attributes, $zone));
 
-        $fields['IP_ADDRESS'] = $row['ip'];
+        $ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], get_module_zone('admin_lookup'));
+        $fields['IP_ADDRESS'] = hyperlink($ip_url, $row['ip'], false, true);
 
-        $fields['MEMBER_ID'] = '#' . strval($row['member_id']);
+        $member_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['member_id']], get_module_zone('admin_lookup'));
+        $fields['MEMBER_ID'] = hyperlink($member_url, '#' . strval($row['member_id']), false, true);
 
         //$fields['SESSION_ID'] = $row['session_id'];   Best not to give out for security reasons
 

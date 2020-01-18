@@ -748,7 +748,6 @@ class Module_admin_stats extends Standard_crud_module
 
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['SECTION_HIDDEN' => $notes == '', 'TITLE' => do_lang_tempcode('ADVANCED')]));
         $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
 
         return [$fields, $hidden];
