@@ -238,6 +238,8 @@ class Module_admin_stats extends Standard_crud_module
             ]);
             $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_url', ['l_url']);
             $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_times_seen', ['l_times_seen']);
+
+            $GLOBALS['SITE_DB']->create_index('stats', 'session_id', ['session_id']);
         }
     }
 
