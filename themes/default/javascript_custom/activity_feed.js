@@ -213,7 +213,7 @@
         } else {
             // First we check whether our feed is already up to date
             jQuery.ajax({
-                url: $util.rel('data_custom/latest_activity.txt?cache_break=' + Math.floor(Math.random() * 10000)),
+                url: $util.rel('data_custom/latest_activity.bin?cache_break=' + Math.floor(Math.random() * 10000)),
                 data: {},
                 success: function (data) {
                     if (parseInt(data) !== window.latestActivity) {
