@@ -1750,12 +1750,23 @@ function sort_search_results($hook_results, $results, $direction)
     $done_all = false;
     foreach ($hook_results as $i => $result) {
         while (true) {
-            if (!array_key_exists($results_position, $results)) { // If we've run off the end of our current results
+            if (!array_key_exists($results_position, $results)) {
+                // If we've run off the end of our current results - everything we have left in $hook_results fits AFTER $results, and is already sorted...
                 $results = array_merge($results, array_slice($hook_results, $i));
                 $done_all = true;
                 break;
             }
-            if ((array_key_exists('orderer', $result)) && (array_key_exists('orderer', $results[$results_position])) && ((($direction == 'ASC') && ($result['orderer'] <= $results[$results_position]['orderer'])) || (($direction == 'DESC') && ($result['orderer'] >= $results[$results_position]['orderer'])))) { // If it definitely beats, put in front. If it's unknown (no orderer on one - which is very common) it has to go on the end so FIFO is preserved
+            if (
+                (array_key_exists('orderer', $result)) &&
+                (
+                    (!array_key_exists('orderer', $results[$results_position])) ||
+                    (
+                        (($direction == 'ASC') && ($result['orderer'] <= $results[$results_position]['orderer'])) ||
+                        (($direction == 'DESC') && ($result['orderer'] >= $results[$results_position]['orderer']))
+                    )
+                )
+            ) {
+                // If it definitely beats, put in front. If it's unknown (no orderer on one - which is very common) it has to go on the end so FIFO is preserved
                 $results = array_merge(array_slice($results, 0, $results_position), [$result], array_slice($results, $results_position));
                 break;
             }

@@ -179,7 +179,7 @@ class Hook_search_confluence extends FieldsSearchHook
                 break;
         }
 
-        $rows = confluence_query('search?cql=' . urlencode($cql_query)/* We can't put on a limit as we need to be able to count results . '&limit=' . strval($limit_to + $start)*/);
+        $rows = confluence_query('search?limit=100&cql=' . urlencode($cql_query)/* We can't put on a limit as we need to be able to count results . '&limit=' . strval($limit_to + $start)*/);
 
         $out = [];
         foreach ($rows['results'] as $i => $row) {
@@ -187,6 +187,8 @@ class Hook_search_confluence extends FieldsSearchHook
             unset($rows[$i]);
             if (($remapped_orderer != '') && (array_key_exists($remapped_orderer, $row))) {
                 $out[$i]['orderer'] = $row[$remapped_orderer];
+            } else {
+                $out[$i]['orderer'] = $i;
             }
         }
 
@@ -216,7 +218,7 @@ class Hook_search_confluence extends FieldsSearchHook
         $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
 
         $text_summary_h = $this->cleanup_text($myrow['excerpt']);
-        $text_summary = generate_text_summary($text_summary_h, $highlight_bits);
+        $text_summary = generate_text_summary($text_summary_h, []);
 
         $title = $myrow['content']['title'];
 
