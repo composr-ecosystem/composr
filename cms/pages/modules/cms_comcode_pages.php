@@ -99,11 +99,14 @@ class Module_cms_comcode_pages
         set_helper_panel_tutorial('tut_comcode_pages');
 
         if ($type == 'browse') {
-            breadcrumb_set_self(do_lang_tempcode('COMCODE_PAGES'));
-
-            set_helper_panel_text(comcode_lang_string('DOC_COMCODE_PAGE_EDIT'));
-
-            $this->title = get_screen_title('COMCODE_PAGE_EDIT');
+            $identify_translations = (get_param_integer('translations', 0) == 1);
+            if ($identify_translations) {
+                $this->title = get_screen_title('COMCODE_PAGE_TRANSLATIONS');
+            } else {
+                $this->title = get_screen_title('COMCODE_PAGE_EDIT');
+                breadcrumb_set_self(do_lang_tempcode('COMCODE_PAGES'));
+                set_helper_panel_text(comcode_lang_string('DOC_COMCODE_PAGE_EDIT'));
+            }
         }
 
         if ($type == '_edit') {
@@ -132,7 +135,18 @@ class Module_cms_comcode_pages
             }
             breadcrumb_set_parents([['_SELF:_SELF:browse:lang=' . get_param_string('lang', ''), do_lang_tempcode('menus:_COMCODE_PAGES')]]);
 
-            $this->title = get_screen_title(($file == '') ? 'COMCODE_PAGE_ADD' : '_COMCODE_PAGE_EDIT', true, [escape_html($zone), escape_html($file)]);
+            $lang = get_param_string('lang', get_site_default_lang());
+
+            if ($file == '') {
+                $this->title = get_screen_title('COMCODE_PAGE_ADD', true, [escape_html($zone), escape_html($file)]);
+            } else {
+                if ($lang == get_site_default_lang()) {
+                    $this->title = get_screen_title('_COMCODE_PAGE_EDIT', true, [escape_html($zone), escape_html($file)]);
+                } else {
+                    require_code('lang2');
+                    $this->title = get_screen_title('__COMCODE_PAGE_EDIT', true, [escape_html($zone), escape_html($file), escape_html(lookup_language_full_name($lang))]);
+                }
+            }
 
             $this->page_link = $page_link;
             $this->zone = $zone;
@@ -269,6 +283,8 @@ class Module_cms_comcode_pages
 
         require_code('templates_results_table');
 
+        $translations_mode = (get_param_integer('translations', 0) == 1);
+
         $number_pages_parsed_for_titles = 0;
 
         push_query_limiting(false);
@@ -289,9 +305,13 @@ class Module_cms_comcode_pages
         }
 
         // Choose language
-        $lang = choose_language($this->title, true);
-        if (is_object($lang)) {
-            return $lang;
+        if (!$translations_mode) {
+            $lang = choose_language($this->title, true);
+            if (is_object($lang)) {
+                return $lang;
+            }
+        } else {
+            $lang = get_site_default_lang();
         }
 
         // Form for adding new
@@ -317,39 +337,43 @@ class Module_cms_comcode_pages
 
         // URLs etc...
 
-        $search_url = build_url(['page' => 'search', 'id' => 'comcode_pages'], get_module_zone('search'));
-        $sitemap_zone = get_page_zone('sitemap', false);
-        if ($sitemap_zone !== null) {
-            $archive_url = build_url(['page' => 'sitemap'], $sitemap_zone);
+        if ($translations_mode) {
+            $text = new Tempcode();
         } else {
-            $archive_url = build_url(['page' => ''], '');
+            $search_url = build_url(['page' => 'search', 'id' => 'comcode_pages'], get_module_zone('search'));
+            $sitemap_zone = get_page_zone('sitemap', false);
+            if ($sitemap_zone !== null) {
+                $archive_url = build_url(['page' => 'sitemap'], $sitemap_zone);
+            } else {
+                $archive_url = build_url(['page' => ''], '');
+            }
+            $sitemap_url = build_url(['page' => '_SELF', 'type' => 'generate_page_sitemap'], '_SELF');
+            $text = paragraph(do_lang_tempcode(
+                'CHOOSE_EDIT_TABLE_EXTRA_COMCODE_PAGES',
+                escape_html($search_url->evaluate()),
+                escape_html($sitemap_url->evaluate()),
+                [
+                    static_evaluate_tempcode(do_template('ICON', [
+                        '_GUID' => '6b23e82e1007bb4e6539db717b6327dd',
+                        'NAME' => 'buttons/search',
+                        'ICON_SIZE' => '18',
+                        'ICON_CLASS' => 'vertical-alignment',
+                    ])),
+                    static_evaluate_tempcode(do_template('ICON', [
+                        '_GUID' => '4ebc80701426935b4d828599f5133e9f',
+                        'NAME' => 'tool_buttons/sitemap',
+                        'ICON_SIZE' => '18',
+                        'ICON_CLASS' => 'vertical-alignment',
+                    ])),
+                    static_evaluate_tempcode(do_template('ICON', [
+                        '_GUID' => 'bbbdabc07f399b9b704fe47a994b1298',
+                        'NAME' => 'admin/add',
+                        'ICON_SIZE' => '18',
+                        'ICON_CLASS' => 'vertical-alignment',
+                    ])),
+                ]
+            ));
         }
-        $sitemap_url = build_url(['page' => '_SELF', 'type' => 'generate_page_sitemap'], '_SELF');
-        $text = paragraph(do_lang_tempcode(
-            'CHOOSE_EDIT_TABLE_EXTRA_COMCODE_PAGES',
-            escape_html($search_url->evaluate()),
-            escape_html($sitemap_url->evaluate()),
-            [
-                static_evaluate_tempcode(do_template('ICON', [
-                    '_GUID' => '6b23e82e1007bb4e6539db717b6327dd',
-                    'NAME' => 'buttons/search',
-                    'ICON_SIZE' => '18',
-                    'ICON_CLASS' => 'vertical-alignment',
-                ])),
-                static_evaluate_tempcode(do_template('ICON', [
-                    '_GUID' => '4ebc80701426935b4d828599f5133e9f',
-                    'NAME' => 'tool_buttons/sitemap',
-                    'ICON_SIZE' => '18',
-                    'ICON_CLASS' => 'vertical-alignment',
-                ])),
-                static_evaluate_tempcode(do_template('ICON', [
-                    '_GUID' => 'bbbdabc07f399b9b704fe47a994b1298',
-                    'NAME' => 'admin/add',
-                    'ICON_SIZE' => '18',
-                    'ICON_CLASS' => 'vertical-alignment',
-                ])),
-            ]
-        ));
 
         // Sorting
         $current_ordering = get_param_string('sort', 'page ASC', INPUT_FILTER_GET_COMPLEX);
@@ -601,6 +625,21 @@ class Module_cms_comcode_pages
             }
         }
 
+        if ($translations_mode) {
+            require_code('lang2');
+            $langs = find_all_langs();
+            foreach (array_keys($langs) as $_lang) {
+                $langs[$_lang] = lookup_language_full_name($_lang);
+            }
+
+            asort($langs, SORT_NATURAL | SORT_FLAG_CASE);
+
+            // We want site language first
+            $tmp = $langs[$lang];
+            unset($langs[$lang]);
+            $langs = array_merge([$lang => $tmp], $langs);
+        }
+
         // Results table
         $has_pagination = (count($rows) > $max);
         $show_helper_panel = (!isset($_COOKIE['hide_helper_panel'])) || ($_COOKIE['hide_helper_panel'] != '1');
@@ -612,25 +651,55 @@ class Module_cms_comcode_pages
         $interactive_options[] = [false, false, 'alphanumeric'];
         $columns[] = do_lang_tempcode('PAGE');
         $interactive_options[] = [true, false, 'alphanumeric'];
-        if (!$show_helper_panel) {
-            $columns[] = do_lang_tempcode('metadata:OWNER');
-            $interactive_options[] = [false,  false, 'alphanumeric'];
-            $columns[] = do_lang_tempcode('ADDED');
-            $interactive_options[] = [false,  false, 'date'];
-            $columns[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => 'bd3e38aa0885f27174b4ccb4515eb727', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
-            $interactive_options[] = [false,  false, 'alphanumeric'];
+        if ($translations_mode) {
+            foreach ($langs as $language_full_name) {
+                $columns[] = $language_full_name;
+                $interactive_options[] = [false,  false, 'alphanumeric'];
+            }
+        } else {
+            if (!$show_helper_panel) {
+                $columns[] = do_lang_tempcode('metadata:OWNER');
+                $interactive_options[] = [false,  false, 'alphanumeric'];
+                $columns[] = do_lang_tempcode('ADDED');
+                $interactive_options[] = [false,  false, 'date'];
+                $columns[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => 'bd3e38aa0885f27174b4ccb4515eb727', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
+                $interactive_options[] = [false,  false, 'alphanumeric'];
+            }
         }
         $columns[] = do_lang_tempcode('ACTIONS');
         $interactive_options[] = [false,  false, null];
         $header_row = results_header_row($columns, $sortables, 'sort', $sortable . ' ' . $sort_order, '434t6fgfh545', $has_pagination ? null : $interactive_options);
         $table_rows = new Tempcode();
-        foreach ($rows as $i => $row) {
+        $i = 0;
+        foreach ($rows as $row) {
             if (!$found_via_query) {
                 if ($i < $start) {
                     continue;
                 }
                 if ($i > $max + $start) {
                     break;
+                }
+            }
+
+            if ($translations_mode) {
+                $translations_found = [];
+                foreach ($langs as $_lang => $language_full_name) {
+                    foreach (['comcode_custom', 'comcode'] as $page_type) {
+                        foreach ((($row['zone'] == '') && (get_option('single_public_zone') == '1')) ? ['', 'site'] : [$row['zone']] as $_zone) {
+                            foreach (array_unique([get_custom_file_base(), get_file_base()]) as $file_base) {
+                                $test_path = $file_base . (($_zone == '') ? '' : ('/' . $_zone)) . '/pages/' . $page_type . '/' . $_lang . '/' . $row['page'] . '.txt';
+                                if (is_file($test_path)) {
+                                    $translations_found[$_lang] = filemtime($test_path);
+                                    continue 4;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ((count($translations_found) == 1) && (array_key_exists($lang, $translations_found))) {
+                    // No translations
+                    continue;
                 }
             }
 
@@ -686,16 +755,35 @@ class Module_cms_comcode_pages
             $display_map[] = protect_from_escaping($page_hyperlink);
             $display_map[] = protect_from_escaping(escape_html($zone_name));
             $display_map[] = protect_from_escaping($page__tempcode);
-            if (!$show_helper_panel) {
-                $display_map[] = $username;
-                $display_map[] = protect_from_escaping($add_date__tempcode);
-                $display_map[] = $validated;
+            if ($translations_mode) {
+                foreach ($langs as $_lang => $language_full_name) {
+                    if (array_key_exists($_lang, $translations_found)) {
+                        if (file_exists(get_file_base() . '/.git')) {
+                            $translation_label = do_lang_tempcode('EDIT');
+                        } else {
+                            $translation_time = $translations_found[$_lang];
+                            $translation_label = do_lang_tempcode('_AGO', escape_html(display_time_period(time() - $translation_time)));
+                        }
+                    } else {
+                        $translation_label = do_lang_tempcode('ADD');
+                    }
+                    $edit_link = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => $row['page_link'], 'lang' => $_lang], '_SELF');
+                    $display_map[] = hyperlink($edit_link, $translation_label, false, true);
+                }
+            } else {
+                if (!$show_helper_panel) {
+                    $display_map[] = $username;
+                    $display_map[] = protect_from_escaping($add_date__tempcode);
+                    $display_map[] = $validated;
+                }
             }
             $display_map[] = protect_from_escaping($actions);
 
             $table_rows->attach(results_entry($display_map, true));
+
+            $i++;
         }
-        if ($show_helper_panel) {
+        if (($show_helper_panel) && (!$translations_mode)) {
             $widths = ['33%', '19%', '28%', '20%'];
         } else {
             $widths = [];
@@ -727,10 +815,26 @@ class Module_cms_comcode_pages
         $links = [];
         foreach ($_links as $_link) {
             $links[] = [
-                'LINK_IMAGE' => find_theme_image('icons/' . $_link[0]),
+                'LINK_ICON' => $_link[0],
                 'LINK_URL' => build_url(['page' => $_link[1][0]] + $_link[1][1], $_link[1][2]),
                 'LINK_TEXT' => $_link[2],
             ];
+        }
+
+        if (multi_lang()) {
+            if ($translations_mode) {
+                $links[] = [
+                    'LINK_ICON' => 'menu/cms/comcode_page_edit',
+                    'LINK_URL' => build_url(['page' => '_SELF'], '_SELF'),
+                    'LINK_TEXT' => do_lang_tempcode('COMCODE_PAGE_EDIT'),
+                ];
+            } else {
+                $links[] = [
+                    'LINK_ICON' => 'menu/adminzone/style/language/language_content',
+                    'LINK_URL' => build_url(['page' => '_SELF', 'translations' => 1], '_SELF'),
+                    'LINK_TEXT' => do_lang_tempcode('COMCODE_PAGE_TRANSLATIONS'),
+                ];
+            }
         }
 
         // Render...
@@ -751,6 +855,7 @@ class Module_cms_comcode_pages
             'EXTRA' => $extra,
             'FILTER' => ($filter === null) ? '' : $filter,
             'HAS_PAGINATION' => $has_pagination,
+            'TRANSLATIONS_MODE' => $translations_mode,
         ]);
 
         require_code('templates_internalise_screen');
@@ -905,8 +1010,8 @@ class Module_cms_comcode_pages
 
         $post_url = build_url(['page' => '_SELF', 'type' => '__edit', 'lang' => $lang], '_SELF');
 
-        if ((addon_installed('page_management')) && (has_actual_page_access(get_member(), 'admin_sitemap'))) {
-            $delete_url = build_url(['page' => 'admin_sitemap', 'type' => '_delete', 'page__' . $file => 1, 'zone' => $zone], get_module_zone('admin_sitemap'));
+        if ((!$new) && (strpos($file_path, '/comcode_custom/') !== false)) {
+            $delete_url = build_url(['page' => '_SELF', 'type' => '__edit', 'lang' => $lang, 'delete' => 1], '_SELF');
         } else {
             $delete_url = new Tempcode();
         }
@@ -960,6 +1065,12 @@ class Module_cms_comcode_pages
         require_code('global4');
         $include_on_sitemap = comcode_page_include_on_sitemap($zone, $file);
         $fields2->attach(form_input_tick(do_lang_tempcode('INCLUDE_ON_SITEMAP'), do_lang_tempcode('DESCRIPTION_INCLUDE_ON_SITEMAP'), 'include_on_sitemap', $include_on_sitemap));
+
+        if (!$new) {
+            if ($delete_url->is_empty()) {
+                $fields2->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
+            }
+        }
 
         if (get_option('is_on_comcode_page_children') == '1') {
             $_pages = find_all_pages_wrap($zone);
@@ -1056,6 +1167,8 @@ class Module_cms_comcode_pages
 
         list($warning_details, $ping_url) = handle_conflict_resolution($page_link);
 
+        $is_translation = ($lang != get_site_default_lang());
+
         return do_template('COMCODE_PAGE_EDIT_SCREEN', [
             '_GUID' => 'ec1d773684757f5bf6f39cf931555bf2',
             'NEW' => $new,
@@ -1064,6 +1177,7 @@ class Module_cms_comcode_pages
             'TEXT' => $text,
             'TITLE' => $this->title,
             'DELETE_URL' => $delete_url,
+            'IS_TRANSLATION' => $is_translation,
             'ZONE' => $zone,
             'FILE' => $file,
             'POSTING_FORM' => $posting_form,
@@ -1197,6 +1311,25 @@ class Module_cms_comcode_pages
                 send_content_validated_notification('comcode_page', $zone . ':' . $file);
             }
         }
+
+        // Deleting?
+        $is_deleting = (post_param_integer('delete', 0) == 1);
+        if ($is_deleting) {
+            $is_translation = ($lang != get_site_default_lang());
+
+            require_code('zones3');
+            delete_cms_page($zone, $file, 'comcode_custom', false, $is_translation ? $lang : null);
+
+            $completion_text = do_lang_tempcode($is_translation ? 'SUCCESS_PAGE_TRANSLATION_DELETED' : 'SUCCESS_PAGE_DELETED');
+            $after_delete_url = build_url(['page' => '_SELF', 'translations' => $is_translation ? 1 : null, 'lang' => $lang], '_SELF');
+            return redirect_screen($this->title, $after_delete_url, $completion_text);
+        } else {
+            // Save custom fields
+            require_code('fields');
+            save_form_custom_fields('comcode_page', $zone . ':' . $new_file, $zone . ':' . $file);
+        }
+
+        // Some more general CRUD maintenance that we don't do within the save_comcode_page function
         require_code('permissions2');
         set_page_permissions_from_environment($zone, $file);
         if (addon_installed('awards')) {
@@ -1231,25 +1364,6 @@ class Module_cms_comcode_pages
                     add_menu_item_simple($menu, $menu_item_under, get_comcode_page_title_from_disk($path), $zone . ':' . $new_file, 0, 1);
                 }
             }
-        }
-
-        // Deleting?
-        if (post_param_integer('delete', 0) == 1) {
-            check_delete_permission('high', $resource_owner);
-            unlink(get_custom_file_base() . '/' . $path);
-            sync_file(get_custom_file_base() . '/' . $path);
-
-            // Delete custom fields
-            require_code('fields');
-            delete_form_custom_fields('comcode_page', $zone . ':' . $file);
-
-            // Delete menu item
-            require_code('menus2');
-            delete_menu_item_simple($zone . ':' . $new_file);
-        } else {
-            // Save custom fields
-            require_code('fields');
-            save_form_custom_fields('comcode_page', $zone . ':' . $new_file, $zone . ':' . $file);
         }
 
         // Health Check

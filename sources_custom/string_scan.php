@@ -114,7 +114,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        SUCCESS_PAGE_TRANSLATION_DELETED
+        SUCCESS_PAGE_DELETED
+        DELETE_TRANSLATION
+        COMCODE_PAGE_TRANSLATIONS
         CONTENT_VIEWS_PER_CONTENT_DAY
+        __COMCODE_PAGE_EDIT
         CONTENT_VIEWS
         ALEXA_RANKING
         ALEXA_LINKS

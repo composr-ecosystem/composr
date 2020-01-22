@@ -209,12 +209,13 @@ class Hook_addon_registry_core_comcode_pages
                 'HIDDEN' => '',
                 'TEXT' => lorem_paragraph_html(),
                 'LINKS' => [[
-                    'LINK_IMAGE' => placeholder_image_url(),
+                    'LINK_ICON' => 'menu/cms/comcode_page_edit',
                     'LINK_URL' => placeholder_url(),
                     'LINK_TEXT' => lorem_phrase(),
                 ]],
                 'FILTER' => '',
                 'HAS_PAGINATION' => true,
+                'TRANSLATIONS_MODE' => false,
             ]), null, '', true)
         ];
     }
