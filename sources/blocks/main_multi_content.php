@@ -266,11 +266,11 @@ PHP;
             if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($info['category_type'] !== '<page>')) {
                 $where .= get_permission_where_clause(get_member(), $groups2, 'a2', 'ma2');
             }
+        }
 
-            if (array_key_exists('where', $info)) {
-                $where .= ' AND ';
-                $where .= $info['where'];
-            }
+        if (array_key_exists('where', $info)) {
+            $where .= ' AND ';
+            $where .= $info['where'];
         }
 
         if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (has_privilege(get_member(), 'see_unvalidated'))) {

@@ -245,19 +245,16 @@ abstract class Hook_sitemap_base
      * @param  ID_TEXT $zone The zone the page is being loaded in
      * @param  ID_TEXT $page The codename of the page to load
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
+     * @param  boolean $is_comcode_page Whether this is a Comcode page
      * @return boolean Whether the page should be omitted
      */
-    protected function _is_page_omitted_from_sitemap($zone, $page, $options)
+    protected function _is_page_omitted_from_sitemap($zone, $page, $options, $is_comcode_page)
     {
-        // Some kinds of hidden pages
-        if (substr($page, 0, 6) == 'panel_') {
-            return true;
-        }
-        if (substr($page, 0, 1) == '_') {
-            return true;
-        }
-        if ($page == '404') {
-            return true;
+        if (($is_comcode_page) && (($options & SITEMAP_GEN_MACHINE_SITEMAP) != 0)) {
+            require_code('global4');
+            if (!comcode_page_include_on_sitemap($zone, $page)) {
+                return true;
+            }
         }
 
         if (($options & SITEMAP_GEN_MACHINE_SITEMAP) == 0) {

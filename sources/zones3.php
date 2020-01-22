@@ -640,6 +640,7 @@ function get_template_contents($name)
  * @param  LANGUAGE_NAME $lang The language
  * @param  ID_TEXT $text The page text
  * @param  ?BINARY $validated The validated status (null: 1 / don't change)
+ * @param  BINARY $include_on_sitemap Include on the sitemap
  * @param  ?ID_TEXT $parent_page The page parent (null: none / don't change if $order is also null)
  * @param  ?integer $order The page order (null: 0 / don't change)
  * @param  ?TIME $add_time Add time (null: now / don't change)
@@ -651,7 +652,7 @@ function get_template_contents($name)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (blank: implicit) (null: no change)
  * @return PATH The save path
  */
-function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $parent_page = null, $order = null, $add_time = null, $edit_time = null, $show_as_edit = 0, $submitter = null, $file = null, $meta_keywords = '', $meta_description = '')
+function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $include_on_sitemap = 1, $parent_page = null, $order = null, $add_time = null, $edit_time = null, $show_as_edit = 0, $submitter = null, $file = null, $meta_keywords = '', $meta_description = '')
 {
     if ($submitter === null) {
         $submitter = get_member();
@@ -752,6 +753,7 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
         'p_add_date' => $add_time,
         'p_submitter' => $submitter,
         'p_show_as_edit' => $show_as_edit,
+        'p_include_on_sitemap' => $include_on_sitemap,
         'p_order' => $order,
     ]);
 
@@ -797,9 +799,20 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
         generate_resource_fs_moniker('comcode_page', $zone . ':' . $new_file);
     }
 
-    if ((substr($new_file, 0, 1) != '_') && (substr($new_file, 0, 6) != 'panel_')) {
-        require_code('sitemap_xml');
-        notify_sitemap_node_add($zone . ':' . $new_file);
+    if ($validated == 1) {
+        if ($include_on_sitemap == 1) {
+            $_include_on_sitemap = 1;
+        } else {
+            $_include_on_sitemap = 0;
+        }
+    } else {
+        $_include_on_sitemap = 0;
+    }
+    require_code('sitemap_xml');
+    if ($_include_on_sitemap == 1) {
+        notify_sitemap_node_edit($zone . ':' . $new_file);
+    } else {
+        notify_sitemap_node_delete($zone . ':' . $new_file);
     }
 
     return $full_path;

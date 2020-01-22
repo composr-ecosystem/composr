@@ -295,6 +295,7 @@ class Module_admin_version
                 'p_add_date' => 'TIME',
                 'p_submitter' => 'MEMBER',
                 'p_show_as_edit' => 'BINARY',
+                'p_include_on_sitemap' => 'BINARY',
                 'p_order' => 'INTEGER',
             ]);
             $GLOBALS['SITE_DB']->create_index('comcode_pages', 'p_submitter', ['p_submitter']);
@@ -894,6 +895,8 @@ class Module_admin_version
             require_code('users_active_actions');
             $admin_user = get_first_admin_user();
 
+            require_code('global4');
+
             $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
                 'the_zone' => 'site',
                 'the_page' => 'userguide_comcode',
@@ -907,6 +910,7 @@ class Module_admin_version
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
+                'p_include_on_sitemap' => comcode_page_include_on_sitemap('site', 'userguide_comcode') ? 1 : 0,
                 'p_order' => 0,
             ], false, true);
 
@@ -923,6 +927,7 @@ class Module_admin_version
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
+                'p_include_on_sitemap' => comcode_page_include_on_sitemap('', 'keymap') ? 1 : 0,
                 'p_order' => 0,
             ], false, true);
 
@@ -1124,6 +1129,14 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('group_privileges', 'by_privilege', ['privilege']);
 
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', ['l_member_id', 'l_notification_code', 'l_code_category(10)']);
+
+            $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_include_on_sitemap', 'BINARY', 1);
+            require_code('global4');
+            $rows = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_zone', 'the_page']);
+            foreach ($rows as $row) {
+                $include_on_sitemap = _comcode_page_include_on_sitemap_default($row['the_zone'], $row['the_page']);
+                $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_include_on_sitemap' => $include_on_sitemap ? 1 : 0], $row, '', 1);
+            }
         }
     }
 

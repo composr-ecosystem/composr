@@ -50,6 +50,8 @@ class Hook_whatsnew_comcode_pages
 
         $new = new Tempcode();
 
+        require_code('global4');
+
         require_code('selectcode');
         if ($filter == '') {
             $filter = ','; // Just welcome zone
@@ -84,7 +86,7 @@ class Hook_whatsnew_comcode_pages
                     $page = strval($page); // PHP can be weird when things like '404' are put in arrays
                 }
 
-                if (substr($page, 0, 6) == 'panel_') {
+                if (!comcode_page_include_on_sitemap($zone, $page)) {
                     continue;
                 }
 

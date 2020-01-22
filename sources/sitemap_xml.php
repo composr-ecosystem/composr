@@ -420,15 +420,17 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
 
     list($zone, $map) = page_link_decode($page_link);
     if (isset($map['page'])) {
-        require_code('global4');
-        if (!comcode_page_is_indexable($zone, $map['page'])) {
-            return;
+        // We don't want to leave _SEARCH in there, as it's inconsistent with what the regular Sitemap code goes
+        if ($zone == '_SEARCH') {
+            $_zone = get_page_zone($map['page'], false);
+            if ($_zone !== null) {
+                $page_link = preg_replace('#^_SEARCH:#', $_zone . ':', $page_link);
+            }
         }
 
-        // We don't want to leave _SEARCH in there, as it's inconsistent with what the regular Sitemap code goes
-        $_zone = get_page_zone($map['page'], false);
-        if ($_zone !== null) {
-            $page_link = preg_replace('#^_SEARCH:#', $_zone . ':', $page_link);
+        require_code('global4');
+        if (!comcode_page_include_on_sitemap($zone, $map['page'])) {
+            return;
         }
     }
 

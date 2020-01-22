@@ -112,6 +112,8 @@ class Hook_content_meta_aware_comcode_page
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_COMCODE_PAGE',
+
+            'where' => 'p_include_on_sitemap=1',
         ];
     }
 

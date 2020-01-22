@@ -308,6 +308,7 @@ class Hook_task_import_wordpress
                             'p_add_date' => $edit_time,
                             'p_submitter' => $submitter_id,
                             'p_show_as_edit' => 0,
+                            'p_include_on_sitemap' => 1,
                             'p_order' => 0,
                         ]);
 

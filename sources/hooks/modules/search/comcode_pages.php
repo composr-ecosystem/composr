@@ -120,10 +120,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $where_clause .= ' AND ';
             $where_clause .= 'z.zone_name IS NOT NULL';
         }
-        if (strpos($content, 'panel_') === false) {
-            $where_clause .= ' AND ';
-            $where_clause .= '(r.the_page NOT LIKE \'' . db_encode_like('panel\_%') . '\') AND (r.the_page NOT LIKE \'' . db_encode_like('\_%') . '\')';
-        }
+        $where_clause .= ' AND q.p_include_on_sitemap=1';
         if (($search_under !== null) && ($search_under != '!')) {
             $where_clause .= ' AND ';
             $where_clause .= '(' . db_string_equal_to('r.the_zone', $search_under) . ')';
@@ -212,12 +209,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                             continue;
                         }
 
-                        if (strpos($content, 'panel_') === false) {
-                            if (substr($page, 0, 6) == 'panel_') {
-                                continue;
-                            }
-                        }
-                        if (substr($page, 0, 1) == '_') {
+                        require_code('global4');
+                        if (!comcode_page_include_on_sitemap($zone, $page)) {
                             continue;
                         }
 

@@ -957,6 +957,10 @@ class Module_cms_comcode_pages
             }
         }
 
+        require_code('global4');
+        $include_on_sitemap = comcode_page_include_on_sitemap($zone, $file);
+        $fields2->attach(form_input_tick(do_lang_tempcode('INCLUDE_ON_SITEMAP'), do_lang_tempcode('DESCRIPTION_INCLUDE_ON_SITEMAP'), 'include_on_sitemap', $include_on_sitemap));
+
         if (get_option('is_on_comcode_page_children') == '1') {
             $_pages = find_all_pages_wrap($zone);
             cms_mb_ksort($_pages, SORT_NATURAL | SORT_FLAG_CASE);
@@ -1153,6 +1157,7 @@ class Module_cms_comcode_pages
         if (!addon_installed('unvalidated')) {
             $validated = 1;
         }
+        $include_on_sitemap = post_param_integer('include_on_sitemap', 0);
         require_code('antispam');
         inject_action_spamcheck();
         if (!has_bypass_validation_comcode_page_permission($zone)) {
@@ -1204,7 +1209,7 @@ class Module_cms_comcode_pages
         }
 
         // Main save function
-        $path = save_comcode_page($zone, $new_file, $lang, $text, $validated, $parent_page, $order, $metadata['add_time'], $metadata['edit_time'], $show_as_edit, $metadata['submitter'], $file, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''));
+        $path = save_comcode_page($zone, $new_file, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $metadata['add_time'], $metadata['edit_time'], $show_as_edit, $metadata['submitter'], $file, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''));
 
         // Update any current menu link(s)
         $GLOBALS['SITE_DB']->query_update('menu_items', ['i_url' => $zone . ':' . $new_file], ['i_url' => $zone . ':' . $file]);
@@ -1301,6 +1306,7 @@ class Module_cms_comcode_pages
         require_css('sitemap_editor');
 
         require_code('type_sanitisation');
+        require_code('global4');
 
         disable_php_memory_limit();
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
@@ -1340,26 +1346,14 @@ class Module_cms_comcode_pages
         } else {
             $__pages = $GLOBALS['SITE_DB']->query_select(
                 'comcode_pages a LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages b ON a.the_zone=b.the_zone AND a.the_page=b.the_page',
-                ['a.the_zone', 'a.the_page', 'a.p_parent_page', 'a.p_validated', 'b.cc_page_title', 'b.string_index'],
+                ['a.*', 'b.cc_page_title', 'b.string_index'],
                 [],
                 'ORDER BY the_zone,the_page'
             );
         }
         $_pages = [];
         foreach ($__pages as $i => $__page) {
-            if (substr($__page['the_page'], 0, 6) == 'panel_') {
-                unset($__pages[$i]);
-                continue;
-            }
-            if (substr($__page['the_page'], 0, 1) == '_') {
-                unset($__pages[$i]);
-                continue;
-            }
-            if (!is_alphanumeric($__page['the_page'])) { // e.g. 404 page
-                unset($__pages[$i]);
-                continue;
-            }
-            if (!is_alphanumeric($__page['the_zone'])) {
+            if (!comcode_page_include_on_sitemap($__page['the_zone'], $__page['the_page'], $__page)) {
                 unset($__pages[$i]);
                 continue;
             }

@@ -36,6 +36,8 @@ class Hook_rss_comcode_pages
      */
     public function run($_filters, $cutoff, $prefix, $date_string, $max)
     {
+        require_code('global4');
+
         $filters = explode(',', $_filters);
 
         $content = new Tempcode();
@@ -82,7 +84,7 @@ class Hook_rss_comcode_pages
                     $page = strval($page);
                 }
 
-                if (substr($page, 0, 6) == 'panel_') {
+                if (!comcode_page_include_on_sitemap($zone, $page)) {
                     continue;
                 }
                 if (!has_page_access(get_member(), $page, $zone)) {

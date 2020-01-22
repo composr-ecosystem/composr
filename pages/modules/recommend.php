@@ -64,6 +64,8 @@ class Module_recommend
             require_code('users_active_actions');
             $admin_user = get_first_admin_user();
 
+            require_code('global4');
+
             $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
                 'the_zone' => '',
                 'the_page' => 'recommend_help',
@@ -77,6 +79,7 @@ class Module_recommend
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
+                'p_include_on_sitemap' => comcode_page_include_on_sitemap('', 'recommend_help') ? 1 : 0,
                 'p_order' => 0,
             ]);
         }

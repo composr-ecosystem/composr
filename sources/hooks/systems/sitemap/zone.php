@@ -324,7 +324,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                     }
 
                     if ((!isset($pages_found[$_zone . ':' . $page])) && ($page != 'recommend_help'/*Special case*/) && ((strpos($page_type, 'comcode') === false/*not a Comcode page*/) || (isset($root_comcode_pages[$_zone . ':' . $page])))) {
-                        if ($this->_is_page_omitted_from_sitemap($_zone, $page, $options)) {
+                        if ($this->_is_page_omitted_from_sitemap($_zone, $page, $options, strpos($page_type, 'comcode') !== false)) {
                             continue;
                         }
                         $orphaned_pages[$_zone . ':' . $page] = $page_type;

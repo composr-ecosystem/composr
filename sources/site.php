@@ -1894,14 +1894,6 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
         set_http_status_code(404);
     }
 
-    require_code('global4');
-    if (
-        (!comcode_page_is_indexable($zone, $codename)) &&
-        (get_page_name() == $codename/*Top-level*/)
-    ) {
-        attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
-    }
-
     if ($zone == 'adminzone') {
         require_code('site_adminzone');
         adminzone_special_cases($codename);
@@ -1926,6 +1918,7 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
         'p_add_date' => null,
         'p_submitter' => null,
         'p_show_as_edit' => 0,
+        'p_include_on_sitemap' => null,
         'p_order' => 0,
     ];
 
@@ -2010,6 +2003,8 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
 
                 require_code('site2');
                 $new_comcode_page_row['p_add_date'] = filectime($file_base . '/' . $string);
+                require_code('global4');
+                $new_comcode_page_row['p_include_on_sitemap'] = comcode_page_include_on_sitemap($zone, $codename) ? 1 : 0;
                 list($html, $title_to_use, $comcode_page_row, $raw_comcode) = _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $comcode_page_row, $new_comcode_page_row, $being_included);
             }
 
@@ -2020,8 +2015,19 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
     } else {
         require_code('site2');
         $new_comcode_page_row['p_add_date'] = filectime($file_base . '/' . $string);
+        require_code('global4');
+        $new_comcode_page_row['p_include_on_sitemap'] = comcode_page_include_on_sitemap($zone, $codename) ? 1 : 0;
         list($html, $comcode_page_row, $title_to_use, $raw_comcode) = _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $new_comcode_page_row, $being_included);
     }
+
+    require_code('global4');
+    if (
+        (!comcode_page_include_on_sitemap($zone, $codename, $comcode_page_row)) &&
+        (get_page_name() == $codename/*Top-level*/)
+    ) {
+        attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
+    }
+
     $filtered_title_to_use = null;
     if ((!$is_panel) && (!$being_included)) {
         if (!cms_empty_safe($title_to_use)) {

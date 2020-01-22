@@ -1735,6 +1735,7 @@ class Hook_import_cms_merge
                 'p_add_date' => $row['p_add_date'],
                 'p_submitter' => $p_submitter,
                 'p_show_as_edit' => $row['p_show_as_edit'],
+                'p_include_on_sitemap' => $row['p_include_on_sitemap'],
                 'p_order' => $row['p_order'],
             ]);
 
