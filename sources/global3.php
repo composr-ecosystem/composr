@@ -1848,12 +1848,19 @@ function cms_tempnam($prefix = 'cms')
  * Make a value suitable for use in an XML ID.
  *
  * @param  string $param The value to escape
+ * @param  boolean $simplified Generate simplified IDs
  * @return string The escaped value
  */
-function fix_id($param)
+function fix_id($param, $simplified = false)
 {
     if (preg_match('#^[A-Za-z][\w]*$#', $param) !== 0) {
         return $param; // Optimisation
+    }
+
+    if ($simplified) {
+        if (get_charset() == 'utf-8') {
+            $param = str_replace(hex2bin('ce94'), 'delta', $param);
+        }
     }
 
     $length = strlen($param);
@@ -1862,31 +1869,37 @@ function fix_id($param)
         $char = $param[$i];
         switch ($char) {
             case '[':
-                $new .= '_opensquare_';
+                $new .= $simplified ? '' : '_opensquare_';
                 break;
             case ']':
-                $new .= '_closesquare_';
+                $new .= $simplified ? '' : '_closesquare_';
                 break;
             case '&#039;':
             case '\'':
-                $new .= '_apostophe_';
+                $new .= $simplified ? '' : '_apostophe_';
                 break;
             case '-':
-                $new .= '_minus_';
+                $new .= $simplified ? '' : '_minus_';
                 break;
             case ' ':
-                $new .= '_space_';
+                $new .= $simplified ? '' : '_space_';
                 break;
             case '+':
-                $new .= '_plus_';
+                $new .= $simplified ? '' : '_plus_';
                 break;
             case '*':
-                $new .= '_star_';
+                $new .= $simplified ? '' : '_star_';
                 break;
             case '/':
-                $new .= '__';
+                $new .= $simplified ? '' : '__';
+                break;
+            case '%':
+                $new .= '_percent_';
                 break;
             default:
+                if (($simplified) && (in_array($char, ['(' , ')', ',']))) {
+                    break;
+                }
                 $ascii = ord($char);
                 if ((($i !== 0) && ($char === '_')) || (($ascii >= 48) && ($ascii <= 57)) || (($ascii >= 65) && ($ascii <= 90)) || (($ascii >= 97) && ($ascii <= 122))) {
                     $new .= $char;
@@ -1896,12 +1909,18 @@ function fix_id($param)
                 break;
         }
     }
+
+    if ($simplified) {
+        $new = str_replace('_', '', $new);
+    }
+
     if ($new === '') {
         $new = 'zero_length';
     }
     if ($new[0] === '_') {
         $new = 'und_' . $new;
     }
+
     return $new;
 }
 

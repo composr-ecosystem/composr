@@ -1,11 +1,13 @@
 {$REQUIRE_JAVASCRIPT,sortable_tables}
 
 <div data-tpl="sortableTable" class="wide-table-wrap">
-	<table id="sortable-table-{ID*}" class="results-table wide-table columned-table autosized-table sortable-table{+START,IF_PASSED,DEFAULT_SORT_COLUMN} table-autosort:{DEFAULT_SORT_COLUMN*}{+END} table-autofilter table-autopage:{MAX*}">
+	<table id="sortable-table-{ID*}" class="results-table wide-table columned-table autosized-table sortable-table{+START,IF_PASSED,DEFAULT_SORT_COLUMN} table-autosort:{DEFAULT_SORT_COLUMN*}{+END} table-autofilter table-autopage:{MAX*}{+START,IF_NON_EMPTY,CLASS} {CLASS*}{+END}">
 		<thead>
 			<tr>
 				{+START,LOOP,HEADERS}
-					<th class="table-sortable:{SORTABLE_TYPE*}{+START,IF_NON_EMPTY,{FILTERABLE}} table-filterable{+END}{+START,IF,{SEARCHABLE}} table-searchable table-searchable-with-substrings{+END}">
+					{+START,SET,style}{+START,OF,STYLINGS}{_loop_key}{+END}{+END}
+					{+START,SET,class}{+START,OF,CLASSES}{_loop_key}{+END}{+END}
+					<th class="table-sortable:{SORTABLE_TYPE*}{+START,IF_NON_EMPTY,{FILTERABLE}} table-filterable{+END}{+START,IF,{SEARCHABLE}} table-searchable table-searchable-with-substrings{+END}{+START,IF_NON_EMPTY,{$GET,class}} {$GET*,class}{+END}"{+START,IF_NON_EMPTY,{$GET,style}} style="{$GET*,style}"{+END}>
 						{+START,INCLUDE,ICON}NAME=sortable_tables/sortable{+END}
 						<span>{LABEL*}</span>
 						{$,	If you want the template to define sorting, uncomment this and remove table-filterable -- but it will not be sorted consistently
