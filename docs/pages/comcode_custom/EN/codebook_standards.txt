@@ -2883,6 +2883,14 @@ Appropriate branch naming
 ! Notes
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not use [tt]*_custom[/tt] dirs for code that will make it into Composr[/color]
+| Ease of upgrading
+| Projects
+| Manually
+| If you make some changes which are being merged back into Composr, put them where they will be in the final Composr. That will make large future upgrades easier.
+It will also make patch upgrades harder, but for most client projects you'll be hand-patching only relevant fixes as fixing every minor issue is less of a concern than implementing and maintaining new features.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Add new CSS/templates/images into the default theme [tt]*_custom[/tt] dirs[/color]
 | Deployment, collaboration
 | Projects
