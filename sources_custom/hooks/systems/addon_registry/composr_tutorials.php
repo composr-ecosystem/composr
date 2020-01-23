@@ -1395,6 +1395,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'docs/pages/comcode_custom/EN/codebook_2.txt',
             'docs/pages/comcode_custom/EN/codebook_3.txt',
             'docs/pages/comcode_custom/EN/codebook_standards.txt',
+            'docs/pages/comcode_custom/EN/codebook_standards_obscure.txt',
             'docs/pages/comcode_custom/EN/faq.txt',
             'docs/pages/comcode_custom/EN/tut_adv_forums.txt',
             'docs/pages/comcode_custom/EN/sup_inline_editing.txt',

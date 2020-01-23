@@ -135,6 +135,7 @@ class lang_misc_test_set extends cms_test_case
             if (in_array($path, [
                 'docs/pages/comcode_custom/EN/tut_designer_themes.txt',
                 'docs/pages/comcode_custom/EN/codebook_standards.txt',
+                'docs/pages/comcode_custom/EN/codebook_standards_obscure.txt',
                 'docs/pages/comcode_custom/EN/codebook_1.txt',
                 'docs/pages/comcode_custom/EN/codebook_1b.txt',
                 'docs/pages/comcode_custom/EN/codebook_2.txt',
