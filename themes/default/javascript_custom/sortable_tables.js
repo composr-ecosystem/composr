@@ -770,6 +770,7 @@ var SortableTable = (function(){
     // Scrape each row of each tbody
     var bodies = t.tBodies;
     if (bodies==null || bodies.length==0) { return; }
+    var mostRecentVisibleRow = null;
     for (var i=0,L=bodies.length; i<L; i++) {
       var tb = bodies[i];
       for (var j=0,L2=tb.rows.length; j<L2; j++) {
@@ -819,17 +820,29 @@ var SortableTable = (function(){
         if (!hasClass(row,'table-nofilter'))
           row.style.display = hideRow?"none":"";
 
-        if (row.className.replace(/^(\s*(first|last)\s*)*$/, '') == '') {
+        if (row.className.replace(/^(\s*(first|last)\s*)*$/, '') == '') { // If no other styles on the row
             var classes = [];
-            if (unfilteredrowcount == pagestart) {
-                classes.push('first');
-            }
-            if (unfilteredrowcount == pageend) {
-                classes.push('last');
+            if (!hideRow) {
+                if (unfilteredrowcount == pagestart) {
+                    classes.push('first');
+                }
+                if (unfilteredrowcount == pageend) {
+                    classes.push('last');
+                }
+                mostRecentVisibleRow = row;
             }
             row.className = classes.join(' ');
         }
       }
+    }
+
+    if (mostRecentVisibleRow !== null) {
+        var classes = [];
+        if (unfilteredrowcount == pagestart) {
+            classes.push('first');
+        }
+        classes.push('last');
+        mostRecentVisibleRow.className = classes.join(' ');
     }
 
     if (def(page)) {
@@ -970,7 +983,12 @@ var SortableTable = (function(){
     }
     // Do auto-sort if necessary
     if ((val = classValue(t,table.AutoSortColumnPrefix)) || (hasClass(t,table.AutoSortClassName))) {
-      table.autosort(t,{'col':(val==null)?null:+val});
+      var autoSortArgs = {'col':(val==null)?null:window.parseInt(val.replace(/^!/,''))};
+      if (val.substr(0, 1) == '!') {
+        autoSortArgs['forcedirection'] = true;
+        autoSortArgs['desc'] = true;
+      }
+      table.autosort(t,autoSortArgs);
     }
     // Do auto-stripe if necessary
     if (tdata.stripeclass && hasClass(t,table.AutoStripeClassName)) {

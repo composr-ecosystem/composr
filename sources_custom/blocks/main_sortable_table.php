@@ -182,20 +182,6 @@ PHP;
                     continue;
                 }
 
-                foreach ($row as $j => $val) {
-                    switch (is_array($transform) ? $transform[$j] : $transform) {
-                        case 'ucwords':
-                            $row[$j] = cms_mb_ucwords($val);
-                            break;
-
-                        case 'non-numeric-italics':
-                            if (!is_numeric($val)) {
-                                $row[$j] = protect_from_escaping('<em>' . escape_html($val) . '</em>');
-                            }
-                            break;
-                    }
-                }
-
                 $_rows[] = $row;
 
                 $i++;
@@ -350,6 +336,18 @@ PHP;
         foreach ($_rows as $i => &$row) {
             foreach ($row as $j => &$value) {
                 $value = $this->apply_formatting($value, $headers[$j]['SORTABLE_TYPE']);
+
+                switch (is_array($transform) ? $transform[$j] : $transform) {
+                    case 'ucwords':
+                        $value = cms_mb_ucwords($value);
+                        break;
+
+                    case 'non-numeric-italics':
+                        if ((!is_numeric($val)) && ($val != '')) {
+                            $value = protect_from_escaping('<em>' . escape_html($value) . '</em>');
+                        }
+                        break;
+                }
             }
 
             $tooltip_values = [];
@@ -370,8 +368,13 @@ PHP;
 
         // Final render...
 
-        $id = (preg_match('#^[\w_]+$#', $guid) != 0) ? $guid : uniqid('', false);
+        $id = (preg_match('#^[\w_\-]+$#', $guid) != 0) ? $guid : uniqid('', false);
 
+        $reverse_sorting = false;
+        if ((!empty($map['default_sort_column'])) && (substr($map['default_sort_column'], 0, 1) == '!')) {
+            $reverse_sorting = true;
+            $map['default_sort_column'] = substr($map['default_sort_column'], 1);
+        }
         $_default_sort_column = max(0, empty($map['default_sort_column']) ? 0 : ($this->letters_to_numbers($map['default_sort_column']) - 1));
         $default_sort_column = ($columns_display == []) ? $_default_sort_column : array_search($_default_sort_column + 1, $columns_display);
         if ($default_sort_column === false) {
@@ -383,7 +386,7 @@ PHP;
             '_GUID' => $guid,
             'ID' => $id,
             'CLASS' => $class,
-            'DEFAULT_SORT_COLUMN' => strval($default_sort_column),
+            'DEFAULT_SORT_COLUMN' => ($reverse_sorting ? '!' : '') . strval($default_sort_column),
             'MAX' => strval($max),
             'HEADERS' => $headers,
             'STYLINGS_HEADER' => $stylings_header,
