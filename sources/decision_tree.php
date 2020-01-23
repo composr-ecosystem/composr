@@ -130,8 +130,6 @@ class DecisionTree
      */
     public function run($recurse = false)
     {
-        $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
-
         $tree_position = get_param_string('type', 'browse');
         if ($tree_position != '' && $tree_position[0] == '_') {
             $tree_position = substr($tree_position, 1);

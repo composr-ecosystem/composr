@@ -127,10 +127,6 @@ class Module_admin_quiz
             $this->title = get_screen_title('EXPORT_QUIZ');
         }
 
-        if ($type == '_export') {
-            $GLOBALS['OUTPUT_STREAMING'] = false;
-        }
-
         if ($type == 'find_winner' || $type == '_find_winner') {
             $this->title = get_screen_title('FIND_WINNERS');
         }

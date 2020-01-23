@@ -53,8 +53,6 @@ class Module_lost_password
             warn_exit(do_lang_tempcode('NO_CNS'));
         }
 
-        $GLOBALS['OUTPUT_STREAMING'] = false; // Due to meta refresh that may happen
-
         $type = get_param_string('type', 'browse');
 
         require_lang('cns');

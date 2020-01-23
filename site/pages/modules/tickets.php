@@ -209,8 +209,6 @@ class Module_tickets
 
         if ($type == 'ticket') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('SUPPORT_TICKETS')]]);
-
-            $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
         }
 
         if ($type == 'post') {
@@ -221,10 +219,6 @@ class Module_tickets
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('SUPPORT_TICKETS')], ['_SELF:_SELF:ticket:' . get_param_string('id'), do_lang_tempcode('VIEW_SUPPORT_TICKET')]]);
 
             $this->title = get_screen_title('SET_TICKET_EXTRA_ACCESS');
-        }
-
-        if ($type == 'toggle_ticket_closed') {
-            $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
         }
 
         if ($type == 'merge' || $type == '_merge') {

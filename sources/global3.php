@@ -727,7 +727,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
 /**
  * Turn the Tempcode lump into a standalone page.
  *
- * @param  ?Tempcode $middle The Tempcode to put into a nice frame (null: support output streaming mode)
+ * @param  Tempcode $middle The Tempcode to put into a nice frame
  * @param  ?mixed $message 'Additional' message (null: none)
  * @param  string $type The type of special message
  * @set inform warn ""
@@ -751,7 +751,7 @@ function globalise($middle, $message = null, $type = '', $include_header_and_foo
     }
 
     $show_border = (get_param_integer('show_border', $show_border ? 1 : 0) == 1);
-    if (!$show_border && !running_script('index') && $middle !== null) {
+    if (!$show_border && !running_script('index')) {
         $global = do_template('STANDALONE_HTML_WRAP', [
             '_GUID' => 'fe818a6fb0870f0b211e8e52adb23f26',
             'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
@@ -759,39 +759,28 @@ function globalise($middle, $message = null, $type = '', $include_header_and_foo
             'TARGET' => '_self',
             'CONTENT' => $middle,
         ]);
-        if ($GLOBALS['OUTPUT_STREAMING'] || $middle !== null) {
-            $global->handle_symbol_preprocessing();
-        }
+        $global->handle_symbol_preprocessing();
         return $global;
     }
 
     global $TEMPCODE_CURRENT_PAGE_OUTPUTTING;
 
-    if (($middle !== null) && (isset($TEMPCODE_CURRENT_PAGE_OUTPUTTING))) { // Error happened after output and during MIDDLE processing, so bind MIDDLE as an error
-        $middle->handle_symbol_preprocessing();
-        $global = $TEMPCODE_CURRENT_PAGE_OUTPUTTING;
-        $global->singular_bind('MIDDLE', $middle);
-        // NB: We also considered the idea of using document.write() as a way to reset the output stream, but JavaScript execution will not happen before the parser (even if you force a flush and delay)
+    global $DOING_OUTPUT_PINGS;
+    if (headers_sent() && !$DOING_OUTPUT_PINGS) {
+        $global = do_template('STANDALONE_HTML_WRAP', [
+            '_GUID' => 'd579b62182a0f815e0ead1daa5904793',
+            'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
+            'FRAME' => false,
+            'TARGET' => '_self',
+            'CONTENT' => $middle,
+        ]);
     } else {
-        global $DOING_OUTPUT_PINGS;
-        if (headers_sent() && !$DOING_OUTPUT_PINGS && $middle !== null) {
-            $global = do_template('STANDALONE_HTML_WRAP', [
-                '_GUID' => 'd579b62182a0f815e0ead1daa5904793',
-                'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
-                'FRAME' => false,
-                'TARGET' => '_self',
-                'CONTENT' => $middle,
-            ]);
-        } else {
-            $global = do_template('GLOBAL_HTML_WRAP', [
-                '_GUID' => '592faa2c0e8bf2dc3492de2c11ca7131',
-                'MIDDLE' => $middle,
-            ]);
-        }
-        if ($GLOBALS['OUTPUT_STREAMING'] || $middle !== null) {
-            $global->handle_symbol_preprocessing();
-        }
+        $global = do_template('GLOBAL_HTML_WRAP', [
+            '_GUID' => '592faa2c0e8bf2dc3492de2c11ca7131',
+            'MIDDLE' => $middle,
+        ]);
     }
+    $global->handle_symbol_preprocessing();
 
     if ((!$include_header_and_footer) && ($old !== null)) {
         $_GET['wide_high'] = $old;

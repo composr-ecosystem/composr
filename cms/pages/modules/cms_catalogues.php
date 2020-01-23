@@ -186,8 +186,6 @@ class Module_cms_catalogues extends Standard_crud_module
 
         if ($type == 'export') {
             $this->title = get_screen_title('EXPORT_CATALOGUE_ENTRIES');
-
-            $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
         }
 
         switch ($type) {

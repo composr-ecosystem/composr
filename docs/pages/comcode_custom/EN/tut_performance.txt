@@ -262,7 +262,7 @@ Composr has HTML compression. If you wish you can edit the [tt]GLOBAL_HTML_WRAP[
 The beauty of these directives is that they can run fast because they don't do a full parse of the HTML code while the concern of accidentally breaking anything is removed because you have full control over what portions of your HTML they run on.
 Both directives make some assumptions based upon Composr coding standards. So make sure you stick to Composr HTML standards when using it.
 
-Note that these directives will not do anything if the "Output streaming" option is enabled. Also they will disable if you temporarily are disabling output minification.
+Note that these directives will disable if you temporarily are disabling output minification.
 
 [title="4"][tt]HTML_COMPRESS[/tt] directive[/title]
 

@@ -515,24 +515,6 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             $eval = tempcode_compiler_eval('return ' . $new_line . ';', $tpl_funcs, [], $cl);
 
                             $new_line = '"' . php_addslashes($eval) . '"';
-                        } else {
-                            // We want the benefit's of keep_ variables but not with having to do lots of individual URL moniker lookup queries - so use a static URL and KEEP_ symbol combination
-                            if (($GLOBALS['OUTPUT_STREAMING']) && ($first_param === '"PAGE_LINK"') && (count($opener_params) === 1) && (tc_is_all_static($_opener_params)) && (function_exists('has_submit_permission')/*needed for moniker hooks to load up*/)) {
-                                $tmp = $_GET;
-                                foreach (array_keys($_GET) as $key) {
-                                    if (substr($key, 0, 5) === 'keep_') {
-                                        unset($_GET[$key]);
-                                    }
-                                }
-                                $tpl_funcs = [];
-                                $eval = tempcode_compiler_eval('return ' . $new_line . ';', $tpl_funcs, [], $cl);
-                                $new_line = '"' . php_addslashes($eval) . '"';
-                                $_GET = $tmp;
-                                $current_level_data[] = $new_line;
-                                $current_level_data[] = 'ecv_KEEP($cl,[' . implode(',', array_map('strval', $escaped)) . '],["' . ((strpos($new_line, '?') === false) ? '1' : '0') . '"])';
-                                $GLOBALS['HAS_KEEP_IN_URL_CACHE'] = null; // The temporary $_GET change can cause this to go wrong
-                                break;
-                            }
                         }
                         $current_level_data[] = $new_line;
                         break;
@@ -1284,19 +1266,11 @@ function template_to_tempcode($text, $symbol_pos = 0, $inside_directive = false,
         return new Tempcode();
     }
 
-    $output_streaming = (function_exists('get_option')) && (get_option('output_streaming') === '1');
-
     $is_all_static = true;
 
     $parts_groups = [];
     $parts_group = [];
     foreach ($parts as $part) {
-        if (($output_streaming) && (strpos($part, '$bound_') !== false)) { // Start a new seq_part, so output streaming can break at this parameter reference
-            if ($parts_group !== []) {
-                $parts_groups[] = $parts_group;
-            }
-            $parts_group = [];
-        }
         $parts_group[] = $part;
 
         if (!tc_is_all_static($part)) {

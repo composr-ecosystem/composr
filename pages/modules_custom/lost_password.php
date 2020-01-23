@@ -29,7 +29,6 @@ class Mx_lost_password extends Module_lost_password
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
-        $GLOBALS['OUTPUT_STREAMING'] = false;
         return parent::pre_run();
     }
 

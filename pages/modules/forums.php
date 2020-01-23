@@ -76,10 +76,6 @@ class Module_forums
 
         $forums = get_param_string('url', $base_url . '/', INPUT_FILTER_URL_GENERAL);
 
-        if (substr($forums, 0, strlen($base_url)) != $base_url) {
-            $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
-        }
-
         return null;
     }
 

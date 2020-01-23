@@ -702,7 +702,7 @@ function ecv($lang, $escaped, $type, $name, $param)
             case 'HTML_COMPRESS':
                 $options = isset($param[1]) ? explode('|', $param[0]) : [];
                 $value = $param[count($param) - 2]->evaluate();
-                if ((get_option('output_streaming') == '0') && (get_param_integer('keep_minify', 1) == 1)) {
+                if (get_param_integer('keep_minify', 1) == 1) {
                     if (in_array('comments', $options)) {
                         $value = preg_replace('#<!--.*-->#Us', '', $value);
                     }

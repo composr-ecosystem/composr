@@ -3465,7 +3465,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_oembed_max_size
         CONFIG_OPTION_one_per_email_address
         YOU_ADMIN_NO_EMAIL
-        CONFIG_OPTION_output_streaming
         CONFIG_OPTION_overt_whisper_suggestion
         CONFIG_OPTION_password_change_days
         CONFIG_OPTION_password_cookies
@@ -6341,7 +6340,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ORPHANED_UPLOADS
         OTHER_MAINTENANCE
         OUTMODE
-        OUTPUT_STREAMING
         OUTSTANDING_INVOICES
         OUT_OF_BOUNDS_TIME
         OVERRIDE

@@ -132,10 +132,6 @@ class Module_admin_newsletter extends Standard_crud_module
             breadcrumb_set_self(do_lang_tempcode('VIEW'));
         }
 
-        if (either_param_integer('spreadsheet', 0) == 1) {
-            $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
-        }
-
         return parent::pre_run($top_level);
     }
 

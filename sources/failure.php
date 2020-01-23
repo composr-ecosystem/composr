@@ -543,7 +543,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         'TRACE' => $trace,
     ]);
     $echo = globalise($middle, null, '', true);
-    $echo->evaluate_echo(null, true);
+    $echo->evaluate_echo();
     exit();
 }
 
@@ -1208,7 +1208,7 @@ function put_value_in_stack_trace($value)
         if (($value === null) || (is_array($value) && (strlen(serialize($value)) > MAX_STACK_TRACE_VALUE_LENGTH))) {
             $_value = gettype($value);
         } elseif (is_object($value) && (is_a($value, 'Tempcode'))) {
-            if (($value->codename == 'GLOBAL_HTML_WRAP') || (strlen(serialize($value)) > 1000)) { // NB: We can't do an eval on GLOBAL_HTML_WRAP because it may be output streaming, incomplete
+            if (strlen(serialize($value)) > 1000) {
                 $_value = 'Tempcode -> ...';
             } else {
                 $_value = $value->evaluate();
@@ -1456,7 +1456,7 @@ function _access_denied($class, $param, $force_login)
             attach_message($message, 'warn');
         }
         $echo = globalise($middle, null, '', true);
-        $echo->evaluate_echo(null, true);
+        $echo->evaluate_echo();
         exit();
     }
 

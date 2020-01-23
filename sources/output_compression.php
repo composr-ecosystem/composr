@@ -63,7 +63,7 @@ function enable_output_compression()
         cms_ini_set('brotli.output_compression', 'On');
         cms_ini_set('brotli.output_compression_level', '11'); // Recommended. Default for Brotli
     } elseif (supports_gzip(true, $use_cmd_line)) {
-        cms_ini_set('zlib.output_compression', '2048'); // 2KB buffer is based on capturing repetition while not breaking output streaming
+        cms_ini_set('zlib.output_compression', '4096');
         cms_ini_set('zlib.output_compression_level', '2'); // Recommended. Compression doesn't get much better after this, but performance drop
     }
 }

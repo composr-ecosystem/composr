@@ -136,8 +136,6 @@ class Module_topics
             attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
         }
 
-        $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
-
         return null;
     }
 

@@ -182,8 +182,6 @@ class Module_admin_cns_members
             $this->title = get_screen_title('EXPORT_MEMBERS');
 
             set_helper_panel_text(comcode_lang_string('DOC_EXPORT_MEMBERS'));
-
-            $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
         }
 
         return null;

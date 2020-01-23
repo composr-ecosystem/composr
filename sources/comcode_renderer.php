@@ -472,7 +472,7 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
     ]);
     $echo = globalise($output, null, '', true);
     $echo->handle_symbol_preprocessing();
-    $echo->evaluate_echo(null, true);
+    $echo->evaluate_echo();
     exit();
 }
 

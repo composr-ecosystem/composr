@@ -502,7 +502,6 @@ function set_helper_panel_tutorial($tutorial)
 
 /**
  * Sets the short title, used for screen header text if set.
- * Does not do anything if output streaming is on and already started.
  *
  * @sets_output_state
  *
@@ -1021,15 +1020,9 @@ function do_site()
     $show_edit_links = get_param_integer('show_edit_links', 0);
     $webstandards_mode = (
         (($GLOBALS['IS_ACTUALLY_ADMIN']) || ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()))) && (($special_page_type == 'code') || (($webstandards_check == 1) && ($GLOBALS['REFRESH_URL'][0] == '') && ($show_edit_links == 0)))); // Not a permission - a matter of performance
-    if ($webstandards_mode) {
-        $GLOBALS['OUTPUT_STREAMING'] = false;
-    }
-
-    // Output streaming?
-    $out = globalise(null, null, '', true);
 
     // Load up our frames into strings. Note that the header and the footer are fixed already.
-    $middle = request_page(get_page_name(), true, null, null, false, true, $out);
+    $middle = request_page(get_page_name(), true, null, null, false, true);
     if ($middle->is_empty_shell()) {
         set_http_status_code(404);
 
@@ -1037,11 +1030,8 @@ function do_site()
         $text = do_lang_tempcode('NO_PAGE_OUTPUT');
         $middle = warn_screen($title, $text, false);
     }
-    $out->singular_bind('MIDDLE', $middle);
 
-    if (!$GLOBALS['OUTPUT_STREAMING']) {
-        $out->handle_symbol_preprocessing();
-    }
+    $out = globalise($middle, null, '', true);
 
     // Web Standards mode
     if ($webstandards_mode) {
@@ -1051,8 +1041,7 @@ function do_site()
     }
 
     // Static cache
-    $out2 = clone $out; // This is needed to stop things messing up during output streaming
-    save_static_caching($out2);
+    save_static_caching($out);
 
     // Save template tree
     if ($GLOBALS['RECORD_TEMPLATES_USED']) {
@@ -1096,9 +1085,6 @@ function do_site()
         if ($out_evaluated !== null) {
             echo $out_evaluated;
         } else {
-            if ($GLOBALS['OUTPUT_STREAMING']) {
-                $middle->handle_symbol_preprocessing();
-            }
             $GLOBALS['FINISHING_OUTPUT'] = true;
             $out->evaluate_echo(null);
         }
@@ -1350,10 +1336,9 @@ function write_static_cache_file($fast_cache_path, $out_evaluated, $support_outp
  * @param  ?ID_TEXT $page_type The type of page - for if you know it (null: don't know it)
  * @param  boolean $being_included Whether the page is being included from another
  * @param  boolean $redirect_check Whether to check for redirects (normally you would)
- * @param  ?object $out Semi-filled output template (null: definitely not doing output streaming)
  * @return Tempcode The page
  */
-function request_page($codename, $required, $zone = null, $page_type = null, $being_included = false, $redirect_check = true, &$out = null)
+function request_page($codename, $required, $zone = null, $page_type = null, $being_included = false, $redirect_check = true)
 {
     global $SITE_INFO;
 
@@ -1403,18 +1388,18 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
     switch ($details[0]) {
         case 'MODULES_CUSTOM':
             $path = isset($details[3]) ? $details[3] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/modules_custom/' . $details[2] . '.php', true);
-            $ret = load_module_page($path, $details[2], $out);
+            $ret = load_module_page($path, $details[2]);
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'MODULES':
             $path = isset($details[3]) ? $details[3] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/modules/' . $details[2] . '.php', true);
-            $ret = load_module_page($path, $details[2], $out);
+            $ret = load_module_page($path, $details[2]);
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'COMCODE_CUSTOM':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode_custom/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1') && (get_custom_file_base() == get_file_base())) || (@is_file(get_custom_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], get_custom_file_base(), $being_included, $out);
+                $ret = load_comcode_page($path, $details[1], $details[2], get_custom_file_base(), $being_included);
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
@@ -1422,7 +1407,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
         case 'COMCODE_CUSTOM_PURE':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode_custom/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1')) || (@is_file(get_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], get_file_base(), $being_included, $out);
+                $ret = load_comcode_page($path, $details[1], $details[2], get_file_base(), $being_included);
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
@@ -1430,7 +1415,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
         case 'COMCODE':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1')) || (@is_file(get_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], null, $being_included, $out);
+                $ret = load_comcode_page($path, $details[1], $details[2], null, $being_included);
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
@@ -1438,23 +1423,23 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
         case 'HTML_CUSTOM':
             require_code('site_html_pages');
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/html_custom/' . $details[3] . '/' . $details[2] . '.htm', true);
-            $ret = make_string_tempcode(load_html_page($path, null, $out));
+            $ret = make_string_tempcode(load_html_page($path));
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'HTML':
             require_code('site_html_pages');
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/html/' . $details[3] . '/' . $details[2] . '.htm', true);
-            $ret = make_string_tempcode(load_html_page($path, null, $out));
+            $ret = make_string_tempcode(load_html_page($path));
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'MINIMODULES_CUSTOM':
             $path = isset($details[3]) ? $details[3] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/minimodules_custom/' . $codename . '.php', true);
-            $ret = load_minimodule_page($path, $out);
+            $ret = load_minimodule_page($path);
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'MINIMODULES':
             $path = isset($details[3]) ? $details[3] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/minimodules/' . $codename . '.php', true);
-            $ret = load_minimodule_page($path, $out);
+            $ret = load_minimodule_page($path);
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'REDIRECT':
@@ -1484,7 +1469,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
                     }
                 }
                 if (($redirect['r_to_page'] != $codename) || ($redirect['r_to_zone'] != $zone)) {
-                    $ret = request_page($redirect['r_to_page'], $required, $redirect['r_to_zone'], null, $being_included, false/*Don't want redirect loops*/, $out);
+                    $ret = request_page($redirect['r_to_page'], $required, $redirect['r_to_zone'], null, $being_included, false/*Don't want redirect loops*/);
                     $REQUEST_PAGE_NEST_LEVEL--;
                     return $ret;
                 }
@@ -1871,10 +1856,9 @@ function _load_comcodes_page_from_cache($pages)
  * @param  ID_TEXT $codename The codename of the page
  * @param  ?PATH $file_base The file base to load from (null: standard)
  * @param  boolean $being_included Whether the page is being included from another
- * @param  ?object $out Semi-filled output template (null: definitely not doing output streaming)
  * @return Tempcode The page
  */
-function load_comcode_page($string, $zone, $codename, $file_base = null, $being_included = false, &$out = null)
+function load_comcode_page($string, $zone, $codename, $file_base = null, $being_included = false)
 {
     if (strlen($codename) < 1) {
         warn_exit(do_lang_tempcode('EMPTY_CODENAME'));
@@ -2076,12 +2060,6 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
             'title' => ($title_to_use == '') ? null : ('[semihtml]' . $title_to_use . '[/semihtml]'),
             'identifier' => $zone . ':' . $codename,
         ], $comcode_page_row, 'comcode_page', $zone . ':' . $codename);
-    }
-
-    if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null)) {
-        $GLOBALS['TEMPCODE_CURRENT_PAGE_OUTPUTTING'] = $out;
-
-        $out->evaluate_echo(null, true);
     }
 
     global $SCREEN_TEMPLATE_CALLED;

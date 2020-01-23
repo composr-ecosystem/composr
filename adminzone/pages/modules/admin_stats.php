@@ -360,10 +360,6 @@ class Module_admin_stats extends Standard_crud_module
             inform_non_canonical_parameter($graph_name . '_sort');
         }
 
-        if ($type == 'spreadsheet') {
-            $GLOBALS['OUTPUT_STREAMING'] = false;
-        }
-
         if ($type == 'redirect') {
             $id = get_param_string('id');
 
