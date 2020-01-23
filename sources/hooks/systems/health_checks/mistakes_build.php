@@ -377,7 +377,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                     if ($has_action) {
                         $url = html_entity_decode($matches_action[1], ENT_QUOTES);
 
-                        if ($url == '#') {
+                        if ($url == '#' || $url == '#!') {
                             continue;
                         }
 
