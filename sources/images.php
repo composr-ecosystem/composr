@@ -465,7 +465,7 @@ function is_image($name, $criteria, $as_admin = false, $mime_too = false)
 
     // Web-safe check
     if (($criteria & IMAGE_CRITERIA_WEBSAFE) != 0) {
-        if (!in_array($ext, ['jpeg', 'jpe', 'jpg', 'gif', 'png', 'bmp', 'svg', 'ico', 'cur'])) {
+        if (!in_array($ext, ['jpeg', 'jpe', 'jpg', 'gif', 'png', 'bmp', 'svg', 'ico', 'cur', 'webp'])) {
             return false;
         }
     }
