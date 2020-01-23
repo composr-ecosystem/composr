@@ -732,7 +732,7 @@ Entry-point scripts should not crash for missing dependencies
 | Product development only
 | Automated test ([tt]addon_guards.php[/tt])
 | Entry-point scripts should not crash for missing dependencies (including the files owner addon), they should just put out an error.
-}
+|}
 
 [title="4"]AJAX[/title]
 
@@ -770,7 +770,7 @@ Call [tt]exit();[/tt] after your code runs
 | Product development only
 | Manually
 | If you do not explicitly exit your code then hosting using [tt]auto_append_file[/tt] could append junk to your XML/JSON, corrupting it. This is common on free webhosting plans.
-}
+|}
 
 [title="4"]Files[/title]
 
@@ -874,7 +874,7 @@ Reference in [tt]web.config[/tt] file
 | Composr development
 | Manually
 | We support IIS, which does not support wild-card blocking of file access. So we must manually block access to each individual log file.
-}
+|}
 
 [title="4"]URLs and file paths[/title]
 
@@ -2871,7 +2871,7 @@ Appropriate branch naming
 | Composr development
 | Automated test ([tt]sensible_git_branches[/tt])
 | The current 'mainline' version branch should be in [tt]master[/tt], and any other version branch should be in [tt]v<version-number>[/tt].
-}
+|}
 
 [title="3"]Agency standards[/title]
 
