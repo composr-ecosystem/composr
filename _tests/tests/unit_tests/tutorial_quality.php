@@ -47,6 +47,8 @@ class tutorial_quality_test_set extends cms_test_case
                 continue;
             }
 
+			$this->assertTrue($tutorial['raw_tags'] == array_unique($tutorial['raw_tags']), 'Tag duplication for ' . $tutorial_name);
+
             $this->assertTrue($tutorial['title'] != '', 'Title undefined for ' . $tutorial_name);
             $this->assertTrue($tutorial['author'] != '', 'Author undefined for ' . $tutorial_name);
             $this->assertTrue($tutorial['summary'] != '', 'Summary undefined for ' . $tutorial_name);
