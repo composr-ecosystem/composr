@@ -487,13 +487,13 @@ class Hook_addon_registry_core_comcode_pages
 2_key="' . lorem_phrase() . '" 2_value="' . lorem_sentence() . '"
 ][/concepts]
 ';
-        save_comcode_page('lorem', 'lorem', fallback_lang(), $lorem_comcode, 1, DEFAULT_ZONE_PAGE_NAME);
+        save_comcode_page('lorem', 'lorem', fallback_lang(), $lorem_comcode, 1, 1, DEFAULT_ZONE_PAGE_NAME);
 
         // Simple example page ('menus')
         $menus_comcode = '[title]' . lorem_phrase() . '[/title]' . "\n\n";
         $menus_comcode .= '[block type="tree"]menu[/block]' . "\n\n" . '[block type="popup"]menu[/block]' . "\n\n";
         $menus_comcode .= '[block type="select"]menu[/block]' . "\n\n";
         $menus_comcode .= '[block type="embossed"]menu[/block]' . "\n\n";
-        save_comcode_page('lorem', 'menus', fallback_lang(), $menus_comcode, 1, DEFAULT_ZONE_PAGE_NAME);
+        save_comcode_page('lorem', 'menus', fallback_lang(), $menus_comcode, 1, 1, DEFAULT_ZONE_PAGE_NAME);
     }
 }
