@@ -37,6 +37,11 @@ else
 	echo "4/4 Fixed permissions of uploads"
 fi
 
+# In git?
+if [ -e ".git" ]; then
+	git config core.fileMode false
+fi
+
 # Messages...
 
 echo "DONE"
