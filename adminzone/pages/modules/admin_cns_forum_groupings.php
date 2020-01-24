@@ -35,7 +35,6 @@ class Module_admin_cns_forum_groupings extends Standard_crud_module
     protected $do_next_editing_categories = true;
     protected $menu_label = 'SECTION_FORUMS';
     protected $orderer = 'c_title';
-    protected $title_is_multi_lang = false;
     protected $donext_entry_content_type = 'forum_grouping';
     protected $donext_category_content_type = null;
     protected $do_preview = null;

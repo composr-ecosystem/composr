@@ -314,6 +314,11 @@ class Module_shopping
     {
         @ignore_user_abort(true); // Must keep going till completion
 
+        // Static cache issue? (We can disable static caching for particular pages to avoid this)
+        if (get_session_id() == '') {
+            access_denied('NOT_AS_GUEST');
+        }
+
         require_code('shopping');
         require_code('feedback');
         require_code('ecommerce');

@@ -563,7 +563,7 @@ class Module_news
                 'select' => $select,
                 'select_and' => $select_and,
                 'interval' => '6000',
-                'max' => $items_in_the_slider
+                'max' => strval($items_in_the_slider)
             ]));
         }
 
@@ -584,7 +584,7 @@ class Module_news
                 'pagination' => '1',
                 'attach_to_url_filter' => '1',
                 'filter' => $filter,
-                'start' => $items_in_the_slider, // Pickup where 'main_news_slider' ends
+                'start' => strval($items_in_the_slider), // Pickup where 'main_news_slider' ends
             ]));
         }
 
@@ -763,12 +763,12 @@ class Module_news
         $_next_article_title = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'title', ['id' => $id + 1], '', true);
 
         if (!cms_empty_safe($_prev_article_title)) {
-            $prev_article_title = $_prev_article_title;
+            $prev_article_title = get_translated_text($_prev_article_title);
             $prev_article_url   = build_url(['page' => 'news', 'type' => 'view', 'id' => $id - 1], get_module_zone('news'));
         }
 
         if (!cms_empty_safe($_next_article_title)) {
-            $next_article_title = $_next_article_title;
+            $next_article_title = get_translated_text($_next_article_title);
             $next_article_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $id + 1], get_module_zone('news'));
         }
 

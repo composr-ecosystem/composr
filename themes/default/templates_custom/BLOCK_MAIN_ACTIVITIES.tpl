@@ -31,7 +31,7 @@
 		{+START,IF_NON_EMPTY,{PAGINATION}}
 			{+START,INCLUDE,AJAX_PAGINATION}
 				WRAPPER_ID={$GET,ajax_block_main_activities_wrapper}
-				ALLOW_INFINITE_SCROLL=1
+				ALLOW_INFINITE_SCROLL={$NAND,{$MATCH_KEY_MATCH,_WILD:members:view},{$EQ,{$MEMBER},{MEMBER_IDS}}}
 			{+END}
 		{+END}
 	</div>
@@ -43,6 +43,4 @@
 			{+START,INCLUDE,ACTIVITY}{+END}
 		</li>
 	{+END}
-
-	{PAGINATION}
 {+END}

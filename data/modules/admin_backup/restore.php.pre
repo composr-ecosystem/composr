@@ -165,7 +165,7 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
         // Run command
         $success = @eval($sql_buildup); // NB: Query errors are echo'd out as DB API knows restoration script is running
         if ($success === false) {
-            header('Content-type: text/plain');
+            header('Content-Type: text/plain');
             exit('Failed on: ' . $sql_buildup);
         }
         $sql_buildup = '';
@@ -194,7 +194,7 @@ fclose($data_file);
 if ($sql_buildup != '') {
     $success = @eval($sql_buildup);
     if ($success === false) {
-        header('Content-type: text/plain');
+        header('Content-Type: text/plain');
         exit('Failed on: ' . $sql_buildup);
     }
     $sql_buildup = '';
@@ -282,6 +282,16 @@ function cms_ini_set($var, $value)
 }
 
 /**
+ * Flush but don't break Brotli compression.
+ */
+function cms_flush_safe()
+{
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
+        flush();
+    }
+}
+
+/**
  * Handle GET URLs requesting embedded media files.
  */
 function handle_self_referencing_embedment()
@@ -291,7 +301,7 @@ function handle_self_referencing_embedment()
         $type = $_GET['type'];
 
         if ($type == 'logo') {
-            header('Content-type: image/png');
+            header('Content-Type: image/png');
             if (!file_exists(get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png')) {
                 $out = file_array_get('themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png');
             } else {

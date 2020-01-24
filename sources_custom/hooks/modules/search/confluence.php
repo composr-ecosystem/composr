@@ -31,6 +31,10 @@ class Hook_search_confluence extends FieldsSearchHook
             return null;
         }
 
+        if ((get_option('confluence_subdomain') == '') || (get_option('confluence_space') == '')) {
+            return null;
+        }
+
         if ($member_id === null) {
             $member_id = get_member();
         }
@@ -135,9 +139,9 @@ class Hook_search_confluence extends FieldsSearchHook
             }
 
             if ($only_titles) {
-                $cql_query .= 'title ~ "' . str_replace('"', '', $content) . '"';
+                $cql_query .= 'title ~ "' . $this->cleanup_search_verb($content) . '"';
             } else {
-                $cql_query .= '(title ~ "' . str_replace('"', '', $content) . '" or text ~ "' . str_replace('"', '', $content) . '")';
+                $cql_query .= '(title ~ "' . $this->cleanup_search_verb($content) . '" or text ~ "' . $this->cleanup_search_verb($content) . '")';
             }
         }
 
@@ -175,7 +179,7 @@ class Hook_search_confluence extends FieldsSearchHook
                 break;
         }
 
-        $rows = confluence_query('search?cql=' . urlencode($cql_query)/* We can't put on a limit as we need to be able to count results . '&limit=' . strval($limit_to + $start)*/);
+        $rows = confluence_query('search?limit=100&cql=' . urlencode($cql_query)/* We can't put on a limit as we need to be able to count results . '&limit=' . strval($limit_to + $start)*/);
 
         $out = [];
         foreach ($rows['results'] as $i => $row) {
@@ -183,12 +187,23 @@ class Hook_search_confluence extends FieldsSearchHook
             unset($rows[$i]);
             if (($remapped_orderer != '') && (array_key_exists($remapped_orderer, $row))) {
                 $out[$i]['orderer'] = $row[$remapped_orderer];
+            } else {
+                $out[$i]['orderer'] = $i;
             }
         }
 
         $GLOBALS['TOTAL_SEARCH_RESULTS'] += count($rows['results']);
 
         return $out;
+    }
+
+    protected function cleanup_search_verb($in)
+    {
+        $reps = [
+            '"' => '',
+            '\\' => '',
+        ];
+        return str_replace(array_keys($reps), array_values($reps), $in);
     }
 
     /**
@@ -202,11 +217,22 @@ class Hook_search_confluence extends FieldsSearchHook
         global $SEARCH__CONTENT_BITS;
         $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
 
-        $text_summary_h = nl2br(escape_html(preg_replace('#\n+#', "\n", str_replace('@', '', $myrow['excerpt']))));
-        $text_summary = generate_text_summary($text_summary_h, $highlight_bits);
+        $text_summary_h = $this->cleanup_text($myrow['excerpt']);
+        $text_summary = generate_text_summary($text_summary_h, []);
+
+        $title = $myrow['content']['title'];
 
         $url = build_url(['page' => 'docs', 'type' => $myrow['content']['id']], '_SEARCH');
         $breadcrumbs = confluence_breadcrumbs($myrow['content']['id']);
-        return do_template('SIMPLE_PREVIEW_BOX', ['TITLE' => 'Documentation: ' . $myrow['title'], 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
+        return do_template('SIMPLE_PREVIEW_BOX', ['TITLE' => 'Documentation: ' . $title, 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
+    }
+
+    protected function cleanup_text($in)
+    {
+        $out = $in;
+        $out = preg_replace('#\n+#', "\n", $out);
+        $out = nl2br($out);
+        $out = preg_replace('#@@@hl@@@(.*)@@@endhl@@@#U', '<span class="comcode_highlight">\1</span>', $out);
+        return $out;
     }
 }

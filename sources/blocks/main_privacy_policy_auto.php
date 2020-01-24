@@ -53,7 +53,7 @@ class Block_main_privacy_policy_auto
         [
         ]
 PHP;
-        $info['ttl'] = (60 * 60 * 24 * 365 * 5/*5 year timeout*/);
+        $info['ttl'] = 60 * 60 * 24 * 365 * 5;
         return $info;
     }
 

@@ -901,7 +901,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for($real_content_type, $content_id);
         } else {
-            $privacy_limits = [];
+            $privacy_limits = null;
         }
         dispatch_notification('comment_posted', $content_type . '_' . $content_id, $subject, $message_raw, $privacy_limits);
 

@@ -121,7 +121,7 @@ if ($t !== null) {
     }
 }
 
-if ($releases_tpl_map === []) {
+if (empty($releases_tpl_map)) {
     $latest = do_lang('NA');
     $releases_tpl = paragraph(do_lang_tempcode('CMS_BETWEEN_VERSIONS'));
 } else {

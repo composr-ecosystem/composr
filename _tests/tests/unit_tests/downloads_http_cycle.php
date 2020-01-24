@@ -51,7 +51,7 @@ class downloads_http_cycle_test_set extends cms_test_case
             @var_dump($data);
             exit();
         }
-        $this->assertTrue(is_string($data));
+        $this->assertTrue(is_string($data), 'Got non-string result for upload');
     }
 
     public function testDownload()

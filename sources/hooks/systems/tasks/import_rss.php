@@ -291,6 +291,7 @@ class Hook_task_import_rss
                     'p_add_date' => $post_time,
                     'p_submitter' => $submitter_id,
                     'p_show_as_edit' => 0,
+                    'p_include_on_sitemap' => 1,
                     'p_order' => 0,
                 ]);
 

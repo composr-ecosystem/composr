@@ -136,8 +136,6 @@ class Module_topics
             attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
         }
 
-        $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
-
         return null;
     }
 
@@ -336,7 +334,7 @@ class Module_topics
 
         // Show it worked / Refresh
         if ($forum_id === null) {
-            $url = build_url(['page' => 'members', 'type' => 'view', 'id' => get_member()], get_module_zone('members'), [], false, false, false, 'tab--pts');
+            $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, 'tab--pts');
         } else {
             $url = build_url(['page' => 'forumview', 'id' => $forum_id], get_module_zone('forumview'));
         }
@@ -1283,7 +1281,7 @@ class Module_topics
 
         // Show it worked / Refresh
         $title = get_screen_title('DELETE_TOPICS_AND_POSTS');
-        $url = build_url(['page' => 'members', 'type' => 'view', 'id' => get_member()], get_module_zone('members'));
+        $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'));
         return redirect_screen($title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -2756,7 +2754,7 @@ END;
             $ip = $post_rows[0]['p_ip_address'];
             $time = $post_rows[0]['p_time'];
             $count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_time>' . strval($time - 60 * 60 * 24) . ' AND p_time<' . strval($time + 60 * 60 * 24) . ' AND ' . db_string_equal_to('p_ip_address', $ip));
-            $_ip_url = build_url(['page' => 'admin_lookup', 'param' => get_ip_address()], get_module_zone('admin_lookup'));
+            $_ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => get_ip_address()], get_module_zone('admin_lookup'));
             $ip_url = $_ip_url->evaluate();
             $text = paragraph(do_lang_tempcode('DELETE_POSTS_DESCRIPTION', escape_html(integer_format($count)), escape_html($ip), escape_html($ip_url)));
             $submit_name = do_lang_tempcode('DELETE_POST');

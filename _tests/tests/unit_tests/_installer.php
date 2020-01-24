@@ -142,7 +142,7 @@ class _installer_test_set extends cms_test_case
         // Assumes we're using a blank root password, which is typically the case on development) - or you have it in $SITE_INFO['mysql_root_password']
         global $SITE_INFO;
         require_code('install_headless');
-        for ($i = 0; $i < 2; $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
+        for ($i = 0; $i < ($this->only === null) ? 2 : 1; $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
             $success = do_install_to(
                 $database,
                 (strpos(get_db_type(), 'mysql') === false) ? get_db_site_user() : 'root',

@@ -29,7 +29,7 @@ function catalogue_file_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
     }
 
@@ -143,7 +143,7 @@ function catalogue_file_script()
     $from = 0;
     $new_length = $size;
 
-    cms_ini_set('zlib.output_compression', 'Off');
+    disable_output_compression(); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
 
     // They're trying to resume (so update our range)
     $httprange = $_SERVER['HTTP_RANGE'];

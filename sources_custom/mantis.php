@@ -21,9 +21,13 @@ function get_tracker_issue_titles($ids, $version = null)
 
     $sql = 'SELECT id,summary,view_state,(SELECT name FROM mantis_category_table c WHERE c.id=m.category_id) AS category FROM mantis_bug_table m WHERE ';
 
-    $_ids = @implode(',', $ids);
-    $where_ids = 'id IN (' . $_ids . ')';
-    $sql .= $where_ids;
+    if (empty($ids)) {
+        $sql .= '1=0';
+    } else {
+        $_ids = @implode(',', $ids);
+        $where_ids = 'id IN (' . $_ids . ')';
+        $sql .= $where_ids;
+    }
 
     if ($version !== null) {
         $where_version = 'status=80 AND fixed_in_version=\'' . db_escape_string($version) . '\'';

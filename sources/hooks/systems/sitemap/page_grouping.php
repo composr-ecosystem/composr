@@ -81,6 +81,10 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
         $pages_found = [];
         $links = get_page_grouping_links();
         foreach ($links as $link) {
+            if ($link === null) {
+                continue;
+            }
+
             list($_page_grouping) = $link;
 
             if (($_page_grouping == '') || ($_page_grouping == $page_grouping)) {
@@ -202,6 +206,10 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
             // Directly defined in page grouping hook
             $child_links = [];
             foreach ($links as $link) {
+                if ($link === null) {
+                    continue;
+                }
+
                 if ($link[0] == $page_grouping) {
                     $title = $link[3];
                     $icon = $link[1];
@@ -301,7 +309,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                             }
 
                             if ((!isset($pages_found[$_zone . ':' . $page])) && ($page != 'recommend_help'/*Special case*/) && ((strpos($page_type, 'comcode') === false) || (isset($root_comcode_pages_validation[$_zone . ':' . $page])))) {
-                                if ($this->_is_page_omitted_from_sitemap($_zone, $page, $options)) {
+                                if ($this->_is_page_omitted_from_sitemap($_zone, $page, $options, strpos($page_type, 'comcode') !== false)) {
                                     continue;
                                 }
 

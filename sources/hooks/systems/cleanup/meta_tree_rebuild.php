@@ -33,7 +33,7 @@ class Hook_cleanup_meta_tree_rebuild
         $info = [];
         $info['title'] = do_lang_tempcode('META_TREE_REBUILD');
         $info['description'] = do_lang_tempcode('DESCRIPTION_META_TREE_REBUILD');
-        $info['type'] = 'optimise';
+        $info['type'] = 'other';
 
         return $info;
     }

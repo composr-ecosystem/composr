@@ -477,11 +477,11 @@ class Module_admin_config
 
             // Render group
             $group_title = do_lang_tempcode($group_codename);
-            $_group_description = do_lang('CONFIG_GROUP_DESCRIP_' . $group_codename, escape_html($post_max_size), escape_html($upload_max_filesize), null, null, false);
+            $_group_description = do_lang('CONFIG_GROUP_DESCRIP_' . $group_codename, escape_html($post_max_size), escape_html($upload_max_filesize), escape_html(get_base_url()), null, false);
             if ($_group_description === null) {
                 $group_description = new Tempcode();
             } else {
-                $group_description = do_lang_tempcode('CONFIG_GROUP_DESCRIP_' . $group_codename, escape_html($post_max_size), escape_html($upload_max_filesize));
+                $group_description = do_lang_tempcode('CONFIG_GROUP_DESCRIP_' . $group_codename, escape_html($post_max_size), escape_html($upload_max_filesize), escape_html(get_base_url()));
             }
             $groups_arr[] = ['GROUP_DESCRIPTION' => $group_description, 'GROUP_NAME' => $group_codename, 'GROUP' => $out, 'GROUP_TITLE' => $group_title];
             $_groups[$group_codename] = $group_title;

@@ -127,7 +127,7 @@ function get_self_url_easy($script_name_if_cli = false)
 function get_self_url($evaluate = false, $root_if_posted = false, $extra_params = [], $posted_too = false, $avoid_remap = false)
 {
     global $SELF_URL_CACHED, $IN_SELF_ROUTING_SCRIPT;
-    $cacheable = ($evaluate) && (!$root_if_posted) && ($extra_params === []) && (!$posted_too) && (!$avoid_remap);
+    $cacheable = ($evaluate) && (!$root_if_posted) && (empty($extra_params)) && (!$posted_too) && (!$avoid_remap);
     if (($cacheable) && ($SELF_URL_CACHED !== null)) {
         return $SELF_URL_CACHED;
     }
@@ -884,7 +884,7 @@ function _url_rewrite_params($zone_name, $parameters, $force_index_php = false)
                         break;
                 }
             }
-            if (($extra_vars !== []) || ($force_index_php)) {
+            if ((!empty($extra_vars)) || ($force_index_php)) {
                 $first = true;
                 $_makeup = '';
                 foreach ($extra_vars as $key => $val) { // Add these in explicitly
@@ -1102,7 +1102,7 @@ function page_link_decode($page_link)
         }
         if (isset($_bit[1])) {
             $decoded = urldecode($_bit[1]);
-            if (($decoded !== '') && ($decoded[0] === '{') && (strlen($decoded) > 2) && (intval($decoded[1]) > 51)) { // If it is in template format (symbols)
+            if (($decoded !== '') && ($decoded[0] === '{') && (strlen($decoded) > 2) && (is_numeric($decoded[1])) && (intval($decoded[1]) > 51)) { // If it is in template format (symbols)
                 require_code('tempcode_compiler');
                 $_decoded = template_to_tempcode($decoded);
                 $decoded = $_decoded->evaluate();
@@ -1187,18 +1187,6 @@ function page_link_to_tempcode_url($page_link)
 {
     list($zone, $map, $hash) = page_link_decode($page_link);
     return build_url($map, $zone, [], false, false, false, $hash);
-}
-
-/**
- * Convert a local page file path to a written page-link.
- *
- * @param  string $page The path
- * @return string The page-link (blank: could not convert)
- */
-function page_path_to_page_link($page)
-{
-    require_code('urls2');
-    return _page_path_to_page_link($page);
 }
 
 /**
@@ -1311,7 +1299,7 @@ function find_id_moniker($url_parts, $zone, $search_redirects = true)
         }
         if ($search_redirects) {
             $page_place = _request_page(str_replace('-', '_', $page), $zone);
-            if ($page_place[0] == 'REDIRECT') {
+            if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
                 $page = $page_place[1]['r_to_page'];
                 $zone = $page_place[1]['r_to_zone'];
             }
@@ -1493,7 +1481,7 @@ function ensure_protocol_suitability($url)
         return $url;
     }
 
-    $https_url = 'https://' . $url;
+    $https_url = 'https://' . substr($url, 7);
 
     $https_exists = check_url_exists($https_url, 60 * 60 * 24 * 31);
 
@@ -1640,4 +1628,40 @@ function normalise_idn_url($url)
     require_code('urls_simplifier');
     $coder_ob = new HarmlessURLCoder();
     return $coder_ob->encode($url);
+}
+
+/**
+ * Find the page-link of the current screen.
+ *
+ * @param  boolean $include_keep_components Whether to include keep_* components in the URL
+ * @return string Page-link
+ */
+function get_current_page_link($include_keep_components = true)
+{
+    $page_link = get_zone_name() . ':' . get_page_name();
+    $type = get_param_string('type', null);
+    if ($type !== null) {
+        $page_link .= ':' . $type;
+    }
+    $id = get_param_string('id', null);
+    if ($id !== null) {
+        if ($type === null) {
+            $page_link .= ':id=' . $id;
+        } else {
+            $page_link .= ':' . $id;
+        }
+    }
+    foreach ($_GET as $key => $val) {
+        if (($key == 'page') || ($key == 'type') || ($key == 'id')) {
+            continue;
+        }
+        if (is_array($val)) {
+            continue;
+        }
+        if ((substr($key, 0, 5) == 'keep_') && ((!$include_keep_components) || (!skippable_keep($key, $val)))) {
+            continue;
+        }
+        $page_link .= ':' . $key . '=' . $val;
+    }
+    return $page_link;
 }

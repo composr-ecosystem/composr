@@ -63,13 +63,13 @@ function init__cns_join($in)
 function get_referrer_field($visible)
 {
     require_lang('referrals');
-    $known_referrer = get_param_string('keep_referrer', '');
-    if ($known_referrer != '') {
-        if (is_numeric($known_referrer)) {
-            $known_referrer = $GLOBALS['FORUM_DRIVER']->get_username(intval($known_referrer), false, USERNAME_DEFAULT_BLANK);
+    $tracking_codes = find_session_tracking_codes();
+    $known_referrer = null;
+    foreach ($tracking_codes as $tracking_code) {
+        if (is_numeric($tracking_code)) {
+            $known_referrer = $GLOBALS['FORUM_DRIVER']->get_username(intval($tracking_code), false, USERNAME_DEFAULT_BLANK);
+            break;
         }
-    } else {
-        $known_referrer = cms_admirecookie('referrer', '');
     }
 
     if ($visible) {
@@ -92,14 +92,12 @@ function set_from_referrer_field()
 
     $referrer_member = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . db_string_equal_to('m_username', $referrer) . ' OR ' . db_string_equal_to('m_email_address', $referrer));
     if ($referrer_member !== null) {
-        $GLOBALS['FORUM_DB']->query_delete('f_invites', [
-            'i_email_address' => post_param_string('email'),
-        ], '', 1); // Delete old invites for this e-mail address
-        $GLOBALS['FORUM_DB']->query_insert('f_invites', [
+        $GLOBALS['FORUM_DB']->query_insert_or_replace('f_invites', [
+            'i_time' => time(),
+            'i_taken' => 1,
+        ], [
             'i_inviter' => $referrer_member,
             'i_email_address' => post_param_string('email'),
-            'i_time' => time(),
-            'i_taken' => 0,
         ]);
     }
 }

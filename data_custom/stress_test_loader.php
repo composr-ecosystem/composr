@@ -49,7 +49,7 @@ header('X-Robots-Tag: noindex');
 
 cms_disable_time_limit();
 cms_ini_set('ocproducts.xss_detect', '0');
-@header('Content-type: text/plain; charset=' . get_charset());
+@header('Content-Type: text/plain; charset=' . get_charset());
 disable_php_memory_limit();
 if (function_exists('gc_enable')) {
     gc_enable();
@@ -62,7 +62,7 @@ do_work();
 function do_work()
 {
     if (!is_cli()) {
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         exit('Must run this script on command line, for security reasons');
     }
 
@@ -460,7 +460,7 @@ function do_work()
     // logged hits in one day
     require_code('site');
     for ($i = $GLOBALS['SITE_DB']->query_select_value('stats', 'COUNT(*)'); $i < $num_wanted; $i++) {
-        log_stats('/testing' . uniqid('', true), mt_rand(100, 2000));
+        log_stats(':' . uniqid('', true), mt_rand(100, 2000));
     }
     echo 'done logs stuff' . "\n";
 

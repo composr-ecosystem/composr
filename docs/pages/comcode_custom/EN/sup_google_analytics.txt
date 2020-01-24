@@ -35,6 +35,8 @@ In addition to the above list, for larger websites built around a [acronym="Cont
  - Guests getting converted to members (i.e. joins)
  - Other measured goals such as newsletter signups
 
+Google Analytics isn't necessarily all good. A discussion on positives and negatives is included in the [page="_SEARCH:tut_statistics"]Statistics for your site (analytics)[/page] tutorial.
+
 You can sign up for [url="Google Analytics here"]http://www.google.com/analytics[/url]. If you already have a Google account you can sign in, otherwise you can create a new account. In order to really explore the product it is advisable to sign up with your active website details. Upon signup a [i]Google Analytics[/i] tracking code will be generated for your website.
 
 [title="3"]Google Analytics terminology[/title]
@@ -304,8 +306,10 @@ The redirect technique is good enough for many, but is sub-optimal because the r
 
 Another approach is to use JavaScript to randomly decide the version ourselves, and to tell [i]Google Analytics[/i] which page variant is loaded.
 
+[color="red"]The below instructions need updating, as Google Analytics Content Experiments are now Google Optimize, which we have not tested.[/color]
+
 For this to work we need to:
-1) [url="Follow Google's tutorial"]https://developers.google.com/analytics/solutions/experiments-client-side[/url]
+1) [url="Follow Google's tutorial"]https://marketingplatform.google.com/about/optimize[/url]
 2) Write the Composr code to pick the random version
 3) Don't put any code in [tt]HTML_HEAD.tpl[/tt] (remove it if you added it already)
 
@@ -361,96 +365,21 @@ To do split testing well you need to be willing to put the time in, and be willi
 
 You can split test things you might never have thought about, even outside the scope of [i]Google Analytics[/i]. For example:
  - give a different phone number extension for different randomised versions of copy, and record performance externally
- - pass through a different Composr [tt]keep_referrer[/tt] parameter to the [tt]join[/tt] module, e.g. [page=":join:keep_referrer=2"]a[/page] or [page=":join:keep_referrer=3"]b[/page]. In this case make sure '2' and '3' are the IDs of admin accounts. You can then use the non-bundled [tt]referrals[/tt] addon to track the referrals these accounts make.
+ - pass through a different Composr [tt]_t[/tt] parameter to the [tt]join[/tt] module, e.g. [page=":join:_t=abc1"]a[/page] or [page=":join:_t=abc2"]b[/page]. You can then track conversions against those tracking codes.
 
 [title="2"]Creating events (advanced)[/title]
 
 The [i]Google Analytics[/i] JavaScript library, which comes pre-integrated as a part of a [i]Google Analytics[/i] deployment, provides a means for tracking custom events. That is events beyond just basic page views.
 
-Composr provides a JavaScript function, [tt]$cms.gaTrack[/tt], to abstract this, which is pre-integrated in a number of places:
-{|
-! Event description
-! Event name
-! Event parameter
-|-
-| Click banner
-| [tt]Banner[/tt]
-| [tt]<bannerCodename>[/tt]
-|-
-| Click Comcode link
-| [tt]URL[/tt]
-| [tt]<url>[/tt]
-|-
-| Click system links put out for many things (the [tt]HYPERLINK.tpl[/tt] template)
-| [tt]URL[/tt]
-| [tt]<url>[/tt]
-|-
-| Download a download
-| [tt]Download[/tt]
-| [tt]<filename>[/tt]
-|-
-| Download an attachment
-| [tt]Attachment[/tt]
-| [tt]<filename>[/tt]
-|-
-| Play attachment audio 
-| [tt]Audio[/tt]
-| [tt]<url>[/tt]
-|-
-| Play attachment video
-| [tt]Video[/tt]
-| [tt]<url>[/tt]
-|-
-| Open attachment overlay
-| [tt]Image[/tt]
-| [tt]<filename>[/tt]
-|-
-| Join newsletter
-| [tt]Join newsletter/Change settings[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Create support ticket
-| [tt]Create support ticket[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Send contact message
-| [tt]<catalogueName>[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Send contact message
-| [tt]Contact Us[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Join
-| [tt]Join[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Do a social interaction (e.g. a like or a share)
-| [tt]social__facebook_like[/tt] / [tt]social__facebook[/tt] / [tt]social__twitter[/tt] / [tt]social__linkedin[/tt] / [tt]social__pinterest[/tt] / [tt]social__tumblr[/tt] / [tt]social__vk[/tt] / [tt]social__sina_weibo[/tt] / [tt]social__tencent_weibo[/tt] / [tt]social__qzone[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Print the page
-| [tt]Print this[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Bookmark the page
-| [tt]Add to favorites[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Standard tracking via [tt]_t[/tt] URL parameter
-| [tt]tracking__<parameterValue>[/tt]
-| [tt]<currentUrl>[/tt]
-|-
-| Get whitepaper from join block
-| [tt]Download whitepaper[/tt]
-| [tt]<currentUrl>[/tt]
-|}
+Composr provides a JavaScript function, [tt]$cms.statsEventTrack[/tt], to abstract this, which is pre-integrated in a number of places. Pre-integrated events are documented in the [page="_SEARCH:tut_statistics"]Statistics for your site (analytics)[/page] tutorial.
 
-You may easily extend this with whatever custom events you want, then configure [i]Google Analytics[/i] against those events. Just edit it into HTML within pages/templates, adding an [tt]onclick[/tt] to links like follows:
+You may easily create whatever custom events you want, then configure [i]Google Analytics[/i] against those events. Just edit it into HTML within pages/templates, adding an [tt]onclick[/tt] to links like follows:
 [code="HTML"]
-onclick="$cms.gaTrack(this,'My Event Name','My Event Parameter', event);"
+onclick="$cms.statsEventTrack(this,'My Event Name','My Event Parameter', event);"
 [/code]
 The [tt]'My Event Parameter'[/tt] bit is optional, but often you will want to define different parameter value underneath the same event name. For example, for the banner click events this is the codename of the clicked banner.
+
+The above assumes that CSP is disabled in the configuration. If CSP is enabled you'll need to write your JavaScript in a more sophisticated fashion, using included JavaScript files. This is beyond the scope of this tutorial.
 
 [title="2"]Session unificiation[/title]
 
@@ -465,26 +394,22 @@ c) Third-parties may have onerous policies you can't deal with.
 
 However, in a few very special cases we do think its best to pick one widespread tool and pre-integrate it, hence our strong support for [i]Google Analytics[/i].
 
-In the interest of providing other options, here are some good alternative resources for you to consider...
-
-Split testing tools:
- - [url="Visual Website Optimizer"]https://vwo.com/[/url]
- - [url="Optimizely"]https://www.optimizely.com/[/url]
- - [url="http://blog.crazyegg.com/2014/06/25/best-testing-software/"]Comparison article[/url]
-
-Hosted analytics tool:
- - http://piwik.org/
+In the interest of providing other options, here are some good alternative resources for you to consider:
+ - Composr's own integrated stats addon
+ - Hosted analytics tool:
+  - http://piwik.org/
+ - Split testing tools:
+  - [url="Visual Website Optimizer"]https://vwo.com/[/url]
+  - [url="Optimizely"]https://www.optimizely.com/[/url]
+  - [url="http://blog.crazyegg.com/2014/06/25/best-testing-software/"]Comparison article[/url]
 
 [concepts
- 1_key="Multivariate testing"		1_value="An analytical technique to see which of multiple variations performs best."
- 2_key="Split testing"				2_value="The same as Multivariate testing. A more conversational way of putting it."
- 3_key="A/B testing"					3_value="Multivariate testing with exactly two versions (original version and 1 variation)."
- 4_key="Analytics Event"			4_value="An in-page user action that is explicitly triggered via tracking code."
- 5_key="Analytics Goal"				5_value="A goal is a defined condition against an event."
- 6_key="Analytics Experiment"		6_value="A configured case of multivariate testing."
- 7_key="Multivariate original"	7_value="What multivariate testing is being performed against (i.e. with reference against the original version)."
- 8_key="Multivariate variate"		8_value="A variation on the multivariate original."
- 9_key="Multivariate version"		9_value="Either the multivariate original or a multivariate variate."
+ 1_key="Analytics Event"			1_value="An in-page user action that is explicitly triggered via tracking code."
+ 2_key="Analytics Goal"				2_value="A goal is a defined condition against an event."
+ 3_key="Analytics Experiment"		3_value="A configured case of multivariate testing."
+ 4_key="Multivariate original"	4_value="What multivariate testing is being performed against (i.e. with reference against the original version)."
+ 5_key="Multivariate variate"		5_value="A variation on the multivariate original."
+ 6_key="Multivariate version"		6_value="Either the multivariate original or a multivariate variate."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
@@ -493,6 +418,6 @@ Hosted analytics tool:
  - http://www.simplybusiness.co.uk/microsites/google-analytics-guide/
  - https://moz.com/blog/absolute-beginners-guide-to-google-analytics
  - https://econsultancy.com/blog/66230-a-beginner-s-dictionary-of-google-analytics/
- - [page="_SEARCH:tut_statistics"]Activity statistics for your site (analytics)[/page]
+ - [page="_SEARCH:tut_statistics"]Statistics for your site (analytics)[/page]
 
 {$SET,tutorial_tags,Analytics,Administration,expert,pinned}{$SET,tutorial_add_date,Jan 2016}{$SET,tutorial_summary,Applying advanced Google Analytics techniques to Composr.}[block]main_tutorial_rating[/block]

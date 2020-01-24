@@ -245,19 +245,16 @@ abstract class Hook_sitemap_base
      * @param  ID_TEXT $zone The zone the page is being loaded in
      * @param  ID_TEXT $page The codename of the page to load
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
+     * @param  boolean $is_comcode_page Whether this is a Comcode page
      * @return boolean Whether the page should be omitted
      */
-    protected function _is_page_omitted_from_sitemap($zone, $page, $options)
+    protected function _is_page_omitted_from_sitemap($zone, $page, $options, $is_comcode_page)
     {
-        // Some kinds of hidden pages
-        if (substr($page, 0, 6) == 'panel_') {
-            return true;
-        }
-        if (substr($page, 0, 1) == '_') {
-            return true;
-        }
-        if ($page == '404') {
-            return true;
+        if (($is_comcode_page) && (($options & SITEMAP_GEN_MACHINE_SITEMAP) != 0)) {
+            require_code('global4');
+            if (!comcode_page_include_on_sitemap($zone, $page)) {
+                return true;
+            }
         }
 
         if (($options & SITEMAP_GEN_MACHINE_SITEMAP) == 0) {
@@ -580,6 +577,10 @@ abstract class Hook_sitemap_base
 
             $links = get_page_grouping_links();
             foreach ($links as $link) {
+                if ($link === null) {
+                    continue;
+                }
+
                 if (!is_array($link[2])) {
                     continue;
                 }
@@ -718,7 +719,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $cache[$this->content_type] = $cma_info;
             }
             require_code('site');
-            if (($cma_info['module'] == $page) && (($zone == '_SEARCH') || (_request_page($page, $zone) !== false))) { // Ensure the given page matches the content type, and it really does exist in the given zone
+            if (($cma_info !== null) && ($cma_info['module'] == $page) && (($zone == '_SEARCH') || (_request_page($page, $zone) !== false))) { // Ensure the given page matches the content type, and it really does exist in the given zone
                 if ($matches[0] == $page_link) {
                     return SITEMAP_NODE_HANDLED_VIRTUALLY; // No type/ID specified
                 }
@@ -748,7 +749,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     /**
      * Get the CMA info for our content hook.
      *
-     * @return array The CMA info
+     * @return ?array The CMA info (null: disabled)
      */
     protected function _get_cma_info()
     {
@@ -793,14 +794,21 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             return null;
         }
 
+        $cma_info = $this->_get_cma_info();
+        if ($cma_info === null) {
+            return null;
+        }
+
         $content_id = $this->_get_page_link_id($page_link);
         if ($content_id === null) {
             return null;
         }
         if ($row === null) {
             $row = $this->_get_row($content_id);
+            if ($row === null) {
+                return null;
+            }
         }
-        $cma_info = $this->_get_cma_info();
 
         if (strpos($cma_info['title_field'], 'CALL:') !== false) {
             $title_value = call_user_func(trim(substr($cma_info['title_field'], 5)), ['id' => $content_id], false);
@@ -1182,28 +1190,10 @@ function get_page_grouping_links()
 
         $hooks = find_all_hook_obs('systems', 'page_groupings', 'Hook_page_groupings_');
         foreach ($hooks as $ob) {
-            $links_to_add = $ob->run();
-
-            if (!empty($links_to_add) && in_array(null, $links_to_add, true)) {
-                // Remove null elements
-                $links_to_add = array_filter($links_to_add, '_not_null');
-            }
-
-            if (!empty($links_to_add)) {
-                $links = array_merge($links, $links_to_add);
-            }
+            $links = array_merge($links, $ob->run());
         }
     }
     return $links;
-}
-
-/**
- * @param mixed $var
- * @return bool false if var is null, true otherwise.
- */
-function _not_null($var)
-{
-    return !is_null($var);
 }
 
 /**

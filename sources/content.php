@@ -238,6 +238,7 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
                 $submitter_id = db_get_first_id() + 1; // On Conversr and most forums, this is the first admin member
             }
 
+            require_code('global4');
             $content_row = [
                 'the_zone' => $zone,
                 'the_page' => $page,
@@ -247,6 +248,7 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
                 'p_add_date' => time(),
                 'p_submitter' => $submitter_id,
                 'p_show_as_edit' => 0,
+                'p_include_on_sitemap' => comcode_page_include_on_sitemap($zone, $page) ? 1 : 0,
             ];
 
             $content_url = build_url(['page' => $page], $zone, [], false, false, false);

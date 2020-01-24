@@ -323,7 +323,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 break;
 
             case '}':
-                if (($stack === []) || ($current_level_mode === PARSE_DIRECTIVE_INNER)) {
+                if ((empty($stack)) || ($current_level_mode === PARSE_DIRECTIVE_INNER)) {
                     $literal = php_addslashes($next_token);
                     if ($GLOBALS['XSS_DETECT']) {
                         ocp_mark_as_escaped($literal);
@@ -348,7 +348,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 $past_level_data = $current_level_data;
                 $past_level_params = $current_level_params;
                 $past_level_mode = $current_level_mode;
-                if ($stack === []) {
+                if (empty($stack)) {
                     if (!$tolerate_errors) {
                         warn_exit(do_lang_tempcode('TEMPCODE_TOO_MANY_CLOSES', escape_html($template_name), escape_html(integer_format(1 + _length_so_far($bits, $i)))), false, true);
                     }
@@ -416,7 +416,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 }
                 $_opener_params = '';
                 foreach ($opener_params as $oi => &$oparam) {
-                    if ($oparam === []) {
+                    if (empty($oparam)) {
                         $oparam = ['""'];
                         if (!isset($opener_params[$oi + 1])) {
                             unset($opener_params[$oi]);
@@ -515,24 +515,6 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             $eval = tempcode_compiler_eval('return ' . $new_line . ';', $tpl_funcs, [], $cl);
 
                             $new_line = '"' . php_addslashes($eval) . '"';
-                        } else {
-                            // We want the benefit's of keep_ variables but not with having to do lots of individual URL moniker lookup queries - so use a static URL and KEEP_ symbol combination
-                            if (($GLOBALS['OUTPUT_STREAMING']) && ($first_param === '"PAGE_LINK"') && (count($opener_params) === 1) && (tc_is_all_static($_opener_params)) && (function_exists('has_submit_permission')/*needed for moniker hooks to load up*/)) {
-                                $tmp = $_GET;
-                                foreach (array_keys($_GET) as $key) {
-                                    if (substr($key, 0, 5) === 'keep_') {
-                                        unset($_GET[$key]);
-                                    }
-                                }
-                                $tpl_funcs = [];
-                                $eval = tempcode_compiler_eval('return ' . $new_line . ';', $tpl_funcs, [], $cl);
-                                $new_line = '"' . php_addslashes($eval) . '"';
-                                $_GET = $tmp;
-                                $current_level_data[] = $new_line;
-                                $current_level_data[] = 'ecv_KEEP($cl,[' . implode(',', array_map('strval', $escaped)) . '],["' . ((strpos($new_line, '?') === false) ? '1' : '0') . '"])';
-                                $GLOBALS['HAS_KEEP_IN_URL_CACHE'] = null; // The temporary $_GET change can cause this to go wrong
-                                break;
-                            }
                         }
                         $current_level_data[] = $new_line;
                         break;
@@ -574,7 +556,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             }
                             $temp .= ')';
 
-                            if ($escaped === []) {
+                            if (empty($escaped)) {
                                 $current_level_data[] = $temp;
                             } else {
                                 $s_escaped = '';
@@ -617,12 +599,12 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                     } elseif ($eval === 'END') { // END
                         // Test that the top stack does represent a started directive, and close directive level
                         $past_level_data = $current_level_data;
-                        if ($past_level_data === []) {
+                        if (empty($past_level_data)) {
                             $past_level_data = ['""'];
                         }
                         $past_level_params = $current_level_params;
                         $past_level_mode = $current_level_mode;
-                        if ($stack === []) {
+                        if (empty($stack)) {
                             if ($tolerate_errors) {
                                 continue 2;
                             }
@@ -653,12 +635,12 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                         // Work out parameters
                         $directive_params = '';
                         $first_directive_param = '""';
-                        if ($directive_opener_params[1] === []) {
+                        if (empty($directive_opener_params[1])) {
                             $directive_opener_params[1] = ['""'];
                         }
                         $count_directive_opener_params = count($directive_opener_params);
                         for ($j = 2; $j < $count_directive_opener_params; $j++) {
-                            if ($directive_opener_params[$j] === []) {
+                            if (empty($directive_opener_params[$j])) {
                                 $directive_opener_params[$j] = ['""'];
                             }
 
@@ -884,8 +866,9 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
 
                                     $found = find_template_place($eval, '', $_theme, $_ex, $_td, ($template_name === $eval) || ($_force_original == '1'));
 
-                                    $_theme = $found[0];
-                                    if ($found[1] !== null) {
+                                    if (($found !== null) && ($found[1] !== null)) {
+                                        $_theme = $found[0];
+
                                         $full_path = get_custom_file_base() . '/themes/' . $_theme . $found[1] . $eval . $found[2];
                                         if (!is_file($full_path)) {
                                             $full_path = get_file_base() . '/themes/' . $_theme . $found[1] . $eval . $found[2];
@@ -954,7 +937,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
     }
     require_code('comcode');
     if (!peek_lax_comcode()) {
-        if ($stack !== []) {
+        if (!empty($stack)) {
             if (!$tolerate_errors) {
                 warn_exit(do_lang_tempcode('UNCLOSED_DIRECTIVE_OR_BRACE', escape_html($template_name), escape_html(integer_format(1 + substr_count(substr($data, 0, _length_so_far($bits, $i)), "\n")))), false, true);
             }
@@ -1017,6 +1000,10 @@ function tc_eval_opener_params($_opener_params)
 function tc_is_all_static($_opener_params)
 {
     if (strpos($_opener_params, '$bound_') !== false) {
+        return false;
+    }
+
+    if (strpos($_opener_params, 'ecv(') !== false) {
         return false;
     }
 
@@ -1134,7 +1121,7 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
         // Stop parallel compilation of the same file by a little hack; without this it could knock out a server
         /*$final_css_path = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang . '/' . $codename . '.css'; Actually this is architecturally messy, just let it happen - it's not as slow as it was
         if ((is_file($final_css_path)) && (cms_file_get_contents_safe($final_css_path, FILE_READ_LOCK) === 'GENERATING')) {
-            header('Content-type: text/plain; charset=' . get_charset());
+            header('Content-Type: text/plain; charset=' . get_charset());
             exit('We are doing a code update. Please refresh in around 2 minutes.');
         }
         require_code('files');
@@ -1279,19 +1266,11 @@ function template_to_tempcode($text, $symbol_pos = 0, $inside_directive = false,
         return new Tempcode();
     }
 
-    $output_streaming = (function_exists('get_option')) && (get_option('output_streaming') === '1');
-
     $is_all_static = true;
 
     $parts_groups = [];
     $parts_group = [];
     foreach ($parts as $part) {
-        if (($output_streaming) && (strpos($part, '$bound_') !== false)) { // Start a new seq_part, so output streaming can break at this parameter reference
-            if ($parts_group !== []) {
-                $parts_groups[] = $parts_group;
-            }
-            $parts_group = [];
-        }
         $parts_group[] = $part;
 
         if (!tc_is_all_static($part)) {
@@ -1344,7 +1323,7 @@ function template_to_tempcode($text, $symbol_pos = 0, $inside_directive = false,
  */
 function build_closure_function($myfunc, $parts)
 {
-    if ($parts === []) {
+    if (empty($parts)) {
         $parts = ['""'];
     }
     $code = '';

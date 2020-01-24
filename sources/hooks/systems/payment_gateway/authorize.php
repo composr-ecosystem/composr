@@ -391,7 +391,7 @@ class Hook_payment_gateway_authorize
             if ($silent_fail) {
                 return null;
             }
-            fatal_ipn_exit(do_lang('IPN_UNVERIFIED') . ' - ' . flatten_slashed_array($_POST, true));
+            fatal_ipn_exit(do_lang('IPN_UNVERIFIED') . ' - ' . json_encode($_POST));
         }
 
         $this->store_shipping_address($trans_expecting_id, $txn_id);

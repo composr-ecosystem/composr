@@ -27,7 +27,6 @@ class Module_cms_booking extends Standard_crud_module
     protected $user_facing = false;
     protected $menu_label = 'BOOKINGS';
     protected $orderer = 'sort_order';
-    protected $title_is_multi_lang = true;
     protected $table = 'bookable';
     protected $bookings_crud_module;
 
@@ -477,7 +476,6 @@ class Module_cms_booking_supplements extends Standard_crud_module
     protected $user_facing = false;
     protected $menu_label = 'BOOKINGS';
     protected $orderer = 'sort_order';
-    protected $title_is_multi_lang = true;
     protected $table = 'bookable_supplement';
 
     protected $donext_type = null;
@@ -684,7 +682,6 @@ class Module_cms_booking_blacks extends Standard_crud_module
     protected $user_facing = false;
     protected $menu_label = 'BOOKINGS';
     protected $orderer = 'id';
-    protected $title_is_multi_lang = true;
     protected $table = 'bookable_blacked';
 
     protected $donext_type = null;
@@ -879,7 +876,6 @@ class Module_cms_booking_bookings extends Standard_crud_module
     protected $user_facing = false;
     protected $menu_label = 'BOOKINGS';
     protected $orderer = 'id';
-    protected $title_is_multi_lang = true;
     protected $table = 'booking';
     protected $type_code = 'booking';
     protected $non_integer_id = true;

@@ -108,7 +108,11 @@ function check_class($class)
                                 }
                             } elseif ($compare == 'return') {
                                 foreach (['type'] as $compare2) {
-                                    if (serialize($inherited_function_signature['return'][$compare2]) !== serialize($function_signature['return'][$compare2])) {
+                                    if ($inherited_function_signature['return'] === null) {
+                                        $differs = ($function_signature['return'] !== null);
+                                    } elseif ($function_signature['return'] === null) {
+                                        $differs = true;
+                                    } elseif (serialize($inherited_function_signature['return'][$compare2]) !== serialize($function_signature['return'][$compare2])) {
                                         $differs = true;
                                     }
                                 }
@@ -193,7 +197,7 @@ function find_inherits_from($class, $direct_only = false)
         return [];
     }
 
-    $inherits_from = array();
+    $inherits_from = [];
 
     $inherits_from = array_merge($inherits_from, $FUNCTION_SIGNATURES[$class]['implements']);
     if (!$direct_only) {
@@ -519,18 +523,49 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 // Work out function guards
                 $temp_function_guard = $function_guard;
                 foreach ([0, 1] as $function_parameter_pos) {
-                    if (($c[1][0] == 'BOOLEAN_NOT') && ($c[1][1][0] == 'CALL_DIRECT') && ($c[1][1][1] == 'php_function_allowed' || strpos($c[1][1][1], '_exists') !== false) && (isset($c[1][1][2][$function_parameter_pos])) && ($c[1][1][2][$function_parameter_pos][0][0][0] == 'LITERAL') && ($c[1][1][2][$function_parameter_pos][1][0][0] == 'STRING') && (($c[2][0][0] == 'BREAK') || ($c[2][0][0] == 'CONTINUE') || ($c[2][0][0] == 'RETURN') || (($c[2][0][0] == 'CALL_DIRECT') && ($c[2][0][1] == 'critical_error')))) {
+                    if (
+                        ($c[1][0] == 'BOOLEAN_NOT') &&
+                        ($c[1][1][0] == 'CALL_DIRECT') &&
+                        ($c[1][1][1] == 'php_function_allowed' || strpos($c[1][1][1], '_exists') !== false) &&
+                        (isset($c[1][1][2][$function_parameter_pos])) && ($c[1][1][2][$function_parameter_pos][0][0][0] == 'LITERAL') &&
+                        ($c[1][1][2][$function_parameter_pos][1][0][0] == 'STRING') &&
+                        (($c[2][0][0] == 'BREAK') || ($c[2][0][0] == 'CONTINUE') || ($c[2][0][0] == 'RETURN') || (($c[2][0][0] == 'CALL_DIRECT') &&
+                        ($c[2][0][1] == 'critical_error')))
+                    ) {
                         $temp_function_guard .= ',' . $c[1][1][2][$function_parameter_pos][0][1][1] . ',';
                     }
-                    if (($c[1][0] == 'CALL_DIRECT') && ($c[1][1] == 'php_function_allowed' || strpos($c[1][1], '_exists') !== false) && (isset($c[1][2][$function_parameter_pos])) && ($c[1][2][$function_parameter_pos][0][0] == 'LITERAL') && ($c[1][2][$function_parameter_pos][0][1][0] == 'STRING')) {
+                    if (
+                        ($c[1][0] == 'CALL_DIRECT') &&
+                        ($c[1][1] == 'php_function_allowed' || strpos($c[1][1], '_exists') !== false) &&
+                        (isset($c[1][2][$function_parameter_pos])) &&
+                        ($c[1][2][$function_parameter_pos][0][0] == 'LITERAL') &&
+                        ($c[1][2][$function_parameter_pos][0][1][0] == 'STRING')
+                    ) {
                         $temp_function_guard .= ',' . $c[1][2][$function_parameter_pos][0][1][1] . ',';
                     }
 
                     foreach ([0, 1] as $and_position) { // NB: Can't check 3rd AND position because this is actually nested AND's, so we'd need to write recursive code or more hard-coded checking
-                        if (($c[1][0] == 'BOOLEAN_AND') && ($c[1][$and_position + 1][0] == 'CALL_DIRECT') && ($c[1][$and_position + 1][1] == 'php_function_allowed' || strpos($c[1][$and_position + 1][1], '_exists') !== false) && (isset($c[1][$and_position + 1][2][$function_parameter_pos])) && ($c[1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') && ($c[1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')) {
+                        if (
+                            ($c[1][0] == 'BOOLEAN_AND') &&
+                            (is_array($c[1][$and_position + 1])) &&
+                            ($c[1][$and_position + 1][0] == 'CALL_DIRECT') &&
+                            ($c[1][$and_position + 1][1] == 'php_function_allowed' || strpos($c[1][$and_position + 1][1], '_exists') !== false) &&
+                            (isset($c[1][$and_position + 1][2][$function_parameter_pos])) &&
+                            ($c[1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') &&
+                            ($c[1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')
+                        ) {
                             $temp_function_guard .= ',' . $c[1][$and_position + 1][2][$function_parameter_pos][0][1][1] . ',';
                         }
-                        if (($c[1][0] == 'BOOLEAN_AND') && ($c[1][$and_position + 1][0] == 'PARENTHESISED') && ($c[1][$and_position + 1][1][0] == 'CALL_DIRECT') && ($c[1][$and_position + 1][1][1] == 'php_function_allowed' || strpos($c[1][$and_position + 1][1][1], '_exists') !== false) && (isset($c[1][$and_position + 1][1][2][$function_parameter_pos])) && ($c[1][$and_position + 1][1][2][$function_parameter_pos][0][0] == 'LITERAL') && ($c[1][$and_position + 1][1][2][$function_parameter_pos][0][1][0] == 'STRING')) {
+                        if (
+                            ($c[1][0] == 'BOOLEAN_AND') &&
+                            ($c[1][$and_position + 1][0] == 'PARENTHESISED') &&
+                            (is_array($c[1][$and_position + 1][1])) &&
+                            ($c[1][$and_position + 1][1][0] == 'CALL_DIRECT') &&
+                            ($c[1][$and_position + 1][1][1] == 'php_function_allowed' || strpos($c[1][$and_position + 1][1][1], '_exists') !== false) &&
+                            (isset($c[1][$and_position + 1][1][2][$function_parameter_pos])) &&
+                            ($c[1][$and_position + 1][1][2][$function_parameter_pos][0][0] == 'LITERAL') &&
+                            ($c[1][$and_position + 1][1][2][$function_parameter_pos][0][1][0] == 'STRING')
+                        ) {
                             $temp_function_guard .= ',' . $c[1][$and_position + 1][1][2][$function_parameter_pos][0][1][1] . ',';
                         }
                     }
@@ -946,21 +981,19 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
                 if (
                     ($e[0] == 'BOOLEAN_AND') &&
                     ($e[1][0] == 'PARENTHESISED') &&
-                    is_array($e[1][$and_position + 1]) &&
+                    (is_array($e[1][$and_position + 1])) &&
                     ($e[1][$and_position + 1][0] == 'CALL_DIRECT') &&
                     ($e[1][$and_position + 1][1] == 'php_function_allowed' || strpos($e[1][$and_position + 1][1], '_exists') !== false) &&
-                    (isset($e[1][$and_position + 1][2][$function_parameter_pos])) &&
-                    ($e[1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') &&
+                    (isset($e[1][$and_position + 1][2][$function_parameter_pos])) && ($e[1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') &&
                     ($e[1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')
                 ) {
                     $function_guard .= ',' . $e[1][1][2][$function_parameter_pos][0][1][1] . ',';
                 }
-
                 if (
                     ($e[0] == 'BOOLEAN_AND') &&
                     ($e[2][0] == 'BOOLEAN_AND') &&
                     ($e[2][1][0] == 'PARENTHESISED') &&
-                    is_array($e[2][1][$and_position + 1]) &&
+                    (is_array($e[2][1][$and_position + 1])) &&
                     ($e[2][1][$and_position + 1][0] == 'CALL_DIRECT') &&
                     ($e[2][1][$and_position + 1][1] == 'php_function_allowed' || strpos($e[2][1][$and_position + 1][1], '_exists') !== false) &&
                     (isset($e[2][1][$and_position + 1][2][$function_parameter_pos][0])) &&
@@ -1071,6 +1104,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
     }
 
     $inner = $e;
+
     switch ($inner[0]) {
         case 'CLOSURE':
             global $LOCAL_VARIABLES;
@@ -1425,7 +1459,7 @@ function check_method_call($c, $c_pos, $function_guard = '')
                 if ($CURRENT_CLASS != '__global') {
                     $class = $CURRENT_CLASS;
                 } else {
-                    log_warning('Cannot reference a self class from outside a class', $c_pos);
+                    log_warning('Cannot reference the ' . $variable[1] . ' class pseudonym from outside a class', $c_pos);
                     $class = null;
                 }
 
@@ -1436,10 +1470,15 @@ function check_method_call($c, $c_pos, $function_guard = '')
                 }
             } elseif (($variable[0] == 'IDENTIFIER') && ($variable[1] == 'parent')) {
                 if (isset($FUNCTION_SIGNATURES[$CURRENT_CLASS])) {
-                    if ($FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'] !== null) {
-                        $class = $FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'];
+                    if ($CURRENT_CLASS != '__global') {
+                        if ($FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'] !== null) {
+                            $class = $FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'];
+                        } else {
+                            log_warning('Cannot reference the parent class pseudonym when a class is not a subclass', $c_pos);
+                            $class = null;
+                        }
                     } else {
-                        log_warning('Cannot reference a parent class when a class is not a subclass', $c_pos);
+                        log_warning('Cannot reference the parent class pseudonym from outside a class', $c_pos);
                         $class = null;
                     }
                 } else {

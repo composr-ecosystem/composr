@@ -181,12 +181,12 @@ sites/www/caches/lang/.htaccess
 sites/www/caches/lang/EN
 sites/www/caches/lang/EN/.htaccess
 sites/www/caches/lang/index.html
-sites/www/caches/guest_pages
-sites/www/caches/guest_pages/.htaccess
-sites/www/caches/guest_pages/index.html
 sites/www/caches/self_learning
 sites/www/caches/self_learning/.htaccess
 sites/www/caches/self_learning/index.html
+sites/www/caches/static
+sites/www/caches/static/.htaccess
+sites/www/caches/static/index.html
 sites/www/cms
 sites/www/cms/pages
 sites/www/cms/pages/comcode_custom

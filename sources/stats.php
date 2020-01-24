@@ -15,38 +15,1370 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    core
+ * @package    stats
  */
 
 /**
- * Output a cached stats SVG file.
+ * Script to track clicks to sites.
  *
  * @ignore
  */
-function stats_graph_script()
+function tracked_redirect_script()
 {
-    header('X-Robots-Tag: noindex');
+    $url = get_param_string('url', null, INPUT_FILTER_URL_GENERAL);
 
-    header('Content-Type: image/svg+xml; charset=' . get_charset());
+    if (!is_our_server(parse_url($url, PHP_URL_HOST))) {
+        $hash = get_param_string('hash', false, INPUT_FILTER_GET_COMPLEX);
+        require_code('crypt');
+        if (!ratchet_hash_verify($url, get_site_salt(), $hash)) {
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+    }
 
-    $file = filter_naughty(get_param_string('file'));
+    $GLOBALS['SITE_DB']->query_insert('stats_link_tracker', [
+        'c_date_and_time' => time(),
+        'c_member_id' => get_member(),
+        'c_ip_address' => get_ip_address(),
+        'c_url' => cms_mb_substr($url, 0, 255),
+    ]);
 
-    $path = get_custom_file_base() . '/data_custom/modules/admin_stats/' . $file . '.xml';
+    if (addon_installed('stats')) {
+        $event = get_param_string('event', null);
+        if ($event !== null) {
+            log_stats_event($event);
+        }
+    }
 
-    if (file_exists($path)) {
-        echo cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
+    require_code('site2');
+    redirect_exit($url);
+}
+
+/**
+ * Gather details on all active KPIs.
+ *
+ * @param  ?integer $pivot_filter Filter only to this pivot (null: no filter)
+ * @return array List of details tuples
+ */
+function gather_kpis($pivot_filter = null)
+{
+    $where = [];
+    if ($pivot_filter !== null) {
+        $where['k_pivot'] = $pivot_filter;
+    }
+    $kpi_rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['*'], $where, 'ORDER BY k_title');
+
+    $kpis = [];
+    foreach ($kpi_rows as $kpi_row) {
+        $graph_name = $kpi_row['k_graph_name'];
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, true/*Filters will be generated in KPI mode*/);
+        if ($hook_ob === null) {
+            continue;
+        }
+
+        $edit_url = build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $kpi_row['id']], '_SELF');
+
+        $kpi_method = $graph_details['support_kpis'];
+
+        $filters = json_decode($kpi_row['k_filters'], true);
+        $pivot = ($kpi_row['k_pivot'] == '') ? null : $kpi_row['k_pivot'];
+
+        $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details, true);
+
+        $target = $kpi_row['k_target'];
+        $current = array_pop($graph_final_details['data']);
+        if ($current === null) {
+            $hits_target = null;
+        } else {
+            if ($kpi_method == $hook_ob::KPI_HIGH_IS_GOOD) {
+                $hits_target = ($current >= $target);
+            } else {
+                $hits_target = ($current <= $target);
+            }
+        }
+
+        $kpis[] = [
+            $kpi_row,
+            $hook_ob,
+            $graph_details,
+            $graph_final_details,
+            $filters,
+            $pivot,
+            $edit_url,
+            $kpi_method,
+            $target,
+            $current,
+            $hits_target,
+        ];
+    }
+
+    return $kpis;
+}
+
+/**
+ * Generate stats data.
+ *
+ * @param  string $graph_name Graph name
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
+ * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
+ * @return ?array Graph data in standard map format (null: unknown)
+ */
+function stats_generate_data($graph_name, $filters = [], $pivot = null, &$hook_ob = null, &$graph_details = null, $for_kpi = false)
+{
+    if (($hook_ob === null) || ($graph_details === null)) {
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
+    }
+
+    if ($hook_ob instanceof CMSStatsProvider) {
+        require_code('temporal2');
+
+        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, false/*Can only generate data with dates converted to absolute first*/);
+        return $hook_ob->generate_final_data($graph_name, ($pivot === null) ? '' : $pivot, $filters);
+    }
+
+    return null;
+}
+
+/**
+ * Generate a stats graph.
+ *
+ * @param  string $graph_name Graph name
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
+ * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @param  ?array $graph_final_details Graph data (null: look it up using $graph_name etc)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
+ * @return Tempcode Graph
+ */
+function stats_generate_graph($graph_name, $filters = [], $pivot = null, &$hook_ob = null, &$graph_details = null, &$graph_final_details = null, $for_kpi = false)
+{
+    if (($hook_ob === null) || ($graph_details === null)) {
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
+        if ($hook_ob === null) {
+            return paragraph(do_lang_tempcode('MISSING_RESOURCE'), 'red-alert');
+        }
+    }
+
+    if ($hook_ob instanceof CMSStatsBlob) {
+        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, false/*Can only generate data with dates converted to absolute first*/);
+        return $hook_ob->generate($graph_name, $filters);
+    }
+
+    if ($graph_final_details === null) {
+        $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details, $for_kpi);
+        if ($graph_final_details === null) {
+            return new Tempcode();
+        }
+    }
+
+    list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, $for_kpi);
+
+    require_code('graphs');
+
+    $data = $graph_final_details['data'];
+
+    if (empty($data)) {
+        return new Tempcode();
+    }
+
+    $x_axis_label = $graph_final_details['x_axis_label'];
+    $y_axis_label = $graph_final_details['y_axis_label'];
+
+    if ($graph_final_details['type'] === null) {
+        if (strpos($pivot, '_of_') !== false) {
+            $graph_final_details['type'] = CMSStatsProvider::GRAPH_BAR_CHART;
+        } else {
+            $graph_final_details['type'] = CMSStatsProvider::GRAPH_LINE_CHART;
+        }
+    }
+    switch ($graph_final_details['type']) {
+        case CMSStatsProvider::GRAPH_LINE_CHART:
+            $keys = array_keys($data);
+            $values = array_values($data);
+            $_values = [];
+            $_values[] = [
+                'label' => do_lang('RESULTS'),
+                'datapoints' => $values,
+            ];
+            if (count(array_unique($values)) != 0) { // Average line
+                $average = array_sum($values) / count($values);
+                $_values[] = [
+                    'label' => do_lang('__AVERAGE'),
+                    'datapoints' => array_fill(0, count($keys), $average),
+                ];
+            }
+            if (isset($graph_details['support_kpis'])) {
+                $kpi_rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['k_title', 'k_target'], ['k_graph_name' => $graph_name, 'k_pivot' => $pivot]);
+                foreach ($kpi_rows as $kpi_row) {
+                    $_values[] = [
+                        'label' => do_lang('KPI') . ': ' . $kpi_row['k_title'],
+                        'datapoints' => array_fill(0, count($keys), $kpi_row['k_target']),
+                    ];
+                }
+            }
+            $graph_rendered = graph_line_chart($_values, $keys, $x_axis_label, $y_axis_label, false, false, [], '100%', '500px');
+            break;
+
+        case CMSStatsProvider::GRAPH_PIE_CHART:
+            $graph_rendered = graph_pie_chart($data, true, [], null, '100%', '500px');
+            break;
+
+        case CMSStatsProvider::GRAPH_BAR_CHART:
+            if (!empty($graph_final_details['limit_bars'])) {
+                if (!empty($graph_final_details['low_first'])) {
+                    asort($data);
+                } else {
+                    arsort($data);
+                }
+                $num_bars = 10;
+                $_data = @array_slice($data, 0, $num_bars, true);
+                if (count($_data) < count($data)) {
+                    $other = 0;
+                    $_remaining_data = @array_slice($data, $num_bars);
+                    foreach ($_remaining_data as $val) {
+                        $other += $val;
+                    }
+                    if (($other != 0) && (empty($graph_final_details['skip_other_bar']))) {
+                        $_data[do_lang('OTHER')] = $val;
+                    }
+                }
+                $data = $_data;
+            }
+            $graph_rendered = graph_bar_chart($data, $x_axis_label, $y_axis_label, true, true, [], null, '100%', '500px');
+            break;
+
+        default:
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    return $graph_rendered;
+}
+
+/**
+ * Generate a stats graph filter form.
+ *
+ * @param  string $graph_name Graph name
+ * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
+ * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
+ * @return Tempcode Graph filter form
+ */
+function stats_generate_graph_form($graph_name, &$hook_ob = null, &$graph_details = null, $filters = [], $pivot = null, $for_kpi = false)
+{
+    $_fields = stats_generate_graph_form_fields($graph_name, $hook_ob, $graph_details, $filters, $pivot, $for_kpi);
+    if ($_fields === null) {
+        return new Tempcode();
+    }
+    list($fields, $hidden) = $_fields;
+
+    $graph_form = do_template('FORM', [
+        'SKIP_WEBSTANDARDS' => true,
+        'FIELDS' => $fields,
+        'GET' => true,
+        'URL' => get_self_url(true) . '#graph_' . $graph_name,
+        'SUBMIT_ICON' => 'buttons/filter',
+        'SUBMIT_NAME' => do_lang_tempcode('FILTER'),
+        'HIDDEN' => $hidden,
+        'TEXT' => '',
+    ]);
+
+    return $graph_form;
+}
+
+/**
+ * Generate a stats graph filter form.
+ *
+ * @param  string $graph_name Graph name
+ * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
+ * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
+ * @return ?array A pair: Graph filter fields, Hidden fields (null: could not generate anything)
+ */
+function stats_generate_graph_form_fields($graph_name, &$hook_ob = null, &$graph_details = null, $filters = [], $pivot = null, $for_kpi = false)
+{
+    if (($hook_ob === null) || ($graph_details === null)) {
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
+    }
+
+    if (!$hook_ob instanceof CMSStatsProvider) {
+        return null;
+    }
+
+    if ((empty($graph_details['filters'])) && ($graph_details['pivot'] === null)) {
+        return null;
+    }
+
+    foreach ($graph_details['filters'] as $filter_name => $filter) {
+        if ($filter !== null) {
+            if (array_key_exists($filter_name, $filters)) {
+                $filter->set_default($filters[$filter_name]);
+            }
+        }
+    }
+    if ($pivot !== null) {
+        $graph_details['pivot']->set_default($pivot);
+    }
+
+    require_code('form_templates');
+
+    $hidden = new Tempcode();
+
+    $graph_fields = new Tempcode();
+    foreach ($graph_details['filters'] as $filter) {
+        if ($filter !== null) {
+            $graph_fields->attach($filter->ui_component($hidden));
+        }
+    }
+    if ($graph_details['pivot'] !== null) {
+        $graph_fields->attach($graph_details['pivot']->ui_component($hidden));
+    }
+
+    return [$graph_fields, $hidden];
+}
+
+/**
+ * Generate a stats results table.
+ *
+ * @param  string $graph_name Graph name
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
+ * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @param  ?array $graph_final_details Graph data (null: look it up using $graph_name etc)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
+ * @return Tempcode Graph
+ */
+function stats_generate_results_table($graph_name, $filters = [], $pivot = null, &$hook_ob = null, &$graph_details = null, &$graph_final_details = null, $for_kpi = false)
+{
+    if (($hook_ob === null) || ($graph_details === null)) {
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
+    }
+
+    if ($graph_final_details === null) {
+        $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details, $for_kpi);
+    }
+
+    if ($graph_final_details === null) {
+        return new Tempcode();
+    }
+
+    require_code('templates_results_table');
+
+    $data = $graph_final_details['data'];
+
+    $x_axis_label = $graph_final_details['x_axis_label'];
+    $y_axis_label = $graph_final_details['y_axis_label'];
+
+    $current_ordering = get_param_string($graph_name . '_sort', (!empty($graph_final_details['low_first'])) ? 'y ASC' : 'y DESC', INPUT_FILTER_GET_COMPLEX);
+    list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
+    $sortables = [
+        'x' => $x_axis_label,
+        'y' => $y_axis_label,
+    ];
+    if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        log_hack_attack_and_exit('ORDERBY_HACK');
+    }
+
+    $columns = [];
+    $columns[] = $x_axis_label;
+    $columns[] = $y_axis_label;
+    $header_row = results_header_row($columns);
+
+    switch ($sortable) {
+        case 'x':
+            if ($sort_order == 'ASC') {
+                ksort($data, SORT_NATURAL | SORT_FLAG_CASE);
+            } else {
+                krsort($data, SORT_NATURAL | SORT_FLAG_CASE);
+            }
+            break;
+        case 'y':
+            if ($sort_order == 'ASC') {
+                asort($data, SORT_NATURAL | SORT_FLAG_CASE);
+            } else {
+                arsort($data, SORT_NATURAL | SORT_FLAG_CASE);
+            }
+            break;
+    }
+
+    $start = get_param_integer($graph_name . '_start', 0);
+    $max = get_param_integer($graph_name . '_max', 10);
+
+    $results_entries = new Tempcode();
+    $i = 0;
+    foreach ($data as $key => $val) {
+        if (($i >= $start) && ($i <= $start + $max)) {
+            $_val = is_integer($val) ? integer_format($val) : float_format($val, 2, true);
+            $values = [
+                $key,
+                $_val,
+            ];
+            $results_entries->attach(results_entry($values, true));
+        }
+        $i++;
+    }
+    $results_table = results_table(
+        $graph_details['label'],
+        $start,
+        $graph_name . '_start',
+        $max,
+        $graph_name . '_max',
+        count($data),
+        $header_row,
+        $results_entries,
+        $sortables,
+        $sortable,
+        $sort_order
+    );
+
+    return $results_table;
+}
+
+/**
+ * Generate a stats spreadsheet from graph data.
+ *
+ * @param  string $spreadsheet_graph_name Graph name
+ * @param  ?string $filename Filename (null: auto-generate)
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
+ * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @return object Writer object
+ */
+function stats_generate_spreadsheet($spreadsheet_graph_name, &$filename = null, $filters = [], $pivot = null, $hook_ob = null, $graph_details = null)
+{
+    if (($hook_ob === null) || ($graph_details === null)) {
+        list($hook_ob, $graph_details) = stats_find_graph_details($spreadsheet_graph_name);
+    }
+
+    require_code('temporal2');
+
+    list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot);
+    $graph_final_details = $hook_ob->generate_final_data($spreadsheet_graph_name, ($pivot === null) ? '' : $pivot, $filters);
+
+    $x_axis_label = $graph_final_details['x_axis_label']->evaluate();
+    $y_axis_label = $graph_final_details['y_axis_label']->evaluate();
+
+    $spreadsheet_rows = [];
+    foreach ($graph_final_details['data'] as $key => $val) {
+        $_val = is_integer($val) ? integer_format($val) : float_format($val, 2, true);
+        $spreadsheet_rows[] = [$x_axis_label => $key, $y_axis_label => $_val];
+    }
+
+    require_code('files_spreadsheets_write');
+    $filename = $spreadsheet_graph_name . '.' . spreadsheet_write_default();
+    $path = null;
+    return make_spreadsheet($path, $spreadsheet_rows, $filename);
+}
+
+/**
+ * Get context details (filter & pivot settings) for a particular graph.
+ *
+ * @param  array $graph_details Map of graph details
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
+ * @return array A pair: filters, pivot
+ */
+function _stats_get_graph_context($graph_details, $filters = [], $pivot = null, $for_kpi = false)
+{
+    if (($pivot === null) && ($graph_details['pivot'] !== null)) {
+        $pivot = $graph_details['pivot']->read_value($for_kpi);
+    }
+    foreach ($graph_details['filters'] as $filter) {
+        if ($filter !== null) {
+            $filter_name = $filter->filter_name;
+            if (!isset($filters[$filter_name])) {
+                $filters[$filter_name] = $filter->read_value($for_kpi);
+            }
+        }
+    }
+    return [$filters, $pivot];
+}
+
+/**
+ * Get a list of all stat categories.
+ *
+ * @return array The categories (each is a map)
+ */
+function stats_find_graph_categories()
+{
+    $categories = [];
+    $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
+    foreach ($hooks as $ob) {
+        $_categories = $ob->category_info();
+        if ($_categories !== null) {
+            $categories += $_categories;
+        }
+    }
+    ksort($categories);
+    return $categories;
+}
+
+/**
+ * Find all the graphs in a stats category.
+ *
+ * @param  ?string $category_name The category name (null: all categories)
+ * @return array Map between graph name and pair of graph object and graph details
+ */
+function stats_find_graphs_in_category($category_name = null)
+{
+    $graphs = [];
+
+    $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
+    foreach ($hooks as $ob) {
+        $info = $ob->info();
+        if ($info !== null) {
+            foreach ($info as $graph_name => $graph_details) {
+                if (($category_name === null) || ($graph_details['category'] === $category_name)) {
+                    $graphs[$graph_name] = [$ob, $graph_details];
+                }
+            }
+        }
+    }
+
+    return $graphs;
+}
+
+/**
+ * Find all the graphs in a stats category.
+ *
+ * @param  string $graph_name The graph name
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
+ * @return ?array A pair: graph object and graph details (null: could not find graph)
+ */
+function stats_find_graph_details($graph_name, $for_kpi = false)
+{
+    $graphs = [];
+
+    $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
+    foreach ($hooks as $ob) {
+        $info = $ob->info($for_kpi);
+        if ($info !== null) {
+            if (array_key_exists($graph_name, $info)) {
+                return [$ob, $info[$graph_name]];
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Get the month number of a timestamp, starting from 1970.
+ *
+ * @param  TIME $timestamp Timestamp
+ * @return integer Month number
+ */
+function get_stats_month_for_timestamp($timestamp)
+{
+    list($year, $month) = array_map('intval', explode('-', strftime('%Y-%m', $timestamp)));
+    return ($year - 1970) * 12 + ($month - 1);
+}
+
+/**
+ * Base stats hook class.
+ *
+ * @package stats
+ */
+abstract class CMSStatsHookBase
+{
+    /**
+     * Find metadata about stats categories that are defined by this stats hook.
+     *
+     * @return ?array Map of metadata (null: hook is disabled)
+     */
+    public function category_info()
+    {
+        return [];
+    }
+
+    /**
+     * Find metadata about stats graphs that are provided by this stats hook.
+     *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
+     * @return ?array Map of metadata (null: hook is disabled)
+     */
+    abstract public function info($for_kpi = false);
+}
+
+/**
+ * Base stats hook class for stats providers.
+ *
+ * @package stats
+ */
+abstract class CMSStatsProvider extends CMSStatsHookBase
+{
+    const GRAPH_LINE_CHART = 1;
+    const GRAPH_PIE_CHART = 2;
+    const GRAPH_BAR_CHART = 3;
+
+    const KPI_HIGH_IS_GOOD = 1;
+    const KPI_LOW_IS_GOOD = 2;
+
+    /**
+     * Find all the feedback type codes. Useful for creating filters that are filtering by feedback type code.
+     *
+     * @return array Codes
+     */
+    protected function find_all_feedback_type_codes()
+    {
+        require_code('content');
+
+        $cma_hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_') + find_all_hook_obs('systems', 'resource_meta_aware', 'Hook_resource_meta_aware_');
+        $feedback_type_codes = [];
+        foreach ($cma_hooks as $content_type => $hook_ob) {
+            $info = $hook_ob->info();
+            if (($info !== null) && ($info['feedback_type_code'] !== null)) {
+                $feedback_type_codes[$info['feedback_type_code']] = do_lang($info['content_type_label']);
+            }
+        }
+
+        asort($feedback_type_codes, SORT_FLAG_CASE);
+
+        return $feedback_type_codes;
+    }
+
+    /**
+     * Find all the content types. Useful for creating filters that are filtering by content types.
+     *
+     * @return array Content types
+     */
+    protected function find_all_content_types()
+    {
+        require_code('content');
+
+        $cma_hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
+        $content_types = [];
+        foreach ($cma_hooks as $content_type => $hook_ob) {
+            $info = $hook_ob->info();
+            if (($info !== null) && ($info['views_field'] !== null) && (is_string($info['id_field'])) && ($info['title_field'] !== null) && (strpos($info['title_field'], 'CALL:') === false)) {
+                $content_types[$content_type] = do_lang($info['content_type_label']);
+            }
+        }
+
+        asort($content_types, SORT_FLAG_CASE);
+
+        return $content_types;
+    }
+
+    /**
+     * Find which bracket a value fits in.
+     *
+     * @param  array $brackets List of brackets
+     * @param  integer $value Value
+     * @return ?string Bracket (null: none)
+     */
+    protected function find_value_bracket($brackets, $value)
+    {
+        $bracket = null;
+        foreach ($brackets as $_bracket) {
+            $matches = [];
+            if (preg_match('#^(\d+)$#', $_bracket, $matches) != 0) {
+                if ($value == intval($matches[1])) {
+                    $bracket = $_bracket;
+                    break;
+                }
+            } elseif (preg_match('#^<(\d+)$#', $_bracket, $matches) != 0) {
+                if ($value < intval($matches[1])) {
+                    $bracket = $_bracket;
+                    break;
+                }
+            } elseif (preg_match('#^(\d+)-(\d+)$#', $_bracket, $matches) != 0) {
+                if (($value >= intval($matches[1])) && ($value <= intval($matches[2]))) {
+                    $bracket = $_bracket;
+                    break;
+                }
+            } elseif (preg_match('#^(\d+)\+$#', $_bracket, $matches) != 0) {
+                if ($value >= intval($matches[1])) {
+                    $bracket = $_bracket;
+                    break;
+                }
+            }
+        }
+        return $bracket;
+    }
+
+    /**
+     * Get a list of all the standard date pivot types.
+     *
+     * @param  boolean $include_of_types Whether to include non-series pivots
+     * @return array List of standardised date pivot names
+     */
+    protected function get_date_pivots($include_of_types = true)
+    {
+        require_lang('dates');
+
+        $ret = [];
+        if ($include_of_types) {
+            $ret['hour_of_day'] = do_lang_tempcode('PIVOT_X_OF', do_lang_tempcode('HOUR'));
+        }
+        $ret['day_series'] = do_lang_tempcode('PIVOT_X_SERIES', do_lang_tempcode('DAY'));
+        if ($include_of_types) {
+            $ret['day_of_week'] = do_lang_tempcode('PIVOT_X_OF', do_lang_tempcode('DAY'));
+        }
+        $ret['month_series'] = do_lang_tempcode('PIVOT_X_SERIES', do_lang_tempcode('MONTH'));
+        if ($include_of_types) {
+            $ret['month_of_year'] = do_lang_tempcode('PIVOT_X_OF', do_lang_tempcode('MONTH'));
+        }
+        $ret['quarter_series'] = do_lang_tempcode('PIVOT_X_SERIES', do_lang_tempcode('CALENDAR_QUARTER'));
+        $ret['year_series'] = do_lang_tempcode('PIVOT_X_SERIES', do_lang_tempcode('YEAR'));
+        return $ret;
+    }
+
+    /**
+     * Preprocess raw data in the database into something we can efficiently draw graphs/conclusions from.
+     *
+     * @param  TIME $start_time Start timestamp
+     * @param  TIME $end_time End timestamp
+     * @param  array $data_buckets Map of data buckets; a map of bucket name to nested maps with the following maps in sequence: 'month', 'pivot', 'value' (then further map data) ; extended and returned by reference
+     */
+    public function preprocess_raw_data($start_time, $end_time, &$data_buckets)
+    {
+    }
+
+    /**
+     * Preprocess raw data in the database into something we can efficiently draw graphs/conclusions from.
+     * This is for flat and timeless data.
+     *
+     * @param  TIME $start_time Start timestamp
+     * @param  TIME $end_time End timestamp
+     * @param  array $data_buckets Map of data buckets; a map of bucket name to nested maps
+     */
+    public function preprocess_raw_data_flat($start_time, $end_time, &$data_buckets)
+    {
+    }
+
+    /**
+     * Generate final data from preprocessed data.
+     *
+     * @param  string $bucket Data bucket we want data for
+     * @param  string $pivot Pivot value
+     * @param  array $filters Map of filters (including pivot if applicable)
+     * @return array Final data in standardised map format
+     */
+    abstract public function generate_final_data($bucket, $pivot, $filters);
+
+    /**
+     * Get the pivot value (date-differentiation value within a bucket) for a standard date pivot type.
+     *
+     * @param  string $pivot Pivot type
+     * @param  TIME $timestamp Timestamp
+     * @return mixed Pivot value
+     */
+    protected function calculate_date_pivot_value($pivot, $timestamp)
+    {
+        switch ($pivot) {
+            case 'hour_of_day':
+                return intval(cms_strftime('%H', $timestamp));
+            case 'day_series':
+                return cms_strftime('%Y-%m-%d', $timestamp);
+            case 'day_of_week':
+                return intval(cms_strftime('%w', $timestamp));
+            case 'month_series':
+                return get_stats_month_for_timestamp($timestamp);
+            case 'month_of_year':
+                return intval(cms_strftime('%m', $timestamp));
+            case 'quarter_series':
+                $month = floatval(cms_strftime('%m', $timestamp));
+                return intval(floor($month / 4.0));
+            case 'year_series':
+                return intval(cms_strftime('%Y', $timestamp));
+        }
+
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    /**
+     * Fill up an array with all standard date pivot values between a month range.
+     *
+     * @param  string $pivot Pivot type
+     * @param  integer $start_month Start month (counting from 1970)
+     * @param  integer $end_month End month (counting from 1970)
+     * @return array All pivot values mapping to 0
+     */
+    protected function fill_data_by_date_pivots($pivot, $start_month, $end_month)
+    {
+        $pivot_value = mixed();
+
+        $data = [];
+        switch ($pivot) {
+            case 'hour_of_day':
+                for ($i = 0; $i <= 23; $i++) {
+                    $pivot_value = $i;
+                    $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                    $data[$pivot_value] = 0;
+                }
+                break;
+
+            case 'day_series':
+                for ($i = $start_month; $i <= $end_month; $i++) {
+                    $year = 1970 + intval(floor(floatval($i) / 12.0));
+                    $month = ($i % 12) + 1;
+                    $days_in_month = intval(date('t', mktime(0, 0, 0, $month, 1, $year)));
+                    for ($j = 1; $j <= $days_in_month; $j++) {
+                        $pivot_value = strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($j), 2, '0', STR_PAD_LEFT);
+                        $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                        $data[$pivot_value] = 0;
+                    }
+                }
+                break;
+
+            case 'day_of_week':
+                for ($i = 0; $i <= 6; $i++) {
+                    $pivot_value = $i;
+                    $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                    $data[$pivot_value] = 0;
+                }
+                break;
+
+            case 'month_series':
+                for ($i = $start_month; $i <= $end_month; $i++) {
+                    $pivot_value = $i;
+                    $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                    $data[$pivot_value] = 0;
+                }
+                break;
+
+            case 'month_of_year':
+                for ($i = 1; $i <= 12; $i++) {
+                    $pivot_value = $i;
+                    $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                    $data[$pivot_value] = 0;
+                }
+                break;
+
+            case 'quarter_series':
+                for ($i = $start_month; $i <= $end_month; $i++) {
+                    if (($i % 4 == 0) || (empty($data))) {
+                        $quarter = $i / 4;
+                        $pivot_value = $quarter;
+                        $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                        $data[$pivot_value] = 0;
+                    }
+                }
+                break;
+
+            case 'year_series':
+                for ($i = $start_month; $i <= $end_month; $i++) {
+                    if (($i % 12 == 0) || (empty($data))) {
+                        $year = 1970 + intval(floor(floatval($i) / 12.0));
+                        $pivot_value = $year;
+                        $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+                        $data[$pivot_value] = 0;
+                    }
+                }
+                break;
+
+            default:
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+        return $data;
+    }
+
+    /**
+     * Make a date pivot value look nice, using the current locale.
+     *
+     * @param  string $pivot Current pivot
+     * @param  mixed $pivot_value Pivot value
+     * @return string Nice looking pivot value
+     */
+    protected function make_date_pivot_value_nice($pivot, $pivot_value)
+    {
+        require_lang('dates');
+
+        switch ($pivot) {
+            case 'hour_of_day':
+                return trim(strftime('%l%P', mktime($pivot_value)));
+
+            case 'day_of_week':
+                $dows = [
+                    'SUNDAY',
+                    'MONDAY',
+                    'TUESDAY',
+                    'WEDNESDAY',
+                    'THURSDAY',
+                    'FRIDAY',
+                    'SATURDAY',
+                ];
+                return do_lang($dows[$pivot_value]);
+
+            case 'month_series':
+                $year = 1970 + intval(floor(floatval($pivot_value) / 12.0));
+                $month = ($pivot_value % 12) + 1;
+                return strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT);
+
+            case 'month_of_year':
+                $months = [
+                    'JANUARY',
+                    'FEBRUARY',
+                    'MARCH',
+                    'APRIL',
+                    'MAY',
+                    'JUNE',
+                    'JULY',
+                    'AUGUST',
+                    'SEPTEMBER',
+                    'OCTOBER',
+                    'NOVEMBER',
+                    'DECEMBER',
+                ];
+                return do_lang($months[$pivot_value - 1]);
+
+            case 'quarter_series':
+                return 'Q' . strval($pivot_value + 1);
+        }
+
+        return is_integer($pivot_value) ? strval($pivot_value) : $pivot_value;
+    }
+}
+
+/**
+ * Base stats hook class for stats blob providers. These are hooks that provide graphs, but cannot break down data within the API (for tables or spreadsheets etc).
+ *
+ * @package stats
+ */
+abstract class CMSStatsBlob extends CMSStatsHookBase
+{
+    /**
+     * Generate graph.
+     *
+     * @param  string $graph_name Graph name
+     * @param  array $filters Filter settings to take precedence
+     * @return Tempcode Graph
+     */
+    abstract public function generate($graph_name, $filters);
+}
+
+/**
+ * Base stats hook class for simple redirect hooks.
+ *
+ * @package stats
+ */
+abstract class CMSStatsRedirect extends CMSStatsHookBase
+{
+    /**
+     * Get the hook's redirect URL.
+     *
+     * @param  string $bucket_name The bucket name
+     * @return URLPATH Redirect URL
+     */
+    abstract public function get_redirect_url($bucket_name);
+}
+
+/**
+ * Get the month bounds of what dates we have stats data for.
+ *
+ * @return array A pair: min month, max month
+ */
+function find_known_stats_date_month_bounds()
+{
+    static $min_month = null, $max_month = null;
+    if ($min_month === null) {
+        $min_month = $GLOBALS['SITE_DB']->query_select_value('stats_preprocessed', 'MIN(p_month)');
+        if ($min_month === null) {
+            $min_month = get_stats_month_for_timestamp(time());
+        }
+    }
+    if ($max_month === null) {
+        $max_month = $GLOBALS['SITE_DB']->query_select_value('stats_preprocessed', 'MAX(p_month)');
+        if ($max_month === null) {
+            $max_month = get_stats_month_for_timestamp(time());
+        }
+    }
+    return [$min_month, $max_month];
+}
+
+/**
+ * Base class for stat filters/pivots.
+ *
+ * @package stats
+ */
+abstract class CMSStatsFilter
+{
+    public $filter_name;
+    protected $label;
+    protected $default;
+
+    /**
+     * Get the inputting UI for the filter.
+     *
+     * @param  Tempcode $hidden The hidden field
+     * @return Tempcode The input field
+     */
+    abstract public function ui_component(&$hidden);
+
+    /**
+     * Read the current filter value.
+     *
+     * @return mixed The filter value
+     */
+    public function read_value()
+    {
+        return either_param_string($this->filter_name, $this->default);
+    }
+
+    /**
+     * Set the default. Useful when defaults are saved, rather than in the GET environment.
+     *
+     * @param  mixed $default The new default
+     * @param  ?boolean $for_kpi Whether this is a setting for a KPI (null: as object was initiated)
+     */
+    public function set_default($default, $for_kpi = null)
+    {
+        $this->default = $default;
+    }
+}
+
+/**
+ * Class for stat text input filters.
+ *
+ * @package stats
+ */
+class CMSStatsTextFilter extends CMSStatsFilter
+{
+    /**
+     * Constructor.
+     *
+     * @param  string $filter_name Filter name
+     * @param  Tempcode $label Label
+     * @param  string $default Default
+     */
+    public function __construct($filter_name, $label, $default = '')
+    {
+        $this->filter_name = $filter_name;
+        $this->label = $label;
+        $this->default = $default;
+    }
+
+    /**
+     * Get the inputting UI for the filter.
+     *
+     * @param  Tempcode $hidden The hidden field
+     * @return Tempcode The input field
+     */
+    public function ui_component(&$hidden)
+    {
+        require_code('form_templates');
+        return form_input_line(do_lang_tempcode('_FILTER', $this->label), new Tempcode(), $this->filter_name, $this->read_value(), $this->default != '');
+    }
+}
+
+/**
+ * Class for stat text input filters.
+ *
+ * @package stats
+ */
+class CMSStatsTickFilter extends CMSStatsFilter
+{
+    /**
+     * Constructor.
+     *
+     * @param  string $filter_name Filter name
+     * @param  Tempcode $label Label
+     * @param  boolean $default Default
+     */
+    public function __construct($filter_name, $label, $default = true)
+    {
+        $this->filter_name = $filter_name;
+        $this->label = $label;
+        $this->default = $default;
+    }
+
+    /**
+     * Get the inputting UI for the filter.
+     *
+     * @param  Tempcode $hidden The hidden field
+     * @return Tempcode The input field
+     */
+    public function ui_component(&$hidden)
+    {
+        $hidden->attach(form_input_hidden($this->filter_name, '0'));
+
+        require_code('form_templates');
+        return form_input_tick(do_lang_tempcode('_FILTER', $this->label), new Tempcode(), $this->filter_name, $this->read_value());
+    }
+
+    /**
+     * Read the current filter value.
+     *
+     * @return mixed The filter value
+     */
+    public function read_value()
+    {
+        return either_param_integer($this->filter_name, 1) == 1;
+    }
+}
+
+/**
+ * Class for stat list input filters.
+ *
+ * @package stats
+ */
+class CMSStatsListFilter extends CMSStatsFilter
+{
+    protected $list;
+
+    /**
+     * Constructor.
+     *
+     * @param  string $filter_name Filter name
+     * @param  Tempcode $label Label
+     * @param  array $list List (a map)
+     * @param  string $default Default
+     */
+    public function __construct($filter_name, $label, $list, $default = '')
+    {
+        $this->filter_name = $filter_name;
+        $this->label = $label;
+        $this->list = $list;
+        $this->default = $default;
+    }
+
+    /**
+     * Get the inputting UI for the filter.
+     *
+     * @param  Tempcode $hidden The hidden field
+     * @return Tempcode The input field
+     */
+    public function ui_component(&$hidden)
+    {
+        require_code('form_templates');
+        $list = new Tempcode();
+        $list->attach(form_input_list_entry('', '' == $this->read_value(), ''));
+        foreach ($this->list as $key => $val) {
+            $list->attach(form_input_list_entry($key, $key == $this->read_value(), $val));
+        }
+        return form_input_list(do_lang_tempcode('_FILTER', $this->label), new Tempcode(), $this->filter_name, $list, null, false, false);
+    }
+}
+
+/**
+ * Class for stat month date range input filters.
+ *
+ * @package stats
+ */
+class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
+{
+    protected $for_kpi = false;
+
+    /**
+     * Constructor.
+     *
+     * @param  string $filter_name Filter name
+     * @param  Tempcode $label Label
+     * @param  ?mixed $default Default (null: past year)
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
+     */
+    public function __construct($filter_name, $label, $default = null, $for_kpi = false)
+    {
+        if ($default === null) {
+            if ($for_kpi) {
+                $default = 12; // 12 months back
+            } else {
+                list($min_month, $max_month) = find_known_stats_date_month_bounds();
+                $min_month = max($min_month, $max_month - 12);
+                $default = [$min_month, $max_month];
+            }
+        }
+
+        $this->filter_name = $filter_name;
+        $this->label = $label;
+        $this->default = $default;
+        $this->for_kpi = $for_kpi;
+    }
+
+    /**
+     * Get the inputting UI for the filter.
+     *
+     * @param  Tempcode $hidden The hidden field
+     * @return Tempcode The input field
+     */
+    public function ui_component(&$hidden)
+    {
+        require_code('form_templates');
+
+        require_lang('dates');
+
+        $value = $this->read_value();
+
+        if ($this->for_kpi) {
+            $_options = [
+                1 => do_lang_tempcode('MONTHS', integer_format(1)),
+                3 => do_lang_tempcode('MONTHS', integer_format(3)),
+                6 => do_lang_tempcode('MONTHS', integer_format(6)),
+                12 => do_lang_tempcode('YEARS', integer_format(1)),
+                24 => do_lang_tempcode('YEARS', integer_format(2)),
+                36 => do_lang_tempcode('YEARS', integer_format(3)),
+                60 => do_lang_tempcode('YEARS', integer_format(5)),
+            ];
+
+            $options = new Tempcode();
+            foreach ($_options as $option_key => $option_label) {
+                $options->attach(form_input_list_entry($option_key, $value == $option_key, $option_label));
+            }
+
+            return form_input_list($this->label, new Tempcode(), $this->filter_name, $options, null, false, true);
+        }
+
+        list($min_month, $max_month) = find_known_stats_date_month_bounds();
+
+        $month_array = [
+            'JANUARY',
+            'FEBRUARY',
+            'MARCH',
+            'APRIL',
+            'MAY',
+            'JUNE',
+            'JULY',
+            'AUGUST',
+            'SEPTEMBER',
+            'OCTOBER',
+            'NOVEMBER',
+            'DECEMBER',
+        ];
+
+        $months = [];
+        for ($month = min($this->default[0], $min_month); $month <= max($this->default[1], $max_month); $month++) {
+            $year = 1970 + intval(floor(floatval($month) / 12.0));
+
+            $val = protect_from_escaping(strval($year) . ', ' . do_lang($month_array[($month % 12)]));
+            $months[$month] = $val;
+        }
+
+        $tabindex = get_form_field_tabindex();
+
+        $input = do_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
+            'TABINDEX' => strval($tabindex),
+            'NAME' => $this->filter_name,
+            'MONTHS' => $months,
+            'START' => strval($value[0]),
+            'END' => strval($value[1]),
+        ]);
+
+        return _form_input($this->filter_name, $this->label, new Tempcode(), $input, true, false, $tabindex, false, true);
+    }
+
+    /**
+     * Set the default. Useful when defaults are saved, rather than in the GET environment.
+     *
+     * @param  mixed $default The new default
+     * @param  ?boolean $for_kpi Whether this is a setting for a KPI (null: as object was initiated)
+     */
+    public function set_default($default, $for_kpi = null)
+    {
+        if ($for_kpi !== null) {
+            if (($for_kpi) && (!$this->for_kpi)) {
+                $current_month = get_stats_month_for_timestamp(time());
+                $this->default = [$current_month - $default - 1, $current_month];
+                return;
+            } elseif ((!$for_kpi) && ($this->for_kpi)) {
+                list($start, $end) = $default;
+                $this->default = ($end - $start) + 1;
+                return;
+            }
+        }
+
+        $this->default = $default;
+    }
+
+    /**
+     * Read the current filter value.
+     *
+     * @param  ?boolean $for_kpi Whether this is for setting up a KPI (null: as object was initiated)
+     * @return mixed The filter value
+     */
+    public function read_value($for_kpi = null)
+    {
+        $ret = mixed();
+
+        if ($this->for_kpi) {
+            $ret = either_param_integer($this->filter_name, $this->default);
+
+            $wants_for_non_kpi = ($for_kpi !== null) && (!$for_kpi);
+            if ($wants_for_non_kpi) {
+                $current_month = get_stats_month_for_timestamp(time());
+                $ret = [$current_month - $ret - 1, $current_month];
+            }
+
+            return $ret;
+        }
+
+        $start = either_param_integer($this->filter_name . '__start', $this->default[0]);
+        $end = either_param_integer($this->filter_name . '__end', $this->default[1]);
+
+        $wants_for_kpi = ($for_kpi !== null) && ($for_kpi);
+        if ($wants_for_kpi) {
+            $ret = ($end - $start) + 1;
+        } else {
+            $ret = [$start, $end];
+        }
+
+        return $ret;
+    }
+}
+
+/**
+ * Class for stat date input filters.
+ *
+ * @package stats
+ */
+class CMSStatsDatePivot extends CMSStatsFilter
+{
+    protected $pivot_values;
+
+    /**
+     * Constructor.
+     *
+     * @param  string $filter_name Filter name
+     * @param  array $pivot_values List of possible pivot values
+     * @param  string $default Default
+     */
+    public function __construct($filter_name, $pivot_values, $default = 'day_series')
+    {
+        $this->filter_name = $filter_name;
+        $this->label = do_lang_tempcode('TALLY_BY');
+        $this->default = $default;
+        $this->pivot_values = $pivot_values;
+    }
+
+    /**
+     * Get the inputting UI for the filter.
+     *
+     * @param  Tempcode $hidden The hidden field
+     * @return Tempcode The input field
+     */
+    public function ui_component(&$hidden)
+    {
+        require_code('form_templates');
+        $list = new Tempcode();
+        foreach ($this->pivot_values as $key => $val) {
+            $list->attach(form_input_list_entry($key, $key == $this->read_value(), $val));
+        }
+        return form_input_list($this->label, new Tempcode(), $this->filter_name, $list);
     }
 }
 
 /**
  * Function to find Alexa details of the site.
  *
- * @param  string $url The URL of the site which you want to find out information on.)
+ * @param  ?string $url The URL of the site which you want to find out information on.) (null: base URL)
  * @return array Returns a pair with the rank, and the amount of links
  */
-function get_alexa_rank($url)
+function get_alexa_rank($url = null)
 {
-    $test = get_value_newer_than('alexa__' . md5($url), time() - 60 * 60 * 24 * 5, true);
+    if ($url === null) {
+        $url = get_base_url() . '/';
+    }
+
+    $test = get_value_newer_than('alexa__' . md5($url), time() - 60 * 60 * 24, true);
     if ($test !== null) {
         return unserialize($test);
     }
@@ -54,19 +1386,19 @@ function get_alexa_rank($url)
     $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
     $result = http_get_contents($_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 2.0]);
     if ($result === null) {
-        return ['', ''];
+        return [null, null];
     }
 
     $matches = [];
     if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Alexa Traffic Rank#s', $result, $matches) != 0) {
-        $rank = integer_format(intval(str_replace(',', '', $matches[1])));
+        $rank = intval(str_replace(',', '', $matches[1]));
     } else {
-        $rank = '';
+        $rank = null;
     }
     if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Sites Linking In#s', $result, $matches) != 0) {
-        $links = integer_format(intval(str_replace(',', '', $matches[1])));
+        $links = intval(str_replace(',', '', $matches[1]));
     } else {
-        $links = '';
+        $links = null;
     }
 
     // we would like, but cannot get (without an API key)...
@@ -82,4 +1414,218 @@ function get_alexa_rank($url)
     set_value('alexa__' . md5($url), serialize($ret), true);
 
     return $ret;
+}
+
+/**
+ * Find whether geolocation data is installed.
+ *
+ * @return boolean Whether it is
+ */
+function has_geolocation_data()
+{
+    return ($GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'begin_num') !== null);
+}
+
+/**
+ * Log a stats event.
+ *
+ * @param  string $event The event
+ */
+function log_stats_event($event)
+{
+    if ((get_option('site_closed') == '1') && (get_option('stats_when_closed') == '0')) {
+        return;
+    }
+
+    require_code('locations');
+
+    $country_code = geolocate_ip();
+    $GLOBALS['SITE_DB']->query_insert('stats_events', [
+        'e_event' => $event,
+        'e_date_and_time' => time(),
+        'e_country_code' => ($country_code == '') ? '' : $country_code,
+        'e_session_id' => get_session_id(),
+    ]);
+}
+
+/**
+ * Cleanup old stats.
+ * We cannot just do this in Cron, because we can't rely on Cron running.
+ */
+function cleanup_stats()
+{
+    if (!$GLOBALS['SITE_DB']->table_is_locked('stats')) {
+        $cutoff = strval(time() - 60 * 60 * 24 * intval(get_option('stats_store_time')));
+
+        $where = 'date_and_time<' . $cutoff;
+        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+
+        $where = 'e_date_and_time<' . $cutoff;
+        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats_events WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+
+        $where = 'c_date_and_time<' . $cutoff;
+        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats_link_tracker WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+    }
+}
+
+/**
+ * Pre-process raw data for a stats hook.
+ *
+ * @param  string $hook_name The hook name to preprocess data in
+ * @param  TIME $start_time Start time
+ * @param  ?TIME $end_time End time (null: now)
+ */
+function preprocess_raw_data_for($hook_name, $start_time = 0, $end_time = null)
+{
+    if ($end_time === null) {
+        $end_time = time();
+    }
+
+    require_code('hooks/modules/admin_stats/' . filter_naughty($hook_name));
+    $hook_ob = object_factory('Hook_admin_stats_' . $hook_name, true);
+    if ($hook_ob === null) {
+        return;
+    }
+
+    $info = $hook_ob->info();
+    if ($info === null) {
+        return;
+    }
+
+    if (!$hook_ob instanceof CMSStatsProvider) {
+        return;
+    }
+
+    // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
+
+    $months = [];
+    for ($timestamp = $start_time; $timestamp < $end_time; $timestamp += 60 * 60 * 24 * 28) {
+        $month = get_stats_month_for_timestamp($timestamp);
+        $months[$month] = true;
+    }
+
+    $data_buckets = [];
+    foreach (array_keys($info) as $bucket) {
+        $data_buckets[$bucket] = [];
+
+        foreach (array_keys($months) as $month) {
+            $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_pivot', 'p_data'], [
+                'p_bucket' => $bucket,
+                'p_month' => $month,
+            ]);
+            foreach ($data_rows as $row) {
+                $pivot = $row['p_pivot'];
+                $data_buckets[$bucket][$month][$pivot] = @unserialize($row['p_data']);
+                if ($data_buckets[$bucket][$month][$pivot] === false) {
+                    $data_buckets[$bucket][$month][$pivot] = [];
+                }
+            }
+        }
+    }
+
+    // Preprocess new data...
+
+    $hook_ob->preprocess_raw_data($start_time, $end_time, $data_buckets);
+
+    // Re-save into the database...
+
+    foreach ($data_buckets as $bucket => $_) {
+        foreach ($_ as $month => $__) {
+            foreach ($__ as $pivot => $data) {
+                $GLOBALS['SITE_DB']->query_insert_or_replace('stats_preprocessed', [
+                    'p_data' => serialize($data),
+                ], [
+                    'p_bucket' => $bucket,
+                    'p_month' => $month,
+                    'p_pivot' => $pivot,
+                ]);
+            }
+        }
+    }
+
+    // Now for flat data...
+
+    // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
+
+    $data_buckets = [];
+    foreach (array_keys($info) as $bucket) {
+        $data_buckets[$bucket] = [];
+
+        $data_row = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_preprocessed_flat', 'p_data', [
+            'p_bucket' => $bucket,
+        ]);
+        if ($data_row !== null) {
+            $data_buckets[$bucket] = @unserialize($data_row['p_data']);
+            if ($data_buckets[$bucket] === false) {
+                $data_buckets[$bucket] = [];
+            }
+        } else {
+            $data_buckets[$bucket] = [];
+        }
+    }
+
+    // Preprocess new data...
+
+    $hook_ob->preprocess_raw_data_flat($start_time, $end_time, $data_buckets);
+
+    // Re-save into the database...
+
+    foreach ($data_buckets as $bucket => $data) {
+        $GLOBALS['SITE_DB']->query_insert_or_replace('stats_preprocessed_flat', [
+            'p_data' => serialize($data),
+        ], [
+            'p_bucket' => $bucket,
+        ]);
+    }
+}
+
+/**
+ * Send out KPI notifications, as appropriate based on today's date.
+ */
+function send_kpi_notifications()
+{
+    $series = [ // Runs day after a period ends
+        'year_series' => (date('m-d') == '01-01'),
+        'quarter_series' => (date('d') == '01') && (in_array(date('m'), ['01', '04', '07', '10'])),
+        'month_series' => (date('d') == '01'),
+        'day_series' => true,
+    ];
+
+    $kpis = [];
+    foreach ($series as $pivot => $send_today) {
+        if ($send_today) {
+            $_kpis = gather_kpis($pivot);
+            $kpis = array_merge($kpis, $_kpis);
+        }
+    }
+
+    if (!empty($kpis)) {
+        $kpis_for_tpl = [];
+        foreach ($kpis as $kpi) {
+            list($kpi_row, , , , , , $edit_url, , $target, $current, $hits_target) = $kpi;
+            $graph_name = $kpi_row['k_graph_name'];
+            $edit_url = build_url(['page' => 'admin_stats', 'type' => '_edit', 'id' => $kpi_row['id']], get_module_zone('admin_stats'));
+            $view_url = build_url(['page' => 'admin_stats', 'type' => 'kpis'], get_module_zone('admin_stats'), [], false, false, false, 'graph_' . $graph_name);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+            $kpis_for_tpl[] = [
+                'TITLE' => $kpi_row['k_title'],
+                'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current) : float_format($current, 4, true)),
+                'HITS_TARGET' => $hits_target,
+                'TARGET' => ($target === null) ? null : float_format($target, 4, true),
+                'EDIT_URL' => $edit_url,
+                'VIEW_URL' => $view_url,
+                'GRAPH_NAME' => $kpi_row['k_graph_name'],
+                'USERNAME' => $username,
+                'ADDED' => get_timezoned_date($kpi_row['k_added']),
+                'NOTES' => $kpi_row['k_notes'],
+            ];
+        }
+
+        require_code('notifications');
+        $mail = do_notification_template('KPI_UPDATE_MAIL', [
+            'KPIS' => $kpis_for_tpl,
+        ], null, false, null, '.txt', 'text');
+
+        dispatch_notification('kpis', '', do_lang('NOTIFICATION_TYPE_kpis'), $mail->evaluate(get_site_default_lang()));
+    }
 }

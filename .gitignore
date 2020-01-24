@@ -1,3 +1,7 @@
+; LEGACY from v10
+/data_custom/latest_activity.txt
+/safe_mode_temp
+
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
 /psalm.xml
 /composer.phar
@@ -5,6 +9,7 @@
 /vendor
 /composer.lock
 /_tests/codechecker/codechecker.ini
+/_tests/codechecker/checker.ini
 /Icon?
 /cgi-bin
 *.bak
@@ -31,10 +36,12 @@ test_a
 /caches/*/*.htm
 /caches/*/*.xml
 /caches/*/*.gz
+/caches/*/*.br
 /themes/*/templates_cached/*/*.js
 /themes/*/templates_cached/*/*.css
 /themes/*/templates_cached/*/*.tcp
 /themes/*/templates_cached/*/*.gz
+/themes/*/templates_cached/*/*.br
 /data_custom/rate_limiter.php
 /data_custom/*log.php
 /exports/*/*.tar
@@ -48,6 +55,7 @@ test_a
 /data_custom/ckeditor
 /data_custom/sitemaps/*.xml
 /data_custom/sitemaps/*.gz
+/data_custom/sitemaps/*.br
 /data_custom/modules/chat/*.bin
 /data_custom/modules/admin_stats/*.xml
 /data_custom/modules/web_notifications/latest.bin

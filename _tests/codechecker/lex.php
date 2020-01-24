@@ -413,8 +413,8 @@ function lex($text = null)
                 }
 
                 // Special case, don't allow tokens in object dereferencing chains
-                if (!empty($tokens)) {
-                    $_last_token = end($tokens);
+                $_last_token = end($tokens);
+                if ($_last_token !== false) {
                     if ($_last_token[0] == 'OBJECT_OPERATOR') {
                         $applicable_tokens = [];
                     }

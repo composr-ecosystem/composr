@@ -168,10 +168,7 @@ END;
     <body class="website-body"><div class="global-middle container-fluid">
         <h1 class="screen-title">{$title}</h1>
 END;
-    if (@ob_end_flush() !== false) {
-        @ob_start(); // Push out and recreate buffer
-    }
-    flush();
+    cms_flush_safe();
 }
 
 function testset_do_footer()

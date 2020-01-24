@@ -29,7 +29,6 @@ class Module_admin_cns_emoticons extends Standard_crud_module
     protected $select_name = 'EMOTICON';
     protected $orderer = 'e_code';
     protected $array_key = 'e_code';
-    protected $title_is_multi_lang = false;
     protected $non_integer_id = true;
     protected $possibly_some_kind_of_upload = true;
     protected $do_preview = null;

@@ -444,7 +444,7 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('image', strval($id));
         } else {
-            $privacy_limits = [];
+            $privacy_limits = null;
         }
 
         require_lang('galleries');
@@ -568,7 +568,7 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('image', strval($id));
         } else {
-            $privacy_limits = [];
+            $privacy_limits = null;
         }
 
         require_lang('galleries');
@@ -919,7 +919,7 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('video', strval($id));
         } else {
-            $privacy_limits = [];
+            $privacy_limits = null;
         }
 
         require_lang('galleries');
@@ -1058,7 +1058,7 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('video', strval($id));
         } else {
-            $privacy_limits = [];
+            $privacy_limits = null;
         }
 
         require_lang('galleries');

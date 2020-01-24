@@ -81,7 +81,7 @@ function mobiquo_xmlrpc_simple_call($method, $params, $username = null)
     $response = $ob->send(new xmlrpcmsg($method, $arr));
     $result = $response->value();
     if ($result === 0) {
-        @header('Content-type: text/plain; charset=utf-8');
+        @header('Content-Type: text/plain; charset=utf-8');
         exit($response->faultString());
     }
     return php_xmlrpc_decode($result);

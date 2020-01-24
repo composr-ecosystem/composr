@@ -25,10 +25,9 @@
  *
  * @param  PATH $string The relative (to Composr's base directory) path to the HTML page
  * @param  ?PATH $file_base The file base to load from (null: standard)
- * @param  ?object $out Semi-filled output template (null: definitely not doing output streaming)
  * @return string The page
  */
-function load_html_page($string, $file_base = null, &$out = null)
+function load_html_page($string, $file_base = null)
 {
     if ($file_base === null) {
         $file_base = get_file_base();
@@ -125,10 +124,6 @@ function load_html_page($string, $file_base = null, &$out = null)
         } else {
             $html = '';
         }
-    }
-
-    if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null)) {
-        $out->evaluate_echo(null, true);
     }
 
     return $html;

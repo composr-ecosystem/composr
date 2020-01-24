@@ -39,7 +39,6 @@ class Module_cms_news extends Standard_crud_module
     protected $menu_label = 'NEWS';
     protected $table = 'news';
     protected $orderer = 'title';
-    protected $title_is_multi_lang = true;
 
     protected $donext_type = null;
 
@@ -892,7 +891,6 @@ class Module_cms_news_cat extends Standard_crud_module
     protected $menu_label = 'NEWS';
     protected $table = 'news_categories';
     protected $orderer = 'nc_title';
-    protected $title_is_multi_lang = true;
     protected $is_chained_with_parent_browse = true;
     protected $do_preview = null;
 

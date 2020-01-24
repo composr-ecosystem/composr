@@ -504,6 +504,11 @@ class Module_purchase
     {
         @ignore_user_abort(true); // Must keep going till completion
 
+        // Static cache issue? (We can disable static caching for particular pages to avoid this)
+        if (get_session_id() == '') {
+            access_denied('NOT_AS_GUEST');
+        }
+
         require_lang('config');
         require_css('ecommerce');
         require_code('currency');
@@ -1398,6 +1403,13 @@ class Module_purchase
         }
 
         // We know success at this point...
+
+        if (($subtype == 'ipn_return') || ($subtype == 'local_payment')) {
+            if (addon_installed('stats')) {
+                require_code('stats');
+                log_stats_event(do_lang('ECOMMERCE', null, null, null, get_site_default_lang()) . '-' . $type_code);
+            }
+        }
 
         if (($subtype == 'ipn_return') && (has_interesting_post_fields())) { // Alternative to IPN, *if* posted fields sent here
             handle_ipn_transaction_script(); // This is just in case the IPN doesn't arrive somehow, we still know success because the gateway sent us here on success

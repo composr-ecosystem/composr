@@ -100,7 +100,6 @@ class Hook_addon_registry_stats
         return [
             'sources/hooks/systems/privacy/stats.php',
             'themes/default/images/icons/menu/adminzone/audit/statistics/statistics.svg',
-            'themes/default/images/icons/menu/adminzone/audit/statistics/clear_stats.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/geolocate.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/load_times.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/page_views.svg',
@@ -109,7 +108,6 @@ class Hook_addon_registry_stats
             'themes/default/images/icons/menu/adminzone/audit/statistics/users_online.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/index.html',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/statistics.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/clear_stats.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/geolocate.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/load_times.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/page_views.svg',
@@ -117,37 +115,64 @@ class Hook_addon_registry_stats
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/top_referrers.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/users_online.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/index.html',
-            'sources/hooks/modules/admin_setupwizard/stats.php',
             'sources/hooks/systems/config/stats_store_time.php',
             'sources/hooks/systems/config/super_logging.php',
             'sources/hooks/systems/realtime_rain/stats.php',
-            'data/modules/admin_cleanup/page_stats.php.pre',
             'sources/hooks/systems/cleanup/page_stats.php',
-            'sources/hooks/systems/cron/stats_clean.php',
             'sources/hooks/systems/page_groupings/stats.php',
             'sources/hooks/systems/non_active_urls/stats.php',
             'sources/hooks/systems/addon_registry/stats.php',
             'sources/hooks/modules/admin_stats/.htaccess',
-            'sources_custom/hooks/modules/admin_stats/.htaccess',
             'sources/hooks/modules/admin_stats/index.html',
+            'sources_custom/hooks/modules/admin_stats/.htaccess',
             'sources_custom/hooks/modules/admin_stats/index.html',
-            'themes/default/templates/STATS_GRAPH.tpl',
+            'sources/hooks/modules/admin_stats_redirects/.htaccess',
+            'sources/hooks/modules/admin_stats_redirects/index.html',
+            'sources/stats.php',
             'themes/default/templates/STATS_SCREEN.tpl',
-            'themes/default/templates/STATS_SCREEN_ISCREEN.tpl',
-            'themes/default/templates/STATS_OVERVIEW_SCREEN.tpl',
+            'themes/default/templates/STATS_GRAPH.tpl',
+            'themes/default/templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl',
             'adminzone/pages/modules/admin_stats.php',
             'themes/default/css/stats.css',
-            'themes/default/css/svg.css',
             'data/modules/admin_stats/index.html',
             'data/modules/admin_stats/IP_Country.txt', // http://geolite.maxmind.com/download/geoip/database/
             'data_custom/modules/admin_stats/index.html',
             'lang/EN/stats.ini',
-            'sources/svg.php',
-            'sources/hooks/systems/config/bot_stats.php',
             'sources/hooks/systems/tasks/install_geolocation_data.php',
             'data/modules/admin_stats/.htaccess',
             'data_custom/modules/admin_stats/.htaccess',
-            'adminzone/stats_graph.php',
+            'text/search_engine_domains.txt',
+            'text/social_media_domains.txt',
+            'sources/blocks/main_staff_stats_graph.php',
+            'sources/hooks/systems/cron/stats_preprocess_raw_data.php',
+            'sources/hooks/systems/block_ui_renderers/stats.php',
+            'data/tracked_redirect.php',
+            'sources/hooks/systems/snippets/stats_event.php',
+
+            'sources/hooks/systems/symbols/LOG_STATS_EVENT.php',
+            'sources/hooks/systems/symbols/STATS_TRACK_URL.php',
+            'sources/hooks/systems/symbols/SET_TRACKING_CODE.php',
+            'sources/hooks/systems/symbols/SPLIT_TEST.php',
+            'sources/hooks/systems/symbols/HAS_TRACKING_CODE.php',
+
+            'sources/hooks/systems/resource_meta_aware/kpi.php',
+            'themes/default/templates/KPI_SCREEN.tpl',
+            'sources/hooks/blocks/main_staff_checklist/kpis.php',
+            'sources/hooks/systems/notifications/kpis.php',
+            'themes/default/text/KPI_UPDATE_MAIL.txt',
+            'sources/hooks/systems/actionlog/kpis.php',
+
+            'sources/hooks/modules/admin_stats/emails.php',
+            'sources/hooks/modules/admin_stats/sitemap.php',
+            'sources/hooks/modules/admin_stats/users_online.php',
+            'sources/hooks/modules/admin_stats/views.php',
+            'sources/hooks/modules/admin_stats/comments.php',
+            'sources/hooks/modules/admin_stats/events.php',
+            'sources/hooks/modules/admin_stats/links.php',
+            'sources/hooks/modules/admin_stats/ratings.php',
+            'sources/hooks/modules/admin_stats/alexa.php',
+            'sources/hooks/modules/admin_stats/content.php',
+            'sources/hooks/modules/admin_stats_redirects/google_analytics.php',
         ];
     }
 
@@ -159,10 +184,10 @@ class Hook_addon_registry_stats
     public function tpl_previews()
     {
         return [
-            'templates/STATS_GRAPH.tpl' => 'administrative__stats_screen',
             'templates/STATS_SCREEN.tpl' => 'administrative__stats_screen',
-            'templates/STATS_OVERVIEW_SCREEN.tpl' => 'administrative__stats_screen_overview',
-            'templates/STATS_SCREEN_ISCREEN.tpl' => 'administrative__stats_screen_iscreen',
+            'templates/STATS_GRAPH.tpl' => 'administrative__stats_screen',
+            'templates/KPI_SCREEN.tpl' => 'administrative__kpi_screen',
+            'templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl' => 'administrative__form_screen_input_stats_date_range_screen',
         ];
     }
 
@@ -175,16 +200,28 @@ class Hook_addon_registry_stats
      */
     public function tpl_preview__administrative__stats_screen()
     {
-        $graph = do_lorem_template('STATS_GRAPH', [
-            'GRAPH' => placeholder_url(),
-            'TEXT' => lorem_sentence(),
-        ]);
+        $existing_kpis = [];
+        $existing_kpis[] = [
+            'KPI_ID' => placeholder_id(),
+            'KPI_TITLE' => lorem_phrase(),
+            'KPI_EDIT_URL' => placeholder_url(),
+        ];
+
+        $graphs = [];
+        $graphs[] = [
+            'GRAPH_NAME' => lorem_word(),
+            'GRAPH_LABEL' => lorem_phrase(),
+            'GRAPH_FORM' => placeholder_form(),
+            'GRAPH_RENDERED' => lorem_chunk_html(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'EXISTING_KPIS' => $existing_kpis,
+            'KPI_ADD_URL' => placeholder_url(),
+        ];
 
         return [
             lorem_globalise(do_lorem_template('STATS_SCREEN', [
                 'TITLE' => lorem_title(),
-                'GRAPH' => $graph,
-                'STATS' => placeholder_table(),
+                'GRAPHS' => $graphs,
             ]), null, '', true)
         ];
     }
@@ -196,14 +233,42 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__stats_screen_overview()
+    public function tpl_preview__administrative__kpi_screen()
     {
+        $existing_kpis = [];
+        $existing_kpis[] = [
+            'KPI_ID' => placeholder_id(),
+            'KPI_TITLE' => lorem_phrase(),
+            'KPI_EDIT_URL' => placeholder_url(),
+        ];
+
+        $graphs = [];
+        $graphs[] = [
+            'GRAPH_NAME' => lorem_word(),
+            'GRAPH_LABEL' => lorem_phrase(),
+            'GRAPH_RENDERED' => lorem_chunk_html(),
+            'GRAPH_FORM' => placeholder_form(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'EXISTING_KPIS' => $existing_kpis,
+            'KPI_ADD_URL' => placeholder_url(),
+            'SPREADSHEET_URL' => placeholder_url(),
+        ];
+
+        $kpis = [];
+        $kpis[] = [
+            'TITLE' => lorem_phrase(),
+            'CURRENT' => placeholder_number(),
+            'HITS_TARGET' => true,
+            'TARGET' => placeholder_number(),
+            'KPI_EDIT_URL' => placeholder_url(),
+            'GRAPH_NAME' => lorem_word(),
+        ];
+
         return [
-            lorem_globalise(do_lorem_template('STATS_OVERVIEW_SCREEN', [
+            lorem_globalise(do_lorem_template('KPI_SCREEN', [
                 'TITLE' => lorem_title(),
-                'STATS_VIEWS' => placeholder_table(),
-                'GRAPH_VIEWS_MONTHLY' => lorem_phrase(),
-                'STATS_VIEWS_MONTHLY' => lorem_phrase(),
+                'GRAPHS' => $graphs,
+                'KPIS' => $kpis,
             ]), null, '', true)
         ];
     }
@@ -215,30 +280,40 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__stats_screen_iscreen()
+    public function tpl_preview__administrative__form_screen_input_stats_date_range_screen()
     {
+        $field = do_lorem_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
+            'TABINDEX' => placeholder_number(),
+            'NAME' => lorem_word(),
+            'MONTHS' => ['10' => lorem_phrase()],
+            'START' => '10',
+            'END' => '10',
+        ]);
+
+        $fields = new Tempcode();
+
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
+            'REQUIRED' => true,
+            'SKIP_LABEL' => true,
+            'NAME' => lorem_word(),
+            'PRETTY_NAME' => lorem_word(),
+            'DESCRIPTION' => lorem_sentence_html(),
+            'DESCRIPTION_SIDE' => '',
+            'INPUT' => $field,
+            'COMCODE' => '',
+        ]));
+
         return [
-            lorem_globalise(do_lorem_template('STATS_SCREEN_ISCREEN', [
+            lorem_globalise(do_lorem_template('FORM', [
+                'GET' => null,
+                'SKIP_WEBSTANDARDS' => true,
+                'HIDDEN' => '',
                 'TITLE' => lorem_title(),
-                'GRAPH_REGIONALITY' => lorem_phrase(),
-                'STATS_REGIONALITY' => placeholder_table(),
-                'STATS_VIEWS' => lorem_phrase(),
-                'GRAPH_VIEWS_HOURLY' => lorem_phrase(),
-                'STATS_VIEWS_HOURLY' => lorem_phrase(),
-                'GRAPH_VIEWS_DAILY' => lorem_phrase(),
-                'STATS_VIEWS_DAILY' => lorem_phrase(),
-                'GRAPH_VIEWS_WEEKLY' => lorem_phrase(),
-                'STATS_VIEWS_WEEKLY' => lorem_phrase(),
-                'GRAPH_VIEWS_MONTHLY' => lorem_phrase(),
-                'STATS_VIEWS_MONTHLY' => lorem_phrase(),
-                'GRAPH_IP' => placeholder_ip(),
-                'STATS_IP' => placeholder_ip(),
-                'GRAPH_BROWSER' => lorem_phrase(),
-                'STATS_BROWSER' => lorem_phrase(),
-                'GRAPH_REFERRER' => lorem_phrase(),
-                'STATS_REFERRER' => lorem_phrase(),
-                'GRAPH_OS' => lorem_phrase(),
-                'STATS_OS' => lorem_phrase(),
+                'URL' => placeholder_url(),
+                'FIELDS' => $fields,
+                'SUBMIT_ICON' => 'buttons/proceed',
+                'SUBMIT_NAME' => lorem_word(),
+                'TEXT' => lorem_sentence_html(),
             ]), null, '', true)
         ];
     }

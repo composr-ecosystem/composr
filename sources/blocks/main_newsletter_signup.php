@@ -57,7 +57,7 @@ class Block_main_newsletter_signup
         null
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;
-        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24);
+        $info['ttl'] = 60 * 24;
         return $info;
     }
 
@@ -111,6 +111,12 @@ PHP;
             $forename = post_param_string('firstname' . strval($newsletter_id), '');
             $surname = post_param_string('lastname' . strval($newsletter_id), '');
             $password = basic_newsletter_join($address, null, !$path_exists/*Send confirm if we're not sending an intro e-mail through this block*/, $newsletter_id, $forename, $surname);
+
+            if (addon_installed('stats')) {
+                require_code('stats');
+                log_stats_event('newsletter:__NEWSLETTER_JOIN');
+            }
+
             if ($password == '') {
                 return do_template('INLINE_WIP_MESSAGE', ['_GUID' => 'bbbf2b31e71cbdbc2bcf2bdb7605142c', 'MESSAGE' => do_lang_tempcode('NEWSLETTER_THIS_ALSO')]);
             }

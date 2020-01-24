@@ -114,6 +114,123 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        SUCCESS_PAGE_TRANSLATION_DELETED
+        SUCCESS_PAGE_DELETED
+        DELETE_TRANSLATION
+        COMCODE_PAGE_TRANSLATIONS
+        CONTENT_VIEWS_PER_CONTENT_DAY
+        __COMCODE_PAGE_EDIT
+        CONTENT_VIEWS
+        ALEXA_RANKING
+        ALEXA_LINKS
+        FORM
+        BLOCK_TRANS_NAME_main_staff_stats_graph
+        CONVERSION_RATES
+        LINK_TRACKING
+        STATS_EVENT
+        TRACKING_CODE
+        TRACKING_CODE_CONVERSION_RATES
+        TRACKING_CODE_USAGE
+        VIEW_REQUEST
+        __NEWSLETTER_JOIN
+        ADD_KPI
+        EDIT_KPI
+        _EDIT_KPI
+        DELETE_KPI
+        KPIS
+        KPI
+        DESCRIPTION_KPI
+        DESCRIPTION_KPI_TARGET
+        KPI_CONFIGURING_FOR
+        MONTHS
+        YEARS
+        REACH_KPI_TARGETS
+        NOTIFICATION_TYPE_kpis
+        TEXT_KPI_UPDATE_MAIL
+        TOP_MEMBERS_BY_VISITS
+        TOP_MEMBERS_BY_FORUM_POSTS
+        TOP_MEMBERS_BY_POINTS
+        TIME_IN_TIMEZONE
+        AVERAGE_RATING
+        AVERAGE_SESSION_DURATION
+        AVERAGE_SESSION_DURATION_SECONDS
+        AVERAGE_SESSION_TOTAL_VIEWS
+        TIME_IN_MILLISECONDS
+        MILLISECONDS
+        _UNKNOWN
+        POLL_VOTES
+        DATE_RANGE
+        USER_AGENT_TYPE__DESKTOP
+        USER_AGENT_TYPE__MOBILE
+        USER_AGENT_TYPE__BOT
+        REFERRER_TYPE__DIRECT
+        REFERRER_TYPE__INTERNAL
+        REFERRER_TYPE__EXTERNAL_SEARCH_ENGINE
+        REFERRER_TYPE__EXTERNAL_SOCIAL_MEDIA
+        REFERRER_TYPE__EXTERNAL_MISC
+        _FILTER
+        __AVERAGE
+        AVERAGE_PAGE_SPEEDS
+        BANNER_CLICKS
+        BLOCK_main_staff_stats_graph_DESCRIPTION
+        BLOCK_main_staff_stats_graph_PARAM_param
+        BLOCK_main_staff_stats_graph_PARAM_param_TITLE
+        BLOCK_main_staff_stats_graph_USE
+        CALENDAR_QUARTER
+        CLEANUP_PAGE_MISC_TOOLS
+        COMMENT_ENGAGEMENT
+        STATS_EVENTS
+        COUNTRY
+        DESCRIPTION_GATHERED_STATISTICS
+        GATHERED_STATISTICS
+        INCOME
+        INVITATIONS_ACCEPTED
+        INVITATIONS_MADE
+        OPERATING_SYSTEMS
+        PIVOT_X_OF
+        PIVOT_X_SERIES
+        POPULAR_PAGES
+        PRIVATE_POSTS
+        RATINGS
+        RECOMMENDATIONS_MADE
+        REFERRER_DOMAINS
+        REFERRER_TYPES
+        REFERRER_URLS
+        REQUESTED_LANGUAGES
+        REQUESTED_LANGUAGE
+        SEARCHES
+        SESSION_BOUNCE_RATES
+        SESSION_DURATIONS
+        SESSION_ENTRY_PAGES
+        SESSION_EXIT_PAGES
+        SESSION_TOTAL_VIEWS
+        STATS_CATEGORY_audience_demographics
+        STATS_CATEGORY_audience_technical
+        STATS_CATEGORY_content_growth
+        STATS_CATEGORY_conversions
+        STATS_CATEGORY_economic_activity
+        STATS_CATEGORY_feedback_and_engagement
+        STATS_CATEGORY_hits
+        STATS_CATEGORY_inter_member_engagement
+        STATS_CATEGORY_referrers_and_referrals
+        STATS_CATEGORY_search_traffic
+        STATS_CATEGORY_server_performance
+        STATS_CATEGORY_session_behaviours
+        TALLY_BY
+        TOTAL_REFERRALS
+        UNIQUE_VIEWS
+        USER_AGENT_TYPES
+        VISITOR_COUNTRIES
+        VISITOR_COUNTRY
+        WEB_BROWSER
+        WEB_BROWSERS
+        WITHOUT_VERSION_NUMBERS
+        WITH_VERSION_NUMBERS
+        _AVERAGE
+        _COUNTRIES
+        _GOOGLE_ANALYTICS
+        _INCOME
+        GIFTS
         DAYS_TO_KEEP__CRON_LOG
         CONFIG_OPTION_days_to_keep__cron_log
         DAYS_TO_KEEP__DEBUG_FS_LOG
@@ -347,7 +464,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_dashboard_links
         CONFIG_OPTION_dashboard_new_version
         CONFIG_OPTION_dashboard_tips
-        CONFIG_OPTION_dashboard_website_monitoring
         CONFIG_OPTION_hc_cpu_normative_threshold
         CONFIG_OPTION_hc_io_mbs
         CONFIG_OPTION_list_unsubscribe_target
@@ -364,7 +480,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DASHBOARD_LINKS
         DASHBOARD_NEW_VERSION
         DASHBOARD_TIPS
-        DASHBOARD_WEBSITE_MONITORING
         DATABASE_UPDATE_QUERY
         DELETE_ADDON_TAR
         DELETE_LOG
@@ -592,7 +707,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACCEPT_VIDEOS
         ACCESSIB_COLONS_IN_PRE_LABELS
         ACCESS_BANNER_INFO
-        ACCESS_DENIED_SCREEN
         ACCESS_DENIED__ADD_COMCODE_PAGE
         ACCESS_DENIED__ADD_OR_EDIT_COMCODE_PAGES
         ACCESS_DENIED__ADMIN_ONLY
@@ -691,7 +805,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_privacy_policy_auto_DESCRIPTION
         BLOCK_main_privacy_policy_auto_USE
         BLOCK_TRANS_NAME_top_search
-        BLOCK_TRANS_NAME_main_staff_website_monitoring
         BLOCK_top_language_DESCRIPTION
         BLOCK_top_language_USE
         BLOCK_TRANS_NAME_top_personal_stats
@@ -989,6 +1102,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_PARAM_defer
         BLOCK_PARAM_failsafe
         BLOCK_PARAM_quick_cache
+        BLOCK_PARAM_ttl
         BLOCK_TAG
         BLOCK_THEM
         TRANSCODING_IN_PROGRESS
@@ -1741,8 +1855,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_staff_new_version_USE
         BLOCK_main_staff_tips_DESCRIPTION
         BLOCK_main_staff_tips_USE
-        BLOCK_main_staff_website_monitoring_DESCRIPTION
-        BLOCK_main_staff_website_monitoring_USE
         BLOCK_main_top_sites_DESCRIPTION
         BLOCK_main_top_sites_PARAM_param
         BLOCK_main_top_sites_PARAM_param_TITLE
@@ -1929,7 +2041,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BODY
         BOTTOM_LEFT
         BOTTOM_RIGHT
-        BOT_STATS
         BOUNCE_FILTER
         BOUNCE_WHICH
         BRANCH
@@ -1940,7 +2051,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BROKEN_URLS
         BROKEN_WIKI_CHILD_LINK
         BROKEN_XHTML_FIXED
-        BROWSER_SHARE
         BROWSE_ID_INSERT
         BRUTEFORCE_LOGIN_HACK
         BRUTE_FORCE
@@ -1968,7 +2078,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CLEANUP_PAGE_CACHES
         CLEANUP_PAGE_EXP_CACHES
         CLEANUP_PAGE_EXP_OPTIMISERS
-        CLEANUP_PAGE_OPTIMISERS
         CACHE_FORUMS
         FEEDS_TO_OVERLAY
         PURCHASE_WRONG_CURRENCY
@@ -2218,7 +2327,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CLEANUP_FILES
         CLEANUP_TOOLS
         CLEAR_EXISTING_FORUMS_ON_INSTALL
-        CLEAR_STATISTICS
         CLICK_ENTRY_POINT_TO_USE
         CLICK_ENTRY_POINT_TO_USE_2
         CLONE
@@ -2970,7 +3078,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_banner_setup_price_points
         CONFIG_OPTION_bcc
         CONFIG_OPTION_blog_update_time
-        CONFIG_OPTION_bot_stats
         CONFIG_OPTION_bottom_show_commandr_button
         CONFIG_OPTION_bottom_show_feedback_link
         CONFIG_OPTION_bottom_show_privacy_link
@@ -3162,7 +3269,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_google_geocoding_api_enabled
         CONFIG_OPTION_google_translate_enabled
         CONFIG_OPTION_group_private_chatrooms
-        CONFIG_OPTION_gzip_output
+        CONFIG_OPTION_output_compression
+        CONFIG_OPTION_output_compression_VALUE_0
+        CONFIG_OPTION_output_compression_VALUE_1
+        CONFIG_OPTION_output_compression_VALUE_2
         CONFIG_OPTION_hack_ban_threshold
         CONFIG_OPTION_has_low_memory_limit
         CONFIG_OPTION_header_menu_call_string
@@ -3355,7 +3465,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_oembed_max_size
         CONFIG_OPTION_one_per_email_address
         YOU_ADMIN_NO_EMAIL
-        CONFIG_OPTION_output_streaming
         CONFIG_OPTION_overt_whisper_suggestion
         CONFIG_OPTION_password_change_days
         CONFIG_OPTION_password_cookies
@@ -3819,7 +3928,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DELETE_CHATROOM
         DELETE_CUSTOM_COMCODE_TAG
         DELETE_CUSTOM_PROFILE_FIELD
-        DELETE_DATA_AVAILABLE
         DELETE_DOWNLOAD
         DELETE_DOWNLOAD_CATEGORY
         DELETE_DOWNLOAD_LICENCE
@@ -3874,7 +3982,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DELETE_QUIZ_RESULTS
         DELETE_REVISION
         DELETE_SAVED_WARNING
-        DELETE_SEARCH_STATS
         HTTP_CACHE
         REORGANISE_UPLOADS
         CONFIG_OPTION_reorganise_uploads
@@ -3935,8 +4042,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DELURK_MIN_DAYS_SINCE_LOGIN
         DELURK_MIN_DAYS_SINCE_LOGIN_DESCRIPTION
         DELURK_USERGROUPS_DESCRIPTION
-        DEMOGRAPHICS
-        DEMOGRAPHICS_STATS_RANGE
         DENSITY
         DEPENDENCIES
         DEPLOYMENT_AGREEMENT
@@ -4054,7 +4159,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_BLOCKS_CACHE
         DESCRIPTION_BLOCK_TAG
         DESCRIPTION_BRAND_BASE_URL
-        DESCRIPTION_BROWSER_SHARE
         DESCRIPTION_FORUMS_CACHE
         DESCRIPTION_MEMBERS_CACHE
         DESCRIPTION_TOPICS_CACHE
@@ -4072,10 +4176,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_CAT_ECOMMERCE
         DESCRIPTION_CHANGE_USERGROUP_TO
         DESCRIPTION_CHARGED_POINTS
-        DESCRIPTION_CLEAR_ALL
         DESCRIPTION_CLEAR_EXISTING_FORUMS_ON_INSTALL
-        DESCRIPTION_CLEAR_GRAPHS
-        DESCRIPTION_CLEAR_STATISTICS
         DESCRIPTION_CLOSE_TIME
         DESCRIPTION_CODENAME
         DESCRIPTION_CODENAME_SHOULDNT
@@ -4109,17 +4210,14 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_DEFINES_ORDER
         DESCRIPTION_DELETE_AGGREGATE_MATCHES
         DESCRIPTION_DELETE_CHATROOM
-        DESCRIPTION_DELETE_DAYS
         DESCRIPTION_DELETE_LOSE_CONTENTS
         DESCRIPTION_DELETE_MESSAGE
         DESCRIPTION_DELETE_PARENT_CONTENTS
-        DESCRIPTION_DELETE_SEARCH_STATS
         DESCRIPTION_DELETE_STATUS
         DESCRIPTION_DELETE_THEME_IMAGE
         DESCRIPTION_DELETE_TOPICS
         DESCRIPTION_DELETE_UN_PC
         DESCRIPTION_DELETE_USERGROUP_SUB_DANGER
-        DESCRIPTION_DEMOGRAPHICS
         DESCRIPTION_DEPENDENCIES
         DESCRIPTION_DESCRIPTION
         DESCRIPTION_DESCRIPTION_ACCESSIBILITY
@@ -4128,7 +4226,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_DESTINATION_PATH
         DESCRIPTION_DISPLAY_REVIEW_STATUS
         DESCRIPTION_DISPLAY_TYPE
-        DESCRIPTION_DOWNLOADS_STATISTICS
         DESCRIPTION_EXPORT_AS_SPREADSHEET
         DESCRIPTION_DOWNLOAD_COMPOSR_HOMESITE
         DESCRIPTION_DOWNLOAD_COST
@@ -4208,7 +4305,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_SHOW_AWARDEE
         DESCRIPTION_SHOW_POSTS
         DESCRIPTION_HITS_ALLOCATED
-        DESCRIPTION_HOURLY_BREAKDOWNS
         DESCRIPTION_HTML_ONLY
         DESCRIPTION_ICAL
         DESCRIPTION_IMAGE
@@ -4237,7 +4333,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_INVOICE_NOTE
         DESCRIPTION_INVOICE_PAGE
         DESCRIPTION_PURCHASE_ID_INVOICE
-        DESCRIPTION_IP_ADDRESS_DISTRIBUTION
         DESCRIPTION_IS_DEFAULT_GROUP
         DESCRIPTION_IS_MEMBER_SYNCHED_GALLERY
         DESCRIPTION_IS_PRESENTED_AT_INSTALL
@@ -4258,7 +4353,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_LICENCE_TEXT
         DESCRIPTION_LOAD_FILESYSTEM_FILES
         DESCRIPTION_LOAD_FTP_FILES
-        DESCRIPTION_LOAD_TIMES
         DESCRIPTION_LOGOWIZARD_THEME
         DESCRIPTION_LOGO_NAME
         DESCRIPTION_MAIN_CATEGORY
@@ -4317,15 +4411,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_ORPHANED_CONTENT_LANG_STRINGS
         DESCRIPTION_ORPHANED_TAGS
         DESCRIPTION_ORPHANED_UPLOADS
-        DESCRIPTION_OS_SHARE
         DESCRIPTION_OUTMODE
-        DESCRIPTION_OVERVIEW_STATISTICS
         DESCRIPTION_OWNER
         DESCRIPTION_OWNER_SET
         DESCRIPTION_OWNER_VIEW
-        DESCRIPTION_PAGES_STATISTICS
         DESCRIPTION_PAGE_NAME
-        DESCRIPTION_PAGE_STATS_DELETE
         DESCRIPTION_PARENT
         DESCRIPTION_PARENT_FORUM
         DESCRIPTION_PARENT_PAGE
@@ -4338,7 +4428,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_PERMISSION_SCOPE_zone
         DESCRIPTION_PIN_STATE
         DESCRIPTION_POINTS_FOR_COMPLETING
-        DESCRIPTION_POSTING_RATES
         DESCRIPTION_POSTS_DESTINATION_FORUM
         DESCRIPTION_POST_COUNT_INCREMENT
         DESCRIPTION_POST_TEMPLATE_X
@@ -4366,10 +4455,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_RECURRENCES
         DESCRIPTION_RECURRENCE_PATTERN
         DESCRIPTION_REDO_TIME
-        DESCRIPTION_REFERRER_SHARE
         DESCRIPTION_REFRESH_TIME
         REFRESH_TIMEOUT_REACHED
-        DESCRIPTION_REGIONALITY_SHARE
         DESCRIPTION_RELEVANCE_LEVEL
         DESCRIPTION_REMEMBER_PASSWORD
         DESCRIPTION_REMINDER_TIME
@@ -4385,8 +4472,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_RULES
         DESCRIPTION_SAVE_WARNING_DETAILS
         DESCRIPTION_SCHEDULE_TIME
-        DESCRIPTION_SEARCHABLE
-        DESCRIPTION_SEARCH_STATISTICS
         DESCRIPTION_SECONDARY_CATEGORIES
         DESCRIPTION_SECONDARY_GROUP
         DESCRIPTION_SEED_COLOUR
@@ -4412,7 +4497,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_SOURCE
         DESCRIPTION_SOURCE_THEME
         DESCRIPTION_DISPOSABLE_VALUES_CACHE
-        DESCRIPTION_SUBMISSION_STATISTICS
         DESCRIPTION_SUBMITTER_GETS_POINTS
         DESCRIPTION_SUBMIT_POINTS
         DESCRIPTION_SUBSCRIPTION_BODY
@@ -4457,7 +4541,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_USERGROUP_SUBSCRIPTION_MAIL_UHOH
         DESCRIPTION_USERGROUP_SUBSCRIPTION_TITLE
         DESCRIPTION_USERGROUP_TITLE
-        DESCRIPTION_USERS_ONLINE_STATISTICS
         DESCRIPTION_USES_PRIMARY
         DESCRIPTION_USE_ALL_LANGS
         DESCRIPTION_USE_ALL_THEMES
@@ -4468,10 +4551,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VERSION
         DESCRIPTION_VIDEO_DIMENSIONS
         DESCRIPTION_VIDEO_LENGTH
-        DESCRIPTION_VIEWS_PER_DAY
-        DESCRIPTION_VIEWS_PER_HOUR
-        DESCRIPTION_VIEWS_PER_MONTH
-        DESCRIPTION_VIEWS_PER_WEEK
         DESCRIPTION_VIEW_REPORTS
         DESCRIPTION_VISIBLE
         DESCRIPTION_WATERMARK
@@ -4595,7 +4674,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_INVESTIGATE_USER
         DOC_IP_BAN
         DOC_LDAP
-        DOC_LOAD_TIMES
         DOC_LOGOWIZARD
         DOC_MANAGE_GROUP_MEMBER_TIMEOUTS
         DOC_MEMBERS
@@ -4608,7 +4686,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_NEWSLETTER
         DOC_NOTIFICATIONS
         DOC_PAGE_MATCH_KEY_ACCESS
-        DOC_PAGE_STATISTICS
         DOC_PERMISSIONS_TREE
         DOC_PHPINFO
         DOC_POINTS
@@ -4632,20 +4709,17 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_STATISTICS
         DOC_STRUCTURE
         DOC_STYLE
-        DOC_SUBMISSION_STATISTICS
         DOC_SUPERDEBRAND
         DOC_TEMPLATES
         DOC_THEMES
         DOC_THEMEWIZARD
         DOC_TICKETS
         DOC_TOOLS
-        DOC_TOP_REFERRERS
         DOC_TRACKBACKS
         DOC_TRANSLATE
         DOC_TRANSLATE_CONTENT
         DOC_UNVALIDATED
         DOC_USERGROUP_SUBSCRIPTION
-        DOC_USERS_ONLINE_STATISTICS
         DOC_WELCOME_EMAILS
         DOC_WELCOME_EMAIL_PREVIEW
         DOC_WHATSNEW
@@ -4670,8 +4744,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOWNLOAD_GALLERY_ROOT
         DOWNLOAD_IMAGES
         EXPORT_MEMBERS
-        DOWNLOAD_STATS_BACKUP
-        DOWNLOAD_STATS_RANGE
         DOWNLOAD_SUBCATS_PER_PAGE
         DO_NOT_FILL_ME_SPAMMER_BLACKHOLE
         DO_TIMEZONE_CONV
@@ -5109,7 +5181,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EDIT_ALL_RECURRENCES
         FLOOD_CONTROL
         FLOOD_CONTROL_ACCESS_SECS
-        FLOOD_CONTROL_SCREEN
         FLOOD_CONTROL_SUBMIT_SECS
         FLOOD_TIMELIMIT
         FOLDER_DELETE_ERROR
@@ -5335,7 +5406,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GROUP_PRIVATE_CHATROOMS
         GROUP_TEXT
         GUEST_ZONE_ACCESS
-        GZIP_OUTPUT
+        OUTPUT_COMPRESSION
         HACKED_BY
         HACKER_DETECTED
         HACK_ATTACK
@@ -5376,7 +5447,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HONEYPOT_URL
         HOST
         HOT_TOPIC_DEFINITION
-        HOURLY_BREAKDOWNS
         HOVER_FOR_CONTENTS
         DESCRIPTION_PRICE
         DESCRIPTION_TAX_CODE
@@ -5491,6 +5561,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INSTALL_AND_UNINSTALL
         INSTALL_COMPLETE
         INSTALL_GEOLOCATION_DATA
+        REINSTALL_GEOLOCATION_DATA
         INSTALL_LOG
         INSTALL_LOG_BELOW
         INSTALL_SLOW_SERVER
@@ -5529,7 +5600,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         IPN_SUB_RECURRING_WRONG
         IPN_UNVERIFIED
         IP_ADDRESSES
-        IP_ADDRESS_DISTRIBUTION
         IP_ADDRESS_NOT_VALID
         IP_ADDRESS_NOT_VALID_MAKE_UNBANNABLE
         IP_BANNED
@@ -5634,9 +5704,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LOAD_FILESYSTEM_FILES
         LOAD_FTP_FILES
         LOAD_SAVED_WARNING
-        LOAD_TIME
         LOAD_TIMES
-        LOAD_TIMES_RANGE
         LOCAL_PAYMENT_NOT_SUPPORTED
         LOGGING
         LOGICAL_SYMBOL__AND
@@ -6002,7 +6070,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NAG_SETUP_PROFILE
         NAG_VALIDATE
         NEED_FTP
-        NEED_GEOLOCATION_DATA
         NETWORKING
         NETWORK_LINKS
         NET_PROFIT
@@ -6166,7 +6233,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         YES_COMPACT
         NO_DATA
         NO_DATA_IMPORTED
-        NO_DATA_SPECIFIC
         NO_DEFINED_THEME_UPGRADER
         NO_DELETE_LAST_CATEGORY
         NO_DELETE_ROOT
@@ -6184,6 +6250,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_GD_ON_SERVER_JPEG
         NO_GD_ON_SERVER_PNG
         NO_GD_ON_SERVER_TTF
+        NO_EXIF_ON_SERVER
+        NO_POSIX_ON_SERVER
+        NO_CTYPE_ON_SERVER
+        NO_INTL_ON_SERVER
+        NO_ZLIB_ON_SERVER
         NO_HELP
         NO_INTEGERS_TEMPLATE
         NO_LAST_BACKUP
@@ -6206,7 +6277,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_SUCH_THEME_IMAGE
         NO_SUCH_ZONE
         NO_SUICIDAL_SUPER_ADMIN_REMOVAL
-        NO_THEME_PERMISSION
         NO_TRACKBACKS
         NO_UPGRADE_DONE
         NO_UPLOAD
@@ -6268,30 +6338,23 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ORPHANED_CONTENT_LANG_STRINGS
         ORPHANED_TAGS
         ORPHANED_UPLOADS
-        OS_SHARE
         OTHER_MAINTENANCE
         OUTMODE
-        OUTPUT_STREAMING
         OUTSTANDING_INVOICES
         OUT_OF_BOUNDS_TIME
         OVERRIDE
         OVERT_WHISPER_SUGGESTION
-        OVERVIEW_STATISTICS
         OVERWRITE_ERROR
         OVER_SMS_LIMIT
         OWNER_SET
         OWNER_VIEW
         OWN_PARENT_ERROR
-        PAGES_STATISTICS
-        PAGES_STATISTICS_RANGE
         PAGE_ACCESS
         PAGE_ACTIONS
         PAGE_DRAG
         PAGE_MATCH_KEY_ACCESS
         PAGE_MATCH_KEY_ACCESS_TEXT
         PAGE_MATCH_KEY_MESSAGES_TEXT
-        PAGE_OR_URL
-        PAGE_STATS_DELETE
         PAGE_TEMPLATE
         PAGE_TEMPLATE_DESCRIPTION
         PAGE_TEXT
@@ -6325,7 +6388,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PAYMENT_STATE_paid
         PAYMENT_STATE_pending
         PAYPAL
-        PEAK
         PERFORM_MULTI_MODERATION
         PERIODIC_BIWEEKLY_ON
         PERIODIC_CREATE
@@ -6414,7 +6476,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PORT
         SERVER_TYPE
         PORTFOLIO
-        POSTING_RATES
         POSTING_TICKET_AS
         POST_COUNT_INCREMENT
         POST_DATA
@@ -6750,11 +6811,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REDIRECT_TRANS_SHORT
         REDUCE_PROBATION
         REFERER
-        REFERRER_SHARE
         REFRESH_TIME
         REFRESH_TO_FINISH
-        REGIONALITY
-        REGIONALITY_SHARE
         REGULAR_TASKS
         REINSTALL_MODULE
         RELATED_SCREENS
@@ -6820,20 +6878,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SCRIPT_URL_HACK
         SCRIPT_URL_HACK_2
         SD_WARNING_BELOW
-        SEARCHABLE
         SEARCH_ORDERS
         SEARCH_RESULTS_PER_PAGE
-        SEARCH_STATISTICS
-        SEARCH_STATISTICS_RANGE
-        SEARCH_STATS_ADVANCED
         SEARCH_TUTORIALS
         SEARCH_WITH_DATE_RANGE
         SECONDARY_CORE_INSTALLED
         SECONDARY_MEMBERS_PER_PAGE
         SECTION
-        SECTION_DEMOGRAPHICS_RANGE
-        SECTION_DOWNLOADS_RANGE
-        SECTION_POSTING_RATES_RANGE
         SECURITY
         SECURITY_ALERTS
         SECURITY_LOG
@@ -6848,7 +6899,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SELECT_AN_ACTION
         SELECT_CATEGORIES_WANTED
         SELECT_COLUMNS_TO_INCLUDE
-        SELECT_STATS_RANGE
         SELECT_TO_IMPORT
         SELECT_USERGROUPS_TO_FILTER
         SELF_LEARNING_CACHE
@@ -6929,7 +6979,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SITE_SCOPE
         SITE_SPECIAL_ACCESS
         SITE_SPECIAL_ACCESS_SU
-        SITE_STATISTICS
         SITE_WATCHLIST
         SIZE_CHANGE
         SKU
@@ -7010,7 +7059,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ST_START_PERIOD_DESCRIPTION
         SU
         SUBGALLERY_LINK_LIMIT
-        SUBMISSION_STATISTICS
         SUBMITTER_BAN
         SUBMITTER_BANNED
         SUBMITTER_GETS_POINTS
@@ -7039,7 +7087,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SUPPORT_OPERATOR
         SU_2
         SU_CHATTING_AS
-        SVG_EXPLANATION
         SWITCH_MODULE_WARNING
         SWITCH_SECTION_WARNING
         SWITCH_TO_CNS
@@ -7415,14 +7462,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TOO_MUCH_CHOOSE__ALPHABETICAL
         TOO_MUCH_CHOOSE__RECENT_ONLY
         TOO_MUCH_CHOOSE__TOP_ONLY
-        TOO_MUCH_DATA
         TOO_MUCH_DOWNLOAD
         TOO_MUCH_FILE_DATA
         TOPIC_ORDER
         TOP_LEFT
         TOP_LINK
-        TOP_REFERRERS
-        TOP_REFERRERS_RANGE
         TOP_RIGHT
         BING_GEOCODE_API_KEY
         CMD_HEALTH_CHECK_HELP
@@ -7528,7 +7572,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         USERGROUP_SETTINGS_SEARCH_GROUP
         USERNAMES_AND_PASSWORDS
         USERNAME_PROFILE_LINKS
-        USERS_ONLINE_STATISTICS
         USERS_ONLINE_TIME
         USER_POSTSIZE_ERRORS
         USER_SYSTEM
@@ -7571,10 +7614,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VIDEO_TYPES
         VIDEO_WIDTH_SETTING
         VIEWING_SOURCE
-        VIEWS_PER_DAY
-        VIEWS_PER_HOUR
-        VIEWS_PER_MONTH
-        VIEWS_PER_WEEK
         VIEW_ACTIONLOGS
         VIEW_CATALOGUE
         VIEW_LISTING
@@ -7803,7 +7842,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PAYMENT_RECEIVED_SUBJECT
         _ADDON_WARNING_MISSING_DEPENDENCIES
         _ADDON_WARNING_PRESENT_DEPENDENCIES
-        _BAD_INPUT
         _BLOCKS
         _CANCEL_MANUAL_SUBSCRIPTION
         _CHOOSE_EDIT_LIST_EXTRA
@@ -7869,7 +7907,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _MISSING_INSTALLATION_FILE
         _MODIFIED
         _MUST_BE_EMAIL_DOMAIN
-        _PAGE_STATISTICS
         _PASSWORD_RESET_TEXT_emailed
         _PASSWORD_RESET_TEXT_temporary
         _PASSWORD_RESET_TEXT_ultra
@@ -7877,7 +7914,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _PRIVILEGES
         _REALTIME_RAIN
         _SCREEN_PREVIEWS
-        _SELECT_STATS_RANGE
         _SET_TICKET_EXTRA_ACCESS
         _SIZE
         _SUBSCRIPTION_EXPIRY_TIME
@@ -10340,8 +10376,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TIMEZONE
         TIME_FOR_THEM
         TIME_LEFT_TO_EDIT_POST
-        TIME_RANGE_END
-        TIME_RANGE_START
         TIME_REMAINING
         TITLE
         NEWFORWARDING_TITLE
@@ -10745,7 +10779,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _SUBGALLERY_BITS_VIDEOS
         _SUBMITTED_BY
         _TYPE
-        _UNKNOWN
         _UNSET
         VIDEO_LENGTH
         _VIEW_AS_LINEAR

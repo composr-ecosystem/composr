@@ -293,7 +293,11 @@ function fix_permissions($path, $perms = null)
 
     // If the file user is different to the FTP user, we need to make it world writeable
     if ((!is_suexec_like()) || ($_SERVER['REQUEST_METHOD'] == '')) {
-        @chmod($path, $perms);
+        if ($perms == 0600) {
+            @chmod($path, 0666);
+        } else {
+            @chmod($path, $perms);
+        }
     } else { // Otherwise we do not
         if ($perms == 0666) {
             @chmod($path, 0644);
@@ -681,10 +685,10 @@ function push_output_state($just_tempcode = false, $true_blank = false)
  * @sets_output_state
  *
  * @param  boolean $just_tempcode Whether to only restore the Tempcode execution part of the state
- * @param  boolean $merge_current Whether to merge the current output state in
- * @param  array $keep Settings to keep / merge if possible
+ * @param  boolean $merge_current Whether to merge the current output state in (or take precedence when merging isn't applicable)
+ * @param  ?array $keep Settings to keep (not replace) / merge if possible (null: merge all)
  */
-function restore_output_state($just_tempcode = false, $merge_current = false, $keep = [])
+function restore_output_state($just_tempcode = false, $merge_current = false, $keep = null)
 {
     global $OUTPUT_STATE_STACK;
 
@@ -700,7 +704,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
                 $merge_array = (($merge_current) && (is_array($val)) && (isset($mergeable_arrays[$var])));
                 $merge_tempcode = (($merge_current) && (isset($val->codename/*faster than is_object*/, $mergeable_tempcode[$var])));
                 $mergeable = $merge_array || $merge_tempcode;
-                if (($keep === []) || (!in_array($var, $keep)) || ($mergeable)) {
+                if (($keep === null) || (!in_array($var, $keep)) || ($mergeable)) {
                     if ($merge_array) {
                         if ($GLOBALS[$var] === null) {
                             $GLOBALS[$var] = [];
@@ -711,7 +715,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
                             $GLOBALS[$var] = new Tempcode();
                         }
                         $GLOBALS[$var]->attach($val);
-                    } elseif (!$merge_current || !isset($GLOBALS[$var]) || $GLOBALS[$var] === [] || $GLOBALS[$var] === false || $GLOBALS[$var] === '' || $var == 'REFRESH_URL') {
+                    } elseif ((!$merge_current) || (!isset($GLOBALS[$var])) || (cms_empty_safe($GLOBALS[$var])) || ($var == 'REFRESH_URL') || (($var == 'HTTP_STATUS_CODE') && ($GLOBALS['HTTP_STATUS_CODE'] == 200))) {
                         $GLOBALS[$var] = $val;
                     }
                 }
@@ -723,7 +727,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
 /**
  * Turn the Tempcode lump into a standalone page.
  *
- * @param  ?Tempcode $middle The Tempcode to put into a nice frame (null: support output streaming mode)
+ * @param  Tempcode $middle The Tempcode to put into a nice frame
  * @param  ?mixed $message 'Additional' message (null: none)
  * @param  string $type The type of special message
  * @set inform warn ""
@@ -746,10 +750,8 @@ function globalise($middle, $message = null, $type = '', $include_header_and_foo
         attach_message($message, $type);
     }
 
-    restore_output_state(true); // Here we reset some Tempcode environmental stuff, because template compilation or preprocessing may have dirtied things
-
     $show_border = (get_param_integer('show_border', $show_border ? 1 : 0) == 1);
-    if (!$show_border && !running_script('index') && $middle !== null) {
+    if (!$show_border && !running_script('index')) {
         $global = do_template('STANDALONE_HTML_WRAP', [
             '_GUID' => 'fe818a6fb0870f0b211e8e52adb23f26',
             'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
@@ -757,39 +759,28 @@ function globalise($middle, $message = null, $type = '', $include_header_and_foo
             'TARGET' => '_self',
             'CONTENT' => $middle,
         ]);
-        if ($GLOBALS['OUTPUT_STREAMING'] || $middle !== null) {
-            $global->handle_symbol_preprocessing();
-        }
+        $global->handle_symbol_preprocessing();
         return $global;
     }
 
     global $TEMPCODE_CURRENT_PAGE_OUTPUTTING;
 
-    if (($middle !== null) && (isset($TEMPCODE_CURRENT_PAGE_OUTPUTTING))) { // Error happened after output and during MIDDLE processing, so bind MIDDLE as an error
-        $middle->handle_symbol_preprocessing();
-        $global = $TEMPCODE_CURRENT_PAGE_OUTPUTTING;
-        $global->singular_bind('MIDDLE', $middle);
-        // NB: We also considered the idea of using document.write() as a way to reset the output stream, but JavaScript execution will not happen before the parser (even if you force a flush and delay)
+    global $DOING_OUTPUT_PINGS;
+    if (headers_sent() && !$DOING_OUTPUT_PINGS) {
+        $global = do_template('STANDALONE_HTML_WRAP', [
+            '_GUID' => 'd579b62182a0f815e0ead1daa5904793',
+            'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
+            'FRAME' => false,
+            'TARGET' => '_self',
+            'CONTENT' => $middle,
+        ]);
     } else {
-        global $DOING_OUTPUT_PINGS;
-        if (headers_sent() && !$DOING_OUTPUT_PINGS && $middle !== null) {
-            $global = do_template('STANDALONE_HTML_WRAP', [
-                '_GUID' => 'd579b62182a0f815e0ead1daa5904793',
-                'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
-                'FRAME' => false,
-                'TARGET' => '_self',
-                'CONTENT' => $middle,
-            ]);
-        } else {
-            $global = do_template('GLOBAL_HTML_WRAP', [
-                '_GUID' => '592faa2c0e8bf2dc3492de2c11ca7131',
-                'MIDDLE' => $middle,
-            ]);
-        }
-        if ($GLOBALS['OUTPUT_STREAMING'] || $middle !== null) {
-            $global->handle_symbol_preprocessing();
-        }
+        $global = do_template('GLOBAL_HTML_WRAP', [
+            '_GUID' => '592faa2c0e8bf2dc3492de2c11ca7131',
+            'MIDDLE' => $middle,
+        ]);
     }
+    $global->handle_symbol_preprocessing();
 
     if ((!$include_header_and_footer) && ($old !== null)) {
         $_GET['wide_high'] = $old;
@@ -833,11 +824,13 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
 
     // Pre-validation of stuff that may not be acceptable
     foreach ($metadata as $key => $val) {
-        $val = cms_trim($val);
-        if ($val == '') {
-            unset($metadata[$key]);
-        } else {
-            $metadata[$key] = $val;
+        if ($val !== null) {
+            $val = cms_trim($val);
+            if ($val == '') {
+                unset($metadata[$key]);
+            } else {
+                $metadata[$key] = $val;
+            }
         }
     }
     if (isset($metadata['image'])) {
@@ -1844,12 +1837,19 @@ function cms_tempnam($prefix = 'cms')
  * Make a value suitable for use in an XML ID.
  *
  * @param  string $param The value to escape
+ * @param  boolean $simplified Generate simplified IDs
  * @return string The escaped value
  */
-function fix_id($param)
+function fix_id($param, $simplified = false)
 {
     if (preg_match('#^[A-Za-z][\w]*$#', $param) !== 0) {
         return $param; // Optimisation
+    }
+
+    if ($simplified) {
+        if (get_charset() == 'utf-8') {
+            $param = str_replace(hex2bin('ce94'), 'delta', $param);
+        }
     }
 
     $length = strlen($param);
@@ -1858,31 +1858,37 @@ function fix_id($param)
         $char = $param[$i];
         switch ($char) {
             case '[':
-                $new .= '_opensquare_';
+                $new .= $simplified ? '' : '_opensquare_';
                 break;
             case ']':
-                $new .= '_closesquare_';
+                $new .= $simplified ? '' : '_closesquare_';
                 break;
             case '&#039;':
             case '\'':
-                $new .= '_apostophe_';
+                $new .= $simplified ? '' : '_apostophe_';
                 break;
             case '-':
-                $new .= '_minus_';
+                $new .= $simplified ? '' : '_minus_';
                 break;
             case ' ':
-                $new .= '_space_';
+                $new .= $simplified ? '' : '_space_';
                 break;
             case '+':
-                $new .= '_plus_';
+                $new .= $simplified ? '' : '_plus_';
                 break;
             case '*':
-                $new .= '_star_';
+                $new .= $simplified ? '' : '_star_';
                 break;
             case '/':
-                $new .= '__';
+                $new .= $simplified ? '' : '__';
+                break;
+            case '%':
+                $new .= '_percent_';
                 break;
             default:
+                if (($simplified) && (in_array($char, ['(' , ')', ',']))) {
+                    break;
+                }
                 $ascii = ord($char);
                 if ((($i !== 0) && ($char === '_')) || (($ascii >= 48) && ($ascii <= 57)) || (($ascii >= 65) && ($ascii <= 90)) || (($ascii >= 97) && ($ascii <= 122))) {
                     $new .= $char;
@@ -1892,12 +1898,18 @@ function fix_id($param)
                 break;
         }
     }
+
+    if ($simplified) {
+        $new = str_replace('_', '', $new);
+    }
+
     if ($new === '') {
         $new = 'zero_length';
     }
     if ($new[0] === '_') {
         $new = 'und_' . $new;
     }
+
     return $new;
 }
 
@@ -1936,10 +1948,21 @@ function match_key_match($match_keys, $support_post = false, $current_params = n
     $potentials = is_array($match_keys) ? $match_keys : explode(',', $match_keys);
     foreach ($potentials as $potential) {
         $parts = is_array($potential) ? $potential : explode(':', $potential);
+
+        // Allow the first 2 parts to be omitted, but if so we need to insert them back in here
+        $prepend_zone = ((!isset($parts[0])) || (strpos($parts[0], '=') !== false));
+        if ($prepend_zone) {
+            $parts = array_merge(['_WILD'], $parts);
+        }
+        $prepend_page = ((!isset($parts[1])) || (strpos($parts[1], '=') !== false));
+        if ($prepend_page) {
+            $parts = array_merge(array_slice($parts, 0, 1), ['_WILD'], array_slice($parts, 1));
+        }
+
         if (($parts[0] == '_WILD') || ($parts[0] == '_SEARCH')) {
             $parts[0] = $current_zone_name;
         }
-        if ((!isset($parts[1])) || ($parts[1] == '_WILD') || (($parts[1] == '_WILD_NOT_START') && ($current_page_name != get_zone_default_page($parts[0])))) {
+        if (($parts[1] == '_WILD') || (($parts[1] == '_WILD_NOT_START') && ($current_page_name != get_zone_default_page($parts[0])))) {
             $parts[1] = $current_page_name;
         }
         if (($parts[0] == 'site') && (get_option('single_public_zone') == '1')) {
@@ -2165,26 +2188,6 @@ function collapse_1d_complexity($key, $list)
     }
 
     return $new_array;
-}
-
-/**
- * Turn an array into a humanely readable string.
- *
- * @param  array $array Array to convert
- * @param  boolean $already_stripped Whether PHP magic-quotes have already been cleaned out for the array
- * @return string A humanely readable version of the array
- */
-function flatten_slashed_array($array, $already_stripped = false)
-{
-    $ret = '';
-    foreach ($array as $key => $val) {
-        if (is_array($val)) {
-            $val = flatten_slashed_array($val);
-        }
-
-        $ret .= '<param>' . (is_integer($key) ? strval($key) : $key) . '=' . $val . '</param>' . "\n"; // $key may be integer, due to recursion line for list fields, above
-    }
-    return $ret;
 }
 
 /**
@@ -2858,8 +2861,11 @@ function me_debug($ip, $data)
  */
 function get_browser_string()
 {
-    $ret = $_SERVER['HTTP_USER_AGENT'];
-    $ret = str_replace(' (' . get_os_string() . ')', '', $ret);
+    static $ret = null;
+    if ($ret === null) {
+        $ret = $_SERVER['HTTP_USER_AGENT'];
+        $ret = str_replace(' (' . get_os_string() . ')', '', $ret);
+    }
     return $ret;
 }
 
@@ -2870,19 +2876,18 @@ function get_browser_string()
  */
 function get_os_string()
 {
-    if ($_SERVER['HTTP_UA_OS'] != '') {
-        return $_SERVER['HTTP_UA_OS'];
-    } elseif ($_SERVER['HTTP_USER_AGENT'] != '') {
+    static $ret = null;
+    if ($ret === null) {
+        $ret = '';
         // E.g. Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586)
         // We need to get the stuff in the parentheses
         $matches = [];
         if (preg_match('#\(([^\)]*)\)#', $_SERVER['HTTP_USER_AGENT'], $matches) != 0) {
             $ret = $matches[1];
             $ret = preg_replace('#^compatible; (MSIE[^;]*; )?#', '', $ret);
-            return $ret;
         }
     }
-    return '';
+    return $ret;
 }
 
 /**
@@ -3157,6 +3162,45 @@ function is_invisible()
 }
 
 /**
+ * Find the session tracking codes, most relevant first.
+ *
+ * @param  ?EMAIL $email_address A new user's e-mail address, to be used to track an inviter/recommender (null: N/A)
+ * @return array The tracking codes
+ */
+function find_session_tracking_codes($email_address = null)
+{
+    $tracking_codes = [];
+
+    $tracking_code = get_param_string('_t', '');
+    if ($tracking_code != '') {
+        $tracking_codes = array_merge($tracking_codes, explode(',', $tracking_code));
+    }
+
+    if (addon_installed('stats')) {
+        static $tracking_code_rows = null;
+        if ($tracking_code_rows === null) {
+            $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats', ['tracking_code'], ['session_id' => get_session_id()], ' AND ' . db_string_not_equal_to('tracking_code', '') . ' ORDER BY date_and_time DESC');
+        }
+        foreach ($tracking_code_rows as $tracking_code_row) {
+            $tracking_codes = array_merge($tracking_codes, explode(',', $tracking_code_row['tracking_code']));
+        }
+    }
+
+    if ((addon_installed('recommend')) && (!empty($email_address))) {
+        // This is not strictly a tracking code (it won't come up in the stats system for example), but we roll it into this function for simplicity
+        static $inviter = false;
+        if ($inviter === false) {
+            $inviter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address], 'ORDER BY i_time DESC');
+        }
+        if ($inviter !== null) {
+            $tracking_codes[] = strval($inviter);
+        }
+    }
+
+    return array_unique($tracking_codes);
+}
+
+/**
  * Get the number of users on the site in the last 5 minutes. The function also maintains the statistic via the sessions table.
  *
  * @return integer The number of users on the site
@@ -3284,8 +3328,8 @@ function browser_matches($code, $comcode = null)
         return $browser_matches_cache[$code];
     }
 
-    $browser = strtolower($_SERVER['HTTP_USER_AGENT']);
-    $os = strtolower($_SERVER['HTTP_UA_OS']) . ' ' . $browser;
+    $browser = strtolower(get_browser_string());
+    $os = strtolower(get_os_string());
     $is_safari = strpos($browser, 'applewebkit') !== false;
     $is_chrome = strpos($browser, 'chrome/') !== false;
     $is_gecko = (strpos($browser, 'gecko') !== false) && !$is_safari;
@@ -3794,7 +3838,7 @@ function get_zone_default_page($zone_name, &$zone_missing = false)
     }*/
 
     global $ZONE;
-    if (($ZONE['zone_name'] == $zone_name) && ($ZONE['zone_default_page'] !== null)) {
+    if (($ZONE !== null) && ($ZONE['zone_name'] == $zone_name) && ($ZONE['zone_default_page'] !== null)) {
         return $ZONE['zone_default_page'];
     } else {
         global $ZONE_DEFAULT_PAGES_CACHE;
@@ -3859,6 +3903,7 @@ function titleify($boring)
         'CSS',
         'SEO',
         'JavaScript',
+        'TTL',
     ];
     foreach ($acronyms as $acronym) {
         if (stripos($ret, $acronym) !== false) {
@@ -4267,17 +4312,42 @@ function has_interesting_post_fields()
 }
 
 /**
+ * Find if a POST field is a password field.
+ *
+ * @param  string $field_name Field to check
+ * @return boolean If it's a password field
+ */
+function is_password_field($field_name)
+{
+    $password_fields = [
+        'password',
+        'confirm_password',
+        'password_confirm',
+        'edit_password',
+        'decrypt',
+    ];
+    return in_array($field_name, $password_fields);
+}
+
+/**
  * Find if a POST field is some kind of special control field rather than interesting standalone data.
  *
  * @param  string $field_name Field to check
  * @param  boolean $include_email_metafields Consider e-mail metafields as control fields
  * @param  boolean $include_login_fields Consider login fields as control fields
  * @param  array $extra_boring_fields Additional boring fields to skip
+ * @param  boolean $include_password_fields Consider password fields as control fields
  * @return boolean If it's a control field
  */
-function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = [])
+function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = [], $include_password_fields = false)
 {
     // NB: Keep this function synced with the copy of it in static_export.php
+
+    if ($include_password_fields) {
+        if (is_password_field($field_name)) {
+            return true;
+        }
+    }
 
     $boring_fields = [
         // Passed through metadata
@@ -4295,11 +4365,6 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
         // Image buttons send these
         'x',
         'y',
-
-        // Password fields
-        'password',
-        'confirm_password',
-        'edit_password',
 
         // Relating to uploads/attachments
         'MAX_FILE_SIZE',
@@ -4528,7 +4593,7 @@ function website_creation_time()
 function is_maintained($code)
 {
     static $cache = [];
-    if ($cache === []) {
+    if (empty($cache)) {
         global $FILE_ARRAY;
         if (@is_array($FILE_ARRAY)) {
             $file = file_array_get('data/maintenance_status.csv');
@@ -4852,12 +4917,12 @@ function send_http_output_ping()
 
     if ((running_script('index')) && (!is_cli())) {
         if (!headers_sent()) {
-            cms_ini_set('zlib.output_compression', 'Off'); // Otherwise it can compress all the spaces to nothing
+            disable_output_compression(); // Otherwise the output handler will squash flushes
             cms_ob_end_clean(); // Otherwise flushing won't help
         }
 
         echo ' ';
-        flush();
+        cms_flush_safe();
     }
 }
 

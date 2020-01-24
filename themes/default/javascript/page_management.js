@@ -112,7 +112,7 @@
             if (['modules', 'modules_custom', 'comcode', 'comcode_custom', 'html', 'html_custom'].includes(fullType)) {
                 actionBuildup += actionsTplItem.replace(/\[1\]/, '{!DELETE;^}').replace(/\[2\]/, deleteUrl.replace(/%5B1%5D/, pageLinkBits[0]).replace(/\[2\]/, pageLinkBits[1]));
                 if ($ADDON_INSTALLED_stats && statsUrl) {
-                    actionBuildup += actionsTplItem.replace(/\[1\]/, '{!stats:PAGES_STATISTICS;^}').replace(/\[2\]/, statsUrl.replace(/%21/, path));
+                    actionBuildup += actionsTplItem.replace(/\[1\]/, '{!stats:MODULE_TRANS_NAME_admin_stats;^}').replace(/\[2\]/, statsUrl.replace(/%21/, path));
                 }
             }
 

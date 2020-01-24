@@ -49,13 +49,13 @@ require($FILE_BASE . '/_config.php');
 
 $cli = ((function_exists('php_sapi_name')) && (strpos(ini_get('disable_functions'), 'php_sapi_name') === false) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR'])) && (empty($_ENV['REMOTE_ADDR'])));
 if ($cli) {
-    header('Content-type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
 }
 
 header('X-Robots-Tag: noindex');
 
 $required_settings = [
-    'fast_spider_cache',
+    'static_caching_hours',
     'any_guest_cached_too',
     'failover_mode',
     //'failover_message',   Actually, may be blank

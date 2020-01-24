@@ -2254,7 +2254,7 @@ class DatabaseConnector
      */
     public function query_delete($table, $where_map = [], $end = '', $max = null, $start = 0, $fail_ok = false)
     {
-        if ($where_map === []) {
+        if (empty($where_map)) {
             if (($end === '') && ($max === null) && ($start == 0) && ($this->static_ob->supports_truncate_table($GLOBALS['SITE_DB']->connection_read))) {
                 $this->_query('TRUNCATE ' . $this->table_prefix . $table, null, 0, $fail_ok);
             } else {

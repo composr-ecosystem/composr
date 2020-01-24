@@ -107,12 +107,12 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
 
     $sender_point_info = point_info($sender_id);
     $sender_gift_points_used_old = array_key_exists('gift_points_used', $sender_point_info) ? $sender_point_info['gift_points_used'] : 0;
-    $sender_gift_points_used_new = min(2147483647, $sender_gift_points_used_old + $amount);
+    $sender_gift_points_used_new = max(-2147483648, min(2147483647, $sender_gift_points_used_old + $amount)); // TODO: #3046 in tracker
     $GLOBALS['FORUM_DRIVER']->set_custom_field($sender_id, 'gift_points_used', strval($sender_gift_points_used_new));
 
     $recipient_point_info = point_info($recipient_id);
     $recipient_points_given_new = array_key_exists('points_gained_given', $recipient_point_info) ? $recipient_point_info['points_gained_given'] : 0;
-    $recipient_points_given_new = min(2147483647, $recipient_points_given_new + $amount);
+    $recipient_points_given_new = max(-2147483648, min(2147483647, $recipient_points_given_new + $amount)); // TODO: #3046 in tracker
     $GLOBALS['FORUM_DRIVER']->set_custom_field($recipient_id, 'points_gained_given', strval($recipient_points_given_new));
 
     $your_username = $GLOBALS['FORUM_DRIVER']->get_username($sender_id);
@@ -177,7 +177,7 @@ function charge_member($member_id, $amount, $reason)
 
     $_before = point_info($member_id);
     $before = array_key_exists('points_used', $_before) ? intval($_before['points_used']) : 0;
-    $new = $before + $amount;
+    $new = max(-2147483648, min(2147483647, $before + $amount)); // TODO: #3046 in tracker
     $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_used', strval($new));
     add_to_charge_log($member_id, $amount, $reason);
 

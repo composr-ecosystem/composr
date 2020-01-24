@@ -244,7 +244,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                 attach_message('require_code: ' . $codename . ' (' . number_format(memory_get_usage() - $before) . ' bytes used, now at ' . number_format(memory_get_usage()) . ')', 'inform');
             } else {
                 print('<!-- require_code: ' . htmlentities($codename) . ' (' . htmlentities(number_format(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
-                flush();
+                cms_flush_safe();
             }
         }
 
@@ -268,7 +268,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                 attach_message('require_code: ' . $codename . ' (' . number_format(memory_get_usage() - $before) . ' bytes used, now at ' . number_format(memory_get_usage()) . ')', 'inform');
             } else {
                 print('<!-- require_code: ' . htmlentities($codename) . ' (' . htmlentities(number_format(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
-                flush();
+                cms_flush_safe();
             }
         }
 
@@ -563,6 +563,16 @@ function cms_ini_set($var, $value)
 }
 
 /**
+ * Flush but don't break Brotli compression.
+ */
+function cms_flush_safe()
+{
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
+        flush();
+    }
+}
+
+/**
  * Get the file base for your installation of Composr.
  *
  * @return PATH The file base, without a trailing slash
@@ -672,7 +682,6 @@ function fixup_bad_php_env_vars_pre()
         'HTTP_PREFER',
         'HTTP_RANGE',
         'HTTP_REFERER',
-        'HTTP_UA_OS',
         'HTTP_USER_AGENT',
         'HTTP_X_FORWARDED_FOR',
         'HTTP_X_FORWARDED_PROTO',
@@ -787,7 +796,7 @@ fixup_bad_php_env_vars_pre();
 
 $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
 if ((strpos($script_name, '/sources/') !== false) || (strpos($script_name, '/sources_custom/') !== false)) {
-    header('Content-type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
     exit('May not be included directly');
 }
 

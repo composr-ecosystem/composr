@@ -39,7 +39,6 @@ class Module_cms_blogs extends Standard_crud_module
     protected $menu_label = 'BLOGS';
     protected $table = 'news';
     protected $orderer = 'title';
-    protected $title_is_multi_lang = true;
     protected $privilege_page_name = 'cms_news';
 
     protected $donext_type = null;

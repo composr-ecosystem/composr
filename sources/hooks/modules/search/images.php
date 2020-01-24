@@ -164,7 +164,7 @@ class Hook_search_images extends FieldsSearchHook
         }
 
         $table = 'images r';
-        $trans_fields = ['' => '', 'r.description' => 'LONG_TRANS__COMCODE', 'r.title' => 'SHORT_TRANS'];
+        $trans_fields = ['' => '', 'r.the_description' => 'LONG_TRANS__COMCODE', 'r.title' => 'SHORT_TRANS'];
         $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_image', $table, $where_clause, $trans_fields, $nontrans_fields);
 

@@ -231,6 +231,7 @@ function actual_add_zone($zone, $title, $default_page = DEFAULT_ZONE_PAGE_NAME, 
         'p_add_date' => time(),
         'p_submitter' => get_member(),
         'p_show_as_edit' => 0,
+        'p_include_on_sitemap' => 1,
         'p_order' => 0,
     ]);
 
@@ -602,6 +603,7 @@ function get_standard_block_parameters()
         'quick_cache',
         'defer',
         'block_id',
+        'ttl',
     ];
 }
 

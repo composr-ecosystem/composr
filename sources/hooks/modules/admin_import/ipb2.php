@@ -291,7 +291,7 @@ class Hook_import_ipb2
         }
 
         set_option('session_expiry_time', strval(60 * intval($PROBED_FORUM_CONFIG['session_expiration'])));
-        set_option('gzip_output', strval(1 - intval($PROBED_FORUM_CONFIG['disable_gzip'])));
+        set_option('output_compression', strval(1 - intval($PROBED_FORUM_CONFIG['disable_gzip'])));
         set_option('smtp_sockets_use', ($PROBED_FORUM_CONFIG['mail_method'] == 'smtp') ? '1' : '0');
         set_option('session_expiry_time', strval(60 * intval($PROBED_FORUM_CONFIG['session_expiration'])));
 

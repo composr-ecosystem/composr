@@ -614,18 +614,14 @@ function get_page_zone($page_name, $error = true)
  * The module result is returned.
  *
  * @param  PATH $string The relative path to the module file
- * @param  ?object $out Semi-filled output template (null: definitely not doing output streaming)
  * @return Tempcode The result of executing the module
  */
-function load_minimodule_page($string, &$out = null)
+function load_minimodule_page($string)
 {
     global $PAGE_STRING;
     if ($PAGE_STRING === null) {
         $PAGE_STRING = $string;
     }
-
-    /*if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null))  Actually we cannot do this, as some mini-modules don't return HTML and exit themselves (e.g. spreadsheet downloads)
-        $out->evaluate_echo(null, true);*/
 
     return _load_mini_code($string);
 }
@@ -703,10 +699,9 @@ function _load_mini_code($string, $map = [])
  *
  * @param  PATH $string The relative path to the module file
  * @param  ID_TEXT $codename The page name to load
- * @param  ?object $out Semi-filled output template (null: definitely not doing output streaming)
  * @return Tempcode The result of executing the module
  */
-function load_module_page($string, $codename, &$out = null)
+function load_module_page($string, $codename)
 {
     global $PAGE_STRING;
     if ($PAGE_STRING === null) {
@@ -726,10 +721,6 @@ function load_module_page($string, $codename, &$out = null)
 
     _check_module_installation_status($object, $codename);
 
-    if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null)) {
-        $GLOBALS['TEMPCODE_CURRENT_PAGE_OUTPUTTING'] = $out;
-    }
-
     if (method_exists($object, 'pre_run')) {
         $exceptional_output = $object->pre_run();
         if ($exceptional_output !== null) {
@@ -742,21 +733,6 @@ function load_module_page($string, $codename, &$out = null)
             }
 
             return $exceptional_output;
-        }
-
-        if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null)) {
-            /* Breaks output streaming
-            if ((strpos($string, '_custom/') !== false) && (!is_file(str_replace('_custom/', '/', $string)))) {
-                $_out = $out->evaluate();
-                _solemnly_leave($_out);
-                if (!has_solemnly_declared(I_UNDERSTAND_XSS)) {
-                    $out = make_string_tempcode($_out);
-                }
-                _solemnly_enter();
-            }
-            */
-
-            $out->evaluate_echo(null, true);
         }
     }
 
@@ -1052,6 +1028,7 @@ function get_block_id($map)
     ksort($map);
     unset($map['raw']);
     unset($map['cache']);
+    unset($map['ttl']);
     unset($map['start']);
     unset($map['max']);
     return substr(md5(serialize($map)), 0, 6);
@@ -1062,10 +1039,9 @@ function get_block_id($map)
  *
  * @param  ID_TEXT $codename The block name
  * @param  array $map The block parameter map
- * @param  ?integer $ttl The TTL to use in minutes (null: block default)
  * @return Tempcode The generated Tempcode
  */
-function do_block($codename, $map = [], $ttl = null)
+function do_block($codename, $map = [])
 {
     global $LANGS_REQUESTED, $REQUIRED_ALL_LANG, $JAVASCRIPTS, $CSSS, $DO_NOT_CACHE_THIS, $SMART_CACHE;
 
@@ -1075,19 +1051,24 @@ function do_block($codename, $map = [], $ttl = null)
         $map['cache'] = block_cache_default($codename);
     }
 
-    if (!$GLOBALS['OUTPUT_STREAMING']) {
-        push_output_state(false, true);
-    }
+    push_output_state(false, true);
 
     $DO_NOT_CACHE_THIS = ($map['cache'] === '0');
 
+    if ((isset($map['ttl'])) && ($map['ttl'] != '')) {
+        $ttl = intval($map['ttl']);
+    } else {
+        $ttl = null;
+    }
+
     $object = null;
+    $new_security_scope = null;
     if (has_caching_for('block')) {
         // See if the block may be cached (else cannot, or is yet unknown)
         if ($map['cache'] === '0') {
             $row = null;
         } else { // We may allow it to be cached but not store the cache signature, as it is too complex
-            $row = get_block_info_row($codename, $map);
+            $row = get_block_info_row($codename, $map, $object, $new_security_scope);
         }
         if ($row !== null) {
             $cache_identifier = do_block_get_cache_identifier($codename, $row['cache_on'], $map);
@@ -1113,9 +1094,7 @@ function do_block($codename, $map = [], $ttl = null)
 
                         $out = new Tempcode();
                         $out->attach(@strval($object));
-                        if (!$GLOBALS['OUTPUT_STREAMING']) {
-                            restore_output_state(false, true);
-                        }
+                        restore_output_state(false, true);
 
                         return $out;
                     }
@@ -1124,9 +1103,7 @@ function do_block($codename, $map = [], $ttl = null)
 
                     $out = _check_block_installation_status($object, $codename);
                     if ($out !== null) {
-                        if (!$GLOBALS['OUTPUT_STREAMING']) {
-                            restore_output_state(false, true);
-                        }
+                        restore_output_state(false, true);
                         return $out;
                     }
 
@@ -1181,19 +1158,15 @@ function do_block($codename, $map = [], $ttl = null)
                     } elseif (($ttl !== null) && ($cache->is_empty())) { // Try again with no TTL, if we currently failed but did impose a TTL
                         $LANGS_REQUESTED += $backup_langs_requested;
                         $REQUIRED_ALL_LANG = $backup_required_all_lang;
-                        if (!$GLOBALS['OUTPUT_STREAMING']) {
-                            restore_output_state(false, true);
-                        }
-                        return do_block($codename, $map, -1);
+                        restore_output_state(false, true);
+                        return do_block($codename, ['ttl' => '0'] + $map);
                     }
                     $LANGS_REQUESTED += $backup_langs_requested;
                     $REQUIRED_ALL_LANG += $backup_required_all_lang;
 
                     pop_query_limiting();
                 }
-                if (!$GLOBALS['OUTPUT_STREAMING']) {
-                    restore_output_state(false, true);
-                }
+                restore_output_state(false, true);
                 return $cache;
             }
         }
@@ -1209,17 +1182,13 @@ function do_block($codename, $map = [], $ttl = null)
     if (!is_object($object)) {
         $out = new Tempcode();
         $out->attach(@strval($object));
-        if (!$GLOBALS['OUTPUT_STREAMING']) {
-            restore_output_state(false, true);
-        }
+        restore_output_state(false, true);
         return $out;
     }
 
     $out = _check_block_installation_status($object, $codename);
     if ($out !== null) {
-        if (!$GLOBALS['OUTPUT_STREAMING']) {
-            restore_output_state(false, true);
-        }
+        restore_output_state(false, true);
         return $out;
     }
 
@@ -1247,21 +1216,23 @@ function do_block($codename, $map = [], $ttl = null)
     if ((!$DO_NOT_CACHE_THIS) && (method_exists($object, 'caching_environment')) && (has_caching_for('block'))) {
         $info = $object->caching_environment($map);
         if ($info !== null) {
+            if ($ttl === null) {
+                $ttl = $info['ttl'];
+            }
+
             $cache_identifier = do_block_get_cache_identifier($codename, $info['cache_on'], $map);
             if ($cache_identifier !== null) {
                 $special_cache_flags = array_key_exists('special_cache_flags', $info) ? $info['special_cache_flags'] : CACHE_AGAINST_DEFAULT;
 
                 require_code('caches2');
-                set_cache_entry($codename, $info['ttl'], $cache_identifier, $cache, $special_cache_flags, array_keys($LANGS_REQUESTED), $GLOBALS['OUTPUT_STREAMING'] ? [] : array_keys($JAVASCRIPTS), $GLOBALS['OUTPUT_STREAMING'] ? [] : array_keys($CSSS), true);
+                set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_cache_flags, array_keys($LANGS_REQUESTED), array_keys($JAVASCRIPTS), array_keys($CSSS), true);
             }
         }
     }
     $LANGS_REQUESTED += $backup_langs_requested;
     $REQUIRED_ALL_LANG += $backup_required_all_lang;
 
-    if (!$GLOBALS['OUTPUT_STREAMING']) {
-        restore_output_state(false, true);
-    }
+    restore_output_state(false, true);
 
     return $cache;
 }
@@ -1485,9 +1456,11 @@ function do_block_hunt_file($codename, $map = [])
  *
  * @param  ID_TEXT $codename The block name
  * @param  array $map The block parameter map
+ * @param  ?mixed $object Object/string of the block (null: not looked up)
+ * @param  ?boolean $new_security_scope Whether the block is in a new security scope (null: not looked up)
  * @return ?array The block info (null: cannot cache for some reason)
  */
-function get_block_info_row($codename, $map)
+function get_block_info_row($codename, $map = [], &$object = null, &$new_security_scope = null)
 {
     static $cache = [];
     $sz = serialize([$codename, $map]);
@@ -1519,7 +1492,7 @@ function get_block_info_row($codename, $map)
         }
     }
     if (($row === null) && (isset($map['quick_cache'])) && ($map['quick_cache'] === '1')) {
-        $row = ['cached_for' => $codename, 'cache_on' => '[$map,$GLOBALS[\'FORUM_DRIVER\']->get_members_groups(get_member(]))', 'cache_ttl' => 60];
+        $row = ['cached_for' => $codename, 'cache_on' => '[$map]', 'cache_ttl' => 60, 'special_cache_flags' => CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS];
     }
 
     $cache[$sz] = $row;

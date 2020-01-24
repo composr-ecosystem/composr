@@ -37,7 +37,6 @@ class Module_admin_cns_groups extends Standard_crud_module
     protected $view_entry_point = '_SEARCH:groups:view:_ID';
     protected $menu_label = 'USERGROUPS';
     protected $orderer = 'g_name';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'group';
     protected $donext_category_content_type = null;
 

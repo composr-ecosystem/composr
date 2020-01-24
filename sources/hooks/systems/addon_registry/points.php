@@ -116,7 +116,6 @@ class Hook_addon_registry_points
             'sources/hooks/systems/config/points_joining.php',
             'sources/hooks/systems/config/points_per_daily_visit.php',
             'sources/hooks/systems/config/points_per_day.php',
-            'sources/hooks/systems/config/points_posting.php',
             'sources/hooks/systems/config/points_rating.php',
             'sources/hooks/systems/config/points_show_personal_stats_gift_points_left.php',
             'sources/hooks/systems/config/points_show_personal_stats_gift_points_used.php',
@@ -164,6 +163,15 @@ class Hook_addon_registry_points
             'sources/hooks/systems/commandr_fs_extended_member/point_gifts_given.php',
             'themes/default/javascript/points.js',
             'sources/hooks/systems/actionlog/points.php',
+            'sources/hooks/systems/points/.htaccess',
+            'sources/hooks/systems/points/given.php',
+            'sources/hooks/systems/points/rating.php',
+            'sources/hooks/systems/points/joining.php',
+            'sources/hooks/systems/points/daily.php',
+            'sources/hooks/systems/points/visiting.php',
+            'sources/hooks/systems/points/index.html',
+
+            'sources/hooks/modules/admin_stats/point_gifts.php',
         ];
     }
 

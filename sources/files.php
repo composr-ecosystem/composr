@@ -431,7 +431,7 @@ function clean_file_size($bytes)
     if ($bytes === null) {
         return do_lang('UNKNOWN') . ' bytes';
     }
-    if ($bytes == 2147483647) {
+    if ($bytes == 2147483647) { // TODO: #3046 in tracker
         return do_lang('UNKNOWN') . ' bytes';
     }
     if (floatval($bytes) > 2.0 * 1024.0 * 1024.0 * 1024.0) {
@@ -631,18 +631,20 @@ function should_ignore_file($path, $bitmask = 0)
 
         // Composr testing platform
         'codechecker.ini' => '_tests/codechecker',
+        'checker.ini' => '_tests/codechecker', // LEGACY
     ];
 
     $ignore_extensions = [ // Case insensitive, define in lower case
         // Cache files
         'lcd' => 'caches/.*',
         'gcd' => 'caches/.*',
-        'htm' => 'caches/guest_pages',
-        'xml' => 'caches/guest_pages',
+        'htm' => 'caches/static',
+        'xml' => 'caches/static',
         'tcp' => 'themes/[^/]*/templates_cached/.*',
         'css' => 'themes/[^/]*/templates_cached/.*',
         'js' => 'themes/[^/]*/templates_cached/.*',
-        'gz' => '(themes/[^/]*/templates_cached/.*|caches/guest_pages)',
+        'gz' => '(themes/[^/]*/templates_cached/.*|caches/static)',
+        'br' => '(themes/[^/]*/templates_cached/.*|caches/static)',
 
         // Log files
         'log' => '.*',
@@ -656,6 +658,10 @@ function should_ignore_file($path, $bitmask = 0)
         'bak' => '.*',
         'old' => '.*',
         'cms' => '.*', // Installers and upgraders
+
+        // Build files
+        'class' => '.*',
+        'lst' => '.*',
 
         // IDE projects
         'clpprj' => '.*', // Code Lobster
@@ -787,7 +793,7 @@ function should_ignore_file($path, $bitmask = 0)
         }
 
         $ignore_extensions = array_merge($ignore_extensions, [
-            'gz' => '(data_custom/sitemaps|themes/[^/]*/templates_cached/.*|caches/guest_pages|imports/.*|exports/.*)',
+            'gz' => '(data_custom/sitemaps|themes/[^/]*/templates_cached/.*|caches/static|imports/.*|exports/.*)',
 
             // Import/Export files
             'tar' => '(imports|exports)/.*',

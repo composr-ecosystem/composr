@@ -148,7 +148,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     }
 
     // Close
-    $blob = '</urlset>';
+    $blob = '</urlset>' . "\n";
     fwrite($sitemaps_out_file, $blob);
     fclose($sitemaps_out_file);
     @unlink($sitemaps_out_path);
@@ -160,11 +160,9 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     sync_file($sitemaps_out_path);
     fix_permissions($sitemaps_out_path);
 
-    // Gzip
-    if (function_exists('gzencode')) {
-        require_code('files');
-        cms_file_put_contents_safe($sitemaps_out_path . '.gz', gzencode(cms_file_get_contents_safe($sitemaps_out_path, FILE_READ_LOCK), -1), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-    }
+    // Compress
+    require_code('web_resources2');
+    compress_cms_stub_file($sitemaps_out_path);
 }
 
 /**
@@ -216,7 +214,7 @@ function rebuild_sitemap_index()
     }
 
     // Close
-    $blob = '</sitemapindex>';
+    $blob = '</sitemapindex>' . "\n";
     fwrite($sitemaps_out_file, $blob);
     fclose($sitemaps_out_file);
     @unlink($sitemaps_out_path);
@@ -422,15 +420,17 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
 
     list($zone, $map) = page_link_decode($page_link);
     if (isset($map['page'])) {
-        require_code('global4');
-        if (!comcode_page_is_indexable($zone, $map['page'])) {
-            return;
+        // We don't want to leave _SEARCH in there, as it's inconsistent with what the regular Sitemap code goes
+        if ($zone == '_SEARCH') {
+            $_zone = get_page_zone($map['page'], false);
+            if ($_zone !== null) {
+                $page_link = preg_replace('#^_SEARCH:#', $_zone . ':', $page_link);
+            }
         }
 
-        // We don't want to leave _SEARCH in there, as it's inconsistent with what the regular Sitemap code goes
-        $_zone = get_page_zone($map['page'], false);
-        if ($_zone !== null) {
-            $page_link = preg_replace('#^_SEARCH:#', $_zone . ':', $page_link);
+        require_code('global4');
+        if (!comcode_page_include_on_sitemap($zone, $map['page'])) {
+            return;
         }
     }
 

@@ -240,6 +240,7 @@ abstract class Database_super_mysql extends DatabaseDriver
 
                     if (($next == '*') && ($i + 1 < $len) && ($query[$i + 1] == '/')) {
                         $tokens[] = '/*' . $current_token . '*/';
+                        $i++;
                         break;
                     } else {
                         $current_token .= $next;

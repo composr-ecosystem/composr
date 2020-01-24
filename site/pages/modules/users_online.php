@@ -155,7 +155,7 @@ class Module_users_online
             }
         }
 
-        if ($rows === []) {
+        if (empty($rows)) {
             warn_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 

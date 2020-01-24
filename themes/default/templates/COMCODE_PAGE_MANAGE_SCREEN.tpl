@@ -19,15 +19,17 @@
 		{+END}
 	</form>
 
-	<h2 class="force_margin">{!COMCODE_PAGE_ADD}</h2>
+	{+START,IF,{$NOT,{TRANSLATIONS_MODE}}}
+		<h2 class="force_margin">{!COMCODE_PAGE_ADD}</h2>
 
-	<a id="comcode_page_add"></a>
+		<a id="comcode_page_add"></a>
 
-	{+START,IF_PASSED,EXTRA}
-		{EXTRA}
-	{+END}
-	{+START,IF_NON_PASSED,EXTRA}
-		<p>{!ACCESS_DENIED}</p>
+		{+START,IF_PASSED,EXTRA}
+			{EXTRA}
+		{+END}
+		{+START,IF_NON_PASSED,EXTRA}
+			<p>{!ACCESS_DENIED}</p>
+		{+END}
 	{+END}
 
 	{+START,IF_NON_EMPTY,{LINKS}}
@@ -35,7 +37,7 @@
 
 		<ul class="actions-list">
 			{+START,LOOP,LINKS}
-				<li style="background-image: url('{LINK_IMAGE;*}'); background-size: 18px 18px; background-position: 0 0; padding-left: 20px"><a href="{LINK_URL*}">{LINK_TEXT*}</a></li>
+				<li>{+START,INCLUDE,ICON}NAME={LINK_ICON}{+END} <a href="{LINK_URL*}">{LINK_TEXT*}</a></li>
 			{+END}
 		</ul>
 	{+END}

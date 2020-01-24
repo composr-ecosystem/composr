@@ -45,7 +45,7 @@ $g_allow_file_upload = ON;
 $g_file_upload_method = DISK;
 $g_max_file_size = 25000000; // in bytes
 $g_preview_attachments_inline_max_size = 256 * 1024;
-$g_allowed_files = '1st,3g2,3gp,3gp2,3gpp,3p,7z,aac,ai,aif,aifc,aiff,bz2,cur,dot,dotx,f4v,ico,ics,iso,jpe,keynote,log,m2v,m4v,mdb,mid,mp2,mpa,mpe,mpv2,odb,odc,odi,ogv,otf,rtf,tgz,tiff,ttf,vsd,vtt,weba,webm,webp,wma,pages,numbers,patch,diff,sql,odg,odp,odt,ods,ps,pdf,doc,ppt,csv,xls,docx,pptx,xlsx,pub,txt,psd,tga,tif,gif,png,bmp,jpg,jpeg,avi,mov,mpg,mpeg,mp4,asf,wmv,ram,ra,rm,qt,zip,tar,rar,gz,wav,mp3,ogg,torrent,php,tpl,ini,eml';
+$g_allowed_files = '1st,3g2,3gp,3gp2,3gpp,3p,7z,aac,ai,aif,aifc,aiff,br,bz2,cur,dot,dotx,f4v,ico,ics,iso,jpe,keynote,log,m2v,m4v,mdb,mid,mp2,mpa,mpe,mpv2,odb,odc,odi,ogv,otf,rtf,tgz,tiff,ttf,vsd,vtt,weba,webm,webp,wma,pages,numbers,patch,diff,sql,odg,odp,odt,ods,ps,pdf,doc,ppt,csv,xls,docx,pptx,xlsx,pub,txt,psd,tga,tif,gif,png,bmp,jpg,jpeg,avi,mov,mpg,mpeg,mp4,asf,wmv,ram,ra,rm,qt,zip,tar,rar,gz,wav,mp3,ogg,torrent,php,tpl,ini,eml';
 $g_disallowed_files = '';
 $g_absolute_path_default_upload_folder = __DIR__ . '/../uploads/';
 

@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
 $from = 0;
 $new_length = $size;
 
-cms_ini_set('zlib.output_compression', 'Off');
+disable_output_compression();
 
 // They're trying to resume (so update our range)
 $httprange = $_SERVER['HTTP_RANGE'];

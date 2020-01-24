@@ -4,9 +4,15 @@ rm -f themes/*/templates_cached/*/*.tcp
 rm -f themes/*/templates_cached/*/*.js
 rm -f themes/*/templates_cached/*/*.css
 rm -f themes/*/templates_cached/*/*.gz
+rm -f themes/*/templates_cached/*/*.br
 rm -f caches/http/*.bin
+rm -f caches/persistent/*.bin
+rm -f caches/self_learning/*.bin
 rm -f caches/lang/*.lcd
 rm -f caches/lang/*/*.lcd
+rm -f caches/static/*.htm
+rm -f caches/static/*.br
+rm -f caches/static/*.gz
 find caches -name "*.gcd" -exec rm -f {} \;
 find caches -name "*.xml" -exec rm -f {} \;
 find caches -name "*.htm" -exec rm -f {} \;
@@ -24,6 +30,7 @@ if [ -e "sites" ]; then
 	find sites -name "*.js" -path "*cache*" -exec rm -f {} \;
 	find sites -name "*.css" -path "*cache*" -exec rm -f {} \;
 	find sites -name "*.gz" -path "*cache*" -exec rm -f {} \;
+	find sites -name "*.br" -path "*cache*" -exec rm -f {} \;
 	find sites -name "*.lcd" -exec rm -f {} \;
 	find sites -name "*.gcd" -exec rm -f {} \;
 	find sites -name "*.xml" -path "*cache*" -exec rm -f {} \;

@@ -137,10 +137,8 @@ class Hook_addon_registry_core_adminzone_dashboard
             'sources/blocks/main_staff_checklist.php',
             'sources/blocks/main_staff_new_version.php',
             'sources/blocks/main_staff_tips.php',
-            'sources/blocks/main_staff_website_monitoring.php',
             'sources/blocks/main_staff_links.php',
             'themes/default/templates/BLOCK_MAIN_STAFF_LINKS.tpl',
-            'themes/default/templates/BLOCK_MAIN_STAFF_WEBSITE_MONITORING.tpl',
             'sources/hooks/systems/notifications/checklist_task.php',
             'themes/default/templates/BLOCK_MAIN_STAFF_ACTIONS.tpl',
             'sources/hooks/systems/commandr_fs_extended_config/checklist_tasks.php',
@@ -155,7 +153,6 @@ class Hook_addon_registry_core_adminzone_dashboard
             'sources/hooks/systems/config/dashboard_db_notes.php',
             'sources/hooks/systems/config/dashboard_forum_topics.php',
             'sources/hooks/systems/config/dashboard_links.php',
-            'sources/hooks/systems/config/dashboard_website_monitoring.php',
         ];
     }
 
@@ -177,48 +174,7 @@ class Hook_addon_registry_core_adminzone_dashboard
             'templates/BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_NA.tpl' => 'administrative__block_main_staff_checklist',
             'templates/BLOCK_MAIN_STAFF_TIPS.tpl' => 'administrative__block_main_staff_tips',
             'templates/BLOCK_MAIN_STAFF_LINKS.tpl' => 'administrative__block_main_staff_links',
-            'templates/BLOCK_MAIN_STAFF_WEBSITE_MONITORING.tpl' => 'administrative__block_main_staff_website_monitoring',
             'templates/BLOCK_MAIN_STAFF_ACTIONS.tpl' => 'administrative__block_main_staff_actions',
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__administrative__block_main_staff_website_monitoring()
-    {
-        $data = [];
-        foreach (placeholder_array() as $v) {
-            $data[] = [
-                'SITE_NAME' => lorem_phrase(),
-                'ALEXA_RANKING' => placeholder_number(),
-                'ALEXA_LINKS' => placeholder_number(),
-                'URL' => placeholder_url(),
-            ];
-        }
-
-        $urls = [];
-        foreach (placeholder_array() as $v) {
-            $urls[] = [
-                '_loop_key' => lorem_word(),
-                '_loop_var' => lorem_word_2(),
-            ];
-        }
-
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_WEBSITE_MONITORING', [
-                'BLOCK_ID' => lorem_word(),
-                'GRID_DATA' => $data,
-                'URL' => placeholder_url(),
-                'SITE_URLS' => $urls,
-                'BLOCK_NAME' => '',
-                'MAP' => '',
-                'BLOCK_PARAMS' => '',
-            ]), null, '', true)
         ];
     }
 

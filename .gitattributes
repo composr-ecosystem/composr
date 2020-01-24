@@ -79,6 +79,7 @@
 *.asf binary
 *.avi binary
 *.bmp binary
+*.br binary
 *.bz2 binary
 *.cur binary
 *.bin binary
@@ -157,7 +158,7 @@
 *.xls binary
 *.xlsx binary
 *.zip binary
-*.bcmap text
+*.bcmap binary
 
 # Other binary formats
 *.aiml binary

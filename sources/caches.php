@@ -548,15 +548,15 @@ function erase_persistent_cache()
  */
 function erase_static_cache()
 {
-    $path = get_custom_file_base() . '/caches/guest_pages';
+    $path = get_custom_file_base() . '/caches/static';
     if (!file_exists($path)) {
         return;
     }
     $d = opendir($path);
     while (($e = readdir($d)) !== false) {
-        if ((substr($e, -4) == '.htm' || substr($e, -4) == '.xml' || substr($e, -3) == '.gz') && (strpos($e, '__failover_mode') === false)) {
+        if ((substr($e, -4) == '.htm' || substr($e, -4) == '.xml' || substr($e, -3) == '.gz' || substr($e, -3) == '.br') && (strpos($e, '__failover_mode') === false)) {
             // Ideally we'd lock while we delete, but it's not stable (and the workaround would be too slow for our efficiency context). So some people reading may get errors while we're clearing the cache. Fortunately this is a rare op to perform.
-            @unlink(get_custom_file_base() . '/caches/guest_pages/' . $e);
+            @unlink(get_custom_file_base() . '/caches/static/' . $e);
         }
     }
     closedir($d);

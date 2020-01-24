@@ -57,7 +57,6 @@ class _setupwizard_test_set extends cms_test_case
             'have_default_full_emoticon_set' => '1',
             'have_default_cpf_set' => '1',
             'keep_news_categories' => '1',
-            'stats_store_time' => '124',
             'have_default_wordfilter' => '1',
             'show_screen_actions' => '1',
             'block_SITE_main_awards' => 'NO',

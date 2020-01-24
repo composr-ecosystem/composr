@@ -1,0 +1,685 @@
+[title sub="Written by Chris Graham (ocProducts)"]Code Book, part 4 (Obscure Coding Standards)[/title]
+
+&laquo; Return to [page="_SEARCH:codebook"]Code Book table of contents[/page]{$REQUIRE_CSS,tutorials}
+
+This section covers coding standards that should be upheld, but are either:
+1) relate to a very specific Composr scenario that most developers won't be facing day-to-day
+2) so obvious you don't need to learn them in advance either
+
+It serves as a reference guide for settling disagreements, as a general reference when doing more extensive quality reviews, and a reference for what some of our automated tests do.
+
+[contents][/contents]
+
+{$SET,cs_count,1}[surround="coding-standards-tables"]
+
+[title="3"]Back-end programming[/title]
+
+[title="4"]General[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Export metadata[/color]
+| Standards compliance
+| Composr development +
+| Manually
+| Export metadata using [tt]seo_meta_load_for[/tt] and [tt]set_extra_request_metadata[/tt] for content modules supporting it.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Never include [tt]<?[/tt] within your PHP source
+| Portability
+| All development
+| Code Quality Checker
+| PHP [tt]short_tags[/tt] option may be on. This string is used within XML so is fairly common to type in; if you need it append two strings together to form it so that it doesn't have to be literally written into the code.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Any page should be accessible as standalone[/color]
+| Usability
+| All development
+| Manually
+| You shouldn't add modules that are never intended to be used independently, because they will come up on the sitemap. If you intend to write some kind of helper script that may be called by a module then either use an "entry-point script" for that or build the functionality into the module file itself (you are allowed to [tt]exit[/tt] out of a module with your own HTTP headers etc rather than returning Tempcode).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Write appropriate hooks etc for new content types[/color]
+| Consistency
+| Composr development +
+| Manually
+| When adding new content types remember to write all appropriate hooks for them (e.g. search hooks). And implement standard systems like SEO metadata, feedback systems, validation, and permissions.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Communicate upload limits[/color]
+| Usability
+| Product development only
+| Manually
+| Show the appropriate maximum-upload size on all screens that support file uploads, unless the size is very unlikely to be reached by the user (e.g. just uploading an avatar). Composr has a standard mechanism to do this, which can be automated within CRUD modules. For code examples search the code for [tt]get_upload_limit_config_url[/tt].
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Don't define too many functions in a single file
+| Portability: PHP [tt]memory_limit[/tt] setting / performance
+| Composr development +
+| Composr development mode sets a low [tt]memory_limit[/tt]
+| Instead put the script into code files that are loaded only when needed.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Pass in extra useful template parameters[/color]
+| Themeing
+| Product development only
+| Manually
+| Pass in any additional unused parameters to the template where they might be useful; raw timestamps, IDs, etc.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]E-mail subject lines must be unique, or the e-mail sender must be a specific user (not the website itself)[/color]
+| Usability
+| Composr development +
+| Manually
+| This convention makes e-mails easier to scan in an inbox and stops incorrect automatic threading.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use [tt]cms_ini_set[/tt][/color]
+| Portability
+| Product development only
+| Manually
+| Use [tt]cms_ini_set[/tt] rather than [tt]ini_set[/tt], as it allows us to control for factors such as [tt]ini_set[/tt] being disabled on the hosting platform (some hosts do this for security reasons).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Block access when closed
+| Stability
+| All development
+| Manually
+| Any URL that a user may reasonably navigate to manually that is not passed through [tt]index.php[/tt], must show the closed site message by its own means. Look to see how other code does it for example.
+|}
+
+[title="4"]Files[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]1 KB = 1024 bytes, etc[/color]
+| Consistency
+| Product development only
+| Manually
+| We don't say KiB or use 1000s. People don't understand KiB (the term never caught on), and 1024 is the long term convention in computing.
+|}
+
+[title="4"]Log files[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Define log file in a hook
+| GDPR, Administration
+| Composr development
+| Manually
+| A [tt]systems/logs[/tt] hook needs to define that your log exists. This allows the log purger to clear out old records, and the administrative error-log interface to find your log.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Use correct date format
+| GDPR
+| Composr development
+| Manually
+| Start your log entries using the output of [tt]loggable_date()[/tt]. This consistent date formatting will allow the log purger to read the log. Multiple lines per entry and lead-in text at the top of the log are allowed; these special lines should not include the date/time. Other than this function there's no explicit log-writing API, because it's pretty standard PHP file I/O.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Lock your file when writing
+| Stability
+| Composr development
+| Manually
+| Multiple processes may want to write to the log at the same time. Look how other logging code handles locking. In rare situations it may be guaranteed an operation is not going to happen concurrently, in which case you can forget about locking.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Store log as [tt]data_custom/whatever.log[/tt]
+| Security
+| Composr development
+| Manually
+| This allows the default Apache [tt].htaccess[/tt] to deny web access to the log. The only exception should be logs which are created by default, which must be [tt].php[/tt] files with some lead-in code to prevent PHP command execution (using [tt].php[/tt] is the only 100%-reliable way to prevent unintended file download by URL access).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Do not create log by default
+| Security
+| Composr development
+| Manually
+| Logs should usually only be used if the standard file has been pre-created by hand. This avoids bloated unneeded logs that may not be properly secured against unwanted access. See the note above for stipulations around the exception to this rule.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Reference in [tt]web.config[/tt] file
+| Security
+| Composr development
+| Manually
+| We support IIS, which does not support wild-card blocking of file access. So we must manually block access to each individual log file.
+|}
+
+[title="4"]URLs and file paths[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Don't append to URLs in templates[/color]
+| URL schemes
+| All development
+| Manually
+| Do not try and appending something to a URL inside a template, unless it is a URL to a helper script (rather than a screen) or if you have explicitly disabled SEO for the URL. URL schemes involve different URL structures. Pass in all the URLs you need to the template so you don't need to deploy hacks.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Don't assume directories already exist to write into[/color]
+| Shared installs: multiple sites with one Composr install, GAE
+| Product development only
+| Manually
+| If running a blank custom directory, none of the bundled directory structure will be initially present. You must therefore detect and auto-create missing directories, using [tt]make_missing_directory[/tt].
+|}
+
+[title="4"]Databases[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Don't require write queries on normal views[/color]
+| Stability, Performance
+| Product development only
+| Manually
+| Some webhosts will restrict SQL write permission if a database size limit is exceeded, so any routine write queries should have the [tt]$fail_ok[/tt] option set so that it doesn't take the whole site down.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do maintenance using [tt]cms_register_shutdown_function_safe[/tt][/color]
+| Performance
+| Product development only
+| Manually
+| Non-critical maintenance such as logging, updating view counts, or deleting expired records, should be done at script end and using the [tt]cms_register_shutdown_function_safe[/tt] function. This is to decrease the time before rendering the page output. Note that we use the [tt]cms_register_shutdown_function_safe[/tt] instead of the [tt]register_shutdown_function[/tt] function, as a minority of servers do not support [tt]register_shutdown_function[/tt].
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use [tt]statistical_update_model[/tt] function for controlling view count maintenance, and increment directly[/color]
+| Performance
+| Product development only
+| Manually
+| The [tt]statistical_update_model[/tt] function does a number of checks to see if and how view counts should change. Use this function in the same pattern as it is used elsewhere in the code. Do not increment by explicitly passing in a new view count, as that would assume the view count hasn't changed since it came out of the database -- run a query to directly increment from the in-database field.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Stay within common denominator of limits
+| Portability
+| Product development only
+| Table creation code checks
+| There are maximum numbers of indices, fields, fields in keys and indexes, total field size in keys and indexes, length of field names, and length of table names.
+|}
+
+[title="4"]Templates and Interfaces[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Nest your templates[/color]
+| Themeing
+| Composr development +
+| Manually
+| Templates should nest, not be split up into start/end pairs.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use [tt]handle_max_file_size ($hidden)[/tt] when using upload fields so that your form has the right file-size limits on it[/color]
+| Usability for webmasters: stops nasty server-side upload-limit errors
+| Composr development +
+| Manually
+| 
+|}
+
+[title="4"]Modifying core classes[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Object orientated principles[/color]
+| Technical debt
+| Product development only
+| 
+| Use object-orientated principles properly where Composr does already. For example, forum drivers all have a database object as a property, rather than referencing the global [tt]FORUM_DB[/tt] object. This is because they provide a core service and cannot make assumptions about the environment (e.g. it must be possible to have multiple simultaneous forum drivers running).
+|}
+
+[title="4"]Blocks[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Blocks should not exit
+| Stability
+| Product development only
+| Automated test ([tt]blocks.php[/tt])
+| If a block hits an error condition it must return an error message, not call a function like [tt]warn_exit[/tt]. An error on a block can't be a fatal thing.
+|}
+
+[title="4"]Attachments[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Remember posted Comcode might be invalid[/color]
+| Stability
+| All development
+| Manually
+| If you are supporting Composr attachments in a field, run the [tt]check_comcode[/tt] function on the Comcode that references the attachments before the main row for the content is added to the database. This ensures the Comcode is valid, so you can proceed to add the content row (using the integer [tt]0[/tt] temporarily as the field value for where the Comcode will be placed). The attachment Comcode can then be fully parsed (given the ID of the content row, so it can store its security properly) and then the content row updated with the new content language string ID for that parsed Comcode.
+|}
+
+[title="4"]Comcode parser/renderer code[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]No context-sensitivity[/color]
+| Stability
+| All development
+| Manually
+| When programming the Comcode system, never allow Comcode to become context-sensitive (e.g. behaving differently when run from different URL paths).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Don't use [tt]require_javascript[/tt] or [tt]require_css[/tt]
+| Stability: cache safety
+| All development
+| Manually
+| When implementing tags, CSS must all be in [tt]global.css[/tt], and any JavaScript must be by using a symbol to load the JavaScript file -- this is because any inclusion code put in the PHP rendering code only runs when the Comcode is first compiled, and not when it is loaded out of the cache.
+|}
+
+[title="4"]Regular expressions[/title]
+
+If you are writing regular expressions to extract data from HTML, you should anticipate...
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]...there may be extra whitespace (there may be extra spaces inside tag definitions)[/color]
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]...whitespace may come in other forms than the [tt]\t[/tt] symbol (there may be tabs)[/color]
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]...HTML used instead of XHTML. (there may be [tt]<br>[/tt] instead of [tt]<br />[/tt])[/color]
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]...that tags may be written in upper case[/color]
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]...attribute quotes can be given as single-quotes as well as double quotes, and attribute contents may span multiple lines[/color]
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]...there may be whitespace around tag-contents[/color]
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]...tag contents may not be properly entity-encoded[/color]
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]...quoted data may contain quotes of the other-type (there may be [tt]<a title="He's saying hello">[/tt])[/color]
+| 
+| 
+| 
+| 
+|}
+
+You [b]may[/b] assume...
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+...a tag opener/closer stays on one line
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+...attribute values are quoted
+| 
+| 
+| 
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+...the text is in either well-formed SGML (HTML) or well-formed XML (XHTML)
+| 
+| 
+| 
+| 
+|}
+
+[title="4"]Installation code[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Installation code must respect the multi-language system[/color]
+| Internationalisation
+| Product development only
+| Manually
+| Make sure the [tt]lang_code_to_default_content[/tt] function is used where appropriate in installation code. This function puts in content language strings to the database such that they get stored automatically for all translations available on the installation.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Upgrades must be handled correctly[/color]
+| Stability
+| Product development only
+| Manually
+| Make sure that modules upgrade properly between major versions of Composr, and preferably between all versions. Do not assume a module will never be upgraded: if your module has undergone database structure revisions then you must make sure there is upgrade code to apply these revisions. See how existing code does it for examples.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Reinstalls must be handled correctly
+| Stability
+| Product development only
+| Automated test ([tt]_installer.php[/tt])
+| If a module is reinstalled, it should not give errors about existing tables or privileges. For this to work, the uninstall function must fully uninstall what the install function creates.
+|}
+
+[title="3"]Front-end programming[/title]
+
+[title="4"]Spelling/grammar/lexicon[/title]
+
+(examples of what not to do are in [i]italics[/i])
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Don't spell things [i]rong[/i] or use incorrect grammar[/color]
+| Usability
+| Composr development +
+| Automated test ([tt]lang_spelling.php[/tt]), Automated test ([tt]_lang_spelling.php[/tt]), Automated test ([tt]lang_grammar.php[/tt])
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Be careful where you put your [i]apostrophe's[/i][/color]
+| Usability
+| Composr development +
+| Manually + use the [tt].ini[/tt] files with Microsoft Word's checking tools
+| Apostrophes are not used for plurals.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]When needed, add comments to the language files to define context[/color]
+| Internationalisation
+| Product development only
+| Manually
+| For an example of how to do this, see [tt]global.ini[/tt].
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]When referencing key names, refer to them like Ctrl or Shift or Option or Alt: capitalise the first letter, don't use quotes, and don't use [tt]tt[/tt]/[tt]kbd[/tt][/color]
+| Consistent UI
+| Product development only
+| Manually
+| 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Don't use Composr-specific terms on the main website[/color]
+| Consistent UI
+| Composr development +
+| Manually
+| Composr 'brands' or unique terminology ('Zone', 'Comcode', ...) should not be seen on the main website.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use the term &lsquo;link&rsquo; correctly[/color]
+| Consistent UI
+| Product development only
+| Manually
+| A &lsquo;link&rsquo; is specifically a hyperlink (i.e. something that can be clicked), it is not a synonym for &lsquo;URL&rsquo;. Most of the time in code you will use the term &lsquo;URL&rsquo;. A &lsquo;link&rsquo; goes to a &lsquo;URL&rsquo;.
+|}
+
+[title="4"]Markup/Tempcode[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Exclude robots appropriately
+| SEO
+| All development
+| Manually
+| You need to stop search engines indexing utility scripts, or pages that only should be navigated to manually by a human. This can be done using an [tt]attach_to_screen_header[/tt] call that adds a [tt]meta[/tt] tag for HTML pages, a [tt]NOINDEX[/tt] parameter to the [tt]STANDALONE_HTML_WRAP[/tt] template, or a [tt]X-Robots-Tag[/tt] HTTP header for non-HTML pages.
+|}
+
+[title="4"]JavaScript[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Use official DOM (so no [tt]document.all[/tt], or [tt]window.images[/tt])
+| Standards compliance
+| Product development only
+| Automated test ([tt]web_resources.php[/tt])
+| [tt]document.all[/tt], [tt]form.foo[/tt], etc, are all non-standard (even though they're commonplace) -- use [tt]getElementById[/tt] etc.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Don't use any deprecated methods (so no [tt]escape[/tt])
+| Standards compliance
+| Product development only
+| Automated test ([tt]web_resources.php[/tt])
+| Instead of escape, use [tt]encodeURIComponent[/tt].
+|}
+
+[title="4"]Documentation[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Use top-level heading correctly
+| Communication
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| The top level heading must be structured correctly, including attributing the tutorial author. Refer to existing tutorials for an example.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Include a table of contents
+| Communication
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| Include a table of contents after the introduction paragraph and before subsequent titles. Refer to existing tutorials for an example.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Include a sensible title structure
+| Communication
+| Product development only
+| Automated test ([tt]tutorial_title_structure.php[/tt])
+| Have a title structure that uses the title levels sensibly.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Standardised image linking
+| Communication, consistency
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt]), Automated test ([tt]tutorial_image_consistency.php[/tt])
+| Include images via Comcode [tt]media[/tt] tags to files in [tt]data_custom/images/docs/<tutorial_name>[/tt]. Typically use floating to put images to the right of text content, and use the [tt]surround[/tt] Comcode tag to hold things together. Refer to existing tutorials for an example.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Meet minimum image density
+| Communication: visual learners appreciate images
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| Have a reasonable number of images per tutorial.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Define a keyword table
+| Communication
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| Define new keywords in a table near the bottom of the tutorial. Refer to existing tutorials for an example.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Have a See Also list
+| Communication: strong cross-linking
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| Provide a list of other tutorials to reference. Refer to existing tutorials for an example.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Link to other tutorials using the [tt]_SEARCH[/tt] zone
+| Stability
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| By linking using the [tt]_SEARCH[/tt] zone we allow tutorials to run from different contexts, but also to link to tutorials within the same zone as they are in when possible (so we can host multiple copies of the documentation with correct internal cross-linking).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Use code tags correctly
+| Communication: syntax highlighting
+| Product development only
+| Automated test ([tt]tutorials_codebox.php[/tt])
+| Any Comcode [tt]code[/tt] tag must specify the language of the code, which must be one of the languages listed in the automated test (we try and match ones we can syntax highlight).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Supply tutorial tags
+| Communication: strong cross-linking
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt]), Automated test ([tt]tutorials_all_linked.php[/tt])
+| Provide a list of applicable tags for the tutorial at the bottom. At least one of these should be the title of a broad documentation category (the first of which is where the icon is drawn from). Tags that do not refer to a documentation category must refer to a Composr addon codename. If you refer to an addon, the addon's registry hook must refer back in it's list of tutorials. Refer to existing tutorials for an example.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Include a tutorial date
+| Communication
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| Include the date the tutorial was written on. Refer to existing tutorials for an example.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Include a rating block
+| Product feedback
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| Include a rating block. Refer to existing tutorials for an example.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Include a summary
+| Communication: use on indexes
+| Product development only
+| Automated test ([tt]tutorial_quality.php[/tt])
+| Include a summary. Refer to existing tutorials for an example.
+|}
+
+[title="3"]Agency standards[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use a staging server system[/color]
+| Deployment, collaboration
+| Projects
+| Manually
+| The [page="_SEARCH:sup_staging_servers"]Staging Servers[/page] tutorial lays out processes for deploying in a professional way.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Run Health Check[/color]
+| Deployment, stability
+| Projects
+| Manually
+| Run Admin Zone > Tools > Health Check to confirm things are good.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use a good upgrade and maintenance process[/color]
+| Deployment, collaboration
+| Projects
+| Manually
+| The [page="_SEARCH:sup_professional_upgrading"]Professional upgrading[/page] tutorial lays out a good process for maintaining and upgrading websites.
+|}
+[/surround]
+
+{$SET,tutorial_tags,Development,PHP,Development,CSS,JavaScript,expert}{$SET,tutorial_add_date,Jun 2017}{$SET,tutorial_summary,The programmer's guide for Composr development. Coding Standards.}[block]main_tutorial_rating[/block]

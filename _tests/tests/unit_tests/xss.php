@@ -34,12 +34,12 @@ class xss_test_set extends cms_test_case
 
     public function testComcodeHTMLFilter()
     {
+        require_code('permissions3');
+
         // This won't check everything, but will make sure we don't accidentally regress our overall checking
         // To do a better check, find a manual XSS test blob, and try pasting it into a news post (using html tags) to preview -- and ensure no JS alerts come up
 
         $comcode = '[html]<iframe></iframe><Iframe></iframe>test<test>test</test><script></script><span onclick=""></span><span onClick=""></span><span on' . chr(0) . 'click=""></span><a href="&#115;cript:">x</a><a href="&#0115;cript:">x</a><a href="&#x73;cript:">x</a><a href="&#x73cript:">x</a><a href="j	a	v	a	s	c	r	i	p	t	:">x</a>[/html]';
-
-        require_code('permissions3');
 
         $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
         $guest_group_id = $guest_id; // Assumption
@@ -74,14 +74,27 @@ class xss_test_set extends cms_test_case
 
         $this->assertTrue(strpos($parsed, '<test') === false); // Not white-listed
 
-        // Some more hard-core stuff, where no white-list check needed
+        // target="_blank" attack (assumes browser has implemented https://github.com/whatwg/html/issues/4078)...
 
         set_privilege($guest_group_id, 'allow_html', true);
 
-        $comcode = '<scr<script>';
+        $comcode = '[semihtml]<a href="http://evilsite.com/" target="_blank" rel="opener">test</a> <a href="http://evilsite.com/" target="_blank"' . "\t" . 'rel=\'foo' . "\t" . 'opener' . "\t" . 'bar\'>test</a> <a href="http://evilsite.com/" target=_blank' . "\n" . 'rel=opener>test</a> [url rel="opener"]test[/url][/semihtml]';
 
         $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
 
+        $parsed = str_replace('noopener', '', $parsed);
+        $this->assertTrue(preg_match('#rel=.*opener#', $parsed) == 0);
+
+        // Some more hard-core stuff, where no white-list check needed...
+
+        set_privilege($guest_group_id, 'allow_html', true);
+
+        $comcode = '<scr<script>'; // Browser will interpret as a script tag
+        $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
+        $this->assertTrue(strpos($parsed, '<script') === false);
+
+        $comcode = '<script/foobar>'; // Browser will interpret as a script tag
+        $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
         $this->assertTrue(strpos($parsed, '<script') === false);
 
         set_privilege($guest_group_id, 'allow_html', false);

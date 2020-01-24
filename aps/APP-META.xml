@@ -278,7 +278,7 @@
           <mapping url="adminzone/pages/html_custom/EN">
             <php:permissions writable="true"/>
           </mapping>
-          <mapping url="caches/guest_pages">
+          <mapping url="caches/static">
             <php:permissions writable="true"/>
           </mapping>
           <mapping url="caches/lang">

@@ -69,7 +69,7 @@ function notification_mark_all_read_script()
 function notification_display_script()
 {
     set_http_caching(null);
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     $max = post_param_integer('max', null);
 
@@ -370,7 +370,7 @@ function get_pts($max = null, $start = 0)
         }
         $to_member_url = $GLOBALS['CNS_DRIVER']->member_profile_url($to_poster_id, true);
 
-        $is_unread = ($topic['t_cache_last_time'] > time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) && (($topic['l_time'] === null) || ($topic['l_time'] < $topic['p_time']));
+        $is_unread = ($topic['t_cache_last_time'] > time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) && (($topic['l_time'] === null) || ($topic['l_time'] < $topic['t_cache_last_time']));
 
         $out->attach(do_template('CNS_PRIVATE_TOPIC_LINK', [
             '_GUID' => '6a36e785b05d10f53e7ee76acdfb9f80',

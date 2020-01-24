@@ -50,7 +50,7 @@ if (!addon_installed('news')) {
 
 $news_id = get_param_integer('news_id');
 
-header('Content-type: text/plain; charset=' . get_charset());
+header('Content-Type: text/plain; charset=' . get_charset());
 
 $news_rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['validated' => 1, 'id' => $news_id], '', 1);
 if ((array_key_exists(0, $news_rows)) && (has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'news', $news_rows[0]['news_category']))) {

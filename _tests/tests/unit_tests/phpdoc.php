@@ -54,7 +54,6 @@ class phpdoc_test_set extends cms_test_case
             '@package',
             'Standard PHP XML parser function.',
             'Find the cache signature for the block.',
-            'Standard crud_module cat getter.',
             'Actualiser to undo a certain type of punitive action.',
             'Substitution callback for \'fix_links\'.',
             'Get the filename for a resource ID. Note that filenames are unique across all folders in a filesystem.',
@@ -76,6 +75,18 @@ class phpdoc_test_set extends cms_test_case
             'Spreadsheet reader.',
             'Read spreadsheet row.',
             'Write spreadsheet row.',
+            'Get Tempcode for an adding form.',
+            'Standard crud_module edit form filler.',
+            'Standard crud_module add actualiser.',
+            'Standard crud_module edit actualiser.',
+            'Standard crud_module category getter.',
+            'This function is a very basic query executor.',
+            'Escape a string so it may be inserted into a query.',
+            'Get a map of Composr field types, to actual database types.',
+            'Find all the graphs in a stats category.',
+            'Find metadata about stats graphs that are provided by this stats hook.',
+            'Generate final data from preprocessed data.',
+            'Generate a stats graph filter form.',
         ];
         $exceptions_regexp = '#' . implode('|', array_map('preg_quote', $exceptions)) . '#';
 

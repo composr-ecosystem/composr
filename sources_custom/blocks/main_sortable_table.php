@@ -32,7 +32,7 @@ class Block_main_sortable_table
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = ['param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'guid', 'transform', 'stylings', 'classes'];
+        $info['parameters'] = ['param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'guid', 'class', 'transform', 'stylings_header', 'stylings', 'classes'];
         return $info;
     }
 
@@ -45,7 +45,7 @@ class Block_main_sortable_table
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        $map
+        [$map, @filemtime(get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($map['param']))]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;
         $info['ttl'] = 60 * 60 * 24 * 365 * 5;
@@ -73,84 +73,33 @@ PHP;
 
         disable_php_memory_limit();
 
-        $letters = [
-            'A',
-            'B',
-            'C',
-            'D',
-            'E',
-            'F',
-            'G',
-            'H',
-            'I',
-            'J',
-            'K',
-            'L',
-            'M',
-            'N',
-            'O',
-            'P',
-            'Q',
-            'R',
-            'S',
-            'T',
-            'U',
-            'V',
-            'W',
-            'X',
-            'Y',
-            'Z',
-        ];
-        $numbers = [
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            '10',
-            '11',
-            '12',
-            '13',
-            '14',
-            '15',
-            '16',
-            '17',
-            '18',
-            '19',
-            '20',
-            '21',
-            '22',
-            '23',
-            '24',
-            '25',
-            '26',
-        ];
-        if (!@cms_empty_safe($map['columns_display'])) {
-            $map['columns_display'] = str_replace($letters, $numbers, $map['columns_display']);
-        }
-        if (!@cms_empty_safe($map['columns_tooltip'])) {
-            $map['columns_tooltip'] = str_replace($letters, $numbers, $map['columns_tooltip']);
-        }
+        $columns_display = empty($map['columns_display']) ? [] : array_map([$this, 'letters_to_numbers'], $this->parse_comma_separated($map['columns_display']));
+        $columns_tooltip = empty($map['columns_tooltip']) ? [] : array_map([$this, 'letters_to_numbers'], $this->parse_comma_separated($map['columns_tooltip']));
 
-        $labels = @cms_empty_safe($map['labels']) ? [] : array_map('trim', explode(',', $map['labels']));
-        $labels_tooltip = @cms_empty_safe($map['labels_tooltip']) ? [] : array_map('trim', explode(',', $map['labels_tooltip']));
-        $columns_display = @cms_empty_safe($map['columns_display']) ? [] : array_map('intval', array_map('trim', explode(',', $map['columns_display'])));
-        $columns_tooltip = @cms_empty_safe($map['columns_tooltip']) ? [] : array_map('intval', array_map('trim', explode(',', $map['columns_tooltip'])));
+        $labels = empty($map['labels']) ? [] : $this->parse_comma_separated($map['labels']);
+        $labels = $this->set_property_list_alignment($labels, $columns_display);
 
-        $stylings = empty($map['stylings']) ? [] : array_map('trim', explode(',', $map['stylings']));
-        $classes = empty($map['classes']) ? [] : array_map('trim', explode(',', $map['classes']));
+        $labels_tooltip = empty($map['labels_tooltip']) ? [] : $this->parse_comma_separated($map['labels_tooltip']);
+        $labels_tooltip = $this->set_property_list_alignment($labels_tooltip, $columns_display);
+
+        $stylings_header = empty($map['stylings_header']) ? [] : $this->parse_comma_separated($map['stylings_header']);
+        $stylings_header = $this->set_property_list_alignment($stylings_header, $columns_display);
+
+        $stylings = empty($map['stylings']) ? [] : $this->parse_comma_separated($map['stylings']);
+        $stylings = $this->set_property_list_alignment($stylings, $columns_display);
+
+        $classes = empty($map['classes']) ? [] : $this->parse_comma_separated($map['classes']);
+        $classes = $this->set_property_list_alignment($classes, $columns_display);
 
         if (empty($map['transform'])) {
             $transform = [];
         } else {
-            $transform = array_map('trim', explode(',', $map['transform']));
+            $transform = $this->parse_comma_separated($map['transform']);
+            $transform = $this->set_property_list_alignment($transform, $columns_display);
         }
 
         $guid = empty($map['guid']) ? '' : $map['guid'];
+        $class = empty($map['class']) ? '' : $map['class'];
 
         // What will we be reading?
         $file = empty($map['param']) ? 'example.csv' : $map['param'];
@@ -171,7 +120,7 @@ PHP;
             }
             $path = get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($file);
             if (!is_file($path)) {
-                $path = get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($file);
+                $path = get_file_base() . '/uploads/website_specific/' . filter_naughty($file);
             }
             if (!is_file($path)) {
                 return paragraph('File not found (' . escape_html($file) . ').', 'encs8t6p4oax17o84fq6uwhjcty6mo13', 'nothing-here');
@@ -231,22 +180,6 @@ PHP;
 
                 if (implode('', $row) == '') {
                     continue;
-                }
-
-                foreach ($row as $j => $val) {
-                    foreach ($transform as $_transform) {
-                        switch ($_transform) {
-                            case 'ucwords':
-                                $val = cms_mb_ucwords($val);
-                                break;
-
-                            case 'non-numeric-italics':
-                                if (!is_numeric($val)) {
-                                    $row[$j] = protect_from_escaping('<em>' . escape_html($val) . '</em>');
-                                }
-                                break;
-                        }
-                    }
                 }
 
                 $_rows[] = $row;
@@ -357,13 +290,20 @@ PHP;
             }
         }
 
-        // Work out data types
+        // Work out data types and set automatic classnames
         foreach ($headers as $j => &$header) {
             if ($header['SORTABLE_TYPE'] !== null) {
                 continue; // Already known
             }
 
             $header['SORTABLE_TYPE'] = $this->determine_field_type($_rows, $j);
+
+            if (!empty($classes[$j])) {
+                $classes[$j] .= ' ';
+            } else {
+                $classes[$j] = '';
+            }
+            $classes[$j] .= 'column-' . fix_id($header['LABEL'], true);
         }
 
         // Work out filterability
@@ -396,6 +336,18 @@ PHP;
         foreach ($_rows as $i => &$row) {
             foreach ($row as $j => &$value) {
                 $value = $this->apply_formatting($value, $headers[$j]['SORTABLE_TYPE']);
+
+                switch (is_array($transform) ? $transform[$j] : $transform) {
+                    case 'ucwords':
+                        $value = cms_mb_ucwords($value);
+                        break;
+
+                    case 'non-numeric-italics':
+                        if ((!is_numeric($val)) && ($val != '')) {
+                            $value = protect_from_escaping('<em>' . escape_html($value) . '</em>');
+                        }
+                        break;
+                }
             }
 
             $tooltip_values = [];
@@ -416,9 +368,14 @@ PHP;
 
         // Final render...
 
-        $id = (preg_match('#^[\w_]+$#', $guid) != 0) ? $guid : uniqid('', false);
+        $id = (preg_match('#^[\w_\-]+$#', $guid) != 0) ? $guid : uniqid('', false);
 
-        $_default_sort_column = max(0, empty($map['default_sort_column']) ? 0 : (intval(str_replace($letters, $numbers, $map['default_sort_column'])) - 1));
+        $reverse_sorting = false;
+        if ((!empty($map['default_sort_column'])) && (substr($map['default_sort_column'], 0, 1) == '!')) {
+            $reverse_sorting = true;
+            $map['default_sort_column'] = substr($map['default_sort_column'], 1);
+        }
+        $_default_sort_column = max(0, empty($map['default_sort_column']) ? 0 : ($this->letters_to_numbers($map['default_sort_column']) - 1));
         $default_sort_column = ($columns_display == []) ? $_default_sort_column : array_search($_default_sort_column + 1, $columns_display);
         if ($default_sort_column === false) {
             $default_sort_column = 0;
@@ -428,12 +385,143 @@ PHP;
         return do_template('SORTABLE_TABLE', [
             '_GUID' => $guid,
             'ID' => $id,
-            'DEFAULT_SORT_COLUMN' => strval($default_sort_column),
+            'CLASS' => $class,
+            'DEFAULT_SORT_COLUMN' => ($reverse_sorting ? '!' : '') . strval($default_sort_column),
             'MAX' => strval($max),
             'HEADERS' => $headers,
+            'STYLINGS_HEADER' => $stylings_header,
+            'CLASSES' => $classes,
             'ROWS' => $rows,
             'NUM_ROWS' => strval(count($_rows)),
         ]);
+    }
+
+    /**
+     * Parse out comma-separated lists, with escaping support.
+     *
+     * @param  string $str Input string
+     * @return array List
+     */
+    protected function parse_comma_separated($str)
+    {
+        $out = [];
+        $tmp = '';
+        $escaped = false;
+        $len = strlen($str);
+        for ($i = 0; $i < $len; $i++) {
+            $c = $str[$i];
+            if ($escaped) {
+                $tmp .= $c;
+                $escaped = false;
+            } elseif ($c == ',') {
+                $out[] = $tmp;
+                $tmp = '';
+            } elseif ($c == '\\') {
+                $escaped = true;
+            } else {
+                $tmp .= $c;
+            }
+        }
+        $out[] = $tmp;
+        return $out;
+    }
+
+    /**
+     * Support for column letter syntax as an alternative to position-aligned syntax.
+     *
+     * @param  array $list Property list with use of both possible syntaxes.
+     * @param  array $columns_display Columns displayed.
+     * @return array Property list with just position-aligned syntax.
+     */
+    protected function set_property_list_alignment($list, $columns_display)
+    {
+        $_list = array_fill(0, count($columns_display), null);
+        $i = 0;
+        foreach ($list as $l) {
+            $l = trim($l);
+
+            $matches = [];
+            if (preg_match('#^([A-Z\d]+)=(.*)$#i', $l, $matches) != 0) {
+                $column_code = $this->letters_to_numbers($matches[1]);
+                foreach ($columns_display as $column_index => $_column_code) {
+                    if ($_column_code == $column_code) {
+                        $_list[$column_index] = $matches[2];
+                    }
+                }
+            } else {
+                $_list[$i] = $l;
+                $i++;
+            }
+        }
+        return $_list;
+    }
+
+    /**
+     * Convert column letters to normal numbers (starting from 1).
+     *
+     * @param  string $val Value to convert
+     * @return integer Converted value
+     */
+    public function letters_to_numbers($val)
+    {
+        $letters = [
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+            'F',
+            'G',
+            'H',
+            'I',
+            'J',
+            'K',
+            'L',
+            'M',
+            'N',
+            'O',
+            'P',
+            'Q',
+            'R',
+            'S',
+            'T',
+            'U',
+            'V',
+            'W',
+            'X',
+            'Y',
+            'Z',
+        ];
+        $numbers = [
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            '10',
+            '11',
+            '12',
+            '13',
+            '14',
+            '15',
+            '16',
+            '17',
+            '18',
+            '19',
+            '20',
+            '21',
+            '22',
+            '23',
+            '24',
+            '25',
+            '26',
+        ];
+
+        return intval(str_replace($letters, $numbers, $val));
     }
 
     /**
@@ -444,7 +532,7 @@ PHP;
      * @return string Field type
      * @set integer float date currency alphanumeric
      */
-    public function determine_field_type($_rows, $j)
+    protected function determine_field_type($_rows, $j)
     {
         $sortable_type = null;
         foreach ($_rows as $row) {
@@ -527,7 +615,7 @@ PHP;
      * @set integer float date currency alphanumeric
      * @return string Formatted value
      */
-    public function apply_formatting($value, $sortable_type)
+    protected function apply_formatting($value, $sortable_type)
     {
         if (($sortable_type == 'integer') && (is_numeric($value))) {
             $value = integer_format(intval($value));

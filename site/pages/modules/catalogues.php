@@ -944,10 +944,28 @@ class Module_catalogues
         }
 
         cms_mb_ksort($cats, SORT_NATURAL | SORT_FLAG_CASE);
+        $_display_type = C_DT_FIELDMAPS;
         foreach ($cats as $letter => $entries) {
-            list($entry_buildup) = render_catalogue_category_entry_buildup(null, $catalogue_name, $catalogue, 'CATEGORY', $tpl_set, $max, $start, null, $root, null, true, $entries);
+            list($entry_buildup, , , , $_display_type) = render_catalogue_category_entry_buildup(null, $catalogue_name, $catalogue, 'CATEGORY', $tpl_set, $max, $start, null, $root, null, true, $entries);
 
             $category_buildup->attach(do_template('CATALOGUE_CATEGORY_HEADING', ['_GUID' => '633d73ad882c9f28524ad27120b77b78', 'LETTER' => is_integer($letter) ? strval($letter) : $letter, 'ENTRIES' => escape_html($entry_buildup)], null, false, 'CATALOGUE_CATEGORY_HEADING'));
+        }
+
+        // Find display type
+        $display_type = '';
+        switch ($_display_type) {
+            case C_DT_FIELDMAPS:
+                $display_type = 'FIELDMAPS';
+                break;
+            case C_DT_TITLELIST:
+                $display_type = 'TITLELIST';
+                break;
+            case C_DT_TABULAR:
+                $display_type = 'TABULAR';
+                break;
+            case C_DT_GRID:
+                $display_type = 'GRID';
+                break;
         }
 
         // Management links
@@ -988,6 +1006,7 @@ class Module_catalogues
                 'SUBCATEGORIES' => '',
                 'DESCRIPTION' => '',
                 'ID' => '',
+                'DISPLAY_TYPE' => $display_type,
             ],
             null,
             false,

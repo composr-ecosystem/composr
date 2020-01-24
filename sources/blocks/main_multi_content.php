@@ -106,7 +106,7 @@ PHP;
         if (addon_installed('content_privacy')) {
             $info['special_cache_flags'] |= CACHE_AGAINST_MEMBER;
         }
-        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 30;
+        $info['ttl'] = 30;
         return $info;
     }
 
@@ -266,11 +266,11 @@ PHP;
             if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($info['category_type'] !== '<page>')) {
                 $where .= get_permission_where_clause(get_member(), $groups2, 'a2', 'ma2');
             }
+        }
 
-            if (array_key_exists('where', $info)) {
-                $where .= ' AND ';
-                $where .= $info['where'];
-            }
+        if (array_key_exists('where', $info)) {
+            $where .= ' AND ';
+            $where .= $info['where'];
         }
 
         if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (has_privilege(get_member(), 'see_unvalidated'))) {

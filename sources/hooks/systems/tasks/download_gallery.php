@@ -52,7 +52,7 @@ class Hook_task_download_gallery
 
         $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
-        $ini_set['zlib.output_compression'] = 'Off';
+        $ini_set += _disable_output_compression();
 
         $rows_images = $GLOBALS['SITE_DB']->query_select('images', ['id', 'url', 'add_date'], ['cat' => $cat, 'validated' => 1]);
         $rows_videos = $GLOBALS['SITE_DB']->query_select('videos', ['id', 'url', 'add_date'], ['cat' => $cat, 'validated' => 1]);

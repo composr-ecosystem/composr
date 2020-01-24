@@ -408,7 +408,7 @@ function cdn_filter($url)
  */
 function _search_img_file($theme, $lang, $id, $dir = 'images')
 {
-    $places = [get_custom_file_base(), get_file_base()];
+    $places = array_unique([get_custom_file_base(), get_file_base()]);
     $extensions = ['png', 'jpg', 'jpe', 'jpeg', 'gif', 'ico', 'cur', 'svg', 'webp', 'bmp'];
 
     foreach ($places as $_base) {
@@ -424,7 +424,7 @@ function _search_img_file($theme, $lang, $id, $dir = 'images')
             }
             $file_path .= $id . '.' . $extension;
 
-            if (is_file($file_path)) { // Good, now return URL
+            if (@is_file($file_path)) { // Good, now return URL (@ in case something component in path is actually a file https://bugs.php.net/bug.php?id=52065)
                 $url = cms_rawurlrecode('themes/' . rawurlencode($theme) . '/' . $dir . '/');
                 if (!empty($lang)) {
                     $url .= $lang . '/';

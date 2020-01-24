@@ -36,9 +36,6 @@ class Module_cms_banners extends Standard_crud_module
     protected $permission_module = 'banners';
     protected $menu_label = 'BANNERS';
     protected $array_key = 'name';
-    protected $title_is_multi_lang = false;
-
-    protected $do_next_type = null;
 
     public $title;
 
@@ -94,7 +91,6 @@ class Module_cms_banners extends Standard_crud_module
         $this->cat_crud_module = class_exists('Mx_cms_banners_cat') ? new Mx_cms_banners_cat() : new Module_cms_banners_cat();
 
         $type = get_param_string('type', 'browse');
-
 
         inform_non_canonical_parameter('b_type');
 
@@ -295,7 +291,7 @@ class Module_cms_banners extends Standard_crud_module
     }
 
     /**
-     * Get the Tempcode for the form to add a banner, with the information passed along to it via the parameters already added in.
+     * Get Tempcode for adding/editing form.
      *
      * @param  ID_TEXT $name The name of the banner (blank: new)
      * @param  URLPATH $image_url The URL to the banner image
@@ -658,7 +654,6 @@ class Module_cms_banners_cat extends Standard_crud_module
     protected $select_name_description = '_DESCRIPTION_BANNER_TYPE';
     protected $orderer = 'id';
     protected $array_key = 'id';
-    protected $title_is_multi_lang = false;
     protected $non_integer_id = true;
     protected $protect_first = 1;
     protected $table = 'banner_types';

@@ -203,8 +203,6 @@ class Module_filedump
                     break;
 
                 case 'zip':
-                    $GLOBALS['OUTPUT_STREAMING'] = false;
-
                     $this->title = get_screen_title('FILEDUMP_ZIP');
                     break;
 

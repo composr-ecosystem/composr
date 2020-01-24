@@ -619,7 +619,7 @@ class Module_admin_import
         global $I_REFRESH_URL, $I_REFRESH_TIME;
         $I_REFRESH_URL = $refresh_url;
         $I_REFRESH_TIME = $refresh_time;
-        $GLOBALS['NO_QUERY_LIMIT'] = true;
+        push_query_limiting(false);
         if ($I_REFRESH_TIME != 0) {
             register_tick_function('i_timed_refresh');
         }
@@ -731,6 +731,8 @@ class Module_admin_import
 
         // Cleanup
         post_import_cleanup();
+
+        pop_query_limiting();
 
         //$back_url = build_url(['page' => '_SELF', 'type' => 'hook', 'importer' => get_param_string('importer'), 'just' => $import_last, 'session' => $session], '_SELF'); Actually we won't do this, as we want to be able to see any PHP errors that had been spit out
         // Instead we will just go back to choose_actions

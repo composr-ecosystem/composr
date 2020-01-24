@@ -160,6 +160,7 @@ function get_mime_types($as_admin)
         'tar' => 'application/x-tar',
         'zip' => 'application/zip',
         'gz' => 'application/gzip',
+        'br' => 'application/x-brotli',
         'tgz' => 'application/gzip',
         'bz2' => 'application/x-bzip2',
         '7z' => 'application/x-7z-compressed',

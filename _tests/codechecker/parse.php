@@ -361,6 +361,11 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                 do {
                     pparse__parser_next();
                     $trait = pparse__parser_expect('IDENTIFIER');
+
+                    if (in_array($trait, $class['traits'])) {
+                        log_warning('Duplicated use of trait: ' . $trait);
+                    }
+
                     $class['traits'][] = $trait;
 
                     if (isset($FUNCTION_SIGNATURES[$trait])) {
@@ -449,6 +454,13 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                     } else {
                         $identifier = pparse__parser_expect('variable');
                     }
+
+                    foreach ($class[($next == 'CONST') ? 'constants' : 'vars'] as $class_member) {
+                        if ($class_member[0] == $identifier) {
+                            log_warning('Duplicated class member: ' . $identifier);
+                        }
+                    }
+
                     $next_2 = pparse__parser_peek();
                     if ($next_2 == 'EQUAL') {
                         pparse__parser_next();
@@ -701,7 +713,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
         $next_2 = pparse__parser_peek();
         $I--;
         if ($next_2 == 'SCOPE') {
-            $next = ['IDENTIFIER', 'static' , $next[2]]; // Like static::FOO, a way to avoid writing in class name. But it conflicts with static variable declaration syntax so we need to adjust it.
+            $next = ['IDENTIFIER', 'static' , $GLOBALS['I']]; // Like static::FOO, a way to avoid writing in class name. But it conflicts with static variable declaration syntax so we need to adjust it.
         }
     }
 
@@ -802,7 +814,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             break;
 
         case 'IDENTIFIER': // Direct function call, or jump label
-            $next = pparse__parser_next(true);
+            pparse__parser_next();
             $identifier = $next[1];
             $next_2 = pparse__parser_peek();
             if ($next_2 == 'COLON') {
@@ -816,7 +828,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
                 if ($command[0] == 'CALL_DIRECT') {
                     $command = ['CALL_METHOD', ['IDENTIFIER', /*class name*/$identifier, ['DEREFERENCE', ['VARIABLE', /*method name*/$command[1], [], $GLOBALS['I']], [], $GLOBALS['I']], $GLOBALS['I']], /*params*/$command[2], $GLOBALS['I']];
                 } else {
-                    $expression = ['REFERENCE', $command, $GLOBALS['I']];
+                    $command = ['REFERENCE', $command, $GLOBALS['I']];
                 }
             } else {
                 pparse__parser_expect('PARENTHESIS_OPEN');
@@ -1230,7 +1242,7 @@ function _parse_cases()
                     }
                 }
                 foreach ($cases as $c) {
-                    if (($c[0][0] == 'LITERAL') && ($expression[0] == 'LITERAL') && ($c[0][1][1] == $expression[1][1])) {
+                    if (($c[0] !== null) && ($c[0][0] == 'LITERAL') && ($expression[0] == 'LITERAL') && ($c[0][1][1] == $expression[1][1])) {
                         log_warning('Duplicate case expression');
                     }
                 }
@@ -1410,8 +1422,11 @@ function _parse_expression_inner()
                 $expression = _parse_expression_inner();
                 if ($expression[0] == 'CALL_DIRECT') {
                     $expression[0] = 'CALL_METHOD';
+                    $identifier = $next[1];
+                    $expression = ['CALL_METHOD', ['IDENTIFIER', /*class name*/$identifier, ['DEREFERENCE', ['VARIABLE', /*method name*/$expression[1], [], $GLOBALS['I']], [], $GLOBALS['I']], $GLOBALS['I']], /*params*/$expression[2], $GLOBALS['I']];
+                } else {
+                    $expression = [['CONSTANT', $next[1], $GLOBALS['I']], ['DEREFERENCE', $expression, []], $GLOBALS['I']];
                 }
-                $expression = [['CONSTANT', $next[1], $GLOBALS['I']], ['DEREFERENCE', $expression, []], $GLOBALS['I']];
             } elseif ($next_2 == 'PARENTHESIS_OPEN') { // Is it an inline direct function call
                 pparse__parser_next();
                 $parameters = _parse_function_call();

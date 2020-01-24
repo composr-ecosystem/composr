@@ -38,6 +38,7 @@ class Hook_config_long_google_cookies
             'explanation' => 'CONFIG_OPTION_long_google_cookies',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 6,
             'required' => true,
             'public' => true,
 

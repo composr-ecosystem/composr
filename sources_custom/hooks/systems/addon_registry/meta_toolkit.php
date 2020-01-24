@@ -146,7 +146,8 @@ class Hook_addon_registry_meta_toolkit
             'data_custom/cleanout.php',
             'adminzone/pages/minimodules_custom/admin_generate_adhoc_upgrade.php',
             'delete_alien_files.php',
-            'line_count.sh',
+            'line_count.php',
+            'sources_custom/third_party_code.php',
             'sources_custom/install_headless.php',
         ];
     }

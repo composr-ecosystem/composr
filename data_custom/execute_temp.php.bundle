@@ -27,8 +27,8 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
     $RELATIVE_PATH = '';
 }
 if (!is_file($FILE_BASE . '/sources/global.php')) {
-	$FILE_BASE = $_SERVER['SCRIPT_FILENAME']; // this is with symlinks-unresolved (__FILE__ has them resolved); we need as we may want to allow zones to be symlinked into the base directory without getting path-resolved
-	$FILE_BASE = dirname($FILE_BASE);
+    $FILE_BASE = $_SERVER['SCRIPT_FILENAME']; // this is with symlinks-unresolved (__FILE__ has them resolved); we need as we may want to allow zones to be symlinked into the base directory without getting path-resolved
+    $FILE_BASE = dirname($FILE_BASE);
     if (!is_file($FILE_BASE . '/sources/global.php')) {
         $RELATIVE_PATH = basename($FILE_BASE);
         $FILE_BASE = dirname($FILE_BASE);
@@ -53,7 +53,7 @@ require($FILE_BASE . '/sources/global.php');
 require_all_core_cms_code();
 $out = execute_temp();
 if (!headers_sent()) {
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
     cms_ini_set('ocproducts.xss_detect', '0');
     if ($out !== null) {
         echo is_object($out) ? $out->evaluate() : (is_bool($out) ? ($out ? 'true' : 'false') : $out);

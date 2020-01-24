@@ -28,7 +28,6 @@ class Module_admin_cns_post_templates extends Standard_crud_module
     protected $lang_type = 'POST_TEMPLATE';
     protected $select_name = 'TITLE';
     protected $table_prefix = 't_';
-    protected $title_is_multi_lang = false;
     protected $archive_entry_point = '_SEARCH:forumview';
     protected $archive_label = 'SECTION_FORUMS';
     protected $menu_label = 'POST_TEMPLATES';

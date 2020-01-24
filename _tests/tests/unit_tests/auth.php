@@ -88,13 +88,15 @@ class auth_test_set extends cms_test_case
 
     public function testCannotStealSession()
     {
-        $fake_session_id = '1234543';
-
         $ips = [];
         $ips[get_ip_address(3, get_server_external_looparound_ip())] = true;
         $ips[get_ip_address(3, '1.2.3.4')] = false;
 
+        require_code('crypt');
+
         foreach ($ips as $ip => $pass_expected) { // We actually test both pass and fail, to help ensure our test is actually not somehow getting a failure from something else
+            $fake_session_id = get_secure_random_string();
+
             // Clean up
             $GLOBALS['SITE_DB']->query_delete('sessions', ['the_session' => $fake_session_id]);
 
@@ -117,12 +119,20 @@ class auth_test_set extends cms_test_case
 
             require_code('files');
             $url = static_evaluate_tempcode(build_url(['page' => ''], 'adminzone', [], false, false, true));
-            $http_result = cms_http_request($url, ['trigger_error' => false, 'cookies' => [get_session_cookie() => $fake_session_id]]);
+            $http_result = cms_http_request($url, ['ignore_http_status' => true, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $fake_session_id]]);
 
             if ($pass_expected) {
-                $this->assertTrue($http_result->message != '401', 'No access when expected for ' . $ip);
+                $success = ($http_result->message != '401');
+                if ((!$success) && ($this->debug)) {
+                    var_dump($http_result);
+                }
+                $this->assertTrue($success, 'No access when expected for ' . $ip . ' with ' . $fake_session_id);
             } else {
-                $this->assertTrue($http_result->message == '401', 'Access when none expected for ' . $ip);
+                $success = ($http_result->message == '401');
+                if ((!$success) && ($this->debug)) {
+                    var_dump($http_result);
+                }
+                $this->assertTrue($success, 'Access when none expected for ' . $ip . ' with ' . $fake_session_id);
             }
         }
     }

@@ -318,9 +318,9 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         }
         if ($source != '') {
             if (get_db_type() != 'xml') {
-                cms_register_shutdown_function_safe(function () use ($name) {
+                cms_register_shutdown_function_safe(function () use ($source) {
                     if (!$GLOBALS['SITE_DB']->table_is_locked('banners')) {
-                        $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET views_from=(views_from+1) WHERE ' . db_string_equal_to('name', $name), 1, 0, true); // Errors suppressed in case DB write access broken
+                        $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET views_from=(views_from+1) WHERE ' . db_string_equal_to('name', $source), 1, 0, true); // Errors suppressed in case DB write access broken
                     }
                 });
             }

@@ -360,7 +360,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
                         continue;
                     }
 
-                    $file_template_name = preg_replace('#(\.tcp|\.gz|_mobile|_non_minified|_ssl)#', '', $file);
+                    $file_template_name = preg_replace('#(\.tcp|\.gz|\.br|_mobile|_non_minified|_ssl)#', '', $file);
 
                     // $using_less filter (we never want to force the main global.less file to be decached, too expensive)
                     if (($using_less) && ($file_template_name == 'global.less')) {
@@ -377,6 +377,8 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
                             (substr($file_template_name, -4) == '.css')
                             ||
                             (substr($file_template_name, -3) == '.gz')
+                            ||
+                            (substr($file_template_name, -3) == '.br')
                         )
                     ) {
                         continue;

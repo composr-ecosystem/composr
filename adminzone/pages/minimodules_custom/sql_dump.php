@@ -60,7 +60,7 @@ if (!isset($_GET['testing'])) {
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
 } else {
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 }
 
 // Output

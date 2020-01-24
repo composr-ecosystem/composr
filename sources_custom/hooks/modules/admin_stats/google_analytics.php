@@ -16,14 +16,14 @@
 /**
  * Hook class.
  */
-class Hook_admin_stats_google_analytics
+class Hook_admin_stats_google_analytics extends CMSStatsBlob
 {
     /**
-     * Define stats screens implemented in this hook.
+     * Find metadata about stats categories that are defined by this stats hook.
      *
-     * @return ?array A pair: entry-point, do-next information (null: hook is disabled).
+     * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function category_info()
     {
         if (!addon_installed('google_analytics')) {
             return null;
@@ -38,30 +38,66 @@ class Hook_admin_stats_google_analytics
         }
 
         return [
-            ['demographics' => ['_GOOGLE_ANALYTICS', 'buttons/search'],],
-            ['buttons/search', ['_SELF', ['type' => 'google_analytics'], '_SELF'], do_lang('_GOOGLE_ANALYTICS'), 'DOC_GOOGLE_ANALYTICS'],
+            'google_analytics' => [
+                'label_lang_string' => 'GOOGLE_ANALYTICS_SIMPLIFIED',
+                'icon' => 'spare/analytics',
+            ],
         ];
     }
 
     /**
-     * The UI to show Google Analytics.
+     * Find metadata about stats graphs that are provided by this stats hook.
      *
-     * @param  object $ob The stats module object
-     * @param  string $type The screen type
-     * @return Tempcode The UI
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
+     * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function google_analytics($ob, $type)
+    public function info($for_kpi = false)
     {
+        if (!addon_installed('google_analytics')) {
+            return null;
+        }
+
         require_code('google_analytics');
         require_lang('google_analytics');
 
-        set_helper_panel_text(comcode_lang_string('DOC_GOOGLE_ANALYTICS'));
+        $result = google_analytics_initialise(true);
+        if (is_object($result)) {
+            return null;
+        }
 
-        $ga = render_google_analytics(get_param_string('id', '*'));
-        return do_template('PAGINATION_SCREEN', [
-            '_GUID' => '48dedd8da83a0ebbf1a9e050d5cf6ac5',
-            'TITLE' => get_screen_title('_GOOGLE_ANALYTICS'),
-            'CONTENT' => $ga,
-        ]);
+        $metrics = enumerate_google_analytics_metrics();
+
+        $ret = [];
+
+        foreach ($metrics as $metric_name => $metric_label) {
+            $ret['google_analytics__' . $metric_name] = [
+                'label' => make_string_tempcode($metric_label),
+                'category' => 'google_analytics',
+                'filters' => [],
+                'pivot' => null,
+            ];
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Generate graph.
+     *
+     * @param  string $graph_name Graph name
+     * @param  array $filters Filter settings to take precedence
+     * @return Tempcode Graph
+     */
+    public function generate($graph_name, $filters)
+    {
+        static $done_once = false;
+        if (!$done_once) {
+            set_helper_panel_text(comcode_lang_string('DOC_GOOGLE_ANALYTICS'));
+            $done_once = true;
+        }
+
+        $days = empty($filters['days']) ? 31 : intval($filters['days']);
+
+        return render_google_analytics(preg_replace('#^google_analytics__#', '', $graph_name), null, $days);
     }
 }

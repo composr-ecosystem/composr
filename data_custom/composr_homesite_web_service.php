@@ -62,7 +62,7 @@ header('X-Robots-Tag: noindex');
 
 require_code('composr_homesite');
 
-header('Content-type: text/plain; charset=' . get_charset());
+header('Content-Type: text/plain; charset=' . get_charset());
 
 $call = get_param_string('call');
 

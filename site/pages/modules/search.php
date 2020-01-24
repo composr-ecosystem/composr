@@ -460,7 +460,7 @@ class Module_search
             if ($days === null) {
                 $_days = get_value('search_days__' . $id);
                 if ($_days === null) {
-                    $days = ($id == 'cns_members') ? -1 : 60;
+                    $days = -1;
                 } else {
                     $days = intval($_days);
                     if ($days == 0) {
@@ -567,14 +567,6 @@ class Module_search
         // What we're searching for
         $content = get_param_string('content', false, INPUT_FILTER_GET_COMPLEX);
 
-        // Did you mean?
-        require_code('spelling');
-        $corrected = spell_correct_phrase($content);
-        if (cms_mb_strtolower($corrected) != cms_mb_strtolower($content)) {
-            $search_url = get_self_url(true, false, ['content' => $corrected]);
-            attach_message(do_lang_tempcode('DID_YOU_MEAN', escape_html($corrected), escape_html($search_url)), 'notice');
-        }
-
         // Search keyword highlighting in any loaded Comcode
         global $SEARCH__CONTENT_BITS;
         $_content_bits = explode(' ', str_replace('"', '', cms_preg_replace_safe('#(^|\s)\+#', '', cms_preg_replace_safe('#(^|\s)\-#', '', $content))));
@@ -656,6 +648,16 @@ class Module_search
                 }
 
                 $results = sort_search_results($hook_results, $results, $direction);
+            }
+        }
+
+        if (empty($results)) {
+            // Did you mean?
+            require_code('spelling');
+            $corrected = spell_correct_phrase($content);
+            if (cms_mb_strtolower($corrected) != cms_mb_strtolower($content)) {
+                $search_url = get_self_url(true, false, ['content' => $corrected]);
+                attach_message(do_lang_tempcode('DID_YOU_MEAN', escape_html($corrected), escape_html($search_url)), 'notice');
             }
         }
 

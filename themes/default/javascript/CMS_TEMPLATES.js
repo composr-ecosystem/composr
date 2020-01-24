@@ -29,51 +29,50 @@
 
     $cms.templates.blockMainScreenActions = function blockMainScreenActions(params, container) {
         var urlEncodedCanonicalUrl = strVal(params.urlEncodedCanonicalUrl);
-
-        $dom.on(container, 'click', '.js-click-action-print-screen', function () {
-            $cms.gaTrack(null,'{!recommend:PRINT_THIS_SCREEN;}');
+        $dom.on(container, 'click', '.js-click-print-screen', function () {
+            $cms.statsEventTrack(null, '{!recommend:PRINT_THIS_SCREEN;}', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-facebook', function () {
-            $cms.gaTrack(null,'social__facebook');
+        $dom.on(container, 'click', '.js-click-add-to-facebook', function () {
+            $cms.statsEventTrack(null, 'social__facebook', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-twitter', function (e, link) {
+        $dom.on(container, 'click', '.js-click-add-to-twitter', function (e, link) {
             link.href = 'https://twitter.com/share?count=horizontal&counturl=' + urlEncodedCanonicalUrl + '&original_referer=' + urlEncodedCanonicalUrl + '&text=' + encodeURIComponent(document.title) + '&url=' + urlEncodedCanonicalUrl;
 
-            $cms.gaTrack(null,'social__twitter');
+            $cms.statsEventTrack(null, 'social__twitter', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-digg', function () {
-            $cms.gaTrack(null,'social__digg');
+        $dom.on(container, 'click', '.js-click-add-to-digg', function () {
+            $cms.statsEventTrack(null, 'social__digg', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-linkedin', function () {
-            $cms.gaTrack(null,'social__linkedin');
+        $dom.on(container, 'click', '.js-click-add-to-linkedin', function () {
+            $cms.statsEventTrack(null, 'social__linkedin', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-pinterest', function () {
-            $cms.gaTrack(null,'social__pinterest');
+        $dom.on(container, 'click', '.js-click-add-to-pinterest', function () {
+            $cms.statsEventTrack(null, 'social__pinterest', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-tumblr', function () {
-            $cms.gaTrack(null,'social__tumblr');
+        $dom.on(container, 'click', '.js-click-add-to-tumblr', function () {
+            $cms.statsEventTrack(null, 'social__tumblr', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-vk', function () {
-            $cms.gaTrack(null,'social__vk');
+        $dom.on(container, 'click', '.js-click-add-to-vk', function () {
+            $cms.statsEventTrack(null, 'social__vk', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-sina-weibo', function () {
-            $cms.gaTrack(null,'social__sina_weibo');
+        $dom.on(container, 'click', '.js-click-add-to-sina-weibo', function () {
+            $cms.statsEventTrack(null, 'social__sina_weibo', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-tencent-weibo', function () {
-            $cms.gaTrack(null,'social__tencent_weibo');
+        $dom.on(container, 'click', '.js-click-add-to-tencent-weibo', function () {
+            $cms.statsEventTrack(null, 'social__tencent_weibo', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-action-add-to-qzone', function () {
-            $cms.gaTrack(null,'social__qzone');
+        $dom.on(container, 'click', '.js-click-add-to-qzone', function () {
+            $cms.statsEventTrack(null, 'social__qzone', null, null, true);
         });
     };
 

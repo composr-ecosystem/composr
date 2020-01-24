@@ -68,11 +68,11 @@ This section is not actively maintained. Package names may change, but it is des
 [i]These instructions have not been tested since changes have been made to them.[/i]
 
 [code="Bash"]
-apt install apache2 libapache2-mod-php php php-common php-cli php-apcu php-curl \
-php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-pspell php-json \
-php-xml php-intl openssl mysql-server mysql-client \
-postfix nano wget lynx hunspell git openssh-server nano wget sysstat iotop \
-whois dnsutils
+apt install apache2 libapache2-mod-php php php-common php-cli php-apcu curl php-curl \
+php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-mbstring php-pspell \
+php-xml php-intl php-json openssl mysql-server mysql-client \
+postfix nano wget lynx hunspell aspell aspell-en git openssh-server nano wget sysstat iotop \
+screen zip unzip bzip2 gzip tar whois dnsutils
 [/code]
 
 Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need changing:
@@ -103,10 +103,11 @@ Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need
 You may need to setup the [url="EPEL repository"]https://www.tecmint.com/how-to-enable-epel-repository-for-rhel-centos-6-5/[/url] first.
 
 [code="Bash"]
-yum install httpd mod_ssl mod_fcgid php php-common php-cli php-pecl-apc php-pdo curl enchant \
-freetype gd php-gd php-imap php-mysqlnd php-mbstring php-pspell php-xml php-json openssl mysql-server \
-mysql sendmail nano wget lynx hunspell git openssh-server aspell aspell-en nano wget sysstat iotop \
-hunspell-en screen unzip whois dnsutils
+yum install httpd mod_ssl mod_fcgid php php-common php-cli php-pecl-apc php-pdo curl \
+enchant freetype php-gd php-imap php-pecl-zip php-mysqlnd php-mbstring php-pspell \
+php-xml php-intl php-json openssl mysql-server mysql \
+sendmail nano wget lynx hunspell hunspell-en aspell aspell-en git openssh-server sysstat iotop \
+screen zip unzip bzip2 gzip tar whois dnsutils
 [/code]
 
 You may have selinux installed, you can see if you do with [tt]sestatus[/tt]:

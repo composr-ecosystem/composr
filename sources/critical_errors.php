@@ -169,7 +169,7 @@ if (!function_exists('critical_error')) {
         $extra = '';
 
         $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
-        $in_upgrader = (strpos($script_name, 'upgrader.php') !== false);
+        $in_upgrader = (basename($script_name) == 'upgrader.php');
 
         if (
             (strpos($error, 'Allowed memory') === false) &&
@@ -226,7 +226,7 @@ if (!function_exists('critical_error')) {
 
         $headers_sent = headers_sent();
         if (!$headers_sent) {
-            @header('Content-type: text/html; charset=utf-8');
+            @header('Content-Type: text/html; charset=utf-8');
             echo '<' . '!DOCTYPE html>';
             echo <<<END
 <html lang="EN">
@@ -257,7 +257,7 @@ END;
         }
         echo $extra, "\n";
         if ($may_show_footer) {
-            echo '<p>Details here are intended only for the website/system-administrator, not for regular website users.<br />&raquo; <strong>If you are a regular website user, please let the website staff deal with this problem.</strong></p>' . "\n" . '<p class="associated-details">Depending on the error, and only if the website installation finished, you may need to <a href="#!" onclick="if (!window.confirm(\'Are you staff on this site?\')) return false; this.href=\'' . htmlentities($edit_url) . '\';">edit the installation options</a> (the <kbd>_config.php</kbd> file).</p>' . "\n" . '<p class="associated-details">ocProducts maintains full documentation for all procedures and tools (including <a href="https://compo.sr/docs/tut-disaster.htm">disaster recovery</a>). These may be found on the <a href="http://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p>' . "\n" . '<hr />' . "\n" . '<p style="font-size: 0.8em"><a href="https://compo.sr/">Composr</a> is a <abbr title="Content Management System">CMS</abbr> for building websites, developed by ocProducts.</p>' . "\n";
+            echo '<p>Details here are intended only for the website/system-administrator, not for regular website users.<br />&raquo; <strong>If you are a regular website user, please let the website staff deal with this problem.</strong></p>' . "\n" . '<p class="associated-details">Depending on the error, and only if the website installation finished, you may need to <a href="#!" onclick="if (!window.confirm(\'Are you staff on this site?\')) return false; this.href=\'' . htmlentities($edit_url) . '\';">edit the installation options</a> (the <kbd>_config.php</kbd> file).</p>' . "\n" . '<p class="associated-details">ocProducts maintains full documentation for all procedures and tools (including <a href="https://compo.sr/docs/tut-disaster.htm">disaster recovery</a>). These may be found on the <a href="https://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p>' . "\n" . '<hr />' . "\n" . '<p style="font-size: 0.8em"><a href="https://compo.sr/">Composr</a> is a <abbr title="Content Management System">CMS</abbr> for building websites, developed by ocProducts.</p>' . "\n";
         }
         echo '</div></body>' . "\n" . '</html>';
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
@@ -289,8 +289,6 @@ END;
             }
             @header('Location: ' . $url);
             echo '<meta http-equiv="refresh" content="0;url=' . htmlentities($url) . '" />';
-        } else {
-            ob_end_flush();
         }
 
         if (php_function_allowed('error_log')) {

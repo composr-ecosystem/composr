@@ -196,9 +196,9 @@ function get_member($quick_only = false)
     $base = $cookie_bits[0];
 
     // Try by session
-    $session = get_session_id();
+    $session = get_session_id(true);
     if (($session != '') && (get_param_integer('keep_force_htaccess', 0) == 0)) {
-        $ip = get_ip_address(3); // I hope AOL can cope with this
+        $ip = get_ip_address(3);
         $allow_unbound_guest = true; // Note: Guest sessions are not IP bound
         $member_row = null;
 
@@ -297,7 +297,7 @@ function get_member($quick_only = false)
     }
 
     // If one of the try_* functions hasn't actually created the session, call it here
-    $session = get_session_id();
+    $session = get_session_id(true);
     if ($session == '') {
         require_code('users_inactive_occasionals');
         create_session($member_id);
@@ -396,10 +396,16 @@ function apply_forum_driver_md5_variant($data, $key)
 /**
  * Get the current session ID.
  *
+ * @param  boolean $ignore_static_cache Whether to ignore the fact there may be a static cache; used to get true session ID during authentication code to break a paradox
  * @return ID_TEXT The current session ID (blank: none)
  */
-function get_session_id()
+function get_session_id($ignore_static_cache = false)
 {
+    require_code('static_cache');
+    if ((!$ignore_static_cache) && (can_static_cache_request())) {
+        return ''; // We should not even try and count/distinguish sessions for guests if the static cache may be involved
+    }
+
     $cookie_var = get_session_cookie();
 
     if ((!isset($_COOKIE[$cookie_var])) || (/*To work around Commandr's development mode trick*/$GLOBALS['DEV_MODE'] && running_script('commandr'))) {
@@ -409,6 +415,21 @@ function get_session_id()
         return '';
     }
     return isset($_COOKIE[$cookie_var]) ? $_COOKIE[$cookie_var] : '';
+}
+
+/**
+ * Get the current session ID, or if there is none something that can roughly differentiate a session. Used by stats code.
+ * Use very carefully, we don't want the output of this function to bias static cached pages in any way.
+ *
+ * @return ID_TEXT The current pseudo session ID
+ */
+function get_pseudo_session_id()
+{
+    $session_id = get_session_id();
+    if ($session_id == '') {
+        $session_id = get_ip_address();
+    }
+    return $session_id;
 }
 
 /**

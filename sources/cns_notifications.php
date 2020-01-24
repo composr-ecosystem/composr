@@ -111,13 +111,13 @@ function cns_get_pp_rows($limit = 5, $unread = true, $include_inline = true, $ti
     $ret = $GLOBALS['FORUM_DB']->query($query, $limit, 0, false, true);
     $ret = remove_duplicate_rows($ret, 't_id');
 
-    $private_post_rows_cache[$cache_key] = $ret;
-
     // We load this late, as otherwise on-disk temporary tables are created by the UNION (the nature of TEXT columns in MySQL)
-    foreach ($private_post_rows_cache[$cache_key] as &$pp_row) {
+    foreach ($ret as &$pp_row) {
         $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => $pp_row['p_id']], '', 1);
         $pp_row += $post_rows[0];
     }
+
+    $private_post_rows_cache[$cache_key] = $ret;
 
     return $ret;
 }

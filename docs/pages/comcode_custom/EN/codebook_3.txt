@@ -8,7 +8,7 @@
 
 The Composr core is extremely optimised.
 
-Most of the Composr page generation time can be put down to detecting the context the user is operating in, retrieving all components from their storage locations, structuring, processing whatever aspects of the output are dynamic, and outputting. This typically all-together takes a few hundred milliseconds. With opcode caching and persistent caching, it can be under 100ms, and potentially further with a platform like HipHop-PHP (which compiles code, and keeps code even more permanently resident between requests than an opcode cache).
+Most of the Composr page generation time can be put down to detecting the context the user is operating in, retrieving all components from their storage locations, structuring, processing whatever aspects of the output are dynamic, and outputting. This typically all-together takes a few hundred milliseconds. With opcode caching and persistent caching, it can be under 100ms.
 
 The very core Composr responsibilities are as follows...
 
@@ -555,7 +555,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_mbstring[/tt] -- set this to '1' if your mbstring extension causes PHP to crash
   - [tt]prefer_curl[/tt] -- set this to '1' if the server requires you to not use network sockets directly from PHP and instead use the CuRL extension (although if you need this it is likely you actually need to just configure the proxy server options instead)
   - [tt]real_memory_available_mb[/tt] -- set this to the number of MB GD should consider available for image generation, if PHP is lying about its memory limit
-  - [tt]http_faux_loopback[/tt] -- a regular expression of URLs that may be accessed via direct filesystem reading rather than HTTP loopback. Be very careful with this, as it could seriously harm security. It can improve performance however. Some poor webhosts may also require it (we've only seen one though). It does support PHP scripts, which are given special treatment, via passing through the [tt]php-cgi[/tt] interpreter (file uploads and POST requests not supported). Set via a command such as: [tt]:set_value('http_faux_loopback','^'.preg_quote(get_base_url(),'#').'.*\.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bin|bmp|bz2|css|csv|cur|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|swf|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|woff2|xls|xlsx|xml|xsd|xsl|zip)\??');[/tt]
+  - [tt]http_faux_loopback[/tt] -- a regular expression of URLs that may be accessed via direct filesystem reading rather than HTTP loopback. Be very careful with this, as it could seriously harm security. It can improve performance however. Some poor webhosts may also require it (we've only seen one though). It does support PHP scripts, which are given special treatment, via passing through the [tt]php-cgi[/tt] interpreter (file uploads and POST requests not supported). Set via a command such as: [tt]:set_value('http_faux_loopback','^'.preg_quote(get_base_url(),'#').'.*\.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bin|bmp|br|bz2|css|csv|cur|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|swf|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|woff2|xls|xlsx|xml|xsd|xsl|zip)\??');[/tt]
   - [tt]disable_ssl_for__<domain>[/tt] -- set this to '1' to disable SSL certificate checking for the given domain name. This is not a great idea, but may be necessary if a required service has a broken certificate yet it only supports HTTPS. Note that this will not work on a Mac by default because Apple's build of cURL (using https://opensource.apple.com/source/curl/curl-95/curl/lib/vtls/darwinssl.c) will use Apple SecureTransport instead of OpenSSL, which doesn't support disabling of verification
   - [tt]manualproc_mail[/tt] -- set this to '1' to debug problems with the PHP mail command (the PHP mail command won't relay error information from the sendmail process, this will replace it with something that does); it only works on servers that allow PHP process control
   - [tt]disable_cookie_checks[/tt] -- set this to '1' if you are somehow proxying traffic into your web server with an incorrect hostname header, so cookie checks must be skipped
@@ -603,7 +603,7 @@ Values are like hidden configuration options. They are either hidden because the
  - Low-level tuning:
   - [tt]disable_kid_gloves_html[/tt] -- set this to '1' if you want to completely disable the kid-gloves HTML escaping mode, i.e. avoid the need to make declarations in your overrides. You may want to use this if you override various files but aren't really writing custom code and don't really understand how to make the declarations
   - [tt]show_menu_items_as_url[/tt] -- set this to '1' if you want the menu editor to show URLs instead of page-links (they will then be converted back)
-  - [tt]whitelisted_blocks[/tt] -- set this to a comma-separated list of block names to whitelist any user to use those blocks independently. This is useful for AJAX-loaded blocks on sites where users may leave pages open, letting their sessions or block authorisations expire.
+  - [tt]whitelisted_blocks[/tt] -- set this to a comma-separated list of block names to whitelist any user to use those blocks independently. This is useful for AJAX-loaded blocks on sites where users may leave pages open, letting their sessions or block authorisations expire. It also is a performance boost because it means that the run-time permissions don't need maintaining.
   - [tt]no_individual_gallery_view[/tt] -- set this to '1' if all images/videos in a carousel-mode gallery must be viewed from the carousel-mode view (never individually)
   - [tt]root_cat__images[/tt] -- you can set this to the codename of a gallery, which will be the root for gallery selection on the gallery addon's Add Image form (root is not shown as an option). Alternatively, it can be an Selectcode string.
   - [tt]root_cat__videos[/tt] -- you can set this to the codename of a gallery, which will be the root for gallery selection on the gallery addon's Add Video form (root is not shown as an option). Alternatively, it can be an Selectcode string.
@@ -651,7 +651,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_user_online_counting[/tt] -- set this to '1' if you don't want to count online users (small performance improvement)
   - [tt]disable_banner_count_updates[/tt] -- set this to '1' if you don't want to maintain banner view counts (small performance improvement)
   - [tt]pinpoint_submitban_check[/tt] -- set this to '1' if you only want submitter ban checks to occur in the CMS zone (small performance improvement)
-  - [tt]disable_block_timeout[/tt] -- set this to '1' if blocks should never timeout (stops stuttered performance if a site is not used regularly)
   - [tt]disable_sitemap_for__*[/tt] -- disable sitemap generation for a particular page (e.g. if there's too much data in it and the server can't cope, and the data isn't so important anyway). Replace '*' with the page name
   - [tt]disable_view_counts[/tt] -- set this to '1' if you don't want view counts to be maintained (reduces database writes). You will probably want to disable the normal "Reveal usage figures" configuration option (Admin Zone > Setup > Configuration > Site options > Analytics / Logging) too, to hide all the zero counts
   - [tt]disable_normal_topic_read_history[/tt] -- set this to '1' if you don't want topic-read history to be maintained for things other than private topics
@@ -669,6 +668,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]innodb[/tt] -- set this to '1' if you have switched to MySQL's InnoDB
   - [tt]disable_post_rating[/tt] -- set this to '1' if you don't want to allow post ratings, which saves one query per displayed post
   - [tt]statistical_update_model[/tt] -- update view counts irregularly in bulk, using a statistical algorithm
+  - [tt]whitelisted_blocks[/tt] -- see explanation under "Low-level tuning"
  - Performance tuning (negative):
   - [tt]flush_cache_on_action[/tt] -- set this to '1' to automatically flush the static cache when actions are performed
   - [tt]allow_admin_in_other_zones[/tt] -- set this to '1' if you want to allow admin and CMS modules to run in other zones (small performance cost)
@@ -703,7 +703,6 @@ The 'keep' parameters available are:
  - [tt]keep_preserve_ids[/tt] -- set this to '1' when doing an CMS-merge import, to preserve IDs in the import (and not import duplicated IDs); this is not supported officially
  - [tt]keep_theme[/tt] -- set this to a theme name, to temporarily try out a different theme
  - [tt]keep_safe_mode[/tt] -- set this to '1' so that where possible, any customised files will be ignored; the default theme will be used
- - [tt]keep_output_streaming[/tt] -- set this to '0' to disable output streaming (i.e. enable full pre-processing)
  - [tt]keep_fatalistic[/tt] -- set this to '1' if terminal warning errors should be handled as terminal fatal errors (which include stack traces), and '2' if you want to show extra detail (which may be risky, it could use a lot of server RAM); useful for debugging the origin of an error message
  - [tt]keep_firephp[/tt] -- set this to '1' to dump permissions checks that occurred to [url="FirePHP"]http://www.firephp.org/[/url]. It only works for authenticated administrators, but if the administrator is using [tt]keep_su[/tt] to masquerade as another user it will work (which is particularly useful for debugging permissions problems).
  - [tt]keep_firephp_queries[/tt] -- set this to '1' to dump queries that occurred to [url="FirePHP"]http://www.firephp.org/[/url]. It only works for authenticated administrators, but if the administrator is using [tt]keep_su[/tt] to masquerade as another user it will work.
@@ -781,6 +780,9 @@ The following aren't 'keep' parameters, but are still useful and otherwise behav
  - [tt]max[/tt] -- set to the maximum number of results to show per-page
  - [tt]page/type/id[/tt] -- standard URL routing parameters
  - [tt]kfsXX[/tt] -- this isn't useful for manual editing but people ask what it's for; it's to preserve the browse positions in forumviews, such that when returning, the browse positions are remembered
+ - Tracking:
+  - [tt]_t[/tt] -- used for tracking referral codes, useful for marketing campaigns, split testing, and referral schemes
+  - [tt]_lead_source_description[/tt] -- used for tracking where a lead came from [i]within Composr[/i], when it's going to be sent off to an external CRM (via some non-bundled addon)
 
 [title="4"]Extra _config.php settings[/title]
 
@@ -1101,7 +1103,7 @@ This section is not designed as primary documentation for the tools. Those tools
 | [tt]testing_platform[/tt]
 | Command-line via Bash
 |-
-| [tt]line_count.sh[/tt]
+| [tt]line_count.php[/tt]
 | Count the number of lines of code, excluding third-party code.
 | [tt]meta_toolkit[/tt]
 | Command-line via Bash

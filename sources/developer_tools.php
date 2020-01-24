@@ -261,13 +261,13 @@ function _inspect($args, $force_plain = false)
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 
         if (!headers_sent()) {
-            header('Content-type: text/plain; charset=' . get_charset());
+            header('Content-Type: text/plain; charset=' . get_charset());
             header('Content-Disposition: inline'); // Override what might have been set
         }
 
         echo 'DEBUGGING. INSPECTING VARIABLES...' . "\n";
     } else {
-        header('Content-type: text/html; charset=' . get_charset());
+        header('Content-Type: text/html; charset=' . get_charset());
         header('Content-Disposition: inline'); // Override what might have been set
     }
 
@@ -321,7 +321,7 @@ function memory_trace_point($name = null)
  */
 function show_memory_points()
 {
-    @header('Content-type: text/plain; charset=' . get_charset());
+    @header('Content-Type: text/plain; charset=' . get_charset());
 
     cms_ini_set('ocproducts.xss_detect', '0');
 

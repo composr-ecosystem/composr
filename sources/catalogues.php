@@ -289,7 +289,7 @@ function count_catalogue_category_children($category_id)
  * @param  ID_TEXT $ordering_param Environment param used for ordering. You should pass in $order_by_high_level if it is set.
  * @param  ?MEMBER $viewing_member_id Viewing member ID (null: current user)
  * @param  boolean $check_perms Whether to check permissions (we normally leave false as we have pre-checked permissions for $category_id)
- * @return array An array containing our built up entries (renderable Tempcode), our sorting interface, and our entries (entry records from database, with an additional 'map' field), and the max rows
+ * @return array An array containing our built up entries (renderable Tempcode), our sorting interface, and our entries (entry records from database, with an additional 'map' field), and the max rows, and the display type used
  */
 function render_catalogue_category_entry_buildup($category_id, $catalogue_name, $catalogue, $view_type, $tpl_set, $max, $start, $select, $root, $display_type = null, $do_sorting = true, $entries = null, $filter = '', $order_by_high_level = null, $ordering_param = 'sort', $viewing_member_id = null, $check_perms = false)
 {
@@ -593,7 +593,7 @@ function render_catalogue_category_entry_buildup($category_id, $catalogue_name, 
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    return [$entry_buildup, $sorting, $entries, $num_entries];
+    return [$entry_buildup, $sorting, $entries, $num_entries, $display_type];
 }
 
 /**
@@ -932,20 +932,20 @@ function get_catalogue_entry_map($entry, $catalogue = null, $view_type = 'PAGE',
 
         // Value to show
         $ev = $field['effective_value'];
-        $evaluated_ev = is_object($field['effective_value']) ? $field['effective_value']->evaluate() : $field['effective_value'];
+        $ev_pure = $field['effective_value_pure'];
         $ob = get_fields_hook($field['cf_type']);
         list(, , $storage_type) = $ob->get_field_value_row_bits($field);
         if (($i == 0) && ($catalogue['c_display_type'] == C_DT_TITLELIST)) {
             $use_ev = $ev;
         } else {
-            $use_ev = $ob->render_field_value($field, $ev, $i, $only_fields, 'catalogue_efv_' . $storage_type, $id, 'ce_id', 'cf_id', 'cv_value', $entry['ce_submitter']);
+            $use_ev = $ob->render_field_value($field, $ev, $i, $only_fields, 'catalogue_efv_' . $storage_type, $id, 'ce_id', 'cf_id', 'cv_value', $entry['ce_submitter'], $ev_pure);
         }
 
         // Special case for access to raw thumbnail
         if ($field['cf_type'] == 'picture') {
-            if (($ev !== null) && ($evaluated_ev != '')) {
+            if (($ev !== null) && ($ev_pure != '')) {
                 require_code('images');
-                $map['FIELD_' . $str_i . '_THUMB'] = do_image_thumb($evaluated_ev, ($i == 0) ? new Tempcode() : (is_object($map['FIELD_0']) ? $map['FIELD_0'] : protect_from_escaping(escape_html($map['FIELD_0']))), false, false);
+                $map['FIELD_' . $str_i . '_THUMB'] = do_image_thumb($ev_pure, ($i == 0) ? new Tempcode() : (is_object($map['FIELD_0']) ? $map['FIELD_0'] : protect_from_escaping(escape_html($map['FIELD_0']))), false, false);
             } else {
                 $map['FIELD_' . $str_i . '_THUMB'] = new Tempcode();
             }

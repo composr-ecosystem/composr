@@ -474,7 +474,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
 
     global $WANT_TEXT_ERRORS;
     if ($WANT_TEXT_ERRORS) {
-        @header('Content-type: text/plain; charset=' . get_charset());
+        @header('Content-Type: text/plain; charset=' . get_charset());
         if ($HTTP_STATUS_CODE == 200) {
             set_http_status_code(500);
         }
@@ -483,7 +483,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         exit((is_object($text) ? strip_html($text->evaluate()) : $text) . "\n");
     }
 
-    @header('Content-type: text/html; charset=' . get_charset());
+    @header('Content-Type: text/html; charset=' . get_charset());
     @header('Content-Disposition: inline');
 
     if ((function_exists('do_lang')) && (strpos($text_eval, do_lang('MISSING_RESOURCE_SUBSTRING')) !== false)) {
@@ -543,7 +543,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         'TRACE' => $trace,
     ]);
     $echo = globalise($middle, null, '', true);
-    $echo->evaluate_echo(null, true);
+    $echo->evaluate_echo();
     exit();
 }
 
@@ -981,7 +981,7 @@ function get_webservice_result($error_message)
 
     require_code('version2');
     require_code('http');
-    $url = 'http://compo.sr/uploads/website_specific/compo.sr/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
+    $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
     list($http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 24 * 31/*once a month*/);
 
     if (!is_object($http_result)) {
@@ -1101,6 +1101,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         (strpos($text, 'connect to') === false) &&
         (strpos($text, 'Access denied for') === false) &&
         (strpos($text, 'command denied for') === false) && // MySQL
+        (strpos($text, 'was deadlocked on lock resources with another process') === false) && // SQL Server
         (strpos($text, 'Unknown database') === false) &&
         (strpos($text, 'headers already sent') === false) &&
         (strpos($text, 'Your TaxCloud API trial period has expired') === false) &&
@@ -1207,7 +1208,7 @@ function put_value_in_stack_trace($value)
         if (($value === null) || (is_array($value) && (strlen(serialize($value)) > MAX_STACK_TRACE_VALUE_LENGTH))) {
             $_value = gettype($value);
         } elseif (is_object($value) && (is_a($value, 'Tempcode'))) {
-            if (($value->codename == 'GLOBAL_HTML_WRAP') || (strlen(serialize($value)) > 1000)) { // NB: We can't do an eval on GLOBAL_HTML_WRAP because it may be output streaming, incomplete
+            if (strlen(serialize($value)) > 1000) {
                 $_value = 'Tempcode -> ...';
             } else {
                 $_value = $value->evaluate();
@@ -1288,7 +1289,18 @@ function get_html_trace()
     }
     pop_suppress_error_death();
 
-    return do_template('STACK_TRACE', ['_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => (count($_POST) < 200) ? $_POST : [], 'TRACE' => $trace]);
+    $post = [];
+    if (count($_POST) < 200) {
+        foreach ($_POST as $key => $val) {
+            if (is_password_field($key)) {
+                continue;
+            }
+
+            $post[$key] = $val;
+        }
+    }
+
+    return do_template('STACK_TRACE', ['_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => $post, 'TRACE' => $trace]);
 }
 
 /**
@@ -1415,9 +1427,6 @@ function _access_denied($class, $param, $force_login)
         throw new CMSException($message);
     }
 
-    require_code('site');
-    log_stats('/access_denied', 0);
-
     if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_integer('keep_fatalistic', 0) != 0)) {
         fatal_exit($message);
     }
@@ -1447,7 +1456,7 @@ function _access_denied($class, $param, $force_login)
             attach_message($message, 'warn');
         }
         $echo = globalise($middle, null, '', true);
-        $echo->evaluate_echo(null, true);
+        $echo->evaluate_echo();
         exit();
     }
 

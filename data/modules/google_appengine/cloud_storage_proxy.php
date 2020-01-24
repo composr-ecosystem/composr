@@ -22,12 +22,12 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 if (!isset($_SERVER['APPLICATION_ID'])) {
-    header('Content-type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
     exit('This can only run on Google App Engine.');
 }
 
 if ((!is_writable(__FILE__)/*suggests locked-down live environment*/) || (preg_replace('#:.*$#', '', $_SERVER['HTTP_HOST']) != 'localhost')) {
-    header('Content-type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
     exit('This cannot run on live Google App Engine, for security reasons.');
 }
 
@@ -41,13 +41,13 @@ if ($contents === false) {
     echo 'File not found.';
 } else {
     if (substr($request, -4) == '.css') {
-        header('Content-type: text/css; charset=utf-8');
+        header('Content-Type: text/css; charset=utf-8');
     } elseif (substr($request, -3) == '.js') {
-        header('Content-type: application/javascript; charset=utf-8');
+        header('Content-Type: application/javascript; charset=utf-8');
     } elseif ((substr($request, -4) == '.htm') || (substr($request, -5) == '.html')) {
-        header('Content-type: text/html; charset=utf-8');
+        header('Content-Type: text/html; charset=utf-8');
     } else {
-        header('Content-type: application/octet-stream');
+        header('Content-Type: application/octet-stream');
     }
 
     echo $contents;

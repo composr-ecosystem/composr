@@ -110,7 +110,6 @@ class Hook_addon_registry_search
             'themes/default/templates/SEARCH_RESULT.tpl',
             'themes/default/templates/SEARCH_RESULT_TABLE.tpl',
             'sources/hooks/systems/addon_registry/search.php',
-            'sources/hooks/modules/admin_stats/search.php',
             'sources/hooks/modules/admin_setupwizard/search.php',
             'themes/default/templates/SEARCH_ADVANCED.tpl',
             'themes/default/templates/BLOCK_MAIN_SEARCH.tpl',
@@ -151,6 +150,8 @@ class Hook_addon_registry_search
             'sources/blocks/bottom_tag_cloud.php',
             'themes/default/templates/BLOCK_BOTTOM_TAG_CLOUD.tpl',
             'themes/default/javascript/search.js',
+
+            'sources/hooks/modules/admin_stats/searches.php',
         ];
     }
 

@@ -110,18 +110,6 @@
         }
     };
 
-    $cms.templates.googleSearchConsoleKeywords = function (params, container) {
-        $dom.on(container, 'cms:ga:reinit', function (e) {
-            if ((e.target !== container) || !e.days) {
-                return;
-            }
-
-            $cms.loadSnippet('google_search_console&days=' + encodeURIComponent(e.days)).then(function (html) {
-                $dom.html(container, html);
-            });
-        });
-    };
-
     $cms.templates.googleTimePeriods = function (params, container) {
         $dom.on(container, 'change', '.js-select-onchange-trigger-tab-ga-reinit', function (e, select) {
             var tabId = select.dataset.tpTabId;

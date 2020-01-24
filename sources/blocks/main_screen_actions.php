@@ -60,16 +60,24 @@ class Block_main_screen_actions
 
         $block_id = get_block_id($map);
 
-        $from = isset($map['url']) ? $map['url'] : '';
-        if ($from == '') {
-            $from = get_self_url(true);
+        $url = isset($map['url']) ? $map['url'] : '';
+        if ($url == '') {
+            $url = get_self_url(true);
         }
 
-        $_map = ['page' => 'recommend', 'from' => protect_url_parameter($from)];
-        if (array_key_exists('title', $map)) {
-            $_map['title'] = $map['title'];
+        $title = isset($map['title']) ? $map['title'] : '';
+        if ($title == '') {
+            global $METADATA, $DISPLAYED_TITLE;
+            if (isset($METADATA['title'])) {
+                $title = $METADATA['title'];
+            }
+            if (isset($DISPLAYED_TITLE)) {
+                $title = $DISPLAYED_TITLE;
+            }
         }
-        $recommend_url = build_url($_map, get_module_zone('recommend'));
+
+        $url_map = ['page' => 'recommend', 'from_url' => protect_url_parameter($url), 'from_title' => $title];
+        $recommend_url = build_url($url_map, get_module_zone('recommend'));
 
         return do_template('BLOCK_MAIN_SCREEN_ACTIONS', [
             '_GUID' => '2f5ceee4e1cc3d31c184c62e0710b1c3',

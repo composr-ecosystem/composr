@@ -210,7 +210,7 @@ class Hook_health_check_performance extends Hook_Health_Check
             return;
         }
 
-        //set_option('gzip_output', '1');   To test
+        //set_option('output_compression', '1');   To test
 
         if (!php_function_allowed('stream_context_set_default')) {
             $this->stateCheckSkipped('PHP [tt]stream_context_set_default[/tt] function not available');
@@ -332,10 +332,10 @@ class Hook_health_check_performance extends Hook_Health_Check
         }
 
         if (addon_installed('stats')) {
-            $results = $GLOBALS['SITE_DB']->query_select('stats', ['the_page', 'AVG(milliseconds) AS milliseconds'], [], 'GROUP BY the_page');
+            $results = $GLOBALS['SITE_DB']->query_select('stats', ['page_link', 'AVG(milliseconds) AS milliseconds'], [], 'GROUP BY page_link');
             foreach ($results as $result) {
                 $time = floatval($result['milliseconds']) / 1000.0;
-                $this->assertTrue($time < $threshold, 'Slow page generation speed for [tt]' . $result['the_page'] . '[/tt] page @ ' . float_format($time) . ' seconds)');
+                $this->assertTrue($time < $threshold, 'Slow page generation speed for [tt]' . $result['page_link'] . '[/tt] page @ ' . float_format($time) . ' seconds)');
             }
         }
     }

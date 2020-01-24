@@ -106,7 +106,6 @@ class modularisation_test_set extends cms_test_case
             if ($path == 'sources_custom/hooks/systems/content_meta_aware/temp_test.php') {
                 continue;
             }
-
             $found = false;
             foreach ($addon_data as $addon_name => $addon_files) {
                 foreach ($addon_files as $fileindex => $_path) {
@@ -135,7 +134,7 @@ class modularisation_test_set extends cms_test_case
                 }
             }
             if (!$found) {
-                $data = cms_file_get_contents_safe(get_file_base() . '/' . $_path);
+                $data = cms_file_get_contents_safe(get_file_base() . '/' . $path);
                 $check_package = $this->should_check_package($data, $path);
 
                 if ($check_package) {
@@ -144,6 +143,8 @@ class modularisation_test_set extends cms_test_case
                     if ($m_count != 0) {
                         $unput_files[$matches[1]][] = $path;
                     }
+                } else {
+                    $m_count = 0;
                 }
 
                 $this->assertTrue($m_count == 0, 'Could not find the addon for... \'' . htmlentities($path) . '\',');
@@ -181,6 +182,6 @@ class modularisation_test_set extends cms_test_case
             return false;
         }
 
-        return !should_ignore_file($path, IGNORE_SHIPPED_VOLATILE);
+        return true;
     }
 }

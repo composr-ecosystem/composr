@@ -68,7 +68,6 @@ class Module_admin_version
         $GLOBALS['SITE_DB']->drop_table_if_exists('url_title_cache');
         $GLOBALS['SITE_DB']->drop_table_if_exists('review_supplement');
         $GLOBALS['SITE_DB']->drop_table_if_exists('logged_mail_messages');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('link_tracker');
         $GLOBALS['SITE_DB']->drop_table_if_exists('incoming_uploads');
         $GLOBALS['SITE_DB']->drop_table_if_exists('f_group_member_timeouts');
         $GLOBALS['SITE_DB']->drop_table_if_exists('temp_block_permissions');
@@ -296,6 +295,7 @@ class Module_admin_version
                 'p_add_date' => 'TIME',
                 'p_submitter' => 'MEMBER',
                 'p_show_as_edit' => 'BINARY',
+                'p_include_on_sitemap' => 'BINARY',
                 'p_order' => 'INTEGER',
             ]);
             $GLOBALS['SITE_DB']->create_index('comcode_pages', 'p_submitter', ['p_submitter']);
@@ -379,14 +379,6 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'queued', ['m_queued']);
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'combo', ['m_date_and_time', 'm_queued']); // Used for number-sent-within querying
 
-            $GLOBALS['SITE_DB']->create_table('link_tracker', [
-                'id' => '*AUTO',
-                'c_date_and_time' => 'TIME',
-                'c_member_id' => 'MEMBER',
-                'c_ip_address' => 'IP',
-                'c_url' => 'URLPATH',
-            ]);
-
             $GLOBALS['SITE_DB']->create_table('incoming_uploads', [
                 'id' => '*AUTO',
                 'i_submitter' => 'MEMBER',
@@ -408,7 +400,7 @@ class Module_admin_version
                 'identifier' => 'MINIID_TEXT',
                 'staff_status' => '?BINARY', // May be null
                 'the_member' => '?MEMBER', // May be null
-                'the_groups' => 'SHORT_TEXT', // May be blank
+                'the_groups' => 'LONG_TEXT', // May be blank
                 'is_bot' => '?BINARY', // May be null
                 'timezone' => 'MINIID_TEXT', // May be blank
                 'is_ssl' => '?BINARY', // May be null
@@ -903,6 +895,8 @@ class Module_admin_version
             require_code('users_active_actions');
             $admin_user = get_first_admin_user();
 
+            require_code('global4');
+
             $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
                 'the_zone' => 'site',
                 'the_page' => 'userguide_comcode',
@@ -916,6 +910,7 @@ class Module_admin_version
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
+                'p_include_on_sitemap' => comcode_page_include_on_sitemap('site', 'userguide_comcode') ? 1 : 0,
                 'p_order' => 0,
             ], false, true);
 
@@ -932,6 +927,7 @@ class Module_admin_version
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
+                'p_include_on_sitemap' => comcode_page_include_on_sitemap('', 'keymap') ? 1 : 0,
                 'p_order' => 0,
             ], false, true);
 
@@ -984,8 +980,6 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->create_index('cache', 'cached_forf', ['cached_for', 'identifier', 'the_theme', 'lang', 'staff_status', 'the_member'/*, 'the_groups'So key is not too long*/, 'is_bot'/*, 'timezone'So key is not too long*/]);
 
-            $GLOBALS['SITE_DB']->create_index('link_tracker', 'c_url', ['c_url']);
-
             $GLOBALS['SITE_DB']->create_table('post_tokens', [
                 'token' => '*ID_TEXT',
                 'generation_time' => 'TIME',
@@ -1000,7 +994,6 @@ class Module_admin_version
         if (($upgrade_from === null) || ($upgrade_from < 18)) {
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'from_member_id', ['d_from_member_id']);
             $GLOBALS['SITE_DB']->create_index('cache', 'the_member', ['the_member']);
-            $GLOBALS['SITE_DB']->create_index('link_tracker', 'member_id', ['c_member_id']);
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as', ['m_as']);
             $GLOBALS['SITE_DB']->create_index('rating', 'rating_member', ['rating_member']);
             $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences', ['r_referer_type', 'r_referer_id']);
@@ -1091,9 +1084,7 @@ class Module_admin_version
                     'c_enabled' => 1,
                 ]);
             }
-        }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 18)) { // LEGACY
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('smart_topic_notification');
 
             rename_config_option('imap_folder', 'mail_folder');
@@ -1104,6 +1095,8 @@ class Module_admin_version
 
             rename_config_option('email_log_days', 'email_log_store_time');
 
+            rename_config_option('gzip_output', 'output_compression');
+
             $GLOBALS['FORUM_DB']->add_table_field('logged_mail_messages', 'm_sender_email', 'SHORT_TEXT');
             $GLOBALS['FORUM_DB']->add_table_field('logged_mail_messages', 'm_plain_subject', 'BINARY');
 
@@ -1111,13 +1104,21 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->query_update('actionlogs', ['the_type' => 'SET_PAGE_REDIRECTS'], ['the_type' => 'SET_REDIRECTS']);
 
-            $GLOBALS['SITE_DB']->alter_table_field('cache', 'groups', 'SHORT_TEXT', 'the_groups');
+            $GLOBALS['SITE_DB']->alter_table_field('cache', 'groups', 'LONG_TEXT', 'the_groups');
 
             if (get_value('timezone') !== null) {
                 set_option('timezone', get_value('timezone'));
                 delete_value('timezone');
             }
 
+            $GLOBALS['SITE_DB']->delete_index_if_exists('notifications_enabled', 'l_member_id');
+
+            $GLOBALS['SITE_DB']->drop_table_if_exists('staff_website_monitoring');
+
+            $GLOBALS['SITE_DB']->drop_table_if_exists('link_tracker');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 18)) {
             $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences2', ['a_id']);
             $GLOBALS['SITE_DB']->create_index('member_privileges', 'active_until', ['active_until']);
             $GLOBALS['SITE_DB']->create_index('member_zone_access', 'active_until', ['active_until']);
@@ -1127,8 +1128,15 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('f_group_member_timeouts', 'expiring_timeouts', ['timeout']);
             $GLOBALS['SITE_DB']->create_index('group_privileges', 'by_privilege', ['privilege']);
 
-            $GLOBALS['SITE_DB']->delete_index_if_exists('notifications_enabled', 'l_member_id');
-            $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', ['l_member_id', 'l_notification_code', 'l_code_category']);
+            $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', ['l_member_id', 'l_notification_code', 'l_code_category(10)']);
+
+            $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_include_on_sitemap', 'BINARY', 1);
+            require_code('global4');
+            $rows = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_zone', 'the_page']);
+            foreach ($rows as $row) {
+                $include_on_sitemap = _comcode_page_include_on_sitemap_default($row['the_zone'], $row['the_page']);
+                $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_include_on_sitemap' => $include_on_sitemap ? 1 : 0], $row, '', 1);
+            }
         }
     }
 

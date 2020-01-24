@@ -168,7 +168,7 @@ class Hook_search_videos extends FieldsSearchHook
         }
 
         $table = 'videos r';
-        $trans_fields = ['' => '', 'r.description' => 'LONG_TRANS__COMCODE', 'r.title' => 'SHORT_TRANS'];
+        $trans_fields = ['' => '', 'r.the_description' => 'LONG_TRANS__COMCODE', 'r.title' => 'SHORT_TRANS'];
         $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_video', $table, $where_clause, $trans_fields, $nontrans_fields);
 

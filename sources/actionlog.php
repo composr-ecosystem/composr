@@ -35,7 +35,7 @@ function init__actionlog()
 }
 
 /**
- * Base action log object.
+ * Base action log class.
  * Used for ameliorating action log entries.
  *
  * @package core_notifications

@@ -53,8 +53,6 @@ class Module_lost_password
             warn_exit(do_lang_tempcode('NO_CNS'));
         }
 
-        $GLOBALS['OUTPUT_STREAMING'] = false; // Due to meta refresh that may happen
-
         $type = get_param_string('type', 'browse');
 
         require_lang('cns');
@@ -217,6 +215,10 @@ class Module_lost_password
      */
     public function step3()
     {
+        // We need to disable static caching for 'ultra' mode to work (it is a GET request, so static cache may be enabled otherwise)
+        require_code('static_cache');
+        disable_static_caching();
+
         $password_reset_process = get_password_reset_process();
 
         $code = trim(get_param_string('code', ''));

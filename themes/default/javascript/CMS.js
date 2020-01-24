@@ -853,28 +853,30 @@
     };
 
     /**
-     * Google Analytics tracking for links; particularly useful if you have no server-side stat collection
+     * Analytics platform tracking for events; will integrate with Google Analytics if configured
      * @memberof $cms
      * @param el
-     * @param category
+     * @param category - This is the 'category' in GA, and combines with action (below) to form the 'event' in Composr inbuilt tracking
      * @param action
-     * @param event - To call event.preventDefault() if the event is handled
+     * @param e - To call e.preventDefault() if the JS event is handled
+     * @param nativeTracking - Whether the inbuilt Composr tracking should register the event (normally we don't do this as we can register events without requiring JavaScript)
      * @returns { Promise }
      */
-    $cms.gaTrack = function gaTrack(el, category, action, event) {
-        if (!$cms.configOption('google_analytics') || $cms.isStaff() || $cms.isAdmin()) {
-            return Promise.resolve();
-        }
+    $cms.statsEventTrack = function statsEventTrack(el, category, action, e, nativeTracking) {
+        nativeTracking = nativeTracking || false;
+        var useGA = $cms.configOption('google_analytics') && !$cms.isStaff() && !$cms.isAdmin(),
+            $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}'),
+            promises = [];
 
-        return new Promise(function (resolve) {
+        promises.push(new Promise(function (resolve) {
             category = strVal(category) || '{!URL;^}';
-            action = strVal(action) || (el ? el.href : '{!UNKNOWN;^}');
+            var gaAction = strVal(action) || (el ? el.href : '{!UNKNOWN;^}');
 
             var okay = true;
             try {
-                $util.log('Beacon', 'send', 'event', category, action);
+                $util.log('Beacon', 'send', 'event', category, gaAction);
 
-                window.ga('send', 'event', category, action, { transport: 'beacon', hitCallback: resolve });
+                window.ga('send', 'event', category, gaAction, { transport: 'beacon', hitCallback: resolve });
             } catch (err) {
                 okay = false;
             }
@@ -886,13 +888,24 @@
                     }, 100);
                 }
 
-                event && event.preventDefault(); // Cancel event because we'll be submitting by ourselves, either via $util.navigate() or on promise resolve
+                e && e.preventDefault(); // Cancel event because we'll be submitting by ourselves, either via $util.navigate() or on promise resolve
             } else {
                 setTimeout(function () {
                     resolve();
                 }, 100);
             }
-        });
+        }));
+
+        if ((nativeTracking) && ($ADDON_INSTALLED_stats)) {
+            var snippet = 'stats_event&event=' + encodeURIComponent(category);
+            var cmsParam = strVal(action) || (el ? el.href : '');
+            if (cmsParam != '') {
+                snippet += '-' + encodeURIComponent(cmsParam);
+            }
+            promises.push($cms.loadSnippet(snippet));
+        }
+
+        return Promise.all(promises);
     };
 
     /**

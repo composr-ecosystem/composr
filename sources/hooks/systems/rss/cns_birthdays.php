@@ -112,7 +112,7 @@ class Hook_rss_cns_birthdays
             sort_maps_by($rows, 'birthday_time');
         }
 
-        $GLOBALS['NO_QUERY_LIMIT'] = true;
+        push_query_limiting(false);
 
         foreach ($rows as $row) {
             $id = strval($row['id']);
@@ -143,6 +143,8 @@ class Hook_rss_cns_birthdays
                 break;
             }
         }
+
+        pop_query_limiting();
 
         require_lang('cns');
         return [$content, do_lang('BIRTHDAYS')];

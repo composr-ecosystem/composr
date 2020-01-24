@@ -29,7 +29,7 @@ class _critical_error_display_test_set extends cms_test_case
         $c_path = get_file_base() . '/_config.php';
         rename($c_path, $c_path . '.old'); // Rename config file to intentionally break Composr
         $result = cms_http_request(get_base_url() . '/index.php', ['convert_to_internal_encoding' => true]);
-        $this->assertTrue(strpos($result->download_url, '_critical_error.html') !== false, 'Got ' . $result->download_url);
+        $this->assertTrue(strpos($result->download_url, '_critical_error.html') !== false, 'Got ' . $result->download_url . ' (' . serialize($result) . ')');
         rename($c_path . '.old', $c_path);
 
         unlink($e_path);

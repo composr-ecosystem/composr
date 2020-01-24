@@ -81,16 +81,12 @@ function dload_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
     }
 
-    global $SITE_INFO;
-    if ((!is_guest()) || (!isset($SITE_INFO['any_guest_cached_too'])) || ($SITE_INFO['any_guest_cached_too'] == '0')) {
-        if ((get_param_string('for_session', '') != md5(get_session_id())) && (get_option('anti_leech') == '1') && ($_SERVER['HTTP_REFERER'] != '')) {
-            warn_exit(do_lang_tempcode('LEECH_BLOCK'));
-        }
-    }
+    require_code('anti_leech');
+    check_anti_leech();
 
     require_lang('downloads');
     require_code('downloads');
@@ -228,7 +224,7 @@ function dload_script()
     $from = 0;
     $new_length = $size;
 
-    cms_ini_set('zlib.output_compression', 'Off'); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
+    disable_output_compression(); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
 
     // They're trying to resume (so update our range)
     $httprange = $_SERVER['HTTP_RANGE'];
@@ -651,25 +647,24 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
             @unlink($tmp_file);
             break;
         case 'gz':
-            if (function_exists('gzopen')) {
-                if (function_exists('gzeof')) {
-                    if (function_exists('gzread')) {
-                        $tmp_file = cms_tempnam();
-                        file_put_contents($tmp_file, $data);
-                        $myfile = gzopen($tmp_file, 'rb');
-                        if ($myfile !== false) {
-                            $file_data = '';
-                            while (!gzeof($myfile)) {
-                                $it = gzread($myfile, 1024);
-                                $file_data .= $it;
-                                if (strlen($file_data) >= 3 * 1024 * 1024) {
-                                    break; // 3MB is enough
-                                }
+            if ((function_exists('gzopen')) && (function_exists('gzclose'))) {
+                if ((function_exists('gzeof')) && (function_exists('gzread'))) {
+                    $tmp_file = cms_tempnam();
+                    file_put_contents($tmp_file, $data);
+                    $myfile = gzopen($tmp_file, 'rb');
+                    if ($myfile !== false) {
+                        $file_data = '';
+                        while (!gzeof($myfile)) {
+                            $it = gzread($myfile, 1024);
+                            $file_data .= $it;
+                            if (strlen($file_data) >= 3 * 1024 * 1024) {
+                                break; // 3MB is enough
                             }
-                            $mash = ' ' . create_data_mash(preg_replace('#\.gz#i', '', $url), $file_data);
                         }
-                        @unlink($tmp_file);
+                        gzclose($myfile);
+                        $mash = ' ' . create_data_mash(preg_replace('#\.gz#i', '', $url), $file_data);
                     }
+                    @unlink($tmp_file);
                 }
             }
             break;
@@ -901,7 +896,7 @@ function add_download($category_id, $name, $url, $description, $author, $additio
         }
     }
 
-    if (($file_size < 0) || ($file_size > 2147483647)) {
+    if (($file_size < 0) || ($file_size > 2147483647)) { // TODO: #3046 in tracker
         $file_size = 2147483647;
     }
 
@@ -979,7 +974,7 @@ function add_download($category_id, $name, $url, $description, $author, $additio
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('download', strval($id));
         } else {
-            $privacy_limits = [];
+            $privacy_limits = null;
         }
 
         require_lang('downloads');
@@ -1109,7 +1104,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
         }
     }
 
-    if (($file_size < 0) || ($file_size > 2147483647)) {
+    if (($file_size < 0) || ($file_size > 2147483647)) { // TODO: #3046 in tracker
         $file_size = 2147483647;
     }
 
@@ -1181,7 +1176,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('download', strval($id));
         } else {
-            $privacy_limits = [];
+            $privacy_limits = null;
         }
 
         require_lang('downloads');

@@ -84,9 +84,9 @@
     });
 
     $cms.templates.blockMainJoinDone = function blockMainJoinDone(params, container) {
-        $dom.on(container, 'submit', '.js-submit-ga-track-dl-whitepaper', function (e, form) {
+        $dom.on(container, 'submit', '.js-submit-stats-event-track-dl-whitepaper', function (e, form) {
             e.preventDefault();
-            $cms.gaTrack(null, '{!cns:DOWNLOAD_WHITEPAPER;}').then(function () {
+            $cms.statsEventTrack(null, '{!cns:DOWNLOAD_WHITEPAPER;}').then(function () {
                 $dom.submit(form);
             });
         });

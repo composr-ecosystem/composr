@@ -584,36 +584,6 @@ function _url_to_page_link($url, $abs_only = false, $perfect_only = true)
 }
 
 /**
- * Convert a local page file path to a written page-link.
- *
- * @param  string $page The path
- * @return string The page-link (blank: could not convert)
- *
- * @ignore
- */
-function _page_path_to_page_link($page)
-{
-    if ((substr($page, 0, 1) == '/') && (substr($page, 0, 6) != '/pages')) {
-        $page = substr($page, 1);
-    }
-    $matches = [];
-    if (preg_match('#^([^/]*)/?pages/([^/]+)/(\w\w/)?([^/\.]+)\.(php|txt|htm)$#', $page, $matches) == 1) {
-        $page2 = $matches[1] . ':' . $matches[4];
-        if (($matches[2] == 'comcode') || ($matches[2] == 'comcode_custom')) {
-            if (file_exists(get_custom_file_base() . '/' . $page)) {
-                require_code('zones2');
-                $page2 .= ' (' . get_comcode_page_title_from_disk(get_custom_file_base() . '/' . $page) . ')';
-                $page2 = preg_replace('#\[[^\[\]]*\]#', '', $page2);
-            }
-        }
-    } else {
-        $page2 = '';
-    }
-
-    return $page2;
-}
-
-/**
  * Called from 'find_id_moniker'. We tried to lookup a moniker, found a hook, but found no stored moniker. So we'll try and auto-generate one.
  *
  * @param  array $ob_info The hooks info profile

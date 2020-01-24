@@ -124,6 +124,8 @@ class Hook_addon_registry_securitylogging
             'sources/hooks/systems/commandr_fs_extended_config/ip_unbannable.php',
             'themes/default/javascript/securitylogging.js',
             'sources/hooks/systems/actionlog/securitylogging.php',
+
+            'sources/hooks/modules/admin_stats/security_incidents.php',
         ];
     }
 
@@ -275,9 +277,9 @@ class Hook_addon_registry_securitylogging
                 'IP_BANNED' => lorem_phrase(),
                 'SUBMITTER_BANNED' => lorem_phrase(),
                 'MEMBER_BANNED' => lorem_phrase(),
-                'ID' => placeholder_id(),
+                'MEMBER_ID' => placeholder_id(),
                 'IP' => placeholder_ip(),
-                'NAME' => lorem_word(),
+                'USERNAME' => lorem_word(),
                 'SEARCH_URL' => placeholder_url(),
                 'AUTHOR_URL' => placeholder_url(),
                 'POINTS_URL' => placeholder_url(),

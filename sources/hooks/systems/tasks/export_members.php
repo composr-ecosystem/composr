@@ -153,7 +153,7 @@ class Hook_task_export_members
         $sheet_writer->close();
 
         $headers = [];
-        $headers['Content-type'] = $sheet_writer->get_mime_type();
+        $headers['Content-Type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
         $ini_set = [];

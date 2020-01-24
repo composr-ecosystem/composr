@@ -154,7 +154,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
 
         $mb = 1024 * 1024;
         $directories = [
-            'caches/guest_pages' => 5000,
+            'caches/static' => 5000,
             'caches/lang' => 200,
             'caches/persistent' => 500,
             'caches/self_learning' => 500,

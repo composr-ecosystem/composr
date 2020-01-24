@@ -226,7 +226,7 @@
                 }
 
                 if (analyticEventCategory) {
-                    $cms.gaTrack(null, analyticEventCategory, null).then(function () {
+                    $cms.statsEventTrack(null, analyticEventCategory, null).then(function () {
                         resolveSubmitPromise(true);
                         form.submit();
                     });

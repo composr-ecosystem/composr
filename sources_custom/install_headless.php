@@ -36,7 +36,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
             @var_dump($http_result->message);
             $error = $url . ' : ' . clean_installer_output_for_code_display($data);
             @print(escape_html($error));
-            @ob_end_flush();
+            cms_flush_safe();
         }
     }
 
@@ -189,7 +189,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
             @var_dump($http_result->message);
             $error = $url . ' : ' . clean_installer_output_for_code_display($data);
             @print(escape_html($error));
-            @ob_end_flush();
+            cms_flush_safe();
 
             if ((!$success) && (in_array('early_exit', $_SERVER['argv']))) {
                 exit('Exiting early due to error');

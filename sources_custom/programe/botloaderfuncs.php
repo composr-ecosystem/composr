@@ -860,7 +860,7 @@ function endElement($parser, $name)
 
         // IIS doesn't flush properly unless it has a bunch of characters in it. This fills it with spaces.
 		print "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ";
-        flush();
+        cms_flush_safe();
 
         $pattern="";
         $template="";
@@ -1140,7 +1140,7 @@ function learn($file)
     xml_set_element_handler($xml_parser, "startElement", "endElement");
     xml_set_character_data_handler ($xml_parser, "handleme");
 //    print "<font size='3'>Loading data aiml file: $file<BR></font>\n";
-    flush();
+    cms_flush_safe();
 
     if (strtoupper(substr($file,0,7))=="HTTP://"){
         $file=$file;

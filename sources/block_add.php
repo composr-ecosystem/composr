@@ -230,9 +230,6 @@ function block_helper_script()
         if (!isset($defaults['cache'])) {
             $defaults['cache'] = block_cache_default($block);
         }
-        if ($parameters === null) {
-            $parameters = [];
-        }
         $advanced_ind = do_lang('BLOCK_IND_ADVANCED');
         $param_classes = ['normal' => [], 'advanced' => []];
         foreach ($parameters as $parameter) {
@@ -246,6 +243,13 @@ function block_helper_script()
                 }
             }
             $param_classes[$param_class][] = $parameter;
+        }
+
+        $row = get_block_info_row($block);
+        if ($row !== null) {
+            $ttl = $row['cache_ttl'];
+        } else {
+            $ttl = null;
         }
 
         // Go over each set of parameters
@@ -272,20 +276,13 @@ function block_helper_script()
 
                 // Work out and cleanup the description
                 $matches = [];
-                switch ($parameter) {
-                    case 'quick_cache':
-                    case 'cache':
-                    case 'defer':
-                    case 'block_id':
-                    case 'failsafe':
-                        $description = do_lang('BLOCK_PARAM_' . $parameter, get_brand_base_url());
-                        break;
-                    default:
-                        $description = do_lang('BLOCK_' . $block . '_PARAM_' . $parameter, get_brand_base_url(), null, null, null, false);
-                        if ($description === null) {
-                            $description = '';
-                        }
-                        break;
+                if (in_array($parameter, get_standard_block_parameters())) {
+                    $description = do_lang('BLOCK_PARAM_' . $parameter, get_brand_base_url(), ($ttl === null) ? do_lang('NA') : integer_format($ttl));
+                } else {
+                    $description = do_lang('BLOCK_' . $block . '_PARAM_' . $parameter, get_brand_base_url(), null, null, null, false);
+                    if ($description === null) {
+                        $description = '';
+                    }
                 }
                 $description = str_replace(do_lang('BLOCK_IND_STRIPPABLE_1'), '', $description);
                 $description = trim(str_replace(do_lang('BLOCK_IND_ADVANCED'), '', $description));
@@ -468,7 +465,7 @@ function block_helper_script()
         $bparameters_tempcode = '';
         $block = trim(either_param_string('block'));
         $parameters = get_block_parameters($block, true);
-        if (in_array('param', $parameters)) {
+        if (in_array('param', $parameters)) { // 'param' must come first
             $_parameters = ['param'];
             unset($parameters[array_search('param', $parameters)]);
             $parameters = array_merge($_parameters, $parameters);
@@ -477,11 +474,18 @@ function block_helper_script()
             $value = post_param_string($parameter, post_param_string($parameter . '_fallback_list', null));
             if ($value === null) {
                 if (post_param_integer('tick_on_form__' . $parameter, null) === null) {
-                    continue; // If not on form, continue, otherwise must be 0
+                    $value = '';
+                } else {
+                    $value = '0';
                 }
-                $value = '0';
             }
-            if (($value != '') && (($parameter != 'block_id') || ($value != '')) && (($parameter != 'failsafe') || ($value == '1')) && (($parameter != 'defer') || ($value == '1')) && (($parameter != 'cache') || ($value != block_cache_default($block))) && (($parameter != 'quick_cache') || ($value == '1'))) {
+            if (
+                ($value != '') &&
+                (($parameter != 'failsafe') || ($value == '1')) &&
+                (($parameter != 'defer') || ($value == '1')) &&
+                (($parameter != 'cache') || ($value != block_cache_default($block))) &&
+                (($parameter != 'quick_cache') || ($value == '1'))
+            ) {
                 if ($parameter == 'param') {
                     $bparameters .= '="' . str_replace('"', '\"', $value) . '"';
                 } else {

@@ -30,7 +30,6 @@ class Module_admin_newsletter extends Standard_crud_module
     protected $do_preview = null;
     protected $menu_label = 'NEWSLETTER';
     protected $table = 'newsletters';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'newsletter';
     protected $donext_category_content_type = null;
 
@@ -131,10 +130,6 @@ class Module_admin_newsletter extends Standard_crud_module
         if ($type == 'view') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')], ['_SELF:_SELF:archive', do_lang_tempcode('NEWSLETTER_ARCHIVE')]]);
             breadcrumb_set_self(do_lang_tempcode('VIEW'));
-        }
-
-        if (either_param_integer('spreadsheet', 0) == 1) {
-            $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
         }
 
         return parent::pre_run($top_level);

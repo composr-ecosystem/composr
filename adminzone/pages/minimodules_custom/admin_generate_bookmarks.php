@@ -38,7 +38,7 @@ if (post_param_integer('confirm', 0) == 0) {
 }
 
 if (get_param_integer('debug', 0) != 1) {
-    header('Content-type: text/html; charset=' . get_charset());
+    header('Content-Type: text/html; charset=' . get_charset());
     header('Content-Disposition: attachment; filename="bookmarks.html"');
 }
 

@@ -196,6 +196,7 @@ class template_no_unused_test_set extends cms_test_case
             'HEADER_CLASSIC',
             'HEADER_SIDE',
             'HEADER_MODERN',
+            'STATS_GRAPH',
         ];
 
         $themes = find_all_themes();

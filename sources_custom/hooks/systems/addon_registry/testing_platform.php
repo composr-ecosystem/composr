@@ -210,6 +210,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/codechecker/src/main/java/com/composrfoundation/codequalitychecker/AboutDialog.java',
             '_tests/codechecker/target/codequalitychecker-11.0.jar',
             '_tests/codechecker/target/maven-archiver/pom.properties',
+            '_tests/codechecker/index.html',
             '_tests/html_dump/.htaccess',
             '_tests/html_dump/forums_test_set/.htaccess',
             '_tests/html_dump/forums_test_set/index.html',
@@ -710,14 +711,11 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/xss.php',
             '_tests/tests/unit_tests/core_fields.php',
             '_tests/tests/unit_tests/chmod_consistency.php',
-            '_tests/tests/unit_tests/external_code_considerations.php',
             '_tests/tests/unit_tests/tutorials_codebox.php',
             '_tests/tests/unit_tests/_performance.php',
             '_tests/tests/regression_tests/input_filter_post_block.php',
             '_tests/tests/unit_tests/privilege_existence.php',
-            '_tests/codechecker/java_src/index.html',
             '_tests/html_dump/forum_test_set/index.html',
-            '_tests/codechecker/java_src/.htaccess',
         ];
     }
 }

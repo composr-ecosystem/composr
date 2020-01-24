@@ -2457,6 +2457,7 @@ body button.button-hyperlink:hover {
 }
 
 /* Error/status messages */
+td.red-alert,
 span.red-alert,
 a.red-alert,
 strong.red-alert,
@@ -3757,12 +3758,12 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	margin-right: 0.75em;
 }
 /*{+START,CSS_MODE,desktop}*/
-	.results-table-sorter {
+	.results-table-sorter select {
 		max-width: 400px;
 	}
 /*{+END}*/
 /*{+START,CSS_MODE,mobile}*/
-	.results-table-sorter {
+	.results-table-sorter select {
 		max-width: 315px;
 	}
 /*{+END}*/

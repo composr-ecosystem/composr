@@ -22,7 +22,7 @@ function get_problem_match_script()
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite')));
     }
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     $version = get_param_string('version');
     $error_message = get_param_string('error_message', false, INPUT_FILTER_GET_COMPLEX);

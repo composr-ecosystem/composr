@@ -33,7 +33,7 @@ class Hook_cleanup_email_bounces
         $info = [];
         $info['title'] = do_lang_tempcode('EMAIL_BOUNCES');
         $info['description'] = do_lang_tempcode('DESCRIPTION_EMAIL_BOUNCES');
-        $info['type'] = 'cache';
+        $info['type'] = 'other';
 
         return $info;
     }

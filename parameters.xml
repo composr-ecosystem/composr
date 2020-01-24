@@ -419,8 +419,8 @@
   </parameter>
 
   <parameter
-    name="SetAclParameter15" description="Sets the ACL on the right file" defaultValue="{Application Path}/caches/guest_pages" tags="Hidden">
-    <parameterEntry type="ProviderPath" scope="setAcl" match="composr/caches/guest_pages" />
+    name="SetAclParameter15" description="Sets the ACL on the right file" defaultValue="{Application Path}/caches/static" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="composr/caches/static" />
   </parameter>
 
   <parameter

@@ -372,7 +372,6 @@
 
                     setTimeout(function () {
                         wysiwygEditorInitFor(textarea);
-                   
                     }, 1000);
 
                     resolvePromise();
@@ -913,6 +912,14 @@
             return '';
         }
 
+        /*
+        TODO: Salman, fix me for v11
+        var element = mySelection.getSelectedElement();
+        if (element) {
+            return get_outer_html(element.$);
+        }
+        */
+
         var selectedText = '';
         if (mySelection.getNative()) {
             try {
@@ -996,7 +1003,7 @@
                 }
 
                 var newHtml = '',
-                    url = $util.rel($cms.maintainThemeInLink('{$FIND_SCRIPT_NOHTTP;,comcode_convert}?semihtml=1&lax_comcode=1' + $cms.keep()));
+                    url = $util.rel($cms.maintainThemeInLink('{$FIND_SCRIPT_NOHTTP;,comcode_convert}?semihtml=1&is_semihtml=1&lax_comcode=1' + $cms.keep()));
 
                 if ($cms.getPageName() === 'topics') {
                     url += '&forum_db=1';

@@ -74,8 +74,6 @@ function captcha_script()
             return;
         }
 
-        cms_ini_set('zlib.output_compression', 'Off');
-
         $data = captcha_audio($code_needed);
 
         header('Content-Length: ' . strval(strlen($data)));
@@ -256,8 +254,6 @@ function form_input_captcha($hidden)
     if (uses_question_captcha()) {
         $tpl = new Tempcode();
 
-        $GLOBALS['STATIC_CACHE_ENABLED'] = false;
-
         require_code('form_templates');
 
         $questions = get_captcha_questions();
@@ -278,11 +274,6 @@ function form_input_captcha($hidden)
         }
 
         return $tpl;
-    }
-
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
-    if ($code_needed === null) {
-        generate_captcha();
     }
 
     // Show template
@@ -425,6 +416,11 @@ function generate_captcha()
     }
 
     $session = get_session_id();
+    if ($session == '') {
+        if (php_function_allowed('error_log')) {
+            error_log('CAPTCHA generated aainst blank session - static caching is misconfigured');
+        }
+    }
 
     // Clear out old codes
     $where = 'si_time<' . strval(time() - 60 * 30) . ' OR ' . db_string_equal_to('si_session_id', $session);

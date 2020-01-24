@@ -224,7 +224,7 @@ class Module_admin_security
         $result_entries = new Tempcode();
         foreach ($rows as $row) {
             $date = get_timezoned_date_time($row['date_and_time']);
-            $lookup_url = build_url(['page' => 'admin_lookup', 'param' => $row['ip']], '_SELF');
+            $lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], '_SELF');
             $result_entries->attach(results_entry([$row['failed_account'], $date, hyperlink($lookup_url, $row['ip'], false, true)], true));
         }
 
@@ -289,8 +289,8 @@ class Module_admin_security
         $id = $this->id;
         $row = $this->row;
 
-        $lookup_url = build_url(['page' => 'admin_lookup', 'param' => $row['ip']], '_SELF');
-        $member_url = build_url(['page' => 'admin_lookup', 'param' => $row['member_id']], '_SELF');
+        $lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], '_SELF');
+        $member_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['member_id']], '_SELF');
         $reason = do_lang($row['reason'], $row['reason_param_a'], $row['reason_param_b']);
 
         $post = with_whitespace(unixify_line_format($row['data_post']));

@@ -116,15 +116,12 @@ function init__minikernel()
 function set_http_caching($last_modified, $public = false, $expiry_seconds = 604800/*1 week*/)
 {
     if ($last_modified === null) {
-        @header('Expires: Mon, 20 Dec 1998 01:00:00 GMT');
-        @header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
         @header('Cache-Control: no-cache');
-        @header('Pragma: no-cache');
     } else {
-        @header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $expiry_seconds) . ' GMT');
         @header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $last_modified) . ' GMT');
         @header('Cache-Control: ' . ($public ? 'public' : 'private') . 'max-age=' . strval($expiry_seconds));
         @header_remove('Pragma');
+        @header_remove('Expires');
     }
 }
 
@@ -181,7 +178,6 @@ function fixup_bad_php_env_vars_pre()
         'HTTP_PREFER',
         'HTTP_RANGE',
         'HTTP_REFERER',
-        'HTTP_UA_OS',
         'HTTP_USER_AGENT',
         'HTTP_X_FORWARDED_FOR',
         'HTTP_X_FORWARDED_PROTO',
@@ -229,6 +225,8 @@ function fixup_bad_php_env_vars()
     if ((empty($_SERVER['SERVER_ADDR'])) && (!empty($_SERVER['LOCAL_ADDR']))) {
         $_SERVER['SERVER_ADDR'] = $_SERVER['LOCAL_ADDR'];
     }
+
+    $_SERVER['HTTP_USER_AGENT'] = urldecode($_SERVER['HTTP_USER_AGENT']);
 
     $document_root = empty($_SERVER['DOCUMENT_ROOT']) ? '' : $_SERVER['DOCUMENT_ROOT'];
     if (empty($document_root)) {
@@ -1193,13 +1191,13 @@ function persistent_cache_delete($key, $substring = false)
 
 /**
  * Recursively clean (erase) the output buffer and turn off output buffering.
+ * Does not disable the output handler, you need to call disable_output_compression() for that.
  */
 function cms_ob_end_clean()
 {
     while (ob_get_level() > 0) {
         if (!ob_end_clean()) {
-            cms_ini_set('zlib.output_compression', '0');
-            break;
+            break; // Cannot delete special buffer, likely output compression
         }
     }
 }

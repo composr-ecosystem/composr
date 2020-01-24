@@ -512,7 +512,7 @@ class Module_admin_actionlog
                 $fields['MEMBER_BANNED'] = $banned_test_3 ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             }
         }
-        $fields['INVESTIGATE_USER'] = hyperlink(build_url(['page' => 'admin_lookup', 'id' => (array_key_exists('ip', $row)) ? $row['ip'] : $row['member_id']], '_SELF'), do_lang_tempcode('PROCEED'), false, false);
+        $fields['INVESTIGATE_USER'] = hyperlink(build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => (array_key_exists('ip', $row)) ? $row['ip'] : $row['member_id']], '_SELF'), do_lang_tempcode('PROCEED'), false, false);
 
         // Is there a revision here?
         require_code('revisions_engine_database');

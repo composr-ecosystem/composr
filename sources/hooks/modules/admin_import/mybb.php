@@ -160,7 +160,7 @@ class Hook_import_mybb
             }
 
             if ($row['name'] == 'gzipoutput') {
-                $config_remapping['gzip_output'] = $row['value'];
+                $config_remapping['output_compression'] = $row['value'];
                 continue;
             }
 

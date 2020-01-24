@@ -46,7 +46,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         $this->process_checks_section('testLocalLinking', 'Local linking', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testBrokenWebPostForms', 'Broken web POST forms', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testForgottenIcons', 'Default icons', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testSpellingComcodePages', 'Spellchecking of all Comcode pages', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testSpellingComcodePages', 'Spellchecking of all Comcode pages (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSpellingPages', 'Spellchecking of pages', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSpellingContent', 'Spellchecking of miscellaneous content', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testComcodePageHeadings', 'Comcode page headings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -77,7 +77,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             return;
         }
 
-        $this->stateCheckManual('Check [url="Open Graph metadata"]https://developers.facebook.com/tools/debug/sharing/[/url] on any key pages you expect to be shared');
+        $this->stateCheckManual('Check [url="Open Graph metadata"]https://developers.facebook.com/tools/debug/[/url] on any key pages you expect to be shared');
 
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
             return;
@@ -376,6 +376,11 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
                     if ($has_action) {
                         $url = html_entity_decode($matches_action[1], ENT_QUOTES);
+
+                        if ($url == '#' || $url == '#!') {
+                            continue;
+                        }
+
                         $is_absolute_url = (strpos($url, '://') !== false);
                         $this->assertTrue($is_absolute_url, do_lang('FORM_ACTION_RELATIVE_PROBLEM'));
 
@@ -949,7 +954,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                     continue;
                 }
                 /*if ($result != 0) { Debugging
-                    @header('Content-type: text/plain');@var_dump($matches);exit();
+                    @header('Content-Type: text/plain');@var_dump($matches);exit();
                 }*/
                 $this->assertTrue($result == 0, $description);
             }

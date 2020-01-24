@@ -181,9 +181,12 @@ function do_access($given_password)
         'cookie_days' => '<em>Cookies:</em> The number of days to store login cookies for.',
 
         'use_persistent_cache' => '<em>Performance:</em> If persistent memory caching is to be used (caches data in memory between requests using whatever appropriate PHP extensions are available). May be set to <kbd>1</kbd> or the name of a PHP file in <kbd>sources/persistent_caching</kbd> to force a specific method (e.g. <kbd>apc</kbd>).',
-        'fast_spider_cache' => '<em>Performance:</em> The number of hours that the spider/bot cache lasts for (this sets both HTTP caching, and server retention of cached screens).',
-        'any_guest_cached_too' => '<em>Performance:</em> Whether Guests are cached with the spider cache time too.',
-        'self_learning_cache' => '<em>Performance:</em> Whether to allow pages to learn what resources they need, for efficient bulk loading of essentials while avoiding loading full resource sets upfront. Stores copies of some resources within the self-learning cache itself. If you disable this you should also disable the Composr "Output streaming" config option.',
+        'static_caching_hours' => '<em>Performance:</em> The number of hours that the static cache lasts (this sets both HTTP caching, and server retention of cached screens).',
+        'any_guest_cached_too' => '<em>Performance:</em> Whether Guest hits are cached with static caching (by default only spiders/bots get static caching).',
+        'static_caching_whitelist' => '<em>Performance:</em> A regular expresion determining what URLs are subject to the static cache. Does not need to match full URL unless you code your regexp to anchor itself. If not set all URLs will be cached that don\'t have special GET parameters (non-canonical parameters, or extra parameters to home page).',
+        'static_caching_blacklist' => '<em>Performance:</em> A regular expresion determining what URLs not subject to the static cache. Does not need to match full URL unless you code your regexp to anchor itself. If not set there will be no blacklist.',
+        'self_learning_cache' => '<em>Performance:</em> Whether to allow pages to learn what resources they need, for efficient bulk loading of essentials while avoiding loading full resource sets upfront. Stores copies of some resources within the self-learning cache itself.',
+        'no_nosniff_header' => '<em>Performance:</em> If you can rely on your webserver configuration sending "X-Content-Type-Options: nosniff" enable this to stop Composr duplicating it.',
 
         'max_execution_time' => '<em>Performance:</em> The time in seconds to use for PHP\'s maximum execution time option. Composr defaults to 60 and raises it in known situations that require more time.',
 
@@ -424,6 +427,7 @@ function do_set()
         $backup_path .= strval(mt_rand(0, mt_getrandmax()));
     }
     $copied_ok = @copy($FILE_BASE . '/' . $config_file, $backup_path);
+    @chmod($backup_path, 0600);
     if ($copied_ok !== false) {
         co_sync_file($backup_path);
     }

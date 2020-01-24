@@ -179,8 +179,8 @@ Need to output a simple spreadsheet? You are allowed to set headers and [tt]exit
 [code="PHP"]
 <?php
 
-header('Content-type: text/plain; charset=utf-8');
-header('Content-disposition: attachment; filename="example.csv"');
+header('Content-Type: text/plain; charset=utf-8');
+header('Content-Disposition: attachment; filename="example.csv"');
 
 // Some arbitrary data to output
 $example_data = array(
@@ -961,7 +961,7 @@ In Composr content types are implemented via a lot of different files. The best 
  - [tt]site/pages/modules_custom/iotds.php[/tt] -- This is the main site module (a kind of page) that provides the user-focused IOTD functionality. It provides screens for viewing IOTDs, etc.
  - [tt]sources_custom/blocks/main_iotd.php[/tt] -- This is a block for showing the current IOTD. Webmasters may place it on their Comcode pages (such as their front page) via this Comcode:
   - [tt][block]main_iotd[/block][/tt]
- - [tt]sources_custom/hooks/blocks/main_staff_checklist/iotds.php[/tt] -- This is a staff checklist hook that is used to show whether the IOTD needs setting, as a checklist item on the Admin Zone dashboard. Most content-types don't provide this hook.
+ - [tt]sources_custom/hooks/blocks/main_staff_checklist/iotds.php[/tt] -- This is a staff checklist hook that is used to show whether the IOTD needs setting, as a checklist item on the Admin Zone dashboard. Most Content-Types don't provide this hook.
  - [tt]sources_custom/hooks/modules/admin_import_types/iotds.php[/tt] -- This is an importer hook, it's not very interesting and you are very unlikely to need to write one.
  - [tt]sources_custom/hooks/modules/admin_setupwizard/iotds.php[/tt] -- This is a Setup Wizard hook, and this particular hook allows the Setup Wizard to place the IOTD block automatically on the website (Setup Wizard hooks can do various things, this is just one example of what a Setup Wizard hook can do). You are very unlikely to need to write one of these hooks.
  - [tt]sources_custom/hooks/modules/search/iotds.php[/tt] -- This is a search hook, to allow IOTDs to be searchable from the Composr [tt]search[/tt] module.

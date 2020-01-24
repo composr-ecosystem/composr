@@ -640,6 +640,7 @@ function get_template_contents($name)
  * @param  LANGUAGE_NAME $lang The language
  * @param  ID_TEXT $text The page text
  * @param  ?BINARY $validated The validated status (null: 1 / don't change)
+ * @param  BINARY $include_on_sitemap Include on the sitemap
  * @param  ?ID_TEXT $parent_page The page parent (null: none / don't change if $order is also null)
  * @param  ?integer $order The page order (null: 0 / don't change)
  * @param  ?TIME $add_time Add time (null: now / don't change)
@@ -651,7 +652,7 @@ function get_template_contents($name)
  * @param  ?LONG_TEXT $meta_description Meta description for this resource (blank: implicit) (null: no change)
  * @return PATH The save path
  */
-function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $parent_page = null, $order = null, $add_time = null, $edit_time = null, $show_as_edit = 0, $submitter = null, $file = null, $meta_keywords = '', $meta_description = '')
+function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $include_on_sitemap = 1, $parent_page = null, $order = null, $add_time = null, $edit_time = null, $show_as_edit = 0, $submitter = null, $file = null, $meta_keywords = '', $meta_description = '')
 {
     if ($submitter === null) {
         $submitter = get_member();
@@ -752,6 +753,7 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
         'p_add_date' => $add_time,
         'p_submitter' => $submitter,
         'p_show_as_edit' => $show_as_edit,
+        'p_include_on_sitemap' => $include_on_sitemap,
         'p_order' => $order,
     ]);
 
@@ -797,9 +799,20 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
         generate_resource_fs_moniker('comcode_page', $zone . ':' . $new_file);
     }
 
-    if ((substr($new_file, 0, 1) != '_') && (substr($new_file, 0, 6) != 'panel_')) {
-        require_code('sitemap_xml');
-        notify_sitemap_node_add($zone . ':' . $new_file);
+    if ($validated == 1) {
+        if ($include_on_sitemap == 1) {
+            $_include_on_sitemap = 1;
+        } else {
+            $_include_on_sitemap = 0;
+        }
+    } else {
+        $_include_on_sitemap = 0;
+    }
+    require_code('sitemap_xml');
+    if ($_include_on_sitemap == 1) {
+        notify_sitemap_node_edit($zone . ':' . $new_file);
+    } else {
+        notify_sitemap_node_delete($zone . ':' . $new_file);
     }
 
     return $full_path;
@@ -887,20 +900,19 @@ function get_page_type_file_extension($type)
  *
  * @param  ID_TEXT $zone The zone
  * @param  ID_TEXT $page The page
- * @param  ?ID_TEXT $type The page type (null: Comcode page in Composr's fallback language) [NB: page is deleted in all languages regardless of which is given]
+ * @param  ID_TEXT $type The page type [NB: page is deleted in all languages regardless of which is given]
  * @set modules modules_custom minimodules minimodules_custom comcode comcode_custom html html_custom
  * @param  boolean $use_afm Whether to use the AFM
+ * @param  ?LANGUAGE_NAME $only_lang Only delete this specific language (null: none)
  */
-function delete_cms_page($zone, $page, $type = null, $use_afm = false)
+function delete_cms_page($zone, $page, $type = 'comcode_custom', $use_afm = false, $only_lang = null)
 {
-    if ($type === null) {
-        $type = 'comcode_custom/' . fallback_lang();
-    }
-
     $_page = $page . '.' . get_page_type_file_extension($type);
 
-    $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_url' => $zone . ':' . $page]);
-    delete_cache_entry('menu');
+    if ($only_lang === null) {
+        $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_url' => $zone . ':' . $page]);
+        delete_cache_entry('menu');
+    }
 
     if ((substr($type, 0, 7) == 'comcode') || (substr($type, 0, 4) == 'html')) {
         $type_shortened = preg_replace('#/.+#', '', $type);
@@ -909,7 +921,7 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
             if (addon_installed('actionlog')) {
                 require_code('revisions_engine_files');
                 $revision_engine = new RevisionEngineFiles();
-                list(, , $existing_path) = find_comcode_page(user_lang(), $page, $zone);
+                list(, , $existing_path) = find_comcode_page(($only_lang === null) ? user_lang() : $only_lang, $page, $zone);
                 if ($existing_path != '') {
                     $revision_engine->add_revision(dirname($existing_path), $page, 'txt', cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM), filemtime($existing_path));
                 }
@@ -918,6 +930,10 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
 
         $langs = find_all_langs(true);
         foreach (array_keys($langs) as $lang) {
+            if (($only_lang !== null) && ($only_lang != $lang)) {
+                continue;
+            }
+
             $_path = zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type_shortened) . '/' . $lang . '/' . $_page, true);
             $path = ((strpos($type, 'comcode/') !== false) ? get_file_base() : get_custom_file_base()) . '/' . $_path;
             if (file_exists($path)) {
@@ -930,7 +946,7 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
             }
         }
 
-        if (substr($type, 0, 7) == 'comcode') {
+        if ((substr($type, 0, 7) == 'comcode') && ($only_lang === null)) {
             require_code('attachments2');
             require_code('attachments3');
             delete_comcode_attachments('comcode_page', $zone . ':' . $page);
@@ -942,8 +958,15 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
 
             require_code('content2');
             seo_meta_erase_storage('comcode_page', $zone . ':' . $page);
+
+            require_code('fields');
+            delete_form_custom_fields('comcode_page', $zone . ':' . $page);
         }
     } else {
+        if ($only_lang !== null) {
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
         $_path = zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/' . filter_naughty($type) . '/' . $_page, true);
         $path = ((strpos($type, '_custom') === false) ? get_file_base() : get_custom_file_base()) . '/' . $_path;
         if (file_exists($path)) {
@@ -956,16 +979,18 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
         }
     }
 
-    $GLOBALS['SITE_DB']->query_delete('https_pages', ['https_page_name' => $zone . ':' . $page], '', 1);
+    if ($only_lang === null) {
+        $GLOBALS['SITE_DB']->query_delete('https_pages', ['https_page_name' => $zone . ':' . $page], '', 1);
 
-    if (addon_installed('catalogues')) {
-        update_catalogue_content_ref('comcode_page', $page, '');
+        if (addon_installed('catalogues')) {
+            update_catalogue_content_ref('comcode_page', $page, '');
+        }
+
+        $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => $page, 'm_resource_type' => '', 'm_resource_id' => $zone]);
+
+        log_it('DELETE_PAGES', $zone . ':' . $page);
+
+        require_code('sitemap_xml');
+        notify_sitemap_node_delete($zone . ':' . $page);
     }
-
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => $page, 'm_resource_type' => '', 'm_resource_id' => $zone]);
-
-    log_it('DELETE_PAGES', $zone . ':' . $page);
-
-    require_code('sitemap_xml');
-    notify_sitemap_node_delete($zone . ':' . $page);
 }

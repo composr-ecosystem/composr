@@ -38,6 +38,7 @@ class Hook_config_users_online_time
             'explanation' => 'CONFIG_OPTION_users_online_time',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 4,
             'required' => true,
 
             'public' => false,

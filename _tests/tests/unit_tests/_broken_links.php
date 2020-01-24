@@ -158,6 +158,17 @@ class _broken_links_test_set extends cms_test_case
 
     protected function check_link($url, $context)
     {
+        /*// This is just for temporary testing of a list of broken links
+        if (!in_array($url, [
+        ])) {
+            return;
+        }*/
+
+        $docs_stub =  get_brand_base_url() . '/docs' . strval(cms_version()) . '/';
+        if ((substr($url, 0, strlen($docs_stub)) == $docs_stub) && (cms_version_branch_status() == VERSION_ALPHA)) {
+            return;
+        }
+
         if (strpos($url, '{') !== false) {
             return;
         }
@@ -174,10 +185,7 @@ class _broken_links_test_set extends cms_test_case
         if (preg_match('#^http://december\.com/html/4/element/#', $url) != 0) {
             return;
         }
-        if (preg_match('#^http://shareddemo\.composr\.info/#', $url) != 0) {
-            return;
-        }
-        if (preg_match('#^http://compo\.sr/docs\d+/#', $url) != 0) {
+        if (preg_match('#^https?://shareddemo\.composr\.info/#', $url) != 0) {
             return;
         }
         if (in_array($url, [ // These just won't check from a bot guest user

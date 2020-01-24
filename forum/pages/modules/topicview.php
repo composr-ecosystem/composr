@@ -429,7 +429,11 @@ class Module_topicview
                             'HIGHLIGHT_NAME' => array_key_exists('highlighted_name', $_postdetails) ? ($_postdetails['highlighted_name'] ? '1' : '0') : null,
                         ]);
                     } else {
-                        $ip_url = ((addon_installed('securitylogging')) && (array_key_exists('ip_address', $_postdetails)) && (has_actual_page_access(get_member(), 'admin_lookup'))) ? build_url(['page' => 'admin_lookup', 'param' => $_postdetails['ip_address']], get_module_zone('admin_lookup')) : new Tempcode();
+                        if ((addon_installed('securitylogging')) && (array_key_exists('ip_address', $_postdetails)) && (has_actual_page_access(get_member(), 'admin_lookup'))) {
+                            $ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $_postdetails['ip_address']], get_module_zone('admin_lookup'));
+                        } else {
+                            $ip_url = new Tempcode();
+                        }
                         $poster = do_template('CNS_POSTER_GUEST', [
                             '_GUID' => '36a8e550222cdac5165ef8f722be3def',
                             'LOOKUP_IP_URL' => $ip_url,

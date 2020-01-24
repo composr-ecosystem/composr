@@ -2,11 +2,11 @@
 	<tbody>
 		<tr>
 			<th>{!USERNAME}</th>
-			<td>{NAME*}</td>
+			<td>{USERNAME*}</td>
 		</tr>
 		<tr>
 			<th>{!MEMBER_ID}</th>
-			<td>{ID*}</td>
+			<td>{MEMBER_ID*}</td>
 		</tr>
 		<tr>
 			<th>{!IP_ADDRESS}</th>

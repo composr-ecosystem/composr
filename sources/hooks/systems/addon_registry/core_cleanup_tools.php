@@ -112,7 +112,6 @@ class Hook_addon_registry_core_cleanup_tools
             'sources/hooks/systems/addon_registry/core_cleanup_tools.php',
             'themes/default/templates/CLEANUP_ORPHANED_UPLOADS.tpl',
             'themes/default/templates/CLEANUP_COMPLETED_SCREEN.tpl',
-            'themes/default/templates/CLEANUP_PAGE_STATS.tpl',
             'adminzone/pages/modules/admin_cleanup.php',
             'adminzone/pages/modules/admin_broken_urls.php',
             'sources/broken_urls.php',
@@ -162,7 +161,6 @@ class Hook_addon_registry_core_cleanup_tools
         return [
             'templates/CLEANUP_COMPLETED_SCREEN.tpl' => 'administrative__cleanup_completed_screen',
             'templates/CLEANUP_ORPHANED_UPLOADS.tpl' => 'administrative__cleanup_completed_screen',
-            'templates/CLEANUP_PAGE_STATS.tpl' => 'administrative__cleanup_completed_screen',
             'templates/BROKEN_URLS.tpl' => 'administrative__broken_urls_screen',
             'templates/BROKEN_CONTENT_LANG_STRINGS.tpl' => 'administrative__broken_content_lang_strings',
         ];
@@ -188,13 +186,6 @@ class Hook_addon_registry_core_cleanup_tools
         $message = do_lorem_template('CLEANUP_ORPHANED_UPLOADS', [
             'FOUND' => $urls,
         ]);
-
-        if (addon_installed('stats')) {
-            require_lang('stats');
-            $message->attach(do_lorem_template('CLEANUP_PAGE_STATS', [
-                'STATS_BACKUP_URL' => placeholder_url(),
-            ]));
-        }
 
         return [
             lorem_globalise(do_lorem_template('CLEANUP_COMPLETED_SCREEN', [

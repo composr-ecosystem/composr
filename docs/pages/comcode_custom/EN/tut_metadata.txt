@@ -76,7 +76,6 @@ If you have a Twitter account you want to promote, you may also want to add:
 (Where [tt]@example[/tt] is your Twitter account)
 
 Or if you want to allow individual content items to have their own metadata specifying the creator, you can do that. Here's an example for gallery images:[list="1"]
-[*] Make sure the "Output streaming" option has not been enabled (it is not enabled by default). 
 [*] Create a custom field for the gallery images (Admin Zone > Content > Galleries > Choose custom 'Image' fields). It should be of field type Codename.
 [*] Edit the [tt]GALLERY_ENTRY_SCREEN[/tt] template, adding the following to the end:
 [code="HTML"]

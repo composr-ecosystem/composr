@@ -28,6 +28,7 @@ class addon_guards_test_set extends cms_test_case
         'modules/admin_setupwizard' => 'setupwizard',
         'modules/admin_setupwizard_installprofiles' => 'setupwizard',
         'modules/admin_stats' => 'stats',
+        'modules/admin_stats_redirects' => 'stats',
         'modules/admin_themewizard' => 'themewizard',
         'modules/admin_unvalidated' => 'unvalidated',
         'modules/chat_bots' => 'chat',
@@ -43,6 +44,7 @@ class addon_guards_test_set extends cms_test_case
         'systems/realtime_rain' => 'realtime_rain',
         'systems/referrals' => 'referrals',
         'systems/syndication' => 'activity_feed',
+        'systems/points' => 'points',
     ];
 
     public function testAddonGuardsCohesion()

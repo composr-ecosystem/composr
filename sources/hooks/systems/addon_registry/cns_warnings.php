@@ -117,6 +117,8 @@ class Hook_addon_registry_cns_warnings
             'sources/hooks/systems/commandr_fs_extended_member/warnings.php',
             'themes/default/javascript/cns_warnings.js',
             'sources/hooks/systems/actionlog/cns_warnings.php',
+
+            'sources/hooks/modules/admin_stats/warnings.php',
         ];
     }
 

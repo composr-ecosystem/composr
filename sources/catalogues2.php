@@ -634,7 +634,7 @@ function actual_add_catalogue_category($catalogue_name, $title, $description, $n
 
     calculate_category_child_count_cache($parent_id);
 
-     reorganise_uploads__catalogue_categories(['id' => $id]);
+    reorganise_uploads__catalogue_categories(['id' => $id]);
 
     log_it('ADD_CATALOGUE_CATEGORY', strval($id), get_translated_text($map['cc_title']));
 
@@ -1121,7 +1121,7 @@ function actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rat
                 require_code('content_privacy');
                 $privacy_limits = privacy_limits_for('catalogue_entry', strval($id));
             } else {
-                $privacy_limits = [];
+                $privacy_limits = null;
             }
 
             require_lang('catalogues');
@@ -1318,7 +1318,7 @@ function actual_edit_catalogue_entry($id, $category_id, $validated, $notes, $all
                 require_code('content_privacy');
                 $privacy_limits = privacy_limits_for('catalogue_entry', strval($id));
             } else {
-                $privacy_limits = [];
+                $privacy_limits = null;
             }
 
             require_lang('catalogues');

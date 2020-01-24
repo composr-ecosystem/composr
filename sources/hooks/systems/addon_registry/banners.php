@@ -150,6 +150,8 @@ class Hook_addon_registry_banners
             'themes/default/javascript/banners.js',
             'sources/hooks/systems/reorganise_uploads/banners.php',
             'sources/hooks/systems/actionlog/banners.php',
+
+            'sources/hooks/modules/admin_stats/banners.php',
         ];
     }
 

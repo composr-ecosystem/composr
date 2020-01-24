@@ -190,6 +190,8 @@ Of course, with all things, a sense of balance is important. An instinct/habit f
 
 &raquo; See [page="_SEARCH:codebook_standards"]Coding standards[/page].
 
+&raquo; See [page="_SEARCH:codebook_standards_obscure"]Obscure coding standards[/page].
+
 [title="2"]Tips[/title]
 
 &raquo; See [page="_SEARCH:codebook_3"]Miscellany[/page].

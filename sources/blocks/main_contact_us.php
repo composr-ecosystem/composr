@@ -84,7 +84,7 @@ class Block_main_contact_us
         $body_prefix = array_key_exists('body_prefix', $map) ? $map['body_prefix'] : '';
         $body_suffix = array_key_exists('body_suffix', $map) ? $map['body_suffix'] : '';
 
-        $type = @cms_empty_safe($map['param']) ? do_lang('GENERAL') : $map['param'];
+        $type = @cms_empty_safe($map['param']) ? do_lang('GENERAL', null, null, null, get_site_default_lang()) : $map['param'];
         $box_title = array_key_exists('title', $map) ? $map['title'] : do_lang('CONTACT_US');
         $email_optional = array_key_exists('email_optional', $map) ? (intval($map['email_optional']) == 1) : true;
         $support_attachments = array_key_exists('attachments', $map) ? (intval($map['attachments']) == 1) : false;
@@ -97,6 +97,11 @@ class Block_main_contact_us
             // Check CAPTCHA
             if ($use_captcha) {
                 enforce_captcha();
+            }
+
+            if (addon_installed('stats')) {
+                require_code('stats');
+                log_stats_event(do_lang('FORM', null, null, null, get_site_default_lang()) . '-' . $type);
             }
 
             list($subject, $body, , , $from_email, $from_name) = _form_to_email([], $subject_prefix, $subject_suffix, $body_prefix, $body_suffix);

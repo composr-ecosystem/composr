@@ -1,0 +1,15 @@
+{!TEXT_KPI_UPDATE_MAIL}
+
+{|
+! {!TITLE}
+! {!CURRENT}
+! {!TARGET}
+! {!ACTIONS}
+|-
+{+START,LOOP,KPIS}
+| [url="{TITLE@}"]{VIEW_URL@}[/url]
+| {+START,IF_PASSED,CURRENT}{CURRENT@}{+END}{+START,IF_NON_PASSED,CURRENT}[i]{!NA}[/i]{+END}
+| {+START,IF_PASSED,TARGET}{+START,IF,{$NOT,{HITS_TARGET}}}[color="red"]{TARGET@}[/color]{+END}{+START,IF,{HITS_TARGET}}[color="green"]{TARGET@}[/color]{+END}{+END}{+START,IF_NON_PASSED,CURRENT}[i]{!NONE}[/i]{+END}
+| [url="{!EDIT}"]{EDIT_URL@}[/url]
+{+END}
+|}

@@ -30,7 +30,6 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     protected $menu_label = 'CUSTOM_PROFILE_FIELDS';
     protected $orderer = 'cf_name';
     protected $table = 'f_custom_fields';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'cpf';
     protected $donext_category_content_type = null;
 
@@ -313,13 +312,17 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         $fields->attach(form_input_list(do_lang('AUTOFILL_TYPE'), do_lang('DESCRIPTION_AUTOFILL_TYPE'), 'autofill_type', $autofill_types_option_list, null, false, false));
 
-        require_lang('ecommerce');
-
         $possible_autofill_hints =  [
             '' => do_lang('NA'),
-            'shipping' => do_lang('SHIPPING'),
-            'billing' => do_lang('BILLING'),
         ];
+
+        if (addon_installed('ecommerce')) {
+            require_lang('ecommerce');
+            $possible_autofill_hints =  [
+                'shipping' => do_lang('SHIPPING'),
+                'billing' => do_lang('BILLING'),
+            ];
+        }
 
         $autofill_hints_option_list = new Tempcode();
 
@@ -897,7 +900,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
                 $lines[] = ['CNT' => integer_format($row['cnt']), 'VAL' => is_integer($val) ? integer_format($val) : $val];
             }
         }
-        if ($lines === []) {
+        if (empty($lines)) {
             warn_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 

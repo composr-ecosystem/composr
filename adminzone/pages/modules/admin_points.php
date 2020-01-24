@@ -93,7 +93,6 @@ class Module_admin_points
             breadcrumb_set_self(do_lang_tempcode('EXPORT'));
 
             $this->title = get_screen_title('EXPORT_POINTS');
-            $GLOBALS['OUTPUT_STREAMING'] = false;
         } else {
             set_helper_panel_tutorial('tut_points');
         }

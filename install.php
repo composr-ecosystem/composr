@@ -18,13 +18,13 @@
 $functions = ['fopen'];
 foreach ($functions as $function) {
     if (preg_match('#[^,\s]' . $function . '[$,\s]#', ini_get('disable_functions')) != 0) {
-        header('Content-type: text/plain; charset=utf-8');
+        header('Content-Type: text/plain; charset=utf-8');
         exit('The ' . $function . ' function appears to have been manually disabled in your PHP installation. This is a basic and necessary function, required for Composr.');
     }
 }
 
 if ((!array_key_exists('type', $_GET)) && (file_exists('install_locked'))) {
-    header('Content-type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
     exit('Installer is locked for security reasons (delete the \'install_locked\' file to return to the installer)');
 }
 
@@ -72,7 +72,7 @@ define('URL_CONTENT_REGEXP_JS', '\w\-\u0080-\uFFFF'); // JavaScript is done usin
 
 if (!array_key_exists('type', $_GET)) {
     if (empty($_GET)) {
-        header('Content-type: text/html; charset=utf-8');
+        header('Content-Type: text/html; charset=utf-8');
     }
 
     echo '<!DOCTYPE html>' . "\n";
@@ -2556,7 +2556,7 @@ function require_code($codename)
         $prior = memory_get_usage();
         //echo '<!-- Memory: ' . number_format($prior) . ' -->' . "\n"; Can break JS validity if we inject this
         //echo '<!-- Loading code file: ' . $codename . ' -->' . "\n";
-        flush();
+        cms_flush_safe();
     }
 
     global $FILE_BASE;
@@ -2620,6 +2620,16 @@ function cms_ini_set($var, $value)
     }
 
     return @ini_set($var, $value);
+}
+
+/**
+ * Flush but don't break Brotli compression.
+ */
+function cms_flush_safe()
+{
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
+        flush();
+    }
 }
 
 /**
@@ -2714,7 +2724,7 @@ function handle_self_referencing_embedment()
                 break;
 
             case 'logo':
-                header('Content-type: image/png');
+                header('Content-Type: image/png');
                 if (!file_exists(get_file_base() . '/themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png')) {
                     $out = file_array_get('themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png');
                     echo $out;
@@ -2727,7 +2737,7 @@ function handle_self_referencing_embedment()
 
             case 'contract':
             case 'expand':
-                header('Content-type: image/svg+xml');
+                header('Content-Type: image/svg+xml');
                 if (!file_exists(get_file_base() . '/themes/default/images/icons/trays/' . $type . '.svg')) {
                     $out = file_array_get('themes/default/images/icons/trays/' . $type . '.svg');
                     echo $out;
@@ -2781,7 +2791,7 @@ function handle_self_referencing_embedment()
         }
 
         if (substr($type, 0, 15) == 'themes/default/') {
-            header('Content-type: image/svg+xml; charset=' . get_charset());
+            header('Content-Type: image/svg+xml; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
                 $out = handle_string_bom(file_array_get(filter_naughty($type)));
                 echo $out;
@@ -3026,7 +3036,7 @@ function test_htaccess($conn)
     $clauses = [];
 
     $clauses[] = <<<END
-# Stop any potential content-type sniffing vulnerabilities
+# Stop any potential Content-Type sniffing vulnerabilities
 <IfModule mod_headers.c>
 Header set X-Content-Type-Options "nosniff"
 </IfModule>
@@ -3113,7 +3123,7 @@ AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javasc
 </IfModule>
 </IfModule>
 
-# We do not want for TAR files, due to IE bug http://blogs.msdn.com/b/wndp/archive/2006/08/21/content-encoding-not-equal-content-type.aspx (IE won't decompress again as it thinks it's a mistake)
+# We do not want for TAR files, due to IE bug http://blogs.msdn.com/b/wndp/archive/2006/08/21/content-encoding-not-equal-Content-Type.aspx (IE won't decompress again as it thinks it's a mistake)
 <IfModule mod_setenvif.c>
 SetEnvIfNoCase Request_URI \.tar$ no-gzip dont-vary
 </IfModule>
@@ -3147,7 +3157,7 @@ RewriteRule ^(themes/default/images/cns_emoticons/.*\.gif)$ $1.png [L,QSA]
 
 # Anything that would point to a real file should actually be allowed to do so. If you have a "RewriteBase /subdir" command, you may need to change to "%{DOCUMENT_ROOT}/subdir/$1".
 RewriteCond $1 ^\d+.shtml [OR]
-RewriteCond $1 \.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bmp|bz2|css|csv|cur|dat|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|php|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|swf|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|xls|xlsx|xml|xsd|xsl|zip) [OR]
+RewriteCond $1 \.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bmp|br|bz2|css|csv|cur|dat|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|php|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|swf|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|xls|xlsx|xml|xsd|xsl|zip) [OR]
 RewriteCond %{DOCUMENT_ROOT}/$1 -f [OR]
 RewriteCond %{DOCUMENT_ROOT}/$1 -l [OR]
 RewriteCond %{DOCUMENT_ROOT}/$1 -d [OR]
@@ -3232,10 +3242,7 @@ END;
 
         foreach ($clauses as $i => $clause) {
             cms_file_put_contents_safe(get_file_base() . '/exports/addons/index.php', "<" . "?php
-            header('Expires: Mon, 20 Dec 1998 01:00:00 GMT');
-            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Cache-Control: no-cache');
-            header('Pragma: no-cache');
             ");
 
             cms_file_put_contents_safe(get_file_base() . '/exports/addons/.htaccess', $clause);

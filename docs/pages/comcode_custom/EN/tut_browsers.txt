@@ -38,7 +38,7 @@ Composr is designed to work on all serious modern browsers:
 
 &dagger;&dagger; We officially support the last two releases of these browsers. In practice we are likely to accept bug reports for older browsers if they are still widely used by relevant demographics.
 
-&dagger;&dagger;&dagger; As Microsoft Browsers are particularly widely-used and inflexible we are more explicit about what we will support. Officially it is still the last two releases, but we will accept bug reports for IE10/IE11. The exact supported versions will change over time, as install bases change, and this tutorial will be updated accordingly.
+&dagger;&dagger;&dagger; As Microsoft Browsers are particularly widely-used and inflexible we are more explicit about what we will support. Officially it is still the last two releases, but we will accept bug reports for IE10/IE11. The exact supported versions will change over time, as install bases change, and also according to Microsoft EOL policy, and this tutorial can be updated accordingly.
 
 We do not explicitly support the following browsers, but will generally accept bug reports for them:
  - Chromium (the Open Source version of Google Chrome)

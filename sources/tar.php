@@ -19,7 +19,7 @@
  */
 
 /**
- * Open up a TAR archive (or tarball if the zlib extension is available), and return the resource.
+ * Open up a TAR archive (or tarball if the zlib extension is available and .gz is requested), and return the resource.
  *
  * @param  PATH $path The path to the TAR archive
  * @param  string $mode The mode to open the TAR archive (rb=read, wb=write)
@@ -57,6 +57,7 @@ function tar_open($path, $mode, $known_exists = false, $real_filename = null)
     $resource['new'] = !$exists;
     $resource['mode'] = $mode;
     $resource['myfile'] = $myfile;
+    $resource['real_filename'] = $real_filename;
     $resource['full'] = $path;
     $resource['already_at_end'] = false;
     if (((!$exists) || (!(filesize($path) > 0))) && (strpos($mode, 'w') !== false)) {
@@ -137,7 +138,8 @@ function tar_get_directory(&$resource, $tolerate_errors = false)
                 $path = utf8_decode($path);
             }
 
-            $mode = octdec(substr($header, 100, 8));
+            $_mode = substr($header, 100, 8);
+            $mode = octdec(trim($_mode));
             $size = octdec(rtrim(substr($header, 124, 12)));
             $mtime = octdec(rtrim(substr($header, 136, 12)));
             $chksum = octdec(rtrim(substr($header, 148, 8)));
@@ -624,17 +626,17 @@ function tar_add_file(&$resource, $target_path, $data, $_mode = 0644, $_mtime = 
         $name = pack('a100', $target_path);
     }
 
-    $mode = sprintf('%7s ', decoct($_mode));
-    $uid = sprintf('%7s ', decoct(website_file_owner()));
+    $mode = sprintf('%07s', decoct($_mode)) . chr(0);
+    $uid = sprintf('%07s ', decoct(website_file_owner())) . chr(0);
     if (strlen($uid) > 8) {
         $uid = '        ';
     }
-    $gid = sprintf('%7s ', decoct(website_file_group()));
+    $gid = sprintf('%07s', decoct(website_file_group())) . chr(0);
     if (strlen($gid) > 8) {
         $gid = '        ';
     }
-    $size = sprintf('%11s ', decoct($data_is_path ? filesize($data) : strlen($data)));
-    $mtime = sprintf('%11s ', decoct($_mtime));
+    $size = sprintf('%011s', decoct($data_is_path ? filesize($data) : strlen($data))) . chr(0);
+    $mtime = sprintf('%011s', decoct($_mtime)) . chr(0);
     $chksum = '        ';
     $typeflag = pack('a1', ($target_path == '././@LongLink') ? 'L' : '');
     $linkname = pack('a100', '');
@@ -719,7 +721,11 @@ function tar_close($resource)
     }
 
     @flock($resource['myfile'], LOCK_UN);
-    fclose($resource['myfile']);
+    if ((function_exists('gzclose')) && (strtolower(substr($resource['real_filename'], -3)) == '.gz')) {
+        gzclose($resource['myfile']);
+    } else {
+        fclose($resource['myfile']);
+    }
 
     if ($writing) {
         fix_permissions($resource['full']);

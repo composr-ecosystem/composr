@@ -14,10 +14,12 @@ The code quality checker is a tool to check web documents against a number of st
 The checker consists of a number of linked checkers.
 
 The code quality checker is copyright ocProducts Ltd, licensed under the CPAL (http://opensource.org/licenses/cpal_1.0), and hence can be extended and re-distributed by third-parties.
-The frontend is written in Java, and thus should run wherever Java can run. The backend is written in PHP, and thus it also requires a command-line PHP interpreter to be installed (e.g. php.exe).
 
-To launch the Code Quality checker open a command line to the code checker directory and run:
-java -jar "netbeans/dist/Code_Quality_Checker.jar"
+The frontend is written in Java, and thus should run wherever Java can run. A minimum of Java 11 is required. Note the latest version of Java from java.com is version 8, as that website was created for the Java web plugin only, which has reached end-of-life some time ago.
+
+The backend is written in PHP, and thus it also requires a command-line PHP interpreter to be installed (e.g. php.exe).
+
+To launch the Code Quality checker open a command line to the code checker directory and run codechecker.sh (Linux/Mac OS) or codechecker.bat (Windows). The correct minimum version of Java needs to be in the system path.
 
 You can drag and drop files into the checker, or you can work from a project directory.
 
@@ -140,10 +142,8 @@ Some checks we could do but don't:
  - checking constants exist (predefined and global and class constants), and knowing their type (Reason: Would be difficult to implement given they can be defined dynamically)
  > see "Comparison to other PHP linters" for more
 
-The PHP checker is very much set up to enforce compatibility across different PHP platforms. It is only assumed that a small number of extensions will be present:
- - gd2
- - gzip
-For all of these, you should use function_exists at some point before using these function sets.
+The PHP checker is very much set up to enforce compatibility across different PHP platforms. It is only assumed that the gd2 extension will be present:
+For extension functions you should use function_exists at some point before using these function sets.
 For other functions you can use function_exists too. The checker is smart about function_exists, but not very smart. You can do:
 function_exists('foo')?foo():bar()
 and

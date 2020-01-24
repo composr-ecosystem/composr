@@ -58,7 +58,7 @@ class Hook_privacy_polls extends Hook_privacy_base
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'poll_votes' => [
-                    'timestamp_field' => null,
+                    'timestamp_field' => 'v_vote_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
                     'member_id_fields' => ['v_voter_id'],

@@ -69,7 +69,7 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
 {
     list($minify, $https, $mobile) = _get_web_resources_env();
 
-    if (($allow_defer) && (function_exists('can_static_cache')) && (can_static_cache())) {
+    if (($allow_defer) && (function_exists('can_static_cache_request')) && (can_static_cache_request())) {
         $allow_defer = false;
     }
 
@@ -227,7 +227,8 @@ function _javascript_tempcode($j, &$js, $_minify = null, $_https = null, $_mobil
     $temp = $do_enforce ? javascript_enforce($j, null, (!running_script('script')) && ($_minify === null) && ($_https === null) && ($_mobile === null)) : '';
     if (($temp != '') || (!$do_enforce)) {
         if ($temp == 'defer') {
-            $GLOBALS['STATIC_CACHE_ENABLED'] = false;
+            require_code('static_cache');
+            disable_static_caching();
 
             if ((function_exists('debugging_static_cache')) && (debugging_static_cache())) {
                 if (php_function_allowed('error_log')) {
@@ -311,7 +312,7 @@ function css_enforce($c, $theme = null, $allow_defer = false)
 {
     list($minify, $https, $mobile) = _get_web_resources_env();
 
-    if (($allow_defer) && (function_exists('can_static_cache')) && (can_static_cache())) {
+    if (($allow_defer) && (function_exists('can_static_cache_request')) && (can_static_cache_request())) {
         $allow_defer = false;
     }
 
@@ -480,7 +481,8 @@ function _css_tempcode($c, &$css, &$css_need_inline, $inline = false, $context =
         $temp = $do_enforce ? css_enforce($c, $theme, (!running_script('sheet')) && ($context === null) && ($_minify === null) && ($_https === null) && ($_mobile === null)) : '';
 
         if ($temp == 'defer') {
-            $GLOBALS['STATIC_CACHE_ENABLED'] = false;
+            require_code('static_cache');
+            disable_static_caching();
 
             if ((function_exists('debugging_static_cache')) && (debugging_static_cache())) {
                 if (php_function_allowed('error_log')) {

@@ -42,7 +42,6 @@ class Module_cms_catalogues extends Standard_crud_module
     protected $menu_label = 'CATALOGUES';
     protected $orderer = 'ce_add_date';
     protected $table = 'catalogue_entries';
-    protected $title_is_multi_lang = false;
     protected $supports_mass_delete = true;
 
     protected $donext_category_id;
@@ -187,8 +186,6 @@ class Module_cms_catalogues extends Standard_crud_module
 
         if ($type == 'export') {
             $this->title = get_screen_title('EXPORT_CATALOGUE_ENTRIES');
-
-            $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
         }
 
         switch ($type) {
@@ -1178,7 +1175,6 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     protected $upload = 'image';
     protected $menu_label = 'CATALOGUES';
     protected $table = 'catalogue_categories';
-    protected $title_is_multi_lang = false;
     protected $orderer = 'cc_title';
     protected $is_chained_with_parent_browse = true;
 

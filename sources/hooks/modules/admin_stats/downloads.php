@@ -21,147 +21,125 @@
 /**
  * Hook class.
  */
-class Hook_admin_stats_downloads
+class Hook_admin_stats_downloads extends CMSStatsProvider
 {
     /**
-     * Define stats screens implemented in this hook.
+     * Find metadata about stats graphs that are provided by this stats hook.
      *
-     * @return ?array A pair: entry-point, do-next information (null: hook is disabled)
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
+     * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('downloads')) {
             return null;
         }
 
+        require_code('locations');
+
         require_lang('downloads');
 
         return [
-            ['downloads' => ['SECTION_DOWNLOADS', 'menu/rich_content/downloads'],],
-            ['menu/rich_content/downloads', ['_SELF', ['type' => 'downloads'], '_SELF'], do_lang('SECTION_DOWNLOADS'), 'DESCRIPTION_DOWNLOADS_STATISTICS'],
+            'downloads' => [
+                'label' => do_lang_tempcode('COUNT_DOWNLOADS'),
+                'category' => 'feedback_and_engagement',
+                'filters' => [
+                    'downloads__month_range' => new CMSStatsDateMonthRangeFilter('downloads__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'downloads__country' => has_geolocation_data() ? new CMSStatsListFilter('downloads__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()) : null,
+                ],
+                'pivot' => new CMSStatsDatePivot('downloads__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
+            ],
         ];
     }
 
     /**
-     * The UI to show download statistics.
+     * Preprocess raw data in the database into something we can efficiently draw graphs/conclusions from.
      *
-     * @param  object $ob The stats module object
-     * @param  string $type The screen type
-     * @return Tempcode The UI
+     * @param  TIME $start_time Start timestamp
+     * @param  TIME $end_time End timestamp
+     * @param  array $data_buckets Map of data buckets; a map of bucket name to nested maps with the following maps in sequence: 'month', 'pivot', 'value' (then further map data) ; extended and returned by reference
      */
-    public function downloads($ob, $type)
+    public function preprocess_raw_data($start_time, $end_time, &$data_buckets)
     {
-        require_lang('downloads');
+        $server_timezone = get_server_timezone();
 
-        // This will show a plain bar chart with all the downloads listed
-        $title = get_screen_title('SECTION_DOWNLOADS');
+        $max = 1000;
+        $start = 0;
 
-        // Handle time range
-        if (get_param_integer('dated', 0) == 0) {
-            $title = get_screen_title('SECTION_DOWNLOADS');
+        $date_pivots = $this->get_date_pivots();
 
-            return $ob->get_between($title, false, null, do_lang_tempcode('DOWNLOAD_STATS_RANGE'));
-        }
-        $time_start = post_param_date('time_start', true);
-        $time_end = post_param_date('time_end', true);
-        if ($time_end !== null) {
-            $time_end += 60 * 60 * 24 - 1; // So it is end of day not start
-        }
+        $query = 'SELECT MIN(date_and_time) AS date_and_time,ip FROM ' . get_table_prefix() . 'download_logging WHERE ';
+        $query .= 'date_and_time>=' . strval($start_time) . ' AND ';
+        $query .= 'date_and_time<=' . strval($end_time);
+        $query .= ' GROUP BY id,member_id,ip ORDER BY date_and_time';
+        do {
+            $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
+            foreach ($rows as $row) {
+                $timestamp = $row['date_and_time'];
+                $timestamp = tz_time($timestamp, $server_timezone);
 
-        if (($time_start === null) && ($time_end === null)) {
-            $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'num_downloads', 'name']);
-        } else {
-            if ($time_start === null) {
-                $time_start = 0;
+                $month = get_stats_month_for_timestamp($timestamp);
+
+                $country_code = geolocate_ip($row['ip']);
+
+                foreach (array_keys($date_pivots) as $pivot) {
+                    $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
+
+                    if (!isset($data_buckets['downloads'][$month][$pivot][$pivot_value][$country_code])) {
+                        $data_buckets['downloads'][$month][$pivot][$pivot_value][$country_code] = 0;
+                    }
+                    $data_buckets['downloads'][$month][$pivot][$pivot_value][$country_code]++;
+                }
             }
-            if ($time_end === null) {
-                $time_end = time();
+
+            $start += $max;
+        } while (!empty($rows));
+    }
+
+    /**
+     * Generate final data from preprocessed data.
+     *
+     * @param  string $bucket Data bucket we want data for
+     * @param  string $pivot Pivot value
+     * @param  array $filters Map of filters (including pivot if applicable)
+     * @return array Final data in standardised map format
+     */
+    public function generate_final_data($bucket, $pivot, $filters)
+    {
+        $data = $this->fill_data_by_date_pivots($pivot, $filters[$bucket . '__month_range'][0], $filters[$bucket . '__month_range'][1]);
+
+        $where = [
+            'p_bucket' => $bucket,
+            'p_pivot' => $pivot,
+        ];
+        $extra = '';
+        $extra .= ' AND p_month>=' . strval($filters[$bucket . '__month_range'][0]);
+        $extra .= ' AND p_month<=' . strval($filters[$bucket . '__month_range'][1]);
+        $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
+        foreach ($data_rows as $data_row) {
+            $_data = @unserialize($data_row['p_data']);
+            foreach ($_data as $pivot_value => $_) {
+                $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
+
+                foreach ($_ as $country => $num_downloads) {
+                    if ((!empty($filters[$bucket . '__country'])) && ($filters[$bucket . '__country'] != $country)) {
+                        continue;
+                    }
+
+                    if (!isset($data[$pivot_value])) {
+                        $data[$pivot_value] = 0;
+                    }
+                    $data[$pivot_value] += $num_downloads;
+                }
             }
-
-            $title = get_screen_title('SECTION_DOWNLOADS_RANGE', true, [escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))]);
-
-            $rows = $GLOBALS['SITE_DB']->query('SELECT id,num_downloads,name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_downloads WHERE add_date>' . strval($time_start) . ' AND add_date<' . strval($time_end));
         }
 
-        if (count($rows) < 1) {
-            return warn_screen($title, do_lang_tempcode('NO_DATA'));
-        }
-
-        $downloads = [];
-        foreach ($rows as $i => $row) {
-            if (!array_key_exists('num_downloads', $row)) {
-                $row['num_downloads'] = $GLOBALS['SITE_DB']->query_select_value('download_logging', 'COUNT(*)', ['id' => $row['id']]);
-                $rows[$i] = $row;
-            }
-            $downloads[get_translated_text($row['name']) . ' (#' . strval($row['id']) . ')'] = $row['num_downloads'];
-        }
-
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 30);
-        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
-        if ($spreadsheet) {
-            cms_disable_time_limit();
-            $start = 0;
-            $max = 10000;
-        }
-        $sortables = ['num_downloads' => do_lang_tempcode('COUNT_DOWNLOADS')];
-        $test = explode(' ', get_param_string('sort', 'num_downloads DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        if ($sort_order == 'ASC') {
-            cms_mb_asort($downloads, SORT_NATURAL | SORT_FLAG_CASE);
-        } else {
-            cms_mb_arsort($downloads, SORT_NATURAL | SORT_FLAG_CASE);
-        }
-
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('TITLE'), do_lang_tempcode('COUNT_DOWNLOADS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        $result_entries = new Tempcode();
-        $real_data = [];
-        $i = 0;
-        foreach ($downloads as $download_name => $value) {
-            if ($i < $start) {
-                $i++;
-                continue;
-            } elseif ($i >= $start + $max) {
-                break;
-            }
-            $result_entries->attach(results_entry([$download_name, integer_format($value)], true));
-
-            $real_data[] = [
-                'Download name' => $download_name,
-                'Tally' => $value,
-            ];
-
-            $i++;
-        }
-        $list = results_table(do_lang_tempcode('SECTION_DOWNLOADS'), $start, 'start', $max, 'max', count($downloads), $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-        if ($spreadsheet) {
-            $filename = 'download_stats.' . spreadsheet_write_default();
-            $path = null;
-            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
-            $sheet_writer->output_and_exit($filename, true);
-        }
-
-        $output = create_bar_chart(array_slice($downloads, $start, $max), do_lang('TITLE'), do_lang('COUNT_DOWNLOADS'), '', '');
-        $ob->save_graph('Global-Downloads', $output);
-
-        $graph = do_template('STATS_GRAPH', [
-            '_GUID' => 'd2cd5da7cf2139f750d4373acf6149e8',
-            'GRAPH' => $ob->get_stats_url('Global-Downloads'),
-            'TITLE' => do_lang_tempcode('SECTION_DOWNLOADS'),
-            'TEXT' => do_lang_tempcode('DESCRIPTION_DOWNLOADS_STATISTICS'),
-        ]);
-
-        $tpl = do_template('STATS_SCREEN', ['_GUID' => '4b8e0478231473d690e947ffc4580840', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list]);
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
+        return [
+            'type' => null,
+            'data' => $data,
+            'x_axis_label' => do_lang_tempcode('TIME_IN_TIMEZONE', escape_html(make_nice_timezone_name(get_site_timezone()))),
+            'y_axis_label' => do_lang_tempcode('COUNT_TOTAL'),
+        ];
     }
 }

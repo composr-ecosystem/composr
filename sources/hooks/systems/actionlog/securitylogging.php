@@ -46,7 +46,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
-                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
+                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],
             'IP_UNBANNED' => [
@@ -57,7 +57,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
-                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
+                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],
             'SYNDICATED_IP_BAN' => [
@@ -68,7 +68,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
-                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
+                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],
             'MADE_IP_BANNABLE' => [
@@ -78,7 +78,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'written_context_index' => 0,
                 'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
-                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
+                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],
             'MADE_IP_UNBANNABLE' => [
@@ -88,7 +88,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'written_context_index' => 0,
                 'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
-                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
+                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],
             'SUBMITTER_BANNED' => [
@@ -99,7 +99,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'followup_page_links' => [
                     'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
-                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
+                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],
             'SUBMITTER_UNBANNED' => [
@@ -110,7 +110,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'followup_page_links' => [
                     'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
-                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
+                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],
             'INVESTIGATE_USER' => [
@@ -120,7 +120,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'written_context_index' => 1,
                 'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{0}',
-                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
+                    'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
                 ],
             ],
         ];

@@ -62,7 +62,7 @@ class MobiquoServerXMLRPC extends MobiquoServer
         $data = @file_get_contents('php://input');
 
         if ($data == '') {
-            header('Content-type: text/plain; charset=utf-8');
+            header('Content-Type: text/plain; charset=utf-8');
             exit('No method is provided');
         }
         $parsed = php_xmlrpc_decode_xml($data);

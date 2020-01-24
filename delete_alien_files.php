@@ -49,7 +49,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-header('Content-type: text/plain; charset=' . get_charset());
+header('Content-Type: text/plain; charset=' . get_charset());
 
 cms_ini_set('ocproducts.xss_detect', '0');
 

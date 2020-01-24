@@ -344,7 +344,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
         }
 
         if ($display_cpf) {
-            $rendered_value = $ob->render_field_value($field_to_show, $member_value, $i, null, 'f_member_custom_fields', $member_id, 'mf_member_id', null, 'field_' . strval($field_to_show['id']), $member_id);
+            $rendered_value = $ob->render_field_value($field_to_show, $member_value, $i, null, 'f_member_custom_fields', $member_id, 'mf_member_id', null, 'field_' . strval($field_to_show['id']), $member_id, $member_value_raw);
 
             $editability = null; // If stays as null, not editable
             if (isset($editable_with_comcode[$field_to_show['cf_type']])) {
@@ -489,10 +489,10 @@ function cns_get_custom_field_mappings($member_id)
                             }
                             break;
                         case 'integer':
-                            $row['field_' . strval($field['id'])] = intval($value);
+                            $row['field_' . strval($field['id'])] = @intval($value);
                             break;
                         case 'float':
-                            $row['field_' . strval($field['id'])] = floatval($value);
+                            $row['field_' . strval($field['id'])] = @floatval($value);
                             break;
                     }
                 }

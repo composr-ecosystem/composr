@@ -61,7 +61,7 @@ class Block_main_forum_topics
         ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
-        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 10;
+        $info['ttl'] = 10;
         return $info;
     }
 
@@ -225,7 +225,7 @@ PHP;
                 }
             }
         }
-        if ($_topics === []) {
+        if (empty($_topics)) {
             return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => 'c76ab018a0746c2875c6cf69c92a01fb',
                 'BLOCK_ID' => $block_id,

@@ -401,8 +401,6 @@ class Module_calendar
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('CALENDAR')]]);
         }
 
-        $GLOBALS['OUTPUT_STREAMING'] = false; // Too complex to do a pre_run for this properly
-
         return null;
     }
 

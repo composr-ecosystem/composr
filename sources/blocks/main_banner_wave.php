@@ -57,7 +57,7 @@ class Block_main_banner_wave
             array_key_exists('max', $map) ? intval($map['max']) : 100,
         ]
 PHP;
-        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 5; // due to shuffle, can't cache long
+        $info['ttl'] = 5; // due to shuffle, can't cache long
         return $info;
     }
 

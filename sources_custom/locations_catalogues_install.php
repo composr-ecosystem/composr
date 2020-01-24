@@ -341,7 +341,7 @@ function create_catalogue_category_tree($catalogue_name = 'places', $country = n
         foreach ($countries as $country) {
             create_catalogue_category_tree($catalogue_name, $country['l_country'], $fixup);
             echo('Done ' . $country['l_country'] . "\n");
-            flush();
+            cms_flush_safe();
         }
 
         // Recalculate continent bounds, as will be outdated

@@ -39,43 +39,34 @@ function points_profile($member_id_of, $member_id_viewing)
     }
 
     // Get info about viewed user
-    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, false, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
+    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
 
     $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true);
 
-    // Show stats about $member_id_of
-    $post_count = $GLOBALS['FORUM_DRIVER']->get_post_count($member_id_of);
-    $_point_info = point_info($member_id_of);
-    $points_gained_given = array_key_exists('points_gained_given', $_point_info) ? $_point_info['points_gained_given'] : 0;
-    $points_gained_visiting = array_key_exists('points_gained_visiting', $_point_info) ? $_point_info['points_gained_visiting'] : 0;
-    $points_gained_rating = array_key_exists('points_gained_rating', $_point_info) ? $_point_info['points_gained_rating'] : 0;
-    $points_gained_voting = array_key_exists('points_gained_voting', $_point_info) ? $_point_info['points_gained_voting'] : 0;
-    $wiki_post_count = array_key_exists('points_gained_wiki', $_point_info) ? $_point_info['points_gained_wiki'] : 0;
-    $chat_post_count = array_key_exists('points_gained_chat', $_point_info) ? $_point_info['points_gained_chat'] : 0;
+    // Get point info
+    $point_info = point_info($member_id_of);
+
+    $points_records = [];
+    $additional_fields = [];
+
+    // Run points hooks
+    $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
+    foreach ($hook_obs as $hook_ob) {
+        $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing, $point_info);
+        if (!is_null($_array)) {
+            if (array_key_exists('POINTS_EACH', $_array)) {
+                array_push($points_records, $_array);
+            } else {
+                array_push($additional_fields, $_array);
+            }
+        }
+    }
+
+    // Get additional points info
     $points_used = points_used($member_id_of);
     $remaining = available_points($member_id_of);
     $gift_points_used = get_gift_points_used($member_id_of); //$_point_info['gift_points_used'];
     $gift_points_available = get_gift_points_to_give($member_id_of);
-
-    $points_posting = intval(get_option('points_posting'));
-    $points_per_daily_visit = intval(get_option('points_per_daily_visit'));
-    $points_rating = intval(get_option('points_rating'));
-    $points_voting = intval(get_option('points_voting'));
-    $points_joining = intval(get_option('points_joining'));
-    $_points_wiki_posting = get_option('points_wiki', true);
-    if ($_points_wiki_posting === null) {
-        $_points_wiki_posting = '0';
-    }
-    $points_wiki_posting = intval($_points_wiki_posting);
-    $_points_chat = get_option('points_chat', true);
-    if ($_points_chat === null) {
-        $_points_chat = '0';
-    }
-    $points_chat_posting = intval($_points_chat);
-    $points_per_day = intval(get_option('points_per_day'));
-
-    $days_joined = intval(floor(floatval(time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id_of)) / (60.0 * 60.0 * 24.0)));
-    $points_gained_auto = $points_per_day * $days_joined;
 
     $to = points_get_transactions('to', $member_id_of, $member_id_viewing);
     $from = points_get_transactions('from', $member_id_of, $member_id_viewing);
@@ -139,52 +130,27 @@ function points_profile($member_id_of, $member_id_viewing)
         }
     }
 
-    return do_template('POINTS_PROFILE', [
-        '_GUID' => 'f91208ef0f9a1e1a8633ce307a778a8d',
-        'MEMBER' => strval($member_id_of),
-        'PROFILE_URL' => $profile_url,
-        'USERNAME' => $username,
+    return do_template('POINTS_PROFILE', array_merge(
+        [
+            '_GUID' => 'f91208ef0f9a1e1a8633ce307a778a8d',
 
-        'POINTS_JOINING' => integer_format($points_joining),
+            'MEMBER' => strval($member_id_of),
+            'PROFILE_URL' => $profile_url,
+            'USERNAME' => $username,
 
-        'POST_COUNT' => integer_format($post_count),
-        'POINTS_POSTING' => integer_format($points_posting),
-        'MULT_POINTS_POSTING' => integer_format($points_posting * $post_count),
+            'POINTS_RECORDS' => $points_records,
 
-        'POINTS_PER_DAY' => integer_format($points_per_day),
-        'DAYS_JOINED' => integer_format($days_joined),
-        'MULT_POINTS_PER_DAY' => integer_format($points_per_day * $days_joined),
-
-        'WIKI_POST_COUNT' => integer_format($wiki_post_count),
-        'POINTS_WIKI_POSTING' => integer_format($points_wiki_posting),
-        'MULT_POINTS_WIKI_POSTING' => integer_format($wiki_post_count * $points_wiki_posting),
-
-        'CHAT_POST_COUNT' => integer_format($chat_post_count),
-        'POINTS_CHAT_POSTING' => integer_format($points_chat_posting),
-        'MULT_POINTS_CHAT_POSTING' => integer_format($chat_post_count * $points_chat_posting),
-
-        'POINTS_RATING' => integer_format($points_rating),
-        'POINTS_GAINED_RATING' => integer_format($points_gained_rating),
-        'MULT_POINTS_RATING' => integer_format($points_rating * $points_gained_rating),
-
-        'POINTS_VOTING' => integer_format($points_voting),
-        'POINTS_GAINED_VOTING' => integer_format($points_gained_voting),
-        'MULT_POINTS_VOTING' => integer_format($points_voting * $points_gained_voting),
-
-        'POINTS_PER_DAILY_VISIT' => integer_format($points_per_daily_visit),
-        'POINTS_GAINED_VISITING' => integer_format($points_gained_visiting),
-        'MULT_POINTS_VISITING' => integer_format($points_per_daily_visit * $points_gained_visiting),
-
-        'POINTS_GAINED_GIVEN' => integer_format($points_gained_given),
-        'POINTS_USED' => integer_format($points_used),
-        'REMAINING' => integer_format($remaining),
-        'GIFT_POINTS_USED' => integer_format($gift_points_used),
-        'GIFT_POINTS_AVAILABLE' => integer_format($gift_points_available),
-        'TO' => $to,
-        'FROM' => $from,
-        'CHARGELOG_DETAILS' => $chargelog_details,
-        'GIVE' => $give_template,
-    ]);
+            'POINTS_USED' => integer_format($points_used),
+            'REMAINING' => integer_format($remaining),
+            'GIFT_POINTS_USED' => integer_format($gift_points_used),
+            'GIFT_POINTS_AVAILABLE' => integer_format($gift_points_available),
+            'TO' => $to,
+            'FROM' => $from,
+            'CHARGELOG_DETAILS' => $chargelog_details,
+            'GIVE' => $give_template,
+        ],
+        $additional_fields
+    ));
 }
 
 /**

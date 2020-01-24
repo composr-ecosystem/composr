@@ -31,7 +31,6 @@ class file_naming_test_set extends cms_test_case
             'data/ckeditor/',
             'data/curl-ca-bundle.crt',
             'data/modules/admin_backup/restore.php.pre',
-            'data/modules/admin_cleanup/page_stats.php.pre',
             'data/modules/google_appengine/php.gae.ini',
             'data/plupload/',
             'data_custom/execute_temp.php.bundle',
@@ -61,8 +60,11 @@ class file_naming_test_set extends cms_test_case
             'vendor/',
             '_config.php.template',
             '_tests/codechecker/codechecker.app/',
-            '_tests/codechecker/netbeans/',
             'test-a',
+            'themes/default/templates_cached/EN/',
+            'themes/admin/templates_cached/EN/',
+            '_tests/codechecker/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst',
+            '_tests/codechecker/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst',
             'data/mediaelement/mediaelement-flash-audio-ogg.swf',
             'data/mediaelement/mediaelement-flash-audio.swf',
             'data/mediaelement/mediaelement-flash-video-hls.swf',
@@ -80,6 +82,7 @@ class file_naming_test_set extends cms_test_case
             '_tests/assets/spreadsheets/test-tsv.txt',
             '_tests/assets/spreadsheets/test-scsv.txt',
             'data_custom/pdf_viewer/',
+            '_tests/codechecker/target/maven-archiver/pom.properties',
         ];
 
         $ignore_substrings = [
@@ -100,7 +103,7 @@ class file_naming_test_set extends cms_test_case
                 }
             }
 
-            $ok = preg_match('#^[\w/]*(\.\w+)?$#', $path);
+            $ok = preg_match('#^[\w/]*(\.\w+)?(\.(gz|br))?$#', $path);
 
             $this->assertTrue($ok, 'File naming not matching convention for: ' . $path);
         }

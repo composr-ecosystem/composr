@@ -487,6 +487,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_mrow($name)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $i => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_username'] == $name) {
                 return $row;
             }
@@ -563,7 +567,7 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function member_home_url($id, $tempcode_okay = false)
     {
-        $_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $id], get_module_zone('members'), [], false, false, false, 'tab--edit');
+        $_url = build_url(['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id], get_module_zone('members'), [], false, false, false, 'tab--edit');
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
@@ -588,13 +592,13 @@ class Forum_driver_cns extends Forum_driver_base
             if ($username === null) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($id, false, USERNAME_DEFAULT_ID_TIDY);
             }
-            $map = ['page' => 'members', 'type' => 'view', 'id' => $username];
+            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : (($username === null) ? strval($id) : $username)];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
             $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay);
         } else {
-            $map = ['page' => 'members', 'type' => 'view', 'id' => $id];
+            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
@@ -1143,7 +1147,11 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_member_join_timestamp($member)
     {
-        return $this->get_member_row_field($member, 'm_join_time');
+        $ret = $this->get_member_row_field($member, 'm_join_time');
+        if ($ret === null) {
+            $ret = time();
+        }
+        return $ret;
     }
 
     /**
@@ -1191,7 +1199,11 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_post_count($member)
     {
-        return $this->get_member_row_field($member, 'm_cache_num_posts');
+        $ret = $this->get_member_row_field($member, 'm_cache_num_posts');
+        if ($ret === null) {
+            $ret = 0;
+        }
+        return $ret;
     }
 
     /**
@@ -1202,7 +1214,11 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_topic_count($member)
     {
-        return $this->db->query_select_value('f_topics', 'COUNT(*)', ['t_cache_first_member_id' => $member]);
+        $ret = $this->db->query_select_value_if_there('f_topics', 'COUNT(*)', ['t_cache_first_member_id' => $member]);
+        if ($ret === null) {
+            $ret = 0;
+        }
+        return $ret;
     }
 
     /**
@@ -1345,6 +1361,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_member_from_username($name)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $id => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_username'] == $name) {
                 return $id;
             }
@@ -1370,6 +1390,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_member_from_email_address($email_address)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $id => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_email_address'] == $email_address) {
                 return $id;
             }
@@ -1664,9 +1688,6 @@ class Forum_driver_cns extends Forum_driver_base
                         return;
                     }
                 }
-
-                require_code('site');
-                log_stats('/flood', 0);
 
                 $time_threshold = 30;
                 $count_threshold = 50;

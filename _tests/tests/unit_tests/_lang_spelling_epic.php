@@ -36,6 +36,20 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         // Many of these aren't real words, but they appear for good reasons so we whitelist them
         $okay_words = [
+            'kpis',
+            'brotli',
+            'durations',
+            'analyzer',
+            'ttl',
+            'codesniffer',
+            'goto',
+            'jshint',
+            'ide',
+            'phpstan',
+            'instanceof',
+            'autoloading',
+            'exakat',
+            'phan',
             'unionised',
             'blobby',
             'reparsing',
@@ -3390,7 +3404,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
                             'text/EN/licence.txt',
                             'docs/pages/comcode_custom/EN/tut_addon_index.txt',
                             'text/EN/synonyms.txt',
-                            '_tests/codechecker/netbeans/dist/README.TXT',
                         ])) {
                             continue 2;
                         }
@@ -3435,7 +3448,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                             'themes/default/javascript_custom/skitter.js',
                             'themes/default/javascript_custom/jquery_flip.js',
                             'themes/default/javascript_custom/sortable_tables.js',
-                            'themes/default/javascript_custom/charts.js',
+                            'themes/default/javascript/charts.js',
                             'themes/default/javascript_custom/confluence.js',
                             'themes/default/javascript_custom/confluence2.js',
                             'themes/default/css_custom/confluence.css',

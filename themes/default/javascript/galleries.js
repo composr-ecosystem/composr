@@ -444,7 +444,7 @@
 
                     if (self.isCurrentSlideLast()) {
                         self.stopPlaying();
-                        self.updateStatusMessage('{!LAST_SLIDE;^}');
+                        self.updateStatusMessage('{!galleries:LAST_SLIDE;^}');
                         return;
                     }
 
@@ -495,7 +495,7 @@
 
                     if (self.isCurrentSlideLast()) {
                         self.stopPlaying();
-                        self.updateStatusMessage('{!LAST_SLIDE;^}');
+                        self.updateStatusMessage('{!galleries:LAST_SLIDE;^}');
                         return $util.promiseHalt();
                     }
 

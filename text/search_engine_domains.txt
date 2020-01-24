@@ -1,0 +1,6 @@
+^google\.
+^duckduckgo\.com$
+^baidu\.
+^yandex\.
+^yahoo\.
+^bing\.

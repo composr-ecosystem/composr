@@ -141,7 +141,11 @@ class Hook_preview_cns_post
             $custom_fields = do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => '9cbbc5913d8164970f19c38a210fda95', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => (get_ip_address())]);
             $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => '2db48e17db9f060c04386843f2d0f105', 'CUSTOM_FIELDS' => $custom_fields]);
             $poster_username = cns_get_safe_specified_poster_name();
-            $ip_url = ((has_actual_page_access(get_member(), 'admin_lookup')) && (addon_installed('securitylogging'))) ? build_url(['page' => 'admin_lookup', 'param' => get_ip_address()], get_module_zone('admin_lookup')) : new Tempcode();
+            if ((has_actual_page_access(get_member(), 'admin_lookup')) && (addon_installed('securitylogging'))) {
+                $ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => get_ip_address()], get_module_zone('admin_lookup'));
+            } else {
+                $ip_url = new Tempcode();
+            }
             $poster = do_template('CNS_POSTER_GUEST', ['_GUID' => '9c0ba6198663de96facc7399a08e8281', 'LOOKUP_IP_URL' => $ip_url, 'POSTER_DETAILS' => $poster_details, 'POSTER_USERNAME' => $poster_username]);
         }
 

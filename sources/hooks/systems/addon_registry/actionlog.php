@@ -123,6 +123,8 @@ class Hook_addon_registry_actionlog
             'themes/default/templates/REVISIONS_WRAP.tpl',
             'themes/default/templates/REVISIONS_DIFF_ICON.tpl',
             'themes/default/templates/REVISION_UNDO.tpl',
+
+            'sources/hooks/modules/admin_stats/actionlogs.php',
         ];
     }
 

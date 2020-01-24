@@ -58,7 +58,7 @@ class Block_top_login
         [
         ]
 PHP;
-        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24);
+        $info['ttl'] = 60 * 24;
         return $info;
     }
 

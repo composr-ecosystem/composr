@@ -1,0 +1,4 @@
+^facebook\.com$
+^instagram\.com$
+^twitter\.com$
+^minds\.com$

@@ -73,7 +73,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		</tr>
 		<tr>
 			<td>[abbr="HyperText Transfer Protocol"][url="http://tools.ietf.org/html/rfc2616"]HTTP[/url][/abbr] with some [url="common extensions"]https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers[/url]</td>
-			<td>This is the protocol for transmitting web data.</td>
+			<td>This is the protocol for transmitting web data. We also use [url="https://indieweb.org/meta_http-equiv_status"]meta http-equiv status[/url].</td>
 			<td>You won't need much awareness that web [abbr="Uniform Resource Locator"]URL[/abbr]s come from the HTTP standard, as do cookies, as does HTTP authentication (not used on many sites, but sometimes useful).</td>
 		</tr>
 		<tr>
@@ -103,8 +103,8 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		</tr>
 		<tr>
 			<td>[url="CSP"]https://www.w3.org/TR/CSP3/[/url]</td>
-			<td>Extra security for web pages.</td>
-			<td>This imposes various constraints on how you can code, but no true limitations. Other similar micro standards we use: [tt]X-Content-Type-Options[/tt] and [tt]X-XSS-Protection[/tt] and [tt]Cross-Origin-Opener-Policy[/tt].</td>
+			<td>Extra security for web pages. Other similar micro standards we use: [tt]X-Content-Type-Options[/tt] and [tt]X-XSS-Protection[/tt] and [tt]Cross-Origin-Opener-Policy[/tt].</td>
+			<td>This imposes various constraints on how you can code, but no true limitations.</td>
 		</tr>
 		<tr>
 			<td>[abbr="Scalable Vector Graphics"][url="http://www.w3.org/Graphics/SVG/"]SVG[/url][/abbr]</td>

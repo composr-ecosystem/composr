@@ -18,8 +18,8 @@ public class Main {
     public static boolean relay__codesniffer = false;
     public static boolean relay__eslint = false;
     public static String basePath = ".." + File.separator + ".." + File.separator;
-    public static String textEditorPath = "geany";
     public static String phpPath = "php";
+    public static String textEditorPath = null;
 
     // Memory
     static ArrayList<String> skipped_errors = new ArrayList<String>();
@@ -40,56 +40,116 @@ public class Main {
         Properties p = new Properties();
         try {
             p.load(new FileInputStream(System.getProperty("user.dir") + File.separator + "codechecker.ini"));
-            relay__api = (p.getProperty("relay__api").equals("1"));
-            relay__todo = (p.getProperty("relay__todo").equals("1"));
-            relay__mixed = (p.getProperty("relay__mixed").equals("1"));
-            relay__pedantic = (p.getProperty("relay__pedantic").equals("1"));
-            relay__security = (p.getProperty("relay__security").equals("1"));
-            relay__manual_checks = (p.getProperty("relay__manual_checks").equals("1"));
-            relay__spelling = (p.getProperty("relay__spelling").equals("1"));
-            relay__codesniffer = (p.getProperty("relay__codesniffer").equals("1"));
-            relay__eslint = (p.getProperty("relay__eslint").equals("1"));
-            basePath = p.getProperty("basePath");
-            textEditorPath = p.getProperty("textEditorPath");
-            phpPath = p.getProperty("phpPath");
-            if (!new File(basePath).exists()) {
-                basePath = ".." + File.separator + ".." + File.separator;
+            try {
+                relay__api = (p.getProperty("relay__api").equals("1"));
             }
-            if (!new File(textEditorPath).exists()) {
-                List<String> pathsToSearch = Arrays.asList(
-                    "C:\\Program Files\\jedit\\jedit.exe",
-                    "/Applications/jEdit.app/Contents/MacOS/jedit",
-                    "/usr/local/bin/jedit",
-                    "/usr/bin/jedit",
-                    "C:\\Program Files\\Notepad++\\notepad++.exe",
-                    "/usr/bin/kate",
-                    "/usr/local/bin/geany",
-                    "/usr/bin/geany",
-                    "/usr/local/bin/bbedit",
-                    "C:\\Program Files (x86)\\Codelobster Software\\CodelobsterPHPEdition\\ClPhpEd.exe",
-                    "C:\\Program Files (x86)\\Codelobster Software\\CodeLobster IDE\\CodeLobsterIDE.exe",
-                    "/Applications/CodeLobsterIDE.app/Contents/MacOS/CodeLobsterIDE",
-                    "/usr/bin/codelobster", // TODO: Add line number support, once told about it
-                    "C:\\Program Files\\NetBeans 8.2\\bin\\netbeans.exe",
-                    "/Applications/NetBeans/NetBeans 8.2.app/Contents/Resources/NetBeans/bin/netbeans",
-                    "/usr/local/bin/netbeans",
-                    "C:\\Users\\IEUser\\AppData\\Local\\atom\\atom.exe",
-                    "/Applications/Atom.app/Contents/Resources/app/atom.sh",
-                    "/usr/bin/atom",
-                    "/usr/local/bin/atom",
-                    "C:\\Program Files\\Microsoft VS Code\\Code.exe",
-                    "/usr/local/bin/code",
-                    "C:\\Program Files (x86)\\PSPad editor\\PSPad.exe"
-                );
-                for (String pathToSearch : pathsToSearch) {
-                    if (new File(pathToSearch).exists()) {
-                        textEditorPath = pathToSearch;
-                        break;
-                    }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__todo = (p.getProperty("relay__todo").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__mixed = (p.getProperty("relay__mixed").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__pedantic = (p.getProperty("relay__pedantic").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__security = (p.getProperty("relay__security").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__manual_checks = (p.getProperty("relay__manual_checks").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__spelling = (p.getProperty("relay__spelling").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__codesniffer = (p.getProperty("relay__codesniffer").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                relay__eslint = (p.getProperty("relay__eslint").equals("1"));
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                basePath = p.getProperty("basePath");
+                if (!new File(basePath).exists()) {
+                    basePath = ".." + File.separator + ".." + File.separator;
                 }
             }
-        } catch (IOException | NullPointerException e) {
-        } // No loading then
+            catch (NullPointerException e) {
+            }
+            try {
+                phpPath = p.getProperty("phpPath");
+            }
+            catch (NullPointerException e) {
+            }
+            try {
+                textEditorPath = p.getProperty("textEditorPath");
+            }
+            catch (NullPointerException e) {
+                textEditorPath = null;
+            }
+        } catch (IOException e) {
+        }
+
+        if ((textEditorPath == null) || (!new File(textEditorPath).exists())) {
+            List<String> pathsToSearch = Arrays.asList(
+                "C:\\Program Files\\Notepad++\\notepad++.exe",
+
+                "C:\\Program Files (x86)\\PSPad editor\\PSPad.exe",
+
+                "/usr/local/bin/geany",
+                "/usr/bin/geany",
+
+                "/usr/local/bin/kate",
+                "/usr/bin/kate",
+
+                "/usr/local/bin/jedit",
+                "/usr/bin/jedit",
+                "/Applications/jEdit.app/Contents/MacOS/jedit",
+                "C:\\Program Files\\jedit\\jedit.exe",
+
+                "/usr/local/bin/bbedit",
+
+                "/usr/bin/codelobster", // TODO: Add line number support, once told about it
+                "/Applications/CodeLobsterIDE.app/Contents/MacOS/CodeLobsterIDE",
+                "C:\\Program Files (x86)\\Codelobster Software\\CodelobsterPHPEdition\\ClPhpEd.exe",
+                "C:\\Program Files (x86)\\Codelobster Software\\CodeLobster IDE\\CodeLobsterIDE.exe",
+
+                "/usr/local/bin/netbeans",
+                "/Applications/NetBeans/NetBeans 8.2.app/Contents/Resources/NetBeans/bin/netbeans",
+                "C:\\Program Files\\NetBeans 8.2\\bin\\netbeans.exe",
+
+                "/usr/local/bin/atom",
+                "/usr/bin/atom",
+                "/Applications/Atom.app/Contents/Resources/app/atom.sh",
+                "C:\\Users\\IEUser\\AppData\\Local\\atom\\atom.exe",
+
+                "/usr/local/bin/code",
+                "C:\\Program Files\\Microsoft VS Code\\Code.exe"
+            );
+            for (String pathToSearch : pathsToSearch) {
+                if (new File(pathToSearch).exists()) {
+                    textEditorPath = pathToSearch;
+                    break;
+                }
+            }
+        }
 
         // Load skipped
         try {
@@ -101,7 +161,7 @@ public class Main {
                 line = skipFile.readLine();
             }
         } catch (IOException e) {
-        } // No skip-saving then
+        }
 
         MainDialog d = new MainDialog();
     }

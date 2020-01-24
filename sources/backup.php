@@ -267,32 +267,34 @@ function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null)
 
     rename($backup_file_tmp_path, $backup_file_path);
 
-    fix_permissions($backup_file_path);
+    fix_permissions($backup_file_path, 0600);
 
     // Compress...
 
-    if (function_exists('gzopen')) {
-        if (fwrite($log_file, "\n" . do_lang('COMPRESSING') . "\n") == 0) {
-            warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html('?')), false, true);
+    if ((function_exists('gzopen')) && (function_exists('gzclose'))) {
+        if ((function_exists('gzeof')) && (function_exists('gzwrite'))) {
+            if (fwrite($log_file, "\n" . do_lang('COMPRESSING') . "\n") == 0) {
+                warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html('?')), false, true);
+            }
+
+            $compressed_file_tmp_path = get_custom_file_base() . '/exports/backups/' . $file . '.tar.gz.tmp';
+            $compressed_file = gzopen($compressed_file_tmp_path, 'wb') or intelligent_write_error($compressed_file_tmp_path);
+
+            $fp_in = fopen($backup_file_path, 'rb');
+            while (!feof($fp_in)) {
+                $read = fread($fp_in, 8192);
+                gzwrite($compressed_file, $read, strlen($read));
+            }
+            fclose($fp_in);
+            gzclose($compressed_file);
+
+            $compressed_file_path = get_custom_file_base() . '/exports/backups/' . $file . '.tar.gz';
+            $url = get_base_url() . '/exports/backups/' . $file . '.tar.gz';
+
+            rename($compressed_file_tmp_path, $compressed_file_path);
+
+            fix_permissions($compressed_file_path, 0600);
         }
-
-        $compressed_file_tmp_path = get_custom_file_base() . '/exports/backups/' . $file . '.tar.gz.tmp';
-        $compressed_file = gzopen($compressed_file_tmp_path, 'wb') or intelligent_write_error($compressed_file_tmp_path);
-
-        $fp_in = fopen($backup_file_path, 'rb');
-        while (!feof($fp_in)) {
-            $read = fread($fp_in, 8192);
-            gzwrite($compressed_file, $read, strlen($read));
-        }
-        fclose($fp_in);
-        gzclose($compressed_file);
-
-        $compressed_file_path = get_custom_file_base() . '/exports/backups/' . $file . '.tar.gz';
-        $url = get_base_url() . '/exports/backups/' . $file . '.tar.gz';
-
-        rename($compressed_file_tmp_path, $compressed_file_path);
-
-        fix_permissions($compressed_file_path);
     }
 
     // Finish logging...

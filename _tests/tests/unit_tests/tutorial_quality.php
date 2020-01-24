@@ -204,7 +204,7 @@ class tutorial_quality_test_set extends cms_test_case
 
         /*sort_maps_by($data, 'ratio');
 
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         @var_dump($data);*/
     }
 

@@ -33,7 +33,6 @@ class Module_admin_custom_comcode extends Standard_crud_module
     protected $non_integer_id = true;
     protected $menu_label = 'CUSTOM_COMCODE';
     protected $orderer = 'tag_title';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'custom_comcode_tag';
     protected $donext_category_content_type = null;
 

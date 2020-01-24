@@ -27,6 +27,7 @@ class basic_code_formatting_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
+        require_code('third_party_code');
         require_code('files2');
 
         $this->files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_CUSTOM_THEMES);
@@ -83,61 +84,22 @@ class basic_code_formatting_test_set extends cms_test_case
         ];
 
         foreach ($this->files as $path) {
-            $exceptions = [
-                'data_custom/sitemap',
-                'sources_custom/sabredav',
-                'docs/pages/comcode_custom/EN',
-                'data_custom/modules/admin_stats',
-                'data/polyfills',
+            $exceptions = array_merge(list_untouchable_third_party_directories(), [
                 'aps',
-                '_tests/codechecker/netbeans',
-                'data/ace',
-                'data/ckeditor',
-                'sources_custom/composr_mobile_sdk',
-                'tracker',
-                'vendor',
-                'sources_custom/ILess',
-                'sources_custom/spout',
-                'sources_custom/getid3',
-                'sources_custom/programe',
-                '_tests/simpletest',
-                'data_custom/pdf_viewer',
-            ];
+                'data_custom/sitemap',
+            ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
 
-            $exceptions = [
-                '_tests/tests/unit_tests/tempcode.php',
-                '_tests/tests/unit_tests/xss.php',
-                '_tests/libs/mf_parse.php',
+            $exceptions = array_merge(list_untouchable_third_party_files(), [
                 'data_custom/sitemaps/news_sitemap.xml',
                 'manifest.xml',
-                'mobiquo/lib/xmlrpc.php',
-                'mobiquo/lib/xmlrpcs.php',
-                'mobiquo/smartbanner/appbanner.css',
-                'mobiquo/smartbanner/appbanner.js',
-                'mobiquo/tapatalkdetect.js',
                 'parameters.xml',
                 'site/pages/comcode/EN/userguide_comcode.txt',
-                'sources_custom/twitter.php',
-                'themes/default/css/widget_color.css',
-                'themes/default/css/widget_select2.css',
-                'themes/default/css/mediaelementplayer.css',
-                'themes/default/javascript/jquery.js',
-                'themes/default/javascript/jquery_ui.js',
-                'themes/default/javascript/plupload.js',
-                'themes/default/javascript/select2.js',
-                'themes/default/javascript/theme_colours.js',
-                'themes/default/javascript/widget_date.js',
-                'themes/default/javascript_custom/columns.js',
-                'themes/default/javascript_custom/jquery_flip.js',
-                'themes/default/javascript/mediaelement-and-player.js',
-                'themes/default/javascript_custom/skitter.js',
-                'themes/default/javascript_custom/sortable_tables.js',
-                'themes/default/javascript_custom/unslider.js',
-                'themes/default/javascript_custom/charts.js',
-            ];
+                '_tests/tests/unit_tests/tempcode.php',
+                '_tests/tests/unit_tests/xss.php',
+            ]);
             if (in_array($path, $exceptions)) {
                 continue;
             }
@@ -168,43 +130,17 @@ class basic_code_formatting_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         foreach ($this->files as $path) {
-            $exceptions = [
-                '_tests/assets/text',
-                '_tests/assets/spreadsheets',
-                '_tests/codechecker/netbeans',
-                '_tests/simpletest',
-                'data/ace',
-                'data/ckeditor/plugins/codemirror',
-                'data/polyfills',
-                'mobiquo/lib',
-                'mobiquo/smartbanner',
-                'sources_custom/aws',
-                'sources_custom/Cloudinary',
-                'sources_custom/composr_mobile_sdk/ios',
-                'sources_custom/photobucket',
-                'sources_custom/programe',
-                'sources_custom/sabredav',
-                'tracker',
-                'vendor',
-                'data_custom/pdf_viewer',
-            ];
+            $exceptions = array_merge(list_untouchable_third_party_directories(), [
+            ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
 
-            $exceptions = [
-                'text/unbannable_ips.txt',
-                'sources_custom/twitter.php',
-                'user.sql',
-                'themes/default/javascript/mediaelement-and-player.js',
-                'themes/default/javascript_custom/skitter.js',
-                'themes/default/javascript_custom/sortable_tables.js',
-                'themes/default/javascript_custom/unslider.js',
-                'themes/default/javascript_custom/charts.js',
-                'themes/default/javascript_custom/confluence2.js',
-                'themes/default/templates/BREADCRUMB_SEPARATOR.tpl',
+            $exceptions = array_merge(list_untouchable_third_party_files(), [
                 'data_custom/rate_limiter.php',
-            ];
+                'text/unbannable_ips.txt',
+                'themes/default/templates/BREADCRUMB_SEPARATOR.tpl',
+            ]);
             if (in_array($path, $exceptions)) {
                 continue;
             }
@@ -215,7 +151,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 $c = cms_file_get_contents_safe($path);
 
                 $ok = (preg_match('#[ \t]$#m', $c) == 0);
-                $this->assertTrue($ok, 'Has trailing whitespace in ' . $path);
+                $this->assertTrue($ok, 'Has trailing whitespace in ' . $path . '; grep for [ \t]+$');
             }
         }
     }
@@ -229,40 +165,18 @@ class basic_code_formatting_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         foreach ($this->files as $path) {
-            $exceptions = [
-                '_tests/assets/text',
-                '_tests/assets/spreadsheets',
-                '_tests/simpletest',
-                'data/ckeditor',
-                'sources_custom/aws',
-                'sources_custom/geshi',
-                'sources_custom/getid3',
-                'sources_custom/ILess',
-                'sources_custom/sabredav',
-                'sources_custom/spout',
-                'sources_custom/swift_mailer',
-                'tracker',
-                'vendor',
+            $exceptions = array_merge(list_untouchable_third_party_directories(), [
+                'comcode_custom/(?!EN)\w+',
                 'lang_custom/(?!EN)\w+',
                 'text_custom/(?!EN)\w+',
-                'comcode_custom/(?!EN)\w+',
-                'data_custom/pdf_viewer',
-                'data/ace',
-            ];
+            ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
 
-            $exceptions = [
-                'data/curl-ca-bundle.crt',
+            $exceptions = array_merge(list_untouchable_third_party_files(), [
                 'lang/langs.ini',
-                'mobiquo/license_agreement.txt',
-                'themes/default/css_custom/confluence.css',
-                'data_custom/webfonts/adgs-icons.svg',
-                'themes/default/javascript_custom/confluence.js',
-                'themes/default/javascript_custom/confluence2.js',
-                'sources_custom/Cloudinary/cacert.pem',
-            ];
+            ]);
             if (in_array($path, $exceptions)) {
                 continue;
             }
@@ -307,27 +221,15 @@ class basic_code_formatting_test_set extends cms_test_case
                 continue;
             }
 
-            $exceptions = [
-                '_tests/assets/text',
-                '_tests/assets/spreadsheets',
-                'tracker',
-                'vendor',
-                'data/ace',
-                'data/ckeditor',
-                'sources_custom/composr_mobile_sdk/ios/ApnsPHP',
-                'sources_custom/sabredav',
-                'sources_custom/spout',
-                'sources_custom/photobucket',
-                'sources_custom/ILess',
-                'sources_custom/facebook',
-                'sources_custom/aws/Aws',
-                'docs/jsdoc',
-                'data_custom/pdf_viewer',
-            ];
+            $exceptions = array_merge(list_untouchable_third_party_directories(), [
+            ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-            if ($path == '_tests/codechecker/codechecker.ini') {
+            $exceptions = array_merge(list_untouchable_third_party_files(), [
+                'data_custom/latest_activity.txt', // LEGACY
+            ]);
+            if (in_array($path, $exceptions)) {
                 continue;
             }
 

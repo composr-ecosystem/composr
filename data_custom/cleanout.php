@@ -64,7 +64,7 @@ header('X-Robots-Tag: noindex');
 
 $out = cleanup();
 if (!headers_sent()) {
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
     cms_ini_set('ocproducts.xss_detect', '0');
     if ($out !== null) {
         echo is_object($out) ? $out->evaluate() : (is_bool($out) ? ($out ? 'true' : 'false') : $out);

@@ -690,10 +690,8 @@ function generate_dload_url($id, $use_gateway)
     $download_url->attach('?id=' . strval($id));
     $download_url->attach($keep);
 
-    if (get_option('anti_leech') == '1') {
-        $download_url->attach('&for_session=');
-        $download_url->attach(symbol_tempcode('SESSION_HASHED'));
-    }
+    require_code('anti_leech');
+    apply_anti_leech_to_tempcode_url($download_url);
 
     return $download_url;
 }

@@ -57,7 +57,7 @@ require_code('locations_catalogues_geopositioning');
 
 prepare_for_known_ajax_response();
 
-header('Content-type: text/plain; charset=' . get_charset());
+header('Content-Type: text/plain; charset=' . get_charset());
 
 cms_ini_set('ocproducts.xss_detect', '0');
 

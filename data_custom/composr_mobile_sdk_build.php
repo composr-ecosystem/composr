@@ -77,7 +77,7 @@ class Composr_mobile_sdk_tools
     {
         // Check running on the command line
         if (!is_cli()) {
-            header('Content-type: text/plain; charset=' . get_charset());
+            header('Content-Type: text/plain; charset=' . get_charset());
             exit('This script must be run from the command line, php data_custom/composr_mobile_sdk_build.php <toolname> <params...>' . "\n");
         }
 

@@ -221,6 +221,10 @@ class Module_members
     {
         disable_php_memory_limit();
 
+        if (($this->member_id_of == get_member()) && (get_param_string('id', null) !== null)) {
+            unset($_GET['id']); // So self-URL links go without 'id', which is unneeded. oAuth may whitelist what URLs may request linkage.
+        }
+
         require_code('cns_profiles');
         return render_profile_tabset($this->title, $this->member_id_of, get_member(), $this->username);
     }

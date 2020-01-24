@@ -692,13 +692,13 @@ class Module_admin_permissions
             $sections_uncommon = new Tempcode();
             $doing_uncommon = false;
             foreach ($_sections as $s) {
-                if (($s['p_section'] == 'FORUMS_AND_MEMBERS') && (get_forum_type() != 'cns')) {
-                    continue;
-                }
-
                 if ($s === null) {
                     $doing_uncommon = true;
                 } else {
+                    if (($s['p_section'] == 'FORUMS_AND_MEMBERS') && (get_forum_type() != 'cns')) {
+                        continue;
+                    }
+
                     if ($s['trans'] !== null) {
                         if ($doing_uncommon) {
                             $sections_uncommon->attach(form_input_list_entry($s['p_section'], false, $s['trans']));

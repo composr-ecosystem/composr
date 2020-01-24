@@ -18,11 +18,23 @@
  * @package    stats
  */
 
+require_code('crud_module');
+
 /**
  * Module page class.
  */
-class Module_admin_stats
+class Module_admin_stats extends Standard_crud_module
 {
+    protected $lang_type = 'KPI';
+    protected $select_name = 'KPI';
+    protected $select_name_description = 'DESCRIPTION_KPI';
+    protected $menu_label = 'MODULE_TRANS_NAME_admin_stats';
+    protected $table = 'stats_kpis';
+    protected $do_preview = false;
+    protected $orderer = 'k_title';
+
+    public $title;
+
     /**
      * Find details of the module.
      *
@@ -31,7 +43,7 @@ class Module_admin_stats
     public function info()
     {
         $info = [];
-        $info['author'] = 'Philip Withnall';
+        $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
@@ -47,6 +59,14 @@ class Module_admin_stats
     public function uninstall()
     {
         $GLOBALS['SITE_DB']->drop_table_if_exists('stats');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_preprocessed');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_preprocessed_flat');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_kpis');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_events');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_link_tracker');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_events');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_tracking');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_links');
         $GLOBALS['SITE_DB']->drop_table_if_exists('usersonline_track');
         $GLOBALS['SITE_DB']->drop_table_if_exists('ip_country');
     }
@@ -62,35 +82,25 @@ class Module_admin_stats
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('stats', [
                 'id' => '*AUTO',
-                'the_page' => 'SHORT_TEXT',
+                'date_and_time' => 'TIME',
+                'page_link' => 'SHORT_TEXT',
+                'post' => 'LONG_TEXT',
+                'referer' => 'URLPATH',
                 'ip' => 'IP',
                 'member_id' => 'MEMBER',
-                'session_id' => 'ID_TEXT',
-                'date_and_time' => 'TIME',
-                'referer' => 'URLPATH',
-                's_get' => 'URLPATH',
-                'post' => 'LONG_TEXT',
+                'session_id' => 'ID_TEXT', // May not be a literal session, as we don't always assign sessions to users (when operating from static caching) - might be an IP address for example
                 'browser' => 'SHORT_TEXT',
-                'milliseconds' => 'INTEGER',
                 'operating_system' => 'SHORT_TEXT',
-                'access_denied_counter' => 'INTEGER',
-                'title' => 'SHORT_TEXT',
+                'requested_language' => 'ID_TEXT',
+                'milliseconds' => 'INTEGER',
+                'tracking_code' => 'ID_TEXT',
             ]);
-
-            // Note: We have chosen not to create many indices because we want insertion to be very fast
-            $GLOBALS['SITE_DB']->create_index('stats', 'member_track_2', ['ip']);
-            $GLOBALS['SITE_DB']->create_index('stats', 'pages', ['the_page']);
             $GLOBALS['SITE_DB']->create_index('stats', 'date_and_time', ['date_and_time']);
-            $GLOBALS['SITE_DB']->create_index('stats', 'milliseconds', ['milliseconds']);
-            $GLOBALS['SITE_DB']->create_index('stats', 'referer', ['referer']);
-            $GLOBALS['SITE_DB']->create_index('stats', 'browser', ['browser']);
-            $GLOBALS['SITE_DB']->create_index('stats', 'operating_system', ['operating_system']);
 
             $GLOBALS['SITE_DB']->create_table('usersonline_track', [
                 'date_and_time' => '*TIME',
                 'peak' => 'INTEGER',
             ]);
-
             $GLOBALS['SITE_DB']->create_index('usersonline_track', 'peak_track', ['peak']);
 
             $GLOBALS['SITE_DB']->create_table('ip_country', [
@@ -101,7 +111,6 @@ class Module_admin_stats
             ]);
 
             require_lang('stats');
-
             require_code('crypt');
             $secure_ref = get_secure_random_string();
             $id = $GLOBALS['SITE_DB']->query_insert('task_queue', [
@@ -123,19 +132,114 @@ class Module_admin_stats
             $GLOBALS['SITE_DB']->alter_table_field('stats', 'the_user', 'MEMBER', 'member_id');
             $GLOBALS['SITE_DB']->add_table_field('stats', 'session_id', 'ID_TEXT');
             $GLOBALS['SITE_DB']->query_update('db_meta_indices', ['i_fields' => 'member_id'], ['i_name' => 'member_track_1'], '', 1);
-
-            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'member_track_1');
-            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'member_track_3');
-        }
-
-        if (($upgrade_from === null) || ($upgrade_from < 9)) {
-            $GLOBALS['SITE_DB']->create_index('stats', 'member_track_4', ['session_id']);
-            $GLOBALS['SITE_DB']->create_index('stats', 'member_track_1', ['member_id']);
-            $GLOBALS['SITE_DB']->create_index('stats', 'member_track_3', ['member_id', 'date_and_time']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY
-            $GLOBALS['SITE_DB']->add_table_field('stats', 'title', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'pages');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'milliseconds');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'referer');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'browser');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'operating_system');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'member_track_1');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'member_track_2');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'member_track_3');
+            $GLOBALS['SITE_DB']->delete_index_if_exists('stats', 'member_track_4');
+
+            $GLOBALS['SITE_DB']->delete_table_field('stats', 'access_denied_counter');
+
+            $GLOBALS['SITE_DB']->add_table_field('stats', 'page_link', 'SHORT_TEXT');
+            $start = 0;
+            do { // Do a rough upgrade to the new format
+                $rows = $GLOBALS['SITE_DB']->query_select('stats', ['id', 'the_page', 's_get'], [], 'ORDER BY id', 1000, $start);
+                foreach ($rows as $row) {
+                    $matches = [];
+                    if (preg_match('#^(([^/]*)/)?pages/.*/([^/]+)\.\w+$#', $row['the_page'], $matches) != 0) {
+                        $page_link = $matches[2] . ':' . $matches[3];
+                        $GLOBALS['SITE_DB']->query_update('stats', ['page_link' => $page_link], ['id' => $row['id']]);
+                    } else {
+                        $GLOBALS['SITE_DB']->query_delete('stats', ['id' => $row['id']]);
+                    }
+                }
+                $start += 1000;
+            } while (count($rows) > 0);
+            $GLOBALS['SITE_DB']->delete_table_field('stats', 'the_page');
+            $GLOBALS['SITE_DB']->delete_table_field('stats', 's_get');
+
+            $GLOBALS['SITE_DB']->delete_table_field('stats', 'title');
+
+            $GLOBALS['SITE_DB']->add_table_field('stats', 'requested_language', 'LANGUAGE_NAME');
+            $GLOBALS['SITE_DB']->add_table_field('stats', 'tracking_code', 'ID_TEXT');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 10)) { // LEGACY
+            $GLOBALS['SITE_DB']->create_table('stats_preprocessed', [
+                'p_bucket' => '*ID_TEXT',
+                'p_month' => '*INTEGER',
+                'p_pivot' => '*ID_TEXT',
+                'p_data' => 'LONG_TEXT',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_table('stats_preprocessed_flat', [
+                'p_bucket' => '*ID_TEXT',
+                'p_data' => 'LONG_TEXT',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_table('stats_events', [ // This table is not about tracking individual users, 'stats' does that - it's for trend analysis
+                'id' => '*AUTO',
+                'e_event' => 'ID_TEXT',
+                'e_date_and_time' => 'TIME',
+                'e_country_code' => 'ID_TEXT',
+                'e_session_id' => 'ID_TEXT',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_events', 'e_event', ['e_event', 'e_date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('stats_events', 'e_date_and_time', ['e_date_and_time']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_kpis', [
+                'id' => '*AUTO',
+                'k_graph_name' => 'ID_TEXT',
+                'k_pivot' => 'ID_TEXT',
+                'k_filters' => 'LONG_TEXT',
+                'k_target' => '?REAL',
+                'k_title' => 'SHORT_TEXT',
+                'k_added' => 'TIME',
+                'k_added_by' => 'MEMBER',
+                'k_notes' => 'LONG_TEXT',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_kpis', 'k_graph_name', ['k_graph_name']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_link_tracker', [
+                'id' => '*AUTO',
+                'c_url' => 'URLPATH',
+                'c_date_and_time' => 'TIME',
+
+                // Unlike events, it is not possible to guess a link happened by looking at the stats table, so we gather more
+                'c_member_id' => 'MEMBER',
+                'c_ip_address' => 'IP',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_link_tracker', 'c_url', ['c_url']);
+            $GLOBALS['SITE_DB']->create_index('stats_link_tracker', 'c_date_and_time', ['c_date_and_time']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_known_events', [
+                'e_event' => '*ID_TEXT',
+                'e_times_seen' => 'INTEGER',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_known_events', 'e_times_seen', ['e_times_seen']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_known_tracking', [
+                't_tracking_code' => '*ID_TEXT',
+                't_times_seen' => 'INTEGER',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_known_tracking', 't_times_seen', ['t_times_seen']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_known_links', [
+                'id' => '*AUTO',
+                'l_url' => 'URLPATH',
+                'l_times_seen' => 'INTEGER',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_url', ['l_url']);
+            $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_times_seen', ['l_times_seen']);
+
+            $GLOBALS['SITE_DB']->create_index('stats', 'session_id', ['session_id']);
         }
     }
 
@@ -154,16 +258,27 @@ class Module_admin_stats
             return null;
         }
 
+        require_code('stats');
+        require_lang('stats');
+
         $ret = [
-            'browse' => ['SITE_STATISTICS', 'menu/adminzone/audit/statistics/statistics'],
-            'overview' => ['OVERVIEW_STATISTICS', 'menu/adminzone/audit/statistics/statistics'],
-            'users_online' => ['USERS_ONLINE_STATISTICS', 'menu/adminzone/audit/statistics/users_online'],
-            'submission_rates' => ['SUBMISSION_STATISTICS', 'menu/adminzone/audit/statistics/submits'],
-            'referrers' => ['TOP_REFERRERS', 'menu/adminzone/audit/statistics/top_referrers'],
-            'page' => ['PAGES_STATISTICS', 'menu/adminzone/audit/statistics/page_views'],
-            'load_times' => ['LOAD_TIMES', 'menu/adminzone/audit/statistics/load_times'],
-            'clear' => ['CLEAR_STATISTICS', 'menu/adminzone/audit/statistics/clear_stats'],
+            'browse' => ['MODULE_TRANS_NAME_admin_stats', 'menu/adminzone/audit/statistics/statistics'],
         ];
+
+        $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
+        foreach ($hooks as $ob) {
+            $info = $ob->info();
+            if ($info !== null) {
+                foreach ($info as $graph_name => $details) {
+                    $ret[get_module_zone('admin_stats') . ':admin_stats:graph:' . $graph_name] = [$details['label_lang_string'], $details['icon']];
+                }
+            }
+        }
+
+        $categories = stats_find_graph_categories();
+        foreach ($categories as $category_name => $category) {
+            $ret[get_module_zone('admin_stats') . ':admin_stats:category:' . $category_name] = [$category['label_lang_string'], $category['icon']];
+        }
 
         static $has_geolocation_data = null;
         if ($has_geolocation_data === null) {
@@ -174,1189 +289,148 @@ class Module_admin_stats
             $ret['install_data'] = ['INSTALL_GEOLOCATION_DATA', 'menu/adminzone/audit/statistics/geolocate'];
         }
 
-        $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
-        foreach ($hooks as $ob) {
-            $info = $ob->info();
-            if ($info !== null) {
-                $ret += $info[0];
-            }
-        }
+        $ret['edit'] = ['EDIT_KPI', 'admin/edit'];
+
+        $ret['kpis'] = ['KPIS', 'admin/view_archive'];
 
         return $ret;
     }
 
-    public $title;
-
     /**
      * Module pre-run function. Allows us to know metadata for <head> before we start streaming output.
      *
+     * @param  boolean $top_level Whether this is running at the top level, prior to having sub-objects called
+     * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run($top_level = true, $type = null)
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('stats', $error_msg)) {
             return $error_msg;
         }
 
-        $type = get_param_string('type', 'browse');
-
+        require_code('stats');
         require_lang('stats');
 
-        if ($type != 'browse' && $type != '_clear') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('SITE_STATISTICS')]]);
+        if (!cron_installed()) {
+            attach_message(do_lang_tempcode('CRON_NEEDED_TO_WORK'), 'warn');
         }
 
-        if ($type == '_clear') {
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('SITE_STATISTICS')], ['_SELF:_SELF:clear', do_lang_tempcode('CLEAR_STATISTICS')]]);
-            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        $type = get_param_string('type', 'browse');
+
+        if ($type == 'browse') {
+            set_helper_panel_tutorial('tut_statistics');
         }
 
-        if ($type == 'overview') {
-            inform_non_canonical_parameter('sort_views');
+        if ($type == 'category') {
+            $categories = stats_find_graph_categories();
+            $category_name = get_param_string('id');
+            $this->title = get_screen_title($categories[$category_name]['label_lang_string']);
+
+            $_graphs = stats_find_graphs_in_category($category_name);
+            foreach ($_graphs as $graph_name => $_graph) {
+                list($hook_ob, $graph_details) = $_graph;
+                if ($hook_ob instanceof CMSStatsProvider) {
+                    foreach ($graph_details['filters'] as $filter) {
+                        if ($filter !== null) {
+                            inform_non_canonical_parameter($filter->filter_name);
+                        }
+                    }
+                }
+                inform_non_canonical_parameter($graph_name . '_start');
+                inform_non_canonical_parameter($graph_name . '_max');
+                inform_non_canonical_parameter($graph_name . '_sort');
+            }
         }
 
-        if ($type == '_page') {
-            inform_non_canonical_parameter('sort_regionalities');
-            inform_non_canonical_parameter('sort_views');
+        if (($type == 'graph') || ($type == 'spreadsheet')) {
+            $graph_name = get_param_string('id');
+            list($hook_ob, $graph_details) = stats_find_graph_details($graph_name);
+
+            $title = get_screen_title($graph_details['label'], false);
+
+            foreach ($graph_details['filters'] as $filter) {
+                if ($filter !== null) {
+                    inform_non_canonical_parameter($filter->filter_name);
+                }
+            }
+            inform_non_canonical_parameter($graph_name . '_start');
+            inform_non_canonical_parameter($graph_name . '_max');
+            inform_non_canonical_parameter($graph_name . '_sort');
         }
 
-        set_helper_panel_tutorial('tut_statistics');
+        if ($type == 'redirect') {
+            $id = get_param_string('id');
 
-        if ($type == 'users_online') {
-            $this->title = get_screen_title('USERS_ONLINE_STATISTICS');
-        }
+            $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
+            foreach ($hooks as $ob) {
+                $info = $ob->info();
+                if ($info !== null) {
+                    foreach ($info as $_id => $details) {
+                        if ($_id == $id) {
+                            $title = get_screen_title($details['label_lang_string']);
 
-        if ($type == 'submission_rates') {
-            $this->title = get_screen_title('SUBMISSION_STATISTICS');
-        }
-
-        if ($type == 'load_times') {
-            $this->title = get_screen_title('LOAD_TIMES');
-        }
-
-        if ($type == 'referrers') {
-            $this->title = get_screen_title('TOP_REFERRERS');
-        }
-
-        if ($type == 'overview') {
-            $this->title = get_screen_title('OVERVIEW_STATISTICS');
-        }
-
-        if ($type == 'page') {
-            $this->title = get_screen_title('PAGES_STATISTICS');
-        }
-
-        if ($type == '_page') {
-            $page = get_param_string('iscreen');
-            $this->title = get_screen_title(do_lang_tempcode('_PAGE_STATISTICS', escape_html($page)), false);
-        }
-
-        if ($type == 'clear') {
-            $this->title = get_screen_title('CLEAR_STATISTICS');
+                            break 2;
+                        }
+                    }
+                }
+            }
         }
 
         if ($type == 'install_data') {
             $this->title = get_screen_title('INSTALL_GEOLOCATION_DATA');
         }
 
-        if (!in_array($type, ['browse', 'overview', 'users_online', 'submission_rates', 'referrers', '_page', 'load_times', 'clear', '_clear', 'install_data', 'page'])) {
-            $GLOBALS['OUTPUT_STREAMING'] = false;
+        if ($type == 'kpis') {
+            $this->title = get_screen_title('KPIS');
         }
 
-        return null;
+        return parent::pre_run($top_level);
     }
 
     /**
-     * Execute the module.
+     * Standard crud_module run_start.
      *
-     * @return Tempcode The result of execution
+     * @param  ID_TEXT $type The type of module execution
+     * @return Tempcode The output of the run
      */
-    public function run()
+    public function run_start($type)
     {
-        if (!$GLOBALS['SITE_DB']->table_is_locked('stats')) {
-            $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats WHERE date_and_time<' . strval(time() - 60 * 60 * 24 * intval(get_option('stats_store_time'))), 500/*to reduce lock times*/);
-        }
-
-        require_code('svg');
         require_css('stats');
-
-        if (get_param_integer('spreadsheet', 0) == 1) {
-            require_code('files_spreadsheets_write');
-        }
-
-        $type = get_param_string('type', 'browse');
-
-        if (in_array($type, ['browse', 'overview', 'users_online', 'submission_rates', 'referrers', '_page', 'load_times', 'clear', '_clear', 'install_data', 'page'])) {
-            if (get_param_integer('spreadsheet', 0) == 0) {
-                send_http_output_ping();
-            }
-        }
-
-        if (!file_exists(get_custom_file_base() . '/data_custom/modules/admin_stats')) {
-            require_code('files2');
-            make_missing_directory(get_custom_file_base() . '/data_custom/modules/admin_stats');
-        }
 
         if ($type == 'browse') {
             return $this->browse();
-        } elseif ($type == 'overview') {
-            return $this->overview();
-        } elseif ($type == 'users_online') {
-            return $this->users_online();
-        } elseif ($type == 'submission_rates') {
-            return $this->submission_rates();
-        } elseif ($type == 'referrers') {
-            return $this->referrers();
-        } elseif ($type == '_page') {
-            return $this->show_page();
-        } elseif ($type == 'load_times') {
-            return $this->load_times();
-        } elseif ($type == 'clear') {
-            return $this->clear();
-        } elseif ($type == '_clear') {
-            return $this->_clear();
         } elseif ($type == 'install_data') {
             return $this->install_geolocation_data();
-        } elseif ($type == 'page') {
-            return $this->page_stats();
-        } else {
-            $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
-            foreach ($hooks as $ob) {
-                if (method_exists($ob, $type)) {
-                    return call_user_func_array([&$ob, $type], [&$this, $type]);
-                }
-            }
+        } elseif ($type == 'category') {
+            cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+            disable_php_memory_limit();
+
+            return $this->category();
+        } elseif ($type == 'graph') {
+            cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+            disable_php_memory_limit();
+
+            return $this->graph();
+        } elseif ($type == 'spreadsheet') {
+            return $this->spreadsheet();
+        } elseif ($type == 'redirect') {
+            return $this->redirect();
+        } elseif ($type == 'kpis') {
+            return $this->kpis();
         }
         return new Tempcode();
     }
 
     /**
-     * The do-next manager for before content management.
+     * The do-next manager for choosing a stats category.
      *
      * @return Tempcode The UI
      */
     public function browse()
     {
-        require_code('templates_donext');
-
-        $actions = [
-            ['menu/adminzone/audit/statistics/statistics', ['_SELF', ['type' => 'overview'], '_SELF'], do_lang('OVERVIEW_STATISTICS'), 'DESCRIPTION_OVERVIEW_STATISTICS'],
-            ['menu/adminzone/audit/statistics/page_views', ['_SELF', ['type' => 'page'], '_SELF'], do_lang('PAGES_STATISTICS'), 'DOC_PAGE_STATISTICS'],
-            ['menu/adminzone/audit/statistics/users_online', ['_SELF', ['type' => 'users_online'], '_SELF'], do_lang('USERS_ONLINE_STATISTICS'), 'DOC_USERS_ONLINE_STATISTICS'],
-            ['menu/adminzone/audit/statistics/submits', ['_SELF', ['type' => 'submission_rates'], '_SELF'], do_lang('SUBMISSION_STATISTICS'), 'DOC_SUBMISSION_STATISTICS'],
-            ['menu/adminzone/audit/statistics/load_times', ['_SELF', ['type' => 'load_times'], '_SELF'], do_lang('LOAD_TIMES'), 'DOC_LOAD_TIMES'],
-            ['menu/adminzone/audit/statistics/top_referrers', ['_SELF', ['type' => 'referrers'], '_SELF'], do_lang('TOP_REFERRERS'), 'DOC_TOP_REFERRERS'],
-        ];
-
-        $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
-        foreach ($hooks as $ob) {
-            $info = $ob->info();
-            if ($info !== null) {
-                $actions = array_merge($actions, [$info[1]]);
-            }
-        }
-
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
-        if ($test === null) {
-            $actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang('INSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
-        }
-
-        $actions[] = ['menu/adminzone/audit/statistics/clear_stats', ['_SELF', ['type' => 'clear'], '_SELF'], do_lang('CLEAR_STATISTICS'), do_lang_tempcode('DESCRIPTION_CLEAR_STATISTICS')];
-
-        return do_next_manager(
-            get_screen_title('SITE_STATISTICS'),
-            comcode_lang_string('DOC_STATISTICS'),
-            $actions,
-            do_lang('SITE_STATISTICS')
-        );
-    }
-
-    /**
-     * An interface for choosing between dates.
-     *
-     * @param  Tempcode $title The title to display
-     * @param  boolean $stats_table Whether display is dependent on what we kept in our stats table
-     * @param  ?Tempcode $extra_fields Extra fields to request (null: none)
-     * @param  ?Tempcode $message The message to show for date selection (null: default)
-     * @return Tempcode The result of execution
-     */
-    public function get_between($title, $stats_table = false, $extra_fields = null, $message = null)
-    {
-        require_code('form_templates');
-
-        $fields = new Tempcode();
-        $month_start = utctime_to_usertime(mktime(0, 0, 0, intval(date('m')), 1, intval(date('Y'))));
-        $prior_month = intval(date('m')) - 1;
-        $prior_year = intval(date('Y'));
-        if ($prior_month == 0) {
-            $prior_month = 12;
-            $prior_year--;
-        }
-        $prior_month_start = utctime_to_usertime(mktime(0, 0, 0, $prior_month, 1, $prior_year));
-        $first_stat = $stats_table ? $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'MIN(date_and_time)') : null;
-        if ($first_stat === null) {
-            $year_start = intval(date('Y')) - 5;
-            $years_ahead = 5;
-            $first_stat = time();
-        } else {
-            $year_start = intval(date('Y', $first_stat));
-            $years_ahead = intval(date('Y')) - $year_start;
-        }
-        if ($stats_table) {
-            if (utctime_to_usertime($first_stat) > $month_start) {
-                $prior_month_start = $first_stat;
-                $month_start = time();
-            }
-        }
-        $fields->attach(form_input_date(do_lang_tempcode('FROM'), do_lang_tempcode('TIME_RANGE_START'), 'time_start', false, false, false, $prior_month_start, $years_ahead, $year_start));
-        $fields->attach(form_input_date(do_lang_tempcode('TO'), do_lang_tempcode('TIME_RANGE_END'), 'time_end', false, false, false, $month_start, $years_ahead, $year_start));
-        if ($extra_fields !== null) {
-            $fields->attach($extra_fields);
-        }
-
-        $post_url = get_self_url(false, false, ['dated' => 1], false, true);
-
-        if ($message === null) {
-            $message = do_lang_tempcode($stats_table ? 'SELECT_STATS_RANGE' : '_SELECT_STATS_RANGE', escape_html(get_timezoned_date($first_stat, false)));
-        }
-
-        return do_template('FORM_SCREEN', [
-            '_GUID' => '3e76584f20ecfb947b00638211e63321',
-            'SKIP_WEBSTANDARDS' => true,
-            'GET' => true,
-            'TITLE' => $title,
-            'FIELDS' => $fields,
-            'TEXT' => $message,
-            'HIDDEN' => '',
-            'URL' => $post_url,
-            'SUBMIT_ICON' => 'buttons/proceed',
-            'SUBMIT_NAME' => do_lang_tempcode('CHOOSE'),
-        ]);
-    }
-
-    /**
-     * The UI to show user online statistics.
-     *
-     * @return Tempcode The UI
-     */
-    public function users_online()
-    {
-        // This needs to show a big scatter graph with the users online every day
-
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 50); // Intentionally the browse is disabled, as the graph will show all - we fudge $max_rows to $i
-        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
-        if ($spreadsheet) {
-            cms_disable_time_limit();
-            $start = 0;
-            $max = 10000;
-        }
-        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME'), 'peak' => do_lang_tempcode('PEAK')];
-        $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        $rows = $GLOBALS['SITE_DB']->query_select('usersonline_track', ['date_and_time', 'peak'], [], 'ORDER BY ' . $sortable . ' ' . $sort_order);
-        if (count($rows) < 1) {
-            return warn_screen($this->title, do_lang_tempcode('NO_DATA'));
-        }
-
-        $base = $rows[0]['date_and_time'];
-        foreach ($rows as $value) {
-            if ($value['date_and_time'] < $base) {
-                $base = $value['date_and_time'];
-            }
-        }
-
-        $data = [];
-
-        foreach ($rows as $value) {
-            $date = get_timezoned_date($value['date_and_time'], false);
-            // If there's no data, or if this isn't the same as the last record and is more than an hour later than it
-            if ((empty($data)) || ($data[count($data) - 1]['key'] != $date)) {
-                $data[] = ['t' => $value['date_and_time'] - $base, 'key' => $date, 'value' => $value['peak']];
-            } else {
-                $data[count($data) - 1]['value'] = max($value['peak'], $data[count($data) - 1]['value']);
-            }
-        }
-
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('PEAK')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        $result_entries = new Tempcode();
-        $real_data = [];
-        for ($i = 0; $i < $max; $i++) {
-            if (!array_key_exists($i, $data)) {
-                continue;
-            }
-
-            $real_data[] = [
-                do_lang('DATE_TIME') => get_timezoned_date_time($data[$i]['t'] + $base),
-                do_lang('COUNT_TOTAL') => $data[$i]['value'],
-            ];
-
-            $result_entries->attach(results_entry([get_timezoned_date($data[$i]['t'] + $base, false), integer_format($data[$i]['value'])], true));
-        }
-        if ($spreadsheet) {
-            $filename = 'users_online.' . spreadsheet_write_default();
-            $path = null;
-            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
-            $sheet_writer->output_and_exit($filename, true);
-        }
-        $list = results_table(do_lang_tempcode('USERS_ONLINE_STATISTICS'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-
-        $output = create_scatter_graph($data, do_lang('DATE'), do_lang('USERS_ONLINE'), '', '');
-        $this->save_graph('Global-Users-online', $output);
-
-        $graph = do_template('STATS_GRAPH', [
-            '_GUID' => '9688722e526a814f3b90ca93a21333ad',
-            'GRAPH' => $this->get_stats_url('Global-Users-online'),
-            'TITLE' => do_lang_tempcode('USERS_ONLINE_STATISTICS'),
-            'TEXT' => do_lang_tempcode('DESCRIPTION_USERS_ONLINE_STATISTICS'),
-        ]);
-
-        $tpl = do_template('STATS_SCREEN', ['_GUID' => '2e5a6a2f7317c80464c518996728d839', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list]);
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
-    }
-
-    /**
-     * The UI to show submission rates.
-     *
-     * @return Tempcode The UI
-     */
-    public function submission_rates()
-    {
-        // Like the users online above, we need to use a nice scatter graph
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 50); // Intentionally the browse is disabled, as the graph will show all - we fudge $max_rows to $i
-        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
-        if ($spreadsheet) {
-            cms_disable_time_limit();
-            $start = 0;
-            $max = 10000;
-        }
-        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
-        $test = explode(' ', either_param_string('sort', 'date_and_time DESC'));
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        $rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['date_and_time', 'COUNT(*) AS cnt'], [], 'GROUP BY date_and_time ORDER BY ' . $sortable . ' ' . $sort_order, 3000/*reasonable limit*/);
-        if (count($rows) < 1) {
-            return warn_screen($this->title, do_lang_tempcode('NO_DATA'));
-        }
-        //$max_rows = $GLOBALS['SITE_DB']->query_select_value('actionlogs', 'COUNT(DISTINCT date_and_time)');   Cannot do this as the DB does not do all the processing
-
-        $data = [];
-        $base = $rows[0]['date_and_time'];
-        foreach ($rows as $value) {
-            $date = get_timezoned_date($value['date_and_time'], false);
-            $t = $value['date_and_time'] - $base;
-            if ($t < 0) {
-                $t = 0 - $t;
-            }
-            if ((empty($data)) || ($data[count($data) - 1]['key'] != $date)) {
-                $data[] = ['t' => $t, 'key' => $date, 'value' => $value['cnt']];
-            } else {
-                $data[count($data) - 1]['value'] += $value['cnt'];
-            }
-        }
-
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('PEAK')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        $fields = new Tempcode();
-        $real_data = [];
-        for ($i = 0; $i < $max; $i++) {
-            if (!array_key_exists($i, $data)) {
-                continue;
-            }
-
-            $real_data[] = [
-                do_lang('DATE_TIME') => $data[$i]['key'],
-                do_lang('COUNT_TOTAL') => $data[$i]['value'],
-            ];
-
-            $fields->attach(results_entry([$data[$i]['key'], integer_format($data[$i]['value'])], true));
-        }
-        $list = results_table(do_lang_tempcode('SUBMISSION_STATISTICS'), $start, 'start', $max, 'max', $i, $header_row, $fields, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-        if ($spreadsheet) {
-            $filename = 'submission_rates.' . spreadsheet_write_default();
-            $path = null;
-            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
-            $sheet_writer->output_and_exit($filename, true);
-        }
-
-        $output = create_scatter_graph($data, do_lang('DATE'), do_lang('SUBMISSION_STATISTICS'), '', '');
-        $this->save_graph('Global-Submissions', $output);
-
-        $graph = do_template('STATS_GRAPH', [
-            '_GUID' => 'f6d5a58eae148a555e0f868eda245304',
-            'GRAPH' => $this->get_stats_url('Global-Submissions'),
-            'TITLE' => do_lang_tempcode('SUBMISSION_STATISTICS'),
-            'TEXT' => do_lang_tempcode('DESCRIPTION_SUBMISSION_STATISTICS'),
-        ]);
-
-        $tpl = do_template('STATS_SCREEN', ['_GUID' => '66e8534ef342c1d0197f4ddb8f767025', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list]);
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
-    }
-
-    /**
-     * The UI to show page load times.
-     *
-     * @return Tempcode The UI
-     */
-    public function load_times()
-    {
-        // Handle time range
-        if (get_param_integer('dated', 0) == 0) {
-            return $this->get_between($this->title, true);
-        }
-        $time_start = post_param_date('time_start', true);
-        $time_end = post_param_date('time_end', true);
-        if ($time_end !== null) {
-            $time_end += 60 * 60 * 24 - 1; // So it is end of day not start
-        }
-        if ($time_start === null) {
-            $time_start = 0;
-        }
-        if ($time_end === null) {
-            $time_end = time();
-        }
-        $first_stat = $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'MIN(date_and_time)');
-        if ($time_end < $first_stat) {
-            warn_exit(do_lang_tempcode('NO_DATA_SPECIFIC'));
-        }
-
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 30);
-        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
-        if ($spreadsheet) {
-            cms_disable_time_limit();
-            $start = 0;
-            $max = 10000;
-            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in a spreadsheet application retro-actively
-            $time_end = time();*/
-        }
-
-        $this->title = get_screen_title('LOAD_TIMES_RANGE', true, [escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))]);
-
-        // We calculate MIN not AVG, because data can be made very dirty by slow clients or if the server is having trouble at one specific point. It's a shame.
-        $rows = $GLOBALS['SITE_DB']->query('SELECT the_page,MIN(milliseconds) AS min_time FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval($time_start) . ' AND date_and_time<' . strval($time_end) . ' GROUP BY the_page');
-        if (count($rows) < 1) {
-            return warn_screen($this->title, do_lang_tempcode('NO_DATA'));
-        }
-
-        $data = [];
-        foreach ($rows as $row) {
-            $page = $row['the_page'];
-            $page2 = page_path_to_page_link($page);
-            if ($page2 == '') {
-                $page2 = $page;
-            }
-
-            if ($row['min_time'] === null) {
-                $min_time = 0.0;
-            } else {
-                $min_time = $row['min_time'] / 1000.0;
-            }
-
-            $data[$page2] = [$min_time, $page];
-        }
-
-        $sortables = ['AVG(milliseconds)' => do_lang_tempcode('LOAD_TIME')];
-        $test = explode(' ', get_param_string('sort', 'AVG(milliseconds) DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        sort_maps_by($data, 0);
-        if ($sort_order == 'DESC') {
-            $data = array_reverse($data, true);
-        }
-
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('URL'), do_lang_tempcode('LOAD_TIME')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        $fields = new Tempcode();
-        $real_data = [];
-        $i = 0;
-        foreach ($data as $url => $_value) {
-            if ($i < $start) {
-                $i++;
-                continue;
-            } elseif ($i >= $start + $max) {
-                break;
-            }
-            list($value, $page) = $_value;
-
-            $real_data[] = [
-                'URL' => $url,
-                'Milliseconds' => $value,
-            ];
-
-            $fields->attach(results_entry([hyperlink(build_url(['page' => '_SELF', 'type' => '_page', 'iscreen' => $page], '_SELF'), $url, false, true), float_format($value)], true));
-
-            $i++;
-        }
-        $list = results_table(do_lang_tempcode('LOAD_TIMES'), $start, 'start', $max, 'max', count($data), $header_row, $fields, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-        if ($spreadsheet) {
-            $filename = 'load_times.' . spreadsheet_write_default();
-            $path = null;
-            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
-            $sheet_writer->output_and_exit($filename, true);
-        }
-
-        $output = create_bar_chart($data, do_lang('PAGE'), do_lang('LOAD_TIME'), '', do_lang('dates:DPLU_SECONDS'));
-        $this->save_graph('Global-Load-times', $output);
-
-        $graph = do_template('STATS_GRAPH', [
-            '_GUID' => '3f1ef4ebbed1e064c0ec89481dc39afc',
-            'GRAPH' => $this->get_stats_url('Global-Load-times'),
-            'TITLE' => do_lang_tempcode('LOAD_TIMES'),
-            'TEXT' => do_lang_tempcode('DESCRIPTION_LOAD_TIMES'),
-        ]);
-
-        $tpl = do_template('STATS_SCREEN', ['_GUID' => '8f7c585bdbc0180ed116693723108e2b', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list]);
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
-    }
-
-    /**
-     * The UI to show referrers.
-     *
-     * @return Tempcode The UI
-     */
-    public function referrers()
-    {
-        // Handle time range
-        if (get_param_integer('dated', 0) == 0) {
-            return $this->get_between($this->title, true);
-        }
-        $time_start = post_param_date('time_start', true);
-        $time_end = post_param_date('time_end', true);
-        if ($time_end !== null) {
-            $time_end += 60 * 60 * 24 - 1; // So it is end of day not start
-        }
-        if ($time_start === null) {
-            $time_start = 0;
-        }
-        if ($time_end === null) {
-            $time_end = time();
-        }
-        $first_stat = $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'MIN(date_and_time)');
-        if ($time_end < $first_stat) {
-            warn_exit(do_lang_tempcode('NO_DATA_SPECIFIC'));
-        }
-
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 25);
-        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
-        if ($spreadsheet) {
-            cms_disable_time_limit();
-            $start = 0;
-            $max = 10000;
-            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in a spreadsheet application retro-actively
-            $time_end = time();*/
-        }
-
-        $this->title = get_screen_title('TOP_REFERRERS_RANGE', true, [escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))]);
-
-        $non_local_filter = 'referer NOT LIKE \'' . db_encode_like(str_replace('_', '\\_', preg_replace('#^https?://#', 'http://', get_base_url())) . '%') . '\'';
-        $non_local_filter .= ' AND referer NOT LIKE \'' . db_encode_like(str_replace('_', '\\_', preg_replace('#^https?://#', 'https://', get_base_url())) . '%') . '\'';
-        if (get_param_integer('debug', 0) == 1) {
-            $non_local_filter = '1=1';
-        }
-
-        $where = $non_local_filter . ' AND date_and_time>' . strval($time_start) . ' AND date_and_time<' . strval($time_end);
-
-        $rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) AS cnt,referer FROM ' . get_table_prefix() . 'stats WHERE ' . $where . ' GROUP BY referer');
-        if (count($rows) < 1) {
-            return warn_screen($this->title, do_lang_tempcode('NO_DATA'));
-        }
-
-        $referrers = [];
-        $total = 0;
-        foreach ($rows as $value) {
-            $referrers[$value['referer']] = $value['cnt'];
-            $total += $referrers[$value['referer']];
-        }
-
-        $sortables = ['referer' => do_lang_tempcode('TOP_REFERRERS')];
-        $test = explode(' ', get_param_string('sort', 'referer DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        if ($sort_order == 'ASC') {
-            asort($referrers);
-        } else {
-            arsort($referrers);
-        }
-
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('URL'), do_lang_tempcode('COUNT_VIEWS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        $fields = new Tempcode();
-        $i = 0;
-        $degrees = 360.0 / floatval($total);
-        $done_total = 0;
-        $data = [];
-
-        $real_data = [];
-        foreach ($referrers as $referrer => $views) {
-            if ($i < $start) {
-                $i++;
-                continue;
-            } elseif ($i >= $start + $max) {
-                break;
-            }
-            if ($referrer == '') {
-                $link = do_lang('_UNKNOWN');
-            } else {
-                $link = hyperlink($referrer, $referrer, false, true);
-            }
-            $fields->attach(results_entry([$link, integer_format($views)], true));
-
-            $real_data[] = [
-                do_lang('DATE_TIME') => $referrer,
-                do_lang('COUNT_TOTAL') => $views,
-            ];
-
-            $data[$referrer] = $views * $degrees;
-            $done_total += $data[$referrer];
-            $i++;
-        }
-        if ($spreadsheet) {
-            $filename = 'referrers.' . spreadsheet_write_default();
-            $path = null;
-            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
-            $sheet_writer->output_and_exit($filename, true);
-        }
-
-        if ((360.0 - $done_total) > 0.0) {
-            $data[do_lang('OTHER')] = 360.0 - $done_total;
-            $fields->attach(results_entry([do_lang('OTHER'), float_format((360.0 - $done_total) / $degrees)], true));
-        }
-
-        $list = results_table(do_lang_tempcode('TOP_REFERRERS'), $start, 'start', $max, 'max', count($referrers), $header_row, $fields, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-
-        $output = create_pie_chart($data);
-        $this->save_graph('Global-Referrers', $output);
-
-        $graph = do_template('STATS_GRAPH', [
-            '_GUID' => '22c565665d8a98528659bbfc25526855',
-            'GRAPH' => $this->get_stats_url('Global-Referrers'),
-            'TITLE' => do_lang_tempcode('REFERRER_SHARE'),
-            'TEXT' => do_lang_tempcode('DESCRIPTION_REFERRER_SHARE'),
-        ]);
-
-        $tpl = do_template('STATS_SCREEN', ['_GUID' => '777bc5f8573a5cef54aa0bc9bdc0ee29', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list]);
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
-    }
-
-    /**
-     * The UI to show page view statistics.
-     *
-     * @return Tempcode The UI
-     */
-    public function page_stats()
-    {
-        // This will show a plain bar chart with all the pages listed
-
-        // Handle time range
-        if (get_param_integer('dated', 0) == 0) {
-            return $this->get_between($this->title, true);
-        }
-        $time_start = post_param_date('time_start', true);
-        $time_end = post_param_date('time_end', true);
-        if ($time_end !== null) {
-            $time_end += 60 * 60 * 24 - 1; // So it is end of day not start
-        }
-        if ($time_start === null) {
-            $time_start = 0;
-        }
-        if ($time_end === null) {
-            $time_end = time();
-        }
-        $first_stat = $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'MIN(date_and_time)');
-        if ($time_end < $first_stat) {
-            warn_exit(do_lang_tempcode('NO_DATA_SPECIFIC'));
-        }
-
-        $start = get_param_integer('start', 0);
-        $max = get_param_integer('max', 30);
-        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
-        if ($spreadsheet) {
-            cms_disable_time_limit();
-            $start = 0;
-            $max = 10000;
-            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in a spreadsheet application retro-actively
-            $time_end = time();*/
-        }
-
-        $this->title = get_screen_title('PAGES_STATISTICS_RANGE', true, [escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))]);
-
-        $rows = $GLOBALS['SITE_DB']->query_select('stats', ['the_page'], [], 'GROUP BY the_page ORDER BY COUNT(*) DESC', 3000);
-        if (count($rows) < 1) {
-            return warn_screen($this->title, do_lang_tempcode('NO_DATA'));
-        }
-
-        $views = [do_lang('_ALL') => 0];
-        $total = 0;
-        foreach ($rows as $row) {
-            $page = $row['the_page'];
-            $matches = [];
-            if ((preg_match('#^/?([^/]+)/pages/([^/]+)/(\w\w/)?([^/\.]+)\.(php|txt|htm)$#', $page, $matches) == 1) && ($matches[4] == 'catalogues') && (addon_installed('catalogues')) && ($GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)') < 300)) {
-                require_lang('catalogues');
-                $categories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id', 'cc_title']);
-                foreach ($categories as $cat) {
-                    $where = db_string_equal_to('the_page', $page);
-                    if (substr($page, 0, 6) == 'pages/') {
-                        $where .= ' OR ' . db_string_equal_to('the_page', '/' . $page); // Legacy compatibility
-                    }
-                    $count = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE (' . $where . ') AND s_get LIKE \'' . db_encode_like('<param>page=catalogues</param>\n<param>type=category</param>\n<param>id=' . strval($cat['id']) . '</param>%') . '\' AND date_and_time>' . strval($time_start) . ' AND date_and_time<' . strval($time_end));
-                    $cc_cat_written = do_lang('CATALOGUE_CATEGORY') . ': ' . get_translated_text($cat['cc_title']);
-                    $views[$cc_cat_written] = [$count, $page];
-                    $total += $count;
-                }
-                continue;
-            } else {
-                $page2 = page_path_to_page_link($page);
-                if ($page2 == '') {
-                    $page2 = $page;
-                }
-            }
-            $where = db_string_equal_to('the_page', $page);
-            if (substr($page, 0, 6) == 'pages/') {
-                $where .= ' OR ' . db_string_equal_to('the_page', '/' . $page); // Legacy compatibility
-            }
-            $views[$page2] = [$GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE (' . $where . ') AND date_and_time>' . strval($time_start) . ' AND date_and_time<' . strval($time_end)), $page];
-            $total += $views[$page2][0];
-        }
-        $views[do_lang('_ALL')] = [$total, null];
-
-        $sortables = ['views' => do_lang_tempcode('COUNT_VIEWS')];
-        $test = explode(' ', get_param_string('sort', 'views DESC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        sort_maps_by($views, 0);
-        if ($sort_order == 'DESC') {
-            $views = array_reverse($views, true);
-        }
-
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('URL'), do_lang_tempcode('COUNT_VIEWS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        $fields = new Tempcode();
-        $i = 0;
-        $real_data = [];
-        foreach ($views as $url => $_value) {
-            if ($i < $start) {
-                $i++;
-                continue;
-            } elseif ($i >= $start + $max) {
-                break;
-            }
-            list($value, $page) = $_value;
-
-            $real_data[] = [
-                do_lang('PAGE_OR_URL') => ($page === null) ? $url : $page,
-                do_lang('COUNT_TOTAL') => $value,
-            ];
-
-            $fields->attach(results_entry([($page === null) ? make_string_tempcode(escape_html($url)) : hyperlink(build_url(['page' => '_SELF', 'type' => '_page', 'iscreen' => $page], '_SELF'), $url, false, true), integer_format($value)], false));
-
-            $i++;
-        }
-        unset($views['(' . do_lang('ALL') . ')']);
-        $list = results_table(do_lang_tempcode('PAGES_STATISTICS'), $start, 'start', $max, 'max', count($views), $header_row, $fields, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-        if ($spreadsheet) {
-            $filename = 'page_stats.' . spreadsheet_write_default();
-            $path = null;
-            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
-            $sheet_writer->output_and_exit($filename, true);
-        }
-
-        $output = create_bar_chart(array_slice($views, $start, $max), do_lang('PAGE'), do_lang('COUNT_VIEWS'), '', '');
-        $this->save_graph('Global-Views', $output);
-
-        $graph = do_template('STATS_GRAPH', [
-            '_GUID' => 'ea79fdc013046ef94992daeab961f2da',
-            'GRAPH' => $this->get_stats_url('Global-Views'),
-            'TITLE' => do_lang_tempcode('PAGES_STATISTICS'),
-            'TEXT' => do_lang_tempcode('DESCRIPTION_PAGES_STATISTICS'),
-        ]);
-
-        $tpl = do_template('STATS_SCREEN', ['_GUID' => 'cfe7d5aee8aa3c0d3a54bd3bf2d09e7f', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list]);
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
-    }
-
-    /**
-     * The UI to show page view statistics for the front page.
-     *
-     * @return Tempcode The UI
-     */
-    public function overview()
-    {
-        $page_request = _request_page(get_zone_default_page(''), '');
-        $page = $page_request[count($page_request) - 1];
-        if (is_array($page)) {
-            $page = $page['r_to_page'];
-        }
-
-        list($graph_views_monthly, $list_views_monthly) = array_values($this->views_per_x($page, 'views_hourly', 'VIEWS_PER_MONTH', 'DESCRIPTION_VIEWS_PER_MONTH', 730, 8766));
-
-        //************************************************************************************************
-        // Views
-        //************************************************************************************************
-        $start = get_param_integer('start_views', 0);
-        $max = get_param_integer('max_views', 30);
-        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
-        list($sortable, $sort_order) = explode(' ', get_param_string('sort_views', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        // NB: not used in default templates
-        $where = db_string_equal_to('the_page', $page);
-        if (substr($page, 0, 6) == 'pages/') {
-            $where .= ' OR ' . db_string_equal_to('the_page', '/' . $page); // Legacy compatibility
-        }
-        $reasonable_max = 10000;
-        $rows = $GLOBALS['SITE_DB']->query('SELECT date_and_time FROM ' . get_table_prefix() . 'stats WHERE (' . $where . ') ORDER BY ' . $sortable . ' ' . $sort_order, $reasonable_max, 0, false, true);
-        if (count($rows) < 1) {
-            $list_views = new Tempcode();
-        } else {
-            require_code('templates_results_table');
-            $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('COUNT_VIEWS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-            $fields = new Tempcode();
-            $i = 0;
-            while (array_key_exists($i, $rows)) {
-                $row = $rows[$i];
-                $week = intval(round($row['date_and_time'] / (60 * 60 * 24 * 7)));
-                $date = get_timezoned_date(($week - 1) * (60 * 60 * 24 * 7), false) . ' - ' . get_timezoned_date(($week) * (60 * 60 * 24 * 7), false);
-                $views = 0;
-                while (array_key_exists($i + $views, $rows)) {
-                    $_week = intval(round($row['date_and_time'] / (60 * 60 * 24 * 7)));
-
-                    if ($_week != $week) {
-                        break;
-                    }
-
-                    $views++;
-                }
-                $i += $views;
-                if ($i < $start) {
-                    continue;
-                }
-                $fields->attach(results_entry([$date, ($i < $reasonable_max) ? integer_format($views) : ('>' . integer_format($views))], true));
-                if ($i >= $start + $max) {
-                    break;
-                }
-            }
-            $list_views = results_table(do_lang_tempcode('PAGES_STATISTICS', escape_html($page)), $start, 'start_views', $max, 'max_views', $i, $header_row, $fields, $sortables, $sortable, $sort_order, 'sort_views');
-        }
-
-        $tpl = do_template('STATS_OVERVIEW_SCREEN', [
-            '_GUID' => '71be91ba0d83368e1e1ceaf39e506610',
-            'TITLE' => $this->title,
-            'STATS_VIEWS' => $list_views,
-            'GRAPH_VIEWS_MONTHLY' => $graph_views_monthly,
-            'STATS_VIEWS_MONTHLY' => $list_views_monthly,
-        ]);
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
-    }
-
-    /**
-     * The UI to show page view statistics for a single page.
-     *
-     * @return Tempcode The UI
-     */
-    public function show_page()
-    {
-        $page = get_param_string('iscreen');
-
-        require_code('locations');
-
-        //************************************************************************************************
-        // Views per hour/day/week/month
-        //************************************************************************************************
-        list($graph_views_hourly, $list_views_hourly) = array_values($this->views_per_x($page, 'views_hourly', 'VIEWS_PER_HOUR', 'DESCRIPTION_VIEWS_PER_HOUR', 1));
-        list($graph_views_daily, $list_views_daily) = array_values($this->views_per_x($page, 'views_hourly', 'VIEWS_PER_DAY', 'DESCRIPTION_VIEWS_PER_DAY', 24, 168));
-        list($graph_views_weekly, $list_views_weekly) = array_values($this->views_per_x($page, 'views_hourly', 'VIEWS_PER_WEEK', 'DESCRIPTION_VIEWS_PER_WEEK', 168, 730));
-        list($graph_views_monthly, $list_views_monthly) = array_values($this->views_per_x($page, 'views_hourly', 'VIEWS_PER_MONTH', 'DESCRIPTION_VIEWS_PER_MONTH', 730, 8766));
-
-        //************************************************************************************************
-        // Page browser/referrer/operating/IP system share
-        //************************************************************************************************
-        list($graph_share_browser, $list_share_browser) = array_values($this->page_x_share($page, 'browser', 'BROWSER_SHARE', 'DESCRIPTION_BROWSER_SHARE', 'USER_AGENT'));
-        list($graph_share_referrer, $list_share_referrer) = array_values($this->page_x_share($page, 'referer', 'REFERRER_SHARE', 'DESCRIPTION_REFERRER_SHARE', 'REFERER'));
-        list($graph_share_os, $list_share_os) = array_values($this->page_x_share($page, 'operating_system', 'OS_SHARE', 'DESCRIPTION_OS_SHARE', 'USER_OS'));
-        list($graph_ip, $list_ip) = array_values($this->page_x_share($page, 'ip', 'IP_ADDRESS_DISTRIBUTION', 'DESCRIPTION_IP_ADDRESS_DISTRIBUTION', 'IP_ADDRESS'));
-
-        //************************************************************************************************
-        // Regionalities
-        //************************************************************************************************
-        $regionalities_test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
-        if ($regionalities_test !== null) {
-            $start = get_param_integer('start_regionalities', 0);
-            $max = get_param_integer('max_regionalities', 15);
-            $sortables = ['ip' => do_lang_tempcode('REGIONALITY')];
-            list($sortable, $sort_order) = explode(' ', get_param_string('sort_regionalities', 'ip DESC', INPUT_FILTER_GET_COMPLEX));
-            if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-                log_hack_attack_and_exit('ORDERBY_HACK');
-            }
-
-            $where = db_string_equal_to('the_page', $page);
-            if (substr($page, 0, 6) == 'pages/') {
-                $where .= ' OR ' . db_string_equal_to('the_page', '/' . $page); // Legacy compatibility
-            }
-            $ip_filter = $GLOBALS['DEV_MODE'] ? '' : (' AND ' . db_string_not_equal_to('ip', get_ip_address()));
-            $rows = $GLOBALS['SITE_DB']->query('SELECT DISTINCT ip,' . $sortable . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE (' . $where . ')' . $ip_filter . ' ORDER BY ' . $sortable . ' ' . $sort_order, 1000/*reasonable limit*/);
-            shuffle($rows);
-            if (count($rows) < 1) {
-                $list_regionality = new Tempcode();
-                $graph_regionality = new Tempcode();
-            } else {
-                $regions = [];
-                $data = [];
-                $degrees = 360.0 / floatval(count($rows));
-                foreach ($rows as $value) {
-                    $region = geolocate_ip($value['ip']);
-                    if (empty($region)) {
-                        $region = do_lang('_UNKNOWN');
-                    }
-
-                    if (!array_key_exists($region, $regions)) {
-                        $regions[$region] = 1;
-                    } else {
-                        $regions[$region]++;
-                    }
-                }
-
-                require_code('templates_results_table');
-                $header_row = results_header_row([do_lang_tempcode('REGIONALITY'), do_lang_tempcode('COUNT_VIEWS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-                $fields = new Tempcode();
-                $done_total = 0;
-                $i = 0;
-                foreach ($regions as $key => $value) {
-                    if ($i < $start) {
-                        $i++;
-                        continue;
-                    } elseif ($i >= $start + $max) {
-                        break;
-                    }
-                    if ($key == '') {
-                        $link = do_lang('_UNKNOWN');
-                    } else {
-                        $link = escape_html($key);
-                    }
-                    $fields->attach(results_entry([$link, integer_format($value)], true));
-
-                    $data[$key] = $degrees * $value;
-                    $done_total += $data[$key];
-                    $i++;
-                }
-                if (360.0 - $done_total > 0.0) {
-                    $data[do_lang('OTHER')] = 360 - $done_total;
-                    $fields->attach(results_entry([do_lang('OTHER'), integer_format(intval(round((360.0 - $done_total) / $degrees)))], true));
-                }
-                $list_regionality = results_table(do_lang_tempcode('PAGES_STATISTICS', escape_html($page)), $start, 'start_views', $max, 'max_views', $i, $header_row, $fields, $sortables, $sortable, $sort_order, 'sort_views');
-
-                $output = create_pie_chart($data);
-                $this->save_graph('Regionality', $output);
-
-                $graph_regionality = do_template('STATS_GRAPH', [
-                    '_GUID' => '1087a34b5aa2ec808dcdce234dfe492e',
-                    'GRAPH' => $this->get_stats_url(strval($rows[0]['ip']) . '-Regionality'),
-                    'TITLE' => do_lang_tempcode('REGIONALITY_SHARE'),
-                    'TEXT' => do_lang_tempcode('DESCRIPTION_REGIONALITY_SHARE'),
-                ]);
-            }
-        } else {
-            // Geo-IP data isn't installed
-            $list_regionality = new Tempcode();
-            $graph_regionality = new Tempcode();
-        }
-
-        //************************************************************************************************
-        // Views
-        //************************************************************************************************
-        $start = get_param_integer('start_views', 0);
-        $max = get_param_integer('max_views', 30);
-        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
-        $test = explode(' ', get_param_string('sort_views', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        $reasonable_max = 10000;
-        $where = db_string_equal_to('the_page', $page);
-        if (substr($page, 0, 6) == 'pages/') {
-            $where .= ' OR ' . db_string_equal_to('the_page', '/' . $page); // Legacy compatibility
-        }
-        $ip_filter = $GLOBALS['DEV_MODE'] ? '' : (' AND ' . db_string_not_equal_to('ip', get_ip_address()));
-        $reasonable_max = 10000;
-        $rows = $GLOBALS['SITE_DB']->query('SELECT date_and_time FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE (' . $where . ')' . $ip_filter . ' ORDER BY ' . $sortable . ' ' . $sort_order, $reasonable_max/*reasonable limit*/);
-        if (count($rows) < 1) {
-            $list_views = new Tempcode();
-        } else {
-            require_code('templates_results_table');
-            $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('COUNT_VIEWS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-            $fields = new Tempcode();
-            $i = 0;
-            while (array_key_exists($i, $rows)) {
-                $row = $rows[$i];
-                $week = intval(round($row['date_and_time'] / (60 * 60 * 24 * 7)));
-                $date = get_timezoned_date_time(($week - 1) * (60 * 60 * 24 * 7), false) . ' - ' . get_timezoned_date_time(($week) * (60 * 60 * 24 * 7), false);
-                $views = 0;
-                while (array_key_exists($i + $views, $rows)) {
-                    $_week = intval(round($row['date_and_time'] / (60 * 60 * 24 * 7)));
-
-                    if ($_week != $week) {
-                        break;
-                    }
-
-                    $views++;
-                }
-                $i += $views;
-                if ($i < $start) {
-                    continue;
-                }
-                $fields->attach(results_entry([$date, ($i < $reasonable_max) ? integer_format($views) : ('>' . integer_format($views))], true));
-                if ($i >= $start + $max) {
-                    break;
-                }
-            }
-            $list_views = results_table(do_lang_tempcode('PAGES_STATISTICS', escape_html($page)), $start, 'start_views', $max, 'max_views', $i, $header_row, $fields, $sortables, $sortable, $sort_order, 'sort_views');
-        }
-
-        $tpl = do_template('STATS_SCREEN_ISCREEN', [
-            '_GUID' => '1ac86992de9fc7095883ae23b900d84c',
-            'TITLE' => $this->title,
-            'GRAPH_REGIONALITY' => $graph_regionality,
-            'STATS_REGIONALITY' => $list_regionality,
-            'STATS_VIEWS' => $list_views,
-            'GRAPH_VIEWS_HOURLY' => $graph_views_hourly,
-            'STATS_VIEWS_HOURLY' => $list_views_hourly,
-            'GRAPH_VIEWS_DAILY' => $graph_views_daily,
-            'STATS_VIEWS_DAILY' => $list_views_daily,
-            'GRAPH_VIEWS_WEEKLY' => $graph_views_weekly,
-            'STATS_VIEWS_WEEKLY' => $list_views_weekly,
-            'GRAPH_VIEWS_MONTHLY' => $graph_views_monthly,
-            'STATS_VIEWS_MONTHLY' => $list_views_monthly,
-            'GRAPH_IP' => $graph_ip,
-            'STATS_IP' => $list_ip,
-            'GRAPH_BROWSER' => $graph_share_browser,
-            'STATS_BROWSER' => $list_share_browser,
-            'GRAPH_REFERRER' => $graph_share_referrer,
-            'STATS_REFERRER' => $list_share_referrer,
-            'GRAPH_OS' => $graph_share_os,
-            'STATS_OS' => $list_share_os,
-        ]);
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
-    }
-
-    /**
-     * The UI to clear statistics.
-     *
-     * @return Tempcode The UI
-     */
-    public function clear()
-    {
-        // Someone obviously wants to clear out all their statistics.
-        // Let's give them the option of only clearing out stored graphs, or deleting everything.
-
-        require_code('form_templates');
-        $controls = new Tempcode();
-
-        $controls->attach(form_input_radio_entry('clear', 'some', true, do_lang_tempcode('DESCRIPTION_CLEAR_GRAPHS')));
-        $controls->attach(form_input_radio_entry('clear', 'all', false, do_lang_tempcode('DESCRIPTION_CLEAR_ALL')));
-
-        $fields = form_input_radio(do_lang_tempcode('CLEAR_STATISTICS'), '', 'clear', $controls);
-
-        return do_template('FORM_SCREEN', [
-            '_GUID' => '82f3410d45e4d9ea53b2c033792a3207',
-            'SKIP_WEBSTANDARDS' => true,
-            'TITLE' => $this->title,
-            'SUBMIT_ICON' => 'buttons/clear',
-            'SUBMIT_NAME' => do_lang_tempcode('CLEAR_STATISTICS'),
-            'TEXT' => paragraph(do_lang_tempcode('DESCRIPTION_CLEAR_STATISTICS')),
-            'URL' => build_url(['page' => '_SELF', 'type' => '_clear'], '_SELF'),
-            'HIDDEN' => '',
-            'FIELDS' => $fields,
-        ]);
-    }
-
-    /**
-     * The actualiser to clear statistics.
-     *
-     * @return Tempcode The UI
-     */
-    public function _clear()
-    {
-        // Let's clear out the saved graphs
-        $handle = opendir(get_custom_file_base() . '/data_custom/modules/admin_stats/');
-        if ($handle !== false) {
-            require_code('files');
-
-            while (false !== ($file = readdir($handle))) {
-                if ((!should_ignore_file(get_custom_file_base() . '/data_custom/modules/admin_stats/' . $file, IGNORE_ACCESS_CONTROLLERS | IGNORE_HIDDEN_FILES)) && ($file != 'IP_Country.txt') && (!is_dir($file))) {
-                    $path = get_custom_file_base() . '/data_custom/modules/admin_stats/' . $file;
-                    @unlink($path) or intelligent_write_error($path);
-                    sync_file($path);
-                }
-            }
-
-            if (post_param_string('clear') == 'all') {
-                // Clear ALL of the data stored stats in the db
-                $GLOBALS['SITE_DB']->query_delete('hackattack');
-                $GLOBALS['SITE_DB']->query_delete('failedlogins');
-                $GLOBALS['SITE_DB']->query_delete('stats');
-                $GLOBALS['SITE_DB']->query_delete('usersonline_track');
-            }
-
-            closedir($handle);
-        }
-
-        return inform_screen(get_screen_title('CLEAR_STATISTICS'), do_lang_tempcode('SUCCESS'));
+        return $this->do_next_manager($this->title, comcode_lang_string('DOC_STATISTICS'));
     }
 
     /**
@@ -1377,222 +451,507 @@ class Module_admin_stats
     }
 
     /**
-     * Create a bar chart of the views the specified page has received in relation to the specified hours. The bar chart is stored in /data_custom/admin_stats/ as an SVG image, and the Tempcode for display of the graph and results table is returned.
+     * Viewing all the graphs in a stats category.
      *
-     * @param  PATH $page The page path
-     * @param  string $type The statistic type (for use in sort parameters and such)
-     * @param  string $graph_title Language string codename for the graph title
-     * @param  string $graph_description Language string codename for the graph description
-     * @param  integer $hours The steps of hours to use
-     * @param  integer $total The total hours to plot
-     * @return array A linear array containing the graph and list Tempcode objects, respectively
+     * @return Tempcode The UI
      */
-    public function views_per_x($page, $type, $graph_title, $graph_description, $hours = 1, $total = 24)
+    public function category()
     {
-        // Return a graph with the views per hour for a specified page
-        $start = get_param_integer('start_' . $type, 0);
-        $max = get_param_integer('max_' . $type, 50);
-        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
-        $test = explode(' ', get_param_string('sort', 'date_and_time ASC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (count($test) == 1) {
-            $test[1] = 'DESC';
-        }
-        list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
+        send_http_output_ping();
+
+        $category_name = get_param_string('id');
+
+        $_graphs = stats_find_graphs_in_category($category_name);
+
+        $graphs = [];
+        foreach ($_graphs as $graph_name => $_graph) {
+            list($hook_ob, $graph_details) = $_graph;
+            $graph = $this->templatify_graph($graph_name, $hook_ob, $graph_details);
+            $graphs[] = $graph;
         }
 
-        $where = db_string_equal_to('the_page', $page);
-        if (substr($page, 0, 6) == 'pages/') {
-            $where .= ' OR ' . db_string_equal_to('the_page', '/' . $page); // Legacy compatibility
-        }
-        $ip_filter = $GLOBALS['DEV_MODE'] ? '' : (' AND ' . db_string_not_equal_to('ip', get_ip_address()));
-        $query = 'SELECT id,date_and_time FROM ' . get_table_prefix() . 'stats WHERE (' . $where . ')' . $ip_filter . ' AND date_and_time>' . strval(time() - ($total * 60 * 60)) . ' AND date_and_time<=' . strval(time()) . ' ORDER BY ' . $sortable . ' ' . $sort_order;
-        $rows = $GLOBALS['SITE_DB']->query($query, 10000/*reasonable limit*/);
-        if ((count($rows) < 1) || (count($rows) == 10000)) {
-            $list = do_template('RED_ALERT', ['_GUID' => '22c0062afd78fbb36321e3f5f36c00ae', 'TEXT' => do_lang_tempcode('TOO_MUCH_DATA')]);
-            $graph = new Tempcode();
-            return [$graph, $list];
+        return do_template('STATS_SCREEN', ['TITLE' => $this->title, 'GRAPHS' => $graphs]);
+    }
+
+    /**
+     * View a specific graph.
+     *
+     * @return Tempcode The UI
+     */
+    public function graph()
+    {
+        $graph_name = get_param_string('id');
+
+        send_http_output_ping();
+
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name);
+        $graph = $this->templatify_graph($graph_name, $hook_ob, $graph_details);
+        $graphs = [$graph];
+
+        return do_template('STATS_SCREEN', ['TITLE' => $this->title, 'GRAPHS' => $graphs]);
+    }
+
+    /**
+     * Make a specific graph template-ready.
+     *
+     * @param  string $graph_name The UI
+     * @param  object $hook_ob Hook object
+     * @param  array $graph_details Graph details
+     * @param  ?array $graph_final_details Graph data (null: look it up using $graph_name etc)
+     * @param  array $filters Filter settings to take precedence
+     * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+     * @param  boolean $include_form Whether to include a form
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
+     * @return array The UI
+     */
+    protected function templatify_graph($graph_name, $hook_ob, $graph_details, $graph_final_details = null, $filters = [], $pivot = null, $include_form = true, $for_kpi = false)
+    {
+        $graph_rendered = stats_generate_graph($graph_name, $filters, $pivot, $hook_ob, $graph_details, $graph_final_details, $for_kpi);
+
+        if ($include_form) {
+            $graph_form = stats_generate_graph_form($graph_name, $hook_ob, $graph_details, $filters, $pivot, $for_kpi);
+        } else {
+            $graph_form = new Tempcode();
         }
 
-        require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('COUNT_VIEWS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        $fields = new Tempcode();
-        $data = [];
-        $round = 60 * 60 * $hours;
-        $start_date_and_time = time() + $round - (time() + $round) % $round - $total * 60 * 60;
-        $i = 0;
+        $results_table = stats_generate_results_table($graph_name, [], null, $hook_ob, $graph_details, $graph_final_details, $for_kpi);
 
-        for ($a = 0; $a < intval($total / $hours); $a++) {
-            if ($i < $start) {
-                $i++;
-                continue;
-            } elseif ($i >= $start + $max) {
-                break;
+        list($filters_relative, $pivot_relative) = _stats_get_graph_context($graph_details, $filters, $pivot, true); // We have to do a conversion because a new KPI has to take initial parameters in a KPI-format
+        list($filters_absolute, $pivot_absolute) = _stats_get_graph_context($graph_details, $filters, $pivot, false); // We have to do a conversion because stats_generate_spreadsheet assumes non-KPI parameters
+
+        $supports_kpi = (!empty($graph_details['support_kpis'])) && (($pivot_absolute === null) || (strpos($pivot_absolute, '_series') !== false));
+
+        if ($supports_kpi) {
+            $existing_kpis = [];
+            $kpi_rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['id', 'k_title'], ['k_graph_name' => $graph_name]);
+            foreach ($kpi_rows as $kpi_row) {
+                $existing_kpis[] = [
+                    'KPI_ID' => strval($kpi_row['id']),
+                    'KPI_TITLE' => $kpi_row['k_title'],
+                    'KPI_EDIT_URL' => build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $kpi_row['id']], '_SELF'),
+                ];
             }
+        } else {
+            $existing_kpis = null;
+        }
 
-            if ($hours < 24) {
-                $date = get_timezoned_date_time($start_date_and_time + $a * $hours * 60 * 60);
-                $to_date = get_timezoned_date_time($start_date_and_time + ($a + 1) * $hours * 60 * 60);
-            } else {
-                $date = get_timezoned_date($start_date_and_time + $a * $hours * 60 * 60);
-                $to_date = get_timezoned_date($start_date_and_time + ($a + 1) * $hours * 60 * 60);
-            }
-            $data[$date] = 0;
-            foreach ($rows as $value) {
-                if (($value['date_and_time'] >= $start_date_and_time + $a * $hours * 60 * 60) && ($value['date_and_time'] < $start_date_and_time + ($a + 1) * $hours * 60 * 60)) {
-                    $data[$date]++;
-                } elseif ($value['date_and_time'] > $start_date_and_time + ($a + 1) * $hours * 60 * 60) {
-                    break;
+        $kpi_add_url = null;
+        if ((!$for_kpi) && ($supports_kpi)) {
+            $kpi_add_url = build_url(['page' => '_SELF', 'type' => 'add', 'graph_name' => $graph_name, 'filters' => json_encode($filters_relative), 'pivot' => $pivot_relative], '_SELF');
+        }
+
+        if ($results_table->is_empty()) {
+            $spreadsheet_url = null;
+        } else {
+            $spreadsheet_url = build_url(['page' => '_SELF', 'type' => 'spreadsheet', 'id' => $graph_name, 'filters' => json_encode($filters_absolute), 'pivot' => $pivot_absolute], '_SELF');
+        }
+
+        return [
+            'GRAPH_NAME' => $graph_name,
+            'GRAPH_LABEL' => $graph_details['label'],
+            'GRAPH_RENDERED' => $graph_rendered,
+            'GRAPH_FORM' => $graph_form,
+            'RESULTS_TABLE' => $results_table,
+            'EXISTING_KPIS' => $existing_kpis,
+            'KPI_ADD_URL' => $kpi_add_url,
+            'SPREADSHEET_URL' => $spreadsheet_url,
+        ];
+    }
+
+    /**
+     * Download the spreadsheet for a graph.
+     *
+     * @return Tempcode The UI
+     */
+    public function spreadsheet()
+    {
+        $spreadsheet_graph_name = get_param_string('id');
+
+        $filters = json_decode(get_param_string('filters', '[]', INPUT_FILTER_GET_COMPLEX), true);
+        $pivot = get_param_string('pivot', null);
+
+        $filename = null;
+        $sheet_writer = stats_generate_spreadsheet($spreadsheet_graph_name, $filename, $filters, $pivot);
+        $sheet_writer->output_and_exit($filename, true);
+
+        return new Tempcode();
+    }
+
+    /**
+     * Redirect to an external stats system.
+     *
+     * @return Tempcode The UI
+     */
+    public function redirect()
+    {
+        $id = get_param_string('id');
+
+        $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
+        foreach ($hooks as $ob) {
+            $info = $ob->info();
+            if ($info !== null) {
+                foreach ($info as $_id => $details) {
+                    if ($_id == $id) {
+                        $url = $ob->get_redirect_url($id);
+                        return redirect_screen($this->title, $url);
+                    }
                 }
             }
-
-            $i++;
-            $fields->attach(results_entry([$date . ' - ' . $to_date, integer_format($data[$date])], true));
         }
-        $list = results_table(do_lang_tempcode('PAGES_STATISTICS', escape_html($page)), $start, 'start_' . $type, $max, 'max_' . $type, $i, $header_row, $fields, $sortables, $sortable, $sort_order, 'sort_' . $type);
 
-        $output = create_bar_chart($data, do_lang('DATE_TIME'), do_lang('COUNT_VIEWS'), '', '');
-        $this->save_graph(strval($rows[0]['id']) . '-Views-' . strval($hours) . '_' . strval($start_date_and_time), $output);
-
-        $graph = do_template('STATS_GRAPH', [
-            '_GUID' => 'b4cf5df74c012c2df5e3988a0ca0e622',
-            'GRAPH' => $this->get_stats_url(strval($rows[0]['id']) . '-Views-' . strval($hours) . '_' . strval($start_date_and_time)),
-            'TITLE' => do_lang_tempcode($graph_title),
-            'TEXT' => do_lang_tempcode($graph_description),
-        ]);
-
-        return [$graph, $list];
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
     /**
-     * Create a pie chart of the ratios of the specified statistic for the specified page. The chart is saved as an SVG image in /data_custom/admin_stats/, and the Tempcode for display of the graph and results table is returned.
+     * Show KPIs.
      *
-     * @param  PATH $page The page path
-     * @param  string $type The statistic to use
-     * @param  string $graph_title Language string codename for the graph title
-     * @param  string $graph_description Language string codename for the graph description
-     * @param  string $list_title Language string codename for the list title
-     * @return array A linear array containing the graph and list Tempcode objects, respectively
+     * @return Tempcode The UI
      */
-    public function page_x_share($page, $type, $graph_title, $graph_description, $list_title)
+    public function kpis()
     {
-        // Return a pie chart with the $type used to view this page
-        $start = get_param_integer('start_' . $type, 0);
-        $max = get_param_integer('max_' . $type, 25);
-        $sortables = ['views' => do_lang_tempcode('COUNT_VIEWS')];
-        list($sortable, $sort_order) = explode(' ', get_param_string('sort', 'views ASC', INPUT_FILTER_GET_COMPLEX), 2);
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
+        $graphs = [];
+        $kpis = [];
+        $_kpis = gather_kpis();
+        foreach ($_kpis as $_kpi) {
+            list($kpi_row, $hook_ob, $graph_details, $graph_final_details, $filters, $pivot, $edit_url, , $target, $current, $hits_target) = $_kpi;
+
+            $graphs[] = $this->templatify_graph($kpi_row['k_graph_name'], $hook_ob, $graph_details, $graph_final_details, $filters, $pivot, false, true);
+
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+
+            $kpi = [
+                'TITLE' => $kpi_row['k_title'],
+                'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current) : float_format($current, 4, true)),
+                'HITS_TARGET' => $hits_target,
+                'TARGET' => ($target === null) ? null : float_format($target, 4, true),
+                'KPI_EDIT_URL' => $edit_url,
+                'GRAPH_NAME' => $kpi_row['k_graph_name'],
+                'USERNAME' => $username,
+                'ADDED' => get_timezoned_date($kpi_row['k_added']),
+                'NOTES' => $kpi_row['k_notes'],
+            ];
+            $kpis[] = $kpi;
         }
 
-        $where = db_string_equal_to('the_page', $page);
-        if (substr($page, 0, 6) == 'pages/') {
-            $where .= ' OR ' . db_string_equal_to('the_page', '/' . $page); // Legacy compatibility
-        }
-        $ip_filter = $GLOBALS['DEV_MODE'] ? '' : (' AND ' . db_string_not_equal_to('ip', get_ip_address()));
-        $rows = $GLOBALS['SITE_DB']->query('SELECT id,' . $type . ' FROM ' . get_table_prefix() . 'stats WHERE (' . $where . ')' . $ip_filter, 10000/*reasonable limit*/);
-        if (count($rows) < 1) {
-            $list = new Tempcode();
-            $graph = new Tempcode();
-            return [$graph, $list];
-        }
+        return do_template('KPI_SCREEN', [
+            'TITLE' => $this->title,
+            'GRAPHS' => $graphs,
+            'KPIS' => $kpis,
+        ]);
+    }
 
-        $data1 = [];
-        $degrees = 360.0 / floatval(count($rows));
-        foreach ($rows as $value) {
-            if ($type == 'browser') {
-                // Strip point versions in e.g. Chrome
-                $value[$type] = preg_replace('#[/ ]\d+\.\d+(\.\d+)+#', '', $value[$type]);
-                $value[$type] = preg_replace('#[/ ]\d+\.\d\d+#', '', $value[$type]);
-                $value[$type] = preg_replace('#/\d\d\d\d\d+#', '', $value[$type]);
-                for ($i = 0; $i < 10; $i++) {
-                    $value[$type] = preg_replace('#; \.NET .*([;\)])#U', '$1', $value[$type]);
-                }
-                $value[$type] = preg_replace('# \((Windows|Linux|Macintosh).*\)#U', '', $value[$type]);
-                $value[$type] = preg_replace('#; (Windows|Linux|Macintosh).*\)#U', ')', $value[$type]);
-            }
-
-            if (!array_key_exists($value[$type], $data1)) {
-                $data1[$value[$type]] = 0;
-            }
-            $data1[$value[$type]]++;
-        }
-
-        if ($sortable == 'views') {
-            cms_mb_asort($data1, SORT_NATURAL | SORT_FLAG_CASE);
-            if ($sort_order == 'DESC') {
-                $data1 = array_reverse($data1);
-            }
-        }
-
+    /**
+     * Standard crud_module table function.
+     *
+     * @param  array $url_map Details to go to build_url for link to the next screen
+     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     */
+    public function create_selection_list_choose_table($url_map)
+    {
         require_code('templates_results_table');
-        $header_row = results_header_row([do_lang_tempcode($list_title), do_lang_tempcode('COUNT_VIEWS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
+
+        list($rows, $max_rows) = $this->get_entry_rows();
+
+        $hr = [
+            do_lang_tempcode('TITLE'),
+            do_lang_tempcode('BLOCK_main_staff_stats_graph_PARAM_param_TITLE'),
+            do_lang_tempcode('USERNAME'),
+            do_lang_tempcode('ADDED'),
+            do_lang_tempcode('TARGET'),
+            do_lang_tempcode('ACTIONS'),
+        ];
+        $header_row = results_header_row($hr);
+
+        $result_entries = new Tempcode();
+
+        $_kpis = gather_kpis();
+        foreach ($_kpis as $_kpi) {
+            list($kpi_row, , , , , , $edit_url, , , , ) = $_kpi;
+
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+
+            $fr = [
+                $kpi_row['k_title'],
+                $kpi_row['k_graph_name'],
+                $username,
+                get_timezoned_date($kpi_row['k_added']),
+                ($kpi_row['k_target'] === null) ? do_lang_tempcode('NONE_EM') : protect_from_escaping(escape_html(float_format($kpi_row['k_target'], 4, true))),
+                protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, $kpi_row['k_title'])),
+            ];
+
+            $result_entries->attach(results_entry($fr, true));
+        }
+
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries), false];
+    }
+
+    /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
+     * Get Tempcode for adding/editing form.
+     *
+     * @param  ?integer $id ID (null: new)
+     * @param  array $filters Filter settings
+     * @param  ?ID_TEXT $pivot Pivot value (null: default)
+     * @param  ?float $target Target (null: none)
+     * @param  ?SHORT_TEXT $title Title (null: auto-generate)
+     * @param  LONG_TEXT $notes Staff notes
+     * @return array A tuple: The input fields, Hidden fields, ...
+     */
+    public function get_form_fields($id = null, $filters = [], $pivot = null, $target = null, $title = null, $notes = '')
+    {
         $fields = new Tempcode();
-        $data = [];
-        $done_total = 0;
-        $i = 0;
+        $hidden = new Tempcode();
 
-        foreach ($data1 as $key => $value) {
-            if ($i < $start) {
-                $i++;
-                continue;
-            } elseif ($i >= $start + $max) {
-                break;
-            }
-            if ($key == '') {
-                $link = do_lang('_UNKNOWN');
-            } else {
-                $link = escape_html($key);
-            }
-            $fields->attach(results_entry([$link, integer_format($value)], true));
+        if ($id === null) {
+            $graph_name = get_param_string('graph_name');
 
-            $data[$key] = $value * $degrees;
-            $done_total += $value;
-            $i++;
+            $filters = json_decode(get_param_string('filters', '[]', INPUT_FILTER_GET_COMPLEX), true);
+            $pivot = get_param_string('pivot', null);
+        } else {
+            $graph_name = $GLOBALS['SITE_DB']->query_select_value('stats_kpis', 'k_graph_name', ['id' => $id]);
         }
-        if (count($rows) > $done_total) {
-            $data[do_lang('OTHER')] = 360.0 - $done_total * $degrees;
-            $fields->attach(results_entry([do_lang('OTHER'), integer_format(count($rows) - $done_total)], true));
+        $hook_ob = null;
+        $graph_details = null;
+        $_graph_fields = stats_generate_graph_form_fields($graph_name, $hook_ob, $graph_details, $filters, $pivot, true);
+
+        $hidden->attach(form_input_hidden('graph_name', $graph_name));
+
+        if ($title === null) {
+            $title = $graph_details['label'];
         }
-        $list = results_table(do_lang_tempcode('PAGES_STATISTICS', escape_html($page)), $start, 'start_' . $type, $max, 'max_' . $type, $i, $header_row, $fields, $sortables, $sortable, $sort_order, 'sort_' . $type);
 
-        $output = create_pie_chart($data);
-        $this->save_graph(strval($rows[0]['id']) . '-' . $type, $output);
+        $message = do_lang_tempcode('KPI_CONFIGURING_FOR', $graph_details['label']);
+        if ($id === null) {
+            $this->add_text = $message;
+        } else {
+            $this->edit_text = $message;
+        }
 
-        $graph = do_template('STATS_GRAPH', [
-            '_GUID' => '5a88fdf891e9af4eb1cca3470f263c7d',
-            'GRAPH' => $this->get_stats_url(strval($rows[0]['id']) . '-' . $type),
-            'TITLE' => do_lang_tempcode($graph_title),
-            'TEXT' => do_lang_tempcode($graph_description),
-        ]);
+        if ($_graph_fields !== null) {
+            list($graph_fields, $hidden_fields) = $_graph_fields;
+            $fields->attach($graph_fields);
+            $hidden->attach($hidden_fields);
+        }
 
-        return [$graph, $list];
+        $fields->attach(form_input_float(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_KPI_TARGET'), 'target', $target, false));
+
+        $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
+
+        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
+
+        return [$fields, $hidden];
     }
 
     /**
-     * Save a graph to the server so it can be viewed client-side.
+     * Standard crud_module submitter getter.
      *
-     * @param  string $file Name of the graph (no path or extension)
-     * @param  string $graph SVG markup
+     * @param  ID_TEXT $id The entry for which the submitter is sought
+     * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
-    public function save_graph($file, $graph)
+    public function get_submitter($id)
     {
-        require_code('files');
-        $path = get_custom_file_base() . '/data_custom/modules/admin_stats/' . filter_naughty_harsh($file) . '.xml';
-        cms_file_put_contents_safe($path, $graph, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        $rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['k_added_by', 'k_added'], ['id' => intval($id)], '', 1);
+        if (!array_key_exists(0, $rows)) {
+            return [null, null];
+        }
+        return [$rows[0]['k_added_by'], $rows[0]['k_added']];
     }
 
     /**
-     * Get the URL to a graph.
+     * Standard crud_module edit form filler.
      *
-     * @param  string $file Name of the graph (no path or extension)
-     * @return URLPATH URL to graph
+     * @param  ID_TEXT $id The entry being edited
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function get_stats_url($file)
+    public function fill_in_edit_form($id)
     {
-        //return get_custom_base_url() . '/data_custom/modules/admin_stats/' . $file . '.xml'; We do not allow direct access, as it would not be secure
-        $keep = symbol_tempcode('KEEP');
-        return find_script('stats_graph') . '?file=' . urlencode($file) . $keep->evaluate();
+        $rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['*'], ['id' => intval($id)], '', 1);
+        if (!array_key_exists(0, $rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'kpi'));
+        }
+        $myrow = $rows[0];
+
+        $filters = unserialize($myrow['k_filters']);
+        $pivot = ($myrow['k_pivot'] == '') ? null : $myrow['k_pivot'];
+        return $this->get_form_fields(intval($id), $filters, $pivot, $myrow['k_target'], $myrow['k_title'], $myrow['k_notes']);
+    }
+
+    /**
+     * Standard crud_module add actualiser.
+     *
+     * @return array A pair: The entry added, description about usage
+     */
+    public function add_actualisation()
+    {
+        $graph_name = post_param_string('graph_name');
+        $_target = post_param_string('target', '');
+        $target = ($_target == '') ? null : floatval($_target);
+        $title = post_param_string('title');
+        $notes = post_param_string('notes');
+
+        list(, $graph_details) = stats_find_graph_details($graph_name, true);
+        $filters = null;
+        $pivot = null;
+        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, true);
+
+        $id = $GLOBALS['SITE_DB']->query_insert('stats_kpis', [
+            'k_graph_name' => $graph_name,
+            'k_pivot' => ($pivot === null) ? '' : $pivot,
+            'k_filters' => serialize($filters),
+            'k_target' => $target,
+            'k_title' => $title,
+            'k_added' => time(),
+            'k_added_by' => get_member(),
+            'k_notes' => $notes,
+        ], true);
+
+        log_it('ADD_KPI', strval($id), $title);
+
+        return [strval($id), null];
+    }
+
+    /**
+     * Standard crud_module edit actualiser.
+     *
+     * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
+     */
+    public function edit_actualisation($id)
+    {
+        $graph_name = post_param_string('graph_name');
+        $_target = post_param_string('target', '');
+        $target = ($_target == '') ? null : floatval($_target);
+        $title = post_param_string('title');
+        $notes = post_param_string('notes');
+
+        list(, $graph_details) = stats_find_graph_details($graph_name, true);
+        $filters = null;
+        $pivot = null;
+        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, true);
+
+        $GLOBALS['SITE_DB']->query_update('stats_kpis', [
+            'k_graph_name' => $graph_name,
+            'k_pivot' => ($pivot === null) ? '' : $pivot,
+            'k_filters' => serialize($filters),
+            'k_target' => $target,
+            'k_title' => $title,
+            'k_notes' => $notes,
+        ], [
+            'id' => intval($id),
+        ], '', 1);
+
+        log_it('EDIT_KPI', strval($id), $title);
+
+        return null;
+    }
+
+    /**
+     * Standard crud_module delete actualiser.
+     *
+     * @param  ID_TEXT $id The entry being deleted
+     */
+    public function delete_actualisation($id)
+    {
+        $title = $GLOBALS['SITE_DB']->query_select_value('stats_kpis', 'k_title', ['id' => intval($id)]);
+
+        $GLOBALS['SITE_DB']->query_delete('stats_kpis', [
+            'id' => intval($id),
+        ], '', 1);
+
+        log_it('DELETE_KPI', strval($id), $title);
+    }
+
+    /**
+     * The do-next manager for after banner content management (banners only).
+     *
+     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  Tempcode $description Some description to show, saying what happened
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
+     * @return Tempcode The UI
+     */
+    public function do_next_manager($title, $description, $id = null)
+    {
+        require_code('templates_donext');
+
+        $install_actions = [];
+        $category_actions = [];
+        $kpi_actions = [];
+
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
+        if ($test === null) {
+            $install_actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang_tempcode('INSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
+        } else {
+            $install_actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang_tempcode('REINSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
+        }
+
+        $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
+        foreach ($hooks as $ob) {
+            $info = $ob->info();
+            if ($info !== null) {
+                foreach ($info as $id => $graph_details) {
+                    $label = do_lang_tempcode($graph_details['label_lang_string']);
+                    $label->attach(' (' . escape_html(integer_format(1)) . ')');
+                    $category_actions[] = [$graph_details['icon'], ['_SELF', ['type' => 'redirect', 'id' => $id], '_SELF'], protect_from_escaping($label)];
+                }
+            }
+        }
+
+        $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
+        foreach ($hooks as $ob) {
+            $info = $ob->info();
+            if ($info !== null) {
+                foreach ($info as $graph_name => $graph_details) {
+                    if ($graph_details['category'] === null) {
+                        $label = $graph_details['label'];
+                        $label->attach(' (' . escape_html(integer_format(1)) . ')');
+                        $category_actions[] = [$graph_details['icon'], ['_SELF', ['type' => 'graph', 'id' => $graph_name], '_SELF'], protect_from_escaping($label)];
+                    }
+                }
+            }
+        }
+
+        $categories = stats_find_graph_categories();
+        foreach ($categories as $category_name => $category) {
+            $graphs = stats_find_graphs_in_category($category_name);
+            $label = do_lang_tempcode($category['label_lang_string']);
+            $label->attach(' (' . escape_html(integer_format(count($graphs))) . ')');
+            $category_actions[] = [$category['icon'], ['_SELF', ['type' => 'category', 'id' => $category_name], '_SELF'], protect_from_escaping($label)];
+        }
+
+        $kpi_actions[] = ['admin/view_archive', ['_SELF', ['type' => 'kpis'], '_SELF'], do_lang('VIEW')];
+
+        $kpi_actions[] = ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_KPI')];
+
+        return do_next_manager(
+            get_screen_title('MODULE_TRANS_NAME_admin_stats'),
+            $description,
+            $install_actions,
+            do_lang('SETUP'),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            $category_actions,
+            $kpi_actions,
+            [],
+            null,
+            null,
+            do_lang('CATEGORIES'),
+            do_lang('KPIS')
+        );
     }
 }

@@ -33,7 +33,7 @@ function backend_cloud_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
     }
 
@@ -90,7 +90,7 @@ function rss_backend_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!is_our_server(get_ip_address())) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
     }
 
@@ -110,7 +110,7 @@ function rss_backend_script()
         header('Content-Type: text/xsl; charset=' . get_charset());
         require_css('rss');
         $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
-        $echo = do_template('RSS_XSLT', ['_GUID' => 'c443e0195c935117cf0d9a7bc2730d7a', 'XSL_MOPUP' => $js], null, false, null, '.xml', 'xml');
+        $echo = do_template('RSS_XSLT', ['_GUID' => 'c443e0195c935117cf0d9a7bc2730d7a', 'JAVASCRIPT_XSL_MOPUP' => $js], null, false, null, '.xml', 'xml');
         $echo->evaluate_echo();
         return;
     }
@@ -119,7 +119,7 @@ function rss_backend_script()
         header('Content-Type: text/xsl; charset=' . get_charset());
         require_css('rss');
         $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
-        $echo = do_template('ATOM_XSLT', ['_GUID' => '27fec456a6b3144aa847130e74463d99', 'XSL_MOPUP' => $js], null, false, null, '.xml', 'xml');
+        $echo = do_template('ATOM_XSLT', ['_GUID' => '27fec456a6b3144aa847130e74463d99', 'JAVASCRIPT_XSL_MOPUP' => $js], null, false, null, '.xml', 'xml');
         $echo->evaluate_echo();
         return;
     }
@@ -166,7 +166,6 @@ function rss_backend_script()
 
     $site_about = xmlentities(get_option('description'));
     $logo_url = xmlentities(find_theme_image('logo/standalone_logo'));
-    $copyright = xmlentities(trim(str_replace('&copy;', '', str_replace('$CURRENT_YEAR', date('Y'), get_option('copyright')))));
 
     $cutoff = get_param_integer('cutoff', time() - 60 * 60 * 24 * get_param_integer('days', 30));
     $max = get_param_integer('max', 100);
@@ -210,6 +209,8 @@ function rss_backend_script()
     // Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom, even if the Content-Disposition is sent to inline :(
     header('Content-Type: text/xml; charset=' . get_charset()); // application/rss+xml ?
 
+    push_query_limiting(false);
+
     if ((!file_exists(get_file_base() . '/sources/hooks/systems/rss/' . $mode . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/rss/' . $mode . '.php'))) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
@@ -223,6 +224,8 @@ function rss_backend_script()
     } else {
         $content = ($_content === null) ? [] : $_content;
     }
+
+    pop_query_limiting();
 
     if ($type == 'RSS2') {
         // Change a full URL into constituent parts
@@ -241,7 +244,7 @@ function rss_backend_script()
         return;
     }
 
-    $echo = do_template($prefix . 'WRAPPER', ['SELECT' => $select, 'CUTOFF' => strval($cutoff), 'MODE' => $mode, 'MODE_NICE' => $mode_nice, 'RSS_CLOUD' => $rss_cloud, 'VERSION' => cms_version_pretty(), 'COPYRIGHT' => $copyright, 'DATE' => $date, 'LOGO_URL' => $logo_url, 'ABOUT' => $site_about, 'CONTENT' => $content, 'SELF_URL' => get_self_url_easy()], null, false, null, '.xml', 'xml');
+    $echo = do_template($prefix . 'WRAPPER', ['SELECT' => $select, 'CUTOFF' => strval($cutoff), 'MODE' => $mode, 'MODE_NICE' => $mode_nice, 'RSS_CLOUD' => $rss_cloud, 'VERSION' => cms_version_pretty(), 'DATE' => $date, 'LOGO_URL' => $logo_url, 'ABOUT' => $site_about, 'CONTENT' => $content, 'SELF_URL' => get_self_url_easy()], null, false, null, '.xml', 'xml');
     $echo->evaluate_echo();
 
     if ($mode != 'comments') {

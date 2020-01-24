@@ -72,6 +72,9 @@ then
 read -d '' NO_DATA_TABLES_B << EOF
 ${DB_TABLE_PREFIX}video_transcoding
 ${DB_TABLE_PREFIX}stats
+${DB_TABLE_PREFIX}stats_events
+${DB_TABLE_PREFIX}stats_preprocessed
+${DB_TABLE_PREFIX}stats_preprocessed_flat
 ${DB_TABLE_PREFIX}f_moderator_logs
 ${DB_TABLE_PREFIX}adminlogs
 ${DB_TABLE_PREFIX}import_id_remap
@@ -79,7 +82,6 @@ ${DB_TABLE_PREFIX}import_parts_done
 ${DB_TABLE_PREFIX}import_session
 ${DB_TABLE_PREFIX}incoming_uploads
 ${DB_TABLE_PREFIX}hackattack
-${DB_TABLE_PREFIX}link_tracker
 ${DB_TABLE_PREFIX}logged_mail_messages
 ${DB_TABLE_PREFIX}searches_logged
 ${DB_TABLE_PREFIX}sessions

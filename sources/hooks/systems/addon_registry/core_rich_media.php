@@ -528,6 +528,7 @@ class Hook_addon_registry_core_rich_media
                 'TEXT' => lorem_sentence_html(),
                 'TITLE' => lorem_title(),
                 'DELETE_URL' => placeholder_url(),
+                'IS_TRANSLATION' => false,
                 'ZONE' => lorem_phrase(),
                 'FILE' => lorem_phrase(),
                 'EXPORT_URL' => placeholder_url(),

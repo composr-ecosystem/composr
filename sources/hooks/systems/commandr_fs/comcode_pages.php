@@ -283,6 +283,11 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         if ($validated === null) {
             $validated = 1;
         }
+        require_code('global4');
+        $include_on_sitemap = $this->_default_property_int_null($properties, 'include_on_sitemap');
+        if ($include_on_sitemap === null) {
+            $include_on_sitemap = comcode_page_include_on_sitemap($zone, $page) ? 1 : 0;
+        }
         $edit_time = $this->_default_property_time_null($properties, 'edit_date');
         $add_time = $this->_default_property_time($properties, 'add_date');
         $show_as_edit = $this->_default_property_int($properties, 'show_as_edit');
@@ -301,7 +306,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         }
 
         require_code('zones3');
-        $full_path = save_comcode_page($zone, $page, $lang, $text, $validated, $parent_page, $order, $add_time, $edit_time, $show_as_edit, $submitter, null, $meta_keywords, $meta_description);
+        $full_path = save_comcode_page($zone, $page, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $add_time, $edit_time, $show_as_edit, $submitter, null, $meta_keywords, $meta_description);
         $page = basename($full_path, '.txt');
 
         $this->_resource_save_extend($this->file_resource_type, $zone . ':' . $page, $filename, $label, $properties);
@@ -354,6 +359,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
             'order' => $row['p_order'],
             'validated' => $row['p_validated'],
             'show_as_edit' => $row['p_show_as_edit'],
+            'include_on_sitemap' => $row['p_include_on_sitemap'],
             'meta_keywords' => $meta_keywords,
             'meta_description' => $meta_description,
             'submitter' => remap_resource_id_as_portable('member', $row['p_submitter']),
@@ -399,6 +405,11 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         if ($validated === null) {
             $validated = 1;
         }
+        require_code('global4');
+        $include_on_sitemap = $this->_default_property_int_null($properties, 'include_on_sitemap');
+        if ($include_on_sitemap === null) {
+            $include_on_sitemap = comcode_page_include_on_sitemap($zone, $page) ? 1 : 0;
+        }
         $edit_time = $this->_default_property_time($properties, 'edit_date');
         $add_time = $this->_default_property_time($properties, 'add_date');
         $show_as_edit = $this->_default_property_int($properties, 'show_as_edit');
@@ -419,7 +430,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         }
 
         require_code('zones3');
-        $full_path = save_comcode_page($zone, $page, $lang, $text, $validated, $parent_page, $order, $add_time, $edit_time, $show_as_edit, $submitter, $old_page, $meta_keywords, $meta_description);
+        $full_path = save_comcode_page($zone, $page, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $add_time, $edit_time, $show_as_edit, $submitter, $old_page, $meta_keywords, $meta_description);
         $page = basename($full_path, '.txt');
 
         $this->_resource_save_extend($this->file_resource_type, $zone . ':' . $page, $filename, $label, $properties);

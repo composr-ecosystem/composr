@@ -40,7 +40,21 @@ function init__site()
 
     global $NON_CANONICAL_PARAMS;
     // We only bother listing ones the software itself may inject - otherwise admin responsible for their own curation of canonical settings
-    $NON_CANONICAL_PARAMS = ['_t' => false, 'wide_high' => false, 'wide' => false, 'wide_print' => false, 'filtered' => false, 'utheme' => false, 'active_filter' => true, 'redirected' => true, 'redirect_url' => true, 'redirect' => true, 'redirect_passon' => true];
+    $NON_CANONICAL_PARAMS = [
+        '_t' => false,
+        'wide_high' => false,
+        'wide' => false,
+        'wide_print' => false,
+        'filtered' => false,
+        'utheme' => false,
+
+        // 'true' means that the static cache cannot cache with this parameter by default
+        'active_filter' => true,
+        'redirected' => true,
+        'redirect_url' => true,
+        'redirect' => true,
+        'redirect_passon' => true,
+    ];
     inform_non_canonical_parameter('#^(.*_)?(max|start|sort)$#');
     if (function_exists('get_value')) {
         $is_non_canonical = false;
@@ -488,7 +502,6 @@ function set_helper_panel_tutorial($tutorial)
 
 /**
  * Sets the short title, used for screen header text if set.
- * Does not do anything if output streaming is on and already started.
  *
  * @sets_output_state
  *
@@ -546,7 +559,7 @@ function do_site_prep()
 
         // Detect bad access protocol (also see handle_bad_access_context function)
         if (addon_installed('ssl')) {
-            if (is_page_https(get_zone_name(), get_page_name()) != tacit_https()) {
+            if ((!whole_site_https()) && (is_page_https(get_zone_name(), get_page_name()) != tacit_https())) {
                 set_http_status_code(301);
                 header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
                 exit();
@@ -745,7 +758,7 @@ function process_url_monikers($redirect_if_non_canonical = true, $env_change = t
     if (url_monikers_enabled()) {
         // Monikers relative to the zone
         $page_place = _request_page($page, $zone);
-        if ($page_place[0] == 'REDIRECT') {
+        if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
             $page = $page_place[1]['r_to_page'];
             $zone = $page_place[1]['r_to_zone'];
             $page_place = _request_page($page_place[1]['r_to_page'], $page_place[1]['r_to_zone']);
@@ -1007,15 +1020,9 @@ function do_site()
     $show_edit_links = get_param_integer('show_edit_links', 0);
     $webstandards_mode = (
         (($GLOBALS['IS_ACTUALLY_ADMIN']) || ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()))) && (($special_page_type == 'code') || (($webstandards_check == 1) && ($GLOBALS['REFRESH_URL'][0] == '') && ($show_edit_links == 0)))); // Not a permission - a matter of performance
-    if ($webstandards_mode) {
-        $GLOBALS['OUTPUT_STREAMING'] = false;
-    }
-
-    // Output streaming?
-    $out = globalise(null, null, '', true);
 
     // Load up our frames into strings. Note that the header and the footer are fixed already.
-    $middle = request_page(get_page_name(), true, null, null, false, true, $out);
+    $middle = request_page(get_page_name(), true, null, null, false, true);
     if ($middle->is_empty_shell()) {
         set_http_status_code(404);
 
@@ -1023,11 +1030,8 @@ function do_site()
         $text = do_lang_tempcode('NO_PAGE_OUTPUT');
         $middle = warn_screen($title, $text, false);
     }
-    $out->singular_bind('MIDDLE', $middle);
 
-    if (!$GLOBALS['OUTPUT_STREAMING']) {
-        $out->handle_symbol_preprocessing();
-    }
+    $out = globalise($middle, null, '', true);
 
     // Web Standards mode
     if ($webstandards_mode) {
@@ -1037,8 +1041,7 @@ function do_site()
     }
 
     // Static cache
-    $out2 = clone $out; // This is needed to stop things messing up during output streaming
-    save_static_caching($out2);
+    save_static_caching($out);
 
     // Save template tree
     if ($GLOBALS['RECORD_TEMPLATES_USED']) {
@@ -1082,20 +1085,15 @@ function do_site()
         if ($out_evaluated !== null) {
             echo $out_evaluated;
         } else {
-            if ($GLOBALS['OUTPUT_STREAMING']) {
-                $middle->handle_symbol_preprocessing();
-            }
             $GLOBALS['FINISHING_OUTPUT'] = true;
-            /*if (get_option('gzip_output')=='1')  Does not work well
-                    ob_start('_compress_html_output');*/
             $out->evaluate_echo(null);
         }
     }
 
     // Finally, stats
     if ($PAGE_STRING !== null) {
-        cms_register_shutdown_function_safe(function () use ($PAGE_STRING, $page_generation_time) {
-            log_stats($PAGE_STRING, intval($page_generation_time));
+        cms_register_shutdown_function_safe(function () use ($page_generation_time) {
+            log_stats(null, intval($page_generation_time));
         });
     }
 
@@ -1127,79 +1125,50 @@ function do_site()
  *
  * @param  mixed $out Output to cache (Tempcode or string)
  * @param  string $mime_type Mime type to use
+ * @return boolean Whether saving could have happened
  */
 function save_static_caching($out, $mime_type = 'text/html')
 {
     require_code('static_cache');
     $debugging = debugging_static_cache();
 
+    $url = get_self_url_easy();
+
     // Initial assessments of whether we can cache...
 
-    global $SITE_INFO;
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, POST request on ' . get_self_url_easy());
+    // We cannot cache if there's a redirect
+    $headers_sent = headers_list();
+    foreach ($headers_sent as $header) {
+        if (preg_match('#^Location:#i', $header) != 0) {
+            if ($debugging) {
+                if (php_function_allowed('error_log')) {
+                    @error_log('SC save: redirect is present');
+                }
             }
-        }
 
-        return;
-    }
-    if ((!isset($SITE_INFO['fast_spider_cache'])) || ($SITE_INFO['fast_spider_cache'] == '0')) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, not enabled on ' . get_self_url_easy());
-            }
-        }
-
-        return;
-    }
-    if (!is_guest()) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, logged in on ' . get_self_url_easy());
-            }
-        }
-
-        return;
-    }
-    if ($GLOBALS['IS_ACTUALLY_ADMIN']) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, using SU to Guest on ' . get_self_url_easy());
-            }
-        }
-
-        return;
-    }
-    if ((get_zone_name() == '') && (get_zone_default_page('') == get_page_name()) && (!empty(array_diff(array_keys($_GET), ['page', 'keep_session', 'keep_devtest', 'keep_failover'])))) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, home page has spurious parameters, likely a bot probing');
-            }
-        }
-
-        return;
-    }
-
-    $bot_type = get_bot_type();
-    $supports_failover_mode = (isset($SITE_INFO['failover_mode'])) && ($SITE_INFO['failover_mode'] != 'off');
-    $supports_guest_caching = (isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1');
-    require_code('static_cache');
-    if (($bot_type === null) && (!$supports_failover_mode) && (!$supports_guest_caching)) {
-        if (php_function_allowed('error_log')) {
-            @error_log('SC save: No, not a bot and no failover mode or guest caching enabled, on ' . get_self_url_easy());
+            return false;
         }
     }
 
-    if (!can_static_cache()) {
+    global $HTTP_STATUS_CODE;
+    if (($HTTP_STATUS_CODE != 200) && ($mime_type != 'text/html')) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, static cache not available according to can_static_cache() on ' . get_self_url_easy());
+                @error_log('SC save: HTTP status is ' . strval($HTTP_STATUS_CODE) . ' and non-HTML so no http-equiv');
             }
         }
 
-        return;
+        return false;
+    }
+
+    if (!can_static_cache_request(true)) {
+        if ($debugging) {
+            if (php_function_allowed('error_log')) {
+                @error_log('SC save: No, static cache not available according to can_static_cache_request() on ' . $url);
+            }
+        }
+
+        return false;
     }
 
     // Work out what to cache...
@@ -1213,24 +1182,14 @@ function save_static_caching($out, $mime_type = 'text/html')
 
     // Deeper assessments about what we can cache...
 
-    if (strpos($static_cache, '<meta name="robots" content="noindex') !== false) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, page had set noindex on ' . get_self_url_easy());
-            }
-        }
-
-        return;
-    }
-
     if (!$GLOBALS['STATIC_CACHE_ENABLED']) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, internal signal to not cache on ' . get_self_url_easy());
+                @error_log('SC save: No, internal signal to not cache from Tempcode on ' . $url);
             }
         }
 
-        return; // Something in the output tree decided this was not cacheable
+        return false; // Something in the output tree decided this was not cacheable
     }
 
     // Cache...
@@ -1240,7 +1199,7 @@ function save_static_caching($out, $mime_type = 'text/html')
     // Log
     if ($debugging) {
         if (php_function_allowed('error_log')) {
-            @error_log('SC save: Yes, on ' . get_self_url_easy());
+            @error_log('SC save: Yes, on ' . $url);
         }
     }
 
@@ -1254,9 +1213,42 @@ function save_static_caching($out, $mime_type = 'text/html')
     $static_cache .= "\n\n" . '<!-- Mime type ' . htmlentities($mime_type) . ' -->';
     $file_extension = ($mime_type == 'text/xml') ? '.xml' : '.htm';
 
+    // Add HTTP response code and select HTTP headers (HTML-only)
+    if ($mime_type == 'text/html') {
+        $meta_extra = '';
+
+        if (substr(strval($HTTP_STATUS_CODE), 0, 1) != '2') {
+            $meta_extra .= '<meta http-equiv="Status" content="' . strval($HTTP_STATUS_CODE) . '" />';
+
+            // Search engines likely won't support "meta http-equiv status", so let's just tell them not to index
+            $noindex_meta = '<meta name="robots" content="noindex" />';
+            if (strpos($static_cache, $noindex_meta) === false) {
+                $meta_extra .= '<meta name="robots" content="noindex" />';
+            }
+        }
+
+        // Criteria:
+        //  - likely supported under http-equiv
+        //  - actually set by Composr
+        //  - has actual chance of being present during something statically cached
+        //  - is not already represented in HTML output in some (other?) way already (e.g. unlike X-Robots-Tag)
+        //  - is not set algorithmically by the static cache itself (e.g. unlike Content-Type, or caching, or Vary)
+        $supported_http_equiv_header_patterns = '#^(Content-Security-Policy|Cross-Origin-Opener-Policy):\s*(.*)$#';
+
+        foreach (headers_list() as $header) {
+            $matches = [];
+            if (preg_match($supported_http_equiv_header_patterns, $header, $matches) != 0) {
+                $meta_extra .= '<meta http-equiv="' . escape_html($matches[1]) . '" content="' . escape_html($matches[2]) . '" />';
+            }
+        }
+
+        $static_cache = str_ireplace('</head>', $meta_extra . '</head>', $static_cache);
+    }
+
     // Work out cache path on disk
-    $fast_cache_path = get_custom_file_base() . '/caches/guest_pages/' . md5($url);
+    $fast_cache_path = get_custom_file_base() . '/caches/static/' . md5($url);
     $fast_cache_path_failover_mode = $fast_cache_path;
+    $bot_type = get_bot_type();
     if ($bot_type === null) {
         $fast_cache_path .= '__non-bot';
     }
@@ -1275,6 +1267,8 @@ function save_static_caching($out, $mime_type = 'text/html')
     }
 
     // Save for failover mode
+    global $SITE_INFO;
+    $supports_failover_mode = (isset($SITE_INFO['failover_mode'])) && ($SITE_INFO['failover_mode'] != 'off');
     if ($supports_failover_mode) {
         if (!is_file($fast_cache_path_failover_mode . $file_extension) || filemtime($fast_cache_path_failover_mode . $file_extension) < time() - 60 * 60 * 5) {
             // Add failover messages
@@ -1310,6 +1304,8 @@ function save_static_caching($out, $mime_type = 'text/html')
             }
         }
     }
+
+    return true;
 }
 
 /**
@@ -1317,15 +1313,17 @@ function save_static_caching($out, $mime_type = 'text/html')
  *
  * @param  PATH $fast_cache_path Cache file path
  * @param  string $out_evaluated Cache contents
- * @param  boolean $support_gzip Whether to allow gzipping
+ * @param  boolean $support_output_compression Whether to allow output compression
  */
-function write_static_cache_file($fast_cache_path, $out_evaluated, $support_gzip)
+function write_static_cache_file($fast_cache_path, $out_evaluated, $support_output_compression)
 {
     require_code('files');
     cms_file_put_contents_safe($fast_cache_path, $out_evaluated, FILE_WRITE_FIX_PERMISSIONS);
-    if ((function_exists('gzencode')) && (php_function_allowed('ini_set')) && ($support_gzip)) {
-        cms_file_put_contents_safe($fast_cache_path . '.gz', gzencode($out_evaluated, 9), FILE_WRITE_FIX_PERMISSIONS);
-        //unlink($fast_cache_path); Actually, we should not assume all user agents support gzip
+    if ($support_output_compression) {
+        require_code('web_resources2');
+        compress_cms_stub_file($fast_cache_path);
+
+        //unlink($fast_cache_path); Actually, we should not assume all user agents support compression
     }
 }
 
@@ -1338,10 +1336,9 @@ function write_static_cache_file($fast_cache_path, $out_evaluated, $support_gzip
  * @param  ?ID_TEXT $page_type The type of page - for if you know it (null: don't know it)
  * @param  boolean $being_included Whether the page is being included from another
  * @param  boolean $redirect_check Whether to check for redirects (normally you would)
- * @param  ?object $out Semi-filled output template (null: definitely not doing output streaming)
  * @return Tempcode The page
  */
-function request_page($codename, $required, $zone = null, $page_type = null, $being_included = false, $redirect_check = true, &$out = null)
+function request_page($codename, $required, $zone = null, $page_type = null, $being_included = false, $redirect_check = true)
 {
     global $SITE_INFO;
 
@@ -1391,18 +1388,18 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
     switch ($details[0]) {
         case 'MODULES_CUSTOM':
             $path = isset($details[3]) ? $details[3] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/modules_custom/' . $details[2] . '.php', true);
-            $ret = load_module_page($path, $details[2], $out);
+            $ret = load_module_page($path, $details[2]);
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'MODULES':
             $path = isset($details[3]) ? $details[3] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/modules/' . $details[2] . '.php', true);
-            $ret = load_module_page($path, $details[2], $out);
+            $ret = load_module_page($path, $details[2]);
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'COMCODE_CUSTOM':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode_custom/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1') && (get_custom_file_base() == get_file_base())) || (@is_file(get_custom_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], get_custom_file_base(), $being_included, $out);
+                $ret = load_comcode_page($path, $details[1], $details[2], get_custom_file_base(), $being_included);
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
@@ -1410,7 +1407,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
         case 'COMCODE_CUSTOM_PURE':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode_custom/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1')) || (@is_file(get_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], get_file_base(), $being_included, $out);
+                $ret = load_comcode_page($path, $details[1], $details[2], get_file_base(), $being_included);
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
@@ -1418,7 +1415,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
         case 'COMCODE':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1')) || (@is_file(get_file_base() . '/' . $path))) {
-                $ret = load_comcode_page($path, $details[1], $details[2], null, $being_included, $out);
+                $ret = load_comcode_page($path, $details[1], $details[2], null, $being_included);
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
@@ -1426,23 +1423,23 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
         case 'HTML_CUSTOM':
             require_code('site_html_pages');
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/html_custom/' . $details[3] . '/' . $details[2] . '.htm', true);
-            $ret = make_string_tempcode(load_html_page($path, null, $out));
+            $ret = make_string_tempcode(load_html_page($path));
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'HTML':
             require_code('site_html_pages');
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/html/' . $details[3] . '/' . $details[2] . '.htm', true);
-            $ret = make_string_tempcode(load_html_page($path, null, $out));
+            $ret = make_string_tempcode(load_html_page($path));
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'MINIMODULES_CUSTOM':
             $path = isset($details[3]) ? $details[3] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/minimodules_custom/' . $codename . '.php', true);
-            $ret = load_minimodule_page($path, $out);
+            $ret = load_minimodule_page($path);
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'MINIMODULES':
             $path = isset($details[3]) ? $details[3] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/minimodules/' . $codename . '.php', true);
-            $ret = load_minimodule_page($path, $out);
+            $ret = load_minimodule_page($path);
             $REQUEST_PAGE_NEST_LEVEL--;
             return $ret;
         case 'REDIRECT':
@@ -1472,7 +1469,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
                     }
                 }
                 if (($redirect['r_to_page'] != $codename) || ($redirect['r_to_zone'] != $zone)) {
-                    $ret = request_page($redirect['r_to_page'], $required, $redirect['r_to_zone'], null, $being_included, false/*Don't want redirect loops*/, $out);
+                    $ret = request_page($redirect['r_to_page'], $required, $redirect['r_to_zone'], null, $being_included, false/*Don't want redirect loops*/);
                     $REQUEST_PAGE_NEST_LEVEL--;
                     return $ret;
                 }
@@ -1859,10 +1856,9 @@ function _load_comcodes_page_from_cache($pages)
  * @param  ID_TEXT $codename The codename of the page
  * @param  ?PATH $file_base The file base to load from (null: standard)
  * @param  boolean $being_included Whether the page is being included from another
- * @param  ?object $out Semi-filled output template (null: definitely not doing output streaming)
  * @return Tempcode The page
  */
-function load_comcode_page($string, $zone, $codename, $file_base = null, $being_included = false, &$out = null)
+function load_comcode_page($string, $zone, $codename, $file_base = null, $being_included = false)
 {
     if (strlen($codename) < 1) {
         warn_exit(do_lang_tempcode('EMPTY_CODENAME'));
@@ -1880,14 +1876,6 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
 
     if ($zone == '' && $codename == '404') {
         set_http_status_code(404);
-    }
-
-    require_code('global4');
-    if (
-        (!comcode_page_is_indexable($zone, $codename)) &&
-        (get_page_name() == $codename/*Top-level*/)
-    ) {
-        attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
     }
 
     if ($zone == 'adminzone') {
@@ -1914,6 +1902,7 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
         'p_add_date' => null,
         'p_submitter' => null,
         'p_show_as_edit' => 0,
+        'p_include_on_sitemap' => null,
         'p_order' => 0,
     ];
 
@@ -1998,6 +1987,8 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
 
                 require_code('site2');
                 $new_comcode_page_row['p_add_date'] = filectime($file_base . '/' . $string);
+                require_code('global4');
+                $new_comcode_page_row['p_include_on_sitemap'] = comcode_page_include_on_sitemap($zone, $codename) ? 1 : 0;
                 list($html, $title_to_use, $comcode_page_row, $raw_comcode) = _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $comcode_page_row, $new_comcode_page_row, $being_included);
             }
 
@@ -2008,8 +1999,19 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
     } else {
         require_code('site2');
         $new_comcode_page_row['p_add_date'] = filectime($file_base . '/' . $string);
+        require_code('global4');
+        $new_comcode_page_row['p_include_on_sitemap'] = comcode_page_include_on_sitemap($zone, $codename) ? 1 : 0;
         list($html, $comcode_page_row, $title_to_use, $raw_comcode) = _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $new_comcode_page_row, $being_included);
     }
+
+    require_code('global4');
+    if (
+        (!comcode_page_include_on_sitemap($zone, $codename, $comcode_page_row)) &&
+        (get_page_name() == $codename/*Top-level*/)
+    ) {
+        attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
+    }
+
     $filtered_title_to_use = null;
     if ((!$is_panel) && (!$being_included)) {
         if (!cms_empty_safe($title_to_use)) {
@@ -2058,12 +2060,6 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
             'title' => ($title_to_use == '') ? null : ('[semihtml]' . $title_to_use . '[/semihtml]'),
             'identifier' => $zone . ':' . $codename,
         ], $comcode_page_row, 'comcode_page', $zone . ':' . $codename);
-    }
-
-    if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null)) {
-        $GLOBALS['TEMPCODE_CURRENT_PAGE_OUTPUTTING'] = $out;
-
-        $out->evaluate_echo(null, true);
     }
 
     global $SCREEN_TEMPLATE_CALLED;
@@ -2186,10 +2182,10 @@ function comcode_breadcrumbs($the_page, $the_zone, $root = '', $include_link = f
 /**
  * Log statistics for the page view.
  *
- * @param  string $string The string to the page file
+ * @param  ?string $page_link Page link being viewed (null: work it out)
  * @param  integer $pg_time The time taken for page loading in milliseconds
  */
-function log_stats($string, $pg_time)
+function log_stats($page_link, $pg_time)
 {
     if (!addon_installed('stats')) {
         return;
@@ -2199,61 +2195,47 @@ function log_stats($string, $pg_time)
         return;
     }
 
-    if ((get_option('super_logging') == '1') || (get_param_string('track', null) !== null)) {
-        $get = substr(flatten_slashed_array($_GET), 0, 255);
-        $post2 = $_POST;
-        unset($post2['password']);
-        unset($post2['password_confirm']);
-        unset($post2['decrypt']);
-        $post = flatten_slashed_array($post2);
+    $time = time();
+
+    if ($page_link === null) {
+        $page_link = get_current_page_link();
+    }
+
+    if ((get_option('super_logging') == '1') && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
+        $post2 = [];
+        foreach ($_POST as $key => $val) {
+            if (!is_password_field($key)) {
+                $post2[$key] = $val;
+            }
+        }
+        $post = json_encode($post2);
     } else {
-        $get = '';
         $post = '';
     }
-    $page = $string;
+
     $ip = get_ip_address();
-    $session_id = get_session_id();
     global $IS_ACTUALLY;
     $member_id = ($IS_ACTUALLY === null) ? get_member() : $IS_ACTUALLY;
-    $time = time();
-    $referer = cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255);
-    $browser = cms_mb_substr(get_browser_string(), 0, 255);
-    $os = cms_mb_substr(get_os_string(), 0, 255);
-    if ($os === null) {
-        $os = '';
-    }
-
-    if ((get_option('bot_stats') == '1') && ((stripos($browser, 'http:') !== false) || (stripos($browser, 'bot') !== false) || (get_bot_type() !== null))) {
-        return;
-    }
-
-    global $DISPLAYED_TITLE;
-    if ($DISPLAYED_TITLE === null) {
-        $title = '';
-    } else {
-        $title = $DISPLAYED_TITLE->evaluate();
-    }
 
     $GLOBALS['SITE_DB']->query_insert('stats', [
-        'access_denied_counter' => 0,
-        'browser' => $browser,
-        'operating_system' => $os,
-        'the_page' => $page,
-        'ip' => $ip,
-        'session_id' => $session_id,
-        'member_id' => $member_id,
         'date_and_time' => $time,
-        'referer' => $referer,
-        's_get' => $get,
+        'page_link' => $page_link,
         'post' => $post,
+        'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
+        'ip' => $ip,
+        'member_id' => $member_id,
+        'session_id' => get_pseudo_session_id(),
+        'browser' => cms_mb_substr(get_browser_string(), 0, 255),
+        'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
+        'requested_language' => substr(preg_replace('#[,;].*$#', '', $_SERVER['HTTP_ACCEPT_LANGUAGE']), 0, 10),
         'milliseconds' => intval($pg_time),
-        'title' => $title,
+        'tracking_code' => cms_mb_substr(get_param_string('_t', ''), 0, 80),
     ], false, true); // Errors suppressed in case DB write access broken
+
     if (mt_rand(0, 100) == 1) {
         cms_register_shutdown_function_safe(function () {
-            if (!$GLOBALS['SITE_DB']->table_is_locked('stats')) {
-                $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats WHERE date_and_time<' . strval(time() - 60 * 60 * 24 * intval(get_option('stats_store_time'))), 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
-            }
+            require_code('stats');
+            cleanup_stats();
         });
     }
 
@@ -2265,14 +2247,3 @@ function log_stats($string, $pg_time)
         }
     }
 }
-
-/* *
- * Output filter to compress HTML.
- *
- * @param  string $data The HTML to filter
- * @return string Compressed HTML
- */
-/*f unction _compress_html_output($data)
-{
-    return preg_replace(['#>[ \t]+#', '#[ \t]+<#', '#\n[ \t]+\r?\n#', '#\n+#'], ['> ', ' <', "\n", "\n"], $data);
-}*/

@@ -323,20 +323,24 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
     $member_id = $GLOBALS['FORUM_DB']->query_insert('f_members', $map, true);
 
     if ($check_correctness) {
-        // If it was an invite/recommendation, award the referrer
-        if ((addon_installed('recommend')) && ($email_address != '')) {
-            $inviter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address], 'ORDER BY i_time');
-            if ($inviter !== null) {
-                if (addon_installed('points')) {
+        // If it was an invite/recommendation, award the referrer and set a friendship
+        $tracking_codes = find_session_tracking_codes($email_address);
+        foreach ($tracking_codes as $tracking_code) {
+            if (is_numeric($tracking_code)) {
+                $referrer = intval($tracking_code);
+
+                if ((addon_installed('points')) && (addon_installed('recommend'))) {
                     require_code('points2');
                     require_lang('recommend');
-                    system_gift_transfer(do_lang('RECOMMEND_SITE_TO', $username, get_site_name()), intval(get_option('points_RECOMMEND_SITE')), $inviter);
+                    system_gift_transfer(do_lang('RECOMMEND_SITE_TO', $username, get_site_name()), intval(get_option('points_RECOMMEND_SITE')), $referrer);
                 }
                 if (addon_installed('chat')) {
                     require_code('chat2');
-                    friend_add($inviter, $member_id);
-                    friend_add($member_id, $inviter);
+                    friend_add($referrer, $member_id);
+                    friend_add($member_id, $referrer);
                 }
+
+                break; // We only pick the first
             }
         }
     }

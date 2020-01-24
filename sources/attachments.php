@@ -87,10 +87,8 @@ function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source
 
         $keep = symbol_tempcode('KEEP');
         $url->attach($keep);
-        if (get_option('anti_leech') == '1') {
-            $url->attach('&for_session=');
-            $url->attach(symbol_tempcode('SESSION_HASHED'));
-        }
+        require_code('anti_leech');
+        apply_anti_leech_to_tempcode_url($url);
 
         if ((array_key_exists('thumb_url', $attributes)) && ($attributes['thumb_url'] != '')) {
             $attributes['thumb_url'] = new Tempcode();
@@ -168,7 +166,7 @@ function attachments_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
     }
 
@@ -177,12 +175,8 @@ function attachments_script()
     $has_no_restricts = ($db->query_select_value_if_there('attachment_refs', 'id', ['r_referer_type' => 'null', 'a_id' => $id]) !== null);
 
     if (!$has_no_restricts) {
-        global $SITE_INFO;
-        if ((!is_guest()) || (!isset($SITE_INFO['any_guest_cached_too'])) || ($SITE_INFO['any_guest_cached_too'] == '0')) {
-            if ((get_param_string('for_session', '') != md5(get_session_id())) && (get_option('anti_leech') == '1') && ($_SERVER['HTTP_REFERER'] != '')) {
-                warn_exit(do_lang_tempcode('LEECH_BLOCK'));
-            }
-        }
+        require_code('anti_leech');
+        check_anti_leech();
     }
 
     require_lang('comcode');
@@ -264,7 +258,7 @@ function attachments_script()
     $from = 0;
     $new_length = $size;
 
-    cms_ini_set('zlib.output_compression', 'Off'); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
+    disable_output_compression(); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
 
     // They're trying to resume (so update our range)
     $httprange = $_SERVER['HTTP_RANGE'];

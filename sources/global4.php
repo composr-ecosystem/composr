@@ -30,22 +30,64 @@ function init__global4()
 }
 
 /**
- * Find whether a page is indexable.
+ * Find whether a page is included on the sitemap / indexable.
+ *
+ * @param  ID_TEXT $zone Zone name
+ * @param  ID_TEXT $codename Page name
+ * @param  ?array $row The database row (null: lookup directly from the database)
+ * @return boolean Whether it is indexable
+ */
+function comcode_page_include_on_sitemap($zone, $codename, $row = null)
+{
+    if ($row === null) {
+        $include_on_sitemap = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_include_on_sitemap', ['the_zone' => $zone, 'the_page' => $codename]);
+    } else {
+        $include_on_sitemap = $row['p_include_on_sitemap'];
+    }
+    if ($include_on_sitemap !== null) {
+        return ($include_on_sitemap == 1);
+    }
+
+    return _comcode_page_include_on_sitemap_default($zone, $codename);
+}
+
+/**
+ * Find whether a page is included on the sitemap / indexable - by default.
  *
  * @param  ID_TEXT $zone Zone name
  * @param  ID_TEXT $codename Page name
  * @return boolean Whether it is indexable
  */
-function comcode_page_is_indexable($zone, $codename)
+function _comcode_page_include_on_sitemap_default($zone, $codename)
 {
+    // These are the defaults...
+
+    $noindex_comcode_pages = [
+        ':404',
+        ':help',
+        ':keymap',
+        ':popup_blockers',
+        ':recommend_help',
+        ':rules',
+        ':userguide_chatcode',
+        ':userguide_comcode',
+        'forum:rules',
+        'site:help',
+        'site:popup_blockers',
+        'site:userguide_chatcode',
+        'site:userguide_comcode',
+        'site:rules',
+    ];
+
     if (
         (substr($codename, 0, 6) == 'panel_') ||
         ($codename[0] == '_') ||
         ($zone . ':' . $codename == ':404') ||
-        (in_array($zone . ':' . $codename, explode("\n", get_option('noindex_comcode_pages'))))
+       (in_array($zone . ':' . $codename, $noindex_comcode_pages))
     ) {
         return false;
     }
+
     return true;
 }
 

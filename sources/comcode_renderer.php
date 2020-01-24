@@ -472,7 +472,7 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
     ]);
     $echo = globalise($output, null, '', true);
     $echo->handle_symbol_preprocessing();
-    $echo->evaluate_echo(null, true);
+    $echo->evaluate_echo();
     exit();
 }
 
@@ -1823,6 +1823,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $rel .= 'nofollow';
             }
             if (!$as_admin) {
+                $rel = preg_replace('#(^|\s)opener($|[^\w])#', '\2', $rel);
                 if ($rel != '') {
                     $rel .= ' ';
                 }
@@ -2417,8 +2418,8 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
 {
     $_embed = null;
     $title = do_lang_tempcode('CODE');
-    if (file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) {
-        $evaluated = $embed->evaluate();
+    if ((file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) && (!in_safe_mode())) {
+            $evaluated = $embed->evaluate();
 
         if (($in_semihtml) || ($is_all_semihtml)) {
             require_code('comcode_from_html');
@@ -2505,7 +2506,7 @@ function _do_contents_level($tree_structure, $list_types, $base, $the_level = 0)
         $lines[] = ['ID' => $level[0], 'LINE' => $level[1], 'URL' => $level[2], 'UNDER' => $under];
     }
 
-    if ($lines === []) {
+    if (empty($lines)) {
         return new Tempcode();
     }
 

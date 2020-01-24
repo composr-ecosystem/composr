@@ -58,7 +58,7 @@ If you already customised your panels or menus (perhaps via the Setup Wizard), y
 
 If you want to display the contents of a catalogue category within another page, you can embed it on there as a block. This is useful if you are trying to embed a database listing within a wider context (e.g. in the middle of an article), or if the listing is just not something you want people to have to separately navigate to).
 
-If you are using multiple categories, you'll probably not want to embed, as it is difficult to get category navigation working within an embedding scenario. The normal [tt]catalogues[/tt] module (which is what you've already been using to display entries up to this point) is designed to handle all this kind of thing well, so it's best to make use of that.
+If you are using multiple categories, you'll probably not want to embed, as it is difficult to get category navigation working within an embedding scenario. The normal [tt]catalogues[/tt] module (which is what you've already been using to display entries up to this point) is designed to handle all this kind of thing well, so it's best to make use of that. That said, there is a special case for embedding multiple categories that will be explained in the next subsection.
 
 This tutorial explains how to do embedding.
 
@@ -66,7 +66,7 @@ This tutorial explains how to do embedding.
 Log in to the Composr site using the admin username and password. Then navigate to the Comcode Page where you want to embed the catalogue block. Click on the 'Edit this page' link at the bottom of the page. If you haven't created the page yet, create it (Admin Zone --> Structure --> Add-New-Page Wizard), which will put you into the editing screen also.
 
 [b]Step2:[/b]
-The catalogue block can be embedded using the [tt]main_cc_embed[/tt] block. You can manually embed catalogue by pasting the below line of code in the appropriate place in the Comcode editor.
+The catalogue category can be embedded using the [tt]main_cc_embed[/tt] block. You can manually embed the category by pasting the below line of code in the appropriate place in the Comcode editor.
 
 [code="Comcode"]
 [block="8" max="30"]main_cc_embed[/block]
@@ -87,6 +87,20 @@ The changes can be saved if you are done (click the 'Save' button at the bottom 
 
 You will see the catalogue block has been embedded, like in the following screen shot.
 [media width="150"]data_custom/images/docs/sup_catalogues/sup_catalogues_13.png[/media]
+
+[title="3"]Embedded multiple categories[/title]
+
+The [tt]main_cc_embed[/tt] block is literally designed to embed a category (the name comes from "catalogue category embed").
+However, if you have entries across multiple categories and you want them all folded together into the block, you can do that.
+
+To do this:
+1) Specify the root category you want to embed from. You need to still provide a category because otherwise Composr has no way of knowing what catalogue to get entries from (it gets the catalogue by looking at what catalogue the specified category is in).
+2) Use the [tt]select[/tt] parameter with the value [tt]*[/tt] to tell Composr to actually select all entries, not just that from the specified category.
+
+For example:
+[code="Comcode"]
+[block="8" select="*" max="30"]main_cc_embed[/block]
+[/code]
 
 [title="2"]Customising catalogue layout[/title]
 

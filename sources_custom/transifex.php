@@ -147,12 +147,12 @@ function transifex_push_script()
     $cli = is_cli();
     if (!$cli) {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
-            header('Content-type: text/plain; charset=utf-8');
+            header('Content-Type: text/plain; charset=utf-8');
             exit('Must run this script on command line, for security reasons -- or be logged in as an administrator');
         }
     }
 
-    @header('Content-type: text/plain; charset=' . get_charset());
+    @header('Content-Type: text/plain; charset=' . get_charset());
     cms_ini_set('ocproducts.xss_detect', '0');
 
     $core_only = _transifex_env_setting('core_only');
@@ -240,7 +240,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
             _push_cms_file_to_transifex($path, $extra_file[0], $project_slug, $extra_file[1], $extra_file[3], $extra_file[2], $push_translations);
 
             echo "Uploaded CMS file {$path}\n";
-            flush();
+            cms_flush_safe();
         }
     }
 
@@ -261,7 +261,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
                     _push_ini_file_to_transifex($f, $project_slug, false, TRANSLATE_ADMINISTRATIVE_YES, $push_translations);
 
                     echo "Uploaded ini (strings) file {$f}\n";
-                    flush();
+                    cms_flush_safe();
                 }
             }
         }
@@ -279,7 +279,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
 
                     if ($result) {
                         echo "Uploaded ini (strings) file {$f}\n";
-                        flush();
+                        cms_flush_safe();
                     }
                 }
             }
@@ -338,7 +338,7 @@ function _push_cms_file_to_transifex($path, $resource_path, $project_slug, $prio
                     _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/translation/' . convert_lang_code_to_transifex($lang) . '/', 'PUT', json_encode($args));
 
                     echo "Uploaded translation {$trans_full_path}\n";
-                    flush();
+                    cms_flush_safe();
                 }
             }
         }
@@ -492,12 +492,12 @@ function transifex_pull_script()
     if (!$cli) {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
             if (!$output) {
-                header('Content-type: text/plain; charset=utf-8');
+                header('Content-Type: text/plain; charset=utf-8');
                 exit('You must be logged in as an administrator (or run this script from the command line) if not using output=0');
             }
 
             if ($lang === null) {
-                header('Content-type: text/plain; charset=utf-8');
+                header('Content-Type: text/plain; charset=utf-8');
                 exit('You must be logged in as an administrator (or run this script from the command line) if not setting an output language');
             }
         }
@@ -526,7 +526,7 @@ function transifex_pull_script()
         tar_close($tar_file);
         exit();
     } else {
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         cms_ini_set('ocproducts.xss_detect', '0');
         echo 'Done';
     }

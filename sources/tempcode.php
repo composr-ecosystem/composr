@@ -94,22 +94,6 @@ function init__tempcode()
     global $IS_TEMPLATE_PREVIEW_OP_CACHE;
     $IS_TEMPLATE_PREVIEW_OP_CACHE = null;
 
-    /** Whether output streaming mode is active.
-     *
-     * @global boolean $OUTPUT_STREAMING
-     */
-    global $OUTPUT_STREAMING, $SMART_CACHE;
-    $OUTPUT_STREAMING = (function_exists('get_option')) && (get_option('output_streaming') === '1') && (get_param_integer('keep_output_streaming', null) !== 0) && (isset($SMART_CACHE)) && (!$SMART_CACHE->empty);
-    if ($GLOBALS['SMART_CACHE'] === null || !$GLOBALS['SMART_CACHE']->get_initial_status('CSSS')) {
-        $OUTPUT_STREAMING = false;
-    } elseif (get_param_string('special_page_type', 'view') !== 'view') {
-        $OUTPUT_STREAMING = false;
-    } elseif (get_param_integer('keep_markers', 0) === 1) {
-        $OUTPUT_STREAMING = false;
-    } elseif (get_param_integer('show_edit_links', 0) === 1) {
-        $OUTPUT_STREAMING = false;
-    }
-
     global $STOP_IF_STUCK, $STUCK_ABORT_SIGNAL, $TEMPCODE_OUTPUT_STARTED, $CSS_OUTPUT_STARTED, $JS_OUTPUT_STARTED, $TEMPCODE_CURRENT_PAGE_OUTPUTTING;
     $STOP_IF_STUCK = false;
     $STUCK_ABORT_SIGNAL = false;
@@ -674,7 +658,7 @@ function apply_tempcode_escaping($escaped, &$value)
             $value = filter_naughty_harsh($value, true);
         }
     }
-    if (($GLOBALS['XSS_DETECT']) && ($escaped !== [])) {
+    if (($GLOBALS['XSS_DETECT']) && (!empty($escaped))) {
         ocp_mark_as_escaped($value);
     }
 
@@ -727,7 +711,7 @@ function apply_tempcode_escaping_inline($escaped, $value)
             $value = filter_naughty_harsh($value, true);
         }
     }
-    if (($GLOBALS['XSS_DETECT']) && ($escaped !== [])) {
+    if (($GLOBALS['XSS_DETECT']) && (!empty($escaped))) {
         ocp_mark_as_escaped($value);
     }
 
@@ -1000,7 +984,7 @@ function do_template($codename, $parameters = [], $lang = null, $light_error = f
 
         $out->code_to_preexecute = $_data->code_to_preexecute;
 
-        if (!$GLOBALS['OUTPUT_STREAMING'] && !empty($_data->preprocessable_bits)) {
+        if (!empty($_data->preprocessable_bits)) {
             $out->preprocessable_bits = $_data->preprocessable_bits;
         }
 
@@ -1035,7 +1019,7 @@ function do_template($codename, $parameters = [], $lang = null, $light_error = f
             $__data->attach('<!-- END-TEMPLATE=' . escape_html($codename) . ' -->');
             $ret = $__data;
         }
-        if (($SHOW_EDIT_LINKS) && ($codename !== 'PARAM_INFO') && ($codename !== 'TEMPLATE_EDIT_LINK') && ($codename !== 'GLOBAL_HTML_WRAP'/*For some obscure reason letting this go through causes content to disappear, maybe because it has already started output streaming*/)) {
+        if (($SHOW_EDIT_LINKS) && ($codename !== 'PARAM_INFO') && ($codename !== 'TEMPLATE_EDIT_LINK')) {
             $edit_url = build_url(['page' => 'admin_themes', 'type' => 'edit_templates', 'theme' => $theme, 'f0file' => $directory . '/' . $codename], 'adminzone');
 
             $parameters2 = [];
@@ -1326,7 +1310,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                             @ob_end_flush();
                             @ob_end_flush();
                             print('<!-- block: ' . htmlentities($block_parms['block']) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(integer_format(memory_get_usage())) . ') -->' . "\n");
-                            flush();
+                            cms_flush_safe();
                         }
                     }
 
@@ -1428,7 +1412,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                                 @ob_end_flush();
                                 @ob_end_flush();
                                 print('<!-- panel: ' . htmlentities('panel_' . $param[0]) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
-                                flush();
+                                cms_flush_safe();
                             }
                         }
 
@@ -1541,7 +1525,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                         @ob_end_flush();
                         @ob_end_flush();
                         print('<!-- page: ' . htmlentities($param[0]) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
-                        flush();
+                        cms_flush_safe();
                     }
                 }
 
@@ -1642,49 +1626,47 @@ class Tempcode
             $this->code_to_preexecute = $details[0];
             $this->seq_parts = $details[1];
 
-            if (!$GLOBALS['OUTPUT_STREAMING'] || $GLOBALS['RECORD_TEMPLATES_USED']) {
-                $pp_bits = [];
+            $pp_bits = [];
 
-                foreach ($this->seq_parts as $seq_parts_group) {
-                    foreach ($seq_parts_group as $seq_part) {
-                        if ($seq_part[2] === TC_SYMBOL) {
-                            switch ($seq_part[3]) {
-                                case 'REQUIRE_CSS':
-                                case 'REQUIRE_JAVASCRIPT':
-                                case 'FACILITATE_AJAX_BLOCK_CALL':
-                                case 'JS_TEMPCODE':
-                                case 'CSS_TEMPCODE':
-                                case 'SET':
-                                case 'SET_TITLE':
-                                case 'BLOCK':
-                                case 'PAGE_LINK':
-                                case 'LOAD_PAGE':
-                                case 'LOAD_PANEL':
-                                case 'METADATA':
-                                    $pp_bits[] = [[], TC_SYMBOL, $seq_part[3], $seq_part[1]];
-                                    break;
-                            }
-                        } elseif ($seq_part[2] === TC_DIRECTIVE) {
-                            switch ($seq_part[3]) {
-                                case 'INCLUDE':
-                                case 'FRACTIONAL_EDITABLE':
-                                    $pp_bits[] = [[], TC_DIRECTIVE, $seq_part[3], $seq_part[1]];
-                                    break;
-                            }
+            foreach ($this->seq_parts as $seq_parts_group) {
+                foreach ($seq_parts_group as $seq_part) {
+                    if ($seq_part[2] === TC_SYMBOL) {
+                        switch ($seq_part[3]) {
+                            case 'REQUIRE_CSS':
+                            case 'REQUIRE_JAVASCRIPT':
+                            case 'FACILITATE_AJAX_BLOCK_CALL':
+                            case 'JS_TEMPCODE':
+                            case 'CSS_TEMPCODE':
+                            case 'SET':
+                            case 'SET_TITLE':
+                            case 'BLOCK':
+                            case 'PAGE_LINK':
+                            case 'LOAD_PAGE':
+                            case 'LOAD_PANEL':
+                            case 'METADATA':
+                                $pp_bits[] = [[], TC_SYMBOL, $seq_part[3], $seq_part[1]];
+                                break;
                         }
-                        foreach ($seq_part[1] as $param) {
-                            if (!empty($param->preprocessable_bits)) { // If is a Tempcode object
-                                foreach ($param->preprocessable_bits as $b) {
-                                    $pp_bits[] = $b;
-                                }
+                    } elseif ($seq_part[2] === TC_DIRECTIVE) {
+                        switch ($seq_part[3]) {
+                            case 'INCLUDE':
+                            case 'FRACTIONAL_EDITABLE':
+                                $pp_bits[] = [[], TC_DIRECTIVE, $seq_part[3], $seq_part[1]];
+                                break;
+                        }
+                    }
+                    foreach ($seq_part[1] as $param) {
+                        if (!empty($param->preprocessable_bits)) { // If is a Tempcode object
+                            foreach ($param->preprocessable_bits as $b) {
+                                $pp_bits[] = $b;
                             }
                         }
                     }
                 }
+            }
 
-                if (!empty($pp_bits)) {
-                    $this->preprocessable_bits = $pp_bits;
-                }
+            if (!empty($pp_bits)) {
+                $this->preprocessable_bits = $pp_bits;
             }
         }
 
@@ -1784,7 +1766,7 @@ class Tempcode
 
             $this->code_to_preexecute += $attach->code_to_preexecute;
 
-            if (!$GLOBALS['OUTPUT_STREAMING'] && !empty($attach->preprocessable_bits)) {
+            if (!empty($attach->preprocessable_bits)) {
                 foreach ($attach->preprocessable_bits as $b) {
                     $this->preprocessable_bits[] = $b;
                 }
@@ -1802,7 +1784,7 @@ class Tempcode
                 $end = &$this->seq_parts[key($this->seq_parts)];
                 if ($inlining_mode && end($end) !== false) {
                     $_end = &$end[key($end)];
-                    if (($_end[2] === TC_KNOWN) && ($_end[1] === [])) { // Optimisation to save memory/storage-space/evaluation-time -- we can just append text
+                    if (($_end[2] === TC_KNOWN) && (empty($_end[1]))) { // Optimisation to save memory/storage-space/evaluation-time -- we can just append text
                         $myfunc = $_end[0];
                         if (isset($this->code_to_preexecute[$myfunc])) {
                             $code = $this->code_to_preexecute[$myfunc];
@@ -1869,7 +1851,7 @@ class Tempcode
         unset($this->cached_output);
 
         $this->seq_parts = $result[0];
-        if (!$GLOBALS['OUTPUT_STREAMING'] && !empty($result[1])) {
+        if (!empty($result[1])) {
             $this->preprocessable_bits = $result[1];
         }
         $this->codename = $result[2];
@@ -1985,7 +1967,7 @@ class Tempcode
         unset($this->cached_output);
 
         $this->seq_parts = $result[0];
-        if (!$GLOBALS['OUTPUT_STREAMING'] && !empty($result[1])) {
+        if (!empty($result[1])) {
             $this->preprocessable_bits = $result[1];
         }
         $this->codename = $result[2];
@@ -2013,7 +1995,7 @@ class Tempcode
         foreach ($this->seq_parts as $seq_parts_group) {
             foreach ($seq_parts_group as $seq_part) {
                 if ($i === $at) {
-                    return ($seq_part[1] === []);
+                    return empty($seq_part[1]);
                 }
                 $i++;
             }
@@ -2041,7 +2023,7 @@ class Tempcode
         $out = new Tempcode();
         $out->codename = $codename;
         $out->code_to_preexecute = $this->code_to_preexecute;
-        if (!$GLOBALS['OUTPUT_STREAMING'] && !empty($this->preprocessable_bits)) {
+        if (!empty($this->preprocessable_bits)) {
             foreach ($this->preprocessable_bits as $preprocessable_bit) {
                 foreach ($preprocessable_bit[3] as $i => $param) {
                     if ((($preprocessable_bit[2] !== 'SET') || (($i >= 1))) && (isset($param->codename/*faster than is_object*/))) {
@@ -2078,7 +2060,7 @@ class Tempcode
                     $is_all_static = false;
                 }
 
-                if (!$GLOBALS['OUTPUT_STREAMING'] && !empty($parameter->preprocessable_bits)) {
+                if (!empty($parameter->preprocessable_bits)) {
                     foreach ($parameter->preprocessable_bits as $b) {
                         $out->preprocessable_bits[] = $b;
                     }
@@ -2135,7 +2117,7 @@ class Tempcode
             }
         }
 
-        if ($this->seq_parts === []) {
+        if (empty($this->seq_parts)) {
             return;
         }
 
@@ -2147,7 +2129,7 @@ class Tempcode
             }
         }
 
-        if (!$GLOBALS['OUTPUT_STREAMING'] && !empty($value->preprocessable_bits)) { // Is Tempcode
+        if (!empty($value->preprocessable_bits)) { // Is Tempcode
             foreach ($value->preprocessable_bits as $b) {
                 $this->preprocessable_bits[] = $b;
             }
@@ -2163,9 +2145,6 @@ class Tempcode
      */
     public function handle_symbol_preprocessing()
     {
-        if ($GLOBALS['OUTPUT_STREAMING']) {
-            return;
-        }
         if (!empty($this->preprocessed)) {
             return;
         }
@@ -2403,10 +2382,9 @@ class Tempcode
      * Parse the current Tempcode object, then echo it to the browser.
      *
      * @param  ?LANGUAGE_NAME $current_lang The language to evaluate with (null: current user's language)
-     * @param  boolean $stop_if_stuck Whether to stop if we are stuck of a seq_part with parameters yet-unbound, and to continue from last resume point
      * @return string Blank string. Allows chaining within echo statements
      */
-    public function evaluate_echo($current_lang = null, $stop_if_stuck = false)
+    public function evaluate_echo($current_lang = null)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'HEAD') {
             return '';
@@ -2429,7 +2407,7 @@ class Tempcode
 
         $codename = $this->codename;
 
-        global $KEEP_TPL_FUNCS, $FULL_RESET_VAR_CODE, $RESET_VAR_CODE, $STOP_IF_STUCK, $STUCK_ABORT_SIGNAL, $DEV_MODE, $TEMPCODE_OUTPUT_STARTED;
+        global $KEEP_TPL_FUNCS, $FULL_RESET_VAR_CODE, $RESET_VAR_CODE, $STUCK_ABORT_SIGNAL, $DEV_MODE, $TEMPCODE_OUTPUT_STARTED;
         $TEMPCODE_OUTPUT_STARTED = true;
         $tpl_funcs = $KEEP_TPL_FUNCS;
         $seq_parts_group_cnt = count($this->seq_parts);
@@ -2438,11 +2416,6 @@ class Tempcode
             $this->evaluate_echo_offset_inner = 0;
         }
         $i = &$this->evaluate_echo_offset_group; // A reference, so evaluate_echo_offset_group will go up naturally via looping of $i
-        if ($stop_if_stuck) {
-            $stop_if_stuck_bak = $STOP_IF_STUCK;
-            $STOP_IF_STUCK = true;
-            ob_start();
-        }
         $first_i = true;
         for (; $i < $seq_parts_group_cnt; $i++) {
             $seq_parts_group = $this->seq_parts[$i];
@@ -2475,25 +2448,10 @@ class Tempcode
                         tempcode_error($e, $tpl_funcs[$seq_part_0]);
                     }
                 }
-
-                if ($stop_if_stuck) {
-                    if ($STUCK_ABORT_SIGNAL) {
-                        $STUCK_ABORT_SIGNAL = false;
-                        ob_clean();
-                        break 2;
-                    } else {
-                        ob_flush();
-                    }
-                }
             }
         }
 
-        if ($stop_if_stuck) {
-            $STOP_IF_STUCK = $stop_if_stuck_bak;
-            ob_end_flush();
-        }
-
-        flush();
+        cms_flush_safe();
 
         return '';
     }

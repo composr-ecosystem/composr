@@ -43,7 +43,16 @@ class xml_sitemaps_test_set extends cms_test_case
 
     public function testSitemapValidate()
     {
-        $files = ['index.xml', 'set_0.xml'];
+        $files = [];
+        $dh = @opendir(get_custom_file_base() . '/data_custom/sitemaps');
+        if ($dh !== false) {
+            while (($f = readdir($dh)) !== false) {
+                if (substr($f, -4) == '.xml') {
+                    $files[] = $f;
+                }
+            }
+            closedir($dh);
+        }
         foreach ($files as $file) {
             $c = cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/sitemaps/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 

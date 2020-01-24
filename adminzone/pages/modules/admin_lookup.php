@@ -91,18 +91,19 @@ class Module_admin_lookup
 
         set_helper_panel_text(comcode_to_tempcode(do_lang('DOC_INVESTIGATE_USER')));
 
-        $param = get_param_string('param', get_param_string('id', ''));
-
-        if ($param == '') {
+        if ($type == 'browse') {
             breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
-        } else {
-            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('INVESTIGATE_USER')]]);
-            breadcrumb_set_self(do_lang_tempcode('RESULT'));
+
+            $this->title = get_screen_title('INVESTIGATE_USER');
         }
 
-        if ($param == '') {
-            $this->title = get_screen_title('INVESTIGATE_USER');
-        } else {
+        if ($type == 'results') {
+            $param = get_param_string('param');
+            $this->param = $param;
+
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('INVESTIGATE_USER')]]);
+            breadcrumb_set_self(do_lang_tempcode('RESULTS'));
+
             if (is_numeric($param)) {
                 $this->title = get_screen_title('INVESTIGATE_USER_BY_MEMBER_ID');
             } elseif (strpos($param, '.') !== false) {
@@ -112,7 +113,20 @@ class Module_admin_lookup
             }
         }
 
-        $this->param = $param;
+        if ($type == 'view') {
+            $param = get_param_string('param', null);
+
+            $this->title = get_screen_title('VIEW_REQUEST');
+
+            $breadcrumbs = [];
+            $breadcrumbs[] = ['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')];
+            $breadcrumbs[] = ['_SELF:_SELF:browse', do_lang_tempcode('INVESTIGATE_USER')];
+            if ($param !== null) {
+                $breadcrumbs[] = ['_SELF:_SELF:results:param=' . urlencode($param), do_lang_tempcode('RESULTS')];
+            }
+            breadcrumb_set_parents($breadcrumbs);
+            breadcrumb_set_self(do_lang_tempcode('RESULT'));
+        }
 
         return null;
     }
@@ -126,195 +140,302 @@ class Module_admin_lookup
     {
         require_code('lookup');
 
+        $type = get_param_string('type', 'browse');
+
+        if ($type == 'browse') {
+            return $this->browse();
+        }
+
+        if ($type == 'results') {
+            return $this->results();
+        }
+
+        if ($type == 'view') {
+            return $this->request_view();
+        }
+
+        return new Tempcode();
+    }
+
+    /**
+     * The UI to search.
+     *
+     * @return Tempcode The UI
+     */
+    public function browse()
+    {
+        $submit_name = do_lang_tempcode('INVESTIGATE_USER');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'results'], '_SELF', [], false, true);
+        $fields = form_input_line(do_lang_tempcode('DETAILS'), do_lang_tempcode('DESCRIPTION_INVESTIGATE'), 'param', '', false);
+
+        return do_template('FORM_SCREEN', [
+            '_GUID' => '9cc407037ec01a8f3483746a22889471',
+            'GET' => true,
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => '',
+            'TITLE' => $this->title,
+            'TEXT' => '',
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => $submit_name,
+            'FIELDS' => $fields,
+            'URL' => $post_url,
+        ]);
+    }
+
+    /**
+     * The UI to view results.
+     *
+     * @return Tempcode The UI
+     */
+    public function results()
+    {
         $param = $this->param;
 
-        if ($param == '') {
-            $submit_name = do_lang_tempcode('INVESTIGATE_USER');
-            $post_url = build_url(['page' => '_SELF'], '_SELF', [], false, true);
-            $fields = form_input_line(do_lang_tempcode('DETAILS'), do_lang_tempcode('DESCRIPTION_INVESTIGATE'), 'param', '', false);
+        // Fill in user identification data as far as possible, and log if appropriate...
 
-            return do_template('FORM_SCREEN', [
-                '_GUID' => '9cc407037ec01a8f3483746a22889471',
-                'GET' => true,
-                'SKIP_WEBSTANDARDS' => true,
-                'HIDDEN' => '',
-                'TITLE' => $this->title,
-                'TEXT' => '',
-                'SUBMIT_ICON' => 'buttons/proceed',
-                'SUBMIT_NAME' => $submit_name,
-                'FIELDS' => $fields,
-                'URL' => $post_url,
-            ]);
-        } else {
-            $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
-            if (count($test) == 1) {
-                $test[1] = 'DESC';
-            }
-            list($sortable, $sort_order) = $test;
-            $name = null;
-            $id = null;
-            $ip = null;
-            $rows = lookup_member_page($param, $name, $id, $ip);
-            if ($name === null) {
-                $name = do_lang('UNKNOWN');
-            }
-            if ($id === null) {
-                $id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-            } else {
-                log_it('INVESTIGATE_USER', strval($id), $name);
-            }
-            if ($ip === null) {
-                $ip = '';
-            }
-
-            if (addon_installed('securitylogging')) {
-                $all_banned = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query('SELECT ip FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_positive=1 AND (i_ban_until IS NULL OR i_ban_until>' . strval(time()) . ')'));
-            } else {
-                $all_banned = [];
-            }
-
-            $ip_list = new Tempcode();
-            $groups = [];
-            foreach ($rows as $row) {
-                if (strpos($row['ip'], ':') !== false) {
-                    $bits = explode(':', $row['ip']);
-                    $bits[count($bits) - 1] = '*';
-                    $ip_masked = implode(':', $bits);
-                } else {
-                    $bits = explode('.', $row['ip']);
-                    $bits[count($bits) - 1] = '*';
-                    $ip_masked = implode('.', $bits);
-                }
-                if (!array_key_exists($ip_masked, $groups)) {
-                    $groups[$ip_masked] = [];
-                }
-                $groups[$ip_masked][] = $row;
-            }
-            $all_ips = [];
-            foreach ($groups as $mask => $group) {
-                foreach ($group as $row) {
-                    $all_ips[] = $row['ip'];
-                }
-                $all_ips[] = $mask;
-            }
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                if (!array_key_exists('banned', $_POST)) {
-                    $_POST['banned'] = [];
-                }
-
-                require_code('failure');
-                $all_banned_filtered = [];
-                foreach ($all_ips as $bip) {
-                    if (addon_installed('securitylogging')) {
-                        if (in_array($bip, $_POST['banned'])) {
-                            add_ip_ban($bip);
-                            $all_banned_filtered[] = $bip;
-                        } else {
-                            remove_ip_ban($bip);
-                        }
-                    }
-                }
-                $all_banned = $all_banned_filtered;
-            }
-            foreach ($groups as $mask => $group) {
-                $inner_ip_list = new Tempcode();
-                $one_sub_is_banned = false;
-                foreach ($group as $row) {
-                    $date = get_timezoned_date_time($row['date_and_time']);
-                    $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip']], '_SELF');
-                    $inner_ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', ['_GUID' => '94a133f5f711bbf09100346661e3f7c9', 'LOOKUP_URL' => $lookup_url, 'DATE' => $date, '_DATE' => strval($row['date_and_time']), 'IP' => $row['ip'], 'BANNED' => in_array($row['ip'], $all_banned)]));
-                    if (in_array($row['ip'], $all_banned)) {
-                        $one_sub_is_banned = true;
-                    }
-                }
-                $ip_list->attach(do_template('LOOKUP_IP_LIST_GROUP', ['_GUID' => '10612a64654f3a75fca65d089e039e9a', 'OPEN_DEFAULT' => $one_sub_is_banned, 'BANNED' => in_array($mask, $all_banned), 'MASK' => $mask, 'GROUP' => $inner_ip_list]));
-            }
-
-            $stats = get_stats_track($id, $ip, get_param_integer('start', 0), get_param_integer('max', 10), $sortable, $sort_order);
-
-            $points_url = addon_installed('points') ? build_url(['page' => 'points', 'type' => 'member', 'id' => $id], get_module_zone('points')) : null;
-            if (addon_installed('authors')) {
-                $author_url = ($name == do_lang('UNKNOWN')) ? null : build_url(['page' => 'authors', 'author' => $name], get_module_zone('authors'));
-            } else {
-                $author_url = null;
-            }
-            if (addon_installed('search')) {
-                $search_url = ($name == do_lang('UNKNOWN')) ? null : build_url(['page' => 'search', 'type' => 'results', 'content' => '', 'author' => $name, 'days' => '-1', 'sort' => 'add_date', 'direction' => 'DESC'], get_module_zone('search'));
-            } else {
-                $search_url = null;
-            }
-            $profile_url = (is_guest($id)) ? null : $GLOBALS['FORUM_DRIVER']->member_profile_url($id, true);
-            if (addon_installed('actionlog')) {
-                $actionlog_url = (is_guest($id)) ? null : build_url(['page' => 'admin_actionlog', 'type' => 'list', 'id' => $id], get_module_zone('admin_actionlog'));
-            } else {
-                $actionlog_url = null;
-            }
-
-            if ($ip == '') {
-                $alerts = new Tempcode();
-            } else {
-                list($alerts,) = find_security_alerts(['ip' => $ip]);
-            }
-
-            $member_banned = $GLOBALS['FORUM_DRIVER']->is_banned($id);
-            $ip_banned = false;
-            if ($ip != '' && addon_installed('securitylogging')) {
-                $ban_until = $GLOBALS['SITE_DB']->query_select('banned_ip', ['i_ban_until'], ['i_ban_positive' => 1, 'ip' => $ip]);
-                if (array_key_exists(0, $ban_until)) {
-                    $ip_banned = ($ban_until[0]['i_ban_until'] === null) || $ban_until[0]['i_ban_until'] > time();
-                }
-            }
-            $banned_test_2 = $GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', ['the_member' => $id]);
-            $submitter_banned = $banned_test_2 !== null;
-
-            $member_ban_link = null;
-            $ip_ban_link = null;
-            $submitter_ban_link = null;
-            if (addon_installed('securitylogging')) {
-                if (((get_forum_type() == 'cns') && (!is_guest($id))) && ($id != get_member())) {
-                    $member_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
-                        '_GUID' => '840c361ab217959f8b85141497e6e6a6',
-                        'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_member_ban', 'id' => $id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_actionlog')),
-                    ]);
-                }
-                if (($ip != '') && ($ip != get_ip_address()) &&  (!in_array($ip, get_server_ips()))) {
-                    $ip_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
-                        '_GUID' => '76979d80cdd7d3e664c9a4ec04419bc6',
-                        'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $ip], get_module_zone('admin_actionlog')),
-                    ]);
-                }
-                if ((!is_guest($id)) && ($id != get_member())) {
-                    $submitter_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
-                        '_GUID' => '03834262af908bf78c4eef69e78c8cff',
-                        'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_actionlog')),
-                    ]);
-                }
-            }
-
-            $tpl = do_template('LOOKUP_SCREEN', [
-                '_GUID' => 'dc6effaa043949940b809f6aa5a1f944',
-                'TITLE' => $this->title,
-                'ALERTS' => $alerts,
-                'STATS' => $stats,
-                'IP_LIST' => $ip_list,
-                'IP_BANNED' => $ip_banned ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
-                'SUBMITTER_BANNED' => $submitter_banned ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
-                'MEMBER_BANNED' => $member_banned ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
-                'MEMBER_BAN_LINK' => $member_ban_link,
-                'SUBMITTER_BAN_LINK' => $submitter_ban_link,
-                'IP_BAN_LINK' => $ip_ban_link,
-                'ID' => strval($id),
-                'IP' => $ip,
-                'NAME' => $name,
-                'SEARCH_URL' => $search_url,
-                'AUTHOR_URL' => $author_url,
-                'POINTS_URL' => $points_url,
-                'PROFILE_URL' => $profile_url,
-                'ACTIONLOG_URL' => $actionlog_url,
-            ]);
-
-            require_code('templates_internalise_screen');
-            return internalise_own_screen($tpl);
+        $username = null;
+        $member_id = null;
+        $ip = null;
+        $known_ip_addresses = lookup_user($param, $username, $member_id, $ip);
+        if ($username === null) {
+            $username = do_lang('UNKNOWN');
         }
+        if ($member_id === null) {
+            $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+        } else {
+            log_it('INVESTIGATE_USER', strval($member_id), $username);
+        }
+        if ($ip === null) {
+            $ip = '';
+        }
+
+        // Load up IP bans and see what applies to the user's IPs...
+
+        if (addon_installed('securitylogging')) {
+            $all_banned = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query('SELECT ip FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_positive=1 AND (i_ban_until IS NULL OR i_ban_until>' . strval(time()) . ')'));
+        } else {
+            $all_banned = [];
+        }
+
+        $ip_list = new Tempcode();
+        $groups = [];
+        foreach ($known_ip_addresses as $row) {
+            if (strpos($row['ip'], ':') !== false) {
+                $bits = explode(':', $row['ip']);
+                $bits[count($bits) - 1] = '*';
+                $ip_masked = implode(':', $bits);
+            } else {
+                $bits = explode('.', $row['ip']);
+                $bits[count($bits) - 1] = '*';
+                $ip_masked = implode('.', $bits);
+            }
+            if (!array_key_exists($ip_masked, $groups)) {
+                $groups[$ip_masked] = [];
+            }
+            $groups[$ip_masked][] = $row;
+        }
+        $all_ips = [];
+        foreach ($groups as $mask => $group) {
+            foreach ($group as $row) {
+                $all_ips[] = $row['ip'];
+            }
+            $all_ips[] = $mask;
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (!array_key_exists('banned', $_POST)) {
+                $_POST['banned'] = [];
+            }
+
+            require_code('failure');
+            $all_banned_filtered = [];
+            foreach ($all_ips as $bip) {
+                if (addon_installed('securitylogging')) {
+                    if (in_array($bip, $_POST['banned'])) {
+                        add_ip_ban($bip);
+                        $all_banned_filtered[] = $bip;
+                    } else {
+                        remove_ip_ban($bip);
+                    }
+                }
+            }
+            $all_banned = $all_banned_filtered;
+        }
+        foreach ($groups as $mask => $group) {
+            $inner_ip_list = new Tempcode();
+            $one_sub_is_banned = false;
+            foreach ($group as $row) {
+                $date = get_timezoned_date_time($row['date_and_time']);
+                $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip']], '_SELF');
+                $inner_ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', ['_GUID' => '94a133f5f711bbf09100346661e3f7c9', 'LOOKUP_URL' => $lookup_url, 'DATE' => $date, '_DATE' => strval($row['date_and_time']), 'IP' => $row['ip'], 'BANNED' => in_array($row['ip'], $all_banned)]));
+                if (in_array($row['ip'], $all_banned)) {
+                    $one_sub_is_banned = true;
+                }
+            }
+            $ip_list->attach(do_template('LOOKUP_IP_LIST_GROUP', ['_GUID' => '10612a64654f3a75fca65d089e039e9a', 'OPEN_DEFAULT' => $one_sub_is_banned, 'BANNED' => in_array($mask, $all_banned), 'MASK' => $mask, 'GROUP' => $inner_ip_list]));
+        }
+
+        // Get page views stats...
+
+        $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
+        if (count($test) == 1) {
+            $test[1] = 'DESC';
+        }
+        list($sortable, $sort_order) = $test;
+
+        $stats = find_page_stats_for($member_id, $ip, get_param_integer('start', 0), get_param_integer('max', 10), $sortable, $sort_order);
+
+        // Generate appropriate follow-up links to find more (noting that member profiles are the primary place for member links)...
+
+        $points_url = ((addon_installed('points')) && (!is_guest($member_id))) ? build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')) : null;
+        if (addon_installed('authors')) {
+            $author_url = ($username == do_lang('UNKNOWN')) ? null : build_url(['page' => 'authors', 'author' => $username], get_module_zone('authors'));
+        } else {
+            $author_url = null;
+        }
+        if (addon_installed('search')) {
+            $search_url = ($username == do_lang('UNKNOWN')) ? null : build_url(['page' => 'search', 'type' => 'results', 'content' => '', 'author' => $username, 'days' => '-1', 'sort' => 'add_date', 'direction' => 'DESC'], get_module_zone('search'));
+        } else {
+            $search_url = null;
+        }
+        $profile_url = (is_guest($member_id)) ? null : $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
+        if (addon_installed('actionlog')) {
+            $actionlog_url = (is_guest($member_id)) ? null : build_url(['page' => 'admin_actionlog', 'type' => 'list', 'id' => $member_id], get_module_zone('admin_actionlog'));
+        } else {
+            $actionlog_url = null;
+        }
+
+        // Find security alerts...
+
+        if ($ip == '') {
+            $alerts = new Tempcode();
+        } else {
+            list($alerts,) = find_security_alerts(['ip' => $ip]);
+        }
+
+        // Find direct ban status and provide ban/unban links...
+
+        $member_banned = $GLOBALS['FORUM_DRIVER']->is_banned($member_id);
+        $ip_banned = false;
+        if ($ip != '' && addon_installed('securitylogging')) {
+            $ban_until = $GLOBALS['SITE_DB']->query_select('banned_ip', ['i_ban_until'], ['i_ban_positive' => 1, 'ip' => $ip]);
+            if (array_key_exists(0, $ban_until)) {
+                $ip_banned = ($ban_until[0]['i_ban_until'] === null) || $ban_until[0]['i_ban_until'] > time();
+            }
+        }
+        $banned_test_2 = $GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', ['the_member' => $member_id]);
+        $submitter_banned = $banned_test_2 !== null;
+
+        $member_ban_link = null;
+        $ip_ban_link = null;
+        $submitter_ban_link = null;
+        if (addon_installed('securitylogging')) {
+            if (((get_forum_type() == 'cns') && (!is_guest($member_id))) && ($member_id != get_member())) {
+                $member_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
+                    '_GUID' => '840c361ab217959f8b85141497e6e6a6',
+                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_member_ban', 'id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_actionlog')),
+                ]);
+            }
+            if (($ip != '') && ($ip != get_ip_address()) &&  (!in_array($ip, get_server_ips()))) {
+                $ip_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
+                    '_GUID' => '76979d80cdd7d3e664c9a4ec04419bc6',
+                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $ip], get_module_zone('admin_actionlog')),
+                ]);
+            }
+            if ((!is_guest($member_id)) && ($member_id != get_member())) {
+                $submitter_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', [
+                    '_GUID' => '03834262af908bf78c4eef69e78c8cff',
+                    'URL' => build_url(['page' => 'admin_ip_ban', 'type' => 'toggle_submitter_ban', 'id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_actionlog')),
+                ]);
+            }
+        }
+
+        // Display it all...
+
+        $tpl = do_template('LOOKUP_SCREEN', [
+            '_GUID' => 'dc6effaa043949940b809f6aa5a1f944',
+
+            'TITLE' => $this->title,
+
+            'ALERTS' => $alerts,
+
+            'STATS' => $stats,
+
+            'IP_LIST' => $ip_list,
+
+            'IP_BANNED' => $ip_banned ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
+            'SUBMITTER_BANNED' => $submitter_banned ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
+            'MEMBER_BANNED' => $member_banned ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
+            'MEMBER_BAN_LINK' => $member_ban_link,
+            'SUBMITTER_BAN_LINK' => $submitter_ban_link,
+            'IP_BAN_LINK' => $ip_ban_link,
+
+            'MEMBER_ID' => strval($member_id),
+            'IP' => $ip,
+            'USERNAME' => $username,
+
+            'SEARCH_URL' => $search_url,
+            'AUTHOR_URL' => $author_url,
+            'POINTS_URL' => $points_url,
+            'PROFILE_URL' => $profile_url,
+            'ACTIONLOG_URL' => $actionlog_url,
+        ]);
+
+        require_code('templates_internalise_screen');
+        return internalise_own_screen($tpl);
+    }
+
+    /**
+     * The UI to view a request.
+     *
+     * @return Tempcode The UI
+     */
+    public function request_view()
+    {
+        $fields = [];
+
+        $id = get_param_integer('id');
+
+        $rows = $GLOBALS['SITE_DB']->query_select('stats', ['*'], ['id' => $id]);
+        if (!array_key_exists(0, $rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+        }
+
+        $row = $rows[0];
+
+        $fields['DATE_TIME'] =  get_timezoned_date_time($row['date_and_time']);
+
+        $fields['PAGE_LINK'] = $row['page_link'];
+
+        list($zone, $attributes) = page_link_decode($row['page_link']);
+        $fields['URL'] = static_evaluate_tempcode(build_url($attributes, $zone));
+
+        $ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], get_module_zone('admin_lookup'));
+        $fields['IP_ADDRESS'] = hyperlink($ip_url, $row['ip'], false, true);
+
+        $member_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['member_id']], get_module_zone('admin_lookup'));
+        $fields['MEMBER_ID'] = hyperlink($member_url, '#' . strval($row['member_id']), false, true);
+
+        //$fields['SESSION_ID'] = $row['session_id'];   Best not to give out for security reasons
+
+        if ($row['tracking_code'] != '') {
+            $fields['TRACKING_CODE'] = $row['tracking_code'];
+        }
+
+        if ($row['post'] != '') {
+            $fields['POST_DATA'] = $row['post'];
+        }
+
+        $fields['REFERER'] = $row['referer'];
+
+        $fields['USER_AGENT'] = $row['browser'];
+
+        $fields['USER_OS'] = $row['operating_system'];
+
+        $fields['REQUESTED_LANGUAGE'] = $row['requested_language'];
+
+        $fields['TIME'] = do_lang_tempcode('MILLISECONDS', escape_html(integer_format($row['milliseconds'])));
+
+        require_code('templates_map_table');
+        return map_table_screen($this->title, $fields, null, null, true);
     }
 }
