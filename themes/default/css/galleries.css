@@ -252,7 +252,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 /*{+END}*/
 
 .gallery-slideshow-screen.is-bg-color-light {
-	background: #fff;
+	background: {$GET,WB};
 }
 
 .gallery-slideshow-screen.is-bg-color-dark {
@@ -347,7 +347,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	left: 0;
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-direction: column;
-	color: #fff;
+	color: {$GET,WB};
 	animation: cms-fade-in 0.3s ease-in-out;
 	pointer-events: none;
 	z-index: 10;
@@ -360,7 +360,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 
 .gallery-slideshow-screen .slideshow-details-overlay .title a,
 .gallery-slideshow-screen .slideshow-details-overlay .title a:hover {
-	color: #fff;
+	color: {$GET,WB};
 	text-decoration: none;
 }
 

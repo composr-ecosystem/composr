@@ -421,7 +421,7 @@ table {
 caption {
 	padding-top: 10px;
 	padding-bottom: 10px;
-	color: #6c757d;
+	color: {$GET,seed_secondary};
 	text-align: left;
 	caption-side: bottom;
 }
@@ -612,7 +612,7 @@ small,
 mark,
 .mark {
 	padding: 0.2em;
-	background-color: #fcf8e3;
+	background-color: {$GET,yellow_highlight_background};
 }
 
 html, body {
@@ -5161,7 +5161,7 @@ ul.associated-links-block-group {
 	padding: 6px 12px;
 	font-size: 14px;
 	line-height: 1.5;
-	color: #495057;
+	color: {$GET,text_dark};
 	background-color: {$GET,WB};
 	background-clip: padding-box;
 	border: 1px solid {$GET,standard_border};
@@ -5175,7 +5175,7 @@ ul.associated-links-block-group {
 }
 
 .form-control:focus {
-	color: #495057;
+	color: {$GET,text_dark};
 	background-color: {$GET,WB};
 	border-color: {$COLOR_LIGHTEN,{$GET,seed},25%};
 	outline: 0;
@@ -5213,7 +5213,7 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 select.form-control:focus::-ms-value {
-	color: #495057;
+	color: {$GET,text_dark};
 	background-color: {$GET,WB};
 }
 
@@ -5230,7 +5230,7 @@ select.form-control:focus::-ms-value {
 	padding-bottom: 5px;
 	margin-bottom: 0;
 	line-height: 1.5;
-	color: #212529;
+	color: {$GET,text_dark};
 	background-color: transparent;
 	border: solid transparent;
 	border-width: 1px 0;
@@ -5581,13 +5581,13 @@ fieldset:disabled a.btn {
 }
 
 .btn-light {
-	color: #212529;
+	color: {$GET,text_dark};
 	background-color: {$GET,light_color};
 	border-color: {$GET,light_color};
 }
 
 .btn-light:hover {
-	color: #212529;
+	color: {$GET,text_dark};
 	background-color: {$COLOR_DARKEN,{$GET,light_color},7.5%};
 	border-color: {$COLOR_DARKEN,{$GET,light_color},10%};
 }
@@ -5599,7 +5599,7 @@ fieldset:disabled a.btn {
 
 .btn-light.disabled,
 .btn-light:disabled {
-	color: #212529;
+	color: {$GET,text_dark};
 	background-color: {$GET,light_color};
 	border-color: {$GET,light_color};
 }
@@ -5607,7 +5607,7 @@ fieldset:disabled a.btn {
 .btn-light:not(:disabled):not(.disabled):active,
 .btn-light:not(:disabled):not(.disabled).active,
 .show > .btn-light.dropdown-toggle {
-	color: #212529;
+	color: {$GET,text_dark};
 	background-color: {$COLOR_DARKEN,{$GET,light_color},10%};
 	border-color: {$COLOR_DARKEN,{$GET,light_color},12.5%};
 }
@@ -5626,8 +5626,8 @@ fieldset:disabled a.btn {
 
 .btn-dark:hover {
 	color: {$GET,WB};
-	background-color: #23272b;
-	border-color: #1d2124;
+	background-color: {$COLOR_DARKEN,{$GET,dark_color},7.5%};
+	border-color: {$COLOR_DARKEN,{$GET,dark_color},10%};
 }
 
 .btn-dark:focus,
@@ -5815,14 +5815,14 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-light:hover {
-	color: #212529;
+	color: {$GET,text_dark};
 	background-color: {$GET,light_color};
 	border-color: {$GET,light_color};
 }
 
 .btn-outline-light:focus,
 .btn-outline-light.focus {
-	box-shadow: 0 0 0 3px {$COLOR_RGBA,#212529,0.5};
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,text_dark},0.5};
 }
 
 .btn-outline-light.disabled,
@@ -5834,7 +5834,7 @@ fieldset:disabled a.btn {
 .btn-outline-light:not(:disabled):not(.disabled):active,
 .btn-outline-light:not(:disabled):not(.disabled).active,
 .show > .btn-outline-light.dropdown-toggle {
-	color: #212529;
+	color: {$GET,text_dark};
 	background-color: {$GET,light_color};
 	border-color: {$GET,light_color};
 }
@@ -5842,7 +5842,7 @@ fieldset:disabled a.btn {
 .btn-outline-light:not(:disabled):not(.disabled):active:focus,
 .btn-outline-light:not(:disabled):not(.disabled).active:focus,
 .show > .btn-outline-light.dropdown-toggle:focus {
-	box-shadow: 0 0 0 3px {$COLOR_RGBA,#212529,0.5};
+	box-shadow: 0 0 0 3px {$COLOR_RGBA,{$GET,text_dark},0.5};
 }
 
 .btn-outline-dark {
@@ -5890,7 +5890,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-link:hover {
-	color: #0056b3;
+	color: {$GET,a.hover};
 	text-decoration: underline;
 	background-color: transparent;
 	border-color: transparent;
@@ -5903,7 +5903,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-link:disabled, .btn-link.disabled {
-	color: #6c757d;
+	color: {$GET,seed_secondary};
 	pointer-events: none;
 }
 
@@ -6012,7 +6012,7 @@ input[type="button"].btn-block {
 	padding: 7px 0;
 	margin: 2px 0 0;
 	font-size: 14px;
-	color: #212529;
+	color: {$GET,text_dark};
 	text-align: left;
 	list-style: none;
 	background-color: {$GET,WB};
@@ -6138,27 +6138,29 @@ input[type="button"].btn-block {
 	padding: 4px 21px;
 	clear: both;
 	font-weight: 400;
-	color: #212529;
+	color: {$GET,text_dark};
 	text-align: inherit;
 	white-space: nowrap;
 	background-color: transparent;
 	border: 0;
 }
 
-.dropdown-item:hover, .dropdown-item:focus {
-	color: #16181b;
+.dropdown-item:hover,
+.dropdown-item:focus {
+	color: {$GET,text_dark};
 	text-decoration: none;
 	background-color: {$GET,light_color};
 }
 
-.dropdown-item.active, .dropdown-item:active {
+.dropdown-item.active, 
+.dropdown-item:active {
 	color: {$GET,WB};
 	text-decoration: none;
 	background-color: {$GET,seed};
 }
 
 .dropdown-item.disabled, .dropdown-item:disabled {
-	color: #6c757d;
+	color: {$GET,seed_secondary};
 	background-color: transparent;
 }
 
@@ -6171,14 +6173,14 @@ input[type="button"].btn-block {
 	padding: 7px 21px;
 	margin-bottom: 0;
 	font-size: 12px;
-	color: #6c757d;
+	color: {$GET,seed_secondary};
 	white-space: nowrap;
 }
 
 .dropdown-item-text {
 	display: block;
 	padding: 4px 21px;
-	color: #212529;
+	color: {$GET,text_dark};
 }
 
 .btn-group,
@@ -6386,11 +6388,11 @@ input[type="button"].btn-block {
 	font-size: 14px;
 	font-weight: 400;
 	line-height: 1.5;
-	color: #495057;
+	color: {$GET,text_dark};
 	text-align: center;
 	white-space: nowrap;
 	background-color: {$GET,input_disabled_background};
-	border: 1px solid #ced4da;
+	border: 1px solid {$GET,standard_border};
 	border-radius: {$GET,border_radius};
 }
 
@@ -7622,7 +7624,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	align-items: center;
 	justify-content: center;
 	width: 15%;
-	color: #fff;
+	color: {$GET,WB};
 	text-align: center;
 	opacity: 0.5;
 	transition: opacity 0.2s linear;
@@ -7632,7 +7634,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 .cms-slider-control-prev:focus,
 .cms-slider-control-next:hover,
 .cms-slider-control-next:focus {
-	color: #fff;
+	color: {$GET,WB};
 	text-decoration: none;
 	outline: 0;
 	opacity: .9;
@@ -7710,7 +7712,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 }
 
 .cms-slider-indicators .active {
-	background-color: #fff;
+	background-color: {$GET,WB};
 }
 
 .cms-slider-caption {
@@ -7721,7 +7723,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	z-index: 10;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	color: #fff;
+	color: {$GET,WB};
 	text-align: center;
 }
 
