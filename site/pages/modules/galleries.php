@@ -1315,8 +1315,8 @@ HTML;
             $where .= ' AND add_date > ' . strval(time() - get_param_integer('days') * 60 * 60 * 24);
         }
 
-        $query_rows_videos = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS r_id' . $sql_suffix_videos . ' FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . ' WHERE ' . $where . $extra_where_video . ' ORDER BY ' . $sort, null, 0, false, true, ['title' => 'SHORT_TRANS', 'description' => 'LONG_TRANS__COMCODE']);
-        $query_rows_images = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS r_id' . $sql_suffix_images . ' FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . ' WHERE ' . $where . $extra_where_image . ' ORDER BY ' . $sort, null, 0, false, true, ['title' => 'SHORT_TRANS', 'description' => 'LONG_TRANS__COMCODE']);
+        $query_rows_videos = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS r_id' . $sql_suffix_videos . ' FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . ' WHERE ' . $where . $extra_where_video . ' ORDER BY ' . $sort, null, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
+        $query_rows_images = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS r_id' . $sql_suffix_images . ' FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . ' WHERE ' . $where . $extra_where_image . ' ORDER BY ' . $sort, null, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
 
         $query_rows = array_merge($query_rows_images, $query_rows_videos);
 
@@ -1345,7 +1345,7 @@ HTML;
             $type = array_key_exists('video_length', $row) ? 'video' : 'image';
             $type_plural = $type . 's';
 
-            $just_row = db_map_restrict($row, ['description']) + ['id' => $row['r_id']];
+            $just_row = db_map_restrict($row, ['the_description']) + ['id' => $row['r_id']];
 
             $entry_title = get_translated_text($row['title']);
             $entry_description = get_translated_tempcode($type_plural, $just_row, 'description');
