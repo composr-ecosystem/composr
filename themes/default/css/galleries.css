@@ -256,7 +256,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 }
 
 .gallery-slideshow-screen.is-bg-color-dark {
-	background: #222;
+	background: {$COLOR_LIGHTEN,{$GET,BW},13.5%};
 }
 
 .gallery-slideshow-screen .slideshow-content {
@@ -271,7 +271,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	display: table;
 	margin: 0 auto;
 	padding: 5px 10px;
-	background: #444;
+	background: {$COLOR_LIGHTEN,{$GET,BW},20%};
 	color: white;
 	border-bottom-left-radius: {$GET,border_radius};
 	border-bottom-right-radius: {$GET,border_radius};
@@ -393,7 +393,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	border: none;
 	cursor: pointer;
 	transition: opacity 0.2s ease-in-out;
-	color: #333;
+	color: {$COLOR_LIGHTEN,{$GET,BW},20%};
 	opacity: 0.8;
 }
 
@@ -426,7 +426,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	/*flex-basis: 0;*/
 	height: 100px;
 	max-height: 100px;
-	background: #333;
+	background: {$COLOR_LIGHTEN,{$GET,BW},20%};
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -467,7 +467,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	order: 2;
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-direction: column;
-	background: #333;
+	background: {$COLOR_LIGHTEN,{$GET,BW},20%};
 }
 
 /*{+START,CSS_MODE,mobile}*/
@@ -504,7 +504,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 
 .gallery-slideshow-screen .slideshow-tab {
 	max-width: 400px;
-	background: #bbb;
+	background: {$COLOR_DARKEN,{$GET,WB},26.8%};
 	overflow: auto;
 	order: 3;
 }
@@ -1020,7 +1020,7 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 /* Homepage Hero Slider */
 
 #slider-homepage-hero {
-	background: #555;
+	background: {$COLOR_LIGHTEN,{$GET,BW},33.5%};
 	overflow: hidden;
 	position: relative;
 	color: {$GET,WB};
