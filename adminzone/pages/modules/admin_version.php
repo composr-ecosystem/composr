@@ -1116,6 +1116,8 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->drop_table_if_exists('staff_website_monitoring');
 
             $GLOBALS['SITE_DB']->drop_table_if_exists('link_tracker');
+
+            $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_include_on_sitemap', 'BINARY', 1);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 18)) {
@@ -1130,7 +1132,6 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', ['l_member_id', 'l_notification_code', 'l_code_category(10)']);
 
-            $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_include_on_sitemap', 'BINARY', 1);
             require_code('global4');
             $rows = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_zone', 'the_page']);
             foreach ($rows as $row) {
