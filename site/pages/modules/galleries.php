@@ -1348,7 +1348,7 @@ HTML;
             $just_row = db_map_restrict($row, ['the_description']) + ['id' => $row['r_id']];
 
             $entry_title = get_translated_text($row['title']);
-            $entry_description = get_translated_tempcode($type_plural, $just_row, 'description');
+            $entry_description = get_translated_tempcode($type_plural, $just_row, 'the_description');
 
             $probe_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $cat, 'layout_mode' => get_param_string('layout_mode', null), 'probe_type' => $type, 'probe_id' => $row['r_id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($sort == 'add_date DESC') ? null : $sort, 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
             $view_url_2 = build_url(['page' => '_SELF', 'type' => $type, 'id' => $row['r_id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($sort == 'add_date DESC') ? null : $sort, 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
