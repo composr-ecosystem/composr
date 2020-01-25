@@ -25,6 +25,11 @@
 *.xsl text
 *.map text
 
+# Exceptions
+/_tests/assets/text/utf-16.txt binary
+/_tests/assets/text/utf-8.txt binary
+/_tests/assets/text/ïso-8859-1.txt binary
+
 # Other text formats
 *.bat text
 *.config text

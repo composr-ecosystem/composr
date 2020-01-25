@@ -359,6 +359,13 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
     if ((function_exists('iconv')) && ($VALID_ENCODING) && (get_value('disable_iconv') !== '1')) {
         // iconv option
 
+        // LE is the de-facto standard now for everything outside binary network protocols
+        if ($input_charset == 'utf-16') {
+            $input_charset = 'utf-16LE';
+        } elseif ($input_charset == 'utf-8') {
+            $input_charset = 'utf-8LE';
+        }
+
         $test = @iconv($input_charset, $internal_charset . '//TRANSLIT', $data);
         if (cms_empty_safe($test)) {
             $test = @iconv($input_charset, $internal_charset . '//IGNORE', $data);
