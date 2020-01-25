@@ -428,9 +428,9 @@ You can also do a blank search to just see miscellaneous logged hits, which will
  1_key="Referrer"                1_value="A page of a 3rd-party website linking to a page on your website."
  2_key="Geo-location"            2_value="The process of using some type of individually-identifiable information to find out where in the world somebody is."
  3_key="KPI"                     3_value="Key Performance Indicator, a measurement that has been chosen for marketing purposes."
- 3_key="Multivariate testing"		4_value="An analytical technique to see which of multiple variations performs best."
- 4_key="Split testing"				5_value="The same as Multivariate testing. A more conversational way of putting it."
- 5_key="A/B testing"					6_value="Multivariate testing with exactly two versions (original version and 1 variation)."
+ 4_key="Multivariate testing"		4_value="An analytical technique to see which of multiple variations performs best."
+ 5_key="Split testing"				5_value="The same as Multivariate testing. A more conversational way of putting it."
+ 6_key="A/B testing"					6_value="Multivariate testing with exactly two versions (original version and 1 variation)."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

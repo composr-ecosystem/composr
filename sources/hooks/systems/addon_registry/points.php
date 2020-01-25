@@ -308,6 +308,14 @@ class Hook_addon_registry_points
             'VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
         ]);
 
+        $points_records = [];
+        $points_records[] = [
+            'LABEL' => lorem_phrase(),
+            'COUNT' => placeholder_number(),
+            'POINTS_EACH' => placeholder_number(),
+            'POINTS_TOTAL' => placeholder_number(),
+        ];
+
         $content = do_lorem_template('POINTS_PROFILE', [
             'MEMBER' => placeholder_id(),
             'PROFILE_URL' => placeholder_url(),
@@ -321,21 +329,13 @@ class Hook_addon_registry_points
             'FROM' => $from,
             'CHARGELOG_DETAILS' => $chargelog_details,
             'GIVE' => $give_template,
+            'POINTS_RECORDS' => $points_records,
         ]);
-
-        $points_records = [];
-        $points_records[] = [
-            'LABEL' => lorem_phrase(),
-            'COUNT' => placeholder_number(),
-            'POINTS_EACH' => placeholder_number(),
-            'POINTS_TOTAL' => placeholder_number(),
-        ];
 
         return [
             lorem_globalise(do_lorem_template('POINTS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'CONTENT' => $content,
-                'POINTS_RECORDS' => $points_records,
             ]), null, '', true)
         ];
     }
