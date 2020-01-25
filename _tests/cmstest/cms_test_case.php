@@ -78,7 +78,9 @@ class cms_test_case extends WebTestCase
     public function extend_cqc_call($url)
     {
         $url .= '&api=1&todo=1';
-        $url .= '&codesniffer=1';
+        if (strpos(shell_exec('npx eslint -v'), 'v') !== false) {
+            $url .= '&codesniffer=1';
+        }
         $url .= '&base_path=' . urlencode(get_file_base());
         if ($this->debug) {
             $url .= '&manual_checks=1&pedantic=1&security=1&mixed=1';
