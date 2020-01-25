@@ -382,9 +382,11 @@ function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null)
 function _get_boms()
 {
     return [
-        'utf-32' => hex2bin('fffe0000'),
-        'utf-16' => hex2bin('fffe'),
-        'utf-8' => hex2bin('efbbbf') ,
+        'utf-32' => hex2bin('fffe0000'), // LE, which is de-facto standard that convert_to_internal_encoding assumes
+        'utf-32BE' => hex2bin('0000feff'),
+        'utf-16' => hex2bin('fffe'), // LE, which (...)
+        'utf-16BE' => hex2bin('feff'),
+        'utf-8' => hex2bin('efbbbf') , // No LE vs BE distinction for utf-8
         'GB-18030' => hex2bin('84319533'),
     ];
 }
