@@ -324,6 +324,7 @@ class Hook_addon_registry_points
             'REMAINING' => placeholder_number(),
             'GIFT_POINTS_USED' => placeholder_number(),
             'GIFT_POINTS_AVAILABLE' => placeholder_number(),
+            'POINTS_GAINED_GIVEN' => placeholder_number(),
             'DAYS_JOINED' => placeholder_number(),
             'TO' => $to,
             'FROM' => $from,

@@ -235,6 +235,13 @@ class Hook_addon_registry_stats
      */
     public function tpl_preview__administrative__stats_graph_screen()
     {
+        $existing_kpis = [];
+        $existing_kpis[] = [
+            'KPI_ID' => placeholder_id(),
+            'KPI_TITLE' => lorem_phrase(),
+            'KPI_EDIT_URL' => placeholder_url(),
+        ];
+
         return [
             lorem_globalise(do_lorem_template('STATS_GRAPH', [
                 'GRAPH_NAME' => lorem_word(),

@@ -201,6 +201,8 @@ class _broken_links_test_set extends cms_test_case
             'http://purl.org/dc/terms/',
             'https://notepad-plus-plus.org/',
             'https://compo.sr/themeing-changes.htm',
+            'https://pixabay.com/',
+            'https://www.patreon.com/posts/18644315',
         ])) {
             return;
         }
