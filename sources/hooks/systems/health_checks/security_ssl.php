@@ -309,7 +309,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             return;
         }
 
-        if ((!addon_installed('ssl')) && (substr(get_base_url(), 0, 7) != 'https://')) {
+        if (((!addon_installed('ssl')) || ($GLOBALS['SITE_DB']->query_select_value('https_pages', 'COUNT(*)') == 0)) && (substr(get_base_url(), 0, 7) != 'https://')) {
             $this->stateCheckSkipped('SSL not enabled');
             return;
         }
@@ -320,15 +320,19 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             $context = stream_context_create(['ssl' => ['allow_self_signed' => true, 'verify_peer_name' => false, 'verify_peer' => false, 'capture_peer_cert' => true]]);
             $errno = null;
             $errstr = null;
-            $read = stream_socket_client('ssl://' . $domain . ':443', $errno, $errstr, 5.0, STREAM_CLIENT_CONNECT, $context);
-            $cert = stream_context_get_params($read);
-            $certinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
-
-            if (isset($certinfo['validTo_time_t'])) {
-                $expiry = $certinfo['validTo_time_t'];
-                $this->assertTrue($expiry > time() - 60 * 60 * 24 * 7, 'SSL certificate seems to be expiring within a week or already expired (' . get_timezoned_date($expiry) . ')');
+            $read = @stream_socket_client('ssl://' . $domain . ':443', $errno, $errstr, 5.0, STREAM_CLIENT_CONNECT, $context);
+            if ($read === false) {
+                $this->stateCheckSkipped('Failed to establish SSL connection to ' . $domain);
             } else {
-                $this->stateCheckSkipped('Could not read expiry time');
+                $cert = stream_context_get_params($read);
+                $certinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
+
+                if (isset($certinfo['validTo_time_t'])) {
+                    $expiry = $certinfo['validTo_time_t'];
+                    $this->assertTrue($expiry > time() - 60 * 60 * 24 * 7, 'SSL certificate seems to be expiring within a week or already expired (' . get_timezoned_date($expiry) . ')');
+                } else {
+                    $this->stateCheckSkipped('Could not read expiry time for ' . $domain);
+                }
             }
         } else {
             $this->stateCheckSkipped('OpenSSL extension is required for this test');

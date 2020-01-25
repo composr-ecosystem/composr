@@ -326,7 +326,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $files = array_merge($files, get_directory_contents($fb . '/uploads', 'uploads', 0, true, true, ['php'])); // common uploads location
         $files = array_merge($files, get_directory_contents($fb . '/themes', 'themes', 0, true, true, ['php'])); // common uploads location
 
-        foreach ($files as $file) {
+        foreach (array_unique($files) as $file) {
             $c = @cms_file_get_contents_safe($fb . '/' . $file);
             if ($c !== false) {
                 $trigger = $this->isLikelyWebShell($file, $c);

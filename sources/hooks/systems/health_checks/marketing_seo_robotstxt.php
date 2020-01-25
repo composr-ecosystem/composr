@@ -97,6 +97,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         $rules = $this->robots_parse(null, true);
         if ($rules === null) {
             $this->stateCheckSkipped('No robots.txt file');
+            return;
         }
 
         $url = $this->get_page_url();
@@ -169,6 +170,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         $rules = $this->robots_parse(null, true);
         if ($rules === null) {
             $this->stateCheckSkipped('No robots.txt file');
+            return;
         }
 
         $scripts = [ // Really bad if these get indexed on Google
