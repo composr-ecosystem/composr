@@ -58,4 +58,4 @@ The last option is the expiry date for a banner which will only display until th
 [/list]
 Your banners should now display.
 
-{$SET,tutorial_tags,Banners,eCommerce,Banners,novice}{$SET,tutorial_add_date,Aug 2013}{$SET,tutorial_summary,Banners make up a key part of many websites and Composr has a banner system which allows you to display a number of banners in any of your site panels.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Banners,eCommerce,novice}{$SET,tutorial_add_date,Aug 2013}{$SET,tutorial_summary,Banners make up a key part of many websites and Composr has a banner system which allows you to display a number of banners in any of your site panels.}[block]main_tutorial_rating[/block]

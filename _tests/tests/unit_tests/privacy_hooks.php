@@ -86,6 +86,10 @@ class privacy_hooks_test_set extends cms_test_case
         }
 
         foreach ($all_tables as $table) {
+            if ($table == 'temp_test') {
+                continue;
+            }
+
             $all_fields = collapse_2d_complexity('m_name', 'm_type', $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table], 'ORDER BY m_name'));
             $relevant_fields_member_id = [];
             $relevant_fields_ip_address = [];

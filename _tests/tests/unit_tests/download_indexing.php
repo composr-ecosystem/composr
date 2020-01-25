@@ -23,6 +23,8 @@ class download_indexing_test_set extends cms_test_case
         parent::setUp();
 
         require_code('downloads2');
+
+        set_option('dload_search_index', '1');
     }
 
     public function testTarIndexing()
@@ -42,6 +44,11 @@ class download_indexing_test_set extends cms_test_case
 
     public function testZipIndexing()
     {
+        if ((!function_exists('zip_open')) && (get_option('unzip_cmd') == '')) {
+            $this->asssertTrue(false, 'Zip is not enabled on server, cannot run test');
+            return;
+        }
+
         $file_array = [
             [
                 'name' => 'test.txt',

@@ -106,7 +106,7 @@ class Hook_snippet_template_editor_save
             list($zone, $page) = explode(':', $file, 2);
 
             require_code('zones3');
-            save_comcode_page($zone, $page, get_site_default_lang(), $contents, null, null, null, null, time(), 0, null, null, null, null);
+            save_comcode_page($zone, $page, get_site_default_lang(), $contents, null, null, null, null, null, time(), 0, null, null, null, null);
         }
 
         return do_lang_tempcode('SUCCESS');

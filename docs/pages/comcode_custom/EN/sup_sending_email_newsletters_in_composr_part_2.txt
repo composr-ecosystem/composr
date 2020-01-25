@@ -22,4 +22,4 @@ Fill in the rest of the form as you would have for part 1 and then click Preview
 
 There are benefits to both types of these e-mails and at times you may choose to make use of both types. On occasions you may just want to send a quick update to your site members informing them of some news and at other times you may want to choose to send them a general update.
 
-{$SET,tutorial_tags,Newsletters,newsletter,Newsletters,novice}{$SET,tutorial_add_date,Jul 2013}{$SET,tutorial_summary,This is part 2 of how to send an e-mail newsletter through the Composr system. This part deals with the automated content creation for your e-mail newsletters.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Newsletters,newsletter,novice}{$SET,tutorial_add_date,Jul 2013}{$SET,tutorial_summary,This is part 2 of how to send an e-mail newsletter through the Composr system. This part deals with the automated content creation for your e-mail newsletters.}[block]main_tutorial_rating[/block]

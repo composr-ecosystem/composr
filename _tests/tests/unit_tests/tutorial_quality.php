@@ -47,6 +47,7 @@ class tutorial_quality_test_set extends cms_test_case
                 continue;
             }
 
+            $this->assertTrue(!in_array('', $tutorial['raw_tags']), 'Empty tag in ' . $tutorial_name);
             $this->assertTrue($tutorial['raw_tags'] == array_unique($tutorial['raw_tags']), 'Tag duplication for ' . $tutorial_name);
 
             $this->assertTrue($tutorial['title'] != '', 'Title undefined for ' . $tutorial_name);

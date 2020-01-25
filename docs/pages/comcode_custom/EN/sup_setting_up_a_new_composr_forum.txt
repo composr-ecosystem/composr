@@ -56,4 +56,4 @@ Composr forums offer extremely easy access to the most common forum moderation t
 [/list]
 To activate any of these options simply select the checkbox to the right hand side of each thread, choose the moderation option you want and click Proceed. In some cases you will be taken to another screen which allows you to add a reason why an action is being done so other staff are aware.
 
-{$SET,tutorial_tags,Forum,Social,Forum,novice}{$SET,tutorial_add_date,Apr 2013}{$SET,tutorial_summary,One of Composr's core features is the forum. Composr forums include many of the common forum features found within other well-known forum systems. This tutorial covers the basics.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Forum,Social,novice}{$SET,tutorial_add_date,Apr 2013}{$SET,tutorial_summary,One of Composr's core features is the forum. Composr forums include many of the common forum features found within other well-known forum systems. This tutorial covers the basics.}[block]main_tutorial_rating[/block]

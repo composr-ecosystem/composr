@@ -25,4 +25,4 @@ In addition to all of the above protection, Composr offers an impressive set of 
 
 As you can see Composr offers a fantastic set of security options.
 
-{$SET,tutorial_tags,Security,Security,novice}{$SET,tutorial_add_date,Sep 2013}{$SET,tutorial_summary,The inbuilt security of Composr is one of its strongest features. This ranges from many inbuilt features to the close integration of features using the same very high coding standards.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Security,novice}{$SET,tutorial_add_date,Sep 2013}{$SET,tutorial_summary,The inbuilt security of Composr is one of its strongest features. This ranges from many inbuilt features to the close integration of features using the same very high coding standards.}[block]main_tutorial_rating[/block]

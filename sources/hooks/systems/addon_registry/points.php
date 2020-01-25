@@ -312,17 +312,6 @@ class Hook_addon_registry_points
             'MEMBER' => placeholder_id(),
             'PROFILE_URL' => placeholder_url(),
             'USERNAME' => lorem_word(),
-            'POINTS_JOINING' => placeholder_number(),
-            'POINTS_PER_DAILY_VISIT' => placeholder_number(),
-            'POINTS_RATING' => placeholder_number(),
-            'POINTS_VOTING' => placeholder_number(),
-            'POINTS_POSTING' => placeholder_number(),
-            'POINTS_PER_DAY' => placeholder_number(),
-            'POST_COUNT' => placeholder_number(),
-            'POINTS_GAINED_GIVEN' => placeholder_number(),
-            'POINTS_GAINED_VISITING' => placeholder_number(),
-            'POINTS_GAINED_RATING' => placeholder_number(),
-            'POINTS_GAINED_VOTING' => placeholder_number(),
             'POINTS_USED' => placeholder_number(),
             'REMAINING' => placeholder_number(),
             'GIFT_POINTS_USED' => placeholder_number(),
@@ -332,24 +321,21 @@ class Hook_addon_registry_points
             'FROM' => $from,
             'CHARGELOG_DETAILS' => $chargelog_details,
             'GIVE' => $give_template,
-            'WIKI_POST_COUNT' => placeholder_number(),
-            'POINTS_WIKI_POSTING' => placeholder_number(),
-            'CHAT_POST_COUNT' => placeholder_number(),
-            'POINTS_CHAT_POSTING' => placeholder_number(),
-            'MULT_POINTS_RATING' => placeholder_number(),
-            'MULT_POINTS_VOTING' => placeholder_number(),
-            'MULT_POINTS_CHAT_POSTING' => placeholder_number(),
-            'MULT_POINTS_WIKI_POSTING' => placeholder_number(),
-            'MULT_POINTS_POSTING' => placeholder_number(),
-            'MULT_POINTS_PER_DAY' => placeholder_number(),
-            'MULT_POINTS_VISITING' => placeholder_number(),
-            'POINTS_CREDITS' => '', // From non-bundled addon
         ]);
+
+        $points_records = [];
+        $points_records[] = [
+            'LABEL' => lorem_phrase(),
+            'COUNT' => placeholder_number(),
+            'POINTS_EACH' => placeholder_number(),
+            'POINTS_TOTAL' => placeholder_number(),
+        ];
 
         return [
             lorem_globalise(do_lorem_template('POINTS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'CONTENT' => $content,
+                'POINTS_RECORDS' => $points_records,
             ]), null, '', true)
         ];
     }

@@ -35,4 +35,4 @@ Once this is up and running you should see options to schedule a post within the
 
 You will also need to make sure you have the website time settings correct otherwise the article may not appear at the correct time.
 
-{$SET,tutorial_tags,Content,Content,novice}{$SET,tutorial_add_date,May 2013}{$SET,tutorial_summary,This tutorial explains how to set up Cron, and therefore scheduled postings, on a real webhost.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Content,novice}{$SET,tutorial_add_date,May 2013}{$SET,tutorial_summary,This tutorial explains how to set up Cron, and therefore scheduled postings, on a real webhost.}[block]main_tutorial_rating[/block]

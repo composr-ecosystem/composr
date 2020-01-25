@@ -41,9 +41,9 @@ class sitemap_test_set extends cms_test_case
         $valid_node_types = null;
         $child_cutoff = null;
         $max_recurse_depth = null;
-        $options = SITEMAP_GEN_NONE;
+        $options = SITEMAP_GEN_NONE | SITEMAP_GEN_MACHINE_SITEMAP;
         $zone = '_SEARCH';
-        $meta_gather = SITEMAP_GATHER__ALL | SITEMAP_GEN_USE_PAGE_GROUPINGS;
+        $meta_gather = SITEMAP_GATHER__ALL;
 
         $this->sitemap = retrieve_sitemap_node($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $options, $zone, $meta_gather);
         $this->flattened = $this->flatten_sitemap($this->sitemap);

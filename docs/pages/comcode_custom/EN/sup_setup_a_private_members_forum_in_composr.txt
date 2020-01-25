@@ -59,4 +59,4 @@ Once you have filled in the permissions for all of the groups that have view acc
 
 You should now have a new forum and zone where only those in the new usergroup and site staff have access to it. You will need to remember to set the permissions for any new pages in the new zone or subforums to have the correct permissions too.
 
-{$SET,tutorial_tags,Forum,Social,Forum,Members,novice}{$SET,tutorial_add_date,Jul 2013}{$SET,tutorial_summary,Composr works extremely well as a base for a community website and a common task you may face is wanting to set up a private members area of the website. If you are an owner or moderator for a large community you may find this useful.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Forum,Social,Members,novice}{$SET,tutorial_add_date,Jul 2013}{$SET,tutorial_summary,Composr works extremely well as a base for a community website and a common task you may face is wanting to set up a private members area of the website. If you are an owner or moderator for a large community you may find this useful.}[block]main_tutorial_rating[/block]

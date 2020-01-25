@@ -46,4 +46,4 @@ Once the user has read the text and typed the answer, they will be able to see t
 
 By now, you should be well on your way to creating a great forum and the start of your community!
 
-{$SET,tutorial_tags,Forum,Social,Forum,novice}{$SET,tutorial_add_date,Dec 2014}{$SET,tutorial_summary,Forums can be small or large, but you need to think about the structure and the user experience. Thankfully Composr makes it very easy for us to create forums.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Forum,Social,novice}{$SET,tutorial_add_date,Dec 2014}{$SET,tutorial_summary,Forums can be small or large, but you need to think about the structure and the user experience. Thankfully Composr makes it very easy for us to create forums.}[block]main_tutorial_rating[/block]

@@ -20,4 +20,4 @@ In the advanced section of this page there is the option to set a URL scheme. If
 
 Composr will automatically mark up the title you give your content as the H1 tag and the main meta title for your page saving on duplication on filling this in. Most content types in Composr also have a keywords and description boxes to fill in to set your metadata for the content you are adding. You can also set a keyword density check for your content when you save your page.
 
-{$SET,tutorial_tags,SEO,SEO,novice}{$SET,tutorial_add_date,Aug 2013}{$SET,tutorial_summary,Composr has a number of inbuilt features to aid your SEO efforts. This tutorial goes over some.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,SEO,novice}{$SET,tutorial_add_date,Aug 2013}{$SET,tutorial_summary,Composr has a number of inbuilt features to aid your SEO efforts. This tutorial goes over some.}[block]main_tutorial_rating[/block]
