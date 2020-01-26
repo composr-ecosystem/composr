@@ -408,7 +408,6 @@ function handle_string_bom($contents, $default_charset = null)
     } else {
         $file_charset = $default_charset;
     }
-
     $contents = convert_to_internal_encoding($contents, $file_charset);
 
     return $contents;
@@ -436,16 +435,8 @@ function detect_string_bom($contents)
     $magic_data = substr($contents, 0, $max_bom_len);
 
     foreach ($boms as $charset => $bom) {
-        // Big-endian (most significant byte first)
         if (substr($magic_data, 0, strlen($bom)) == $bom) {
             $file_charset = $charset;
-            $bom_found = $bom;
-            break;
-        }
-
-        // Little-endian (most significant byte last - which is what happens on Intel and most ARM architectures IF characters are being stored in wchars rather than raw byte strings)
-        if (substr($magic_data, 0, strlen($bom)) == strrev($bom)) {
-            $file_charset = $charset . 'LE';
             $bom_found = $bom;
             break;
         }

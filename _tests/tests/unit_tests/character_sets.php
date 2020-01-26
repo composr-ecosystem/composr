@@ -67,18 +67,22 @@ class character_sets_test_set extends cms_test_case
         $path_a = $path_stub . '/utf-16.txt'; // Trickiest case
         $path_b = $path_stub . '/utf-8.txt';
         $path_c = $path_stub . '/iso-8859-1.txt';
+        $path_d = $path_stub . '/utf-16be.txt';
 
         $url_stub = get_base_url() . '/_tests/assets/text';
         $url_a = $url_stub . '/utf-16.txt'; // Trickiest case
         $url_b = $url_stub . '/utf-8.txt';
         $url_c = $url_stub . '/iso-8859-1.txt';
+        $url_d = $url_stub . '/utf-16be.txt';
 
         // Test easy reading
         $a = cms_file_get_contents_safe($path_a, FILE_READ_BOM);
         $b = cms_file_get_contents_safe($path_b, FILE_READ_BOM);
         $c = cms_file_get_contents_safe($path_c, FILE_READ_BOM, 'ISO-8859-1');
+        $d = cms_file_get_contents_safe($path_d, FILE_READ_BOM);
         $this->assertTrue($a == $b);
         $this->assertTrue($a == $c);
+        $this->assertTrue($a == $d);
 
         // Test line array reading
         $this->assertTrue(cms_file_safe($path_a) == [$a]);
