@@ -320,6 +320,7 @@ class Hook_addon_registry_core_feedback_features
             'OPTIONS' => '',
             'IS_THREADED' => false,
             'HASH' => '',
+            'CONTENT_TYPE' => '',
         )));
 
         return array(
@@ -456,7 +457,7 @@ class Hook_addon_registry_core_feedback_features
         return array(
             lorem_globalise(do_lorem_template('TRACKBACK_WRAPPER', array(
                 'TRACKBACKS' => $content,
-                'TRACKBACK_PAGE' => lorem_word(),
+                'TRACKBACK_FEEDBACK_TYPE' => lorem_word(),
                 'TRACKBACK_ID' => placeholder_id(),
                 'TRACKBACK_TITLE' => lorem_phrase(),
             )), null, '', true)
