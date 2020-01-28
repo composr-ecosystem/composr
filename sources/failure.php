@@ -273,7 +273,7 @@ function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $sys
             @error_log('PHP ' . ucwords($type) . ': ' . $php_error_label, 0);
         }
 
-        // Send error mail
+        // Send error e-mail
         $trace = get_html_trace();
         relay_error_notification($php_error_label . '[html]' . $trace->evaluate() . '[/html]');
     }
@@ -1022,7 +1022,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
     if ((function_exists('get_value')) && (!$GLOBALS['BOOTSTRAPPING']) && (array_key_exists('SITE_DB', $GLOBALS)) && ($GLOBALS['SITE_DB'] !== null)) {
         $num = intval(get_value('num_error_mails_' . date('Y-m-d'), null, true)) + 1;
         if ($num == 51) {
-            return; // We've sent too many error mails today
+            return; // We've sent too many error e-mails today
         }
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values_elective WHERE the_name LIKE \'' . db_encode_like('num\_error\_mails\_%') . '\'');
         persistent_cache_delete('VALUES');
@@ -1118,6 +1118,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         ((strpos($text, 'No such file or directory') === false) || ((strpos($text, 'admin_setupwizard') === false))) &&
         (strpos($text, 'File(/tmp/) is not within the allowed path') === false)
     ) {
+        // Send error e-mail (telemetry) to developers
         require_code('mail');
         dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, ['errors_final' . strval(cms_version()) . '@compo.sr'], '', '', '', ['no_cc' => true, 'as_admin' => true]);
     }

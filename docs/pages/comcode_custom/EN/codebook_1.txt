@@ -1004,7 +1004,7 @@ Composr has a multi-faceted testing strategy as there is no perfect solution for
 7) Public beta testing and bug reporting.
 8) Composr development mode, which applies lots of tricksy things, checking various things are done at run-time, and turning features on and off randomly, and doing some performance testing.
 9) Other things we use: MySQL strict mode, Strict JavaScript errors.
-10) Composr error mails.
+10) Composr error e-mails (telemetry).
 
 [title="3"]Software for editing code[/title]
 
@@ -1169,7 +1169,7 @@ To raise an error you'll typically call one of these functions:.
 
 Use [tt]trigger_error[/tt]/[tt]fatal_exit[/tt] if it is a totally unexpected but detectable error condition (i.e. not user error, not a common system error, i.e. very likely a Composr bug). As such it would be subject to logging and error notifications. As [tt]trigger_error[/tt] goes through the Composr's handling of the PHP error system, the configuration options for how to handle PHP errors are respected. In many cases [tt]trigger_error[/tt] will effectively call [tt]fatal_exit[/tt]/[tt]attach_message[/tt] based on these settings. The other functions are to be called directly in detectable situations that are typically user errors, where you want to specify the precise handling for them.
 
-[tt]warn_exit[/tt] and [tt]attach_message[/tt] can be told to do logging and error notifications also via setting a special parameter. In this case though no error mail will send to ocProducts, as it's not a Composr bug.
+[tt]warn_exit[/tt] and [tt]attach_message[/tt] can be told to do logging and error notifications also via setting a special parameter. In this case though no error e-mail will send to ocProducts, as it's not a Composr bug.
 
 {|
 ! Function
@@ -1177,7 +1177,7 @@ Use [tt]trigger_error[/tt]/[tt]fatal_exit[/tt] if it is a totally unexpected but
 ! Handling type
 ! Logging
 ! Error notification
-! ocProducts error mail
+! ocProducts error e-mail
 |-
 ! [tt]trigger_error[/tt]
 | Notice, Warn, Error
