@@ -178,6 +178,8 @@ function find_sitemap_object($page_link)
 
         $is_virtual = false;
     } else {
+        $page_link = preg_replace('#:keep_\w+=[^:]*#', '', $page_link);
+
         $hook = mixed();
         $matches = array();
         $hooks = find_all_hooks('systems', 'sitemap');
