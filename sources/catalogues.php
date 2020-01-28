@@ -106,7 +106,7 @@ function render_catalogue_entry_box($row, $zone = '_SEARCH', $give_context = tru
     }
 
     $tpl_set = $catalogue_name;
-    return do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $display + array('_GUID' => ($guid != '') ? $guid : 'dfg3rergt5g433f', 'GIVE_CONTEXT' => $give_context, 'BREADCRUMBS' => $breadcrumbs), null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
+    return do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', array('_GUID' => ($guid != '') ? $guid : 'dfg3rergt5g433f', 'GIVE_CONTEXT' => $give_context, 'BREADCRUMBS' => $breadcrumbs) + $display, null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
 }
 
 /**
