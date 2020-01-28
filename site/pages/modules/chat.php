@@ -206,6 +206,8 @@ class Module_chat
             require_code('users_active_actions');
             $admin_user = get_first_admin_user();
 
+            require_code('global4');
+
             $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
                 'the_zone' => 'site',
                 'the_page' => 'userguide_chatcode',
@@ -219,6 +221,7 @@ class Module_chat
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
+                'p_include_on_sitemap' => comcode_page_include_on_sitemap('site', 'userguide_chatcode') ? 1 : 0,
                 'p_order' => 0,
             ]);
 
@@ -235,6 +238,7 @@ class Module_chat
                 'p_add_date' => time(),
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
+                'p_include_on_sitemap' => comcode_page_include_on_sitemap('site', 'popup_blockers') ? 1 : 0,
                 'p_order' => 0,
             ]);
 

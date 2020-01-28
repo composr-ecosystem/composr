@@ -126,6 +126,8 @@ function define_comcode_page_structure($structure, $zone = '', $parent = '', $ov
         $admin_user = get_first_admin_user();
     }
 
+    require_code('global4');
+
     $i = 0;
 
     foreach ($structure as $page => $_structure) {
@@ -154,6 +156,7 @@ function define_comcode_page_structure($structure, $zone = '', $parent = '', $ov
             'p_add_date' => time(),
             'p_submitter' => $admin_user,
             'p_show_as_edit' => 0,
+            'p_include_on_sitemap' => comcode_page_include_on_sitemap($zone, $page) ? 1 : 0,
             'p_order' => $i,
         ]);
 
