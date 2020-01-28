@@ -693,9 +693,13 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
     }
 
     if (!$is_new) {
-        $manually_chosen = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_moniker', array('m_manually_chosen' => 1, 'm_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id));
-        if ($manually_chosen !== null) {
-            return $manually_chosen;
+        $manually_chosen_now = ($moniker !== null);
+
+        if (!$manually_chosen_now) {
+            $_manually_chosen = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_moniker', array('m_manually_chosen' => 1, 'm_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id));
+            if ($_manually_chosen !== null) {
+                return $_manually_chosen;
+            }
         }
 
         // Deprecate old one(s) if already existing (there should only be 1 non-deprecated, but possible DB state may have gotten into a mess somehow)
@@ -760,7 +764,7 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
         'm_moniker' => $moniker,
         'm_moniker_reversed' => strrev($moniker),
         'm_deprecated' => 0,
-        'm_manually_chosen' => 0,
+        'm_manually_chosen' => $manually_chosen_now ? 1 : 0,
     ));
 
     global $LOADED_MONIKERS_CACHE;
