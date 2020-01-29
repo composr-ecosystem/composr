@@ -212,6 +212,10 @@ if (isset($options['test'])) {
     }
 }
 
+if (!empty($GLOBALS['DID_OUTPUT_CQC_WARNINGS'])) {
+    $has_errors = true;
+}
+
 echo 'FINAL Done!';
 exit($has_errors ? 1 : 0);
 

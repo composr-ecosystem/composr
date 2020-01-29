@@ -164,6 +164,8 @@ function die_error($system, $pos, $line, $message)
 
 function warn_error($system, $pos, $line, $message)
 {
+    $GLOBALS['DID_OUTPUT_CQC_WARNINGS'] = true;
+
     global $FILENAME;
     @touch(get_file_base() . '/' . $FILENAME); // So CQC can sort by mtime and find it easily
     echo 'WARNING "' . (($FILENAME != '') ? $FILENAME : '(code)') . '" ' . $line . ' ' . $pos . ' ' . 'PHP: ' . $message . cnl();
@@ -225,6 +227,8 @@ function pos_to_line_details($i, $absolute = false)
 
 function log_warning($warning, $i = -1, $absolute = false)
 {
+    $GLOBALS['DID_OUTPUT_CQC_WARNINGS'] = true;
+
     global $TEXT, $FILENAME, $START_TIME, $MYFILE_WARNINGS;
 
     if (($i == -1) && (isset($GLOBALS['I']))) {
