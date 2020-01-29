@@ -113,6 +113,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     );
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        IF_UNCHANGED_CURRENT_FILE_REMAINS
         MONIKER_TRANSLITERATION
         CONFIG_OPTION_moniker_transliteration
         BLOCKS_AT_TOP
