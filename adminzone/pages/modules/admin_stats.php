@@ -348,6 +348,10 @@ class Module_admin_stats extends Standard_crud_module
             $graph_name = get_param_string('id');
             list($hook_ob, $graph_details) = stats_find_graph_details($graph_name);
 
+            if (!is_array($graph_details)) {
+                warn_exit(do_lang_tempcode('GRAPH_NOT_FOUND', escape_html($graph_name)));
+            }
+
             $title = get_screen_title($graph_details['label'], false);
 
             foreach ($graph_details['filters'] as $filter) {

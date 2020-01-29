@@ -14,12 +14,15 @@
 
         return gaLoadPromise = new Promise(function (resolve) {
             window.gapi || (window.gapi = {});
-            window.gapi.analytics || (window.gapi.analytics = {
-                q: [],
-                ready: function (cb) {
-                    this.q.push(cb)
-                }
-            });
+
+            if (!window.gapi.analytics) {
+                window.gapi.analytics = {
+                    q: [],
+                    ready: function (cb) {
+                        this.q.push(cb)
+                    }
+                };
+            }
 
             window.gapi.analytics.ready(resolve);
 
@@ -46,6 +49,38 @@
             }
         });
     };
+
+    var SIMULTANEOUS_LIMIT = 5;
+    var pendingPromises = new Set();
+    var queuedPromiseFactoryFns = [];
+
+    // See MANTIS-4028: Google Analytics graphs don't all load
+    // Google doesn't like too many simultaneous API requests so we need to rate limit ourselves
+    function rateLimitedPromiseCall(promiseFactoryFn) {
+        queuedPromiseFactoryFns.push(promiseFactoryFn);
+        processPromiseQueue();
+    }
+
+    function processPromiseQueue() {
+        if ((pendingPromises.size >= SIMULTANEOUS_LIMIT) || !queuedPromiseFactoryFns.length) {
+            return;
+        }
+
+        var fns = queuedPromiseFactoryFns.splice(0, SIMULTANEOUS_LIMIT);
+
+        fns.forEach(function (promiseFactoryFn) {
+            var promise = promiseFactoryFn();
+
+            function onFinally() {
+                pendingPromises.delete(promise);
+                processPromiseQueue();
+            }
+
+            promise.then(onFinally, onFinally);
+
+            pendingPromises.add(promise);
+        });
+    }
 
     var alreadyInitializedGas = new WeakSet();
     $cms.templates.googleAnalytics = function (params, container) {
@@ -95,12 +130,26 @@
                     },
                 };
 
-                // Create the timeline chart
-                var timeline = new window.gapi.analytics.googleCharts.DataChart(chartOptions);
+                rateLimitedPromiseCall(function () {
+                    var isResolved = false;
+                    return new Promise(function (resolve, reject) {
+                        // Create the timeline chart
+                        var timeline = new window.gapi.analytics.googleCharts.DataChart(chartOptions);
 
-                timeline.set(GID).execute();
-                timeline.once('success', function () {
-                    document.getElementById('loading-' + params.id).style.display = 'none';
+                        timeline.set(GID).execute();
+                        timeline.once('success', function () {
+                            document.getElementById('loading-' + params.id).style.display = 'none';
+                            isResolved = true;
+                            resolve();
+                        });
+
+                        setTimeout(function () {
+                            if (!isResolved) {
+                                // Some error may have occurred, reject so the queue can continue
+                                reject();
+                            }
+                        }, 10000);
+                    });
                 });
             });
         });
