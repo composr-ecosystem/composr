@@ -59,15 +59,8 @@
 	margin-right: 15px;
 }
 
-.gallery-entry-details {
-	margin-bottom: 1em;
-}
-
 .gallery-member-details {
 	min-width: 24em;
-}
-.gallery-entry-details table {
-	width: 100%;
 }
 
 .gallery-entry-field-name-column {
@@ -622,14 +615,6 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	width: 100%;
 }
 
-.carousel-mode-details .gallery-entry-details .box {
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
-}
-.carousel-mode-details .gallery-entry-details .box.staff-actions {
-	margin-top: 1em !important;
-}
-
 .carousel-mode-thumb {
 	display: inline-block;
 	transform: scale(1); /* Needed to stop size jerk during animation, by forcing it as a layer at all times */
@@ -858,17 +843,6 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 .media-box object {
 	max-width: 100%;
 }
-
-/*{+START,CSS_MODE,desktop}*/
-	.media-box .gallery-entry-details {
-		margin-left: 1em;
-		max-width: 18em;
-	}
-
-	.media-box .gallery-entry-details table {
-		margin-top: 0;
-	}
-/*{+END}*/
 
 /* side_galleries block */
 
