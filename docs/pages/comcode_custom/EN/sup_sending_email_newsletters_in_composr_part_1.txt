@@ -30,4 +30,4 @@ The last option before previewing the e-mail is which template you wish to use. 
 
 [page="_SEARCH:sup_sending_email_newsletters_in_composr_part_2"]Sending E-mail Newsletters in Composr Part 2[/page] will discuss sending automated and periodic e-mails through the Composr e-mail system.
 
-{$SET,tutorial_tags,Newsletters,newsletter,Newsletters,novice}{$SET,tutorial_add_date,Jul 2013}{$SET,tutorial_summary,Composr has an inbuilt e-mail newsletter system. While e-marketing has taken more of a backseat in recent years to social media, it is still an important part of any digital marketing mix.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Newsletters,newsletter,novice}{$SET,tutorial_add_date,Jul 2013}{$SET,tutorial_summary,Composr has an inbuilt e-mail newsletter system. While e-marketing has taken more of a backseat in recent years to social media, it is still an important part of any digital marketing mix.}[block]main_tutorial_rating[/block]

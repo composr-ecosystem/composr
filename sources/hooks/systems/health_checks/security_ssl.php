@@ -47,6 +47,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         $this->process_checks_section('testIncorrectHTTPSLinking', 'Insecure linking', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSSLCorrectness', 'SSL correctness', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSSLExpiry', 'SSL expiry', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testCAARecord', 'CAA record present', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
     }
@@ -72,6 +73,19 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
     }
 
     /**
+     * Find if SSL is enabled.
+     *
+     * @return boolean Whether it is
+     */
+    protected function hasSSLEnabled()
+    {
+        if (((!addon_installed('ssl')) || ($GLOBALS['SITE_DB']->query_select_value('https_pages', 'COUNT(*)') == 0)) && (substr(get_base_url(), 0, 7) != 'https://')) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Run a section of health checks.
      *
      * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
@@ -94,13 +108,13 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             return;
         }
 
-        if ((!addon_installed('ssl')) && (substr(get_base_url(), 0, 7) != 'https://')) {
+        if (!$this->hasSSLEnabled()) {
             $this->stateCheckSkipped('SSL not enabled');
             return;
         }
 
         // external_health_check (on maintenance sheet)
-        $this->stateCheckManual('Check for [url="SSL security issues"]https://www.ssllabs.com/ssltest/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
+        $this->stateCheckManual('Check for [url="SSL security issues"]https://www.ssllabs.com/ssltest/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate; [url="setting generator"]https://ssl-config.mozilla.org/[/url])');
     }
 
     /**
@@ -243,7 +257,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             return;
         }
 
-        if ((!addon_installed('ssl')) && (substr(get_base_url(), 0, 7) != 'https://')) {
+        if (!$this->hasSSLEnabled()) {
             $this->stateCheckSkipped('SSL not enabled');
             return;
         }
@@ -309,7 +323,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             return;
         }
 
-        if ((!addon_installed('ssl')) && (substr(get_base_url(), 0, 7) != 'https://')) {
+        if (!$this->hasSSLEnabled()) {
             $this->stateCheckSkipped('SSL not enabled');
             return;
         }
@@ -320,18 +334,57 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             $context = stream_context_create(['ssl' => ['allow_self_signed' => true, 'verify_peer_name' => false, 'verify_peer' => false, 'capture_peer_cert' => true]]);
             $errno = null;
             $errstr = null;
-            $read = stream_socket_client('ssl://' . $domain . ':443', $errno, $errstr, 5.0, STREAM_CLIENT_CONNECT, $context);
-            $cert = stream_context_get_params($read);
-            $certinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
-
-            if (isset($certinfo['validTo_time_t'])) {
-                $expiry = $certinfo['validTo_time_t'];
-                $this->assertTrue($expiry > time() - 60 * 60 * 24 * 7, 'SSL certificate seems to be expiring within a week or already expired (' . get_timezoned_date($expiry) . ')');
+            $read = @stream_socket_client('ssl://' . $domain . ':443', $errno, $errstr, 5.0, STREAM_CLIENT_CONNECT, $context);
+            if ($read === false) {
+                $this->stateCheckSkipped('Failed to establish SSL connection to ' . $domain);
             } else {
-                $this->stateCheckSkipped('Could not read expiry time');
+                $cert = stream_context_get_params($read);
+                $certinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
+
+                if (isset($certinfo['validTo_time_t'])) {
+                    $expiry = $certinfo['validTo_time_t'];
+                    $this->assertTrue($expiry > time() - 60 * 60 * 24 * 7, 'SSL certificate seems to be expiring within a week or already expired (' . get_timezoned_date($expiry) . ')');
+                } else {
+                    $this->stateCheckSkipped('Could not read expiry time for ' . $domain);
+                }
             }
         } else {
             $this->stateCheckSkipped('OpenSSL extension is required for this test');
+        }
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testCAARecord($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            return;
+        }
+
+        if (!$this->hasSSLEnabled()) {
+            $this->stateCheckSkipped('SSL not enabled');
+            return;
+        }
+
+        if (php_function_allowed('checkdnsrr')) {
+            $url = get_base_url();
+            $domain = parse_url($url, PHP_URL_HOST);
+
+            $has_caa = @checkdnsrr($domain, 'CAA');
+            $this->assertTrue($has_caa, 'CAA record not set for [tt]' . $domain . '[/tt], which increases the risk of 3rd-party certificate forgery');
+        } else {
+            $this->stateCheckSkipped('PHP [tt]checkdnsrr[/tt] function not available');
         }
     }
 }

@@ -36,4 +36,4 @@ Once the addon is installed and you are happy it is working how you would like i
 
 However I strongly recommend that unless you have a very good understanding of programming you don't make changes to the templates as changes here could cause serious issues for your website.
 
-{$SET,tutorial_tags,Members,Social,Members,regular}{$SET,tutorial_add_date,Jun 2014}{$SET,tutorial_summary,Once your Composr community-based site gets to a certain size you might want to change how your members list is displayed. This tutorial explains how to change the display options.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Members,Social,regular}{$SET,tutorial_add_date,Jun 2014}{$SET,tutorial_summary,Once your Composr community-based site gets to a certain size you might want to change how your members list is displayed. This tutorial explains how to change the display options.}[block]main_tutorial_rating[/block]

@@ -185,7 +185,7 @@ class Hook_addon_registry_stats
     {
         return [
             'templates/STATS_SCREEN.tpl' => 'administrative__stats_screen',
-            'templates/STATS_GRAPH.tpl' => 'administrative__stats_screen',
+            'templates/STATS_GRAPH.tpl' => 'administrative__stats_graph_screen',
             'templates/KPI_SCREEN.tpl' => 'administrative__kpi_screen',
             'templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl' => 'administrative__form_screen_input_stats_date_range_screen',
         ];
@@ -222,6 +222,35 @@ class Hook_addon_registry_stats
             lorem_globalise(do_lorem_template('STATS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'GRAPHS' => $graphs,
+            ]), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__administrative__stats_graph_screen()
+    {
+        $existing_kpis = [];
+        $existing_kpis[] = [
+            'KPI_ID' => placeholder_id(),
+            'KPI_TITLE' => lorem_phrase(),
+            'KPI_EDIT_URL' => placeholder_url(),
+        ];
+
+        return [
+            lorem_globalise(do_lorem_template('STATS_GRAPH', [
+                'GRAPH_NAME' => lorem_word(),
+                'GRAPH_LABEL' => lorem_phrase(),
+                'GRAPH_FORM' => placeholder_form(),
+                'GRAPH_RENDERED' => lorem_chunk_html(),
+                'RESULTS_TABLE' => placeholder_table(),
+                'EXISTING_KPIS' => $existing_kpis,
+                'KPI_ADD_URL' => placeholder_url(),
             ]), null, '', true)
         ];
     }

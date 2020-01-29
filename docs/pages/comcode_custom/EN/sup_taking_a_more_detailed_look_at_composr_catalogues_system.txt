@@ -53,4 +53,4 @@ You will of course need to plan out your catalogue before you start building it 
 
 The Catalogue system allows you to add up to 10 fields initially and you will need to add the catalogue and go back in to edit it to be able to add more than ten fields.
 
-{$SET,tutorial_tags,Catalogues,Content,Catalogues,novice}{$SET,tutorial_add_date,Aug 2013}{$SET,tutorial_summary,Composr's inbuilt catalogue system is a very useful tool and can be used for a wide range of tasks relating to the display of information on your Composr website.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Catalogues,Content,novice}{$SET,tutorial_add_date,Aug 2013}{$SET,tutorial_summary,Composr's inbuilt catalogue system is a very useful tool and can be used for a wide range of tasks relating to the display of information on your Composr website.}[block]main_tutorial_rating[/block]

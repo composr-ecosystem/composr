@@ -392,7 +392,6 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/site_message_start_datetime.php',
             'sources/hooks/systems/config/site_message_status_level.php',
             'sources/hooks/systems/config/site_message_usergroup_select.php',
-            'sources/hooks/systems/config/noindex_comcode_pages.php',
             'sources/hooks/systems/addon_registry/core_configuration.php',
             'themes/default/templates/CONFIG_CATEGORY_SCREEN.tpl',
             'adminzone/pages/modules/admin_config.php',

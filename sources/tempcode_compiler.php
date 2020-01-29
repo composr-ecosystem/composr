@@ -266,7 +266,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
     require_code('lang');
     require_code('urls');
     $cl = fallback_lang();
-    $bits = array_values(preg_split('#(?<!\\\\)(\{(?![A-Z][a-z])(?=[\dA-Z\$\+\!_]+[\.`%\*=\;\#\-~\^\|\'!&/@+]*))|((?<!\\\\),)|((?<!\\\\)\})#', $data, -1, PREG_SPLIT_DELIM_CAPTURE));  // One error mail showed on a server it had weird indexes, somehow. Hence the array_values call to reindex it
+    $bits = array_values(preg_split('#(?<!\\\\)(\{(?![A-Z][a-z])(?=[\dA-Z\$\+\!_]+[\.`%\*=\;\#\-~\^\|\'!&/@+]*))|((?<!\\\\),)|((?<!\\\\)\})#', $data, -1, PREG_SPLIT_DELIM_CAPTURE));  // One error e-mail showed on a server it had weird indexes, somehow. Hence the array_values call to reindex it
     $count = count($bits);
     $stack = [];
     $current_level_mode = PARSE_NO_MANS_LAND;

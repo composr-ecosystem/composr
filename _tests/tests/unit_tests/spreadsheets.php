@@ -64,6 +64,11 @@ class spreadsheets_test_set extends cms_test_case
 
     public function testRead()
     {
+        if (!function_exists('zip_open') || !function_exists('xml_parser_create')) {
+            $this->assertTrue(false, 'Zip and XML extensions needed for test');
+            return;
+        }
+
         $exts = [];
         foreach ($this->files as $file) {
             foreach ($this->expected as $algorithm => $expected) {
@@ -99,6 +104,11 @@ class spreadsheets_test_set extends cms_test_case
 
     public function testWrite()
     {
+        if (!function_exists('zip_open') || !function_exists('xml_parser_create')) {
+            $this->assertTrue(false, 'Zip and XML extensions needed for test');
+            return;
+        }
+
         foreach ($this->expected as $algorithm => $expected) {
             if ($algorithm == CMS_Spreadsheet_Reader::ALGORITHM_UNNAMED_FIELDS) {
                 continue; // Not supported for write

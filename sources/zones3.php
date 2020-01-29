@@ -126,6 +126,8 @@ function define_comcode_page_structure($structure, $zone = '', $parent = '', $ov
         $admin_user = get_first_admin_user();
     }
 
+    require_code('global4');
+
     $i = 0;
 
     foreach ($structure as $page => $_structure) {
@@ -154,6 +156,7 @@ function define_comcode_page_structure($structure, $zone = '', $parent = '', $ov
             'p_add_date' => time(),
             'p_submitter' => $admin_user,
             'p_show_as_edit' => 0,
+            'p_include_on_sitemap' => comcode_page_include_on_sitemap($zone, $page) ? 1 : 0,
             'p_order' => $i,
         ]);
 
@@ -640,7 +643,7 @@ function get_template_contents($name)
  * @param  LANGUAGE_NAME $lang The language
  * @param  ID_TEXT $text The page text
  * @param  ?BINARY $validated The validated status (null: 1 / don't change)
- * @param  BINARY $include_on_sitemap Include on the sitemap
+ * @param  ?BINARY $include_on_sitemap Include on the sitemap (null: default / don't change)
  * @param  ?ID_TEXT $parent_page The page parent (null: none / don't change if $order is also null)
  * @param  ?integer $order The page order (null: 0 / don't change)
  * @param  ?TIME $add_time Add time (null: now / don't change)
@@ -683,6 +686,13 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $i
         $validated = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_validated', ['the_zone' => $zone, 'the_page' => $file]);
         if ($validated === null) {
             $validated = 1;
+        }
+    }
+    if ($include_on_sitemap === null) {
+        $include_on_sitemap = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_include_on_sitemap', ['the_zone' => $zone, 'the_page' => $file]);
+        if ($include_on_sitemap === null) {
+            require_code('global4');
+            $include_on_sitemap = comcode_page_include_on_sitemap($zone, $file) ? 1 : 0;
         }
     }
 

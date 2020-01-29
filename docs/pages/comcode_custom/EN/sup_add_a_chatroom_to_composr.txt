@@ -35,4 +35,4 @@ Under the advanced section you can set a disallow list in the same way you set t
 
 In the final section you can specify which groups can view each chatroom.
 
-{$SET,tutorial_tags,Chatrooms,Social,Chatrooms,novice}{$SET,tutorial_add_date,Oct 2013}{$SET,tutorial_summary,Composr has its own inbuilt text chatrooms available to be used for any community website. Chatrooms are useful for conducting a discussion quicker than utilising the forums.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Chatrooms,Social,novice}{$SET,tutorial_add_date,Oct 2013}{$SET,tutorial_summary,Composr has its own inbuilt text chatrooms available to be used for any community website. Chatrooms are useful for conducting a discussion quicker than utilising the forums.}[block]main_tutorial_rating[/block]

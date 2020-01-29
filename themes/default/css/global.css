@@ -6152,7 +6152,7 @@ input[type="button"].btn-block {
 	background-color: {$GET,light_color};
 }
 
-.dropdown-item.active, 
+.dropdown-item.active,
 .dropdown-item:active {
 	color: {$GET,WB};
 	text-decoration: none;

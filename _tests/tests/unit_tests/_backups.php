@@ -83,7 +83,7 @@ if ((isset($SITE_INFO[\'db_type\'])) && (strpos($SITE_INFO[\'db_type\'], \'mysql
 $SITE_INFO[\'db_site_password\'] = isset($SITE_INFO[\'mysql_root_password\']) ? $SITE_INFO[\'mysql_root_password\'] : \'\';
 $SITE_INFO[\'table_prefix\'] = \'cms_backup_test_\';
 $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_content']) . '\';
-        ');
+        ') . "\n";
         cms_file_put_contents_safe($config_path, $config_php);
 
         $GLOBALS['SITE_DB']->query('CREATE DATABASE cms_backup_test', null, 0, true); // Suppress errors in case already exists

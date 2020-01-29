@@ -72,7 +72,8 @@ apt install apache2 libapache2-mod-php php php-common php-cli php-apcu curl php-
 php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-mbstring php-pspell \
 php-xml php-intl php-json openssl mysql-server mysql-client \
 postfix nano wget lynx hunspell aspell aspell-en git openssh-server nano wget sysstat iotop \
-screen zip unzip bzip2 gzip tar whois dnsutils
+screen zip unzip bzip2 gzip tar whois dnsutils \
+lsof mlocate certbot python-certbot-apache
 [/code]
 
 Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need changing:
@@ -107,7 +108,8 @@ yum install httpd mod_ssl mod_fcgid php php-common php-cli php-pecl-apc php-pdo 
 enchant freetype php-gd php-imap php-pecl-zip php-mysqlnd php-mbstring php-pspell \
 php-xml php-intl php-json openssl mysql-server mysql \
 sendmail nano wget lynx hunspell hunspell-en aspell aspell-en git openssh-server sysstat iotop \
-screen zip unzip bzip2 gzip tar whois dnsutils
+screen zip unzip bzip2 gzip tar whois dnsutils bind-utils \
+lsof mlocate certbot python-certbot-apache
 [/code]
 
 You may have selinux installed, you can see if you do with [tt]sestatus[/tt]:

@@ -30,6 +30,10 @@ class Hook_snippet_stats_event
      */
     public function run()
     {
+        if (!addon_installed('stats')) {
+            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('stats')));
+        }
+
         require_code('stats');
 
         log_stats_event(get_param_string('event', false, INPUT_FILTER_GET_COMPLEX));

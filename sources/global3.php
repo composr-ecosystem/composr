@@ -382,9 +382,11 @@ function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null)
 function _get_boms()
 {
     return [
-        'utf-32' => hex2bin('fffe0000'),
-        'utf-16' => hex2bin('fffe'),
-        'utf-8' => hex2bin('efbbbf') ,
+        'utf-32' => hex2bin('fffe0000'), // LE, which is de-facto standard that convert_to_internal_encoding assumes
+        'utf-32BE' => hex2bin('0000feff'),
+        'utf-16' => hex2bin('fffe'), // LE, which (...)
+        'utf-16BE' => hex2bin('feff'),
+        'utf-8' => hex2bin('efbbbf') , // No LE vs BE distinction for utf-8
         'GB-18030' => hex2bin('84319533'),
     ];
 }
@@ -406,7 +408,6 @@ function handle_string_bom($contents, $default_charset = null)
     } else {
         $file_charset = $default_charset;
     }
-
     $contents = convert_to_internal_encoding($contents, $file_charset);
 
     return $contents;
@@ -434,16 +435,8 @@ function detect_string_bom($contents)
     $magic_data = substr($contents, 0, $max_bom_len);
 
     foreach ($boms as $charset => $bom) {
-        // Big-endian (most significant byte first)
         if (substr($magic_data, 0, strlen($bom)) == $bom) {
             $file_charset = $charset;
-            $bom_found = $bom;
-            break;
-        }
-
-        // Little-endian (most significant byte last - which is what happens on Intel and most ARM architectures IF characters are being stored in wchars rather than raw byte strings)
-        if (substr($magic_data, 0, strlen($bom)) == strrev($bom)) {
-            $file_charset = $charset . 'LE';
             $bom_found = $bom;
             break;
         }

@@ -41,9 +41,9 @@ class sitemap_test_set extends cms_test_case
         $valid_node_types = null;
         $child_cutoff = null;
         $max_recurse_depth = null;
-        $options = SITEMAP_GEN_NONE;
+        $options = SITEMAP_GEN_NONE | SITEMAP_GEN_MACHINE_SITEMAP;
         $zone = '_SEARCH';
-        $meta_gather = SITEMAP_GATHER__ALL | SITEMAP_GEN_USE_PAGE_GROUPINGS;
+        $meta_gather = SITEMAP_GATHER__ALL;
 
         $this->sitemap = retrieve_sitemap_node($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $options, $zone, $meta_gather);
         $this->flattened = $this->flatten_sitemap($this->sitemap);
@@ -147,15 +147,10 @@ class sitemap_test_set extends cms_test_case
         foreach ($this->flattened as $k => $c) {
             if (preg_match('#^\w*:(\w*(:\w*)?)?$#', $k) != 0) {
                 if (in_array($k, [ // Exceptions
-                    'site:popup_blockers',
-                    'site:userguide_chatcode',
-                    'site:userguide_comcode',
-                    'site:top_sites',
-                    ':popup_blockers',
-                    ':userguide_chatcode',
-                    ':userguide_comcode',
-                    ':top_sites',
-                    ':recommend_help',
+                    // Would be filtered out by _is_page_omitted_from_sitemap
+                    ':sitemap',
+                    ':privacy',
+                    ':feedback',
                 ])) {
                     continue;
                 }

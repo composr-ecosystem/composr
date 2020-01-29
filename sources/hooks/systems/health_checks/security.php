@@ -39,6 +39,7 @@ class Hook_health_check_security extends Hook_Health_Check
      */
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
+        $this->process_checks_section('testExternalSecurityScan', 'External security scan', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testMalware', 'Malware', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testDirectorySecuring', 'Directory securing', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSiteOrphaned', 'Site orphaning', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -52,6 +53,33 @@ class Hook_health_check_security extends Hook_Health_Check
         $this->process_checks_section('testExposedExecuteTemp', 'Exposed execute_temp.php', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testExternalSecurityScan($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            return;
+        }
+
+        if (!$manual_checks) {
+            return;
+        }
+
+        // external_health_check (on maintenance sheet)
+        $this->stateCheckManual('Check for [url="security configuration issues"]https://observatory.mozilla.org[/url]');
     }
 
     /**
@@ -326,7 +354,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $files = array_merge($files, get_directory_contents($fb . '/uploads', 'uploads', 0, true, true, ['php'])); // common uploads location
         $files = array_merge($files, get_directory_contents($fb . '/themes', 'themes', 0, true, true, ['php'])); // common uploads location
 
-        foreach ($files as $file) {
+        foreach (array_unique($files) as $file) {
             $c = @cms_file_get_contents_safe($fb . '/' . $file);
             if ($c !== false) {
                 $trigger = $this->isLikelyWebShell($file, $c);

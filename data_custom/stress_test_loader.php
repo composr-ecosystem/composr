@@ -210,6 +210,7 @@ function do_work()
             'p_add_date' => time(),
             'p_submitter' => db_get_first_id(),
             'p_show_as_edit' => 0,
+            'p_include_on_sitemap' => 1,
             'p_order' => 0,
         ]);
     }

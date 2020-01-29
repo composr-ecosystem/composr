@@ -167,10 +167,6 @@ If you uninstall the [tt]authors[/tt] addon it will automatically change to show
 
 Instead of removing the [tt]authors[/tt] addon you could change the [tt]NEWS_BOX.tpl[/tt] template -- this template encodes the logic described above, so by changing the template you can achieve either behaviour, or any combination.
 
-[title="2"]Integrating third-party widgets[/title]
-
-There are a lot of 'widgets' out there for blogging platforms and there's nothing stopping you using them with Composr too. For example, [url="this widget"]http://www.backtype.com/widgets/backtweets[/url] allows you to see what people are saying about your article on Twitter. You could easily put the HTML provided into your [tt]NEWS_ENTRY_SCREEN.tpl[/tt] template.
-
 [title="2"]Make news archive screens show summaries[/title]
 
 The default news archive screen shows just the news headlines. By adding [tt]:inline=1[/tt] to the page-link you can make it show like the news block does.

@@ -22,7 +22,7 @@
 function is_spreadsheet_writable($filename)
 {
     if (!addon_installed('enhanced_spreadsheets') || !function_exists('zip_open') || !function_exists('xml_parser_create')) {
-        return non_overridden__is_spreadsheet_readable($filename);
+        return non_overridden__is_spreadsheet_writable($filename);
     }
 
     $ext = get_file_extension($filename);

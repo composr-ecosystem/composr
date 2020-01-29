@@ -317,52 +317,59 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
         } elseif (strpos(shell_exec('phpcs --version'), 'PHP_CodeSniffer') !== false) {
             $cmd = 'phpcs';
         } else {
-            echo 'Cannot find PHP CodeSniffer in the path' . cnl();
+			static $complained_once = false;
+			if (!$complained_once) {
+	            echo 'Cannot find PHP CodeSniffer in the path' . cnl();
+				$complained_once = true;
+			}
+			$cmd = null;
         }
 
-        $cmd_line = $cmd . ' ' . $to_use . ' -s -q --report-width=10000';
-        //$cmd_line .= ' --standard=PSR12'; Better to just disable sniffs we don't like
-        $skip_tests_broad = [
-            // In standards we don't support
-            'PEAR.NamingConventions.ValidClassName',
-            'PEAR.NamingConventions.ValidFunctionName',
-            'PEAR.NamingConventions.ValidVariableName',
-        ];
-        if (!empty($skip_tests_broad)) {
-            $cmd_line .= ' --exclude=' . implode(',', $skip_tests_broad);
-        }
-        if ($codesniffer_only !== null) {
-            $cmd_line .= ' --sniffs=' . implode(',', $codesniffer_only);
-        }
-        $out = shell_exec($cmd_line . ' 2>&1');
-        $pending_out = null;
-        $matches = [];
-        foreach (explode("\n", $out) as $msg_line) {
-            if (preg_match('#^\s*(\d+)\s*\|\s*(\w+)\s*\|\s*(.*)$#', $msg_line, $matches) != 0) {
-                if ($pending_out !== null) {
-                    if (!filtered_codesniffer_result($pending_out)) {
-                        echo $pending_out . cnl();
-                    }
-                    $pending_out = null;
-                }
+		if ($cmd !== null) {
+	        $cmd_line = $cmd . ' ' . $to_use . ' -s -q --report-width=10000';
+	        //$cmd_line .= ' --standard=PSR12'; Better to just disable sniffs we don't like
+	        $skip_tests_broad = [
+	            // In standards we don't support
+	            'PEAR.NamingConventions.ValidClassName',
+	            'PEAR.NamingConventions.ValidFunctionName',
+	            'PEAR.NamingConventions.ValidVariableName',
+	        ];
+	        if (!empty($skip_tests_broad)) {
+	            $cmd_line .= ' --exclude=' . implode(',', $skip_tests_broad);
+	        }
+	        if ($codesniffer_only !== null) {
+	            $cmd_line .= ' --sniffs=' . implode(',', $codesniffer_only);
+	        }
+	        $out = shell_exec($cmd_line . ' 2>&1');
+	        $pending_out = null;
+	        $matches = [];
+	        foreach (explode("\n", $out) as $msg_line) {
+	            if (preg_match('#^\s*(\d+)\s*\|\s*(\w+)\s*\|\s*(.*)$#', $msg_line, $matches) != 0) {
+	                if ($pending_out !== null) {
+	                    if (!filtered_codesniffer_result($pending_out)) {
+	                        echo $pending_out . cnl();
+	                    }
+	                    $pending_out = null;
+	                }
 
-                $line = $matches[1];
-                $pos = '0';
-                $message_type = $matches[2];
-                $message = $matches[3];
+	                $line = $matches[1];
+	                $pos = '0';
+	                $message_type = $matches[2];
+	                $message = $matches[3];
 
-                $pending_out = 'PHPCS-' . $message_type . ' "' . $FILENAME . '" ' . $line . ' ' . $pos . ' ' . $message;
-            } elseif (preg_match('#^\s*\|\s*\|\s*(.*)$#', $msg_line, $matches) != 0) {
-                $pending_out .= ' ' . $matches[1];
-            }
-        }
-        if ($pending_out !== null) {
-            if (!filtered_codesniffer_result($pending_out)) {
-                echo $pending_out . cnl();
-            }
-            $pending_out = null;
-        }
-    }
+	                $pending_out = 'PHPCS-' . $message_type . ' "' . $FILENAME . '" ' . $line . ' ' . $pos . ' ' . $message;
+	            } elseif (preg_match('#^\s*\|\s*\|\s*(.*)$#', $msg_line, $matches) != 0) {
+	                $pending_out .= ' ' . $matches[1];
+	            }
+	        }
+	        if ($pending_out !== null) {
+	            if (!filtered_codesniffer_result($pending_out)) {
+	                echo $pending_out . cnl();
+	            }
+	            $pending_out = null;
+	        }
+	    }
+	}
 
     return $structure;
 }

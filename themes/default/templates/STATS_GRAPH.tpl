@@ -19,15 +19,15 @@
 		{+START,LOOP,EXISTING_KPIS}
 			<li>{+START,INCLUDE,ICON}NAME=admin/edit{+END} <a href="{KPI_EDIT_URL*}">{!_EDIT_KPI,{KPI_TITLE*}}</a></li>
 		{+END}
-		{+START,IF_PASSED,KPI_ADD_URL}
-			<li>{+START,INCLUDE,ICON}NAME=admin/add{+END} <a href="{KPI_ADD_URL*}">{!ADD_KPI}</a></li>
-		{+END}
+	{+END}
+	{+START,IF_PASSED,KPI_ADD_URL}
+		<li>{+START,INCLUDE,ICON}NAME=admin/add{+END} <a href="{KPI_ADD_URL*}">{!ADD_KPI}</a></li>
 	{+END}
 	{+START,IF_PASSED,SPREADSHEET_URL}
 		<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a href="{SPREADSHEET_URL*}" class="xls-link">{!EXPORT_STATS_TO_SPREADSHEET}</a></li>
 	{+END}
 {+END}
-{+START,IF_NON_EMPTY,{$GET,graph_actions}}
+{+START,IF_NON_EMPTY,{$TRIM,{$GET,graph_actions}}}
 	<ul class="actions-list force-margin">
 		{$GET,graph_actions}
 	</ul>

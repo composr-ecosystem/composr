@@ -36,7 +36,7 @@ class Hook_task_install_geolocation_data
 
         push_query_limiting(false);
 
-        $GLOBALS['SITE_DB']->query_delete('ip_country', $to_insert);
+        $GLOBALS['SITE_DB']->query_delete('ip_country');
 
         // We need to read in IP_Country.txt, line-by-line...
 
