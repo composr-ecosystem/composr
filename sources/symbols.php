@@ -1244,7 +1244,7 @@ function ecv_FACILITATE_AJAX_BLOCK_CALL($lang, $escaped, $param)
 
         $keep = symbol_tempcode('KEEP');
         $value = find_script('snippet') . '?snippet=block&auth_key=' . urlencode(strval($auth_key)) . '&block_map=' . urlencode($param[0]) . $keep->evaluate();
-        if (get_param_string('keep_theme', null) === null) {
+        if (get_param_string('keep_theme', null) !== null) {
             $value .= '&keep_theme=' . urlencode($GLOBALS['FORUM_DRIVER']->get_theme());
         }
     }
