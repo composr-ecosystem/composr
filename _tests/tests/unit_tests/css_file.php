@@ -281,6 +281,7 @@ class css_file_test_set extends cms_test_case
         $prefix_exceptions = [
             'zone-running-',
             'page-running-',
+            'has-header-', // Dynamically set on <html> in GLOBAL_HTML_WRAP.tpl
             'menu-',
             'buttons--',
             'admin--',
@@ -294,6 +295,7 @@ class css_file_test_set extends cms_test_case
             'align',
             'display-type-',
             'icon-',
+            'btn-comcode-(block|box|code|comcode|hide|html|list|page|quote|thumb|url)',
         ];
         if (preg_match('#^' . implode('|', $prefix_exceptions) . '#', $class) != 0) {
             return true;
@@ -306,6 +308,9 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'inline-flex',
+            'sr',
+            'sr-only-focusable',
             'responsive-video',
             'content-wrap-auto-center',
             'table-header-sorted',
@@ -1050,6 +1055,18 @@ class css_file_test_set extends cms_test_case
             'ui-widget-overlay',
             'ui-widget-shadow',
             'wp-caption',
+            // Glide.js:
+            'glide--dragging',
+            'glide--rtl',
+            'glide--swipeable',
+            'glide__arrow',
+            'glide__arrow--disabled',
+            'glide__arrow--left',
+            'glide__arrow--right',
+            'glide__bullet',
+            'glide__bullet--active',
+            'glide__bullets',
+            'glide__slides--dragging',
         ];
         if (in_array($class, $exceptions)) {
             return true;
