@@ -19,6 +19,9 @@
 
                     var slideshowUrl = $util.url(link.href);
 
+                    // class="gallery-mosaic-masonry-sizer gallery-slideshow-iframe gallery-slideshow-iframe-wrapper"
+                    // ^ Above comment serves to mark the classes as _used_ for the 'css_file' unit test
+
                     var iframeWrapperEl = $dom.create('div', {
                         className: 'gallery-slideshow-iframe-wrapper has-loading-indicator',
                         onclick: function () {

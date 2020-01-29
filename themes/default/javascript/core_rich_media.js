@@ -187,6 +187,9 @@
                 var modal = $cms.ui.openImageIntoLightbox(imgs[start][0], imgs[start][1], start + 1, imgs.length, true, imgs[start][2]);
                 modal.positionInSet = start;
 
+                // class="previous-button next-button"
+                // ^ Above comment serves to mark the classes as _used_ for the 'css_file' unit test
+
                 var previousButton = document.createElement('img');
                 previousButton.className = 'previous-button';
                 previousButton.src = $util.srl('{$IMG;,icons/media_set/previous}');

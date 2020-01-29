@@ -405,10 +405,6 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	right: 20px;
 }
 
-.gallery-slideshow-screen .slideshow-slider-progress-bar {
-	height: 5px;
-}
-
 .gallery-slideshow-screen .slideshow-progress-bar-fill {
 	background: {$GET,seed};
 	width: 0%;
