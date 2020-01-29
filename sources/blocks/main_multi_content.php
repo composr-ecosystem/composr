@@ -633,8 +633,7 @@ class Block_main_multi_content
             }
             $done_already[$content_id] = 1;
 
-            if (count($done_already) < $start) {
-                $rows_skipped++;
+            if (count($done_already) <= $start) { // <= because it will over-count by one as we already added to $done_already
                 continue;
             }
 
