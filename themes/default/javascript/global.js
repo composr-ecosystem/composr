@@ -1443,7 +1443,7 @@ function toggleable_tray(element,no_animate,cookie_id_name)
 		if ((type=='block') && (element.nodeName.toLowerCase()=='div') && (!no_animate) && ((!pic) || (pic.src.indexOf('themewizard.php')==-1)))
 		{
 			element.style.visibility='hidden';
-			element.style.width=find_width(element)+'px';
+			element.style.width=find_width(element,true)+'px';
 			element.style.position='absolute'; // So things do not just around now it is visible
 			if (pic)
 			{

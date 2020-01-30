@@ -26,9 +26,12 @@
 				<dt class="field_name">{!COUNT_DOWNLOADS}:</dt> <dd>{DOWNLOADS*}</dd>
 			{+END}
 			<dt class="field_name">{!ADDED}:</dt> <dd>{DATE*}</dd>
-			{+START,IF_PASSED,RATING}{+START,IF_NON_EMPTY,{RATING}}
-				<dt class="field_name">{!RATING}:</dt> <dd>{RATING}</dd>
-			{+END}{+END}
+			{+START,IF_PASSED,RATING}
+				{$SET,rating,{$RATING,downloads,{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
+				{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
+					<dt class="field_name">{!RATING}:</dt> <dd>{$GET,rating}</dd>
+				{+END}
+			{+END}
 		</dl>
 	</div>
 

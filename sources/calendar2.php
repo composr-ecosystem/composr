@@ -154,7 +154,7 @@ function add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, 
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('event', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = null;
         }
 
         require_lang('calendar');
@@ -340,7 +340,7 @@ function edit_calendar_event($id, $type, $recurrence, $recurrences, $seg_recurre
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('event', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = null;
         }
 
         require_lang('calendar');

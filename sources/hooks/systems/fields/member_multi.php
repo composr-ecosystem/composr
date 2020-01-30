@@ -114,7 +114,7 @@ class Hook_fields_member_multi
 
         $ret = new Tempcode();
         foreach (array_keys($out) as $key) {
-            $ret->attach(paragraph($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($key)));
+            $ret->attach(paragraph($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($key), 'member_multi'));
         }
 
         return $ret;

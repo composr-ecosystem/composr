@@ -992,7 +992,7 @@ function do_site()
     }
 
     // When someone hits the Admin Zone
-    if ($ZONE['zone_name'] == 'adminzone') {
+    if (($ZONE !== null) && ($ZONE['zone_name'] == 'adminzone')) {
         // Security feature admins can turn on
         if (get_page_name() == 'start') {
             require_code('notifications');
@@ -1041,6 +1041,14 @@ function do_site()
  */
 function save_static_caching($out, $mime_type = 'text/html')
 {
+    // We cannot cache if there's a redirect
+    $headers_sent = headers_list();
+    foreach ($headers_sent as $header) {
+        if (preg_match('#^Location:#i', $header) != 0) {
+            return;
+        }
+    }
+
     global $SITE_INFO;
     if ((cms_srv('REQUEST_METHOD') != 'POST') && (isset($SITE_INFO['fast_spider_cache'])) && ($SITE_INFO['fast_spider_cache'] != '0') && (is_guest()) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         if ((get_zone_name() == '') && (get_zone_default_page('') == get_page_name()) && (count(array_diff(array_keys($_GET), array('page', 'keep_session', 'keep_devtest', 'keep_failover'))) > 0)) {

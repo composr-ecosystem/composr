@@ -45,7 +45,7 @@
 					</tr>
 
 					{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-						{$SET,rating,{$RATING,{MEDIA_TYPE},{ID},{SUBMITTER},,,RATING_INLINE_DYNAMIC}}
+						{$SET,rating,{$RATING,{MEDIA_TYPE}s,{ID},{SUBMITTER},,,RATING_INLINE_DYNAMIC}}
 						{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
 							<tr>
 								<th class="de_th metadata_title">{!RATING}</th>

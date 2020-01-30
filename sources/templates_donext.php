@@ -328,6 +328,10 @@ function _do_next_section($list, $title, $entry_content_type = null, $category_c
 
     $num_siblings = 0;
     foreach ($list as $i => $_option) {
+        if ($_option === null) {
+            continue;
+        }
+
         $url = $_option[1];
         if (!is_null($url)) {
             $zone = array_key_exists(2, $url) ? $url[2] : '';

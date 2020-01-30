@@ -94,7 +94,7 @@ function trackback_script()
 
     header('Content-type: text/xml');
 
-    $page = get_page_name();
+    $feedback_type = get_param_string('page');
     $id = get_param_integer('id');
     $mode = either_param_string('__mode', 'none');
 
@@ -102,7 +102,7 @@ function trackback_script()
 
     $hooks = find_all_hooks('systems', 'trackback');
     foreach (array_keys($hooks) as $hook) {
-        if ($hook == $page) {
+        if ($hook == $feedback_type) {
             require_code('hooks/systems/trackback/' . filter_naughty_harsh($hook));
             $object = object_factory('Hook_trackback_' . filter_naughty_harsh($hook), true);
             if (is_null($object)) {
@@ -114,16 +114,16 @@ function trackback_script()
     }
 
     if ($mode == 'rss') {
-        //List all the trackbacks to the specified page
-        $xml = get_trackbacks($page, strval($id), $allow_trackbacks, 'xml');
+        // List all the trackbacks to the specified feedback type
+        $xml = get_trackbacks($feedback_type, strval($id), $allow_trackbacks, 'xml');
     } else {
         $time = get_param_integer('time');
         if ($time > time() - 60 * 5) {
             exit(); // Trackback link intentionally goes stale after 5 minutes, so it can't be statically stored and spam hammered
         }
 
-        //Add a trackback for the specified page
-        $output = actualise_post_trackback($allow_trackbacks, $page, strval($id));
+        // Add a trackback for the specified feedback type
+        $output = actualise_post_trackback($allow_trackbacks, $feedback_type, strval($id));
 
         if ($output) {
             $xml = do_template('TRACKBACK_XML_NO_ERROR', array(), null, false, null, '.xml', 'xml');
