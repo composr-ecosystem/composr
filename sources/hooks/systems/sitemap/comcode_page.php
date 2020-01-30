@@ -263,7 +263,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                 }
 
                 if ((!$skip_children) && ($count !== 0)) {
-                    $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+                    $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
                     static $child_rows = array();
                     $start = 0;
