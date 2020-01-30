@@ -72,7 +72,7 @@ function set_comment_forum_for($feedback_code, $category_id, $forum_id)
                 }
             }
             $start += 100;
-        } while (count($rows) > 0);
+        } while (count($rows) == 100);
 
         if (count($topics) > 0) {
             require_code('cns_topics_action2');

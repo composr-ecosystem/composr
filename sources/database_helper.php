@@ -606,7 +606,7 @@ function _helper_add_table_field($this_ref, $table_name, $name, $_type, $default
                     $this_ref->query_update($table_name, insert_lang($name, $default_st, $lang_level), $row);
                 }
                 $start += 1000;
-            } while (count($rows) > 0);
+            } while (count($rows) == 1000);
         }
     }
 

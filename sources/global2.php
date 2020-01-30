@@ -805,7 +805,9 @@ function load_user_stuff()
          */
         $FORUM_DB = mixed();
         $GLOBALS['FORUM_DB'] = &$FORUM_DRIVER->connection; // Done like this to workaround that PHP can't put a reference in a global'd variable
-        reload_lang_fields(false, 'f_member_custom_fields');
+        if (is_on_multi_site_network()) {
+            reload_lang_fields(false, 'f_member_custom_fields');
+        }
     }
 }
 

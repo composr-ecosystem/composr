@@ -252,6 +252,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
             $children = array();
             if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
                 $skip_children = false;
+                $count = null;
                 if ($child_cutoff !== null) {
                     $count = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'COUNT(*)');
                     if ($count > $child_cutoff) {
@@ -259,7 +260,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
                     }
                 }
 
-                if (!$skip_children) {
+                if ((!$skip_children) && ($count !== 0)) {
                     $start = 0;
                     do {
                         $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), null, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);

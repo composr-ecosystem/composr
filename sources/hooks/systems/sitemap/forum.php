@@ -195,7 +195,9 @@ class Hook_sitemap_forum extends Hook_sitemap_content
         ) + $struct['extra_meta'];
 
 
-        $struct['extra_meta']['is_a_category_tree_root'] = true;
+        if ($content_id == strval(db_get_first_id())) {
+            $struct['extra_meta']['is_a_category_tree_root'] = true;
+        }
 
         if (!$this->_check_node_permissions($struct)) {
             return null;
