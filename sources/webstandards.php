@@ -157,7 +157,6 @@ function init__webstandards()
         'nav' => true,
         'header' => true,
         'footer' => true,
-        'figure' => true,
         'canvas' => true,
         'audio' => true,
         'aside' => true,
