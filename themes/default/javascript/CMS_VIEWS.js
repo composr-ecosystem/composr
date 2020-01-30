@@ -427,6 +427,9 @@
             this.option('right');
         },
 
+        // class="cms-modal-background cms-modal-button-container cms-modal-overlay cms-modal-type-alert cms-modal-type-confirm"
+        // ^ Above comment serves to mark the classes as _used_ for the 'css_file' unit test
+
         _setElement: function _setElement() {
             var button;
 

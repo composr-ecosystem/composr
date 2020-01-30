@@ -1344,6 +1344,9 @@
             DATA_SLIDE  : '[data-slide], [data-slide-to]'
         };
 
+        // class="cms-slider-caption cms-slider-fade cms-slider-fullscreen cms-slider-item cms-slider-item-left cms-slider-item-next cms-slider-item-prev cms-slider-item-right"
+        // ^ Above comment serves to mark the classes as _used_ for the 'css_file' unit test
+
         $dom.Slider = Slider;
         /**
          * @constructor Slider
