@@ -1043,7 +1043,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                         $db = $GLOBALS['SITE_DB'];
                     }
 
-                    $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+                    $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
 
                     $start = 0;
                     do {
@@ -1096,7 +1096,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
             $lang_fields = isset($GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']]) ? $GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']] : array();
 
-            $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+            $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
 
             $start = 0;
             do {

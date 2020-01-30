@@ -108,7 +108,7 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
             }
         }
 
-        $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
 
         $start = 0;
         do {
@@ -212,7 +212,7 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
                 if (!$lots) {
                     $child_hook_ob = $this->_get_sitemap_object('catalogue_category');
 
-                    $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+                    $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
 
                     $children_entries = array();
                     $start = 0;

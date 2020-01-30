@@ -261,7 +261,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
                 }
 
                 if ((!$skip_children) && ($count !== 0)) {
-                    $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+                    $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
 
                     $start = 0;
                     do {
