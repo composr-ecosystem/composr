@@ -83,7 +83,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
         }
 
         $path = end($details);
-        $row = $this->_load_row_from_page_groupings($row, $zone, $page);
+        $row = $this->_load_row_from_page_groupings($row, $meta_gather, $zone, $page);
 
         $struct = array(
             'title' => make_string_tempcode(escape_html(titleify($page))),

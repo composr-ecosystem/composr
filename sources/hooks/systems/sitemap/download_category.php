@@ -142,7 +142,9 @@ class Hook_sitemap_download_category extends Hook_sitemap_content
             'edit_url' => build_url(array('page' => 'cms_downloads', 'type' => '_edit_category', 'id' => $content_id), get_module_zone('cms_downloads')),
         ) + $partial_struct;
 
-        $struct['extra_meta']['is_a_category_tree_root'] = true;
+        if ($content_id == strval(db_get_first_id())) {
+            $struct['extra_meta']['is_a_category_tree_root'] = true;
+        }
 
         if (!$this->_check_node_permissions($struct)) {
             return null;

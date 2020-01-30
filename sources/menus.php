@@ -229,6 +229,12 @@ function _build_sitemap_menu($menu)
             }
         }
 
+        $meta_gather = SITEMAP_GATHER_IMAGE;
+        if (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0) {
+            // For performance we only gather this for the proper page-grouping menus, not general sitemaps
+            $meta_gather = $meta_gather | SITEMAP_GATHER_DESCRIPTION;
+        }
+
         $node = retrieve_sitemap_node(
             $page_link,
             /*$callback=*/
@@ -240,7 +246,7 @@ function _build_sitemap_menu($menu)
             $options,
             /*$zone=*/
             '_SEARCH',
-            SITEMAP_GATHER_DESCRIPTION | SITEMAP_GATHER_IMAGE
+            $meta_gather
         );
 
         if ($node === null) {

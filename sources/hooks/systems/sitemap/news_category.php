@@ -168,6 +168,7 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
                 $child_hook_ob = object_factory('Hook_sitemap_news');
 
                 $skip_children = false;
+                $count = null;
                 if ($child_cutoff !== null) {
                     $count = $GLOBALS['SITE_DB']->query_select_value('news_category_entries', 'COUNT(*)', array('news_entry_category' => intval($content_id)));
                     if ($count > $child_cutoff) {
@@ -175,7 +176,7 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
                     }
                 }
 
-                if (!$skip_children) {
+                if ((!$skip_children) && ($count !== 0)) {
                     $child_rows = $GLOBALS['SITE_DB']->query_select('news_category_entries', array('news_entry'), array('news_entry_category' => intval($content_id)));
                     foreach ($child_rows as $child_row) {
                         $child_page_link = $zone . ':' . $page . ':view:' . strval($child_row['news_entry']);

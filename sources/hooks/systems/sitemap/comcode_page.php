@@ -89,13 +89,21 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
             return null;
         }
 
+        // Conventionally $row will be a page-grouping tuple, but it may also be a DB row, so do a switcheroo if needed
+        if (($row !== null) && ((count($row) == 0) || (array_key_exists('cc_page_title', $row)))) {
+            $db_row = $row;
+            $row = null;
+        } else {
+            $db_row = null;
+        }
+
         $matches = array();
         preg_match('#^([^:]*):([^:]*)#', $page_link, $matches);
         $page = $matches[2];
 
         $this->_make_zone_concrete($zone, $page_link);
 
-        $details = $this->_request_page_details($page, $zone);
+        $details = $this->_request_page_details($page, $zone, 'comcode_custom'/*will also search 'comcode'*/);
         if (($details === false) && (get_option('collapse_user_zones') == '0')) {
             $zone = ($zone == 'site') ? '' : 'site'; // Try different zone
             $details = $this->_request_page_details($page, $zone);
@@ -113,7 +121,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
             $full_path = get_file_base() . '/' . $path;
         }
 
-        $row = $this->_load_row_from_page_groupings($row, $zone, $page);
+        $row = $this->_load_row_from_page_groupings($row, $meta_gather, $zone, $page);
 
         $test_icon = find_theme_image('icons/24x24/menu/pages/' . $page, true);
         $test_icon_2x = find_theme_image('icons/48x48/menu/pages/' . $page, true);
@@ -178,32 +186,34 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
 
         // In the DB?
         $got_title = false;
-        $db_row = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a LEFT JOIN ' . get_table_prefix() . 'comcode_pages b ON a.the_zone=b.the_zone AND a.the_page=b.the_page', array('cc_page_title', 'p_add_date', 'p_edit_date', 'p_submitter'), array('a.the_zone' => $zone, 'a.the_page' => $page), '', 1);
-        if (isset($db_row[0])) {
-            if (isset($db_row[0]['cc_page_title'])) {
-                $_title = get_translated_text($db_row[0]['cc_page_title']);
+        if ($db_row === null) {
+            $db_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a LEFT JOIN ' . get_table_prefix() . 'comcode_pages b ON a.the_zone=b.the_zone AND a.the_page=b.the_page', array('cc_page_title', 'p_add_date', 'p_edit_date', 'p_submitter'), array('a.the_zone' => $zone, 'a.the_page' => $page), '', 1);
+            $db_row = array_key_exists(0, $db_rows) ? $db_rows[0] : null;
+        }
+        if (($db_row !== null) && (count($db_row) != 0)) {
+            if (isset($db_row['cc_page_title'])) {
+                $_title = get_translated_text($db_row['cc_page_title']);
                 if ($_title != '') {
                     $struct['title'] = make_string_tempcode(escape_html($_title));
                     $got_title = true;
                 }
             }
-            if (isset($db_row[0]['p_add_date'])) {
-                $struct['extra_meta']['add_date'] = $db_row[0]['p_add_date'];
+            if (isset($db_row['p_add_date'])) {
+                $struct['extra_meta']['add_date'] = $db_row['p_add_date'];
             }
-            if (isset($db_row[0]['p_edit_date'])) {
-                $struct['extra_meta']['edit_date'] = $db_row[0]['p_edit_date'];
+            if (isset($db_row['p_edit_date'])) {
+                $struct['extra_meta']['edit_date'] = $db_row['p_edit_date'];
             }
-            if (isset($db_row[0]['p_submitter'])) {
-                $struct['extra_meta']['submitter'] = $db_row[0]['p_submitter'];
+            if (isset($db_row['p_submitter'])) {
+                $struct['extra_meta']['submitter'] = $db_row['p_submitter'];
             }
             if (($meta_gather & SITEMAP_GATHER_DB_ROW) != 0) {
-                $struct['extra_meta']['db_row'] = $db_row[0] + (($row === null) ? array() : $struct['extra_meta']['db_row']);
+                $struct['extra_meta']['db_row'] = $db_row + (($row === null) ? array() : $struct['extra_meta']['db_row']);
             }
         }
-        $page_contents = file_get_contents($full_path);
-        if (!$got_title || strpos($page_contents, 'sub=') !== false) {
+        if (!$got_title) {
             require_code('zones2');
-            $__title = get_comcode_page_title_from_disk($full_path, true, true);
+            $__title = get_comcode_page_title_from_disk($full_path, false, true);
             if (!$__title->is_empty()) {
                 $struct['title'] = $__title;
             }
@@ -232,12 +242,23 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                     $where['p_validated'] = 1;
                 }
 
-                $skip_children = false;
-                $count = null;
-                if ($child_cutoff !== null) {
-                    $count = $GLOBALS['SITE_DB']->query_select_value('comcode_pages', 'COUNT(*)', $where);
-                    if ($count > $child_cutoff) {
-                        $skip_children = true;
+                // Optimisation: most of the time in practice parent relationships aren't used, but their use is a big perf hit here; so pre-compute if they are per-zone in advance
+                static $children_in_zone = null;
+                if ($children_in_zone === null) {
+                    $_children_in_zone = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_zone', 'COUNT(*) AS cnt'), array(), ' AND ' . db_string_not_equal_to('p_parent_page', '') . ' GROUP BY the_zone');
+                    $children_in_zone = collapse_2d_complexity('the_zone', 'cnt', $_children_in_zone);
+                }
+
+                if ((!array_key_exists($zone, $children_in_zone)) || ($children_in_zone[$zone] == 0)) {
+                    $skip_children = true;
+                } else {
+                    $skip_children = false;
+                    $count = null;
+                    if ($child_cutoff !== null) {
+                        $count = $GLOBALS['SITE_DB']->query_select_value('comcode_pages', 'COUNT(*)', $where);
+                        if ($count > $child_cutoff) {
+                            $skip_children = true;
+                        }
                     }
                 }
 
@@ -258,7 +279,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                             }
                         }
                         $start += SITEMAP_MAX_ROWS_PER_LOOP;
-                    } while (count($child_rows[$sz]) > 0);
+                    } while (count($child_rows[$sz]) == SITEMAP_MAX_ROWS_PER_LOOP);
                 }
             }
             $struct['children'] = $children;
