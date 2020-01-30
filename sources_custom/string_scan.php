@@ -126,6 +126,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TAX_STATE_REGEXP
         VIEW_CART
         _DESCRIPTION_MAIL_TAX_CODE
+        IF_UNCHANGED_CURRENT_FILE_REMAINS
         MONIKER_TRANSLITERATION
         CONFIG_OPTION_moniker_transliteration
         BLOCKS_AT_TOP

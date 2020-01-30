@@ -230,6 +230,8 @@ Like other Composr content types, catalogues support access permissions. However
 
 If you manually alter the templates so that upload/picture fields display the raw URL, rather than going through Composr's downloader script, then you will need to delete the [tt]uploads/catalogues/.htaccess[/tt] file. By default permissions are denied to directly access these URLs, to prevent users without catalogue access from accessing individual files.
 
+Note that assigning permissions to add/edit whole catalogues comes with a high risk -- as permission to post any Comcode/HTML effectively comes with permission to add the catalogue.
+
 [title="2"]Customising the look & feel of catalogues (advanced)[/title]
 
 If you have multiple catalogues on your website and you wish for them to have customised appearances, this is possible for advanced users via one of two ways:
@@ -485,5 +487,6 @@ The non-bundled classified ads addon overrides the functionality of [tt]ce_last_
  - [page="_SEARCH:sup_catalogues"]Catalogues in Composr[/page]
  - [page="_SEARCH:tut_comcode_pages"]Adding standalone pages of content (via Comcode)[/page]
  - [page="_SEARCH:tut_ecommerce"]eCommerce[/page]
+ - [page="_SEARCH:sup_catalogue_field_references"]Catalogue field references[/page]
 
 {$SET,tutorial_tags,Catalogues,core_fields,catalogues,Content,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,The catalogue system lets you set up your own databases on your website.}[block]main_tutorial_rating[/block]

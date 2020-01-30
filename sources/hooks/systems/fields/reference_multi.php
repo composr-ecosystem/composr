@@ -132,7 +132,7 @@ class Hook_fields_reference_multi
         $ret = new Tempcode();
         foreach ($out as $o) {
             list($title, $url) = $o;
-            $ret->attach(paragraph(hyperlink($url, $title, false, true)));
+            $ret->attach(paragraph(hyperlink($url, $title, false, true), 'reference_multi'));
         }
 
         return $ret;

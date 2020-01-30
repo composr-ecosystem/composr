@@ -612,6 +612,11 @@ class Module_groups
         $s_max_rows = cns_get_group_members_raw_count($id, false, false, false);
         $d_max_rows = cns_may_control_group($id, get_member()) ? cns_get_group_members_raw_count($id, false, true, false) : 0;
         foreach ($_secondary_members as $secondary_member) {
+            if (!cns_may_control_group($id, get_member())) {
+                // Update to consistent map format, as we use it here
+                $secondary_member = array('gm_member_id' => $secondary_member, 'gm_validated' => 1, 'implicit' => false);
+            }
+
             if ($this->filter_out($GLOBALS['FORUM_DRIVER']->get_member_row($secondary_member['gm_member_id']))) {
                 continue;
             }

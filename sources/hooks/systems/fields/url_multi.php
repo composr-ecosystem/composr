@@ -109,7 +109,7 @@ class Hook_fields_url_multi
 
         $ret = new Tempcode();
         foreach ($out as $ev => $link_captions_title) {
-            $ret->attach(paragraph(hyperlink((url_is_local($ev) ? (get_base_url() . '/') : '') . $ev, $link_captions_title, true, true)));
+            $ret->attach(paragraph(hyperlink((url_is_local($ev) ? (get_base_url() . '/') : '') . $ev, $link_captions_title, true, true), 'url_multi'));
         }
         return $ret;
     }

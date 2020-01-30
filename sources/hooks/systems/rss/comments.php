@@ -36,6 +36,10 @@ class Hook_rss_comments
      */
     public function run($full_title, $cutoff, $prefix, $date_string, $max)
     {
+        if ($full_title == '*') {
+            return null; // We cannot get 'all' comments, as there's no API for that, and no easy way to check permissions
+        }
+
         require_code('content');
 
         // Check permissions (this is HARD, we have to tunnel through content_meta_aware hooks)
@@ -81,6 +85,8 @@ class Hook_rss_comments
                 }
             }
         } else {
+            // Assume it is for a page then...
+
             $zone = get_page_zone($parts[0], false);
             if (is_null($zone)) {
                 return null;

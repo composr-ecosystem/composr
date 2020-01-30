@@ -1456,7 +1456,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                                                     if ($HTTP_DOWNLOAD_URL == $_url) {
                                                         $HTTP_DOWNLOAD_URL = $url;
                                                     }
-                                                    $HTTP_MESSAGE = strval(curl_getinfo($ch, CURLINFO_HTTP_CODE));
+                                                    $HTTP_MESSAGE = _fix_non_standard_statuses(strval(curl_getinfo($ch, CURLINFO_HTTP_CODE)));
                                                     if ($HTTP_MESSAGE == '206') {
                                                         $HTTP_MESSAGE = '200'; // We don't care about partial-content return code, as Composr implementation gets ranges differently and we check '200' as a return result
                                                     }
@@ -1833,7 +1833,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                         // 400/500=Internal error
                         // 405=Method not allowed
 
-                        $HTTP_MESSAGE = $matches[2];
+                        $HTTP_MESSAGE = _fix_non_standard_statuses($matches[2]);
                         switch ($matches[2]) {
                             case '301':
                             case '302':
@@ -2386,4 +2386,18 @@ function _detect_character_encoding($out)
     }
 
     return $out;
+}
+
+/**
+ * Fixup non-standard status codes to standard ones.
+ *
+ * @param  string $status Status returned
+ * @return string Fixed status
+ *
+ * @ignore
+ */
+function _fix_non_standard_statuses($status)
+{
+    $status = preg_replace('#^(\d\d\d)\.\d+$#', '$1', $status); // IIS
+    return $status;
 }

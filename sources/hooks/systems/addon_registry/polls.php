@@ -358,7 +358,7 @@ class Hook_addon_registry_polls
         }
         $trackback_details = do_lorem_template('TRACKBACK_WRAPPER', array(
             'TRACKBACKS' => $trackbacks,
-            'TRACKBACK_PAGE' => placeholder_id(),
+            'TRACKBACK_FEEDBACK_TYPE' => placeholder_id(),
             'TRACKBACK_ID' => placeholder_id(),
             'TRACKBACK_TITLE' => lorem_phrase(),
         ));

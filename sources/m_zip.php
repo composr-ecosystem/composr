@@ -29,7 +29,7 @@
  */
 function init__m_zip()
 {
-    $ud = trim(get_option('unzip_dir'), '/\\');
+    $ud = rtrim(get_option('unzip_dir'), '/\\');
     if (!defined('UNZIP_DIR')) {
         define('UNZIP_DIR', $ud);
         define('UNZIP_CMD', get_option('unzip_cmd'));
@@ -94,7 +94,7 @@ function init__m_zip()
             $unzip_cmd = str_replace('@_DST_@', '"' . $zip_dir . '"', $unzip_cmd);
 
             $bits = explode(' ', UNZIP_CMD);
-            if (!@file_exists(array_shift($bits))) {
+            if (!@file_exists($bits[0])) { // Check that InfoZip is where it is configured to be
                 $_config_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'), get_module_zone('admin_config'));
                 $config_url = $_config_url->evaluate();
                 $config_url .= '#group_ARCHIVES';

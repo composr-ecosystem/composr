@@ -640,7 +640,7 @@ function dispatch_news_notification($id, $title, $main_news_category)
         require_code('content_privacy');
         $privacy_limits = privacy_limits_for('news', strval($id));
     } else {
-        $privacy_limits = array();
+        $privacy_limits = null;
     }
 
     require_code('notifications');

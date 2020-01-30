@@ -1115,6 +1115,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         (strpos($text, 'connect to') === false) &&
         (strpos($text, 'Access denied for') === false) &&
         (strpos($text, 'command denied for') === false) && // MySQL
+        (strpos($text, 'was deadlocked on lock resources with another process') === false) && // SQL Server
         (strpos($text, 'Unknown database') === false) &&
         (strpos($text, 'headers already sent') === false) &&
         (strpos($text, 'Your TaxCloud API trial period has expired') === false) &&
