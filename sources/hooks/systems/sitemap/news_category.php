@@ -74,9 +74,11 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
             }
         }
 
+        $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), null, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), null, '', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':select=' . strval($row['id']);
                 if (strpos($page_link, ':blog=0') !== false) {
@@ -91,8 +93,8 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         if (is_array($nodes)) {
             sort_maps_by($nodes, 'title');

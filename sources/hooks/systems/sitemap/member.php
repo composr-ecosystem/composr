@@ -82,9 +82,11 @@ class Hook_sitemap_member extends Hook_sitemap_content
             }
         }
 
+        $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), $consider_validation ? array('m_validated' => 1) : null, 'ORDER BY m_username', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), $consider_validation ? array('m_validated' => 1) : null, 'ORDER BY m_username', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 if ($row['id'] == db_get_first_id()) {
                     continue;
@@ -96,8 +98,8 @@ class Hook_sitemap_member extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         return $nodes;
     }

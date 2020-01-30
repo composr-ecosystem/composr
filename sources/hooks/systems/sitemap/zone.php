@@ -402,7 +402,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                     }
                     $comcode_page_db_rows = array();
                     foreach ($_comcode_page_db_rows as $comcode_page_db_row) {
-                        $child_page_link = $row['the_zone'] . ':' . $row['the_page'];
+                        $child_page_link = $comcode_page_db_row['the_zone'] . ':' . $comcode_page_db_row['the_page'];
                         $_comcode_page_db_rows[$child_page_link] = $comcode_page_db_row;
                     }
 

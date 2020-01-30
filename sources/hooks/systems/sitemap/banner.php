@@ -80,6 +80,8 @@ class Hook_sitemap_banner extends Hook_sitemap_content
             }
         }
 
+        $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
             $where_map = array();
@@ -89,7 +91,7 @@ class Hook_sitemap_banner extends Hook_sitemap_content
             if (!has_privilege(get_member(), 'view_anyones_banner_stats')) {
                 $where_map['submitter'] = get_member();
             }
-            $rows = $GLOBALS['SITE_DB']->query_select('banners', array('*'), $where_map, 'ORDER BY name', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('banners', array('*'), $where_map, 'ORDER BY name', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':source=' . $row['name'];
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
@@ -98,8 +100,8 @@ class Hook_sitemap_banner extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         return $nodes;
     }
