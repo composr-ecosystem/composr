@@ -415,6 +415,9 @@ function generate_captcha()
         return;
     }
 
+    global $INVALIDATED_FAST_SPIDER_CACHE;
+    $INVALIDATED_FAST_SPIDER_CACHE = true;
+
     $session = get_session_id();
     if ($session == '') {
         if (php_function_allowed('error_log')) {

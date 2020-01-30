@@ -1150,6 +1150,17 @@ function save_static_caching($out, $mime_type = 'text/html')
         }
     }
 
+    global $INVALIDATED_FAST_SPIDER_CACHE;
+    if ($INVALIDATED_FAST_SPIDER_CACHE) {
+        if ($debugging) {
+            if (php_function_allowed('error_log')) {
+                @error_log('SC save: caching explicitly blocked by $INVALIDATED_FAST_SPIDER_CACHE');
+            }
+        }
+
+        return false;
+    }
+
     global $HTTP_STATUS_CODE;
     if (($HTTP_STATUS_CODE != 200) && ($mime_type != 'text/html')) {
         if ($debugging) {
