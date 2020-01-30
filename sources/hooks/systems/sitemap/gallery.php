@@ -78,9 +78,11 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
 
         require_code('galleries');
 
+        $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('parent_id' => $parent), ' AND name NOT LIKE \'download\_%\'', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('parent_id' => $parent), ' AND name NOT LIKE \'download\_%\'', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 if ((get_option('show_empty_galleries') == '1') || (gallery_has_content($row['name']))) {
                     $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . $row['name'];
@@ -91,8 +93,8 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         if (is_array($nodes)) {
             sort_maps_by($nodes, 'title');

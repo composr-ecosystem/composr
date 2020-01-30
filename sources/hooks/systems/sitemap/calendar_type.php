@@ -74,9 +74,11 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
             }
         }
 
+        $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', array('*'), null, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', array('*'), null, '', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 if (($row['id'] != db_get_first_id()) || (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (cron_installed()))) { // Filters system commands
                     $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':int_' . strval($row['id']) . '=1';
@@ -87,8 +89,8 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         if (is_array($nodes)) {
             sort_maps_by($nodes, 'title');

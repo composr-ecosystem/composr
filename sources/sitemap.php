@@ -1043,6 +1043,8 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                         $db = $GLOBALS['SITE_DB'];
                     }
 
+                    $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
                     $start = 0;
                     do {
                         $rows = $cma_entry_info['connection']->query_select($table, array('r.*'), $where, $extra_where_entries . $privacy_where . (is_null($explicit_order_by_entries) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), SITEMAP_MAX_ROWS_PER_LOOP, $start);
@@ -1094,9 +1096,11 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
             $lang_fields = isset($GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']]) ? $GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']] : array();
 
+            $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
             $start = 0;
             do {
-                $rows = $cma_info['connection']->query_select($table, $select, $where, (is_null($explicit_order_by_subcategories) ? '' : ('ORDER BY ' . $explicit_order_by_subcategories)), SITEMAP_MAX_ROWS_PER_LOOP, $start, false, $lang_fields);
+                $rows = $cma_info['connection']->query_select($table, $select, $where, (is_null($explicit_order_by_subcategories) ? '' : ('ORDER BY ' . $explicit_order_by_subcategories)), $max_rows_per_loop, $start, false, $lang_fields);
 
                 if (($start == 0) && ($child_cutoff !== null) && (count($rows) > $child_cutoff)) {
                     $rows = array(); // Too many to process. We don't do with a COUNT(*) query because on balance of probability there won't be too many child rows and we can save a count query at the cost of the small risk of loading excess data
@@ -1121,8 +1125,8 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                         $children_categories[] = $child_node;
                     }
                 }
-                $start += SITEMAP_MAX_ROWS_PER_LOOP;
-            } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+                $start += $max_rows_per_loop;
+            } while (count($rows) == $max_rows_per_loop);
 
             if (is_null($explicit_order_by_subcategories)) {
                 sort_maps_by($children_categories, 'title');

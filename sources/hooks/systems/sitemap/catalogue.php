@@ -108,9 +108,11 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
             }
         }
 
+        $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), $map, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), $map, '', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 if (substr($row['c_name'], 0, 1) != '_') {
                     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', array('c_name' => $row['c_name']));
@@ -127,8 +129,8 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         if (is_array($nodes)) {
             sort_maps_by($nodes, 'title');
@@ -210,11 +212,13 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
                 if (!$lots) {
                     $child_hook_ob = $this->_get_sitemap_object('catalogue_category');
 
+                    $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
                     $children_entries = array();
                     $start = 0;
                     do {
                         $where = array('c_name' => $content_id, 'cc_parent_id' => null);
-                        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('*'), $where, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+                        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('*'), $where, '', $max_rows_per_loop, $start);
                         foreach ($rows as $child_row) {
                             $child_page_link = $zone . ':' . $page . ':category:' . strval($child_row['id']);
                             $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
@@ -233,8 +237,8 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
                                 $children_entries[] = $child_node;
                             }
                         }
-                        $start += SITEMAP_MAX_ROWS_PER_LOOP;
-                    } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+                        $start += $max_rows_per_loop;
+                    } while (count($rows) == $max_rows_per_loop);
 
                     sort_maps_by($children_entries, 'title');
 

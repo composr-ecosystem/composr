@@ -263,13 +263,15 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                 }
 
                 if ((!$skip_children) && ($count !== 0)) {
+                    $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+
                     static $child_rows = array();
                     $start = 0;
                     do {
                         $sz = serialize($where + array('_start' => $start));
 
                         if (!isset($child_rows[$sz])) {
-                            $child_rows[$sz] = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_page'), $where, 'ORDER BY p_order,the_page', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+                            $child_rows[$sz] = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_page'), $where, 'ORDER BY p_order,the_page', $max_rows_per_loop, $start);
                         }
                         foreach ($child_rows[$sz] as $child_row) {
                             $child_page_link = $zone . ':' . $child_row['the_page'];
@@ -278,8 +280,8 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                                 $children[] = $child_node;
                             }
                         }
-                        $start += SITEMAP_MAX_ROWS_PER_LOOP;
-                    } while (count($child_rows[$sz]) == SITEMAP_MAX_ROWS_PER_LOOP);
+                        $start += $max_rows_per_loop;
+                    } while (count($child_rows[$sz]) == $max_rows_per_loop);
                 }
             }
             $struct['children'] = $children;
