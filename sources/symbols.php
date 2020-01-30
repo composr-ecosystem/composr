@@ -5012,3 +5012,90 @@ function ecv_SMART_LINK_STRIP($lang, $escaped, $param)
     }
     return $value;
 }
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements).
+ * @param  array $escaped Array of escaping operations.
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result.
+ */
+function ecv_ROUND($lang, $escaped, $param)
+{
+    $value = '';
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+
+    if (isset($param[0])) {
+        $amount = isset($param[1]) ? intval($param[1]) : 0;
+        if ($amount > 0) {
+            $value = float_format(floatval($param[0]), $amount);
+        } else {
+            $value = strval(intval(round(floatval($param[0]), $amount)));
+        }
+    }
+
+    if ($escaped !== array()) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements).
+ * @param  array $escaped Array of escaping operations.
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result.
+ */
+function ecv_RATING($lang, $escaped, $param)
+{
+    $value = mixed();
+
+    $value = '';
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+
+    if (isset($param[1])) {
+        static $cache_rating = array();
+        $cache_key = serialize($param);
+        if (isset($cache_rating[$cache_key])) {
+            $value = $cache_rating[$cache_key];
+        } else {
+            global $DISPLAYED_TITLE;
+
+            require_code('feedback');
+            $display_tpl = empty($param[5]) ? 'RATING_FORM' : $param[5];
+            $rating = get_rating_simple_array(
+                empty($param[3]) ? get_self_url(true) : $param[3], // content_url
+                empty($param[4]) ? (is_null($DISPLAYED_TITLE) ? '' : $DISPLAYED_TITLE->evaluate()) : $param[4], // content_title
+                $param[0], // content_type
+                $param[1], // content_id
+                'RATING_FORM', // form_tpl
+                empty($param[2]) ? null : intval($param[2]) // submitter
+            );
+            if ($rating !== null) {
+                if (empty($param[5])) {
+                    $value = isset($rating['ALL_RATING_CRITERIA'][key($rating['ALL_RATING_CRITERIA'])]['RATING']) ? $rating['ALL_RATING_CRITERIA'][key($rating['ALL_RATING_CRITERIA'])]['RATING'] : '';
+                } else {
+                    $value = static_evaluate_tempcode(do_template($display_tpl, $rating));
+                }
+            }
+
+            $cache_rating[$cache_key] = $value;
+        }
+    }
+
+    if ($escaped !== array()) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+    return $value;
+}
