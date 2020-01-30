@@ -106,7 +106,7 @@ function render_catalogue_entry_box($row, $zone = '_SEARCH', $give_context = tru
     }
 
     $tpl_set = $catalogue_name;
-    return do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $display + array('_GUID' => ($guid != '') ? $guid : 'dfg3rergt5g433f', 'GIVE_CONTEXT' => $give_context, 'BREADCRUMBS' => $breadcrumbs), null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
+    return do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', array('_GUID' => ($guid != '') ? $guid : 'dfg3rergt5g433f', 'GIVE_CONTEXT' => $give_context, 'BREADCRUMBS' => $breadcrumbs) + $display, null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
 }
 
 /**
@@ -1017,6 +1017,7 @@ function get_catalogue_entry_map($entry, $catalogue, $view_type, $tpl_set, $root
     $map['ID'] = strval($id);
     $map['CATALOGUE'] = $catalogue_name;
     $map['CATALOGUE_TITLE'] = array_key_exists('c_title', $catalogue) ? get_translated_text($catalogue['c_title']) : '';
+    $map['CATEGORY_ID'] = strval($entry['cc_id']);
     $map['CAT'] = strval($entry['cc_id']);
     if ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($entry['allow_comments'] >= 1)) {
         $map['COMMENT_COUNT'] = '1';

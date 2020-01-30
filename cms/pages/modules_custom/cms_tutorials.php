@@ -45,6 +45,8 @@ class Module_cms_tutorials extends Standard_crud_module
 
         require_lang('tutorials');
 
+        set_helper_panel_text(comcode_lang_string('DOC_TUTORIALS'));
+
         return parent::pre_run($top_level);
     }
 

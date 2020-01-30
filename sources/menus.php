@@ -431,7 +431,9 @@ function _append_to_page_links(&$branches, $page_link_append)
         if ($branch['page_link'] !== null) {
             $branch['page_link'] .= $page_link_append;
         }
-        _append_to_page_links($branch['children'], $page_link_append);
+        if ($branch['children'] !== null) {
+            _append_to_page_links($branch['children'], $page_link_append);
+        }
     }
 }
 

@@ -57,9 +57,11 @@ function process_overridden_comment_forum($feedback_code, $id, $category_id, $ol
     $forum_id = find_overridden_comment_forum($feedback_code, $category_id);
 
     if (($category_id != $old_category_id) && (get_forum_type() == 'cns')) {
+        $real_feedback_type = _real_feedback_type($feedback_code);
+
         // Move if needed
         $old_forum_id = find_overridden_comment_forum($feedback_code, $old_category_id);
-        $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($old_forum_id, $feedback_code . '_' . $id, do_lang('COMMENT'));
+        $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($old_forum_id, $real_feedback_type . '_' . $id, do_lang('COMMENT'));
         if (!is_null($topic_id)) {
             $_forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_id);
             $_old_forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($old_forum_id);
@@ -97,6 +99,20 @@ function find_overridden_comment_forum($feedback_code, $category_id = null)
 }
 
 /**
+ * We allow the feedback type to be over-specified in some places, to allow more configurability - but need to narrow it down in some places.
+ *
+ * @param  ID_TEXT $content_type Content type
+ * @return ID_TEXT Fixed content type
+ */
+function _real_feedback_type($content_type)
+{
+    if (substr($content_type, 0, 12) == 'catalogues__') {
+        return 'catalogues';
+    }
+    return $content_type;
+}
+
+/**
  * Find who submitted a piece of feedbackable content.
  *
  * @param  ID_TEXT $content_type Content type
@@ -107,7 +123,9 @@ function get_details_behind_feedback_code($content_type, $content_id)
 {
     require_code('content');
 
-    $real_content_type = convert_composr_type_codes('feedback_type_code', $content_type, 'content_type');
+    $real_feedback_type = _real_feedback_type($content_type);
+
+    $real_content_type = convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
     if ($real_content_type != '') {
         require_code('content');
         $cma_ob = get_content_object($real_content_type);
@@ -122,7 +140,7 @@ function get_details_behind_feedback_code($content_type, $content_id)
 /**
  * Main wrapper function to embed miscellaneous feedback systems into a module output.
  *
- * @param  ID_TEXT $page_name The page name
+ * @param  ID_TEXT $content_type The type (download, etc) that this feedback is for
  * @param  ID_TEXT $content_id Content ID
  * @param  BINARY $allow_rating Whether rating is allowed
  * @param  integer $allow_comments Whether comments/reviews is allowed (reviews allowed=2)
@@ -136,8 +154,10 @@ function get_details_behind_feedback_code($content_type, $content_id)
  * @param  ?TIME $time Time of comment topic (null: now)
  * @return array Tuple: Rating details, Comment details, Trackback details
  */
-function embed_feedback_systems($page_name, $content_id, $allow_rating, $allow_comments, $allow_trackbacks, $validated, $submitter, $content_url, $content_title, $forum, $time = null)
+function embed_feedback_systems($content_type, $content_id, $allow_rating, $allow_comments, $allow_trackbacks, $validated, $submitter, $content_url, $content_title, $forum, $time = null)
 {
+    $real_feedback_type = _real_feedback_type($content_type);
+
     // Sign up original poster for notifications
     if (get_forum_type() == 'cns') {
         $auto_monitor_contrib_content = $GLOBALS['CNS_DRIVER']->get_member_row_field($submitter, 'm_auto_monitor_contrib_content');
@@ -145,28 +165,28 @@ function embed_feedback_systems($page_name, $content_id, $allow_rating, $allow_c
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there('notifications_enabled', 'l_setting', array(
                 'l_member_id' => $submitter,
                 'l_notification_code' => 'comment_posted',
-                'l_code_category' => $page_name . '_' . $content_id,
+                'l_code_category' => $real_feedback_type . '_' . $content_id,
             ));
             if (is_null($test)) {
                 require_code('notifications');
-                enable_notifications('comment_posted', $page_name . '_' . $content_id, $submitter);
+                enable_notifications('comment_posted', $real_feedback_type . '_' . $content_id, $submitter);
             }
         }
     }
 
-    actualise_rating($allow_rating == 1, $page_name, $content_id, $content_url, $content_title);
+    actualise_rating($allow_rating == 1, $content_type, $content_id, $content_url, $content_title);
     if ((!is_null(post_param_string('title', null))) || ($validated == 1)) {
-        actualise_post_comment($allow_comments >= 1, $page_name, $content_id, $content_url, $content_title, $forum, false, null, false, false, false, null, null, $time);
+        actualise_post_comment($allow_comments >= 1, $content_type, $content_id, $content_url, $content_title, $forum, false, null, false, false, false, null, null, $time);
     }
-    $rating_details = get_rating_box($content_url, $content_title, $page_name, $content_id, $allow_rating == 1, $submitter);
-    $comment_details = get_comments($page_name, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
-    $trackback_details = get_trackbacks($page_name, $content_id, $allow_trackbacks == 1);
+    $rating_details = get_rating_box($content_url, $content_title, $content_type, $content_id, $allow_rating == 1, $submitter);
+    $comment_details = get_comments($content_type, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
+    $trackback_details = get_trackbacks($content_type, $content_id, $allow_trackbacks == 1);
 
     if (is_object($content_url)) {
         $content_url = $content_url->evaluate();
     }
 
-    $serialized_options = serialize(array($page_name, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time));
+    $serialized_options = serialize(array($content_type, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time));
     require_code('crypt');
     $hash = ratchet_hash($serialized_options, get_site_salt()); // A little security, to ensure $serialized_options is not tampered with
 
@@ -175,7 +195,7 @@ function embed_feedback_systems($page_name, $content_id, $allow_rating, $allow_c
         '_GUID' => 'da533e0f637e4c90ca7ef5a9a23f3203',
         'OPTIONS' => $serialized_options,
         'HASH' => $hash,
-        'PAGE_NAME' => $page_name,
+        'CONTENT_TYPE' => $content_type,
         'IS_THREADED' => true,
     )));
 
@@ -199,7 +219,7 @@ function post_comment_script()
     if (!is_array($_options)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
-    list($page_name, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time) = $_options;
+    list($content_type, $content_id, $allow_comments, $submitter, $content_url, $content_title, $forum, $time) = $_options;
 
     // Check security
     $hash = either_param_string('hash');
@@ -210,17 +230,17 @@ function post_comment_script()
     }
 
     // Post comment
-    actualise_post_comment($allow_comments >= 1, $page_name, $content_id, $content_url, $content_title, $forum, false, null, false, false, false, null, null, $time);
+    actualise_post_comment($allow_comments >= 1, $content_type, $content_id, $content_url, $content_title, $forum, false, null, false, false, false, null, null, $time);
 
     // Get new comments state
-    $comment_details = get_comments($page_name, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
+    $comment_details = get_comments($content_type, $allow_comments == 1, $content_id, false, $forum, null, null, false, null, $submitter, $allow_comments == 2);
 
     // AJAX support
     $comment_details->attach(do_template('COMMENT_AJAX_HANDLER', array(
         '_GUID' => 'da533e0f637e4c90ca7ef5a9a23f3203',
         'OPTIONS' => $options,
         'HASH' => $hash,
-        'PAGE_NAME' => $page_name,
+        'CONTENT_TYPE' => $content_type,
         'IS_THREADED' => true,
     )));
 
@@ -287,6 +307,8 @@ function display_rating($content_url, $content_title, $content_type, $content_id
 function get_rating_simple_array($content_url, $content_title, $content_type, $content_id, $form_tpl = 'RATING_FORM', $submitter = null)
 {
     if (get_option('is_on_rating') == '1') {
+        $real_feedback_type = _real_feedback_type($content_type);
+
         global $RATING_DETAILS_CACHE;
         if (isset($RATING_DETAILS_CACHE[$content_type][$content_id][$form_tpl])) {
             return $RATING_DETAILS_CACHE[$content_type][$content_id][$form_tpl];
@@ -321,7 +343,7 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
                 $rating_for_type .= '_' . $rating_criteria['TYPE'];
             }
 
-            $_num_ratings = $GLOBALS['SITE_DB']->query_select('rating', array('COUNT(*) AS cnt', 'SUM(rating) AS compound_rating'), array('rating_for_type' => $rating_for_type, 'rating_for_id' => $content_id), '', 1);
+            $_num_ratings = $GLOBALS['SITE_DB']->query_select('rating', array('COUNT(*) AS cnt', 'SUM(rating) AS compound_rating'), array('rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id), '', 1);
             $num_ratings = $_num_ratings[0]['cnt'];
             if ($num_ratings > 0) {
                 $rating = $_num_ratings[0]['compound_rating'];
@@ -332,7 +354,7 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
                         $liked_by = array();
                     }
                     if (count($liked_by) < MAX_LIKES_TO_SHOW) {
-                        $_liked_by = $GLOBALS['SITE_DB']->query_select('rating', array('rating_member'), array('rating_for_type' => $rating_for_type, 'rating_for_id' => $content_id, 'rating' => 10));
+                        $_liked_by = $GLOBALS['SITE_DB']->query_select('rating', array('rating_member'), array('rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating' => 10));
                         foreach ($_liked_by as $l) {
                             $username = $GLOBALS['FORUM_DRIVER']->get_username($l['rating_member']);
                             if (!is_null($username)) {
@@ -431,10 +453,12 @@ function already_rated($rating_for_types, $content_id)
     // Main query
     $for_types = '';
     foreach ($rating_for_types as $rating_for_type) {
+        $real_feedback_type = _real_feedback_type($rating_for_type);
+
         if ($for_types != '') {
             $for_types .= ' OR ';
         }
-        $for_types .= db_string_equal_to('rating_for_type', $rating_for_type);
+        $for_types .= db_string_equal_to('rating_for_type', $real_feedback_type);
     }
     $query = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'rating WHERE (' . $for_types . ') AND ' . db_string_equal_to('rating_for_id', $content_id);
 
@@ -536,6 +560,8 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
         }
     }
 
+    $real_feedback_type = _real_feedback_type($content_type);
+
     $rating_for_type = $content_type . (($type == '') ? '' : ('_' . $type));
 
     if (!has_privilege($member_id, 'rate', $page_name)) {
@@ -545,9 +571,9 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
     $past_rating = mixed();
     if (!is_null($rating)) {
         if ($already_rated) {
-            $past_rating = $GLOBALS['SITE_DB']->query_select_value_if_there('rating', 'rating', array('rating_for_type' => $rating_for_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()));
+            $past_rating = $GLOBALS['SITE_DB']->query_select_value_if_there('rating', 'rating', array('rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()));
             // Delete, in preparation for re-rating
-            $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => $rating_for_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()));
+            $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()));
         }
     }
 
@@ -560,9 +586,9 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
     }
 
     if (!is_null($rating)) {
-        $GLOBALS['SITE_DB']->query_insert('rating', array('rating_for_type' => $rating_for_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address(), 'rating_time' => time(), 'rating' => $rating));
+        $GLOBALS['SITE_DB']->query_insert('rating', array('rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address(), 'rating_time' => time(), 'rating' => $rating));
     } else {
-        $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => $rating_for_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()));
+        $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating_member' => $member_id, 'rating_ip' => get_ip_address()));
     }
 
     // Top rating / liked
@@ -575,7 +601,7 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
                 $content_title = do_lang('POST_IN', $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', array('id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', array('id' => intval($content_id))))));
             }
 
-            $real_content_type = convert_composr_type_codes('feedback_type_code', $content_type, 'content_type');
+            $real_content_type = convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
 
             if ((!is_null($submitter)) && (!is_guest($submitter))) {
                 // Give points
@@ -628,12 +654,12 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
                     $content_page_link = url_to_page_link($_safe_content_url);
                     require_code('activities');
                     if ($content_title == '') {
-                        syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $content_type, 'addon_name'), 1, null, false, $submitter);
+                        syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                     } else {
                         if ($content_type_title == $real_content_type) {
                             $activity_type .= '_UNTYPED';
                         }
-                        syndicate_described_activity($activity_type, $content_title, cms_mb_strtolower($content_type_title), $content_type_title, $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $content_type, 'addon_name'), 1, null, false, $submitter);
+                        syndicate_described_activity($activity_type, $content_title, cms_mb_strtolower($content_type_title), $content_type_title, $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                     }
                 }
             }
@@ -664,6 +690,8 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
 function get_comments($content_type, $allow_comments, $content_id, $invisible_if_no_comments = false, $forum = null, $post_warning = null, $_comments = null, $explicit_allow = false, $reverse = null, $highlight_by_user = null, $allow_reviews = false, $num_to_show_limit = null)
 {
     if (((get_option('is_on_comments') == '1') && (get_forum_type() != 'none') && ((get_forum_type() != 'cns') || (addon_installed('cns_forum'))) && (($allow_reviews) || ($allow_comments))) || ($explicit_allow)) {
+        $real_feedback_type = _real_feedback_type($content_type);
+
         if (is_null($forum)) {
             $forum = get_option('comments_forum_name');
         }
@@ -671,7 +699,7 @@ function get_comments($content_type, $allow_comments, $content_id, $invisible_if
         require_code('topics');
         $renderer = new CMS_Topic();
 
-        return $renderer->render_as_comment_topic($content_type, $content_id, $allow_comments, $invisible_if_no_comments, $forum, $post_warning, $_comments, $explicit_allow, $reverse, $highlight_by_user, $allow_reviews, $num_to_show_limit);
+        return $renderer->render_as_comment_topic($real_feedback_type, $content_id, $allow_comments, $invisible_if_no_comments, $forum, $post_warning, $_comments, $explicit_allow, $reverse, $highlight_by_user, $allow_reviews, $num_to_show_limit);
     }
 
     return new Tempcode(); // No franchise to render comments
@@ -726,6 +754,8 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
     if (running_script('preview')) {
         return false;
     }
+
+    $real_feedback_type = _real_feedback_type($content_type);
 
     $forum_tie = (get_option('is_on_strong_forum_tie') == '1');
 
@@ -798,7 +828,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
     list($topic_id, $is_hidden) = $GLOBALS['FORUM_DRIVER']->make_post_forum_topic(
         // Define scope
         $forum,
-        $content_type . '_' . $content_id,
+        $real_feedback_type . '_' . $content_id,
 
         // What is being posted
         get_member(),
@@ -822,7 +852,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
 
         // Do not send notifications to someone also getting one defined by the following
         ((!$private) && ($post != '')) ? 'comment_posted' : null,
-        ((!$private) && ($post != '')) ? ($content_type . '_' . $content_id) : null,
+        ((!$private) && ($post != '')) ? ($real_feedback_type . '_' . $content_id) : null,
 
         null, // current time
         $submitter
@@ -857,7 +887,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
                         'r_topic_id' => $GLOBALS['LAST_TOPIC_ID'],
                         'r_post_id' => $GLOBALS['LAST_POST_ID'],
                         'r_rating_type' => $rating_type,
-                        'r_rating_for_type' => $content_type,
+                        'r_rating_for_type' => $real_feedback_type,
                         'r_rating_for_id' => $content_id,
                         'r_rating' => $rating,
                     ));
@@ -867,7 +897,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
     }
 
     if ((!$private) && ($post != '')) {
-        $real_content_type = convert_composr_type_codes('feedback_type_code', $content_type, 'content_type');
+        $real_content_type = convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'content_type');
 
         $content_type_title = $real_content_type;
         if (!is_null($cma_info)) {
@@ -887,13 +917,13 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
         } else {
             $privacy_limits = null;
         }
-        dispatch_notification('comment_posted', $content_type . '_' . $content_id, $subject, $message_raw, $privacy_limits);
+        dispatch_notification('comment_posted', $real_feedback_type . '_' . $content_id, $subject, $message_raw, $privacy_limits);
 
         // Is the user gonna automatically enable notifications for this?
         if (get_forum_type() == 'cns') {
             $auto_monitor_contrib_content = $GLOBALS['CNS_DRIVER']->get_member_row_field(get_member(), 'm_auto_monitor_contrib_content');
             if ($auto_monitor_contrib_content == 1) {
-                enable_notifications('comment_posted', $content_type . '_' . $content_id);
+                enable_notifications('comment_posted', $real_feedback_type . '_' . $content_id);
             }
         }
 
@@ -917,12 +947,12 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
                 $content_page_link = url_to_page_link($_safe_content_url);
                 require_code('activities');
                 if ($content_title == '') {
-                    syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $content_type, 'addon_name'), 1, null, false, $submitter);
+                    syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                 } else {
                     if ($content_type_title == $real_content_type) {
                         $activity_type .= '_UNTYPED';
                     }
-                    syndicate_described_activity($activity_type, $content_title, cms_mb_strtolower($content_type_title), $content_type_title, $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $content_type, 'addon_name'), 1, null, false, $submitter);
+                    syndicate_described_activity($activity_type, $content_title, cms_mb_strtolower($content_type_title), $content_type_title, $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                 }
             }
         }
@@ -930,7 +960,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
 
     if (($post != '') && ($forum_tie) && (!$no_success_message)) {
         require_code('site2');
-        assign_refresh($GLOBALS['FORUM_DRIVER']->topic_url($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum, $content_type . '_' . $content_id, do_lang('COMMENT')), $forum, true), 0.0);
+        assign_refresh($GLOBALS['FORUM_DRIVER']->topic_url($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum, $real_feedback_type . '_' . $content_id, do_lang('COMMENT')), $forum, true), 0.0);
     }
 
     if (($post != '') && (!$no_success_message)) {
@@ -960,6 +990,8 @@ function update_spacer_post($allow_comments, $content_type, $content_id, $conten
         return;
     }
 
+    $real_feedback_type = _real_feedback_type($content_type);
+
     $home_link = is_null($content_title) ? new Tempcode() : hyperlink($content_url, $content_title, false, true);
 
     if (is_null($forum)) {
@@ -978,7 +1010,7 @@ function update_spacer_post($allow_comments, $content_type, $content_id, $conten
 
     foreach (($post_id !== null) ? array(get_site_default_lang()) : array_keys(find_all_langs()) as $lang) {
         if (is_null($post_id)) {
-            $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(strval($forum_id), $content_type . '_' . $content_id, do_lang('COMMENT'));
+            $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(strval($forum_id), $real_feedback_type . '_' . $content_id, do_lang('COMMENT'));
             if (is_null($topic_id)) {
                 continue;
             }
@@ -990,14 +1022,14 @@ function update_spacer_post($allow_comments, $content_type, $content_id, $conten
             $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', array('id' => $post_id));
         }
 
-        $spacer_title = is_null($content_title) ? ($content_type . '_' . $content_id) : ($content_title . ' (#' . $content_type . '_' . $content_id . ')');
+        $spacer_title = is_null($content_title) ? ($real_feedback_type . '_' . $content_id) : ($content_title . ' (#' . $real_feedback_type . '_' . $content_id . ')');
         $spacer_post = '[semihtml]' . do_lang('SPACER_POST', $home_link->evaluate(), '', '', $lang) . '[/semihtml]';
 
         if (get_forum_type() == 'cns') {
             require_code('cns_posts_action3');
             cns_edit_post($post_id, 1, is_null($content_title) ? $spacer_title : $content_title, $spacer_post, 0, 0, null, false, false, '', false);
             require_code('cns_topics_action2');
-            cns_edit_topic($topic_id, do_lang('COMMENT', null, null, null, $lang) . ': #' . $content_type . '_' . $content_id, null, null, null, null, null, null, '', null, $home_link->evaluate(), false);
+            cns_edit_topic($topic_id, do_lang('COMMENT', null, null, null, $lang) . ': #' . $real_feedback_type . '_' . $content_id, null, null, null, null, null, null, '', null, $home_link->evaluate(), false);
         }
     }
 }
@@ -1020,7 +1052,9 @@ function get_trackbacks($content_type, $content_id, $allow_trackback, $type = ''
     if ((get_option('is_on_trackbacks') == '1') && ($allow_trackback)) {
         require_lang('trackbacks');
 
-        $trackbacks = $GLOBALS['SITE_DB']->query_select('trackbacks', array('*'), array('trackback_for_type' => $content_type, 'trackback_for_id' => $content_id), 'ORDER BY trackback_time DESC', intval(get_option('general_safety_listing_limit')));
+        $real_feedback_type = _real_feedback_type($content_type);
+
+        $trackbacks = $GLOBALS['SITE_DB']->query_select('trackbacks', array('*'), array('trackback_for_type' => $real_feedback_type, 'trackback_for_id' => $content_id), 'ORDER BY trackback_time DESC', intval(get_option('general_safety_listing_limit')));
 
         $content = new Tempcode();
         $items = new Tempcode();
@@ -1067,7 +1101,7 @@ function get_trackbacks($content_type, $content_id, $allow_trackback, $type = ''
             $output = do_template('TRACKBACK_WRAPPER', array(
                 '_GUID' => '1bc2c42a54fdf4b0a10e8e1ea45f6e4f',
                 'TRACKBACKS' => $content,
-                'TRACKBACK_PAGE' => $content_type,
+                'TRACKBACK_FEEDBACK_TYPE' => $real_feedback_type,
                 'TRACKBACK_ID' => $content_id,
                 'TRACKBACK_TITLE' => $CURRENT_SCREEN_TITLE,
             ));
@@ -1075,7 +1109,7 @@ function get_trackbacks($content_type, $content_id, $allow_trackback, $type = ''
             $trackback_xml = do_template('TRACKBACK_XML_LISTING', array(
                 '_GUID' => '3bff402f15395f4648a2b5af33de8285',
                 'ITEMS' => $items,
-                'LINK_PAGE' => $content_type,
+                'LINK_PAGE' => $real_feedback_type,
                 'LINK_ID' => $content_id,
             ), null, false, null, '.xml', 'xml');
             $content->attach($trackback_xml);
@@ -1113,7 +1147,9 @@ function actualise_post_trackback($allow_trackbacks, $content_type, $content_id)
     $excerpt = post_param_string('excerpt', '');
     $name = post_param_string('blog_name', $url);
 
-    $GLOBALS['SITE_DB']->query_insert('trackbacks', array('trackback_for_type' => $content_type, 'trackback_for_id' => $content_id, 'trackback_ip' => get_ip_address(), 'trackback_time' => time(), 'trackback_url' => $url, 'trackback_title' => $title, 'trackback_excerpt' => $excerpt, 'trackback_name' => $name));
+    $real_feedback_type = _real_feedback_type($content_type);
+
+    $GLOBALS['SITE_DB']->query_insert('trackbacks', array('trackback_for_type' => $real_feedback_type, 'trackback_for_id' => $content_id, 'trackback_ip' => get_ip_address(), 'trackback_time' => time(), 'trackback_url' => $url, 'trackback_title' => $title, 'trackback_excerpt' => $excerpt, 'trackback_name' => $name));
 
     return true;
 }
