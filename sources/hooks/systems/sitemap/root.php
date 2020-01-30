@@ -157,7 +157,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
 
             $children = array();
 
-            $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+            $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
 
             // Ones going first
             $first_zones = find_all_zones(false, true, false, 0, $max_rows_per_loop);

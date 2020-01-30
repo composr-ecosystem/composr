@@ -74,7 +74,7 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
             }
         }
 
-        $max_rows_per_loop = min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff, SITEMAP_MAX_ROWS_PER_LOOP);
 
         $start = 0;
         do {
