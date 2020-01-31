@@ -28,7 +28,7 @@ class Hook_page_groupings_ad_success
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('audit', 'menu/_generic_admin/tool', array('ad_success', array(), get_page_zone('ad_success')), make_string_tempcode('Ad success')),
+            array('audit', 'menu/_generic_admin/tool', array('ad_success', array(), get_page_zone('ad_success', false, 'adminzone')), make_string_tempcode('Ad success')),
         );
     }
 }

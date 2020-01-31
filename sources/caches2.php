@@ -173,19 +173,19 @@ function put_into_cache($codename, $ttl, $cache_identifier, $staff_status, $memb
             'lang' => $lang,
             'the_theme' => $theme,
             'cached_for' => $codename,
-            'identifier' => md5($cache_identifier)
-        ), '', 1);
+            'identifier' => md5($cache_identifier),
+            'staff_status' => $staff_status,
+            'the_member' => $member,
+            'groups' => $groups,
+            'is_bot' => $is_bot,
+            'timezone' => $timezone,
+        ));
         $GLOBALS['SITE_DB']->query_insert('cache', array(
             'cached_for' => $codename,
             'dependencies' => $dependencies,
             'lang' => $lang,
             'identifier' => md5($cache_identifier),
             'the_theme' => $theme,
-            'staff_status' => $staff_status,
-            'the_member' => $member,
-            'groups' => $groups,
-            'is_bot' => $is_bot,
-            'timezone' => $timezone,
             'the_value' => $tempcode ? $cache->to_assembly($lang) : serialize($cache),
             'date_and_time' => time(),
         ), false, true);

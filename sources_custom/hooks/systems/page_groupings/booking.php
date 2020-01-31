@@ -28,8 +28,8 @@ class Hook_page_groupings_booking
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('cms', 'menu/booking', array('cms_booking', array(), get_page_zone('cms_booking')), do_lang_tempcode('booking:BOOKINGS'), 'booking:DOC_BOOKING'),
-            array('pages', 'menu/book', array('booking', array('type' => 'browse'), get_page_zone('booking')), do_lang_tempcode('booking:BOOKINGS')),
+            array('cms', 'menu/booking', array('cms_booking', array(), get_page_zone('cms_booking', false, 'cms')), do_lang_tempcode('booking:BOOKINGS'), 'booking:DOC_BOOKING'),
+            array('pages', 'menu/book', array('booking', array('type' => 'browse'), get_page_zone('booking', false)), do_lang_tempcode('booking:BOOKINGS')),
         );
     }
 }

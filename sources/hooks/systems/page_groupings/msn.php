@@ -36,7 +36,7 @@ class Hook_page_groupings_msn
             return array();
         }
 
-        $zone = get_page_zone('netlink', false);
+        $zone = get_page_zone('netlink', false, 'adminzone');
         if (is_null($zone)) {
             return array();
         }

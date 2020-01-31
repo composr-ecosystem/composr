@@ -40,7 +40,7 @@ class Hook_page_groupings_gallery_syndication
             $menu_items[] = array(
                 'setup',
                 'menu/rich_content/galleries',
-                array($hook . '_oauth', array(), get_page_zone($hook . '_oauth')),
+                array($hook . '_oauth', array(), get_page_zone($hook . '_oauth', false, 'adminzone')),
                 do_lang_tempcode('oauth:OAUTH_TITLE_UNDER_SETUP', escape_html($service_title)),
                 comcode_to_tempcode(do_lang('oauth:DOC_OAUTH_SETUP', $service_title))
             );

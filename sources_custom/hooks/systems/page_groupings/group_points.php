@@ -28,7 +28,7 @@ class Hook_page_groupings_group_points
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('setup', 'menu/social/pointstore', array('group_points', array('type' => 'browse'), get_page_zone('group_points')), make_string_tempcode('Usergroup point assignments')),
+            array('setup', 'menu/social/pointstore', array('group_points', array('type' => 'browse'), get_page_zone('group_points', false, 'adminzone')), make_string_tempcode('Usergroup point assignments')),
         );
     }
 }
