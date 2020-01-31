@@ -450,12 +450,12 @@ function get_module_zone($module_name, $type = 'modules', $dir2 = null, $ftype =
     }
 
     if (get_value('allow_admin_in_other_zones') !== '1') {
-        if (($type === 'modules') && ($module_name[0] === 'a') && (substr($module_name, 0, 6) === 'admin_')) {
+        if (($type === 'modules') && ($module_name[0] === 'a') && (($module_name == 'admin') || (substr($module_name, 0, 6) === 'admin_'))) {
             $zone = 'adminzone';
             $MODULES_ZONES_CACHE[$check_redirects][$_zone][$type][$module_name] = $zone;
             return $zone;
         }
-        if (($type === 'modules') && ($module_name[0] === 'c') && (substr($module_name, 0, 4) === 'cms_')) {
+        if (($type === 'modules') && ($module_name[0] === 'c') && (($module_name == 'cms') || (substr($module_name, 0, 4) === 'cms_'))) {
             $zone = 'cms';
             $MODULES_ZONES_CACHE[$check_redirects][$_zone][$type][$module_name] = $zone;
             return $zone;
@@ -470,9 +470,9 @@ function get_module_zone($module_name, $type = 'modules', $dir2 = null, $ftype =
     if ($check_redirects && $REDIRECT_CACHE === null) {
         load_redirect_cache();
     }
-    if ($module_name[0] == 'a' && substr($module_name, 0, 6) === 'admin_') {
+    if (($module_name[0] == 'a') && (($module_name == 'admin') || (substr($module_name, 0, 6) === 'admin_'))) {
         $first_zones = array('adminzone');
-    } elseif ($module_name[0] == 'c' && substr($module_name, 0, 4) === 'cms_') {
+    } elseif (($module_name[0] == 'c') && (($module_name == 'cms') || (substr($module_name, 0, 4) === 'cms_'))) {
         $first_zones = array('cms');
     } else {
         $first_zones = array($first_zone_to_check);

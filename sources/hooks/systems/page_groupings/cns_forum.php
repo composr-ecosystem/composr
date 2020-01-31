@@ -34,7 +34,7 @@ class Hook_page_groupings_cns_forum
     {
         return array(
             (get_forum_type() != 'cns') ? null : array('structure', 'menu/social/forum/forums', array('admin_cns_forums', array('type' => 'browse'), get_module_zone('admin_cns_forums')), do_lang_tempcode('SECTION_FORUMS'), 'cns:DOC_FORUMS'),
-            array('social', 'menu/social/forum/forums', array('forumview', array(), get_module_zone('forumview')), do_lang_tempcode('SECTION_FORUMS')),
+            array('social', 'menu/social/forum/forums', array('forumview', array(), get_module_zone('forumview', 'modules', null, 'php', false, true, 'forum')), do_lang_tempcode('SECTION_FORUMS')),
         );
     }
 }
