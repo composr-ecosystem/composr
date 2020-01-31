@@ -75,14 +75,22 @@ function build_menu($type, $menu, $silent_failure = false, $apply_highlighting =
     $content->handle_symbol_preprocessing(); // Optimisation: we are likely to have lots of page-links in here, so we want to spawn them to be detected for mass moniker loading
 
     $flattened = false;
-    if (function_exists('json_encode')) {
-        $sz = json_encode($root); // Faster
-    } else {
-        $sz = serialize($root);
-    }
-    if (strpos($sz, 'keep_') === false) {/*Will only work if there are no keep_ parameters within the menu itself, as the quick caching will get confused by that*/
-        $content = apply_quick_caching($content);
-        $flattened = true;
+    if (has_caching_for('block')) {
+        if ($is_sitemap_menu) {
+            $flattened = true; // We can assume that a Sitemap menu will not include keep_* parameters
+        } else {
+            if (function_exists('json_encode')) {
+                $sz = json_encode($root); // Faster
+            } else {
+                $sz = serialize($root);
+            }
+            if (strpos($sz, 'keep_') === false) {/*Will only work if there are no keep_ parameters within the menu itself, as the quick caching will get confused by that*/
+                $flattened = true;
+            }
+        }
+        if ($flattened) {
+            $content = apply_quick_caching($content);
+        }
     }
 
     // Edit link
@@ -690,12 +698,10 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
 
     // Render out branches at this level
     $children = new Tempcode();
-    $definitely_has_children = false;
     foreach ($new_children as $i => $child) {
         if (is_object($child)) {
             $children->attach($child);
         } else {
-            $definitely_has_children = true;
             $children->attach(do_template('MENU_BRANCH_' . filter_naughty_harsh($type, true), $child + array(
                 '_GUID' => 'd5209ec65425bed1207e2f667d9116f6',
                 'POSITION' => strval($i),
@@ -706,7 +712,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             ), null, false, 'MENU_BRANCH_tree'));
         }
     }
-    if ((!$definitely_has_children) && ($url->is_empty()) && ($children->is_empty())) {
+    if (($page_link == '') && ($children->is_empty())) {
         return array(null, false); // Nothing here!
     }
 
@@ -715,7 +721,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
     $tooltip = isset($branch['extra_meta']['description']) ? $branch['extra_meta']['description'] : new Tempcode();
 
     // How to display
-    if ((!isset($branch['modifiers']['expanded'])) && (!$expand_this) && (!$current_page) && ($url->is_empty())) {
+    if ((!isset($branch['modifiers']['expanded'])) && (!$expand_this) && (!$current_page) && ($page_link == '')) {
         $display = has_js() ? 'none' : 'block'; // We remap to 'none' using JS. If no JS, it remains visible. Once we have learn't we have JS, we don't need to do it again
     } else {
         $display = 'block';
