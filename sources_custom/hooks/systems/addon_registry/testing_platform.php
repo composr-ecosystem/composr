@@ -404,6 +404,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/_rate_limiting.php',
             '_tests/tests/unit_tests/banners.php',
             '_tests/tests/unit_tests/comcode_wysiwyg.php',
+            '_tests/tests/unit_tests/database_query_parameterised.php',
             '_tests/tests/unit_tests/_bash_parser.php',
             '_tests/tests/unit_tests/_backups.php',
             '_tests/tests/unit_tests/bookmark.php',
