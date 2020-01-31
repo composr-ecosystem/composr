@@ -106,6 +106,10 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
         } else {
             require_code('comcode');
             $tempcode_title = comcode_to_tempcode($raw_title, null, true, null, null, null, false, false, $html_context);
+
+            if ((preg_match('#[\[\{]#'/*Somehow dynamic so could still be empty*/, $raw_title) != 0) && ($tempcode_title->is_empty())) {
+                $tempcode_title = make_string_tempcode(escape_html($fallback_title));
+            }
         }
         return $tempcode_title;
     }
