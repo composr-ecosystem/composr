@@ -39,7 +39,7 @@ function init__menus()
  * @param  SHORT_TEXT $menu The menu identifier to use (may be the name of a editable menu, or syntax to load from the Sitemap)
  * @param  boolean $silent_failure Whether to silently return blank if the menu does not exist
  * @param  boolean $apply_highlighting Whether to apply current-screen highlighting
- * @return array A pair: The generated Tempcode of the menu, the menu nodes
+ * @return array A tuple: The generated Tempcode of the menu, the menu nodes, whether we flattened
  */
 function build_menu($type, $menu, $silent_failure = false, $apply_highlighting = true)
 {
@@ -74,8 +74,15 @@ function build_menu($type, $menu, $silent_failure = false, $apply_highlighting =
 
     $content->handle_symbol_preprocessing(); // Optimisation: we are likely to have lots of page-links in here, so we want to spawn them to be detected for mass moniker loading
 
-    if (strpos(serialize($root), 'keep_') === false) {/*Will only work if there are no keep_ parameters within the menu itself, as the quick caching will get confused by that*/
+    $flattened = false;
+    if (function_exists('json_encode')) {
+        $sz = json_encode($root); // Faster
+    } else {
+        $sz = serialize($root);
+    }
+    if (strpos($sz, 'keep_') === false) {/*Will only work if there are no keep_ parameters within the menu itself, as the quick caching will get confused by that*/
         $content = apply_quick_caching($content);
+        $flattened = true;
     }
 
     // Edit link
@@ -106,7 +113,7 @@ function build_menu($type, $menu, $silent_failure = false, $apply_highlighting =
         $content = $_content;
     }
 
-    return array($content, $root);
+    return array($content, $root, $flattened);
 }
 
 /**
@@ -683,10 +690,12 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
 
     // Render out branches at this level
     $children = new Tempcode();
+    $definitely_has_children = false;
     foreach ($new_children as $i => $child) {
         if (is_object($child)) {
             $children->attach($child);
         } else {
+            $definitely_has_children = true;
             $children->attach(do_template('MENU_BRANCH_' . filter_naughty_harsh($type, true), $child + array(
                 '_GUID' => 'd5209ec65425bed1207e2f667d9116f6',
                 'POSITION' => strval($i),
@@ -697,7 +706,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             ), null, false, 'MENU_BRANCH_tree'));
         }
     }
-    if (($children->is_empty()) && ($url->is_empty())) {
+    if ((!$definitely_has_children) && ($url->is_empty()) && ($children->is_empty())) {
         return array(null, false); // Nothing here!
     }
 
