@@ -57,6 +57,10 @@ class database_query_parameterised_test_set extends cms_test_case
             // Mixing
             "SELECT * FROM foobar WHERE x='{string_dangerous_1}' OR x={string_dangerous_2} OR 1=1" => "SELECT * FROM foobar WHERE x='let\'s be unsafe' OR x='a\\\\b' OR 1=1",
             "SELECT * FROM foobar WHERE a='b' OR x='{string_dangerous_2}'" => "SELECT * FROM foobar WHERE a='b' OR x='a\\\\b'",
+
+            // Missing params
+            "SELECT * FROM foobar WHERE x={missing}" => "SELECT * FROM foobar WHERE x={missing}",
+            "SELECT * FROM foobar WHERE x='{missing}'" => "SELECT * FROM foobar WHERE x='{missing}'",
         );
 
         foreach ($tests as $before => $expected) {
