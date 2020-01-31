@@ -42,10 +42,10 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
 {
     $page_contents = trim(file_get_contents($path, false, null, 0, 300));
 
-    $fallback_title = titleify(basename($path, '.txt'));
-
     $matches = array();
     if (preg_match('#\[title([^\]]*)?[^\]]*\]#', $page_contents, $matches) == 0) {
+        $fallback_title = titleify(basename($path, '.txt'));
+
         // No title
         if ($in_tempcode) {
             return make_string_tempcode(escape_html($fallback_title));
@@ -57,6 +57,8 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
     $tag_attribute_stuff = empty($matches[1]) ? '' : $matches[1];
 
     if (preg_match('#^(.*\sparam)?=?"[2-9]"?#', $tag_attribute_stuff) != 0) {
+        $fallback_title = titleify(basename($path, '.txt'));
+
         // Wrong title level
         if ($in_tempcode) {
             return make_string_tempcode(escape_html($fallback_title));
@@ -70,6 +72,8 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
     $raw_title = trim(substr($page_contents, $start, $end - $start));
 
     if (($raw_title == '') || ($raw_title == 'TODO')) {
+        $fallback_title = titleify(basename($path, '.txt'));
+
         // Blank title
         if ($in_tempcode) {
             return make_string_tempcode(escape_html($fallback_title));

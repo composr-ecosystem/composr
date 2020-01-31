@@ -1850,6 +1850,10 @@ function unixify_line_format($in, $desired_charset = null, $html = false, $from_
         $in = substr($in, 3);
     }
 
+    if (strpos($in, "\r") === false) {
+        return $in;
+    }
+
     static $from = null;
     if ($from === null) {
         $from = array("\r\n", '&#8298;', "\r"); // &#8298; is very odd- seems to come from open office copy & paste
