@@ -28,7 +28,7 @@ class Hook_page_groupings_twitter
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('setup', 'menu/twitter', array('twitter_oauth', array(), get_page_zone('twitter_oauth', false, 'adminzone')), do_lang_tempcode('twitter:TWITTER_SYNDICATION'), 'twitter:DOC_TWITTER_SYNDICATION'),
+            array('setup', 'menu/twitter', array('twitter_oauth', array(), get_page_zone('twitter_oauth', false, 'adminzone', 'minimodules')), do_lang_tempcode('twitter:TWITTER_SYNDICATION'), 'twitter:DOC_TWITTER_SYNDICATION'),
         );
     }
 }
