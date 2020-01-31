@@ -671,6 +671,10 @@ function permissive_groups_cache_signature()
         } else {
             $groups_cache = json_encode(array($actual_groups, $m_zone, $m_page, $m_privileges, $m_categories));
         }
+
+        if (strlen($groups_cache) > 255) {
+            $groups_cache = md5($groups_cache);
+        }
     }
 
     return $groups_cache;

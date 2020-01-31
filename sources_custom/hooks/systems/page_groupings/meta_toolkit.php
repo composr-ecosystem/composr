@@ -28,11 +28,11 @@ class Hook_page_groupings_meta_toolkit
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('tools', 'menu/_generic_admin/tool', array('sql_schema_generate', array(), get_page_zone('sql_schema_generate')), make_string_tempcode('Doc build: Generate database schema')),
-            array('tools', 'menu/_generic_admin/tool', array('sql_schema_generate_by_addon', array(), get_page_zone('sql_schema_generate_by_addon')), make_string_tempcode('Doc build: Generate database schema, by addon')),
-            array('tools', 'menu/_generic_admin/tool', array('sql_show_tables_by_addon', array(), get_page_zone('sql_show_tables_by_addon')), make_string_tempcode('Doc build: Show database tables, by addon')),
-            array('tools', 'menu/_generic_admin/tool', array('sql_dump', array(), get_page_zone('sql_dump')), make_string_tempcode('Backup tools: Create SQL dump (MySQL syntax)')),
-            array('tools', 'menu/_generic_admin/tool', array('tar_dump', array(), get_page_zone('tar_dump')), make_string_tempcode('Backup tools: Create files dump (TAR file)')),
+            array('tools', 'menu/_generic_admin/tool', array('sql_schema_generate', array(), get_page_zone('sql_schema_generate', false, 'adminzone')), make_string_tempcode('Doc build: Generate database schema')),
+            array('tools', 'menu/_generic_admin/tool', array('sql_schema_generate_by_addon', array(), get_page_zone('sql_schema_generate_by_addon', false, 'adminzone')), make_string_tempcode('Doc build: Generate database schema, by addon')),
+            array('tools', 'menu/_generic_admin/tool', array('sql_show_tables_by_addon', array(), get_page_zone('sql_show_tables_by_addon', false, 'adminzone')), make_string_tempcode('Doc build: Show database tables, by addon')),
+            array('tools', 'menu/_generic_admin/tool', array('sql_dump', array(), get_page_zone('sql_dump', false, 'adminzone')), make_string_tempcode('Backup tools: Create SQL dump (MySQL syntax)')),
+            array('tools', 'menu/_generic_admin/tool', array('tar_dump', array(), get_page_zone('tar_dump', false, 'adminzone')), make_string_tempcode('Backup tools: Create files dump (TAR file)')),
         );
     }
 }

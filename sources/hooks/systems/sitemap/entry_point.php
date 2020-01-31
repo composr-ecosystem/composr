@@ -55,7 +55,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
      * Has caching, which speeds things up a lot.
      *
      * @param  ID_TEXT $zone The zone
-     * @param  ID_TEXT $zone The page
+     * @param  ID_TEXT $page The page
      * @return array Covered entry points
      */
     protected function get_native_entry_points_for($zone, $page)
