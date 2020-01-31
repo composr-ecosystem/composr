@@ -135,7 +135,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
         }
 
         $struct = array(
-            'title' => make_string_tempcode(escape_html(titleify($page))),
+            'title' => null,
             'content_type' => 'comcode_page',
             'content_id' => $zone . ':' . $page,
             'modifiers' => array(),
@@ -213,10 +213,11 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
         }
         if (!$got_title) {
             require_code('zones2');
-            $__title = get_comcode_page_title_from_disk($full_path, false, true);
-            if (!$__title->is_empty()) {
-                $struct['title'] = $__title;
-            }
+            $struct['title'] = get_comcode_page_title_from_disk($full_path, false, true);
+        }
+
+        if ($struct['title'] === null) {
+            $struct['title'] = make_string_tempcode(escape_html(titleify($page)));
         }
 
         if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) != 0) {
