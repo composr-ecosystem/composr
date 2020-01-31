@@ -45,7 +45,7 @@ class Hook_page_groupings_referrals
             }
         }
 
-        $ret[] = array('setup', 'menu/referrals', array('referrals', array(), get_page_zone('referrals', false, 'adminzone')), do_lang_tempcode('referrals:REFERRALS'), 'referrals:DOC_REFERRALS');
+        $ret[] = array('setup', 'menu/referrals', array('referrals', array(), get_comcode_zone('referrals', false, 'adminzone')), do_lang_tempcode('referrals:REFERRALS'), 'referrals:DOC_REFERRALS');
 
         return $ret;
     }

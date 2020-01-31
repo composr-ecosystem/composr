@@ -464,6 +464,8 @@ function get_module_zone($module_name, $type = 'modules', $dir2 = null, $ftype =
 
     $check_redirects = $check_redirects && (get_value('no_priority_redirects') !== '1');
 
+    $likely_non_custom = ($type == 'minimodules') || ($type == 'html');
+
     global $REDIRECT_CACHE;
     if ($check_redirects && $REDIRECT_CACHE === null) {
         load_redirect_cache();
@@ -490,9 +492,9 @@ function get_module_zone($module_name, $type = 'modules', $dir2 = null, $ftype =
             return $zone;
         }
 
-        if ((is_file(zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . (($dir2 === null) ? '' : ($dir2 . '/')) . $module_name . '.' . $ftype)))
-            || (is_file(zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '_custom/' . (($dir2 === null) ? '' : ($dir2 . '/')) . $module_name . '.' . $ftype)))
-        ) {
+        $a = zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . (($dir2 === null) ? '' : ($dir2 . '/')) . $module_name . '.' . $ftype);
+        $b = zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '_custom/' . (($dir2 === null) ? '' : ($dir2 . '/')) . $module_name . '.' . $ftype);
+        if ((($likely_non_custom) && ((is_file($b)) || (is_file($a)))) || ((!$likely_non_custom) && ((is_file($a)) || (is_file($b))))) { // heavily optimised based on most likely path coming first
             if (($check_redirects) && (isset($REDIRECT_CACHE[$zone][strtolower($module_name)])) && ($REDIRECT_CACHE[$zone][strtolower($module_name)]['r_is_transparent'] === 0) && ($REDIRECT_CACHE[$zone][strtolower($module_name)]['r_to_page'] === $module_name)) {
                 $zone = $REDIRECT_CACHE[$zone][strtolower($module_name)]['r_to_zone'];
             }
@@ -510,9 +512,9 @@ function get_module_zone($module_name, $type = 'modules', $dir2 = null, $ftype =
         $zones = find_all_zones(false, false, false, $start, $max);
         foreach ($zones as $zone) {
             if (!array_key_exists($zone, $first_zones_flip)) {
-                if ((is_file(zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . (($dir2 === null) ? '' : ($dir2 . '/')) . $module_name . '.' . $ftype)))
-                    || (is_file(zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '_custom/' . (($dir2 === null) ? '' : ($dir2 . '/')) . $module_name . '.' . $ftype)))
-                ) {
+                $a = zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . (($dir2 === null) ? '' : ($dir2 . '/')) . $module_name . '.' . $ftype);
+                $b = zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '_custom/' . (($dir2 === null) ? '' : ($dir2 . '/')) . $module_name . '.' . $ftype);
+                if ((($likely_non_custom) && ((is_file($b)) || (is_file($a)))) || ((!$likely_non_custom) && ((is_file($a)) || (is_file($b))))) { // heavily optimised based on most likely path coming first
                     if (($check_redirects) && (isset($REDIRECT_CACHE[$zone][strtolower($module_name)])) && ($REDIRECT_CACHE[$zone][strtolower($module_name)]['r_is_transparent'] === 0) && ($REDIRECT_CACHE[$zone][strtolower($module_name)]['r_to_page'] === $module_name)) {
                         $zone = $REDIRECT_CACHE[$zone][strtolower($module_name)]['r_to_zone'];
                     }
@@ -584,45 +586,56 @@ function get_comcode_zone($page_name, $error = true, $first_zone_to_check = null
  * @param  ID_TEXT $page_name The page name to find
  * @param  boolean $error Whether Composr should bomb out if the page was not found
  * @param  ?ID_TEXT $first_zone_to_check First zone to check (used for an optimisation) (null: current zone)
+ * @param  ?ID_TEXT $type Page type (null: check all)
  * @return ?ID_TEXT The zone the page is in (null: missing)
  */
-function get_page_zone($page_name, $error = true, $first_zone_to_check = null)
+function get_page_zone($page_name, $error = true, $first_zone_to_check = null, $type = null)
 {
-    // Optimisation for pages known to default as Comcode pages
-    if (in_array($page_name, array('privacy', 'sitemap', 'feedback', 'panel_top', 'panel_bottom', 'panel_left', 'panel_right', 'rules', 'keymap', 'start'/*TODO: change in v11*/))) {
-        $test = get_comcode_zone($page_name, false);
-        if ($test !== null) {
-            return $test;
+    if (($type === null) || ($type == 'comcode')) {
+        // Optimisation for pages known to default as Comcode pages
+        if (in_array($page_name, array('privacy', 'sitemap', 'feedback', 'panel_top', 'panel_bottom', 'panel_left', 'panel_right', 'rules', 'keymap', 'start'/*TODO: change in v11*/))) {
+            $test = get_comcode_zone($page_name, false);
+            if ($test !== null) {
+                return $test;
+            }
         }
     }
 
-    $test = get_module_zone($page_name, 'modules', null, 'php', false, true, $first_zone_to_check);
-    if ($test !== null) {
-        return $test;
-    }
-    $test = get_module_zone($page_name, 'comcode', get_site_default_lang(), 'txt', false, true, $first_zone_to_check);
-    if ($test !== null) {
-        return $test;
-    }
-    if (fallback_lang() != get_site_default_lang()) {
-        $test = get_module_zone($page_name, 'comcode', fallback_lang(), 'txt', false, true, $first_zone_to_check);
+    if (($type === null) || ($type == 'modules')) {
+        $test = get_module_zone($page_name, 'modules', null, 'php', false, true, $first_zone_to_check);
         if ($test !== null) {
             return $test;
         }
     }
-    $test = get_module_zone($page_name, 'html', get_site_default_lang(), 'htm', false, true, $first_zone_to_check);
-    if ($test !== null) {
-        return $test;
-    }
-    if (fallback_lang() != get_site_default_lang()) {
-        $test = get_module_zone($page_name, 'html', fallback_lang(), 'htm', false, true, $first_zone_to_check);
+    if (($type === null) || ($type == 'comcode')) {
+        $test = get_module_zone($page_name, 'comcode', get_site_default_lang(), 'txt', false, true, $first_zone_to_check);
         if ($test !== null) {
             return $test;
         }
+        if (fallback_lang() != get_site_default_lang()) {
+            $test = get_module_zone($page_name, 'comcode', fallback_lang(), 'txt', false, true, $first_zone_to_check);
+            if ($test !== null) {
+                return $test;
+            }
+        }
     }
-    $test = get_module_zone($page_name, 'minimodules', null, 'php', false, true, $first_zone_to_check);
-    if ($test !== null) {
-        return $test;
+    if (($type === null) || ($type == 'html')) {
+        $test = get_module_zone($page_name, 'html', get_site_default_lang(), 'htm', false, true, $first_zone_to_check);
+        if ($test !== null) {
+            return $test;
+        }
+        if (fallback_lang() != get_site_default_lang()) {
+            $test = get_module_zone($page_name, 'html', fallback_lang(), 'htm', false, true, $first_zone_to_check);
+            if ($test !== null) {
+                return $test;
+            }
+        }
+    }
+    if (($type === null) || ($type == 'minimodules')) {
+        $test = get_module_zone($page_name, 'minimodules', null, 'php', false, true, $first_zone_to_check);
+        if ($test !== null) {
+            return $test;
+        }
     }
     if ($error) {
         warn_exit(do_lang_tempcode('MISSING_MODULE_REFERENCED', escape_html($page_name)));

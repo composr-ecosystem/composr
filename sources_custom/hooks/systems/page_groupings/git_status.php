@@ -28,7 +28,7 @@ class Hook_page_groupings_git_status
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('tools', 'status/notice', array('admin_git_status', array(), get_page_zone('admin_git_status', false, 'adminzone')), make_string_tempcode('Git status')),
+            array('tools', 'status/notice', array('admin_git_status', array(), get_page_zone('admin_git_status', false, 'adminzone', 'minimodules')), make_string_tempcode('Git status')),
         );
     }
 }
