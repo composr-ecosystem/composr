@@ -188,6 +188,11 @@ function put_into_cache($codename, $ttl, $cache_identifier, $staff_status, $memb
             'the_theme' => $theme,
             'the_value' => $tempcode ? $cache->to_assembly($lang) : serialize($cache),
             'date_and_time' => time(),
+            'staff_status' => $staff_status,
+            'the_member' => $member,
+            'groups' => $groups,
+            'is_bot' => $is_bot,
+            'timezone' => $timezone,
         ), false, true);
     }
 
