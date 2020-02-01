@@ -78,9 +78,11 @@ class Hook_sitemap_download_category extends Hook_sitemap_content
 
         $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
+        $lang_fields = $this->safe_lang_fields('download_categories');
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('download_categories', array('*'), array('parent_id' => $parent), '', $max_rows_per_loop, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('download_categories', array('*'), array('parent_id' => $parent), '', $max_rows_per_loop, $start, false, $lang_fields);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);

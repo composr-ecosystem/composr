@@ -958,6 +958,25 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     }
 
     /**
+     * Find out what language fields we can load up for a table with the select code without loading unnecessary Tempcode.
+     *
+     * @param  ID_TEXT $table Table
+     * @return array Map between field name and field type
+     */
+    protected function safe_lang_fields($table)
+    {
+        global $TABLE_LANG_FIELDS_CACHE;
+        $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : array();
+        $lang_fields_filtered = array();
+        foreach ($lang_fields as $field => $type) {
+            if (strpos($type, 'LONG_') === false) {
+                $lang_fields_filtered[$field] = $type;
+            }
+        }
+        return $lang_fields_filtered;
+    }
+
+    /**
      * Get a list of child nodes, from what we know from the CMA hook.
      *
      * @param  ID_TEXT $content_id The content ID.
@@ -1037,6 +1056,8 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                     $table = $cma_entry_info['table'] . ' r';
                     $table .= $privacy_join;
 
+                    $lang_fields = $this->safe_lang_fields($cma_entry_info['table']);
+
                     if (substr($cma_entry_info['table'], 0, 2) == 'f_') {
                         $db = $GLOBALS['FORUM_DB'];
                     } else {
@@ -1047,7 +1068,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
                     $start = 0;
                     do {
-                        $rows = $cma_entry_info['connection']->query_select($table, array('r.*'), $where, $extra_where_entries . $privacy_where . (is_null($explicit_order_by_entries) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), $max_rows_per_loop, $start);
+                        $rows = $cma_entry_info['connection']->query_select($table, array('r.*'), $where, $extra_where_entries . $privacy_where . (is_null($explicit_order_by_entries) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), $max_rows_per_loop, $start, false, $lang_fields);
 
                         if (($start == 0) && ($child_cutoff !== null) && (count($rows) > $child_cutoff)) {
                             $rows = array(); // Too many to process. We don't do with a COUNT(*) query because on balance of probability there won't be too many child rows and we can save a count query at the cost of the small risk of loading excess data
@@ -1094,7 +1115,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $db = $GLOBALS['SITE_DB'];
             }
 
-            $lang_fields = isset($GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']]) ? $GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']] : array();
+            $lang_fields = $this->safe_lang_fields($cma_info['parent_spec__table_name']);
 
             $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
