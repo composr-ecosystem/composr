@@ -74,7 +74,9 @@ class Hook_sitemap_wiki_page extends Hook_sitemap_content
             }
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('*'), array('id' => db_get_first_id()), '', 1);
+        $lang_fields = $this->safe_lang_fields('wiki_pages');
+
+        $rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('*'), array('id' => db_get_first_id()), '', 1, null, false, $lang_fields);
         if (isset($rows[0])) {
             $row = $rows[0];
             $child_page_link = $zone . ':' . $page . ':' . $this->screen_type;
