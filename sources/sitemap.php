@@ -686,15 +686,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             $zone = $matches[1];
             $page = $matches[2];
 
-            static $cache = array();
-            if (isset($cache[$this->content_type])) {
-                $cma_info = $cache[$this->content_type];
-            } else {
-                require_code('content');
-                $cma_ob = get_content_object($this->content_type);
-                $cma_info = $cma_ob->info();
-                $cache[$this->content_type] = $cma_info;
-            }
+            $cma_info = $this->_get_cma_info();
             require_code('site');
             if (($cma_info !== null) && ($cma_info['module'] == $page) && (($zone == '_SEARCH') || (_request_page($page, $zone) !== false))) { // Ensure the given page matches the content type, and it really does exist in the given zone
                 if ($matches[0] == $page_link) {
@@ -958,22 +950,68 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     }
 
     /**
-     * Find out what language fields we can load up for a table with the select code without loading unnecessary Tempcode.
+     * Find what fields we should select for the Sitemap to be buildable. We don't want to select too much for perf reasons.
+     * Also find out what language fields we should load up for the table (returned by reference).
      *
-     * @param  ID_TEXT $table Table
+     * @param  ?array $cma_info CMA info (null: standard for this hook)
+     * @param  string $table_prefix Table prefix
+     * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
      * @return array Map between field name and field type
      */
-    protected function safe_lang_fields($table)
+    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
     {
+        if ($cma_info === null) {
+            $cma_info = $this->_get_cma_info();
+        }
+
+        $cma_fields = array(
+            'id_field',
+            'title_field',
+            'category_field',
+            'thumb_field',
+            'add_time_field',
+            'edit_time_field',
+            'submitter_field',
+            'author_field',
+            'views_field',
+            'validated_field',
+        );
+        $select = array();
+        foreach ($cma_fields as $cma_field) {
+            if ($cma_info[$cma_field] !== null) {
+                if (is_array($cma_info[$cma_field])) {
+                    foreach ($cma_info[$cma_field] as $f) {
+                        if ($table_prefix != '') {
+                            $f = $table_prefix . '.' . $f;
+                        }
+                        $select[] = $f;
+                    }
+                } elseif (strpos($cma_info[$cma_field], 'CALL:') === false) {
+                    $f = $cma_info[$cma_field];
+                    if ($table_prefix != '') {
+                        $f = $table_prefix . '.' . $f;
+                    }
+                    $select[] = $f;
+                }
+            }
+        }
+
+        $table = $cma_info['table'];
+
         global $TABLE_LANG_FIELDS_CACHE;
         $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : array();
         $lang_fields_filtered = array();
         foreach ($lang_fields as $field => $type) {
-            if (strpos($type, 'LONG_') === false) {
+            $f = $field;
+            if ($table_prefix != '') {
+                $f = $table_prefix . '.' . $f;
+            }
+            if (in_array($f, $select)) {
                 $lang_fields_filtered[$field] = $type;
             }
         }
-        return $lang_fields_filtered;
+
+        return $select;
     }
 
     /**
@@ -1056,7 +1094,8 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                     $table = $cma_entry_info['table'] . ' r';
                     $table .= $privacy_join;
 
-                    $lang_fields = $this->safe_lang_fields($cma_entry_info['table']);
+                    $lang_fields = array();
+                    $select = $this->select_fields($cma_entry_info, 'r', $lang_fields);
 
                     if (substr($cma_entry_info['table'], 0, 2) == 'f_') {
                         $db = $GLOBALS['FORUM_DB'];
@@ -1068,7 +1107,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
                     $start = 0;
                     do {
-                        $rows = $cma_entry_info['connection']->query_select($table, array('r.*'), $where, $extra_where_entries . $privacy_where . (is_null($explicit_order_by_entries) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), $max_rows_per_loop, $start, false, $lang_fields);
+                        $rows = $cma_entry_info['connection']->query_select($table, $select, $where, $extra_where_entries . $privacy_where . (is_null($explicit_order_by_entries) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), $max_rows_per_loop, $start, false, $lang_fields);
 
                         if (($start == 0) && ($child_cutoff !== null) && (count($rows) > $child_cutoff)) {
                             $rows = array(); // Too many to process. We don't do with a COUNT(*) query because on balance of probability there won't be too many child rows and we can save a count query at the cost of the small risk of loading excess data
@@ -1102,10 +1141,13 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             if (($consider_validation) && (!is_null($cma_info['validated_field']))) {
                 $where[$cma_info['validated_field']] = 1;
             }
-            $select = array('r.*');
+
             $table = $cma_info['parent_spec__table_name'] . ' r';
+
+            $lang_fields = array();
+            $select = $this->select_fields($cma_info, 'r', $lang_fields);
+
             if ($cma_info['parent_spec__table_name'] != $cma_info['table']) {
-                $select[] = 'r2.*';
                 $table .= ' JOIN ' . $cma_info['connection']->get_table_prefix() . $cma_info['table'] . ' r2 ON r2.' . $cma_info['id_field'] . '=r.' . $cma_info['parent_spec__field_name'];
             }
 
@@ -1114,8 +1156,6 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             } else {
                 $db = $GLOBALS['SITE_DB'];
             }
-
-            $lang_fields = $this->safe_lang_fields($cma_info['parent_spec__table_name']);
 
             $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
@@ -1170,9 +1210,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
         preg_match('#^([^:]*):([^:]*):browse:(.*)$#', $page_link, $matches);
         $id = $matches[3];
 
-        require_code('content');
-        $cma_ob = get_content_object($this->content_type);
-        $cma_info = $cma_ob->info();
+        $cma_info = $this->_get_cma_info();
 
         return array($id, $cma_info['permissions_type_code']);
     }

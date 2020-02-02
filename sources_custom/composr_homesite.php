@@ -278,7 +278,7 @@ function server__public__get_tracker_issue_titles($ids, $version = null)
 
 function server__public__get_tracker_categories()
 {
-    $categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0'));
+    $categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0 ORDER BY name'));
     $categories = array_unique($categories);
     echo json_encode($categories);
 }

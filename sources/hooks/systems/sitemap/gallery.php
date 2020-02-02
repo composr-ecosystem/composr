@@ -78,11 +78,13 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
 
         require_code('galleries');
 
+        $select = $this->select_fields();
+
         $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('parent_id' => $parent), ' AND name NOT LIKE \'download\_%\'', $max_rows_per_loop, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('galleries', $select, array('parent_id' => $parent), ' AND name NOT LIKE \'download\_%\'', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 if ((get_option('show_empty_galleries') == '1') || (gallery_has_content($row['name']))) {
                     $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . $row['name'];

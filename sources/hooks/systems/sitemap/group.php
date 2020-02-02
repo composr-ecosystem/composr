@@ -83,11 +83,13 @@ class Hook_sitemap_group extends Hook_sitemap_content
             }
         }
 
+        $select = $this->select_fields(null, 'g');
+
         $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
         $start = 0;
         do {
-            $rows = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where, $max_rows_per_loop, $start);
+            $rows = $GLOBALS['FORUM_DB']->query('SELECT ' . implode(',', $select) . ' FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where, $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 if ($row['id'] == db_get_first_id()) {
                     continue;

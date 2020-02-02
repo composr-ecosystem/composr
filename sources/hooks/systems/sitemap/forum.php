@@ -115,11 +115,13 @@ class Hook_sitemap_forum extends Hook_sitemap_content
             }
         }
 
+        $select = $this->select_fields();
+
         $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
         $start = 0;
         do {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', array('*'), array('f_parent_forum' => $parent), '', $max_rows_per_loop, $start);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', $select, array('f_parent_forum' => $parent), '', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
@@ -136,6 +138,31 @@ class Hook_sitemap_forum extends Hook_sitemap_content
         }
 
         return $nodes;
+    }
+
+    /**
+     * Find what fields we should select for the Sitemap to be buildable. We don't want to select too much for perf reasons.
+     * Also find out what language fields we should load up for the table (returned by reference).
+     *
+     * @param  ?array $cma_info CMA info (null: standard for this hook)
+     * @param  string $table_prefix Table prefix
+     * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
+     * @return array Map between field name and field type
+     */
+    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
+    {
+        if ($cma_info === null) {
+            $cma_info = $this->_get_cma_info();
+        }
+
+        $ret = parent::select_fields($cma_info, $table_prefix, $lang_fields_filtered);
+        if ($cma_info['table'] == 'f_forums') {
+            $ret[] = 'f_order';
+        }
+        if ($cma_info['table'] == 'f_topics') {
+            $ret[] = 't_cache_num_posts';
+        }
+        return $ret;
     }
 
     /**
