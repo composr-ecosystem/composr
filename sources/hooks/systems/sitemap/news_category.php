@@ -74,11 +74,13 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
             }
         }
 
+        $select = $this->select_fields();
+
         $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), null, '', $max_rows_per_loop, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('news_categories', $select, null, '', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':select=' . strval($row['id']);
                 if (strpos($page_link, ':blog=0') !== false) {

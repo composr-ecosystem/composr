@@ -80,11 +80,13 @@ class Hook_sitemap_poll extends Hook_sitemap_content
             }
         }
 
+        $select = $this->select_fields();
+
         $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), null, ($consider_validation ? ' AND date_and_time IS NOT NULL' : '') . ' ORDER BY date_and_time', $max_rows_per_loop, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('poll', $select, null, ($consider_validation ? ' AND date_and_time IS NOT NULL' : '') . ' ORDER BY date_and_time', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
