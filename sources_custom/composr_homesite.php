@@ -194,7 +194,8 @@ function load_version_news_rows()
             ];
         } else {
             // Live data
-            $NEWS_ROWS = $GLOBALS['SITE_DB']->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], 'ORDER BY add_date');
+            $db = $GLOBALS['SITE_DB'];
+            $NEWS_ROWS = $db->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], ' AND ' . $db->translate_field_ref('title') . ' LIKE \'' . db_encode_like('%released%') . '\' ORDER BY add_date');
             foreach ($NEWS_ROWS as $i => $row) {
                 $NEWS_ROWS[$i]['nice_title'] = get_translated_text($row['title']);
             }

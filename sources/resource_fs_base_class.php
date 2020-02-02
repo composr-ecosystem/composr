@@ -2511,7 +2511,7 @@ abstract class Resource_fs_base
 
             $folder_info = $this->_get_cma_info($resource_type);
 
-            $select = ['main.*'];
+            $select = [];
             $table = $folder_info['table'] . ' main';
             if (($relationship['linker_table'] !== null) && ($relationship['linker_table'] != $folder_info['table'])) {
                 if (($_cat_id !== null) && ($_cat_id !== '')) {
@@ -2526,6 +2526,10 @@ abstract class Resource_fs_base
             }
             if (!is_array($folder_info['id_field'])) {
                 $select[] = 'main.' . $folder_info['id_field'];
+            } else {
+                foreach ($folder_info['id_field'] as $id_field) {
+                    $select[] = 'main.' . $id_field;
+                }
             }
             $extra = '';
             if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
@@ -2591,7 +2595,11 @@ abstract class Resource_fs_base
                 $select[] = $file_info['edit_time_field'];
             }
             if (!is_array($file_info['id_field'])) {
-                $select[] = $file_info['id_field'];
+                $select[] = 'main.' . $file_info['id_field'];
+            } else {
+                foreach ($file_info['id_field'] as $id_field) {
+                    $select[] = 'main.' . $id_field;
+                }
             }
             $select = array_unique($select);
             $files = $file_info['db']->query_select($file_info['table'], $select, $where, '', 10000/*Reasonable limit*/);

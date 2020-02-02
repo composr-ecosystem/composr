@@ -49,10 +49,11 @@ class BrokenURLScanner
                 continue;
             }
 
-            $sql = 'SELECT m_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $field['m_table']);
-            $key_fields = $GLOBALS['SITE_DB']->query($sql);
+            $key_sql = 'SELECT m_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $field['m_table']);
+            $key_fields = $GLOBALS['SITE_DB']->query($key_sql);
+            $select = array_unique(array_merge([$field['m_name']], collapse_1d_complexity('m_name', $key_fields)));
 
-            $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], ['*']);
+            $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], $select);
             foreach ($ofs as $of) {
                 $url = $of[$field['m_name']];
 
@@ -125,10 +126,11 @@ class BrokenURLScanner
                 continue;
             }
 
-            $sql = 'SELECT m_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $field['m_table']);
-            $key_fields = $GLOBALS['SITE_DB']->query($sql);
+            $key_sql = 'SELECT m_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $field['m_table']);
+            $key_fields = $GLOBALS['SITE_DB']->query($key_sql);
+            $select = array_unique(array_merge([$field['m_name']], collapse_1d_complexity('m_name', $key_fields)));
 
-            $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], ['*']);
+            $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], $select);
             foreach ($ofs as $of) {
                 if (strpos($of[$field['m_name']], '/') === false) {
                     continue; // Doesn't appear to contain any URLs

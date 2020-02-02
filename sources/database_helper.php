@@ -583,9 +583,13 @@ function _helper_add_table_field($this_ref, $table_name, $name, $_type, $default
 
     if (multi_lang_content()) {
         if ($default_st !== null) {
+            $key_sql = 'SELECT m_name FROM ' . $this_ref->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $table_name);
+            $key_fields = $this_ref->query($key_sql);
+            $select = collapse_1d_complexity('m_name', $key_fields);
+
             $start = 0;
             do {
-                $rows = $this_ref->_query('SELECT * FROM ' . $this_ref->get_table_prefix() . $table_name, 1000, $start);
+                $rows = $this_ref->_query('SELECT ' . implode(',', $select) . ' FROM ' . $this_ref->get_table_prefix() . $table_name, 1000, $start);
                 if ($rows === null) {
                     break; // Issue inside upgrader
                 }
@@ -850,6 +854,11 @@ function _helper_add_auto_key($this_ref, $table_name, $field_name)
 {
     push_query_limiting(false);
 
+    // Current key fields
+    $key_sql = 'SELECT m_name FROM ' . $this_ref->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $table_name);
+    $key_fields = $this_ref->query($key_sql);
+    $select = collapse_1d_complexity('m_name', $key_fields);
+
     // Add integer field, as it is a safe op (auto_increment can only be active key, and we already have a key)
     $this_ref->add_table_field($table_name, $field_name, 'INTEGER');
 
@@ -857,9 +866,9 @@ function _helper_add_auto_key($this_ref, $table_name, $field_name)
     $start = 0;
     $i = db_get_first_id();
     do {
-        $rows = $this_ref->query_select($table_name, ['*'], [], '', 100, $start);
+        $rows = $this_ref->query_select($table_name, $select, [], '', 100, $start);
         foreach ($rows as $row) {
-            $this_ref->query_update($table_name, [$field_name => $i] + $row, $row, '', 1);
+            $this_ref->query_update($table_name, [$field_name => $i], $row, '', 1);
             $i++;
         }
         $start += 100;

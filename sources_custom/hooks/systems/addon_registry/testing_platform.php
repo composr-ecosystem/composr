@@ -595,6 +595,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/downloads_http_cycle.php',
             '_tests/tests/unit_tests/webstandards.php',
             '_tests/tests/unit_tests/css_file.php',
+            '_tests/tests/unit_tests/_blob_slowdown.php',
             '_tests/tests/unit_tests/urls_simplifier.php',
             '_tests/tests/unit_tests/rootkit_detection.php',
             '_tests/tests/unit_tests/emoticons.php',

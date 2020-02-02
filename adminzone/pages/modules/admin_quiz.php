@@ -274,7 +274,7 @@ class Module_admin_quiz
      */
     public function find_winner()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['q_type' => 'COMPETITION'], 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name'], ['q_type' => 'COMPETITION'], 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name'])));
@@ -421,7 +421,7 @@ class Module_admin_quiz
             $where['q_type'] = $type;
         }
 
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_type'], $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name']) . ' (' . do_lang($m['q_type']) . ')'));
@@ -517,7 +517,7 @@ class Module_admin_quiz
             $where['q_member'] = $member_id;
         }
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', $where);
-        $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz', ['e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.*'], $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz', ['e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.q_name', 'q.q_type'], $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
         if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }

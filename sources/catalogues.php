@@ -1400,7 +1400,7 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
  */
 function create_selection_list_catalogues($it = null, $prefer_ones_with_entries = false, $only_submittable = false, $updated_since = null)
 {
-    $query = 'SELECT c.* FROM ' . get_table_prefix() . 'catalogues c';
+    $query = 'SELECT c.c_name,c.c_ecommerce,c.c_title FROM ' . get_table_prefix() . 'catalogues c';
     if ($updated_since !== null) {
         $privacy_join = '';
         $privacy_where = '';
