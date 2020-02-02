@@ -501,7 +501,8 @@ function can_rename_topic($topic_id, $member_id = null, $topic_details = null)
  */
 function can_merge_posts($topic_id, $member_id = null)
 {
-    $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p', array('*', 'p.id AS post_id'), array('p_topic_id' => $topic_id, 'p_poster' => $member_id), '', 2);
+    $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
+    $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', array('*', 'p.id AS post_id'), array('p_topic_id' => $topic_id, 'p_poster' => $member_id), '', 2);
     return (count($posts) >= 2) && (can_edit('post', $posts[0]['post_id'], $member_id, $posts[0]));
 }
 
