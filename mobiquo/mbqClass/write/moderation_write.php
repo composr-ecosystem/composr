@@ -279,7 +279,7 @@ class CMSModerationWrite
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
         $sql = 'SELECT *,id AS post_id FROM ' . $table_prefix . 'f_posts WHERE p_intended_solely_for IS NULL AND id IN (' . implode(',', array_map('strval', $source_post_ids)) . ')';
-        $source_posts = ($source_post_ids == []) ? [] : $GLOBALS['FORUM_DB']->query($sql);
+        $source_posts = empty($source_post_ids) ? [] : $GLOBALS['FORUM_DB']->query($sql);
         foreach ($source_posts as $source_post) {
             $key = str_pad(strval($source_post['p_time']), 15, '0', STR_PAD_LEFT) . '_' . strval($source_post['post_id']);
             $post[$key] = get_translated_text($source_post['p_post'], $GLOBALS['FORUM_DB']);

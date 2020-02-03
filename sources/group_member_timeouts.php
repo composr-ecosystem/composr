@@ -144,7 +144,7 @@ function cleanup_member_timeouts()
             }
         }
         $start += 100;
-    } while (count($timeouts) == 100);
+    } while (!empty($timeouts));
 
     if ($has_timeout) {
         if (!$db->table_is_locked('f_group_member_timeouts')) {

@@ -312,7 +312,7 @@ class Module_admin_workflow extends Standard_crud_module
         $fields->attach(form_input_line(do_lang_tempcode('NAME'), do_lang_tempcode('WORKFLOW_NAME_DESCRIPTION', $defined_names), 'workflow_name', $workflow_name, true));
 
         $all_points = ($id === null) ? [] : get_all_approval_points($id); // We need to display which points are available
-        if ($all_points == []) {
+        if (empty($all_points)) {
             $points_list = do_lang_tempcode('APPROVAL_POINTS_DESCRIPTION_EMPTY_LIST');
         } else {
             $points_list = do_lang_tempcode('APPROVAL_POINTS_DESCRIPTION_LIST', escape_html(implode(', ', $all_points)));

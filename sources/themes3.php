@@ -165,7 +165,7 @@ function actual_add_theme($name)
             }
         }
         $start += 100;
-    } while (count($theme_images) == 100);
+    } while (!empty($theme_images));
 
     Self_learning_cache::erase_smart_cache();
 

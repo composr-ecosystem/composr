@@ -103,7 +103,7 @@ function render_catalogue_entry_box($row, $zone = '_SEARCH', $give_context = tru
     }
 
     $tpl_set = $catalogue_name;
-    return do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $display + ['_GUID' => ($guid != '') ? $guid : 'dfg3rergt5g433f', 'GIVE_CONTEXT' => $give_context, 'BREADCRUMBS' => $breadcrumbs], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
+    return do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', ['_GUID' => ($guid != '') ? $guid : 'dfg3rergt5g433f', 'GIVE_CONTEXT' => $give_context, 'BREADCRUMBS' => $breadcrumbs] + $display, null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
 }
 
 /**
@@ -1020,6 +1020,7 @@ function get_catalogue_entry_map($entry, $catalogue = null, $view_type = 'PAGE',
     $map['ID'] = strval($id);
     $map['CATALOGUE'] = $catalogue_name;
     $map['CATALOGUE_TITLE'] = array_key_exists('c_title', $catalogue) ? get_translated_text($catalogue['c_title']) : '';
+    $map['CATEGORY_ID'] = strval($entry['cc_id']);
     $map['CAT'] = strval($entry['cc_id']);
     if ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($entry['allow_comments'] >= 1)) {
         $map['COMMENT_COUNT'] = '1';
@@ -1273,7 +1274,7 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
         $only_fields_sql = '';
         if ($only_field_ids !== null) {
             $only_fields_sql .= ' AND (';
-            if ($only_field_ids != []) {
+            if (!empty($only_field_ids)) {
                 foreach ($only_field_ids as $i => $_field_id) {
                     if ($i != 0) {
                         $only_fields_sql .= ' OR ';
@@ -1568,7 +1569,7 @@ function get_catalogue_category_tree($catalogue_name, $category_id, $breadcrumbs
             $child_id = $child['id'];
 
             $child_children = get_catalogue_category_tree($catalogue_name, $child_id, $child_breadcrumbs, $child, ($levels === null) ? null : ($levels - 1), $addable_filter, $use_compound_list, $do_stats);
-            if ($child_children != []) {
+            if (!empty($child_children)) {
                 if ($use_compound_list) {
                     list($child_children, $_compound_list) = $child_children;
                     if (!$no_root) {

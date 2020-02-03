@@ -473,7 +473,7 @@ class Module_tutorials
                 'url' => 'https://www.amazon.co.uk/gp/product/0071373586/ref=as_li_tl?ie=UTF8&camp=1634&creative=6738&creativeASIN=0071373586&linkCode=as2&tag=ocportal-21&linkId=YNTM3KPP5RRHCZX5',
                 'author' => 'Al Ries',
                 'difficulty_level' => 'novice',
-                'summary' => 'The first book to deal with the problems of communicating to a skeptical, media-blitzed public,Positioning describes a revolutionary approach to creating a "position" in a prospective customer\'s mind-one that reflects a company\'s own strengths and weaknesses as well as those of its competitors.',
+                'summary' => 'The first book to deal with the problems of communicating to a skeptical, media-blitzed public, Positioning describes a revolutionary approach to creating a "position" in a prospective customer\'s mind-one that reflects a company\'s own strengths and weaknesses as well as those of its competitors.',
                 'icon' => 'icons/spare/book',
                 'media_type' => 'book',
                 'tags' => ['Advice & Guidance'],

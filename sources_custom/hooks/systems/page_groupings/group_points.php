@@ -32,7 +32,7 @@ class Hook_page_groupings_group_points
         }
 
         return [
-            ['setup', 'menu/rich_content/ecommerce/purchase', ['group_points', ['type' => 'browse'], get_page_zone('group_points')], make_string_tempcode('Usergroup point assignments')],
+            ['setup', 'menu/rich_content/ecommerce/purchase', ['group_points', ['type' => 'browse'], get_page_zone('group_points', false, 'adminzone', 'minimodules')], make_string_tempcode('Usergroup point assignments')],
         ];
     }
 }

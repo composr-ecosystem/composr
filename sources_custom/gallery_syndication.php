@@ -213,7 +213,7 @@ function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reu
                 $changes += ['url' => $local_video['url']];
             }
         }
-        if ($changes != []) {
+        if (!empty($changes)) {
             $ob->change_remote_video($video + $local_video, $changes);
         }
     } else {

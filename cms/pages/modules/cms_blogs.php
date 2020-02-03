@@ -335,7 +335,7 @@ class Module_cms_blogs extends Standard_crud_module
         if (addon_installed('authors')) {
             $hidden->attach(form_input_hidden('author', $author));
         }
-        $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'cff27a28d4d01f8e0255ee645ea210b3', 'SECTION_HIDDEN' => $image == '' && ($title == ''/*=new entry and selected news cats was from URL*/ || ($news_category === null) || $news_category == []), 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'cff27a28d4d01f8e0255ee645ea210b3', 'SECTION_HIDDEN' => $image == '' && ($title == ''/*=new entry and selected news cats was from URL*/ || (empty($news_category))), 'TITLE' => do_lang_tempcode('ADVANCED')]));
         $fields2->attach(form_input_text_comcode(do_lang_tempcode('BLOG_NEWS_SUMMARY'), do_lang_tempcode('DESCRIPTION_NEWS_SUMMARY'), 'news', $news, false));
         if (get_option('enable_secondary_news') == '1') {
             $fields2->attach(form_input_list(do_lang_tempcode('MAIN_CATEGORY'), do_lang_tempcode('DESCRIPTION_MAIN_CATEGORY'), 'main_news_category', $cats1));

@@ -237,7 +237,7 @@ function _find_parameters_in($src_text, &$parameters)
 function parse_aggregate_xml($display_errors = false)
 {
     static $_aggregate_types = [];
-    if ($_aggregate_types != []) {
+    if (!empty($_aggregate_types)) {
         return $_aggregate_types;
     }
 

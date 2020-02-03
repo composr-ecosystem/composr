@@ -340,7 +340,7 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
 function find_remote_addons()
 {
     static $addons = [];
-    if ($addons !== []) {
+    if (!empty($addons)) {
         return $addons; // Caching
     }
     $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'http://compo.sr';
@@ -1404,7 +1404,7 @@ function uninstall_addon($addon_name, $clear_caches = true)
     // Try and cleanup some empty/unneeded dirs
     krsort($dirs);
     foreach ($dirs as $dir => $true) {
-        if (array_diff(scandir(get_file_base() . '/' . $dir), ['..', '.']) == []) {
+        if (empty(array_diff(scandir(get_file_base() . '/' . $dir), ['..', '.']))) {
             afm_delete_directory($dir);
             if (strpos($dir, '/') !== false) {
                 $dirs[dirname($dir)] = true;

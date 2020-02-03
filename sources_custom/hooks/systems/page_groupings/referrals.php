@@ -50,12 +50,12 @@ class Hook_page_groupings_referrals
 
                     $scheme_title = isset($scheme['title']) ? $scheme['title'] : $ini_file_section_name;
 
-                    $ret[] = ['audit', 'spare/referrals', ['admin_referrals', ['type' => 'browse', 'scheme' => $scheme_name], get_page_zone('admin_referrals')], $scheme_title, 'referrals:DOC_REFERRALS'];
+                    $ret[] = ['audit', 'spare/referrals', ['admin_referrals', ['type' => 'browse', 'scheme' => $scheme_name], get_page_zone('admin_referrals', false)], $scheme_title, 'referrals:DOC_REFERRALS'];
                 }
             }
         }
 
-        $ret[] = ['setup', 'spare/referrals', ['referrals', [], get_page_zone('referrals')], do_lang_tempcode('referrals:REFERRALS'), 'referrals:DOC_REFERRALS'];
+        $ret[] = ['setup', 'spare/referrals', ['referrals', [], get_page_zone('referrals', false)], do_lang_tempcode('referrals:REFERRALS'), 'referrals:DOC_REFERRALS'];
 
         return $ret;
     }

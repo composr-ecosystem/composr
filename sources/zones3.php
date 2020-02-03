@@ -377,7 +377,7 @@ function actual_delete_zone($zone, $force = false, $skip_afm = false)
 
         cms_set_time_limit($old_limit);
 
-        if ($bad != []) {
+        if (!empty($bad)) {
             require_lang('zones');
             warn_exit(do_lang_tempcode('DELETE_ZONE_ERROR', '<kbd>' . implode('</kbd>, <kbd>', $bad) . '</kbd>'));
         }

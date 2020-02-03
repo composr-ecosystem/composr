@@ -183,7 +183,7 @@ function output_ical($headers_and_exit = true)
                     break;
                 }
                 $start += 1000;
-            } while (count($_comments) == 1000);
+            } while (!empty($_comments));
 
             $_start_hour = ($event['e_start_hour'] === null) ? find_timezone_start_hour_in_utc($event['e_timezone'], $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type']) : $event['e_start_hour'];
             $_start_minute = ($event['e_start_minute'] === null) ? find_timezone_start_minute_in_utc($event['e_timezone'], $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type']) : $event['e_start_minute'];

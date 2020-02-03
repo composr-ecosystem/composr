@@ -40,7 +40,7 @@ function get_nested_spreadsheet_structure()
     }
 
     static $spreadsheet_structure = [];
-    if ($spreadsheet_structure !== []) {
+    if (!empty($spreadsheet_structure)) {
         return $spreadsheet_structure;
     }
 

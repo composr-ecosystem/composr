@@ -401,7 +401,7 @@ PHP;
                                 $sort_combos[] = [$other_info['table'], $other_info['add_time_field'], $other_info['parent_category_field']];
                             }
                         }
-                        if ($sort_combos != []) {
+                        if (!empty($sort_combos)) {
                             $_order_by = [];
                             foreach ($sort_combos as $i => $sort_combo) {
                                 list($other_table, $other_add_time_field, $other_category_field) = $sort_combo;
@@ -513,7 +513,7 @@ PHP;
         require_code('content');
 
         // Add in requested pinned awards
-        if (($pinned != []) && (addon_installed('awards'))) {
+        if ((!empty($pinned)) && (addon_installed('awards'))) {
             $where = '';
             foreach ($pinned as $p) {
                 if (trim($p) == '') {
@@ -621,8 +621,7 @@ PHP;
             }
             $done_already[$content_id] = 1;
 
-            if (count($done_already) < $start) {
-                $rows_skipped++;
+            if (count($done_already) <= $start) { // <= because it will over-count by one as we already added to $done_already
                 continue;
             }
 

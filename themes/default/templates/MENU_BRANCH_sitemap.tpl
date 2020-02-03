@@ -1,5 +1,5 @@
-{$SET,js_menu,{$NOT,{$BROWSER_MATCHES,bot}}}
-{$SET,img,{$?,{$AND,{$IS_EMPTY,{IMG}},{$LT,{THE_LEVEL},3}},{$IMG,icons/content_types/page},{IMG}}}
+{$SET-,js_menu,{$NOT,{$BROWSER_MATCHES,bot}}}
+{$SET-,img,{$?,{$AND,{$IS_EMPTY,{IMG}},{$LT,{THE_LEVEL},3}},{$IMG,icons/content_types/page},{IMG}}}
 {+START,IF,{$NOT,{$GET,js_menu}}}
 	<li class="menu-sitemap-item {$?,{CURRENT},current,non-current} has-img">
 		<span>

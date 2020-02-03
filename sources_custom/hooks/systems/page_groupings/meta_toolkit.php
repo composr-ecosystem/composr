@@ -32,11 +32,11 @@ class Hook_page_groupings_meta_toolkit
         }
 
         return [
-            ['tools', 'admin/tool', ['sql_schema_generate', [], get_page_zone('sql_schema_generate')], make_string_tempcode('Doc build: Generate database schema')],
-            ['tools', 'admin/tool', ['sql_schema_generate_by_addon', [], get_page_zone('sql_schema_generate_by_addon')], make_string_tempcode('Doc build: Generate database schema, by addon')],
-            ['tools', 'admin/tool', ['sql_show_tables_by_addon', [], get_page_zone('sql_show_tables_by_addon')], make_string_tempcode('Doc build: Show database tables, by addon')],
-            ['tools', 'admin/tool', ['sql_dump', [], get_page_zone('sql_dump')], make_string_tempcode('Backup tools: Create SQL dump (MySQL syntax)')],
-            ['tools', 'admin/tool', ['tar_dump', [], get_page_zone('tar_dump')], make_string_tempcode('Backup tools: Create files dump (TAR file)')],
+            ['tools', 'admin/tool', ['sql_schema_generate', [], get_page_zone('sql_schema_generate', false, 'adminzone', 'minimodules')], make_string_tempcode('Doc build: Generate database schema')],
+            ['tools', 'admin/tool', ['sql_schema_generate_by_addon', [], get_page_zone('sql_schema_generate_by_addon', false, 'adminzone', 'minimodules')], make_string_tempcode('Doc build: Generate database schema, by addon')],
+            ['tools', 'admin/tool', ['sql_show_tables_by_addon', [], get_page_zone('sql_show_tables_by_addon', false, 'adminzone', 'minimodules')], make_string_tempcode('Doc build: Show database tables, by addon')],
+            ['tools', 'admin/tool', ['sql_dump', [], get_page_zone('sql_dump', false, 'adminzone', 'minimodules')], make_string_tempcode('Backup tools: Create SQL dump (MySQL syntax)')],
+            ['tools', 'admin/tool', ['tar_dump', [], get_page_zone('tar_dump', false, 'adminzone', 'minimodules')], make_string_tempcode('Backup tools: Create files dump (TAR file)')],
         ];
     }
 }

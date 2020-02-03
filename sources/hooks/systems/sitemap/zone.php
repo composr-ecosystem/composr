@@ -365,55 +365,89 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                 }
 
                 // Any remaining orphaned pages (we have to tag these on as there was no catch-all page grouping in this zone)
-                foreach ($orphaned_pages as $page => $page_type) {
-                    if (is_integer($page)) {
-                        $page = strval($page);
-                    }
+                if (count($orphaned_pages) > 0) {
+                    $page_or_list = '';
+                    foreach ($orphaned_pages as $page => $page_type) {
+                        if (is_integer($page)) {
+                            $page = strval($page);
+                        }
 
-                    if ($page == $zone_default_page) {
-                        continue;
-                    }
+                        if ($page == $zone_default_page) {
+                            continue;
+                        }
 
-                    if (strpos($page, ':') !== false) {
-                        list($_zone, $page) = explode(':', $page, 2);
+                        if (strpos($page, ':') !== false) {
+                            list($_zone, $page) = explode(':', $page, 2);
+                        } else {
+                            $_zone = $zone;
+                        }
+
+                        if (strpos($page_type, 'comcode') !== false) {
+                            $page_or_list .= ' OR (' . db_string_equal_to('a.the_zone', $_zone) . ' AND ' . db_string_equal_to('a.the_page', $page) . ')';
+                        }
+                    }
+                    if ($page_or_list == '') {
+                        $_comcode_page_db_rows = [];
                     } else {
-                        $_zone = $zone;
+                        $_comcode_page_db_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a LEFT JOIN ' . get_table_prefix() . 'comcode_pages b ON a.the_zone=b.the_zone AND a.the_page=b.the_page', ['cc_page_title', 'p_add_date', 'p_edit_date', 'p_submitter', 'a.the_zone', 'a.the_page'], [], ' WHERE 1=0' . $page_or_list);
+                    }
+                    $comcode_page_db_rows = [];
+                    foreach ($_comcode_page_db_rows as $comcode_page_db_row) {
+                        $child_page_link = $comcode_page_db_row['the_zone'] . ':' . $comcode_page_db_row['the_page'];
+                        $_comcode_page_db_rows[$child_page_link] = $comcode_page_db_row;
                     }
 
-                    $child_page_link = $_zone . ':' . $page;
+                    foreach ($orphaned_pages as $page => $page_type) {
+                        if (is_integer($page)) {
+                            $page = strval($page);
+                        }
 
-                    if (strpos($page_type, 'comcode') !== false) {
-                        if (($valid_node_types !== null) && (!in_array('comcode_page', $valid_node_types))) {
+                        if ($page == $zone_default_page) {
                             continue;
                         }
 
-                        if (($consider_validation) && (isset($root_comcode_pages[$child_page_link])) && ($root_comcode_pages[$child_page_link] == 0)) {
-                            continue;
+                        if (strpos($page, ':') !== false) {
+                            list($_zone, $page) = explode(':', $page, 2);
+                        } else {
+                            $_zone = $zone;
                         }
 
-                        $child_node = $comcode_page_sitemap_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $_zone, $meta_gather);
-                    } else {
-                        if (($valid_node_types !== null) && (!in_array('page', $valid_node_types))) {
-                            continue;
-                        }
+                        $child_page_link = $_zone . ':' . $page;
 
-                        $child_node = $page_sitemap_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $_zone, $meta_gather);
-                    }
-
-                    if ($child_node !== null) {
-                        if (preg_match('#^redirect:#', $page_type) != 0) {
-                            if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) != 0) {
-                                list(, $redir_zone, $redir_page) = explode(':', $page_type);
-                                require_code('xml');
-                                $struct['title'] = make_string_tempcode(strip_html(str_replace(['<kbd>', '</kbd>'], ['"', '"'], do_lang('zones:REDIRECT_PAGE_TO', xmlentities($redir_zone), xmlentities($redir_page)))) . ': ' . (is_string($page) ? $page : strval($page)));
+                        if (strpos($page_type, 'comcode') !== false) {
+                            if (($valid_node_types !== null) && (!in_array('comcode_page', $valid_node_types))) {
+                                continue;
                             }
+
+                            if (($consider_validation) && (isset($root_comcode_pages[$child_page_link])) && ($root_comcode_pages[$child_page_link] == 0)) {
+                                continue;
+                            }
+
+                            $comcode_page_db_row = array_key_exists($child_page_link, $comcode_page_db_rows) ? $comcode_page_db_rows[$child_page_link] : []/*coded as an indicator of "not found"*/;
+                            $child_node = $comcode_page_sitemap_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $_zone, $meta_gather, $comcode_page_db_row);
+                        } else {
+                            if (($valid_node_types !== null) && (!in_array('page', $valid_node_types))) {
+                                continue;
+                            }
+
+                            $child_node = $page_sitemap_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $_zone, $meta_gather);
                         }
 
-                        if (($_zone == 'site' || $_zone == 'adminzone') && (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0)) {
-                            $child_node['is_unexpected_orphan'] = true; // This should never be set, it indicates a page not in a page grouping
-                        }
+                        if ($child_node !== null) {
+                            if (preg_match('#^redirect:#', $page_type) != 0) {
+                                if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) != 0) {
+                                    list(, $redir_zone, $redir_page) = explode(':', $page_type);
+                                    require_code('xml');
+                                    $struct['title'] = make_string_tempcode(strip_html(str_replace(['<kbd>', '</kbd>'], ['"', '"'], do_lang('zones:REDIRECT_PAGE_TO', xmlentities($redir_zone), xmlentities($redir_page)))) . ': ' . (is_string($page) ? $page : strval($page)));
+                                }
+                            }
 
-                        $children_orphaned[] = $child_node;
+                            if (($_zone == 'site' || $_zone == 'adminzone') && (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0)) {
+                                $child_node['is_unexpected_orphan'] = true; // This should never be set, it indicates a page not in a page grouping
+                            }
+
+                            $children_orphaned[] = $child_node;
+                        }
                     }
                 }
             } else { // 1 page group exactly

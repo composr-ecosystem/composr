@@ -140,7 +140,7 @@ function newsletter_get_category_choices($cutoff_time, $lang)
             if ($num_matches < 1500) { /*reasonable limit on how many categories to consider*/
                 for ($i = 0; $i < $num_matches; $i++) {
                     $hook_result = $object->run($cutoff_time, $lang, $matches[1][$i]);
-                    if ($hook_result == []) {
+                    if (empty($hook_result)) {
                         continue;
                     }
                     list($hook_content, $_title) = $hook_result;
@@ -154,7 +154,7 @@ function newsletter_get_category_choices($cutoff_time, $lang)
         }
         if (!$done) {
             $new = $object->run($cutoff_time, $lang, '*');
-            if ($new != []) {
+            if (!empty($new)) {
                 list($hook_content, $_title) = $new;
                 if (!$hook_content->is_empty()) {
                     $chosen_categories .= $_title . ' [' . $hook . "]\n";

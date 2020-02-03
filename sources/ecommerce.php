@@ -687,7 +687,7 @@ function find_product_details($search)
     }
 
     static $hook_products_cache = [];
-    $has_cache = ($hook_products_cache != []);
+    $has_cache = (!empty($hook_products_cache));
 
     $_hooks = find_all_hooks('systems', 'ecommerce');
     foreach (array_keys($_hooks) as $hook) {

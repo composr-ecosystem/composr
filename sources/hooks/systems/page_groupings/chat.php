@@ -37,7 +37,7 @@ class Hook_page_groupings_chat
         }
 
         return [
-            ['cms', 'menu/social/chat/chat', ['cms_chat', ['type' => 'browse'], get_module_zone('cms_chat')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('chat:CHAT_MODERATION'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)')))))), 'chat:DOC_CHAT'],
+            ['cms', 'menu/social/chat/chat', ['cms_chat', ['type' => 'browse'], get_module_zone('cms_chat')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('chat:CHAT_MODERATION'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)', ['is_im' => 0])))))), 'chat:DOC_CHAT'],
             ['structure', 'menu/social/chat/chat', ['admin_chat', ['type' => 'browse'], get_module_zone('admin_chat')], do_lang_tempcode('chat:CHATROOMS'), 'chat:DOC_CHAT'],
             ['social', 'menu/social/chat/chat', ['chat', [], get_module_zone('chat')], do_lang_tempcode('chat:CHAT_LOBBY')],
             // userguide_chatcode and popup_blockers are children of help_page

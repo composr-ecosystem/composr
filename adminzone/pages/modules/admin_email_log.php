@@ -620,7 +620,7 @@ class Module_admin_email_log
             }
 
             $start += $max;
-        } while (count($rows) == $max);
+        } while (!empty($rows));
 
         $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 0], ['m_queued' => 1]);
 

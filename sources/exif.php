@@ -80,10 +80,10 @@ function _get_simple_gps($exif)
     // get the Hemisphere multiplier
     $lat_m = 1;
     $long_m = 1;
-    if ($exif['GPSLatitudeRef'] == 'S') {
+    if ((isset($exif['GPSLatitudeRef'])) && ($exif['GPSLatitudeRef'] == 'S')) {
         $lat_m = -1;
     }
-    if ($exif['GPSLongitudeRef'] == 'W') {
+    if ((isset($exif['GPSLongitudeRef'])) && ($exif['GPSLongitudeRef'] == 'W')) {
         $long_m = -1;
     }
 

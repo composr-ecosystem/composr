@@ -197,7 +197,7 @@ PHP;
 
             // Get results
             $entries_to_show = [];
-            if (($map['select'] == '/') && ($entries_to_load == [])) {
+            if (($map['select'] == '/') && (empty($entries_to_load))) {
                 $ce_entries = [];
             } else {
                 $ce_entries = $GLOBALS['SITE_DB']->query($query . ' ORDER BY ce_add_date DESC', $max_results);

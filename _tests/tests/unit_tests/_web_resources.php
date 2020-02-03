@@ -123,7 +123,7 @@ class _web_resources_test_set extends cms_test_case
                     $errors['errors'][$i] = $e;
                 }
             }
-            if (($errors !== null) && ($errors['errors'] == [])) {
+            if (($errors !== null) && (empty($errors['errors']))) {
                 $errors = null; // Normalise
             }
             $this->assertTrue(($errors === null), 'Bad JS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path) . '&debug=1 to see errors)') : ''));
@@ -195,7 +195,7 @@ class _web_resources_test_set extends cms_test_case
 
             $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
             $errors = check_css($c);
-            if (($errors !== null) && ($errors['errors'] == [])) {
+            if (($errors !== null) && (empty($errors['errors']))) {
                 $errors = null; // Normalise
             }
             $this->assertTrue(($errors === null), 'Bad CSS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path) . '&debug=1 to see errors)') : ''));

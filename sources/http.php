@@ -475,7 +475,7 @@ abstract class HttpDownloader
         $this->put = null;
         $this->put_path = null;
         $this->put_no_delete = false;
-        if (($this->post_params !== null) || ($this->raw_post) || ($this->files != [])) {
+        if (($this->post_params !== null) || ($this->raw_post) || (!empty($this->files))) {
             if ($this->post_params === null) {
                 $this->post_params = []; // POST is implied
             }
@@ -495,7 +495,7 @@ abstract class HttpDownloader
                 }
             }
 
-            if ($this->files == []) { // If no files, use simple application/x-www-form-urlencoded
+            if (empty($this->files)) { // If no files, use simple application/x-www-form-urlencoded
                 if (!$this->add_content_type_header_manually) {
                     if ($this->raw_post) {
                         if (!isset($this->extra_headers['Content-Type'])) {
@@ -610,7 +610,7 @@ abstract class HttpDownloader
         }
 
         if ($this->http_verb === null) {
-            $this->http_verb = ((($this->post_params === null) && ($this->files == [])) ? (($this->byte_limit === 0) ? 'HEAD' : 'GET') : 'POST');
+            $this->http_verb = ((($this->post_params === null) && (empty($this->files))) ? (($this->byte_limit === 0) ? 'HEAD' : 'GET') : 'POST');
         }
 
         // Call downloader method...
@@ -636,6 +636,18 @@ abstract class HttpDownloader
         // Done...
 
         return $this->data;
+    }
+
+    /**
+     * Fixup non-standard status codes to standard ones.
+     *
+     * @param  string $status Status returned
+     * @return string Fixed status
+     */
+    protected function fix_non_standard_statuses($status)
+    {
+        $status = preg_replace('#^(\d\d\d)\.\d+$#', '$1', $status); // IIS
+        return $status;
     }
 
     /**
@@ -751,7 +763,7 @@ abstract class HttpDownloader
     protected function get_cookie_string()
     {
         // Prep cookies
-        if ($this->cookies != []) {
+        if (!empty($this->cookies)) {
             $cookies = '';
             $done_one_cookie = false;
             foreach ($this->cookies as $key => $val) {
@@ -786,7 +798,7 @@ abstract class HttpDownloader
     protected function get_header_string()
     {
         $headers = '';
-        if ($this->cookies != []) {
+        if (!empty($this->cookies)) {
             $headers .= 'Cookie: ' . $this->get_cookie_string() . "\r\n";
         }
         if (is_string($this->ua)) {
@@ -1010,7 +1022,7 @@ class HttpDownloaderCurl extends HttpDownloader
         $ch = curl_init($this->do_ip_forwarding ? $this->connecting_url : $url);
 
         // Cookie prep
-        if ($this->cookies != []) {
+        if (!empty($this->cookies)) {
             curl_setopt($ch, CURLOPT_COOKIE, $this->get_cookie_string());
         }
 
@@ -1059,7 +1071,7 @@ class HttpDownloaderCurl extends HttpDownloader
         foreach ($this->extra_headers as $key => $val) {
             $curl_headers[] = $key . ': ' . $val;
         }
-        if (($this->raw_post) && (($this->files == []) || ($this->put !== null))) {
+        if (($this->raw_post) && ((empty($this->files)) || ($this->put !== null))) {
             if (!isset($this->extra_headers['Content-Type'])) {
                 $curl_headers[] = 'Content-Type: ' . $this->raw_content_type;
             }
@@ -1074,7 +1086,7 @@ class HttpDownloaderCurl extends HttpDownloader
             } else {
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $this->raw_payload);
-                if ($this->files != []) { // We will be doing a multipart/form-data call
+                if (!empty($this->files)) { // We will be doing a multipart/form-data call
                     $curl_headers[] = 'Content-Type: multipart/form-data; boundary="--cms' . $this->divider . '"; charset=' . get_charset();
                 }
                 $curl_headers[] = 'Expect:'; // Suppress  automatic Expect header
@@ -1120,7 +1132,7 @@ class HttpDownloaderCurl extends HttpDownloader
 
         // Response
         $curl_result = curl_exec($ch);
-        /*if ((count($curl_headers)!=0) && (($this->files != []))) { // Useful for debugging
+        /*if ((count($curl_headers)!=0) && (!empty($this->files))) { // Useful for debugging
             var_dump(curl_getinfo($ch,CURLINFO_HEADER_OUT));exit();
         }*/
         if ($curl_result === false) {
@@ -1155,7 +1167,7 @@ class HttpDownloaderCurl extends HttpDownloader
         if ($this->download_url == $this->connecting_url) {
             $this->download_url = $url;
         }
-        $this->message = strval(curl_getinfo($ch, CURLINFO_HTTP_CODE));
+        $this->message = $this->fix_non_standard_statuses(strval(curl_getinfo($ch, CURLINFO_HTTP_CODE)));
         if ($this->message == '206') {
             $this->message = '200'; // We don't care about partial-content return code, as Composr implementation gets ranges differently and we check '200' as a return result
         }
@@ -1612,7 +1624,7 @@ class HttpDownloaderSockets extends HttpDownloader
                             // 400/500=Internal error
                             // 405=Method not allowed
 
-                            $this->message = $matches[2];
+                            $this->message = $this->fix_non_standard_statuses($matches[2]);
 
                             switch ($this->message) {
                                 case '200':
@@ -1954,7 +1966,7 @@ class HttpDownloaderFilesystem extends HttpDownloader
         $this->read_in_options($options);
 
         $faux = function_exists('get_value') ? get_value('http_faux_loopback') : null;
-        if ((!cms_empty_safe($faux)) && ($this->post_params === null) && ($this->files == [])) { // NB: Does not support cookies, accept headers, referers
+        if ((!cms_empty_safe($faux)) && ($this->post_params === null) && (empty($this->files))) { // NB: Does not support cookies, accept headers, referers
             if (substr($faux, 0, 1) != '#') {
                 $faux = '#' . $faux . '#i';
             }

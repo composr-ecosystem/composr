@@ -150,7 +150,7 @@ class Hook_rss_comments
             }
 
             $start += 1000;
-        } while (count($_comments) == 1000);
+        } while (!empty($_comments));
 
         $title = do_lang('COMMENTS');
 

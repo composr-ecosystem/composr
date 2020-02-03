@@ -646,7 +646,7 @@ abstract class Mail_dispatcher_base
         $lang = get_site_default_lang(); // Returned by reference if we want something else
         $theme = 'default'; // Returned by reference if we want something else
         $this->tidy_parameters($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name, $lang, $theme);
-        if ($to_emails == []) {
+        if (empty($to_emails)) {
             require_code('files2');
             clean_temporary_mail_attachments($this->attachments);
 
@@ -892,7 +892,7 @@ abstract class Mail_dispatcher_base
         }
         // else maybe server won't let us set it due to whitelist security, and we must let it use it's default (i.e. accountname@hostname)
         $headers .= 'Reply-To: <' . $from_email . '>' . $this->line_term;
-        if ($this->cc_addresses !== []) {
+        if (!empty($this->cc_addresses)) {
             $headers .= 'Cc: ';
             foreach ($this->cc_addresses as $i => $cc_address) {
                 if ($i != 0) {
@@ -902,7 +902,7 @@ abstract class Mail_dispatcher_base
             }
             $headers .= $this->line_term;
         }
-        if ($this->bcc_addresses !== []) {
+        if (!empty($this->bcc_addresses)) {
             $headers .= 'Bcc: ';
             foreach ($this->bcc_addresses as $i => $bcc_address) {
                 if ($i != 0) {

@@ -42,38 +42,61 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             $page = $matches[2];
             $type = $matches[3];
 
-            $details = $this->_request_page_details($page, $zone);
+            $entry_points = $this->get_native_entry_points_for($zone, $page, $options);
 
-            if ($details !== false) {
-                $path = end($details);
-                if ($details[0] == 'MODULES' || $details[0] == 'MODULES_CUSTOM') {
-                    require_all_lang();
+            if (isset($entry_points[$type])) {
+                return SITEMAP_NODE_HANDLED;
+            }
+        }
+        return SITEMAP_NODE_NOT_HANDLED;
+    }
 
-                    $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
-                        false, // $check_perms
-                        $this->get_member($options), // $member_id
-                        true, // $support_crosslinks
-                        true, // $be_deferential
-                    ]);
-                    if ($functions[0] !== null) {
-                        $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], get_file_base() . '/' . $path);
+    /**
+     * Get entry points handled natively by a particular page.
+     * Has caching, which speeds things up a lot.
+     *
+     * @param  ID_TEXT $zone The zone
+     * @param  ID_TEXT $page The page
+     * @param  integer $options A bitmask of SITEMAP_GEN_* options
+     * @return array Covered entry points
+     */
+    protected function get_native_entry_points_for($zone, $page, $options)
+    {
+        static $entry_points_cache = [];
+        if (isset($entry_points_cache[$zone . ':' . $page])) {
+            return $entry_points_cache[$zone . ':' . $page];
+        }
 
-                        if ($entry_points !== null) {
-                            if (isset($entry_points['browse'])) {
-                                unset($entry_points['browse']);
-                            } else {
-                                array_shift($entry_points);
-                            }
-                        }
+        $entry_points = [];
 
-                        if (isset($entry_points[$type])) {
-                            return SITEMAP_NODE_HANDLED;
+        $details = $this->_request_page_details($page, $zone);
+
+        if ($details !== false) {
+            $path = end($details);
+            if ($details[0] == 'MODULES' || $details[0] == 'MODULES_CUSTOM') {
+                $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
+                    false, // $check_perms
+                    $this->get_member($options), // $member_id
+                    true, // $support_crosslinks
+                    true, // $be_deferential
+                ]);
+                if (!is_null($functions[0])) {
+                    $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : eval($functions[0]);
+
+                    if ($entry_points !== null) {
+                        if (isset($entry_points['browse'])) {
+                            unset($entry_points['browse']);
+                        } else {
+                            array_shift($entry_points);
                         }
                     }
                 }
             }
         }
-        return SITEMAP_NODE_NOT_HANDLED;
+
+        $entry_points_cache[$zone . ':' . $page] = $entry_points;
+
+        return $entry_points;
     }
 
     /**
@@ -245,8 +268,8 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             $struct['title'] = make_string_tempcode(do_lang('ENTRY_POINT') . ': ' . $title->evaluate());
         }
 
-        $row_x = $this->_load_row_from_page_groupings(null, $zone, $page, $type, $id);
-        if ($row_x != []) {
+        $row_x = $this->_load_row_from_page_groupings(null, $meta_gather, $zone, $page, $type, $id);
+        if (!empty($row_x)) {
             if ($_title !== null) {
                 $row_x[0] = null; // We have a better title
             }

@@ -709,6 +709,10 @@ function get_cache_signature_details($special_cache_flags, &$staff_status, &$mem
                 }
             }
 
+            if (strlen($groups_cache) > 255) {
+                $groups_cache = md5($groups_cache);
+            }
+
             $groups = $groups_cache;
         } else {
             $groups = '';
@@ -752,7 +756,7 @@ function _get_cache_entries($dets, $special_cache_flags = null)
 {
     static $cache = [];
 
-    if ($dets == []) {
+    if (empty($dets)) {
         return [];
     }
 

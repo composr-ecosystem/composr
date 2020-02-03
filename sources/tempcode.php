@@ -430,7 +430,7 @@ function closure_loop($param, $args, $main_function)
             }
             $row_starter = isset($param[2 + 1]) ? $param[2] : '<tr>';
             $row_terminator = isset($param[3 + 1]) ? $param[3] : '</tr>';
-            if ($array !== []) {
+            if (!empty($array)) {
                 $value .= $row_starter;
             }
 

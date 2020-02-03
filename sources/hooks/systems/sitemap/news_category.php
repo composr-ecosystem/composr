@@ -78,9 +78,13 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
             }
         }
 
+        $select = $this->select_fields();
+
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], [], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('news_categories', $select, [], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 if (strpos($page_link, ':blog=0') !== false) {
@@ -95,14 +99,36 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         if (is_array($nodes)) {
             sort_maps_by($nodes, 'title', false, true);
         }
 
         return $nodes;
+    }
+
+    /**
+     * Find what fields we should select for the Sitemap to be buildable. We don't want to select too much for perf reasons.
+     * Also find out what language fields we should load up for the table (returned by reference).
+     *
+     * @param  ?array $cma_info CMA info (null: standard for this hook)
+     * @param  string $table_prefix Table prefix
+     * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
+     * @return array Map between field name and field type
+     */
+    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
+    {
+        if ($cma_info === null) {
+            $cma_info = $this->_get_cma_info();
+        }
+
+        $ret = parent::select_fields($cma_info, $table_prefix, $lang_fields_filtered);
+        if ($cma_info['table'] == 'news_categories') {
+            $ret[] = 'nc_img';
+        }
+        return $ret;
     }
 
     /**
@@ -174,6 +200,7 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
                 $child_hook_ob = object_factory('Hook_sitemap_news');
 
                 $skip_children = false;
+                $count = null;
                 if ($child_cutoff !== null) {
                     $count = $GLOBALS['SITE_DB']->query_select_value('news_category_entries', 'COUNT(*)', ['news_entry_category' => intval($content_id)]);
                     if ($count > $child_cutoff) {
@@ -181,7 +208,7 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
                     }
                 }
 
-                if (!$skip_children) {
+                if ((!$skip_children) && ($count !== 0)) {
                     $child_rows = $GLOBALS['SITE_DB']->query_select('news_category_entries', ['news_entry'], ['news_entry_category' => intval($content_id)]);
                     foreach ($child_rows as $child_row) {
                         $child_page_link = $zone . ':' . $page . ':view:' . strval($child_row['news_entry']);

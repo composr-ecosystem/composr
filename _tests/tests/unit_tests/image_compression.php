@@ -41,7 +41,7 @@ class image_compression_test_set extends cms_test_case
                         continue;
                     }
 
-                    $filesize = filesize($base . '/' . $path);
+                    $filesize = filesize($base . '/' . $path) - 100/*overhead*/;
 
                     // Approximate base size
                     if (substr($path, -4) == '.gif') {
@@ -52,7 +52,7 @@ class image_compression_test_set extends cms_test_case
                         }
                     } else {
                         $filesize -= 73;
-                        $min_ratio = 0.28;
+                        $min_ratio = 0.31;
                     }
                     if ($filesize < 1) {
                         $filesize = 1;

@@ -32,7 +32,7 @@ class Hook_page_groupings_support_credits
         }
 
         return [
-            ['audit', 'admin/tool', ['outstanding_credits', [], get_page_zone('outstanding_credits')], do_lang_tempcode('customers:UNSPENT_SUPPORT_CREDITS')],
+            ['audit', 'admin/tool', ['outstanding_credits', [], get_page_zone('outstanding_credits', false, 'adminzone', 'minimodules')], do_lang_tempcode('customers:UNSPENT_SUPPORT_CREDITS')],
             ['tools', 'admin/tool', ['admin_customers', [], get_module_zone('admin_customers')], do_lang_tempcode('customers:CHARGE_CUSTOMER')],
         ];
     }

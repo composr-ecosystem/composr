@@ -1978,7 +1978,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                         return comcode_parse_error_exit($preparse_mode, ['CCP_TAG_CLOSE_ANOMALY'], $pos, $comcode, $check_only);
                     }
 
-                    if ($attribute_map != []) {
+                    if (!empty($attribute_map)) {
                         $at_map_keys = array_keys($attribute_map);
                         $old_attribute_name = $at_map_keys[count($at_map_keys) - 1];
                         $attribute_map[$old_attribute_name] .= ' ' . $current_attribute_name;

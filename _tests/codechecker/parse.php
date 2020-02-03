@@ -1578,7 +1578,7 @@ function _parse_expression_inner()
     }
 
     $variable_chain = _parse_variable_dereferencing_chain_segment(false);
-    if ($variable_chain !== []) {
+    if (!empty($variable_chain)) {
         $expression = ['EXPRESSION_CHAINING', $expression, $variable_chain, $GLOBALS['I']];
     }
 
@@ -1621,7 +1621,7 @@ function _parse_variable($suppress_error, $can_be_dangling_method_call_instead =
     }
 
     $variable_chain = _parse_variable_dereferencing_chain_segment($suppress_error/*, $can_be_dangling_method_call_instead*/);
-    if ($variable_chain !== []) {
+    if (!empty($variable_chain)) {
         // Restructure the chain around any particular calls made
         $actual_expression = ['VARIABLE', $variable[1], $variable_chain, $GLOBALS['I']];
 
@@ -1649,10 +1649,7 @@ function _parse_variable($suppress_error, $can_be_dangling_method_call_instead =
 
 function _parse_is_non_pure_variable($actual_expression)
 {
-    if ($actual_expression === null) {
-        return false;
-    }
-    if ($actual_expression == []) {
+    if (empty($actual_expression)) {
         return false;
     }
     if ($actual_expression[0] == 'CALL_METHOD') {

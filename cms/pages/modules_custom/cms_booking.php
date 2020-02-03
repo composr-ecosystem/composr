@@ -895,7 +895,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      */
     public function get_entry_rows($recache = false, $orderer = null, $where = [], $force_site_db = false, $join = '', $max = null)
     {
-        if ((!$recache) && ($orderer !== null) && ($where !== [])) {
+        if ((!$recache) && ($orderer !== null) && (!empty($where))) {
             if (isset($this->cached_entry_rows)) {
                 return [$this->cached_entry_rows, $this->cached_max_rows];
             }
@@ -947,7 +947,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
             $_entries[] = $row;
         }
 
-        if (($orderer !== null) && ($where !== [])) {
+        if (($orderer !== null) && (!empty($where))) {
             $this->cached_entry_rows = $_entries;
             $this->cached_max_rows = count($request);
         }

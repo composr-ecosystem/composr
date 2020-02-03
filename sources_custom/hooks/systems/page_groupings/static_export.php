@@ -32,8 +32,8 @@ class Hook_page_groupings_static_export
         }
 
         return [
-            ['tools', 'admin/tool', ['static_export', ['utheme' => $GLOBALS['FORUM_DRIVER']->get_theme('')], get_page_zone('static_export')], make_string_tempcode('Export static site (TAR field)')],
-            ['tools', 'admin/tool', ['static_export', ['dir' => '1', 'utheme' => $GLOBALS['FORUM_DRIVER']->get_theme('')], get_page_zone('static_export')], make_string_tempcode('Export static site (exports/static, with mtimes)')],
+            ['tools', 'admin/tool', ['static_export', ['utheme' => $GLOBALS['FORUM_DRIVER']->get_theme('')], get_page_zone('static_export', false, 'adminzone', 'minimodules')], make_string_tempcode('Export static site (TAR field)')],
+            ['tools', 'admin/tool', ['static_export', ['dir' => '1', 'utheme' => $GLOBALS['FORUM_DRIVER']->get_theme('')], get_page_zone('static_export', false, 'adminzone', 'minimodules')], make_string_tempcode('Export static site (exports/static, with mtimes)')],
         ];
     }
 }

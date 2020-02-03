@@ -32,7 +32,7 @@ class Hook_page_groupings_giftr
         }
 
         return [
-            ['setup', 'spare/gifts', ['admin_giftr', [], get_page_zone('admin_giftr')], do_lang_tempcode('giftr:GIFTR_TITLE'), 'giftr:DOC_GIFTR'],
+            ['setup', 'spare/gifts', ['admin_giftr', [], get_page_zone('admin_giftr', false, 'adminzone')], do_lang_tempcode('giftr:GIFTR_TITLE'), 'giftr:DOC_GIFTR'],
         ];
     }
 }

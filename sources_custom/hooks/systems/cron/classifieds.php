@@ -102,6 +102,8 @@ class Hook_cron_classifieds
                     dispatch_notification('classifieds__' . $entry['c_name'], '', $subject_line, $mail, [$member_id], A_FROM_SYSTEM_PRIVILEGED);
                 }
             }
-        } while (count($entries) == 1000);
+
+            $start += 1000;
+        } while (!empty($entries));
     }
 }

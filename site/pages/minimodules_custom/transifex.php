@@ -41,7 +41,7 @@ if ($test[1] == '200') {
 $_languages = [];
 
 foreach ($languages as $language_code => $language_details_basic) {
-    if ($language_details_basic['reviewers'] == [] && $language_details_basic['translators'] == []) {
+    if (empty($language_details_basic['reviewers']) && empty($language_details_basic['translators'])) {
         continue; // Not started yet
     }
 

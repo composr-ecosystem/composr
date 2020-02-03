@@ -43,9 +43,10 @@
 		{+END}
 	{+END}
 
-	{+START,IF,{ALLOW_RATING}}{+START,IF_NON_EMPTY,{$TRIM,{RATING}}}
-		<div class="ratings">
-			{RATING}
-		</div>
-	{+END}{+END}
+	{+START,IF,{ALLOW_RATING}}
+		{$SET,rating,{$RATING,catalogues__{CATALOGUE},{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
+		{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
+			<div class="ratings">{$GET,rating}</div>
+		{+END}
+	{+END}
 </div></section>

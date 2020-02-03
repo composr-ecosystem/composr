@@ -54,8 +54,8 @@ class tutorial_quality_test_set extends cms_test_case
             $this->assertTrue($tutorial['author'] != '', 'Author undefined for ' . $tutorial_name);
             $this->assertTrue($tutorial['summary'] != '', 'Summary undefined for ' . $tutorial_name);
             $this->assertTrue($tutorial['icon'] != '', 'Icon undefined for ' . $tutorial_name);
-            $this->assertTrue($tutorial['tags'] != [], 'Tags undefined for ' . $tutorial_name);
-            $this->assertTrue(array_intersect($tutorial['raw_tags'], ['novice', 'regular', 'expert']) != [], 'No difficulty level defined for ' . $tutorial_name);
+            $this->assertTrue(!empty($tutorial['tags']), 'Tags undefined for ' . $tutorial_name);
+            $this->assertTrue(!empty(array_intersect($tutorial['raw_tags'], ['novice', 'regular', 'expert'])), 'No difficulty level defined for ' . $tutorial_name);
         }
     }
 

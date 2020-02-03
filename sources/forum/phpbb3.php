@@ -1169,7 +1169,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     protected function _is_staff($member)
     {
-        return (array_intersect($this->get_members_groups($member), $this->get_moderator_groups()) != []);
+        return !empty(array_intersect($this->get_members_groups($member), $this->get_moderator_groups()));
     }
 
     /**
@@ -1180,7 +1180,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     protected function _is_super_admin($member)
     {
-        return (array_intersect($this->get_members_groups($member), $this->get_super_admin_groups()) != []);
+        return !empty(array_intersect($this->get_members_groups($member), $this->get_super_admin_groups()));
     }
 
     /**

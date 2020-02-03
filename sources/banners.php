@@ -248,7 +248,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
 
         // Remove ones already shown on this page-view
         static $shown_already = []; // NB: Holds shown ones for any banner types, not specifically the restraints we are working on here. This could be true if you have multiple banner spots: count($shown_already)>count($rows)
-        if ($shown_already !== []) {
+        if (!empty($shown_already)) {
             if (!running_script('banner')) {
                 $old_rows = $rows;
                 foreach ($rows as $counter => $myrow) {

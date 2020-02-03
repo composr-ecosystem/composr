@@ -182,6 +182,10 @@ class _broken_links_test_set extends cms_test_case
             return;
         }
 
+        if (preg_match('#^http://sns.qzone.qq.com/#', $url) != 0) {
+            return;
+        }
+
         if (preg_match('#^http://december\.com/html/4/element/#', $url) != 0) {
             return;
         }

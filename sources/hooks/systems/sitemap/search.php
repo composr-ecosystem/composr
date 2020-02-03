@@ -255,6 +255,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
             $children = [];
             if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
                 $skip_children = false;
+                $count = null;
                 if ($child_cutoff !== null) {
                     $count = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'COUNT(*)');
                     if ($count > $child_cutoff) {
@@ -262,10 +263,12 @@ class Hook_sitemap_search extends Hook_sitemap_base
                     }
                 }
 
-                if (!$skip_children) {
+                if ((!$skip_children) && ($count !== 0)) {
+                    $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
                     $start = 0;
                     do {
-                        $rows = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], [], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+                        $rows = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], [], '', $max_rows_per_loop, $start);
                         foreach ($rows as $row) {
                             if (substr($row['c_name'], 0, 1) == '_') {
                                 continue;
@@ -277,8 +280,8 @@ class Hook_sitemap_search extends Hook_sitemap_base
                                 $children[] = $child_node;
                             }
                         }
-                        $start += SITEMAP_MAX_ROWS_PER_LOOP;
-                    } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+                        $start += $max_rows_per_loop;
+                    } while (count($rows) == $max_rows_per_loop);
                 }
             }
             $struct['children'] = $children;

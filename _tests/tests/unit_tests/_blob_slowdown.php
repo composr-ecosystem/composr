@@ -15,7 +15,7 @@
 
 // Test finds possible slow-downs due to bulk querying potentially large blobby fields out of the database
 
-// Also can incidently find references to tables that don't exist anymore.
+// Also can incidentally find references to tables that don't exist anymore.
 
 // This test is not expected to pass! It's a guide for manual code review.
 
@@ -176,7 +176,7 @@ class _blob_slowdown_test_set extends cms_test_case
 
                 if (!$return_abstract_table) {
                     if (($num_tables_safe_ref == 0) && ($num_tables_unsafe_ref == 0)) {
-                        continue; // Cannnot be confirmed safe but we're configured to not be interested
+                        continue; // Cannot be confirmed safe but we're configured to not be interested
                     }
                 }
 

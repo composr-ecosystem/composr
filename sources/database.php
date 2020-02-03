@@ -1364,7 +1364,7 @@ class DatabaseConnector
         }
 
         $where = '';
-        if ($where_map != []) {
+        if (!empty($where_map)) {
             foreach ($where_map as $key => $value) {
                 if ($DEV_MODE) {
                     if (!is_string($key)) {
@@ -1550,7 +1550,7 @@ class DatabaseConnector
                 $lang_fields_provisional = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : [];
                 $lang_fields = [];
 
-                if ($lang_fields_provisional !== []) {
+                if (!empty($lang_fields_provisional)) {
                     $full_table .= ' main';
 
                     foreach ($select as $i => $s) {
@@ -1611,7 +1611,7 @@ class DatabaseConnector
      * Lots of programmers like to do queries like this as it reduces the chance of accidentally forgetting to escape a parameter inserted directly/manually within a longer query.
      * Usually in Composr we use APIs like query_select, which avoids the need for SQL all-together, but this doesn't work for all patterns of query.
      *
-     * @param  string $query The complete SQL query
+     * @param  string $query The complete parameter-ready SQL query
      * @param  array $parameters The query parameters (a map)
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
      * @param  integer $start The start row to affect
@@ -1623,29 +1623,98 @@ class DatabaseConnector
      */
     public function query_parameterised($query, $parameters, $max = null, $start = 0, $fail_ok = false, $skip_safety_check = false, $lang_fields = null, $field_prefix = '')
     {
+        $query = $this->_query_parameterised($query, $parameters);
+        return $this->query($query, $max, $start, $fail_ok, $skip_safety_check, $lang_fields, $field_prefix);
+    }
+
+    /**
+     * Helper for query_parameterised.
+     *
+     * @param  string $query The complete parameter-ready SQL query
+     * @param  array $parameters The query parameters (a map)
+     * @return string Parameterised query
+     */
+    public function _query_parameterised($query, $parameters)
+    {
         if (isset($parameters['prefix'])) {
             warn_exit('prefix is a reserved parameter, you should not set it.');
         }
 
-        $parameters += ['prefix' => $this->get_table_prefix()];
-        foreach ($parameters as $key => $val) {
-            if (!is_string($val)) {
-                $val = strval($val);
-            }
+        $val = mixed();
 
-            if ($key === 'prefix') {
-                // Special case, not within quotes.
-                $search = '#{' . preg_quote($key, '#') . '}#';
-                $replace = $val;
+        $len = strlen($query);
+        $current_parameter = null;
+        $query_new = '';
+        for ($i = 0; $i < $len; $i++) {
+            $c = $query[$i];
+            if ($current_parameter === null) {
+                if ($c == '{') {
+                    $current_parameter = '';
+                    $in_quotes_start = (($i > 0) && ($query[$i - 1] == "'"));
+                } else {
+                    $query_new .= $c;
+                }
             } else {
-                // NB: It will always add quotes around in the query (if not already there), as that is needed for escaping to be valid.
-                $search = '#\'?\{' . preg_quote($key, '#') . '\}\'?#';
-                $replace = '\'' . db_escape_string($val) . '\'';
+                if ($c == '}') {
+                    if ($current_parameter == 'prefix') {
+                        $query_new .= $this->get_table_prefix();
+                    } elseif (array_key_exists($current_parameter, $parameters)) {
+                        $in_quotes_end = (($i < $len - 1) && ($query[$i + 1] == "'"));
+
+                        $val = $parameters[$current_parameter];
+                        if (is_integer($val)) {
+                            $val = strval($val);
+
+                            if ($in_quotes_start || $in_quotes_end) {
+                                $val = db_escape_string($val);
+                            }
+                        } elseif (is_float($val)) {
+                            $val = float_to_raw_string($val);
+
+                            if ($in_quotes_start || $in_quotes_end) {
+                                $val = db_escape_string($val);
+                            }
+                        } elseif (is_bool($val)) {
+                            $val = ($val ? '1' : '0');
+
+                            if ($in_quotes_start || $in_quotes_end) {
+                                $val = db_escape_string($val);
+                            }
+                        } elseif ($val === null) {
+                            $val = 'NULL';
+
+                            if ($in_quotes_start) {
+                                $query_new = substr($query_new, 0, strlen($query_new) - 1);
+                            }
+                            if ($in_quotes_end) {
+                                $i++;
+                            }
+                        } else {
+                            if (!is_string($val)) {
+                                $val = strval($val);
+                            }
+
+                            $val = db_escape_string($val);
+                            if (!$in_quotes_start) {
+                                $val = "'" . $val;
+                            }
+                            if (!$in_quotes_end) {
+                                $val .= "'";
+                            }
+                        }
+
+                        $query_new .= $val;
+                    } else {
+                        $query_new .= '{' . $current_parameter . '}'; // No match so leave alone
+                    }
+                    $current_parameter = null;
+                } else {
+                    $current_parameter .= $c;
+                }
             }
-            $query = preg_replace($search, $replace, $query);
         }
 
-        return $this->query($query, $max, $start, $fail_ok, $skip_safety_check, $lang_fields, $field_prefix);
+        return $query_new;
     }
 
     /**

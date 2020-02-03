@@ -902,7 +902,7 @@ class Module_admin_themes
         }
         $files_to_load = array_unique($files_to_load);
         // Default files
-        if ($files_to_load == []) {
+        if (empty($files_to_load)) {
             $files_to_load = [
                 'templates/HTML_HEAD.tpl',
                 'templates/GLOBAL_HTML_WRAP.tpl',

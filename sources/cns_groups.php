@@ -225,6 +225,12 @@ function cns_ensure_groups_cached($groups, $tolerant = false)
  */
 function cns_get_group_link($id, $hide_hidden = true)
 {
+    static $cache = [];
+
+    if (isset($cache[$id][$hide_hidden])) {
+        return $cache[$id][$hide_hidden];
+    }
+
     $_row = $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $_row)) {
         return make_string_tempcode(do_lang('UNKNOWN'));
@@ -232,7 +238,9 @@ function cns_get_group_link($id, $hide_hidden = true)
     $row = $_row[0];
 
     if ($row['id'] == db_get_first_id()) {
-        return make_string_tempcode(escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])));
+        $ret = make_string_tempcode(escape_html(get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])));
+        $cache[$id][$hide_hidden] = $ret;
+        return $ret;
     }
 
     $name = cns_get_group_name($row['id'], $hide_hidden);
@@ -241,10 +249,14 @@ function cns_get_group_link($id, $hide_hidden = true)
 
     $see_hidden = has_privilege(get_member(), 'see_hidden_groups');
     if ((!$see_hidden) && ($row['g_hidden'] == 1) && (!in_array($id, $members_groups))) {
-        return make_string_tempcode(escape_html($name));
+        $ret = make_string_tempcode(escape_html($name));
+        $cache[$id][$hide_hidden] = $ret;
+        return $ret;
     }
 
-    return hyperlink(build_url(['page' => 'groups', 'type' => 'view', 'id' => $row['id']], get_module_zone('groups')), $name, false, true);
+    $ret = hyperlink(build_url(['page' => 'groups', 'type' => 'view', 'id' => $row['id']], get_module_zone('groups')), $name, false, true);
+    $cache[$id][$hide_hidden] = $ret;
+    return $ret;
 }
 
 /**

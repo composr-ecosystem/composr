@@ -477,7 +477,7 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
         }
     }
 
-    return ($errors == []) ? null : $errors;
+    return empty($errors) ? null : $errors;
 }
 
 /**
@@ -593,7 +593,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
         }
     }
 
-    return ($errors == []) ? null : $errors;
+    return empty($errors) ? null : $errors;
 }
 
 /**
@@ -691,7 +691,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
         }
     }
 
-    return ($errors == []) ? null : $errors;
+    return empty($errors) ? null : $errors;
 }
 
 /**
@@ -749,7 +749,7 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
         $A_LINKS[$title][$content] = $filtered_href;
     }
 
-    return ($errors == []) ? null : $errors;
+    return empty($errors) ? null : $errors;
 }
 
 /**
@@ -803,7 +803,7 @@ function _check_labelling($tag, $attributes, $self_close, $close)
         }
     }
 
-    return ($errors == []) ? null : $errors;
+    return empty($errors) ? null : $errors;
 }
 
 /**
@@ -1123,7 +1123,7 @@ function _webstandards_css_sheet($data)
         return $errors;
     }
 
-    return ($errors == []) ? null : $errors;
+    return empty($errors) ? null : $errors;
 }
 
 /**
@@ -1245,7 +1245,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
         }
     }
 
-    return ($errors == []) ? null : $errors;
+    return empty($errors) ? null : $errors;
 }
 
 /**

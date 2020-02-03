@@ -632,7 +632,7 @@ class Module_admin_cns_members
                 $out[$row['id']] = $row['m_username'];
             }
             $start += 500;
-        } while (count($rows) == 500);
+        } while (!empty($rows));
 
         return $out;
     }

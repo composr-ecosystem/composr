@@ -12,10 +12,11 @@
 	{+END}
 	{$, Uncomment to show ratings
 	<td>
-		{+START,IF_NON_EMPTY,{$TRIM,{RATING}}}
-			{RATING}
+		{$SET,rating,{$RATING,catalogues__{CATALOGUE},{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
+		{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
+			{$GET,rating}
 		{+END}
-		{+START,IF_EMPTY,{$TRIM,{RATING}}}
+		{+START,IF_EMPTY,{$TRIM,{$GET,rating}}}
 			{!UNRATED}
 		{+END}
 	</td>

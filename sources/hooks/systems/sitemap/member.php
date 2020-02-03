@@ -82,9 +82,13 @@ class Hook_sitemap_member extends Hook_sitemap_content
             }
         }
 
+        $select = $this->select_fields();
+
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], $consider_validation ? ['m_validated' => 1] : [], 'ORDER BY m_username', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', $select, $consider_validation ? ['m_validated' => 1] : [], 'ORDER BY m_username', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 if ($row['id'] == db_get_first_id()) {
                     continue;
@@ -96,8 +100,8 @@ class Hook_sitemap_member extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         return $nodes;
     }

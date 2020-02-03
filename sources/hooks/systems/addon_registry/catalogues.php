@@ -617,6 +617,8 @@ class Hook_addon_registry_catalogues
             'EDIT_URL' => placeholder_url(),
             'RATING' => new Tempcode(),
             'ALLOW_RATING' => false,
+            'CATALOGUE' => lorem_word(),
+            'SUBMITTER' => placeholder_id(),
         ]));
         $content = do_lorem_template('CATALOGUE_DEFAULT_TABULAR_WRAP', [
             'CATALOGUE' => lorem_word(),

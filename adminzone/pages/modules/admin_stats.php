@@ -161,7 +161,7 @@ class Module_admin_stats extends Standard_crud_module
                     }
                 }
                 $start += 1000;
-            } while (count($rows) > 0);
+            } while (!empty($rows));
             $GLOBALS['SITE_DB']->delete_table_field('stats', 'the_page');
             $GLOBALS['SITE_DB']->delete_table_field('stats', 's_get');
 

@@ -464,7 +464,7 @@ function delete_chat_messages($where)
             delete_lang($message['the_message']);
             $GLOBALS['SITE_DB']->query_delete('chat_messages', ['id' => $message['id']], '', 1);
         }
-    } while ($messages != []);
+    } while (!empty($messages));
     cms_set_time_limit($old_limit);
 }
 
@@ -483,7 +483,7 @@ function delete_all_chatrooms()
             $GLOBALS['SITE_DB']->query_delete('chat_rooms', ['id' => $c_welcome['id']]);
             delete_chat_messages(['room_id' => $c_welcome['id']]);
         }
-    } while ($c_welcomes != []);
+    } while (!empty($c_welcomes));
     cms_set_time_limit($old_limit);
 
     delete_cache_entry('side_shoutbox');

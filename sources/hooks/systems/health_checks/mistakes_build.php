@@ -703,7 +703,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 cms_set_time_limit($old_limit);
 
                 $start += $max;
-            } while (!empty($rows));
+            } while (count($rows) == $max);
         }
 
         spellchecker_shutdown();

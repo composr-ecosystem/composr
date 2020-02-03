@@ -779,7 +779,7 @@ class Module_cms_banners_cat extends Standard_crud_module
                     foreach ($compatible_banners as $compatible_banner) {
                         $_compatible_banners->attach(form_input_list_entry($compatible_banner['name'], in_array($compatible_banner['name'], $banners_in_type)));
                     }
-                    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '008cd640acc13e51876701415bc8810f', 'SECTION_HIDDEN' => $banners_in_type == [], 'TITLE' => do_lang_tempcode('ACTIONS')]));
+                    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '008cd640acc13e51876701415bc8810f', 'SECTION_HIDDEN' => empty($banners_in_type), 'TITLE' => do_lang_tempcode('ACTIONS')]));
                     $fields->attach(form_input_multi_list(do_lang_tempcode('BANNERS_IN_TYPE_AS_SECONDARY'), do_lang_tempcode('DESCRIPTION_BANNERS_IN_TYPE_AS_SECONDARY'), 'banners_in_type_as_secondary', $_compatible_banners));
 
                     $this->appended_actions_already = true;

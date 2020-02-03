@@ -302,7 +302,7 @@ function check_function($function, $is_closure = false, $inside_class = false)
         if (($ret) && (!in_array('abstract', $function['modifiers'])) && (!isset($LOCAL_VARIABLES['__return']))) {
             log_warning('Function \'' . $function['name'] . '\' is missing a return statement with a value', $function['offset']);
         }
-        if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && ($LOCAL_VARIABLES['__return']['types'] != [])) {
+        if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && (!empty($LOCAL_VARIABLES['__return']['types']))) {
             if (strpos($function['name'], 'init__') === false/*Composr-specific*/) {
                 log_warning('Function \'' . $function['name'] . '\' has a return with a value, and the function returns void', $LOCAL_VARIABLES['__return']['first_mention']);
             }
@@ -410,7 +410,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
 {
     global $LOCAL_VARIABLES, $CURRENT_CLASS, $FUNCTION_SIGNATURES;
     foreach ($command as $i => $c) {
-        if ($c == []) {
+        if (empty($c)) {
             continue;
         }
 
@@ -1216,7 +1216,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
                     log_warning('Trying to initiate a(n) ' . $FUNCTION_SIGNATURES[$class]['type'] . ', ' . $class, $c_pos);
                 }
             }
-            if ((!isset($FUNCTION_SIGNATURES[$class])) && ($FUNCTION_SIGNATURES != []) && (strpos($function_guard, ',' . $class . ',') === false)) {
+            if ((!isset($FUNCTION_SIGNATURES[$class])) && (!empty($FUNCTION_SIGNATURES)) && (strpos($function_guard, ',' . $class . ',') === false)) {
                 if ((($GLOBALS['OK_EXTRA_FUNCTIONS'] === null) || (preg_match('#^' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . '#', $class) == 0))) {
                     if (!isset($GLOBALS['KNOWN_EXTRA_CLASSES'][$class]) && $class != '') {
                         if ($class !== null) {
@@ -1305,7 +1305,7 @@ function check_variable($variable, $reference = false, $function_guard = '')
 
     $next = $variable[2];
     $depth = 0;
-    while ($next != []) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index / string extract expressions
+    while (!empty($next)) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index / string extract expressions
         /*if ($next[0] == 'CHAR_OF_STRING') {    Deprecated syntax
             check_expression($next[1]);
             $passes = ensure_type(['string'], check_variable(['VARIABLE', $identifier, []]), $variable[3], 'Variable \'' . $identifier . '\' must be a string due to dereferencing');
@@ -1348,7 +1348,7 @@ function check_variable($variable, $reference = false, $function_guard = '')
             }
 
             ensure_type(['object', 'resource'], $type, $variable[3], 'Variable must be an object due to dereferencing');
-            if (($next[2] != []) && ($next[2][0] == 'CALL_METHOD')) {
+            if ((!empty($next[2])) && ($next[2][0] == 'CALL_METHOD')) {
                 if (($depth == 0) && (is_string($variable[1]))) {
                     // Convert the complex variable chaining syntax into a simpler method call that we can check
                     $method_call_command = $next[2];
@@ -1961,7 +1961,7 @@ function scan_extractive_expressions($variable)
     if (!is_array($variable)) {
         return;
     }
-    if ($variable == []) {
+    if (empty($variable)) {
         return;
     }
 

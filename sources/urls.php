@@ -465,7 +465,7 @@ function build_url($parameters, $zone_name = '_SEARCH', $skip = [], $keep_all = 
         $skip_keep ? '1' : '0',
         $keep_all ? '1' : '0',
     ];
-    if ($skip != []) {
+    if (!empty($skip)) {
         $arr[] = implode('|', array_keys($skip));
     }
 

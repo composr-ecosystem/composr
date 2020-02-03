@@ -343,9 +343,10 @@ function cms_file_safe($path, $default_charset = null)
  * @param  PATH $path File path
  * @param  integer $flags FILE_READ_* flags
  * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set)
+ * @param  ?integer $max_bytes Maximum number of bytes to read (null: read all bytes)
  * @return ~string File contents (false: error)
  */
-function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null)
+function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null, $max_bytes = null)
 {
     $locking = ($flags & FILE_READ_LOCK) != 0;
     $handle_file_bom = ($flags & FILE_READ_BOM) != 0;
@@ -358,7 +359,7 @@ function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null)
     if ($locking) {
         flock($tmp, LOCK_SH);
     }
-    $contents = stream_get_contents($tmp);
+    $contents = stream_get_contents($tmp, ($max_bytes === null) ? -1 : $max_bytes);
     if ($locking) {
         flock($tmp, LOCK_UN);
     }
@@ -382,7 +383,7 @@ function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null)
 function _get_boms()
 {
     return [
-        'utf-32' => hex2bin('fffe0000'), // LE, which is de-facto standard that convert_to_internal_encoding assumes
+        'utf-32' => hex2bin('fffe0000'), // LE, which is de facto standard that convert_to_internal_encoding assumes
         'utf-32BE' => hex2bin('0000feff'),
         'utf-16' => hex2bin('fffe'), // LE, which (...)
         'utf-16BE' => hex2bin('feff'),
@@ -1574,7 +1575,7 @@ function has_no_forum()
 function addon_installed($addon_name, $check_hookless = false, $deep_scan = true, $disabled_scan = true)
 {
     global $ADDON_INSTALLED_CACHE;
-    if ($ADDON_INSTALLED_CACHE == []) {
+    if (empty($ADDON_INSTALLED_CACHE)) {
         if (!in_safe_mode()) {
             if (function_exists('persistent_cache_get')) {
                 $ADDON_INSTALLED_CACHE = persistent_cache_get('ADDONS_INSTALLED');
@@ -2262,7 +2263,7 @@ function _strlen_sort($a, $b)
  */
 function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false, $natural = false)
 {
-    if ($rows == []) {
+    if (empty($rows)) {
         return;
     }
 

@@ -115,7 +115,7 @@ class Module_topicview
         if ($id !== null) {
             $notification_where_map = ['d_notification_code' => 'cns_topic', 'd_code_category' => strval($id), 'd_to_member_id' => get_member(), 'd_read' => 0];
             $notification_ids = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['id'], $notification_where_map);
-            if ($notification_ids !== []) {
+            if (!empty($notification_ids)) {
                 foreach ($notification_ids as $notification_id) {
                     $GLOBALS['SITE_DB']->query_update('digestives_tin', ['d_read' => 1], ['id' => $notification_id['id']]);
                 }

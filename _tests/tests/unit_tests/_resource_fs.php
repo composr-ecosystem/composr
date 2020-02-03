@@ -128,13 +128,13 @@ class _resource_fs_test_set extends cms_test_case
             if ($ob->folder_resource_type !== null) {
                 foreach (is_array($ob->folder_resource_type) ? $ob->folder_resource_type : [$ob->folder_resource_type] as $resource_type) {
                     $count_folders += $ob->get_resources_count($resource_type);
-                    $this->assertTrue($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))) == []); // Search for a unique random ID should find nothing
+                    $this->assertTrue(empty($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))))); // Search for a unique random ID should find nothing
                 }
             }
             $count_files = 0;
             foreach (is_array($ob->file_resource_type) ? $ob->file_resource_type : [$ob->file_resource_type] as $resource_type) {
                 $count_files += $ob->get_resources_count($resource_type);
-                $this->assertTrue($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))) == []); // Search for a unique random ID should find nothing
+                $this->assertTrue(empty($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))))); // Search for a unique random ID should find nothing
             }
 
             $listing = $this->_recursive_listing($ob, [], ['var', $commandr_fs_hook], $commandr_fs);

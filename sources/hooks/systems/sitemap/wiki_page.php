@@ -78,7 +78,10 @@ class Hook_sitemap_wiki_page extends Hook_sitemap_content
             }
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['*'], ['id' => db_get_first_id()], '', 1);
+        $select = $this->select_fields();
+
+        $rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', $select, ['id' => db_get_first_id()], '', 1);
+
         if (isset($rows[0])) {
             $row = $rows[0];
             $child_page_link = $zone . ':' . $page . ':' . $this->screen_type;

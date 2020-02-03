@@ -2008,7 +2008,7 @@ abstract class Resource_fs_base
             'privileges',
             'privileges__members',
         ];
-        if (array_intersect(array_keys($properties), $reserved_fields) != []) {
+        if (!empty(array_intersect(array_keys($properties), $reserved_fields))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 

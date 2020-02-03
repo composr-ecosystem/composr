@@ -580,7 +580,7 @@ function emoticons_script()
             'CODE' => $myrow['e_code'],
         ];
     }
-    if ($cells !== []) {
+    if (!empty($cells)) {
         $rows[] = ['CELLS' => $cells];
     }
 
