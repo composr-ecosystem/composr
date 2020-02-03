@@ -1238,7 +1238,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$MEMBER_OVERRIDE}</td>
-			<td>The Member-ID of the Account being viewed (e.g. if you're staff looking in somebody else's account then this would find the member ID, otherwise it is your own member ID)</td>
+			<td>The Member-ID of the account most relevant for the current page view. If you're looking at somebody else's account then this would find their member ID, otherwise it is your own member ID. This symbol can be used for displaying user-specific links and information in a panel that changes from your own if you are viewing an account.</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$COOKIE_PATH}</td>
