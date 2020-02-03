@@ -1034,7 +1034,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $f = $table_prefix . '.' . $f;
             }
             if (in_array($f, $select)) {
-                $lang_fields_filtered[$field] = $type;
+                $lang_fields_filtered[$table_prefix . '.' . $field] = $type;
             }
         }
 
