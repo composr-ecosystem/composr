@@ -176,7 +176,7 @@ if (cms_srv('REQUEST_METHOD') == 'POST') {
         }
     }
     if ($create_hotfix) {
-        $tracker_comment_message .= 'A hotfix (a TAR of files to upload) have been uploaded to this issue. These files are made to the latest intra-version state (i.e. may roll in earlier fixes too if made to the same files) - so only upload files newer than what you have already. Always take backups of files you are replacing or keep a copy of the manual installer for your version, and only apply fixes you need. These hotfixes are not necessarily reliable or well supported. Not sure how to extract TAR files to your Windows computer? Try 7-zip (http://www.7-zip.org/).';
+        $tracker_comment_message .= 'A hotfix (a TAR of files to upload) has been uploaded to this issue. These files are made to the latest intra-version state (i.e. may roll in earlier fixes too if made to the same files) - so only upload files newer than what you have already. If there are files in a hot-fix that you don\'t have then they probably relate to addons that you don\'t have installed and should be skipped. Always take backups of files you are replacing or keep a copy of the manual installer for your version, and only apply fixes you need. These hotfixes are not necessarily reliable or well supported. Not sure how to extract TAR files to your Windows computer? Try 7-zip (http://www.7-zip.org/).';
     }
     $update_post_id = create_tracker_post($tracker_id, $tracker_comment_message);
     if ($update_post_id !== null) {
@@ -558,7 +558,7 @@ function git_find_uncommitted_files()
     foreach ($lines as $line) {
         $matches = array();
         if (preg_match('#\t(both )?modified:\s+(.*)$#', $line, $matches) != 0) {
-            if (($matches[2] != 'data/files.bin') && (basename($matches[2]) != 'push_bugfix.php')) {
+            if (($matches[2] != 'data/files.bin') && ((basename($matches[2]) != 'push_bugfix.php') || (get_param_integer('include_push_bugfix', 0) == 1))) {
                 $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', array('filename' => $matches[2]));
                 if (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $file_addon . '.php')) {
                     $file_addon = null;
