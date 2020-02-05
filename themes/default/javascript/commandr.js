@@ -95,6 +95,14 @@
         }
     };
 
+    window.commandr.javaScriptCommands.exit = function exit(options) {
+        if (document.getElementById('commandr-button')) {
+            document.getElementById('commandr-button').click();
+        } else {
+            window.location.href = options.redirectUrl;
+        }
+    };
+
     $cms.templates.commandrMain = function commandrMain(params, container) {
         $cms.requireJavascript('core_form_interfaces').then(function () {
             $dom.on(container, 'submit', '.js-submit-commandr-form-submission', function (e, form) {
