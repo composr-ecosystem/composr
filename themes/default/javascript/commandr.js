@@ -39,7 +39,8 @@
         var windowName = strVal(options.windowName);
 
         if (!url) {
-            throw new TypeError('commandrJavaScriptCommands.openWindow(): Invalid or missing url option');
+            $util.error('commandr.javaScriptCommands.openWindow(): Invalid or missing url option');
+            return;
         }
 
         if (windowName) {
