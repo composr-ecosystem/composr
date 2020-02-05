@@ -102,6 +102,6 @@ class Hook_cron_manual_subscription_notification
             }
 
             $start += $max;
-        } while (count($subscribers) == $max);
+        } while (!empty($subscribers));
     }
 }

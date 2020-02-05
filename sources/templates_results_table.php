@@ -68,7 +68,7 @@ function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows
     }
 
     // Sorting
-    if ($sortables != []) {
+    if (!empty($sortables)) {
         $sort = results_sorter($sortables, $sortable, $sort_order, $sort_name, $hash);
     } else {
         $sort = new Tempcode();

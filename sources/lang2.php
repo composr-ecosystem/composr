@@ -308,6 +308,8 @@ function get_lang_files($lang = null)
  */
 function find_lang_content_names($ids)
 {
+    require_code('content');
+
     static $langidfields = null;
     if ($langidfields === null) {
         $query = 'SELECT m_name,m_table,m_type FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta';
@@ -316,12 +318,12 @@ function find_lang_content_names($ids)
         $langidfields = [];
         foreach ($all_fields as $f) {
             if (strpos($f['m_type'], '_TRANS') !== false) {
-                $langidfields[] = ['m_name' => $f['m_name'], 'm_table' => $f['m_table'], 'key' => ''];
+                $langidfields[] = ['m_name' => $f['m_name'], 'm_table' => $f['m_table'], 'key' => null];
             }
         }
         foreach ($langidfields as $i => $l) {
             foreach ($all_fields as $f) {
-                if (($l['m_table'] == $f['m_table']) && (substr($f['m_type'], 0, 1) == '*') && ($l['key'] == '')) {
+                if (($l['m_table'] == $f['m_table']) && (substr($f['m_type'], 0, 1) == '*') && ($l['key'] === null)) {
                     $langidfields[$i]['key'] = $f['m_name'];
                 }
             }
@@ -345,38 +347,40 @@ function find_lang_content_names($ids)
             }
         }
         if ($or_list != '') {
-            $test = list_to_map($field['m_name'], $db->query('SELECT * FROM ' . $db->get_table_prefix() . $field['m_table'] . ' WHERE ' . $or_list));
+            $info = null;
+            $cma_hook = convert_composr_type_codes('table', $field['m_table'], 'content_type');
+            if ($cma_hook !== null) {
+                $ob = get_content_object($cma_hook);
+                if ($ob !== null) {
+                    $info = $ob->info();
+                }
+            }
+
+            $fields_to_select = [$field['m_name'], $info['id_field']];
+            if ($info !== null) {
+                if (strpos($info['title_field'], 'CALL:') === false) {
+                    $fields_to_select[] = $info['title_field'];
+                }
+            }
+            if ($field['key'] !== null) {
+                $fields_to_select[] = $field['key'];
+            }
+            $test = list_to_map($field['m_name'], $db->query('SELECT ' . implode(',', array_unique($fields_to_select)) . ' FROM ' . $db->get_table_prefix() . $field['m_table'] . ' WHERE ' . $or_list));
             foreach ($ids as $id) {
                 if (array_key_exists($id, $test)) {
-                    $cma_hooks = find_all_hooks('systems', 'content_meta_aware');
-                    foreach (array_keys($cma_hooks) as $hook) {
-                        require_code('content');
-                        $ob = get_content_object($hook);
-                        if ($ob === null) {
-                            continue;
-                        }
-
-                        $info = $ob->info();
-                        if ($info === null) {
-                            continue;
-                        }
-
-                        if ($info['table'] == $field['m_table']) {
-                            if ($info['title_field_dereference']) {
-                                $ret[$id] = $field['m_table'] . ' \ ' . get_translated_text($test[$id][$info['title_field']]) . ' \ ' . $field['m_name'];
+                    if ($info !== null) {
+                        if ($info['title_field_dereference']) {
+                            $ret[$id] = $field['m_table'] . ' \ ' . get_translated_text($test[$id][$info['title_field']]) . ' \ ' . $field['m_name'];
+                        } else {
+                            if (strpos($info['title_field'], 'CALL:') !== false) {
+                                $ret[$id] = call_user_func(trim(substr($info['title_field'], 5)), ['id' => $test[$id][$info['id_field']]], false);
                             } else {
-                                if (strpos($info['title_field'], 'CALL:') !== false) {
-                                    $ret[$id] = call_user_func(trim(substr($info['title_field'], 5)), ['id' => $test[$id][$info['id_field']]], false);
-                                } else {
-                                    $ret[$id] = $field['m_table'] . ' \ ' . (is_integer($test[$id][$info['title_field']]) ? strval($test[$id][$info['title_field']]) : $test[$id][$info['title_field']]) . ' \ ' . $field['m_name'];
-                                }
+                                $ret[$id] = $field['m_table'] . ' \ ' . (is_integer($test[$id][$info['title_field']]) ? strval($test[$id][$info['title_field']]) : $test[$id][$info['title_field']]) . ' \ ' . $field['m_name'];
                             }
-
-                            continue 2;
                         }
+                    } else {
+                        $ret[$id] = $field['m_table'] . ' \ ' . (is_integer($test[$id][$field['key']]) ? strval($test[$id][$field['key']]) : $test[$id][$field['key']]) . ' \ ' . $field['m_name'];
                     }
-
-                    $ret[$id] = $field['m_table'] . ' \ ' . (is_integer($test[$id][$field['key']]) ? strval($test[$id][$field['key']]) : $test[$id][$field['key']]) . ' \ ' . $field['m_name'];
                 } else {
                     if (!array_key_exists($id, $ret)) {
                         $ret[$id] = null;

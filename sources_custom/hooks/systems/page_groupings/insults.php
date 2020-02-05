@@ -32,7 +32,7 @@ class Hook_page_groupings_insults
         }
 
         return [
-            ['setup', 'spare/heartbreak', ['insults', [], get_page_zone('insults')], do_lang_tempcode('insults:MANAGE_INSULTS'), 'insults:DOC_INSULTS'],
+            ['setup', 'spare/heartbreak', ['insults', [], get_comcode_zone('insults', false, 'adminzone')], do_lang_tempcode('insults:MANAGE_INSULTS'), 'insults:DOC_INSULTS'],
         ];
     }
 }

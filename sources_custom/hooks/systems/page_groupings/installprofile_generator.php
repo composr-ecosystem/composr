@@ -32,7 +32,7 @@ class Hook_page_groupings_installprofile_generator
         }
 
         return [
-            ['setup', 'admin/tool', ['installprofile_generator', [], get_page_zone('installprofile_generator')], make_string_tempcode('Export installprofile')],
+            ['setup', 'admin/tool', ['installprofile_generator', [], get_page_zone('installprofile_generator', false, 'adminzone', 'minimodules')], make_string_tempcode('Export installprofile')],
         ];
     }
 }

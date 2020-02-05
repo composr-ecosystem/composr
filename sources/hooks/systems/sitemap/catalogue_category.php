@@ -43,6 +43,28 @@ class Hook_sitemap_catalogue_category extends Hook_sitemap_content
     }
 
     /**
+     * Find what fields we should select for the Sitemap to be buildable. We don't want to select too much for perf reasons.
+     * Also find out what language fields we should load up for the table (returned by reference).
+     *
+     * @param  ?array $cma_info CMA info (null: standard for this hook)
+     * @param  string $table_prefix Table prefix
+     * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
+     * @return array Map between field name and field type
+     */
+    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
+    {
+        if ($cma_info === null) {
+            $cma_info = $this->_get_cma_info();
+        }
+
+        $ret = parent::select_fields($cma_info, $table_prefix, $lang_fields_filtered);
+        if ($cma_info['table'] == 'catalogue_categories') {
+            $ret[] = 'cc_parent_id';
+        }
+        return $ret;
+    }
+
+    /**
      * Find details of a position in the Sitemap.
      *
      * @param  ID_TEXT $page_link The page-link we are finding
@@ -91,7 +113,7 @@ class Hook_sitemap_catalogue_category extends Hook_sitemap_content
             'edit_url' => build_url(['page' => 'cms_catalogues', 'type' => '_edit_category', 'id' => $content_id], get_module_zone('cms_catalogues')),
         ] + $partial_struct;
 
-        if ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_is_tree', ['c_name' => $content_id]) == 1) {
+        if (($row['cc_parent_id'] === null) && ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_is_tree', ['c_name' => $row['c_name']]) == 1)) {
             $struct['extra_meta']['is_a_category_tree_root'] = true;
         }
 
@@ -100,8 +122,8 @@ class Hook_sitemap_catalogue_category extends Hook_sitemap_content
         }
 
         // Sometimes page groupings link direct to catalogue categories, so search for an icon
-        $row_x = $this->_load_row_from_page_groupings(null, $zone, 'catalogues', 'category', $content_id);
-        if ($row_x != []) {
+        $row_x = $this->_load_row_from_page_groupings(null, $meta_gather, $zone, 'catalogues', 'category', $content_id);
+        if (!empty($row_x)) {
             if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) == 0) {
                 $struct['title'] = null;
             }

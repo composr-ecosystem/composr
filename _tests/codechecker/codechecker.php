@@ -195,6 +195,11 @@ if (isset($options['test'])) {
     foreach ($files_to_check as $to_use) {
         $full_path = $COMPOSR_PATH . '/' . $to_use;
 
+        if (!is_file($full_path)) {
+            echo 'MISSING: ' . $to_use . cnl();
+            continue;
+        }
+
         if (strpos(file_get_contents($full_path), '/*CQC:' . ' No check*/') !== false) {
             echo 'SKIP: ' . $to_use . cnl();
             continue;

@@ -163,7 +163,7 @@ class Module_admin_email_log
         require_code('templates_results_table');
         $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('SUBJECT')], $sortables, 'sort', $sortable . ' ' . $sort_order);
         $result_entries = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['*'], [], 'ORDER BY  ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['id', 'm_date_and_time', 'm_queued', 'm_from_email', 'm_from_name', 'm_to_email', 'm_to_name', 'm_subject'], [], 'ORDER BY  ' . $sortable . ' ' . $sort_order, $max, $start);
         foreach ($rows as $row) {
             send_http_output_ping();
 
@@ -580,39 +580,47 @@ class Module_admin_email_log
     public function mass_send()
     {
         require_code('mail');
-        $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['*'], ['m_queued' => 1]);
-        foreach ($rows as $row) {
-            $subject = $row['m_subject'];
-            $message = $row['m_message'];
-            $to_email = unserialize($row['m_to_email']);
-            $extra_cc_addresses = unserialize($row['m_extra_cc_addresses']);
-            $extra_bcc_addresses = unserialize($row['m_extra_bcc_addresses']);
-            $to_name = unserialize($row['m_to_name']);
-            $from_email = $row['m_from_email'];
-            $from_name = $row['m_from_name'];
-            $join_time = $row['m_join_time'];
 
-            dispatch_mail(
-                $subject,
-                $message,
-                $to_email,
-                $to_name,
-                $from_email,
-                $from_name,
-                [
-                    'priority' => $row['m_priority'],
-                    'attachments' => unserialize($row['m_attachments']),
-                    'no_cc' => ($row['m_no_cc'] == 1),
-                    'as' => $row['m_as'],
-                    'as_admin' => ($row['m_as_admin'] == 1),
-                    'in_html' => ($row['m_in_html'] == 1),
-                    'coming_out_of_queue' => true,
-                    'extra_cc_addresses' => $extra_cc_addresses,
-                    'extra_bcc_addresses' => $extra_bcc_addresses,
-                    'require_recipient_valid_since' => $join_time,
-                ]
-            );
-        }
+        $max = 20;
+        $start = 0;
+
+        do {
+            $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['*'], ['m_queued' => 1], 'ORDER BY m_date_and_time', $max, $start);
+            foreach ($rows as $row) {
+                $subject = $row['m_subject'];
+                $message = $row['m_message'];
+                $to_email = unserialize($row['m_to_email']);
+                $extra_cc_addresses = unserialize($row['m_extra_cc_addresses']);
+                $extra_bcc_addresses = unserialize($row['m_extra_bcc_addresses']);
+                $to_name = unserialize($row['m_to_name']);
+                $from_email = $row['m_from_email'];
+                $from_name = $row['m_from_name'];
+                $join_time = $row['m_join_time'];
+
+                dispatch_mail(
+                    $subject,
+                    $message,
+                    $to_email,
+                    $to_name,
+                    $from_email,
+                    $from_name,
+                    [
+                        'priority' => $row['m_priority'],
+                        'attachments' => unserialize($row['m_attachments']),
+                        'no_cc' => ($row['m_no_cc'] == 1),
+                        'as' => $row['m_as'],
+                        'as_admin' => ($row['m_as_admin'] == 1),
+                        'in_html' => ($row['m_in_html'] == 1),
+                        'coming_out_of_queue' => true,
+                        'extra_cc_addresses' => $extra_cc_addresses,
+                        'extra_bcc_addresses' => $extra_bcc_addresses,
+                        'require_recipient_valid_since' => $join_time,
+                    ]
+                );
+            }
+
+            $start += $max;
+        } while (!empty($rows));
 
         $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 0], ['m_queued' => 1]);
 

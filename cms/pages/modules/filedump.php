@@ -171,7 +171,7 @@ class Module_filedump
                 }
                 $pre .= $dirs[$i] . '/';
             }
-            if ($breadcrumbs !== []) {
+            if (!empty($breadcrumbs)) {
                 $breadcrumbs[] = ['', $d];
                 breadcrumb_set_parents($breadcrumbs);
             } else {

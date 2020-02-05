@@ -952,7 +952,7 @@ function get_all_image_ids_type($type, $recurse = false, $db = null, $theme = nu
  */
 function _get_all_image_ids_type(&$ids, $dir, $type, $recurse, $dirs_only, $skip)
 {
-    $has_skip = ($skip !== []);
+    $has_skip = (!empty($skip));
 
     $_dir = @opendir($dir);
     if ($_dir !== false) {

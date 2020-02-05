@@ -1098,7 +1098,7 @@ function do_site()
     }
 
     // When someone hits the Admin Zone
-    if ($ZONE['zone_name'] == 'adminzone') {
+    if (($ZONE !== null) && ($ZONE['zone_name'] == 'adminzone')) {
         // Security feature admins can turn on
         if (get_page_name() == DEFAULT_ZONE_PAGE_NAME) {
             require_code('notifications');

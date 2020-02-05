@@ -51,7 +51,7 @@ class Block_menu
         /* Ideally we would not cache as we would need to cache for all screens due to context sensitive link display (either you're here or match key filtering). However in most cases that only happens per page, so we will cache per page -- and people can turn off caching via the standard block parameter for that if needed.*/
         $info = [];
         $info['cache_on'] = ['block_menu__cache_on'];
-        $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
+        $info['special_cache_flags'] = CACHE_AGAINST_BOT_STATUS | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = 60 * 24 * 140;
         return $info;
     }
@@ -102,8 +102,8 @@ class Block_menu
         $javascript_highlighting = ((isset($map['javascript_highlighting']) ? $map['javascript_highlighting'] : '1') == '1');
 
         require_code('menus');
-        list($content, $root) = build_menu($type, $menu, false, !$javascript_highlighting);
-        if (strpos(serialize($root), 'keep_') === false) {
+        list($content, $root, $flattened) = build_menu($type, $menu, false, !$javascript_highlighting);
+        if ($flattened) {
             $LANGS_REQUESTED = $bak; // We've flattened with apply_quick_caching, we don't need to load up all those language files next time
         }
 

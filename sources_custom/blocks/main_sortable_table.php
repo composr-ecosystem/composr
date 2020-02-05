@@ -159,8 +159,8 @@ PHP;
                 }
 
                 // Filter to displayed table columns
-                if ($columns_display != [] || $columns_tooltip != []) {
-                    if ($columns_display == []) {
+                if (!empty($columns_display) || !empty($columns_tooltip)) {
+                    if (empty($columns_display)) {
                         foreach ($row as $key => $val) {
                             if (in_array($key + 1, $columns_tooltip)) {
                                 unset($row[$key]);
@@ -241,8 +241,8 @@ PHP;
                 $_rows_raw[] = $record;
 
                 // Filter to displayed table columns
-                if ($columns_display != [] || $columns_tooltip != []) {
-                    if ($columns_display == []) {
+                if (!empty($columns_display) || !empty($columns_tooltip)) {
+                    if (empty($columns_display)) {
                         foreach (array_keys($record) as $j => $key) {
                             if (in_array($j + 1, $columns_tooltip)) {
                                 unset($record[$key]);
@@ -376,7 +376,7 @@ PHP;
             $map['default_sort_column'] = substr($map['default_sort_column'], 1);
         }
         $_default_sort_column = max(0, empty($map['default_sort_column']) ? 0 : ($this->letters_to_numbers($map['default_sort_column']) - 1));
-        $default_sort_column = ($columns_display == []) ? $_default_sort_column : array_search($_default_sort_column + 1, $columns_display);
+        $default_sort_column = empty($columns_display) ? $_default_sort_column : array_search($_default_sort_column + 1, $columns_display);
         if ($default_sort_column === false) {
             $default_sort_column = 0;
         }

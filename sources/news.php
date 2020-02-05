@@ -348,9 +348,9 @@ function create_selection_list_news($it, $only_owned = null, $editable_filter = 
 {
     $where = ($only_owned === null) ? '1' : ('submitter=' . strval($only_owned));
     if ($only_in_blog) {
-        $rows = $GLOBALS['SITE_DB']->query('SELECT n.* FROM ' . get_table_prefix() . 'news n JOIN ' . get_table_prefix() . 'news_categories c ON c.id=n.news_category AND ' . $where . ' AND nc_owner IS NOT NULL ORDER BY date_and_time DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT n.id,n.news_category,submitter,title FROM ' . get_table_prefix() . 'news n JOIN ' . get_table_prefix() . 'news_categories c ON c.id=n.news_category AND ' . $where . ' AND nc_owner IS NOT NULL ORDER BY date_and_time DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     } else {
-        $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'news WHERE ' . $where . ' ORDER BY date_and_time DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/, 0, false, true);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT n.id,n.news_category,submitter,title FROM ' . get_table_prefix() . 'news WHERE ' . $where . ' ORDER BY date_and_time DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/, 0, false, true);
     }
 
     if (count($rows) == intval(get_option('general_safety_listing_limit'))) {

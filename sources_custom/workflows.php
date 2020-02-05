@@ -117,7 +117,7 @@ function get_default_workflow()
         // Look for those which are set as default
         $defaults = $GLOBALS['SITE_DB']->query_select('workflows', ['id'], ['is_default' => 1]);
         // If there aren't any then we can't presume to know which should be returned, so return an empty array
-        if ($defaults == []) {
+        if (empty($defaults)) {
             return null;
         } elseif (count($defaults) > 1) {
             // Likewise we cannot choose between multiple defaults, so return an empty array
@@ -158,7 +158,7 @@ function get_submitter_of_workflow_content($content_id)
     }
     // Find out the author straight from the workflow_content table
     $submitter = $GLOBALS['SITE_DB']->query_select('workflow_content', ['original_submitter'], ['id' => $content_id]);
-    if ($submitter == []) {
+    if (empty($submitter)) {
         // Exit if we can't find the given resource
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html('workflow_content->' . strval($content_id))));
     }
@@ -209,7 +209,7 @@ function get_workflow_form($workflow_content_id)
 
     // Make sure there are some points to approve
     $approval_points = get_all_approval_points($relevant_workflow);
-    if ($approval_points == []) {
+    if (empty($approval_points)) {
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($workflow_content_id)), do_lang_tempcode('WORKFLOW')));
     }
 
@@ -416,7 +416,7 @@ function get_workflow_form($workflow_content_id)
     ////////////////////////
 
     // Bail out if there's nothing to the workflow
-    if ($approval_status == []) {
+    if (empty($approval_status)) {
         return new Tempcode();
     }
 
@@ -613,7 +613,7 @@ function workflow_update_handler()
 
     // Grab lookup data from the workflows database
     $content_details = $GLOBALS['SITE_DB']->query_select('workflow_content', ['content_type', 'content_id'], ['id' => $content_id], '', 1);
-    if ($content_details == []) {
+    if (empty($content_details)) {
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html('workflow_content->' . strval($content_id))));
     }
 
@@ -651,7 +651,7 @@ function workflow_update_handler()
 
     // In order for content to go live all points must be approved. See if all points have been approved. If so, none will have status 0
     $all_points_approved = false;
-    if ($GLOBALS['SITE_DB']->query_select('workflow_content_status', ['workflow_approval_point_id'], ['workflow_content_id' => $content_id, 'status_code' => 0]) == []) {
+    if (empty($GLOBALS['SITE_DB']->query_select('workflow_content_status', ['workflow_approval_point_id'], ['workflow_content_id' => $content_id, 'status_code' => 0]))) {
         $all_points_approved = true;
     }
 
@@ -727,7 +727,7 @@ function add_content_to_workflow($content_type = '', $content_id = '', $workflow
     // Need different paths based on ID type, to prevent breaking strict databases
 
     // Query the database for content matching the found parameters
-    if ($GLOBALS['SITE_DB']->query_select($content_table, [$content_field], [$content_field => $info['id_field_numeric'] ? $content_id : intval($content_id)], '', 1) == []) {
+    if (empty($GLOBALS['SITE_DB']->query_select($content_table, [$content_field], [$content_field => $info['id_field_numeric'] ? $content_id : intval($content_id)], '', 1))) {
         // This content doesn't exist, bail out
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($content_table . '/' . $content_field . '/' . $content_id)));
     }
@@ -808,7 +808,7 @@ function get_usergroups_for_approval_point($approval_id)
 function get_approval_point_position($approval_point_id)
 {
     $found = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', ['the_position'], ['id' => $approval_point_id], 'ORDER BY the_position ASC');
-    if ($found != []) {
+    if (!empty($found)) {
         return $found[0]['the_position'];
     }
     return null;
@@ -825,7 +825,7 @@ function get_workflow_content_id($content_type, $content_id)
 {
     // Grab the specified content's ID
     $content = $GLOBALS['SITE_DB']->query_select('workflow_content', ['id'], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
-    if ($content == []) {
+    if (empty($content)) {
         return null;
     }
     return $content[0]['id'];

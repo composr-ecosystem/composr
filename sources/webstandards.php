@@ -460,6 +460,104 @@ function init__webstandards()
         'namespace',
     ];
 
+    global $NEVER_SELFCLOSE_TAGS;
+    $NEVER_SELFCLOSE_TAGS = [
+        'div' => true,
+        'h1' => true,
+        'h2' => true,
+        'h3' => true,
+        'h4' => true,
+        'h5' => true,
+        'h6' => true,
+        'p' => true,
+        'blockquote' => true,
+        'pre' => true,
+        'fieldset' => true,
+        'figure' => true,
+        'address' => true,
+        'iframe' => true,
+        'noscript' => true,
+        'table' => true,
+        'tbody' => true,
+        'td' => true,
+        'tfoot' => true,
+        'th' => true,
+        'thead' => true,
+        'tr' => true,
+        'dd' => true,
+        'dt' => true,
+        'dl' => true,
+        'li' => true,
+        'ol' => true,
+        'ul' => true,
+        'rbc' => true,
+        'rtc' => true,
+        'rb' => true,
+        'rt' => true,
+        'rp' => true,
+        'video' => true,
+        'details' => true,
+        'summary' => true,
+        'section' => true,
+        'nav' => true,
+        'header' => true,
+        'footer' => true,
+        'canvas' => true,
+        'audio' => true,
+        'aside' => true,
+        'article' => true,
+        'span' => true,
+        'abbr' => true,
+        'cite' => true,
+        'code' => true,
+        'dfn' => true,
+        'em' => true,
+        'strong' => true,
+        'kbd' => true,
+        'q' => true,
+        'samp' => true,
+        'var' => true,
+        'sub' => true,
+        'sup' => true,
+        'del' => true,
+        'ruby' => true,
+        'a' => true,
+        'bdo' => true,
+        'ins' => true,
+        'textarea' => true,
+        'select' => true,
+        'object' => true,
+        'caption' => true,
+        'label' => true,
+        'time' => true,
+        'progress' => true,
+        'output' => true,
+        'meter' => true,
+        'mark' => true,
+        'datalist' => true,
+        'body' => true,
+        'colgroup' => true,
+        'head' => true,
+        'html' => true,
+        'map' => true,
+        'optgroup' => true,
+        'option' => true,
+        'style' => true,
+        'title' => true,
+        'legend' => true,
+        'figcaption' => true,
+        'script' => true,
+        'form' => true,
+        'dir' => true,
+        'menu' => true,
+        'center' => true,
+        'applet' => true,
+        'font' => true,
+        's' => true,
+        'strike' => true,
+        'u' => true,
+    ];
+
     global $POSSIBLY_EMPTY_TAGS;
     $POSSIBLY_EMPTY_TAGS = [
         'a' => true, // When it's an anchor only - we will detect this with custom code
@@ -1288,7 +1386,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     global $BLOCK_CONSTRAIN, $XML_CONSTRAIN, $LAST_TAG_ATTRIBUTES, $FOUND_DOCTYPE, $FOUND_DESCRIPTION, $FOUND_KEYWORDS, $FOUND_CONTENTTYPE, $THE_DOCTYPE, $TAGS_DEPRECATE_ALLOW, $URL_BASE, $PARENT_TAG, $TABS_SEEN, $KEYS_SEEN, $ANCHORS_SEEN, $ATT_STACK, $TAG_STACK, $POS, $LINENO, $LINESTART, $OUT, $T_POS, $PROHIBITIONS, $ONLY_PARENT, $ONLY_CHILDREN, $REQUIRE_ANCESTOR, $LEN, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $POSSIBLY_EMPTY_TAGS, $MUST_SELFCLOSE_TAGS, $FOR_LABEL_IDS, $FOR_LABEL_IDS_2, $INPUT_TAG_IDS;
     global $TAG_RANGES, $VALUE_RANGES, $LAST_A_TAG, $A_LINKS, $XHTML_FORM_ENCODING;
     global $AREA_LINKS, $LAST_HEADING, $CRAWLED_URLS, $HYPERLINK_URLS, $EMBED_URLS, $THE_LANGUAGE, $PSPELL_LINK;
-    global $TAGS_BLOCK, $TAGS_INLINE, $TAGS_NORMAL, $TAGS_BLOCK_DEPRECATED, $TAGS_INLINE_DEPRECATED, $TAGS_NORMAL_DEPRECATED;
+    global $TAGS_BLOCK, $TAGS_INLINE, $TAGS_NORMAL, $TAGS_BLOCK_DEPRECATED, $TAGS_INLINE_DEPRECATED, $TAGS_NORMAL_DEPRECATED, $NEVER_SELFCLOSE_TAGS;
     $PSPELL_LINK = null;
     $THE_LANGUAGE = 'en';
     $THE_DOCTYPE = $is_fragment ? DOCTYPE_XHTML : DOCTYPE_HTML;
@@ -1439,7 +1537,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
                     $only_one_of = $only_one_of_template;
                     ++$stack_size;
                 } else {
-                    if ((($WEBSTANDARDS_CHECKER_OFF === null)) && (!$WELL_FORMED_ONLY) && ((!$XML_CONSTRAIN) || (!isset($MUST_SELFCLOSE_TAGS[$basis_token]))) && (($WEBSTANDARDS_CHECKER_OFF === null))) { // A tags must not self close even when only an anchor. Makes a weird underlined line effect in Firefox
+                    if ((($WEBSTANDARDS_CHECKER_OFF === null)) && (!$WELL_FORMED_ONLY) && ((!$XML_CONSTRAIN) || (isset($NEVER_SELFCLOSE_TAGS[$basis_token]))) && (($WEBSTANDARDS_CHECKER_OFF === null))) { // A tags must not self close even when only an anchor. Makes a weird underlined line effect in Firefox
                         if (!$bad_root) {
                             $errors[] = _xhtml_error('XHTML_CEMPTY_TAG', $basis_token);
                         }
@@ -1458,7 +1556,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
                 }
 
                 $previous = array_pop($TAG_STACK);
-                $PARENT_TAG = ($TAG_STACK == []) ? '' : $TAG_STACK[count($TAG_STACK) - 1];
+                $PARENT_TAG = empty($TAG_STACK) ? '' : $TAG_STACK[count($TAG_STACK) - 1];
                 $start_pos = array_pop($content_start_stack);
                 array_pop($ATT_STACK);
                 $only_one_of = array_pop($only_one_of_stack);

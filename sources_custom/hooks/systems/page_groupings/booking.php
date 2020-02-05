@@ -32,8 +32,8 @@ class Hook_page_groupings_booking
         }
 
         return [
-            ['cms', 'booking/booking', ['cms_booking', [], get_page_zone('cms_booking')], do_lang_tempcode('booking:BOOKINGS'), 'booking:DOC_BOOKING'],
-            ['pages', 'booking/book', ['booking', ['type' => 'browse'], get_page_zone('booking')], do_lang_tempcode('booking:BOOKINGS')],
+            ['cms', 'booking/booking', ['cms_booking', [], get_page_zone('cms_booking', false)], do_lang_tempcode('booking:BOOKINGS'), 'booking:DOC_BOOKING'],
+            ['pages', 'booking/book', ['booking', ['type' => 'browse'], get_page_zone('booking', false)], do_lang_tempcode('booking:BOOKINGS')],
         ];
     }
 }

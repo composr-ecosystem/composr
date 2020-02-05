@@ -357,7 +357,7 @@ function _csp_extract_sources_list($level, $sources_csp = '', $include_self = tr
 
     require_code('input_filter');
     $_trusted_sites = get_trusted_sites($level, $include_self);
-    if ($_trusted_sites == []) {
+    if (empty($_trusted_sites)) {
         foreach ($_trusted_sites as $partner) {
             $sources_list[] = $partner;
         }

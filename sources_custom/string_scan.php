@@ -317,6 +317,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SECURITY_LEVEL_high
         MAINTENANCE_SCRIPT_ACCESS
         CONFIG_OPTION_maintenance_script_htaccess
+        IF_UNCHANGED_CURRENT_FILE_REMAINS
         MONIKER_TRANSLITERATION
         CONFIG_OPTION_moniker_transliteration
         BLOCKS_AT_TOP
@@ -10633,7 +10634,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WIKI_PAGE
         WIKI_PAGES
         WIKI_POST
-        WIKI_POST_COUNT
         WILDCARD
         WILL_CONTINUE_AFTER_VIDEO_FINISHED
         WILL_COST

@@ -38,8 +38,11 @@ class Hook_symbol_SHOW_RATINGS
             $rating_id = $param[1];
             $max = (!empty($param[2])) ? intval($param[2]) : 30;
 
+            require_code('feedback');
+            $real_feedback_type = _real_feedback_type($rating_type);
+
             $ratings = [];
-            $_ratings = $GLOBALS['SITE_DB']->query_select('rating', ['rating_member', 'rating_ip', 'rating_time', 'rating'], ['rating_for_type' => $rating_type, 'rating_for_id' => $rating_id], 'ORDER BY rating_time DESC', $max);
+            $_ratings = $GLOBALS['SITE_DB']->query_select('rating', ['rating_member', 'rating_ip', 'rating_time', 'rating'], ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $rating_id], 'ORDER BY rating_time DESC', $max);
             foreach ($_ratings as $rating) {
                 $ratings[] = [
                     'RATING_MEMBER' => strval($rating['rating_member']),

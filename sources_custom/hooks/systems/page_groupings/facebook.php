@@ -32,7 +32,7 @@ class Hook_page_groupings_facebook
         }
 
         return [
-            ['setup', 'links/facebook', ['facebook_oauth', [], get_page_zone('facebook_oauth')], do_lang_tempcode('facebook:FACEBOOK_SYNDICATION'), 'facebook:DOC_FACEBOOK_SYNDICATION'],
+            ['setup', 'links/facebook', ['facebook_oauth', [], get_page_zone('facebook_oauth', false, 'adminzone', 'minimodules')], do_lang_tempcode('facebook:FACEBOOK_SYNDICATION'), 'facebook:DOC_FACEBOOK_SYNDICATION'],
         ];
     }
 }

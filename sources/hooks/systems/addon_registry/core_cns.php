@@ -742,7 +742,7 @@ class Hook_addon_registry_core_cns
                 'CODE' => ':)',
             ];
         }
-        if ($cells !== []) {
+        if (!empty($cells)) {
             $rows[] = [
                 'CELLS' => $cells,
             ];

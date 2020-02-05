@@ -920,7 +920,7 @@ function actual_delete_catalogue_category($id, $deleting_all = false)
                     actual_delete_catalogue_entry($entry['id']);
                 }
                 $start += 500;
-            } while (count($entries) == 500);
+            } while (!empty($entries));
         }
 
         cms_set_time_limit($old_limit);

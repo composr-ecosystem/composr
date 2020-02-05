@@ -42,6 +42,9 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
             $rating_type = isset($param[3]) ? $param[3] : ''; // If non empty, it will get the highest rated first
             $field_id = ((isset($param[4])) && (is_numeric($param[4]))) ? intval($param[4]) : null; // Limit to a particular field ID
 
+            require_code('feedback');
+            $real_feedback_type = _real_feedback_type($rating_type);
+
             static $cache = [];
             $cache_key = serialize($param);
             if (isset($cache[$cache_key])) {
@@ -60,7 +63,7 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
                 $select[] = 'content_id';
 
                 if ($rating_type != '') {
-                    $select[] = '(SELECT AVG(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $rating_type) . ' AND rating_for_id=content_id) AS average_rating';
+                    $select[] = '(SELECT AVG(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $real_feedback_type) . ' AND rating_for_id=content_id) AS average_rating';
                     $order_by = 'ORDER BY average_rating DESC';
                 }
             }

@@ -489,7 +489,10 @@ function get_value($name, $default = null, $elective_or_lengthy = false, $env_al
         return $default;
     }
 
-    if (isset($VALUE_OPTIONS_CACHE[$name])) {
+    if (($VALUE_OPTIONS_CACHE !== null) && (array_key_exists($name, $VALUE_OPTIONS_CACHE))) {
+        if ($VALUE_OPTIONS_CACHE[$name] === null) {
+            return $default;
+        }
         return $VALUE_OPTIONS_CACHE[$name]['the_value'];
     }
 

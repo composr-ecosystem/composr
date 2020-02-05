@@ -1333,7 +1333,7 @@ class Module_admin_setupwizard
         if ((post_param_integer('skip_4', 0) == 0) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
             foreach ($addons_uninstall as $addon_name => $addon_info) {
                 // Archive it off to exports/addons
-                if ($addon_info['files'] != []) {
+                if (!empty($addon_info['files'])) {
                     $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $addon_name)) . '.tar';
                     create_addon(
                         $file,

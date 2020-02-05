@@ -156,8 +156,10 @@ class Hook_sitemap_root extends Hook_sitemap_base
 
             $children = [];
 
+            $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
             // Ones going first
-            $first_zones = find_all_zones(false, true, false, 0, SITEMAP_MAX_ROWS_PER_LOOP);
+            $first_zones = find_all_zones(false, true, false, 0, $max_rows_per_loop);
             foreach ($first_zones as $_zone) {
                 list($zone) = $_zone;
                 if ($zone == ((get_option('single_public_zone') == '0') ? 'site' : '')) {
@@ -177,7 +179,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
                 if ($start == 0) {
                     $zones = $first_zones;
                 } else {
-                    $zones = find_all_zones(false, true, false, $start, SITEMAP_MAX_ROWS_PER_LOOP);
+                    $zones = find_all_zones(false, true, false, $start, $max_rows_per_loop);
                 }
                 foreach ($zones as $_zone) {
                     list($zone) = $_zone;
@@ -204,8 +206,8 @@ class Hook_sitemap_root extends Hook_sitemap_base
                         $children[] = $child_node;
                     }
                 }
-                $start += SITEMAP_MAX_ROWS_PER_LOOP;
-            } while (count($zones) >= SITEMAP_MAX_ROWS_PER_LOOP - 2/*2 rows may be abridged from results according to implementation filters*/);
+                $start += $max_rows_per_loop;
+            } while (count($zones) >= $max_rows_per_loop - 2/*2 rows may be abridged from results according to implementation filters*/);
 
             // Ones going last
             foreach ($last_ones as $_zone) {

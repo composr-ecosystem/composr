@@ -738,7 +738,7 @@ class Module_admin_version
                         $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_moniker_reversed' => strrev($url_id_moniker['m_moniker'])], ['m_moniker' => $url_id_moniker['m_moniker']]);
                     }
                     $start += $max;
-                } while (count($url_id_monikers) == $max);
+                } while (!empty($url_id_monikers));
             }
             $GLOBALS['SITE_DB']->create_index('url_id_monikers', 'uim_monrev', ['m_moniker_reversed']);
 

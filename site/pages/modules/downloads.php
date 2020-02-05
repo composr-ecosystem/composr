@@ -607,7 +607,7 @@ class Module_downloads
 
         // Load up all data
         $cats = [];
-        $rows = $GLOBALS['SITE_DB']->query('SELECT p.* FROM ' . get_table_prefix() . 'download_downloads p' . $privacy_join . ' WHERE ' . (addon_installed('unvalidated') ? 'validated=1 AND ' : '') . '(' . $sql_select . ')' . $privacy_where . ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'), null, 0, false, true, ['name' => 'SHORT_TRANS']);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT p.name,p.category_id FROM ' . get_table_prefix() . 'download_downloads p' . $privacy_join . ' WHERE ' . (addon_installed('unvalidated') ? 'validated=1 AND ' : '') . '(' . $sql_select . ')' . $privacy_where . ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'), null, 0, false, true, ['name' => 'SHORT_TRANS']);
         foreach ($rows as $row) {
             $download_name = get_translated_text($row['name']);
             $letter = strtoupper(substr($download_name, 0, 1));
@@ -621,7 +621,6 @@ class Module_downloads
             }
             $cats[$letter][] = $row;
         }
-        unset($rows);
 
         // Show all letters
         // Not done via main_multi_content block due to complex organisation

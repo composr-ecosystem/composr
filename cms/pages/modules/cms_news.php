@@ -410,7 +410,7 @@ class Module_cms_news extends Standard_crud_module
             }
         }
 
-        $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '90e0f1f4557eb78d58b9a13c3e1e65dc', 'SECTION_HIDDEN' => $news == '' && $image == '' && ($scheduled === null) && ($title == ''/*=new entry and selected news cats was from URL*/ || ($news_category === null) || $news_category == []), 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '90e0f1f4557eb78d58b9a13c3e1e65dc', 'SECTION_HIDDEN' => $news == '' && $image == '' && ($scheduled === null) && ($title == ''/*=new entry and selected news cats was from URL*/ || (empty($news_category))), 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
         $news_summary_required = (get_option('news_summary_required') == '1');
         $_summary_field = form_input_text_comcode(do_lang_tempcode('NEWS_SUMMARY'), $news_summary_required ? new Tempcode() : do_lang_tempcode('DESCRIPTION_NEWS_SUMMARY'), 'news', $news, $news_summary_required);

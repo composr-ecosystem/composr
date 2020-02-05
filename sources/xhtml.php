@@ -53,7 +53,7 @@ function xhtmlise_html($html, $definitely_want = false, $snippet = false)
     require_code('crypt');
     require_code('webstandards');
 
-    global $XML_CONSTRAIN, $LAST_TAG_ATTRIBUTES, $POS, $OUT, $TAG_STACK, $INBETWEEN_TEXT, $LEN, $WELL_FORMED_ONLY, $MUST_SELFCLOSE_TAGS, $LINENO, $LINESTART;
+    global $XML_CONSTRAIN, $LAST_TAG_ATTRIBUTES, $POS, $OUT, $TAG_STACK, $INBETWEEN_TEXT, $LEN, $WELL_FORMED_ONLY, $MUST_SELFCLOSE_TAGS, $NEVER_SELFCLOSE_TAGS, $LINENO, $LINESTART;
     $POS = 0;
     $OUT = $html;
     $LEN = strlen($html);
@@ -94,7 +94,7 @@ function xhtmlise_html($html, $definitely_want = false, $snippet = false)
             $term = strpos($token, '/');
 
             if ($term !== 1) {
-                if (($term === false) && (!isset($MUST_SELFCLOSE_TAGS[$basis_token]))) { // Opening a tag
+                if ((($term === false) || (isset($NEVER_SELFCLOSE_TAGS[$basis_token]))) && (!isset($MUST_SELFCLOSE_TAGS[$basis_token]))) { // Opening a tag
                     // Fix nesting
                     if (!$snippet) {
                         if (($basis_token == 'li') && (!in_array('ul', $TAG_STACK)) && (!in_array('ol', $TAG_STACK)) && (!in_array('dl', $TAG_STACK)) && (!in_array('dd', $TAG_STACK)) && (!in_array('dt', $TAG_STACK)) && (!in_array('dir', $TAG_STACK)) && (!in_array('menu', $TAG_STACK))) {

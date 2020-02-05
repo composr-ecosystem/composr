@@ -57,11 +57,14 @@ class Hook_config_unzip_cmd
             return null;
         }
         if (php_function_allowed('shell_exec')) {
-            if (@strpos(shell_exec('unzip -h'), 'UnZip') !== false) {
-                return 'unzip -o @_SRC_@ -x -d @_DST_@';
+            if (@strpos(shell_exec('/usr/local/bin/unzip -h'), 'UnZip') !== false) {
+                return '/usr/local/bin/unzip -o @_SRC_@ -x -d @_DST_@';
             }
             if (@strpos(shell_exec('/usr/bin/unzip -h'), 'UnZip') !== false) {
                 return '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@';
+            }
+            if (@strpos(shell_exec('unzip -h'), 'UnZip') !== false) {
+                return 'unzip -o @_SRC_@ -x -d @_DST_@';
             }
         }
         return '';

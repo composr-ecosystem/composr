@@ -32,7 +32,7 @@ class Hook_page_groupings_comcode_whitelist
         }
 
         return [
-            ['setup', 'menu/adminzone/setup/custom_comcode', ['comcode_whitelist', [], get_page_zone('comcode_whitelist')], make_string_tempcode('Edit Comcode whitelist')],
+            ['setup', 'menu/adminzone/setup/custom_comcode', ['comcode_whitelist', [], get_comcode_zone('comcode_whitelist', false, 'adminzone')], make_string_tempcode('Edit Comcode whitelist')],
         ];
     }
 }

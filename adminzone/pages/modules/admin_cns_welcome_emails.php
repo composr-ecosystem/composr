@@ -309,7 +309,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
      */
     public function create_selection_list_entries()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', ['*']);
+        $_m = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', ['id', 'w_name']);
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, $m['w_name']));

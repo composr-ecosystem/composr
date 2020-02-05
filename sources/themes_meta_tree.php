@@ -395,10 +395,10 @@ function find_template_tree_nice($metadata, &$collected_templates)
             $child_items[$_middle->evaluate()] = true;
         }
     }
-    if (($child_items == []) && ($metadata['type'] != TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE)) {
+    if ((empty($child_items)) && ($metadata['type'] != TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE)) {
         return '';
     }
-    if ($child_items != []) {
+    if (!empty($child_items)) {
         $_child_items = '';
         foreach (array_keys($child_items) as $_child_item) {
             $_child_items .= str_replace('__id__', strval(mt_rand(0, mt_getrandmax())), $_child_item);

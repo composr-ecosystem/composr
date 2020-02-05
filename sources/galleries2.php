@@ -1571,7 +1571,7 @@ function delete_gallery($name)
         foreach ($images as $image) {
             delete_image($image['id'], false);
         }
-    } while ($images != []);
+    } while (!empty($images));
     do {
         send_http_output_ping();
 
@@ -1579,7 +1579,7 @@ function delete_gallery($name)
         foreach ($videos as $video) {
             delete_video($video['id'], false);
         }
-    } while ($videos != []);
+    } while (!empty($videos));
     cms_set_time_limit($old_limit);
     //... but the subgalleries remain
     $GLOBALS['SITE_DB']->query_update('galleries', ['parent_id' => $rows[0]['parent_id']], ['parent_id' => $name]);

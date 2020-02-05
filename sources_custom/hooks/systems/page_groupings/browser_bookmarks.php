@@ -32,7 +32,7 @@ class Hook_page_groupings_browser_bookmarks
         }
 
         return [
-            ['tools', 'admin/tool', ['admin_generate_bookmarks', [], get_page_zone('admin_generate_bookmarks')], make_string_tempcode('Generate bookmarks.html for browser')],
+            ['tools', 'admin/tool', ['admin_generate_bookmarks', [], get_page_zone('admin_generate_bookmarks', false, 'adminzone', 'minimodules')], make_string_tempcode('Generate bookmarks.html for browser')],
         ];
     }
 }

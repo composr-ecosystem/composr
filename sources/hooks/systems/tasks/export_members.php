@@ -52,7 +52,7 @@ class Hook_task_export_members
         }
 
         // Derive filtering
-        if ($usergroups != []) {
+        if (!empty($usergroups)) {
             // Filter just for f_group_members
             $group_filter = '(';
             foreach ($usergroups as $i => $usergroup) {

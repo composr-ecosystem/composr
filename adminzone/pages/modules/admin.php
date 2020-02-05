@@ -263,7 +263,7 @@ class Module_admin
      */
     public function _section_match($section_limitations, $results_type)
     {
-        if ($section_limitations == []) {
+        if (empty($section_limitations)) {
             return true;
         }
 
@@ -440,7 +440,7 @@ class Module_admin
                     if (($i[0] != '') && ($this->_keyword_match(is_object($n) ? $n->evaluate() : $n)) && (has_actual_page_access(get_member(), $i[2][0], $i[2][2]))) {
                         $_url = build_url(['page' => $i[2][0]] + $i[2][1], $i[2][2]);
                         $breadcrumbs = new Tempcode();
-                        $breadcrumbs->attach(hyperlink(build_url(['page' => 'admin', 'type' => $i[0]], 'adminzone'), do_lang_tempcode(strtoupper($i[0])), false, false));
+                        $breadcrumbs->attach(hyperlink(build_url(['page' => 'admin', 'type' => $i[0]], 'adminzone'), do_lang_tempcode(($i[0] == 'social') ? 'SECTION_SOCIAL' : strtoupper($i[0])), false, false));
                         $sup = do_lang_tempcode('LOCATED_IN', $breadcrumbs);
                         $content[$current_results_type]->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', ['_GUID' => 'ec53a1d45fe6a80308bf509b896d2763', 'NAME' => $n, 'URL' => $_url, 'TITLE' => '', 'DESCRIPTION' => '', 'SUP' => $sup]));
                     }
@@ -524,7 +524,7 @@ class Module_admin
                                                     require_lang('menus');
 
                                                     $breadcrumbs->attach(do_template('BREADCRUMB_SEPARATOR'));
-                                                    $breadcrumbs->attach(hyperlink($_url, do_lang_tempcode(strtoupper($i[0])), false, false));
+                                                    $breadcrumbs->attach(hyperlink($_url, do_lang_tempcode(($i[0] == 'social') ? 'SECTION_SOCIAL' : strtoupper($i[0])), false, false));
                                                     if ($type != 'browse') {
                                                         $breadcrumbs->attach(do_template('BREADCRUMB_SEPARATOR'));
                                                         $breadcrumbs->attach(hyperlink(build_url(['page' => $page, 'type' => 'browse'], $zone), $i[3], false, false));

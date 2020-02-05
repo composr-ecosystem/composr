@@ -32,7 +32,7 @@ class Hook_page_groupings_git_status
         }
 
         return [
-            ['tools', 'status/notice', ['admin_git_status', [], get_page_zone('admin_git_status')], make_string_tempcode('Git status')],
+            ['tools', 'status/notice', ['admin_git_status', [], get_page_zone('admin_git_status', false, 'adminzone', 'minimodules')], make_string_tempcode('Git status')],
         ];
     }
 }

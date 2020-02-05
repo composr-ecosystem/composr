@@ -138,7 +138,7 @@ function has_privacy_access($content_type, $content_id, $viewing_member_id = nul
             return true;
         }
 
-        $query = 'SELECT * FROM ' . $privacy_table . ' WHERE ' . $privacy_table_where . ' AND ' . db_string_equal_to('priv.content_id', $content_id);
+        $query = 'SELECT COUNT(*) FROM ' . $privacy_table . ' WHERE ' . $privacy_table_where . ' AND ' . db_string_equal_to('priv.content_id', $content_id);
     } else { // With JOIN
         $cma_info = $cma_ob->info();
 
@@ -158,12 +158,12 @@ function has_privacy_access($content_type, $content_id, $viewing_member_id = nul
         } else {
             $where = db_string_equal_to('e.' . $first_id_field, $content_id);
         }
-        $query = 'SELECT * FROM ' . get_table_prefix() . $cma_info['table'] . ' e' . $privacy_join . ' WHERE ' . $where . $privacy_where;
+        $query = 'SELECT COUNT(*) FROM ' . get_table_prefix() . $cma_info['table'] . ' e' . $privacy_join . ' WHERE ' . $where . $privacy_where;
     }
 
-    $results = $GLOBALS['SITE_DB']->query($query, 1);
+    $cnt = $GLOBALS['SITE_DB']->query_value_if_there($query);
 
-    return array_key_exists(0, $results);
+    return ($cnt >= 1);
 }
 
 /**

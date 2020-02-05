@@ -200,10 +200,16 @@ class Hook_fields_picture
      */
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
-        $say_required = ($field['cf_required'] == 1) && (($actual_value == '') || ($actual_value === null));
+        $say_required = ($field['cf_required'] == 1) && (empty($actual_value));
+
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
-        require_code('images');
-        $ffield = form_input_upload($_cf_name, $_cf_description, $input_name, $say_required, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : $actual_value, null, true, get_allowed_image_file_types());
+
+        $cf_description = protect_from_escaping(escape_html($_cf_description));
+        if (($field['cf_required'] == 1) && (!empty($actual_value))) {
+            $cf_description->attach(do_lang_tempcode('IF_UNCHANGED_CURRENT_FILE_REMAINS'));
+        }
+
+        $ffield = form_input_upload($_cf_name, $cf_description, $input_name, $say_required, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : $actual_value, null, true, get_allowed_image_file_types());
 
         $hidden = new Tempcode();
         handle_max_file_size($hidden, 'image');

@@ -194,7 +194,8 @@ function load_version_news_rows()
             ];
         } else {
             // Live data
-            $NEWS_ROWS = $GLOBALS['SITE_DB']->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], 'ORDER BY add_date');
+            $db = $GLOBALS['SITE_DB'];
+            $NEWS_ROWS = $db->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], ' AND ' . $db->translate_field_ref('title') . ' LIKE \'' . db_encode_like('%released%') . '\' ORDER BY add_date');
             foreach ($NEWS_ROWS as $i => $row) {
                 $NEWS_ROWS[$i]['nice_title'] = get_translated_text($row['title']);
             }
@@ -280,7 +281,7 @@ function server__public__get_tracker_issue_titles($ids, $version = null)
 
 function server__public__get_tracker_categories()
 {
-    $categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0'));
+    $categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0 ORDER BY name'));
     $categories = array_unique($categories);
     echo json_encode($categories);
 }

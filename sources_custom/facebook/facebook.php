@@ -1597,7 +1597,11 @@ class Facebook extends BaseFacebook
     if ((function_exists('session_status')
       && session_status() !== PHP_SESSION_ACTIVE) || session_id() == '') {
       @session_start();
+
+      // Performance optimisation
+      @session_write_close();
     }
+
     parent::__construct($config);
     if (!empty($config['sharedSession'])) {
       $this->initSharedSession();
@@ -1726,7 +1730,6 @@ class Facebook extends BaseFacebook
     // Performance optimisation
     if ((function_exists('session_status') && session_status() !== PHP_SESSION_ACTIVE)) {
       @session_start();
-      @session_write_close();
     }
 
     if (isset($_SESSION[$session_var_name])) {

@@ -82,9 +82,13 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
 
         require_code('galleries');
 
+        $select = $this->select_fields();
+
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['parent_id' => $parent], ' AND name NOT LIKE \'download\_%\'', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('galleries', $select, ['parent_id' => $parent], ' AND name NOT LIKE \'download\_%\'', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 if ((get_option('show_empty_galleries') == '1') || (gallery_has_content($row['name']))) {
                     $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . $row['name'];
@@ -95,8 +99,8 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         if (is_array($nodes)) {
             sort_maps_by($nodes, 'title');
@@ -146,7 +150,9 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
             'edit_url' => build_url(['page' => 'cms_galleries', 'type' => '_edit_category', 'id' => $content_id], get_module_zone('cms_galleries')),
         ] + $partial_struct;
 
-        $struct['extra_meta']['is_a_category_tree_root'] = true;
+        if ($content_id == 'root') {
+            $struct['extra_meta']['is_a_category_tree_root'] = true;
+        }
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

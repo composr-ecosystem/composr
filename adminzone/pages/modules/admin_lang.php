@@ -428,7 +428,7 @@ class Module_admin_lang
                 break;
         }
         $query = 'FROM ' . get_table_prefix() . 'translate a LEFT JOIN ' . get_table_prefix() . 'translate b ON a.id=b.id AND b.broken=0 AND ' . db_string_equal_to('b.language', $lang) . ' WHERE b.id IS NULL AND ' . db_string_not_equal_to('a.language', $lang) . ' AND ' . db_string_not_equal_to('a.text_original', '');
-        $to_translate = $GLOBALS['SITE_DB']->query('SELECT a.* ' . $query . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY a.id' : '') . ' ORDER BY ' . $order_by, $max/*reasonable limit*/, $start);
+        $to_translate = $GLOBALS['SITE_DB']->query('SELECT a.id,a.importance_level,a.text_original,a.language ' . $query . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY a.id' : '') . ' ORDER BY ' . $order_by, $max/*reasonable limit*/, $start);
         $total = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query);
         if (empty($to_translate)) {
             inform_exit(do_lang_tempcode('NOTHING_TO_TRANSLATE'));

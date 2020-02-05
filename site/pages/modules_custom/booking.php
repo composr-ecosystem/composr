@@ -500,13 +500,13 @@ class Module_booking
 
         $found = false;
 
-        $bookable_rows = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], [], 'ORDER BY sort_order');
+        $bookable_rows = $GLOBALS['SITE_DB']->query_select('bookable', ['id', 'title', 'supports_notes'], [], 'ORDER BY sort_order');
         foreach ($bookable_rows as $bookable_row) {
             if (post_param_integer('bookable_' . strval($bookable_row['id']) . '_quantity', 0) > 0) {
                 $found = true;
 
                 $supplements = [];
-                $supplement_rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement_for b ON a.id=b.supplement_id', ['a.*'], ['bookable_id' => $bookable_row['id']], 'ORDER BY sort_order');
+                $supplement_rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement_for b ON a.id=b.supplement_id', ['a.id', 'a.title', 'a.supports_quantities'], ['bookable_id' => $bookable_row['id']], 'ORDER BY sort_order');
                 foreach ($supplement_rows as $supplement_row) {
                     $supplements[] = [
                         'SUPPLEMENT_ID' => strval($supplement_row['id']),

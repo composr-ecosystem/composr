@@ -47,7 +47,7 @@ class Hook_task_cns_recache
                 cns_force_update_forum_caching($forum['id']);
             }
             $start += 100;
-        } while ($forums != []);
+        } while (!empty($forums));
 
         return null;
     }

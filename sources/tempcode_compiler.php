@@ -1277,7 +1277,7 @@ function template_to_tempcode($text, $symbol_pos = 0, $inside_directive = false,
             $is_all_static = false;
         }
     }
-    if ($parts_group !== []) {
+    if (!empty($parts_group)) {
         $parts_groups[] = $parts_group;
     }
 

@@ -29,7 +29,7 @@
 					{+END}
 
 					{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-						{$SET,rating,{$RATING,{+START,IF_PASSED,VIDEO}videos{+END}{+START,IF_NON_PASSED,VIDEO}images{+END},{ID},{SUBMITTER},,,RATING_INLINE_DYNAMIC}}
+						{$SET,rating,{$RATING,{MEDIA_TYPE}s,{ID},{SUBMITTER},,,RATING_INLINE_DYNAMIC}}
 						{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
 							<li>{!RATING} {$GET,rating}</li>
 						{+END}

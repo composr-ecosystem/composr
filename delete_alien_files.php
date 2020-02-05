@@ -117,7 +117,7 @@ do_dir();
 $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
 $installed_addons = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons', ['addon_name']));
 $intersection = array_intersect(array_keys($hooks), $installed_addons);
-if ($intersection == []) {
+if (empty($intersection)) {
     echo 'All addons seem still installed. You should uninstall from within Composr.';
 } else {
     foreach ($hooks as $hook => $ob) {

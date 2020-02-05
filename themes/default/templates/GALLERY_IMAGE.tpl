@@ -10,9 +10,12 @@
 		<a href="{VIEW_URL*}">{$TRIM,{THUMB}}</a>
 	</div>
 
-	{+START,IF_PASSED,RATING_DETAILS}{+START,IF_NON_EMPTY,{$TRIM,{RATING_DETAILS}}}
-		<div class="grating">{RATING_DETAILS}</div>
-	{+END}{+END}
+	{+START,IF_PASSED,RATING_DETAILS}
+		{$SET,rating,{$RATING,images,{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
+		{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
+			<div class="grating">{$GET,rating}</div>
+		{+END}
+	{+END}
 
 	<h3 class="gallery-grid-item-heading">
 		<a href="{VIEW_URL*}" class="subtle-link">{+START,FRACTIONAL_EDITABLE,{TITLE},title,_SEARCH:cms_galleries:__edit:{ID},1,1,{$HAS_EDIT_PERMISSION,mid,{SUBMITTER},{$MEMBER},cms_galleries,galleries,{CAT}}}{TITLE}{+END}</a>

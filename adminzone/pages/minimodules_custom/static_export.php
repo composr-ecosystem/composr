@@ -428,7 +428,7 @@ tar_add_file($STATIC_EXPORT_TAR, 'robots.txt', 'User-agent: *' . "\n" . $robots_
 
 // Add warnings file
 if (get_param_integer('save__warnings', 1) == 1) {
-    if ($STATIC_EXPORT_WARNINGS != []) {
+    if (!empty($STATIC_EXPORT_WARNINGS)) {
         tar_add_file($STATIC_EXPORT_TAR, '_warnings.txt', implode("\n", $STATIC_EXPORT_WARNINGS), 0644, time(), false);
     }
 }

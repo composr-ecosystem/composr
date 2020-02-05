@@ -1712,13 +1712,13 @@ function db_like_assemble($content, $boolean_operator = 'AND', $full_coverage = 
 
     // $content_where combines all
     $content_where = '';
-    if ($body_words != []) {
+    if (!empty($body_words)) {
         if ($content_where != '') {
             $content_where .= ' AND ';
         }
         $content_where .= '(' . implode($boolean_operator, $body_where) . ')';
     }
-    if ($include_where != []) {
+    if (!empty($include_where)) {
         if ($content_where != '') {
             $content_where .= ' AND ';
         }

@@ -84,9 +84,13 @@ class Hook_sitemap_poll extends Hook_sitemap_content
             }
         }
 
+        $select = $this->select_fields();
+
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], [], ($consider_validation ? ' AND date_and_time IS NOT NULL' : '') . ' ORDER BY date_and_time', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('poll', $select, [], ($consider_validation ? ' AND date_and_time IS NOT NULL' : '') . ' ORDER BY date_and_time', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
@@ -95,8 +99,8 @@ class Hook_sitemap_poll extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         return $nodes;
     }

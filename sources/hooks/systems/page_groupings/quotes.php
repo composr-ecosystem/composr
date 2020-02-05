@@ -36,7 +36,7 @@ class Hook_page_groupings_quotes
             return [];
         }
 
-        $zone = get_page_zone('quotes', false);
+        $zone = get_comcode_zone('quotes', false, 'adminzone');
         if ($zone === null) {
             return [];
         }

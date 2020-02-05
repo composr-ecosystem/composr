@@ -78,6 +78,7 @@ class file_naming_test_set extends cms_test_case
             'themes/default/images/mediaelement/mejs-controls.svg',
             '_tests/assets/text/utf-8.txt',
             '_tests/assets/text/utf-16.txt',
+            '_tests/assets/text/utf-16be.txt',
             '_tests/assets/text/iso-8859-1.txt',
             '_tests/assets/spreadsheets/test-tsv.txt',
             '_tests/assets/spreadsheets/test-scsv.txt',

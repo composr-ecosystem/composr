@@ -773,7 +773,7 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
 function filtercode_to_sql($db, $filters, $content_type = null, $context = null, $table_join_code = 'r')
 {
     // Nothing to do?
-    if (($filters === null) || ($filters == [])) {
+    if (empty($filters)) {
         return [[], [], ''];
     }
 

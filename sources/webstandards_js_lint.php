@@ -393,7 +393,7 @@ function js_check_command($command, $depth)
 
     // Need to load up functions in advance
     foreach ($command as $i => $c) {
-        if ($c == []) {
+        if (empty($c)) {
             continue;
         }
 
@@ -413,7 +413,7 @@ function js_check_command($command, $depth)
 
     // Scan rest of commands
     foreach ($command as $i => $c) {
-        if ($c == []) {
+        if (empty($c)) {
             continue;
         }
 
