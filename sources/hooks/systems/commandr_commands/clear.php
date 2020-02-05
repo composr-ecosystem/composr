@@ -36,7 +36,8 @@ class Hook_commandr_command_clear
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('clear', ['h'], []), '', ''];
         } else {
-            return [/**@lang JavaScript*/'clearCl();', '', do_lang('SUCCESS'), ''];
+            $stdcommand = ['commandName' => 'clearCommandLine'];
+            return [$stdcommand, '', do_lang('SUCCESS'), ''];
         }
     }
 }

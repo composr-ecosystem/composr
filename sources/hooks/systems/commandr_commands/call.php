@@ -41,7 +41,12 @@ class Hook_commandr_command_call
             }
 
             $url = page_link_to_url($parameters[0]);
-            return ['window.open(\'' . addslashes($url) . '\',\'commandr_window1\',\'\');', '', do_lang('SUCCESS'), ''];
+            $stdcommand = [
+                'commandName' => 'openWindow',
+                'options' => ['url' => $url, 'windowName' => 'commandr_window1']
+            ];
+
+            return [$stdcommand, '', do_lang('SUCCESS'), ''];
         }
     }
 }

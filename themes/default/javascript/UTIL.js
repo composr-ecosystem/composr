@@ -924,6 +924,7 @@
 
         return array;
     };
+
     var rgxHttp = /^https?:(?=\/\/)/i;
     $util.isAbsolute = function isAbsolute(url) {
         url = strVal(url);

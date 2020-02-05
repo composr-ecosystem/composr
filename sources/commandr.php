@@ -259,6 +259,12 @@ class Virtual_shell
             $this->output[STREAM_STDERR] = $this->output[STREAM_STDERR]->evaluate();
         }
 
+        $stdcommand = $this->output[STREAM_STDCOMMAND];
+
+        if (is_array($stdcommand)) {
+            $stdcommand = json_encode($stdcommand);
+        }
+
         // Make the HTML not use non-XML entities
         $html_bak = $this->output[STREAM_STDHTML];
         $this->output[STREAM_STDHTML] = convert_bad_entities($this->output[STREAM_STDHTML], get_charset());
@@ -293,7 +299,7 @@ class Virtual_shell
 <response>
     <result>
         <command>' . xmlentities($this->current_input) . '</command>
-        <stdcommand>' . xmlentities($this->output[STREAM_STDCOMMAND]) . '</stdcommand>
+        <stdcommand>' . xmlentities($stdcommand) . '</stdcommand>
         <stdhtml><div xmlns="http://www.w3.org/1999/xhtml">' . $this->output[STREAM_STDHTML] . '</div></stdhtml>
         <stdout>' . xmlentities($this->output[STREAM_STDOUT]) . '</stdout>
         <stderr>' . xmlentities($this->output[STREAM_STDERR]) . '</stderr>
@@ -339,12 +345,18 @@ class Virtual_shell
             $this->output[STREAM_STDERR] = do_lang('ERROR_NON_TERMINAL') . "\n" . $this->output[STREAM_STDERR]; // And again :-(
         }
 
+        $stdcommand = $this->output[STREAM_STDCOMMAND];
+
+        if (is_array($stdcommand)) {
+            $stdcommand = json_encode($stdcommand);
+        }
+
         $output = do_template('COMMANDR_COMMAND', [
             '_GUID' => 'a05ee6b75302f8ccd5ec9f3a24207521',
             'METHOD' => $this->current_input,
             'STDOUT' => $this->output[STREAM_STDOUT],
             'STDHTML' => $this->output[STREAM_STDHTML],
-            'STDCOMMAND' => $this->output[STREAM_STDCOMMAND],
+            'STDCOMMAND' => $stdcommand,
             'STDERR' => $this->output[STREAM_STDERR],
         ]);
 
