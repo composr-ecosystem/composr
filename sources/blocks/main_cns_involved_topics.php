@@ -147,6 +147,7 @@ class Block_main_cns_involved_topics
                 $topics = do_template('CNS_FORUM_TOPIC_WRAPPER', array(
                     '_GUID' => '8723270b128b4eea47ab3c756b342e14',
                     'ORDER' => '',
+                    'TYPE' => 'main_cns_involved_topics',
                     'MAX' => '15',
                     'MAY_CHANGE_MAX' => false,
                     'BREADCRUMBS' => $breadcrumbs,
