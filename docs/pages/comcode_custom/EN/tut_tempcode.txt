@@ -387,7 +387,7 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$STRIP_HTML,&lt;strong&gt;example&lt;/strong&gt;}</td>
-			<td>Turn some HTML into a plain-text string (i.e. no HTML entities either)</td>
+			<td>Turn some HTML into a plain-text string (i.e. no HTML entities either). This is not in itself a security filter: in-fact, it can turn escaped text into unescaped text by decoding entities. If you are therefore embedding the output in HTML it is important you escape the output of the symbol itself.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$ENTITY_DECODE,this &amp;amp; that}</td>
