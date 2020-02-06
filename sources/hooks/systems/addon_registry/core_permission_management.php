@@ -111,7 +111,6 @@ class Hook_addon_registry_core_permission_management
             'sources/hooks/systems/sitemap/privilege_category.php',
             'themes/default/templates/PERMISSION_KEYS_PERMISSIONS_SCREEN.tpl',
             'themes/default/templates/PERMISSION_KEYS_PERMISSION_ROW.tpl',
-            'themes/default/templates/PERMISSION_PRIVILEGES_SECTION.tpl',
             'themes/default/templates/PERMISSION_PRIVILEGES_SCREEN.tpl',
             'themes/default/templates/PERMISSION_CELL.tpl',
             'themes/default/templates/PERMISSION_HEADER_CELL.tpl',
@@ -146,7 +145,6 @@ class Hook_addon_registry_core_permission_management
             'templates/PERMISSION_KEYS_PERMISSIONS_SCREEN.tpl' => 'administrative__permission_keys_permissions_screen',
             'templates/PERMISSION_COLUMN_SIZER.tpl' => 'administrative__permission_s_permissions_screen',
             'templates/PERMISSION_ROW.tpl' => 'administrative__permission_s_permissions_screen',
-            'templates/PERMISSION_PRIVILEGES_SECTION.tpl' => 'administrative__permission_s_permissions_screen',
             'templates/PERMISSION_PRIVILEGES_SCREEN.tpl' => 'administrative__permission_s_permissions_screen',
         ];
     }
@@ -318,17 +316,12 @@ class Hook_addon_registry_core_permission_management
             'GROUP' => '+/-',
         ]));
 
-        $sections->attach(do_lorem_template('PERMISSION_PRIVILEGES_SECTION', [
-            'HEADER_CELLS' => $header_cells,
-            'SECTION' => $rows,
-            'COLS' => '',
-            'CURRENT_SECTION' => lorem_word(),
-        ]));
-
         $out = do_lorem_template('PERMISSION_PRIVILEGES_SCREEN', [
             'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
-            'SECTIONS' => $sections,
+            'HEADER_CELLS' => $header_cells,
+            'SECTION' => $rows,
+            'COLS' => '',
         ]);
 
         return [
