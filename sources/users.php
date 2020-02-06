@@ -408,12 +408,13 @@ function get_session_id($ignore_static_cache = false)
 
     $cookie_var = get_session_cookie();
 
-    if ((!isset($_COOKIE[$cookie_var])) || (/*To work around Commandr's development mode trick*/$GLOBALS['DEV_MODE'] && running_script('commandr'))) {
+    if (!isset($_COOKIE[$cookie_var])) {
         if (array_key_exists('keep_session', $_GET)) {
             return get_param_string('keep_session');
         }
         return '';
     }
+
     return isset($_COOKIE[$cookie_var]) ? $_COOKIE[$cookie_var] : '';
 }
 

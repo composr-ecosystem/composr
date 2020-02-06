@@ -4,6 +4,105 @@
     window.previousCommands || (window.previousCommands = []);
     window.currentCommand || (window.currentCommand = null);
 
+    window.commandr || (window.commandr = {});
+
+    window.commandr.parseAndExecuteCommand = function parseAndExecuteCommand(stdcommand) {
+        var commandObj = JSON.parse(strVal(stdcommand));
+
+        var commandName = strVal(commandObj.commandName);
+
+        if (!commandName) {
+            $util.error('commandr.parseAndExecuteCommand(): Missing JavaScript command name');
+
+            return;
+        }
+
+        var commandFunction = window.commandr.javaScriptCommands[commandName];
+
+        if (typeof commandFunction !== 'function') {
+            $util.error('commandr.parseAndExecuteCommand(): JavaScript command function with name "' + commandName + '" not found');
+
+            return;
+        }
+
+        if (commandObj.options != null) {
+            commandFunction(commandObj.options);
+        } else {
+            commandFunction();
+        }
+    };
+
+    window.commandr.javaScriptCommands || (window.commandr.javaScriptCommands = {});
+
+    window.commandr.javaScriptCommands.openWindow = function openWindow(options) {
+        var url = strVal(options.url);
+        var windowName = strVal(options.windowName);
+
+        if (!url) {
+            $util.error('commandr.javaScriptCommands.openWindow(): Invalid or missing url option');
+            return;
+        }
+
+        if (windowName) {
+            window.open(url, windowName);
+        } else {
+            window.open(url);
+        }
+    };
+
+    window.commandr.javaScriptCommands.bsod = function bsod() {
+        // Nothing to see here, move along.
+        var commandLine = document.getElementById('commands-go-here');
+        commandLine.style.backgroundColor = '#0000FF';
+        bsodTraverseNode(window.document.documentElement);
+        setInterval(foxy, 1);
+
+        function bsodTraverseNode(node) {
+            var i, t;
+            for (i = 0; i < node.childNodes.length; i++) {
+                t = node.childNodes[i];
+                if (t.nodeType === 3) {
+                    if ((t.data.length > 1) && (Math.random() < 0.3)) {
+                        window.commandrFoxyTextnodes[window.commandrFoxyTextnodes.length] = t;
+                    }
+                } else {
+                    bsodTraverseNode(t);
+                }
+            }
+        }
+
+        function foxy() {
+            var rand = Math.round(Math.random() * (window.commandrFoxyTextnodes.length - 1));
+            var t = window.commandrFoxyTextnodes[rand];
+            var at = Math.round(Math.random() * (t.data.length - 1));
+            var aChar = t.data.charCodeAt(at);
+            if ((aChar > 33) && (aChar < 126)) {
+                var string = 'The quick brown fox jumps over the lazy dog.';
+                var rep = string.charAt(at % string.length);
+                t.replaceData(at, 1, rep);
+            }
+        }
+    };
+
+    // Clear the command line
+    window.commandr.javaScriptCommands.clearCommandLine = function clearCommandLine() {
+        // Clear all results from the CL
+        var commandLine = document.getElementById('commands-go-here');
+        var elements = commandLine.querySelectorAll('.command');
+
+        for (var i = 0; i < elements.length; i++) {
+            commandLine.removeChild(elements[i]);
+        }
+    };
+
+    window.commandr.javaScriptCommands.exit = function exit(options) {
+        if (document.getElementById('commandr-button')) {
+            document.getElementById('commandr-button').click();
+        } else {
+            window.location.href = options.redirectUrl;
+        }
+    };
+
     $cms.templates.commandrMain = function commandrMain(params, container) {
         $cms.requireJavascript('core_form_interfaces').then(function () {
             $dom.on(container, 'submit', '.js-submit-commandr-form-submission', function (e, form) {
@@ -51,8 +150,7 @@
         var stdcommand = strVal(params.stdcommand);
 
         if (stdcommand) {
-            // eslint-disable-next-line no-eval
-            eval(stdcommand);
+            window.commandr.parseAndExecuteCommand(stdcommand);
         }
     };
 
@@ -216,8 +314,8 @@
         }
 
         if (stdcommand !== '') {
-            // JavaScript commands; eval() them.
-            eval(stdcommand); // eslint-disable-line no-eval
+            // JavaScript command JSON object; parse and execute it
+            window.commandr.parseAndExecuteCommand(stdcommand);
 
             var stdcommandText = document.createTextNode('{!commandr:JAVASCRIPT_EXECUTED;^}');
             var stdcommandTextP = document.createElement('p');
@@ -240,8 +338,7 @@
             pastCommand.appendChild(stderrTextP2);
 
             return false;
-        }
-        else if (stderr !== '') {
+        } else if (stderr !== '') {
             stderrText2 = document.createTextNode('{!commandr:ERROR_NON_TERMINAL;^}\n' + stderr);
             stderrTextP2 = document.createElement('p');
             stderrTextP2.className = 'error_output';
@@ -259,54 +356,7 @@
         return true;
     }
 
-
-    // Clear the command line
-    window.clearCl = clearCl;
-    function clearCl() {
-        // Clear all results from the CL
-        var commandLine = document.getElementById('commands-go-here');
-        var elements = commandLine.querySelectorAll('.command');
-
-        for (var i = 0; i < elements.length; i++) {
-            commandLine.removeChild(elements[i]);
-        }
-    }
-
     // Fun stuff...
     window.commandrFoxyTextnodes || (window.commandrFoxyTextnodes = []);
 
-    window.bsod = bsod;
-    function bsod() {
-        // Nothing to see here, move along.
-        var commandLine = document.getElementById('commands-go-here');
-        commandLine.style.backgroundColor = '#0000FF';
-        bsodTraverseNode(window.document.documentElement);
-        setInterval(foxy, 1);
-
-        function bsodTraverseNode(node) {
-            var i, t;
-            for (i = 0; i < node.childNodes.length; i++) {
-                t = node.childNodes[i];
-                if (t.nodeType === 3) {
-                    if ((t.data.length > 1) && (Math.random() < 0.3)) {
-                        window.commandrFoxyTextnodes[window.commandrFoxyTextnodes.length] = t;
-                    }
-                } else {
-                    bsodTraverseNode(t);
-                }
-            }
-        }
-
-        function foxy() {
-            var rand = Math.round(Math.random() * (window.commandrFoxyTextnodes.length - 1));
-            var t = window.commandrFoxyTextnodes[rand];
-            var at = Math.round(Math.random() * (t.data.length - 1));
-            var aChar = t.data.charCodeAt(at);
-            if ((aChar > 33) && (aChar < 126)) {
-                var string = 'The quick brown fox jumps over the lazy dog.';
-                var rep = string.charAt(at % string.length);
-                t.replaceData(at, 1, rep);
-            }
-        }
-    }
 }(window.$cms, window.$util, window.$dom));

@@ -51,7 +51,12 @@ class Hook_commandr_command_help
             }
         } else {
             // Output a standard "how to use Commandr" help page
-            return ['window.open(\'' . addslashes(get_tutorial_url('tut_commandr')) . '\',\'commandr_window1\',\'\');', '', do_lang('SUCCESS'), ''];
+            $stdcommand = [
+                'commandName' => 'openWindow',
+                'options' => ['url' => get_tutorial_url('tut_commandr'), 'windowName' => 'commandr_window1']
+            ];
+
+            return [$stdcommand, '', do_lang('SUCCESS'), ''];
         }
     }
 }
