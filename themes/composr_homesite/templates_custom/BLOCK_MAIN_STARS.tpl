@@ -36,7 +36,7 @@
 					</td>
 
 					<td class="blk3">
-						{$CPF_VALUE,{!cns_special_cpf:DEFAULT_CPF_about_NAME},{MEMBER_ID}}
+						{$CPF_VALUE,{!cns_special_cpf:DEFAULT_CPF_about_NAME},{MEMBER_ID},1}
 					</td>
 				</tr>
 			{+END}
