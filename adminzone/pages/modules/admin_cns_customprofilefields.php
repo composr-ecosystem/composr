@@ -498,7 +498,12 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
                 if (!$selected_one) {
                     $order_list .= '<option value="' . strval($i) . '" selected="selected">' . (($order == ORDER_AUTOMATED_CRITERIA) ? do_lang('NA') : strval($order + 1)) . '</option>';
                 }
-                $orderer = do_template('COLUMNED_TABLE_ROW_CELL_SELECT', ['_GUID' => '0c35279246e34d94fd4a41c432cdffed', 'LABEL' => do_lang_tempcode('SORT'), 'NAME' => 'order_' . strval($row['id']), 'LIST' => $order_list]);
+                $orderer = do_template('COLUMNED_TABLE_ROW_CELL_SELECT', [
+                    '_GUID' => '0c35279246e34d94fd4a41c432cdffed',
+                    'LABEL' => do_lang_tempcode('SORT'),
+                    'NAME' => 'order_' . strval($row['id']),
+                    'LIST' => $order_list,
+                ]);
             } else {
                 $orderer = make_string_tempcode('#' . escape_html($order + 1));
             }
@@ -780,6 +785,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'POST_URL' => build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'),
+            'JS_FUNCTION_CALLS' => [],
         ]);
     }
 

@@ -487,6 +487,7 @@ function iframe_script()
         'NOINDEX' => true,
         'TARGET' => '_top',
         'CONTENT' => $output,
+        'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
     ]);
     $tpl->handle_symbol_preprocessing();
     $tpl->evaluate_echo();
@@ -516,8 +517,21 @@ function page_link_chooser_script()
     attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
     // Display
-    $content = do_template('PAGE_LINK_CHOOSER', ['_GUID' => '235d969528d7b81aeb17e042a17f5537', 'NAME' => 'tree_list', 'VALUE' => '', 'GET_TITLE_TOO' => true]);
-    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '58768379196d6ad27d6298134e33fabd', 'TITLE' => do_lang_tempcode('CHOOSE'), 'CONTENT' => $content, 'POPUP' => true, 'NOINDEX' => true]);
+    $content = do_template('PAGE_LINK_CHOOSER', [
+        '_GUID' => '235d969528d7b81aeb17e042a17f5537',
+        'NAME' => 'tree_list',
+        'VALUE' => '',
+        'GET_TITLE_TOO' => true,
+        'AS_FIELD' => null,
+        'PAGE_TYPE' => null,
+    ]);
+    $echo = do_template('STANDALONE_HTML_WRAP', [
+        '_GUID' => '58768379196d6ad27d6298134e33fabd',
+        'TITLE' => do_lang_tempcode('CHOOSE'),
+        'CONTENT' => $content,
+        'POPUP' => true,
+        'NOINDEX' => true,
+    ]);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
 }

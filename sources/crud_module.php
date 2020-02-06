@@ -910,7 +910,7 @@ abstract class Standard_crud_module
                 list($_fields_new, $_hidden_new) = $this->get_field_fields((($i == 0) && (substr(get_param_string('id', ''), 0, 1) != '_')), 10, 'new_field_' . strval($i) . '_', $i);
                 $temp = do_template('FORM_FIELD_SET_GROUPER', [
                     '_GUID' => '3eba3a73d1fbdf922707d63216e13e03' . get_class($this),
-                    'VISIBLE' => ($i == 0) ? true : null,
+                    'VISIBLE' => ($i == 0),
                     'NAME' => do_lang_tempcode('NEW_FIELD', strval($i + 1)),
                     'ID' => 'NEW_FIELD_' . strval($i + 1),
                     'FIELDS' => $_fields_new->evaluate()/*Conserve memory*/,
@@ -1543,6 +1543,7 @@ abstract class Standard_crud_module
                     'NAME' => $name . ' (ID #' . strval($myrow['id']) . ')',
                     'ID' => 'FIELD_' . strval($i + 1),
                     'FIELDS' => $_fields_existing->evaluate()/*Conserve memory*/,
+                    'VISIBLE' => false,
                 ]);
                 $fields_existing->attach($temp);
                 $hidden->attach($_fields_hidden);
@@ -1559,6 +1560,7 @@ abstract class Standard_crud_module
                     'NAME' => do_lang_tempcode('NEW_FIELD', strval($i + 1)),
                     'ID' => 'NEW_FIELD_' . strval($i + 1),
                     'FIELDS' => $_fields_new->evaluate()/*Conserve memory*/,
+                    'VISIBLE' => false,
                 ]);
                 $fields_new->attach($temp);
                 $hidden->attach($_fields_hidden);

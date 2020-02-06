@@ -433,7 +433,7 @@ class Hook_addon_registry_core_configuration
 
         foreach (placeholder_array() as $k => $group) {
             $groups[] = [
-                'GROUP_DESCRIPTION' => lorem_word(),
+                'GROUP_DESCRIPTION' => lorem_phrase(),
                 'GROUP_NAME' => $group,
                 'GROUP' => placeholder_fields(),
                 'GROUP_TITLE' => 'ID' . strval($k),

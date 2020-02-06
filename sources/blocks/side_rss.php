@@ -178,7 +178,8 @@ class Block_side_rss
                 'FULL_URL' => $full_url,
                 'NEWS_TITLE' => $_title,
                 'DATE' => $date,
-                'DATE_RAW' => array_key_exists('clean_add_date', $item) ? strval($item['clean_add_date']) : '', 'SUMMARY' => array_key_exists('news', $item) ? $item['news'] : (array_key_exists('news_article', $item) ? $item['news_article'] : ''),
+                'DATE_RAW' => array_key_exists('clean_add_date', $item) ? strval($item['clean_add_date']) : '',
+                'SUMMARY' => array_key_exists('news', $item) ? $item['news'] : (array_key_exists('news_article', $item) ? $item['news_article'] : ''),
             ]));
         }
 

@@ -556,14 +556,35 @@ function inform_about_addon_install($file, $also_uninstalling = [], $also_instal
 
         // Template
         if ($this_comcode_page) {
-            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', ['_GUID' => 'd0cf99f96262296df4afe2387f4cd3e8', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_IS_COMCODE_PAGE')]));
+            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', [
+                '_GUID' => 'd0cf99f96262296df4afe2387f4cd3e8',
+                'I' => strval($i),
+                'PATH' => $entry['path'],
+                'ABOUT' => do_lang_tempcode('ADDON_FILE_IS_COMCODE_PAGE'),
+            ]));
         } elseif ($this_overwrite) {
             $backup = (substr($entry['path'], -4) == '.txt');
-            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', ['_GUID' => 'c62168dee316d8f73d20a0d70d41b1a4', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode($backup ? 'ADDON_FILE_WILL_OVERWRITE_BACKUP' : 'ADDON_FILE_WILL_OVERWRITE')]));
+            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', [
+                '_GUID' => 'c62168dee316d8f73d20a0d70d41b1a4',
+                'I' => strval($i),
+                'PATH' => $entry['path'],
+                'ABOUT' => do_lang_tempcode($backup ? 'ADDON_FILE_WILL_OVERWRITE_BACKUP' : 'ADDON_FILE_WILL_OVERWRITE'),
+            ]));
         } elseif ($this_php) {
-            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', ['_GUID' => 'c0cf99f96262296df4afe2387f4cd3e8', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_IS_PHP')]));
+            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', [
+                '_GUID' => 'c0cf99f96262296df4afe2387f4cd3e8',
+                'I' => strval($i),
+                'PATH' => $entry['path'],
+                'ABOUT' => do_lang_tempcode('ADDON_FILE_IS_PHP'),
+            ]));
         } else {
-            $files->attach(do_template('ADDON_INSTALL_FILES', ['_GUID' => '74edcf396387c842cab5cfd0ab74b8f6', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_NORMAL')]));
+            $files->attach(do_template('ADDON_INSTALL_FILES', [
+                '_GUID' => '74edcf396387c842cab5cfd0ab74b8f6',
+                'I' => strval($i),
+                'PATH' => $entry['path'],
+                'ABOUT' => do_lang_tempcode('ADDON_FILE_NORMAL'),
+                'DISABLED' => false,
+            ]));
         }
     }
     tar_close($tar);

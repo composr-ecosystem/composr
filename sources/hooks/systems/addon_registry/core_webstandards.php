@@ -197,7 +197,7 @@ class Hook_addon_registry_core_webstandards
 
         $display->attach(do_lorem_template('WEBSTANDARDS_LINE_END', []));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', []));
+        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', ['RET' => false]));
 
         return [
             lorem_globalise($display, null, '', true)
@@ -257,7 +257,7 @@ class Hook_addon_registry_core_webstandards
         ]));
         $display->attach(do_lorem_template('WEBSTANDARDS_LINE_END', []));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', []));
+        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', ['RET' => false]));
 
         return [
             lorem_globalise($display, null, '', true)

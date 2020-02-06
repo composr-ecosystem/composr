@@ -485,7 +485,11 @@ class Module_admin_addons
                     if ($addon_info['version'] == '(version-synched)') {
                         $addon_info['version'] = float_to_raw_string(cms_version_number());
                     }
-                    $pretty_name = do_template('ADDON_NAME', ['_GUID' => '4802523382da01432bf04120ad01c677', 'IMAGE_URL' => find_addon_icon($addon_info['name'], false, $addon_info['tar_path']), 'NAME' => $addon_info['name']]);
+                    $pretty_name = do_template('ADDON_NAME', [
+                        '_GUID' => '4802523382da01432bf04120ad01c677',
+                        'IMAGE_URL' => find_addon_icon($addon_info['name'], false, $addon_info['tar_path']),
+                        'NAME' => $addon_info['name'],
+                    ]);
 
                     $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', [
                         '_GUID' => 'cb61bdb9ce0cef5cd520440c5f62008f',
@@ -893,6 +897,7 @@ class Module_admin_addons
             'HIDDEN' => $hidden,
             'URL' => $url,
             'TEXT' => do_lang_tempcode('DESCRIPTION_DELETE_ADDON_TAR', $text),
+            'PREVIEW' => '',
         ]);
     }
 

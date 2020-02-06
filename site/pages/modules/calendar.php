@@ -707,7 +707,13 @@ class Module_calendar
                 $test = in_array($type['id'], $member_interests);
                 $interested = ($test !== null) ? 'not_interested' : 'interested';
             }
-            $event_types_1->attach(do_template('CALENDAR_EVENT_TYPE', ['_GUID' => '104b723d5211f400267345f616c4a677', 'S' => 'I', 'INTERESTED' => $interested, 'TYPE' => get_translated_text($type['t_title']), 'TYPE_ID' => strval($type['id'])]));
+            $event_types_1->attach(do_template('CALENDAR_EVENT_TYPE', [
+                '_GUID' => '104b723d5211f400267345f616c4a677',
+                'S' => 'I',
+                'INTERESTED' => $interested,
+                'TYPE' => get_translated_text($type['t_title']),
+                'TYPE_ID' => strval($type['id']),
+            ]));
         }
         $filter_url = build_url(['page' => '_SELF', 'type' => 'browse', 'view' => $view, 'id' => $id], '_SELF', [], false, true);
         $event_types_2 = new Tempcode();
@@ -720,7 +726,13 @@ class Module_calendar
             }
 
             $interested = ((!isset($filter['int_' . strval($type['id'])])) || ($filter['int_' . strval($type['id'])] == 1)) ? 'not_interested' : 'interested';
-            $event_types_2->attach(do_template('CALENDAR_EVENT_TYPE', ['_GUID' => '7511d60148835b7f4fea68a246af424e', 'S' => 'F', 'INTERESTED' => $interested, 'TYPE' => get_translated_text($type['t_title']), 'TYPE_ID' => strval($type['id'])]));
+            $event_types_2->attach(do_template('CALENDAR_EVENT_TYPE', [
+                '_GUID' => '7511d60148835b7f4fea68a246af424e',
+                'S' => 'F',
+                'INTERESTED' => $interested,
+                'TYPE' => get_translated_text($type['t_title']),
+                'TYPE_ID' => strval($type['id']),
+            ]));
         }
 
         $add_url = new Tempcode();
@@ -1404,7 +1416,15 @@ class Module_calendar
                 } elseif (is_array($entries[$j])) {
                     $class = 'single';
                     $events_and_priority_lang = do_lang_tempcode('TOTAL_EVENTS_AND_HIGHEST_PRIORITY', '1', do_lang_tempcode('PRIORITY_' . strval($priorities[$j])));
-                    $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ACTIVE', array_merge(['CURRENT' => date('Y-m-d') == $date, 'DAY_URL' => $day_url, 'DATE' => $date_formatted, 'DAY' => strval($j), 'CLASS' => $class, 'COUNT' => '1', 'EVENTS_AND_PRIORITY_LANG' => $events_and_priority_lang], $entries[$j])));
+                    $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ACTIVE', array_merge([
+                        'CURRENT' => date('Y-m-d') == $date,
+                        'DAY_URL' => $day_url,
+                        'DATE' => $date_formatted,
+                        'DAY' => strval($j),
+                        'CLASS' => $class,
+                        'COUNT' => '1',
+                        'EVENTS_AND_PRIORITY_LANG' => $events_and_priority_lang
+                    ], $entries[$j])));
                 } else {
                     $class = 'multiple';
                     $e_count = integer_format($entries[$j]);
@@ -1414,10 +1434,6 @@ class Module_calendar
                         'CURRENT' => date('Y-m-d') == $date,
                         'DAY_URL' => $day_url,
                         'DATE' => $date_formatted,
-                        'TITLE' => '',
-                        'TIME' => '',
-                        'URL' => '',
-                        'ID' => '',
                         'PRIORITY' => strval($priorities[$j]),
                         'DAY' => strval($j),
                         'ICON' => '',

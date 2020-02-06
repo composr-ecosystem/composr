@@ -1106,7 +1106,6 @@ function step_4()
 
     $hidden = build_keep_post_fields();
 
-    global $PASSWORD_PROMPT;
     return do_template('INSTALLER_STEP_4', [
         '_GUID' => '73c3ac0a7108709b74b2e89cae30be12',
         'URL' => $url,
@@ -1118,7 +1117,6 @@ function step_4()
         'BOARD_PATH' => $board_path,
         'SECTIONS' => $sections,
         'MAX' => strval(post_param_integer('max', 1000)),
-        'PASSWORD_PROMPT' => $PASSWORD_PROMPT,
     ]);
 }
 
@@ -1267,7 +1265,6 @@ function step_5()
             $hidden = build_keep_post_fields();
             $hidden->attach(form_input_hidden('confirm', '1'));
 
-            global $PASSWORD_PROMPT;
             return do_template('INSTALLER_STEP_4', [
                 '_GUID' => 'aaf0386966dd4b75c8027a6b1f7454c6',
                 'URL' => $url,
@@ -1278,7 +1275,7 @@ function step_5()
                 'FORUM_TYPE' => post_param_string('forum_type'),
                 'BOARD_PATH' => post_param_string('board_path'),
                 'SECTIONS' => $sections,
-                'PASSWORD_PROMPT' => $PASSWORD_PROMPT,
+                'MAX' => null,
             ]);
         }
     }
@@ -1697,7 +1694,8 @@ function step_5_checks_b()
     // MySQL check (could not be checked earlier due to lack of active connection)
     $_warnings = installer_health_checks(['Installation environment \\ MySQL version']);
     foreach ($_warnings as $_warning) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['SOMETHING' => do_template('INSTALLER_WARNING', ['MESSAGE' => $_warning])]));
+        $warning = do_template('INSTALLER_WARNING', ['MESSAGE' => $_warning]);
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['SOMETHING' => $warning]));
     }
 
     return $log;

@@ -165,7 +165,7 @@ class Hook_addon_registry_filedump
             'DESCRIPTION' => lorem_paragraph(),
             'ACTIONS' => lorem_paragraph(),
             '_SIZE' => placeholder_number(),
-            'SIZE' => lorem_word(),
+            'SIZE' => placeholder_number(),
             '_TIME' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
             'WIDTH' => placeholder_number(),
@@ -207,18 +207,21 @@ class Hook_addon_registry_filedump
      */
     public function tpl_preview__filedump_embed_screen()
     {
+        $image_sizes = [];
+        foreach (placeholder_array() as $k => $v) {
+            $image_sizes[] = [
+                'LABEL' => $v,
+                'SIZE_URL' => placeholder_image_url(),
+                'SIZE_WIDTH' => placeholder_number() . strval($k),
+                'SIZE_HEIGHT' => placeholder_number() . strval($k),
+            ];
+        }
+
         return [
             lorem_globalise(do_lorem_template('FILEDUMP_EMBED_SCREEN', [
                 'TITLE' => lorem_title(),
                 'FORM' => placeholder_form(),
-                'IMAGE_SIZES' => [
-                    [
-                        'LABEL' => do_lang_tempcode('FILEDUMP_IMAGE_URLS_SMALL', escape_html(get_option('thumb_width')), escape_html(get_option('thumb_width'))),
-                        'SIZE_URL' => placeholder_image_url(),
-                        'SIZE_WIDTH' => get_option('thumb_width'),
-                        'SIZE_HEIGHT' => get_option('thumb_width'),
-                    ],
-                ],
+                'IMAGE_SIZES' => $image_sizes,
                 'URL' => placeholder_image_url(),
                 'EXISTING_COUNT' => placeholder_number(),
             ]), null, '', true)

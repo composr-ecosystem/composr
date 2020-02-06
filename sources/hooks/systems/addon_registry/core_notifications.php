@@ -431,6 +431,7 @@ class Hook_addon_registry_core_notifications
             'MAILING_LIST_STYLE_DESCRIPTION' => do_lang_tempcode('DESCRIPTION_MAILING_LIST_STYLE', ''),
             'MEMBER_ID' => placeholder_id(),
             'ADVANCED_COLUMN' => true,
+            'SHOW_PRIVILEGES' => false,
         ]);
         $out = do_lorem_template('NOTIFICATIONS_MANAGE_SCREEN', [
             'TITLE' => lorem_title(),

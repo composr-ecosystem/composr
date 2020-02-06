@@ -238,9 +238,9 @@ class Hook_addon_registry_core_feedback_features
             $trackbacks->attach(do_lorem_template('TRACKBACK', [
                 'ID' => strval($k),
                 '_DATE' => placeholder_date_raw(),
-                'DATE' => placeholder_number(),
+                'DATE' => placeholder_date(),
                 'URL' => placeholder_url(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'EXCERPT' => lorem_phrase(),
                 'NAME' => $value,
             ]));
@@ -313,6 +313,8 @@ class Hook_addon_registry_core_feedback_features
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => true,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         $ret->attach(do_lorem_template('COMMENT_AJAX_HANDLER', [
@@ -346,8 +348,8 @@ class Hook_addon_registry_core_feedback_features
             $map = [
                 'INDIVIDUAL_REVIEW_RATINGS' => [],
                 'HIGHLIGHT' => ($i == 1),
-                'TITLE' => lorem_word(),
-                'TIME_RAW' => placeholder_number(),
+                'TITLE' => lorem_phrase(),
+                'TIME_RAW' => placeholder_date_raw(),
                 'TIME' => placeholder_date(),
                 'POSTER_ID' => placeholder_id(),
                 'POSTER_URL' => placeholder_url(),
@@ -403,6 +405,8 @@ class Hook_addon_registry_core_feedback_features
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         $out = do_lorem_template('COMMENTS_WRAPPER', [
@@ -415,12 +419,16 @@ class Hook_addon_registry_core_feedback_features
             'SORT' => 'relevance',
             'TOTAL_POSTS' => placeholder_number(),
             'IS_THREADED' => false,
+            'FORUM_LINK' => null,
+            'HASH' => '',
+            'SERIALIZED_OPTIONS' => '',
         ]);
 
         $out->attach(do_lorem_template('COMMENT_AJAX_HANDLER', [
             'OPTIONS' => '',
             'IS_THREADED' => false,
             'HASH' => '',
+            'CONTENT_TYPE' => lorem_word(),
         ]));
 
         return [
@@ -447,7 +455,7 @@ class Hook_addon_registry_core_feedback_features
                 '_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'URL' => placeholder_url(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'EXCERPT' => '',
                 'NAME' => placeholder_id(),
             ]));
@@ -494,7 +502,7 @@ class Hook_addon_registry_core_feedback_features
     {
         $all_rating_criteria = [];
         $all_rating_criteria[] = [
-            'TITLE' => lorem_word(),
+            'TITLE' => lorem_phrase(),
             'RATING' => make_string_tempcode('6'),
             'NUM_RATINGS' => placeholder_number(),
             'TYPE' => lorem_word(),
@@ -541,7 +549,7 @@ class Hook_addon_registry_core_feedback_features
         $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
             $all_rating_criteria[] = [
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'RATING' => '3',
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
@@ -559,6 +567,7 @@ class Hook_addon_registry_core_feedback_features
             'ERROR' => '',
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
+            'OVERALL_NUM_RATINGS' => placeholder_number(),
         ]);
         return [
             lorem_globalise(do_lorem_template('RATING_INLINE_STATIC', [
@@ -587,7 +596,7 @@ class Hook_addon_registry_core_feedback_features
         $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
             $all_rating_criteria[] = [
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'RATING' => '3',
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
@@ -605,6 +614,7 @@ class Hook_addon_registry_core_feedback_features
             'LIKES' => true,
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
+            'OVERALL_NUM_RATINGS' => placeholder_number(),
         ]);
         return [
             lorem_globalise(do_lorem_template('RATING_INLINE_DYNAMIC', [
@@ -633,7 +643,7 @@ class Hook_addon_registry_core_feedback_features
         $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
             $all_rating_criteria[] = [
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'RATING' => '3',
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
@@ -651,6 +661,7 @@ class Hook_addon_registry_core_feedback_features
             'LIKES' => true,
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
+            'OVERALL_NUM_RATINGS' => placeholder_number(),
         ]);
         return [
             lorem_globalise(do_lorem_template('RATING_DISPLAY_SHARED', [
@@ -729,12 +740,13 @@ class Hook_addon_registry_core_feedback_features
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_SIMPLE', [
                 'BLOCK_ID' => lorem_word(),
-                'EMAIL_OPTIONAL' => lorem_word_html(),
                 'COMMENT_DETAILS' => $comment_details,
                 'MESSAGE' => lorem_phrase(),
             ]), null, '', true)

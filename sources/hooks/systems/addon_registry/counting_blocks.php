@@ -158,6 +158,7 @@ class Hook_addon_registry_counting_blocks
                 'BLOCK_ID' => lorem_word(),
                 'NAME' => lorem_word(),
                 'VALUE' => placeholder_number(),
+                'UPDATE' => null,
             ]), null, '', true)
         ];
     }

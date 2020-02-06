@@ -401,15 +401,18 @@ class Hook_addon_registry_language_block
      */
     public function tpl_preview__block_top_language()
     {
+        $langs = [
+            'FR' => ['FULL_NAME' => 'French', 'COUNTRY_FLAG' => 'fr'],
+            'DE' => ['FULL_NAME' => 'German', 'COUNTRY_FLAG' => 'de'],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('BLOCK_TOP_LANGUAGE', [
-                'LANGS' => [
-                    'FR' => ['FULL_NAME' => 'French', 'COUNTRY_FLAG' => 'fr'],
-                    'DE' => ['FULL_NAME' => 'German', 'COUNTRY_FLAG' => 'de'],
-                ],
+                'LANGS' => $langs,
                 'CURRENT_LANG_FULL_NAME' => 'English',
                 'CURRENT_LANG_COUNTRY_FLAG' => 'gb',
                 'CURRENT_LANG' => 'EN',
+                'BLOCK_ID' => placeholder_id(),
             ]), null, '', true)
         ];
     }

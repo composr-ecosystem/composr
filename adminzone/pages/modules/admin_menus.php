@@ -239,7 +239,6 @@ class Module_admin_menus
             '_GUID' => '59d5c9bebecdac1440112ef8301d7c67',
             'CLICKABLE_SECTIONS' => $clickable_sections ? 'true' : 'false',
             'I' => $t_id,
-            'CHILD_BRANCH_TEMPLATE' => '',
             'CHILD_BRANCHES' => '',
         ]);
         $child_branch_template = do_template('MENU_EDITOR_BRANCH_WRAP', [
@@ -268,7 +267,6 @@ class Module_admin_menus
         $root_branch = do_template('MENU_EDITOR_BRANCH', [
             '_GUID' => '28009b66089c05744d2727ff4689e43e',
             'CLICKABLE_SECTIONS' => $clickable_sections ? 'true' : 'false',
-            'CHILD_BRANCH_TEMPLATE' => $child_branch_template,
             'CHILD_BRANCHES' => $child_branches,
             'I' => '',
         ]);

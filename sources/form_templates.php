@@ -375,8 +375,6 @@ function get_posting_form($submit_name, $submit_icon, $post, $post_url, $hidden_
 
     $hidden_fields->attach($attach_size_field);
 
-    $continue_url = get_self_url();
-
     $help_zone = get_comcode_zone('userguide_comcode', false);
 
     $emoticon_chooser = $GLOBALS['FORUM_DRIVER']->get_emoticon_chooser();
@@ -419,7 +417,6 @@ function get_posting_form($submit_name, $submit_icon, $post, $post_url, $hidden_
         'URL' => $post_url,
         'POST' => $post,
         'DEFAULT_PARSED' => $default_parsed,
-        'CONTINUE_URL' => $continue_url,
         'ATTACHMENTS' => $attachments,
         'SPECIALISATION' => $specialisation,
         'SPECIALISATION2' => $specialisation2,
@@ -1075,11 +1072,29 @@ function form_input_text_multi($pretty_name, $description, $name, $default_array
     $i = 0;
     foreach ($default_array as $default) {
         $_required = ($i < $num_required) ? '-required' : '';
-        $input->attach(do_template('FORM_SCREEN_INPUT_TEXT_MULTI', ['_GUID' => '0d9e3c073d09d1ce3725f47813375c28', 'PRETTY_NAME' => $pretty_name, 'TABINDEX' => strval($tabindex), 'NAME_STUB' => $name, 'I' => strval($i), 'REQUIRED' => $_required, 'DEFAULT' => $default, 'MAXLENGTH' => ($maxlength === null) ? null : strval($maxlength)]));
+        $input->attach(do_template('FORM_SCREEN_INPUT_TEXT_MULTI', [
+            '_GUID' => '0d9e3c073d09d1ce3725f47813375c28',
+            'PRETTY_NAME' => $pretty_name,
+            'TABINDEX' => strval($tabindex),
+            'NAME_STUB' => $name,
+            'I' => strval($i),
+            'REQUIRED' => $_required,
+            'DEFAULT' => $default,
+            'MAXLENGTH' => ($maxlength === null) ? null : strval($maxlength),
+        ]));
         $i++;
     }
     for (; $i < $num_required; $i++) {
-        $input->attach(do_template('FORM_SCREEN_INPUT_TEXT_MULTI', ['_GUID' => '2e816a71ef5a9ac9e1aac4bd1c13b5bd', 'PRETTY_NAME' => $pretty_name, 'TABINDEX' => strval($tabindex), 'NAME_STUB' => $name, 'I' => strval($i), 'REQUIRED' => '-required', 'DEFAULT' => '', 'MAXLENGTH' => ($maxlength === null) ? null : strval($maxlength)]));
+        $input->attach(do_template('FORM_SCREEN_INPUT_TEXT_MULTI', [
+            '_GUID' => '2e816a71ef5a9ac9e1aac4bd1c13b5bd',
+            'PRETTY_NAME' => $pretty_name,
+            'TABINDEX' => strval($tabindex),
+            'NAME_STUB' => $name,
+            'I' => strval($i),
+            'REQUIRED' => '-required',
+            'DEFAULT' => '',
+            'MAXLENGTH' => ($maxlength === null) ? null : strval($maxlength),
+        ]));
     }
     return _form_input($name, $pretty_name, $description, $input, $num_required > 0, false, $tabindex, false, true);
 }
@@ -1248,6 +1263,7 @@ function form_input_text_comcode($pretty_name, $description, $name, $default, $r
         'DEFAULT' => $default,
         'DEFAULT_PARSED' => $default_parsed,
         'AUTOCOMPLETE' => $autocomplete,
+        'RAW' => false,
     ]);
 
     return _form_input($name, $pretty_name, $description, $input, $required, true, $tabindex, $w, false, $description_side);
@@ -1911,7 +1927,7 @@ function form_input_combo($pretty_name, $description, $name, $default, $options,
         'NAME' => $name,
         'CONTENT' => $options,
         'DEFAULT' => $default,
-        'AUTOCMPLETE' => $autocomplete,
+        'AUTOCOMPLETE' => $autocomplete,
     ]);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }
@@ -1992,6 +2008,7 @@ function form_input_tree_list($pretty_name, $description, $name, $root_id, $hook
         'OPTIONS' => json_encode($options),
         'DESCRIPTION' => $description,
         'CONTENT_TYPE' => $content_type,
+        'END_OF_FORM' => false,
     ]);
     return _form_input($name, $pretty_name, '', $input, $required, false, $tabindex);
 }

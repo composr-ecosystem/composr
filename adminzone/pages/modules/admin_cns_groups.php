@@ -449,7 +449,12 @@ class Module_admin_cns_groups extends Standard_crud_module
             if (!$selected_one) {
                 $orderlist->attach(form_input_list_entry(strval($order), true, ($order == ORDER_AUTOMATED_CRITERIA) ? do_lang('NA') : strval($order + 1)));
             }
-            $ordererx = protect_from_escaping(do_template('COLUMNED_TABLE_ROW_CELL_SELECT', ['_GUID' => '034e9c56038caa68874dece1174700e3', 'LABEL' => do_lang_tempcode('SORT'), 'NAME' => 'order_' . strval($row['id']), 'LIST' => $orderlist]));
+            $ordererx = protect_from_escaping(do_template('COLUMNED_TABLE_ROW_CELL_SELECT', [
+                '_GUID' => '034e9c56038caa68874dece1174700e3',
+                'LABEL' => do_lang_tempcode('SORT'),
+                'NAME' => 'order_' . strval($row['id']),
+                'LIST' => $orderlist,
+            ]));
 
             $fr[] = $ordererx;
 

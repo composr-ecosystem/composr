@@ -201,7 +201,11 @@ class Module_admin_content_reviews
                     'TEXT' => '',
                 ]);
 
-                $out->attach(do_template('UNVALIDATED_SECTION', ['_GUID' => '406d4c0a8abd36b9c88645df84692c7d', 'TITLE' => do_lang_tempcode($info['content_type_label']), 'CONTENT' => $content]));
+                $out->attach(do_template('UNVALIDATED_SECTION', [
+                    '_GUID' => '406d4c0a8abd36b9c88645df84692c7d',
+                    'TITLE' => do_lang_tempcode($info['content_type_label']),
+                    'CONTENT' => $content,
+                ]));
             }
         }
 

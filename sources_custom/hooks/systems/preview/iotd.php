@@ -83,6 +83,7 @@ class Hook_preview_iotd
             'DATE' => $date,
             'DATE_RAW' => strval(time()),
             'IS_CURRENT' => '0',
+            'URL' => $url,
             'THUMB_URL' => $thumb_url,
             'VIEW_URL' => $view_url,
             'ID' => '',

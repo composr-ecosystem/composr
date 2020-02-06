@@ -130,21 +130,23 @@ class Hook_addon_registry_errorlog
      */
     public function tpl_preview__administrative__errorlog_screen()
     {
+        $logs = [
+            lorem_phrase() => [
+                'LOG' => lorem_chunk(),
+                'DOWNLOAD_URL' => placeholder_url(),
+                'CLEAR_URL' => placeholder_url(),
+                'DELETE_URL' => placeholder_url(),
+                'ADD_URL' => placeholder_url(),
+                'ADDITIONAL' => lorem_paragraph_html(),
+            ],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('ERRORLOG_SCREEN', [
                 'TITLE' => lorem_title(),
                 'ERRORS' => lorem_chunk_html(),
                 'CLEAR_URL' => placeholder_url(),
-                'LOGS' => [
-                    lorem_phrase() => [
-                        'LOG' => lorem_chunk(),
-                        'DOWNLOAD_URL' => placeholder_url(),
-                        'CLEAR_URL' => placeholder_url(),
-                        'DELETE_URL' => placeholder_url(),
-                        'ADD_URL' => placeholder_url(),
-                        'ADDITIONAL' => lorem_paragraph_html(),
-                    ],
-                ],
+                'LOGS' => $logs,
             ]), null, '', true)
         ];
     }

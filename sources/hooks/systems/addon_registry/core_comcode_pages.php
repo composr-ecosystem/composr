@@ -200,6 +200,15 @@ class Hook_addon_registry_core_comcode_pages
     public function tpl_preview__administrative__comcode_page_manage_screen()
     {
         require_lang('zones');
+
+        $links = [
+            [
+                'LINK_ICON' => 'menu/cms/comcode_page_edit',
+                'LINK_URL' => placeholder_url(),
+                'LINK_TEXT' => lorem_phrase(),
+            ],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('COMCODE_PAGE_MANAGE_SCREEN', [
                 'TITLE' => lorem_title(),
@@ -208,14 +217,11 @@ class Hook_addon_registry_core_comcode_pages
                 'POST_URL' => placeholder_url(),
                 'HIDDEN' => '',
                 'TEXT' => lorem_paragraph_html(),
-                'LINKS' => [[
-                    'LINK_ICON' => 'menu/cms/comcode_page_edit',
-                    'LINK_URL' => placeholder_url(),
-                    'LINK_TEXT' => lorem_phrase(),
-                ]],
+                'LINKS' => $links,
                 'FILTER' => '',
                 'HAS_PAGINATION' => true,
                 'TRANSLATIONS_MODE' => false,
+                'FIELDS' => placeholder_fields(),
             ]), null, '', true)
         ];
     }
@@ -254,14 +260,14 @@ class Hook_addon_registry_core_comcode_pages
                 'BEING_INCLUDED' => false,
                 'IS_PANEL' => false,
                 'SUBMITTER' => placeholder_id(),
-                'TAGS' => lorem_word_html(),
+                'TAGS' => lorem_sentence_html(),
                 'WARNING_DETAILS' => '',
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'SHOW_AS_EDIT' => lorem_phrase(),
                 'CONTENT' => lorem_phrase(),
                 'EDIT_URL' => placeholder_url(),
                 'ADD_CHILD_URL' => placeholder_url(),
-                'NAME' => placeholder_id(),
+                'NAME' => lorem_word(),
                 'NATIVE_ZONE' => lorem_word(),
             ]), null, '', true)
         ];

@@ -226,6 +226,8 @@ class Hook_snippet_template_editor_load
             'LOGICAL_SYMBOLS' => $logical_symbols,
 
             'INCLUDE_CSS_EDITING' => $include_css_editing,
+
+            'OWN_FORM' => null,
         ]);
     }
 

@@ -593,6 +593,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/shopping_order_management.php',
             '_tests/tests/unit_tests/antispam.php',
             '_tests/tests/unit_tests/_critical_error_display.php',
+            '_tests/tests/unit_tests/template_parameter_consistency.php',
             '_tests/tests/unit_tests/downloads_http_cycle.php',
             '_tests/tests/unit_tests/webstandards.php',
             '_tests/tests/unit_tests/css_file.php',

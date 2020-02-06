@@ -259,23 +259,18 @@ class Hook_addon_registry_catalogues
             'URL' => placeholder_url(),
             'RESOURCE_TYPE' => 'catalogue_category',
         ]));
-        $tags = do_lorem_template('TAGS', [
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ]);
 
         $entries = new Tempcode();
         $fields = new Tempcode();
         foreach (placeholder_array() as $v) {
+            $name = placeholder_random_id();
             $fields->attach(do_lorem_template('CATALOGUE_DEFAULT_GRID_ENTRY_FIELD', [
-                'ENTRYID' => placeholder_random_id(),
+                'ENTRYID' => placeholder_id(),
                 'CATALOGUE' => lorem_phrase(),
                 'TYPE' => lorem_word(),
                 'FIELD' => lorem_word(),
-                'FIELDID' => placeholder_random_id(),
-                '_FIELDID' => placeholder_id(),
+                'FIELDID' => $name,
+                '_FIELDID' => $name,
                 'FIELDTYPE' => lorem_word(),
                 'VALUE_PLAIN' => lorem_phrase(),
                 'VALUE' => lorem_phrase(),
@@ -285,11 +280,15 @@ class Hook_addon_registry_catalogues
             'ID' => placeholder_id(),
             'FIELDS' => $fields,
             'VIEW_URL' => placeholder_url(),
-            'FIELD_0' => lorem_word(),
+            'FIELD_0' => lorem_phrase(),
+            'FIELD_0_PLAIN' => lorem_phrase(),
+            'FIELD_1' => lorem_phrase(),
             'FIELD_1_PLAIN' => lorem_phrase(),
             'EDIT_URL' => placeholder_url(),
             'RATING' => new Tempcode(),
             'ALLOW_RATING' => false,
+            'CATALOGUE' => lorem_word(),
+            'SUBMITTER' => placeholder_id(),
         ]);
 
         $entries = do_lorem_template('CATALOGUE_DEFAULT_CATEGORY_EMBED', [
@@ -313,7 +312,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -338,23 +337,18 @@ class Hook_addon_registry_catalogues
     public function tpl_preview__fieldmap_category_screen()
     {
         $subcategories = new Tempcode();
-        $tags = do_lorem_template('TAGS', [
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ]);
 
         $entries = new Tempcode();
         $fields = new Tempcode();
         foreach (placeholder_array() as $v) {
+            $name = placeholder_random_id();
             $fields->attach(do_lorem_template('CATALOGUE_DEFAULT_FIELDMAP_ENTRY_FIELD', [
-                'ENTRYID' => placeholder_random_id(),
+                'ENTRYID' => placeholder_id(),
                 'CATALOGUE' => lorem_phrase(),
                 'TYPE' => lorem_word(),
                 'FIELD' => lorem_word(),
-                'FIELDID' => placeholder_random_id(),
-                '_FIELDID' => placeholder_id(),
+                'FIELDID' => $name,
+                '_FIELDID' => $name,
                 'FIELDTYPE' => lorem_word(),
                 'VALUE_PLAIN' => lorem_phrase(),
                 'VALUE' => lorem_phrase(),
@@ -364,11 +358,15 @@ class Hook_addon_registry_catalogues
             'ID' => placeholder_id(),
             'FIELDS' => $fields,
             'VIEW_URL' => placeholder_url(),
-            'FIELD_0' => lorem_word(),
+            'FIELD_0' => lorem_phrase(),
+            'FIELD_0_PLAIN' => lorem_phrase(),
+            'FIELD_1' => lorem_phrase(),
             'FIELD_1_PLAIN' => lorem_phrase(),
             'EDIT_URL' => placeholder_url(),
             'RATING' => new Tempcode(),
             'ALLOW_RATING' => false,
+            'CATALOGUE' => lorem_word(),
+            'SUBMITTER' => placeholder_id(),
             'GIVE_CONTEXT' => false,
         ]);
 
@@ -400,7 +398,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -429,21 +427,21 @@ class Hook_addon_registry_catalogues
         foreach (placeholder_array() as $v) {
             $content->attach(do_lorem_template('CATALOGUE_DEFAULT_TITLELIST_ENTRY', [
                 'VIEW_URL' => placeholder_url(),
-                'ID' => placeholder_url(),
-                'FIELD_0' => lorem_word_2(),
-                'FIELD_0_PLAIN' => lorem_word(),
+                'ID' => placeholder_id(),
+                'FIELD_0' => lorem_phrase(),
+                'FIELD_0_PLAIN' => lorem_phrase(),
+                'FIELD_1' => lorem_phrase(),
+                'FIELD_1_PLAIN' => lorem_phrase(),
+                'CATALOGUE' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
+                'EDIT_URL' => placeholder_url(),
+                'RATING' => new Tempcode(),
+                'ALLOW_RATING' => false,
             ]));
         }
         $entries = do_lorem_template('CATALOGUE_DEFAULT_TITLELIST_WRAP', [
             'CATALOGUE' => lorem_word(),
             'CONTENT' => $content,
-        ]);
-
-        $tags = do_lorem_template('TAGS', [
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
         ]);
 
         $entries = do_lorem_template('CATALOGUE_DEFAULT_CATEGORY_EMBED', [
@@ -467,7 +465,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -492,31 +490,28 @@ class Hook_addon_registry_catalogues
     public function tpl_preview__tabular_category_screen__links()
     {
         $subcategories = new Tempcode();
-        $tags = do_lorem_template('TAGS', [
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ]);
 
         $row = new Tempcode();
         $entry_fields = new Tempcode();
         $head = new Tempcode();
         foreach (placeholder_array() as $v) {
+            $name = placeholder_random_id();
             $head->attach(do_lorem_template('CATALOGUE_links_TABULAR_HEADCELL', [
                 'SORT_ASC_SELECTED' => true,
                 'SORT_DESC_SELECTED' => false,
                 'SORT_URL_ASC' => placeholder_url(),
                 'SORT_URL_DESC' => placeholder_url(),
                 'CATALOGUE' => lorem_word(),
-                'FIELDID' => placeholder_random_id(),
-                '_FIELDID' => placeholder_random_id(),
+                'FIELDID' => $name,
+                '_FIELDID' => $name,
                 'FIELD' => $v,
                 'FIELDTYPE' => 'text',
             ]));
+            $name = placeholder_random_id();
             $entry_fields->attach(do_lorem_template('CATALOGUE_links_TABULAR_ENTRY_FIELD', [
-                'FIELDID' => placeholder_random_id(),
-                'ENTRYID' => placeholder_random_id(),
+                'FIELDID' => $name,
+                '_FIELDID' => $name,
+                'ENTRYID' => placeholder_id(),
                 'VALUE' => lorem_phrase(),
             ]));
         }
@@ -524,11 +519,15 @@ class Hook_addon_registry_catalogues
             'ID' => placeholder_id(),
             'FIELDS_TABULAR' => $entry_fields,
             'VIEW_URL' => placeholder_url(),
-            'FIELD_0' => lorem_word(),
+            'FIELD_0' => lorem_phrase(),
+            'FIELD_0_PLAIN' => lorem_phrase(),
+            'FIELD_1' => lorem_phrase(),
             'FIELD_1_PLAIN' => lorem_phrase(),
             'EDIT_URL' => placeholder_url(),
             'RATING' => new Tempcode(),
             'ALLOW_RATING' => false,
+            'CATALOGUE' => lorem_word(),
+            'SUBMITTER' => placeholder_id(),
         ]));
         $content = do_lorem_template('CATALOGUE_links_TABULAR_WRAP', [
             'CATALOGUE' => lorem_word(),
@@ -558,7 +557,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -583,12 +582,6 @@ class Hook_addon_registry_catalogues
     public function tpl_preview__tabular_category_screen()
     {
         $subcategories = new Tempcode();
-        $tags = do_lorem_template('TAGS', [
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ]);
 
         $entries = new Tempcode();
         $head = do_lorem_template('CATALOGUE_DEFAULT_TABULAR_HEADCELL', [
@@ -612,7 +605,9 @@ class Hook_addon_registry_catalogues
             'ID' => placeholder_id(),
             'FIELDS_TABULAR' => $fields,
             'VIEW_URL' => placeholder_url(),
-            'FIELD_0' => lorem_word(),
+            'FIELD_0' => lorem_phrase(),
+            'FIELD_0_PLAIN' => lorem_phrase(),
+            'FIELD_1' => lorem_phrase(),
             'FIELD_1_PLAIN' => lorem_phrase(),
             'EDIT_URL' => placeholder_url(),
             'RATING' => new Tempcode(),
@@ -648,7 +643,7 @@ class Hook_addon_registry_catalogues
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
@@ -672,22 +667,16 @@ class Hook_addon_registry_catalogues
      */
     public function tpl_preview__entry_screen()
     {
-        $tags = do_lorem_template('TAGS', [
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-            'LINK_FULLSCOPE' => placeholder_url(),
-            'TAG' => lorem_word(),
-        ]);
-
         $fields = new Tempcode();
         foreach (placeholder_array() as $v) {
+            $name = placeholder_random_id();
             $fields->attach(do_lorem_template('CATALOGUE_DEFAULT_FIELDMAP_ENTRY_FIELD', [
                 'ENTRYID' => placeholder_id(),
                 'CATALOGUE' => lorem_phrase(),
                 'TYPE' => lorem_word(),
                 'FIELD' => lorem_word(),
-                'FIELDID' => placeholder_id(),
-                '_FIELDID' => placeholder_id(),
+                'FIELDID' => $name,
+                '_FIELDID' => $name,
                 'FIELDTYPE' => lorem_word(),
                 'VALUE_PLAIN' => lorem_phrase(),
                 'VALUE' => lorem_phrase(),
@@ -698,12 +687,16 @@ class Hook_addon_registry_catalogues
             'ID' => placeholder_id(),
             'FIELDS' => $fields,
             'VIEW_URL' => placeholder_url(),
-            'FIELD_0' => lorem_word(),
+            'FIELD_0' => lorem_phrase(),
+            'FIELD_0_PLAIN' => lorem_phrase(),
+            'FIELD_1' => lorem_phrase(),
             'FIELD_1_PLAIN' => lorem_phrase(),
             'EDIT_URL' => placeholder_url(),
             'RATING' => new Tempcode(),
             'ALLOW_RATING' => false,
             'GIVE_CONTEXT' => false,
+            'CATALOGUE' => lorem_word(),
+            'SUBMITTER' => placeholder_id(),
         ]);
 
         return [
@@ -720,9 +713,13 @@ class Hook_addon_registry_catalogues
                 'ADD_DATE_RAW' => placeholder_date_raw(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'VIEWS' => placeholder_number(),
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'SUBMITTER' => placeholder_id(),
-                'FIELD_1' => lorem_word(),
+                'FIELD_0' => lorem_phrase(),
+                'FIELD_0_PLAIN' => lorem_phrase(),
+                'FIELD_1' => lorem_phrase(),
+                'FIELD_1_PLAIN' => lorem_phrase(),
+                'CATALOGUE' => lorem_word(),
             ]), null, '', true)
         ];
     }
@@ -748,6 +745,8 @@ class Hook_addon_registry_catalogues
                 'FIELDS_NEW' => placeholder_form(),
                 'SUBMIT_ICON' => 'admin/add',
                 'SUBMIT_NAME' => lorem_word(),
+                'PREVIEW' => true,
+                'JS_FUNCTION_CALLS' => [],
             ]), null, '', true)
         ];
     }
@@ -774,6 +773,8 @@ class Hook_addon_registry_catalogues
                 'FIELDS_NEW' => placeholder_form(),
                 'SUBMIT_ICON' => 'admin/edit_this',
                 'SUBMIT_NAME' => lorem_word(),
+                'PREVIEW' => true,
+                'JS_FUNCTION_CALLS' => [],
             ]), null, '', true)
         ];
     }
@@ -824,8 +825,8 @@ class Hook_addon_registry_catalogues
         return [
             lorem_globalise(do_lorem_template('SEARCH_RESULT_CATALOGUE_ENTRIES', [
                 'BUILDUP' => lorem_phrase(),
-                'NAME' => lorem_word_html(),
-                'TITLE' => lorem_word(),
+                'NAME' => lorem_word(),
+                'TITLE' => lorem_phrase(),
             ]), null, '', true)
         ];
     }

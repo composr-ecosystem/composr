@@ -510,6 +510,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/sup_updating_the_members_listing_in_composr/0983a9f464db031362356f731ece828d.jpg',
             'data_custom/images/docs/sup_updating_the_members_listing_in_composr/3866360e8d6b1f5af2c3a16c74b0909c.jpg',
             'data_custom/images/docs/tip.png',
+            'data_custom/images/docs/sup_catalogue_field_references/index.html',
             'data_custom/images/docs/sup_catalogue_field_references/referenced_catalogue.png',
             'data_custom/images/docs/sup_catalogue_field_references/referenced_entry.png',
             'data_custom/images/docs/sup_catalogue_field_references/referencing_catalogue.png',

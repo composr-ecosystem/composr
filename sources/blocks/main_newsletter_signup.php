@@ -96,7 +96,10 @@ PHP;
                 $msg = do_template('INLINE_WIP_MESSAGE', ['_GUID' => '9ce849d0d2dc879acba609b907317c74', 'MESSAGE' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')]);
                 return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
                     '_GUID' => '3759e07077d74e6537cab04c897e76d2',
+                    'BLOCK_PARAMS' => block_params_arr_to_str($map),
                     'BLOCK_ID' => $block_id,
+                    'NEWSLETTER_TITLE' => $newsletter_title,
+                    'NID' => strval($newsletter_id),
                     'URL' => get_self_url(),
                     'MSG' => $msg,
                 ]);

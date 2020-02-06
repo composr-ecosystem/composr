@@ -50,7 +50,18 @@ class Hook_preview_poll
                 $answer = comcode_to_tempcode($answer_plain);
                 $votes = 0;
                 $width = 0;
-                $tpl->attach(do_template('POLL_ANSWER_RESULT', ['_GUID' => '0412b038bb359ce84e5732dec8a09b12', 'PID' => '', 'I' => strval($i), 'VOTE_URL' => '', 'ANSWER' => $answer, 'ANSWER_PLAIN' => $answer_plain, 'WIDTH' => strval($width), 'VOTES' => integer_format($votes)]));
+                $tpl->attach(do_template('POLL_ANSWER_RESULT', [
+                    '_GUID' => '0412b038bb359ce84e5732dec8a09b12',
+                    'PID' => '',
+                    'I' => strval($i),
+                    'VOTE_URL' => '',
+                    'ANSWER' => $answer,
+                    'ANSWER_PLAIN' => $answer_plain,
+                    'WIDTH' => strval($width),
+                    'VOTES' => integer_format($votes),
+                    '_VOTES' => strval($votes),
+                    'TOTAL_VOTES' => '0',
+                ]));
                 $i++;
             }
         } while ($answer_plain != '');

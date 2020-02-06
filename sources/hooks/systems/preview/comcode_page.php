@@ -64,7 +64,6 @@ class Hook_preview_comcode_page
             'EDIT_URL' => '',
             'ADD_CHILD_URL' => '',
             'NAME' => $codename,
-            'ZONE' => $zone,
             'NATIVE_ZONE' => $zone,
         ]);
 

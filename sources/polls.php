@@ -284,7 +284,11 @@ function create_selection_list_polls($it = null, $only_owned = null)
                 $status = do_lang_tempcode('NOT_USED_PREVIOUSLY');
             }
         }
-        $text = do_template('POLL_LIST_LINE', ['_GUID' => 'dadf669bca2add9b79329b21e45d1010', 'QUESTION' => get_translated_text($myrow['question']), 'STATUS' => $status]);
+        $text = do_template('POLL_LIST_LINE', [
+            '_GUID' => 'dadf669bca2add9b79329b21e45d1010',
+            'QUESTION' => get_translated_text($myrow['question']),
+            'STATUS' => $status,
+        ]);
         $out->attach(form_input_list_entry(strval($myrow['id']), $selected, $text));
     }
 

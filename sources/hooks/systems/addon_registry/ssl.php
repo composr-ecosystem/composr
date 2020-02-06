@@ -137,7 +137,7 @@ class Hook_addon_registry_ssl
             foreach (placeholder_array() as $k => $v2) {
                 $k++;
                 $entries[] = [
-                    'TICKED' => lorem_word(),
+                    'TICKED' => false,
                     'PAGE' => $v,
                     'ZONE' => $v2,
                 ];

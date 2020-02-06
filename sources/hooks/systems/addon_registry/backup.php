@@ -175,7 +175,7 @@ class Hook_addon_registry_backup
             lorem_globalise(do_lorem_template('RESTORE_HTML_WRAP', [
                 'MESSAGE' => lorem_sentence_html(),
                 'CSS_NOCACHE' => '',
-                'SUCCESS' => '1',
+                'ERROR' => false,
             ]), null, '', true)
         ];
     }

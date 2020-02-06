@@ -870,7 +870,13 @@ class CMS_Topic
                     } else {
                         $custom_fields = new Tempcode();
                         if ((array_key_exists('ip_address', $post)) && (addon_installed('cns_forum'))) {
-                            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => 'f7e62822e879682cf1588d9f49484bfa', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => ($post['ip_address'])]));
+                            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
+                                '_GUID' => 'f7e62822e879682cf1588d9f49484bfa',
+                                'NAME' => do_lang_tempcode('IP_ADDRESS'),
+                                'RAW' => $post['ip_address'],
+                                'VALUE' => $post['ip_address'],
+                                'MEMBER_ID' => null,
+                            ]));
                             $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => 'df42e7d5003834a60fdb3bf476b393c5', 'CUSTOM_FIELDS' => $custom_fields]);
                         } else {
                             $poster_details = new Tempcode();
@@ -887,6 +893,7 @@ class CMS_Topic
                             'POSTER_DETAILS' => $poster_details,
                             'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($post['member'], true),
                             'POSTER_USERNAME' => $post['poster_username'],
+                            'HIGHLIGHT_NAME' => false,
                         ]);
                     } else {
                         $ip_url = ((array_key_exists('ip_address', $post)) && (has_actual_page_access(get_member(), 'admin_lookup'))) ? build_url(['page' => 'admin_lookup', 'param' => $post['ip_address']], get_module_zone('admin_lookup')) : new Tempcode();
@@ -1154,6 +1161,7 @@ class CMS_Topic
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => $post_url,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
     }
 }

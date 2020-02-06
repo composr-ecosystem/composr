@@ -485,14 +485,14 @@ class Hook_addon_registry_core_rich_media
             $page[] = $v;
         }
         $content->attach(do_lorem_template('COMCODE_BIG_TABS_CONTROLLER', [
-            'PASS_ID' => placeholder_random_id(),
+            'PASS_ID' => placeholder_id(),
             'SWITCH_TIME' => '6000',
             'TABS' => $page,
         ]));
 
         foreach ($page as $i => $v) {
             $content->attach(do_lorem_template('COMCODE_BIG_TABS_TAB', [
-                'PASS_ID' => placeholder_random_id() . strval($i),
+                'PASS_ID' => placeholder_id() . strval($i),
                 'CONTENT' => lorem_paragraph() . strval($i),
                 'NAME' => $v,
                 'DEFAULT' => ($i == 0),
@@ -531,7 +531,6 @@ class Hook_addon_registry_core_rich_media
                 'IS_TRANSLATION' => false,
                 'ZONE' => lorem_phrase(),
                 'FILE' => lorem_phrase(),
-                'EXPORT_URL' => placeholder_url(),
                 'POSTING_FORM' => placeholder_form(),
                 'REVISIONS' => lorem_phrase(),
             ]), null, '', true)
@@ -613,6 +612,8 @@ class Hook_addon_registry_core_rich_media
             'I' => placeholder_number(),
             'POSTING_FIELD_NAME' => '',
             'TRUE_ATTACHMENT_UI' => true,
+            'NO_QUOTA' => false,
+            'FILTER' => null,
         ]);
 
         $attachments = do_lorem_template('ATTACHMENTS', [
@@ -623,6 +624,7 @@ class Hook_addon_registry_core_rich_media
             'MAX_ATTACHMENTS' => placeholder_number(),
             'NUM_ATTACHMENTS' => placeholder_number(),
             'TRUE_ATTACHMENT_UI' => true,
+            'FILTER' => null,
         ]);
 
         return [
@@ -642,7 +644,6 @@ class Hook_addon_registry_core_rich_media
                 'URL' => placeholder_url(),
                 'POST' => lorem_phrase(),
                 'DEFAULT_PARSED' => lorem_phrase(),
-                'CONTINUE_URL' => placeholder_url(),
                 'ATTACHMENTS' => $attachments,
                 'SPECIALISATION' => placeholder_fields(),
                 'SPECIALISATION2' => placeholder_fields(),
@@ -650,6 +651,10 @@ class Hook_addon_registry_core_rich_media
                 'SUPPORT_AUTOSAVE' => true,
                 'CANCEL_URL' => placeholder_url(),
                 'DESCRIPTION' => lorem_paragraph(),
+                'JS_FUNCTION_CALLS' => [],
+                'SPECIALISATION2_HIDDEN' => null,
+                'MODSECURITY_WORKAROUND' => false,
+                'COMCODE_PAGE_HINTS' => null,
             ]), null, '', true)
         ];
     }
@@ -744,6 +749,7 @@ class Hook_addon_registry_core_rich_media
                 'URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
                 'POST_ID' => placeholder_id(),
+                '_DATE' => placeholder_date_raw(),
             ]), null, '', true)
         ];
     }
@@ -768,7 +774,7 @@ class Hook_addon_registry_core_rich_media
         }
         $k++;
         $section->attach(do_lorem_template('COMCODE_SECTION', [
-            'PASS_ID' => placeholder_random_id(),
+            'PASS_ID' => placeholder_id(),
             'DEFAULT' => true,
             'NAME' => strval($k + 1),
             'CONTENT' => lorem_paragraph(),
@@ -779,7 +785,7 @@ class Hook_addon_registry_core_rich_media
         }
         $section->attach(do_lorem_template('COMCODE_SECTION_CONTROLLER', [
             'SECTIONS' => $page,
-            'PASS_ID' => placeholder_random_id(),
+            'PASS_ID' => placeholder_id(),
         ]));
 
         return [
@@ -1006,7 +1012,7 @@ class Hook_addon_registry_core_rich_media
     {
         return [
             lorem_globalise(do_lorem_template('COMCODE_INDENT', [
-                'INDENT' => placeholder_id(),
+                'INDENT' => placeholder_number(),
                 'CONTENT' => lorem_phrase(),
             ]), null, '', true)
         ];
@@ -1305,7 +1311,7 @@ class Hook_addon_registry_core_rich_media
                 'ALIGN' => 'top',
                 'URL' => placeholder_image_url(),
                 'CAPTION' => lorem_phrase(),
-                'TOOLTIP' => lorem_word(),
+                'TOOLTIP' => lorem_phrase(),
             ]), null, '', true)
         ];
     }
@@ -1676,7 +1682,6 @@ class Hook_addon_registry_core_rich_media
 
         $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_START', [
             'SUMMARY' => lorem_phrase(),
-            'CAPTION' => lorem_word(),
             'COLUMNED_TABLE' => false,
             'WIDE' => true,
             'COLUMN_SIZES' => $column_sizes,
@@ -1692,9 +1697,13 @@ class Hook_addon_registry_core_rich_media
                     'WIDTH' => '',
                     'C_TYPE' => ($j == 0) ? 'th' : 'td',
                     'MID' => $cell,
+                    'PADDING' => '-left',
+                    'PADDING_AMOUNT' => '2',
                 ]));
             }
-            $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_ROW_END'));
+            $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_ROW_END', [
+                'END_HEAD' => false,
+            ]));
         }
         $tag_output->attach(do_lorem_template('COMCODE_REAL_TABLE_END', ['END_BODY' => true]));
 
@@ -1776,8 +1785,6 @@ class Hook_addon_registry_core_rich_media
                 'TYPE' => lorem_phrase(),
                 'CONTENT' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
-                'SUP_PARAMS' => placeholder_blank(),
-                'FORUM_DB_BIN' => placeholder_blank(),
             ]), null, '', true)
         ];
     }
@@ -2143,6 +2150,9 @@ class Hook_addon_registry_core_rich_media
         for ($i = 0; $i < 3; $i++) {
             $media->attach(do_lorem_template('MEDIA_IMAGE_WEBSAFE', [
                 'URL' => placeholder_url(),
+                'URL_SAFE' => placeholder_url(),
+                'URL_DIRECT_FILESYSTEM' => placeholder_url(),
+                'HOOK' => lorem_word(),
                 'REMOTE_ID' => placeholder_id(),
                 'THUMB_URL' => placeholder_image_url(),
                 'FILENAME' => lorem_word(),

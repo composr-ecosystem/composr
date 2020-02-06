@@ -242,6 +242,7 @@ class Hook_addon_registry_core_cleanup_tools
                 'MISSING_CONTENT_LANG_STRINGS' => placeholder_array(),
                 'FUSED_CONTENT_LANG_STRINGS' => placeholder_array(),
                 'ORPHANED_CONTENT_LANG_STRINGS' => placeholder_array(),
+                'MISSING_CONTENT_LANG_STRINGS_ZERO' => placeholder_array(),
             ]), null, '', true)
         ];
     }

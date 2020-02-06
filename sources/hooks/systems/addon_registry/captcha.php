@@ -212,6 +212,12 @@ class Hook_addon_registry_captcha
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
                 'TEXT' => lorem_sentence_html(),
+                'SUPPORT_AUTOSAVE' => false,
+                'JS_FUNCTION_CALLS' => [],
+                'MODSECURITY_WORKAROUND' => false,
+                'POST' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
+                'GET' => false,
             ]), null, '', true)
         ];
     }
@@ -225,7 +231,7 @@ class Hook_addon_registry_captcha
      */
     public function tpl_preview__captcha_loose()
     {
-        $name = placeholder_random_id();
+        $name = placeholder_id();
         $input = do_lorem_template('FORM_SCREEN_INPUT_TEXT', [
             'RAW' => true,
             'SCROLLS' => '',
@@ -247,15 +253,21 @@ class Hook_addon_registry_captcha
         ]));
 
         $tpl = do_lorem_template('FORM', [
-            'GET' => null,
+            'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => '',
-            'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
             'TEXT' => lorem_sentence_html(),
+            'JS_FUNCTION_CALLS' => [],
+            'SKIP_REQUIRED' => false,
+            'SECONDARY_FORM' => false,
+            'TABINDEX' => placeholder_number(),
+            'SUPPORT_AUTOSAVE' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
+            'MODSECURITY_WORKAROUND' => false,
         ]);
 
         return [

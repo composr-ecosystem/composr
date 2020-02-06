@@ -1565,6 +1565,7 @@ HTML;
             'URL' => $url,
             'THUMB_URL' => $thumb_url,
             'WARNING_DETAILS' => $warning_details,
+            'VIDEO_DETAILS' => null,
         ]);
     }
 

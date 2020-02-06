@@ -216,7 +216,7 @@ class Hook_addon_registry_themewizard
                 'GREEN' => placeholder_id(),
                 'BLUE' => placeholder_id(),
                 'SEED' => lorem_word(),
-                'DARK' => lorem_word_2(),
+                'DARK' => true,
                 'DOMINANT' => lorem_word(),
                 'LD' => lorem_phrase(),
                 'TITLE' => lorem_title(),

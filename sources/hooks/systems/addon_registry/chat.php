@@ -280,9 +280,13 @@ class Hook_addon_registry_chat
         $friends = do_lorem_template('BLOCK_MAIN_FRIENDS_LIST', [
             'BLOCK_ID' => lorem_word(),
 
-            'FRIENDS' => $friends_arr,
+            'FRIENDS_MUTUAL' => $friends_arr,
+            'FRIENDS_NONMUTUAL' => $friends_arr,
+            'FRIENDS_FORWARD' => $friends_arr,
+            'EXTRA_GET_PARAMS' => '',
             'PAGINATION' => placeholder_pagination(),
             'BLOCK_PARAMS' => '',
+            'MEMBER_ID' => placeholder_id(),
 
             'START' => '0',
             'MAX' => '10',
@@ -294,7 +298,6 @@ class Hook_addon_registry_chat
             'MEMBER_ID' => placeholder_id(),
             'ADD_FRIEND_URL' => placeholder_url(),
             'REMOVE_FRIEND_URL' => placeholder_url(),
-            'BOX' => lorem_paragraph(),
         ]);
         return [
             lorem_globalise($tab_content, null, '', true)
@@ -492,10 +495,15 @@ class Hook_addon_registry_chat
      */
     public function tpl_preview__chat_lobby_screen()
     {
+        $sound_effects = [];
+        foreach (placeholder_array() as $k => $v) {
+            $sound_effects[] = [
+                'KEY' => $v,
+                'VALUE' => lorem_word_2(),
+            ];
+        }
         $chat_sound = do_lorem_template('CHAT_SOUND', [
-            'SOUND_EFFECTS' => placeholder_array(),
-            'KEY' => lorem_word(),
-            'VALUE' => lorem_word_2(),
+            'SOUND_EFFECTS' => $sound_effects,
         ]);
 
         $im_area_template = do_lorem_template('CHAT_LOBBY_IM_AREA', [
@@ -553,6 +561,7 @@ class Hook_addon_registry_chat
                 'MEMBER_ID' => strval($key),
                 'USERNAME' => lorem_word(),
                 'ONLINE_TEXT' => lorem_phrase(),
+                'ONLINE' => false,
             ];
         }
 
@@ -562,7 +571,6 @@ class Hook_addon_registry_chat
             'FRIENDS' => $friends,
             'CAN_IM' => true,
             'ONLINE_URL' => placeholder_url(),
-            'ONLINE' => false,
             'SIMPLER' => false,
         ]);
 
@@ -579,8 +587,6 @@ class Hook_addon_registry_chat
                 'URL_REMOVE_FRIENDS' => placeholder_url(),
                 'CHATROOMS' => $chatrooms,
                 'PRIVATE_CHATROOM' => placeholder_link(),
-                'CHATROOM_URL' => placeholder_url(),
-                'PASSWORD_HASH' => placeholder_random(),
                 'MOD_LINK' => placeholder_link(),
                 'BLOCKING_LINK' => placeholder_link(),
                 'SETEFFECTS_LINK' => placeholder_link(),
@@ -602,10 +608,15 @@ class Hook_addon_registry_chat
         require_lang('comcode');
         require_javascript('chat');
 
+        $sound_effects = [];
+        foreach (placeholder_array() as $k => $v) {
+            $sound_effects[] = [
+                'KEY' => $v,
+                'VALUE' => lorem_word_2(),
+            ];
+        }
         $chat_sound = do_lorem_template('CHAT_SOUND', [
-            'SOUND_EFFECTS' => placeholder_array(),
-            'KEY' => lorem_word(),
-            'VALUE' => lorem_word_2(),
+            'SOUND_EFFECTS' => $sound_effects,
         ]);
 
         $_buttons = [
@@ -674,10 +685,8 @@ class Hook_addon_registry_chat
                 'POSTING_URL' => placeholder_url(),
                 'OPTIONS_URL' => placeholder_url(),
                 'SUBMIT_VALUE' => lorem_word(),
-                'PASSWORD_HASH' => placeholder_random(),
                 'INTRODUCTION' => '',
                 'TITLE' => lorem_title(),
-                'CONTENT' => lorem_phrase(),
                 'LINKS' => ['admin/edit2' => placeholder_link(), 'checklist/toggle' => placeholder_link()],
                 'TEXT_COLOUR_DEFAULT' => lorem_word(),
                 'FONT_NAME_DEFAULT' => 'Tahoma',

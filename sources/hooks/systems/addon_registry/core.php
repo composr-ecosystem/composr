@@ -1603,9 +1603,9 @@ class Hook_addon_registry_core
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTENT', [
                 'BLOCK_ID' => lorem_word(),
-                'TYPE' => lorem_phrase(),
-                'TITLE' => lorem_word(),
-                'RAW_AWARD_DATE' => placeholder_date(),
+                'TYPE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
+                'RAW_AWARD_DATE' => placeholder_date_raw(),
                 'AWARD_DATE' => placeholder_date(),
                 'CONTENT' => lorem_phrase_html(),
                 'SUBMIT_URL' => placeholder_url(),
@@ -1628,9 +1628,7 @@ class Hook_addon_registry_core
                 'BLOCK_ID' => lorem_word(),
                 'TYPE' => lorem_phrase(),
                 'CONTENT_TYPE' => lorem_phrase(),
-                'TITLE' => lorem_word(),
-                'RAW_AWARD_DATE' => placeholder_date(),
-                'AWARD_DATE' => placeholder_date(),
+                'TITLE' => lorem_phrase(),
                 'CONTENT' => [
                     lorem_phrase_html(),
                 ],
@@ -1638,6 +1636,7 @@ class Hook_addon_registry_core
                 'ARCHIVE_URL' => placeholder_url(),
                 'BLOCK_PARAMS' => '',
                 'ADD_STRING' => lorem_phrase(),
+                'CONTENT_DATA' => [],
 
                 'START' => '0',
                 'MAX' => '10',
@@ -1678,11 +1677,7 @@ class Hook_addon_registry_core
         return [
             lorem_globalise(do_lorem_template('ACTIONLOGS_TOGGLE_LINK', [
                 'URL' => placeholder_url(),
-                'page' => lorem_phrase(),
-                'type' => lorem_phrase(),
-                'id' => lorem_phrase(),
-                'mode' => lorem_phrase(),
-                'action_id' => lorem_phrase(),
+                'LONELY' => null,
             ]), null, '', true)
         ];
     }
@@ -1868,12 +1863,14 @@ class Hook_addon_registry_core
      */
     public function tpl_preview__param_info()
     {
+        $parameters = [
+            'A' => 'a',
+            'B' => 'b',
+        ];
+
         return [
             lorem_globalise(do_lorem_template('PARAM_INFO', [
-                'MAP' => [
-                    'A' => 'a',
-                    'B' => 'b',
-                ],
+                'MAP' => $parameters,
             ]), null, '', true)
         ];
     }
@@ -1891,9 +1888,11 @@ class Hook_addon_registry_core
         $details->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
             'KEY' => lorem_word(),
             'VALUE' => placeholder_number(),
+            'RAW_VALUE' => placeholder_number(),
         ]));
         $details->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINE_COMPLEX', [
             'KEY' => do_lang_tempcode('USERGROUP'),
+            'RAW_VALUE' => placeholder_url(),
             'VALUE' => placeholder_link(),
         ]));
 
@@ -1902,6 +1901,7 @@ class Hook_addon_registry_core
             'NAME' => lorem_word_2(),
             'DESCRIPTION' => lorem_phrase(),
             'URL' => placeholder_url(),
+            'POST' => false,
         ]));
         $links->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
             'NAME' => lorem_word(),
@@ -1918,6 +1918,7 @@ class Hook_addon_registry_core
             'NAME' => lorem_word_2(),
             'DESCRIPTION' => lorem_phrase(),
             'URL' => placeholder_url(),
+            'POST' => false,
         ]));
 
         return [
@@ -1928,6 +1929,8 @@ class Hook_addon_registry_core
                 'LINKS_ECOMMERCE' => $links_ecommerce,
                 'DETAILS' => $details,
                 'USERNAME' => lorem_word(),
+                'NUM_UNREAD_PTS' => placeholder_number(),
+                'MEMBER_ID' => placeholder_id(),
             ]), null, '', true)
         ];
     }
@@ -1944,10 +1947,12 @@ class Hook_addon_registry_core
         $details = new Tempcode();
         $details->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
             'KEY' => lorem_word(),
+            'RAW_VALUE' => placeholder_number(),
             'VALUE' => placeholder_number(),
         ]));
         $details->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINE_COMPLEX', [
             'KEY' => do_lang_tempcode('USERGROUP'),
+            'RAW_VALUE' => placeholder_url(),
             'VALUE' => placeholder_link(),
         ]));
 
@@ -1956,6 +1961,7 @@ class Hook_addon_registry_core
             'NAME' => lorem_word_2(),
             'DESCRIPTION' => lorem_phrase(),
             'URL' => placeholder_url(),
+            'POST' => false,
         ]));
         $links->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
             'NAME' => lorem_word(),
@@ -1972,6 +1978,7 @@ class Hook_addon_registry_core
             'NAME' => lorem_word_2(),
             'DESCRIPTION' => lorem_phrase(),
             'URL' => placeholder_url(),
+            'POST' => false,
         ]));
 
         return [
@@ -1983,6 +1990,7 @@ class Hook_addon_registry_core
                 'DETAILS' => $details,
                 'USERNAME' => lorem_word(),
                 'MEMBER_ID' => placeholder_id(),
+                'NUM_UNREAD_PTS' => placeholder_number(),
             ]), null, '', false)
         ];
     }
@@ -2040,13 +2048,10 @@ class Hook_addon_registry_core
             lorem_globalise(do_lorem_template('BLOCK_NO_ENTRIES', [
                 'BLOCK_ID' => lorem_word(),
                 'HIGH' => lorem_phrase(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'MESSAGE' => lorem_phrase(),
                 'ADD_NAME' => lorem_word(),
                 'SUBMIT_URL' => placeholder_url(),
-                'RECENT' => lorem_word(),
-                'MEMBERS' => lorem_word(),
-                'NO_ENTRIES' => lorem_word(),
             ]), null, '', true)
         ];
     }
@@ -2095,12 +2100,11 @@ class Hook_addon_registry_core
     {
         $children = [];
         foreach (placeholder_array() as $i => $temp) {
-            $child = [];
-            $child['TITLE'] = $temp;
-            $child['PAGE'] = lorem_word();
-            $child['ZONE'] = lorem_word();
-
-            $children[$i] = $child;
+            $children[] = [
+                'TITLE' => $temp,
+                'PAGE' => lorem_word(),
+                'ZONE' => lorem_word(),
+            ];
         }
 
         return [
@@ -2109,7 +2113,6 @@ class Hook_addon_registry_core
                 'CHILDREN' => $children,
                 'THE_PAGE' => lorem_phrase(),
                 'THE_ZONE' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
             ]), null, '', true)
         ];
     }
@@ -2263,22 +2266,28 @@ class Hook_addon_registry_core
             'TABINDEX' => placeholder_number(),
             'PRETTY_NAME' => lorem_word(),
             'DESCRIPTION' => lorem_sentence(),
-            'NAME' => placeholder_random_id(),
+            'NAME' => placeholder_id(),
             'DEFAULT' => '',
             'ROWS' => '20',
         ]));
 
         return [
             lorem_globalise(do_lorem_template('FORM', [
-                'GET' => null,
+                'GET' => false,
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => $buttons,
-                'TITLE' => lorem_title(),
                 'URL' => placeholder_url(),
                 'FIELDS' => $fields,
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
                 'TEXT' => '',
+                'JS_FUNCTION_CALLS' => [],
+                'SKIP_REQUIRED' => false,
+                'SECONDARY_FORM' => false,
+                'TABINDEX' => placeholder_number(),
+                'SUPPORT_AUTOSAVE' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
+                'MODSECURITY_WORKAROUND' => false,
             ]), null, '', true)
         ];
     }
@@ -2292,19 +2301,21 @@ class Hook_addon_registry_core
      */
     public function tpl_preview__block_main_content_filtering()
     {
+        $links = [
+            [
+                'ACTIVE' => true,
+                'TITLE' => lorem_phrase(),
+                'URL' => placeholder_url(),
+            ],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTENT_FILTERING', [
                 'BLOCK_ID' => lorem_word(),
                 'FIELDS' => placeholder_fields(),
                 'ACTIVE_FILTER' => placeholder_id(),
                 'SUBMIT_ICON' => 'buttons/proceed',
-                'LINKS' => [
-                    [
-                        'ACTIVE' => true,
-                        'TITLE' => lorem_phrase(),
-                        'URL' => placeholder_url(),
-                    ],
-                ],
+                'LINKS' => $links,
             ]), null, '', true)
         ];
     }
@@ -2336,21 +2347,24 @@ class Hook_addon_registry_core
      */
     public function tpl_preview__group_member_timeout_manage_screen()
     {
+        $timeouts = [
+            [
+                'USERNAME' => lorem_word(),
+                'MEMBER_ID' => placeholder_id(),
+                'GROUP_ID' => placeholder_id(),
+                'DATE_INPUT' => lorem_phrase(),
+            ],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN', [
                 'TITLE' => lorem_title(),
-                'TIMEOUTS' => [
-                    [
-                        'USERNAME' => lorem_word(),
-                        'MEMBER_ID' => placeholder_id(),
-                        'GROUP_ID' => placeholder_id(),
-                        'DATE_INPUT' => lorem_phrase(),
-                    ],
-                ],
+                'TIMEOUTS' => $timeouts,
                 'GROUPS' => [placeholder_id() => lorem_word()],
                 'DATE_INPUT' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'PAGINATION' => placeholder_pagination(),
+                'PING_URL' => placeholder_url(),
             ]), null, '', true)
         ];
     }
@@ -2364,19 +2378,22 @@ class Hook_addon_registry_core
      */
     public function tpl_preview__sponsors_screen()
     {
+        $patreon_patrons = [
+            [
+                'USERNAME' => lorem_word(),
+                'NAME' => lorem_word(),
+                'MONTHLY' => placeholder_number(),
+            ],
+        ];
+        $sponsors = [
+            lorem_word() => ['AREAS' => [lorem_word()]],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('SPONSORS_SCREEN', [
                 'TITLE' => lorem_title(),
-                'PATREON_PATRONS' => [
-                    [
-                        'USERNAME' => lorem_word(),
-                        'NAME' => lorem_word(),
-                        'MONTHLY' => placeholder_number(),
-                    ],
-                ],
-                'SPONSORS' => [
-                    lorem_word() => ['AREAS' => [lorem_word()]],
-                ],
+                'PATREON_PATRONS' => $patreon_patrons,
+                'SPONSORS' => $sponsors,
             ]), null, '', true)
         ];
     }

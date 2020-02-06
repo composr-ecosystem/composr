@@ -188,6 +188,7 @@ class Hook_addon_registry_stats
             'templates/STATS_GRAPH.tpl' => 'administrative__stats_graph_screen',
             'templates/KPI_SCREEN.tpl' => 'administrative__kpi_screen',
             'templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl' => 'administrative__form_screen_input_stats_date_range_screen',
+            'text/KPI_UPDATE_MAIL.txt' => 'administrative__kpi_update_mail',
         ];
     }
 
@@ -334,16 +335,52 @@ class Hook_addon_registry_stats
 
         return [
             lorem_globalise(do_lorem_template('FORM', [
-                'GET' => null,
+                'GET' => false,
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => '',
-                'TITLE' => lorem_title(),
                 'URL' => placeholder_url(),
                 'FIELDS' => $fields,
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
                 'TEXT' => lorem_sentence_html(),
+                'JS_FUNCTION_CALLS' => [],
+                'SKIP_REQUIRED' => false,
+                'SECONDARY_FORM' => false,
+                'TABINDEX' => placeholder_number(),
+                'SUPPORT_AUTOSAVE' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
+                'MODSECURITY_WORKAROUND' => false,
             ]), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__administrative__kpi_update_mail()
+    {
+        $kpis = [];
+        $kpis[] = [
+            'TITLE' => lorem_phrase(),
+            'CURRENT' => placeholder_number(),
+            'HITS_TARGET' => true,
+            'TARGET' => placeholder_number(),
+            'EDIT_URL' => placeholder_url(),
+            'VIEW_URL' => placeholder_url(),
+            'GRAPH_NAME' => lorem_phrase(),
+            'USERNAME' => lorem_word(),
+            'ADDED' => placeholder_date(),
+            'NOTES' => lorem_phrase(),
+        ];
+        $tpl = do_lorem_template('KPI_UPDATE_MAIL', [
+            'KPIS' => $kpis,
+        ], null, false, null, '.txt', 'text');
+        return [
+            lorem_globalise($tpl, null, '', true)
         ];
     }
 }

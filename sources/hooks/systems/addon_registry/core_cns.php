@@ -533,21 +533,23 @@ class Hook_addon_registry_core_cns
      */
     public function tpl_preview__administrative__cns_delurk_confirm()
     {
+        $lurkers = [
+            [
+                'ID' => '1',
+                'USERNAME' => lorem_word(),
+                'PROFILE_URL' => placeholder_url(),
+            ],
+            [
+                'ID' => '2',
+                'USERNAME' => lorem_word_2(),
+                'PROFILE_URL' => placeholder_url(),
+            ],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('CNS_DELURK_CONFIRM', [
                 'TITLE' => lorem_title(),
-                'LURKERS' => [
-                    [
-                        'ID' => '1',
-                        'USERNAME' => lorem_word(),
-                        'PROFILE_URL' => placeholder_url(),
-                    ],
-                    [
-                        'ID' => '2',
-                        'USERNAME' => lorem_word_2(),
-                        'PROFILE_URL' => placeholder_url(),
-                    ],
-                ],
+                'LURKERS' => $lurkers,
                 'URL' => placeholder_url(),
             ]), null, '', true)
         ];
@@ -657,7 +659,6 @@ class Hook_addon_registry_core_cns
             'REQUIRED' => '',
             'NAME' => $name,
             'DEFAULT' => '',
-            'SIZE' => '40',
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -672,7 +673,8 @@ class Hook_addon_registry_core_cns
 
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD_SPACER', [
             'TITLE' => lorem_phrase(),
-            'THEME_ALSO_INCLUDE_PAGES' => false,
+            'SECTION_HIDDEN' => false,
+            'DESCRIPTION' => lorem_paragraph(),
         ]));
 
         $form = do_lorem_template('FORM', [
@@ -682,7 +684,15 @@ class Hook_addon_registry_core_cns
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'URL' => placeholder_url(),
-            'BATCH_IMPORT_ARCHIVE_CONTENTS' => lorem_phrase(),
+            'JS_FUNCTION_CALLS' => [],
+            'SKIP_REQUIRED' => false,
+            'SECONDARY_FORM' => false,
+            'TABINDEX' => placeholder_number(),
+            'SUPPORT_AUTOSAVE' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
+            'MODSECURITY_WORKAROUND' => false,
+            'SKIP_WEBSTANDARDS' => true,
+            'GET' => false,
         ]);
 
         return [
@@ -810,7 +820,9 @@ class Hook_addon_registry_core_cns
         foreach (['BLOCK_MAIN_MEMBERS', 'BLOCK_MAIN_MEMBERS_COMPLEX'] as $tpl) {
             $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
                 'NAME' => lorem_phrase(),
+                'RAW' => placeholder_ip(),
                 'VALUE' => placeholder_ip(),
+                'MEMBER_ID' => placeholder_id(),
             ]);
             $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
                 'CUSTOM_FIELDS' => $custom_fields,
@@ -825,7 +837,7 @@ class Hook_addon_registry_core_cns
                 'JOIN_DATE' => placeholder_date(),
                 'PRIMARY_GROUP_NAME' => lorem_phrase(),
                 'SECONDARY_GROUPS' => [
-                    lorem_word_html(),
+                    lorem_word(),
                 ],
                 'CUSTOM_FIELDS' => lorem_phrase(),
                 'ONLINE' => false,
@@ -834,6 +846,7 @@ class Hook_addon_registry_core_cns
                 'DOB' => lorem_title(),
                 '_DOB' => placeholder_date_raw(),
                 '_DOB_CENSORED' => placeholder_date_raw(),
+                'NUM_WARNINGS' => placeholder_number(),
             ]);
 
             $member_boxes = [];
@@ -872,7 +885,7 @@ class Hook_addon_registry_core_cns
                 'MAX' => strval(30),
                 'SORTABLE' => 'm_join_time',
                 'SORT_ORDER' => 'DESC',
-                'ITEM_WIDTH' => ($per_row === null) ? '' : (float_to_raw_string(99.0/*avoid possibility of rounding issues as pixels won't divide perfectly*/ / floatval($per_row)) . '%'),
+                'ITEM_WIDTH' => ($per_row === null) ? '' : (float_to_raw_string(99.0/*avoid possibility of rounding issues as pixels will not divide perfectly*/ / floatval($per_row)) . '%'),
                 'PER_ROW' => strval($per_row),
                 'DISPLAY_MODE' => 'avatars',
                 'MEMBER_BOXES' => $member_boxes,
@@ -914,10 +927,25 @@ class Hook_addon_registry_core_cns
                 'ICON' => 'links/facebook',
                 'LANG' => lorem_word(),
                 'REL' => '',
-                'NAME' => $section_title,
             ]);
             $i++;
         }
+
+        $custom_fields = [
+            [
+                'FIELD_ID' => placeholder_id(),
+                'NAME_FULL' => lorem_phrase(),
+                'NAME' => lorem_phrase(),
+                'RENDERED' => lorem_phrase(),
+                'RAW' => lorem_phrase(),
+                'FIELD_TYPE' => 'short_text',
+                'EDITABILITY' => null,
+                'EDIT_TYPE' => 'line',
+                'ENCRYPTED_VALUE' => '',
+                'ICON' => '',
+                'SECTION' => '',
+            ],
+        ];
 
         $tabs = [];
         $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_ABOUT', [
@@ -951,21 +979,7 @@ class Hook_addon_registry_core_cns
             'SIGNATURE' => lorem_phrase(),
             'JOIN_DATE' => placeholder_date(),
             'JOIN_DATE_RAW' => placeholder_date_raw(),
-            'CUSTOM_FIELDS' => [
-                [
-                    'FIELD_ID' => placeholder_id(),
-                    'NAME_FULL' => lorem_phrase(),
-                    'NAME' => lorem_phrase(),
-                    'RENDERED' => lorem_phrase(),
-                    'RAW' => lorem_phrase(),
-                    'FIELD_TYPE' => 'short_text',
-                    'EDITABILITY' => null,
-                    'EDIT_TYPE' => 'line',
-                    'ENCRYPTED_VALUE' => '',
-                    'ICON' => '',
-                    'SECTION' => '',
-                ],
-            ],
+            'CUSTOM_FIELDS' => $custom_fields,
             'ACTIONS_contact' => $actions['contact'],
             'ACTIONS_profile' => $actions['profile'],
             'ACTIONS_views' => $actions['views'],
@@ -976,12 +990,13 @@ class Hook_addon_registry_core_cns
             'SECONDARY_GROUPS' => placeholder_array(),
             'VIEW_PROFILES' => true,
             'ON_PROBATION' => placeholder_date_raw(),
-            'USERGROUP' => lorem_word(),
             'CLUBS' => lorem_phrase(),
             'EXTRA_INFO_DETAILS' => [],
             'EXTRA_TRACKING_DETAILS' => [],
             'USERS_TIMEZONE' => lorem_word(),
             'USERS_TIMEZONE_RAW' => lorem_word(),
+            'EXTRA_SECTIONS' => [],
+            '_COUNT_POSTS' => placeholder_number(),
         ]);
         $tabs[] = [
             'TAB_CODE' => placeholder_id() . '0',
@@ -993,7 +1008,7 @@ class Hook_addon_registry_core_cns
         ];
         $tabs2 = [];
         $fields = new Tempcode();
-        $name = placeholder_random_id();
+        $name = placeholder_id();
         $input = do_lorem_template('FORM_SCREEN_INPUT_INTEGER', [
             'TABINDEX' => placeholder_number(),
             'REQUIRED' => '',
@@ -1026,6 +1041,7 @@ class Hook_addon_registry_core_cns
             'SKIP_WEBSTANDARDS' => true,
             'TABS' => $tabs2,
             'HIDDEN' => '',
+            'JS_FUNCTION_CALLS' => [],
         ]);
         $tabs[] = [
             'TAB_CODE' => placeholder_id() . '1',
@@ -1061,7 +1077,7 @@ class Hook_addon_registry_core_cns
                 'AT_URL' => placeholder_url(),
                 'LOCATION' => lorem_word(),
                 'MEMBER' => placeholder_link(),
-                'TIME' => lorem_word(),
+                'TIME' => placeholder_date(),
             ];
         }
 
@@ -1116,10 +1132,10 @@ class Hook_addon_registry_core_cns
 
             $cells = do_lorem_template('RESULTS_TABLE_FIELD', [
                 'VALUE' => $temp,
-            ], null, false);
+            ]);
             $entries = do_lorem_template('RESULTS_TABLE_ENTRY', [
                 'VALUES' => $cells,
-            ], null, false);
+            ]);
 
             $primary_members->attach($entries);
         }
@@ -1136,7 +1152,7 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
-        ], null, false);
+        ]);
 
         $temp = new Tempcode();
         foreach (placeholder_array() as $i => $v) {
@@ -1148,10 +1164,10 @@ class Hook_addon_registry_core_cns
             ]);
             $cells = do_lorem_template('RESULTS_TABLE_FIELD', [
                 'VALUE' => $temp,
-            ], null, false);
+            ]);
             $entries = do_lorem_template('RESULTS_TABLE_ENTRY', [
                 'VALUES' => $cells,
-            ], null, false);
+            ]);
 
             $_secondary_members->attach($entries);
         }
@@ -1167,7 +1183,7 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
-        ], null, false);
+        ]);
 
         foreach (placeholder_array() as $i => $v) {
             $temp = do_lorem_template('CNS_VIEW_GROUP_MEMBER_PROSPECTIVE', [
@@ -1179,10 +1195,10 @@ class Hook_addon_registry_core_cns
             ]);
             $cells = do_lorem_template('RESULTS_TABLE_FIELD', [
                 'VALUE' => $temp,
-            ], null, false);
+            ]);
             $entries = do_lorem_template('RESULTS_TABLE_ENTRY', [
                 'VALUES' => $cells,
-            ], null, false);
+            ]);
 
             $_prospective_members->attach($entries);
         }
@@ -1198,7 +1214,7 @@ class Hook_addon_registry_core_cns
             'MESSAGE' => '',
             'SORT' => '',
             'PAGINATION' => '',
-        ], null, false);
+        ]);
 
         return [
             lorem_globalise(do_lorem_template('CNS_VIEW_GROUP_SCREEN', [
@@ -1209,7 +1225,6 @@ class Hook_addon_registry_core_cns
                 'EDIT_URL' => placeholder_url(),
                 'TITLE' => lorem_title(),
                 'LEADER' => lorem_phrase(),
-                'NAME' => lorem_word(),
                 'PROMOTION_INFO' => new Tempcode(),
                 'ADD_URL' => placeholder_url(),
                 'APPLY_URL' => placeholder_url(),
@@ -1235,7 +1250,6 @@ class Hook_addon_registry_core_cns
         $items->attach(do_lorem_template('CNS_POST_MAP_ITEM', [
             'TITLE' => lorem_phrase(),
             'URL' => placeholder_url(),
-            'POST_NUMBER'  =>  placeholder_number(),
             'POSTER_ID' => placeholder_number(),
             'POSTER_IS_GUEST' => false,
             'POSTER_URL' => placeholder_url(),
@@ -1244,11 +1258,11 @@ class Hook_addon_registry_core_cns
             'POST_LEVEL' => '0',
             'DATE' => placeholder_date(),
             'IS_UNREAD' => true,
+            'POST_NUMBER' => '1',
         ]));
         $items->attach(do_lorem_template('CNS_POST_MAP_ITEM', [
             'TITLE' => lorem_phrase(),
             'URL' => placeholder_url(),
-            'POST_NUMBER'  =>  placeholder_number(),
             'POSTER_ID' => placeholder_number(),
             'POSTER_IS_GUEST' => false,
             'POSTER_URL' => placeholder_url(),
@@ -1257,11 +1271,11 @@ class Hook_addon_registry_core_cns
             'POST_LEVEL' => '0',
             'DATE' => placeholder_date(),
             'IS_UNREAD' => false,
+            'POST_NUMBER' => '2',
         ]));
         $items->attach(do_lorem_template('CNS_POST_MAP_ITEM', [
             'TITLE' => lorem_phrase(),
             'URL' => placeholder_url(),
-            'POST_NUMBER'  =>  placeholder_number(),
             'POSTER_ID' => placeholder_number(),
             'POSTER_IS_GUEST' => false,
             'POSTER_URL' => placeholder_url(),
@@ -1270,6 +1284,7 @@ class Hook_addon_registry_core_cns
             'POST_LEVEL' => '1',
             'DATE' => placeholder_date(),
             'IS_UNREAD' => false,
+            'POST_NUMBER' => '3',
         ]));
 
         return [
@@ -1311,7 +1326,6 @@ class Hook_addon_registry_core_cns
                 'MESSAGE' => lorem_paragraph_html(),
                 'LOGGED_IN' => true,
                 'HAS_EMAIL_TO_SEND' => true,
-                'HAS_EMAIL_ADDRESS' => true,
                 'EMAIL_SENT' => true,
                 'EMAIL_ADDRESS' => lorem_word(),
             ]), null, '', true)
@@ -1329,9 +1343,7 @@ class Hook_addon_registry_core_cns
     {
         return [
             lorem_globalise(do_lorem_template('JOIN_FORM', [
-                'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => '',
-                'TITLE' => lorem_title(),
                 'URL' => placeholder_url(),
                 'FIELDS' => placeholder_fields(),
                 'SUBMIT_ICON' => 'menu/site_meta/user_actions/join',
@@ -1342,6 +1354,7 @@ class Hook_addon_registry_core_cns
                 'INVITES_ENABLED' => true,
                 'ONE_PER_EMAIL_ADDRESS' => true,
                 'USE_CAPTCHA' => true,
+                'ANALYTIC_EVENT_CATEGORY' => null,
             ]), null, '', true)
         ];
     }

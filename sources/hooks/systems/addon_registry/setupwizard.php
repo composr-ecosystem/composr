@@ -177,7 +177,6 @@ class Hook_addon_registry_setupwizard
 
         $inner = do_lorem_template('SETUPWIZARD_2', [
             'SKIP_WEBSTANDARDS' => true,
-            'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
@@ -205,7 +204,6 @@ class Hook_addon_registry_setupwizard
         require_lang('config');
 
         $inner = do_lorem_template('SETUPWIZARD_7', [
-            'TITLE' => lorem_title(),
             'FORM' => placeholder_form(),
             'BALANCED' => lorem_phrase(),
             'LIBERAL' => lorem_phrase(),

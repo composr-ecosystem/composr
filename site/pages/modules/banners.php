@@ -454,6 +454,7 @@ class Module_banners
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => null,
             'POST_URL' => get_self_url(),
+            'JS_FUNCTION_CALLS' => [],
         ]);
 
         require_code('templates_internalise_screen');

@@ -215,6 +215,7 @@ class Block_main_contact_us
             'SUBMIT_ICON' => 'buttons/send',
             'SKIP_PREVIEW' => true,
             'ANALYTIC_EVENT_CATEGORY' => do_lang('CONTACT_US'),
+            'REVIEWS' => false,
         ]);
 
         return do_template('BLOCK_MAIN_CONTACT_US', [

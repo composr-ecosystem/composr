@@ -316,6 +316,7 @@ function page_not_found($codename, $zone)
         'ADD_URL' => $add_url,
         'ADD_REDIRECT_URL' => $add_redirect_url,
         'PAGE' => $codename,
+        'SKIP_SITEMAP' => false,
     ]);
 }
 

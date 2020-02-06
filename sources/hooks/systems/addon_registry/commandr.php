@@ -311,6 +311,7 @@ class Hook_addon_registry_commandr
                 'STDOUT' => lorem_phrase(),
                 'STDHTML' => lorem_phrase(),
                 'STDERR' => lorem_phrase(),
+                'STDCOMMAND' => null,
             ]), null, '', true)
         ];
     }
@@ -516,14 +517,29 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_ls()
     {
+        $directories = [];
+        foreach (placeholder_array() as $k => $v) {
+            $directories[] =             [
+                'FILENAME' => $v,
+                'FILESIZE' => lorem_word(),
+                'MTIME' => placeholder_date(),
+            ];
+        }
+
+        $files = [];
+        foreach (placeholder_array() as $k => $v) {
+            $files[] =             [
+                'FILENAME' => $v,
+                'FILESIZE' => lorem_word(),
+                'MTIME' => placeholder_date(),
+            ];
+        }
+
         return [
             lorem_globalise(do_lorem_template('COMMANDR_LS', [
                 'DIRECTORY' => lorem_phrase(),
-                'DIRECTORIES' => placeholder_array(),
-                'FILES' => placeholder_array(),
-                'FILENAME' => lorem_word(),
-                'FILESIZE' => lorem_word(),
-                'MTIME' => lorem_word(),
+                'DIRECTORIES' => $directories,
+                'FILES' => $files,
             ]), null, '', true)
         ];
     }

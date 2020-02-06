@@ -118,34 +118,6 @@ function lorem_chunk()
  *
  * @return Tempcode Place holder text
  */
-function lorem_word_html()
-{
-    $text = '<strong>Lorem</strong>'; // XHTMLXHTML
-    if (function_exists('ocp_mark_as_escaped')) {
-        ocp_mark_as_escaped($text);
-    }
-    return make_string_tempcode($text);
-}
-
-/**
- * Get suitable placeholder text.
- *
- * @return Tempcode Place holder text
- */
-function lorem_word_2_html()
-{
-    $text = '<strong>Ipsum</strong>'; // XHTMLXHTML
-    if (function_exists('ocp_mark_as_escaped')) {
-        ocp_mark_as_escaped($text);
-    }
-    return make_string_tempcode($text);
-}
-
-/**
- * Get suitable placeholder text.
- *
- * @return Tempcode Place holder text
- */
 function lorem_phrase_html()
 {
     $text = '<strong>Lorem ipsum</strong> dolor'; // XHTMLXHTML
@@ -260,7 +232,23 @@ function placeholder_form_with_field($field_name)
     require_code('form_templates');
     $hidden = form_input_hidden($field_name, '0');
 
-    $form = do_lorem_template('FORM', ['TABINDEX' => placeholder_number(), 'HIDDEN' => $hidden, 'TEXT' => $text, 'FIELDS' => placeholder_fields(), 'URL' => placeholder_url(), 'SUBMIT_ICON' => 'buttons/proceed', 'SUBMIT_NAME' => 'proceed']);
+    $form = do_lorem_template('FORM', [
+        'TABINDEX' => placeholder_number(),
+        'HIDDEN' => $hidden,
+        'TEXT' => $text,
+        'FIELDS' => placeholder_fields(),
+        'URL' => placeholder_url(),
+        'SUBMIT_ICON' => 'buttons/proceed',
+        'SUBMIT_NAME' => 'proceed',
+        'JS_FUNCTION_CALLS' => [],
+        'SKIP_WEBSTANDARDS' => true,
+        'SKIP_REQUIRED' => false,
+        'GET' => false,
+        'SUPPORT_AUTOSAVE' => false,
+        'ANALYTIC_EVENT_CATEGORY' => null,
+        'MODSECURITY_WORKAROUND' => false,
+        'SECONDARY_FORM' => false,
+    ]);
 
     return $form;
 }
@@ -449,7 +437,7 @@ function placeholder_number()
  */
 function placeholder_id()
 {
-    return strval(123);
+    return 'x' . strval(123);
 }
 
 /**
@@ -686,6 +674,8 @@ function placeholder_pagination()
                 'P' => strval($j),
                 'URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
+                'NOFOLLOW' => null,
+                'REL' => lorem_word(),
             ]));
         }
     }
@@ -698,22 +688,18 @@ function placeholder_pagination()
         'TITLE' => lorem_phrase(),
         'P' => placeholder_date_raw(),
         'URL' => placeholder_url(),
+        'NOFOLLOW' => null,
     ]);
-    $previous->attach(do_lorem_template('PAGINATION_PREVIOUS', [
-        'TITLE' => lorem_phrase(),
-        'P' => placeholder_date_raw(),
-    ]));
+    $previous->attach(do_lorem_template('PAGINATION_PREVIOUS'));
     $next = do_lorem_template('PAGINATION_NEXT_LINK', [
         'REL' => null,
         'TITLE' => lorem_phrase(),
         'NUM_PAGES' => placeholder_number(),
         'P' => placeholder_number(),
         'URL' => placeholder_url(),
+        'NOFOLLOW' => null,
     ]);
-    $next->attach(do_lorem_template('PAGINATION_NEXT', [
-        'TITLE' => lorem_phrase(),
-        'P' => placeholder_date_raw(),
-    ]));
+    $next->attach(do_lorem_template('PAGINATION_NEXT'));
     $continues = do_lorem_template('PAGINATION_CONTINUE', []);
     $last = do_lorem_template('PAGINATION_CONTINUE_LAST', [
         'TITLE' => lorem_phrase(),

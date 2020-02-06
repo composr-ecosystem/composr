@@ -180,11 +180,15 @@ class Hook_addon_registry_core_addon_management
                 'HIDDEN' => '',
                 'URL' => placeholder_url(),
                 'CONFIRM' => false,
+                'NEW_WINDOW' => false,
             ]);
 
             $status = do_lang_tempcode('STATUS_NOT_INSTALLED');
 
-            $pretty_name = do_lorem_template('ADDON_NAME', ['IMAGE_URL' => placeholder_image_url(), 'NAME' => lorem_word()]);
+            $pretty_name = do_lorem_template('ADDON_NAME', [
+                'IMAGE_URL' => placeholder_image_url(),
+                'NAME' => lorem_word(),
+            ]);
 
             $add_ons->attach(do_lorem_template('ADDON_SCREEN_ADDON', [
                 'DESCRIPTION' => lorem_paragraph(),
@@ -204,7 +208,7 @@ class Hook_addon_registry_core_addon_management
                 'ACTIONS' => $actions,
                 'TYPE' => 'uninstall',
                 'PASSTHROUGH' => lorem_phrase(),
-                'UPDATED' => false,
+                'UPDATED_ADDONS' => false,
             ]));
         }
 
@@ -277,7 +281,6 @@ class Hook_addon_registry_core_addon_management
 
         $warning = do_lorem_template('ADDON_INSTALL_WARNING', [
             'WARNING' => do_lang_tempcode('ADDON_WARNING_PRESENT_DEPENDENCIES', $_dependencies, lorem_phrase()),
-            'ADDON_WARNING_OVERWRITE' => lorem_phrase(),
         ]);
         $files = new Tempcode();
         foreach (placeholder_array() as $k => $val) {
@@ -292,6 +295,7 @@ class Hook_addon_registry_core_addon_management
                 'PATH' => lorem_phrase(),
                 'ABOUT' => do_lang_tempcode('ADDON_FILE_NORMAL'),
                 'I' => strval(count(placeholder_array()) + $k),
+                'DISABLED' => false,
             ]));
         }
         return [
@@ -417,6 +421,7 @@ class Hook_addon_registry_core_addon_management
                 'HIDDEN' => '',
                 'URL' => placeholder_url(),
                 'CONFIRM' => false,
+                'NEW_WINDOW' => false,
             ]);
 
             if ($module == 'downloads') {

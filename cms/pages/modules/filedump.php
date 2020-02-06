@@ -487,6 +487,7 @@ class Module_filedump
                         'NAME' => 'select_' . strval($i),
                         'VALUE' => rtrim($filename, '/'),
                         'HIDDEN' => form_input_hidden('subpath_file_' . strval($i), $_subpath),
+                        'TICKED' => false,
                     ]));
                 }
 

@@ -212,6 +212,7 @@ PHP;
                 'AUTHOR_URL' => $author_url,
                 'NEWS' => $news,
                 'FORUM_ID' => isset($myrow['forum_id']) ? strval($myrow['forum_id']) : '',
+                'BRIEF' => null,
             ]));
 
             $i++;

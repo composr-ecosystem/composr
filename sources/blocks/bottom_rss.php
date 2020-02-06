@@ -115,6 +115,7 @@ class Block_bottom_rss
             '_GUID' => '0fc123199c4d4b7af5a26706271b1f4f',
             'BLOCK_ID' => $block_id,
             'POSTS' => $_postdetailss,
+            'BLOG' => false,
         ]);
     }
 }

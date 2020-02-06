@@ -171,7 +171,7 @@ class Hook_addon_registry_cns_warnings
                 'MESSAGE' => lorem_phrase(),
                 'MESSAGE_HTML' => lorem_phrase(),
                 'EXPLANATION' => lorem_phrase(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'DELETE_LINK' => placeholder_link(),
             ]), null, '', true)
         ];

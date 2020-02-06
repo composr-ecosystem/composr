@@ -1464,6 +1464,7 @@ class Module_topics
             'TABINDEX' => strval($tabindex),
             'CONTENT' => $content,
             'IMAGES' => true,
+            'LINEAR' => false,
         ]);
 
         return _form_input('', do_lang_tempcode('TOPIC_EMOTICON'), '', $input, false);
@@ -1557,7 +1558,13 @@ class Module_topics
             $post_templates2 = form_input_list_entry('', false, do_lang_tempcode('NA_EM'));
             $post_templates2->attach($post_templates);
 
-            $input = do_template('CNS_POST_TEMPLATE_SELECT', ['_GUID' => '2e4270e8fb8050f0201f5aa2af56270a', 'TABINDEX' => '3', 'LIST' => $post_templates2]);
+            $input = do_template('CNS_POST_TEMPLATE_SELECT', [
+                '_GUID' => '2e4270e8fb8050f0201f5aa2af56270a',
+                'TABINDEX' => '3',
+                'LIST' => $post_templates2,
+                'SKIP_LABEL' => false,
+                'RESETS' => false,
+            ]);
             $specialisation->attach(_form_input('post_template', do_lang_tempcode('POST_TEMPLATE'), do_lang_tempcode('DESCRIPTION_POST_TEMPLATE'), $input, false, false));
         }
 
@@ -2843,6 +2850,7 @@ END;
                     'URL' => $post_url,
                     'HIDDEN' => $hidden,
                     'FIELDS' => '',
+                    'PREVIEW' => '',
                 ]);
             }
 

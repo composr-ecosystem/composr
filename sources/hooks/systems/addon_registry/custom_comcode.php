@@ -154,7 +154,7 @@ class Hook_addon_registry_custom_comcode
         $tags = [];
         foreach (placeholder_array() as $tag) {
             $tags[] = [
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph(),
                 'EXAMPLE' => lorem_word(),
             ];

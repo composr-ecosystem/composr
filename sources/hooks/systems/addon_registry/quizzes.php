@@ -291,6 +291,7 @@ class Hook_addon_registry_quizzes
                 '_TYPE' => lorem_word(),
                 'POINTS' => placeholder_id(),
                 'GIVE_CONTEXT' => true,
+                'ID' => placeholder_id(),
             ]);
         }
         $content_surveys->attach($link);
@@ -324,7 +325,7 @@ class Hook_addon_registry_quizzes
 
         return [
             lorem_globalise(do_lorem_template('QUIZ_SCREEN', [
-                'TAGS' => lorem_word_html(),
+                'TAGS' => lorem_sentence_html(),
                 'ID' => placeholder_id(),
                 'WARNING_DETAILS' => $warning_details,
                 'URL' => placeholder_url(),
@@ -464,6 +465,7 @@ class Hook_addon_registry_quizzes
                 'OUT_OF' => placeholder_number(),
                 'MARKS_RANGE' => placeholder_number(),
                 'PERCENTAGE_RANGE' => placeholder_number(),
+                'AFFIRMATIONS' => lorem_phrase(),
             ]), null, '', true)
         ];
     }

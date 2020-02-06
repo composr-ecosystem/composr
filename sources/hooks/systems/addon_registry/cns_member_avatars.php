@@ -146,6 +146,7 @@ class Hook_addon_registry_cns_member_avatars
                 'AVATAR' => $avatar,
                 'WIDTH' => placeholder_number(),
                 'HEIGHT' => placeholder_number(),
+                'MEMBER_ID' => placeholder_id(),
             ]), null, '', true)
         ];
     }

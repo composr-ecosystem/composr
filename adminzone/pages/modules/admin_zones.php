@@ -861,6 +861,7 @@ class Module_admin_zones
             'SUBMIT_ICON' => 'admin/edit_this',
             'SUBMIT_NAME' => null,
             'POST_URL' => get_self_url(),
+            'JS_FUNCTION_CALLS' => [],
         ]);
 
         require_code('templates_internalise_screen');

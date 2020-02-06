@@ -692,6 +692,7 @@ class Module_tickets
             'COMMENT_URL' => '',
             'SUBMIT_NAME' => do_lang_tempcode($starting_new_ticket ? 'CREATE_SUPPORT_TICKET' : 'MAKE_POST'),
             'ANALYTIC_EVENT_CATEGORY' => do_lang('CREATE_SUPPORT_TICKET'),
+            'REVIEWS' => false,
         ]);
 
         // Show other tickets, plus grab topic row for our ticket...

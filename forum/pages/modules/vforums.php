@@ -400,6 +400,7 @@ class Module_vforums
             $action_url = build_url(['page' => 'topics', 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('topics'));
             $topic_wrapper = do_template('CNS_FORUM_TOPIC_WRAPPER', [
                 '_GUID' => '67356b4daacbed3e3d960d89a57d0a4a',
+                'TYPE' => 'vforums',
                 'MAX' => strval($max),
                 'SORT' => '',
                 'MAY_CHANGE_MAX' => false,
@@ -411,6 +412,7 @@ class Module_vforums
                 'ACTION_URL' => $action_url,
                 'TOPICS' => $topics,
                 'FORUM_NAME' => $forum_name,
+                'ID' => null,
             ]);
         }
 

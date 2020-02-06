@@ -172,7 +172,13 @@ class Module_awards
                 $_title = get_translated_text($myrow['a_title']);
                 $description = get_translated_tempcode('award_types', $myrow, 'a_description');
 
-                $out->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', ['_GUID' => '0974df260d7521edebf33f5397cab7f4', 'NAME' => $_title, 'URL' => $url, 'DESCRIPTION' => $description, 'TITLE' => '']));
+                $out->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
+                    '_GUID' => '0974df260d7521edebf33f5397cab7f4',
+                    'NAME' => $_title,
+                    'URL' => $url,
+                    'DESCRIPTION' => $description,
+                    'TITLE' => '',
+                ]));
             }
         }
 
@@ -238,7 +244,13 @@ class Module_awards
                         'CONTENT' => $rendered_content,
                     ]);
                     $archive_url = build_url(['page' => '_SELF', 'type' => 'award', 'id' => $award_type_row['id']], '_SELF');
-                    $content->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', ['_GUID' => 'edd7305b3a9e7777951d0cf04a9360a3', 'URL' => $archive_url, 'TITLE' => $_title, 'NAME' => $_title, 'DESCRIPTION' => $rendered]));
+                    $content->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
+                        '_GUID' => 'edd7305b3a9e7777951d0cf04a9360a3',
+                        'URL' => $archive_url,
+                        'TITLE' => $_title,
+                        'NAME' => $_title,
+                        'DESCRIPTION' => $rendered,
+                    ]));
                 }
             }
         }

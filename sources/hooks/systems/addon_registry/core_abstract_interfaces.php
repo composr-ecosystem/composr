@@ -391,6 +391,7 @@ class Hook_addon_registry_core_abstract_interfaces
         $fields->attach(do_lorem_template('MAP_TABLE_FIELD', [
             'NAME' => lorem_word(),
             'VALUE' => lorem_phrase(),
+            'ABBR' => null,
         ]));
 
         return [
@@ -420,6 +421,7 @@ class Hook_addon_registry_core_abstract_interfaces
             lorem_globalise(do_lorem_template('MAP_TABLE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'FIELDS' => $fields,
+                'RESPONSIVE' => false,
             ]), null, '', true)
         ];
     }
@@ -522,7 +524,6 @@ class Hook_addon_registry_core_abstract_interfaces
         return [
             lorem_globalise(do_lorem_template('INLINE_WIP_MESSAGE', [
                 'MESSAGE' => lorem_phrase(),
-                'NO_ENTRIES' => lorem_word(),
             ]), null, '', true)
         ];
     }
@@ -541,7 +542,7 @@ class Hook_addon_registry_core_abstract_interfaces
                 'TITLE' => lorem_title(),
                 'ADD_URL' => placeholder_url(),
                 'PAGE' => lorem_phrase(),
-                'DID_MEAN' => lorem_word(),
+                'DID_MEAN' => lorem_phrase(),
                 'ADD_REDIRECT_URL' => placeholder_url(),
                 'SKIP_SITEMAP' => true,
             ]), null, '', true)
@@ -655,6 +656,7 @@ class Hook_addon_registry_core_abstract_interfaces
                 'NUM_SIBLINGS' => strval(count($list)),
                 'DOC' => '',
                 'WARNING' => '',
+                'AUTO_ADD' => null,
             ]));
             $i++;
         }
@@ -748,6 +750,7 @@ class Hook_addon_registry_core_abstract_interfaces
                 'NAME' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'CONFIRM' => false,
+                'NEW_WINDOW' => true,
             ]);
 
             $line = do_lorem_template('COLUMNED_TABLE_ROW_CELL_LINE', [
@@ -766,6 +769,7 @@ class Hook_addon_registry_core_abstract_interfaces
                 'LABEL' => lorem_phrase(),
                 'NAME' => placeholder_random_id(),
                 'VALUE' => lorem_phrase(),
+                'TICKED' => true,
             ]);
 
             $values = [
@@ -850,9 +854,9 @@ class Hook_addon_registry_core_abstract_interfaces
                 $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD_TITLE_SORTABLE', [
                     'VALUE' => $v,
                     'SORT_URL_DESC' => placeholder_url(),
-                    'SORT_DESC_SELECTED' => lorem_word(),
-                    'SORT_ASC_SELECTED' => lorem_word(),
+                    'SORT_DESC_SELECTED' => true,
                     'SORT_URL_ASC' => placeholder_url(),
+                    'SORT_ASC_SELECTED' => false,
                 ]));
             }
         }
@@ -892,7 +896,7 @@ class Hook_addon_registry_core_abstract_interfaces
 
         $results_table = do_lorem_template('RESULTS_TABLE', [
             'WIDTHS' => [],
-            'TEXT_ID' => placeholder_random_id(),
+            'TEXT_ID' => placeholder_id(),
             'HEADER_ROW' => $header_row,
             'RESULT_ENTRIES' => $order_entries,
             'MESSAGE' => '',
@@ -930,9 +934,9 @@ class Hook_addon_registry_core_abstract_interfaces
                 $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD_TITLE_SORTABLE', [
                     'VALUE' => $v,
                     'SORT_URL_DESC' => placeholder_url(),
-                    'SORT_DESC_SELECTED' => lorem_word(),
-                    'SORT_ASC_SELECTED' => lorem_word(),
+                    'SORT_DESC_SELECTED' => true,
                     'SORT_URL_ASC' => placeholder_url(),
+                    'SORT_ASC_SELECTED' => false,
                 ]));
             }
         }
@@ -972,7 +976,7 @@ class Hook_addon_registry_core_abstract_interfaces
 
         $results_table = do_lorem_template('RESULTS_TABLE', [
             'WIDTHS' => [],
-            'TEXT_ID' => placeholder_random_id(),
+            'TEXT_ID' => placeholder_id(),
             'HEADER_ROW' => $header_row,
             'RESULT_ENTRIES' => $order_entries,
             'MESSAGE' => '',
@@ -1040,6 +1044,7 @@ class Hook_addon_registry_core_abstract_interfaces
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
                 'POST_URL' => placeholder_url(),
+                'JS_FUNCTION_CALLS' => [],
             ]), null, '', true)
         ];
     }

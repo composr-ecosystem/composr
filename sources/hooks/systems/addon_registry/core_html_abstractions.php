@@ -177,7 +177,7 @@ class Hook_addon_registry_core_html_abstractions
     {
         return [
             lorem_globalise(do_lorem_template('JS_REFRESH', [
-                'FORM_NAME' => lorem_word_html(),
+                'FORM_NAME' => lorem_word(),
             ]), null, '', true)
         ];
     }
@@ -211,6 +211,11 @@ class Hook_addon_registry_core_html_abstractions
             lorem_globalise(do_lorem_template('STANDALONE_HTML_WRAP', [
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => lorem_chunk_html(),
+                'FRAME' => null,
+                'NOINDEX' => null,
+                'TARGET' => null,
+                'POPUP' => null,
+                'OPENS_BELOW' => null,
             ]), null, '', true)
         ];
     }
@@ -266,6 +271,7 @@ class Hook_addon_registry_core_html_abstractions
             lorem_globalise(do_lorem_template('BASIC_HTML_WRAP', [
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => lorem_chunk_html(),
+                'NOINDEX' => null,
             ]), null, '', true)
         ];
     }
@@ -415,7 +421,7 @@ class Hook_addon_registry_core_html_abstractions
                 'NEW_WINDOW' => false,
                 'TITLE' => lorem_phrase(),
                 'URL' => placeholder_url(),
-                'CAPTION' => lorem_word(),
+                'CAPTION' => lorem_phrase(),
             ]), null, '', true)
         ];
     }
@@ -437,7 +443,7 @@ class Hook_addon_registry_core_html_abstractions
                 'NEW_WINDOW' => false,
                 'TITLE' => lorem_phrase(),
                 'URL' => placeholder_url(),
-                'CAPTION' => lorem_word(),
+                'CAPTION' => lorem_phrase(),
             ]), null, '', true)
         ];
     }

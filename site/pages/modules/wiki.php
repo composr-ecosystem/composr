@@ -272,7 +272,13 @@ class Module_wiki
                     $add_access = (has_submit_permission('low', get_member(), get_ip_address(), 'cms_wiki'));
                     require_lang('zones');
                     $add_url = $add_access ? build_url(['page' => 'cms_wiki', 'type' => 'add_page', 'id' => $find, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('cms_wiki')) : new Tempcode();
-                    return do_template('MISSING_SCREEN', ['_GUID' => 'ba778c816860a9594983ed9ef03d0c42', 'TITLE' => $this->title, 'ADD_URL' => $add_url, 'PAGE' => $find]);
+                    return do_template('MISSING_SCREEN', [
+                        '_GUID' => 'ba778c816860a9594983ed9ef03d0c42',
+                        'TITLE' => $this->title,
+                        'ADD_URL' => $add_url,
+                        'PAGE' => $find,
+                        'SKIP_SITEMAP' => false,
+                    ]);
                 }
                 $chain = wiki_derive_chain($id);
             } else {

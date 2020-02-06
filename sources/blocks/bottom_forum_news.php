@@ -146,6 +146,7 @@ PHP;
             '_GUID' => '04d5390309dcba1f17391e9928da0d56',
             'BLOCK_ID' => $block_id,
             'POSTS' => $_postdetailss,
+            'BLOG' => false,
         ]);
     }
 }

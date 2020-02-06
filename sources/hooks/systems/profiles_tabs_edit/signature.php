@@ -103,8 +103,6 @@ class Hook_profiles_tabs_edit_signature
         $hidden_fields = new Tempcode();
         $hidden_fields->attach($attach_size_field);
 
-        $continue_url = get_self_url();
-
         $help_zone = get_comcode_zone('userguide_comcode', false);
 
         $emoticon_chooser = $GLOBALS['FORUM_DRIVER']->get_emoticon_chooser('signature');
@@ -138,12 +136,10 @@ class Hook_profiles_tabs_edit_signature
             'COMCODE_EDITOR_SMALL' => $comcode_editor_small,
             'CLASS' => $class,
             'COMCODE_URL' => ($help_zone === null) ? new Tempcode() : build_url(['page' => 'userguide_comcode'], $help_zone),
-            'EXTRA' => '',
             'POST_COMMENT' => $post_comment,
             'EMOTICON_CHOOSER' => $emoticon_chooser,
             'POST' => $signature_original,
             'DEFAULT_PARSED' => $default_parsed,
-            'CONTINUE_URL' => $continue_url,
             'ATTACHMENTS' => $attachments,
         ]));
 

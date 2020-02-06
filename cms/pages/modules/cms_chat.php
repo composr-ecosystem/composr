@@ -433,6 +433,7 @@ class Module_cms_chat
                 'URL' => get_self_url(),
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
+                'PREVIEW' => '',
             ]);
         }
 
@@ -480,6 +481,7 @@ class Module_cms_chat
                 'URL' => get_self_url(),
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
+                'PREVIEW' => '',
             ]);
         }
 
