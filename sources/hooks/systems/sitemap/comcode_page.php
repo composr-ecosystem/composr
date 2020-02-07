@@ -123,8 +123,13 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
 
         $row = $this->_load_row_from_page_groupings($row, $meta_gather, $zone, $page);
 
-        $test_icon = find_theme_image('icons/24x24/menu/pages/' . $page, true);
-        $test_icon_2x = find_theme_image('icons/48x48/menu/pages/' . $page, true);
+        if ($page == 'start') { // TODO: Change in v11
+            $test_icon = find_theme_image('icons/24x24/menu/' . $page, true);
+            $test_icon_2x = find_theme_image('icons/48x48/menu/' . $page, true);
+        } else {
+            $test_icon = find_theme_image('icons/24x24/menu/pages/' . $page, true);
+            $test_icon_2x = find_theme_image('icons/48x48/menu/pages/' . $page, true);
+        }
         if ($test_icon == '') {
             $test_icon = find_theme_image('icons/24x24/menu/site_meta/' . $page, true);
             $test_icon_2x = find_theme_image('icons/48x48/menu/site_meta/' . $page, true);

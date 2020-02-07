@@ -43,6 +43,20 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
     }
 
     /**
+     * Find if a page-link will be covered by this node.
+     *
+     * @param  ID_TEXT $page_link The page-link.
+     * @return integer A SITEMAP_NODE_* constant.
+     */
+    public function handles_page_link($page_link)
+    {
+        if (preg_match('#^\w+:calendar:browse$#', $page_link) != 0) {
+            return false;
+        }
+        return parent::handles_page_link($page_link);
+    }
+
+    /**
      * Find details of a virtual position in the sitemap. Virtual positions have no structure of their own, but can find child structures to be absorbed down the tree. We do this for modularity reasons.
      *
      * @param  ID_TEXT $page_link The page-link we are finding.

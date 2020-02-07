@@ -189,16 +189,24 @@ function find_sitemap_object($page_link)
             if ($ob->is_active()) {
                 $is_handled = $ob->handles_page_link($page_link);
                 if ($is_handled != SITEMAP_NODE_NOT_HANDLED) {
-                    $matches['_' . strval($is_handled)] = $_hook;
+                    $sup = $_hook;
+                    if ($_hook == 'entry_point') {
+                        $sup = 'aaa'/*high priority (we don't want content category hooks to capture it)*/;
+                    }
+                    if ($_hook == 'page') {
+                        $sup = 'zzz'/*low priority*/;
+                    }
+                    $order_key = '_' . strval($is_handled) . '_' . $sup;
+                    $matches[$order_key] = $_hook;
                 }
             }
         }
         if (count($matches) != 0) {
             ksort($matches);
-            $hook = current($matches);
+            $hook = reset($matches);
             $ob = object_factory('Hook_sitemap_' . $hook);
 
-            $is_handled = intval(substr(key($matches), 1));
+            $is_handled = intval(substr(key($matches), 1, 1));
             $is_virtual = ($is_handled == SITEMAP_NODE_HANDLED_VIRTUALLY);
         }
         if (is_null($hook)) {
