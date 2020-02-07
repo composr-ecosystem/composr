@@ -754,7 +754,8 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     if (!addon_installed('securitylogging')) {
         return false;
     }
-    if ($ip == '') {
+    require_code('type_sanitisation');
+    if (!is_ip_address($ip)) {
         return false;
     }
 

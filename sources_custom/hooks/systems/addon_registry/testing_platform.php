@@ -573,6 +573,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/addon_setupwizard.php',
             '_tests/tests/unit_tests/override_notes_consistency.php',
             '_tests/tests/unit_tests/copyright.php',
+            '_tests/tests/unit_tests/type_sanitisation.php',
             '_tests/tests/unit_tests/image_compression.php',
             '_tests/tests/unit_tests/xss.php',
             '_tests/tests/unit_tests/core_fields.php',
