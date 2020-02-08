@@ -149,7 +149,8 @@ class Module_join
             $map['email_address'] = $email_address;
         }
         $redirect = get_param_string('redirect', '');
-        if ($redirect != '') {
+        require_code('global4');
+        if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
             $map['redirect'] = $redirect;
         }
         $url = build_url($map, '_SELF');
@@ -187,7 +188,8 @@ class Module_join
 
         $map = array('page' => '_SELF', 'type' => 'step3');
         $redirect = get_param_string('redirect', '');
-        if ($redirect != '') {
+        require_code('global4');
+        if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
             $map['redirect'] = $redirect;
         }
         $url = build_url($map, '_SELF');

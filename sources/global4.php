@@ -597,3 +597,35 @@ function find_normative_performance()
     $percentage = 100.0 * (0.055 / (microtime(true) - $t));
     return $percentage;
 }
+
+/**
+ * Find if a particular redirect is itself pointing to a login/join page, and thus should not be injected as a nested redirect.
+ *
+ * @param  string $redirect Redirect to check
+ * @return boolean If it is unhelpful
+ */
+function is_unhelpful_redirect($redirect)
+{
+    $unhelpful_url_stubs = array(
+        static_evaluate_tempcode(build_url(array('page' => 'login'), '', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'browse'), '', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'login'), '', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'logout'), '', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'login'), '_SELF', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'browse'), '_SELF', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'login'), '_SELF', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'logout'), '_SELF', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'join'), '', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'join', 'type' => 'browse'), '', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'join', 'type' => 'step2'), '', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'join', 'type' => 'step3'), '', null, false, false, true)),
+        static_evaluate_tempcode(build_url(array('page' => 'join', 'type' => 'step4'), '', null, false, false, true)),
+    );
+    foreach ($unhelpful_url_stubs as $unhelpful_url_stub) {
+        if (substr($redirect, 0, strlen($unhelpful_url_stub)) == $unhelpful_url_stub) {
+            return true;
+        }
+    }
+
+    return false;
+}

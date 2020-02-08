@@ -204,24 +204,8 @@ class Module_login
         // Where we will be redirected to after login, for GET requests (POST requests are handled further in the code)
         $redirect_default = get_self_url(true); // The default is to go back to where we are after login. Note that this is not necessarily the URL to the login module, as login screens happen on top of screens you're not allowed to access. If it is the URL to the login module, we'll realise this later in this code. This URL is coded to not redirect to root if we have $_POST, because we relay $_POST values and have intelligence (via $passion).
         $redirect = get_param_string('redirect', $redirect_default); // ... but often the login screen's URL tells us where to go back to
-        $unhelpful_redirect = false;
-        $unhelpful_url_stubs = array(
-            static_evaluate_tempcode(build_url(array('page' => 'login'), '', null, false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'browse'), '', null, false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'login'), '', null, false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'logout'), '', null, false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login'), '_SELF', null, false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'browse'), '_SELF', null, false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'login'), '_SELF', null, false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'logout'), '_SELF', null, false, false, true)),
-        );
-        foreach ($unhelpful_url_stubs as $unhelpful_url_stub) {
-            if (substr($redirect, 0, strlen($unhelpful_url_stub)) == $unhelpful_url_stub) {
-                $unhelpful_redirect = true;
-                break;
-            }
-        }
-        if (($redirect != '') && (!$unhelpful_redirect)) {
+        require_code('global4');
+        if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
             $passion->attach(form_input_hidden('redirect', $redirect));
         } else { // We will only go to the zone-default page if an explicitly blank redirect URL is given or if the redirect would take us direct to another login or logout page
             global $ZONE;
