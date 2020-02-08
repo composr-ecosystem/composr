@@ -4,7 +4,7 @@
 			<div class="comments_captcha">
 				<div class="box box___comments_posting_form__captcha"><div class="box_inner">
 					{+START,IF,{$CONFIG_OPTION,audio_captcha,1}}
-						<p>{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}<label for="captcha">{+END}{!DESCRIPTION_CAPTCHA_2,<a onclick="return play_self_audio_link(this\,captcha_sound);" title="{!AUDIO_VERSION}" href="{$CUSTOM_BASE_URL*}/uploads/auto_thumbs/{$SESSION*}.wav?cache_break={$RAND&*}">{!AUDIO_VERSION}</a>}{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}</label>{+END}</p>
+						<p>{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}<label for="captcha">{+END}{!DESCRIPTION_CAPTCHA_2,<a rel="nofollow" onclick="return play_self_audio_link(this\,captcha_sound);" title="{!AUDIO_VERSION}" href="{$CUSTOM_BASE_URL*}/uploads/auto_thumbs/{$SESSION*}.wav?cache_break={$RAND&*}">{!AUDIO_VERSION}</a>}{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}</label>{+END}</p>
 					{+END}
 					{+START,IF,{$NOT,{$CONFIG_OPTION,audio_captcha,1}}}
 						<p>{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}<label for="captcha">{+END}{!DESCRIPTION_CAPTCHA_3}{+START,IF,{$NOT,{$CONFIG_OPTION,js_captcha,1}}}</label>{+END}</p>
