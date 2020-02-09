@@ -86,16 +86,23 @@ class Hook_addon_registry_sortable_tables
      */
     public function get_description()
     {
-        return 'This addon creates a main_sortable_table block that shows the contents of a CSV spreadsheet file (or a database table) in a sortable and filterable table. To use, place the [abbr="Comma-separated Values"]CSV[/abbr] spreadsheet file in [tt]uploads/website_specific[/tt], and place the block like:
+        return 'This addon provides various visualization blocks for Composr, including:
+ - Sortable tables served from spreadsheets or database tables ([tt]main_sortable_table[/tt])
+ - Bar charts from spreadsheets ([tt]graph_bar_chart[/tt])
+ - Line charts from spreadsheets ([tt]graph_line_chart[/tt])
+ - Pie charts from spreadsheets ([tt]graph_pie_chart[/tt])
+ - Scatter diagrams from spreadsheets ([tt]graph_scatter_diagram[/tt])
+ - Maps with pins from spreadsheets ([tt]pins_on_map[/tt])
+ - Maps with country data overlayed from spreadsheets ([tt]countries_on_map[/tt])
+
+To use the [tt]main_sortable_table[/tt] block, place a [abbr="Comma-separated Values"]CSV[/abbr] spreadsheet file in [tt]uploads/website_specific[/tt], and place the block on a Comcode page like:
 [code]
 [block=""example.csv""]main_sortable_table[/block]
 [/code]
-
 ([tt]example.csv[/tt] is supplied with the addon)
+We will automatically detect what columns can be filtered, how to sort each column, and display numbers in an attractive way. Additionally though, the block has many advanced options for customising the output.
 
-We will automatically detect what columns can be filtered, how to sort each column, and display numbers in an attractive way.
-
-Additionally, there are blocks for rendering graphs and maps from CSV spreadsheet files. This is not currently documented, although sample spreadsheet files are provided under [tt]uploads/website_specific/graph_test/[/tt] and a page of sample usage is provided at [tt]site:_graph_test[/tt].';
+Sample spreadsheet files for all the other blocks are provided under [tt]uploads/website_specific/graph_test/[/tt] and a page of sample usage is provided at [tt]site:_graph_test[/tt]. There is currently no UI/documentation for how to use the blocks, but if you look at the code you can see what parameters are available.';
     }
 
     /**
