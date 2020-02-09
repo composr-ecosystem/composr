@@ -105,9 +105,6 @@ function cns_create_selection_list_usergroups($it = null, $allow_guest_group = t
 function get_first_default_group()
 {
     $default_groups = cns_get_all_default_groups(true);
-    if (empty($default_groups)) {
-        $default_groups = [db_get_first_id() + 8];
-    }
     return array_pop($default_groups);
 }
 
@@ -138,16 +135,35 @@ function cns_get_all_default_groups($include_primary = false, $include_all_confi
             $groups = array_merge($groups, collapse_1d_complexity('id', $rows));
         }
 
-        if (empty($rows)) {
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['id' => db_get_first_id() + 8]);
-            if ($test !== null) {
-                $groups[] = db_get_first_id() + 8;
-            }
+        if (empty($groups)) {
+            $groups[] = db_get_first_id() + 7; // HACKHACK: It should never be in the situation, as there is no g_is_default row, so we use a hard-coded group
         }
     }
 
     $all_default_groups_cache[$include_primary ? 1 : 0] = $groups;
     return $groups;
+}
+
+/**
+ * Get the probation usergroup ID.
+ *
+ * @return ?GROUP Probation usergroup ID (null: none)
+ */
+function get_probation_group()
+{
+    static $probation_group_cache = null;
+    static $filled_probation_group_cache = false;
+    if (!$filled_probation_group_cache) {
+        $filled_probation_group_cache = true;
+
+        $probation_group = get_option('probation_usergroup');
+        if (is_numeric($probation_group)) {
+            $probation_group_cache = intval($probation_group);
+        } else {
+            $probation_group_cache = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $probation_group]);
+        }
+    }
+    return $probation_group_cache;
 }
 
 /**
@@ -361,24 +377,6 @@ function cns_get_best_group_property($groups, $property)
 }
 
 /**
- * Get the probation usergroup ID.
- *
- * @return ~GROUP Probation usergroup ID (false: none)
- */
-function get_probation_group()
-{
-    static $probation_group_cache = null;
-    if ($probation_group_cache === null) {
-        $probation_group = get_option('probation_usergroup');
-        $probation_group_cache = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $probation_group]);
-        if ($probation_group_cache === null) {
-            $probation_group_cache = false;
-        }
-    }
-    return $probation_group_cache;
-}
-
-/**
  * Get a list of the usergroups a member is in (keys say the usergroups, values are irrelevant).
  *
  * @param  ?MEMBER $member_id The member to find the usergroups of (null: current member)
@@ -403,7 +401,7 @@ function cns_get_members_groups($member_id = null, $skip_secret = false, $handle
         $opt = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_on_probation_until');
         if (($opt !== null) && ($opt > time())) {
             $probation_group = get_probation_group();
-            if ($probation_group !== false) {
+            if ($probation_group !== null) {
                 if ($member_id == get_member() && running_script('index')) {
                     static $given_message = false;
                     if (!$given_message) {

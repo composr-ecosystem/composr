@@ -106,6 +106,8 @@ class Module_admin_cns_groups extends Standard_crud_module
 
         require_code('cns_groups_action');
         require_code('cns_groups_action2');
+        require_code('cns_groups');
+        require_code('cns_groups2');
 
         $this->add_text = do_lang_tempcode('GROUP_TEXT');
         $this->edit_text = do_lang_tempcode('GROUP_TEXT');
@@ -229,7 +231,11 @@ class Module_admin_cns_groups extends Standard_crud_module
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '4d72d054883ede5250a3c3e03d27d18c', 'TITLE' => do_lang_tempcode('JOINING')]));
         if (($id === null) || ($id != db_get_first_id())) {
             $fields->attach(form_input_tick(do_lang_tempcode('IS_PRESENTED_AT_INSTALL'), do_lang_tempcode('DESCRIPTION_IS_PRESENTED_AT_INSTALL'), 'is_presented_at_install', $is_presented_at_install == 1));
-            $fields->attach(form_input_tick(do_lang_tempcode('DEFAULT_GROUP'), do_lang_tempcode('DESCRIPTION_IS_DEFAULT_GROUP'), 'is_default', $is_default == 1));
+            if (cns_get_all_default_groups(true) === [$id]) {
+                $hidden->attach(form_input_hidden('is_default', '1'));
+            } else {
+                $fields->attach(form_input_tick(do_lang_tempcode('DEFAULT_GROUP'), do_lang_tempcode('DESCRIPTION_IS_DEFAULT_GROUP'), 'is_default', $is_default == 1));
+            }
         }
         $fields->attach(form_input_tick(do_lang_tempcode('OPEN_MEMBERSHIP'), do_lang_tempcode('OPEN_MEMBERSHIP_DESCRIPTION'), 'open_membership', $open_membership == 1));
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '4ec20b3b67c70e1d4136432ae4fd56b6', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('RANK')]));
@@ -415,10 +421,6 @@ class Module_admin_cns_groups extends Standard_crud_module
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            if (($row['id'] == db_get_first_id() + 8) && ($GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_presented_at_install' => 1]) == 0)) {
-                $row['g_is_presented_at_install'] = 1;
-            }
-
             $fr = [
                 protect_from_escaping(cns_get_group_link($row['id'])),
                 ($row['g_is_presented_at_install'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
@@ -503,7 +505,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      */
     public function may_delete_this($id)
     {
-        return (intval($id) != db_get_first_id() + 0) && (intval($id) != db_get_first_id() + 1) && (intval($id) != db_get_first_id() + 8);
+        return !in_array(intval($id), get_all_preserved_groups(true));
     }
 
     /**
@@ -524,10 +526,6 @@ class Module_admin_cns_groups extends Standard_crud_module
             $username = '';
         } else {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($myrow['g_group_leader'], false, USERNAME_DEFAULT_BLANK);
-        }
-
-        if ((intval($id) == db_get_first_id() + 8) && ($GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_presented_at_install' => '1']) == 0)) {
-            $myrow['g_is_presented_at_install'] = 1;
         }
 
         list($fields, $hidden) = $this->get_form_fields(intval($id), get_translated_text($myrow['g_name'], $GLOBALS['FORUM_DB']), $myrow['g_is_default'], $myrow['g_is_super_admin'], $myrow['g_is_super_moderator'], $username, get_translated_text($myrow['g_title'], $GLOBALS['FORUM_DB']), $myrow['g_rank_image'], $myrow['g_promotion_target'], $myrow['g_promotion_threshold'], $myrow['g_flood_control_submit_secs'], $myrow['g_flood_control_access_secs'], $myrow['g_gift_points_base'], $myrow['g_gift_points_per_day'], $myrow['g_max_daily_upload_mb'], $myrow['g_max_attachments_per_post'], $myrow['g_max_avatar_width'], $myrow['g_max_avatar_height'], $myrow['g_max_post_length_comcode'], $myrow['g_max_sig_length_comcode'], $myrow['g_enquire_on_new_ips'], $myrow['g_is_presented_at_install'], $myrow['g_hidden'], $myrow['g_order'], $myrow['g_rank_image_pri_only'], $myrow['g_open_membership'], $myrow['g_is_private_club']);

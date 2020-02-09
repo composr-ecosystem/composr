@@ -205,7 +205,8 @@ function cns_delete_group($group_id, $target_group = null)
         $target_group = get_first_default_group();
     }
 
-    if (($group_id == db_get_first_id() + 0) || ($group_id == db_get_first_id() + 1) || ($group_id == db_get_first_id() + 8)) {
+    require_code('cns_groups2');
+    if (in_array($group_id, get_all_preserved_groups(true))) {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 

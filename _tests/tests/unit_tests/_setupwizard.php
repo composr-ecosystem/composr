@@ -53,7 +53,7 @@ class _setupwizard_test_set extends cms_test_case
             'have_default_catalogues_faqs' => '1',
             'have_default_catalogues_links' => '1',
             'have_default_catalogues_contacts' => '1',
-            'have_default_rank_set' => '1',
+            'rank_set' => 'fun',
             'have_default_full_emoticon_set' => '1',
             'have_default_cpf_set' => '1',
             'keep_news_categories' => '1',

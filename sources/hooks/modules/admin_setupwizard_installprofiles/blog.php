@@ -69,7 +69,7 @@ class Hook_admin_setupwizard_installprofiles_blog
             'have_default_catalogues_contacts' => '0',
             'keep_personal_galleries' => '0',
             'keep_news_categories' => '1',
-            'have_default_rank_set' => '0',
+            'rank_set' => 'none',
             'show_content_tagging' => '1',
             'show_content_tagging_inline' => '1',
             'show_screen_actions' => '1',

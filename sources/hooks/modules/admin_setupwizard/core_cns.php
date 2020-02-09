@@ -40,8 +40,20 @@ class Hook_sw_core_cns
         require_lang('cns_special_cpf');
 
         if (!is_on_multi_site_network()) {
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['id' => db_get_first_id() + 7]);
-            $settings['have_default_rank_set'] = ($test === null) ? '0' : '1';
+            require_code('cns_groups2');
+            $ladder_groups = get_default_rank_ladder_groups();
+            switch (count($ladder_groups)) {
+                case 5:
+                    $settings['rank_set'] = 'fun';
+                    break;
+                case 3:
+                    $settings['rank_set'] = 'simple';
+                    break;
+                case 1:
+                default:
+                    $settings['rank_set'] = 'none';
+                    break;
+            }
 
             $sql = 'SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_emoticons WHERE 1=1';
             $sql .= ' AND ' . db_string_not_equal_to('e_code', ':P');
@@ -85,9 +97,12 @@ class Hook_sw_core_cns
         $fields = new Tempcode();
 
         if (!is_on_multi_site_network()) {
-            if ($current_settings['have_default_rank_set'] == '1') {
-                $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_RANK_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_RANK_SET'), 'have_default_rank_set', $field_defaults['have_default_rank_set'] == '1'));
+            require_lang('cns_ranks');
+            $rank_set_options = new Tempcode();
+            foreach (['none', 'simple', 'fun'] as $rank_set) {
+                $rank_set_options->attach(form_input_list_entry($rank_set, $rank_set == $field_defaults['rank_set'], do_lang_tempcode('RANK_SET_' . $rank_set)));
             }
+            $fields->attach(form_input_list(do_lang_tempcode('RANK_SET'), do_lang_tempcode('DESCRIPTION_RANK_SET'), 'rank_set', $rank_set_options));
 
             $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_FULL_EMOTICON_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_FULL_EMOTICON_SET'), 'have_default_full_emoticon_set', $field_defaults['have_default_full_emoticon_set'] == '1'));
 
@@ -110,24 +125,16 @@ class Hook_sw_core_cns
 
         require_lang('cns');
         if (!is_on_multi_site_network()) {
-            if (post_param_integer('have_default_rank_set', 0) == 0) {
-                $group_rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id'], ['id' => db_get_first_id() + 8]);
-                if (array_key_exists(0, $group_rows)) {
-                    $promotion_target = cns_get_group_property(db_get_first_id() + 8, 'promotion_target');
-                    if ($promotion_target !== null) {
-                        $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => null, 'g_promotion_threshold' => null, 'g_rank_image' => ''], ['id' => db_get_first_id() + 8], '', 1);
-                        for ($i = db_get_first_id() + 4; $i < db_get_first_id() + 8; $i++) {
-                            require_code('cns_groups_action');
-                            require_code('cns_groups_action2');
-                            cns_delete_group($i);
-                        }
-                    }
-                    $GLOBALS['FORUM_DB']->query_update('f_groups', lang_remap('g_name', $group_rows[0]['id'], do_lang('MEMBER')), ['id' => db_get_first_id() + 8], '', 1);
-                }
+            $rank_set = post_param_string('rank_set', null);
+            if ($rank_set !== null) {
+                require_code('cns_groups_action');
+                cns_make_rank_set($rank_set);
             }
+
             if (post_param_integer('have_default_full_emoticon_set', 0) == 0) {
                 $GLOBALS['FORUM_DB']->query('DELETE FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_emoticons WHERE e_code<>\':P\' AND e_code<>\';)\' AND e_code<>\':)\' AND e_code<>\':)\' AND e_code<>\':\\\'(\'');
             }
+
             if (post_param_integer('have_default_cpf_set', 0) == 0) {
                 $fields = ['interests', 'location', 'occupation'];
                 foreach ($fields as $field) {

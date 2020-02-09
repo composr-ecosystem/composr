@@ -49,7 +49,7 @@
  * @param  BINARY $is_private_club Whether this usergroup is a private club. Private clubs may be managed in the CMS zone, and do not have any special permissions - except over their own associated forum.
  * @param  boolean $uniqify Whether to force the title as unique, if there's a conflict
  * @param  boolean $comes_with_permissions Whether permissions should be auto-copied
- * @return AUTO_LINK The ID of the new
+ * @return AUTO_LINK The ID of the new usergroup
  */
 function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_moderator = 0, $title = '', $rank_image = '', $promotion_target = null, $promotion_threshold = null, $group_leader = null, $flood_control_submit_secs = null, $flood_control_access_secs = null, $max_daily_upload_mb = null, $max_attachments_per_post = null, $max_avatar_width = null, $max_avatar_height = null, $max_post_length_comcode = null, $max_sig_length_comcode = null, $gift_points_base = null, $gift_points_per_day = null, $enquire_on_new_ips = 0, $is_presented_at_install = 0, $hidden = 0, $order = null, $rank_image_pri_only = 1, $open_membership = 0, $is_private_club = 0, $uniqify = false, $comes_with_permissions = true)
 {
@@ -130,45 +130,9 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
     $map += insert_lang('g_title', $title, 2, $GLOBALS['FORUM_DB']);
     $group_id = $GLOBALS['FORUM_DB']->query_insert('f_groups', $map, true);
 
-    if (($group_id > db_get_first_id() + 8) && ($is_private_club == 0) && ($comes_with_permissions)) {
+    if (((!running_script('install')) || ($name == do_lang('PROBATION'))) && ($is_private_club == 0) && ($comes_with_permissions)) {
         // Copy permissions from members...
-
-        require_code('cns_groups');
-
-        $group_members = get_first_default_group();
-
-        $member_access = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['group_id' => $group_members]);
-        foreach ($member_access as &$access) {
-            $access['group_id'] = $group_id;
-        }
-        $GLOBALS['SITE_DB']->query_insert('group_privileges', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
-        if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
-            $member_access = $GLOBALS['FORUM_DB']->query_select('group_privileges', ['*'], ['group_id' => $group_members, 'module_the_name' => 'forums']);
-            foreach ($member_access as &$access) {
-                $access['group_id'] = $group_id;
-            }
-            $GLOBALS['FORUM_DB']->query_insert('group_privileges', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
-        }
-
-        $member_access = $GLOBALS['SITE_DB']->query_select('group_category_access', ['*'], ['group_id' => $group_members]);
-        foreach ($member_access as &$access) {
-            $access['group_id'] = $group_id;
-        }
-        $GLOBALS['SITE_DB']->query_insert('group_category_access', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
-        if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
-            $member_access = $GLOBALS['FORUM_DB']->query_select('group_category_access', ['*'], ['group_id' => $group_members, 'module_the_name' => 'forums']);
-            foreach ($member_access as &$access) {
-                $access['group_id'] = $group_id;
-            }
-            $GLOBALS['FORUM_DB']->query_insert('group_category_access', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
-        }
-
-        $member_access = $GLOBALS['SITE_DB']->query_select('group_zone_access', ['*'], ['group_id' => $group_members]);
-        foreach ($member_access as &$access) {
-            $access['group_id'] = $group_id;
-        }
-
-        $GLOBALS['SITE_DB']->query_insert('group_zone_access', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
+        cns_copy_group_permissions($group_id);
     }
 
     log_it('ADD_GROUP', strval($group_id), $name);
@@ -203,6 +167,142 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
 
     require_code('sitemap_xml');
     notify_sitemap_node_add('_SEARCH:groups:view:' . strval($group_id));
+
+    return $group_id;
+}
+
+/**
+ * Copy permissions from the first default group to another group.
+ *
+ * @param  AUTO_LINK $group_id The usergroup to copy to
+ */
+function cns_copy_group_permissions($group_id)
+{
+    require_code('cns_groups');
+    $group_members = get_first_default_group();
+
+    $member_access = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['group_id' => $group_members]);
+    foreach ($member_access as &$access) {
+        $access['group_id'] = $group_id;
+    }
+    $GLOBALS['SITE_DB']->query_insert('group_privileges', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
+    if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
+        $member_access = $GLOBALS['FORUM_DB']->query_select('group_privileges', ['*'], ['group_id' => $group_members, 'module_the_name' => 'forums']);
+        foreach ($member_access as &$access) {
+            $access['group_id'] = $group_id;
+        }
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
+    }
+
+    $member_access = $GLOBALS['SITE_DB']->query_select('group_category_access', ['*'], ['group_id' => $group_members]);
+    foreach ($member_access as &$access) {
+        $access['group_id'] = $group_id;
+    }
+    $GLOBALS['SITE_DB']->query_insert('group_category_access', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
+    if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
+        $member_access = $GLOBALS['FORUM_DB']->query_select('group_category_access', ['*'], ['group_id' => $group_members, 'module_the_name' => 'forums']);
+        foreach ($member_access as &$access) {
+            $access['group_id'] = $group_id;
+        }
+        $GLOBALS['FORUM_DB']->query_insert('group_category_access', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
+    }
+
+    $member_access = $GLOBALS['SITE_DB']->query_select('group_zone_access', ['*'], ['group_id' => $group_members]);
+    foreach ($member_access as &$access) {
+        $access['group_id'] = $group_id;
+    }
+
+    $GLOBALS['SITE_DB']->query_insert('group_zone_access', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
+}
+
+/**
+ * Create/change the rank set.
+ *
+ * @param  string $rank_set The rank set wanted
+ * @set none simple fun
+ * @return array A list of usergroup IDs
+ */
+function cns_make_rank_set($rank_set)
+{
+    require_lang('cns_ranks');
+
+    if (running_script('install')) {
+        $member_group_0 = null;
+    } else {
+        require_code('cns_groups2');
+        $ladder_groups = get_default_rank_ladder_groups();
+        $member_group_0 = array_shift($ladder_groups);
+        $member_group_1 = array_shift($ladder_groups);
+        $member_group_2 = array_shift($ladder_groups);
+        $member_group_3 = array_shift($ladder_groups);
+        $member_group_4 = array_shift($ladder_groups);
+
+        $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' =>null]);
+    }
+
+    switch ($rank_set) {
+        case 'fun':
+            $member_group_4 = cns_make_or_edit_group($member_group_4, do_lang('DEFAULT_RANK_fun_4'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/4');
+            $member_group_3 = cns_make_or_edit_group($member_group_3, do_lang('DEFAULT_RANK_fun_3'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/3', $member_group_4, 10000);
+            $member_group_2 = cns_make_or_edit_group($member_group_2, do_lang('DEFAULT_RANK_fun_2'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/2', $member_group_3, 2500);
+            $member_group_1 = cns_make_or_edit_group($member_group_1, do_lang('DEFAULT_RANK_fun_1'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/1', $member_group_2, 400);
+            $member_group_0 = cns_make_or_edit_group($member_group_0, do_lang('DEFAULT_RANK_fun_0'), 1, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/0', $member_group_1, 100);
+            return [$member_group_0, $member_group_1, $member_group_2, $member_group_3, $member_group_4];
+
+        case 'simple':
+            foreach ([$member_group_4, $member_group_3] as $group_to_delete) {
+                if ($group_to_delete !== null) {
+                    require_code('cns_groups_action2');
+                    cns_delete_group($group_to_delete, $member_group_0);
+                }
+            }
+            $member_group_4 = null;
+            $member_group_3 = null;
+            $member_group_2 = cns_make_or_edit_group($member_group_2, do_lang('DEFAULT_RANK_simple_2'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'icons/tiers/gold', $member_group_3, 10000);
+            $member_group_1 = cns_make_or_edit_group($member_group_1, do_lang('DEFAULT_RANK_simple_1'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'icons/tiers/silver', $member_group_2, 1000);
+            $member_group_0 = cns_make_or_edit_group($member_group_0, do_lang('DEFAULT_RANK_simple_0'), 1, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'icons/tiers/bronze', $member_group_1, 100);
+            return [$member_group_0, $member_group_1, $member_group_2];
+
+        case 'none':
+            foreach ([$member_group_4, $member_group_3, $member_group_2, $member_group_1] as $group_to_delete) {
+                if ($group_to_delete !== null) {
+                    require_code('cns_groups_action2');
+                    cns_delete_group($group_to_delete, $member_group_0);
+                }
+            }
+            $member_group_4 = null;
+            $member_group_3 = null;
+            $member_group_2 = null;
+            $member_group_1 = null;
+            $member_group_0 = cns_make_or_edit_group($member_group_0, do_lang('MEMBERS'), 1, 0, 0, do_lang('DESCRIPTION_MEMBERS'));
+            return [$member_group_0];
+    }
+
+    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+}
+
+/**
+ * Add or edit a usergroup with simple settings.
+ *
+ * @param  ?AUTO_LINK $group_id The ID of the usergroup to edit (null: adding)
+ * @param  SHORT_TEXT $name The name of the usergroup
+ * @param  BINARY $is_default Whether members are automatically put into the when they join
+ * @param  BINARY $is_super_admin Whether members of this usergroup are all super administrators
+ * @param  BINARY $is_super_moderator Whether members of this usergroup are all super moderators
+ * @param  SHORT_TEXT $title The title for primary members of this usergroup that don't have their own title
+ * @param  URLPATH $rank_image The rank image for this
+ * @param  ?GROUP $promotion_target The that members of this usergroup get promoted to at point threshold (null: no promotion prospects)
+ * @param  ?integer $promotion_threshold The point threshold for promotion (null: no promotion prospects)
+ * @return AUTO_LINK The ID of the usergroup
+ */
+function cns_make_or_edit_group($group_id, $name, $is_default = 0, $is_super_admin = 0, $is_super_moderator = 0, $title = '', $rank_image = '', $promotion_target = null, $promotion_threshold = null)
+{
+    if ($group_id === null) {
+        $group_id = cns_make_group($name, $is_default, $is_super_admin, $is_super_moderator, $title, $rank_image, $promotion_target, $promotion_threshold);
+    } else {
+        require_code('cns_groups_action2');
+        cns_edit_group($group_id, $name, $is_default, $is_super_admin, $is_super_moderator, $title, $rank_image, $promotion_target, $promotion_threshold, null, null, null, null, null, null, null, null, null, null, null, 0, 0, 0, null, 1, 0, 0);
+    }
 
     return $group_id;
 }

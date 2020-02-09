@@ -64,7 +64,7 @@ class Hook_admin_setupwizard_installprofiles_community
             'have_default_catalogues_contacts' => '0',
             'keep_personal_galleries' => '1',
             'keep_news_categories' => '1',
-            'have_default_rank_set' => '1',
+            'rank_set' => 'none',
             'show_content_tagging' => '0',
             'show_content_tagging_inline' => '0',
             'show_screen_actions' => '0',

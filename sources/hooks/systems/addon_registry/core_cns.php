@@ -325,6 +325,7 @@ class Hook_addon_registry_core_cns
             'themes/default/images/cns_emoticons/tired.gif.png',
             'themes/default/images/cns_emoticons/whew.gif.png',
             'lang/EN/cns.ini',
+            'lang/EN/cns_ranks.ini',
             'lang/EN/cns_special_cpf.ini',
             'lang/EN/cns_components.ini',
             'lang/EN/cns_config.ini',

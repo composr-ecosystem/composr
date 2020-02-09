@@ -506,12 +506,8 @@ function _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $ne
 
     if ($new_comcode_page_row['p_submitter'] === null) {
         $as_admin = true;
-        $members = $GLOBALS['FORUM_DRIVER']->member_group_query($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), 1);
-        if (!empty($members)) {
-            $new_comcode_page_row['p_submitter'] = $GLOBALS['FORUM_DRIVER']->mrow_id($members[key($members)]);
-        } else {
-            $new_comcode_page_row['p_submitter'] = db_get_first_id() + 1; // On Conversr and most forums, this is the first admin member
-        }
+        require_code('users_active_actions');
+        $new_comcode_page_row['p_submitter'] = get_first_admin_user();
     }
 
     $_comcode_page_row = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['*'], ['the_zone' => $zone, 'the_page' => $codename], '', 1);

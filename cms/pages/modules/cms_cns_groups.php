@@ -98,6 +98,8 @@ class Module_cms_cns_groups extends Standard_crud_module
         require_code('cns_forums_action');
         require_code('cns_groups_action2');
         require_code('cns_forums_action2');
+        require_code('cns_groups');
+        require_code('cns_groups2');
 
         $this->add_one_label = do_lang_tempcode('ADD_CLUB');
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_CLUB');
@@ -248,7 +250,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      */
     public function may_delete_this($id)
     {
-        return (intval($id) != db_get_first_id() + 0) && (intval($id) != db_get_first_id() + 1) && (intval($id) != db_get_first_id() + 8);
+        return !in_array(intval($id), get_all_preserved_groups(true));
     }
 
     /**

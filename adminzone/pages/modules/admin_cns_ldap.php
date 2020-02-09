@@ -110,6 +110,8 @@ class Module_admin_cns_ldap
 
         require_code('cns_groups_action');
         require_code('cns_groups_action2');
+        require_code('cns_groups');
+        require_code('cns_groups2');
 
         global $LDAP_CONNECTION;
         if (($LDAP_CONNECTION === null) && !$GLOBALS['DEV_MODE']) {
@@ -154,7 +156,7 @@ class Module_admin_cns_ldap
         }
         $all_cms_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
         foreach ($all_cms_groups as $id => $group) {
-            if ((!in_array($group, $all_ldap_groups)) && ($id != db_get_first_id() + 0) && ($id != db_get_first_id() + 1) && ($id != db_get_first_id() + 8)) {
+            if ((!in_array($group, $all_ldap_groups)) && (!in_array($group, get_all_preserved_groups(true)))) {
                 $tpl = do_template('CNS_LDAP_LIST_ENTRY', ['_GUID' => '48de4d176157941a0ce7caa7a1c395fb', 'NAME' => 'delete_group_' . strval($id), 'NICE_NAME' => $group]);
                 $groups_delete->attach($tpl);
             }

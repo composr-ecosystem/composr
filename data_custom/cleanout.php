@@ -114,6 +114,9 @@ function cleanup()
 
     $GLOBALS['SITE_INFO']['no_email_output'] = '1';
 
+    require_code('cns_groups2');
+    $all_groups_to_preserve = get_all_preserved_groups();
+
     $purgeable = [
         [
             'delete_author',
@@ -304,7 +307,7 @@ function cleanup()
             'cns_groups_action2',
             'f_groups',
             'id',
-            [db_get_first_id(), db_get_first_id() + 1, db_get_first_id() + 2, db_get_first_id() + 3, db_get_first_id() + 4, db_get_first_id() + 5, db_get_first_id() + 6, db_get_first_id() + 7, db_get_first_id() + 8],
+            $all_groups_to_preserve,
         ],
 
         [
