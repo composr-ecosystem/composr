@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -289,18 +289,22 @@ class Hook_addon_registry_search
      */
     public function tpl_preview__tags()
     {
+        $tags = [
+            [
+                'LINK_LIMITEDSCOPE' => placeholder_url(),
+                'LINK_FULLSCOPE' => placeholder_url(),
+                'TAG' => lorem_word(),
+            ],
+            [
+                'LINK_LIMITEDSCOPE' => placeholder_url(),
+                'LINK_FULLSCOPE' => placeholder_url(),
+                'TAG' => lorem_word(),
+            ],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('TAGS', [
-                'TAGS' => [
-                    [
-                        'LINK_FULLSCOPE' => placeholder_url(),
-                        'TAG' => lorem_word(),
-                    ],
-                    [
-                        'LINK_FULLSCOPE' => placeholder_url(),
-                        'TAG' => lorem_word(),
-                    ],
-                ],
+                'TAGS' => $tags,
                 'TYPE' => lorem_phrase(),
             ]), null, '', true)
         ];
@@ -367,7 +371,6 @@ class Hook_addon_registry_search
             $options->attach(do_lorem_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', [
                 'NAME' => placeholder_random_id(),
                 'DISPLAY' => lorem_phrase(),
-                'SPECIAL' => lorem_phrase(),
                 'CHECKED' => lorem_phrase(),
             ]));
         }
@@ -481,7 +484,7 @@ class Hook_addon_registry_search
             $result->attach(do_lorem_template('SEARCH_RESULT_CATALOGUE_ENTRIES', [
                 'BUILDUP' => lorem_phrase(),
                 'NAME' => lorem_word(),
-                'TITLE' => lorem_word_2(),
+                'TITLE' => lorem_phrase(),
             ]));
         }
 
@@ -507,6 +510,13 @@ class Hook_addon_registry_search
                 'SPECIALISATION' => $specialisation,
                 'URL' => placeholder_url(),
                 'HAS_TEMPLATE_SEARCH' => true,
+                'SEARCH_TYPE' => lorem_word(),
+                'CUTOFF_FROM_DAY' => '',
+                'CUTOFF_FROM_MONTH' => '',
+                'CUTOFF_FROM_YEAR' => '',
+                'CUTOFF_TO_DAY' => '',
+                'CUTOFF_TO_MONTH' => '',
+                'CUTOFF_TO_YEAR' => '',
             ]), null, '', true)
         ];
     }

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -142,9 +142,9 @@ class Hook_addon_registry_forum_blocks
             $topics[] = [
                 'POST' => lorem_paragraph(),
                 'FORUM_ID' => null,
-                'FORUM_NAME' => lorem_word(),
+                'FORUM_NAME' => lorem_phrase(),
                 'TOPIC_URL' => placeholder_url(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'DATE' => placeholder_date(),
                 'DATE_RAW' => placeholder_date_raw(),
                 'USERNAME' => lorem_word(),
@@ -156,9 +156,9 @@ class Hook_addon_registry_forum_blocks
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_TOPICS', [
                 'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'TOPICS' => $topics,
-                'FORUM_NAME' => lorem_word_html(),
+                'FORUM_NAME' => lorem_phrase(),
                 'SUBMIT_URL' => placeholder_url(),
             ]), null, '', true)
         ];
@@ -179,26 +179,26 @@ class Hook_addon_registry_forum_blocks
         $news = [];
         foreach (placeholder_array() as $k => $v) {
             $news[] = [
-                'REPLIES' => lorem_word(),
-                'FIRSTTIME' => lorem_word(),
-                'LASTTIME' => lorem_word(),
-                'CLOSED' => lorem_word(),
+                'REPLIES' => placeholder_number(),
+                'FIRSTTIME' => placeholder_date_raw(),
+                'LASTTIME' => placeholder_date_raw(),
+                'CLOSED' => false,
                 'FIRSTUSERNAME' => lorem_word(),
                 'LASTUSERNAME' => lorem_word(),
-                'FIRSTMEMBERID' => placeholder_random_id(),
-                'LASTMEMBERID' => placeholder_random_id(),
+                'FIRSTMEMBERID' => placeholder_id(),
+                'LASTMEMBERID' => placeholder_id(),
                 '_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'FULL_URL' => placeholder_url(),
-                'NEWS_TITLE' => escape_html(lorem_word()),
+                'NEWS_TITLE' => lorem_phrase_html(),
             ];
         }
 
         return [
             lorem_globalise(do_lorem_template('BLOCK_SIDE_FORUM_NEWS', [
                 'BLOCK_ID' => lorem_word(),
-                'FORUM_NAME' => lorem_word_html(),
-                'TITLE' => lorem_phrase(),
+                'FORUM_NAME' => lorem_phrase(),
+                'TITLE' => lorem_phrase_html(),
                 'NEWS' => $news,
                 'SUBMIT_URL' => placeholder_url(),
                 'ARCHIVE_URL' => placeholder_url(),
@@ -222,13 +222,6 @@ class Hook_addon_registry_forum_blocks
             $out->attach(do_lorem_template('NEWS_BOX', [
                 'TRUNCATE' => false,
                 'BLOG' => false,
-                'FIRSTTIME' => lorem_word(),
-                'LASTTIME' => lorem_word(),
-                'CLOSED' => lorem_word(),
-                'FIRSTUSERNAME' => lorem_word(),
-                'LASTUSERNAME' => lorem_word(),
-                'FIRSTMEMBERID' => placeholder_random_id(),
-                'LASTMEMBERID' => placeholder_random_id(),
                 'ID' => placeholder_random_id(),
                 'FULL_URL' => placeholder_url(),
                 'SUBMITTER' => placeholder_id(),
@@ -244,20 +237,35 @@ class Hook_addon_registry_forum_blocks
                 'AUTHOR_URL' => placeholder_url(),
                 'NEWS' => lorem_paragraph(),
                 'GIVE_CONTEXT' => false,
+                'FORUM_ID' => null,
+                '_AUTHOR' => null,
+                'AVATAR' => null,
+                'COMMENTS' => null,
+                'VIEW' => null,
+                'COMMENT_COUNT' => null,
+                'READ_MORE' => null,
+                'FIRSTTIME' => placeholder_date(),
+                'LASTTIME' => placeholder_date(),
+                'CLOSED' => false,
+                'FIRSTUSERNAME' => lorem_word(),
+                'LASTUSERNAME' => lorem_word(),
+                'FIRSTMEMBERID' => placeholder_id(),
+                'LASTMEMBERID' => placeholder_id(),
+                'BRIEF' => lorem_sentence_html(),
             ]));
         }
 
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_NEWS', [
                 'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_word(),
-                'FORUM_NAME' => lorem_word_html(),
+                'TITLE' => lorem_phrase_html(),
+                'FORUM_NAME' => lorem_phrase(),
                 'CONTENT' => $out,
-                'BRIEF' => lorem_phrase(),
                 'ARCHIVE_URL' => placeholder_url(),
                 'SUBMIT_URL' => placeholder_url(),
                 'RSS_URL' => placeholder_url(),
                 'ATOM_URL' => placeholder_url(),
+                'BRIEF' => lorem_sentence_html(),
             ]), null, '', true)
         ];
     }

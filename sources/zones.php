@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -1193,7 +1193,7 @@ function do_block($codename, $map = [])
                             $REQUIRED_ALL_LANG = [];
                         }
                         set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_cache_flags, array_keys($LANGS_REQUESTED), array_keys($JAVASCRIPTS), array_keys($CSSS), true);
-                    } elseif (($ttl !== null) && ($cache->is_empty())) { // Try again with no TTL, if we currently failed but did impose a TTL
+                    } elseif (($ttl === null) && ($cache->is_empty())) { // Try again with no TTL, if we currently failed but did impose a TTL
                         $LANGS_REQUESTED += $backup_langs_requested;
                         $REQUIRED_ALL_LANG = $backup_required_all_lang;
                         restore_output_state(false, true);

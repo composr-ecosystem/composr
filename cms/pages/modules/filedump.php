@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -487,6 +487,7 @@ class Module_filedump
                         'NAME' => 'select_' . strval($i),
                         'VALUE' => rtrim($filename, '/'),
                         'HIDDEN' => form_input_hidden('subpath_file_' . strval($i), $_subpath),
+                        'TICKED' => false,
                     ]));
                 }
 

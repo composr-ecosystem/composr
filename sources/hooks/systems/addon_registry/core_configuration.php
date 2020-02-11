@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -433,7 +433,7 @@ class Hook_addon_registry_core_configuration
 
         foreach (placeholder_array() as $k => $group) {
             $groups[] = [
-                'GROUP_DESCRIPTION' => lorem_word(),
+                'GROUP_DESCRIPTION' => lorem_phrase(),
                 'GROUP_NAME' => $group,
                 'GROUP' => placeholder_fields(),
                 'GROUP_TITLE' => 'ID' . strval($k),

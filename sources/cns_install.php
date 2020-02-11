@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -689,6 +689,7 @@ function install_cns($upgrade_from = null)
         require_code('zones2');
         reinstall_module('adminzone', 'admin_permissions');
 
+        require_lang('cns_ranks');
         // Make guest
         $guest_group = cns_make_group(do_lang('GUESTS'), 0, 0, 0, do_lang('DESCRIPTION_GUESTS'));
         // Make administrators
@@ -696,11 +697,7 @@ function install_cns($upgrade_from = null)
         // Make super moderators
         $super_moderator_group = cns_make_group(do_lang('SUPER_MODERATORS'), 0, 0, 1, do_lang('DESCRIPTION_SUPER_MODERATORS'), 'cns_rank_images/mod', null, null, null, 0);
         // Make member
-        $member_group_4 = cns_make_group(do_lang('DEFAULT_RANK_4'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/4');
-        $member_group_3 = cns_make_group(do_lang('DEFAULT_RANK_3'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/3', $member_group_4, 10000);
-        $member_group_2 = cns_make_group(do_lang('DEFAULT_RANK_2'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/2', $member_group_3, 2500);
-        $member_group_1 = cns_make_group(do_lang('DEFAULT_RANK_1'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/1', $member_group_2, 400);
-        $member_group_0 = cns_make_group(do_lang('DEFAULT_RANK_0'), 0, 0, 0, do_lang('DESCRIPTION_MEMBERS'), 'cns_rank_images/0', $member_group_1, 100); // Not default because primary is always defaulted to this one
+        list($member_group_0, $member_group_1, $member_group_2, $member_group_3, $member_group_4) = cns_make_rank_set('fun');
         // Make probation
         $probation_group = cns_make_group(do_lang('PROBATION'), 0, 0, 0, do_lang('DESCRIPTION_PROBATION'), '', null, null, null, 0);
 
@@ -1120,5 +1117,10 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_inviter']);
         $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'member_id', ['pv_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_members', 'last_visit_time_2', ['m_last_visit_time']);
+
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['g_is_default' => 1]);
+        if ($test === null) {
+            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_is_default' => 1], ['id' => db_get_first_id() + 8], '', 1);
+        }
     }
 }

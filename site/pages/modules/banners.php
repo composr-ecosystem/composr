@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -454,6 +454,7 @@ class Module_banners
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => null,
             'POST_URL' => get_self_url(),
+            'JS_FUNCTION_CALLS' => [],
         ]);
 
         require_code('templates_internalise_screen');

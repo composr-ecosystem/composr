@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -65,6 +65,7 @@ function render_iotd_box($myrow, $zone = '_SEARCH', $include_manage_links = fals
         'DATE_RAW' => ($myrow['date_and_time'] === null) ? '' : strval($myrow['date_and_time']),
         'IS_CURRENT' => ($myrow['is_current'] == 1),
         'THUMB_URL' => $thumb_url,
+        'URL' => $image_url,
         'VIEW_URL' => $view_url,
         'ID' => strval($myrow['id']),
         'EDIT_URL' => $edit_url,

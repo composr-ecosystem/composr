@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -38,7 +38,12 @@ class Hook_preview_cns_welcome_email
             require_code('mail');
 
             $subject_line = post_param_string('subject');
-            $message_raw = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => 'e065391099b1c7273ca1de940a1acb66', 'CONTENT' => post_param_string('text'), 'LANG' => get_site_default_lang()], null, false, null, '.txt', 'text');
+            $message_raw = do_template('NEWSLETTER_DEFAULT_FCOMCODE', [
+                '_GUID' => 'e065391099b1c7273ca1de940a1acb66',
+                'CONTENT' => post_param_string('text'),
+                'SUBJECT' => $subject_line,
+                'LANG' => get_site_default_lang(),
+            ], null, false, null, '.txt', 'text');
 
             $to = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
             if ($to == '') {

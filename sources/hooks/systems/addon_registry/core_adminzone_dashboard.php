@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -190,8 +190,8 @@ class Hook_addon_registry_core_adminzone_dashboard
         $formatted = [];
         foreach (placeholder_array() as $v) {
             $formatted[] = [
-                'TITLE' => lorem_word(),
-                'DESC' => lorem_word_2(),
+                'TITLE' => lorem_phrase(),
+                'DESC' => lorem_phrase(),
             ];
         }
         $unformatted = [];
@@ -225,7 +225,7 @@ class Hook_addon_registry_core_adminzone_dashboard
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_NOTES', [
                 'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'SCROLLS' => lorem_phrase(),
                 'CONTENTS' => lorem_phrase(),
                 'URL' => placeholder_url(),
@@ -253,7 +253,6 @@ class Hook_addon_registry_core_adminzone_dashboard
             'STATUS' => $_status,
             'TASK' => lorem_phrase(),
             'INFO' => $info,
-            'NUM_QUEUE' => placeholder_id(),
         ]);
 
         $status = do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', []);
@@ -269,7 +268,6 @@ class Hook_addon_registry_core_adminzone_dashboard
             'STATUS' => $status,
             'TASK' => lorem_phrase(),
             'INFO' => lorem_phrase(),
-            'NUM_QUEUE' => placeholder_id(),
         ]);
 
         $todo = new Tempcode();
@@ -278,24 +276,24 @@ class Hook_addon_registry_core_adminzone_dashboard
             'STATUS' => do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1'),
             'TASK' => lorem_phrase(),
             'INFO' => lorem_phrase(),
-            'NUM_QUEUE' => placeholder_id(),
         ]));
         $todo->attach(do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             'URL' => placeholder_url(),
             'STATUS' => do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_NA'),
             'TASK' => lorem_phrase(),
             'INFO' => lorem_phrase(),
-            'NUM_QUEUE' => placeholder_id(),
         ]));
 
         $custom_task = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $custom_task->attach(do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST_CUSTOM_TASK', [
                 'TASK_DONE' => 'checklist_todo',
-                'ADD_TIME' => placeholder_date(),
                 'RECUR_INTERVAL' => '',
                 'ID' => placeholder_id(),
-                'TASK_TITLE' => lorem_word_2(),
+                'TASK_TITLE' => lorem_phrase(),
+                'ADD_DATE' => placeholder_date(),
+                'ADD_TIME' => placeholder_date(), // Actually it's something "ago", but this will do
+                'RECUR_EVERY' => '',
             ]));
         }
 
@@ -303,7 +301,6 @@ class Hook_addon_registry_core_adminzone_dashboard
             lorem_globalise(do_lorem_template('BLOCK_MAIN_STAFF_CHECKLIST', [
                 'BLOCK_ID' => lorem_word(),
                 'URL' => placeholder_url(),
-                'NOTES' => lorem_phrase(),
                 'CUSTOM_TASKS' => $custom_task,
                 'DATES' => $dates,
                 'NO_TIMES' => $no_times,

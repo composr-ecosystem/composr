@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -204,7 +204,7 @@ class Hook_addon_registry_banners
     {
         return [
             lorem_globalise(do_lorem_template('BANNER_SHOW_CODE', [
-                'NAME' => placeholder_random_id(),
+                'NAME' => placeholder_id(),
                 'WIDTH' => placeholder_number(),
                 'HEIGHT' => placeholder_number(),
                 'TYPE' => lorem_word(),
@@ -241,16 +241,22 @@ class Hook_addon_registry_banners
      */
     public function tpl_preview__block_main_top_sites()
     {
+        $banners = [];
+        foreach (placeholder_array() as $k => $v) {
+            $banners[] = [
+                'DESCRIPTION' => lorem_word(),
+                'BANNER' => $v,
+                'HITS_FROM' => placeholder_number(),
+                'HITS_TO' => placeholder_number(),
+            ];
+        }
+
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_TOP_SITES', [
                 'BLOCK_ID' => lorem_word(),
                 'TYPE' => lorem_phrase(),
-                'BANNERS' => placeholder_array(),
+                'BANNERS' => $banners,
                 'SUBMIT_URL' => placeholder_url(),
-                'DESCRIPTION' => lorem_word(),
-                'BANNER' => lorem_word_2(),
-                'HITS_FROM' => placeholder_number(),
-                'HITS_TO' => placeholder_number(),
             ]), null, '', true)
         ];
     }
@@ -274,6 +280,7 @@ class Hook_addon_registry_banners
             'DEST' => lorem_phrase(),
             'CAPTION' => lorem_phrase(),
             'IMG' => placeholder_image_url(),
+            'LOCAL' => false,
         ]));
         $banners->attach(do_lorem_template('BANNER_IFRAME', [
             'B_TYPE' => lorem_phrase(),
@@ -283,20 +290,19 @@ class Hook_addon_registry_banners
         ]));
 
         $assemble = do_lorem_template('BLOCK_MAIN_BANNER_WAVE_BWRAP', [
-            'EXTRA' => lorem_phrase(),
             'TYPE' => lorem_phrase(),
             'BANNER' => $banners,
-            'MORE_COMING' => lorem_phrase(),
             'MAX' => placeholder_number(),
+            'REGION' => '',
         ]);
 
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_BANNER_WAVE', [
                 'BLOCK_ID' => lorem_word(),
-                'EXTRA' => lorem_phrase(),
                 'TYPE' => lorem_phrase(),
                 'ASSEMBLE' => $assemble,
                 'MAX' => placeholder_number(),
+                'REGION' => '',
             ]), null, '', true)
         ];
     }
@@ -336,6 +342,7 @@ class Hook_addon_registry_banners
                 'DEST' => lorem_phrase(),
                 'CAPTION' => lorem_phrase(),
                 'IMG' => placeholder_image_url(),
+                'LOCAL' => false,
             ]), null, '', true)
         ];
     }

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -498,7 +498,10 @@ function cns_get_all_ldap_groups()
 function cns_group_ldapcn_to_cnsid($cn)
 {
     if ($cn == get_mapped_admin_group()) {
-        return db_get_first_id() + 1;
+        $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
+        if (array_key_exists(0, $admin_groups)) {
+            return $admin_groups[0];
+        }
     }
     if ($cn == get_mapped_users_group()) {
         return get_first_default_group();
@@ -523,7 +526,8 @@ function cns_group_ldapcn_to_cnsid($cn)
  */
 function cns_group_cnsid_to_ldapcn($id)
 {
-    if ($id == db_get_first_id() + 1) {
+    $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
+    if ((array_key_exists(0, $admin_groups)) && ($id == $admin_groups[0])) {
         return get_mapped_admin_group();
     }
     if ($id == get_first_default_group()) {

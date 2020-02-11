@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -279,6 +279,11 @@ class Hook_addon_registry_iotds
             'DATE_RAW' => placeholder_date_raw(),
             'URL' => placeholder_url(),
             'CAPTION' => lorem_phrase(),
+            'THUMB_URL' => placeholder_image_url(),
+            'VIEW_URL' => placeholder_url(),
+            'DELETE_URL' => placeholder_url(),
+            'I_TITLE' => lorem_phrase(),
+            'GIVE_CONTEXT' => false,
         ]));
 
         return [
@@ -355,6 +360,8 @@ class Hook_addon_registry_iotds
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         $comment_details = do_lorem_template('COMMENTS_WRAPPER', [
@@ -365,6 +372,11 @@ class Hook_addon_registry_iotds
             'FORM' => $form,
             'COMMENTS' => $comments,
             'SORT' => 'relevance',
+            'FORUM_LINK' => null,
+            'HASH' => '',
+            'SERIALIZED_OPTIONS' => '',
+            'TOTAL_POSTS' => placeholder_number(),
+            'IS_THREADED' => false,
         ]);
 
         return [

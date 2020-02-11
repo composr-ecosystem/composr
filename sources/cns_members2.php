@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -134,7 +134,13 @@ function render_member_box($member_id, $preview = false, $show_avatar = true, $e
             if (is_integer($name)) {
                 $name = strval($name);
             }
-            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => ($guid != '') ? $guid : '10b72cd1ec240c315e56bc8a0f3a92a1', 'MEMBER_ID' => strval($member_id), 'NAME' => $name, 'RAW' => $value['RAW'], 'VALUE' => is_object($value['RENDERED']) ? protect_from_escaping($value['RENDERED']) : $value['RENDERED']]));
+            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
+                '_GUID' => ($guid != '') ? $guid : '10b72cd1ec240c315e56bc8a0f3a92a1',
+                'NAME' => $name,
+                'RAW' => $value['RAW'],
+                'VALUE' => is_object($value['RENDERED']) ? protect_from_escaping($value['RENDERED']) : $value['RENDERED'],
+                'MEMBER_ID' => strval($member_id),
+            ]));
         }
     }
 
@@ -143,11 +149,23 @@ function render_member_box($member_id, $preview = false, $show_avatar = true, $e
             $key = strval($key);
         }
 
-        $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => ($guid != '') ? $guid : '530f049d3b3065df2d1b69270aa93491', 'MEMBER_ID' => strval($member_id), 'NAME' => $key, 'VALUE' => $val]));
+        $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
+            '_GUID' => ($guid != '') ? $guid : '530f049d3b3065df2d1b69270aa93491',
+            'NAME' => $key,
+            'RAW' => $val,
+            'VALUE' => $val,
+            'MEMBER_ID' => strval($member_id),
+        ]));
     }
 
     foreach ($member_info['custom_data'] as $hook_result) {
-        $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => ($guid != '') ? $guid : '630f049d3b3065df2d1b69270aa93490', 'MEMBER_ID' => strval($member_id), 'NAME' => $hook_result[0], 'VALUE' => $hook_result[1]]));
+        $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
+            '_GUID' => ($guid != '') ? $guid : '630f049d3b3065df2d1b69270aa93490',
+            'NAME' => $hook_result[0],
+            'RAW' => $hook_result[1],
+            'VALUE' => $hook_result[1],
+            'MEMBER_ID' => strval($member_id),
+        ]));
     }
 
     return do_template('CNS_MEMBER_BOX', [

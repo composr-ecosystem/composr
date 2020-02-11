@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -89,7 +89,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
             'keep_personal_galleries' => '0',
             'keep_news_categories' => '0',
             'keep_blogs' => '0',
-            'have_default_rank_set' => '0',
+            'rank_set' => 'none',
             'have_default_cpf_set' => '0',
             'have_default_full_emoticon_set' => '0',
             'show_content_tagging' => '0',

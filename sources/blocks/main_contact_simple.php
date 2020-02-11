@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -166,6 +166,7 @@ class Block_main_contact_simple
             'SUBMIT_ICON' => 'buttons/send',
             'SKIP_PREVIEW' => true,
             'ANALYTIC_EVENT_CATEGORY' => do_lang('CONTACT_US'),
+            'REVIEWS' => false,
         ]);
 
         $out = do_template('BLOCK_MAIN_CONTACT_SIMPLE', [

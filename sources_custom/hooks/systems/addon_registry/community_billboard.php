@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -210,7 +210,7 @@ class Hook_addon_registry_community_billboard
         require_css('forms');
 
         $about_current = do_lorem_template('COMMUNITY_BILLBOARD_DETAILS', [
-            'USERNAME' => lorem_word_html(),
+            'USERNAME' => lorem_word(),
             'DAYS_ORDERED' => lorem_phrase(),
             'DATE_RAW' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
@@ -230,7 +230,7 @@ class Hook_addon_registry_community_billboard
                 'TEXT' => $text->evaluate(),
             ]));
         }
-        $name = placeholder_random_id();
+        $name = placeholder_id();
         $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', [
             'TABINDEX' => '5',
             'REQUIRED' => '-required',
@@ -260,6 +260,12 @@ class Hook_addon_registry_community_billboard
                 'FIELDS' => $fields,
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
+                'SKIP_WEBSTANDARDS' => false,
+                'SUPPORT_AUTOSAVE' => false,
+                'JS_FUNCTION_CALLS' => [],
+                'MODSECURITY_WORKAROUND' => false,
+                'POST' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
             ]), null, '', true)
         ];
     }

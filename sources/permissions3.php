@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -133,7 +133,7 @@ function add_privilege($section, $name, $default = false, $not_even_mods = false
         require_code('cns_groups');
         $probation_group = get_probation_group();
     } else {
-        $probation_group = false;
+        $probation_group = null;
     }
 
     // We do bulk inserts, for performance reasons

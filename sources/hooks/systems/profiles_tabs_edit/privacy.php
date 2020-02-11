@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -176,7 +176,7 @@ class Hook_profiles_tabs_edit_privacy
                     if ($gr_key == db_get_first_id()) {
                         continue;
                     }
-                    if ($gr_key == $probation_group) {
+                    if ($gr_key === $probation_group) {
                         continue;
                     }
 

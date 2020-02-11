@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -148,6 +148,8 @@ class Hook_addon_registry_redirects_editor
                 'FROM_PAGE' => lorem_word(),
                 'TO_PAGE' => lorem_word_2(),
                 'IS_TRANSPARENT' => true,
+                'FROM_ZONE' => lorem_word(),
+                'TO_ZONE' => lorem_word_2(),
             ]));
         }
 
@@ -157,6 +159,8 @@ class Hook_addon_registry_redirects_editor
             'FROM_ZONES' => placeholder_options(),
             'FROM_PAGE' => '',
             'TO_PAGE' => '',
+            'FROM_ZONE' => '',
+            'TO_ZONE' => '',
             'IS_TRANSPARENT' => false,
         ]);
 
@@ -204,7 +208,6 @@ class Hook_addon_registry_redirects_editor
         ]);
 
         $out = do_lorem_template('URL_REDIRECT_SCREEN', [
-            'NOTES' => '',
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
             'TITLE' => lorem_title(),

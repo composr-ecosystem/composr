@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -201,7 +201,11 @@ class Module_admin_content_reviews
                     'TEXT' => '',
                 ]);
 
-                $out->attach(do_template('UNVALIDATED_SECTION', ['_GUID' => '406d4c0a8abd36b9c88645df84692c7d', 'TITLE' => do_lang_tempcode($info['content_type_label']), 'CONTENT' => $content]));
+                $out->attach(do_template('UNVALIDATED_SECTION', [
+                    '_GUID' => '406d4c0a8abd36b9c88645df84692c7d',
+                    'TITLE' => do_lang_tempcode($info['content_type_label']),
+                    'CONTENT' => $content,
+                ]));
             }
         }
 

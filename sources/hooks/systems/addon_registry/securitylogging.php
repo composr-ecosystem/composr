@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -187,7 +187,7 @@ class Hook_addon_registry_securitylogging
                 'REASON' => lorem_phrase(),
                 'IP' => placeholder_ip(),
                 'ID' => placeholder_id(),
-                'USERNAME' => lorem_word_html(),
+                'USERNAME' => lorem_word(),
                 'TIME_RAW' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'URL' => placeholder_url(),
@@ -234,7 +234,7 @@ class Hook_addon_registry_securitylogging
                 'USER_OS' => lorem_phrase(),
                 'REASON' => lorem_phrase(),
                 'IP' => lorem_phrase(),
-                'USERNAME' => lorem_word_html(),
+                'USERNAME' => lorem_word(),
                 'POST' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'PERCENTAGE_SCORE' => placeholder_number(),

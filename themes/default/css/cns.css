@@ -1,6 +1,6 @@
 /*
  {$BRAND_NAME`}
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 */
 
 /*
@@ -368,6 +368,10 @@ div.cns-table-footer>div>div {
 	text-align: left;
 	padding: 0.6em 0.2em !important;
 	overflow: auto;
+}
+
+.cns-rank-image img {
+	max-height: 30px;
 }
 
 .cns-post-details-date {

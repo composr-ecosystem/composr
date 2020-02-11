@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -4300,7 +4300,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_HAVE_DEFAULT_CATALOGUES_PROJECTS
         DESCRIPTION_HAVE_DEFAULT_CPF_SET
         DESCRIPTION_HAVE_DEFAULT_FULL_EMOTICON_SET
-        DESCRIPTION_HAVE_DEFAULT_RANK_SET
+        DESCRIPTION_RANK_SET
         DESCRIPTION_HAVE_DEFAULT_WORDFILTER
         DESCRIPTION_HEADER_TEXT
         DESCRIPTION_SHOW_AWARDEE
@@ -5429,7 +5429,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HAVE_DEFAULT_CATALOGUES_PROJECTS
         HAVE_DEFAULT_CPF_SET
         HAVE_DEFAULT_FULL_EMOTICON_SET
-        HAVE_DEFAULT_RANK_SET
+        RANK_SET
+        RANK_SET_fun
+        RANK_SET_simple
+        RANK_SET_none
         HAVE_PERSONAL_GALLERIES
         HEADER_MENU_CALL_STRING
         HEADER_SPLIT_HACK
@@ -8735,11 +8738,14 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DEFAULT_CPF_bitcoin_DESCRIPTION
         DEFAULT_FORUM_TITLE
         DEFAULT_GROUPING_TITLE
-        DEFAULT_RANK_0
-        DEFAULT_RANK_1
-        DEFAULT_RANK_2
-        DEFAULT_RANK_3
-        DEFAULT_RANK_4
+        DEFAULT_RANK_fun_0
+        DEFAULT_RANK_fun_1
+        DEFAULT_RANK_fun_2
+        DEFAULT_RANK_fun_3
+        DEFAULT_RANK_fun_4
+        DEFAULT_RANK_simple_0
+        DEFAULT_RANK_simple_1
+        DEFAULT_RANK_simple_3
         DEFAULT__CATALOGUE_CATEGORY
         DEFAULT__CATALOGUE_CATEGORY_ATOZ
         DEFAULT__CATALOGUE_ENTRY

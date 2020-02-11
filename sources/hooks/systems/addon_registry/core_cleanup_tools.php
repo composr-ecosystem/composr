@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -242,6 +242,7 @@ class Hook_addon_registry_core_cleanup_tools
                 'MISSING_CONTENT_LANG_STRINGS' => placeholder_array(),
                 'FUSED_CONTENT_LANG_STRINGS' => placeholder_array(),
                 'ORPHANED_CONTENT_LANG_STRINGS' => placeholder_array(),
+                'MISSING_CONTENT_LANG_STRINGS_ZERO' => placeholder_array(),
             ]), null, '', true)
         ];
     }

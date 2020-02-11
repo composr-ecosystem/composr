@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -51,7 +51,7 @@ class Block_menu
         /* Ideally we would not cache as we would need to cache for all screens due to context sensitive link display (either you're here or match key filtering). However in most cases that only happens per page, so we will cache per page -- and people can turn off caching via the standard block parameter for that if needed.*/
         $info = [];
         $info['cache_on'] = ['block_menu__cache_on'];
-        $info['special_cache_flags'] = CACHE_AGAINST_BOT_STATUS | CACHE_AGAINST_PERMISSIVE_GROUPS;
+        $info['special_cache_flags'] = CACHE_AGAINST_BOT_STATUS | CACHE_AGAINST_PERMISSIVE_GROUPS | CACHE_AGAINST_SSL;
         $info['ttl'] = 60 * 24 * 140;
         return $info;
     }

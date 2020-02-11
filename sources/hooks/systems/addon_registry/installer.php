@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -444,14 +444,14 @@ class Hook_addon_registry_installer
 
         $section = do_lorem_template('INSTALLER_STEP_4_SECTION', [
             'HIDDEN' => '',
-            'TITLE' => lorem_word(),
+            'TITLE' => lorem_phrase(),
             'TEXT' => lorem_sentence_html(),
             'OPTIONS' => $options,
         ]);
 
         $section->attach(do_lorem_template('INSTALLER_STEP_4_SECTION_HIDE', [
-            'TITLE' => lorem_word(),
-            'CONTENT' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => lorem_paragraph_html(),
         ]));
 
         $content = do_lorem_template('INSTALLER_STEP_4', [

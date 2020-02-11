@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -85,7 +85,13 @@ function render_post_box($row, $use_post_title = false, $give_context = true, $i
             $group_name = cns_get_group_name($group);
             $rank_image_pri_only = cns_get_group_property($group, 'rank_image_pri_only');
             if (($rank_image != '') && (($rank_image_pri_only == 0) || ($group == $primary_group))) {
-                $rank_images->attach(do_template('CNS_RANK_IMAGE', ['_GUID' => 'ad383e495f77445ddb4d9107a9ebf269', 'GROUP_NAME' => $group_name, 'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($row['p_poster']), 'IMG' => $rank_image, 'IS_LEADER' => $group_leader == $row['p_poster']]));
+                $rank_images->attach(do_template('CNS_RANK_IMAGE', [
+                    '_GUID' => 'ad383e495f77445ddb4d9107a9ebf269',
+                    'GROUP_NAME' => $group_name,
+                    'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($row['p_poster']),
+                    'IMG' => $rank_image,
+                    'IS_LEADER' => $group_leader == $row['p_poster'],
+                ]));
             }
         }
 

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -231,7 +231,7 @@ class Hook_addon_registry_core_menus
      */
     public function tpl_preview__administrative__menu_editor_screen()
     {
-        $branch = do_lorem_template('MENU_EDITOR_BRANCH', ['CLICKABLE_SECTIONS' => 'true', 'I' => placeholder_id(), 'CHILD_BRANCH_TEMPLATE' => '', 'CHILD_BRANCHES' => '']);
+        $branch = do_lorem_template('MENU_EDITOR_BRANCH', ['CLICKABLE_SECTIONS' => true, 'I' => placeholder_id(), 'CHILD_BRANCHES' => '']);
 
         $child_branch_template = do_lorem_template('MENU_EDITOR_BRANCH_WRAP', [
             'DISPLAY' => 'display: block',
@@ -251,7 +251,7 @@ class Hook_addon_registry_core_menus
             'BRANCH' => $branch,
         ]);
 
-        $root_branch = do_lorem_template('MENU_EDITOR_BRANCH', ['CLICKABLE_SECTIONS' => 'true', 'CHILD_BRANCH_TEMPLATE' => $child_branch_template, 'CHILD_BRANCHES' => '', 'I' => '']);
+        $root_branch = do_lorem_template('MENU_EDITOR_BRANCH', ['CLICKABLE_SECTIONS' => true, 'CHILD_BRANCHES' => '', 'I' => '']);
 
         return [
             lorem_globalise(do_lorem_template('MENU_EDITOR_SCREEN', [
@@ -286,6 +286,9 @@ class Hook_addon_registry_core_menus
             lorem_globalise(do_lorem_template('PAGE_LINK_CHOOSER', [
                 'NAME' => lorem_word(),
                 'VALUE' => lorem_word(),
+                'GET_TITLE_TOO' => false,
+                'AS_FIELD' => null,
+                'PAGE_TYPE' => null,
             ]), null, '', true),
         ];
     }
@@ -369,6 +372,7 @@ class Hook_addon_registry_core_menus
                 'TRAY_STATUS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'TYPE' => 'mobile',
+                'JAVASCRIPT_HIGHLIGHTING' => false,
             ]), null, '', false),
         ];
     }
@@ -452,6 +456,7 @@ class Hook_addon_registry_core_menus
                 'TRAY_STATUS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'TYPE' => 'tree',
+                'JAVASCRIPT_HIGHLIGHTING' => false,
             ]), null, '', true),
         ];
     }
@@ -611,6 +616,7 @@ class Hook_addon_registry_core_menus
                 'TRAY_STATUS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'TYPE' => 'embossed',
+                'JAVASCRIPT_HIGHLIGHTING' => false,
             ]), null, '', true),
         ];
     }
@@ -694,6 +700,7 @@ class Hook_addon_registry_core_menus
                 'TRAY_STATUS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'TYPE' => 'popup',
+                'JAVASCRIPT_HIGHLIGHTING' => false,
             ]), null, '', true),
         ];
     }
@@ -777,6 +784,7 @@ class Hook_addon_registry_core_menus
                 'TRAY_STATUS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'TYPE' => 'select',
+                'JAVASCRIPT_HIGHLIGHTING' => false,
             ]), null, '', true),
         ];
     }

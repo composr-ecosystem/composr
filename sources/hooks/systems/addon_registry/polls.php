@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -274,6 +274,8 @@ class Hook_addon_registry_polls
                         'ANSWER_PLAIN' => lorem_phrase(),
                         'WIDTH' => strval($k),
                         'VOTES' => placeholder_number(),
+                        '_VOTES' => placeholder_number(),
+                        'TOTAL_VOTES' => placeholder_number(),
                     ]));
                 }
                 break;
@@ -383,6 +385,11 @@ class Hook_addon_registry_polls
             'FORM' => placeholder_form(),
             'COMMENTS' => $comments,
             'SORT' => 'relevance',
+            'FORUM_LINK' => null,
+            'HASH' => '',
+            'SERIALIZED_OPTIONS' => '',
+            'TOTAL_POSTS' => placeholder_number(),
+            'IS_THREADED' => false,
         ]);
 
         $poll_details = $this->poll('poll');

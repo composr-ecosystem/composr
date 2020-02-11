@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -150,8 +150,9 @@ class Hook_addon_registry_syndication_blocks
                 'FULL_URL' => placeholder_url(),
                 'NEWS_TITLE' => lorem_phrase(),
                 'DATE' => placeholder_date(),
+                'DATE_RAW' => placeholder_date_raw(),
                 'SUMMARY' => lorem_paragraph(),
-                'TICKER' => lorem_word(),
+                'TICKER' => lorem_phrase(),
             ]));
         }
 
@@ -191,6 +192,8 @@ class Hook_addon_registry_syndication_blocks
                 'FULL_URL_RAW' => placeholder_url(),
                 'NEWS' => lorem_paragraph(),
                 'NEWS_FULL' => lorem_paragraph(),
+                'BLOCK_ID' => placeholder_id(),
+                'DATE_RAW' => placeholder_date_raw(),
             ]));
         }
 

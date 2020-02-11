@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -198,10 +198,6 @@ PHP;
                         'CURRENT' => date('Y-m-d', utctime_to_usertime()) == $date,
                         'DAY_URL' => $day_url,
                         'DATE' => $date_formatted,
-                        'TITLE' => '',
-                        'TIME' => '',
-                        'URL' => '',
-                        'ID' => '',
                         'PRIORITY' => strval($priorities[$j]),
                         'DAY' => strval($j),
                         'ICON' => '',

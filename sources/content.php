@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -231,12 +231,8 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
         if (($content_type == 'comcode_page') && (strpos($content_id, ':') !== false) && (!$resource_fs_style)) {
             list($zone, $page) = explode(':', $content_id, 2);
 
-            $members = $GLOBALS['FORUM_DRIVER']->member_group_query($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), 1);
-            if (!empty($members)) {
-                $submitter_id = $GLOBALS['FORUM_DRIVER']->mrow_id($members[key($members)]);
-            } else {
-                $submitter_id = db_get_first_id() + 1; // On Conversr and most forums, this is the first admin member
-            }
+            require_code('users_active_actions');
+            $submitter_id = get_first_admin_user();
 
             require_code('global4');
             $content_row = [

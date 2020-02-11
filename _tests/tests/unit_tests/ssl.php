@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -62,7 +62,16 @@ class ssl_test_set extends cms_test_case
         erase_persistent_cache();
         $url = build_url(['page' => $page], get_module_zone($page));
         $c = http_get_contents($url->evaluate(), ['cookies' => [get_session_cookie() => $session_id], 'convert_to_internal_encoding' => true, 'timeout' => 20.0]);
-        $this->assertTrue(strpos($c, 'src="http://') === false, 'HTTPS version failed (HTTP embed [e.g. image] found) on ' . $url->evaluate());
+        if ($this->debug) {
+            var_dump($c);
+        }
+        $matches = [];
+        $num_matches = preg_match_all('#src="(http://[^"]*)#', $c, $matches);
+        $bad_images = [];
+        for ($i = 0; $i < $num_matches; $i++) {
+            $bad_images[] = $matches[1][$i];
+        }
+        $this->assertTrue($num_matches == 0, 'HTTPS version failed (HTTP embed[s] [e.g. image] found) on ' . $url->evaluate() . ' (' . implode(', ', $bad_images) . ')');
 
         // HTTP version
         $GLOBALS['SITE_DB']->query_delete('https_pages', ['https_page_name' => $page_link]);
@@ -70,7 +79,16 @@ class ssl_test_set extends cms_test_case
         erase_persistent_cache();
         $url = build_url(['page' => $page], get_module_zone($page));
         $c = http_get_contents($url->evaluate(), ['cookies' => [get_session_cookie() => $session_id], 'convert_to_internal_encoding' => true, 'timeout' => 20.0]);
-        $this->assertTrue(strpos($c, 'src="https://') === false, 'HTTP version failed (HTTPS embed [e.g. image] found) on ' . $url->evaluate());
+        if ($this->debug) {
+            var_dump($c);
+        }
+        $matches = [];
+        $num_matches = preg_match_all('#src="(https://[^"]*)#', $c, $matches);
+        $bad_images = [];
+        for ($i = 0; $i < $num_matches; $i++) {
+            $bad_images[] = $matches[1][$i];
+        }
+        $this->assertTrue($num_matches == 0, 'HTTP version failed (HTTPS embed[s] [e.g. image] found) on ' . $url->evaluate() . ' (' . implode(', ', $bad_images) . ')');
     }
 
     public function tearDown()

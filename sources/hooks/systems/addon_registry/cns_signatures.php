@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -206,18 +206,24 @@ class Hook_addon_registry_cns_signatures
             'URL' => placeholder_url(),
             'POST' => lorem_sentence(),
             'DEFAULT_PARSED' => lorem_sentence(),
-            'CONTINUE_URL' => placeholder_url(),
             'ATTACHMENTS' => lorem_phrase(),
             'SPECIALISATION' => new Tempcode(),
             'SPECIALISATION2' => new Tempcode(),
             'DESCRIPTION' => lorem_paragraph(),
             'REQUIRED' => true,
+            'JS_FUNCTION_CALLS' => [],
+            'SPECIALISATION2_HIDDEN' => null,
+            'CANCEL_URL' => null,
+            'MODSECURITY_WORKAROUND' => false,
+            'COMCODE_PAGE_HINTS' => null,
+            'SUPPORT_AUTOSAVE' => false,
         ]);
 
         return [
             lorem_globalise(do_lorem_template('CNS_EDIT_SIGNATURE_TAB', [
                 'SIZE' => placeholder_filesize(),
                 'SIGNATURE' => lorem_phrase(),
+                'TITLE' => lorem_phrase(),
             ]), null, '', true)
         ];
     }

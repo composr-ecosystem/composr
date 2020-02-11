@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -458,7 +458,7 @@ class Hook_addon_registry_core_themeing
             'EDIT_URL' => placeholder_url(),
             'CODENAME' => lorem_word(),
             'GUID' => placeholder_id(),
-            'ID' => placeholder_random_id(),
+            'ID' => placeholder_id(),
         ];
 
         $param_info = do_lorem_template('PARAM_INFO', [
@@ -486,13 +486,12 @@ class Hook_addon_registry_core_themeing
     {
         $tree_items = new Tempcode();
         foreach (placeholder_array() as $value) {
-            $parameters = [
+            $tree_item = do_lorem_template('TEMPLATE_TREE_ITEM', [
                 'FILE' => lorem_phrase(),
                 'EDIT_URL' => placeholder_url(),
                 'CODENAME' => lorem_word(),
                 'ID' => placeholder_random_id(),
-            ];
-            $tree_item = do_lorem_template('TEMPLATE_TREE_ITEM', $parameters);
+            ]);
 
             $tree_items->attach(do_lorem_template('TEMPLATE_TREE_ITEM_WRAP', [
                 'CONTENT' => $tree_item,
@@ -554,7 +553,6 @@ class Hook_addon_registry_core_themeing
             '_GUID' => '3904c5dbac05f8bb385eeb359e420154',
             'SPRITE_URL' => find_theme_image('icons_sprite'),
             'SYMBOL_ID' => $symbol_id,
-            'ICON_NAME' => str_replace('__', '/', $symbol_id),
         ]);
 
         return [

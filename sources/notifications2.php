@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -234,6 +234,7 @@ function notifications_ui($member_id_of)
         'MAILING_LIST_STYLE_DESCRIPTION' => $mlsn_description,
         'MEMBER_ID' => strval($member_id_of),
         'ADVANCED_COLUMN' => true,
+        'SHOW_PRIVILEGES' => false,
     ]);
 }
 

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -226,7 +226,7 @@ class Hook_addon_registry_wiki
 
         $all_rating_criteria = [];
         $all_rating_criteria[] = [
-            'TITLE' => lorem_word(),
+            'TITLE' => lorem_phrase(),
             'RATING' => make_string_tempcode('6'),
             'NUM_RATINGS' => placeholder_number(),
             'TYPE' => lorem_word(),
@@ -255,7 +255,6 @@ class Hook_addon_registry_wiki
             'INCLUDE_EXPANSION' => lorem_phrase(),
             'UNVALIDATED' => do_lang('UNVALIDATED'),
             'STAFF_ACCESS' => lorem_phrase(),
-            'EXP_IMG' => placeholder_img_code('icons/trays'),
             'RATE_URL' => placeholder_url(),
             'RATING' => $rating_details,
             'ID' => placeholder_id(),
@@ -278,7 +277,7 @@ class Hook_addon_registry_wiki
 
         return [
             lorem_globalise(do_lorem_template('WIKI_PAGE_SCREEN', [
-                'TAGS' => lorem_word_html(),
+                'TAGS' => lorem_sentence_html(),
                 'SHOW_POSTS' => placeholder_id(),
                 'ID' => placeholder_id(),
                 'CHAIN' => placeholder_id(),
@@ -324,12 +323,17 @@ class Hook_addon_registry_wiki
             'URL' => placeholder_url(),
             'POST' => lorem_phrase(),
             'DEFAULT_PARSED' => lorem_phrase(),
-            'CONTINUE_URL' => placeholder_url(),
             'ATTACHMENTS' => lorem_phrase(),
             'SPECIALISATION' => placeholder_fields(),
             'SPECIALISATION2' => '',
             'REQUIRED' => true,
             'SUPPORT_AUTOSAVE' => true,
+            'JS_FUNCTION_CALLS' => [],
+            'SPECIALISATION2_HIDDEN' => null,
+            'CANCEL_URL' => null,
+            'MODSECURITY_WORKAROUND' => false,
+            'COMCODE_PAGE_HINTS' => null,
+            'DESCRIPTION' => lorem_paragraph(),
         ]);
 
         return [

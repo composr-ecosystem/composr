@@ -87,11 +87,11 @@
 	</p>
 {+END}
 
-{+START,IF_PASSED,MAILING_LIST_STYLE}
+{+START,IF_PASSED,MAILING_LIST_STYLE}{+START,IF_PASSED,MAILING_LIST_STYLE_DESCRIPTION}
 	<h2>{!cns:MAILING_LIST_STYLE}</h2>
 
 	<p class="simple-neat-checkbox">
 		<input {+START,IF,{MAILING_LIST_STYLE}} checked="checked"{+END} type="checkbox" id="mailing-list-style" name="mailing_list_style" value="1" />
 		<label for="mailing-list-style"><span>{MAILING_LIST_STYLE_DESCRIPTION}</span></label>
 	</p>
-{+END}
+{+END}{+END}

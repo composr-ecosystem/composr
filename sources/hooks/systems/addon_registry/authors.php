@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -173,9 +173,9 @@ class Hook_addon_registry_authors
             $tpl = do_lorem_template('NEWS_BRIEF', [
                 'DATE' => placeholder_date(),
                 'FULL_URL' => placeholder_url(),
-                'NEWS_TITLE_PLAIN' => lorem_word(),
+                'NEWS_TITLE_PLAIN' => lorem_phrase(),
                 'ID' => placeholder_id(),
-                'NEWS_TITLE' => lorem_word(),
+                'NEWS_TITLE' => lorem_phrase(),
             ]);
             $news_released->attach($tpl);
         }
@@ -210,7 +210,7 @@ class Hook_addon_registry_authors
 
         return [
             lorem_globalise(do_lorem_template('AUTHOR_SCREEN', [
-                'TAGS' => lorem_word_html(),
+                'TAGS' => lorem_sentence_html(),
                 'TITLE' => lorem_title(),
                 'EDIT_URL' => placeholder_url(),
                 'AUTHOR' => lorem_phrase(),

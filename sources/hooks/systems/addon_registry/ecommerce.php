@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -529,9 +529,9 @@ class Hook_addon_registry_ecommerce
                 'PURCHASE_ID' => placeholder_id(),
                 'TRANS_EXPECTING_ID' => placeholder_id(),
                 'DIGEST' => lorem_phrase(),
-                'TEST' => lorem_phrase(),
+                'TEST_MODE' => true,
                 'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS_2' => lorem_phrase(),
+                'LENGTH_UNITS_2' => 'm',
                 'PRICE' => placeholder_number(),
                 'TAX' => placeholder_number(),
                 'AMOUNT' => placeholder_number(),
@@ -540,8 +540,6 @@ class Hook_addon_registry_ecommerce
                 'USERNAME' => lorem_word(),
                 'FORM_URL' => placeholder_url(),
                 'MEMBER_ADDRESS' => placeholder_array(),
-                'TEST_MODE' => true,
-                'EMAIL_ADDRESS' => lorem_word(),
             ]), null, '', true)
         ];
     }
@@ -649,7 +647,7 @@ class Hook_addon_registry_ecommerce
                 'PURCHASE_ID' => placeholder_id(),
                 'TRANS_EXPECTING_ID' => placeholder_id(),
                 'DIGEST' => lorem_phrase(),
-                'TEST' => lorem_phrase(),
+                'TEST_MODE' => true,
                 'PRICE' => placeholder_number(),
                 'TAX' => placeholder_number(),
                 'SHIPPING_COST' => placeholder_number(),
@@ -678,10 +676,10 @@ class Hook_addon_registry_ecommerce
                 'PURCHASE_ID' => placeholder_id(),
                 'TRANS_EXPECTING_ID' => placeholder_id(),
                 'DIGEST' => lorem_phrase(),
-                'TEST' => lorem_phrase(),
+                'TEST_MODE' => true,
                 'FIRST_REPEAT' => lorem_phrase(),
                 'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS_2' => lorem_phrase(),
+                'LENGTH_UNITS_2' => 'm',
                 'PRICE' => placeholder_number(),
                 'TAX' => placeholder_number(),
                 'AMOUNT' => placeholder_number(),
@@ -758,7 +756,7 @@ class Hook_addon_registry_ecommerce
                 'PURCHASE_ID' => placeholder_id(),
                 'TRANS_EXPECTING_ID' => placeholder_id(),
                 'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS_2' => lorem_phrase(),
+                'LENGTH_UNITS' => 'm',
                 'PRICE' => placeholder_number(),
                 'TAX' => placeholder_number(),
                 'AMOUNT' => placeholder_number(),
@@ -851,7 +849,7 @@ class Hook_addon_registry_ecommerce
                 'CUST_ID' => placeholder_id(),
                 'CURRENCY' => 'GBP',
                 'LENGTH' => placeholder_number(),
-                'LENGTH_UNITS' => lorem_word(),
+                'LENGTH_UNITS' => 'm',
             ]), null, '', true)
         ];
     }
@@ -890,6 +888,7 @@ class Hook_addon_registry_ecommerce
             'HIDDEN' => '',
             'LOGOS' => placeholder_image(),
             'PAYMENT_PROCESSOR_LINKS' => placeholder_link(),
+            'ITEM_NAME' => lorem_phrase(),
         ]);
 
         return [
@@ -899,6 +898,7 @@ class Hook_addon_registry_ecommerce
                 'URL' => placeholder_url(),
                 'SUBMIT_NAME' => lorem_phrase(),
                 'ICON' => 'buttons/proceed',
+                'GET' => false,
             ]), null, '', true)
         ];
     }
@@ -1125,9 +1125,7 @@ class Hook_addon_registry_ecommerce
                 'TYPE_CODE' => lorem_word(),
                 'TEXT' => lorem_sentence_html(),
                 'FIELDS' => placeholder_fields(),
-                'HIDDEN' => '',
-                'LOGOS' => placeholder_image(),
-                'PAYMENT_PROCESSOR_LINKS' => placeholder_link(),
+                'JS_FUNCTION_CALLS' => [],
             ]), null, '', true)
         ];
     }
@@ -1147,7 +1145,6 @@ class Hook_addon_registry_ecommerce
                 'ITEM_NAME' => lorem_phrase(),
                 'TYPE_CODE' => lorem_word(),
                 'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
                 'FIELDS' => placeholder_fields(),
                 'HIDDEN' => '',
                 'LOGOS' => placeholder_image(),
@@ -1173,7 +1170,6 @@ class Hook_addon_registry_ecommerce
                 'ITEM_NAME' => lorem_phrase(),
                 'TYPE_CODE' => lorem_word(),
                 'PURCHASE_ID' => placeholder_id(),
-                'TRANS_EXPECTING_ID' => placeholder_id(),
                 'LENGTH' => '3',
                 'LENGTH_UNITS' => '$',
                 'PRICE' => '123.45',
@@ -1552,7 +1548,6 @@ class Hook_addon_registry_ecommerce
             'PREFIX' => lorem_phrase(),
             'SUFFIX' => lorem_phrase(),
             'FORW_URL' => placeholder_url(),
-            'SUFFIX_PRICE' => lorem_phrase(),
         ], null, false, null, '.txt', 'text');
 
         return [
@@ -1579,7 +1574,6 @@ class Hook_addon_registry_ecommerce
             'PREFIX' => lorem_phrase(),
             'SUFFIX' => lorem_phrase(),
             'POP3_URL' => placeholder_url(),
-            'SUFFIX_PRICE' => placeholder_number(),
         ], null, false, null, '.txt', 'text');
 
         return [
@@ -1602,7 +1596,6 @@ class Hook_addon_registry_ecommerce
                 'QUOTA' => placeholder_number(),
                 'EMAIL' => lorem_word(),
                 'QUOTA_URL' => placeholder_url(),
-                'PRICE' => placeholder_number(),
             ], null, false, null, '.txt', 'text'),
         ];
     }

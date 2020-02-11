@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -228,17 +228,34 @@ function member_personal_links_and_details($member_id)
     if (get_forum_type() != 'none') {
         // Post count
         if ((!has_no_forum()) && (get_option('forum_show_personal_stats_posts') == '1')) {
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => '371dfee46e8c40b1b109e0350055f8cc', 'KEY' => do_lang_tempcode('COUNT_POSTSCOUNT'), 'VALUE' => integer_format($GLOBALS['FORUM_DRIVER']->get_post_count($member_id))]));
+            $post_count = $GLOBALS['FORUM_DRIVER']->get_post_count($member_id);
+            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                '_GUID' => '371dfee46e8c40b1b109e0350055f8cc',
+                'KEY' => do_lang_tempcode('COUNT_POSTSCOUNT'),
+                'RAW_VALUE' => strval($post_count),
+                'VALUE' => integer_format($post_count),
+            ]));
         }
         // Topic count
         if ((!has_no_forum()) && (get_option('forum_show_personal_stats_topics') == '1')) {
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => '2dd2a2d30c4ea7144c74ab058239fb23', 'KEY' => do_lang_tempcode('COUNT_TOPICSCOUNT'), 'VALUE' => integer_format($GLOBALS['FORUM_DRIVER']->get_topic_count($member_id))]));
+            $topic_count = $GLOBALS['FORUM_DRIVER']->get_topic_count($member_id);
+            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                '_GUID' => '2dd2a2d30c4ea7144c74ab058239fb23',
+                'KEY' => do_lang_tempcode('COUNT_TOPICSCOUNT'),
+                'RAW_VALUE' => strval($topic_count),
+                'VALUE' => integer_format($topic_count),
+            ]));
         }
 
         // Member profile view link
         if (get_option('cns_show_profile_link') == '1') {
             $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
-            $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', ['_GUID' => '2c8648c953c802a9de41c3adeef0e97f', 'NAME' => do_lang_tempcode('MY_PROFILE'), 'URL' => $url, 'REL' => 'me']));
+            $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
+                '_GUID' => '2c8648c953c802a9de41c3adeef0e97f',
+                'NAME' => do_lang_tempcode('MY_PROFILE'),
+                'URL' => $url,
+                'REL' => 'me',
+            ]));
         }
     }
 
@@ -247,19 +264,49 @@ function member_personal_links_and_details($member_id)
         require_lang('points');
         require_code('points');
         if (get_option('points_show_personal_stats_points_left') == '1') {
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => '6241e58e30457576735f3a2618fd7fff', 'KEY' => do_lang_tempcode('COUNT_POINTS_LEFT'), 'VALUE' => integer_format(available_points($member_id))]));
+            $available_points = available_points($member_id);
+            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                '_GUID' => '6241e58e30457576735f3a2618fd7fff',
+                'KEY' => do_lang_tempcode('COUNT_POINTS_LEFT'),
+                'RAW_VALUE' => strval($available_points),
+                'VALUE' => integer_format($available_points),
+            ]));
         }
         if (get_option('points_show_personal_stats_points_used') == '1') {
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => '6241e58edfdsf735f3a2618fd7fff', 'KEY' => do_lang_tempcode('COUNT_POINTS_USED'), 'VALUE' => integer_format(points_used($member_id))]));
+            $points_used = points_used($member_id);
+            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                '_GUID' => '6241e58edfdsf735f3a2618fd7fff',
+                'KEY' => do_lang_tempcode('COUNT_POINTS_USED'),
+                'RAW_VALUE' => strval($points_used),
+                'VALUE' => integer_format($points_used),
+            ]));
         }
         if (get_option('points_show_personal_stats_total_points') == '1') {
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => '3e6183abf9054574c0cd292d25a4fe5c', 'KEY' => do_lang_tempcode((get_option('points_show_personal_stats_points_left') == '1') ? 'COUNT_POINTS_EVER' : 'COUNT_POINTS'), 'VALUE' => integer_format(total_points($member_id))]));
+            $total_points = total_points($member_id);
+            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                '_GUID' => '3e6183abf9054574c0cd292d25a4fe5c',
+                'KEY' => do_lang_tempcode((get_option('points_show_personal_stats_points_left') == '1') ? 'COUNT_POINTS_EVER' : 'COUNT_POINTS'),
+                'RAW_VALUE' => strval($total_points),
+                'VALUE' => integer_format($total_points),
+            ]));
         }
         if (get_option('points_show_personal_stats_gift_points_left') == '1') {
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => '6241e5ssd45ddsdsdsa2618fd7fff', 'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_LEFT'), 'VALUE' => integer_format(get_gift_points_to_give($member_id))]));
+            $gift_points_to_give = get_gift_points_to_give($member_id);
+            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                '_GUID' => '6241e5ssd45ddsdsdsa2618fd7fff',
+                'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_LEFT'),
+                'RAW_VALUE' => strval($gift_points_to_give),
+                'VALUE' => integer_format($gift_points_to_give),
+            ]));
         }
         if (get_option('points_show_personal_stats_gift_points_used') == '1') {
-            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => '6241eddsd4sdddssdsa2618fd7fff', 'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_USED'), 'VALUE' => integer_format(get_gift_points_used($member_id))]));
+            $gift_points_used = get_gift_points_used($member_id);
+            $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                '_GUID' => '6241eddsd4sdddssdsa2618fd7fff',
+                'KEY' => do_lang_tempcode('COUNT_GIFT_POINTS_USED'),
+                'RAW_VALUE' => strval($gift_points_used),
+                'VALUE' => integer_format($gift_points_used),
+            ]));
         }
     }
 
@@ -271,9 +318,19 @@ function member_personal_links_and_details($member_id)
             if (get_forum_type() == 'cns') {
                 $group_url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $group_id], get_module_zone('groups'));
                 $hyperlink = hyperlink($group_url, $usergroups[$group_id], false, true);
-                $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE_COMPLEX', ['_GUID' => 'sas41eddsd4sdddssdsa2618fd7fff', 'KEY' => do_lang_tempcode('USERGROUP'), 'VALUE' => $hyperlink]));
+                $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE_COMPLEX', [
+                    '_GUID' => 'sas41eddsd4sdddssdsa2618fd7fff',
+                    'KEY' => do_lang_tempcode('USERGROUP'),
+                    'RAW_VALUE' => $group_url,
+                    'VALUE' => $hyperlink,
+                ]));
             } else {
-                $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => '65180134fbc4cf7e227011463d466677', 'KEY' => do_lang_tempcode('USERGROUP'), 'VALUE' => $usergroups[$group_id]]));
+                $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+                    '_GUID' => '65180134fbc4cf7e227011463d466677',
+                    'KEY' => do_lang_tempcode('USERGROUP'),
+                    'RAW_VALUE' => $usergroups[$group_id],
+                    'VALUE' => $usergroups[$group_id],
+                ]));
             }
         }
     }
@@ -287,8 +344,12 @@ function member_personal_links_and_details($member_id)
         } else {
             $last_visit = $GLOBALS['FORUM_DRIVER']->mrow_lastvisit($row);
         }
-        $_last_visit = get_timezoned_date_time($last_visit);
-        $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', ['_GUID' => 'sas41eddsdsdsdsdsa2618fd7fff', 'KEY' => do_lang_tempcode('LAST_HERE'), 'RAW_KEY' => strval($last_visit), 'VALUE' => $_last_visit]));
+        $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
+            '_GUID' => 'sas41eddsdsdsdsdsa2618fd7fff',
+            'KEY' => do_lang_tempcode('LAST_HERE'),
+            'RAW_VALUE' => strval($last_visit),
+            'VALUE' => get_timezoned_date_time($last_visit),
+        ]));
     }
 
     // Subscription expiry date
@@ -306,6 +367,7 @@ function member_personal_links_and_details($member_id)
                     $details->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
                         '_GUID' => '2675d56aa278616aa9f00b051ca084fc',
                         'KEY' => do_lang_tempcode('SUBSCRIPTION_EXPIRY_MESSAGE', escape_html($subscription['item_name'])),
+                        'RAW_VALUE' => ($expiry_time === null) ? '' : strval($expiry_time),
                         'VALUE' => do_lang_tempcode('SUBSCRIPTION_EXPIRY_DATE', escape_html($expiry_date)),
                     ]));
                 }
@@ -332,7 +394,11 @@ function member_personal_links_and_details($member_id)
             foreach ($usergroup_subs as $sub) {
                 $db = get_db_for('f_usergroup_subs');
                 $url = build_url(['page' => 'purchase', 'type' => 'message', 'type_code' => 'USERGROUP' . strval($sub['id'])], get_module_zone('purchase'));
-                $links_ecommerce->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', ['_GUID' => '5c4a1f300b37722e587fe2f608f1ee3a', 'NAME' => do_lang_tempcode('UPGRADE_TO', escape_html(get_translated_text($sub['s_title'], $db))), 'URL' => $url]));
+                $links_ecommerce->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
+                    '_GUID' => '5c4a1f300b37722e587fe2f608f1ee3a',
+                    'NAME' => do_lang_tempcode('UPGRADE_TO', escape_html(get_translated_text($sub['s_title'], $db))),
+                    'URL' => $url,
+                ]));
             }
         }
     }
@@ -341,17 +407,37 @@ function member_personal_links_and_details($member_id)
     if (get_option('show_personal_adminzone_link') == '1') {
         if (has_zone_access($member_id, 'adminzone')) {
             $url = build_url(['page' => '', 'keep_theme' => null], 'adminzone');
-            $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', ['_GUID' => 'ae243058f780f9528016f7854763a5fa', 'TARGET' => '_blank', 'TITLE' => do_lang_tempcode('LINK_NEW_WINDOW'), 'ACCESSKEY' => 'I', 'NAME' => do_lang_tempcode('ADMIN_ZONE'), 'URL' => $url]));
+            $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
+                '_GUID' => 'ae243058f780f9528016f7854763a5fa',
+                'TARGET' => '_blank',
+                'TITLE' => do_lang_tempcode('LINK_NEW_WINDOW'),
+                'ACCESSKEY' => 'I',
+                'NAME' => do_lang_tempcode('ADMIN_ZONE'),
+                'URL' => $url,
+            ]));
         } elseif (has_zone_access($member_id, 'cms')) {
             $url = build_url(['page' => '', 'keep_theme' => null], 'cms');
-            $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', ['_GUID' => '3f63dad2645b6c39f68dcfebe7d7a0ab', 'ACCESSKEY' => 'I', 'TARGET' => '_blank', 'TITLE' => do_lang_tempcode('LINK_NEW_WINDOW'), 'NAME' => do_lang_tempcode('CMS'), 'URL' => $url]));
+            $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
+                '_GUID' => '3f63dad2645b6c39f68dcfebe7d7a0ab',
+                'ACCESSKEY' => 'I',
+                'TARGET' => '_blank',
+                'TITLE' => do_lang_tempcode('LINK_NEW_WINDOW'),
+                'NAME' => do_lang_tempcode('CMS'),
+                'URL' => $url,
+            ]));
         }
     }
 
     // Conceded mode link
     if (($GLOBALS['SESSION_CONFIRMED_CACHE']) && (get_option('show_conceded_mode_link') == '1')) {
         $url = build_url(['page' => 'login', 'type' => 'concede', 'redirect' => protect_url_parameter((get_page_name() == 'login') ? null : SELF_REDIRECT_RIP)], get_module_zone('login'));
-        $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK_2', ['_GUID' => '81fa81cfd3130e42996bf72b0e03d8aa', 'POST' => true, 'NAME' => do_lang_tempcode('CONCEDED_MODE'), 'DESCRIPTION' => do_lang_tempcode('DESCRIPTION_CONCEDED_MODE'), 'URL' => $url]));
+        $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK_2', [
+            '_GUID' => '81fa81cfd3130e42996bf72b0e03d8aa',
+            'POST' => true,
+            'NAME' => do_lang_tempcode('CONCEDED_MODE'),
+            'DESCRIPTION' => do_lang_tempcode('DESCRIPTION_CONCEDED_MODE'),
+            'URL' => $url,
+        ]));
     }
 
     // Becomes-invisible link
@@ -359,14 +445,24 @@ function member_personal_links_and_details($member_id)
         if ((array_key_exists(get_session_id(), $GLOBALS['SESSION_CACHE'])) && ($GLOBALS['SESSION_CACHE'][get_session_id()]['session_invisible'] == 0)) {
             $visible = (array_key_exists(get_session_id(), $GLOBALS['SESSION_CACHE'])) && ($GLOBALS['SESSION_CACHE'][get_session_id()]['session_invisible'] == 0);
             $url = build_url(['page' => 'login', 'type' => 'invisible', 'redirect' => protect_url_parameter((get_page_name() == 'login') ? null : SELF_REDIRECT_RIP)], get_module_zone('login'));
-            $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK_2', ['_GUID' => '2af618fe39444861c21cf0caec216227', 'NAME' => do_lang_tempcode($visible ? 'INVISIBLE' : 'BE_VISIBLE'), 'DESCRIPTION' => '', 'URL' => $url]));
+            $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LINK_2', [
+                '_GUID' => '2af618fe39444861c21cf0caec216227',
+                'NAME' => do_lang_tempcode($visible ? 'INVISIBLE' : 'BE_VISIBLE'),
+                'DESCRIPTION' => '',
+                'URL' => $url,
+                'POST' => false,
+            ]));
         }
     }
 
     // Logout link
     $url = build_url(['page' => 'login', 'type' => 'logout'], get_module_zone('login'));
     if (!is_httpauth_login()) {
-        $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LOGOUT', ['_GUID' => 'd1caacba272a7ee3bf5b2a758e4e54ee', 'NAME' => do_lang_tempcode('LOGOUT'), 'URL' => $url]));
+        $links->attach(do_template('BLOCK_SIDE_PERSONAL_STATS_LOGOUT', [
+            '_GUID' => 'd1caacba272a7ee3bf5b2a758e4e54ee',
+            'NAME' => do_lang_tempcode('LOGOUT'),
+            'URL' => $url,
+        ]));
     }
 
     if (get_forum_type() == 'cns') {

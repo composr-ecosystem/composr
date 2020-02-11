@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -182,6 +182,9 @@ class xhtml_substr_test_set extends cms_test_case
             'FILENAME' => lorem_word(),
             'MIME_TYPE' => lorem_word(),
             'CLICK_URL' => placeholder_url(),
+            'URL_SAFE' => placeholder_url(),
+            'URL_DIRECT_FILESYSTEM' => placeholder_url(),
+            'HOOK' => lorem_word(),
 
             'WIDTH' => placeholder_number(),
             'HEIGHT' => placeholder_number(),

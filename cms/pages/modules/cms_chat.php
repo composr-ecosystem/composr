@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -433,6 +433,7 @@ class Module_cms_chat
                 'URL' => get_self_url(),
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
+                'PREVIEW' => '',
             ]);
         }
 
@@ -480,6 +481,7 @@ class Module_cms_chat
                 'URL' => get_self_url(),
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
+                'PREVIEW' => '',
             ]);
         }
 

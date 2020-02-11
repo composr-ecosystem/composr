@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -1049,7 +1049,15 @@ class Module_admin_ecommerce_logs
             $continues_for_same_product = true;
             foreach ($value as $val) {
                 if ($continues_for_same_product) {
-                    $result->attach(do_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', ['_GUID' => '979a0e7ca87437bc7ee1035afd16e07c', 'ID' => strval($val[3]), 'SUBSCRIPTION' => $key, 'MEMBER' => $val[0], 'EXPIRY' => $val[1], 'ROWSPAN' => strval(count($data[$key])), 'CANCEL_URL' => $val[2]]));
+                    $result->attach(do_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', [
+                        '_GUID' => '979a0e7ca87437bc7ee1035afd16e07c',
+                        'ID' => strval($val[3]),
+                        'SUBSCRIPTION' => $key,
+                        'MEMBER' => $val[0],
+                        'EXPIRY' => $val[1],
+                        'ROWSPAN' => strval(count($data[$key])),
+                        'CANCEL_URL' => $val[2],
+                    ]));
                     $continues_for_same_product = false;
                 } else {
                     $result->attach(do_template('ECOM_VIEW_MANUAL_SUBSCRIPTIONS_LINE', ['_GUID' => '4abea40b654471f0fec0961a1e8716e4', 'ID' => '', 'SUBSCRIPTION' => '', 'MEMBER' => $val[0], 'EXPIRY' => $val[1], 'ROWSPAN' => '', 'CANCEL_URL' => $val[2]]));

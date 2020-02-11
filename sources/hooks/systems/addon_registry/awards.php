@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -147,7 +147,7 @@ class Hook_addon_registry_awards
         return [
             lorem_globalise(do_lorem_template('BLOCK_MAIN_AWARDS', [
                 'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'TYPE' => lorem_word(),
                 'DESCRIPTION' => lorem_paragraph_html(),
                 'AWARDEE_PROFILE_URL' => placeholder_url(),

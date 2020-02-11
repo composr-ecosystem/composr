@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -271,8 +271,7 @@ class Hook_addon_registry_downloads
     {
         $subcategories = lorem_paragraph_html();
 
-        $downloads = new Tempcode();
-        $map = [
+        $downloads = do_lorem_template('DOWNLOAD_BOX', [
             'ORIGINAL_FILENAME' => lorem_phrase(),
             'AUTHOR' => lorem_phrase(),
             'ID' => placeholder_id(),
@@ -291,13 +290,15 @@ class Hook_addon_registry_downloads
             'GIVE_CONTEXT' => false,
             'MAY_DOWNLOAD' => true,
             'DOWNLOAD_URL' => placeholder_url(),
-        ];
-        $tpl = do_lorem_template('DOWNLOAD_BOX', $map);
-        $downloads->attach($tpl);
+            'IMG_URL' => placeholder_image_url(),
+            'FULL_IMG_URL' => placeholder_image_url(),
+            'LICENCE_TITLE' => lorem_phrase(),
+            'LICENCE_HYPERLINK' => placeholder_link(),
+        ]);
 
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_CATEGORY_SCREEN', [
-                'TAGS' => lorem_word_html(),
+                'TAGS' => lorem_sentence_html(),
                 'TITLE' => lorem_title(),
                 'WARNING_DETAILS' => '',
                 'SUBMIT_URL' => placeholder_url(),
@@ -309,6 +310,7 @@ class Hook_addon_registry_downloads
                 'DOWNLOADS' => $downloads,
                 'SORTING' => lorem_phrase(),
                 'ID' => placeholder_id(),
+                'PRICE' => null,
             ]), null, '', true)
         ];
     }
@@ -399,7 +401,7 @@ class Hook_addon_registry_downloads
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_SCREEN', [
                 'ORIGINAL_FILENAME' => lorem_phrase(),
-                'TAGS' => lorem_word_html(),
+                'TAGS' => lorem_sentence_html(),
                 'LICENCE' => lorem_phrase(),
                 'LICENCE_TITLE' => lorem_phrase(),
                 'LICENCE_HYPERLINK' => placeholder_link(),
@@ -430,6 +432,7 @@ class Hook_addon_registry_downloads
                 'NUM_IMAGES' => '3',
                 'CAT' => placeholder_id(),
                 'DOWNLOAD_URL' => placeholder_url(),
+                'URL' => placeholder_url(),
             ]), null, '', true)
         ];
     }
@@ -449,6 +452,7 @@ class Hook_addon_registry_downloads
                 'NAME' => lorem_phrase(),
                 'DOWNLOAD_URL' => placeholder_url(),
                 'URL' => placeholder_url(),
+                'ID' => placeholder_id(),
             ]), null, '', true)
         ];
     }

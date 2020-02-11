@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -343,6 +343,7 @@ class Module_admin_notifications
             'NOTIFICATION_TYPES_TITLES' => $notification_types_titles,
             'NOTIFICATION_SECTIONS' => $notification_sections,
             'ADVANCED_COLUMN' => false,
+            'MEMBER_ID' => strval(get_member()),
         ]);
 
         return do_template('NOTIFICATIONS_MANAGE_SCREEN', [

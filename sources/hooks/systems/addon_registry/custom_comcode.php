@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -154,7 +154,7 @@ class Hook_addon_registry_custom_comcode
         $tags = [];
         foreach (placeholder_array() as $tag) {
             $tags[] = [
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph(),
                 'EXAMPLE' => lorem_word(),
             ];

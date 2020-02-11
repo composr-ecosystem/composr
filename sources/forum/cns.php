@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -1417,7 +1417,7 @@ class Forum_driver_cns extends Forum_driver_base
         $ret = function_exists('persistent_cache_get') ? persistent_cache_get('SUPER_ADMIN_GROUPS') : null;
 
         if ($ret === null) {
-            $_ret = $this->db->query_select('f_groups', ['id'], ['g_is_super_admin' => 1], '', null, 0, running_script('install')/*may not be installed yet*/);
+            $_ret = $this->db->query_select('f_groups', ['id'], ['g_is_super_admin' => 1], 'ORDER BY id', null, 0, running_script('install')/*may not be installed yet*/);
             if ($_ret === null) {
                 return [];
             }
@@ -1442,7 +1442,7 @@ class Forum_driver_cns extends Forum_driver_base
         $ret = function_exists('persistent_cache_get') ? persistent_cache_get('SUPER_MODERATOR_GROUPS') : null;
 
         if ($ret === null) {
-            $_ret = $this->db->query_select('f_groups', ['id'], ['g_is_super_moderator' => 1], '', null, 0, running_script('install')/*may not be installed yet*/);
+            $_ret = $this->db->query_select('f_groups', ['id'], ['g_is_super_moderator' => 1], 'ORDER BY id', null, 0, running_script('install')/*may not be installed yet*/);
             if ($_ret === null) {
                 return [];
             }

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -197,7 +197,7 @@ class Hook_payment_gateway_worldpay
             'PURCHASE_ID' => $purchase_id,
             'TRANS_EXPECTING_ID' => $trans_expecting_id,
             'DIGEST' => $digest,
-            'TEST' => ecommerce_test_mode(),
+            'TEST_MODE' => ecommerce_test_mode(),
             'LENGTH' => strval($length),
             'LENGTH_UNITS_2' => $length_units_2,
             'PRICE' => float_to_raw_string($price),

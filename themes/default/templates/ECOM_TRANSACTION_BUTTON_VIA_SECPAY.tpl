@@ -7,7 +7,7 @@
 	<input type="hidden" name="currency" value="{CURRENCY*}" />
 	<input type="hidden" name="cb_post" value="true" />
 	<input type="hidden" name="req_cv2" value="true" />
-	{+START,IF,{TEST}}
+	{+START,IF,{TEST_MODE}}
 		<input type="hidden" name="test_status" value="true" />
 	{+END}
 	<input type="hidden" name="md_flds" value="trans_id:req_cv2" />

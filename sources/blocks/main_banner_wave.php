@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -106,7 +106,13 @@ PHP;
         $assemble = new Tempcode();
         foreach ($banners as $i => $banner) {
             $banner = show_banner($banner['name'], $banner['title_text'], get_translated_tempcode('banners', $banner, 'caption'), $banner['direct_code'], $banner['img_url'], '', $banner['site_url'], $banner['b_type'], $banner['submitter']);
-            $assemble->attach(do_template('BLOCK_MAIN_BANNER_WAVE_BWRAP', ['_GUID' => 'bbb0851f015305da014f0a55006770f5', 'TYPE' => $b_type, 'BANNER' => $banner, 'MAX' => strval($max), 'REGION' => $region]));
+            $assemble->attach(do_template('BLOCK_MAIN_BANNER_WAVE_BWRAP', [
+                '_GUID' => 'bbb0851f015305da014f0a55006770f5',
+                'TYPE' => $b_type,
+                'BANNER' => $banner,
+                'MAX' => strval($max),
+                'REGION' => $region,
+            ]));
         }
 
         return do_template('BLOCK_MAIN_BANNER_WAVE', [

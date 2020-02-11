@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -117,7 +117,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
         /*foreach (array_keys($JAVASCRIPTS) as $name) Already in list of templates
         {
             $txtmte_url = 'txmt://open?url=file://'.$name;
-            $file_links->attach(do_template('INDEX_SCREEN_ENTRY', ['_GUID' => 'ef68ed85bfc07b45e1fe2d94bd2672f2', 'URL' = >$txtmte_url, 'NAME' => $name]));
+            $file_links->attach(do_template('INDEX_SCREEN_ENTRY', ['_GUID' => 'ef68ed85bfc07b45e1fe2d94bd2672f2', 'URL' => $txtmte_url, 'NAME' => $name]));
         }*/
 
         foreach (array_keys($CSSS) as $name) {

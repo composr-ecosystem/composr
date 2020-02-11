@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -323,20 +323,16 @@ class Hook_addon_registry_calendar
             if ($j == 10) {
                 $__entries->attach(do_lorem_template('CALENDAR_YEAR_MONTH_DAY_FREE', [
                     'CLASS' => lorem_word(),
-                    'CURRENT' => lorem_word(),
+                    'CURRENT' => false,
                     'DAY_URL' => placeholder_url(),
                     'DATE' => placeholder_date(),
                     'DAY' => lorem_word_2(),
                 ]));
             } else {
                 $__entries->attach(do_lorem_template('CALENDAR_YEAR_MONTH_DAY_ACTIVE', [
-                    'CURRENT' => lorem_word(),
+                    'CURRENT' => false,
                     'DAY_URL' => placeholder_url(),
                     'DATE' => placeholder_date(),
-                    'TITLE' => '',
-                    'TIME' => '',
-                    'URL' => '',
-                    'ID' => '',
                     'PRIORITY' => lorem_word(),
                     'DAY' => placeholder_number(),
                     'ICON' => '',
@@ -390,8 +386,8 @@ class Hook_addon_registry_calendar
 
                 'EVENTS' => [
                     [
-                        'T_TITLE' => lorem_word(),
-                        'E_TITLE' => lorem_word(),
+                        'T_TITLE' => lorem_phrase(),
+                        'E_TITLE' => lorem_phrase(),
                         'VIEW_URL' => placeholder_url(),
                         'ICON' => 'icons/calendar/' . placeholder_img_code('icons/calendar'),
                         'DESCRIPTION' => lorem_paragraph_html(),
@@ -413,7 +409,7 @@ class Hook_addon_registry_calendar
         return [
             lorem_globalise(do_lorem_template('BLOCK_SIDE_CALENDAR_LISTING', [
                 'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
                 'DAYS' => $days,
                 'CALENDAR_URL' => placeholder_url(),
             ]), null, '', true)
@@ -433,7 +429,7 @@ class Hook_addon_registry_calendar
             lorem_globalise(do_lorem_template('CALENDAR_EVENT_CONFLICT', [
                 'URL' => placeholder_url(),
                 'ID' => placeholder_id(),
-                'TITLE' => lorem_word(),
+                'TITLE' => lorem_phrase(),
             ]), null, '', true)
         ];
     }
@@ -481,7 +477,7 @@ class Hook_addon_registry_calendar
                             'TEXT' => lorem_phrase(),
                         ]);
                         $_streams->attach(do_lorem_template('CALENDAR_DAY_STREAM_HOUR', [
-                            'CURRENT' => lorem_word(),
+                            'CURRENT' => false,
                             'ADD_URL' => placeholder_url(),
                             'PRIORITY' => lorem_phrase(),
                             'DOWN' => '1',
@@ -494,14 +490,14 @@ class Hook_addon_registry_calendar
                             'URL' => placeholder_url(),
                             'TIME' => placeholder_date(),
                             'T_TITLE' => lorem_phrase(),
-                            'TITLE' => lorem_word(),
-                            'DESCRIPTION' => lorem_word_2(),
+                            'TITLE' => lorem_phrase(),
+                            'DESCRIPTION' => lorem_phrase(),
                             'VALIDATED' => true,
                             'RECURRING' => false,
                             'PRIORITY_ICON' => 'calendar/priority_1',
                         ]);
                         $_streams->attach(do_lorem_template('CALENDAR_DAY_STREAM_HOUR', [
-                            'CURRENT' => lorem_word(),
+                            'CURRENT' => false,
                             'ADD_URL' => placeholder_url(),
                             'PRIORITY' => lorem_phrase(),
                             'DOWN' => '1',
@@ -538,15 +534,16 @@ class Hook_addon_registry_calendar
                                 'ID' => placeholder_id(),
                                 'URL' => placeholder_url(),
                                 'TIME' => placeholder_date(),
-                                'TITLE' => lorem_word(),
-                                'E' => lorem_word(),
+                                'T_TITLE' => lorem_phrase(),
+                                'TITLE' => lorem_phrase(),
                                 'ICON' => 'icons/calendar/' . placeholder_img_code('icons/calendar'),
                                 'VALIDATED' => true,
                                 'RECURRING' => false,
+                                'PRIORITY' => '1',
                             ]);
                         }
                         $days->attach(do_lorem_template('CALENDAR_WEEK_HOUR_DAY', [
-                            'CURRENT' => lorem_word(),
+                            'CURRENT' => false,
                             'ADD_URL' => placeholder_url(),
                             'DOWN' => '1',
                             'DAY' => lorem_word(),
@@ -600,7 +597,7 @@ class Hook_addon_registry_calendar
                             'PRIORITY' => lorem_word(),
                             'ICON' => 'icons/calendar/' . placeholder_img_code('icons/calendar'),
                             'TIME' => placeholder_number(),
-                            'TITLE' => lorem_word(),
+                            'TITLE' => lorem_phrase(),
                             'URL' => placeholder_url(),
                             'VALIDATED' => true,
                             'RECURRING' => false,
@@ -656,21 +653,17 @@ class Hook_addon_registry_calendar
                         if ($j == 10) {
                             $__entries->attach(do_lorem_template('CALENDAR_YEAR_MONTH_DAY_FREE', [
                                 'CLASS' => lorem_word(),
-                                'CURRENT' => lorem_word(),
+                                'CURRENT' => false,
                                 'DAY_URL' => placeholder_url(),
                                 'DATE' => placeholder_date(),
                                 'DAY' => lorem_word_2(),
                             ]));
                         } else {
                             $__entries->attach(do_lorem_template('CALENDAR_YEAR_MONTH_DAY_ACTIVE', [
-                                'CURRENT' => lorem_word(),
+                                'CURRENT' => false,
                                 'DAY_URL' => placeholder_url(),
                                 'DATE' => placeholder_date(),
-                                'TITLE' => '',
-                                'TIME' => '',
-                                'URL' => '',
-                                'ID' => '',
-                                'PRIORITY' => lorem_word(),
+                                'PRIORITY' => placeholder_number(),
                                 'DAY' => placeholder_number(),
                                 'ICON' => '',
                                 'COUNT' => placeholder_number(),
@@ -799,6 +792,8 @@ class Hook_addon_registry_calendar
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         return [
@@ -806,10 +801,10 @@ class Hook_addon_registry_calendar
                 'TITLE' => get_screen_title('CALENDAR_EVENT_VCAL', true, [lorem_phrase()]),
 
                 'ID' => placeholder_id(),
-                'TAGS' => lorem_word_html(),
+                'TAGS' => lorem_sentence_html(),
                 'WARNING_DETAILS' => '',
                 'SUBMITTER' => placeholder_id(),
-                'ADD_DATE' => placeholder_date_raw(),
+                'ADD_DATE' => placeholder_date(),
                 'ADD_DATE_RAW' => placeholder_date_raw(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'VIEWS' => lorem_phrase(),

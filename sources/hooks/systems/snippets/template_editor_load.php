@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -226,6 +226,8 @@ class Hook_snippet_template_editor_load
             'LOGICAL_SYMBOLS' => $logical_symbols,
 
             'INCLUDE_CSS_EDITING' => $include_css_editing,
+
+            'OWN_FORM' => null,
         ]);
     }
 

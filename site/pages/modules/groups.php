@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -786,6 +786,7 @@ class Module_groups
                 'URL' => $post_url,
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
+                'PREVIEW' => '',
             ]);
         }
 
@@ -830,7 +831,15 @@ class Module_groups
                 }
             }
 
-            return do_template('CONFIRM_SCREEN', ['_GUID' => 'ceafde00ade4492c65ed2e6e2309a0e7', 'TITLE' => $this->title, 'TEXT' => $text, 'URL' => $post_url, 'HIDDEN' => $hidden, 'FIELDS' => '']);
+            return do_template('CONFIRM_SCREEN', [
+                '_GUID' => 'ceafde00ade4492c65ed2e6e2309a0e7',
+                'TITLE' => $this->title,
+                'TEXT' => $text,
+                'URL' => $post_url,
+                'HIDDEN' => $hidden,
+                'FIELDS' => '',
+                'PREVIEW' => '',
+            ]);
         }
         if ($id == db_get_first_id()) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -874,6 +883,7 @@ class Module_groups
                 'URL' => $post_url,
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
+                'PREVIEW' => '',
             ]);
         }
 
@@ -953,6 +963,7 @@ class Module_groups
                 'URL' => $post_url,
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
+                'PREVIEW' => '',
             ]);
         }
 

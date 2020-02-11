@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -992,7 +992,7 @@ class Hook_addon_registry_core_form_interfaces
     {
         $fields = new Tempcode();
 
-        $name = placeholder_random_id();
+        $name = placeholder_id();
         $fields->attach(do_lorem_template('FORM_SCREEN_INPUT_FLOAT', [
             'TABINDEX' => placeholder_number(),
             'REQUIRED' => '',
@@ -1002,9 +1002,8 @@ class Hook_addon_registry_core_form_interfaces
 
         return [
             lorem_globalise(do_lorem_template('FORM_SINGLE_FIELD', [
-                'GET' => null,
+                'GET' => false,
                 'HIDDEN' => '',
-                'TITLE' => lorem_title(),
                 'LABEL' => lorem_phrase(),
                 'NAME' => $name,
                 'URL' => placeholder_url(),
@@ -1091,12 +1090,12 @@ class Hook_addon_registry_core_form_interfaces
 
         $name = placeholder_random_id();
         $input = do_lorem_template('FORM_SCREEN_INPUT_TEXT', [
-            'RAW' => true,
             'SCROLLS' => '',
             'TABINDEX' => placeholder_number(),
             'REQUIRED' => '',
             'NAME' => $name,
             'DEFAULT' => '',
+            'RAW' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -1151,7 +1150,7 @@ class Hook_addon_registry_core_form_interfaces
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD_SPACER', [
             'SECTION_HIDDEN' => false,
             'TITLE' => lorem_phrase(),
-            'THEME_ALSO_INCLUDE_PAGES' => false,
+            'DESCRIPTION' => lorem_paragraph(),
         ]));
         $list = new Tempcode();
         foreach (placeholder_array() as $key => $value) {
@@ -1404,7 +1403,7 @@ class Hook_addon_registry_core_form_interfaces
 
         return [
             lorem_globalise(do_lorem_template('FORM', [
-                'GET' => null,
+                'GET' => false,
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => '',
                 'TITLE' => lorem_title(),
@@ -1413,6 +1412,13 @@ class Hook_addon_registry_core_form_interfaces
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
                 'TEXT' => lorem_sentence_html(),
+                'JS_FUNCTION_CALLS' => [],
+                'SKIP_REQUIRED' => false,
+                'SECONDARY_FORM' => false,
+                'TABINDEX' => placeholder_number(),
+                'SUPPORT_AUTOSAVE' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
+                'MODSECURITY_WORKAROUND' => false,
             ]), null, '', true)
         ];
     }
@@ -1629,6 +1635,10 @@ class Hook_addon_registry_core_form_interfaces
             'CONTENT' => $radios,
             'NAME' => $name,
             'REQUIRED' => true,
+            'IMAGES' => null,
+            'LINEAR' => false,
+            'CODE' => '',
+            'TABINDEX' => placeholder_number(),
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -1656,6 +1666,7 @@ class Hook_addon_registry_core_form_interfaces
             'DESCRIPTION' => lorem_sentence_html(),
             'MULTI_SELECT' => false,
             'CONTENT_TYPE' => '',
+            'END_OF_FORM' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -1678,6 +1689,7 @@ class Hook_addon_registry_core_form_interfaces
             'TABINDEX' => placeholder_number(),
             'REQUIRED' => '',
             'NAME' => $name,
+            'PRETTY_NAME' => lorem_word(),
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -1791,7 +1803,7 @@ class Hook_addon_registry_core_form_interfaces
             foreach ($_option[0] as $option) {
                 $out[] = [
                     'DISABLED' => false,
-                    'CHECKED' => lorem_word(),
+                    'CHECKED' => false,
                     'TABINDEX' => placeholder_number(),
                     'NAME' => placeholder_random_id(),
                     'PRETTY_NAME' => lorem_word(),
@@ -1828,7 +1840,7 @@ class Hook_addon_registry_core_form_interfaces
 
         return [
             lorem_globalise(do_lorem_template('FORM_SCREEN', [
-                'GET' => null,
+                'GET' => false,
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => $hidden,
                 'TITLE' => lorem_title(),
@@ -1837,6 +1849,11 @@ class Hook_addon_registry_core_form_interfaces
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
                 'TEXT' => lorem_sentence_html(),
+                'SUPPORT_AUTOSAVE' => false,
+                'JS_FUNCTION_CALLS' => [],
+                'MODSECURITY_WORKAROUND' => false,
+                'POST' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
             ]), null, '', true)
         ];
     }
@@ -1856,6 +1873,9 @@ class Hook_addon_registry_core_form_interfaces
                 'HIDDEN' => '',
                 'TITLE' => lorem_title(),
                 'TEXT' => lorem_sentence_html(),
+                'JS_FUNCTION_CALLS' => [],
+                'SUPPORT_AUTOSAVE' => false,
+                'CANCEL_URL' => placeholder_url(),
             ]), null, '', true)
         ];
     }
@@ -1910,8 +1930,9 @@ class Hook_addon_registry_core_form_interfaces
         return [
             lorem_globalise(do_lorem_template('FORM_FIELD_SET_GROUPER', [
                 'NAME' => lorem_word(),
-                'ID' => placeholder_random_id(),
+                'ID' => placeholder_id(),
                 'FIELDS' => placeholder_fields(),
+                'VISIBLE' => true,
             ]), null, '', true)
         ];
     }
@@ -1925,19 +1946,21 @@ class Hook_addon_registry_core_form_interfaces
      */
     public function tpl_preview__preview_script_spelling()
     {
+        $misspellings = [
+            [
+                'WORD' => 'batt',
+                'CORRECTIONS' => 'bat',
+            ],
+            [
+                'WORD' => 'caat',
+                'CORRECTIONS' => 'cat',
+            ],
+        ];
+
         return [
             lorem_globalise(do_lorem_template('PREVIEW_SCRIPT_SPELLING', [
                 'FIELD' => lorem_phrase(),
-                'MISSPELLINGS' => [
-                    [
-                        'WORD' => 'batt',
-                        'CORRECTIONS' => 'bat',
-                    ],
-                    [
-                        'WORD' => 'caat',
-                        'CORRECTIONS' => 'cat',
-                    ],
-                ],
+                'MISSPELLINGS' => $misspellings,
             ]), null, '', true)
         ];
     }
@@ -1951,13 +1974,19 @@ class Hook_addon_registry_core_form_interfaces
      */
     public function tpl_preview__preview_script_keyword_density()
     {
+        $keywords = [];
+        foreach (placeholder_array() as $k => $v) {
+            $keywords[] = [
+                'KEYWORD' => $v,
+                'DENSITY' => placeholder_id(),
+                'IDEAL_DENSITY' => placeholder_number(),
+            ];
+        }
+
         return [
             lorem_globalise(do_lorem_template('PREVIEW_SCRIPT_KEYWORD_DENSITY', [
                 'FIELD' => lorem_phrase(),
-                'KEYWORDS' => placeholder_array(),
-                'KEYWORD' => lorem_word(),
-                'DENSITY' => placeholder_id(),
-                'IDEAL_DENSITY' => placeholder_number(),
+                'KEYWORDS' => $keywords,
             ]), null, '', true)
         ];
     }
@@ -2046,6 +2075,7 @@ class Hook_addon_registry_core_form_interfaces
             'CONTENT' => $content,
             'REQUIRED' => true,
             'IMAGES' => true,
+            'LINEAR' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -2077,7 +2107,7 @@ class Hook_addon_registry_core_form_interfaces
 
         return [
             lorem_globalise(do_lorem_template('FORM_SCREEN', [
-                'GET' => null,
+                'GET' => false,
                 'HIDDEN' => '',
                 'TITLE' => lorem_title(),
                 'URL' => placeholder_url(),
@@ -2085,6 +2115,12 @@ class Hook_addon_registry_core_form_interfaces
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
                 'TEXT' => lorem_sentence_html(),
+                'SKIP_WEBSTANDARDS' => false,
+                'SUPPORT_AUTOSAVE' => false,
+                'JS_FUNCTION_CALLS' => [],
+                'MODSECURITY_WORKAROUND' => false,
+                'POST' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
             ]), null, '', true)
         ];
     }
@@ -2181,13 +2217,17 @@ class Hook_addon_registry_core_form_interfaces
                 'URL' => placeholder_url(),
                 'POST' => lorem_phrase(),
                 'DEFAULT_PARSED' => lorem_phrase(),
-                'CONTINUE_URL' => placeholder_url(),
                 'ATTACHMENTS' => lorem_phrase(),
                 'SPECIALISATION' => placeholder_fields(),
                 'SPECIALISATION2' => placeholder_fields(),
                 'REQUIRED' => true,
                 'SUPPORT_AUTOSAVE' => false,
                 'DESCRIPTION' => lorem_paragraph(),
+                'JS_FUNCTION_CALLS' => [],
+                'SPECIALISATION2_HIDDEN' => null,
+                'CANCEL_URL' => null,
+                'MODSECURITY_WORKAROUND' => false,
+                'COMCODE_PAGE_HINTS' => null,
             ]), null, '', true)
         ];
     }
@@ -2257,7 +2297,6 @@ class Hook_addon_registry_core_form_interfaces
         ]));
 
         $field = do_lorem_template('FORM_SCREEN_INPUT_PERMISSION_MATRIX', [
-            'TITLE' => lorem_phrase(),
             'SERVER_ID' => placeholder_id(),
             'COLOR' => lorem_word(),
             'OVERRIDES' => placeholder_array(),
@@ -2288,13 +2327,15 @@ class Hook_addon_registry_core_form_interfaces
 
         $fields = new Tempcode();
 
-        $name = placeholder_random_id();
+        $name = placeholder_id();
         $input = do_lorem_template('FORM_SCREEN_INPUT_RADIO_LIST', [
             'NAME' => $name,
             'CODE' => '',
             'TABINDEX' => placeholder_number(),
             'CONTENT' => lorem_phrase(),
             'REQUIRED' => true,
+            'IMAGES' => null,
+            'LINEAR' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -2319,6 +2360,15 @@ class Hook_addon_registry_core_form_interfaces
                 'TEXT' => '',
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word_2(),
+                'JS_FUNCTION_CALLS' => [],
+                'SKIP_REQUIRED' => false,
+                'SECONDARY_FORM' => false,
+                'TABINDEX' => placeholder_number(),
+                'SUPPORT_AUTOSAVE' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
+                'MODSECURITY_WORKAROUND' => false,
+                'SKIP_WEBSTANDARDS' => false,
+                'GET' => false,
             ]), null, '', true)
         ];
     }
@@ -2389,6 +2439,7 @@ class Hook_addon_registry_core_form_interfaces
             lorem_globalise(do_lorem_template('BLOCK_HELPER_START', [
                 'TITLE' => lorem_phrase(),
                 'LINKS' => lorem_paragraph_html(),
+                'GET' => false,
             ]), null, '', true),
         ];
     }
@@ -2412,6 +2463,7 @@ class Hook_addon_registry_core_form_interfaces
                 'DELETE' => false,
                 'COMCODE' => lorem_phrase(),
                 'COMCODE_SEMIHTML' => lorem_phrase(),
+                'PREFIX' => null,
             ]), null, '', true)
         ];
     }

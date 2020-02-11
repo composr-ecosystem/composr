@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -111,34 +111,6 @@ function lorem_paragraph()
 function lorem_chunk()
 {
     return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies cursus egestas. Nunc orci lacus, viverra a ultrices nec, volutpat eu velit. Maecenas imperdiet tortor eget eros varius mattis. Nullam eget lacus in tellus mollis ornare in lobortis sapien. Duis lectus felis, consequat in ullamcorper at, elementum sed est. In viverra tellus turpis, in tincidunt leo. Donec sagittis rhoncus urna quis eleifend. Nam imperdiet, orci quis bibendum porta, odio neque ullamcorper erat, sed malesuada ante libero vel ligula. Ut porttitor est egestas erat placerat eget placerat lectus ultricies. Morbi eu dolor metus, nec vestibulum nisl. Praesent eget massa tortor, in consequat velit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque eget eros ut erat vestibulum facilisis. Duis eleifend odio in neque pellentesque semper pulvinar dolor feugiat. Proin sed lectus et lectus fringilla gravida. Aliquam a nisl metus. In risus risus, tempus interdum viverra ac, laoreet at sem. Sed sem nunc, rutrum quis convallis eu, hendrerit non libero.\n\nSed sollicitudin, dolor ac posuere bibendum, tellus eros hendrerit magna, non accumsan ligula sapien at enim. Curabitur hendrerit lacinia ligula, et dapibus diam porttitor sit amet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec nisi arcu, placerat vel ullamcorper non, hendrerit cursus nisl. Aliquam tincidunt, magna sed tempus auctor, enim dolor consequat massa, rhoncus euismod tortor orci fringilla arcu. Nulla et egestas augue. Fusce non enim vitae dolor imperdiet pulvinar vitae sed neque. Sed augue neque, volutpat non tincidunt ac, volutpat eu tellus. Suspendisse sollicitudin nulla eu leo placerat posuere id sit amet metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum sollicitudin porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed imperdiet scelerisque turpis, eleifend tristique justo euismod non. Pellentesque at elit tristique sem venenatis auctor eu vitae dui. Nam hendrerit sapien sit amet risus suscipit vitae interdum arcu blandit. Phasellus quis massa sed mi mollis hendrerit.\n\nNunc at elit eget elit convallis auctor sit amet non nisi. Curabitur consequat, nisl sed venenatis feugiat, felis purus vehicula purus, sed scelerisque nulla tellus ac neque. Morbi convallis semper pulvinar. Integer auctor mi ante. Cras aliquam egestas lobortis. Maecenas sodales mi at felis ullamcorper tristique. Fusce viverra laoreet sapien, et vestibulum purus interdum sit amet. Sed at ante quis ipsum pellentesque pretium. Praesent volutpat justo in orci ullamcorper cursus. In non nulla sit amet turpis ultrices dignissim eu cursus justo. Etiam lacinia lacinia odio sit amet fringilla. Vestibulum at auctor nisl.';
-}
-
-/**
- * Get suitable placeholder text.
- *
- * @return Tempcode Place holder text
- */
-function lorem_word_html()
-{
-    $text = '<strong>Lorem</strong>'; // XHTMLXHTML
-    if (function_exists('ocp_mark_as_escaped')) {
-        ocp_mark_as_escaped($text);
-    }
-    return make_string_tempcode($text);
-}
-
-/**
- * Get suitable placeholder text.
- *
- * @return Tempcode Place holder text
- */
-function lorem_word_2_html()
-{
-    $text = '<strong>Ipsum</strong>'; // XHTMLXHTML
-    if (function_exists('ocp_mark_as_escaped')) {
-        ocp_mark_as_escaped($text);
-    }
-    return make_string_tempcode($text);
 }
 
 /**
@@ -260,7 +232,23 @@ function placeholder_form_with_field($field_name)
     require_code('form_templates');
     $hidden = form_input_hidden($field_name, '0');
 
-    $form = do_lorem_template('FORM', ['TABINDEX' => placeholder_number(), 'HIDDEN' => $hidden, 'TEXT' => $text, 'FIELDS' => placeholder_fields(), 'URL' => placeholder_url(), 'SUBMIT_ICON' => 'buttons/proceed', 'SUBMIT_NAME' => 'proceed']);
+    $form = do_lorem_template('FORM', [
+        'TABINDEX' => placeholder_number(),
+        'HIDDEN' => $hidden,
+        'TEXT' => $text,
+        'FIELDS' => placeholder_fields(),
+        'URL' => placeholder_url(),
+        'SUBMIT_ICON' => 'buttons/proceed',
+        'SUBMIT_NAME' => 'proceed',
+        'JS_FUNCTION_CALLS' => [],
+        'SKIP_WEBSTANDARDS' => true,
+        'SKIP_REQUIRED' => false,
+        'GET' => false,
+        'SUPPORT_AUTOSAVE' => false,
+        'ANALYTIC_EVENT_CATEGORY' => null,
+        'MODSECURITY_WORKAROUND' => false,
+        'SECONDARY_FORM' => false,
+    ]);
 
     return $form;
 }
@@ -449,7 +437,7 @@ function placeholder_number()
  */
 function placeholder_id()
 {
-    return strval(123);
+    return 'x' . strval(123);
 }
 
 /**
@@ -686,6 +674,8 @@ function placeholder_pagination()
                 'P' => strval($j),
                 'URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
+                'NOFOLLOW' => null,
+                'REL' => lorem_word(),
             ]));
         }
     }
@@ -698,22 +688,18 @@ function placeholder_pagination()
         'TITLE' => lorem_phrase(),
         'P' => placeholder_date_raw(),
         'URL' => placeholder_url(),
+        'NOFOLLOW' => null,
     ]);
-    $previous->attach(do_lorem_template('PAGINATION_PREVIOUS', [
-        'TITLE' => lorem_phrase(),
-        'P' => placeholder_date_raw(),
-    ]));
+    $previous->attach(do_lorem_template('PAGINATION_PREVIOUS'));
     $next = do_lorem_template('PAGINATION_NEXT_LINK', [
         'REL' => null,
         'TITLE' => lorem_phrase(),
         'NUM_PAGES' => placeholder_number(),
         'P' => placeholder_number(),
         'URL' => placeholder_url(),
+        'NOFOLLOW' => null,
     ]);
-    $next->attach(do_lorem_template('PAGINATION_NEXT', [
-        'TITLE' => lorem_phrase(),
-        'P' => placeholder_date_raw(),
-    ]));
+    $next->attach(do_lorem_template('PAGINATION_NEXT'));
     $continues = do_lorem_template('PAGINATION_CONTINUE', []);
     $last = do_lorem_template('PAGINATION_CONTINUE_LAST', [
         'TITLE' => lorem_phrase(),

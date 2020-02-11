@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -551,11 +551,23 @@ class Module_admin_permissions
 
                 $has_not_restriction = !in_array($gid, $access_rows);
 
-                $cells->attach(do_template('PERMISSION_CELL', ['_GUID' => '3d5fe8c61007d9665111fc9536f6ddf0', 'CHECKED' => !$has_not_restriction, 'HUMAN' => do_lang_tempcode('RESTRICTION_CELL', /*$zone.'__'.*/escape_html($page['page_name']), escape_html($g_name)), 'NAME' => 'p_' . strval($id) . '__' . strval($gid)]));
+                $cells->attach(do_template('PERMISSION_CELL', [
+                    '_GUID' => '3d5fe8c61007d9665111fc9536f6ddf0',
+                    'CHECKED' => !$has_not_restriction,
+                    'HUMAN' => do_lang_tempcode('RESTRICTION_CELL', /*$zone.'__'.*/escape_html($page['page_name']), escape_html($g_name)),
+                    'NAME' => 'p_' . strval($id) . '__' . strval($gid),
+                ]));
                 $code .= 'form.elements[\'' . 'p_' . strval($id) . '__' . strval($gid) . '\'].checked=this.value==\'+\';';
             }
 
-            $rows->attach(do_template('PERMISSION_KEYS_PERMISSION_ROW', ['_GUID' => 'dd692175fe246c130126ece7bd30ffb1', 'ALL_OFF' => empty($access_rows), 'KEY' => $page['page_name'], 'UID' => strval($id), 'CODE' => $code, 'CELLS' => $cells]));
+            $rows->attach(do_template('PERMISSION_KEYS_PERMISSION_ROW', [
+                '_GUID' => 'dd692175fe246c130126ece7bd30ffb1',
+                'ALL_OFF' => empty($access_rows),
+                'KEY' => $page['page_name'],
+                'UID' => strval($id),
+                'CODE' => $code,
+                'CELLS' => $cells,
+            ]));
         }
 
         // Match-key messages
@@ -772,7 +784,6 @@ class Module_admin_permissions
         $where = ['p_section' => $p_section]; // Added in because it was eating up too much memory
         $_privileges = collapse_2d_complexity('the_name', 'p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', ['p_section', 'the_name'], $where, 'ORDER BY p_section,the_name'));
         $access_rows = $GLOBALS['SITE_DB']->query_select('group_privileges', ['privilege', 'group_id'], ['the_page' => '', 'module_the_name' => '', 'category_name' => '']);
-        $current_section = '';
         $sections = new Tempcode();
         $_false = do_template('PERMISSION_CELL', ['_GUID' => '61aa7fa739e19caa1efb3695a5e2ab5d', 'CHECKED' => false, 'HUMAN' => '__human__', 'NAME' => '__name__']);
         $_true = do_template('PERMISSION_CELL', ['_GUID' => '44a888b40d7a34aed6ed2bf8ff47f1de', 'CHECKED' => true, 'HUMAN' => '__human__', 'NAME' => '__name__']);
@@ -812,11 +823,6 @@ class Module_admin_permissions
         // Display
         foreach ($__privileges as $privilege => $bits) {
             list($section, $privilege_text) = $bits;
-
-            if (($section != $current_section) && ($current_section != '')) {
-                $sections->attach(do_template('PERMISSION_PRIVILEGES_SECTION', ['_GUID' => '36bc9dfbeb7ee3d91f2a18057cd30551', 'HEADER_CELLS' => $header_cells, 'SECTION' => $rows, 'CURRENT_SECTION' => do_lang_tempcode($current_section)]));
-                $rows = new Tempcode();
-            }
 
             $cells = '';
             $code = '';
@@ -887,12 +893,17 @@ class Module_admin_permissions
 
             // Render row
             $rows->attach(do_template('PERMISSION_ROW', $tpl_map));
-
-            $current_section = $section;
         }
-        $sections->attach(do_template('PERMISSION_PRIVILEGES_SECTION', ['_GUID' => 'c75a07373f54c0fa31d18e360fcf26f6', 'COLS' => $cols, 'HEADER_CELLS' => $header_cells, 'SECTION' => $rows, 'CURRENT_SECTION' => do_lang_tempcode($current_section)]));
 
-        return do_template('PERMISSION_PRIVILEGES_SCREEN', ['_GUID' => '11974f0a137266a625991d3611b8e587', 'TITLE' => $this->title, 'URL' => $url, 'SECTIONS' => $sections]);
+        return do_template('PERMISSION_PRIVILEGES_SCREEN', [
+            '_GUID' => '11974f0a137266a625991d3611b8e587',
+            'TITLE' => $this->title,
+            'URL' => $url,
+            'SECTIONS' => $sections,
+            'COLS' => $cols,
+            'HEADER_CELLS' => $header_cells,
+            'ROWS' => $rows,
+        ]);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -62,7 +62,12 @@ class Hook_implicit_usergroups_antispam_question
      */
     public function get_bound_group_ids()
     {
-        return [db_get_first_id() + 9]; // Probation on standard install; customise as required
+        require_code('cns_groups');
+        $probation_group_id = get_probation_group(); // Customise as required
+        if ($probation_group_id === null) {
+            $probation_group_id = db_get_first_id(); // Guests then
+        }
+        return [$probation_group_id];
     }
 
     protected function _where()

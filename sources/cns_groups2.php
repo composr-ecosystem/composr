@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -154,4 +154,52 @@ function cns_get_group_members_raw($group_id, $include_primaries = true, $non_va
     }
 
     return array_values($members);
+}
+
+/**
+ * Get the usergroups in the rank ladder.
+ *
+ * @return array Rank ladder groups
+ */
+function get_default_rank_ladder_groups()
+{
+    $groups = [];
+    $group = get_first_default_group();
+    do {
+        $groups[] = $group;
+        $group = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_promotion_target', ['id' => $group]);
+    } while ($group !== null);
+    return $groups;
+}
+
+/**
+ * Get a list of groups we should not delete.
+ *
+ * @param  boolean $only_preserve_first_admin_groups Whether to only preserve the first admin/moderator group
+ * @return array Preserved groups
+ */
+function get_all_preserved_groups($only_preserve_first_admin_groups = false)
+{
+    require_code('cns_groups');
+    $all_groups_to_preserve = [];
+    $all_groups_to_preserve[] = db_get_first_id();
+    $probation_group = get_probation_group();
+    if ($probation_group !== null) {
+        $all_groups_to_preserve[] = $probation_group;
+    }
+    $super_admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
+    $moderator_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
+    if ($only_preserve_first_admin_groups) {
+        if (array_key_exists(0, $super_admin_groups)) {
+            $all_groups_to_preserve[] = $super_admin_groups[0];
+        }
+        if (array_key_exists(0, $moderator_groups)) {
+            $all_groups_to_preserve[] = $moderator_groups[0];
+        }
+    } else {
+        $all_groups_to_preserve = array_merge($all_groups_to_preserve, $super_admin_groups);
+        $all_groups_to_preserve = array_merge($all_groups_to_preserve, $moderator_groups);
+    }
+    $all_groups_to_preserve = array_merge($all_groups_to_preserve, get_default_rank_ladder_groups());
+    return $all_groups_to_preserve;
 }

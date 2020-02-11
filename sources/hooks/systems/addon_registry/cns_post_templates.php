@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -151,6 +151,8 @@ class Hook_addon_registry_cns_post_templates
         $input = do_lorem_template('CNS_POST_TEMPLATE_SELECT', [
             'TABINDEX' => placeholder_number(),
             'LIST' => $list,
+            'SKIP_LABEL' => false,
+            'RESETS' => false,
         ]);
 
         $fields = new Tempcode();
@@ -175,6 +177,12 @@ class Hook_addon_registry_cns_post_templates
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_phrase(),
                 'TEXT' => lorem_sentence_html(),
+                'SUPPORT_AUTOSAVE' => false,
+                'JS_FUNCTION_CALLS' => [],
+                'MODSECURITY_WORKAROUND' => false,
+                'POST' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
+                'GET' => false,
             ]), null, '', true)
         ];
     }

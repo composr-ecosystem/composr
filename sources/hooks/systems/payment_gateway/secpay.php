@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -128,7 +128,7 @@ class Hook_payment_gateway_secpay
             'PURCHASE_ID' => $purchase_id,
             'TRANS_EXPECTING_ID' => $trans_expecting_id,
             'DIGEST' => $digest,
-            'TEST' => ecommerce_test_mode(),
+            'TEST_MODE' => true,
             'PRICE' => float_to_raw_string($price),
             'TAX' => float_to_raw_string($tax),
             'SHIPPING_COST' => float_to_raw_string($shipping_cost),
@@ -171,7 +171,7 @@ class Hook_payment_gateway_secpay
             'PURCHASE_ID' => $purchase_id,
             'TRANS_EXPECTING_ID' => $trans_expecting_id,
             'DIGEST' => $digest,
-            'TEST' => ecommerce_test_mode(),
+            'TEST_MODE' => ecommerce_test_mode(),
             'FIRST_REPEAT' => $first_repeat,
             'LENGTH' => strval($length),
             'LENGTH_UNITS_2' => $length_units_2,

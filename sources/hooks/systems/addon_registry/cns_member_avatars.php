@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -146,6 +146,7 @@ class Hook_addon_registry_cns_member_avatars
                 'AVATAR' => $avatar,
                 'WIDTH' => placeholder_number(),
                 'HEIGHT' => placeholder_number(),
+                'MEMBER_ID' => placeholder_id(),
             ]), null, '', true)
         ];
     }

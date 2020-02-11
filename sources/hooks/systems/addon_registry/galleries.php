@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -402,6 +402,7 @@ class Hook_addon_registry_galleries
             'ADD_GALLERY_URL' => placeholder_url(),
             'ADD_IMAGE_URL' => placeholder_url(),
             'ADD_VIDEO_URL' => placeholder_url(),
+            'MEMBER_ID' => placeholder_id(),
 
             'START' => '0',
             'MAX' => '10',
@@ -412,9 +413,6 @@ class Hook_addon_registry_galleries
         $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_GALLERIES', [
             'MEMBER_ID' => placeholder_id(),
             'GALLERIES' => $galleries,
-            'ADD_GALLERY_URL' => placeholder_url(),
-            'ADD_IMAGE_URL' => placeholder_url(),
-            'ADD_VIDEO_URL' => placeholder_url(),
         ]);
         return [
             lorem_globalise($tab_content, null, '', true),
@@ -473,7 +471,7 @@ class Hook_addon_registry_galleries
             'TEXT' => 'test',
         ]));
         $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', [
-            'TABINDEX' => placeholder_id(),
+            'TABINDEX' => placeholder_number(),
             'REQUIRED' => '-required',
             'NAME' => 'files',
             'CONTENT' => $orphaned_content,
@@ -500,6 +498,14 @@ class Hook_addon_registry_galleries
             'TEXT' => lorem_phrase(),
             'HIDDEN' => '',
             'BATCH_IMPORT_ARCHIVE_CONTENTS' => lorem_phrase(),
+            'JS_FUNCTION_CALLS' => [],
+            'SKIP_REQUIRED' => false,
+            'SECONDARY_FORM' => false,
+            'SUPPORT_AUTOSAVE' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
+            'MODSECURITY_WORKAROUND' => false,
+            'SKIP_WEBSTANDARDS' => true,
+            'GET' => false,
         ]);
 
         return [
@@ -543,8 +549,8 @@ class Hook_addon_registry_galleries
                 'VIEW_URL' => placeholder_url(),
                 'THUMB' => placeholder_image(),
                 'DESCRIPTION' => lorem_phrase(),
-                'ADD_DATE_RAW' => placeholder_date(),
-                'EDIT_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
+                'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'VIEWS' => placeholder_number(),
                 'SUBMITTER' => placeholder_id(),
                 'ID' => placeholder_id(),
@@ -583,8 +589,8 @@ class Hook_addon_registry_galleries
                 'CAT' => lorem_word(),
                 'THUMB' => placeholder_image(),
                 'VIEW_URL' => placeholder_url(),
-                'ADD_DATE_RAW' => lorem_word(),
-                'EDIT_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
+                'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'VIEWS' => placeholder_id(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
@@ -605,6 +611,10 @@ class Hook_addon_registry_galleries
                 'TOTAL' => lorem_phrase(),
                 'PAGINATION' => placeholder_pagination(),
                 'BLOCK_PARAMS' => '',
+                'IMAGE_FILTER' => '',
+                'VIDEO_FILTER' => '',
+                'DAYS' => placeholder_number(),
+                'SORT' => lorem_word(),
 
                 'START' => '0',
                 'MAX' => '10',
@@ -627,9 +637,9 @@ class Hook_addon_registry_galleries
         foreach (placeholder_array() as $k => $v) {
             $out = new Tempcode();
             foreach (placeholder_array() as $_k => $_v) {
-                $out->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE_DEPTH', ['TITLE' => lorem_word(), 'URL' => placeholder_url()]));
+                $out->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE_DEPTH', ['TITLE' => lorem_phrase(), 'URL' => placeholder_url()]));
             }
-            $out->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE', ['TITLE' => lorem_word(), 'URL' => placeholder_url()]));
+            $out->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE', ['TITLE' => lorem_phrase(), 'URL' => placeholder_url()]));
 
             $content->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE_CONTAINER', ['ID' => placeholder_random_id(), 'CAPTION' => lorem_phrase(), 'CONTENTS' => $out]));
         }
@@ -639,6 +649,8 @@ class Hook_addon_registry_galleries
                 'BLOCK_ID' => lorem_word(),
                 'DEPTH' => true,
                 'CONTENT' => $content,
+                'TITLE' => lorem_phrase(),
+                'ID' => placeholder_id(),
             ]), null, '', true),
         ];
     }
@@ -691,7 +703,6 @@ class Hook_addon_registry_galleries
             'MAIN' => lorem_phrase(),
             '_TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
-            'FILE_SIZE' => placeholder_filesize(),
             'CAT' => placeholder_id(),
             'RATING_DETAILS' => '',
             'THUMB_URL' => placeholder_image_url(),
@@ -700,18 +711,12 @@ class Hook_addon_registry_galleries
             'VIEWS' => lorem_phrase(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
             'EDIT_DATE_RAW' => placeholder_date_raw(),
-            'SUBMITTER' => lorem_word_html(),
+            'SUBMITTER' => placeholder_id(),
             'VIDEO_PLAYER' => placeholder_image(),
             'VIDEO_DETAILS' => lorem_phrase(),
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
-        ]);
-        $tags = do_lorem_template('TAGS', [
-            'TAG' => lorem_word(),
-            'TAGS' => placeholder_array(),
-            'LINK_FULLSCOPE' => lorem_word(),
-            'TYPE' => null,
         ]);
 
         $entries = new Tempcode();
@@ -721,7 +726,7 @@ class Hook_addon_registry_galleries
                 '_TITLE' => lorem_title(),
                 'ID' => strval($k),
                 'VIEWS' => placeholder_number(),
-                'ADD_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'SUBMITTER' => placeholder_id(),
                 'CLASS' => lorem_word(),
@@ -754,6 +759,8 @@ class Hook_addon_registry_galleries
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => true,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         return [
@@ -773,7 +780,7 @@ class Hook_addon_registry_galleries
                 'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
                 'ENTRY_EDIT_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'RATING_DETAILS' => lorem_sentence_html(),
                 'COMMENT_DETAILS' => $comment_details,
                 'REP_IMAGE_URL' => placeholder_image_url(),
@@ -796,6 +803,7 @@ class Hook_addon_registry_galleries
                 'ACCEPT_VIDEOS' => true,
                 'VIEWS' => placeholder_number(),
                 'OWNER' => null,
+                'PROBE_ID' => placeholder_id(),
             ]), null, '', true),
         ];
     }
@@ -822,17 +830,11 @@ class Hook_addon_registry_galleries
             'VIEWS' => lorem_phrase(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
             'EDIT_DATE_RAW' => placeholder_date_raw(),
-            'SUBMITTER' => lorem_word_html(),
+            'SUBMITTER' => placeholder_id(),
             'THUMB' => placeholder_url(),
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
-        ]);
-        $tags = do_lorem_template('TAGS', [
-            'TAG' => lorem_word(),
-            'TAGS' => placeholder_array(),
-            'LINK_FULLSCOPE' => lorem_word(),
-            'TYPE' => null,
         ]);
 
         $entries = new Tempcode();
@@ -842,7 +844,7 @@ class Hook_addon_registry_galleries
                 '_TITLE' => lorem_title(),
                 'ID' => strval($k),
                 'VIEWS' => placeholder_number(),
-                'ADD_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'SUBMITTER' => placeholder_id(),
                 'CLASS' => lorem_word(),
@@ -875,6 +877,8 @@ class Hook_addon_registry_galleries
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         return [
@@ -891,7 +895,7 @@ class Hook_addon_registry_galleries
                 'ENTRY_COMMENT_DETAILS' => lorem_sentence_html(),
                 'ENTRY_EDIT_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'RATING_DETAILS' => lorem_sentence_html(),
                 'COMMENT_DETAILS' => $comment_details,
                 'REP_IMAGE_URL' => placeholder_image_url(),
@@ -914,6 +918,10 @@ class Hook_addon_registry_galleries
                 'ACCEPT_VIDEOS' => true,
                 'VIEWS' => placeholder_number(),
                 'OWNER' => null,
+                'PROBE_ID' => placeholder_id(),
+                'ENTRY_TITLE' => lorem_phrase(),
+                'ENTRY_DESCRIPTION' => lorem_paragraph_html(),
+                'ENTRY_SUBMITTER' => placeholder_id(),
             ]), null, '', true),
         ];
     }
@@ -927,13 +935,6 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_grid_mode_screen()
     {
-        $tags = do_lorem_template('TAGS', [
-            'LINK_FULLSCOPE' => lorem_word(),
-            'TAG' => lorem_word(),
-            'TAGS' => placeholder_array(),
-            'TYPE' => null,
-        ]);
-
         $entry = new Tempcode();
         $map = [
             'MEDIA_TYPE' => 'image',
@@ -948,8 +949,8 @@ class Hook_addon_registry_galleries
             'CAT' => lorem_word(),
             'THUMB' => placeholder_image(),
             'VIEW_URL' => placeholder_url(),
-            'EDIT_DATE_RAW' => placeholder_date(),
-            'ADD_DATE_RAW' => placeholder_date(),
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
             'VIEWS' => placeholder_number(),
             '_EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
@@ -968,8 +969,8 @@ class Hook_addon_registry_galleries
             'TITLE' => lorem_phrase(),
             'VIDEO_DETAILS' => $video_details,
             'DESCRIPTION' => lorem_phrase(),
-            'ADD_DATE_RAW' => placeholder_date(),
-            'EDIT_DATE_RAW' => placeholder_date(),
+            'ADD_DATE_RAW' => placeholder_date_raw(),
+            'EDIT_DATE_RAW' => placeholder_date_raw(),
             'VIEWS' => placeholder_number(),
             'VIEW_URL' => placeholder_url(),
             'SUBMITTER' => placeholder_id(),
@@ -988,18 +989,19 @@ class Hook_addon_registry_galleries
         $children = do_lorem_template('GALLERY_BOX', [
             'GIVE_CONTEXT' => false,
             'THUMB' => '',
-            'NUM_VIDEOS' => lorem_word(),
-            'NUM_IMAGES' => lorem_word(),
-            'NUM_CHILDREN' => lorem_word(),
-            'ID' => placeholder_random_id(),
+            'NUM_VIDEOS' => placeholder_number(),
+            'NUM_IMAGES' => placeholder_number(),
+            'NUM_CHILDREN' => placeholder_number(),
+            'ID' => placeholder_id(),
             'LANG' => lorem_word(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
-            'ADD_DATE' => lorem_word(),
+            'ADD_DATE' => placeholder_date(),
             'MEMBER_INFO' => lorem_paragraph(),
             'URL' => placeholder_url(),
             'PIC' => placeholder_image_url(),
             'TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph(),
+            'COMMENT_COUNT' => placeholder_number(),
         ]);
 
         $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
@@ -1022,12 +1024,14 @@ class Hook_addon_registry_galleries
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         return [
             lorem_globalise(do_lorem_template('GALLERY_GRID_MODE_SCREEN', [
                 '_TITLE' => lorem_phrase(),
-                'TAGS' => $tags,
+                'TAGS' => '',
                 'CAT' => lorem_word(),
                 'MEMBER_DETAILS' => lorem_sentence_html(),
                 'RATING_DETAILS' => lorem_sentence_html(),
@@ -1041,7 +1045,11 @@ class Hook_addon_registry_galleries
                 'VIDEO_URL' => placeholder_url(),
                 'MAY_DOWNLOAD' => lorem_phrase(),
                 'ENTRIES' => $entries,
-                'SORTING' => lorem_phrase(),
+                'MEMBER_ID' => placeholder_id(),
+                'ACCEPT_IMAGES' => true,
+                'ACCEPT_VIDEOS' => true,
+                'VIEWS' => placeholder_number(),
+                'OWNER' => placeholder_id(),
             ]), null, '', true),
         ];
     }
@@ -1060,14 +1068,13 @@ class Hook_addon_registry_galleries
             'NEXT_URL' => placeholder_url(),
             'BACK_THUMB' => placeholder_image(),
             'NEXT_THUMB' => placeholder_image(),
-            'SLIDESHOW' => false,
             '_X' => placeholder_number(),
             '_N' => placeholder_number(),
             'X' => placeholder_number(),
             'N' => placeholder_number(),
             'SLIDESHOW_URL' => placeholder_url(),
             'SLIDESHOW_NEXT_URL' => placeholder_url(),
-            'PREVIOUS_URL' => placeholder_url(),
+            'SLIDESHOW_PREVIOUS_URL' => placeholder_url(),
             'MORE_URL' => placeholder_url(),
             'CATEGORY_NAME' => lorem_word(),
         ]);
@@ -1092,6 +1099,8 @@ class Hook_addon_registry_galleries
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         $video = lorem_sentence_html();
@@ -1106,11 +1115,10 @@ class Hook_addon_registry_galleries
                 'E_TITLE' => lorem_phrase(),
                 'GALLERY_TITLE' => lorem_phrase(),
                 'MEMBER_ID' => placeholder_id(),
-                'TAGS' => lorem_word_html(),
+                'TAGS' => lorem_sentence_html(),
                 'TITLE' => lorem_title(),
-                'SUBMITTER' => lorem_word_html(),
+                'SUBMITTER' => placeholder_id(),
                 'URL' => placeholder_url(),
-                'VIDEO_DETAILS' => lorem_sentence_html(),
                 'MEMBER_DETAILS' => lorem_sentence_html(),
                 'X' => lorem_phrase(),
                 'N' => lorem_phrase(),
@@ -1128,6 +1136,7 @@ class Hook_addon_registry_galleries
                 'DESCRIPTION' => lorem_phrase(),
                 'VIDEO' => $video,
                 'WARNING_DETAILS' => '',
+                'VIDEO_DETAILS' => null,
             ]), null, '', true),
         ];
     }
@@ -1192,8 +1201,8 @@ class Hook_addon_registry_galleries
                 'THUMB' => placeholder_image(),
                 'VIEW_URL' => placeholder_url(),
                 'VIEWS' => placeholder_id(),
-                'ADD_DATE_RAW' => placeholder_date(),
-                'EDIT_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
+                'EDIT_DATE_RAW' => placeholder_date_raw(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
             ];
@@ -1224,8 +1233,8 @@ class Hook_addon_registry_galleries
                 'VIEW_URL' => placeholder_url(),
                 'VIDEO_DETAILS' => $video_details,
                 'VIEWS' => placeholder_id(),
-                'ADD_DATE_RAW' => placeholder_date(),
-                'EDIT_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
+                'EDIT_DATE_RAW' => placeholder_date_raw(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
             ];
@@ -1248,6 +1257,12 @@ class Hook_addon_registry_galleries
                 'START_PARAM' => placeholder_id() . '_start',
                 'MAX_PARAM' => placeholder_id() . '_max',
                 'EXTRA_GET_PARAMS' => null,
+                'IMAGE_FILTER' => '',
+                'VIDEO_FILTER' => '',
+                'DAYS' => placeholder_number(),
+                'SORT' => lorem_word(),
+                'TITLE' => lorem_phrase(),
+                'CAT' => lorem_word(),
             ]), null, '', true),
         ];
     }
@@ -1278,8 +1293,8 @@ class Hook_addon_registry_galleries
                 'THUMB' => placeholder_image(),
                 'VIEW_URL' => placeholder_url(),
                 'VIEWS' => placeholder_id(),
-                'ADD_DATE_RAW' => placeholder_date(),
-                'EDIT_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
+                'EDIT_DATE_RAW' => placeholder_date_raw(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
             ];
@@ -1309,8 +1324,8 @@ class Hook_addon_registry_galleries
                 'VIEW_URL' => placeholder_url(),
                 'VIDEO_DETAILS' => $video_details,
                 'VIEWS' => placeholder_id(),
-                'ADD_DATE_RAW' => placeholder_date(),
-                'EDIT_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
+                'EDIT_DATE_RAW' => placeholder_date_raw(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
             ];
@@ -1332,6 +1347,12 @@ class Hook_addon_registry_galleries
             'START_PARAM' => placeholder_id() . '_start',
             'MAX_PARAM' => placeholder_id() . '_max',
             'EXTRA_GET_PARAMS' => null,
+            'IMAGE_FILTER' => '',
+            'VIDEO_FILTER' => '',
+            'DAYS' => placeholder_number(),
+            'SORT' => lorem_word(),
+            'TITLE' => lorem_phrase(),
+            'CAT' => lorem_word(),
         ]);
 
         return [
@@ -1388,11 +1409,12 @@ class Hook_addon_registry_galleries
             'VIEW_URL_2' => placeholder_url(),
             '_EDIT_URL' => placeholder_url(),
             'CAT' => 'root',
+            'COMMENTS_OPTIONS_HASH' => '',
         ]));
 
         return [
             lorem_globalise(do_lorem_template('GALLERY_SLIDESHOW_SCREEN', [
-                'SLIDESHOW_ID' => placeholder_random_id(),
+                'SLIDESHOW_ID' => placeholder_id(),
                 'TOTAL_ITEMS' => '1',
                 'CURRENT_INDEX' => '0',
                 'CURRENT_URL' => placeholder_image_url(),

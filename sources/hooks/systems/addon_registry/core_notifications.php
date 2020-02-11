@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -431,6 +431,7 @@ class Hook_addon_registry_core_notifications
             'MAILING_LIST_STYLE_DESCRIPTION' => do_lang_tempcode('DESCRIPTION_MAILING_LIST_STYLE', ''),
             'MEMBER_ID' => placeholder_id(),
             'ADVANCED_COLUMN' => true,
+            'SHOW_PRIVILEGES' => false,
         ]);
         $out = do_lorem_template('NOTIFICATIONS_MANAGE_SCREEN', [
             'TITLE' => lorem_title(),

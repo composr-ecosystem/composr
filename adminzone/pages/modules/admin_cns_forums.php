@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -386,7 +386,12 @@ class Module_admin_cns_forums extends Standard_crud_module
 
             if ($i === null) {
                 if ($forums !== null) {
-                    $forum_groupings->attach(do_template('CNS_EDIT_FORUM_SCREEN_GROUPING', ['_GUID' => '889173769e237b917b7e06eda0fb4350', 'ORDERINGS' => $orderings, 'GROUPING' => isset($C_TITLE[$forum_grouping_id]) ? $C_TITLE[$forum_grouping_id] : do_lang('UNKNOWN'), 'SUBFORUMS' => $forums]));
+                    $forum_groupings->attach(do_template('CNS_EDIT_FORUM_SCREEN_GROUPING', [
+                        '_GUID' => '889173769e237b917b7e06eda0fb4350',
+                        'ORDERINGS' => $orderings,
+                        'GROUPING' => isset($C_TITLE[$forum_grouping_id]) ? $C_TITLE[$forum_grouping_id] : do_lang('UNKNOWN'),
+                        'SUBFORUMS' => $forums,
+                    ]));
                     $forum_grouping_position++;
                 }
                 $forums = new Tempcode();

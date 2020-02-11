@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -551,6 +551,7 @@ class Module_admin_import
                     'NAME' => 'import_' . $import,
                     'TEXT' => $text,
                     'ADVANCED_URL' => $info['supports_advanced_import'] ? build_url(['page' => '_SELF', 'type' => 'advanced_hook', 'session' => $session, 'content_type' => $import, 'importer' => $importer], '_SELF') : new Tempcode(),
+                    'DISABLED' => false,
                 ]));
             }
             if ($just == $import) {

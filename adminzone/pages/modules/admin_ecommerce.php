@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -196,6 +196,36 @@ class Module_admin_ecommerce extends Standard_crud_module
     }
 
     /**
+     * Find the super-member group, or the closest guess for one!
+     * A super-member group is a group that isn't available by default and has some special privileges, yet is not a staff group.
+     *
+     * @return ?GROUP The super-member group (null: none)
+     */
+    protected function get_supermembers_group()
+    {
+        if (get_forum_type() != 'cns') {
+            return null;
+        }
+
+        $sql = 'SELECT id,g_name FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups';
+        $sql .= ' WHERE id<>' . strval(db_get_first_id());
+        $sql .= ' AND g_is_super_admin=0';
+        $sql .= ' AND g_is_super_moderator=0';
+        $sql .= ' AND g_is_presented_at_install=0';
+        $sql .= ' AND g_is_default=0';
+        $sql .= ' AND g_promotion_target IS NULL';
+        $sql .= ' AND g_is_private_club=0';
+        $sql .= ' AND g_open_membership=0';
+        $probation_group = get_probation_group();
+        if ($probation_group !== null) {
+            $sql .= ' AND id<>' . strval($probation_group);
+        }
+        $sql .= ' ORDER BY id';
+        $rows = $GLOBALS['FORUM_DB']->query($sql, 1);
+        return $rows[0]['id'];
+    }
+
+    /**
      * Get Tempcode for adding/editing form.
      *
      * @param  SHORT_TEXT $title The title
@@ -226,7 +256,7 @@ class Module_admin_ecommerce extends Standard_crud_module
         $hidden = new Tempcode();
 
         if ($group_id === null) {
-            $group_id = get_param_integer('group_id', db_get_first_id() + 3);
+            $group_id = get_param_integer('group_id', $this->get_supermembers_group());
         }
         if ($mail_start === null) {
             $mail_start = do_lang('_PAID_SUBSCRIPTION_STARTED', get_option('site_name'));
@@ -272,7 +302,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             }
 
             if ($id != $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                $list->attach(form_input_list_entry(strval($id), $id == $group_id, $group));
+                $list->attach(form_input_list_entry(strval($id), $id === $group_id, $group));
             }
         }
         $fields->attach(form_input_list(do_lang_tempcode('USERGROUP'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_GROUP'), 'group_id', $list));

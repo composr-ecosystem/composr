@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -351,12 +351,22 @@ class Module_search
             $options = new Tempcode();
             if (array_key_exists('special_on', $info)) {
                 foreach ($info['special_on'] as $name => $display) {
-                    $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', ['_GUID' => 'c1853f42d0a110026453f8b94c9f623c', 'CHECKED' => ($content === null) || (get_param_integer('option_' . $id . '_' . $name, 0) == 1), 'NAME' => 'option_' . $id . '_' . $name, 'DISPLAY' => $display]));
+                    $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', [
+                        '_GUID' => 'c1853f42d0a110026453f8b94c9f623c',
+                        'CHECKED' => ($content === null) || (get_param_integer('option_' . $id . '_' . $name, 0) == 1),
+                        'NAME' => 'option_' . $id . '_' . $name,
+                        'DISPLAY' => $display,
+                    ]));
                 }
             }
             if (array_key_exists('special_off', $info)) {
                 foreach ($info['special_off'] as $name => $display) {
-                    $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', ['_GUID' => '2223ada7636c85e6879feb9a6f6885d2', 'CHECKED' => (get_param_integer('option_' . $id . '_' . $name, 0) == 1), 'NAME' => 'option_' . $id . '_' . $name, 'DISPLAY' => $display]));
+                    $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', [
+                        '_GUID' => '2223ada7636c85e6879feb9a6f6885d2',
+                        'CHECKED' => (get_param_integer('option_' . $id . '_' . $name, 0) == 1),
+                        'NAME' => 'option_' . $id . '_' . $name,
+                        'DISPLAY' => $display,
+                    ]));
                 }
             }
             if (method_exists($ob, 'get_fields')) {

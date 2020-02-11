@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -218,17 +218,22 @@ class Hook_addon_registry_tickets
             ]));
         }
 
+        $types = [];
+        foreach (placeholder_array() as $k => $v) {
+            $types[] = [
+                'NAME' => $v,
+                'SELECTED' => true,
+                'LEAD_TIME' => placeholder_number(),
+            ];
+        }
+
         return [
             lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'MESSAGE' => lorem_phrase(),
                 'LINKS' => $links,
-                'TICKET_TYPE_ID' => placeholder_id(),
-                'NAME' => lorem_word_2(),
-                'SELECTED' => true,
                 'ADD_TICKET_URL' => placeholder_url(),
-                'TYPES' => placeholder_array(),
-                'LEAD_TIME' => placeholder_number(),
+                'TYPES' => $types,
             ]), null, '', true)
         ];
     }
@@ -265,6 +270,8 @@ class Hook_addon_registry_tickets
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => '',
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         $other_tickets = new Tempcode();
@@ -277,9 +284,8 @@ class Hook_addon_registry_tickets
                 'EXTRA_DETAILS' => '',
                 'TICKET_TYPE_NAME' => lorem_phrase(),
                 'TICKET_TYPE_ID' => placeholder_id(),
-                'DATE' => placeholder_date(),
-                'DATE_RAW' => placeholder_date_raw(),
-                'PROFILE_URL' => placeholder_url(),
+                'FIRST_DATE' => placeholder_date(),
+                'FIRST_DATE_RAW' => placeholder_date_raw(),
                 'FIRST_POSTER_PROFILE_URL' => placeholder_url(),
                 'FIRST_POSTER' => lorem_phrase(),
                 'FIRST_POSTER_ID' => placeholder_id(),
@@ -288,7 +294,6 @@ class Hook_addon_registry_tickets
                 'LAST_POSTER_ID' => placeholder_id(),
                 'LAST_DATE' => placeholder_date(),
                 'LAST_DATE_RAW' => placeholder_date_raw(),
-                'UNCLOSED' => lorem_word(),
                 'ID' => placeholder_id(),
                 'ASSIGNED' => [],
             ]));
@@ -299,7 +304,7 @@ class Hook_addon_registry_tickets
             'USERNAME' => lorem_word(),
             'MEMBER_ID' => placeholder_id(),
             'MEMBER_URL' => placeholder_url(),
-            'DATE' => lorem_word(),
+            'DATE' => placeholder_date(),
         ];
 
         return [
@@ -328,6 +333,8 @@ class Hook_addon_registry_tickets
                 'ASSIGNED' => [],
                 'EXTRA_DETAILS' => lorem_phrase(),
                 'WHOS_READ' => $whos_read,
+                'SERIALIZED_OPTIONS' => '',
+                'HASH' => '',
             ]), null, '', true)
         ];
     }
@@ -446,6 +453,8 @@ class Hook_addon_registry_tickets
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
+            'REVIEWS' => false,
+            'ANALYTIC_EVENT_CATEGORY' => null,
         ]);
 
         return [

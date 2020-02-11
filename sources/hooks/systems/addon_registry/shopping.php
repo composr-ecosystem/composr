@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -206,18 +206,18 @@ class Hook_addon_registry_shopping
         $fields_table = new Tempcode();
 
         foreach (placeholder_array() as $v) {
-            $_field = do_lorem_template('CATALOGUE_products_FIELDMAP_ENTRY_FIELD', [
-                'ENTRYID' => placeholder_random_id(),
+            $name = placeholder_random_id();
+            $fields->attach(do_lorem_template('CATALOGUE_products_FIELDMAP_ENTRY_FIELD', [
+                'ENTRYID' => placeholder_id(),
                 'CATALOGUE' => lorem_phrase(),
                 'TYPE' => lorem_word(),
                 'FIELD' => lorem_word(),
-                'FIELDID' => placeholder_random_id(),
-                '_FIELDID' => placeholder_random_id(),
+                'FIELDID' => $name,
+                '_FIELDID' => $name,
                 'FIELDTYPE' => lorem_word(),
                 'VALUE_PLAIN' => lorem_phrase(),
                 'VALUE' => lorem_phrase(),
-            ]);
-            $fields->attach($_field);
+            ]));
         }
 
         $cart_buttons = do_lorem_template('ECOM_SHOPPING_CART_BUTTONS', [
@@ -253,7 +253,10 @@ class Hook_addon_registry_shopping
             'FIELDS' => $fields,
             'ENTRY_SCREEN' => true,
             'GIVE_CONTEXT' => false,
+            'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
+            'CATALOGUE' => lorem_word(),
+            'SUBMITTER' => placeholder_id(),
         ];
         $entry = do_lorem_template('CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP', $map);
 
@@ -263,10 +266,13 @@ class Hook_addon_registry_shopping
                 'WARNINGS' => '',
                 'ENTRY' => $entry,
                 'ID' => placeholder_id(),
+                'VIEW_URL' => placeholder_url(),
                 'EDIT_URL' => placeholder_url(),
                 'TRACKBACK_DETAILS' => lorem_phrase(),
                 'RATING_DETAILS' => lorem_phrase(),
                 'COMMENT_DETAILS' => lorem_phrase(),
+                'RATING' => new Tempcode(),
+                'ALLOW_RATING' => false,
                 'ADD_DATE' => placeholder_date(),
                 'ADD_DATE_RAW' => placeholder_date_raw(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
@@ -275,7 +281,10 @@ class Hook_addon_registry_shopping
                 'CART_BUTTONS' => $cart_buttons,
                 'CATALOGUE' => 'products',
                 'SUBMITTER' => placeholder_id(),
-                'FIELD_1' => lorem_word(),
+                'FIELD_0' => lorem_phrase(),
+                'FIELD_0_PLAIN' => lorem_phrase(),
+                'FIELD_1' => lorem_phrase(),
+                'FIELD_1_PLAIN' => lorem_phrase(),
             ]), null, '', true)
         ];
     }
@@ -297,18 +306,18 @@ class Hook_addon_registry_shopping
         $fields_table = new Tempcode();
 
         foreach (placeholder_array() as $v) {
-            $_field = do_lorem_template('CATALOGUE_products_GRID_ENTRY_FIELD', [
-                'ENTRYID' => placeholder_random_id(),
+            $name = placeholder_random_id();
+            $fields->attach(do_lorem_template('CATALOGUE_products_GRID_ENTRY_FIELD', [
+                'ENTRYID' => placeholder_id(),
                 'CATALOGUE' => lorem_phrase(),
                 'TYPE' => lorem_word(),
                 'FIELD' => lorem_word(),
-                'FIELDID' => placeholder_random_id(),
-                '_FIELDID' => placeholder_random_id(),
+                'FIELDID' => $name,
+                '_FIELDID' => $name,
                 'FIELDTYPE' => lorem_word(),
                 'VALUE_PLAIN' => lorem_phrase(),
                 'VALUE' => lorem_phrase(),
-            ]);
-            $fields->attach($_field);
+            ]));
         }
 
         $rating_inside = new Tempcode();
@@ -332,7 +341,10 @@ class Hook_addon_registry_shopping
             'FIELDS' => $fields,
             'URL' => placeholder_url(),
             'VIEW_URL' => placeholder_url(),
+            'EDIT_URL' => placeholder_url(),
             'ALLOW_RATING' => false,
+            'CATALOGUE' => lorem_word(),
+            'SUBMITTER' => placeholder_id(),
         ];
         $entry = do_lorem_template('CATALOGUE_products_GRID_ENTRY_WRAP', $map);
 
@@ -388,7 +400,7 @@ class Hook_addon_registry_shopping
             'URL' => placeholder_url(),
             'TITLE' => lorem_phrase(),
             'ITEMS' => placeholder_number(),
-        ], null, false);
+        ]);
 
         return [
             lorem_globalise($cart_link, null, '', true)
@@ -418,9 +430,9 @@ class Hook_addon_registry_shopping
                 $cells->attach(do_lorem_template('RESULTS_TABLE_FIELD_TITLE_SORTABLE', [
                     'VALUE' => $v,
                     'SORT_URL_DESC' => placeholder_url(),
-                    'SORT_DESC_SELECTED' => lorem_word(),
-                    'SORT_ASC_SELECTED' => lorem_word(),
+                    'SORT_DESC_SELECTED' => true,
                     'SORT_URL_ASC' => placeholder_url(),
+                    'SORT_ASC_SELECTED' => false,
                 ]));
             }
         }
@@ -460,7 +472,7 @@ class Hook_addon_registry_shopping
 
         return [
             lorem_globalise(do_lorem_template('RESULTS_products_TABLE', [
-                'TEXT_ID' => placeholder_random_id(),
+                'TEXT_ID' => placeholder_id(),
                 'HEADER_ROW' => $header_row,
                 'RESULT_ENTRIES' => $order_entries,
                 'SORT' => $sort,
@@ -648,7 +660,7 @@ class Hook_addon_registry_shopping
             'RESULT_ENTRIES' => $shopping_cart,
             'MESSAGE' => new Tempcode(),
             'SORT' => $sort,
-            'PAGINATION' => lorem_word(),
+            'PAGINATION' => placeholder_pagination(),
         ]);
 
         return [
@@ -666,7 +678,6 @@ class Hook_addon_registry_shopping
                 'TOTAL_SHIPPING_TAX' => placeholder_number(),
                 'GRAND_TOTAL' => placeholder_number(),
                 'CURRENCY' => 'GBP',
-                'PROCEED' => lorem_phrase(),
                 'FIELDS' => placeholder_fields(),
                 'NEXT_URL' => placeholder_url(),
             ]), null, '', true)
@@ -687,7 +698,7 @@ class Hook_addon_registry_shopping
         $orders = [];
         foreach (placeholder_array() as $v) {
             $orders[] = [
-                'ORDER_TITLE' => lorem_word(),
+                'ORDER_TITLE' => lorem_phrase(),
                 'ID' => placeholder_id(),
                 'TXN_ID' => placeholder_id(),
                 'TRANSACTION_LINKER' => lorem_word(),

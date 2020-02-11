@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -336,7 +336,7 @@ function _helper_create_index($this_ref, $table_name, $index_name, $fields, $uni
 
     $_fields = _helper_generate_index_fields($table_name, $fields_with_types, $is_full_text);
 
-    $insert_map = ['i_table' => $table_name, 'i_name' => $index_name];
+    $insert_map = ['i_table' => $table_name, 'i_name' => $index_name, 'i_fields' => implode(',', $fields)];
     $test = $this_ref->query_select('db_meta_indices', ['*'], $insert_map);
     if (!empty($test)) { // Already exists, so we'll recreate it
         _helper_delete_index_if_exists($this_ref, $table_name, $index_name);

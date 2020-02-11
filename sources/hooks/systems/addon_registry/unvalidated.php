@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -168,6 +168,7 @@ class Hook_addon_registry_unvalidated
             lorem_globalise(do_lorem_template('UNVALIDATED_SCREEN', [
                 'TITLE' => lorem_title(),
                 'SECTIONS' => $section,
+                'TEXT' => lorem_paragraph_html(),
             ]), null, '', true)
         ];
     }

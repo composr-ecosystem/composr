@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -78,6 +78,7 @@ function chat_logs_script()
             'SYSTEM_MESSAGE' => strval($_message['system_message']),
             'AVATAR_URL' => '',
             'STAFF_ACTIONS' => '',
+            'MEMBER_ID' => strval($_message['member_id'])(),
             'MEMBER_LINK' => escape_html($_message['username']),
             'MESSAGE' => $_message['the_message'],
             'DATE' => $_message['date_and_time_nice'],

@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -432,7 +432,7 @@ class Hook_addon_registry_cns_forum
             'BREADCRUMBS' => placeholder_breadcrumbs(),
             'FILTERS' => '',
             'FILTERING' => $filtering,
-            'FORUM_NAME' => lorem_word_html(),
+            'FORUM_NAME' => lorem_phrase(),
             'STARTER_TITLE' => lorem_phrase(),
             'BUTTONS' => '',
             'TOPIC_WRAPPER' => '',
@@ -442,9 +442,25 @@ class Hook_addon_registry_cns_forum
             'PARENT_FORUM' => '',
         ]);
 
+        $members_viewing = new Tempcode();
+        foreach (placeholder_array() as $_k => $_v) {
+            $members_viewing->attach(do_lorem_template('CNS_USER_MEMBER', [
+                'FIRST' => true,
+                'PROFILE_URL' => placeholder_url(),
+                'USERNAME' => lorem_word(),
+                'MEMBER_ID' => placeholder_id(),
+                'AT' => lorem_phrase(),
+                'COLOUR' => lorem_word(),
+            ]));
+        }
+
         $screen = do_lorem_template('CNS_FORUM_SCREEN', [
             'TITLE' => lorem_title(),
             'CONTENT' => $content,
+            'NUM_GUESTS' => placeholder_number(),
+            'NUM_MEMBERS' => placeholder_number(),
+            'MEMBERS_VIEWING' => $members_viewing,
+            'ID' => placeholder_id(),
         ]);
 
         return [
@@ -480,9 +496,9 @@ class Hook_addon_registry_cns_forum
                 'TO_POSTER_URL' => placeholder_url(),
                 'TO_USERNAME' => lorem_word(),
                 'TO_POSTER_ID' => placeholder_id(),
-                'POSTER_ID' => placeholder_id(),
                 'NUM_POSTS' => placeholder_number(),
                 'HAS_READ' => false,
+                'LAST_POST_BY_POSTER_ID' => placeholder_id(),
             ]), null, '', true)
         ];
     }
@@ -575,7 +591,9 @@ class Hook_addon_registry_cns_forum
 
         $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
             'NAME' => lorem_phrase(),
+            'RAW' => placeholder_ip(),
             'VALUE' => placeholder_ip(),
+            'MEMBER_ID' => placeholder_id(),
         ]);
 
         $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
@@ -645,6 +663,7 @@ class Hook_addon_registry_cns_forum
                 'POST' => $post,
                 'URL' => placeholder_url(),
                 'BREADCRUMBS' => lorem_phrase(),
+                'ACTUAL_POST' => lorem_paragraph_html(),
             ] + $map + ['ACTUAL_POST' => $post]), null, '', true)
         ];
     }
@@ -707,9 +726,9 @@ class Hook_addon_registry_cns_forum
                 'TO_POSTER_URL' => placeholder_url(),
                 'TO_USERNAME' => lorem_word(),
                 'TO_POSTER_ID' => placeholder_id(),
-                'POSTER_ID' => placeholder_id(),
                 'NUM_POSTS' => placeholder_number(),
                 'HAS_READ' => true,
+                'LAST_POST_BY_POSTER_ID' => placeholder_id(),
             ]));
         }
 
@@ -719,7 +738,7 @@ class Hook_addon_registry_cns_forum
                 'SEND_URL' => placeholder_url(),
                 'VIEW_URL' => placeholder_url(),
                 'CONTENT' => $out,
-                'FORUM_NAME' => lorem_word_html(),
+                'FORUM_NAME' => lorem_phrase(),
             ]), null, '', true)
         ];
     }
@@ -803,7 +822,6 @@ class Hook_addon_registry_cns_forum
             'LOGIN_URL' => placeholder_url(),
             'JOIN_URL' => placeholder_url(),
             'FULL_LOGIN_URL' => placeholder_url(),
-            'INLINE_PERSONAL_POSTS_URL' => placeholder_url(),
             'NEW_POSTS_URL' => placeholder_url(),
             'UNANSWERED_TOPICS_URL' => placeholder_url(),
         ]);
@@ -855,6 +873,7 @@ class Hook_addon_registry_cns_forum
         $details->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
             'KEY' => lorem_word(),
             'VALUE' => placeholder_number(),
+            'RAW_VALUE' => placeholder_number(),
         ]));
 
         $links = new Tempcode();
@@ -967,21 +986,28 @@ class Hook_addon_registry_cns_forum
             ];
         }
 
+        $groups = [];
+        foreach (placeholder_array() as $k => $v) {
+            $groups[] = [
+                'GID' => placeholder_id(),
+                'GCOLOUR' => lorem_word(),
+                'GTITLE' => $v,
+            ];
+        }
+
         $foot = do_lorem_template('BLOCK_MAIN_BOTTOM_BAR', [
             'BLOCK_ID' => lorem_word(),
             'NEWEST_MEMBER_PROFILE_URL' => placeholder_url(),
             'NEWEST_MEMBER_USERNAME' => lorem_word(),
             'NUM_MEMBERS' => placeholder_number(),
+            '_NUM_GUESTS' => placeholder_number(),
+            '_NUM_MEMBERS' => placeholder_number(),
             'NUM_TOPICS' => placeholder_number(),
             'NUM_POSTS' => placeholder_number(),
             'BIRTHDAYS' => $birthdays,
             'USERS_ONLINE' => lorem_phrase(),
             'USERS_ONLINE_URL' => placeholder_url(),
-            'page' => lorem_phrase(),
-            'GID' => placeholder_id(),
-            'GCOLOUR' => lorem_word(),
-            'GTITLE' => lorem_word(),
-            'GROUPS' => placeholder_array(),
+            'GROUPS' => $groups,
         ]);
 
         return [
@@ -1165,7 +1191,6 @@ class Hook_addon_registry_cns_forum
             'MAX' => lorem_phrase(),
             'SORT' => lorem_phrase(),
             'MAY_CHANGE_MAX' => lorem_phrase(),
-            'TREE' => lorem_phrase(),
             'BUTTONS' => $buttons,
             'STARTER_TITLE' => lorem_phrase(),
             'PAGINATION' => $pagination,
@@ -1173,11 +1198,13 @@ class Hook_addon_registry_cns_forum
             'ACTION_URL' => placeholder_url(),
             'TOPICS' => $topics,
             'FORUM_NAME' => lorem_word(),
+            'BREADCRUMBS' => placeholder_breadcrumbs(),
+            'ID' => placeholder_id(),
         ]);
         $content = do_lorem_template('CNS_FORUM', [
             'BREADCRUMBS' => placeholder_breadcrumbs(),
             'FILTERS' => $filters,
-            'FORUM_NAME' => lorem_word_html(),
+            'FORUM_NAME' => lorem_phrase(),
             'STARTER_TITLE' => lorem_phrase(),
             'BUTTONS' => $buttons,
             'TOPIC_WRAPPER' => $topic_wrapper,
@@ -1206,6 +1233,7 @@ class Hook_addon_registry_cns_forum
             'NUM_GUESTS' => placeholder_number(),
             'NUM_MEMBERS' => placeholder_number(),
             'MEMBERS_VIEWING' => $members_viewing,
+            'ID' => placeholder_id(),
         ]);
 
         return [
@@ -1393,6 +1421,7 @@ class Hook_addon_registry_cns_forum
                     'MARKER' => $marker,
                     'TOPIC_ROW_LINKS' => $topic_row_links,
                     'TOPIC_ROW_MODIFIERS' => $topic_row_modifiers,
+                    '_TOPIC_ROW_MODIFIERS' => [lorem_word()],
                     'POST' => lorem_phrase(),
                     'EMOTICON' => 'cns_emoticons/' . placeholder_img_code('cns_emoticons'),
                     'DESCRIPTION' => lorem_paragraph(),
@@ -1416,14 +1445,15 @@ class Hook_addon_registry_cns_forum
             'MAX' => lorem_phrase(),
             'SORT' => lorem_phrase(),
             'MAY_CHANGE_MAX' => lorem_phrase(),
-            'TREE' => lorem_phrase(),
             'BUTTONS' => $buttons,
             'STARTER_TITLE' => lorem_phrase(),
             'PAGINATION' => $pagination,
             'MODERATOR_ACTIONS' => placeholder_options(),
             'ACTION_URL' => placeholder_url(),
             'TOPICS' => $topics,
-            'FORUM_NAME' => lorem_word(),
+            'FORUM_NAME' => lorem_phrase(),
+            'BREADCRUMBS' => placeholder_breadcrumbs(),
+            'ID' => placeholder_id(),
         ]);
 
         $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_POSTS', [
@@ -1546,6 +1576,8 @@ class Hook_addon_registry_cns_forum
                 'FIRST_POST_URL' => placeholder_url(),
                 'FIRST_POST' => lorem_paragraph_html(),
                 'COMMENT_URL' => placeholder_url(),
+                'REVIEWS' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
             ]);
 
             $poll = new Tempcode();
@@ -1656,7 +1688,9 @@ class Hook_addon_registry_cns_forum
 
             $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
                 'NAME' => lorem_phrase(),
+                'RAW' => placeholder_ip(),
                 'VALUE' => placeholder_ip(),
+                'MEMBER_ID' => placeholder_id(),
             ]);
             $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
                 'CUSTOM_FIELDS' => $custom_fields,
@@ -1672,7 +1706,7 @@ class Hook_addon_registry_cns_forum
                 'JOIN_DATE' => placeholder_date(),
                 'PRIMARY_GROUP_NAME' => lorem_phrase(),
                 'SECONDARY_GROUPS' => [
-                    lorem_word_html(),
+                    lorem_word(),
                 ],
                 'CUSTOM_FIELDS' => lorem_phrase(),
                 'ONLINE' => false,
@@ -1681,6 +1715,7 @@ class Hook_addon_registry_cns_forum
                 'DOB' => lorem_title(),
                 '_DOB' => placeholder_date_raw(),
                 '_DOB_CENSORED' => placeholder_date_raw(),
+                'NUM_WARNINGS' => placeholder_number(),
             ]);
 
             $poster = do_lorem_template('CNS_POSTER_MEMBER', [
@@ -1688,8 +1723,7 @@ class Hook_addon_registry_cns_forum
                 'POSTER_DETAILS' => $poster_details_mem,
                 'PROFILE_URL' => placeholder_url(),
                 'POSTER_USERNAME' => lorem_word(),
-                'POSTER' => placeholder_number(),
-                'HIGHLIGHT_NAME' => lorem_word_html(),
+                'HIGHLIGHT_NAME' => false,
                 'ONLINE' => false,
             ]);
 
@@ -1720,9 +1754,10 @@ class Hook_addon_registry_cns_forum
             $posts->attach(do_lorem_template('CNS_TOPIC_POST', [
                 'ID' => placeholder_random_id(),
                 'GIVE_CONTEXT' => false,
-                'TOPIC_FIRST_POST_ID' => placeholder_random_id(),
+                'TOPIC_FIRST_POST_ID' => placeholder_id(),
                 'TOPIC_FIRST_POSTER' => lorem_phrase(),
                 'POST_ID' => placeholder_random_id(),
+                'FORUM_ID' => placeholder_id(),
                 'URL' => placeholder_url(),
                 'CLASS' => lorem_phrase(),
                 'EMPHASIS' => lorem_phrase(),
@@ -1779,9 +1814,13 @@ class Hook_addon_registry_cns_forum
             'BUTTON_SCREENS' => $buttons,
             'POSTS' => $posts,
             'MAY_CHANGE_MAX' => lorem_word(),
-            'LAST_POSTER' => placeholder_random_id(),
+            'LAST_POSTER' => placeholder_id(),
             'FORUM_ID' => placeholder_id(),
             'TICKET_FORUM' => false,
+            'SERIALIZED_OPTIONS' => '',
+            'HASH' => '',
+            'IS_ALREADY_READ' => true,
+            'MAY_DOUBLE_POST' => true,
         ]);
 
         return [

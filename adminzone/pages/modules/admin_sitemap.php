@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -208,7 +208,15 @@ class Module_admin_sitemap
 
         $hidden->attach(form_input_hidden('zone', $zone));
 
-        return do_template('CONFIRM_SCREEN', ['_GUID' => 'f732bb10942759c6ca5771d2d446c333', 'TITLE' => $this->title, 'HIDDEN' => $hidden, 'TEXT' => $text, 'URL' => $url, 'FIELDS' => '']);
+        return do_template('CONFIRM_SCREEN', [
+            '_GUID' => 'f732bb10942759c6ca5771d2d446c333',
+            'TITLE' => $this->title,
+            'HIDDEN' => $hidden,
+            'TEXT' => $text,
+            'URL' => $url,
+            'FIELDS' => '',
+            'PREVIEW' => '',
+        ]);
     }
 
     /**
@@ -291,6 +299,7 @@ class Module_admin_sitemap
                 'URL' => $post_url,
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
+                'PREVIEW' => '',
             ]);
         }
 

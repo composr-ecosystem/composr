@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -407,7 +407,13 @@ class Module_topicview
                         } else {
                             $custom_fields = new Tempcode();
                             if (array_key_exists('ip_address', $_postdetails)) {
-                                $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => 'd85be094dff0d039a64120d6f8f381bb', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => ($_postdetails['ip_address'])]));
+                                $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
+                                    '_GUID' => 'd85be094dff0d039a64120d6f8f381bb',
+                                    'NAME' => do_lang_tempcode('IP_ADDRESS'),
+                                    'RAW' => $_postdetails['ip_address'],
+                                    'VALUE' => $_postdetails['ip_address'],
+                                    'MEMBER_ID' => null,
+                                ]));
                                 $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => 'e43534acaf598008602e8da8f9725f38', 'CUSTOM_FIELDS' => $custom_fields]);
                             } else {
                                 $poster_details = new Tempcode();
@@ -834,6 +840,8 @@ class Module_topicview
                 'COMMENT_URL' => $post_url,
                 'SUBMIT_NAME' => do_lang_tempcode('REPLY'),
                 'MORE_URL' => $more_url,
+                'REVIEWS' => false,
+                'ANALYTIC_EVENT_CATEGORY' => null,
             ]);
         } else {
             $quick_reply = new Tempcode();

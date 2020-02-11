@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -153,12 +153,12 @@ class Block_main_cns_involved_topics
                 $action_url = build_url(['page' => 'topics'], get_module_zone('topics'), [], false, true);
 
                 $forum_name = do_lang_tempcode('TOPICS_PARTICIPATED_IN', escape_html(integer_format($start + 1)) . '-' . integer_format($start + $max));
-                $marker = '';
                 $breadcrumbs = new Tempcode();
                 require_code('templates_pagination');
                 $pagination = pagination(do_lang_tempcode('FORUM_TOPICS'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, 5, null);
                 $topics = do_template('CNS_FORUM_TOPIC_WRAPPER', [
                     '_GUID' => '8723270b128b4eea47ab3c756b342e14',
+                    'TYPE' => 'main_cns_involved_topics',
                     'SORT' => '',
                     'MAX' => '15',
                     'MAY_CHANGE_MAX' => false,
@@ -166,11 +166,11 @@ class Block_main_cns_involved_topics
                     'ACTION_URL' => $action_url,
                     'BUTTONS' => '',
                     'STARTER_TITLE' => '',
-                    'MARKER' => $marker,
                     'FORUM_NAME' => $forum_name,
                     'TOPICS' => $topics,
                     'PAGINATION' => $pagination,
                     'MODERATOR_ACTIONS' => $moderator_actions,
+                    'ID' => null,
                 ]);
             }
         }

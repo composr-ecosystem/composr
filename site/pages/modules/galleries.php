@@ -1,7 +1,7 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2019
+ Copyright (c) ocProducts, 2004-2020
 
  See text/EN/licence.txt for full licensing information.
 
@@ -1565,6 +1565,7 @@ HTML;
             'URL' => $url,
             'THUMB_URL' => $thumb_url,
             'WARNING_DETAILS' => $warning_details,
+            'VIDEO_DETAILS' => null,
         ]);
     }
 
