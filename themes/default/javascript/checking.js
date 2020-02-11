@@ -433,35 +433,33 @@
             var erroneous = false,
                 totalFileSize = 0,
                 alerted = false,
-                errorElement = null,
-                theElements = arrVal(theForm.elements),
+                firstFieldWithError = null,
+                fieldElements = arrVal(theForm.elements),
                 fieldCheckPromiseCalls = [];
 
-            if (!theForm.checkValidity()) {
-                erroneous = true;
-            }
-
-            theElements.forEach(function (theElement) {
+            fieldElements.forEach(function (fieldElement) {
                 fieldCheckPromiseCalls.push(function () {
-                    var checkResult = checkField(theElement, theForm);
+                    var checkResult = checkField(fieldElement, theForm);
 
                     return checkResult.then(function (result) {
-                        if (result != null) {
-                            erroneous = result.erroneous || erroneous;
-                            if (!errorElement && erroneous) {
-                                errorElement = theElement;
-                            }
-                            totalFileSize += result.totalFileSize;
-                            alerted = result.alerted || alerted;
+                        if (result == null) {
+                            return;
+                        }
 
-                            if (result.erroneous) {
-                                if (theElement.type === 'radio') {
-                                    for (var i = 0; i < theForm.elements.length; i++) {
-                                        theForm.elements[i].onchange = function () { autoResetError(this); };
-                                    }
-                                } else {
-                                    theElement.onblur = function () { autoResetError(theElement); };
+                        erroneous = result.erroneous || erroneous;
+                        if (!firstFieldWithError && result.erroneous) {
+                            firstFieldWithError = fieldElement;
+                        }
+                        totalFileSize += result.totalFileSize;
+                        alerted = result.alerted || alerted;
+
+                        if (result.erroneous) {
+                            if (fieldElement.type === 'radio') {
+                                for (var i = 0; i < theForm.elements.length; i++) {
+                                    theForm.elements[i].onchange = function () { autoResetError(this); };
                                 }
+                            } else {
+                                fieldElement.onblur = function () { autoResetError(fieldElement); };
                             }
                         }
                     });
@@ -471,7 +469,7 @@
             $util.promiseSequence(fieldCheckPromiseCalls).then(function () {
                 if ((totalFileSize > 0) && (theForm.elements['MAX_FILE_SIZE']) && (totalFileSize > theForm.elements['MAX_FILE_SIZE'].value)) {
                     if (!erroneous) {
-                        errorElement = theElements[theElements.length - 1];
+                        firstFieldWithError = fieldElements[fieldElements.length - 1];
                         erroneous = true;
                     }
                     if (!alerted) {
@@ -484,14 +482,14 @@
                     if (!alerted) {
                         $cms.ui.alert({ notice: '{!IMPROPERLY_FILLED_IN;^}', single: true });
                     }
-                    var posy = $dom.findPosY(errorElement, true);
+                    var posy = $dom.findPosY(firstFieldWithError, true);
                     if (posy === 0) {
-                        posy = $dom.findPosY(errorElement.parentNode, true);
+                        posy = $dom.findPosY(firstFieldWithError.parentNode, true);
                     }
                     if (posy !== 0) {
                         $dom.smoothScroll(posy - 50, null, null, function () {
                             try {
-                                errorElement.focus();
+                                firstFieldWithError.focus();
                             } catch (e) {} // Can have exception giving focus on IE for invisible fields
                         });
                     }
@@ -543,11 +541,11 @@
     };
 
     /**
-     * @param theElement
-     * @param theForm
+     * @param fieldElement
+     * @param formElement
      * @return { Promise }
      */
-    function checkField(theElement, theForm) {
+    function checkField(fieldElement, formElement) {
         return new Promise(function (resolveCheckFieldPromise) {
             var myValue,
                 required = false,
@@ -557,25 +555,25 @@
                 alerted = false;
 
             // No checking for hidden elements
-            if (((theElement.type === 'hidden') || (((theElement.style.display === 'none') || (theElement.parentNode.style.display === 'none') || (theElement.parentNode.parentNode.style.display === 'none') || (theElement.parentNode.parentNode.parentNode.style.display === 'none')) && (!$cms.form.isWysiwygField(theElement)))) && !theElement.classList.contains('hidden-but-needed')) {
+            if (((fieldElement.type === 'hidden') || (((fieldElement.style.display === 'none') || (fieldElement.parentNode.style.display === 'none') || (fieldElement.parentNode.parentNode.style.display === 'none') || (fieldElement.parentNode.parentNode.parentNode.style.display === 'none')) && (!$cms.form.isWysiwygField(fieldElement)))) && !fieldElement.classList.contains('hidden-but-needed')) {
                 return resolveCheckFieldPromise(null);
             }
             // No checking for disabled elements either
-            if (theElement.disabled) {
+            if (fieldElement.disabled) {
                 return resolveCheckFieldPromise(null);
             }
 
-            if (theElement.type === 'file') {
+            if (fieldElement.type === 'file') {
                 // Test file sizes
-                if ((theElement.files) && (theElement.files.item) && (theElement.files.item(0)) && (theElement.files.item(0).fileSize)) {
-                    totalFileSize += theElement.files.item(0).fileSize;
+                if ((fieldElement.files) && (fieldElement.files.item) && (fieldElement.files.item(0)) && (fieldElement.files.item(0).fileSize)) {
+                    totalFileSize += fieldElement.files.item(0).fileSize;
                 }
 
                 // Test file types
-                if ((theElement.value) && (theElement.name !== 'file_anytype')) {
+                if ((fieldElement.value) && (fieldElement.name !== 'file_anytype')) {
                     var allowedTypes = '{$VALID_FILE_TYPES;^}'.split(/,/),
                         typeOk = false,
-                        theFileType = theElement.value.includes('.') ? theElement.value.substr(theElement.value.lastIndexOf('.') + 1) : '{!NONE;^}';
+                        theFileType = fieldElement.value.includes('.') ? fieldElement.value.substr(fieldElement.value.lastIndexOf('.') + 1) : '{!NONE;^}';
 
                     for (var k = 0; k < allowedTypes.length; k++) {
                         if (allowedTypes[k].toLowerCase() === theFileType.toLowerCase()) {
@@ -593,21 +591,21 @@
             }
 
             // Find whether field is required and value of it
-            if (theElement.type === 'radio') {
-                required = (theForm.elements['require__' + theElement.name] != null) && (theForm.elements['require__' + theElement.name].value === '1');
+            if (fieldElement.type === 'radio') {
+                required = (formElement.elements['require__' + fieldElement.name] != null) && (formElement.elements['require__' + fieldElement.name].value === '1');
             } else {
-                required = theElement.className.includes('-required');
+                required = fieldElement.className.includes('-required');
             }
 
-            myValue = $cms.form.cleverFindValue(theForm, theElement);
+            myValue = $cms.form.cleverFindValue(formElement, fieldElement);
 
             // Prepare for custom error messages, stored as HTML5 data on the error message display element
-            var errorMsgElement = (theElement.name === undefined) ? null : getErrorMsgElement(theElement.name),
+            var errorMsgElement = (fieldElement.name === undefined) ? null : getErrorMsgElement(fieldElement.name),
                 isBlank = (required && (myValue.replace(/&nbsp;/g, ' ').replace(/<br\s*\/?>/g, ' ').replace(/\s/g, '') === '')),
                 validatePromise = Promise.resolve();
 
-            if ($dom.data(theElement).pluploadObject != null) { // Plupload placeholder field
-                var plObj = $dom.data(theElement).pluploadObject,
+            if ($dom.data(fieldElement).pluploadObject != null) { // Plupload placeholder field
+                var plObj = $dom.data(fieldElement).pluploadObject,
                     fileNameField = document.getElementById(plObj.settings.txtFileName);
 
                 if (plObj.settings.required && (fileNameField.value === '')) {
@@ -622,11 +620,11 @@
                 errorMsg = '{!REQUIRED_NOT_FILLED_IN;^}';
             } else {
                 // Standard field-type checks
-                if ((theElement.classList.contains('date')) && (theElement.name.match(/_(day|month|year)$/)) && (myValue !== '')) {
-                    var prename = theElement.name.replace(/_(day|month|year)$/, ''),
-                        _day = theForm.elements[prename + '_day'],
-                        _month = theForm.elements[prename + '_month'],
-                        _year = theForm.elements[prename + '_year'];
+                if (fieldElement.classList.contains('date') && (fieldElement.name.match(/_(day|month|year)$/)) && (myValue !== '')) {
+                    var prename = fieldElement.name.replace(/_(day|month|year)$/, ''),
+                        _day = formElement.elements[prename + '_day'],
+                        _month = formElement.elements[prename + '_month'],
+                        _year = formElement.elements[prename + '_year'];
 
                     if (_day && _month && _year) {
                         var day = _day.value,
@@ -647,21 +645,22 @@
                 }
 
                 // Shim for HTML5 regexp patterns
-                if (theElement.getAttribute('pattern') && (myValue !== '') && (!myValue.match(new RegExp(theElement.getAttribute('pattern'))))) {
+                var matches;
+                if ((myValue !== '') && fieldElement.getAttribute('pattern') && (!(matches = myValue.match(new RegExp(fieldElement.getAttribute('pattern')))) || (myValue !== matches[0]))) {
                     errorMsg = $util.format('{!javascript:PATTERN_NOT_MATCHED;^}', [myValue]);
-                } else if ((theElement.classList.contains('input-username') || theElement.classList.contains('input-username-required')) && (myValue !== '') && (myValue !== '****')) {
+                } else if ((fieldElement.classList.contains('input-username') || fieldElement.classList.contains('input-username-required')) && (myValue !== '') && (myValue !== '****')) {
                     validatePromise = $cms.form.doAjaxFieldTest('{$FIND_SCRIPT_NOHTTP;,username_exists}?username=' + encodeURIComponent(myValue)).then(function (exists) {
                         if (!exists) {
                             errorMsg = $util.format('{!javascript:NOT_USERNAME;^}', [myValue]);
                         }
                     });
-                } else if ((theElement.classList.contains('input-email') || theElement.classList.contains('input-email-required')) && (myValue !== '') && (!myValue.match(/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9._-]+$/))) {
+                } else if ((fieldElement.classList.contains('input-email') || fieldElement.classList.contains('input-email-required')) && (myValue !== '') && (!myValue.match(/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9._-]+$/))) {
                     errorMsg = $util.format('{!javascript:NOT_A_EMAIL;^}', [myValue]);
-                } else if ((theElement.classList.contains('input-codename') || theElement.classList.contains('input-codename-required')) && (myValue !== '') && (!myValue.match(/^[a-zA-Z0-9._-]*$/))) {
+                } else if ((fieldElement.classList.contains('input-codename') || fieldElement.classList.contains('input-codename-required')) && (myValue !== '') && (!myValue.match(/^[a-zA-Z0-9._-]*$/))) {
                     errorMsg = $util.format('{!javascript:NOT_CODENAME;^}', [myValue]);
-                } else if ((theElement.classList.contains('input-integer') || theElement.classList.contains('input-integer-required')) && (myValue !== '') && (parseInt(myValue, 10) !== Number(myValue))) {
+                } else if ((fieldElement.classList.contains('input-integer') || fieldElement.classList.contains('input-integer-required')) && (myValue !== '') && (parseInt(myValue, 10) !== Number(myValue))) {
                     errorMsg = $util.format('{!javascript:NOT_INTEGER;^}', [myValue]);
-                } else if ((theElement.classList.contains('input-float') || theElement.classList.contains('input-float-required')) && (myValue !== '') && (parseFloat(myValue) !== Number(myValue))) {
+                } else if ((fieldElement.classList.contains('input-float') || fieldElement.classList.contains('input-float-required')) && (myValue !== '') && (parseFloat(myValue) !== Number(myValue))) {
                     errorMsg = $util.format('{!javascript:NOT_FLOAT;^}', [myValue]);
                 }
             }
@@ -671,12 +670,17 @@
                     errorMsg = errorMsgElement.getAttribute('data-errorRegexp');
                 }
 
-                // Show error?
-                $cms.form.setFieldError(theElement, errorMsg);
+                erroneous = erroneous || (errorMsg !== '');
 
-                if ((errorMsg !== '') && !erroneous) {
-                    erroneous = true;
+                if (!erroneous) {
+                    if (!fieldElement.checkValidity()) {
+                        erroneous = true;
+                        errorMsg = $util.format('{!javascript:PATTERN_NOT_MATCHED;^}', [myValue]);
+                    }
                 }
+
+                // Show error?
+                $cms.form.setFieldError(fieldElement, errorMsg);
 
                 resolveCheckFieldPromise({
                     erroneous: erroneous,
