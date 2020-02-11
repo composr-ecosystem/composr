@@ -16,7 +16,7 @@
 /**
  * Hook class.
  */
-class Hook_addon_registry_sortable_tables
+class Hook_addon_registry_visualisation
 {
     /**
      * Get a list of file permissions to set.
