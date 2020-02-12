@@ -124,7 +124,7 @@
         clickBtnSubmit: function (e, button) {
             var form = button.form;
 
-            form.target = '_self';
+            form.target = ''; // Might have been set to 'preview-iframe' by $cms.form.doFormPreview()
 
             // if (form.oldAction !== undefined) {
             //     form.action = form.oldAction;
