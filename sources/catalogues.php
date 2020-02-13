@@ -603,7 +603,6 @@ function render_catalogue_category_entry_buildup($category_id, $catalogue_name, 
  * @param  array $info Content type info
  * @param  ?ID_TEXT $catalogue_name Name of the catalogue (null: unknown; reduces performance)
  * @param  array $extra_join List of joins (passed as reference)
- * @param  array $extra_select List of selects (passed as reference)
  * @param  ID_TEXT $filter_key The field to get
  * @param  string $filter_val The field value for this
  * @param  array $db_fields Database field data
@@ -611,22 +610,22 @@ function render_catalogue_category_entry_buildup($category_id, $catalogue_name, 
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _catalogues_filtercode($db, $info, $catalogue_name, &$extra_join, &$extra_select, $filter_key, $filter_val, $db_fields, $table_join_code)
+function _catalogues_filtercode($db, $info, $catalogue_name, &$extra_join, $filter_key, $filter_val, $db_fields, $table_join_code)
 {
     if (preg_match('#^((.*)\.)?field_(\d+)#', $filter_key) != 0) { // This is by field ID, not field sequence #
-        $ret = _fields_api_filtercode($db, $info, $catalogue_name, $extra_join, $extra_select, $filter_key, $filter_val, $db_fields, $table_join_code);
+        $ret = _fields_api_filtercode($db, $info, $catalogue_name, $extra_join, $filter_key, $filter_val, $db_fields, $table_join_code);
         if ($ret !== null) {
             return $ret;
         }
     }
 
     // Named
-    $ret = _fields_api_filtercode_named($db, $info, $catalogue_name, $extra_join, $extra_select, $filter_key, $filter_val, $db_fields, $table_join_code);
+    $ret = _fields_api_filtercode_named($db, $info, $catalogue_name, $extra_join, $filter_key, $filter_val, $db_fields, $table_join_code);
     if ($ret !== null) {
         return $ret;
     }
 
-    return _default_conv_func($db, $info, $catalogue_name, $extra_join, $extra_select, $filter_key, $filter_val, $db_fields, $table_join_code);
+    return _default_conv_func($db, $info, $catalogue_name, $extra_join, $filter_key, $filter_val, $db_fields, $table_join_code);
 }
 
 /**
@@ -660,7 +659,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
     // Convert the filters to SQL
     require_code('filtercode');
 
-    list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], $filtercode, 'catalogue_entry', $catalogue_name);
+    list($extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], $filtercode, 'catalogue_entry', $catalogue_name);
     $where_clause .= $extra_where . ' AND ' . db_string_equal_to('r.c_name', $catalogue_name);
 
     $privacy_join = '';
@@ -673,8 +672,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
     $where_clause .= $privacy_where;
 
     if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-        $extra_join[] = get_permission_join_clause('catalogue_category', 'cc_id');
-        $where_clause .= get_permission_where_clause(get_member(), get_permission_where_clause_groups(get_member()));
+        $where_clause .= get_category_permission_where_clause('catalogue_category', 'cc_id', get_member(), get_permission_where_clause_groups(get_member()));
     }
 
     // If we're listing what IDs to look at, work out SQL for this
@@ -718,7 +716,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
         } elseif (($order_by == 'compound_rating') || ($order_by == 'average_rating') || ($order_by == 'fixed_random')) {
             $ob = object_factory('Hook_content_meta_aware_catalogue_entry');
             $info = $ob->info();
-            $bits = _catalogues_filtercode($GLOBALS['SITE_DB'], $info, $catalogue_name, $extra_join, $extra_select, $order_by, '', [], 'r'); // Used to get JOIN for ordering
+            $bits = _catalogues_filtercode($GLOBALS['SITE_DB'], $info, $catalogue_name, $extra_join, $order_by, '', [], 'r'); // Used to get JOIN for ordering
             if ($bits !== null) {
                 list($virtual_order_by,) = $bits;
             } else {
@@ -728,11 +726,11 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
             $ob = object_factory('Hook_content_meta_aware_catalogue_entry');
             $info = $ob->info();
             $order_by_field_id = $fields[intval($order_by)]['id'];
-            $bits = _catalogues_filtercode($GLOBALS['SITE_DB'], $info, $catalogue_name, $extra_join, $extra_select, 'field_' . strval($order_by_field_id), '', [], 'r'); // Used to get JOIN for ordering
+            $bits = _catalogues_filtercode($GLOBALS['SITE_DB'], $info, $catalogue_name, $extra_join, 'field_' . strval($order_by_field_id), '', [], 'r'); // Used to get JOIN for ordering
             if ($bits !== null) {
                 list($new_key,) = $bits;
                 if ((strpos($new_key, '.text_original') !== false) && (multi_lang_content())) {
-                    $num_entries = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . $where_clause, false, true);
+                    $num_entries = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT r.id) FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . $where_clause, false, true);
                     if ($num_entries > 300) { // For large data sets too slow as after two MySQL joins it can't then use index for ordering
                         $virtual_order_by = 'r.id';
                         unset($extra_join[$new_key]);
@@ -753,7 +751,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
     }
 
     if ($num_entries === null) {
-        $num_entries = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . $where_clause, false, true);
+        $num_entries = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT r.id) FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . $where_clause, false, true);
     }
 
     if (get_value('force_memory_sort__' . $catalogue_name) === '1') {
@@ -766,7 +764,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
         $virtual_order_by = 'r.id';
     }
 
-    $sql = 'SELECT r.*' . implode('', $extra_select) . ' FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . $where_clause;
+    $sql = 'SELECT DISTINCT r.* FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . $where_clause;
     if ($in_db_sorting && $do_sorting) {
         $sql .= ' ORDER BY ' . $virtual_order_by . ' ' . $direction;
     }
@@ -1412,9 +1410,7 @@ function create_selection_list_catalogues($it = null, $prefer_ones_with_entries 
         $query .= ' WHERE EXISTS(SELECT * FROM ' . get_table_prefix() . 'catalogue_entries e' . $privacy_join . ' WHERE ce_validated=1 AND ce_add_date>' . strval($updated_since) . $privacy_where . ')';
     } else {
         if ($prefer_ones_with_entries) {
-            if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
-                $query .= ' JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.c_name=c.c_name GROUP BY c.c_name';
-            }
+            $query .= ' WHERE EXISTS(SELECT * FROM ' . get_table_prefix() . 'catalogue_entries e WHERE e.c_name=c.c_name)';
         }
     }
     $query .= ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('c_title');
@@ -1701,7 +1697,7 @@ function get_catalogue_entries_tree($catalogue_name, $submitter = null, $categor
     if ($submitter !== null) {
         $where['ce_submitter'] = $submitter;
     }
-    $erows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id', 'ce_submitter'], $where, 'ORDER BY ce_add_date DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+    $erows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id', 'ce_submitter', 'ce_add_date'], $where, 'ORDER BY ce_add_date DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     if (get_page_name() == 'cms_catalogues') {
         if (count($erows) == intval(get_option('general_safety_listing_limit'))) {
             attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__RECENT_ONLY', escape_html(integer_format(intval(get_option('general_safety_listing_limit'))))), 'warn');

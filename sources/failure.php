@@ -287,7 +287,7 @@ function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $sys
             break;
 
         default:
-            if (!has_privilege(get_member(), 'see_php_errors')) {
+            if ((!has_privilege(get_member(), 'see_php_errors')) && (!$GLOBALS['DEV_MODE'])) {
                 $errstr = do_lang('INTERNAL_ERROR');
             }
             break;

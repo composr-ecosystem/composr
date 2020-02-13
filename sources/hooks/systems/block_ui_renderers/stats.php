@@ -42,7 +42,7 @@ class Hook_block_ui_renderers_stats
         if ($block . ':' . $parameter == 'main_staff_stats_graph:param') { // special case for stats graphs
             require_code('stats');
             $list = new Tempcode();
-            $rows = $GLOBALS['SITE_DB']->query_select('poll', ['id', 'question'], [], 'ORDER BY add_time DESC,id DESC', 100/*In case insane number*/);
+            $rows = $GLOBALS['SITE_DB']->query_select('poll', ['id', 'question', 'add_time'], [], 'ORDER BY add_time DESC,id DESC', 100/*In case insane number*/);
             foreach (stats_find_graphs_in_category() as $graph_name => $_) {
                 list(, $graph_details) = $_;
                 $list->attach(form_input_list_entry($graph_name, $has_default && $graph_name == $default, $graph_details['label']));

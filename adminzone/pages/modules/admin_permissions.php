@@ -784,7 +784,6 @@ class Module_admin_permissions
         $where = ['p_section' => $p_section]; // Added in because it was eating up too much memory
         $_privileges = collapse_2d_complexity('the_name', 'p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', ['p_section', 'the_name'], $where, 'ORDER BY p_section,the_name'));
         $access_rows = $GLOBALS['SITE_DB']->query_select('group_privileges', ['privilege', 'group_id'], ['the_page' => '', 'module_the_name' => '', 'category_name' => '']);
-        $sections = new Tempcode();
         $_false = do_template('PERMISSION_CELL', ['_GUID' => '61aa7fa739e19caa1efb3695a5e2ab5d', 'CHECKED' => false, 'HUMAN' => '__human__', 'NAME' => '__name__']);
         $_true = do_template('PERMISSION_CELL', ['_GUID' => '44a888b40d7a34aed6ed2bf8ff47f1de', 'CHECKED' => true, 'HUMAN' => '__human__', 'NAME' => '__name__']);
         $true = $_true->evaluate();
@@ -899,7 +898,6 @@ class Module_admin_permissions
             '_GUID' => '11974f0a137266a625991d3611b8e587',
             'TITLE' => $this->title,
             'URL' => $url,
-            'SECTIONS' => $sections,
             'COLS' => $cols,
             'HEADER_CELLS' => $header_cells,
             'ROWS' => $rows,

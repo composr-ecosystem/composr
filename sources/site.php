@@ -895,7 +895,7 @@ function do_site()
 {
     // Any messages to output?
     if (get_param_integer('redirected', 0) == 1) {
-        $messages = $GLOBALS['SITE_DB']->query_select('messages_to_render', ['r_message', 'r_type'], ['r_session_id' => get_session_id(),], 'ORDER BY r_time DESC');
+        $messages = $GLOBALS['SITE_DB']->query_select('messages_to_render', ['r_message', 'r_type', 'r_time'], ['r_session_id' => get_session_id(),], 'ORDER BY r_time DESC');
         foreach ($messages as $message) {
             if ($GLOBALS['XSS_DETECT']) {
                 ocp_mark_as_escaped($message['r_message']);
@@ -2128,7 +2128,7 @@ function comcode_breadcrumbs($the_page, $the_zone, $root = '', $include_link = f
     // Find title
     global $PT_PAIR_CACHE_CP;
     if (!array_key_exists($the_page, $PT_PAIR_CACHE_CP)) {
-        $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', ['cc_page_title', 'p_parent_page'], ['a.the_page' => $the_page, 'a.the_zone' => $the_zone], '', 1, 0, false, ['cc_page_title' => '?SHORT_TRANS']);
+        $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON a.the_page=b.the_page AND a.the_zone=b.the_zone', ['cc_page_title', 'p_parent_page'], ['a.the_page' => $the_page, 'a.the_zone' => $the_zone], '', 1, 0, false, ['cc_page_title' => '?SHORT_TRANS']);
         if (!array_key_exists(0, $page_rows)) {
             global $DISPLAYED_TITLE;
 
@@ -2138,7 +2138,7 @@ function comcode_breadcrumbs($the_page, $the_zone, $root = '', $include_link = f
             $temp_title = $DISPLAYED_TITLE;
             restore_output_state();
 
-            $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON (a.the_page=b.the_page AND a.the_zone=b.the_zone)', ['cc_page_title', 'p_parent_page'], ['a.the_page' => $the_page, 'a.the_zone' => $the_zone], '', 1, 0, false, ['cc_page_title' => '?SHORT_TRANS']);
+            $page_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages a JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages b ON a.the_page=b.the_page AND a.the_zone=b.the_zone', ['cc_page_title', 'p_parent_page'], ['a.the_page' => $the_page, 'a.the_zone' => $the_zone], '', 1, 0, false, ['cc_page_title' => '?SHORT_TRANS']);
             if (!array_key_exists(0, $page_rows)) { // Oh well, fallback (maybe page doesn't exist yet, ?)...
                 $PT_PAIR_CACHE_CP[$the_page] = [];
                 $PT_PAIR_CACHE_CP[$the_page]['cc_page_title'] = $temp_title->evaluate();

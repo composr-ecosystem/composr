@@ -242,9 +242,9 @@ function _helper_create_table($this_ref, $table_name, $fields, $skip_size_check 
 
     $this_ref->ensure_connected();
 
-    $queries = $GLOBALS['DB_STATIC_OBJECT']->create_table($this_ref->table_prefix . $table_name, $fields, $this_ref->connection_write, $table_name, $save_bytes);
+    $queries = $this_ref->static_ob->create_table($this_ref->table_prefix . $table_name, $fields, $this_ref->connection_write, $table_name, $save_bytes);
     foreach ($queries as $sql) {
-        $GLOBALS['DB_STATIC_OBJECT']->query($sql, $this_ref->connection_write);
+        $this_ref->static_ob->query($sql, $this_ref->connection_write);
     }
 
     // Considering tables in a DB reference may be in multiple (if they point to same actual DB's), make sure all our DB objects have their cache cleared
@@ -350,9 +350,9 @@ function _helper_create_index($this_ref, $table_name, $index_name, $fields, $uni
             $unique_key_fields = implode(',', _helper_get_table_key_fields($table_name));
         }
 
-        $queries = $GLOBALS['DB_STATIC_OBJECT']->create_index($this_ref->table_prefix . $table_name, $index_name, $_fields, $this_ref->connection_write, $table_name, $unique_key_fields, $this_ref->get_table_prefix());
+        $queries = $this_ref->static_ob->create_index($this_ref->table_prefix . $table_name, $index_name, $_fields, $this_ref->connection_write, $table_name, $unique_key_fields, $this_ref->get_table_prefix());
         foreach ($queries as $i => $sql) {
-            $GLOBALS['DB_STATIC_OBJECT']->query($sql, $this_ref->connection_write, null, 0, $is_full_text/*May fail on database backends that don't cleanup full-text well when dropping tables*/);
+            $this_ref->static_ob->query($sql, $this_ref->connection_write, null, 0, $is_full_text/*May fail on database backends that don't cleanup full-text well when dropping tables*/);
         }
     }
 }
@@ -474,9 +474,9 @@ function _helper_drop_table_if_exists($this_ref, $table)
 
     $this_ref->ensure_connected();
 
-    $queries = $GLOBALS['DB_STATIC_OBJECT']->drop_table_if_exists($this_ref->table_prefix . $table, $this_ref->connection_write);
+    $queries = $this_ref->static_ob->drop_table_if_exists($this_ref->table_prefix . $table, $this_ref->connection_write);
     foreach ($queries as $sql) {
-        $GLOBALS['DB_STATIC_OBJECT']->query($sql, $this_ref->connection_write, null, 0, true); // Might already exist so suppress errors
+        $this_ref->static_ob->query($sql, $this_ref->connection_write, null, 0, true); // Might already exist so suppress errors
     }
 
     if (function_exists('persistent_cache_delete')) {
@@ -609,7 +609,7 @@ function _helper_add_table_field($this_ref, $table_name, $name, $_type, $default
     }
 
     if ((!multi_lang_content()) && (strpos($_type, '__COMCODE') !== false)) {
-        $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
+        $type_remap = $this_ref->static_ob->get_type_remap();
 
         foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $_sub_name => $sub_type) {
             $sub_name = $name . '__' . $_sub_name;
@@ -687,7 +687,7 @@ function _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $def
         }
     }
 
-    $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap(true);
+    $type_remap = $this_ref->static_ob->get_type_remap(true);
 
     $_final_type = $_type;
     if (strpos($_type, '_TRANS') !== false) {
@@ -712,7 +712,7 @@ function _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $def
     }
     $final_type = str_replace(['*', '?'], ['', ''], $_final_type);
     $extra = '';
-    if ((($final_type != 'LONG_TEXT') || ($GLOBALS['DB_STATIC_OBJECT']->has_default_for_text_fields())) && (($_final_type[0] != '?') || ($default !== null))) {
+    if ((($final_type != 'LONG_TEXT') || ($this_ref->static_ob->has_default_for_text_fields())) && (($_final_type[0] != '?') || ($default !== null))) {
         $extra = ($default === null) ? 'DEFAULT NULL' : ('DEFAULT ' . (is_string($default) ? ('\'' . db_escape_string($default) . '\'') : strval($default)));
     }
     $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name;
@@ -779,7 +779,7 @@ function _helper_alter_table_field($this_ref, $table_name, $name, $_type, $new_n
  */
 function _helper_alter_table_field_sql($this_ref, $table_name, $name, $_type, $new_name = null)
 {
-    $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
+    $type_remap = $this_ref->static_ob->get_type_remap();
 
     if ((strpos($_type, '__COMCODE') !== false) && ($new_name !== null) && ($new_name != $name) && (!multi_lang_content())) {
         foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
@@ -813,7 +813,7 @@ function _helper_alter_table_field_sql($this_ref, $table_name, $name, $_type, $n
     $extra = ($new_name !== null) ? $new_name : $name;
     $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name;
     $query .= ' CHANGE ';
-    $e = $GLOBALS['DB_STATIC_OBJECT']->get_field_encapsulator();
+    $e = $this_ref->static_ob->get_field_encapsulator();
     $query .= $e . $name . $e; // Encapsulated in case we renamed due to change in keywords
     $query .= ' ' . $extra . ' ' . $type_remap[$final_type] . $tag;
 
@@ -838,7 +838,7 @@ function _helper_change_primary_key($this_ref, $table_name, $new_key)
         $this_ref->query('UPDATE ' . $this_ref->get_table_prefix() . 'db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key) . ' AND m_type NOT LIKE \'' . db_encode_like('*%') . '\'');
     }
 
-    $GLOBALS['DB_STATIC_OBJECT']->change_primary_key($this_ref->table_prefix . $table_name, $new_key, $this_ref->connection_write);
+    $this_ref->static_ob->change_primary_key($this_ref->table_prefix . $table_name, $new_key, $this_ref->connection_write);
 }
 
 /**

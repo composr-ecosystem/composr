@@ -577,7 +577,7 @@ function find_ticket_assigned_to($ticket_id)
 {
     $assigned = [];
     $where = ['l_notification_code' => 'ticket_assigned_staff', 'l_code_category' => $ticket_id];
-    $_assigned = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_member_id'], $where, 'ORDER BY id DESC', 200/*reasonable limit*/);
+    $_assigned = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_member_id', 'id'], $where, 'ORDER BY id DESC', 200/*reasonable limit*/);
     foreach ($_assigned as $__assigned) {
         $username = $GLOBALS['FORUM_DRIVER']->get_username($__assigned['l_member_id'], true, USERNAME_DEFAULT_NULL);
         if ($username !== null) {

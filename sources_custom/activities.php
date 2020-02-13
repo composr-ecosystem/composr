@@ -104,11 +104,6 @@ function get_activity_querying_sql($viewer_member, $mode, $member_ids)
                 // Working on the principle that you only want to see people you like on this, only those you like and have not blocked will be selected
                 // Exclusions will be based on whether they like and have not blocked you.
 
-                // Select mutual likes you haven't blocked.
-                $tables_and_joins = 'chat_friends a JOIN ' . get_table_prefix() . 'chat_friends b';
-                $tables_and_joins .= ' ON (a.member_liked=b.member_likes AND a.member_likes=b.member_liked AND a.member_likes=';
-                $tables_and_joins .= strval($viewer_member);
-
                 $lm_ids = '';
                 if (strlen($blocking) > 0) { // Also setting who gets discarded from outgoing like selection
                     if ($lm_ids != '') {

@@ -68,7 +68,7 @@ class Hook_content_meta_aware_download
             'view_page_link_pattern' => '_SEARCH:downloads:entry:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_downloads:_edit:_WILD',
             'view_category_page_link_pattern' => '_SEARCH:downloads:browse:_WILD',
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_downloads')) ? (get_module_zone('cms_downloads') . ':cms_downloads:add') : null,
+            'add_url' => ($get_extended_data && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_downloads')) ? (get_module_zone('cms_downloads') . ':cms_downloads:add') : null,
             'archive_url' => $get_extended_data ? ((($zone !== null) ? $zone : get_module_zone('downloads')) . ':downloads') : null,
 
             'support_url_monikers' => true,

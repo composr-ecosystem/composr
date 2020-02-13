@@ -642,7 +642,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $out[$i]['title'] = $r['p_subject'];
             $out[$i]['description'] = $r['p_subject'];
 
-            $fp_rows = $this->db->query('SELECT subject,poster_time,body,id_member FROM ' . $this->db->get_table_prefix() . 'messages WHERE body NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND id_topic=' . strval($out[$i]['id']) . ' ORDER BY id_msg');
+            $fp_rows = $this->db->query('SELECT subject,poster_time,body,id_member,id_msg FROM ' . $this->db->get_table_prefix() . 'messages WHERE body NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' AND id_topic=' . strval($out[$i]['id']) . ' ORDER BY id_msg');
             if (!array_key_exists(0, $fp_rows)) {
                 unset($out[$i]);
                 continue;
@@ -1026,7 +1026,8 @@ class Forum_driver_smf2 extends Forum_driver_base
      */
     public function get_member_from_email_address($email_address)
     {
-        return $this->db->query_select_value_if_there('members', 'id_member', ['email_address' => $email_address], 'ORDER BY date_registered DESC');
+        $results = $this->db->query_select('members', ['id_member', 'date_registered'], ['email_address' => $email_address], 'ORDER BY date_registered DESC', 1);
+        return array_key_exists(0, $results) ? $results[0]['id_member'] : null;
     }
 
     /**

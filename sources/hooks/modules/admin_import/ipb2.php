@@ -1317,9 +1317,13 @@ class Hook_import_ipb2
     public function import_wordfilter($db, $table_prefix, $file_base)
     {
         $rows = $db->query_select('badwords', ['*']);
-        $rows = remove_duplicate_rows($rows, 'type');
+        $done = [];
         foreach ($rows as $row) {
+            if (isset($done[$row['type']])) {
+                continue;
+            }
             add_wordfilter_word($row['type'], $row['swop'], $row['m_exact']);
+            $done[$row['type']] = true;
         }
     }
 }

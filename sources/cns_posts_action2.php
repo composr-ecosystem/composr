@@ -104,7 +104,7 @@ function cns_member_handle_promotion($member_id = null)
         }
         $or_list .= 'id=' . strval($id);
     }
-    $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target IS NOT NULL AND g_promotion_threshold<=' . strval($total_points) . ' ORDER BY g_promotion_threshold');
+    $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target,g_promotion_threshold FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target IS NOT NULL AND g_promotion_threshold<=' . strval($total_points) . ' ORDER BY g_promotion_threshold');
     $promotes_today = [];
     foreach ($promotions as $promotion) {
         $_p = $promotion['g_promotion_target'];

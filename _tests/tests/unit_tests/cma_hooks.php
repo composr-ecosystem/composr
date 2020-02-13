@@ -31,6 +31,10 @@ class cma_hooks_test_set extends cms_test_case
 
         $cma_hooks = find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware');
         foreach (array_keys($cma_hooks) as $content_type) {
+            if ($content_type == 'temp_test') {
+                continue;
+            }
+
             $cma_ob = get_content_object($content_type);
             $cma_info = $cma_ob->info();
 
@@ -56,7 +60,7 @@ class cma_hooks_test_set extends cms_test_case
             'title_field_dereference__resource_fs',
             'title_field_supports_comcode',
             'title_field__resource_fs',
-            'where',
+            'extra_where_sql',
         ];
 
         foreach ($this->all_cma_info as $content_type => $cma_info) {

@@ -1260,7 +1260,8 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_member_from_email_address($email_address)
     {
-        return $this->db->query_select_value_if_there('users', 'user_id', ['user_email' => $email_address], 'ORDER BY user_regdate DESC');
+        $results = $this->db->query_select('users', ['user_id', 'user_regdate'], ['user_email' => $email_address], 'ORDER BY user_regdate DESC', 1);
+        return array_key_exists(0, $results) ? $results[0]['user_id'] : null;
     }
 
     /**

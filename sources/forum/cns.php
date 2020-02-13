@@ -1475,7 +1475,7 @@ class Forum_driver_cns extends Forum_driver_base
 
         $where = $only_permissive ? ' WHERE g_is_private_club=0' : '';
 
-        $select = 'g.id,g_name,g.g_hidden';
+        $select = 'g.id,g_name,g.g_hidden,g.g_order';
         $sup = ' ORDER BY g_order,' . $this->db->translate_field_ref('g_name');
         if (running_script('upgrader')) {
             $sup = '';

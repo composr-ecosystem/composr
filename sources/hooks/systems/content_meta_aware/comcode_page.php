@@ -68,7 +68,7 @@ class Hook_content_meta_aware_comcode_page
             'view_page_link_pattern' => '_WILD:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_comcode_pages:_edit:page_link=_WILD',
             'view_category_page_link_pattern' => '_WILD:',
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('high', get_member(), get_ip_address(), 'cms_comcode_pages')) ? (get_module_zone('cms_comcode_pages') . ':cms_comcode_pages:edit') : null,
+            'add_url' => ($get_extended_data && has_submit_permission('high', get_member(), get_ip_address(), 'cms_comcode_pages')) ? (get_module_zone('cms_comcode_pages') . ':cms_comcode_pages:edit') : null,
             'archive_url' => $get_extended_data ? ($zone . ':sitemap') : null,
 
             'support_url_monikers' => true,
@@ -113,7 +113,7 @@ class Hook_content_meta_aware_comcode_page
 
             'actionlog_regexp' => '\w+_COMCODE_PAGE',
 
-            'where' => 'p_include_on_sitemap=1',
+            'extra_where_sql' => 'p_include_on_sitemap=1',
         ];
     }
 

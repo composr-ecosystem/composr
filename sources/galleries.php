@@ -685,9 +685,9 @@ function get_gallery_tree($gallery = 'root', $breadcrumbs = '', $gallery_info = 
         $rows = [];
     } else {
         if ($num_children >= intval(get_option('general_safety_listing_limit'))) {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT name,fullname,accept_images,accept_videos,is_member_synched,g.fullname,parent_id ' . $query . ' ORDER BY add_date', intval(get_option('general_safety_listing_limit')), 0, false, false, ['fullname' => 'SHORT_TRANS__COMCODE']);
+            $rows = $GLOBALS['SITE_DB']->query('SELECT name,fullname,accept_images,accept_videos,is_member_synched,g.fullname,parent_id,add_date ' . $query . ' ORDER BY add_date', intval(get_option('general_safety_listing_limit')), 0, false, false, ['fullname' => 'SHORT_TRANS__COMCODE']);
         } else {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT name,fullname,accept_images,accept_videos,is_member_synched,g.fullname,parent_id ' . $query . ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('fullname'), null, 0, false, false, ['fullname' => 'SHORT_TRANS__COMCODE']);
+            $rows = $GLOBALS['SITE_DB']->query('SELECT name,fullname,accept_images,accept_videos,is_member_synched,g.fullname,parent_id,add_date ' . $query . ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('fullname'), null, 0, false, false, ['fullname' => 'SHORT_TRANS__COMCODE']);
         }
     }
     if ((($filter === null) || (!is_callable($filter)) || (call_user_func_array($filter, [$gallery, $member_id, count($rows)]))) && ((!$must_accept_images) || (($accept_images) && (!$is_member_synched))) && ((!$must_accept_videos) || (($accept_videos) && (!$is_member_synched)))) {
@@ -1064,14 +1064,14 @@ function get_gallery_content_tree($table, $submitter = null, $gallery = null, $b
     $compound_list = $gallery . ',';
 
     // Children of this category
-    $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['name', 'fullname'], ['parent_id' => $gallery], 'ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit')));
+    $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['name', 'fullname', 'add_date'], ['parent_id' => $gallery], 'ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit')));
     $where = ['cat' => $gallery];
     if ($submitter !== null) {
         $where['submitter'] = $submitter;
     }
-    $erows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'url', 'submitter', 'title', 'thumb_url'], $where, 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('title'), intval(get_option('general_safety_listing_limit')));
+    $erows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'url', 'submitter', 'title', 'thumb_url', 'add_date'], $where, 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('title'), intval(get_option('general_safety_listing_limit')));
     if (count($erows) == intval(get_option('general_safety_listing_limit'))) {
-        $erows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'url', 'submitter', 'title', 'thumb_url'], $where, 'ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $erows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'url', 'submitter', 'title', 'thumb_url', 'add_date'], $where, 'ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit')));
     }
     $children[0]['entries'] = [];
     $children[0]['entries_rows'] = [];

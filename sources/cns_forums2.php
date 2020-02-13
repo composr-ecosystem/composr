@@ -159,7 +159,7 @@ function cns_get_topic_tree($forum_id = null, $breadcrumbs = null, $title = null
     $children[0]['breadcrumbs'] = $breadcrumbs;
 
     // Children of this forum
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name'], ['f_parent_forum' => $forum_id], 'ORDER BY f_forum_grouping_id,f_position', 200);
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name', 'f_forum_grouping_id', 'f_position'], ['f_parent_forum' => $forum_id], 'ORDER BY f_forum_grouping_id,f_position', 200);
     if (count($rows) == 200) {
         $rows = []; // Too many, this method will suck
     }
@@ -167,7 +167,7 @@ function cns_get_topic_tree($forum_id = null, $breadcrumbs = null, $title = null
     if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
         $tmap['t_validated'] = 1;
     }
-    $children[0]['entries'] = collapse_2d_complexity('id', 't_cache_first_title', $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_cache_first_title'], $tmap, 'ORDER BY t_cache_first_time DESC', 12));
+    $children[0]['entries'] = collapse_2d_complexity('id', 't_cache_first_title', $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_cache_first_title', 't_cache_first_time'], $tmap, 'ORDER BY t_cache_first_time DESC', 12));
     $children[0]['child_entry_count'] = count($children[0]['entries']);
     if ($levels === 0) { // We throw them away now because they're not on the desired level
         $children[0]['entries'] = [];

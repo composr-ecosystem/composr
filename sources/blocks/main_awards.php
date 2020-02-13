@@ -85,13 +85,14 @@ PHP;
 
         $block_id = get_block_id($map);
 
+        // Read parameters
         $award = @cms_empty_safe($map['param']) ? $GLOBALS['SITE_DB']->query_select_value('award_types', 'MIN(id)') : intval($map['param']);
         $zone = array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH';
-
         $guid = array_key_exists('guid', $map) ? $map['guid'] : '';
         $give_context = (array_key_exists('give_context', $map) ? $map['give_context'] : '0') == '1';
         $include_breadcrumbs = (array_key_exists('include_breadcrumbs', $map) ? $map['include_breadcrumbs'] : '0') == '1';
 
+        // Award type
         $_award_type_row = $GLOBALS['SITE_DB']->query_select('award_types', ['*'], ['id' => $award], '', 1);
         if (!array_key_exists(0, $_award_type_row)) {
             return do_lang_tempcode('MISSING_RESOURCE', 'award_type');
@@ -100,17 +101,15 @@ PHP;
         $award_title = get_translated_text($award_type_row['a_title']);
         $award_description = get_translated_text($award_type_row['a_description']);
 
-        if ((!file_exists(get_file_base() . '/sources/hooks/systems/content_meta_aware/' . filter_naughty_harsh($award_type_row['a_content_type']) . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/' . filter_naughty_harsh($award_type_row['a_content_type']) . '.php'))) {
-            return do_template('RED_ALERT', ['_GUID' => '2ynzlkmrjkdpo76e5htq9t8bwl2q6jia', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', $award_type_row['a_content_type'])]);
-        }
-
+        // Read content object
         require_code('content');
         $object = get_content_object($award_type_row['a_content_type']);
         $info = $object->info(null, true);
         if ($info === null) {
-            return do_lang_tempcode('IMPOSSIBLE_TYPE_USED');
+            return do_template('RED_ALERT', ['_GUID' => '2ynzlkmrjkdpo76e5htq9t8bwl2q6jia', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', $award_type_row['a_content_type'])]);
         }
 
+        // Submit URL
         $submit_url = $info['add_url'];
         if ($submit_url !== null) {
             $submit_url = page_link_to_url($submit_url);
@@ -127,8 +126,7 @@ PHP;
             extend_url($submit_url, 'award=' . strval($award));
         }
 
-        require_code('content');
-
+        // Find latest award that exists
         $sup = '';
         do {
             $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'award_archive WHERE a_type_id=' . strval($award) . ' ' . $sup . ' ORDER BY date_and_time DESC', 1, 0, false, true);
@@ -150,6 +148,8 @@ PHP;
             $award_content_row = content_get_row($myrow['content_id'], $info);
             $sup = ' AND date_and_time<' . strval($myrow['date_and_time']);
         } while ($award_content_row === null);
+
+        // Move towards render...
 
         $archive_url = build_url(['page' => 'awards', 'type' => 'award', 'id' => $award], get_module_zone('awards'));
 

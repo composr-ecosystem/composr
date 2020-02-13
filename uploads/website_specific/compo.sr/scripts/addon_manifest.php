@@ -72,10 +72,14 @@ $addon_times = [];
 
 $filter_sql = selectcode_to_sqlfragment(strval($_id) . '*', 'id', 'download_categories', 'parent_id', 'category_id', 'id');
 
+$name_remap = [];
+
 foreach (array_keys($_GET) as $x) {
     if (substr($x, 0, 6) == 'addon_') {
         $addon_name = get_param_string($x);
-        $query = 'SELECT d.id,url,name FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name) . ' AND (' . $filter_sql . ')';
+        $addon_name_titled = titleify($addon_name);
+        $name_remap[$addon_name_titled] = $addon_name;
+        $query = 'SELECT d.id,url,name FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name_titled) . ' AND (' . $filter_sql . ')';
         $result = $GLOBALS['SITE_DB']->query($query, null, 0, false, true, ['name' => 'SHORT_TRANS']);
 
         $addon_times[intval(substr($x, 6))] = [null, null, null, $addon_name];
@@ -92,10 +96,13 @@ foreach (array_keys($_GET) as $x) {
                 continue;
             }
 
-            $name = get_translated_text($result[0]['name']);
-            $url = $result[0]['url'];
-            $id = $result[0]['id'];
-            $addon_times[intval(substr($x, 6))] = [$last_date, $id, $url, $name];
+            $name_titled = get_translated_text($result[0]['name']);
+            if (array_key_exists($name_titled, $name_remap)) {
+                $name = $name_remap[$name_titled];
+                $url = $result[0]['url'];
+                $id = $result[0]['id'];
+                $addon_times[intval(substr($x, 6))] = [$last_date, $id, $url, $name];
+            }
         }
     }
 }

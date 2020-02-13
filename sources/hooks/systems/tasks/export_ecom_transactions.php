@@ -49,25 +49,6 @@ class Hook_task_export_ecom_transactions
             $where .= ' AND ' . db_string_equal_to('t_type_code', $type_code);
         }
 
-        $query = 'SELECT t.*,t.id AS t_id,a.*
-            FROM ' . get_table_prefix() . 'ecom_transactions t
-            LEFT JOIN ' . get_table_prefix() . 'ecom_trans_addresses a ON t.id=a.a_txn_id
-            WHERE ' . $where . '
-            ORDER BY t_time';
-        $rows = $GLOBALS['SITE_DB']->query($query);
-        remove_duplicate_rows($rows);
-
-        $tax_categories = [];
-        foreach ($rows as $_transaction) {
-            $tax_derivation = ($_transaction['t_tax_derivation'] == '') ? [] : json_decode($_transaction['t_tax_derivation'], true);
-            foreach (array_keys($tax_derivation) as $tax_category) {
-                $tax_categories[$tax_category] = true;
-            }
-        }
-        $tax_categories = array_keys($tax_categories);
-
-        $max_rows = count($rows);
-
         require_code('files_spreadsheets_write');
         if ($file_type === null) {
             $file_type = spreadsheet_write_default();
@@ -75,93 +56,108 @@ class Hook_task_export_ecom_transactions
         $filename = 'transactions_' . (($transaction_status == '') ? '' : ($transaction_status . '__')) . (($type_code == '') ? '' : ($type_code . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
-        foreach ($rows as $i => $_transaction) {
-            task_log($this, 'Processing transaction row', $i, $max_rows);
 
-            list($details, $product_object) = find_product_details($_transaction['t_type_code']);
-            if ($details !== null) {
-                $item_name = $details['item_name'];
-            } else {
-                $item_name = $_transaction['t_type_code'];
+        $max = 500;
+        $start = 0;
+
+        $query = 'FROM ' . get_table_prefix() . 'ecom_transactions t' . $GLOBALS['SITE_DB']->singular_join('ecom_trans_addresses', 'a', 't.id=a.a_txn_id', 'id', 'MIN', 'LEFT JOIN') . ' WHERE ' . $where;
+
+        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query . ' ORDER BY t_time');
+
+        do {
+            $rows = $GLOBALS['SITE_DB']->query('SELECT t.*,t.id AS t_id,a.* ' . $query, $max, $start);
+
+            foreach ($rows as $i => $_transaction) {
+                task_log($this, 'Processing transaction row', $i, $max_rows);
+
+                list($details, $product_object) = find_product_details($_transaction['t_type_code']);
+                if ($details !== null) {
+                    $item_name = $details['item_name'];
+                } else {
+                    $item_name = $_transaction['t_type_code'];
+                }
+
+                $transaction = [];
+
+                $transaction[do_lang('TRANSACTION')] = $_transaction['t_id'];
+
+                $transaction[do_lang('PARENT')] = $_transaction['t_parent_txn_id'];
+
+                $transaction[do_lang('PURCHASE_ID')] = $_transaction['t_purchase_id'];
+
+                $transaction[do_lang('DATE')] = get_timezoned_date_time($_transaction['t_time']);
+
+                $transaction[do_lang('CURRENCY')] = $_transaction['t_currency'];
+
+                $transaction[do_lang('AMOUNT')] = float_format($_transaction['t_amount']);
+
+                $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('COUNT_TOTAL') . ')'] = float_format($_transaction['t_tax']);
+
+                $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('DETAILS') . ')'] = $_transaction['t_tax_derivation'];
+
+                $transaction[do_lang('PRODUCT')] = $item_name;
+
+                $transaction[do_lang('STATUS')] = get_transaction_status_string($_transaction['t_status']);
+
+                $transaction[do_lang('REASON')] = trim($_transaction['t_reason'] . '; ' . $_transaction['t_pending_reason'], '; ');
+
+                $transaction[do_lang('NOTES')] = $_transaction['t_memo'];
+
+                $transaction[do_lang('PAYMENT_GATEWAY')] = $_transaction['t_payment_gateway'];
+
+                $transaction[do_lang('OTHER_DETAILS')] = $_transaction['t_invoicing_breakdown'];
+
+                $member_id = null;
+                if ($product_object !== null) {
+                    $member_id = method_exists($product_object, 'member_for') ? $product_object->member_for($_transaction['t_type_code'], $_transaction['t_purchase_id']) : null;
+                }
+                if ($member_id !== null) {
+                    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+                } else {
+                    $username = do_lang('UNKNOWN');
+                }
+                $transaction[do_lang('MEMBER')] = $username;
+
+                // Put address together
+                $address = [];
+                if ($_transaction['a_firstname'] !== null) {
+                    if ($_transaction['a_firstname'] . $_transaction['a_lastname'] != '') {
+                        $address[] = trim($_transaction['a_firstname'] . ' ' . $_transaction['a_lastname']);
+                    }
+                    if ($_transaction['a_street_address'] != '') {
+                        $address[] = $_transaction['a_street_address'];
+                    }
+                    if ($_transaction['a_city'] != '') {
+                        $address[] = $_transaction['a_city'];
+                    }
+                    if ($_transaction['a_county'] != '') {
+                        $address[] = $_transaction['a_county'];
+                    }
+                    if ($_transaction['a_state'] != '') {
+                        $address[] = $_transaction['a_state'];
+                    }
+                    if ($_transaction['a_post_code'] != '') {
+                        $address[] = $_transaction['a_post_code'];
+                    }
+                    if ($_transaction['a_country'] != '') {
+                        $address[] = $_transaction['a_country'];
+                    }
+                    if ($_transaction['a_email'] != '') {
+                        $address[] = do_lang('EMAIL_ADDRESS') . ': ' . $_transaction['a_email'];
+                    }
+                    if ($_transaction['a_phone'] != '') {
+                        $address[] = do_lang('PHONE_NUMBER') . ': ' . $_transaction['a_phone'];
+                    }
+                }
+                $full_address = implode("\n", $address);
+                $transaction[do_lang('ADDRESS')] = $full_address;
+
+                $sheet_writer->write_row($transaction);
             }
 
-            $transaction = [];
+            $start += $max;
+        } while (!empty($rows));
 
-            $transaction[do_lang('TRANSACTION')] = $_transaction['t_id'];
-
-            $transaction[do_lang('PARENT')] = $_transaction['t_parent_txn_id'];
-
-            $transaction[do_lang('PURCHASE_ID')] = $_transaction['t_purchase_id'];
-
-            $transaction[do_lang('DATE')] = get_timezoned_date_time($_transaction['t_time']);
-
-            $transaction[do_lang('CURRENCY')] = $_transaction['t_currency'];
-
-            $transaction[do_lang('AMOUNT')] = float_format($_transaction['t_amount']);
-
-            $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('COUNT_TOTAL') . ')'] = float_format($_transaction['t_tax']);
-            $tax_derivation = ($_transaction['t_tax_derivation'] == '') ? [] : json_decode($_transaction['t_tax_derivation'], true);
-            foreach ($tax_categories as $tax_category) {
-                $transaction[do_lang(get_option('tax_system')) . ' (' . $tax_category . ')'] = float_format(isset($tax_derivation[$tax_category]) ? $tax_derivation[$tax_category] : 0.00);
-            }
-
-            $transaction[do_lang('PRODUCT')] = $item_name;
-
-            $transaction[do_lang('STATUS')] = get_transaction_status_string($_transaction['t_status']);
-
-            $transaction[do_lang('REASON')] = trim($_transaction['t_reason'] . '; ' . $_transaction['t_pending_reason'], '; ');
-
-            $transaction[do_lang('NOTES')] = $_transaction['t_memo'];
-
-            $transaction[do_lang('PAYMENT_GATEWAY')] = $_transaction['t_payment_gateway'];
-
-            $transaction[do_lang('OTHER_DETAILS')] = $_transaction['t_invoicing_breakdown'];
-
-            $member_id = null;
-            if ($product_object !== null) {
-                $member_id = method_exists($product_object, 'member_for') ? $product_object->member_for($_transaction['t_type_code'], $_transaction['t_purchase_id']) : null;
-            }
-            if ($member_id !== null) {
-                $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-            } else {
-                $username = do_lang('UNKNOWN');
-            }
-            $transaction[do_lang('MEMBER')] = $username;
-
-            // Put address together
-            $address = [];
-            if ($_transaction['a_firstname'] . $_transaction['a_lastname'] != '') {
-                $address[] = trim($_transaction['a_firstname'] . ' ' . $_transaction['a_lastname']);
-            }
-            if ($_transaction['a_street_address'] != '') {
-                $address[] = $_transaction['a_street_address'];
-            }
-            if ($_transaction['a_city'] != '') {
-                $address[] = $_transaction['a_city'];
-            }
-            if ($_transaction['a_county'] != '') {
-                $address[] = $_transaction['a_county'];
-            }
-            if ($_transaction['a_state'] != '') {
-                $address[] = $_transaction['a_state'];
-            }
-            if ($_transaction['a_post_code'] != '') {
-                $address[] = $_transaction['a_post_code'];
-            }
-            if ($_transaction['a_country'] != '') {
-                $address[] = $_transaction['a_country'];
-            }
-            if ($_transaction['a_email'] != '') {
-                $address[] = do_lang('EMAIL_ADDRESS') . ': ' . $_transaction['a_email'];
-            }
-            if ($_transaction['a_phone'] != '') {
-                $address[] = do_lang('PHONE_NUMBER') . ': ' . $_transaction['a_phone'];
-            }
-            $full_address = implode("\n", $address);
-            $transaction[do_lang('ADDRESS')] = $full_address;
-
-            $sheet_writer->write_row($transaction);
-        }
         $sheet_writer->close();
 
         $headers = [];

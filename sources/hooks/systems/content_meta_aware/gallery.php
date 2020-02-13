@@ -36,6 +36,11 @@ class Hook_content_meta_aware_gallery
             return null;
         }
 
+        $extra_where_sql = 'r.name NOT LIKE \'' . db_encode_like('download\_%') . '\'';
+        if (get_option('show_empty_galleries') == '0') {
+            $extra_where_sql .= ' AND (EXISTS(SELECT * FROM images i WHERE i.cat=r.cat) OR EXISTS(SELECT * FROM videos v WHERE v.cat=r.cat) OR EXISTS(SELECT * FROM galleries g WHERE g.parent_id=r.cat))';
+        }
+
         return [
             'support_custom_fields' => true,
 
@@ -43,7 +48,7 @@ class Hook_content_meta_aware_gallery
             'content_type_universal_label' => 'Gallery',
 
             'db' => $GLOBALS['SITE_DB'],
-            'where' => 'name NOT LIKE \'' . db_encode_like('download\_%') . '\'',
+            'extra_where_sql' => $extra_where_sql,
             'table' => 'galleries',
             'id_field' => 'name',
             'id_field_numeric' => false,
@@ -69,7 +74,7 @@ class Hook_content_meta_aware_gallery
             'view_page_link_pattern' => '_SEARCH:galleries:browse:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_galleries:_edit_category:_WILD',
             'view_category_page_link_pattern' => '_SEARCH:galleries:browse:_WILD',
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries')) ? (get_module_zone('cms_galleries') . ':cms_galleries:add_category:parent_id=!') : null,
+            'add_url' => ($get_extended_data && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries')) ? (get_module_zone('cms_galleries') . ':cms_galleries:add_category') : null,
             'archive_url' => $get_extended_data ? ((($zone !== null) ? $zone : get_module_zone('galleries')) . ':galleries') : null,
 
             'support_url_monikers' => true,

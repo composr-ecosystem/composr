@@ -2290,11 +2290,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CDN_REGEXPS
         CONFIG_OPTION_cdn_regexps
         CONFIG_OPTION_ipstack_api_key
-        CONFIG_OPTION_noindex_comcode_pages
         CONFIG_OPTION_use_monochrome_icons
         CONFIG_OPTION_use_site_name_text_as_logo
         IPSTACK_API_KEY
-        NOINDEX_COMCODE_PAGES
         TOO_MANY_PAGES_LOGGED
         CHOOSE_A_CONFIG_CATEGORY
         CHOOSE_CATALOGUE
@@ -5523,7 +5521,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         IMPORT_WORDPRESS
         IMPORT_WORDPRESS_DONE
         IMPORT_WORDPRESS_USERS
-        IMPOSSIBLE_TYPE_USED
         IMPROPERLY_FILLED_IN_BANNERS
         IMPROPERLY_FILLED_IN_THUMBNAIL
         IMPROPERLY_FILLED_IN_UPLOAD
@@ -8745,7 +8742,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DEFAULT_RANK_fun_4
         DEFAULT_RANK_simple_0
         DEFAULT_RANK_simple_1
-        DEFAULT_RANK_simple_3
+        DEFAULT_RANK_simple_2
         DEFAULT__CATALOGUE_CATEGORY
         DEFAULT__CATALOGUE_CATEGORY_ATOZ
         DEFAULT__CATALOGUE_ENTRY

@@ -56,7 +56,7 @@ function cns_get_forums_stats()
         $forums_stats['newest_member_username'] = null;
     }
     if ($forums_stats['newest_member_username'] === null) {
-        $sql = 'SELECT m_username,id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ';
+        $sql = 'SELECT m_username,id,m_join_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ';
         $sql .= db_string_equal_to('m_validated_email_confirm_code', '') . ' AND id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         if (addon_installed('unvalidated')) {
             $sql .= ' AND m_validated=1';
@@ -306,7 +306,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
 
     // Browser
     if (($need === null) || (in_array('browser', $need)) || (in_array('operating_system', $need))) {
-        $last_stats = $GLOBALS['SITE_DB']->query_select('stats', ['browser', 'operating_system'], ['member_id' => $member_id], 'ORDER BY date_and_time DESC', 1);
+        $last_stats = $GLOBALS['SITE_DB']->query_select('stats', ['browser', 'operating_system', 'date_and_time'], ['member_id' => $member_id], 'ORDER BY date_and_time DESC', 1);
         if (array_key_exists(0, $last_stats)) {
             $member_info['browser'] = $last_stats[0]['browser'];
             $member_info['operating_system'] = $last_stats[0]['operating_system'];
@@ -315,9 +315,9 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
 
     // Last viewed page
     if (($need === null) || (in_array('current_action', $need))) {
-        $at_title = $GLOBALS['SITE_DB']->query_select_value_if_there('sessions', 'the_title', ['member_id' => $member_id], 'ORDER BY last_activity DESC');
-        if ($at_title !== null) {
-            $member_info['current_action'] = $at_title;
+        $_at_title = $GLOBALS['SITE_DB']->query_select('sessions', ['the_title', 'last_activity'], ['member_id' => $member_id], 'ORDER BY last_activity DESC', 1);
+        if (array_key_exists(0, $_at_title)) {
+            $member_info['current_action'] = $_at_title[0]['the_title'];
         }
     }
 
@@ -551,7 +551,13 @@ function cns_find_birthdays($time = null)
     $upper_limit = intval(get_option('enable_birthdays'));
 
     list($day, $month, $year) = explode(' ', date('j m Y', utctime_to_usertime($time)));
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username', 'm_reveal_age', 'm_dob_year'], ['m_dob_day' => intval($day), 'm_dob_month' => intval($month)], 'ORDER BY m_last_visit_time DESC', $upper_limit);
+    $rows = $GLOBALS['FORUM_DB']->query_select(
+        'f_members',
+        ['id', 'm_username', 'm_reveal_age', 'm_dob_year', 'm_last_visit_time'],
+        ['m_dob_day' => intval($day), 'm_dob_month' => intval($month)],
+        'ORDER BY m_last_visit_time DESC',
+        $upper_limit
+    );
     if (count($rows) == $upper_limit) {
         return [];
     }

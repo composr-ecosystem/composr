@@ -1927,8 +1927,9 @@ class Module_topics
             }
         }
 
-        $whisperer = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_poster', ['p_topic_id' => $topic_id, 'p_intended_solely_for' => get_member()], 'ORDER BY p_time DESC');
-        if ($whisperer !== null) {
+        $__whisperer = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_poster', 'p_time'], ['p_topic_id' => $topic_id, 'p_intended_solely_for' => get_member()], 'ORDER BY p_time DESC', 1);
+        if (array_key_exists(0, $__whisperer)) {
+            $whisperer = $__whisperer[0]['p_poster'];
             $_whisperer = $GLOBALS['FORUM_DRIVER']->get_username($whisperer, false, USERNAME_DEFAULT_NULL);
             if ($_whisperer !== null) {
                 attach_message(do_lang_tempcode('TOPIC_HAS_WHISPER_TO_YOU', escape_html($_whisperer)), 'notice');

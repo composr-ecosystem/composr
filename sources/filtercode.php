@@ -96,7 +96,7 @@ function form_for_filtercode($filter, $labels = [], $content_type = null, $types
 
     // Load up fields to compare to
     if ($table !== null) {
-        $db_fields = collapse_2d_complexity('m_name', 'm_type', $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]));
+        $db_fields = collapse_2d_complexity('m_name', 'm_type', $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table], 'ORDER BY m_name'));
 
         if (isset($info['feedback_type_code'])) {
             $db_fields['compound_rating'] = 'INTEGER';
@@ -471,7 +471,6 @@ function unparse_filtercode($parsed)
  * @param  array $info Content type info
  * @param  ?ID_TEXT $catalogue_name Name of the catalogue (null: unknown; reduces performance)
  * @param  array $extra_join List of joins (passed as reference)
- * @param  array $extra_select List of selects (passed as reference)
  * @param  ID_TEXT $filter_key The field to get
  * @param  string $filter_val The field value for this
  * @param  array $db_fields Database field data
@@ -479,14 +478,14 @@ function unparse_filtercode($parsed)
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join, &$extra_select, $filter_key, $filter_val, $db_fields, $table_join_code)
+function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join, $filter_key, $filter_val, $db_fields, $table_join_code)
 {
     require_code('fields');
     $fields = get_catalogue_fields($catalogue_name);
     if (!empty($fields)) {
         foreach ($fields as $i => $field) {
             if (get_translated_text($field['cf_name']) == $filter_key) {
-                return _fields_api_filtercode($db, $info, $catalogue_name, $extra_join, $extra_select, 'field_' . strval($field['id']), $filter_val, $db_fields, $table_join_code);
+                return _fields_api_filtercode($db, $info, $catalogue_name, $extra_join, 'field_' . strval($field['id']), $filter_val, $db_fields, $table_join_code);
             }
         }
     }
@@ -503,7 +502,7 @@ function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join,
             } else {
                 foreach ($fields as $i => $field) {
                     if (get_translated_text($field['cf_name']) == $filter_key) {
-                        return _fields_api_filtercode($db, $info, $catalogue_name, $extra_join, $extra_select, $_catalogue_name . '.field_' . strval($i), $filter_val, $db_fields, $table_join_code);
+                        return _fields_api_filtercode($db, $info, $catalogue_name, $extra_join, $_catalogue_name . '.field_' . strval($i), $filter_val, $db_fields, $table_join_code);
                     }
                 }
             }
@@ -519,7 +518,6 @@ function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join,
  * @param  array $info Content type info
  * @param  ?ID_TEXT $catalogue_name Name of the catalogue (null: unknown; reduces performance)
  * @param  array $extra_join List of joins (passed as reference)
- * @param  array $extra_select List of selects (passed as reference)
  * @param  ID_TEXT $filter_key The field to get
  * @param  string $filter_val The field value for this
  * @param  array $db_fields Database field data
@@ -527,7 +525,7 @@ function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join,
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _fields_api_filtercode($db, $info, $catalogue_name, &$extra_join, &$extra_select, $filter_key, $filter_val, $db_fields, $table_join_code)
+function _fields_api_filtercode($db, $info, $catalogue_name, &$extra_join, $filter_key, $filter_val, $db_fields, $table_join_code)
 {
     $matches = [];
     if (preg_match('#^((.*)\.)?field_(\d+)#', $filter_key, $matches) == 0) {
@@ -561,7 +559,8 @@ function _fields_api_filtercode($db, $info, $catalogue_name, &$extra_join, &$ext
         $join_sql = ' LEFT JOIN ' . $db->get_table_prefix() . 'catalogue_efv_' . $table . ' f' . strval($field_id) . '_' . $catalogue_key . ' ON f' . strval($field_id) . '_' . $catalogue_key . '.ce_id=' . $table_join_code_here . '.id AND f' . strval($field_id) . '_' . $catalogue_key . '.cf_id=' . strval($field_id);
     } else {
         $id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
-        $join_sql = ' LEFT JOIN ' . $db->get_table_prefix() . 'catalogue_entry_linkage l' . strval($field_id) . '_' . $catalogue_key . ' ON ' . db_string_equal_to('l' . strval($field_id) . '_' . $catalogue_key . '.content_type', $info['content_type']) . ' AND l' . strval($field_id) . '_' . $catalogue_key . '.content_id=' . db_cast($table_join_code_here . '.' . $id_field, 'CHAR') . ' LEFT JOIN ' . $db->get_table_prefix() . 'catalogue_efv_' . $table . ' f' . strval($field_id) . '_' . $catalogue_key . ' ON f' . strval($field_id) . '_' . $catalogue_key . '.ce_id=l' . strval($field_id) . '_' . $catalogue_key . '.catalogue_entry_id AND f' . strval($field_id) . '_' . $catalogue_key . '.cf_id=' . strval($field_id);
+        $join_sql = ' LEFT JOIN ' . $db->get_table_prefix() . 'catalogue_entry_linkage l' . strval($field_id) . '_' . $catalogue_key . ' ON ' . db_string_equal_to('l' . strval($field_id) . '_' . $catalogue_key . '.content_type', $info['content_type']) . ' AND l' . strval($field_id) . '_' . $catalogue_key . '.content_id=' . db_cast($table_join_code_here . '.' . $id_field, 'CHAR');
+        $join_sql .= ' LEFT JOIN ' . $db->get_table_prefix() . 'catalogue_efv_' . $table . ' f' . strval($field_id) . '_' . $catalogue_key . ' ON f' . strval($field_id) . '_' . $catalogue_key . '.ce_id=l' . strval($field_id) . '_' . $catalogue_key . '.catalogue_entry_id AND f' . strval($field_id) . '_' . $catalogue_key . '.cf_id=' . strval($field_id);
     }
 
     if ((strpos($table, '_trans') !== false) && (multi_lang_content())) {
@@ -597,7 +596,6 @@ function generate_filtercode_join_key_from_string($str)
  * @param  array $info Content type info
  * @param  ?ID_TEXT $catalogue_name Name of the catalogue (null: unknown; reduces performance)
  * @param  array $extra_join List of joins (passed as reference)
- * @param  array $extra_select List of selects (passed as reference)
  * @param  ID_TEXT $filter_key The field to get
  * @param  string $filter_val The field value for this
  * @param  array $db_fields Database field data
@@ -605,7 +603,7 @@ function generate_filtercode_join_key_from_string($str)
  * @return ?array A triple: Proper database field name to access with, The fields API table type (blank: no special table), The new filter value (null: error)
  * @ignore
  */
-function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_select, $filter_key, $filter_val, $db_fields, $table_join_code)
+function _default_conv_func($db, $info, $catalogue_name, &$extra_join, $filter_key, $filter_val, $db_fields, $table_join_code)
 {
     if (isset($info['id_field'])) {
         $first_id_field = (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']);
@@ -620,7 +618,6 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
             $matches[1] .= '__' . $catalogue_name;
         }
         $clause = '(SELECT SUM(rating-1) FROM ' . $db->get_table_prefix() . 'rating rat WHERE ' . db_string_equal_to('rat.rating_for_type', $matches[1]) . ' AND rat.rating_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ')';
-        $extra_select[$filter_key] = ', ' . $clause . ' AS compound_rating_' . fix_id($matches[1]);
         return [$clause, '', $filter_val];
     }
     $matches = ($filter_key == 'average_rating') ? ['', $info['feedback_type_code']] : [];
@@ -629,7 +626,6 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
             $matches[1] .= '__' . $catalogue_name;
         }
         $clause = '(SELECT AVG(' . db_cast('rating', 'FLOAT') . ')/2 FROM ' . $db->get_table_prefix() . 'rating rat WHERE ' . db_string_equal_to('rat.rating_for_type', $matches[1]) . ' AND rat.rating_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ')';
-        $extra_select[$filter_key] = ', ' . $clause . ' AS average_rating_' . fix_id($matches[1]);
         return [$clause, '', $filter_val];
     }
 
@@ -641,7 +637,6 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
         }
         $clause = db_cast('r.' . $first_id_field, 'INT');
         $clause = '(' . db_function('MOD', [$clause, date('d')]) . ')';
-        $extra_select[$filter_key] = ', ' . $clause . ' AS fixed_random_' . fix_id($matches[1]);
         return [$clause, '', $filter_val];
     }
 
@@ -665,13 +660,12 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
         } else {
             $clause = '(' . db_function('GROUP_CONCAT', ['meta_keyword', $db->get_table_prefix() . 'seo_meta_keywords kw WHERE kw.meta_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('kw.meta_for_type', $seo_type_code)]) . ')';
         }
-        $extra_select[$filter_key] = ', ' . $clause . ' AS meta_keyword_' . fix_id($seo_type_code);
         return [$clause, '', $filter_val];
     }
 
     // Fields API
     if ((preg_match('#^((.*)\.)?field_(\d+)#', $filter_key) != 0) && (isset($info['content_type']))) {
-        return _fields_api_filtercode($db, $info, '_' . $info['content_type'], $extra_join, $extra_select, $filter_key, $filter_val, $db_fields, $table_join_code);
+        return _fields_api_filtercode($db, $info, '_' . $info['content_type'], $extra_join, $filter_key, $filter_val, $db_fields, $table_join_code);
     }
 
     // Natural fields...
@@ -745,7 +739,7 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
     } else {
         // Fields API (named)
         if (isset($info['content_type'])) {
-            return _fields_api_filtercode_named($db, $info, '_' . $info['content_type'], $extra_join, $extra_select, $filter_key, $filter_val, $db_fields, $table_join_code);
+            return _fields_api_filtercode_named($db, $info, '_' . $info['content_type'], $extra_join, $filter_key, $filter_val, $db_fields, $table_join_code);
         }
 
         return null;
@@ -768,13 +762,13 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, &$extra_s
  * @param  ?ID_TEXT $content_type The content type (null: no function needed, direct in-table mapping always works)
  * @param  ?string $context First parameter to send to the conversion function, may mean whatever that function wants it to. If we have no conversion function, this is the name of a table to read field metadata from (null: none)
  * @param  string $table_join_code What the database will join the table with
- * @return array Tuple: array of extra select (implode with ''), array of extra join (implode with ''), string of extra where
+ * @return array Tuple: array of extra join (implode with ''), string of extra where
  */
 function filtercode_to_sql($db, $filters, $content_type = null, $context = null, $table_join_code = 'r')
 {
     // Nothing to do?
     if (empty($filters)) {
-        return [[], [], ''];
+        return [[], ''];
     }
 
     // Get the conversion function. The conversion function takes field names and works out how that results in SQL
@@ -796,7 +790,6 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
         }
     }
 
-    $extra_select = [];
     $extra_join = [];
     $where_clause = '';
 
@@ -852,7 +845,7 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
             }
 
             $filter_key = preg_replace('#[^\w\s\|\.]#', '', $filter_key); // So can safely come from environment
-            $bits = call_user_func_array($conv_func, [$db, $info, &$context, &$extra_join, &$extra_select, &$filter_key, $filter_val, $db_fields, $table_join_code]); // call_user_func_array has to be used for reference passing, bizarrely
+            $bits = call_user_func_array($conv_func, [$db, $info, &$context, &$extra_join, &$filter_key, $filter_val, $db_fields, $table_join_code]); // call_user_func_array has to be used for reference passing, bizarrely
             if ($bits === null) {
                 require_lang('filtercode');
                 attach_message(do_lang_tempcode('FILTERCODE_UNKNOWN_FIELD', escape_html($filter_key)), 'warn');
@@ -862,7 +855,7 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
             list($filter_key, $field_type, $filter_val) = $bits;
 
             if ($is_join) {
-                $bits2 = call_user_func_array($conv_func, [$db, $info, &$context, &$extra_join, &$extra_select, &$filter_val, '', $db_fields, $table_join_code]); // call_user_func_array has to be used for reference passing, bizarrely
+                $bits2 = call_user_func_array($conv_func, [$db, $info, &$context, &$extra_join, &$filter_val, '', $db_fields, $table_join_code]); // call_user_func_array has to be used for reference passing, bizarrely
                 if ($bits2 === null) {
                     require_lang('filtercode');
                     attach_message(do_lang_tempcode('FILTERCODE_UNKNOWN_FIELD', escape_html($filter_val)), 'warn');
@@ -1036,7 +1029,7 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
         }
     }
 
-    return [$extra_select, $extra_join, $where_clause];
+    return [$extra_join, $where_clause];
 }
 
 /**

@@ -37,7 +37,7 @@ function init__cns_members_action2()
 function member_get_spreadsheet_headings_extended()
 {
     // Read CPFs
-    $cpfs = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type', 'cf_name'], [], 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name')));
+    $cpfs = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type', 'cf_name', 'cf_order'], [], 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name')));
 
     // Headings
     $headings = member_get_spreadsheet_headings();
@@ -684,7 +684,7 @@ function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $
 
         // Prepare list of usergroups, if maybe we are gonna let (a) usergroup-change field(s)
         $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_hidden', 'g_open_membership'], ($group_count > 200) ? ['g_is_private_club' => 0] : [], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_hidden', 'g_open_membership', 'g_order'], ($group_count > 200) ? ['g_is_private_club' => 0] : [], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
         $_groups = new Tempcode();
         $current_primary_group = null;
         foreach ($rows as $group) {

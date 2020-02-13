@@ -52,7 +52,7 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
             }
 
             $done = 0;
-            $table = 'catalogue_fields f JOIN ' . get_table_prefix() . 'catalogue_efv_short s ON (f.id=s.cf_id AND (' . db_string_equal_to('cf_type', 'reference') . ' OR cf_type LIKE \'' . db_encode_like('ck\_%') . '\'))';
+            $table = 'catalogue_fields f JOIN ' . get_table_prefix() . 'catalogue_efv_short s ON f.id=s.cf_id AND (' . db_string_equal_to('cf_type', 'reference') . ' OR cf_type LIKE \'' . db_encode_like('ck\_%') . '\')';
             if ($field_id !== null) {
                 $table .= ' AND f.id=' . strval($field_id);
             }
@@ -63,8 +63,7 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
                 $select[] = 'content_id';
 
                 if ($rating_type != '') {
-                    $select[] = '(SELECT AVG(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $real_feedback_type) . ' AND rating_for_id=content_id) AS average_rating';
-                    $order_by = 'ORDER BY average_rating DESC';
+                    $order_by = 'ORDER BY (SELECT AVG(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $real_feedback_type) . ' AND rating_for_id=content_id) DESC';
                 }
             }
             $results = $GLOBALS['SITE_DB']->query_select($table, $select, ['cv_value' => $param[0]], $order_by);

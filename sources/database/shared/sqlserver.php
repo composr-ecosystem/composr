@@ -25,6 +25,18 @@
  */
 abstract class Database_super_sqlserver extends DatabaseDriver
 {
+    protected $table_prefix;
+
+    /**
+     * Set up the database driver.
+     *
+     * @param  string $table_prefix Table prefix
+     */
+    public function __construct($table_prefix)
+    {
+        $this->table_prefix = $table_prefix;
+    }
+
     /**
      * Adjust an SQL query to apply offset/limit restriction.
      *
@@ -381,7 +393,8 @@ abstract class Database_super_sqlserver extends DatabaseDriver
     }
 
     /**
-     * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and ? and % wildcard symbols.
+     * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and _ and % wildcard symbols.
+     * Regular string escaping is also applied so that you can put the output directly between quotes.
      *
      * @param  string $pattern The pattern
      * @return string The encoded pattern

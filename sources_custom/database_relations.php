@@ -224,7 +224,7 @@ function get_innodb_table_sql($tables, $all_tables)
     $table_prefix = $db->get_table_prefix();
 
     require_code('database/mysqli');
-    $db_static = object_factory('Database_Static_mysqli');
+    $db_static = object_factory('Database_Static_mysqli', false, [$table_prefix]);
 
     for ($loop_it = 0; $loop_it < count($tables); $loop_it++) { // Loops over $tables, which is growing as we pull in tables needed due to foreign key references
         $tables_keys = array_keys($tables);

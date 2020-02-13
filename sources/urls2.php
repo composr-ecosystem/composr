@@ -680,7 +680,7 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
 
         // Deprecate old one(s) if already existing (there should only be 1 non-deprecated, but possible DB state may have gotten into a mess somehow)
         $old_moniker_okay = null;
-        $old_monikers = $GLOBALS['SITE_DB']->query_select('url_id_monikers', ['m_moniker'], ['m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id, 'm_deprecated' => 0], 'ORDER BY id DESC');
+        $old_monikers = $GLOBALS['SITE_DB']->query_select('url_id_monikers', ['m_moniker', 'id'], ['m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id, 'm_deprecated' => 0], 'ORDER BY id DESC');
         foreach (collapse_1d_complexity('m_moniker', $old_monikers) as $old) {
             // See if it is same as current
             if ($moniker === null) {

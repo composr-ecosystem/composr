@@ -50,7 +50,7 @@ function init__database()
      *
      * @global object $DB_STATIC_OBJECT
      */
-    $DB_STATIC_OBJECT = object_factory('Database_Static_' . get_db_type());
+    $DB_STATIC_OBJECT = object_factory('Database_Static_' . get_db_type(), false, [get_table_prefix()]);
 
     // Create our main database objects
     global $SITE_DB, $TABLE_LANG_FIELDS_CACHE;
@@ -271,7 +271,8 @@ function db_string_not_equal_to($attribute, $compare)
 }
 
 /**
- * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and ? and % wildcard symbols.
+ * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and _ and % wildcard symbols.
+ * Regular string escaping is also applied so that you can put the output directly between quotes.
  *
  * @param  string $pattern The pattern
  * @return string The encoded pattern
@@ -803,16 +804,6 @@ abstract class DatabaseDriver
     }
 
     /**
-     * Find whether the database may run GROUP BY unfettered with restrictions on the SELECTed fields having to be represented in it or aggregate functions.
-     *
-     * @return boolean Whether it can
-     */
-    public function can_arbitrary_groupby()
-    {
-        return false;
-    }
-
-    /**
      * Find whether expression ordering support is present.
      *
      * @return boolean Whether it is
@@ -986,7 +977,8 @@ abstract class DatabaseDriver
     }
 
     /**
-     * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and ? and % wildcard symbols.
+     * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and _ and % wildcard symbols.
+     * Regular string escaping is also applied so that you can put the output directly between quotes.
      *
      * @param  string $pattern The pattern
      * @return string The encoded pattern
@@ -1078,7 +1070,7 @@ abstract class DatabaseDriver
      * Note that AVG may return an integer or float, depending on whether the DB engine auto-converts round numbers to integers. MySQL seems to.
      *
      * @param  string $function Function name
-     * @set CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD GROUP_CONCAT X_ORDER_BY_BOOLEAN
+     * @set CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD MD5 GROUP_CONCAT X_ORDER_BY_BOOLEAN
      * @param  array $args List of string arguments, assumed already quoted/escaped correctly for the particular database
      * @return string SQL fragment
      */
@@ -1201,6 +1193,21 @@ abstract class DatabaseDriver
                     case 'sqlserver':
                     case 'sqlserver_odbc':
                         return $args[0] . ' % ' . $args[1];
+                }
+                break;
+
+            case 'MD5':
+                if (count($args) != 1) {
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+                switch (get_db_type()) {
+                    case 'oracle':
+                        return 'STANDARD_HASH(' . $args[0] . ',\'MD5\')';
+                    case 'postgresql':
+                        return 'HASH(' . $args[0] . ',0)';
+                    case 'sqlserver':
+                    case 'sqlserver_odbc':
+                        return 'HASHBYTES(\'MD5\',' . $args[0] . ')';
                 }
                 break;
 
@@ -2403,6 +2410,31 @@ class DatabaseConnector
         }
 
         return $this->table_exists_cache[$table_name];
+    }
+
+    /**
+     * Generate a JOIN clause that will only bind to a single row.
+     *
+     * @param  string $table Table to join to
+     * @param  string $alias Alias for the table
+     * @param  string $join_clause The regular join clause
+     * @param  string $threshold_field The field we will use to choose which row to match
+     * @param  string $threshold_func The SQL function to apply to $threshold_field
+     * @param  string $join_type The join type
+     * @set "LEFT JOIN" "JOIN"
+     * @param  ?string $prefer_index Index to force (null: none)
+     * @return string JOIN clause
+     */
+    public function singular_join($table, $alias, $join_clause, $threshold_field = 'id', $threshold_func = 'MIN', $join_type = 'LEFT JOIN', $prefer_index = null)
+    {
+        $_table = $this->get_table_prefix() . $table;
+        $on_clause = $alias . '.' . $threshold_field . '=(SELECT ' . $threshold_func . '(dedupe.' . $threshold_field . ') FROM ' . $_table . ' dedupe WHERE ' . $join_clause . ')';
+        $ret = ' ' . $join_type . ' ' . $_table . ' ' . $alias;
+        if ($prefer_index !== null) {
+            $ret .= $this->prefer_index($table, $prefer_index);
+        }
+        $ret .= ' ON ' . $on_clause;
+        return $ret;
     }
 
     /**

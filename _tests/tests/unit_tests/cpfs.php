@@ -35,6 +35,7 @@ class cpfs_test_set extends cms_test_case
         $fields = cns_get_custom_field_mappings($member_id);
         $this->assertTrue(strpos(serialize($fields), 'Foobar') !== false);
 
-        $this->assertTrue(get_cms_cpf('firstname', $member_id) == 'Foobar');
+        $looked_up = get_cms_cpf('firstname', $member_id);
+        $this->assertTrue($looked_up == 'Foobar', 'Got ' . $looked_up . ', expected Foobar');
     }
 }

@@ -58,7 +58,7 @@ function find_shopping_catalogue_fields($catalogue_name = 'products')
     require_code('fields');
 
     // By tagging
-    $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type', 'cf_options'], ['c_name' => $catalogue_name], 'ORDER BY cf_order');
+    $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type', 'cf_options', 'cf_order'], ['c_name' => $catalogue_name], 'ORDER BY cf_order');
     foreach ($fields as $i => $field) {
         $options = parse_field_options($field['cf_options']);
 

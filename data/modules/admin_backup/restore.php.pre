@@ -255,14 +255,16 @@ function require_code($codename)
 }
 
 /**
- * Make an object of the given class
+ * Make an object of the given class.
  *
  * @param  string $class The class name
+ * @param  boolean $failure_ok Whether to return null if there is no such class
+ * @param  array $parameters Array of parameters
  * @return object The object
  */
-function object_factory($class)
+function object_factory($class, $failure_ok = false, $parameters = [])
 {
-    return new $class;
+    return new $class(...$parameters);
 }
 
 /**

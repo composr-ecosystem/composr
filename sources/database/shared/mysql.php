@@ -25,6 +25,18 @@
  */
 abstract class Database_super_mysql extends DatabaseDriver
 {
+    protected $table_prefix;
+
+    /**
+     * Set up the database driver.
+     *
+     * @param  string $table_prefix Table prefix
+     */
+    public function __construct($table_prefix)
+    {
+        $this->table_prefix = $table_prefix;
+    }
+
     /**
      * Get the default user for making db connections (used by the installer as a default).
      *
@@ -61,16 +73,6 @@ abstract class Database_super_mysql extends DatabaseDriver
         } elseif ($start != 0) {
             $query .= ' LIMIT ' . strval($start) . ',30000000';
         }
-    }
-
-    /**
-     * Find whether the database may run GROUP BY unfettered with restrictions on the SELECTed fields having to be represented in it or aggregate functions.
-     *
-     * @return boolean Whether it can
-     */
-    public function can_arbitrary_groupby()
-    {
-        return true;
     }
 
     /**
@@ -290,7 +292,6 @@ abstract class Database_super_mysql extends DatabaseDriver
         $queries[] = 'SET max_allowed_packet=104857600';
 
         $queries[] = $this->strict_mode_query(true);
-        // NB: Can add ,ONLY_FULL_GROUP_BY for testing on what other DBs will do, but can_arbitrary_groupby() would need to be made to return false
 
         return $queries;
     }
@@ -304,11 +305,10 @@ abstract class Database_super_mysql extends DatabaseDriver
     public function strict_mode_query($setting)
     {
         if ((get_forum_type() == 'cns') && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {
-            $query = 'SET sql_mode=\'STRICT_ALL_TABLES\'';
+            $query = 'SET sql_mode=\'STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY\'';
         } else {
             $query = 'SET sql_mode=\'MYSQL40\'';
         }
-        // NB: Can add ,ONLY_FULL_GROUP_BY for testing on what other DBs will do, but can_arbitrary_groupby() would need to be made to return false
 
         return $query;
     }
@@ -357,7 +357,8 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and ? and % wildcard symbols.
+     * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and _ and % wildcard symbols.
+     * Regular string escaping is also applied so that you can put the output directly between quotes.
      *
      * @param  string $pattern The pattern
      * @return string The encoded pattern

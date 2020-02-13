@@ -78,15 +78,16 @@ PHP;
     {
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
+        require_code('galleries');
+        require_code('content');
+
         $blank_if_empty = isset($map['blank_if_empty']) ? !empty($map['blank_if_empty']) : false;
 
         if (!addon_installed('galleries')) {
             return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '8692692a208449e3862d6ff482dce94b', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('galleries'))]);
         }
 
-        if (@cms_empty_safe($map['gallery_name'])) {
-            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => 'a9a5d583cdc145df840b40bdeb6577cd', 'TEXT' => escape_html('Block main_hero_slider: Parameter "gallery_name" is required.')]);
-        }
+        $gallery_name = @cms_empty_safe($map['gallery_name']) ? 'root' : $map['gallery_name'];
 
         $block_id = get_block_id($map);
 
@@ -103,15 +104,15 @@ PHP;
         $check_perms = isset($map['check_perms']) ? !empty($map['check_perms']) : true;
 
         // Check if the gallery exists
-        $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $map['gallery_name']]);
+        $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $gallery_name]);
 
         if ($gallery_name === null) {
             // Maybe the user specified a gallery's full name instead of the code name?
-            $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['fullname' => $map['gallery_name']]);
+            $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['fullname' => $gallery_name]);
         }
 
         if ($gallery_name === null) {
-            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '19737ba0c9c84c36b92690b7c896040d', 'TEXT' => escape_html('Block main_hero_slider: Gallery named "' . $map['gallery_name'] . '" not found.')]);
+            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '19737ba0c9c84c36b92690b7c896040d', 'TEXT' => escape_html('Block main_hero_slider: Gallery named "' . $gallery_name . '" not found.')]);
         }
 
         if ($gallery_name === 'root') {
@@ -121,44 +122,25 @@ PHP;
             $cat_select = selectcode_to_sqlfragment($gallery_name, 'cat', 'galleries', 'parent_id', 'cat', 'name', false, false);
         }
 
-        $extra_join_image = '';
-        $extra_join_video = '';
-        $extra_where_image = '';
-        $extra_where_video = '';
-
-        if (addon_installed('content_privacy')) {
-            require_code('content_privacy');
-            $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
-            $viewing_member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : null;
-            list($privacy_join_video, $privacy_where_video) = get_privacy_where_clause('video', 'r', $viewing_member_id);
-            list($privacy_join_image, $privacy_where_image) = get_privacy_where_clause('image', 'r', $viewing_member_id);
-            $extra_join_image .= $privacy_join_image;
-            $extra_join_video .= $privacy_join_video;
-            $extra_where_image .= $privacy_where_image;
-            $extra_where_video .= $privacy_where_video;
-        }
-
-        if (get_option('filter_regions') == '1') {
-            require_code('locations');
-            $extra_where_image .= sql_region_filter('image', 'r.id');
-            $extra_where_video .= sql_region_filter('video', 'r.id');
-        }
-
-        $extra_join_sql = '';
-        $where_sup = '';
-        if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-            $extra_join_sql .= get_permission_join_clause('gallery', 'cat');
-            $where_sup .= get_permission_where_clause(get_member(), get_permission_where_clause_groups(get_member()));
-        }
-
-        $image_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS content_type,cat FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_image . $where_sup . ' AND validated=1 ORDER BY title ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
-        $video_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'video\' AS content_type,cat FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_video . $where_sup . ' AND validated=1 ORDER BY title ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
-
-        $all_rows = array_merge($image_rows, $video_rows);
+        $extra_where = ' AND ' . $cat_select;
+        list($rows, $max_rows) = content_rows_for_multi_type(
+            ['image', 'video'],
+            null,
+            $extra_where,
+            '',
+            'recent ASC',
+            0,
+            100, /*reasonable limit*/
+            '',
+            '',
+            '',
+            $check_perms,
+            []
+        );
 
         require_code('images');
 
-        if (empty($all_rows)) {
+        if (empty($rows)) {
             if ($blank_if_empty) {
                 return new Tempcode();
             }
@@ -177,7 +159,7 @@ PHP;
         }
 
         $items = [];
-        foreach ($all_rows as $row) {
+        foreach ($rows as $row) {
             $full_url = $row['url'];
             if (url_is_local($full_url)) {
                 $full_url = get_custom_base_url() . '/' . $full_url;

@@ -82,7 +82,7 @@ function cns_check_post($post, $topic_id = null, $poster = null)
         }
 
         // Check this isn't the same as the last post here
-        $last_posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_post', 'p_poster', 'p_ip_address'], ['p_topic_id' => $topic_id], 'ORDER BY p_time DESC,id DESC', 1);
+        $last_posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_post', 'p_poster', 'p_ip_address', 'p_time'], ['p_topic_id' => $topic_id], 'ORDER BY p_time DESC,id DESC', 1);
         if (array_key_exists(0, $last_posts)) {
             if (($last_posts[0]['p_poster'] == $GLOBALS['CNS_DRIVER']->get_guest_id()) && (get_ip_address() != $last_posts[0]['p_ip_address'])) {
                 $last_posts[0]['p_poster'] = -1;

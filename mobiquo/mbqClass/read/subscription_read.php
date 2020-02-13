@@ -158,7 +158,7 @@ class CMSSubscriptionRead
         $notification_code = 'cns_topic';
 
         $ret = [];
-        $_x = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_member_id' => $member_id, 'l_notification_code' => $notification_code], ' AND l_code_category NOT LIKE \'forum:%\' ORDER BY id DESC');
+        $_x = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['l_code_category', 'id'], ['l_member_id' => $member_id, 'l_notification_code' => $notification_code], ' AND l_code_category NOT LIKE \'forum:%\' ORDER BY id DESC');
         foreach ($_x as $x) {
             $ret[] = mobiquo_val(intval($x['l_code_category']), 'int');
         }

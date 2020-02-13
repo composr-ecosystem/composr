@@ -48,8 +48,8 @@ function assign_referral_awards($referee, $trigger)
     require_lang('referrals');
     require_code('notifications');
 
-    $referrer = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $referee_email], 'ORDER BY i_time');
-    if ($referrer === null) { // Was not actually a referral, member joined site on own accord
+    $referrer_rows = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_inviter', 'i_time'], ['i_email_address' => $referee_email], 'ORDER BY i_time', 1);
+    if (!array_key_exists(0, $referrer_rows)) { // Was not actually a referral, member joined site on own accord
         if ((isset($ini_file['global']['notify_if_join_but_no_referral'])) && ($ini_file['global']['notify_if_join_but_no_referral'] == '1')) {
             dispatch_notification(
                 'referral_staff',
@@ -71,6 +71,7 @@ function assign_referral_awards($referee, $trigger)
 
         return;
     }
+    $referrer = $referrer_rows[0]['i_inviter'];
     $referrer_username = $GLOBALS['FORUM_DRIVER']->get_username($referrer, false, USERNAME_DEFAULT_NULL);
     if ($referrer_username === null) {
         return; // Deleted member
@@ -542,7 +543,7 @@ function referrer_report_script($ret = false)
         $GLOBALS['FORUM_DB']->get_table_prefix() . $table .
         ' WHERE ' .
         $where .
-        ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY i_email_address' : '') . ' ORDER BY i_time DESC',
+        ' ORDER BY i_time DESC',
         $max,
         $start
     );

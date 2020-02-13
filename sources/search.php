@@ -57,7 +57,7 @@ abstract class FieldsSearchHook
         if (addon_installed('catalogues')) {
             require_code('fields');
 
-            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name', 'cf_type', 'cf_default'], ['c_name' => $catalogue_name, 'cf_is_sortable' => 1, 'cf_visible' => 1], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name', 'cf_type', 'cf_default', 'cf_order'], ['c_name' => $catalogue_name, 'cf_is_sortable' => 1, 'cf_visible' => 1], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
             foreach ($rows as $i => $row) {
                 $ob = get_fields_hook($row['cf_type']);
                 $temp = $ob->inputted_to_sql_for_search($row, $i);
@@ -143,7 +143,7 @@ abstract class FieldsSearchHook
                         if ($include_in_main_search) {
                             $trans_fields['f' . strval($i) . '.cv_value'] = 'LONG_TRANS__COMCODE';
                         }
-                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_long_trans f' . strval($i) . ' ON (f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']) . ')';
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_long_trans f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
                         if (multi_lang_content()) {
                             $search_field = 't' . strval(count($trans_fields) - 1) . '.text_original';
                         } else {
@@ -154,7 +154,7 @@ abstract class FieldsSearchHook
                         if ($include_in_main_search) {
                             $trans_fields['f' . strval($i) . '.cv_value'] = 'SHORT_TRANS__COMCODE';
                         }
-                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short_trans f' . strval($i) . ' ON (f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']) . ')';
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short_trans f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
                         if (multi_lang_content()) {
                             $search_field = 't' . strval(count($trans_fields) - 1) . '.text_original';
                         } else {
@@ -165,7 +165,7 @@ abstract class FieldsSearchHook
                         if ($include_in_main_search) {
                             $nontrans_fields[] = 'f' . strval($i) . '.cv_value';
                         }
-                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_long f' . strval($i) . ' ON (f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']) . ')';
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_long f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
                         if (multi_lang_content()) {
                             $search_field = 't' . strval(count($trans_fields) - 1) . '.text_original';
                         } else {
@@ -176,15 +176,15 @@ abstract class FieldsSearchHook
                         if ($include_in_main_search) {
                             $nontrans_fields[] = 'f' . strval($i) . '.cv_value';
                         }
-                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short f' . strval($i) . ' ON (f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']) . ')';
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
                         $search_field = 'f' . strval($i) . '.cv_value';
                         break;
                     case 'float':
-                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_float f' . strval($i) . ' ON (f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']) . ')';
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_float f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
                         $search_field = 'f' . strval($i) . '.cv_value';
                         break;
                     case 'integer':
-                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_integer f' . strval($i) . ' ON (f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']) . ')';
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_integer f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
                         $search_field = 'f' . strval($i) . '.cv_value';
                         break;
                 }

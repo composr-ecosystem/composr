@@ -702,6 +702,7 @@ class Module_search
             });
         }
 
+        require_code('spelling');
         spellchecker_shutdown();
 
         return [$out, $pagination, $GLOBALS['TOTAL_SEARCH_RESULTS']];

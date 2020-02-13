@@ -261,7 +261,8 @@ function ecv2_AWARD_ID($lang, $escaped, $param)
     if ((isset($param[0])) && (is_numeric($param[0]))) {
         static $awarded_content_ids = [];
         if (!isset($awarded_content_ids[intval($param[0])])) {
-            $awarded_content_ids[intval($param[0])] = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', ['a_type_id' => intval($param[0])], 'ORDER BY date_and_time DESC');
+            $test = $GLOBALS['SITE_DB']->query_select('award_archive', ['content_id', 'date_and_time'], ['a_type_id' => intval($param[0])], 'ORDER BY date_and_time DESC', 1);
+            $awarded_content_ids[intval($param[0])] = array_key_exists(0, $test) ? $test[0]['content_id'] : null;
         }
         $value = isset($awarded_content_ids[intval($param[0])]) ? $awarded_content_ids[intval($param[0])] : '';
     }

@@ -105,6 +105,10 @@ Here's one simple standalone example that would set the default title for all ne
 
 It works by applying itself to the type of the main form ([tt]add[/tt]) rather than the type of where forms are submitted to ([tt]_add[/tt]).
 
+[title="2"]Wildcard expressions[/title]
+
+Wildcard expressions support [tt]*[/tt] (match any string) and [tt]_[/tt] (match one character) as wildcards, with backslash escaping (e.g. [tt]\*[/tt] matches a literal [tt]*[/tt] rather than works as a wildcard).
+
 [title="2"]Extension (advanced)[/title]
 
 The form field filter system is ripe for extension by programmers. It would not be hard for a programmer to add new filter attributes. For example, a filter could be added to allow filtering based on day of the week, or geographic location. We'd love to see innovative Composr modifications written around this kind of functionality (e.g. a modification to "only allow people to submit a quiz on Halloween from an iPhone").

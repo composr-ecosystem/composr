@@ -45,14 +45,6 @@ class Hook_task_export_shopping_orders
             $where .= ' AND ' . db_string_equal_to('order_status', $order_status);
         }
 
-        $query = 'SELECT o.*,o.id AS o_id,a.*
-            FROM ' . get_table_prefix() . 'shopping_orders o
-            LEFT JOIN ' . get_table_prefix() . 'ecom_trans_addresses a ON o.txn_id=a.a_txn_id
-            WHERE ' . $where . '
-            ORDER BY add_date';
-        $rows = $GLOBALS['SITE_DB']->query($query);
-        remove_duplicate_rows($rows);
-
         require_code('files_spreadsheets_write');
         if ($file_type === null) {
             $file_type = spreadsheet_write_default();
@@ -61,61 +53,77 @@ class Hook_task_export_shopping_orders
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
-        foreach ($rows as $i => $_order) {
-            task_log($this, 'Processing shopping order row', $i, count($rows));
+        $max = 500;
+        $start = 0;
 
-            $order = [];
+        $query = 'FROM ' . get_table_prefix() . 'shopping_orders o' . $GLOBALS['SITE_DB']->singular_join('ecom_trans_addresses', 'a', 'o.txn_id=a.a_txn_id', 'id', 'MIN', 'LEFT JOIN') . ' WHERE ' . $where;
 
-            $order[do_lang('ORDER_NUMBER')] = strval($_order['o_id']);
+        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query . ' ORDER BY add_date');
 
-            $order[do_lang('ORDERED_DATE')] = get_timezoned_date_time($order['add_date']);
+        do {
+            $rows = $GLOBALS['SITE_DB']->query('SELECT o.*,o.id AS o_id,a.* ' . $query, $max, $start);
 
-            $order[do_lang('ORDER_STATUS')] = do_lang($_order['order_status']);
+            foreach ($rows as $i => $_order) {
+                task_log($this, 'Processing shopping order row', $i, $max_rows);
 
-            $order[do_lang('PRICE')] = float_format($_order['total_price']);
+                $order = [];
 
-            $order[do_lang(get_option('tax_system'))] = float_format($_order['total_tax']);
+                $order[do_lang('ORDER_NUMBER')] = strval($_order['o_id']);
 
-            $order[do_lang('SHIPPING_COST')] = float_format($_order['total_shipping_cost']);
+                $order[do_lang('ORDERED_DATE')] = get_timezoned_date_time($order['add_date']);
 
-            $order[do_lang('ORDERED_PRODUCTS')] = get_ordered_product_list_string($_order['o_id']);
+                $order[do_lang('ORDER_STATUS')] = do_lang($_order['order_status']);
 
-            $order[do_lang('ORDERED_BY')] = $GLOBALS['FORUM_DRIVER']->get_username($_order['member_id']);
+                $order[do_lang('PRICE')] = float_format($_order['total_price']);
 
-            // Put address together
-            $address = [];
-            if ($_order['a_firstname'] . $_order['a_lastname'] != '') {
-                $address[] = trim($_order['a_firstname'] . ' ' . $_order['a_lastname']);
+                $order[do_lang(get_option('tax_system'))] = float_format($_order['total_tax']);
+
+                $order[do_lang('SHIPPING_COST')] = float_format($_order['total_shipping_cost']);
+
+                $order[do_lang('ORDERED_PRODUCTS')] = get_ordered_product_list_string($_order['o_id']);
+
+                $order[do_lang('ORDERED_BY')] = $GLOBALS['FORUM_DRIVER']->get_username($_order['member_id']);
+
+                // Put address together
+                $address = [];
+                if ($_order['a_firstname'] !== null) {
+                    if ($_order['a_firstname'] . $_order['a_lastname'] != '') {
+                        $address[] = trim($_order['a_firstname'] . ' ' . $_order['a_lastname']);
+                    }
+                    if ($_order['a_street_address'] != '') {
+                        $address[] = $_order['a_street_address'];
+                    }
+                    if ($_order['a_city'] != '') {
+                        $address[] = $_order['a_city'];
+                    }
+                    if ($_order['a_county'] != '') {
+                        $address[] = $_order['a_county'];
+                    }
+                    if ($_order['a_state'] != '') {
+                        $address[] = $_order['a_state'];
+                    }
+                    if ($_order['a_post_code'] != '') {
+                        $address[] = $_order['a_post_code'];
+                    }
+                    if ($_order['a_country'] != '') {
+                        $address[] = $_order['a_country'];
+                    }
+                    if ($_order['a_email'] != '') {
+                        $address[] = do_lang('EMAIL_ADDRESS') . ': ' . $_order['a_email'];
+                    }
+                    if ($_order['a_phone'] != '') {
+                        $address[] = do_lang('PHONE_NUMBER') . ': ' . $_order['a_phone'];
+                    }
+                }
+                $full_address = implode(', ', $address);
+                $order[do_lang('SHIPPING_ADDRESS')] = $full_address;
+
+                $sheet_writer->write_row($order);
             }
-            if ($_order['a_street_address'] != '') {
-                $address[] = $_order['a_street_address'];
-            }
-            if ($_order['a_city'] != '') {
-                $address[] = $_order['a_city'];
-            }
-            if ($_order['a_county'] != '') {
-                $address[] = $_order['a_county'];
-            }
-            if ($_order['a_state'] != '') {
-                $address[] = $_order['a_state'];
-            }
-            if ($_order['a_post_code'] != '') {
-                $address[] = $_order['a_post_code'];
-            }
-            if ($_order['a_country'] != '') {
-                $address[] = $_order['a_country'];
-            }
-            if ($_order['a_email'] != '') {
-                $address[] = do_lang('EMAIL_ADDRESS') . ': ' . $_order['a_email'];
-            }
-            if ($_order['a_phone'] != '') {
-                $address[] = do_lang('PHONE_NUMBER') . ': ' . $_order['a_phone'];
-            }
-            $full_address = implode(', ', $address);
-            $order[do_lang('SHIPPING_ADDRESS')] = $full_address;
 
-            $sheet_writer->write_row($order);
-        }
+            $start += $max;
+        } while (!empty($rows));
+
         $sheet_writer->close();
 
         $headers = [];

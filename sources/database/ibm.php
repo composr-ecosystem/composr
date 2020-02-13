@@ -47,6 +47,18 @@ class Database_Static_ibm extends DatabaseDriver
 {
     protected $cache_db = [];
 
+    protected $table_prefix;
+
+    /**
+     * Set up the database driver.
+     *
+     * @param  string $table_prefix Table prefix
+     */
+    public function __construct($table_prefix)
+    {
+        $this->table_prefix = $table_prefix;
+    }
+
     /**
      * Get the default user for making db connections (used by the installer as a default).
      *

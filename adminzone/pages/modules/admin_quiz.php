@@ -213,7 +213,7 @@ class Module_admin_quiz
      */
     public function create_selection_list_entries()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name'], [], 'ORDER BY q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_add_date'], [], 'ORDER BY q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name'])));
@@ -274,7 +274,7 @@ class Module_admin_quiz
      */
     public function find_winner()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name'], ['q_type' => 'COMPETITION'], 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_validated', 'q_add_date'], ['q_type' => 'COMPETITION'], 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name'])));
@@ -421,7 +421,7 @@ class Module_admin_quiz
             $where['q_type'] = $type;
         }
 
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_type'], $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name', 'q_type', 'q_validated', 'q_add_date'], $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name']) . ' (' . do_lang($m['q_type']) . ')'));

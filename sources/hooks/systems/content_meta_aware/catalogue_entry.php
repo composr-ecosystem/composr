@@ -44,6 +44,7 @@ class Hook_content_meta_aware_catalogue_entry
             'content_type_universal_label' => 'Catalogue entry',
 
             'db' => $GLOBALS['SITE_DB'],
+            'extra_where_sql' => 'c_name NOT LIKE \'' . db_encode_like('\_%') . '\'',
             'table' => 'catalogue_entries',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -69,7 +70,7 @@ class Hook_content_meta_aware_catalogue_entry
             'view_page_link_pattern' => '_SEARCH:catalogues:entry:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_catalogues:_edit:_WILD',
             'view_category_page_link_pattern' => '_SEARCH:catalogues:category:_WILD',
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_catalogues')) ? (get_module_zone('cms_catalogues') . ':cms_catalogues:add_entry' . (($catalogue_name === null) ? '' : (':catalogue_name=' . $catalogue_name))) : null,
+            'add_url' => ($get_extended_data && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_catalogues')) ? (get_module_zone('cms_catalogues') . ':cms_catalogues:add_entry' . (($catalogue_name === null) ? '' : (':catalogue_name=' . $catalogue_name))) : null,
             'archive_url' => $get_extended_data ? ((($zone !== null) ? $zone : get_module_zone('catalogues')) . ':catalogues') : null,
 
             'support_url_monikers' => true,

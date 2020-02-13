@@ -320,7 +320,7 @@ class Hook_addon_registry_core_permission_management
             'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
             'HEADER_CELLS' => $header_cells,
-            'SECTION' => $rows,
+            'ROWS' => $rows,
             'COLS' => '',
         ]);
 

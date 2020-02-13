@@ -134,7 +134,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         require_lang('zones');
         $g_or = get_permission_where_clause_groups(get_member(), false);
 
-        $table = 'cached_comcode_pages r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages q ON (q.the_zone=r.the_zone AND q.the_page=r.the_page)';
+        $table = 'cached_comcode_pages r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages q ON q.the_zone=r.the_zone AND q.the_page=r.the_page';
         $trans_fields = ['r.cc_page_title' => 'SHORT_TRANS', 'r.string_index' => 'LONG_TRANS__COMCODE'];
         $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', ['r.the_zone', 'r.the_page']));
@@ -143,7 +143,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         if ($g_or == '') {
             $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.the_zone,r.the_page', $nontrans_fields);
         } else {
-            $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table . ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z ON (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . '))', $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields);
+            $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table . ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z ON z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')', $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields);
         }
 
         if (addon_installed('redirects_editor')) {

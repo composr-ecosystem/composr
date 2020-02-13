@@ -92,7 +92,7 @@ class Hook_notification_cns_topic extends Hook_Notification
 
         if ($id === null) { // On root level add monitored topics too
             $max_topic_rows = max(0, 200 - $total);
-            $types2 = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_notification_code' => 'cns_topic', 'l_member_id' => get_member()], 'ORDER BY id DESC', $max_topic_rows/*reasonable limit*/);
+            $types2 = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['l_code_category', 'id'], ['l_notification_code' => 'cns_topic', 'l_member_id' => get_member()], 'ORDER BY id DESC', $max_topic_rows/*reasonable limit*/);
             if (count($types2) == $max_topic_rows) {
                 $types2 = []; // Too many to consider
             }

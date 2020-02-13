@@ -581,34 +581,68 @@ function get_permission_where_clause_groups($member_id, $consider_clubs = true, 
 }
 
 /**
- * Get a more complete SQL WHERE clause to select for any usergroups the given member is in OR temporary permissions.
- *
- * @param  MEMBER $member_id The member who's usergroups will be OR'd
- * @param  string $groups SQL from get_permission_where_clause_groups
- * @param  ID_TEXT $group_category_alias The alias for the group_category_access table
- * @param  ID_TEXT $member_category_alias The alias for the member_category_access table
- * @return string SQL
- */
-function get_permission_where_clause($member_id, $groups, $group_category_alias = 'a', $member_category_alias = 'ma')
-{
-    return ' AND ((' . $groups . ') AND (' . $group_category_alias . '.group_id IS NOT NULL) OR ((' . $member_category_alias . '.active_until IS NULL OR ' . $member_category_alias . '.active_until>' . strval(time()) . ') AND ' . $member_category_alias . '.member_id=' . strval($member_id) . '))';
-}
-
-/**
- * Get the SQL JOIN clause to join for any usergroups the given member is in / temporary permissions.
+ * Get an SQL WHERE clause for checking member access to a category.
  *
  * @param  ID_TEXT $module The ID code for the permission module being checked for
  * @param  ID_TEXT $category_field The field in the main query row that holds the category
- * @param  ID_TEXT $group_category_alias The alias for the group_category_access table
- * @param  ID_TEXT $member_category_alias The alias for the member_category_access table
+ * @param  ?MEMBER $member_id The member to check individual access for (null: none)
+ * @param  string $groups SQL from get_permission_where_clause_groups
  * @param  ID_TEXT $row_alias The alias for the main query row
  * @return string SQL
  */
-function get_permission_join_clause($module, $category_field, $group_category_alias = 'a', $member_category_alias = 'ma', $row_alias = 'r')
+function get_category_permission_where_clause($module, $category_field, $member_id, $groups, $row_alias = 'r')
 {
-    $query = '';
-    $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_category_access ' . $group_category_alias . ' ON (' . db_string_equal_to($group_category_alias . '.module_the_name', $module) . ' AND ' . $row_alias . '.' . $category_field . '=' . $group_category_alias . '.category_name)';
-    $query .= ' LEFT JOIN ' . get_table_prefix() . 'member_category_access ' . $member_category_alias . ' ON (' . db_string_equal_to($member_category_alias . '.module_the_name', $module) . ' AND ' . $row_alias . '.' . $category_field . '=' . $member_category_alias . '.category_name)';
+    $query = ' AND (';
+    $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_category_access a WHERE ' . db_string_equal_to('a.module_the_name', $module) . ' AND ' . $row_alias . '.' . $category_field . '=a.category_name AND (' . $groups . '))';
+    if ($member_id !== null) {
+        $query .= ' OR ';
+        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_category_access ma WHERE ' . db_string_equal_to('ma.module_the_name', $module) . ' AND ' . $row_alias . '.' . $category_field . '=ma.category_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
+    }
+    $query .= ')';
+    return $query;
+}
+
+/**
+ * Get an SQL WHERE clause for checking member access to a page.
+ *
+ * @param  ID_TEXT $zone_field The field in the main query row that holds the zone
+ * @param  ID_TEXT $page_field The field in the main query row that holds the page
+ * @param  ?MEMBER $member_id The member to check individual access for (null: none)
+ * @param  string $groups SQL from get_permission_where_clause_groups
+ * @param  ID_TEXT $row_alias The alias for the main query row
+ * @return string SQL
+ */
+function get_page_permission_where_clause($zone_field, $page_field, $member_id, $groups, $row_alias = 'r')
+{
+    $query = get_zone_permission_where_clause($zone_field, $member_id, $groups, $row_alias);
+    $query .= ' AND (';
+    $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_page_access a WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND ' . $row_alias . '.' . $page_field . '=a.page_name AND (' . $groups . '))';
+    if ($member_id !== null) {
+        $query .= ' OR ';
+        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_page_access ma WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND ' . $row_alias . '.' . $page_field . '=ma.page_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
+    }
+    $query .= ')';
+    return $query;
+}
+
+/**
+ * Get an SQL WHERE clause for checking member access to a zone.
+ *
+ * @param  ID_TEXT $zone_field The field in the main query row that holds the zone
+ * @param  ?MEMBER $member_id The member to check individual access for (null: none)
+ * @param  string $groups SQL from get_permission_where_clause_groups
+ * @param  ID_TEXT $row_alias The alias for the main query row
+ * @return string SQL
+ */
+function get_zone_permission_where_clause($zone_field, $member_id, $groups, $row_alias = 'r')
+{
+    $query = ' AND (';
+    $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_zone_access a WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND (' . $groups . '))';
+    if ($member_id !== null) {
+        $query .= ' OR ';
+        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_zone_access ma WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
+    }
+    $query .= ')';
     return $query;
 }
 

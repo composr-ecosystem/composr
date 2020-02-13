@@ -216,24 +216,18 @@ class Module_vforums
 
         $title = do_lang_tempcode('INVOLVED_TOPICS');
 
-        $_condition = 'pos.p_poster=' . strval(get_member());
         if (($GLOBALS['FORUM_DRIVER']->get_post_count(get_member()) > 5000) && (get_value('innodb') !== '1')) { // Too many posts, so make time-sensitive
-            $_condition .= ' AND pos.p_time>' . strval(time() - 60 * 60 * 24 * 365);
-        }
-        $condition = [$_condition];
-
-        $initial_table = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts pos' . $GLOBALS['FORUM_DB']->prefer_index('f_posts', 'posts_by');
-        $initial_table .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=pos.p_topic_id';
-
-        if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
-            $extra_select = ',MAX(pos.p_time) AS p_time';
-            $order = 'post_time_grouped';
+            $condition = 'pos.p_time>' . strval(time() - 60 * 60 * 24 * 365);
         } else {
-            $extra_select = '';
-            $order = 'post_time';
+            $condition = '1=1';
         }
 
-        return $this->_vforum($title, $condition, $order, false, [], $initial_table, $extra_select);
+        $initial_table = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t';
+        $initial_table .= $GLOBALS['FORUM_DB']->singular_join('f_posts', 'pos', 't.id=pos.p_topic_id AND pos.p_poster=' . strval(get_member()), 'p_time', 'MAX', 'JOIN', 'posts_by');
+
+        $order = 'post_time';
+
+        return $this->_vforum($title, $condition, $order, false, [], $initial_table);
     }
 
     /**
@@ -313,7 +307,7 @@ class Module_vforums
                 $query .= $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t';
             }
             if (!is_guest()) {
-                $query .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON (t.id=l.l_topic_id AND l.l_member_id=' . strval(get_member()) . ')';
+                $query .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l.l_topic_id AND l.l_member_id=' . strval(get_member());
             }
             $query_cnt = $query;
             $_query_cnt = $query;
@@ -325,10 +319,6 @@ class Module_vforums
             $query_cnt .= $where;
             $_query_cnt .= $where;
             $query .= $sql_sup;
-            if (($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) && ($initial_table !== null)) {
-                $query .= ' GROUP BY t.id';
-                $query_cnt .= ' GROUP BY t.id';
-            }
             $query .= $sql_sup_order_by;
             $full_query = 'SELECT t.*,' . (is_guest() ? 'NULL as l_time' : 'l_time');
             if (multi_lang_content()) {
@@ -343,11 +333,7 @@ class Module_vforums
             } else {
                 $topic_rows = array_merge($topic_rows, $GLOBALS['FORUM_DB']->query($full_query, $max, $start));
             }
-            if (($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) && ($initial_table !== null)) {
-                $max_rows += $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(DISTINCT t.id) ' . $_query_cnt);
-            } else {
-                $max_rows += $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) ' . $query_cnt);
-            }
+            $max_rows += $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) ' . $query_cnt);
         }
         $hot_topic_definition = intval(get_option('hot_topic_definition'));
         $or_list = '';

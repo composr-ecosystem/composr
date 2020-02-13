@@ -95,12 +95,11 @@ PHP;
         $extra_join_sql = '';
         $where_sup = '';
         if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-            $extra_join_sql .= get_permission_join_clause('gallery', 'name');
-            $where_sup .= get_permission_where_clause(get_member(), get_permission_where_clause_groups(get_member()));
+            $where_sup .= get_category_permission_where_clause('gallery', 'name', get_member(), get_permission_where_clause_groups(get_member()));
         }
 
         // For all galleries off the root gallery
-        $query = 'SELECT name,fullname FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'galleries r' . $extra_join_sql;
+        $query = 'SELECT name,fullname,add_date FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'galleries r' . $extra_join_sql;
         $query .= ' WHERE ' . db_string_equal_to('parent_id', $parent_id) . ' AND name NOT LIKE \'' . db_encode_like('download\_%') . '\'' . $where_sup;
         $query .= ' ORDER BY add_date';
         $galleries = $GLOBALS['SITE_DB']->query($query, 300 /*reasonable limit*/);
@@ -111,7 +110,7 @@ PHP;
 
             foreach ($galleries as $gallery) {
                 if (($show_empty) || (gallery_has_content($gallery['name']))) {
-                    $subgalleries = $GLOBALS['SITE_DB']->query_select('galleries', ['name', 'fullname'], ['parent_id' => $gallery['name']], 'ORDER BY add_date', 300 /*reasonable limit*/);
+                    $subgalleries = $GLOBALS['SITE_DB']->query_select('galleries', ['name', 'fullname', 'add_date'], ['parent_id' => $gallery['name']], 'ORDER BY add_date', 300 /*reasonable limit*/);
                     $nest = $this->inside($zone, $subgalleries, 'BLOCK_SIDE_GALLERIES_LINE_DEPTH', $show_empty);
                     $caption = get_translated_text($gallery['fullname']);
                     $content->attach(do_template('BLOCK_SIDE_GALLERIES_LINE_CONTAINER', ['_GUID' => 'e50b84369b5e2146c4fab4fddc84bf0a', 'ID' => $gallery['name'], 'CAPTION' => $caption, 'CONTENTS' => $nest]));

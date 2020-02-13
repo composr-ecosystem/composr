@@ -155,19 +155,17 @@ PHP;
         }
 
         if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-            $join .= get_permission_join_clause('news', 'news_category', 'a', 'ma', 'p');
-            $q_filter .= get_permission_where_clause(get_member(), get_permission_where_clause_groups(get_member()));
+            $q_filter .= get_category_permission_where_clause('news', 'news_category', get_member(), get_permission_where_clause_groups(get_member()), 'p');
         }
 
         if ($historic === '') {
-            $news = $GLOBALS['SITE_DB']->query('SELECT p.* FROM ' . get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $join . ' WHERE ' . $q_filter . ' AND validated=1' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY p.id' : '') . ' ORDER BY date_and_time DESC', $max, 0, false, true);
+            $news = $GLOBALS['SITE_DB']->query('SELECT DISTINCT p.* FROM ' . get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $join . ' WHERE ' . $q_filter . ' AND validated=1 ORDER BY date_and_time DESC', $max, 0, false, true);
         } else {
-            if (php_function_allowed('set_time_limit')) {
-                @set_time_limit(100);
-            }
+            $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+
             $start = 0;
             do {
-                $_rows = $GLOBALS['SITE_DB']->query('SELECT p.* FROM ' . get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON p.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ' AND validated=1' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY p.id' : '') . ' ORDER BY p.date_and_time DESC', 200, $start, false, true);
+                $_rows = $GLOBALS['SITE_DB']->query('SELECT DISTINCT p.* FROM ' . get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON p.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ' AND validated=1 ORDER BY p.date_and_time DESC', 200, $start, false, true);
                 $news = [];
                 foreach ($_rows as $row) {
                     $ok = false;
@@ -201,8 +199,8 @@ PHP;
                 $start += 200;
             } while ((count($_rows) == 200) && (count($news) < $max));
             unset($_rows);
+            cms_set_time_limit($old_limit);
         }
-        $news = remove_duplicate_rows($news, 'id');
 
         $_title = do_lang_tempcode(($blogs === 1) ? 'BLOGS_POSTS' : 'NEWS');
         if ((array_key_exists('title', $map)) && ($map['title'] != '')) {

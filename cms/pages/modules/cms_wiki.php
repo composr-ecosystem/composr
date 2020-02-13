@@ -557,7 +557,7 @@ class Module_cms_wiki
             access_denied('CATEGORY_ACCESS');
         }
 
-        $children_entries = $GLOBALS['SITE_DB']->query_select('wiki_children', ['child_id', 'title'], ['parent_id' => $id], 'ORDER BY the_order');
+        $children_entries = $GLOBALS['SITE_DB']->query_select('wiki_children', ['child_id', 'title', 'the_order'], ['parent_id' => $id], 'ORDER BY the_order');
         $children = '';
         foreach ($children_entries as $entry) {
             $child_id = $entry['child_id'];

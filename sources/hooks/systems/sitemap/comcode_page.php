@@ -269,7 +269,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                         $sz = serialize($where + ['_start' => $start]);
 
                         if (!isset($child_rows[$sz])) {
-                            $child_rows[$sz] = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page'], $where, 'ORDER BY p_order,the_page', $max_rows_per_loop, $start);
+                            $child_rows[$sz] = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page', 'p_order'], $where, 'ORDER BY p_order,the_page', $max_rows_per_loop, $start);
                         }
                         foreach ($child_rows[$sz] as $child_row) {
                             $child_page_link = $zone . ':' . $child_row['the_page'];

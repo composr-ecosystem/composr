@@ -75,7 +75,7 @@ function retrieve_autosave_script()
 
     $rows = $GLOBALS['SITE_DB']->query_select(
         'autosave',
-        ['a_key', 'a_value'],
+        ['a_key', 'a_value', 'a_time'],
         ['a_member_id' => $member_id],
         'AND a_key LIKE \'' . db_encode_like($stem) . '%\' ORDER BY a_time DESC'
     );

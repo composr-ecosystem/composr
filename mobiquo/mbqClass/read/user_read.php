@@ -504,7 +504,7 @@ class CMSUserRead
             return [0, []];
         }
 
-        $users = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => get_member()], 'ORDER BY date_and_time DESC', $max, $start);
+        $users = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked', 'date_and_time'], ['member_likes' => get_member()], 'ORDER BY date_and_time DESC', $max, $start);
         $total = $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', ['member_likes' => get_member()]);
         return [$total, $users];
     }

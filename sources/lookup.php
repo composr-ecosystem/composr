@@ -406,7 +406,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     if (addon_installed('stats')) {
         $history = [];
 
-        $select = 'a.page_link,a.date_and_time,a.member_id,a.ip,a.session_id,a.referer,a.browser,a.operating_system,a.tracking_code';
+        $select = 'a.page_link,a.date_and_time,a.member_id,a.ip,a.session_id,a.referer,a.browser,a.operating_system,a.tracking_code,a.requested_language';
 
         $where = db_string_equal_to('ip', $ip) . ' AND member_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         if (!is_guest($member_id)) {
@@ -423,7 +423,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
             $sql = 'SELECT ' . $select . ' FROM ' . $tp . 'stats a WHERE ' . $where;
         } else { // Filter to one-result-per-page
             $inner_sql = 'SELECT page_link,MAX(date_and_time) AS date_and_time FROM ' . $tp . 'stats WHERE ' . $where . ' GROUP BY page_link';
-            $sql = 'SELECT ' . $select . ' FROM ' . $tp . 'stats a JOIN (' . $inner_sql . ') b ON a.page_link=b.page_link AND a.date_and_time=b.date_and_time WHERE ' . $where . ' GROUP BY page_link';
+            $sql = 'SELECT ' . $select . ' FROM ' . $tp . 'stats a JOIN (' . $inner_sql . ') b ON a.page_link=b.page_link AND a.date_and_time=b.date_and_time WHERE ' . $where;
         }
 
         $pages = $GLOBALS['SITE_DB']->query($sql . ' ORDER BY date_and_time DESC', 50);
@@ -434,7 +434,6 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
 
         $l_date_time = do_lang('DATE_TIME', null, null, null, get_site_default_lang());
         $l_url = do_lang('URL', null, null, null, get_site_default_lang());
-        $l_title = do_lang('TITLE', null, null, null, get_site_default_lang());
         $l_member_id = do_lang('MEMBER_ID', null, null, null, get_site_default_lang());
         $l_ip_address = do_lang('IP_ADDRESS', null, null, null, get_site_default_lang());
         //$l_session_id = do_lang('SESSION_ID', null, null, null, get_site_default_lang());
@@ -459,8 +458,6 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
 
             list($zone, $attributes) = page_link_decode($myrow['page_link']);
             $h[$l_url] = static_evaluate_tempcode(build_url($attributes, $zone));
-
-            $h[$l_title] = $myrow['title'];
 
             if (($myrow['member_id'] != $member_id) && (($advanced) || (!is_guest($myrow['member_id'])))) {
                 if (is_guest($myrow['member_id'])) {

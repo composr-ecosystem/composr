@@ -43,7 +43,7 @@ class Hook_content_meta_aware_video
             'content_type_universal_label' => ((function_exists('get_option')) && (get_option('allow_audio_videos') == '2')) ? 'Multimedia file' : 'Video',
 
             'db' => $GLOBALS['SITE_DB'],
-            'where' => 'cat NOT LIKE \'' . db_encode_like('download\_%') . '\'',
+            'extra_where_sql' => 'cat NOT LIKE \'' . db_encode_like('download\_%') . '\'',
             'table' => 'videos',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -69,7 +69,7 @@ class Hook_content_meta_aware_video
             'view_page_link_pattern' => '_SEARCH:galleries:video:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_galleries:_edit_other:_WILD',
             'view_category_page_link_pattern' => '_SEARCH:galleries:browse:_WILD',
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries')) ? (get_module_zone('cms_galleries') . ':cms_galleries:add_other') : null,
+            'add_url' => ($get_extended_data && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries')) ? (get_module_zone('cms_galleries') . ':cms_galleries:add_other') : null,
             'archive_url' => $get_extended_data ? ((($zone !== null) ? $zone : get_module_zone('galleries')) . ':galleries') : null,
 
             'support_url_monikers' => true,
