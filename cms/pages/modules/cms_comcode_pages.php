@@ -321,7 +321,7 @@ class Module_cms_comcode_pages
             require_code('zones2');
             require_code('zones3');
             $zones = create_selection_list_zones();
-            $fields->attach(form_input_list(do_lang_tempcode('ZONE'), '', 'zone', $zones));
+            $fields->attach(form_input_list(do_lang_tempcode('ZONE'), '', 'zone', $zones, null, false, false));
 
             $fields->attach(form_input_line(do_lang_tempcode('PAGE'), do_lang_tempcode('DESCRIPTION_NEW_COMCODE_PAGE'), 'page_link_2', '', true, null, null, 'text', '', '([' . URL_CONTENT_REGEXP_JS . ']*:)?[' . URL_CONTENT_REGEXP_JS . ']+'));
 

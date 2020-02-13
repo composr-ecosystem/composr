@@ -542,41 +542,42 @@
         window.permServerid = params.serverId;
 
         $dom.on(container, 'click', '.js-click-permissions-toggle', function (e, clicked) {
-            permissionsToggle(clicked.parentNode)
+            var cell = $dom.closest(clicked, 'th, td');
+            permissionsToggle(cell)
         });
 
         function permissionsToggle(cell) {
-            var index = cell.cellIndex,
-                table = cell.parentNode.parentNode;
+            var index = cell.cellIndex;
+            var table = $dom.parent(cell, 'table');
+            var stateList = null;
+            var stateCheckbox = null;
 
-            if (table.localName !== 'table') {
-                table = table.parentNode;
-            }
+            for (var i = 1; i < table.rows.length; i++) {
+                // ^ Note: Start from `one` to skip the titles row in <thead>
+                var cell2 = table.rows[i].cells[index];
+                var input = cell2.querySelector('input[type=checkbox], select');
 
-            var stateList = null,
-                stateCheckbox = null;
+                if (input == null) {
+                    continue;
+                }
 
-            for (var i = 0; i < table.rows.length; i++) {
-                if (i >= 1) {
-                    var cell2 = table.rows[i].cells[index];
-                    var input = cell2.querySelector('input');
-                    if (input) {
-                        if (!input.disabled) {
-                            if (stateCheckbox == null) {
-                                stateCheckbox = input.checked;
-                            }
-                            input.checked = !stateCheckbox;
+                if (input.localName === 'input') {
+                    // <input type=checkbox> field
+                    if (!input.disabled) {
+                        if (stateCheckbox == null) {
+                            stateCheckbox = input.checked;
                         }
-                    } else {
-                        input = cell2.querySelector('select');
-                        if (stateList == null) {
-                            stateList = input.selectedIndex;
-                        }
-                        input.selectedIndex = ((stateList !== (input.options.length - 1)) ? (input.options.length - 1) : (input.options.length - 2));
-                        input.disabled = false;
-
-                        permissionsOverridden(table.rows[i].id.replace(/-privilege-container$/, ''));
+                        input.checked = !stateCheckbox;
                     }
+                } else {
+                    // <select> field
+                    if (stateList == null) {
+                        stateList = input.selectedIndex;
+                    }
+                    input.selectedIndex = ((stateList !== (input.options.length - 1)) ? (input.options.length - 1) : (input.options.length - 2));
+                    input.disabled = false;
+
+                    permissionsOverridden(table.rows[i].id.replace(/-privilege-container$/, ''));
                 }
             }
         }
@@ -1417,7 +1418,14 @@
     }
 
     function permissionsOverridden(select) {
-        var element = document.getElementById(select + '_presets');
+        select = strVal(select);
+
+        var element = document.getElementById(select + '-presets');
+
+        if (!element) {
+            element = document.getElementById(select.replaceAll('-', '_') + '_presets')
+        }
+
         if (element.options[0].id !== select + '-custom-option') {
             var newOption = document.createElement('option');
             $dom.html(newOption, '{!permissions:PINTERFACE_LEVEL_CUSTOM;^}');

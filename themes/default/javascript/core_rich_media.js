@@ -326,6 +326,16 @@
         });
     };
 
+    $cms.templates.comcodePageEditScreen = function comcodePageEditScreen(params, container) {
+        $dom.on(container, 'click', '.js-btn-delete-page', function (e, btn) {
+            var form = btn.form;
+            var deleteField = form.elements['delete'];
+
+            deleteField.value = '1';
+            form.submit();
+        });
+    };
+
     $cms.templates.comcodeMemberLink = function comcodeMemberLink(params, container) {
         var loadTooltipPromise = null;
 
