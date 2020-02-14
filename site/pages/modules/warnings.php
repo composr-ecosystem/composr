@@ -409,7 +409,7 @@ class Module_warnings extends Standard_crud_module
 
         $this->add_text = new Tempcode();
 
-        $post_id = $spam_mode ? null : get_param_integer('post_id', null);
+        $post_id = get_param_integer('post_id', null);
         $ip_address = ($post_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_ip_address', array('id' => $post_id));
 
         // Information about their history, and the rules - to educate the warner/punisher
@@ -509,7 +509,7 @@ class Module_warnings extends Standard_crud_module
 
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '322a026b7a56a3e4e9ac58e4979add35', 'TITLE' => do_lang_tempcode('PUNITIVE_ACTIONS'))));
 
-            if (!is_null($post_id)) {
+            if (($post_id !== null) && (!$spam_mode)) {
                 $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $post_id));
                 if (!is_null($topic_id)) {
                     $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', array('id' => $topic_id));
@@ -600,6 +600,7 @@ class Module_warnings extends Standard_crud_module
                 $_postdetails_text = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_post', array('id' => $post_id));
                 if (!is_null($_postdetails_text)) {
                     $message = '[quote="' . $username . '"]' . "\n" . get_translated_text($_postdetails_text, $GLOBALS['FORUM_DB']) . "\n" . '[/quote]';
+                    $message .= "\n\n" . do_lang('MODERATED_AS_SPAM', get_site_name()); // TODO: Change in v11 to mesh with Patrick's changes
                 }
             }
             $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_PP_MESSAGE'), 'message', $message, false));
