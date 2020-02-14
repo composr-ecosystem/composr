@@ -1,3 +1,4 @@
+{$SET,supports_schema_ratings_and_reviews,1}
 <div class="vcalendar vevent" itemscope="itemscope" itemtype="http://schema.org/Event">
 	{TITLE}
 
@@ -188,3 +189,4 @@
 
 	{+START,IF,{$CONFIG_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 </div>
+{$SET,supports_schema_reviews,0}
