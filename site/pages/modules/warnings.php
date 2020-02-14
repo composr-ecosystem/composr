@@ -447,7 +447,7 @@ class Module_warnings extends Standard_crud_module
             if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
                 $first_post_time = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'MIN(p_time)', array('p_poster' => $member_id));
                 if (
-                    ($first_post_time > time() - 60 * 60 * 24 * 14) && // i.e. a recent spammer, not a normal member being punished
+                    (($GLOBALS['DEV_MODE']) || ($first_post_time > time() - 60 * 60 * 24 * 14)) && // i.e. a recent spammer, not a normal member being punished
                     ((!is_guest($member_id)) || ($ip_address !== null))
                 ) {
                     $where = array();
@@ -456,11 +456,11 @@ class Module_warnings extends Standard_crud_module
                     } else {
                         $where['p_poster'] = $member_id;
                     }
-                    $sup = 'ORDER BY p_time';
+                    $sup = 'ORDER BY p_time DESC';
                     if (!has_privilege(get_member(), 'view_other_pt')) {
                         $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
                     }
-                    $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', array('p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id'), $where, $sup);
+                    $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', array('p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id'), $where, $sup, 10);
                     $spam_urls = array();
                     foreach ($posts_by_member as $post) {
                         $just_post_row = db_map_restrict($post, array('id', 'p_post'), array('id' => 'p_id'));
@@ -474,7 +474,8 @@ class Module_warnings extends Standard_crud_module
                                 if (($domain != get_domain()) && (!empty($domain))) {
                                     if (!isset($spam_urls[$domain])) {
                                         require_code('mail');
-                                        $spam_urls[$domain] = array('DOMAIN' => $domain, 'URLS' => array(), 'POSTS' => array());
+                                        $ip = cms_gethostbyname($domain);
+                                        $spam_urls[$domain] = array('DOMAIN' => $domain, 'IP' => $ip, 'URLS' => array(), 'POSTS' => array());
                                     }
                                     if (!isset($spam_urls[$domain]['URLS'][$spam_url])) {
                                         $spam_urls[$domain]['URLS'][$spam_url] = array('I' => strval(count($spam_urls[$domain]['URLS'])), 'URL' => $spam_url);
