@@ -2245,7 +2245,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         if ((!array_key_exists('width', $attributes)) || ($attributes['width'] == '')) {
                             $attachment_row['width'] = strval($_width);
                         }
-                        if ((!array_key_exists('width', $attributes)) || ($attributes['height'] == '')) {
+                        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] == '')) {
                             $attachment_row['height'] = strval($_height);
                         }
                     }
