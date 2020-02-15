@@ -52,7 +52,7 @@ class Module_cms_booking extends Standard_crud_module
         }
 
         $ret = [
-           'browse' => ['BOOKINGS', 'menu/booking'],
+           'browse' => ['BOOKINGS', 'booking/booking'],
         ];
 
         if (has_privilege($member_id, 'submit_highrange_content', 'cms_booking')) {

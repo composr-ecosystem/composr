@@ -480,7 +480,7 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false, $member_
     if (preg_match('#^\[semihtml\]([^\[\]<>]*)\[\/semihtml\]$#', $semihtml, $matches) != 0) {
         return $matches[1];
     }
-    if (preg_match('#^([^\[\]<>\{\}]*)$#', $semihtml) != 0) {
+    if (preg_match('#^([^\[\]<>\{\}&]*)$#', $semihtml) != 0) {
         return $semihtml;
     }
 
@@ -1081,7 +1081,6 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false, $member_
         //$semihtml2 = str_replace(['&lt;', '&gt;', '&amp;'], ['___lt___', '___gt___', '___amp___'], $semihtml2);
         $semihtml2 = @html_entity_decode($semihtml2, ENT_QUOTES);
         //$semihtml2 = str_replace(['___lt___', '___gt___', '___amp___'], ['&lt;', '&gt;', '&amp;'], $semihtml2);
-        $semihtml2 = str_replace(hex2bin('c2a0'), '&nbsp;', $semihtml2); // Make nbsp legible as an entity again, as otherwise we'll have portability issues with this very common non-ASCII entity
         return $semihtml2;
     }
 

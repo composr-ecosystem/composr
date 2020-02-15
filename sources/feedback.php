@@ -334,7 +334,7 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
             }
         } else {
             $likes = (get_option('likes') == '1');
-            $all_rating_criteria[$content_type] = ['TITLE' => '', 'TYPE' => '', 'NUM_RATINGS' => '0', 'RATING' => '0'];
+            $all_rating_criteria[$content_type] = ['TITLE' => '', 'TYPE' => '', '_NUM_RATINGS' => '0', 'NUM_RATINGS' => '0', 'RATING' => '0'];
         }
 
         // Fill in structure
@@ -377,7 +377,11 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
                 $calculated_rating = intval(round($rating / floatval($num_ratings)));
                 $overall_rating += $calculated_rating;
 
-                $all_rating_criteria[$i] = ['NUM_RATINGS' => integer_format($num_ratings), 'RATING' => strval($calculated_rating)] + $all_rating_criteria[$i];
+                $all_rating_criteria[$i] = [
+                    '_NUM_RATINGS' => strval($num_ratings),
+                    'NUM_RATINGS' => integer_format($num_ratings),
+                    'RATING' => strval($calculated_rating)
+                ] + $all_rating_criteria[$i];
 
                 $extra_metadata = [];
                 $extra_metadata['rating' . (($rating_criteria['TYPE'] == '') ? '' : ('_' . $rating_criteria['TYPE']))] = strval($calculated_rating);
@@ -419,6 +423,7 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
             'ID' => $content_id,
             'URL' => $rate_url,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,
+            '_OVERALL_NUM_RATINGS' => strval($overall_num_ratings),
             'OVERALL_NUM_RATINGS' => integer_format($overall_num_ratings),
             'OVERALL_RATING' => strval(intval($overall_rating / floatval(count($all_rating_criteria)))),
             'HAS_RATINGS' => $has_ratings,

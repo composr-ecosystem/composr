@@ -148,6 +148,7 @@ class Hook_addon_registry_stats
             'sources/hooks/systems/block_ui_renderers/stats.php',
             'data/tracked_redirect.php',
             'sources/hooks/systems/snippets/stats_event.php',
+            'sources/hooks/systems/sitemap/stats_category.php',
 
             'sources/hooks/systems/symbols/LOG_STATS_EVENT.php',
             'sources/hooks/systems/symbols/STATS_TRACK_URL.php',

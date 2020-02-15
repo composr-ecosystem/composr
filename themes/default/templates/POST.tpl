@@ -1,3 +1,5 @@
+{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{INDIVIDUAL_REVIEW_RATINGS},1}}}
+
 {+START,IF,{IS_SPACER_POST}}
 	{+START,IF,{$NOT,{$IN_STR,{POST},<div}}}
 		<div id="box-post-{ID*}" class="box box---post"><div class="box-inner">
@@ -19,8 +21,11 @@
 				{+START,IF_NON_EMPTY,{TITLE}}{+START,IF,{$NEQ,{TITLE},{$GET,topic_title}}}<h3 class="post-title" itemprop="name">{TITLE*}</h3>{+END}{+END}
 
 				<div class="post-subline">
-					{+START,IF_NON_EMPTY,{POSTER_URL}}{!BY_SIMPLE,<a class="post-poster" href="{POSTER_URL*}">{$DISPLAYED_USERNAME*,{POSTER_NAME}}</a>} {+START,INCLUDE,MEMBER_TOOLTIP}SUBMITTER={POSTER_ID}{+END}{+END}
 					{+START,IF_EMPTY,{POSTER_URL}}{!BY_SIMPLE,{POSTER_NAME*}},{+END}
+					<span{+START,IF,{$GET,has_schema_reviews}} itemprop="author" itemscope="itemscope" itemtype="https://schema.org/Person"{+END}>
+						{+START,IF_NON_EMPTY,{POSTER_URL}}{!BY_SIMPLE,<a{+START,IF,{$GET,has_schema_reviews}} itemprop="name"{+END} class="post-poster" href="{POSTER_URL*}">{$DISPLAYED_USERNAME*,{POSTER_NAME}}</a>} {+START,INCLUDE,MEMBER_TOOLTIP}SUBMITTER={POSTER_ID}{+END}{+END}
+						{+START,IF_EMPTY,{POSTER_URL}}<span{+START,IF,{$GET,has_schema_reviews}} itemprop="name"{+END}>{!BY_SIMPLE,{POSTER_NAME*}},</span>{+END}
+					</span>
 
 					<span class="post-time">
 						{!POSTED_TIME_SIMPLE_LOWER,<time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{TIME_RAW}}" itemprop="datePublished">{TIME*}</time>}
@@ -51,7 +56,15 @@
 									{$INC,rating_loop}
 								{+END}
 
-								<span itemprop="reviewRating" itemscope="itemscope" itemtype="http://schema.org/Rating"><meta itemprop="ratingValue" content="{REVIEW_RATING*}" /></span>
+								{+START,IF,{$GET,has_schema_reviews}}
+									{+START,IF_NON_EMPTY,{REVIEW_RATING}}
+										<span itemprop="reviewRating" itemscope="itemscope" itemtype="http://schema.org/Rating">
+											<meta itemprop="worstRating" content="1" />
+											<meta itemprop="bestRating" content="5" />
+											<meta itemprop="ratingValue" content="{$DIV_FLOAT*,{REVIEW_RATING},2}" />
+										</span>
+									{+END}
+								{+END}
 							{+END}
 
 							<span class="post-action-link">
@@ -80,7 +93,7 @@
 					{+END}
 				</div>
 
-				<div itemprop="reviewBody">
+				<div{+START,IF,{$GET,has_schema_reviews}} itemprop="reviewBody"{+END}>
 					{POST}
 					{$METADATA_IMAGE_EXTRACT,{POST}}
 				</div>

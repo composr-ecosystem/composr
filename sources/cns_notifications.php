@@ -101,7 +101,7 @@ function cns_get_pp_rows($limit = 5, $unread = true, $include_inline = true, $ti
         $query .= ' WHERE
         ' . $unread_clause . $time_clause . '
         p.p_intended_solely_for=' . strval($member_id) . '
-        GROUP BY t.id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to';
+        GROUP BY t.id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,l_time';
     }
 
     $query .= ' ORDER BY t_cache_last_time DESC';

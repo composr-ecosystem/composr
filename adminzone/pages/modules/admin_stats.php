@@ -259,26 +259,10 @@ class Module_admin_stats extends Standard_crud_module
         }
 
         require_code('stats');
-        require_lang('stats');
 
         $ret = [
             'browse' => ['MODULE_TRANS_NAME_admin_stats', 'menu/adminzone/audit/statistics/statistics'],
         ];
-
-        $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
-        foreach ($hooks as $ob) {
-            $info = $ob->info();
-            if ($info !== null) {
-                foreach ($info as $graph_name => $details) {
-                    $ret[get_module_zone('admin_stats') . ':admin_stats:graph:' . $graph_name] = [$details['label_lang_string'], $details['icon']];
-                }
-            }
-        }
-
-        $categories = stats_find_graph_categories();
-        foreach ($categories as $category_name => $category) {
-            $ret[get_module_zone('admin_stats') . ':admin_stats:category:' . $category_name] = [$category['label_lang_string'], $category['icon']];
-        }
 
         static $has_geolocation_data = null;
         if ($has_geolocation_data === null) {

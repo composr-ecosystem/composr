@@ -560,7 +560,7 @@ class _filter_xml_test_set extends cms_test_case
         $test_xml = '
             <fieldRestrictions>
                 <qualify pages="cms_news" types="add,_add,_edit,__edit" fields="title">
-                    <disallowedWord>yo*</disallowedWord>
+                    <disallowedWord>yo%</disallowedWord>
                 </qualify>
             </fieldRestrictions>
         ';

@@ -200,7 +200,7 @@ class Hook_health_check_stability extends Hook_Health_Check
                 $line = trim($line);
 
                 $matches = [];
-                if (preg_match('#^\[([^\[\]]*)\] #', $line, $matches) != 0) {
+                if ((preg_match('#^\[([^\[\]]*)\] #', $line, $matches) != 0) && (preg_match('#^\[([^\[\]]*)\] PHP\s+(Stack trace:|\d+\. )#', $line) == 0)/*xdebug*/) {
                     $timestamp = @strtotime($matches[1]);
                     if (($timestamp !== false) && ($timestamp > $threshold_time)) {
                         $dates[] = $timestamp;

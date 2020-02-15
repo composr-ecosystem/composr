@@ -1,3 +1,5 @@
+{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{REVIEW_RATING_CRITERIA},1}}}
+
 <div id="comments-wrapper" class="comments-wrapper" role="complementary" data-tpl="commentsWrapper" data-tpl-params="{+START,PARAMS_JSON,SERIALIZED_OPTIONS,HASH}{_*}{+END}">
 	{+START,SET,REVIEWS_TITLE}
 		<span class="field-title">{!_REVIEWS,{$METADATA*,numcomments}}:</span>
@@ -5,12 +7,21 @@
 		{$SET,rating_loop,0}
 		{+START,LOOP,REVIEW_RATING_CRITERIA}
 			{+START,IF_NON_EMPTY,{REVIEW_RATING}}
+				{+START,IF,{$GET,has_schema_reviews}}
+					<span itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+						<meta itemprop="worstRating" content="1" />
+						<meta itemprop="bestRating" content="5" />
+						<meta itemprop="ratingValue" content="{$DIV_FLOAT*,{REVIEW_RATING},2}" />
+						<meta itemprop="reviewCount" content="{$METADATA*,numcomments}" />
+					</span>
+				{+END}
+
 				{+START,IF_EMPTY,{REVIEW_TITLE}}
 					{+START,WHILE,{$LT,{$GET,rating_loop},{$ROUND,{$DIV_FLOAT,{REVIEW_RATING},2}}}}
 						{+START,INCLUDE,ICON}
 							NAME=feedback/rating
 							ICON_SIZE=14
-							ICON_DESCRIPTION={$ROUND,{$DIV_FLOAT,{REVIEW_RATING},2}}
+							ICON_DESCRIPTION={$ROUND*,{$DIV_FLOAT,{REVIEW_RATING},2}}
 						{+END}
 						{$INC,rating_loop}
 					{+END}

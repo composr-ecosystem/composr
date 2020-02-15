@@ -559,11 +559,10 @@ function sitemap_script_saving()
                 $page = $matches[2];
 
                 $node = retrieve_sitemap_node($page_link);
-                if ($node !== null) {
-                    $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
-                } else {
-                    $privilege_page = $page;
+                if ($node === null) {
+                    fatal_exit('Could not lookup node for ' . $page_link);
                 }
+                $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
                 $overridable_privileges = ($node['content_type'] == 'comcode_page') ? [] : _get_overridable_privileges_for_privilege_page($privilege_page);
 
                 // Insertion
@@ -602,11 +601,7 @@ function sitemap_script_saving()
                 $page = $matches[2];
 
                 $node = retrieve_sitemap_node($page_link);
-                if ($node !== null) {
-                    $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
-                } else {
-                    $privilege_page = $page;
-                }
+                $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
 
                 $overridable_privileges = _get_overridable_privileges_for_privilege_page($privilege_page);
 

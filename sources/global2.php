@@ -1082,6 +1082,7 @@ function load_user_stuff()
         global $SITE_INFO, $FORUM_DRIVER, $SITE_DB, $FORUM_DB;
 
         require_code('forum_stub');
+        require_code('users');
 
         if (empty($SITE_INFO['forum_type'])) {
             $SITE_INFO['forum_type'] = 'cns';

@@ -772,3 +772,35 @@ function get_site_start_time()
     $time_b = filectime(get_file_base() . '/_config.php');
     return min($time_a, $time_b);
 }
+
+/**
+ * Find if a particular redirect is itself pointing to a login/join page, and thus should not be injected as a nested redirect.
+ *
+ * @param  string $redirect Redirect to check
+ * @return boolean If it is unhelpful
+ */
+function is_unhelpful_redirect($redirect)
+{
+    $unhelpful_url_stubs = [
+        static_evaluate_tempcode(build_url(['page' => 'login'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'browse'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'login'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'logout'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'login'], '_SELF', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'browse'], '_SELF', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'login'], '_SELF', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'logout'], '_SELF', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'join'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'join', 'type' => 'browse'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'join', 'type' => 'step2'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'join', 'type' => 'step3'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'join', 'type' => 'step4'], '', [], false, false, true)),
+    ];
+    foreach ($unhelpful_url_stubs as $unhelpful_url_stub) {
+        if (substr($redirect, 0, strlen($unhelpful_url_stub)) == $unhelpful_url_stub) {
+            return true;
+        }
+    }
+
+    return false;
+}

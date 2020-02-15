@@ -33,7 +33,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
     public function handles_page_link($page_link, $options)
     {
         $matches = [];
-        if (preg_match('#^([^:]*):admin_config(:browse|$)#', $page_link, $matches) != 0) {
+        if (preg_match('#^([^:]*):admin_config(:(browse|category)|$)#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = 'admin_config';
 
@@ -78,15 +78,17 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
 
         $page = $this->_make_zone_concrete($zone, $page_link);
 
+        require_all_lang();
+
         // Find all categories
         $categories = [];
         $hook_obs = find_all_hook_obs('systems', 'config_categories', 'Hook_config_categories_');
         foreach ($hook_obs as $hook => $hook_ob) {
             if ($hook_ob->is_enabled()) {
-                $categories[] = strtoupper($hook);
+                $categories[strtoupper($hook)] = do_lang('CONFIG_CATEGORY_' . strtoupper($hook));
             }
         }
-        cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
+        cms_mb_asort($categories, SORT_NATURAL | SORT_FLAG_CASE);
 
         if ($child_cutoff !== null) {
             if (count($categories) > $child_cutoff) {
@@ -94,7 +96,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
             }
         }
 
-        foreach ($categories as $category) {
+        foreach (array_keys($categories) as $category) {
             $child_page_link = $zone . ':' . $page . ':category:' . $category;
             $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather);
             if (($callback === null || $return_anyway) && ($node !== null)) {

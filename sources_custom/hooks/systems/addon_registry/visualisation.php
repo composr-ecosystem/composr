@@ -93,7 +93,7 @@ class Hook_addon_registry_visualisation
  - Pie charts from spreadsheets ([tt]graph_pie_chart[/tt])
  - Scatter diagrams from spreadsheets ([tt]graph_scatter_diagram[/tt])
  - Maps with pins from spreadsheets ([tt]pins_on_map[/tt])
- - Maps with country data overlayed from spreadsheets ([tt]countries_on_map[/tt])
+ - Maps with country data overlaid from spreadsheets ([tt]countries_on_map[/tt])
 
 To use the [tt]main_sortable_table[/tt] block, place a [abbr="Comma-separated Values"]CSV[/abbr] spreadsheet file in [tt]uploads/website_specific[/tt], and place the block on a Comcode page like:
 [code]

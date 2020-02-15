@@ -508,7 +508,7 @@ function tacit_https()
  * @param  string $class The class name
  * @param  boolean $failure_ok Whether to return null if there is no such class
  * @param  array $parameters Array of parameters
- * @return object The object
+ * @return ?object The object (null: could not create)
  */
 function object_factory($class, $failure_ok = false, $parameters = [])
 {

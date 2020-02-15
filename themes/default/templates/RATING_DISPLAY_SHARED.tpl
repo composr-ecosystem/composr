@@ -1,6 +1,10 @@
 {$,Semantics to show results}
-<meta itemprop="ratingCount" content="{$PREG_REPLACE*,[^\d],,{NUM_RATINGS}}" />
-<meta itemprop="ratingValue" content="{RATING*}" />
+{+START,IF,{$GET,has_schema_reviews}}
+	<meta itemprop="worstRating" content="1" />
+	<meta itemprop="bestRating" content="5" />
+	<meta itemprop="ratingValue" content="{$DIV_FLOAT*,{RATING},2}" />
+	<meta itemprop="ratingCount" content="{_NUM_RATINGS*}" />
+{+END}
 
 {$,Shows only if no rating form [which build in result display] or if likes enabled [shows separate stars results and form]}
 {+START,IF,{$OR,{LIKES},{$IS_EMPTY,{$TRIM,{RATING_FORM}}}}}

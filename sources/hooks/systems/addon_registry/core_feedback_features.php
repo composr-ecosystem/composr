@@ -341,12 +341,16 @@ class Hook_addon_registry_core_feedback_features
         $review_titles = [];
         $review_titles[] = [
             'REVIEW_TITLE' => lorem_phrase(),
-            'REVIEW_RATING' => make_string_tempcode(float_format(10.0)),
+            '_NUM_REVIEW_RATINGS' => placeholder_number(),
+            'NUM_REVIEW_RATINGS' => placeholder_number(),
+            '_REVIEW_RATING' => float_to_raw_string(10.0),
+            'REVIEW_RATING' => float_format(10.0),
         ];
         $comments = new Tempcode();
         foreach (placeholder_array() as $i => $comment) {
             $map = [
                 'INDIVIDUAL_REVIEW_RATINGS' => [],
+                'REVIEW_RATING' => strval(10),
                 'HIGHLIGHT' => ($i == 1),
                 'TITLE' => lorem_phrase(),
                 'TIME_RAW' => placeholder_date_raw(),
@@ -504,6 +508,7 @@ class Hook_addon_registry_core_feedback_features
         $all_rating_criteria[] = [
             'TITLE' => lorem_phrase(),
             'RATING' => make_string_tempcode('6'),
+            '_NUM_RATINGS' => placeholder_number(),
             'NUM_RATINGS' => placeholder_number(),
             'TYPE' => lorem_word(),
         ];
@@ -515,6 +520,7 @@ class Hook_addon_registry_core_feedback_features
             'ALLOW_RATING' => true,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,
             'HAS_RATINGS' => true,
+            '_OVERALL_NUM_RATINGS' => placeholder_number(),
             'OVERALL_NUM_RATINGS' => placeholder_number(),
             'SIMPLISTIC' => true,
             'ERROR' => '',
@@ -524,12 +530,14 @@ class Hook_addon_registry_core_feedback_features
 
         return [
             lorem_globalise(do_lorem_template('RATING_BOX', [
+                '_OVERALL_NUM_RATINGS' => placeholder_number(),
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'LIKES' => true,
                 'CONTENT_TYPE' => 'downloads',
                 'ID' => placeholder_id(),
                 'HAS_RATINGS' => true,
                 'ALL_RATING_CRITERIA' => $all_rating_criteria,
+                '_NUM_RATINGS' => '10',
                 'NUM_RATINGS' => '10',
                 'RATING_FORM' => $rating_form,
                 'ERROR' => '',
@@ -551,6 +559,7 @@ class Hook_addon_registry_core_feedback_features
             $all_rating_criteria[] = [
                 'TITLE' => lorem_phrase(),
                 'RATING' => '3',
+                '_OVERALL_NUM_RATINGS' => placeholder_number(),
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
             ];
@@ -567,6 +576,7 @@ class Hook_addon_registry_core_feedback_features
             'ERROR' => '',
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
+            '_OVERALL_NUM_RATINGS' => placeholder_number(),
             'OVERALL_NUM_RATINGS' => placeholder_number(),
         ]);
         return [
@@ -575,7 +585,9 @@ class Hook_addon_registry_core_feedback_features
                 'ID' => placeholder_id(),
                 'ALL_RATING_CRITERIA' => $all_rating_criteria,
                 'HAS_RATINGS' => true,
+                '_NUM_RATINGS' => placeholder_number(),
                 'NUM_RATINGS' => placeholder_number(),
+                '_OVERALL_NUM_RATINGS' => placeholder_number(),
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'RATING_FORM' => $rating_form,
                 'ERROR' => '',
@@ -598,6 +610,7 @@ class Hook_addon_registry_core_feedback_features
             $all_rating_criteria[] = [
                 'TITLE' => lorem_phrase(),
                 'RATING' => '3',
+                '_OVERALL_NUM_RATINGS' => placeholder_number(),
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
             ];
@@ -614,6 +627,7 @@ class Hook_addon_registry_core_feedback_features
             'LIKES' => true,
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
+            '_OVERALL_NUM_RATINGS' => placeholder_number(),
             'OVERALL_NUM_RATINGS' => placeholder_number(),
         ]);
         return [
@@ -622,7 +636,9 @@ class Hook_addon_registry_core_feedback_features
                 'ID' => placeholder_id(),
                 'ALL_RATING_CRITERIA' => $all_rating_criteria,
                 'HAS_RATINGS' => true,
+                '_NUM_RATINGS' => placeholder_number(),
                 'NUM_RATINGS' => placeholder_number(),
+                '_OVERALL_NUM_RATINGS' => placeholder_number(),
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'RATING_FORM' => $rating_form,
                 'ERROR' => '',
@@ -645,6 +661,7 @@ class Hook_addon_registry_core_feedback_features
             $all_rating_criteria[] = [
                 'TITLE' => lorem_phrase(),
                 'RATING' => '3',
+                '_OVERALL_NUM_RATINGS' => placeholder_number(),
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
             ];
@@ -670,7 +687,9 @@ class Hook_addon_registry_core_feedback_features
                 'ID' => placeholder_id(),
                 'ALL_RATING_CRITERIA' => $all_rating_criteria,
                 'HAS_RATINGS' => true,
+                '_NUM_RATINGS' => placeholder_number(),
                 'NUM_RATINGS' => placeholder_number(),
+                '_OVERALL_NUM_RATINGS' => placeholder_number(),
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'RATING_FORM' => $rating_form,
                 'TITLE' => lorem_phrase(),

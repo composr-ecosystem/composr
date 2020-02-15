@@ -68,3 +68,26 @@ function is_email_address($string)
 
     return (preg_match('#^[\w\.\-\+]+@[\w\.\-]+$#', $string) != 0); // Put "\.[a-zA-Z0-9_\-]+" before $ to ensure a two+ part domain
 }
+
+/**
+ * Find whether the specified address is a well-formed IP address or not.
+ *
+ * @param  string $string The string to test (Note: This is typed string, not IP, because it has to function on failure)
+ * @return boolean Whether the string is an IP address or not
+ */
+function is_ip_address($string)
+{
+    $ipv4_regexp = '/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/';
+    $ipv6_regexp = '/^(((?=(?' . '>.*?(::))(?!.+\3)))\3?|([\dA-F]{1,4}(\3|:(?!$)|$)|\2))(?4){5}((?4){2}|((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?7)){3})\z/i';
+    // Credit: http://home.deds.nl/~aeron/regex/
+
+    if (preg_match($ipv4_regexp, $string) != 0) {
+        return true;
+    }
+
+    if (preg_match($ipv6_regexp, $string) != 0) {
+        return true;
+    }
+
+    return false;
+}

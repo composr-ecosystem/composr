@@ -238,6 +238,7 @@ class Hook_addon_registry_wiki
             'URL' => placeholder_url(),
             'ALLOW_RATING' => true,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,
+            '_OVERALL_NUM_RATINGS' => placeholder_number(),
             'OVERALL_NUM_RATINGS' => placeholder_number(),
             'HAS_RATINGS' => true,
             'SIMPLISTIC' => true,
@@ -245,6 +246,7 @@ class Hook_addon_registry_wiki
         ]);
 
         $rating_details = do_lorem_template('WIKI_RATING', [
+            '_OVERALL_NUM_RATINGS' => placeholder_number(),
             'OVERALL_NUM_RATINGS' => placeholder_number(),
             'RATING_FORM' => $rating_inside,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,

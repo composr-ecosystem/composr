@@ -42,9 +42,13 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             $page = $matches[2];
             $type = $matches[3];
 
-            $entry_points = $this->get_native_entry_points_for($zone, $page, $options);
+            $entry_points = $this->get_native_entry_points_for($zone, $page, $options, true);
 
             if (isset($entry_points[$type])) {
+                return SITEMAP_NODE_HANDLED;
+            }
+
+            if (($type == 'browse') && (isset($entry_points['!']))) {
                 return SITEMAP_NODE_HANDLED;
             }
         }
@@ -58,13 +62,16 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
      * @param  ID_TEXT $zone The zone
      * @param  ID_TEXT $page The page
      * @param  integer $options A bitmask of SITEMAP_GEN_* options
+     * @param  boolean $search_mode Whether we are doing a harder search
      * @return array Covered entry points
      */
-    protected function get_native_entry_points_for($zone, $page, $options)
+    protected function get_native_entry_points_for($zone, $page, $options, $search_mode = false)
     {
-        static $entry_points_cache = [];
-        if (isset($entry_points_cache[$zone . ':' . $page])) {
-            return $entry_points_cache[$zone . ':' . $page];
+        if (!$search_mode) {
+            static $entry_points_cache = [];
+            if (isset($entry_points_cache[$zone . ':' . $page])) {
+                return $entry_points_cache[$zone . ':' . $page];
+            }
         }
 
         $entry_points = [];
@@ -77,13 +84,13 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
                 $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
                     false, // $check_perms
                     $this->get_member($options), // $member_id
-                    true, // $support_crosslinks
-                    true, // $be_deferential
+                    !$search_mode, // $support_crosslinks
+                    !$search_mode // $be_deferential
                 ]);
                 if (!is_null($functions[0])) {
                     $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : eval($functions[0]);
 
-                    if ($entry_points !== null) {
+                    if (($entry_points !== null) && (!$search_mode)) {
                         if (isset($entry_points['browse'])) {
                             unset($entry_points['browse']);
                         } else {
@@ -94,7 +101,9 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             }
         }
 
-        $entry_points_cache[$zone . ':' . $page] = $entry_points;
+        if (!$search_mode) {
+            $entry_points_cache[$zone . ':' . $page] = $entry_points;
+        }
 
         return $entry_points;
     }
@@ -141,6 +150,8 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             }
         }
 
+        $check_perms = (($options & SITEMAP_GEN_CHECK_PERMS) != 0);
+
         require_all_lang();
 
         $orig_page_link = $page_link;
@@ -162,7 +173,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
         } else {
             if ($row === null) {
                 $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
-                    true, // $check_perms
+                    $check_perms, // $check_perms
                     $this->get_member($options), // $member_id
                     false, //$support_crosslinks   Must be false so that things known to be cross-linked from elsewhere are not skipped
                     false, //$be_deferential
@@ -183,14 +194,18 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
                         // Not actually an entry-point, so maybe something else handles it directly?
                         // Technically this would be better code to have in page_grouping.php, but we don't want to do a scan for entry-points that are easy to find.
                         $hooks = find_all_hook_obs('systems', 'sitemap', 'Hook_sitemap_');
-                        foreach ($hooks as $ob) {
-                            if ($ob->is_active()) {
-                                $is_handled = $ob->handles_page_link($page_link, $options);
-                                if ($is_handled == SITEMAP_NODE_HANDLED) {
-                                    return $ob->get_node($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, null, $return_anyway);
+                        foreach ($hooks as $_hook => $ob) {
+                            if (($_hook != 'entry_point') && ($_hook != 'page')) {
+                                if ($ob->is_active()) {
+                                    $is_handled = $ob->handles_page_link($page_link, $options);
+                                    if ($is_handled == SITEMAP_NODE_HANDLED) {
+                                        return $ob->get_node($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, null, $return_anyway);
+                                    }
                                 }
                             }
                         }
+
+                        return null;
                     }
                 }
             } else {
@@ -222,7 +237,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
         $struct = [
             'title' => $title,
             'content_type' => 'page',
-            'content_id' => $zone,
+            'content_id' => null,
             'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $page_link,

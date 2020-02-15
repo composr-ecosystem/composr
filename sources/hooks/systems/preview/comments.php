@@ -63,7 +63,7 @@ class Hook_preview_comments
         require_code('cns_members2');
         $poster_details = render_member_box(get_member(), false, false, [], false);
         if (addon_installed('cns_forum')) {
-            if (is_guest()) {
+            if (!is_guest()) {
                 $poster = do_template('CNS_POSTER_MEMBER', [
                     '_GUID' => 'adbfe268015ca904c3f61020a7b0adde',
                     'ONLINE' => true,

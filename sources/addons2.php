@@ -1104,7 +1104,7 @@ function find_updated_addons()
                 break;
             }
         }
-        if ((!$found) && (addon_installed('addons2'))) { // Don't have our original .tar, so lets say we need to reinstall
+        if ((!$found) && (addon_installed($addon_bits[3]))) { // Don't have our original .tar, so lets say we need to reinstall
             $mtime = find_addon_effective_mtime($addon_bits[3]);
             if (($addon_bits[0] !== null) && ($mtime !== null) && ($mtime < $addon_bits[0])) { // If server has it and is newer
                 $updated_addons[$addon_bits[3]] = [$addon_bits[1]];

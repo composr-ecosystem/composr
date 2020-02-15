@@ -151,8 +151,9 @@ class Module_join
             $map['email'] = $email_address;
         }
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-        if ($redirect != '') {
-            $map['redirect'] = protect_url_parameter($redirect);
+        require_code('global4');
+        if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
+            $map['redirect'] = $redirect;
         }
         $url = build_url($map, '_SELF');
 
@@ -203,8 +204,9 @@ class Module_join
 
         $map = ['page' => '_SELF', 'type' => 'step3'];
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-        if ($redirect != '') {
-            $map['redirect'] = protect_url_parameter($redirect);
+        require_code('global4');
+        if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
+            $map['redirect'] = $redirect;
         }
         $url = build_url($map, '_SELF');
 

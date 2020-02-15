@@ -315,6 +315,7 @@ class Module_topicview
         $threaded = ($topic_info['is_threaded'] == 1);
         if (!$threaded) {
             $jump_post_id = get_param_integer('post_id', null);
+            $jump_post_found = false;
 
             // Render non-threaded
             $posts = new Tempcode();
@@ -326,6 +327,10 @@ class Module_topicview
             $second_poster = $topic_info['first_poster'];
             $poster_details_cache = [];
             foreach ($topic_info['posts'] as $array_id => $_postdetails) {
+                if ($_postdetails['id'] === $jump_post_id) {
+                    $jump_post_found = true;
+                }
+
                 if ($array_id == 0) {
                     $description = $topic_info['description'];
                 } else {
@@ -523,6 +528,10 @@ class Module_topicview
 
             $serialized_options = null;
             $hash = null;
+
+            if (($jump_post_id !== null) && (!$jump_post_found)) {
+                attach_message(do_lang_tempcode('_MISSING_RESOURCE', strval($jump_post_id), 'post'), 'warn');
+            }
         } else { // Threaded
             $posts = $this->posts;
             $serialized_options = $this->serialized_options;

@@ -136,7 +136,7 @@ class Module_leader_board
         $weeks = collapse_1d_complexity('date_and_time', $weeks);
         $out = new Tempcode();
         foreach ($weeks as $week) {
-            $rows = collapse_2d_complexity('lb_member', 'lb_points', $GLOBALS['SITE_DB']->query_select('leader_board', ['lb_member', 'lb_points'], ['date_and_time' => $week]));
+            $rows = collapse_2d_complexity('lb_member', 'lb_points', $GLOBALS['SITE_DB']->query_select('leader_board', ['lb_member', 'lb_points'], ['date_and_time' => $week], 'ORDER BY lb_points DESC'));
             $week_tpl = new Tempcode();
             foreach ($rows as $member_id => $points) {
                 $points_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points'));

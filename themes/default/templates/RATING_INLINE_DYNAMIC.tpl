@@ -1,5 +1,7 @@
+{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{HAS_RATINGS}}}
+
 {+START,IF,{$OR,{HAS_RATINGS},{$IS_NON_EMPTY,{$TRIM,{RATING_FORM}}}}}
-	<div class="rating-inline rating-inline-dynamic" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+	<div class="rating-inline rating-inline-dynamic"{+START,IF,{$GET,has_schema_reviews}} itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating"{+END}>
 		{$,Show the current result (nothing shows if nobody voted yet; by default RATING_DISPLAY_SHARED nothing shows if RATING_FORM is not blank either, as the rating stars will show the current rating too)}
 		{+START,IF,{HAS_RATINGS}}
 			{$SET,i,0}

@@ -9256,6 +9256,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INTRO_NOTICE
         INTRO_POST_DEFAULT
         INTRO_QUESTION
+        MODERATED_AS_SPAM
         INVALID_EMAIL_ADDRESS
         INVALID_EMAIL_PREFIX
         INVALID_FILE_TYPE

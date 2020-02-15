@@ -34,7 +34,7 @@ if (!addon_installed__messaged('composr_homesite', $error_msg)) {
 $title = get_screen_title('Publish new Composr release', false);
 $title->evaluate_echo();
 
-set_mass_import_mode();
+set_mass_import_mode(); // We will be adding multiple categories of the same name
 
 restrictify();
 require_code('permissions2');
@@ -67,8 +67,6 @@ $needed = get_param_string('needed', '', INPUT_FILTER_GET_COMPLEX);
 $justification = get_param_string('justification', '', INPUT_FILTER_GET_COMPLEX);
 
 $urls = [];
-
-set_mass_import_mode(); // We will be adding multiple categories of the same name
 
 // Bugs list
 

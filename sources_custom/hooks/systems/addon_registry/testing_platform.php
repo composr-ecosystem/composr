@@ -712,6 +712,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/xml_db.php',
             '_tests/tests/unit_tests/override_notes_consistency.php',
             '_tests/tests/unit_tests/_copyright.php',
+            '_tests/tests/unit_tests/type_sanitisation.php',
             '_tests/tests/unit_tests/image_compression.php',
             '_tests/tests/unit_tests/xss.php',
             '_tests/tests/unit_tests/core_fields.php',

@@ -10,7 +10,7 @@
 			{+START,IF,{$GET,show_label}}
 				<label for="{NAME*}">{PRETTY_NAME*}</label>
 
-				<input type="hidden" name="label_for__{NAME*}" value="{$STRIP_HTML,{PRETTY_NAME*}}" />
+				<input type="hidden" name="label_for__{NAME*}" value="{$STRIP_HTML*,{PRETTY_NAME*}}" />
 			{+END}
 			{+START,IF,{$NOT,{$GET,show_label}}}
 				<span class="faux-label">{PRETTY_NAME*}</span>
