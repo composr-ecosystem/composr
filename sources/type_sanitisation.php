@@ -77,16 +77,51 @@ function is_email_address($string)
  */
 function is_ip_address($string)
 {
-    $ipv4_regexp = '/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/';
-    $ipv6_regexp = '/^(((?=(?>.*?(::))(?!.+\3)))\3?|([\dA-F]{1,4}(\3|:(?!$)|$)|\2))(?4){5}((?4){2}|((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?7)){3})\z/i';
-    // Credit: http://home.deds.nl/~aeron/regex/
-
-    if (preg_match($ipv4_regexp, $string) != 0) {
-        return true;
+    // ipv4
+    if (strpos($string, '.') !== false) {
+        $parts = explode('.', $string);
+        if (count($parts) != 4) {
+            return false;
+        }
+        $ok = true;
+        foreach ($parts as $part) {
+            if (preg_match('#^\d+$#', $part) != 0) {
+                if (intval($part) > 255) {
+                    $ok = false;
+                }
+            } else {
+                $ok = false;
+                break;
+            }
+        }
+        return $ok;
     }
 
-    if (preg_match($ipv6_regexp, $string) != 0) {
-        return true;
+    // ipv6
+    if (strpos($string, ':') !== false) {
+        $parts = explode(':', $string);
+        if (count($parts) > 8) {
+            return false;
+        }
+        $num_empty_sections = 0;
+        $ok = true;
+        foreach ($parts as $part) {
+            if ($part == '') {
+                $num_empty_sections++;
+            } else {
+                if (preg_match('#^[0-9A-F]{1,4}$#i', $part) == 0) {
+                    $ok = false;
+                    break;
+                }
+            }
+        }
+        if ($num_empty_sections > 1) {
+            return false;
+        }
+        if (($num_empty_sections == 0) && (count($parts) < 8)) {
+            return false;
+        }
+        return $ok;
     }
 
     return false;
