@@ -19,7 +19,6 @@
  */
 
 require_code('crud_module');
-require_javascript('core_cns');
 
 /**
  * Module page class.
@@ -88,6 +87,7 @@ class Module_admin_cns_groups extends Standard_crud_module
 
         require_lang('cns');
         require_css('cns_admin');
+        require_javascript('core_cns');
 
         set_helper_panel_tutorial('tut_subcom');
 

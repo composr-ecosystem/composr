@@ -19,7 +19,6 @@
  */
 
 require_code('crud_module');
-require_javascript('ecommerce');
 
 /**
  * Module page class.
@@ -106,6 +105,7 @@ class Module_admin_ecommerce extends Standard_crud_module
         $type = get_param_string('type', 'browse');
 
         require_code('ecommerce');
+        require_javascript('ecommerce');
 
         set_helper_panel_tutorial('tut_ecommerce');
 

@@ -19,7 +19,6 @@
  */
 
 require_code('crud_module');
-require_javascript('custom_comcode');
 
 /**
  * Module page class.
@@ -129,6 +128,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
 
         $type = get_param_string('type', 'browse');
 
+        require_javascript('custom_comcode');
         require_lang('custom_comcode');
         require_lang('comcode');
 
