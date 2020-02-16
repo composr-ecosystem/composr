@@ -175,22 +175,138 @@
     };
 
     /**
-     * Returns a single matching child element, defaults to 'document' as parent
+     * Returns a single matching element
      * @memberof $dom
-     * @param context
-     * @param id
-     * @returns {*}
+     * @param {string} id
+     * @returns { HTMLElement|null }
      */
-    $dom.$id = function $id(context, id) {
-        if (id === undefined) {
-            id = context;
-            context = document;
-        } else {
-            context = $dom.nodeArg(context);
-        }
+    $dom.$id = function $id(id) {
         id = strVal(id);
 
-        return ('getElementById' in context) ? context.getElementById(id) : context.querySelector('#' + id);
+        var element = document.getElementById(id);
+
+        if (element) {
+            return element;
+        }
+
+
+        // Try a hyphen and underscore-insensitive search
+        // TODO: Remove the following code once there's no mismatch of hyphens and underscores in element IDs
+
+        var idHasUnderscores = id.includes('_');
+        var idHasHyphens = id.includes('-');
+
+        if (!idHasUnderscores && !idHasHyphens) {
+            return null;
+        }
+
+        if (idHasUnderscores) {
+            element = document.getElementById(id.replaceAll('_', '-'));
+
+            if (element) {
+                return element;
+            }
+        }
+
+        if (idHasHyphens) {
+            element = document.getElementById(id.replaceAll('-', '_'));
+
+            if (element) {
+                return element;
+            }
+        }
+
+        // Go even deeper
+
+        var idPrefix = id.split(/[-_]/, 1)[0];
+
+        var possibleElements = document.querySelectorAll('[id^="' + idPrefix + '"]');
+
+        if (!possibleElements.length) {
+            return null;
+        }
+
+        var insensitiveIdPattern = $util.escapeRegExp(id).replace(/[-_]/g, '[-_]');
+
+        var rgx = new RegExp('^' + insensitiveIdPattern + '$');
+
+        for (var i = 0, len = possibleElements.length; i < len; i++) {
+            var el = possibleElements[i];
+
+            if (rgx.test(el.id)) {
+                $util.warn('$dom.$id(): Resorted to hyphen and underscore-insensitive search for provided `id`: "' + id + '". Found id is: "' + el.id + '"');
+
+                return el;
+            }
+        }
+
+        return null;
+    };
+
+    /**
+     * Returns a single matching element
+     * @memberof $dom
+     * @param {string} id
+     * @returns { HTMLElement }
+     */
+    $dom.$requireById = function $requireById(id) {
+        var element = $dom.$id(id);
+
+        if (element == null) {
+            throw new Error('$dom.$requireById(): No element found for selector: #' + id);
+        }
+
+        return element;
+    };
+
+    /**
+     * Returns a single matching child element, defaults to 'document' as parent
+     * @memberof $dom
+     * @param contextOrName
+     * @param name
+     * @returns { HTMLElement|null }
+     */
+    $dom.$byName = function $byName(contextOrName, name) {
+        var context;
+
+        if (name === undefined) {
+            name = contextOrName;
+            context = document;
+        } else {
+            context = $dom.nodeArg(contextOrName);
+        }
+        name = strVal(name);
+
+        return ('getElementsByName' in context) ? (context.getElementsByName(name)[0] || null) : context.querySelector('#' + name);
+    };
+
+
+    /**
+     * Returns a single matching child element, defaults to 'document' as parent
+     * Throws an error if not found
+     * @memberof $dom
+     * @param contextOrName
+     * @param name
+     * @returns { HTMLElement }
+     */
+    $dom.$requireByName = function $requireByName(contextOrName, name) {
+        var context;
+
+        if (name === undefined) {
+            name = contextOrName;
+            context = document;
+        } else {
+            context = $dom.nodeArg(contextOrName);
+        }
+        name = strVal(name);
+
+        var element = ('getElementsByName' in context) ? context.getElementsByName(name)[0] : context.querySelector('[name="' + name + '"]');
+
+        if (element == null) {
+            throw new Error('$dom.$requireByName(): No element found with selector [name="' + name + '"]');
+        }
+
+        return element;
     };
     /**
      * Returns a single matching child element, `context` defaults to 'document'

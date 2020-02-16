@@ -253,7 +253,7 @@ function _sitemap_node_to_xml($admin_groups, $groups, $node, $permissions_needed
     if ((get_param_integer('use_urls', 0) == 1) && (!looks_like_url($serverid)) && (strpos($serverid, ':') !== false)) {
         $id = page_link_to_url($serverid, true);
     } else {
-        $id = uniqid('', true);
+        $id = str_replace('.', '-', uniqid('uid-', true));
     }
 
     echo str_replace('  ', str_repeat(' ', $recurse_level + 1), '

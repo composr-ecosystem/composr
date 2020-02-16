@@ -33,7 +33,7 @@
                 'click .js-click-update-group': 'updateGroupDisplayer',
                 'change .js-change-update-group': 'updateGroupDisplayer',
                 'click .js-click-set-permissions': 'setPermissions',
-                'change: .js-change-update-perm-box': 'updatePermissionBox'
+                'change .js-change-update-perm-box': 'updatePermissionBox'
             };
         },
 
@@ -192,7 +192,7 @@
                     privilegeTitle = value;
                     doneHeader = false;
                     for (k = 0; k < rows.length; k++) {
-                        if (rows[k].id.substr(0, 7) !== 'access_') {
+                        if (!rows[k].id.startsWith('access-')) {
                             continue;
                         }
 
@@ -219,7 +219,14 @@
                             newCell = row.insertBefore(document.createElement('td'), row.cells[row.cells.length - 1]);
                             newCell.className = 'form-table-field-input privilege-cell';
                             newCell.id = 'privilege_cell_' + group + '_' + privilege;
-                            if (document.getElementById('access_' + group).name !== '_ignore') {
+
+                            var accessInput = document.getElementById('access-' + group);
+
+                            if (accessInput == null) {
+                                accessInput = $dom.$requireByName('access_' + group);
+                            }
+
+                            if (accessInput.name !== '_ignore') {
                                 $dom.html(newCell, '<div class="accessibility-hidden"><label for="access_' + group + '_privilege_' + privilege + '">{!permissions:OVERRIDE;^}</label></div><select title="' + $cms.filter.html(privilegeTitle) + '" id="access_' + group + '_privilege_' + privilege + '" name="access_' + group + '_privilege_' + privilege + '"><option selected="selected" value="-1">/</option><option value="0">{!permissions:NO_COMPACT;^}</option><option value="1">{!permissions:YES_COMPACT;^}</option></select>');
                                 $dom.on(newCell, 'mouseover', '.js-mouseover-show-permission-setting', function (e, select) {
                                     if (select.value === '-1') {
@@ -396,7 +403,7 @@
                 }
 
                 // Update UI indicators
-                $dom.html('#tree_listextra_' + id, $corePermissionManagement.permissionsImgFunc1(node, id) + $corePermissionManagement.permissionsImgFunc2(node, id));
+                $dom.html($dom.$requireById('tree-listextra_' + id), $corePermissionManagement.permissionsImgFunc1(node, id) + $corePermissionManagement.permissionsImgFunc2(node, id));
             }
 
             if (setRequestB !== '') {

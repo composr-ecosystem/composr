@@ -734,6 +734,27 @@
     };
 
     /**
+     * Used to match `RegExp`
+     * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+     */
+    var reRegExpChar = /[\\^$.*+?()[\]{}|]/g,
+        reHasRegExpChar = RegExp(reRegExpChar.source);
+
+    /**
+     * Escapes the `RegExp` special characters "^", "$", "\", ".", "*", "+",
+     * "?", "(", ")", "[", "]", "{", "}", and "|" in `string`.
+     * 
+     * Credit: https://lodash.com/docs#escapeRegExp
+     * @memberOf $util
+     * @param {string} [string=''] The string to escape.
+     * @returns {string} Returns the escaped string.
+     */
+    $util.escapeRegExp = function escapeRegExp(string) {
+        string = strVal(string);
+        return (string && reHasRegExpChar.test(string)) ? string.replace(reRegExpChar, '\\$&') : string;
+    };
+
+    /**
      * Returns a camelCased string.
      * Credit: http://stackoverflow.com/a/32604073/362006
      * @param str
