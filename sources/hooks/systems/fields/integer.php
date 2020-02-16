@@ -200,8 +200,10 @@ class Hook_fields_integer
     public function get_field_auto_increment($field_id, $default = '')
     {
         // Get most recent value, to start with- we will iterate forward on it
-        $value = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_integer', 'cv_value', ['cf_id' => $field_id], 'ORDER BY ce_id DESC');
-        if ($value === null) {
+        $_value = $GLOBALS['SITE_DB']->query_select('catalogue_efv_integer', ['cv_value', 'ce_id'], ['cf_id' => $field_id], 'ORDER BY ce_id DESC', 1);
+        if (array_key_exists(0, $_value)) {
+            $value = $_value[0]['cv_value'];
+        } else {
             $value = intval($default) - 1;
         }
 

@@ -31,9 +31,9 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
     /**
      * Find if a page-link will be covered by this node.
      *
-     * @param  ID_TEXT $page_link The page-link.
-     * @param  integer $options A bitmask of SITEMAP_GEN_* options.
-     * @return integer A SITEMAP_NODE_* constant.
+     * @param  ID_TEXT $page_link The page-link
+     * @param  integer $options A bitmask of SITEMAP_GEN_* options
+     * @return integer A SITEMAP_NODE_* constant
      */
     public function handles_page_link($page_link, $options)
     {

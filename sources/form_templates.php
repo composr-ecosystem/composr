@@ -1250,7 +1250,7 @@ function form_input_text_comcode($pretty_name, $description, $name, $default, $r
         pop_lax_comcode();
     } else {
         $w = false;
-        $default_parsed = new Tempcode();
+        $default_parsed = null;
     }
 
     $input = do_template('FORM_SCREEN_INPUT_TEXT', [
@@ -1316,7 +1316,7 @@ function form_input_huge_comcode($pretty_name, $description, $name, $default, $r
         pop_lax_comcode();
     } else {
         $w = false;
-        $default_parsed = new Tempcode();
+        $default_parsed = null;
     }
 
     $help_zone = get_comcode_zone('userguide_comcode', false);

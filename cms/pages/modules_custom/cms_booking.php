@@ -52,7 +52,7 @@ class Module_cms_booking extends Standard_crud_module
         }
 
         $ret = [
-           'browse' => ['BOOKINGS', 'menu/booking'],
+           'browse' => ['BOOKINGS', 'booking/booking'],
         ];
 
         if (has_privilege($member_id, 'submit_highrange_content', 'cms_booking')) {
@@ -357,7 +357,7 @@ class Module_cms_booking extends Standard_crud_module
         $fields->attach(form_input_text(do_lang_tempcode('BOOKABLE_CODES'), do_lang_tempcode('DESCRIPTION_BOOKABLE_CODES'), 'codes', implode("\n", $codes), true));
 
         $_supplements = new Tempcode();
-        $all_supplements = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['id', 'title'], [], 'ORDER BY sort_order');
+        $all_supplements = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['id', 'title', 'sort_order'], [], 'ORDER BY sort_order');
         foreach ($all_supplements as $s) {
             $_supplements->attach(form_input_list_entry(strval($s['id']), in_array($s['id'], $supplements), get_translated_text($s['title'])));
         }
@@ -366,7 +366,7 @@ class Module_cms_booking extends Standard_crud_module
         }
 
         $_blacks = new Tempcode();
-        $all_blacks = $GLOBALS['SITE_DB']->query_select('bookable_blacked', ['id', 'blacked_explanation'], [], 'ORDER BY blacked_from_year,blacked_from_month,blacked_from_day');
+        $all_blacks = $GLOBALS['SITE_DB']->query_select('bookable_blacked', ['id', 'blacked_explanation', 'blacked_from_year', 'blacked_from_month', 'blacked_from_day'], [], 'ORDER BY blacked_from_year,blacked_from_month,blacked_from_day');
         foreach ($all_blacks as $s) {
             $_blacks->attach(form_input_list_entry(strval($s['id']), in_array($s['id'], $blacks), get_translated_text($s['blacked_explanation'])));
         }
@@ -581,7 +581,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
         $fields->attach(form_input_integer(do_lang_tempcode('SORT_ORDER'), do_lang_tempcode('DESCRIPTION_SORT_ORDER'), 'sort_order', $details['sort_order'], true));
 
         $_bookables = new Tempcode();
-        $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['id', 'title'], [], 'ORDER BY sort_order');
+        $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['id', 'title', 'sort_order'], [], 'ORDER BY sort_order');
         foreach ($all_bookables as $s) {
             $_bookables->attach(form_input_list_entry(strval($s['id']), in_array($s['id'], $bookables), get_translated_text($s['title'])));
         }
@@ -777,7 +777,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
         $fields->attach(form_input_text(do_lang_tempcode('BLACKED_EXPLANATION'), do_lang_tempcode('DESCRIPTION_BLACKED_EXPLANATION'), 'blacked_explanation', ($details['blacked_explanation'] === null) ? '' : get_translated_text($details['blacked_explanation']), true));
 
         $_bookables = new Tempcode();
-        $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['id', 'title'], [], 'ORDER BY sort_order');
+        $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['id', 'title', 'sort_order'], [], 'ORDER BY sort_order');
         foreach ($all_bookables as $s) {
             $_bookables->attach(form_input_list_entry(strval($s['id']), in_array($s['id'], $bookables), get_translated_text($s['title'])));
         }

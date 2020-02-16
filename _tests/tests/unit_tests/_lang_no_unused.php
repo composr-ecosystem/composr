@@ -62,6 +62,7 @@ class _lang_no_unused_test_set extends cms_test_case
         $all_code .= cms_file_get_contents_safe(get_file_base() . '/install.php', FILE_READ_LOCK);
 
         $skip_prefixes = [
+            'RANK_SET_',
             'BLOCK_',
             'MODULE_',
             'PRIVILEGE_',

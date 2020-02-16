@@ -736,9 +736,11 @@ function step_4()
         exit(do_lang('INST_POST_ERROR'));
     }
 
+    $table_prefix = get_default_table_prefix();
+
     require_code('database');
     require_code('database/' . post_param_string('db_type'));
-    $GLOBALS['DB_STATIC_OBJECT'] = object_factory('Database_Static_' . post_param_string('db_type'));
+    $GLOBALS['DB_STATIC_OBJECT'] = object_factory('Database_Static_' . post_param_string('db_type'), false, [$table_prefix]);
 
     // Probing
 
@@ -798,7 +800,6 @@ function step_4()
     $cookie_days = '120';
     $use_persistent = false;
     require_code('version');
-    $table_prefix = get_default_table_prefix();
     if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
         $db_site_host = '127.0.0.1';
     } else {
@@ -2597,11 +2598,13 @@ function require_code($codename)
  * Make an object of the given class.
  *
  * @param  string $class The class name
- * @return object The object
+ * @param  boolean $failure_ok Whether to return null if there is no such class
+ * @param  array $parameters Array of parameters
+ * @return ?object The object (null: could not create)
  */
-function object_factory($class)
+function object_factory($class, $failure_ok = false, $parameters = [])
 {
-    return new $class();
+    return new $class(...$parameters);
 }
 
 /**

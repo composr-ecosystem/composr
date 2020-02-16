@@ -68,7 +68,7 @@ class Hook_content_meta_aware_banner_type
             'view_page_link_pattern' => null,
             'edit_page_link_pattern' => null,
             'view_category_page_link_pattern' => null,
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('cat_high', get_member(), get_ip_address(), 'cms_banners')) ? (get_module_zone('cms_banners') . ':cms_banners:add_category') : null,
+            'add_url' => ($get_extended_data && has_submit_permission('cat_high', get_member(), get_ip_address(), 'cms_banners')) ? (get_module_zone('cms_banners') . ':cms_banners:add_category') : null,
             'archive_url' => null,
 
             'support_url_monikers' => false,

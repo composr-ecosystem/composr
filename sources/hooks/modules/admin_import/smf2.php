@@ -977,8 +977,7 @@ class Hook_import_smf2
         $row_start = 0;
         $rows = [];
         do {
-            $rows = $db->query('SELECT * FROM ' . $table_prefix . 'topics t LEFT JOIN ' . $table_prefix . 'messages m ON t.id_first_msg=m.id_msg' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY t.id_topic' : ''), 200, $row_start);
-            $rows = remove_duplicate_rows($rows, 'id_topic');
+            $rows = $db->query('SELECT * FROM ' . $table_prefix . 'topics t LEFT JOIN ' . $table_prefix . 'messages m ON t.id_first_msg=m.id_msg', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('topic', strval($row['id_topic']))) {
                     continue;
@@ -1169,8 +1168,7 @@ class Hook_import_smf2
         $row_start = 0;
         $rows = [];
         do {
-            $rows = $db->query('SELECT * FROM ' . $table_prefix . 'attachments a JOIN ' . $table_prefix . 'messages m ON a.id_msg=m.id_msg WHERE a.id_msg<>0' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY id_attach' : ''), 200, $row_start);
-            $rows = remove_duplicate_rows($rows, 'id_attach');
+            $rows = $db->query('SELECT * FROM ' . $table_prefix . 'attachments a JOIN ' . $table_prefix . 'messages m ON a.id_msg=m.id_msg WHERE a.id_msg<>0', 200, $row_start);
             foreach ($rows as $row) {
                 if (substr($row['filename'], -5) == 'thumb') {
                     continue;

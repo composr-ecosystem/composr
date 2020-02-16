@@ -456,3 +456,408 @@ function content_language_string($content_type, $string)
     //return do_lang_tempcode($string_custom); // Assumes that the lang string stays memory resident, but our probing only guarantees it's resident NOW
     return protect_from_escaping($test); // But this should work as the string is rolled into the Tempcode permanently
 }
+
+/**
+ * Get content rows matching certain parameters, across multiple content types.
+ *
+ * @param  array $content_types List of content types to return for
+ * @param  ?integer $days Day limit for recency (null: no limit)
+ * @param  string $extra_where Extra WHERE SQL
+ * @param  string $extra_join Extra JOIN SQL
+ * @param  string $sort URL-style sort parameter
+ * @param  integer $start Start offset
+ * @param  ?integer $max Maximum results to return (null: no limit)
+ * @param  mixed $select Selectcode (either a string, or a map between content types and strings)
+ * @param  string $select_b Selectcode for secondary category
+ * @param  mixed $filter Filtercode (either a string, or a map between content types and strings)
+ * @param  boolean $check_perms Whether to check permissions
+ * @param  array $pinned A list of pinned award IDs
+ * @param  ?array $allowed_sorts List of allowed sorts (null: auto-detected for content type)
+ * @param  ?MEMBER $member_id Member ID to run as (null: current member)
+ * @return array A pair: Rows, Max count
+ */
+function content_rows_for_multi_type($content_types, $days, $extra_where, $extra_join, $sort, $start, $max, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null)
+{
+    $combined_rows = [];
+    $pinned_rows = [];
+    $combined_max_rows = 0;
+
+    foreach ($content_types as $content_type) {
+        $_start = 0;
+        $_max = ($max === null) ? null : ($max + $start); // This is so we can sort the first $max results against those of other content types to get a consistent combined sort order
+        $_select = is_array($select) ? (array_key_exists($content_type, $select) ? $select[$content_type] : '') : $select;
+        $_filter = is_array($filter) ? (array_key_exists($content_type, $filter) ? $filter[$content_type] : '') : $filter;
+        list($rows, $max_rows, $pinned_rows) = content_rows_for_type($content_type, $days, $extra_where, $extra_join, $sort, $_start, $_max, $_select, $select_b, $_filter, $check_perms, $pinned, $allowed_sorts);
+        foreach ($rows as $row) {
+            $combined_rows[] = $row + ['content_type' => $content_type];
+        }
+        foreach ($pinned_rows as $i => $row) {
+            $pinned_rows[$i] = $row + ['content_type' => $content_type];
+        }
+        $combined_max_rows += $max_rows;
+    }
+
+    ksort($pinned_rows);
+
+    list($url_sort, $dir) = read_abstract_sorting_params($sort, $allowed_sorts);
+    sort_maps_by($combined_rows, ($dir == 'DESC') ? '!sort_order' : 'sort_order', false, ($url_sort == 'title'));
+
+    $final_rows = array_slice(array_merge($pinned_rows, $combined_rows), $start, $max);
+
+    return [$final_rows, $combined_max_rows];
+}
+
+/**
+ * Get content rows matching certain parameters.
+ *
+ * @param  ID_TEXT $content_type Content type to get records for
+ * @param  ?integer $days Day limit for recency (null: no limit)
+ * @param  string $extra_where Extra WHERE SQL
+ * @param  string $extra_join Extra JOIN SQL
+ * @param  string $sort URL-style sort parameter
+ * @param  integer $start Start offset
+ * @param  ?integer $max Maximum results to return; pinned rows do not count towards it (null: no limit)
+ * @param  string $select Selectcode
+ * @param  string $select_b Selectcode for secondary category
+ * @param  string $filter Filtercode
+ * @param  boolean $check_perms Whether to check permissions
+ * @param  array $pinned A list of pinned award IDs
+ * @param  ?array $allowed_sorts List of allowed sorts (null: auto-detected for content type)
+ * @param  ?MEMBER $member_id Member ID to run as (null: current member)
+ * @return array A tuple: Rows, Max count, Pinned rows
+ */
+function content_rows_for_type($content_type, $days, $extra_where, $extra_join, $sort, $start, $max, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null)
+{
+    require_code('content');
+
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
+    // Fix invalid parameters
+    if ($max < 1) {
+        $max = 1;
+    }
+
+    // Read content object
+    $object = get_content_object($content_type);
+    $info = $object->info();
+    if ($info === null) {
+        warn_exit(do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type)));
+    }
+    $first_id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
+
+    // Special clauses for content type
+    if (array_key_exists('extra_where_sql', $info)) {
+        $extra_where .= ' AND ' . $info['extra_where_sql'];
+    }
+
+    // Permissions check
+    $category_type_access = null;
+    $category_type_select = null;
+    if (is_array($info['category_field'])) {
+        $category_field_access = $info['category_field'][0];
+        $category_field_select = $info['category_field'][1];
+    } else {
+        $category_field_access = $info['category_field'];
+        $category_field_select = $info['category_field'];
+    }
+    if (array_key_exists('category_type', $info)) {
+        if (is_array($info['category_type'])) {
+            $category_type_access = $info['category_type'][0];
+            $category_type_select = $info['category_type'][1];
+        } else {
+            $category_type_access = $info['category_type'];
+            $category_type_select = $info['category_type'];
+        }
+    }
+    // Actually for categories we check access on category ID
+    if ($info['is_category'] && $category_type_access !== null) {
+        $category_field_access = $first_id_field;
+    }
+    if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin($member_id)) && ($check_perms)) {
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy');
+            list($privacy_join, $privacy_where) = get_privacy_where_clause($content_type, 'r', $member_id);
+            $extra_join .= $privacy_join;
+            $extra_where .= $privacy_where;
+        }
+
+        $groups = get_permission_where_clause_groups($member_id, true, 'a.');
+        if ($category_field_access !== null) {
+            if ($category_type_access === '<zone>') {
+                $extra_where .= get_zone_permission_where_clause($category_field_access, $member_id, $groups);
+            } elseif ($category_type_access === '<page>') {
+                $extra_where .= get_page_permission_where_clause($category_field_access, $category_field_select, $member_id, $groups);
+            } else {
+                $extra_where .= get_category_permission_where_clause($category_type_access, $category_field_access, $member_id, $groups);
+            }
+        }
+        if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($info['category_type'] !== '<page>') && ($info['category_type'] !== '<zone>')) {
+            $extra_where .= get_category_permission_where_clause($category_type_select, $category_field_select, $member_id, $groups);
+        }
+    }
+
+    // Selectcode support
+    if (($select != '') && ($category_field_select !== null)) {
+        if ($select == '-1') {
+            return [[], 0, []]; // Optimisation: Will never match
+        }
+
+        $selectcode_extra_where = build_selectcode_select_for_content_type($select, $info, $category_field_select);
+        $parent_spec__table_name = array_key_exists('parent_spec__table_name', $info) ? $info['parent_spec__table_name'] : $info['table'];
+        if (($parent_spec__table_name !== null) && ($parent_spec__table_name != $info['table'])) {
+            $extra_join .= ' LEFT JOIN ' . $info['db']->get_table_prefix() . $parent_spec__table_name . ' parent ON parent.' . $info['parent_spec__field_name'] . '=r.' . $first_id_field;
+        }
+        if ($selectcode_extra_where != '') {
+            if ($selectcode_extra_where == '1=0' || $selectcode_extra_where == '0=1') {
+                return [[], 0, []]; // Optimisation: Will never match
+            }
+            $extra_where .= ' AND (' . $selectcode_extra_where . ')';
+        }
+    }
+    if (($select_b != '') && ($category_field_access !== null)) {
+        if ($select_b == '-1') {
+            return [[], 0, []]; // Optimisation: Will never match
+        }
+
+        $selectcode_extra_where = build_selectcode_select_for_content_type($select_b, $info, $category_field_access);
+        if ($selectcode_extra_where != '') {
+            if ($selectcode_extra_where == '1=0' || $selectcode_extra_where == '0=1') {
+                return [[], 0, []]; // Optimisation: Will never match
+            }
+            $extra_where .= ' AND (' . $selectcode_extra_where . ')';
+        }
+    }
+
+    // Filtercode support
+    if ($filter != '') {
+        global $BLOCK_OCPRODUCTS_ERROR_EMAILS;
+        $BLOCK_OCPRODUCTS_ERROR_EMAILS = true;
+
+        // Convert the filters to SQL
+        require_code('filtercode');
+        list($filtercode_extra_join, $filtercode_extra_where) = filtercode_to_sql($info['db'], parse_filtercode($filter), $content_type);
+        $extra_join .= implode('', $filtercode_extra_join);
+        $extra_where .= $filtercode_extra_where;
+    }
+
+    // Region filter
+    if (get_option('filter_regions') == '1') {
+        require_code('locations');
+        $extra_where .= sql_region_filter($content_type, 'r.' . $first_id_field);
+    }
+
+    // Validation check
+    if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (has_privilege($member_id, 'see_unvalidated'))) {
+        $extra_where .= ' AND r.' . $info['validated_field'] . '=1';
+    }
+
+    // Time range
+    if (($days !== null) && ($info['date_field'] !== null)) {
+        $extra_where .= ' AND r.' . $info['date_field'] . '>=' . strval(time() - 60 * 60 * 24 * $days);
+    }
+
+    // Find requested pinned awards
+    $pinned_rows = [];
+    if ((!empty($pinned)) && (addon_installed('awards'))) {
+        $pinned_where = '';
+        foreach ($pinned as $p) {
+            if ($pinned_where != '') {
+                $pinned_where .= ' OR ';
+            }
+            $pinned_where .= 'a_type_id=' . strval($p);
+        }
+        if ($pinned_where == '') {
+            $awarded_content_ids = [];
+        } else {
+            $pinned_where = '(' . db_string_equal_to('a_content_type', $content_type) . ') AND ' . $pinned_where;
+            // Complex query to find the most recent, works on assumption you can't just order by timestamp due to possibility of too many matches
+            $award_sql = 'SELECT a.a_type_id,a.content_id FROM ' . get_table_prefix() . 'award_archive a';
+            $award_sql .= ' JOIN (SELECT MAX(date_and_time) AS max_date,a_type_id FROM ' . get_table_prefix() . 'award_archive WHERE ' . $pinned_where . ' GROUP BY a_type_id) b ON b.a_type_id=a.a_type_id AND a.date_and_time=b.max_date';
+            $award_sql .= ' WHERE ' . str_replace('a_type_id', 'a.a_type_id', $pinned_where);
+            $awarded_content_ids = collapse_2d_complexity('a_type_id', 'content_id', $GLOBALS['SITE_DB']->query($award_sql, null, 0, false, true));
+        }
+
+        foreach ($pinned as $i => $award_id) {
+            if (!isset($awarded_content_ids[$p])) {
+                continue;
+            }
+            $awarded_content_id = $awarded_content_ids[$p];
+            $award_content_row = content_get_row($awarded_content_id, $info);
+            if ($award_content_row !== null) {
+                if (is_integer($awarded_content_id)) {
+                    $extra_where .= ' AND ' . $first_id_field . '<>' . strval($awarded_content_id);
+                } else {
+                    $extra_where .= ' AND ' . db_string_not_equal_to($first_id_field, $awarded_content_id);
+                }
+                if ((!addon_installed('unvalidated')) || (!isset($info['validated_field'])) || ($award_content_row[$info['validated_field']] != 0)) {
+                    $pinned_rows[$i] = $award_content_row;
+                }
+            }
+        }
+    }
+
+    // Put query together
+    global $TABLE_LANG_FIELDS_CACHE;
+    $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$info['table']]) ? $TABLE_LANG_FIELDS_CACHE[$info['table']] : [];
+    foreach ($lang_fields as $lang_field => $lang_field_type) {
+        unset($lang_fields[$lang_field]);
+        $lang_fields['r.' . $lang_field] = $lang_field_type;
+    }
+    $query = ' FROM ' . get_table_prefix() . $info['table'] . ' r WHERE 1=1' . $extra_where;
+    list($sql_sort, $dir, $url_sort) = handle_abstract_sorting($sort, $info);
+
+    // Run queries
+    $max_rows = $info['db']->query_value_if_there('SELECT COUNT(DISTINCT r.' . $first_id_field . ') ' . $query, false, true);
+    if ($max == 0) {
+        $rows = []; // Optimisation
+    } else {
+        $rows = $info['db']->query('SELECT DISTINCT r.*,' . $sql_sort . ' AS sort_order ' . $query . ' ORDER BY ' . $sql_sort, $max, $start, false, true, $lang_fields);
+    }
+    return [$rows, $max_rows + count($pinned_rows), $pinned_rows];
+}
+
+/**
+ * Make a selectcode SQL fragment.
+ *
+ * @param  string $select The select string
+ * @param  array $info Map of details of our content type
+ * @param  string $category_field_select The field name of the category to select against
+ * @return string SQL fragment
+ */
+function build_selectcode_select_for_content_type($select, $info, $category_field_select)
+{
+    $parent_spec__table_name = array_key_exists('parent_spec__table_name', $info) ? $info['parent_spec__table_name'] : $info['table'];
+    $parent_field_name = $info['is_category'] ? (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']) : $category_field_select;
+    if ($parent_field_name === null) {
+        $parent_spec__table_name = null;
+    }
+    $parent_spec__parent_name = array_key_exists('parent_spec__parent_name', $info) ? $info['parent_spec__parent_name'] : null;
+    $parent_spec__field_name = array_key_exists('parent_spec__field_name', $info) ? $info['parent_spec__field_name'] : null;
+    $id_field_numeric = ((!array_key_exists('id_field_numeric', $info)) || ($info['id_field_numeric']));
+    $category_is_string = ((array_key_exists('category_is_string', $info)) && (is_array($info['category_is_string']) ? $info['category_is_string'][1] : $info['category_is_string']));
+
+    require_code('selectcode');
+    return selectcode_to_sqlfragment($select, 'r.' . (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']), $parent_spec__table_name, $parent_spec__parent_name, 'r.' . $parent_field_name, $parent_spec__field_name, $id_field_numeric, !$category_is_string);
+}
+
+/**
+ * Remap a simple URL-style sort string with something SQL-compatible. Recognising rating sort order only, but does also support breaking the string down.
+ *
+ * @param  string $sort The URL sort string
+ * @param  array $info Map of details of our content type
+ * @param  ?array $allowed_sorts List of allowed sort types (null: default set)
+ * @param  boolean $strict_error Provide a hack-attack error on invalid input
+ * @return array A tuple: The SQL-style sort order, The sort direction, The URL-style sort order
+ */
+function handle_abstract_sorting($sort, $info, $allowed_sorts = null, $strict_error = true)
+{
+    $feedback_type = isset($info['feedback_type_code']) ? $info['feedback_type_code'] : null;
+    $first_id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
+
+    if ($allowed_sorts === null) {
+        $allowed_sorts = [];
+
+        if (isset($info['order_field'])) {
+            $allowed_sorts[] = 'natural';
+        }
+
+        if ($info['add_time_field'] !== null) {
+            $allowed_sorts[] = 'recent';
+        }
+
+        if ((isset($info['title_field'])) && (strpos($info['title_field'], ':') === false)) {
+            $allowed_sorts[] = 'title';
+        }
+
+        $allowed_sorts = array_merge($allowed_sorts, [
+            'random',
+            'fixed_random',
+        ]);
+
+        if (isset($info['views_field'])) {
+            $allowed_sorts[] = 'views';
+        }
+
+        if ($feedback_type !== null) {
+            $allowed_sorts = array_merge($allowed_sorts, [
+                'average_rating',
+                'compound_rating',
+            ]);
+        }
+    }
+
+    list($url_sort, $dir) = read_abstract_sorting_params($sort, $allowed_sorts, $strict_error);
+
+    if ($url_sort == 'recent') {
+        $sql_sort = 'r.' . $info['add_time_field'];
+    } elseif ($url_sort == 'title') {
+        if ($info['title_field_dereference']) {
+            $sql_sort = $GLOBALS['SITE_DB']->translate_field_ref($info['title_field']);
+        } else {
+            $sql_sort = 'r.' . $info['title_field'];
+        }
+    } elseif ($url_sort == 'natural') {
+        $sql_sort = 'r.' . $info['order_field'];
+    } elseif ($url_sort == 'views') {
+        $sql_sort = 'r.' . $info['views_field'];
+    } elseif ($url_sort == 'average_rating') {
+        $sql_sort = '(SELECT AVG(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $feedback_type) . ' AND rating_for_id=r.' . $first_id_field . ')';
+    } elseif ($url_sort == 'compound_rating') {
+        $sql_sort = '(SELECT SUM(rating-1) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $feedback_type) . ' AND rating_for_id=r.' . $first_id_field . ')';
+    } elseif ($url_sort == 'random') {
+        $sql_sort = '(' . db_function('RAND') . ')';
+    } elseif ($url_sort == 'fixed_random') {
+        if ($info['id_field_numeric']) {
+            $sql_sort = '(' . db_function('MOD', [$first_id_field, date('d')]) . ')';
+        } else {
+            $sql_sort = '(' . db_function('CONCAT', [db_function('MD5', [$first_id_field]), '\'' . db_escape_string(date('d')) . '\'']) . ')';
+        }
+    } else {
+        $sql_sort = 'r.' . $url_sort;
+    }
+
+    return [$sql_sort, $dir, $url_sort];
+}
+
+/**
+ * Clean up and verify URL sort parameters.
+ *
+ * @param  string $sort The URL sort string
+ * @param  ?array $allowed_sorts List of allowed sort types (null: don't check)
+ * @param  boolean $strict_error Provide a hack-attack error on invalid input
+ * @return array A pair: The URL-style sort order, The URL-style sort direction
+ */
+function read_abstract_sorting_params($sort, $allowed_sorts, $strict_error = true)
+{
+    $banal_default_sorts = [
+        'natural',
+        'recent',
+        'title',
+        'random',
+        'fixed_random',
+        'views',
+        'average_rating',
+        'compound_rating',
+    ];
+
+    $parts = explode(' ', $sort, 2);
+    if (count($parts) == 1) {
+        $parts[] = 'DESC';
+    }
+    list($url_sort, $dir) = $parts;
+    if (($allowed_sorts !== null) && (!in_array($url_sort, $allowed_sorts))) {
+        if (($strict_error) && (!in_array($url_sort, $banal_default_sorts))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+        $url_sort = $allowed_sorts[0];
+    }
+    if (!in_array($dir, ['ASC', 'DESC'])) {
+        if ($strict_error) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+        $dir = 'ASC';
+    }
+    return [$url_sort, $dir];
+}

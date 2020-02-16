@@ -151,13 +151,14 @@ class Module_join
             $map['email'] = $email_address;
         }
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-        if ($redirect != '') {
-            $map['redirect'] = protect_url_parameter($redirect);
+        require_code('global4');
+        if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
+            $map['redirect'] = $redirect;
         }
         $url = build_url($map, '_SELF');
 
         $group_select = new Tempcode();
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_is_default'], ['g_is_presented_at_install' => 1], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_is_default', 'g_order'], ['g_is_presented_at_install' => 1], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
         if (count($rows) > 1) {
             foreach ($rows as $group) {
                 if (get_param_integer('usergroup', null) === null) {
@@ -203,8 +204,9 @@ class Module_join
 
         $map = ['page' => '_SELF', 'type' => 'step3'];
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-        if ($redirect != '') {
-            $map['redirect'] = protect_url_parameter($redirect);
+        require_code('global4');
+        if (($redirect != '') && (!is_unhelpful_redirect($redirect))) {
+            $map['redirect'] = $redirect;
         }
         $url = build_url($map, '_SELF');
 

@@ -255,7 +255,7 @@ function store_exif($content_type, $content_id, $exif, $map = [])
     }
 
     // Get field values
-    $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name'], ['c_name' => '_' . $content_type], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+    $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name', 'cf_order'], ['c_name' => '_' . $content_type], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
     foreach ($fields as $field) {
         $name = get_translated_text($field['cf_name'], null, 'EN');
 

@@ -636,7 +636,8 @@ class Forum_driver_ipb3 extends Forum_driver_base
      */
     public function get_member_from_email_address($email_address)
     {
-        return $this->db->query_select_value_if_there('members', 'member_id', ['email' => $email_address], 'ORDER BY member_banned, joined DESC');
+        $results = $this->db->query_select('members', ['member_id', 'member_banned', 'joined'], ['email' => $email_address], 'ORDER BY member_banned,joined DESC', 1);
+        return array_key_exists(0, $results) ? $results[0]['member_id'] : null;
     }
 
     /**

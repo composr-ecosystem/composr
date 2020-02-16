@@ -19,7 +19,6 @@
  */
 
 require_code('crud_module');
-require_javascript('cns_forum');
 
 /**
  * Module page class.
@@ -109,6 +108,7 @@ class Module_admin_cns_forums extends Standard_crud_module
 
         require_lang('cns');
         require_css('cns_admin');
+        require_javascript('cns_forum');
 
         inform_non_canonical_parameter('parent_forum');
         inform_non_canonical_parameter('forum_grouping_id');

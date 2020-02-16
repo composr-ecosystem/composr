@@ -382,9 +382,9 @@ function get_downloads_tree($submitter = null, $category_id = null, $breadcrumbs
     if ($submitter !== null) {
         $where['submitter'] = $submitter;
     }
-    $erows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'name', 'submitter', 'original_filename'], $where, 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'), intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+    $erows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'name', 'submitter', 'original_filename', 'add_date'], $where, 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'), intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     if (count($erows) == intval(get_option('general_safety_listing_limit'))) {
-        $erows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'name', 'submitter', 'original_filename'], $where, 'ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+        $erows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'name', 'submitter', 'original_filename', 'add_date'], $where, 'ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     }
     $children[0]['entries'] = [];
     foreach ($erows as $row) {

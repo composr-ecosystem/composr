@@ -265,7 +265,7 @@ function _helper_show_forum_topics($this_ref, $name, $limit, $start, &$max_rows,
         }
     }
 
-    $post_query_select = 'p.p_title,t.id,p.p_poster,p.p_poster_name_if_guest,p.id AS p_id,p_post';
+    $post_query_select = 'p.p_title,t.id,p.p_poster,p.p_poster_name_if_guest,p.id AS p_id,p_post,p.p_time';
     if (!multi_lang_content()) {
         $post_query_select .= ',p_post__text_parsed,p_post__source_user';
     }

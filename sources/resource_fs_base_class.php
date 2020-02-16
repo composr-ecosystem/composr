@@ -2055,7 +2055,7 @@ abstract class Resource_fs_base
                         $properties['comments'] = json_decode($comments[0], true);
 
                         $properties['comments']['posts'] = [];
-                        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['id'], ['p_topic_id' => $topic_id], 'ORDER BY p_time ASC,id ASC');
+                        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['id', 'p_time'], ['p_topic_id' => $topic_id], 'ORDER BY p_time ASC,id ASC');
                         foreach ($posts as $_post) {
                             $post = get_resource_fs_record('post', strval($_post['id']));
                             $properties['comments']['posts'][] = json_decode($post[0], true);
@@ -2531,11 +2531,7 @@ abstract class Resource_fs_base
                     $select[] = 'main.' . $id_field;
                 }
             }
-            $extra = '';
-            if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
-                $extra .= 'GROUP BY main.' . $relationship['id_field'] . ' '; // In case it's not a real category table, just an implied one by self-categorisation of entries
-            }
-            $extra .= 'ORDER BY main.' . $relationship['id_field'];
+            $extra = 'ORDER BY main.' . $relationship['id_field'];
             if ($relationship['cat_field'] === null) {
                 $where = [];
             } else {

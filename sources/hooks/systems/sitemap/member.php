@@ -41,6 +41,21 @@ class Hook_sitemap_member extends Hook_sitemap_content
     }
 
     /**
+     * Find if a page-link will be covered by this node.
+     *
+     * @param  ID_TEXT $page_link The page-link
+     * @param  integer $options A bitmask of SITEMAP_GEN_* options
+     * @return integer A SITEMAP_NODE_* constant
+     */
+    public function handles_page_link($page_link, $options)
+    {
+        if (preg_match('#^\w+:members:view$#', $page_link) != 0) { // We don't actually support taking a default member ID in here, entry_point can handle that case
+            return SITEMAP_NODE_HANDLED;
+        }
+        return parent::handles_page_link($page_link, $options);
+    }
+
+    /**
      * Find details of a virtual position in the sitemap. Virtual positions have no structure of their own, but can find child structures to be absorbed down the tree. We do this for modularity reasons.
      *
      * @param  ID_TEXT $page_link The page-link we are finding

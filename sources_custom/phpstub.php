@@ -2351,9 +2351,9 @@ function preg_grep($pattern, $subject, $flags = 0)
  *
  * @param  mixed $pattern The pattern (string or array)
  * @param  mixed $replacement The replacement string (string or array)
- * @param  string $subject The subject string
+ * @param  mixed $subject The subject string (string or array)
  * @param  integer $limit The limit of replacements (-1: no limit)
- * @return ~string The string with replacements made (false: error)
+ * @return ~mixed The string with replacements made (false: error)
  */
 function preg_replace($pattern, $replacement, $subject, $limit = -1)
 {

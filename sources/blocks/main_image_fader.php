@@ -84,6 +84,8 @@ PHP;
         require_lang('galleries');
         require_code('galleries');
         require_javascript('core_rich_media');
+        require_code('images');
+        require_code('content');
 
         $block_id = get_block_id($map);
 
@@ -114,67 +116,41 @@ PHP;
         $titles = [];
         $html = [];
 
-        $extra_join_image = '';
-        $extra_join_video = '';
-        $extra_where_image = '';
-        $extra_where_video = '';
+        $extra_where = ' AND ' . $cat_select;
+        list($rows, $max_rows) = content_rows_for_multi_type(
+            ['image', 'video'],
+            null,
+            $extra_where,
+            '',
+            'recent ASC',
+            0,
+            100, /*reasonable limit*/
+            '',
+            '',
+            '',
+            $check_perms,
+            []
+        );
 
-        if (addon_installed('content_privacy')) {
-            require_code('content_privacy');
-            $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
-            $viewing_member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : null;
-            list($privacy_join_video, $privacy_where_video) = get_privacy_where_clause('video', 'r', $viewing_member_id);
-            list($privacy_join_image, $privacy_where_image) = get_privacy_where_clause('image', 'r', $viewing_member_id);
-            $extra_join_image .= $privacy_join_image;
-            $extra_join_video .= $privacy_join_video;
-            $extra_where_image .= $privacy_where_image;
-            $extra_where_video .= $privacy_where_video;
-        }
-
-        if (get_option('filter_regions') == '1') {
-            require_code('locations');
-            $extra_where_image .= sql_region_filter('image', 'r.id');
-            $extra_where_video .= sql_region_filter('video', 'r.id');
-        }
-
-        $extra_join_sql = '';
-        $where_sup = '';
-        if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-            $extra_join_sql .= get_permission_join_clause('gallery', 'cat');
-            $where_sup .= get_permission_where_clause(get_member(), get_permission_where_clause_groups(get_member()));
-        }
-
-        $image_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS content_type,cat FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_image . $where_sup . ' AND validated=1 ORDER BY add_date ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
-        $video_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,thumb_url AS url,\'video\' AS content_type,cat FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_video . $where_sup . ' AND validated=1 ORDER BY add_date ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
         $all_rows = [];
         if ($order != '') {
             foreach (explode(',', $order) as $o) {
-                $num = substr($o, 1);
+                $content_type = (substr($o, 0, 1) == 'v') ? 'video' : 'image';
+                $_id = substr($o, 1);
 
-                if (is_numeric($num)) {
-                    switch (substr($o, 0, 1)) {
-                        case 'i':
-                            foreach ($image_rows as $i => $row) {
-                                if ($row['id'] == intval($num)) {
-                                    $all_rows[] = $row;
-                                    unset($image_rows[$i]);
-                                }
-                            }
-                            break;
-                        case 'v':
-                            foreach ($video_rows as $i => $row) {
-                                if ($row['id'] == intval($num)) {
-                                    $all_rows[] = $row;
-                                    unset($video_rows[$i]);
-                                }
-                            }
-                            break;
+                if (is_numeric($_id)) {
+                    $id = intval($_id);
+                    foreach ($rows as $i => $row) {
+                        if ((($content_type == 'video') && ($row['content_type'] == 'video') && ($row['id'] == $id)) || (($content_type == 'image') && ($row['content_type'] == 'image') && ($row['id'] == $id))) {
+                            $all_rows[] = $row;
+                            unset($rows[$i]);
+                        }
                     }
                 }
             }
         }
-        $all_rows = array_merge($all_rows, $image_rows, $video_rows);
-        require_code('images');
+        $all_rows = array_merge($all_rows, $rows);
+
         foreach ($all_rows as $row) {
             $url = $row['thumb_url'];
             if (url_is_local($url)) {

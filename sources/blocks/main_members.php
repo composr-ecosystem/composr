@@ -190,11 +190,9 @@ PHP;
         }
         if ($filter != '') {
             require_code('filtercode');
-            list($filter_extra_select, $filter_extra_join, $filter_extra_where) = filtercode_to_sql($GLOBALS['FORUM_DB'], parse_filtercode($filter), 'member');
-            $extra_select_sql = implode('', $filter_extra_select);
+            list($filter_extra_join, $filter_extra_where) = filtercode_to_sql($GLOBALS['FORUM_DB'], parse_filtercode($filter), 'member');
             $extra_join_sql = implode('', $filter_extra_join);
         } else {
-            $extra_select_sql = '';
             $extra_join_sql = '';
             $filter_extra_where = '';
         }
@@ -227,7 +225,7 @@ PHP;
         }
         if ((!has_privilege(get_member(), 'see_unvalidated')) || (!isset($map['include_non_confirmed'])) || ($map['include_non_confirmed'] == 'exclude')) {
             $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
-        } elseif ((has_privilege(get_member(), 'see_unvalidated')) && ($map['include_non_confirmed'] == 'exclusively')) {
+        } elseif ((has_privilege(get_member(), 'see_unvalidated')) && (isset($map['include_non_confirmed'])) && ($map['include_non_confirmed'] == 'exclusively')) {
             $where .= ' AND ' . db_string_not_equal_to('m_validated_email_confirm_code', '');
         }
 
@@ -321,12 +319,11 @@ PHP;
                 break;
         }
 
-        $sql = 'SELECT r.*' . $extra_select_sql . ' FROM ';
+        $sql = 'SELECT DISTINCT r.* FROM ';
         $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r';
         $main_sql .= $extra_join_sql;
         $main_sql .= ' WHERE ' . $where;
         $sql .= $main_sql;
-        $sql .= ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '');
         $sql .= ' ORDER BY ' . $sort;
         $count_sql = 'SELECT COUNT(DISTINCT r.id) FROM ' . $main_sql;
 
@@ -341,7 +338,6 @@ PHP;
         $max_rows = $GLOBALS['FORUM_DB']->query_value_if_there($count_sql);
 
         $rows = $GLOBALS['FORUM_DB']->query($sql, ($display_mode == 'media') ? ($max + $start) : $max, ($display_mode == 'media') ? 0 : $start);
-        $rows = remove_duplicate_rows($rows, 'id');
 
         /*if (count($rows)==0)   We let our template control no-result output
         {

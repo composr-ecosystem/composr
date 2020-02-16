@@ -188,7 +188,6 @@ class Module_admin_cmsusers
         }
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT website_url,website_name,MAX(l_version) AS l_version,MAX(hittime) AS hittime FROM ' . get_table_prefix() . 'logged WHERE website_url NOT LIKE \'%.composr.info%\' AND ' . db_string_not_equal_to('website_name', '') . ' AND ' . db_string_not_equal_to('website_name', '(unnamed)') . ' ' . $order_by, $max);
-        $rows = remove_duplicate_rows($rows, 'website_url');
 
         $seen_before = [];
 

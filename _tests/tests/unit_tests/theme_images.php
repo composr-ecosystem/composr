@@ -262,6 +262,9 @@ class theme_images_test_set extends cms_test_case
                 if (in_array($image, ['tracker/credit', 'icons/calendar/booking', 'youtube_channel_integration/youtube_channel_integration_icon'])) { // Addon files not used by default but useful
                     continue;
                 }
+                if (in_array($image, ['cns_rank_images/0', 'cns_rank_images/1', 'cns_rank_images/2', 'cns_rank_images/3', 'cns_rank_images/4'])) { // Rank settings may be changed
+                    continue;
+                }
                 if (preg_match('#^([12]x/)?(chatcode_editor|results|cns_post_map|cns_general|progress_indicator|comcode_editor|realtime_rain|logo|cns_default_avatars|flags|flags_large|icons/spare|icons|icons_monochrome|twitter_feed)/#', $image) != 0) { // Dynamic choices / dynamic sets
                     continue;
                 }

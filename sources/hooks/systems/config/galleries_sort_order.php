@@ -37,7 +37,7 @@ class Hook_config_galleries_sort_order
             'group' => 'BROWSING_GALLERIES',
             'explanation' => 'CONFIG_OPTION_galleries_sort_order',
             'shared_hosting_restricted' => '0',
-            'list_options' => 'fullname ASC|name ASC|average_rating DESC|compound_rating DESC|add_date ASC|add_date DESC',
+            'list_options' => 'title ASC|average_rating DESC|compound_rating DESC|recent ASC|recent DESC',
             'required' => true,
 
             'public' => false,
@@ -57,6 +57,6 @@ class Hook_config_galleries_sort_order
             return null;
         }
 
-        return 'add_date ASC';
+        return 'recent ASC';
     }
 }

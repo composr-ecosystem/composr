@@ -435,7 +435,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         // Normalise ordering
         if ($standard_ordering) {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id'], [], 'ORDER BY cf_order ASC');
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_order'], [], 'ORDER BY cf_order ASC');
             foreach ($rows as $i => $row) {
                 $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_order' => $i], ['id' => $row['id']], '', 1);
             }

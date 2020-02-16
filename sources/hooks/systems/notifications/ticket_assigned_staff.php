@@ -50,7 +50,7 @@ class Hook_notification_ticket_assigned_staff extends Hook_Notification
 
         $page_links = [];
 
-        $tickets = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_notification_code' => 'ticket_assigned_staff', 'l_member_id' => get_member()], 'ORDER BY id DESC', 200/*reasonable limit*/);
+        $tickets = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_code_category', 'id'], ['l_notification_code' => 'ticket_assigned_staff', 'l_member_id' => get_member()], 'ORDER BY id DESC', 200/*reasonable limit*/);
         if (count($tickets) == 200) {
             $types2 = []; // Too many to consider
         }

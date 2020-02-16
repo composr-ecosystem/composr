@@ -144,10 +144,10 @@ function get_award_fields($content_type, $id = null)
 
         foreach ($rows as $row) {
             if (has_category_access(get_member(), 'award', strval($row['id']))) {
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', ['a_type_id' => $row['id']], 'ORDER BY date_and_time DESC');
+                $test = $GLOBALS['SITE_DB']->query_select('award_archive', ['content_id', 'date_and_time'], ['a_type_id' => $row['id']], 'ORDER BY date_and_time DESC', 1);
 
                 if ($id !== null) {
-                    $has_award = ($test === $id);
+                    $has_award = (array_key_exists(0, $test)) && ($test[0]['content_id'] === $id);
                 } else {
                     $has_award = (get_param_integer('award', null) === $row['id']);
                 }
@@ -161,9 +161,9 @@ function get_award_fields($content_type, $id = null)
 
                 if (!$has_award) {
                     $current_content_title = null;
-                    if ($test !== null) {
+                    if (array_key_exists(0, $test)) {
                         require_code('content');
-                        list($current_content_title) = content_get_details($_content_type, $test);
+                        list($current_content_title) = content_get_details($_content_type, $test[0]['content_id']);
                     }
                     $description->attach(paragraph(do_lang_tempcode('CURRENTLY_AWARDED_TO', ($current_content_title === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html($current_content_title)))));
                 }
@@ -208,8 +208,8 @@ function handle_award_setting($content_type, $id)
 
     foreach ($rows as $row) {
         if (has_category_access(get_member(), 'award', strval($row['id']))) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', ['a_type_id' => $row['id']], 'ORDER BY date_and_time DESC');
-            $has_award = ($test !== null) && ($test === $id);
+            $test = $GLOBALS['SITE_DB']->query_select('award_archive', ['content_id', 'date_and_time'], ['a_type_id' => $row['id']], 'ORDER BY date_and_time DESC', 1);
+            $has_award = (array_key_exists(0, $test)) && ($test[0]['date_and_time'] === $id);
             $will_have_award = (post_param_integer('award_' . strval($row['id']), 0) == 1);
 
             if (($will_have_award) && ($has_award)) { // Has to be recached

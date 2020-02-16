@@ -402,7 +402,7 @@ class Module_cms_cns_groups extends Standard_crud_module
 
         // Rename forum
         if ($name != $old_name) {
-            $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_name' => $name], $forum_where, 'ORDER BY id DESC', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_name' => $name], $forum_where, '', 1);
         }
 
         return null;

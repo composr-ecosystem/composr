@@ -53,7 +53,7 @@ function booking_do_next()
  */
 function get_member_booking_request($member_id)
 {
-    $booking_ids = $GLOBALS['SITE_DB']->query_select('booking', ['id'], ['member_id' => $member_id], 'ORDER BY booked_at DESC');
+    $booking_ids = $GLOBALS['SITE_DB']->query_select('booking', ['id', 'booked_at'], ['member_id' => $member_id], 'ORDER BY booked_at DESC');
     return get_booking_request_from_db(collapse_1d_complexity('id', $booking_ids));
 }
 

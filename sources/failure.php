@@ -287,7 +287,7 @@ function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $sys
             break;
 
         default:
-            if (!has_privilege(get_member(), 'see_php_errors')) {
+            if ((!has_privilege(get_member(), 'see_php_errors')) && (!$GLOBALS['DEV_MODE'])) {
                 $errstr = do_lang('INTERNAL_ERROR');
             }
             break;
@@ -498,9 +498,9 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         $GLOBALS['MSN_DB'] = null;
     }
 
-    global $EXITING, $MICRO_BOOTUP;
-    if (($EXITING >= 1) || (!function_exists('get_member')) || (!function_exists('get_screen_title')) || (!function_exists('do_lang')) || (running_script('upgrader')) || (!class_exists('Tempcode')) || ($MICRO_BOOTUP)) {
-        if (($EXITING == 2) && (function_exists('may_see_stack_traces')) && (may_see_stack_traces()) && ($GLOBALS['HAS_SET_ERROR_HANDLER'])) {
+    global $EXITING, $MICRO_BOOTUP, $BOOTSTRAPPING;
+    if (($EXITING >= 1) || (!function_exists('get_member')) || (!function_exists('get_screen_title')) || (!function_exists('do_lang')) || (running_script('upgrader')) || (!class_exists('Tempcode')) || ($MICRO_BOOTUP) || ($BOOTSTRAPPING)) {
+        if (($EXITING == 2) && (!$BOOTSTRAPPING) && (function_exists('may_see_stack_traces')) && (may_see_stack_traces()) && ($GLOBALS['HAS_SET_ERROR_HANDLER'])) {
             die_html_trace($text_eval);
         } else { // Failed even in die_html_trace
             critical_error('EMERGENCY', $text_eval);
@@ -855,7 +855,8 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     if (!addon_installed('securitylogging')) {
         return false;
     }
-    if ($ip == '') {
+    require_code('type_sanitisation');
+    if (!is_ip_address($ip)) {
         return false;
     }
 

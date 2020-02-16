@@ -37,7 +37,7 @@ class Hook_config_gallery_media_default_sort_order
             'group' => 'BROWSING_GALLERIES',
             'explanation' => 'CONFIG_OPTION_gallery_media_default_sort_order',
             'shared_hosting_restricted' => '0',
-            'list_options' => 'add_date DESC|add_date ASC|average_rating DESC|compound_rating DESC|url DESC|url ASC|fixed_random ASC',
+            'list_options' => 'recent DESC|recent ASC|average_rating DESC|compound_rating DESC|title DESC|title ASC|url DESC|url ASC|fixed_random ASC',
             'required' => true,
 
             'public' => false,
@@ -57,6 +57,6 @@ class Hook_config_gallery_media_default_sort_order
             return null;
         }
 
-        return 'add_date DESC';
+        return 'recent DESC';
     }
 }

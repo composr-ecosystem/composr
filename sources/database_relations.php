@@ -597,7 +597,7 @@ function get_sql_dump($out_file, $include_drops = false, $output_statuses = fals
         $intended_db_type = get_db_type();
     }
     require_code('database/' . filter_naughty_harsh($intended_db_type));
-    $db_static = object_factory('Database_Static_' . filter_naughty_harsh($intended_db_type));
+    $db_static = object_factory('Database_Static_' . filter_naughty_harsh($intended_db_type), false, [get_table_prefix()]);
 
     if (!$GLOBALS['DB_STATIC_OBJECT']->supports_drop_table_if_exists($db->connection_write)) {
         $include_drops = false; // "DROP IF EXISTS" only supported on some DBs.

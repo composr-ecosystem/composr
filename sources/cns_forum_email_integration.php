@@ -263,7 +263,8 @@ class ForumEmailIntegration extends EmailIntegration
         // Try and match to a topic
         $topic_id = null;
         if ($possible_reply) {
-            $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', ['t_cache_first_title' => $title, 't_forum_id' => $this->forum_id], 'ORDER BY t_cache_last_time DESC');
+            $_topic_id = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_cache_last_time'], ['t_cache_first_title' => $title, 't_forum_id' => $this->forum_id], 'ORDER BY t_cache_last_time DESC', 1);
+            $topic_id = array_key_exists(0, $_topic_id) ? $_topic_id[0]['id'] : null;
         }
         $is_starter = ($topic_id === null);
 

@@ -89,7 +89,7 @@ class Hook_whatsnew_catalogues
             }
             $c_title = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $c_name]);
 
-            $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type'], ['c_name' => $c_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+            $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type', 'cf_order'], ['c_name' => $c_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
 
             // Work out name
             $name = '';

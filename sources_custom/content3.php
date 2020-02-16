@@ -85,9 +85,9 @@ function catalogue_query_select($catalogue_name, $select, $where = [], $filters 
         $filters .= $key . '=' . (is_string($val) ? $val : strval($val));
     }
 
-    list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filters), 'catalogue_entry', $catalogue_name);
+    list($extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filters), 'catalogue_entry', $catalogue_name);
 
-    $query = 'SELECT r.*' . implode(',', $extra_select) . ' FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . db_string_equal_to('c_name', $catalogue_name) . $extra_where;
+    $query = 'SELECT DISTINCT r.* FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . db_string_equal_to('c_name', $catalogue_name) . $extra_where;
     $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
     $out = [];
     foreach ($rows as $_row) {
@@ -129,9 +129,9 @@ function catalogue_query_select_count($catalogue_name, $where = [], $filters = '
         $filters .= $key . '=' . (is_string($val) ? $val : strval($val));
     }
 
-    list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filters), 'catalogue_entry', $catalogue_name);
+    list($extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filters), 'catalogue_entry', $catalogue_name);
 
-    $query = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . db_string_equal_to('c_name', $catalogue_name) . $extra_where;
+    $query = 'SELECT COUNT(DISTINCT r.id) FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . db_string_equal_to('c_name', $catalogue_name) . $extra_where;
     return $GLOBALS['SITE_DB']->query_value_if_there($query);
 }
 

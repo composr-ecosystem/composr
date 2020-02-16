@@ -24,6 +24,8 @@ class xml_sitemaps_test_set extends cms_test_case
 
         require_code('sitemap_xml');
         require_code('news2');
+
+        $GLOBALS['RUNNING_BUILD_SITEMAP_CACHE_TABLE'] = true; // So it doesn't try and rebuild the whole sitemap during the test
     }
 
     public function testSitemapAdd()

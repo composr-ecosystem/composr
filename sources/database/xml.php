@@ -36,18 +36,26 @@
         Views are not supported
         Integrity checking (field constraints, CHECK) is not supported
         Transactions are not supported
+        COUNT only works on fields or the '*' wildcard, not any expressions or 'alias.*'
+        DISTINCT is not supported in aggregate functions other than COUNT
+        DISTINCT on the main query only works on fields, not any expressions
         Full-text-search is not supported
+        ANY, ALL subquery syntax
+        ROW constructors
+        Stored queries
+        Prepared statements
         Special foreign key support is not supported
         INTERSECT and EXCEPT are not supported
         JOIN's are not supported in DELETE or UPDATE queries
         Character set support is just whatever Composr is set to; there is no special supported
         SELECT INTO is not supported
+        Detection of missing field in SELECT wrt ORDER BY or GROUP BY is not 100% perfect when joining/aliasing tables
         Default values for fields are not supported
         Field naming for things like COUNT(*) will not be consistent with MySQL
         You must specify the field names in INSERT queries
         Expressions in ORDER BY clauses will be ignored
     This database system is intended only for Composr, and not as a general purpose database. In Composr our philosophy is to write logic in PHP, not SQL, hence the subset supported.
-    Also as we have to target MySQL-4.3 we can't implement some more sophisticated featured, in case programmers rely on them!
+    Also as we have to target a database baseline across multiple vendors we can't implement some more sophisticated featured, in case programmers rely on them!
 */
 
 /**
@@ -118,7 +126,7 @@ function _get_sql_keywords()
     return [
         'LEFT', 'RIGHT', // Join types
         'X_CONCAT', 'X_LENGTH', 'X_REPLACE', 'X_COALESCE',
-        'X_SUBSTR', 'X_RAND', 'X_LEAST', 'X_GREATEST', 'X_MOD',
+        'X_SUBSTR', 'X_RAND', 'X_LEAST', 'X_GREATEST', 'X_MOD', 'X_MD5',
         'WHERE',
         'SELECT', 'FROM', 'AS', 'UNION', 'ALL', 'DISTINCT',
         'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE',
@@ -144,14 +152,16 @@ function _get_sql_keywords()
  */
 class Database_Static_xml extends DatabaseDriver
 {
+    protected $table_prefix;
+
     /**
-     * Find whether the database may run GROUP BY unfettered with restrictions on the SELECTed fields having to be represented in it or aggregate functions.
+     * Set up the database driver.
      *
-     * @return boolean Whether it can
+     * @param  string $table_prefix Table prefix
      */
-    public function can_arbitrary_groupby()
+    public function __construct($table_prefix)
     {
-        return true;
+        $this->table_prefix = $table_prefix;
     }
 
     /**
@@ -472,6 +482,18 @@ class Database_Static_xml extends DatabaseDriver
     }
 
     /**
+     * Encode a LIKE string comparison fragment for the database system. The pattern is a mixture of characters and _ and % wildcard symbols.
+     * Regular string escaping is also applied so that you can put the output directly between quotes.
+     *
+     * @param  string $pattern The pattern
+     * @return string The encoded pattern
+     */
+    public function encode_like($pattern)
+    {
+        return str_replace('\\\\_'/*addslashes escaped underscores*/, '\\_', $this->escape_string($pattern));
+    }
+
+    /**
      * Adjust an SQL query to apply offset/limit restriction.
      *
      * @param  string $query The complete SQL query
@@ -654,7 +676,7 @@ class Database_Static_xml extends DatabaseDriver
             return $SCHEMA_CACHE[$table_name];
         }
 
-        $table_prefix = get_table_prefix();
+        $table_prefix = $this->table_prefix;
 
         $schema_query = 'SELECT m_name,m_type FROM ' . $table_prefix . 'db_meta WHERE ' . db_string_equal_to('m_table', substr($table_name, strlen($table_prefix)));
 
@@ -907,7 +929,7 @@ class Database_Static_xml extends DatabaseDriver
                         return [];
                     }
                     $records[$the_key] = $test;
-                    if ($table_name == get_table_prefix() . 'translate') {
+                    if ($table_name == $this->table_prefix . 'translate') {
                         $sup_file = $db[0] . '/' . $table_name . '/sup/' . $key_buildup . '.xml-volatile';
                         if (file_exists($sup_file)) {
                             $sup_record = $this->_read_record($sup_file, $schema, [], $include_unused_fields, $fail_ok);
@@ -968,7 +990,7 @@ class Database_Static_xml extends DatabaseDriver
                 $the_key = preg_replace('#\.[\w\-]+$#', '', $file);
                 $records[$the_key] = $read;
 
-                if ($table_name == get_table_prefix() . 'translate') {
+                if ($table_name == $this->table_prefix . 'translate') {
                     $sup_file = $db[0] . '/' . $table_name . '/sup/' . preg_replace('#\.\w+$#', '', $file) . '.xml-volatile';
                     if (file_exists($sup_file)) {
                         $test = $this->_read_record($sup_file, $schema, [], $include_unused_fields, $fail_ok);
@@ -1242,7 +1264,7 @@ class Database_Static_xml extends DatabaseDriver
 
         $path = $db[0] . '/' . $table_name . '/' . $guid . $suffix;
 
-        if ($table_name == get_table_prefix() . 'translate') { // Special code to store volatile text_parsed attribute externally
+        if ($table_name == $this->table_prefix . 'translate') { // Special code to store volatile text_parsed attribute externally
             $record_copy = $record;
             unset($record_copy['text_original']);
             unset($record_copy['source_user']);
@@ -1915,22 +1937,22 @@ class Database_Static_xml extends DatabaseDriver
 
             case 'DISTINCT':
                 $expr = ['DISTINCT', []];
-                $d = $this->_parsing_read($at, $tokens, $query);
-                if ($d == '(') {
+                do {
                     $d = $this->_parsing_read($at, $tokens, $query);
-                    if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
-                        return null;
-                    }
-                    $expr[1][] = $d;
-                } else {
-                    $at--;
-                    do {
-                        $d = $this->_parsing_read($at, $tokens, $query);
-                        $expr[1][] = $d;
+                    $_token = $this->_parsing_read($at, $tokens, $query);
+                    if ($_token == '*') {
+                        $d .= '*';
                         $_token = $this->_parsing_read($at, $tokens, $query);
-                    } while ($_token == ',');
-                    $at--;
-                }
+                    }
+                    if ($_token == 'AS') {
+                        $alias = $this->_parsing_read($at, $tokens, $query);
+                        $expr[1][] = [$d, $alias];
+                        $_token = $this->_parsing_read($at, $tokens, $query);
+                    } else {
+                        $expr[1][] = $d;
+                    }
+                } while ($_token == ',');
+                $at--;
                 break;
 
             case 'COUNT':
@@ -1961,19 +1983,8 @@ class Database_Static_xml extends DatabaseDriver
                     return null;
                 }
                 $expr = [$token];
-                $next = $this->_parsing_read($at, $tokens, $query);
-                if ($next == 'DISTINCT') {
-                    $distinct = true;
-                } else {
-                    $at--;
-                    $distinct = false;
-                }
                 $_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
-                if ($distinct) {
-                    $expr[1] = ['DISTINCT', $_expr];
-                } else {
-                    $expr[1] = $_expr;
-                }
+                $expr[1] = $_expr;
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
@@ -2004,6 +2015,14 @@ class Database_Static_xml extends DatabaseDriver
                     return null;
                 }
                 $expr = [$token, $expr1, $expr2];
+                break;
+
+            case 'X_MD5':
+                if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
+                    return null;
+                }
+                $expr = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
+                $expr = [$token, $expr];
                 break;
 
             case 'X_LEAST':
@@ -2289,9 +2308,10 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $db Database connection
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @param  ?array $full_set The full record set within a HAVING scope (null: not in a HAVING scope)
+     * @param  boolean $cuts_to_single_row Whether this is an aggregate function that reduces the results to a single row (returned by reference)
      * @return ?mixed The result (null: error/NULL)
      */
-    protected function _execute_expression($expr, $bindings, $query, $db, $fail_ok, $full_set = null)
+    protected function _execute_expression($expr, $bindings, $query, $db, $fail_ok, $full_set = null, &$cuts_to_single_row = false)
     {
         switch ($expr[0]) {
             // Aggregate expressions...
@@ -2302,6 +2322,8 @@ class Database_Static_xml extends DatabaseDriver
             case 'SUM':
             case 'X_GROUP_CONCAT':
             case 'AVG':
+                $cuts_to_single_row = true;
+
                 if ($full_set === null) {
                     return $this->_bad_query($query, $fail_ok, 'Cannot use aggregate function (' . $expr[0] . ') outside SELECT/HAVING scope');
                 }
@@ -2357,6 +2379,10 @@ class Database_Static_xml extends DatabaseDriver
                 return null;
 
             case 'FIELD':
+                if (!array_key_exists($expr[1], $bindings)) {
+                    $this->_bad_query($query, false, 'Missing referenced field, ' . $expr[1]);
+                }
+
                 return $bindings[$expr[1]];
 
             case '+':
@@ -2445,7 +2471,7 @@ class Database_Static_xml extends DatabaseDriver
                     return null;
                 }
                 $expr_eval = $this->_execute_expression($expr[2], $bindings, $query, $db, $fail_ok, $full_set);
-                return simulated_wildcard_match($value, $expr_eval, true);
+                return simulated_wildcard_match($value, $expr_eval, true, true);
 
             case 'EXISTS':
                 list($exists_select, $exists_as, $exists_joins, $exists_where_expr, $exists_group_by, $exists_having, $exists_orders, $exists_unions, $exists_start, $exists_max) = $expr[1];
@@ -2575,6 +2601,13 @@ class Database_Static_xml extends DatabaseDriver
                     return null;
                 }
                 return @($a % $b);
+
+            case 'X_MD5':
+                $value = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
+                if ($value === null) {
+                    return null;
+                }
+                return md5($value);
 
             case 'IN':
                 $val = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
@@ -3147,9 +3180,10 @@ class Database_Static_xml extends DatabaseDriver
      * @param  integer $start The start row to affect
      * @param  array $bindings Bindings available in the execution scope
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
+     * @param  ?array $schema Schema filled in function (null: none passed)
      * @return ?mixed The results (null: no results)
      */
-    protected function _execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, $bindings, $fail_ok)
+    protected function _execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, $bindings, $fail_ok, &$schema = null)
     {
         // Execute to get records
         $done = 0;
@@ -3223,6 +3257,92 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
+        // Find what fields are being selected (we need this for later checks)
+        $selected_fields = [];
+        $selected_fields_aliases = [];
+        $has_wildcard_selected_fields = false;
+        foreach ($select as $i => $want) {
+            $as = null;
+
+            switch ($want[0]) { // NB: COUNT, SUM, etc, already have their values rolled out into $record and we do not need to consider it here
+                case 'MAX':
+                case 'MIN':
+                case 'COUNT':
+                case 'SUM':
+                case 'X_GROUP_CONCAT':
+                case 'AVG':
+                    break;
+
+                case '*':
+                    $has_wildcard_selected_fields = true;
+                    if (array_key_exists(1, $want)) {
+                        if (array_key_exists(0, $records)) {
+                            foreach ($records[0] as $key => $val) {
+                                if (substr($key, 0, strlen($want[1] . '.')) == $want[1] . '.') {
+                                    $selected_fields[] = preg_replace('#^.*\.#', '', $key);
+                                }
+                            }
+                        }
+                    } else {
+                        if (array_key_exists(0, $records)) {
+                            foreach ($records[0] as $key => $val) {
+                                if (strpos($key, '.') === false) {
+                                    $selected_fields[] = preg_replace('#^.*\.#', '', $key);
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case 'DISTINCT':
+                    $val = [];
+                    foreach ($want[1] as $param) {
+                        if (is_array($param)) {
+                            $selected_fields[] = preg_replace('#^.*\.#', '', $param[0]);
+                        } else {
+                            if (strpos($param, '*') !== false) {
+                                $has_wildcard_selected_fields = true;
+                                if (array_key_exists(0, $records)) {
+                                    foreach ($records[0] as $key => $val) {
+                                        if ((strpos($key, '.') === false) || (strpos($param, '.') !== false)) {
+                                            $selected_fields[] = preg_replace('#^.*\.#', '', $key);
+                                        }
+                                    }
+                                }
+                            } else {
+                                $selected_fields[] = $param;
+                            }
+                        }
+                    }
+                    break;
+
+                case 'AS':
+                    $selected_fields_aliases[] = preg_replace('#^.*\.#', '', $want[2]);
+
+                    switch ($want[1][0]) {
+                        case 'MAX':
+                        case 'MIN':
+                        case 'COUNT':
+                        case 'SUM':
+                        case 'X_GROUP_CONCAT':
+                        case 'AVG':
+                            break 2;
+                        default:
+                            if ((isset($want[1][1])) && (is_string($want[1][1]))) {
+                                $selected_fields[] = preg_replace('#^.*\.#', '', $want[1][1]);
+                            }
+                            break 2;
+                    }
+                    // no break
+
+                default:
+                    if ((isset($want[1])) && (is_string($want[1]))) {
+                        $selected_fields[] = preg_replace('#^.*\.#', '', $want[1]);
+                    }
+                    break;
+            }
+        }
+
         // Filter by WHERE
         $pre_filtered_records = [];
         foreach ($records as $record) {
@@ -3254,6 +3374,13 @@ class Database_Static_xml extends DatabaseDriver
                 $records_full_set[] = $set;
             }
 
+            // Test that we aren't selecting records outside the scope of the GROUP BY
+            foreach ($selected_fields as $selected_field) {
+                if (!in_array($selected_field, preg_replace('#^.*\.#', '', $group_by))) {
+                    return $this->_bad_query($query, $fail_ok, 'Selecting ' . $selected_field . ', which is not covered in GROUP BY clause');
+                }
+            }
+
             // Filter by HAVING
             if ($group_by !== null) {
                 if ($having !== null) {
@@ -3274,11 +3401,28 @@ class Database_Static_xml extends DatabaseDriver
                     case 'DISTINCT':
                         $index = [];
                         foreach ($records as $set_item) {
-                            $val = [];
+                            $distinct_compound_val = [];
                             foreach ($s_term[1] as $di) {
-                                $val[] = $set_item[$di];
+                                if (is_array($di)) {
+                                    $di = $di[0];
+                                }
+                                if (strpos($di, '*') !== false) {
+                                    $_val = [];
+                                    foreach ($set_item as $key => $val) {
+                                        if ((strpos($di, '.') === false) || ((strpos($key, '.') !== false) && (substr($key, 0, strpos($key, '.')) == substr($di, 0, strpos($di, '.'))))) {
+                                            $_val[] = $val;
+                                        }
+                                    }
+                                    $distinct_compound_val[] = $_val;
+                                } else {
+                                    if (!array_key_exists($di, $set_item) !== false) {
+                                        return $this->_bad_query($query, $fail_ok, 'Cannot make distinct a non-existent field, ' . $di);
+                                    }
+
+                                    $distinct_compound_val[] = $set_item[$di];
+                                }
                             }
-                            $index[serialize($val)] = $set_item;
+                            $index[serialize($distinct_compound_val)] = $set_item;
                         }
                         $records = array_values($index);
                         break;
@@ -3309,7 +3453,6 @@ class Database_Static_xml extends DatabaseDriver
                     switch ($want[0]) {
                         case 'AS':
                             switch ($want[1][0]) {
-                                case 'DISTINCT':
                                 case 'MAX':
                                 case 'MIN':
                                 case 'COUNT':
@@ -3354,6 +3497,7 @@ class Database_Static_xml extends DatabaseDriver
 
         // Selecting correct fields
         $results = [];
+        $cuts_to_single_row = false;
         foreach ($records as $record) {
             $_record = [];
             foreach ($select as $i => $want) {
@@ -3369,6 +3513,7 @@ class Database_Static_xml extends DatabaseDriver
                         // Was already specially processed (at *MARKER*), compound function - just copy through
                         $as = $this->_param_name_for($want[1], $i);
                         $_record[preg_replace('#^.*\.#', '', $as)] = $record[$as];
+                        $cuts_to_single_row = true;
                         break;
 
                     case '*':
@@ -3393,18 +3538,35 @@ class Database_Static_xml extends DatabaseDriver
 
                     case 'DISTINCT':
                         $val = [];
-                        foreach ($want[1] as $param) {
-                            if (strpos($param, '.') === false) {
-                                $_record[$param] = $record[$param];
+                        foreach ($want[1] as $_param) {
+                            if (is_array($_param)) {
+                                $param = $_param[0];
+                                $alias = $_param[1];
+                                if (!array_key_exists($param, $record) !== false) {
+                                    return $this->_bad_query($query, $fail_ok, 'Cannot alias a non-existent field, ' . $param);
+                                }
+                                $_record[$alias] = $record[$param];
                             } else {
-                                $_record[preg_replace('#^.*\.#', '', $param)] = $record[$param];
+                                $param = $_param;
+                                $alias = preg_replace('#^.*\.#', '', $param);
+                                if (strpos($param, '*') !== false) {
+                                    foreach ($record as $key => $val) {
+                                        if ((strpos($param, '.') === false) || ((strpos($key, '.') !== false) && (substr($key, 0, strpos($key, '.')) == substr($param, 0, strpos($param, '.'))))) {
+                                            $_record[preg_replace('#^.*\.#', '', $key)] = $val;
+                                        }
+                                    }
+                                } else {
+                                    if (!array_key_exists($param, $record) !== false) {
+                                        return $this->_bad_query($query, $fail_ok, 'Cannot make distinct a non-existent field, ' . $param);
+                                    }
+                                    $_record[$alias] = $record[$param];
+                                }
                             }
                         }
                         break;
 
                     case 'AS':
                         switch ($want[1][0]) {
-                            case 'DISTINCT':
                             case 'MAX':
                             case 'MIN':
                             case 'COUNT':
@@ -3415,6 +3577,7 @@ class Database_Static_xml extends DatabaseDriver
                                 $as = $want[2];
                                 $_record[preg_replace('#^.*\.#', '', $as)] = $record[$as];
                                 $want = $want[1];
+                                $cuts_to_single_row = true;
                                 break 2;
                             default:
                                 $as = $want[2];
@@ -3432,6 +3595,9 @@ class Database_Static_xml extends DatabaseDriver
                 }
             }
             $results[] = $_record;
+            if ($cuts_to_single_row) {
+                break;
+            }
         }
 
         // If there are no records, but some functions, we need to add a row
@@ -3469,15 +3635,14 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
-        // Try and validate some stuff PostgreSQL wouldn't like, so we make XML driver as strict as possible
-        //  It's not perfect, only works if we actually have a non-zero result set.
-        //  Can't dig into expressions because the XML driver doesn't support ordering by them.
-        if (!empty($results)) {
-            if ($orders !== null) {
-                $matches = [];
-                if (preg_match('#^\!?(\w+)$#', $orders, $matches) != 0) {
-                    if (!array_key_exists($matches[1], $records[0])) {
-                        warn_exit('Cannot sort by ' . $matches[1] . ', it\'s not selected');
+        // See if sorting by something that is not selected
+        //  Can't dig into expressions because the XML driver doesn't support ordering by them
+        if (($orders !== null) && (!$has_wildcard_selected_fields)) {
+            $matches = [];
+            foreach (explode(',', $orders) as $order) {
+                if (preg_match('#^\!?(\w+)$#', $order, $matches) != 0) {
+                    if ((!in_array($matches[1], preg_replace('#^.*\.#', '', $selected_fields))) && (!in_array($matches[1], preg_replace('#^.*\.#', '', $selected_fields_aliases)))) {
+                        return $this->_bad_query($query, $fail_ok, 'Cannot sort by ' . $matches[1] . ', it\'s not selected');
                     }
                 }
             }
@@ -3585,7 +3750,15 @@ class Database_Static_xml extends DatabaseDriver
                         foreach ($set as $set_item) {
                             $val = [];
                             for ($di = 1; $di < count($s_term[1]); $di++) {
-                                $val[] = $set_item[$s_term[1][$di]];
+                                if ($s_term[1][$di] == '*') {
+                                    $val[] = $set_item;
+                                } else {
+                                    if (!array_key_exists($s_term[1][$di], $set_item) !== false) {
+                                        return $this->_bad_query($query, $fail_ok, 'Cannot make distinct a non-existent field, ' . $s_term[1][$di]);
+                                    }
+
+                                    $val[] = $set_item[$s_term[1][$di]];
+                                }
                             }
                             $index[serialize($val)] = true;
                         }
@@ -3673,11 +3846,24 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
+        $join_table = mixed();
+
         $join_table = $this->_parsing_read($at, $tokens, $query);
 
         if ($join_table == '(') {
-            $closing_parentheses_needed++;
             $join_table = $this->_parsing_read($at, $tokens, $query);
+
+            if ($join_table == 'SELECT') {
+                $at--;
+
+                $join_table = $this->_parse_query_select($tokens, $query, $db, 1, 0, $fail_ok, $at, false);
+
+                if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
+                    return null;
+                }
+            } else {
+                $closing_parentheses_needed++;
+            }
         }
 
         $joined_as_test = $this->_parsing_read($at, $tokens, $query, true);
@@ -3789,23 +3975,35 @@ class Database_Static_xml extends DatabaseDriver
     {
         $joined_as = $join[2];
 
-        $schema_b = $this->_read_schema($db, $join[1], $fail_ok);
-        if ($schema_b === null) {
-            return null;
-        }
-        $schema_b_plus = $schema_b;
-        foreach ($schema_b as $k => $v) {
-            $schema_b_plus[$join[2] . '.' . $k] = $v; // Needed so all scoped variables can be put in place as NULL's in a right variable
-        }
-        $join_condition = $join[3];
-        $join_condition = $this->_setify_join_condition_for_optimisation($join_condition, $schema, $records, $joined_as_prior);
-        $where_expr = $this->_setify_join_condition_for_optimisation($where_expr, $schema, $records, $joined_as_prior); // Good for implicit joins (,)
-        if ($where_expr == ['LITERAL', true]) {
-            $where_expr_combined = $join_condition;
+        if (is_array($join[1])) {
+            // Actually a SELECT (subquery)
+            list($select, $table, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max) = $join[1];
+            $schema_b = [];
+            $records_b = $this->_execute_query_select($select, $joined_as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, [], $fail_ok, $schema_b);
+            $schema_b_plus = $schema_b;
+            foreach ($schema_b as $k => $v) {
+                $schema_b_plus[$joined_as . '.' . $k] = $v; // Needed so all scoped variables can be put in place as NULL's in a right variable
+            }
+            $schema += $schema_b_plus;
         } else {
-            $where_expr_combined = ['AND', $where_expr, $join_condition];
+            $schema_b = $this->_read_schema($db, $join[1], $fail_ok);
+            if ($schema_b === null) {
+                return null;
+            }
+            $schema_b_plus = $schema_b;
+            foreach ($schema_b as $k => $v) {
+                $schema_b_plus[$joined_as . '.' . $k] = $v; // Needed so all scoped variables can be put in place as NULL's in a right variable
+            }
+            $join_condition = $join[3];
+            $join_condition = $this->_setify_join_condition_for_optimisation($join_condition, $schema, $records, $joined_as_prior);
+            $where_expr = $this->_setify_join_condition_for_optimisation($where_expr, $schema, $records, $joined_as_prior); // Good for implicit joins (,)
+            if ($where_expr == ['LITERAL', true]) {
+                $where_expr_combined = $join_condition;
+            } else {
+                $where_expr_combined = ['AND', $where_expr, $join_condition];
+            }
+            $records_b = $this->_read_all_records($db, $join[1], $joined_as, $schema_b, $where_expr_combined, $bindings, $fail_ok, $query);
         }
-        $records_b = $this->_read_all_records($db, $join[1], $joined_as, $schema_b, $where_expr_combined, $bindings, $fail_ok, $query);
         if ($records_b === null) {
             return null;
         }

@@ -32,7 +32,7 @@ class Block_main_image_slider
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = ['param', 'time', 'zone', 'order', 'as_guest', 'transitions', 'width', 'height'];
+        $info['parameters'] = ['param', 'time', 'zone', 'order', 'as_guest', 'transitions', 'width', 'height', 'check'];
         return $info;
     }
 
@@ -54,6 +54,7 @@ class Block_main_image_slider
             empty($map['height']) ? '300px' : $map['height'],
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
             array_key_exists('transitions', $map) ? $map['transitions'] : 'cube|cubeRandom|block|cubeStop|cubeHide|cubeSize|horizontal|showBars|showBarsRandom|tube|fade|fadeFour|paralell|blind|blindHeight|blindWidth|directionTop|directionBottom|directionRight|directionLeft|cubeStopRandom|cubeSpread|cubeJelly|glassCube|glassBlock|circles|circlesInside|circlesRotate|cubeShow|upBars|downBars|hideBars|swapBars|swapBarsBack|swapBlocks|cut|random|randomSmart',
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
@@ -86,8 +87,12 @@ PHP;
 
         require_code('galleries');
         require_lang('galleries');
+        require_code('images');
+        require_code('content');
 
         $block_id = get_block_id($map);
+
+        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
 
         $cat = empty($map['param']) ? 'root' : $map['param'];
         $mill = array_key_exists('time', $map) ? intval($map['time']) : 8000; // milliseconds between animations
@@ -115,61 +120,28 @@ PHP;
             $cat_select = selectcode_to_sqlfragment($cat, 'cat', 'galleries', 'parent_id', 'cat', 'name', false, false);
         }
 
-        $extra_join_image = '';
-        $extra_join_video = '';
-        $extra_where_image = '';
-        $extra_where_video = '';
+        $extra_where = ' AND ' . $cat_select;
 
-        if (addon_installed('content_privacy')) {
-            require_code('content_privacy');
-            $viewing_member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : null;
-            list($privacy_join_video, $privacy_where_video) = get_privacy_where_clause('video', 'r', $viewing_member_id);
-            list($privacy_join_image, $privacy_where_image) = get_privacy_where_clause('image', 'r', $viewing_member_id);
-            $extra_join_image .= $privacy_join_image;
-            $extra_join_video .= $privacy_join_video;
-            $extra_where_image .= $privacy_where_image;
-            $extra_where_video .= $privacy_where_video;
-        }
+        list($rows, $max_rows) = content_rows_for_multi_type(['image', 'video'], null, $extra_where, '', 'recent ASC', 0, 100, '', '', '', $check_perms);
 
-        if (get_option('filter_regions') == '1') {
-            require_code('locations');
-            $extra_where_image .= sql_region_filter('image', 'r.id');
-            $extra_where_video .= sql_region_filter('video', 'r.id');
-        }
-
-        $image_rows = $GLOBALS['SITE_DB']->query('SELECT r.id,thumb_url,url,title,description,\'image\' AS content_type FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . ' WHERE ' . $cat_select . $extra_where_image . ' AND validated=1 ORDER BY add_date ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
-        $video_rows = $GLOBALS['SITE_DB']->query('SELECT r.id,thumb_url,thumb_url AS url,title,description,\'video\' AS content_type FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . ' WHERE ' . $cat_select . $extra_where_video . ' AND validated=1 ORDER BY add_date ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
         $all_rows = [];
         if ($order != '') {
             foreach (explode(',', $order) as $o) {
-                $num = substr($o, 1);
+                $content_type = (substr($o, 0, 1) == 'v') ? 'video' : 'image';
+                $_id = substr($o, 1);
 
-                if (is_numeric($num)) {
-                    switch (substr($o, 0, 1)) {
-                        case 'i':
-                            foreach ($image_rows as $i => $row) {
-                                if ($row['id'] == intval($num)) {
-                                    $all_rows[] = $row;
-                                    unset($image_rows[$i]);
-                                }
-                            }
-                            break;
-                        case 'v':
-                            foreach ($video_rows as $i => $row) {
-                                if ($row['id'] == intval($num)) {
-                                    $all_rows[] = $row;
-                                    unset($video_rows[$i]);
-                                }
-                            }
-                            break;
+                if (is_numeric($_id)) {
+                    $id = intval($_id);
+                    foreach ($rows as $i => $row) {
+                        if ((($content_type == 'video') && ($row['content_type'] == 'video') && ($row['id'] == $id)) || (($content_type == 'image') && ($row['content_type'] == 'image') && ($row['id'] == $id))) {
+                            $all_rows[] = $row;
+                            unset($rows[$i]);
+                        }
                     }
                 }
             }
         }
-
-        $all_rows = array_merge($all_rows, $image_rows, $video_rows);
-
-        require_code('images');
+        $all_rows = array_merge($all_rows, $rows);
 
         $images = [];
         foreach ($all_rows as $i => $row) {

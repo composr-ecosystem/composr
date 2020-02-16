@@ -64,7 +64,7 @@ class Hook_content_meta_aware_iotd
             'view_page_link_pattern' => '_SEARCH:iotds:view:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_iotds:_edit:_WILD',
             'view_category_page_link_pattern' => null,
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_iotds')) ? (get_module_zone('cms_iotds') . ':cms_iotds:add') : null,
+            'add_url' => ($get_extended_data && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_iotds')) ? (get_module_zone('cms_iotds') . ':cms_iotds:add') : null,
             'archive_url' => $get_extended_data ? ((($zone !== null) ? $zone : get_module_zone('iotds')) . ':iotds') : null,
 
             'support_url_monikers' => true,

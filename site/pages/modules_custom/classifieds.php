@@ -185,8 +185,7 @@ class Module_classifieds
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', 'COUNT(*)', ['ce_submitter' => $member_id]);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', ['e.*'], ['ce_submitter' => $member_id], 'ORDER BY ce_add_date DESC');
-        $rows = remove_duplicate_rows($rows, 'e_id');
+        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', ['DISTINCT e.*'], ['ce_submitter' => $member_id], 'ORDER BY ce_add_date DESC'); // Join so we only find catalogues with classified prices defined
         if (empty($rows)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES', 'catalogue_entry'));
         }

@@ -68,7 +68,7 @@ class Hook_content_meta_aware_poll
             'view_page_link_pattern' => '_SEARCH:polls:view:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_polls:_edit:_WILD',
             'view_category_page_link_pattern' => null,
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_polls')) ? (get_module_zone('cms_polls') . ':cms_polls:add') : null,
+            'add_url' => ($get_extended_data && has_submit_permission('mid', get_member(), get_ip_address(), 'cms_polls')) ? (get_module_zone('cms_polls') . ':cms_polls:add') : null,
             'archive_url' => $get_extended_data ? ((($zone !== null) ? $zone : get_module_zone('polls')) . ':polls') : null,
 
             'support_url_monikers' => true,

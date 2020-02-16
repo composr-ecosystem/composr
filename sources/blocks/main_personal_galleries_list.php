@@ -78,8 +78,7 @@ class Block_main_personal_galleries_list
         $extra_join_sql = '';
         $where_sup = '';
         if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-            $extra_join_sql .= get_permission_join_clause('gallery', 'name');
-            $where_sup .= get_permission_where_clause(get_member(), get_permission_where_clause_groups(get_member()));
+            $where_sup .= get_category_permission_where_clause('gallery', 'name', get_member(), get_permission_where_clause_groups(get_member()));
         }
 
         // Find galleries

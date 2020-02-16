@@ -2185,28 +2185,6 @@ function collapse_1d_complexity($key, $list)
 }
 
 /**
- * Remove any duplication inside the list of rows (each row being a map). Duplication is defined by rows with corresponding IDs.
- *
- * @param  array $rows The rows to remove duplication of
- * @param  string $id_field The ID field
- * @return array The filtered rows
- */
-function remove_duplicate_rows($rows, $id_field = 'id')
-{
-    $ids_seen = [];
-    $rows2 = [];
-    foreach ($rows as $row) {
-        if (!array_key_exists($row[$id_field], $ids_seen)) {
-            $rows2[] = $row;
-        }
-
-        $ids_seen[$row[$id_field]] = true;
-    }
-
-    return $rows2;
-}
-
-/**
  * Sort a list of maps by the string length of a particular key ID in the maps.
  *
  * @param  array $rows List of maps to sort
@@ -2417,7 +2395,7 @@ function _multi_sort($a, $b)
             }
 
             if ((is_numeric($av)) && (is_numeric($bv)) || $M_SORT_NATURAL) {
-                $ret = cms_mb_strnatcasecmp($av, $bv);
+                $ret = cms_mb_strnatcasecmp(@strval($av), @strval($bv));
             } else {
                 $ret = cms_mb_strcasecmp($av, $bv);
             }
@@ -3173,7 +3151,7 @@ function find_session_tracking_codes($email_address = null)
     if (addon_installed('stats')) {
         static $tracking_code_rows = null;
         if ($tracking_code_rows === null) {
-            $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats', ['tracking_code'], ['session_id' => get_session_id()], ' AND ' . db_string_not_equal_to('tracking_code', '') . ' ORDER BY date_and_time DESC');
+            $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats', ['tracking_code', 'date_and_time'], ['session_id' => get_session_id()], ' AND ' . db_string_not_equal_to('tracking_code', '') . ' ORDER BY date_and_time DESC');
         }
         foreach ($tracking_code_rows as $tracking_code_row) {
             $tracking_codes = array_merge($tracking_codes, explode(',', $tracking_code_row['tracking_code']));
@@ -3184,7 +3162,8 @@ function find_session_tracking_codes($email_address = null)
         // This is not strictly a tracking code (it won't come up in the stats system for example), but we roll it into this function for simplicity
         static $inviter = false;
         if ($inviter === false) {
-            $inviter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address], 'ORDER BY i_time DESC');
+            $_inviter = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_inviter', 'i_time'], ['i_email_address' => $email_address], 'ORDER BY i_time DESC', 1);
+            $inviter = array_key_exists(0, $_inviter) ? $_inviter[0]['i_inviter'] : null;
         }
         if ($inviter !== null) {
             $tracking_codes[] = strval($inviter);
@@ -3711,7 +3690,7 @@ function seo_meta_get_for($type, $id)
 
     $cache = ['', ''];
 
-    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword'], $where, (get_db_type() == 'xml') ? ('ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword')) : 'ORDER BY id');
+    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword', 'id'], $where, (get_db_type() == 'xml') ? ('ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword')) : 'ORDER BY id');
     foreach ($rows as $row) {
         if ($cache[0] != '') {
             $cache[0] .= ',';
@@ -3849,7 +3828,7 @@ function get_zone_default_page($zone_name, &$zone_missing = false)
                 }
             }
             if ($_zone_default_page === null) {
-                $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page'], []/*Load multiple so we can cache for performance ['zone_name' => $zone_name]*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
+                $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page', 'zone_title'], []/*Load multiple so we can cache for performance ['zone_name' => $zone_name]*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
             }
             foreach ($_zone_default_page as $zone_row) {
                 $ZONE_DEFAULT_PAGES_CACHE[$zone_row['zone_name']] = $zone_row['zone_default_page'];

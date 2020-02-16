@@ -49,9 +49,9 @@ function unixify_line_format($in)
     return str_replace("\r", "\n", $in);
 }
 
-function object_factory($class)
+function object_factory($class, $failure_ok = false, $parameters = [])
 {
-    return new $class();
+    return new $class(...$parameters);
 }
 
 function find_all_hooks($type, $entry)

@@ -143,6 +143,10 @@ PHP;
      */
     public function run($map)
     {
+        $block_id = get_block_id($map);
+
+        // Determine content type
+        require_code('content');
         if (isset($map['param'])) {
             $content_type = $map['param'];
         } else {
@@ -154,17 +158,15 @@ PHP;
             }
         }
 
-        $block_id = get_block_id($map);
-
-        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
-
+        // Read pagination parameters
         $max = get_param_integer($block_id . '_max', isset($map['max']) ? intval($map['max']) : 30);
         $start = get_param_integer($block_id . '_start', isset($map['start']) ? intval($map['start']) : 0);
         $do_pagination = ((isset($map['pagination']) ? $map['pagination'] : '0') == '1');
         $attach_to_url_filter = ((isset($map['attach_to_url_filter']) ? $map['attach_to_url_filter'] : '0') == '1');
         $root = @cms_empty_safe($map['root']) ? get_param_integer('keep_' . $content_type . '_root', null) : intval($map['root']);
 
-        $guid = isset($map['guid']) ? $map['guid'] : '';
+        // Read selection parameters
+        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
         $sort = empty($map['sort']) ? 'recent' : $map['sort']; // recent|top|views|random|title or some manually typed sort order
         $select = isset($map['select']) ? $map['select'] : '';
         $select_b = isset($map['select_b']) ? $map['select_b'] : '';
@@ -172,24 +174,44 @@ PHP;
             return do_template('RED_ALERT', ['_GUID' => 'nktad4b52ustiuhzvqzin9htz4g26vow', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]); // Indicates some kind of referencing error, probably caused by Tempcode pre-processing - skip execution
         }
         $filter = isset($map['filter']) ? $map['filter'] : '';
+        $days = empty($map['days']) ? null : intval($map['days']);
+        $pinned = empty($map['pinned']) ? [] : array_unique(array_map('intval', array_map('trim', explode(',', trim($map['pinned'])))));
+        $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
+
+        // Read display parameters
+        $guid = isset($map['guid']) ? $map['guid'] : '';
         $zone = isset($map['zone']) ? $map['zone'] : '_SEARCH';
         $title = isset($map['title']) ? $map['title'] : '';
-        $days = empty($map['days']) ? null : intval($map['days']);
         $lifetime = empty($map['lifetime']) ? null : intval($map['lifetime']);
-        $pinned = empty($map['pinned']) ? [] : explode(',', $map['pinned']);
         $give_context = (isset($map['give_context']) ? $map['give_context'] : '0') == '1';
         $include_breadcrumbs = (isset($map['include_breadcrumbs']) ? $map['include_breadcrumbs'] : '0') == '1';
 
-        if ((!file_exists(get_file_base() . '/sources/hooks/systems/content_meta_aware/' . filter_naughty_harsh($content_type, true) . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/' . filter_naughty_harsh($content_type, true) . '.php'))) {
-            return do_template('RED_ALERT', ['_GUID' => 'tbt2956j6oneq4j22bap5rbftytfigyg', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
-        }
-
-        require_code('content');
+        // Read content object
         $object = get_content_object($content_type);
         $info = $object->info($zone, true, ($select_b == '') ? null : $select_b);
         if ($info === null) {
-            return do_template('RED_ALERT', ['_GUID' => 'tfvwtgk7hc76qnc54y4t8ckdwf2my0d7', 'TEXT' => do_lang_tempcode('IMPOSSIBLE_TYPE_USED')]);
+            return do_template('RED_ALERT', ['_GUID' => 'tbt2956j6oneq4j22bap5rbftytfigyg', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
         }
+        $first_id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
+
+        $extra_join = '';
+        $extra_where = '';
+
+        // Cycling of what has been seen before
+        if (is_array($info['id_field'])) {
+            $lifetime = null; // Cannot join on this
+        }
+        if ($lifetime !== null) {
+            $block_cache_id = md5(serialize($map));
+            $extra_join .= ' LEFT JOIN ' . $info['db']->get_table_prefix() . 'feature_lifetime_monitor m ON m.content_id=' . db_cast($first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('m.block_cache_id', $block_cache_id);
+            $extra_where .= ' AND (m.run_period IS NULL OR m.run_period<' . strval($lifetime * 60 * 60 * 24) . ')';
+        }
+
+        // Read rows
+        $viewing_member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : get_member();
+        list($rows, $max_rows) = content_rows_for_multi_type([$content_type], $days, $extra_where, $extra_join, $sort, $start, $max, $select, $select_b, $filter, $check_perms, $pinned, null, $viewing_member_id);
+
+        // Links...
 
         $submit_url = $info['add_url'];
         if ($submit_url !== null) {
@@ -201,390 +223,17 @@ PHP;
             $submit_url = '';
         }
 
-        $first_id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
-
-        // Get entries
-
-        $category_type_access = null;
-        $category_type_select = null;
-        if (is_array($info['category_field'])) {
-            $category_field_access = $info['category_field'][0];
-            $category_field_select = $info['category_field'][1];
+        if ($info['archive_url'] !== null) {
+            $archive_url = page_link_to_tempcode_url($info['archive_url']);
         } else {
-            $category_field_access = $info['category_field'];
-            $category_field_select = $info['category_field'];
-        }
-        if (array_key_exists('category_type', $info)) {
-            if (is_array($info['category_type'])) {
-                $category_type_access = $info['category_type'][0];
-                $category_type_select = $info['category_type'][1];
-            } else {
-                $category_type_access = $info['category_type'];
-                $category_type_select = $info['category_type'];
-            }
+            $archive_url = new Tempcode();
         }
 
-        // Actually for categories we check access on category ID
-        if ($info['is_category'] && $category_type_access !== null) {
-            $category_field_access = $first_id_field;
-        }
+        $view_url = array_key_exists('view_url', $info) ? $info['view_url'] : new Tempcode();
 
-        $where = '1=1';
-        $query = 'FROM ' . get_table_prefix() . $info['table'] . ' r';
-        if ($info['table'] == 'catalogue_entries') {
-            $where .= ' AND r.c_name NOT LIKE \'' . db_encode_like('\_%') . '\'';
-        }
-
-        if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-            $groups = get_permission_where_clause_groups(get_member(), true, 'a.');
-            $groups2 = get_permission_where_clause_groups(get_member(), true, 'a2.');
-
-            if ($category_field_access !== null) {
-                if ($category_type_access === '<zone>') {
-                    $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_zone_access a ON (r.' . $category_field_access . '=a.zone_name)';
-                    $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_zone_access ma ON (r.' . $category_field_access . '=ma.zone_name)';
-                } elseif ($category_type_access === '<page>') {
-                    $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_page_access a ON (r.' . $category_field_select . '=a.page_name AND r.' . $category_field_access . '=a.zone_name AND (' . $groups . '))';
-                    $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_zone_access a2 ON (r.' . $category_field_access . '=a2.zone_name)';
-                    $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_zone_access ma2 ON (r.' . $category_field_access . '=ma2.zone_name)';
-                } else {
-                    $query .= get_permission_join_clause($category_type_select, $category_field_select, 'a', 'ma');
-                }
-            }
-            if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($info['category_type'] !== '<page>') && ($info['category_type'] !== '<zone>')) {
-                $query .= get_permission_join_clause($category_type_select, $category_field_select, 'a2', 'ma2');
-            }
-
-            if ($category_field_access !== null) {
-                if ($info['category_type'] === '<page>') {
-                    $where .= ' AND (a.group_id IS NULL) AND (' . $groups2 . ') AND (a2.group_id IS NOT NULL)';
-                    // NB: too complex to handle member-specific page permissions in this
-                } else {
-                    $where .= get_permission_where_clause(get_member(), $groups, 'a', 'ma');
-                }
-            }
-            if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($info['category_type'] !== '<page>')) {
-                $where .= get_permission_where_clause(get_member(), $groups2, 'a2', 'ma2');
-            }
-        }
-
-        if (array_key_exists('where', $info)) {
-            $where .= ' AND ';
-            $where .= $info['where'];
-        }
-
-        if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (has_privilege(get_member(), 'see_unvalidated'))) {
-            $where .= ' AND ';
-            $where .= 'r.' . $info['validated_field'] . '=1';
-        }
-
-        $x1 = '';
-        $x2 = '';
-        if (($select != '') && ($category_field_select !== null)) {
-            $x1 = $this->build_select($select, $info, $category_field_select);
-            $parent_spec__table_name = array_key_exists('parent_spec__table_name', $info) ? $info['parent_spec__table_name'] : $info['table'];
-            if (($parent_spec__table_name !== null) && ($parent_spec__table_name != $info['table'])) {
-                $query .= ' LEFT JOIN ' . $info['db']->get_table_prefix() . $parent_spec__table_name . ' parent ON parent.' . $info['parent_spec__field_name'] . '=r.' . $first_id_field;
-            }
-        }
-        if (($select_b != '') && ($category_field_access !== null)) {
-            $x2 = $this->build_select($select_b, $info, $category_field_access);
-        }
-
-        if (($days !== null) && ($info['date_field'] !== null)) {
-            $where .= ' AND ';
-            $where .= 'r.' . $info['date_field'] . '>=' . strval(time() - 60 * 60 * 24 * $days);
-        }
-
-        if (is_array($info['id_field'])) {
-            $lifetime = null; // Cannot join on this
-        }
-        if ($lifetime !== null) {
-            $block_cache_id = md5(serialize($map));
-            $query .= ' LEFT JOIN ' . $info['db']->get_table_prefix() . 'feature_lifetime_monitor m ON m.content_id=' . db_cast($first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('m.block_cache_id', $block_cache_id);
-            $where .= ' AND ';
-            $where .= '(m.run_period IS NULL OR m.run_period<' . strval($lifetime * 60 * 60 * 24) . ')';
-        }
-
-        if (array_key_exists('extra_select_sql', $info)) {
-            $extra_select_sql = $info['extra_select_sql'];
-        } else {
-            $extra_select_sql = '';
-        }
-        if (array_key_exists('extra_table_sql', $info)) {
-            $query .= $info['extra_table_sql'];
-        }
-        if (array_key_exists('extra_where_sql', $info)) {
-            $where .= ' AND ';
-            $where .= $info['extra_where_sql'];
-        }
-
-        // Filtercode support
-        if ($filter != '') {
-            global $BLOCK_OCPRODUCTS_ERROR_EMAILS;
-            $BLOCK_OCPRODUCTS_ERROR_EMAILS = true;
-
-            // Convert the filters to SQL
-            require_code('filtercode');
-            list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($info['db'], parse_filtercode($filter), $content_type);
-            $extra_select_sql .= implode('', $extra_select);
-            $query .= implode('', $extra_join);
-            $where .= $extra_where;
-        }
-
-        if (addon_installed('content_privacy')) {
-            require_code('content_privacy');
-            $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
-            $viewing_member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : null;
-            list($privacy_join, $privacy_where) = get_privacy_where_clause($content_type, 'r', $viewing_member_id);
-            $query .= $privacy_join;
-            $where .= $privacy_where;
-        }
-
-        // Put query together
-        if ($where . $x1 . $x2 != '') {
-            if ($where == '') {
-                $where = '1=1';
-            }
-            $query .= ' WHERE ' . $where;
-            if ($x1 != '') {
-                $query .= ' AND (' . $x1 . ')';
-            }
-            if ($x2 != '') {
-                $query .= ' AND (' . $x2 . ')';
-            }
-        }
-
-        if ((($sort == 'average_rating') || ($sort == 'compound_rating')) && (array_key_exists('feedback_type_code', $info)) && ($info['feedback_type_code'] === null)) {
-            $sort = 'title';
-        }
-
-        global $TABLE_LANG_FIELDS_CACHE;
-        $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$info['table']]) ? $TABLE_LANG_FIELDS_CACHE[$info['table']] : [];
-        foreach ($lang_fields as $lang_field => $lang_field_type) {
-            unset($lang_fields[$lang_field]);
-            $lang_fields['r.' . $lang_field] = $lang_field_type;
-        }
-
-        // Find what kind of query to run and run it
-        if ($select != '-1') {
-            if (substr($query, -strlen(' WHERE 1=1 AND (0=1)')) == ' WHERE 1=1 AND (0=1)') {
-                // Tried to do recursive query and found nothing to query
-                $max_rows = 0;
-            } else {
-                $max_rows = $info['db']->query_value_if_there('SELECT COUNT(*)' . $extra_select_sql . ' ' . $query, false, true);
-            }
-            if ($max_rows == 0) {
-                $rows = [];
-            } else {
-                if (($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) && (is_string($info['id_field']))) { // Must be after COUNT(*) happens
-                    $query .= ' GROUP BY r.' . $info['id_field'];
-                }
-
-                switch ($sort) {
-                    case 'random':
-                    case 'fixed_random':
-                    case 'fixed_random ASC':
-                        $clause = db_cast('r.' . $first_id_field, 'INT');
-                        $clause = '(' . db_function('MOD', [$clause, date('d')]) . ')';
-                        $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . ',' . $clause . ' AS fixed_random ' . $query . ' ORDER BY fixed_random', $max + $start, 0, false, true, $lang_fields);
-                        break;
-                    case 'recent_contents':
-                    case 'recent_contents ASC':
-                    case 'recent_contents DESC':
-                        $hooks = find_all_hooks('systems', 'content_meta_aware');
-                        $sort_combos = [];
-                        foreach (array_keys($hooks) as $hook) {
-                            $other_ob = get_content_object($hook);
-                            $other_info = $other_ob->info();
-                            if (($hook != $content_type) && ($other_info['parent_category_meta_aware_type'] !== null) && ($other_info['parent_category_meta_aware_type'] == $content_type) && (is_string($other_info['parent_category_field'])) && ($other_info['add_time_field'] !== null)) {
-                                $sort_combos[] = [$other_info['table'], $other_info['add_time_field'], $other_info['parent_category_field']];
-                            }
-                        }
-                        if (!empty($sort_combos)) {
-                            $_order_by = [];
-                            foreach ($sort_combos as $i => $sort_combo) {
-                                list($other_table, $other_add_time_field, $other_category_field) = $sort_combo;
-                                if ($sort == 'recent_contents DESC') {
-                                    $__order_by_a = '(SELECT MAX(';
-                                } else {
-                                    $__order_by_a = '(SELECT MIN(';
-                                }
-                                $__order_by_a .= $other_add_time_field . ') FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . $other_table . ' x WHERE r.' . $first_id_field . '=x.' . $other_category_field;
-                                $__order_by_a .= ')';
-                                $__order_by_b = (($sort == 'recent_contents DESC') ? '0' : strval(PHP_INT_MAX)/*so empty galleries go to end of order*/);
-                                $_order_by[] = db_function('COALESCE', [$__order_by_a, $__order_by_b]);
-                            }
-                            if (count($sort_combos) == 1) {
-                                $order_by = $_order_by[0];
-                            } else {
-                                $order_by = db_function('GREATEST', $_order_by);
-                            }
-
-                            if ($sort == 'recent_contents DESC') {
-                                $order_by .= ' DESC';
-                            }
-
-                            $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . ' ' . $query . ' ORDER BY ' . $order_by, $max + $start, 0);
-
-                            break;
-                        }
-                        // no break
-                    case 'recent':
-                    case 'recent ASC':
-                    case 'recent DESC':
-                        if ((array_key_exists('date_field', $info)) && ($info['date_field'] !== null)) {
-                            $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . ' ' . $query . ' ORDER BY r.' . $info['date_field'] . (($sort != 'recent asc') ? ' DESC' : ' ASC'), $max + $start, 0, false, true, $lang_fields);
-                            break;
-                        }
-                        $sort = $first_id_field;
-                        // no break
-                    case 'views':
-                        if ((array_key_exists('views_field', $info)) && ($info['views_field'] !== null)) {
-                            $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . ' ' . $query . ' ORDER BY r.' . $info['views_field'] . ' DESC', $max + $start, 0, false, true, $lang_fields);
-                            break;
-                        }
-                        $sort = $first_id_field;
-                        // no break
-                    case 'average_rating':
-                    case 'average_rating ASC':
-                    case 'average_rating DESC':
-                        if ((array_key_exists('feedback_type_code', $info)) && ($info['feedback_type_code'] !== null)) {
-                            if ($sort == 'average_rating') {
-                                $sort .= ' DESC';
-                            }
-
-                            $select_rating = ',(SELECT AVG(rating) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $info['feedback_type_code']) . ' AND rating_for_id=' . db_cast($first_id_field, 'CHAR') . ') AS average_rating';
-                            $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . $select_rating . ' ' . $query . ' ORDER BY ' . $sort, $max + $start, 0, false, true, $lang_fields);
-                            break;
-                        }
-                        $sort = $first_id_field;
-                        // no break
-                    case 'compound_rating':
-                    case 'compound_rating ASC':
-                    case 'compound_rating DESC':
-                        if ((array_key_exists('feedback_type_code', $info)) && ($info['feedback_type_code'] !== null)) {
-                            if ($sort == 'compound_rating') {
-                                $sort .= ' DESC';
-                            }
-
-                            $select_rating = ',(SELECT SUM(rating-1) FROM ' . get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $info['feedback_type_code']) . ' AND rating_for_id=' . db_cast($first_id_field, 'CHAR') . ') AS compound_rating';
-                            $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . $select_rating . ' ' . $query . ' ORDER BY ' . $sort, $max + $start, 0, false, true, $lang_fields);
-                            break;
-                        }
-                        $sort = $first_id_field;
-                        // no break
-                    case 'title':
-                    case 'title ASC':
-                    case 'title DESC':
-                        if (strpos($sort, ' ') === false) {
-                            $sort .= ' ASC';
-                        }
-                        $sort_order = preg_replace('#^.* #', '', $sort);
-
-                        $sql = 'SELECT r.*' . $extra_select_sql . ' ' . $query . ' ORDER BY ';
-                        if ((array_key_exists('title_field', $info)) && (strpos($info['title_field'], ':') === false)) {
-                            if ($info['title_field_dereference']) {
-                                $sql .= $GLOBALS['SITE_DB']->translate_field_ref($info['title_field']) . ' ' . $sort_order;
-                            } else {
-                                $sql .= 'r.' . $info['title_field'] . ' ' . $sort_order;
-                            }
-                        } else {
-                            if (isset($info['order_field'])) {
-                                $sql .= 'r.' . $info['order_field'] . ' ' . $sort_order . ',';
-                            } else {
-                                $sql .= 'r.' . $first_id_field . ' ' . $sort_order;
-                            }
-                        }
-                        $rows = $info['db']->query($sql, $max + $start, 0, false, true, $lang_fields);
-                        break;
-                    default: // Some manual order
-                        $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . ' ' . $query . ' ORDER BY ' . $sort, $max + $start, 0, false, true, $lang_fields);
-                        break;
-                }
-            }
-        } else {
-            $max_rows = 0;
-            $rows = [];
-        }
-
-        $pinned_order = [];
-
-        require_code('content');
-
-        // Add in requested pinned awards
-        if ((!empty($pinned)) && (addon_installed('awards'))) {
-            $where = '';
-            foreach ($pinned as $p) {
-                if (trim($p) == '') {
-                    continue;
-                }
-                if ($where != '') {
-                    $where .= ' OR ';
-                }
-                $where .= 'a_type_id=' . strval(intval($p));
-            }
-            if ($where == '') {
-                $awarded_content_ids = [];
-            } else {
-                $award_sql = 'SELECT a.a_type_id,a.content_id FROM ' . get_table_prefix() . 'award_archive a JOIN (SELECT MAX(date_and_time) AS max_date,a_type_id FROM ' . get_table_prefix() . 'award_archive WHERE ' . $where . ' GROUP BY a_type_id) b ON b.a_type_id=a.a_type_id AND a.date_and_time=b.max_date WHERE ' . str_replace('a_type_id', 'a.a_type_id', $where);
-                $awarded_content_ids = collapse_2d_complexity('a_type_id', 'content_id', $GLOBALS['SITE_DB']->query($award_sql, null, 0, false, true));
-            }
-
-            foreach ($pinned as $p) {
-                if (!isset($awarded_content_ids[intval($p)])) {
-                    continue;
-                }
-                $awarded_content_id = $awarded_content_ids[intval($p)];
-
-                $award_content_row = content_get_row($awarded_content_id, $info);
-
-                if (($award_content_row !== null) && ((!addon_installed('unvalidated')) || (!isset($info['validated_field'])) || ($award_content_row[$info['validated_field']] != 0))) {
-                    $pinned_order[] = $award_content_row;
-                }
-            }
-        }
-
-        if (!empty($pinned_order)) { // Re-sort with pinned awards if appropriate
-            if (!empty($rows)) {
-                $old_rows = $rows;
-                $rows = [];
-                $total_count = count($old_rows) + count($pinned_order);
-                $used_ids = [];
-
-                // Carry on as it should be
-                for ($t_count = 0; $t_count < $total_count; $t_count++) {
-                    if (array_key_exists($t_count, $pinned_order)) { // Pinned ones go first, so order # for them is in sequence with main loop order
-                        $str_id = extract_content_str_id_from_data($pinned_order[$t_count], $info);
-                        if (!in_array($str_id, $used_ids)) {
-                            $rows[] = $pinned_order[$t_count];
-                            $used_ids[] = $str_id;
-                        }
-                    } else {
-                        $temp_row = $old_rows[$t_count - count($pinned_order)];
-                        $str_id = extract_content_str_id_from_data($temp_row, $info);
-                        if (!in_array($str_id, $used_ids)) {
-                            $rows[] = $temp_row;
-                            $used_ids[] = $str_id;
-                        }
-                    }
-                }
-            } else {
-                switch ($sort) {
-                    case 'recent':
-                        if (array_key_exists('date_field', $info)) {
-                            sort_maps_by($pinned_order, $info['date_field']);
-                            $rows = array_reverse($pinned_order);
-                        }
-                        break;
-                    case 'views':
-                        if (array_key_exists('views_field', $info)) {
-                            sort_maps_by($pinned_order, $info['views_field']);
-                            $rows = array_reverse($pinned_order);
-                        }
-                        break;
-                }
-            }
+        if ((isset($map['no_links'])) && ($map['no_links'] == '1')) {
+            $submit_url = new Tempcode();
+            $archive_url = new Tempcode();
         }
 
         // Sort out run periods
@@ -594,36 +243,11 @@ PHP;
 
         // Move towards render...
 
-        if ($info['archive_url'] !== null) {
-            $archive_url = page_link_to_tempcode_url($info['archive_url']);
-        } else {
-            $archive_url = new Tempcode();
-        }
-        $view_url = array_key_exists('view_url', $info) ? $info['view_url'] : new Tempcode();
-
-        $done_already = []; // We need to keep track, in case those pulled up via awards would also come up naturally
-
         $rendered_content = [];
         $content_data = [];
-        $rows_skipped = 0;
         foreach ($rows as $row) {
-            if (count($done_already) == $start + $max) {
-                break;
-            }
-
             // Get content ID
             $content_id = extract_content_str_id_from_data($row, $info);
-
-            // De-dupe
-            if (array_key_exists($content_id, $done_already)) {
-                $rows_skipped++;
-                continue;
-            }
-            $done_already[$content_id] = 1;
-
-            if (count($done_already) <= $start) { // <= because it will over-count by one as we already added to $done_already
-                continue;
-            }
 
             // Lifetime managing
             if ($lifetime !== null) {
@@ -653,9 +277,6 @@ PHP;
             // Render
             $rendered_content[] = $object->run($row, $zone, $give_context, $include_breadcrumbs, $root, $attach_to_url_filter, $guid);
 
-            // Try and get a better submit URL
-            $submit_url = str_replace('%21', $content_id, $submit_url);
-
             $content_data[] = ['URL' => str_replace('%21', $content_id, $view_url->evaluate())];
         }
 
@@ -674,11 +295,6 @@ PHP;
             }
         }
 
-        if ((isset($map['no_links'])) && ($map['no_links'] == '1')) {
-            $submit_url = new Tempcode();
-            $archive_url = new Tempcode();
-        }
-
         // Empty? Bomb out somehow
         if (empty($rendered_content)) {
             if ((isset($map['render_if_empty'])) && ($map['render_if_empty'] == '0')) {
@@ -690,9 +306,10 @@ PHP;
         $pagination = null;
         if ($do_pagination) {
             require_code('templates_pagination');
-            $pagination = pagination(do_lang_tempcode($info['content_type_label']), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows - $rows_skipped);
+            $pagination = pagination(do_lang_tempcode($info['content_type_label']), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows);
         }
 
+        // Render
         return do_template('BLOCK_MAIN_MULTI_CONTENT', [
             '_GUID' => ($guid != '') ? $guid : '9035934bc9b25f57eb8d23bf100b5796',
             'BLOCK_ID' => $block_id,
@@ -713,31 +330,5 @@ PHP;
             'MAX_PARAM' => $block_id . '_max',
             'EXTRA_GET_PARAMS' => (get_param_integer($block_id . '_max', null) === null) ? null : ('&' . $block_id . '_max=' . urlencode(strval($max))),
         ]);
-    }
-
-    /**
-     * Make a select SQL fragment.
-     *
-     * @param  string $select The select string
-     * @param  array $info Map of details of our content type
-     * @param  string $category_field_select The field name of the category to select against
-     * @return string SQL fragment
-     */
-    protected function build_select($select, $info, $category_field_select)
-    {
-        $parent_spec__table_name = array_key_exists('parent_spec__table_name', $info) ? $info['parent_spec__table_name'] : $info['table'];
-        $parent_field_name = $info['is_category'] ? (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']) : $category_field_select;
-        if ($parent_field_name === null) {
-            $parent_spec__table_name = null;
-        }
-        $parent_spec__parent_name = array_key_exists('parent_spec__parent_name', $info) ? $info['parent_spec__parent_name'] : null;
-        $parent_spec__field_name = array_key_exists('parent_spec__field_name', $info) ? $info['parent_spec__field_name'] : null;
-        $id_field_numeric = ((!array_key_exists('id_field_numeric', $info)) || ($info['id_field_numeric']));
-        $category_is_string = ((array_key_exists('category_is_string', $info)) && (is_array($info['category_is_string']) ? $info['category_is_string'][1] : $info['category_is_string']));
-
-        require_code('selectcode');
-
-        $sql = selectcode_to_sqlfragment($select, 'r.' . (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']), $parent_spec__table_name, $parent_spec__parent_name, 'r.' . $parent_field_name, $parent_spec__field_name, $id_field_numeric, !$category_is_string);
-        return $sql;
     }
 }

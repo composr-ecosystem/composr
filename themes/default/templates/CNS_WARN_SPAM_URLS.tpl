@@ -4,6 +4,7 @@
 		<tr>
 			<th>{!DOMAIN}</th>
 			<th>{!URL}</th>
+			<th>{!IP_ADDRESS}</th>
 			<th>{!ACTION}</th>
 		</tr>
 	</thead>
@@ -17,6 +18,14 @@
 					{+START,LOOP,URLS}
 						{+START,IF,{$NEQ,{I},0}}<br />{+END}
 						<a href="{URL*}" target="_blank" title="{URL*} {!LINK_NEW_WINDOW}">{URL*}</a>
+					{+END}
+				</td>
+				<td>
+					{+START,IF,{$ADDON_INSTALLED,securitylogging}}
+						<a href="{$PAGE_LINK*,_SEARCH:admin_lookup:view:{IP*}}" target="_blank" title="{IP*} {!LINK_NEW_WINDOW}">{IP*}</a>
+					{+END}
+					{+START,IF,{$NOT,{$ADDON_INSTALLED,securitylogging}}}
+						{IP*}
 					{+END}
 				</td>
 				<td>

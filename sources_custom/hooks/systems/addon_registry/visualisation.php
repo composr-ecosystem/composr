@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    sortable_tables
+ * @package    visualisation
  */
 
 /**
@@ -93,7 +93,7 @@ class Hook_addon_registry_visualisation
  - Pie charts from spreadsheets ([tt]graph_pie_chart[/tt])
  - Scatter diagrams from spreadsheets ([tt]graph_scatter_diagram[/tt])
  - Maps with pins from spreadsheets ([tt]pins_on_map[/tt])
- - Maps with country data overlayed from spreadsheets ([tt]countries_on_map[/tt])
+ - Maps with country data overlaid from spreadsheets ([tt]countries_on_map[/tt])
 
 To use the [tt]main_sortable_table[/tt] block, place a [abbr="Comma-separated Values"]CSV[/abbr] spreadsheet file in [tt]uploads/website_specific[/tt], and place the block on a Comcode page like:
 [code]
@@ -149,7 +149,7 @@ Sample spreadsheet files for all the other blocks are provided under [tt]uploads
     public function get_file_list()
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/sortable_tables.php',
+            'sources_custom/hooks/systems/addon_registry/visualisation.php',
             'lang_custom/EN/sortable_tables.ini',
             'themes/default/javascript_custom/sortable_tables.js',
             'themes/default/templates_custom/SORTABLE_TABLE.tpl',

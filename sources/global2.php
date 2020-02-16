@@ -1082,6 +1082,7 @@ function load_user_stuff()
         global $SITE_INFO, $FORUM_DRIVER, $SITE_DB, $FORUM_DB;
 
         require_code('forum_stub');
+        require_code('users');
 
         if (empty($SITE_INFO['forum_type'])) {
             $SITE_INFO['forum_type'] = 'cns';
@@ -1999,20 +2000,48 @@ function __param($array, $name, $default, $integer = false, $posted = false)
 
 /**
  * Do a wildcard match by converting to a regular expression.
+ * Supports the '%' and '_' wildcards and '\' escaping of them (as per most SQL implementations of LIKE).
  *
  * @param  string $context The haystack
  * @param  string $word The needle (a wildcard expression)
  * @param  boolean $full_cover Whether full-coverage is required
+ * @param  boolean $case_sensitive Whether it is case sensitive
  * @return boolean Whether we have a match
  */
-function simulated_wildcard_match($context, $word, $full_cover = false)
+function simulated_wildcard_match($context, $word, $full_cover = false, $case_sensitive = false)
 {
-    $rexp = str_replace('%', '.*', str_replace('_', '.', str_replace('\\?', '.', str_replace('\\*', '.*', preg_quote($word)))));
+    $rexp = '';
+    $len = strlen($word);
+    $escape_flag = false;
+    for ($i = 0; $i < $len; $i++) {
+        $c = $word[$i];
+        if ($escape_flag) {
+            $c = preg_quote($c, '#');
+        } else {
+            if ($c == '%') {
+                $c = '.*';
+            } elseif ($c == '_') {
+                $c = '.';
+            } elseif ($c == '\\') {
+                $escape_flag = true;
+                continue;
+            } else {
+                $c = preg_quote($c, '#');
+            }
+        }
+        $rexp .= $c;
+    }
+
     if ($full_cover) {
         $rexp = '^' . $rexp . '$';
     }
 
-    return preg_match('#' . str_replace('#', '\#', $rexp) . '#i', $context) != 0;
+    $_rexp = '#' . $rexp . '#';
+    if (!$case_sensitive) {
+        $_rexp .= 'i';
+    }
+
+    return preg_match($_rexp, $context) != 0;
 }
 
 /**

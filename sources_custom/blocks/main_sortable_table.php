@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    sortable_tables
+ * @package    visualisation
  */
 
 /**
@@ -63,7 +63,7 @@ PHP;
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('sortable_tables', $error_msg)) {
+        if (!addon_installed__messaged('visualisation', $error_msg)) {
             return $error_msg;
         }
 

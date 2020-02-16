@@ -72,9 +72,7 @@ class Hook_rss_catalogues
         }
 
         $query = 'SELECT c.* FROM ' . get_table_prefix() . 'catalogues c';
-        if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
-            $query .= ' JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.c_name=c.c_name' . $privacy_join . ' WHERE 1=1' . $privacy_where . ' GROUP BY c.c_name';
-        }
+        $query .= ' WHERE EXISTS(SELECT * FROM ' . get_table_prefix() . 'catalogue_entries e' . $privacy_join . ' WHERE e.c_name=c.c_name' . $privacy_where . ')';
         $_catalogues = $GLOBALS['SITE_DB']->query($query);
 
         $catalogues = [];

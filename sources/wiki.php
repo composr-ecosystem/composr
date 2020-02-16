@@ -807,7 +807,7 @@ function create_selection_list_wiki_page_tree($select = null, $id = null, $bread
     $out = _create_selection_list_wiki_page_tree($wiki_seen, $select, $id, $breadcrumbs, $title, $use_compound_list, $ins_format);
 
     if ($include_orphans) {
-        $orphans = $GLOBALS['SITE_DB']->query('SELECT p.id,p.title FROM ' . get_table_prefix() . 'wiki_pages p WHERE p.id<>' . strval(db_get_first_id()) . ' AND NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'wiki_children WHERE child_id=p.id) ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+        $orphans = $GLOBALS['SITE_DB']->query('SELECT p.id,p.title,p.add_date FROM ' . get_table_prefix() . 'wiki_pages p WHERE p.id<>' . strval(db_get_first_id()) . ' AND NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'wiki_children WHERE child_id=p.id) ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
 
         foreach ($orphans as $i => $orphan) {
             $orphans[$i]['_title'] = get_translated_text($orphan['title']);

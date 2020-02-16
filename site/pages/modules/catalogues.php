@@ -780,14 +780,11 @@ class Module_catalogues
         $max = get_param_integer('catalogues_max', 30);
 
         // Not done via main_multi_content block due to need for custom filtering
-        $query = 'FROM ' . get_table_prefix() . 'catalogues c';
-        if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
-            $query .= ' LEFT JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.c_name=c.c_name';
-        }
-        $query .= ' WHERE ';
+        $query = 'SELECT c.* FROM ' . get_table_prefix() . 'catalogues c WHERE EXISTS (SELECT * FROM ' . get_table_prefix() . 'catalogue_entries e WHERE e.c_name=c.c_name)';
+        $query .= ' AND ';
         $query .= ($ecommerce === null) ? '1=1' : ('c_ecommerce=' . strval($ecommerce));
         $query .= ' AND c.c_name NOT LIKE \'' . db_encode_like('\_%') . '\'';
-        $rows = $GLOBALS['SITE_DB']->query('SELECT c.* ' . $query . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY c.c_name' : ''), $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
         $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT c.c_name) ' . $query);
         $out = new Tempcode();
         foreach ($rows as $myrow) {

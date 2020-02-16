@@ -221,7 +221,7 @@ function bookings_ical_script()
     $max_time = time();
 
     foreach ($members_with_bookings as $member_with_booking) {
-        $bookings = $GLOBALS['SITE_DB']->query('SELECT id FROM ' . get_table_prefix() . 'booking WHERE (' . $where . ') AND member_id=' . strval($member_with_booking['member_id']) . ' ORDER BY booked_at DESC', 10000/*reasonable limit*/);
+        $bookings = $GLOBALS['SITE_DB']->query('SELECT id,booked_at FROM ' . get_table_prefix() . 'booking WHERE (' . $where . ') AND member_id=' . strval($member_with_booking['member_id']) . ' ORDER BY booked_at DESC', 10000/*reasonable limit*/);
 
         $request = get_booking_request_from_db(collapse_1d_complexity('id', $bookings));
 

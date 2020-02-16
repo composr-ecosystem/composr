@@ -43,6 +43,22 @@ class Hook_sitemap_poll extends Hook_sitemap_content
     }
 
     /**
+     * Find what fields we should select for the Sitemap to be buildable. We don't want to select too much for perf reasons.
+     * Also find out what language fields we should load up for the table (returned by reference).
+     *
+     * @param  ?array $cma_info CMA info (null: standard for this hook)
+     * @param  string $table_prefix Table prefix
+     * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
+     * @return array Map between field name and field type
+     */
+    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
+    {
+        $ret = parent::select_fields($cma_info, $table_prefix, $lang_fields_filtered);
+        $ret[] = 'date_and_time';
+        return $ret;
+    }
+
+    /**
      * Find details of a virtual position in the sitemap. Virtual positions have no structure of their own, but can find child structures to be absorbed down the tree. We do this for modularity reasons.
      *
      * @param  ID_TEXT $page_link The page-link we are finding

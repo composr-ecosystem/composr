@@ -267,15 +267,14 @@ function get_members_viewing($page = null, $type = null, $id = null, $forum_laye
     }
     $map['session_invisible'] = 0;
     $db = ($forum_layer ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB']);
-    $results = $db->query_select('member_tracking t LEFT JOIN ' . $db->get_table_prefix() . 'sessions s ON t.mt_member_id=s.member_id', ['*'], $map, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND mt_time>' . strval(time() - 60 * intval(get_option('users_online_time'))) . ' ORDER BY mt_member_id', 200);
+    $table_clause = 'member_tracking t' . $GLOBALS['SITE_DB']->singular_join('sessions', 's', 't.mt_member_id=s.member_id', 'the_session', 'MAX');
+    $results = $db->query_select($table_clause, ['*'], $map, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND mt_time>' . strval(time() - 60 * intval(get_option('users_online_time'))) . ' ORDER BY mt_member_id', 200);
     if (count($results) == 200) {
         return null;
     }
 
     unset($map['session_invisible']);
     $num_guests = $db->query_select_value('member_tracking t', 'COUNT(*)', $map, ' AND mt_member_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
-
-    $results = remove_duplicate_rows($results, 'mt_member_id');
 
     $out = [
         $GLOBALS['FORUM_DRIVER']->get_guest_id() => $num_guests,

@@ -69,12 +69,6 @@ function get_forum_sort_order($_sort = 'first_post', $simplified = false)
             $keyset_field = 'p_time';
             break;
 
-        case 'post_time_grouped':
-            $sort .= 'MAX(pos.p_time) DESC';
-            $keyset_clause = 'pos.p_time<XXX';
-            $keyset_field = 'p_time';
-            break;
-
         case 'last_post':
         default:
             $sort .= 't_cache_last_time DESC';
@@ -793,7 +787,7 @@ function cns_get_forum_view($forum_id, $forum_info, $start = 0, $true_start = 0,
         if ($child_or_list != '') {
             $child_or_list .= ' AND ';
         }
-        $query = 'SELECT DISTINCT t_forum_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON (t.id=l_topic_id AND l_member_id=' . strval(get_member()) . ') WHERE t_forum_id IS NOT NULL AND ' . $child_or_list . 't_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' AND (l_time<t_cache_last_time OR l_time IS NULL)';
+        $query = 'SELECT DISTINCT t_forum_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l_topic_id AND l_member_id=' . strval(get_member()) . ' WHERE t_forum_id IS NOT NULL AND ' . $child_or_list . 't_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' AND (l_time<t_cache_last_time OR l_time IS NULL)';
         if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
             $query .= ' AND t_validated=1';
         }

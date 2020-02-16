@@ -22,6 +22,8 @@ class sitemap_test_set extends cms_test_case
 {
     protected $sitemap;
     protected $flattened;
+    protected $options;
+    protected $meta_gather;
 
     public function setUp()
     {
@@ -41,11 +43,11 @@ class sitemap_test_set extends cms_test_case
         $valid_node_types = null;
         $child_cutoff = null;
         $max_recurse_depth = null;
-        $options = SITEMAP_GEN_NONE | SITEMAP_GEN_MACHINE_SITEMAP;
+        $this->options = SITEMAP_GEN_NONE | SITEMAP_GEN_KEEP_FULL_STRUCTURE | SITEMAP_GEN_MACHINE_SITEMAP;
         $zone = '_SEARCH';
-        $meta_gather = SITEMAP_GATHER__ALL;
+        $this->meta_gather = SITEMAP_GATHER__ALL;
 
-        $this->sitemap = retrieve_sitemap_node($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $options, $zone, $meta_gather);
+        $this->sitemap = retrieve_sitemap_node($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $this->options, $zone, $this->meta_gather);
         $this->flattened = $this->flatten_sitemap($this->sitemap);
     }
 
@@ -72,6 +74,48 @@ class sitemap_test_set extends cms_test_case
             }
         }
         return $ret;
+    }
+
+    public function testIsSearchable()
+    {
+        $properties_compare = [
+            'content_type',
+            'content_id',
+            'page_link',
+            'permissions',
+            'privilege_page',
+        ];
+
+        foreach ($this->flattened as $page_link => $node) {
+            if ($page_link == '') {
+                continue;
+            }
+
+            $node_searched = retrieve_sitemap_node($page_link, null, null, null, null, $this->options, '_SEARCH', $this->meta_gather);
+            $this->assertTrue($node_searched !== null, 'Could not do a search for ' . $page_link);
+            if ($node_searched !== null) {
+                foreach ($properties_compare as $property) {
+                    $node_property = isset($node[$property]) ? $node[$property] : null;
+                    $node_searched_property = isset($node_searched[$property]) ? $node_searched[$property] : null;
+                    $this->assertTrue($node_property === $node_searched_property, 'Search produced different node for ' . $page_link . ' (comparing ' . $property . '; ' . serialize($node_property) . '; vs ' . serialize($node_searched_property) . ')');
+                    if ($node_property !== $node_searched_property) {
+                        if (!empty($_GET['debug'])) { // TODO: Change to $this->debug in v11
+                            var_dump($node_property);
+                            var_dump($node_searched_property);
+                        }
+                    }
+                }
+                if (!isset($node['title'])) {
+                    $this->assertTrue(false, 'Null title for ' . $page_link);
+                } elseif (!isset($node_searched['title'])) {
+                    $this->assertTrue(false, 'Null title on search result for ' . $page_link);
+                } else {
+                    $a = $node['title']->evaluate();
+                    $b = $node_searched['title']->evaluate();
+                    $this->assertTrue($a == $b, 'Search produced different node for ' . $page_link . ' (comparing title; ' . serialize($a) . '; vs ' . serialize($b) . ')');
+                }
+            }
+        }
     }
 
     public function testIsConclusive()

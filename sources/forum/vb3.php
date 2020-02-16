@@ -97,7 +97,7 @@ class Forum_driver_vb3 extends Forum_driver_base
 
         $name = 'cms_' . $name;
         if ((!isset($GLOBALS['SITE_INFO']['vb_version'])) || ($GLOBALS['SITE_INFO']['vb_version'] >= 3.6)) {
-            $r = $this->db->query('SELECT f.profilefieldid FROM ' . $this->db->get_table_prefix() . 'profilefield f LEFT JOIN ' . $this->db->get_table_prefix() . 'phrase p ON (' . db_string_equal_to('product', 'vbulletin') . ' AND p.varname=' . db_function('CONCAT', ['\'field\'', 'f.profilefieldid', '\'_title\'']) . ') WHERE ' . db_string_equal_to('p.text', $name));
+            $r = $this->db->query('SELECT f.profilefieldid FROM ' . $this->db->get_table_prefix() . 'profilefield f LEFT JOIN ' . $this->db->get_table_prefix() . 'phrase p ON ' . db_string_equal_to('product', 'vbulletin') . ' AND p.varname=' . db_function('CONCAT', ['\'field\'', 'f.profilefieldid', '\'_title\'']) . ' WHERE ' . db_string_equal_to('p.text', $name));
         } else {
             $r = $this->db->query_select('profilefield', ['profilefieldid'], ['title', $name]);
         }
@@ -513,7 +513,7 @@ class Forum_driver_vb3 extends Forum_driver_base
             $out[$i]['firsttime'] = $r['dateline'];
             $out[$i]['lasttime'] = $r['lastpost'];
             $out[$i]['closed'] = ($r['open'] == 0);
-            $fp_rows = $this->db->query('SELECT title,pagetext,userid FROM ' . $this->db->get_table_prefix() . 'post WHERE pagetext NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY dateline', 1);
+            $fp_rows = $this->db->query('SELECT title,pagetext,userid,dateline FROM ' . $this->db->get_table_prefix() . 'post WHERE pagetext NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY dateline', 1);
             if (!array_key_exists(0, $fp_rows)) {
                 unset($out[$i]);
                 continue;
@@ -524,7 +524,7 @@ class Forum_driver_vb3 extends Forum_driver_base
                 $out[$i]['firstpost'] = comcode_to_tempcode(@html_entity_decode($fp_rows[0]['pagetext'], ENT_QUOTES), $fp_rows[0]['userid']);
                 pop_lax_comcode();
             }
-            $fp_rows = $this->db->query('SELECT title,pagetext,userid FROM ' . $this->db->get_table_prefix() . 'post WHERE pagetext NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY dateline DESC', 1);
+            $fp_rows = $this->db->query('SELECT title,pagetext,userid,dateline FROM ' . $this->db->get_table_prefix() . 'post WHERE pagetext NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY dateline DESC', 1);
             $out[$i]['lastmemberid'] = $fp_rows[0]['userid'];
         }
         if (!empty($out)) {
@@ -838,7 +838,7 @@ class Forum_driver_vb3 extends Forum_driver_base
     public function set_custom_field($member, $field, $value)
     {
         if ((!isset($GLOBALS['SITE_INFO']['vb_version'])) || ($GLOBALS['SITE_INFO']['vb_version'] >= 3.6)) {
-            $id = $this->db->query_value_if_there('SELECT f.profilefieldid FROM ' . $this->db->get_table_prefix() . 'profilefield f LEFT JOIN ' . $this->db->get_table_prefix() . 'phrase p ON (' . db_string_equal_to('product', 'vbulletin') . ' AND  p.varname=' . db_function('CONCAT', ['\'field\'', 'f.profilefieldid', '\'_title\'']) . ') WHERE ' . db_string_equal_to('p.text', 'cms_' . $field));
+            $id = $this->db->query_value_if_there('SELECT f.profilefieldid FROM ' . $this->db->get_table_prefix() . 'profilefield f LEFT JOIN ' . $this->db->get_table_prefix() . 'phrase p ON ' . db_string_equal_to('product', 'vbulletin') . ' AND  p.varname=' . db_function('CONCAT', ['\'field\'', 'f.profilefieldid', '\'_title\'']) . ' WHERE ' . db_string_equal_to('p.text', 'cms_' . $field));
         } else {
             $id = $this->db->query_select_value_if_there('profilefield', 'profilefieldid', ['title' => 'cms_' . $field]);
         }
@@ -861,7 +861,7 @@ class Forum_driver_vb3 extends Forum_driver_base
     public function get_custom_fields($member)
     {
         if ((!isset($GLOBALS['SITE_INFO']['vb_version'])) || ($GLOBALS['SITE_INFO']['vb_version'] >= 3.6)) {
-            $rows = $this->db->query('SELECT f.profilefieldid,p.text AS title FROM ' . $this->db->get_table_prefix() . 'profilefield f LEFT JOIN ' . $this->db->get_table_prefix() . 'phrase p ON (' . db_string_equal_to('product', 'vbulletin') . ' AND  p.varname=' . db_function('CONCAT', ['\'field\'', 'f.profilefieldid', '\'_title\'']) . ') WHERE p.text LIKE \'' . db_encode_like('cms\_%') . '\'');
+            $rows = $this->db->query('SELECT f.profilefieldid,p.text AS title FROM ' . $this->db->get_table_prefix() . 'profilefield f LEFT JOIN ' . $this->db->get_table_prefix() . 'phrase p ON ' . db_string_equal_to('product', 'vbulletin') . ' AND  p.varname=' . db_function('CONCAT', ['\'field\'', 'f.profilefieldid', '\'_title\'']) . ' WHERE p.text LIKE \'' . db_encode_like('cms\_%') . '\'');
         } else {
             $rows = $this->db->query('SELECT profilefieldid,title FROM ' . $this->db->get_table_prefix() . 'profilefield WHERE title LIKE \'' . db_encode_like('cms\_%') . '\'');
         }
@@ -897,7 +897,8 @@ class Forum_driver_vb3 extends Forum_driver_base
      */
     public function get_member_from_email_address($email_address)
     {
-        return $this->db->query_select_value_if_there('user', 'userid', ['email' => $email_address], 'ORDER BY joindate DESC');
+        $results = $this->db->query_select('user', ['userid', 'joindate'], ['email' => $email_address], 'ORDER BY joindate DESC', 1);
+        return array_key_exists(0, $results) ? $results[0]['userid'] : null;
     }
 
     /**

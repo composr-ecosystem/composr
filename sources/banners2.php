@@ -137,7 +137,7 @@ function create_selection_list_banners($it = null, $only_owned = null)
     $where = ($only_owned === null) ? null : ['submitter' => $only_owned];
     $rows = $GLOBALS['SITE_DB']->query_select('banners', ['name'], $where, 'ORDER BY name', 150);
     if (count($rows) == 300) {
-        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['name'], $where, 'ORDER BY add_date DESC', 150);
+        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['name', 'add_date'], $where, 'ORDER BY add_date DESC', 150);
     }
     $out = new Tempcode();
     foreach ($rows as $myrow) {

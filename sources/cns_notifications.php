@@ -63,53 +63,50 @@ function cns_get_pp_rows($limit = 5, $unread = true, $include_inline = true, $ti
 
     // PT from and PT from
     foreach (['t_pt_from', 't_pt_to'] as $pt_target) {
-        $query .= 'SELECT t.*,l.*,p.id AS p_id,t.id as t_id';
+        $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,p.id AS p_id,l_time';
         $query .= ' FROM
         ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t
-        LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON (t.id=l_topic_id AND l_member_id=' . strval($member_id) . ')
-        JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON (p.id=t.t_cache_last_post_id)';
+        LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l_topic_id AND l_member_id=' . strval($member_id) . '
+        JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_last_post_id';
         if (!multi_lang_content()) {
             $query .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p2 ON p2.id=t.t_cache_first_post_id';
         }
         $query .= ' WHERE
         ' . $unread_clause . $time_clause . '
-        ' . $pt_target . '=' . strval($member_id) . '
-        ' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY t.id' : '');
+        ' . $pt_target . '=' . strval($member_id);
 
         $query .= ' UNION ';
     }
 
     // PT invited to
-    $query .= 'SELECT t.*,l.*,p.id AS p_id,t.id as t_id';
+    $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,p.id AS p_id,l_time';
     $query .= ' FROM
     ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t
-    LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_special_pt_access i ON (i.s_topic_id=t.id)
-    LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON (t.id=l_topic_id AND l_member_id=' . strval($member_id) . ')
-    JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON (p.id=t.t_cache_last_post_id)';
+    LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_special_pt_access i ON i.s_topic_id=t.id
+    LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l_topic_id AND l_member_id=' . strval($member_id) . '
+    JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_last_post_id';
     $query .= ' WHERE
     ' . $unread_clause . $time_clause . '
-    i.s_member_id=' . strval($member_id) . '
-    ' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY t.id' : '');
+    i.s_member_id=' . strval($member_id);
 
     if ($include_inline) {
         $query .= ' UNION ';
 
         // Inline personal post to
-        $query .= 'SELECT t.*,l.*,p.id AS p_id,t.id as t_id';
+        $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,MAX(p.id) AS p_id,l_time';
         $query .= ' FROM
         ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p
-        JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON (p_topic_id=t.id AND p.p_intended_solely_for=' . strval($member_id) . ')
-        LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON (t.id=l_topic_id AND l_member_id=' . strval($member_id) . ')';
+        JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON p_topic_id=t.id AND p.p_intended_solely_for=' . strval($member_id) . '
+        LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l_topic_id AND l_member_id=' . strval($member_id);
         $query .= ' WHERE
         ' . $unread_clause . $time_clause . '
         p.p_intended_solely_for=' . strval($member_id) . '
-        ' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY t.id' : '');
+        GROUP BY t.id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,l_time';
     }
 
     $query .= ' ORDER BY t_cache_last_time DESC';
 
     $ret = $GLOBALS['FORUM_DB']->query($query, $limit, 0, false, true);
-    $ret = remove_duplicate_rows($ret, 't_id');
 
     // We load this late, as otherwise on-disk temporary tables are created by the UNION (the nature of TEXT columns in MySQL)
     foreach ($ret as &$pp_row) {
@@ -164,23 +161,23 @@ function generate_notifications($member_id)
             $by = is_guest($by_id) ? do_lang('SYSTEM') : $GLOBALS['CNS_DRIVER']->get_username($by_id);
             $u_title = $unread_pp['t_cache_first_title'];
             if ($unread_pp['t_forum_id'] === null) {
-                $type = do_lang_tempcode(($unread_pp['t_cache_first_post_id'] == $unread_pp['id']) ? 'NEW_PT_NOTIFICATION' : 'NEW_PP_NOTIFICATION');
+                $type = do_lang_tempcode(($unread_pp['t_cache_first_post_id'] == $unread_pp['p_id']) ? 'NEW_PT_NOTIFICATION' : 'NEW_PP_NOTIFICATION');
                 $num_unread_pps++;
-                $reply_url = build_url(['page' => 'topics', 'type' => 'new_post', 'id' => $unread_pp['p_topic_id'], 'quote' => $unread_pp['id']], get_module_zone('topics'));
+                $reply_url = build_url(['page' => 'topics', 'type' => 'new_post', 'id' => $unread_pp['p_topic_id'], 'quote' => $unread_pp['p_id']], get_module_zone('topics'));
 
-                $additional_posts = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($unread_pp['p_topic_id']) . ' AND id>' . strval($unread_pp['id']));
+                $additional_posts = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($unread_pp['p_topic_id']) . ' AND id>' . strval($unread_pp['p_id']));
             } else {
                 $type = do_lang_tempcode('NEW_INLINE_PERSONAL_POST');
                 if ($unread_pp['p_title'] != '') {
                     $u_title = $unread_pp['p_title'];
                 }
-                $reply_url = build_url(['page' => 'topics', 'type' => 'new_post', 'id' => $unread_pp['p_topic_id'], 'quote' => $unread_pp['id'], 'intended_solely_for' => $unread_pp['p_poster']], get_module_zone('topics'));
+                $reply_url = build_url(['page' => 'topics', 'type' => 'new_post', 'id' => $unread_pp['p_topic_id'], 'quote' => $unread_pp['p_id'], 'intended_solely_for' => $unread_pp['p_poster']], get_module_zone('topics'));
 
                 $additional_posts = 0;
             }
             $time_raw = $unread_pp['p_time'];
             $date = get_timezoned_date_time($unread_pp['p_time']);
-            $topic_url = $GLOBALS['CNS_DRIVER']->post_url($unread_pp['id'], null, true);
+            $topic_url = $GLOBALS['CNS_DRIVER']->post_url($unread_pp['p_id'], null, true);
             $post = get_translated_tempcode('f_posts', $just_post_row, 'p_post', $GLOBALS['FORUM_DB']);
             $description = $unread_pp['t_description'];
             if ($description != '') {
@@ -194,7 +191,7 @@ function generate_notifications($member_id)
                 '_GUID' => '3b224ea3f4da2f8f869a505b9756970a',
                 'ADDITIONAL_POSTS' => integer_format($additional_posts),
                 '_ADDITIONAL_POSTS' => strval($additional_posts),
-                'ID' => strval($unread_pp['id']),
+                'ID' => strval($unread_pp['p_id']),
                 'U_TITLE' => $u_title,
                 'IGNORE_URL' => $ignore_url,
                 'IGNORE_URL_2' => $ignore_url_2,

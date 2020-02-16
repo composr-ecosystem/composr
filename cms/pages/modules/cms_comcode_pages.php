@@ -432,12 +432,6 @@ class Module_cms_comcode_pages
                     break;
             }
 
-            // De-duplication
-            $group_by = '';
-            if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
-                $group_by = ' GROUP BY c.the_zone,c.the_page';
-            }
-
             // Where map
             $where_map = '1=1';
             if (!has_some_edit_comcode_page_permission(COMCODE_EDIT_ANY)) {
@@ -499,7 +493,7 @@ class Module_cms_comcode_pages
 
             // Do queries
             $ttable = get_table_prefix() . 'comcode_pages c LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON c.the_page=a.the_page AND c.the_zone=a.the_zone';
-            $sql = 'SELECT c.*,cc_page_title FROM ' . $ttable . ' WHERE ' . $where_map . $group_by . ' ORDER BY ' . $orderer;
+            $sql = 'SELECT c.*,cc_page_title FROM ' . $ttable . ' WHERE ' . $where_map . ' ORDER BY ' . $orderer;
             $lang_fields = ['cc_page_title' => '?SHORT_TRANS', 'string_index' => '?LONG_TRANS'];
             $page_rows = $GLOBALS['SITE_DB']->query($sql, $max, $start, false, false, $lang_fields);
             $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM (SELECT DISTINCT c.the_zone,c.the_page FROM ' . $ttable . ' WHERE ' . $where_map . ') x', false, false, $lang_fields);

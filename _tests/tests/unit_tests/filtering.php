@@ -68,6 +68,7 @@ class filtering_test_set extends cms_test_case
                         'title_field_dereference' => false,
                         'title_field_supports_comcode' => false,
                         'description_field' => null,
+                        'description_field_dereference' => false,
                         'thumb_field' => null,
                         'thumb_field_is_theme_image' => false,
                         'alternate_icon_theme_image' => null,
@@ -109,6 +110,8 @@ class filtering_test_set extends cms_test_case
 
                         'commandr_filesystem_hook' => null,
                         'commandr_filesystem__is_folder' => false,
+
+                        'support_spam_heuristics' => false,
 
                         'support_revisions' => false,
 
@@ -416,10 +419,14 @@ class filtering_test_set extends cms_test_case
         }
 
         foreach ($filter_tests as $filter => $filter_expected) {
-            list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filter), 'temp_test');
-            $sql = 'SELECT r.id' . implode('', $extra_select) . ' FROM ' . get_table_prefix() . 'temp_test r' . implode('', $extra_join) . ' WHERE 1=1' . $extra_where;
+            list($extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filter), 'temp_test');
+            $sql = 'SELECT DISTINCT r.id FROM ' . get_table_prefix() . 'temp_test r' . implode('', $extra_join) . ' WHERE 1=1' . $extra_where;
             $results = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query($sql));
-            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . $filter . ', got: ' . implode(',', array_map('strval', $results)) . '; query: ' . $sql);
+
+            sort($results);
+            sort($filter_expected);
+
+            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . $filter . ', got: ' . implode(',', array_map('strval', $results)) . ', expected: ' . implode(',', array_map('strval', $filter_expected)) . '; query: ' . $sql);
         }
 
         // Test using POST environment
@@ -450,9 +457,13 @@ class filtering_test_set extends cms_test_case
 
             $_POST[$key . '_op'] = $op;
 
-            list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filter), 'temp_test');
-            $sql = 'SELECT r.id' . implode('', $extra_select) . ' FROM ' . get_table_prefix() . 'temp_test r' . implode('', $extra_join) . ' WHERE 1=1' . $extra_where;
+            list($extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filter), 'temp_test');
+            $sql = 'SELECT DISTINCT r.id FROM ' . get_table_prefix() . 'temp_test r' . implode('', $extra_join) . ' WHERE 1=1' . $extra_where;
             $results = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query($sql));
+
+            sort($results);
+            sort($filter_expected);
+
             $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . $filter . ', got: ' . implode(',', array_map('strval', $results)) . ', expected: ' . implode(',', array_map('strval', $filter_expected)) . ', with: ' . $sql);
         }
 
@@ -460,7 +471,7 @@ class filtering_test_set extends cms_test_case
         list($form_fields, $filter, $_links) = form_for_filtercode('', [], 'temp_test');
         $this->assertTrue(strpos($form_fields->evaluate(), '<input') !== false);
         $filter_expected = 'id<id_op><id>,t_binary<t_binary_op><t_binary>,t_id_text<t_id_text_op><t_id_text>,t_linker<t_linker_op><t_linker>,t_member<t_member_op><t_member>,t_real<t_real_op><t_real>,t_short_text<t_short_text_op><t_short_text>,t_short_trans<t_short_trans_op><t_short_trans>,t_time<t_time_op><t_time>,compound_rating<compound_rating_op><compound_rating>,average_rating<average_rating_op><average_rating>,meta_keywords<meta_keywords_op><meta_keywords>,meta_description<meta_description_op><meta_description>';
-        $this->assertTrue($filter == $filter_expected);
+        $this->assertTrue($filter == $filter_expected, 'Got: ' . $filter . '; Expected: ' . $filter_expected);
     }
 
     protected $ids_and_parents;

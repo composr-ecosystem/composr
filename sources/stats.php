@@ -19,6 +19,41 @@
  */
 
 /**
+ * Find hook-based page links under the admin_stats modules.
+ *
+ * @return array Page-links (each is a tuple)
+ */
+function find_hook_stats_page_links()
+{
+    static $ret = null;
+
+    if ($ret === null) {
+        require_lang('stats');
+
+        $ret = [];
+
+        $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
+        foreach ($hooks as $ob) {
+            $info = $ob->info();
+            if ($info !== null) {
+                foreach ($info as $graph_name => $details) {
+                    $ret[get_module_zone('admin_stats') . ':admin_stats:graph:' . $graph_name] = [do_lang_tempcode($details['label_lang_string']), $details['icon']];
+                }
+            }
+        }
+
+        $categories = stats_find_graph_categories();
+        foreach ($categories as $category_name => $category) {
+            $ret[get_module_zone('admin_stats') . ':admin_stats:category:' . $category_name] = [do_lang_tempcode($category['label_lang_string']), $category['icon']];
+        }
+
+        sort_maps_by($ret, 0);
+    }
+
+    return $ret;
+}
+
+/**
  * Script to track clicks to sites.
  *
  * @ignore

@@ -19,7 +19,6 @@
  */
 
 require_code('crud_module');
-require_javascript('catalogues');
 
 /**
  * Module page class.
@@ -166,6 +165,7 @@ class Module_cms_catalogues extends Standard_crud_module
 
         require_lang('catalogues');
         require_css('catalogues');
+        require_javascript('catalogues');
 
         inform_non_canonical_parameter('parent_id');
         inform_non_canonical_parameter('validated');

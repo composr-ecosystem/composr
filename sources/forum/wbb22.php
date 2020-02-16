@@ -593,7 +593,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
             $out[$i]['firsttime'] = $r['starttime'];
             $out[$i]['lasttime'] = $r['lastposttime'];
             $out[$i]['closed'] = ($r['closed'] == 1);
-            $fp_rows = $this->db->query('SELECT posttopic,message,userid FROM ' . $this->db->get_table_prefix() . 'posts WHERE message NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY posttime', 1);
+            $fp_rows = $this->db->query('SELECT posttopic,message,userid,posttime FROM ' . $this->db->get_table_prefix() . 'posts WHERE message NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY posttime', 1);
             if (!array_key_exists(0, $fp_rows)) {
                 unset($out[$i]);
                 continue;
@@ -880,7 +880,8 @@ class Forum_driver_wbb22 extends Forum_driver_base
      */
     public function get_member_from_email_address($email_address)
     {
-        return $this->db->query_select_value_if_there('users', 'userid', ['email' => $email_address], 'ORDER BY regdate DESC');
+        $results = $this->db->query_select('users', ['userid', 'regdate'], ['email' => $email_address], 'ORDER BY regdate DESC', 1);
+        return array_key_exists(0, $results) ? $results[0]['userid'] : null;
     }
 
     /**

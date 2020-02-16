@@ -84,7 +84,7 @@ function render_group_box($row, $zone = '_SEARCH', $give_context = true, $guid =
 function cns_create_selection_list_usergroups($it = null, $allow_guest_group = true)
 {
     $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
-    $_m = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ($group_count > 200) ? ['g_is_private_club' => 0] : [], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+    $_m = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_order'], ($group_count > 200) ? ['g_is_private_club' => 0] : [], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
     $entries = new Tempcode();
     foreach ($_m as $m) {
         if (!$allow_guest_group && $m['id'] == db_get_first_id()) {
@@ -126,11 +126,11 @@ function cns_get_all_default_groups($include_primary = false, $include_all_confi
         return $all_default_groups_cache[$include_primary ? 1 : 0];
     }
 
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ['g_is_default' => 1, 'g_is_presented_at_install' => 0], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_order'], ['g_is_default' => 1, 'g_is_presented_at_install' => 0], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
     $groups = collapse_1d_complexity('id', $rows);
 
     if ($include_primary) {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ['g_is_presented_at_install' => 1], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_order'], ['g_is_presented_at_install' => 1], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
         if (($include_all_configured_default_groups) || (count($rows) == 1) || (get_option('show_first_join_page') == '0')) { // If just 1 then we won't have presented a choice on the join form, so should inject that 1 as the default group as it is implied
             $groups = array_merge($groups, collapse_1d_complexity('id', $rows));
         }

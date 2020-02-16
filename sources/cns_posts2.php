@@ -251,7 +251,10 @@ function render_post_box($row, $use_post_title = false, $give_context = true, $i
             }
         }
         if ($topic_row['t_cache_first_title'] == '') {
-            $topic_row['t_cache_first_title'] = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', ['p_topic_id' => $row['p_topic_id']], 'ORDER BY p_time ASC');
+            $topic_post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_title', 'p_time'], ['p_topic_id' => $row['p_topic_id']], 'ORDER BY p_time ASC', 1);
+            if (array_key_exists(0, $topic_post_rows)) {
+                $topic_row['t_cache_first_title'] = $topic_post_rows[0]['p_title'];
+            }
         }
         $link = hyperlink($GLOBALS['FORUM_DRIVER']->topic_url($row['p_topic_id'], '', true), $topic_row['t_cache_first_title'], false, true);
         $title = do_lang_tempcode('FORUM_POST_ISOLATED_RESULT', escape_html(strval($row['id'])), $poster, [escape_html($date), $link]);

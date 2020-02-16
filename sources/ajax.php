@@ -164,7 +164,7 @@ function namelike_script()
         }
     } else {
         if ((strlen($id) == 0) && (addon_installed('chat'))) {
-            $rows = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => get_member()], 'ORDER BY date_and_time', 100);
+            $rows = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked', 'date_and_time'], ['member_likes' => get_member()], 'ORDER BY date_and_time', 100);
             $names = [];
             foreach ($rows as $row) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_liked'], false, USERNAME_DEFAULT_NULL);

@@ -68,7 +68,7 @@ class Hook_content_meta_aware_quiz
             'view_page_link_pattern' => '_SEARCH:quiz:do:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_quiz:_edit:_WILD',
             'view_category_page_link_pattern' => null,
-            'add_url' => ($get_extended_data && function_exists('has_submit_permission') && function_exists('get_member') && has_submit_permission('high', get_member(), get_ip_address(), 'cms_quiz')) ? (get_module_zone('cms_quiz') . ':cms_quiz:add') : null,
+            'add_url' => ($get_extended_data && has_submit_permission('high', get_member(), get_ip_address(), 'cms_quiz')) ? (get_module_zone('cms_quiz') . ':cms_quiz:add') : null,
             'archive_url' => $get_extended_data ? ((($zone !== null) ? $zone : get_module_zone('quiz')) . ':quiz') : null,
 
             'support_url_monikers' => true,

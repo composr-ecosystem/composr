@@ -54,7 +54,7 @@ class Hook_symbol_CPF_LIST
                 if ($group_count > 200) {
                     $where_extended .= ' AND g_is_private_club=0';
                 }
-                $_m = $GLOBALS['FORUM_DB']->query('SELECT id,g_name FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where_extended . ' ORDER BY g_order');
+                $_m = $GLOBALS['FORUM_DB']->query('SELECT id,g_name,g_order FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where_extended . ' ORDER BY g_order');
                 foreach ($_m as $i => $m) {
                     $_m[$i]['text'] = get_translated_text($m['g_name'], $GLOBALS['FORUM_DB']);
                 }

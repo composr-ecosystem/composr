@@ -157,7 +157,6 @@ PHP;
             // Preparing for data query
             $where = 'r.ce_validated=1 AND ' . db_string_equal_to('r.c_name', $catalogue_name);
             $join = '';
-            $extra_select_sql = '';
 
             // Selecting and Filtering
             $where .= ' AND (1=1';
@@ -172,8 +171,7 @@ PHP;
             if ($filter != '') {
                 // Convert the filters to SQL
                 require_code('filtercode');
-                list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filter), 'catalogue_entry', $catalogue_name);
-                $extra_select_sql .= implode('', $extra_select);
+                list($extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filter), 'catalogue_entry', $catalogue_name);
                 $join .= implode('', $extra_join);
                 $where .= $extra_where;
             }
@@ -193,7 +191,7 @@ PHP;
             }
 
             // Finishing data query
-            $query = 'SELECT r.*' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries r' . $join . $privacy_join . ' WHERE ' . $where . $privacy_where;
+            $query = 'SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries r' . $join . $privacy_join . ' WHERE ' . $where . $privacy_where;
 
             // Get results
             $entries_to_show = [];

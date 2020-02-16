@@ -466,7 +466,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
             // How to handle the fields
             if ((array_key_exists('fields', $properties)) && ($properties['fields'] != '')) {
-                $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name', 'cf_description'], ['c_name' => $name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+                $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name', 'cf_description', 'cf_order'], ['c_name' => $name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
 
                 $fields_data = $properties['fields'];
                 foreach ($fields_data as $i => $field_data) {
@@ -579,7 +579,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         $category_id = $this->_integer_category($category);
 
         $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $category_id]);
-        $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type', 'cf_default', 'cf_name'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type', 'cf_default', 'cf_name', 'cf_order'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
         $unique_key_num = $this->_find_unique_key_num($_fields);
         $map = [];
         $props_already = [];

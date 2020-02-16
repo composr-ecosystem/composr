@@ -2,16 +2,13 @@
 	<section class="box box---rating-box"><div class="box-inner">
 		<h3>{!RATING}</h3>
 
-		<div class="rating-inner" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+		<div class="rating-inner"{+START,IF,{$GET,has_schema_reviews}} itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating"{+END}>
 			{+START,IF,{HAS_RATINGS}}
 				{+START,LOOP,ALL_RATING_CRITERIA}
 					{+START,INCLUDE,RATING_DISPLAY_SHARED}{+END}
 				{+END}
 			{+END}
 			{+START,IF,{$NOT,{HAS_RATINGS}}}
-				<meta itemprop="ratingCount" content="0" />
-				<meta itemprop="ratingValue" content="3" />
-
 				<em>{!UNRATED}</em>
 			{+END}
 

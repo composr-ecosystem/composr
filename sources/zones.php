@@ -1573,6 +1573,10 @@ function do_block_get_cache_identifier($codename, $cache_on, $map)
         }
     }
 
+    if (!empty($map['raw'])) {
+        $_cache_identifier[] = $map['raw'];
+    }
+
     $cache_identifier = serialize($_cache_identifier);
 
     $cache[$sz] = $cache_identifier;

@@ -421,12 +421,12 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
                     $p = $_postdetailss[$_postdetails['p_parent_id']];
 
                     // Load post
-                    $_p = db_map_restrict($p, ['id', 'p_post']);
+                    $_p = db_map_restrict($p, ['id', 'p_post', 'p_poster_name_if_guest']);
                     $p['message'] = get_translated_tempcode('f_posts', $_p, 'p_post', $GLOBALS['FORUM_DB']);
                 } else { // Drat, we need to load it
                     $_p = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => $_postdetails['p_parent_id']], '', 1);
                     if (array_key_exists(0, $_p)) {
-                        $p = db_map_restrict($_p[0], ['id', 'p_post']);
+                        $p = db_map_restrict($_p[0], ['id', 'p_post', 'p_poster_name_if_guest']);
                         $p['message'] = get_translated_tempcode('f_posts', $p, 'p_post', $GLOBALS['FORUM_DB']);
                     }
                 }

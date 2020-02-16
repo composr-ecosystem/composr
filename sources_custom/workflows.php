@@ -772,7 +772,7 @@ function add_content_to_workflow($content_type = '', $content_id = '', $workflow
  */
 function get_all_approval_points($workflow_id)
 {
-    $workflow_approval_points = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', ['id', 'workflow_approval_name'], ['workflow_id' => $workflow_id], 'ORDER BY the_position');
+    $workflow_approval_points = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', ['id', 'workflow_approval_name', 'the_position'], ['workflow_id' => $workflow_id], 'ORDER BY the_position');
     $approval_points = [];
     foreach ($workflow_approval_points as $r) {
         $approval_points[$r['id']] = get_translated_text($r['workflow_approval_name']);

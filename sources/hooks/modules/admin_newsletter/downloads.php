@@ -88,8 +88,9 @@ class Hook_whatsnew_downloads
             $member_id = (is_guest($row['submitter'])) ? null : strval($row['submitter']);
             $thumb_url = null;
             if (addon_installed('galleries')) {
-                $thumbnail = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'thumb_url', ['cat' => 'download_' . strval($row['id'])], 'ORDER BY add_date ASC');
-                if ($thumbnail !== null) {
+                $_thumbnail = $GLOBALS['SITE_DB']->query_select('images', ['thumb_url', 'add_date'], ['cat' => 'download_' . strval($row['id'])], 'ORDER BY add_date ASC', 1);
+                if (array_key_exists(0, $_thumbnail)) {
+                    $thumbnail = $_thumbnail[0]['thumb_url'];
                     if ($thumbnail != '') {
                         if (url_is_local($thumbnail)) {
                             $thumbnail = get_custom_base_url() . '/' . $thumbnail;

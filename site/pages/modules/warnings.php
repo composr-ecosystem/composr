@@ -433,7 +433,7 @@ class Module_warnings extends Standard_crud_module
         $hidden = new Tempcode();
         $fields = new Tempcode();
 
-        $post_id = $spam_mode ? null : get_param_integer('post_id', null);
+        $post_id = get_param_integer('post_id', null);
         $ip_address = ($post_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_ip_address', ['id' => $post_id]);
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
@@ -443,7 +443,7 @@ class Module_warnings extends Standard_crud_module
         $_history_url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
         $history_url = $_history_url->evaluate();
         if (((!is_guest($member_id)) || ($ip_address !== null)) && (addon_installed('securitylogging'))) {
-            $lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => is_guest($member_id) ? $member_id : $ip_address], 'adminzone');
+            $lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => is_guest($member_id) ? $ip_address : $member_id], 'adminzone');
         } else {
             $lookup_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
         }
@@ -484,7 +484,7 @@ class Module_warnings extends Standard_crud_module
             if (has_delete_permission('mid', get_member(), $member_id, 'topics')) {
                 $first_post_time = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'MIN(p_time)', ['p_poster' => $member_id]);
                 if (
-                    ($first_post_time > time() - 60 * 60 * 24 * 14) && // i.e. a recent spammer, not a normal member being punished
+                    (($GLOBALS['DEV_MODE']) || ($first_post_time > time() - 60 * 60 * 24 * 14)) && // i.e. a recent spammer, not a normal member being punished
                     ((!is_guest($member_id)) || ($ip_address !== null))
                 ) {
                     $where = [];
@@ -493,11 +493,11 @@ class Module_warnings extends Standard_crud_module
                     } else {
                         $where['p_poster'] = $member_id;
                     }
-                    $sup = 'ORDER BY p_time';
+                    $sup = 'ORDER BY p_time DESC';
                     if (!has_privilege(get_member(), 'view_other_pt')) {
                         $sup = ' AND p_cache_forum_id IS NOT NULL ' . $sup;
                     }
-                    $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id'], $where, $sup);
+                    $posts_by_member = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p.*', 't_cache_first_post_id', 't_cache_last_post_id', 't_cache_num_posts', 't_cache_first_title', 'p_cache_forum_id'], $where, $sup, 10);
                     $spam_urls = [];
                     foreach ($posts_by_member as $post) {
                         $just_post_row = db_map_restrict($post, ['id', 'p_post'], ['id' => 'p_id']);
@@ -511,7 +511,8 @@ class Module_warnings extends Standard_crud_module
                                 if (($domain != get_domain()) && (!empty($domain))) {
                                     if (!isset($spam_urls[$domain])) {
                                         require_code('mail');
-                                        $spam_urls[$domain] = ['DOMAIN' => $domain, 'URLS' => [], 'POSTS' => []];
+                                        $ip = cms_gethostbyname($domain);
+                                        $spam_urls[$domain] = ['DOMAIN' => $domain, 'IP' => $ip, 'URLS' => [], 'POSTS' => []];
                                     }
                                     if (!isset($spam_urls[$domain]['URLS'][$spam_url])) {
                                         $spam_urls[$domain]['URLS'][$spam_url] = ['I' => strval(count($spam_urls[$domain]['URLS'])), 'URL' => $spam_url];
@@ -581,7 +582,7 @@ class Module_warnings extends Standard_crud_module
                 $fields->attach(form_input_list(do_lang_tempcode('CHANGE_USERGROUP_TO'), do_lang_tempcode('DESCRIPTION_CHANGE_USERGROUP_TO'), 'changed_usergroup_from', $groups, null, false, false));
             }
 
-            if ($post_id !== null) {
+            if (($post_id !== null) && (!$spam_mode)) {
                 $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
                 if ($topic_id !== null) {
                     $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
@@ -696,6 +697,7 @@ class Module_warnings extends Standard_crud_module
                 $_postdetails_text = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_post', ['id' => $post_id]);
                 if ($_postdetails_text !== null) {
                     $message = '[quote="' . $username . '"]' . "\n" . get_translated_text($_postdetails_text, $GLOBALS['FORUM_DB']) . "\n" . '[/quote]';
+                    $message .= "\n\n" . do_lang('MODERATED_AS_SPAM', get_site_name());
                 }
             }
             $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_PP_MESSAGE'), 'message', $message, true));
@@ -703,7 +705,6 @@ class Module_warnings extends Standard_crud_module
             $fields->attach(form_input_line(do_lang_tempcode('SAVE_WARNING_DETAILS'), do_lang_tempcode('DESCRIPTION_SAVE_WARNING_DETAILS'), 'save', '', false));
 
             require_javascript('cns_warnings');
-            $this->js_function_calls[] = 'moduleWarningsGetFormFields';
         }
 
         return [$fields, $hidden];

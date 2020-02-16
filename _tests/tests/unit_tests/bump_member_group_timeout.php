@@ -42,7 +42,7 @@ class bump_member_group_timeout_test_set extends cms_test_case
         }
 
         $member_id = 3;
-        $group_id = 4;
+        $group_id = 9;
 
         bump_member_group_timeout($member_id, $group_id, -10, false);
 
@@ -60,7 +60,7 @@ class bump_member_group_timeout_test_set extends cms_test_case
         }
 
         $member_id = 3;
-        $group_id = 4;
+        $group_id = 9;
 
         bump_member_group_timeout($member_id, $group_id, -10, true);
 
@@ -78,7 +78,7 @@ class bump_member_group_timeout_test_set extends cms_test_case
         }
 
         $member_id = 3;
-        $group_id = 4;
+        $group_id = 9;
 
         bump_member_group_timeout($member_id, $group_id, 10, false);
         cleanup_member_timeouts();
@@ -97,7 +97,7 @@ class bump_member_group_timeout_test_set extends cms_test_case
         }
 
         $member_id = 3;
-        $group_id = 4;
+        $group_id = 9;
 
         bump_member_group_timeout($member_id, $group_id, -10, false);
         bump_member_group_timeout($member_id, $group_id, 30, false);
@@ -116,7 +116,7 @@ class bump_member_group_timeout_test_set extends cms_test_case
         }
 
         $member_id = 3;
-        $group_id = 4;
+        $group_id = 9;
 
         bump_member_group_timeout($member_id, $group_id, 10, false);
         bump_member_group_timeout($member_id, $group_id, -30, false);
@@ -130,7 +130,7 @@ class bump_member_group_timeout_test_set extends cms_test_case
             return;
         }
 
-        $group_id = 4;
+        $group_id = 9;
 
         $member_id = 3;
         bump_member_group_timeout($member_id, $group_id, -10, false);

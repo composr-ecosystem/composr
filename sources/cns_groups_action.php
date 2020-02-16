@@ -228,6 +228,10 @@ function cns_make_rank_set($rank_set)
 
     if (running_script('install')) {
         $member_group_0 = null;
+        $member_group_1 = null;
+        $member_group_2 = null;
+        $member_group_3 = null;
+        $member_group_4 = null;
     } else {
         require_code('cns_groups2');
         $ladder_groups = get_default_rank_ladder_groups();
@@ -237,7 +241,7 @@ function cns_make_rank_set($rank_set)
         $member_group_3 = array_shift($ladder_groups);
         $member_group_4 = array_shift($ladder_groups);
 
-        $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' =>null]);
+        $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => null]);
     }
 
     switch ($rank_set) {

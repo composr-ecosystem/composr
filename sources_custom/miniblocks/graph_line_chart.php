@@ -10,11 +10,11 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    sortable_tables
+ * @package    visualisation
  */
 
 $error_msg = new Tempcode();
-if (!addon_installed__messaged('sortable_tables', $error_msg)) {
+if (!addon_installed__messaged('visualisation', $error_msg)) {
     return $error_msg;
 }
 

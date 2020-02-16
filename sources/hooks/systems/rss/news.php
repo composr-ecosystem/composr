@@ -60,9 +60,8 @@ class Hook_rss_news
             $extra_where .= sql_region_filter('news', 'p.id');
         }
 
-        $query = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $extra_join . ' WHERE date_and_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . $extra_where . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY p.id' : '') . ' ORDER BY date_and_time DESC';
+        $query = 'SELECT DISTINCT p.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $extra_join . ' WHERE date_and_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . $extra_where  . ' ORDER BY date_and_time DESC';
         $rows = $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['title' => 'SHORT_TRANS__COMCODE', 'news' => 'LONG_TRANS__COMCODE', 'news_article' => 'LONG_TRANS__COMCODE']);
-        $rows = remove_duplicate_rows($rows, 'id');
         $_categories = $GLOBALS['SITE_DB']->query_select('news_categories', ['id', 'nc_title'], ['nc_owner' => null]);
         foreach ($_categories as $i => $_category) {
             $_categories[$i]['_title'] = get_translated_text($_category['nc_title']);

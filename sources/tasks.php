@@ -102,7 +102,11 @@ function execute_task_background($task_row)
     $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
     task_log_open();
     task_log(null, 'Starting task ' . $hook);
+    $mim_before = get_mass_import_mode();
     $result = call_user_func_array([$ob, 'run'], $args);
+    if (!$mim_before) {
+        set_mass_import_mode(false);
+    }
     task_log(null, 'Finished task ' . $hook);
     task_log_close();
 
@@ -236,7 +240,11 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
         $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
         task_log_open();
         task_log(null, 'Starting task ' . $hook);
+        $mim_before = get_mass_import_mode();
         $result = call_user_func_array([$ob, 'run'], $args);
+        if (!$mim_before) {
+            set_mass_import_mode(false);
+        }
         set_mass_import_mode(false);
         if ($result === false) {
             $result = [null, do_lang_tempcode('INTERNAL_ERROR')];

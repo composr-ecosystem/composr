@@ -91,7 +91,7 @@ class CMSAccountRead
         $custom_register_fields = [];
         $_custom_register_fields = $GLOBALS['FORUM_DB']->query_select(
             'f_custom_fields',
-            ['id', 'cf_name', 'cf_description', 'cf_type', 'cf_default'],
+            ['id', 'cf_name', 'cf_description', 'cf_type', 'cf_default', 'cf_order'],
             ['cf_show_on_join_form' => 1, 'cf_required' => 1],
             'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name')
         );

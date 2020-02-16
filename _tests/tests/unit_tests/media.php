@@ -52,6 +52,7 @@ class media_test_set extends cms_test_case
         }
     }
 
+    /* Facebook removed non-authenticated access
     public function testFacebookThumbnail()
     {
         $test_url = 'https://www.facebook.com/CollegeHumor/videos/10154300448557807/';
@@ -63,5 +64,5 @@ class media_test_set extends cms_test_case
             $test = cms_getimagesizefromstring(http_get_contents($thumb_url));
             $this->assertTrue(is_array($test) && is_integer($test[0]) && is_integer($test[1]));
         }
-    }
+    }*/
 }

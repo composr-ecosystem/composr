@@ -127,7 +127,7 @@ class Hook_search_cns_members extends FieldsSearchHook
         if ($group_count > 300) {
             $where .= ' AND g_is_private_club=0';
         }
-        $rows = $GLOBALS['FORUM_DB']->query('SELECT g.id,g_name FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where . ' ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'), null, 0, false, false, ['g_name' => 'SHORT_TRANS']);
+        $rows = $GLOBALS['FORUM_DB']->query('SELECT g.id,g_name,g_order FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where . ' ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'), null, 0, false, false, ['g_name' => 'SHORT_TRANS']);
         $groups = form_input_list_entry('', false, '---');
         $default_group = get_param_string('option__user_group', '');
         $group_titles = [];
@@ -323,7 +323,7 @@ class Hook_search_cns_members extends FieldsSearchHook
             $group_where_clause = '';
             foreach ($bits as $i => $bit) {
                 $group = intval($bit);
-                $table .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g' . strval($i) . ' ON (g' . strval($i) . '.gm_group_id=' . strval($group) . ' AND g' . strval($i) . '.gm_member_id=r.id)';
+                $table .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g' . strval($i) . ' ON g' . strval($i) . '.gm_group_id=' . strval($group) . ' AND g' . strval($i) . '.gm_member_id=r.id';
                 if ($group_where_clause != '') {
                     $group_where_clause .= ' OR ';
                 }
@@ -340,7 +340,7 @@ class Hook_search_cns_members extends FieldsSearchHook
         $where_clause .= ' AND r.id IS NOT NULL';
 
         // Calculate and perform query
-        $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_members r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields a ON r.id=a.mf_member_id' . $table, ['!' => '!', 'm_signature' => 'LONG_TRANS__COMCODE'] + $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,a.*,r.id AS id', $raw_fields);
+        $rows = get_search_rows(null, 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_members r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields a ON r.id=a.mf_member_id' . $table, ['!' => '!', 'm_signature' => 'LONG_TRANS__COMCODE'] + $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,a.*,r.id AS id', $raw_fields);
 
         $out = [];
         foreach ($rows as $i => $row) {

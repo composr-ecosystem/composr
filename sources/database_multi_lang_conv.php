@@ -96,9 +96,9 @@ function disable_content_translation()
 
         // Copy from translate table
         $query = 'UPDATE ' . $db->table_prefix . $field['m_table'] . ' a SET ';
-        $query .= 'a.' . $field['m_name'] . '__new=' . db_function('COALESCE', ['(SELECT b.text_original FROM ' . $db->table_prefix . 'translate b WHERE b.id=a.' . $field['m_name'] . ' ORDER BY broken)', '\'\'']);
+        $query .= 'a.' . $field['m_name'] . '__new=' . db_function('COALESCE', ['(SELECT b.text_original FROM ' . $db->table_prefix . 'translate b WHERE b.id=a.' . $field['m_name'] . ' AND broken=0)', '\'\'']);
         if (strpos($field['m_type'], '__COMCODE') !== false) {
-            $query .= ', a.' . $field['m_name'] . '__source_user=' . db_function('COALESCE', ['(SELECT b.source_user FROM ' . $db->table_prefix . 'translate b WHERE b.id=a.' . $field['m_name'] . ' ORDER BY broken)', strval(db_get_first_id())]);
+            $query .= ', a.' . $field['m_name'] . '__source_user=' . db_function('COALESCE', ['(SELECT b.source_user FROM ' . $db->table_prefix . 'translate b WHERE b.id=a.' . $field['m_name'] . ' AND broken=0)', strval(db_get_first_id())]);
             $query .= ', a.' . $field['m_name'] . '__text_parsed=\'\'';
         }
         $db->_query($query);

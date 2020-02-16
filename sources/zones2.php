@@ -903,7 +903,7 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
                         case FIND_ALL_PAGES__NEWEST: // Only gets newest if it's a large site
                             if (count($out) > intval(get_option('general_safety_listing_limit'))) {
                                 $out = [];
-                                $records = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page'], ['the_zone' => $zone], 'ORDER BY p_add_date DESC', intval(get_option('general_safety_listing_limit')));
+                                $records = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page', 'p_add_date'], ['the_zone' => $zone], 'ORDER BY p_add_date DESC', intval(get_option('general_safety_listing_limit')));
                                 foreach ($records as $record) {
                                     $file = $record['the_page'] . '.txt';
 
@@ -929,7 +929,7 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
                                 if ($show_method != FIND_ALL_PAGES__NEWEST) {
                                     $out = [];
                                 }
-                                $records = $GLOBALS['SITE_DB']->query('SELECT the_page FROM ' . get_table_prefix() . 'comcode_pages WHERE ' . db_string_equal_to('the_zone', $zone) . ' AND (' . db_string_equal_to('the_page', get_zone_default_page($zone)) . ' OR the_page LIKE \'' . db_encode_like('panel\_%') . '\') ORDER BY p_add_date DESC');
+                                $records = $GLOBALS['SITE_DB']->query('SELECT the_page,p_add_date FROM ' . get_table_prefix() . 'comcode_pages WHERE ' . db_string_equal_to('the_zone', $zone) . ' AND (' . db_string_equal_to('the_page', get_zone_default_page($zone)) . ' OR the_page LIKE \'' . db_encode_like('panel\_%') . '\') ORDER BY p_add_date DESC');
                                 foreach ($records as $record) {
                                     $file = $record['the_page'] . '.txt';
 
