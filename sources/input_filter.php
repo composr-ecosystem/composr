@@ -890,7 +890,7 @@ class Advanced_banning_loader
         if (!addon_installed('securitylogging')) {
             return [[], []];
         }
-        if (!is_file(get_file_base() . '/data/xml_config/advanced_banning.xml') && !is_file(get_custom_file_base() . '/data_custom/advanced_banning/advanced_banning.xml')) {
+        if (!is_file(get_file_base() . '/data/xml_config/advanced_banning.xml') && !is_file(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml')) {
             return [[], []];
         }
 
