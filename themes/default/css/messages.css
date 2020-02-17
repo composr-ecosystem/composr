@@ -19,6 +19,7 @@
 	/*{+START,IF,{$MOBILE}}*/
 		padding-bottom: 170px;
 	/*{+END}*/
+	background-size: 200px !important;
 }
 
 .ssm_warn {

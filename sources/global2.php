@@ -520,6 +520,15 @@ function init__global2()
         }
     }
 
+    $member_id = get_member();
+    if ((!is_guest($member_id)) && (!$GLOBALS['IS_VIA_BACKDOOR'])) { // All hands to the guns
+        $reasoned_ban = null;
+        if ($GLOBALS['FORUM_DRIVER']->is_banned($member_id, $reasoned_ban)) {
+            require_code('failure');
+            banned_exit($reasoned_ban);
+        }
+    }
+
     if (!running_script('upgrader')) {
         // Startup hooks
         $startup_hooks = find_all_hooks('systems', 'startup');
@@ -1030,11 +1039,11 @@ function inform_exit($text, $support_match_key_messages = null)
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @return mixed Never returns (i.e. exits)
  */
-function warn_exit($text, $support_match_key_messages = false)
+function warn_exit($text, $support_match_key_messages = false, $http_status = null, $title = null, $image_url = null)
 {
     require_code('failure');
     suggest_fatalistic();
-    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages);
+    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $http_status, $title, $image_url);
     if (running_script('cron_bridge')) {
         relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), false, 'error_occurred_cron');
     }

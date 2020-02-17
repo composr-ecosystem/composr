@@ -722,10 +722,10 @@ class Module_groups
         if ((get_param_integer('without_posts', 0) == 1) && ($member_row['m_cache_num_posts'] > 0)) {
             return true;
         }
-        if ((get_param_integer('is_banned', 0) == 1) && ($member_row['m_is_perm_banned'] == 0)) {
+        if ((get_param_integer('is_banned', 0) == 1) && ($member_row['m_is_perm_banned'] == '0')) {
             return true;
         }
-        if ((get_param_integer('is_not_banned', 0) == 1) && ($member_row['m_is_perm_banned'] == 1)) {
+        if ((get_param_integer('is_not_banned', 0) == 1) && ($member_row['m_is_perm_banned'] != '0')) {
             return true;
         }
         if ((get_param_integer('with_links', 0) == 1) && (strpos(serialize($member_row), '<a') === false) && (strpos(serialize($member_row), '[url') === false)) {

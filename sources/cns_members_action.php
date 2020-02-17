@@ -105,6 +105,10 @@ function member_field_is_required($member_id, $field_class, $current_value = nul
  */
 function cns_make_member($username, $password, $email_address, $secondary_groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone = null, $primary_group = null, $validated = 1, $join_time = null, $last_visit_time = null, $theme = '', $avatar_url = null, $signature = '', $is_perm_banned = 0, $preview_posts = null, $reveal_age = 0, $title = '', $photo_url = '', $photo_thumb_url = '', $views_signatures = 1, $auto_monitor_contrib_content = null, $language = null, $allow_emails = 1, $allow_emails_from_staff = 1, $ip_address = null, $validated_email_confirm_code = '', $check_correctness = true, $password_compatibility_scheme = null, $salt = '', $last_submit_time = null, $id = null, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $on_probation_until = null, $auto_mark_read = 1, $profile_views = 0, $total_sessions = 0)
 {
+    if (is_integer($is_perm_banned)) {
+        $is_perm_banned = strval($is_perm_banned);
+    }
+
     require_code('form_templates');
 
     $preview_posts = take_param_int_modeavg($preview_posts, 'm_preview_posts', 'f_members', 0);

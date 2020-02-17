@@ -153,6 +153,26 @@ function check_posted_field($name, $val)
         }
     }
 
+    // Phrases resulting in automatic banning
+    list($automatic_rules) = load_advanced_banning();
+    foreach ($automatic_rules as $trigger => $details) {
+        if (strpos($val, $trigger) !== false) {
+            if ($details['ip_ban']) {
+                require_code('failure');
+                add_ip_ban(get_ip_address(), 'automaticRule: ' . $trigger);
+                log_it('IP_BANNED', get_ip_address());
+            }
+
+            if (($details['member_ban']) && (function_exists('is_guest')) && (!is_guest()) && (get_forum_type() == 'cns')) {
+                require_code('cns_members_action2');
+                cns_ban_member(get_member(), ($details['reasoned_ban'] === null) ? '1' : $details['reasoned_ban'], true);
+
+                require_code('failure');
+                banned_exit($details['reasoned_ban']);
+            }
+        }
+    }
+
     if ($evil) {
         $_POST = array(); // To stop loops
         log_hack_attack_and_exit('EVIL_POSTED_FORM_HACK', $referer);
@@ -786,5 +806,167 @@ class Field_restriction_loader
     public function startText($parser, $data)
     {
         $this->text_so_far .= $data;
+    }
+}
+
+/**
+ * Find all advanced banning for our page/type.
+ *
+ * @return array A pair: Automatic rules, Reasoned Bans
+ */
+function load_advanced_banning()
+{
+    static $automatic_rules = null, $reasoned_bans = null;
+    if ($automatic_rules === null) {
+        $automatic_rules = [];
+        $reasoned_bans = [];
+
+        if (function_exists('xml_parser_create')) {
+            $the_page = get_page_name();
+            $the_type = get_param_string('type', array_key_exists('type', $_POST) ? $_POST['type'] : 'browse');
+
+            $temp = new Advanced_banning_loader();
+            list($automatic_rules, $reasoned_bans) = $temp->go($the_page, $the_type);
+        }
+    }
+
+    return [$automatic_rules, $reasoned_bans];
+}
+
+/**
+ * Advanced banning loader.
+ *
+ * @package core
+ */
+class Advanced_banning_loader
+{
+    // Used during parsing
+    private $tag_stack;
+    private $attribute_stack;
+    private $automatic_rules; // Output
+    private $reasoned_bans; // Output
+
+    /**
+     * Run the loader, to load up field-restrictions from the XML file.
+     *
+     * @param  string $this_page Page filters are loaded for
+     * @param  string $this_type Screen type filters are loaded for
+     * @return array A pair: Automatic rules, Reasoned bans
+     */
+    public function go($this_page, $this_type)
+    {
+        if (!is_file(get_file_base() . '/data/xml_config/advanced_banning.xml') && !is_file(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml')) {
+            return [[], []];
+        }
+
+        $this->tag_stack = [];
+        $this->attribute_stack = [];
+
+        $this->automatic_rules = [];
+        $this->reasoned_bans = [];
+
+        // Create and setup our parser
+        if (function_exists('libxml_disable_entity_loader')) {
+            libxml_disable_entity_loader();
+        }
+        $xml_parser = @xml_parser_create(get_charset());
+        if ($xml_parser === false) {
+            return [[], []]; // PHP5 default build on windows comes with this function disabled, so we need to be able to escape on error
+        }
+        xml_set_object($xml_parser, $this);
+        @xml_parser_set_option($xml_parser, XML_OPTION_TARGET_ENCODING, get_charset());
+        xml_set_element_handler($xml_parser, 'startElement', 'endElement');
+        xml_set_character_data_handler($xml_parser, 'startText');
+
+        // Run the parser
+        $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? (get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : (get_file_base() . '/data/xml_config/advanced_banning.xml'));
+        if (trim($data) == '') {
+            return [[], []];
+        }
+        if (@xml_parse($xml_parser, $data, true) == 0) {
+            $err_code = xml_get_error_code($xml_parser);
+            $err_msg = xml_error_string($err_code) . ' [#' . strval($err_code) . ' @ ' . strval(xml_get_current_line_number($xml_parser)) . ']';
+            attach_message('advanced_banning.xml: ' . $err_msg, 'warn', false, true);
+            return [[], []];
+        }
+        @xml_parser_free($xml_parser);
+
+        return [$this->automatic_rules, $this->reasoned_bans];
+    }
+
+    /**
+     * Standard PHP XML parser function.
+     *
+     * @param  object $parser The parser object (same as 'this')
+     * @param  string $tag The name of the element found
+     * @param  array $_attributes Array of attributes of the element
+     */
+    public function startElement($parser, $tag, $_attributes)
+    {
+        array_push($this->tag_stack, $tag);
+        $attributes = [];
+        foreach ($_attributes as $key => $val) {
+            $attributes[strtolower($key)] = $val;
+        }
+        array_push($this->attribute_stack, $attributes);
+    }
+
+    /**
+     * Standard PHP XML parser function.
+     *
+     * @param  object $parser The parser object (same as 'this')
+     */
+    public function endElement($parser)
+    {
+        $tag = array_pop($this->tag_stack);
+        $attributes = array_pop($this->attribute_stack);
+
+        switch (strtolower($tag)) {
+            case 'automaticrule':
+                $applies = true;
+                if ($applies) {
+                    if (array_key_exists('pages', $attributes)) {
+                        $applies = false;
+                        $pages = explode(',', $attributes['pages']);
+                        foreach ($pages as $page) {
+                            if (simulated_wildcard_match($this->this_page, trim($page), true)) {
+                                $applies = true;
+                            }
+                        }
+                    }
+                }
+                if ($applies) {
+                    if (array_key_exists('types', $attributes)) {
+                        $applies = false;
+                        $types = explode(',', $attributes['types']);
+                        foreach ($types as $type) {
+                            if (simulated_wildcard_match($this->this_type, trim($type), true)) {
+                                $applies = true;
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($attributes['trigger'])) {
+                    $this->automatic_rules[$attributes['trigger']] = [
+                        'member_ban' => array_key_exists('action_member_ban', $attributes) ? ($attributes['action_member_ban'] == 'true') : false,
+                        'ip_ban' => array_key_exists('action_ip_ban', $attributes) ? ($attributes['action_ip_ban'] == 'true') : false,
+                        'reasoned_ban' => array_key_exists('action_reasoned_ban', $attributes) ? $attributes['action_reasoned_ban'] : null,
+                    ];
+                }
+
+                break;
+
+            case 'reasonedban':
+                if (!empty($attributes['codename'])) {
+                    $this->reasoned_bans[$attributes['codename']] = [
+                        'http_status' => empty($attributes['http_status']) ? 403 : intval($attributes['http_status']),
+                        'title' => empty($attributes['title']) ? null : $attributes['title'],
+                        'message' => empty($attributes['message']) ? null : $attributes['message'],
+                        'image_url' => empty($attributes['image_url']) ? null : $attributes['image_url'],
+                    ];
+                }
+                break;
+        }
     }
 }

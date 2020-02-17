@@ -43,7 +43,7 @@
 		{$BLOCK,block=menu,type=dropdown_new,param=composr_homesite_header}
 	{+END}
 
-	{+START,IF,{$AND,{$OR,{$HAS_PRIVILEGE,access_closed_site},{$NOT,{$CONFIG_OPTION,site_closed}}},{$MATCH_KEY_MATCH,:start}}}
+	{+START,IF,{$AND,{$NOT,{$WIDE_HIGH}},{$OR,{$HAS_PRIVILEGE,access_closed_site},{$NOT,{$CONFIG_OPTION,site_closed}}},{$MATCH_KEY_MATCH,:start}}}
 		<div class="bnrHolder">
 			<div class="headBnr">
 				<div class="banner">

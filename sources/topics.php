@@ -850,7 +850,7 @@ class CMS_Topic
                     }
                 }
 
-                $is_banned = ($GLOBALS['CNS_DRIVER']->get_member_row_field($post['member'], 'm_is_perm_banned') == 1);
+                $is_banned = ($GLOBALS['CNS_DRIVER']->get_member_row_field($post['member'], 'm_is_perm_banned') != '0');
 
                 // Signature
                 require_code('cns_posts');

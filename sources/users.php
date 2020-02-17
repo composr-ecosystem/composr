@@ -257,10 +257,6 @@ function get_member($quick_only = false)
             global $SESSION_CONFIRMED_CACHE;
             $SESSION_CONFIRMED_CACHE = ($member_row['session_confirmed'] == 1);
 
-            if ((!is_guest($member)) && ($GLOBALS['FORUM_DRIVER']->is_banned($member)) && (!$GLOBALS['IS_VIA_BACKDOOR'])) { // All hands to the guns
-                warn_exit(do_lang_tempcode('YOU_ARE_BANNED'));
-            }
-
             // Test this member still exists
             if ($GLOBALS['FORUM_DRIVER']->get_username($member) === null) {
                 $member = $GLOBALS['FORUM_DRIVER']->get_guest_id();

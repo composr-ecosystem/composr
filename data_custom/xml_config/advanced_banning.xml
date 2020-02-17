@@ -1,0 +1,6 @@
+<advancedBans>
+	<automaticRule trigger="https://americanmadepro.com/" pages="topics" types="_new_topic" action_member_ban="true" action_reasoned_ban="pakistani_spammer" action_ip_ban="false" />
+	<automaticRule trigger="https://thefitnessvibes.com/" pages="topics" types="_new_topic" action_member_ban="true" action_reasoned_ban="pakistani_spammer" action_ip_ban="false" />
+
+	<reasonedBan codename="pakistani_spammer" http_status="451" title="Violation of The Prevention of Electronic Crimes Act, 2016" image_url="uploads/website_specific/spam/logo.png" message="Your account has been found in violation of [url=&quot;Islamic Republic of Pakistan - Ordinance LXXII&quot;]uploads/website_specific/spam/law.pdf[/url]. Your account is therefore banned, pending possible legal action for the entity behind {IP_ADDRESS}." />
+</advancedBans>

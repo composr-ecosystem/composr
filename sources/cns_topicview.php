@@ -170,7 +170,7 @@ function cns_get_details_to_show_post($_postdetails, $topic_info, $only_post = f
         }
     }
 
-    $is_banned = ($GLOBALS['CNS_DRIVER']->get_member_row_field($_postdetails['p_poster'], 'm_is_perm_banned') == 1);
+    $is_banned = ($GLOBALS['CNS_DRIVER']->get_member_row_field($_postdetails['p_poster'], 'm_is_perm_banned') != '0');
 
     // Find title
     $title = addon_installed('cns_member_titles') ? $GLOBALS['CNS_DRIVER']->get_member_row_field($_postdetails['p_poster'], 'm_title') : '';

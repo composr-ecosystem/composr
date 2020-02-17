@@ -295,7 +295,7 @@ class Hook_profiles_tabs_about
         $time_for_them_raw = tz_time(time(), $users_timezone);
         $time_for_them = get_timezoned_time(time(), true, $member_id_of);
 
-        $is_banned = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_is_perm_banned') == 1);
+        $is_banned = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_is_perm_banned') != '0');
         $banned = do_lang_tempcode($is_banned ? 'YES' : 'NO');
 
         $last_submit_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_last_submit_time');

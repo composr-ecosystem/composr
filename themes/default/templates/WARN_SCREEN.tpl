@@ -17,7 +17,7 @@
 		</div>
 	{+END}
 	{+START,IF_NON_PASSED,WEBSERVICE_RESULT}
-		<div class="site_special_message ssm_warn" role="alert">
+		<div class="site_special_message ssm_warn" role="alert"{+START,IF_PASSED,IMAGE_URL} style="background-image: url('{IMAGE_URL;*}');"{+END}>
 			<div class="site_special_message_inner">
 				<div class="box box___warn_screen"><div class="box_inner">
 					{TEXT*}

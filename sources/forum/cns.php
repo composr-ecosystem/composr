@@ -1221,9 +1221,15 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  MEMBER $member The member ID
      * @return boolean Whether the member is banned
      */
-    public function is_banned($member)
+    public function is_banned($member, &$reasoned_ban = null)
     {
-        return $this->get_member_row_field($member, 'm_is_perm_banned') == 1;
+        $is_perm_banned = $this->get_member_row_field($member, 'm_is_perm_banned');
+        if (($is_perm_banned == '0') || ($is_perm_banned == '1')) {
+            $reasoned_ban = null;
+        } else {
+            $reasoned_ban = $is_perm_banned;
+        }
+        return ($is_perm_banned != '0');
     }
 
     /**

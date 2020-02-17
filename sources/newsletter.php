@@ -224,12 +224,12 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw
                 if (get_option('allow_email_from_staff_disable') == '1') {
                     $query .= ' AND m_allow_emails_from_staff=1';
                 }
-                $query .= ' AND m_is_perm_banned=0';
+                $query .= ' AND m_is_perm_banned=\'0\'';
                 $query .= ' UNION SELECT xxxxx FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m WHERE ' . db_string_not_equal_to('m_email_address', '') . ' AND ' . $where_lang . 'm_validated=1 AND m_primary_group=' . strval($id);
                 if (get_option('allow_email_from_staff_disable') == '1') {
                     $query .= ' AND m_allow_emails_from_staff=1';
                 }
-                $query .= ' AND m_is_perm_banned=0';
+                $query .= ' AND m_is_perm_banned=\'0\'';
                 $_rows = $GLOBALS['FORUM_DB']->query(str_replace('xxxxx', 'm.id,m.m_email_address,m.m_username', $query) . ' ORDER BY id', $max, $start, false, true);
                 if ($start == 0) {
                     $total['g' . strval($id)] = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT (' . str_replace(' UNION ', ') + (', str_replace('xxxxx', 'COUNT(*)', $query)) . ')', false, true);
@@ -258,7 +258,7 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw
             if (get_option('allow_email_from_staff_disable') == '1') {
                 $query .= ' AND m_allow_emails_from_staff=1';
             }
-            $query .= ' AND m_is_perm_banned=0';
+            $query .= ' AND m_is_perm_banned=\'0\'';
             $_rows = $GLOBALS['FORUM_DB']->query('SELECT id,m_email_address,m_username' . $query, $max, $start);
             if ($start == 0) {
                 $total['-1'] = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*)' . $query);

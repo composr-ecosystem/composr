@@ -443,6 +443,10 @@ function cns_get_member_fields($mini_mode = true, $member_id = null, $groups = n
  */
 function cns_get_member_fields_settings($mini_mode = true, $member_id = null, $groups = null, $email_address = '', $preview_posts = null, $dob_day = null, $dob_month = null, $dob_year = null, $timezone = null, $theme = null, $reveal_age = 1, $views_signatures = 1, $auto_monitor_contrib_content = null, $language = null, $allow_emails = 1, $allow_emails_from_staff = 1, $validated = 1, $primary_group = null, $username = '', $is_perm_banned = 0, $special_type = '', $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $on_probation_until = null)
 {
+    if (is_integer($is_perm_banned)) {
+        $is_perm_banned = strval($is_perm_banned);
+    }
+
     require_code('form_templates');
     require_code('cns_members_action');
 
@@ -706,7 +710,19 @@ function cns_get_member_fields_settings($mini_mode = true, $member_id = null, $g
                 $fields->attach(form_input_tick(do_lang_tempcode('HIGHLIGHTED_NAME'), do_lang_tempcode(addon_installed('pointstore') ? 'DESCRIPTION_HIGHLIGHTED_NAME_P' : 'DESCRIPTION_HIGHLIGHTED_NAME'), 'highlighted_name', $highlighted_name == 1));
             }
             if ((!is_null($member_id)) && ($member_id != get_member())) {// Can't ban someone new, and can't ban yourself
-                $fields->attach(form_input_tick(do_lang_tempcode('BANNED'), do_lang_tempcode('DESCRIPTION_MEMBER_BANNED'), 'is_perm_banned', $is_perm_banned == 1));
+                require_code('input_filter');
+                list(, $reasoned_bans) = load_advanced_banning();
+                if (empty($reasoned_bans)) {
+                    $fields->attach(form_input_tick(do_lang_tempcode('BANNED'), do_lang_tempcode('DESCRIPTION_MEMBER_BANNED'), 'is_perm_banned', $is_perm_banned != '0'));
+                } else {
+                    $reasoned_bans_list = new Tempcode();
+                    $reasoned_bans_list->attach(form_input_list_entry('0', '0' == $is_perm_banned, do_lang_tempcode('NO')));
+                    $reasoned_bans_list->attach(form_input_list_entry('1', '1' == $is_perm_banned, do_lang_tempcode('YES')));
+                    foreach (array_keys($reasoned_bans) as $reasoned_ban) {
+                        $reasoned_bans_list->attach(form_input_list_entry($reasoned_ban, $reasoned_ban == $is_perm_banned));
+                    }
+                    $fields->attach(form_input_list(do_lang_tempcode('BANNED'), do_lang_tempcode('DESCRIPTION_MEMBER_BANNED'), 'is_perm_banned', $reasoned_bans_list, null, false, false));
+                }
             }
         }
 
@@ -866,6 +882,10 @@ function cns_get_member_fields_profile($mini_mode = true, $member_id = null, $gr
  */
 function cns_edit_member($member_id, $email_address, $preview_posts, $dob_day, $dob_month, $dob_year, $timezone, $primary_group, $custom_fields, $theme, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $language, $allow_emails, $allow_emails_from_staff, $validated = null, $username = null, $password = null, $highlighted_name = null, $pt_allow = '*', $pt_rules_text = '', $on_probation_until = null, $auto_mark_read = null, $join_time = null, $avatar_url = null, $signature = null, $is_perm_banned = null, $photo_url = null, $photo_thumb_url = null, $salt = null, $password_compatibility_scheme = null, $skip_checks = false)
 {
+    if (is_integer($is_perm_banned)) {
+        $is_perm_banned = strval($is_perm_banned);
+    }
+
     require_code('type_sanitisation');
     require_code('cns_members_action');
 
@@ -1256,9 +1276,17 @@ function cns_delete_member($member_id)
  *
  * @param  AUTO_LINK $member_id The ID of the member.
  */
-function cns_ban_member($member_id)
+function cns_ban_member($member_id, $reasoned_ban = '1', $automatic = false)
 {
-    if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') == 1) {
+    if ($reasoned_ban == '0') {
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    $previous_value = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned');
+
+    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => $reasoned_ban], ['id' => $member_id], '', 1);
+
+    if ($previous_value != '0') {
         return;
     }
 
@@ -1268,9 +1296,7 @@ function cns_ban_member($member_id)
     $email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
     $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
 
-    $GLOBALS['FORUM_DB']->query_update('f_members', array('m_is_perm_banned' => 1), array('id' => $member_id), '', 1);
-
-    log_it('BAN_MEMBER', strval($member_id), $username);
+    log_it($automatic ? 'BAN_MEMBER_AUTOMATIC' : 'BAN_MEMBER', strval($member_id), $username);
 
     require_lang('cns');
     $mail = do_lang('BAN_MEMBER_MAIL', $username, get_site_name(), array(), get_lang($member_id));
@@ -1288,7 +1314,7 @@ function cns_ban_member($member_id)
  */
 function cns_unban_member($member_id)
 {
-    if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') == 0) {
+    if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') == '0') {
         return;
     }
 
@@ -1296,7 +1322,7 @@ function cns_unban_member($member_id)
     $email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
     $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
 
-    $GLOBALS['FORUM_DB']->query_update('f_members', array('m_is_perm_banned' => 0), array('id' => $member_id), '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_members', array('m_is_perm_banned' => '0'), array('id' => $member_id), '', 1);
 
     log_it('UNBAN_MEMBER', strval($member_id), $username);
 

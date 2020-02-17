@@ -349,7 +349,7 @@ function _sanitise_error_msg($text)
  * @return mixed Never returns (i.e. exits)
  * @ignore
  */
-function _generic_exit($text, $template, $support_match_key_messages = false)
+function _generic_exit($text, $template, $support_match_key_messages = false, $http_status = null, $title = null, $image_url = null)
 {
     if (throwing_errors()) {
         throw new CMSException($text);
@@ -422,6 +422,12 @@ function _generic_exit($text, $template, $support_match_key_messages = false)
         }
     }
 
+    if ($http_status !== null) {
+        if (!headers_sent()) {
+            set_http_status_code(strval($http_status));
+        }
+    }
+
     if ((array_key_exists('MSN_DB', $GLOBALS)) && (!is_null($GLOBALS['MSN_DB']))) {
         $GLOBALS['FORUM_DB'] = $GLOBALS['MSN_DB'];
         $GLOBALS['MSN_DB'] = null;
@@ -445,13 +451,15 @@ function _generic_exit($text, $template, $support_match_key_messages = false)
         $GLOBALS['FORUM_DB']->query_update('f_members', array('m_last_submit_time' => time() - $restrict_answer - 1), array('id' => get_member()), '', 1);
     }
 
-    if (($template == 'INFORM_SCREEN') && (is_object($GLOBALS['DISPLAYED_TITLE']))) {
-        $title = get_screen_title($GLOBALS['DISPLAYED_TITLE'], false);
-    } else {
-        $title = get_screen_title(($template == 'INFORM_SCREEN') ? 'MESSAGE' : 'ERROR_OCCURRED');
+    if ($title === null) {
+        if (($template == 'INFORM_SCREEN') && (is_object($GLOBALS['DISPLAYED_TITLE']))) {
+            $title = get_screen_title($GLOBALS['DISPLAYED_TITLE'], false);
+        } else {
+            $title = get_screen_title(($template == 'INFORM_SCREEN') ? 'MESSAGE' : 'ERROR_OCCURRED');
+        }
     }
 
-    $middle = do_template($template, array('TITLE' => $title, 'TEXT' => $text, 'PROVIDE_BACK' => true));
+    $middle = do_template($template, array('TITLE' => $title, 'TEXT' => $text, 'PROVIDE_BACK' => true, 'IMAGE_URL' => $image_url));
     $echo = globalise($middle, null, '', true);
     $echo->evaluate_echo(null, true);
     exit();
@@ -1493,6 +1501,50 @@ function _access_denied($class, $param, $force_login)
     }
 
     warn_exit($message); // Or if no login screen, just show normal error screen
+}
+
+/**
+ * Show a ban screen.
+ *
+ * @param  ?string $reasoned_ban The reasoned ban type (null: none)
+ * @exits
+ */
+function banned_exit($reasoned_ban = null)
+{
+    $text = do_lang_tempcode('YOU_ARE_BANNED');
+
+    if ($reasoned_ban !== null) {
+        require_code('input_filter');
+        list(, $reasoned_bans) = load_advanced_banning();
+        if (array_key_exists($reasoned_ban, $reasoned_bans)) {
+            $_reasoned_ban = $reasoned_bans[$reasoned_ban];
+
+            $http_status = $_reasoned_ban['http_status'];
+
+            if ($_reasoned_ban['message'] !== null) {
+                $text = comcode_to_tempcode(str_replace('{IP_ADDRESS}', get_ip_address(), $_reasoned_ban['message']), null, true);
+            }
+
+            $_GET['wide_high'] = '1'; // FUDGE
+
+            if (!empty($_reasoned_ban['title'])) {
+                $title = get_screen_title($_reasoned_ban['title'], false);
+            } else {
+                $title = null;
+            }
+
+            $image_url = $_reasoned_ban['image_url'];
+            if ($image_url !== null) {
+                if (url_is_local($image_url)) {
+                    $image_url = get_custom_base_url() . '/' . $image_url;
+                }
+            }
+
+            warn_exit($text, false, $http_status, $title, $image_url);
+        }
+    }
+
+    warn_exit($text);
 }
 
 /**
