@@ -669,7 +669,7 @@ class Field_restriction_loader
         }
         $xml_parser = @xml_parser_create(get_charset());
         if ($xml_parser === false) {
-            return; // PHP5 default build on windows comes with this function disabled, so we need to be able to escape on error
+            return []; // PHP5 default build on windows comes with this function disabled, so we need to be able to escape on error
         }
         xml_set_object($xml_parser, $this);
         @xml_parser_set_option($xml_parser, XML_OPTION_TARGET_ENCODING, get_charset());
@@ -679,13 +679,13 @@ class Field_restriction_loader
         // Run the parser
         $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? (get_custom_file_base() . '/data_custom/xml_config/fields.xml') : (get_file_base() . '/data/xml_config/fields.xml'), FILE_READ_LOCK | FILE_READ_BOM);
         if (trim($data) == '') {
-            return;
+            return [];
         }
         if (@xml_parse($xml_parser, $data, true) == 0) {
             $err_code = xml_get_error_code($xml_parser);
             $err_msg = xml_error_string($err_code) . ' [#' . strval($err_code) . ' @ ' . strval(xml_get_current_line_number($xml_parser)) . ']';
             attach_message('fields.xml: ' . $err_msg, 'warn', false, true);
-            return;
+            return [];
         }
         @xml_parser_free($xml_parser);
 
@@ -888,10 +888,10 @@ class Advanced_banning_loader
     public function go($this_page, $this_type)
     {
         if (!addon_installed('securitylogging')) {
-            return;
+            return [[], []];
         }
-        if (!is_file(get_file_base() . '/data/xml_config/advanced_banning.xml') && !is_file(get_custom_file_base() . '/data_custom/advanced_banning/fields.xml')) {
-            return;
+        if (!is_file(get_file_base() . '/data/xml_config/advanced_banning.xml') && !is_file(get_custom_file_base() . '/data_custom/advanced_banning/advanced_banning.xml')) {
+            return [[], []];
         }
 
         $this->tag_stack = [];
@@ -916,13 +916,13 @@ class Advanced_banning_loader
         // Run the parser
         $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? (get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : (get_file_base() . '/data/xml_config/advanced_banning.xml'), FILE_READ_LOCK | FILE_READ_BOM);
         if (trim($data) == '') {
-            return;
+            return [[], []];
         }
         if (@xml_parse($xml_parser, $data, true) == 0) {
             $err_code = xml_get_error_code($xml_parser);
             $err_msg = xml_error_string($err_code) . ' [#' . strval($err_code) . ' @ ' . strval(xml_get_current_line_number($xml_parser)) . ']';
             attach_message('advanced_banning.xml: ' . $err_msg, 'warn', false, true);
-            return;
+            return [[], []];
         }
         @xml_parser_free($xml_parser);
 
@@ -999,7 +999,7 @@ class Advanced_banning_loader
                         'title' => empty($attributes['title']) ? null : $attributes['title'],
                         'message' => empty($attributes['message']) ? null : $attributes['message'],
                         'image_url' => empty($attributes['image_url']) ? null : $attributes['image_url'],
-                        'redirect_url' => empty($attributes['image']) ? null : $attributes['image'],
+                        'redirect_url' => empty($attributes['redirect_url']) ? null : $attributes['redirect_url'],
                     ];
                 }
                 break;
