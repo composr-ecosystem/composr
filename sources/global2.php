@@ -337,7 +337,7 @@ function init__global2()
     require_code('config'); // Config is needed for much active stuff
     if ((!isset($SITE_INFO['known_suexec'])) || ($SITE_INFO['known_suexec'] == '0')) {
         if (ip_banned(get_ip_address())) {
-            critical_error('YOU_ARE_BANNED');
+            critical_error('BANNED');
         }
     }
 
