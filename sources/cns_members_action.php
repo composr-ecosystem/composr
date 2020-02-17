@@ -109,7 +109,7 @@ function member_field_is_required($member_id, $field_class, $current_value = nul
  * @param  BINARY $validated Whether the account has been validated
  * @param  SHORT_TEXT $validated_email_confirm_code The code required before the account becomes active (blank: already entered)
  * @param  ?TIME $on_probation_until When the member is on probation until (null: not on probation)
- * @param  BINARY $is_perm_banned Whether the member is permanently banned
+ * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  boolean $check_correctness Whether to check details for correctness
  * @param  ?IP $ip_address The member's IP address (blank: unknown) (null: IP address of current user)
  * @param  ?ID_TEXT $password_compatibility_scheme The compatibility scheme that the password operates in (blank: none) (null: none [meaning normal Composr salted style] or plain, depending on whether passwords are encrypted)
@@ -122,7 +122,7 @@ function member_field_is_required($member_id, $field_class, $current_value = nul
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @return AUTO_LINK The ID of the new member
  */
-function cns_make_member($username, $password, $email_address = '', $primary_group = null, $secondary_groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = [], $timezone = null, $language = null, $theme = '', $title = '', $photo_url = '', $photo_thumb_url = '', $avatar_url = null, $signature = '', $preview_posts = null, $reveal_age = 0, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $validated_email_confirm_code = '', $on_probation_until = null, $is_perm_banned = 0, $check_correctness = true, $ip_address = null, $password_compatibility_scheme = null, $salt = '', $join_time = null, $last_visit_time = null, $last_submit_time = null, $profile_views = 0, $total_sessions = 0, $id = null)
+function cns_make_member($username, $password, $email_address = '', $primary_group = null, $secondary_groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = [], $timezone = null, $language = null, $theme = '', $title = '', $photo_url = '', $photo_thumb_url = '', $avatar_url = null, $signature = '', $preview_posts = null, $reveal_age = 0, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $validated_email_confirm_code = '', $on_probation_until = null, $is_perm_banned = '0', $check_correctness = true, $ip_address = null, $password_compatibility_scheme = null, $salt = '', $join_time = null, $last_visit_time = null, $last_submit_time = null, $profile_views = 0, $total_sessions = 0, $id = null)
 {
     require_code('form_templates');
     require_code('cns_members');

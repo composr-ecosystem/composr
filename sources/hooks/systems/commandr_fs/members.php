@@ -235,7 +235,7 @@ class Hook_commandr_fs_members
                 1, // validated
                 '', // validated_email_confirm_code
                 null, // on_probation_until
-                0, // is_perm_banned
+                '0', // is_perm_banned
                 false // check_correctness
             );
         } else {

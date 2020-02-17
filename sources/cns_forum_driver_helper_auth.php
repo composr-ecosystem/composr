@@ -156,8 +156,10 @@ function _forum_authorise_login($this_ref, $username, $user_id, $password_hashed
         $out['error'] = do_lang_tempcode('MEMBER_NOT_VALIDATED_EMAIL');
         return $out;
     }
-    if ($this_ref->is_banned($row['id'])) { // All hands to the guns
+    $reasoned_ban = null;
+    if ($this_ref->is_banned($row['id'], $reasoned_ban)) { // All hands to the guns
         $out['error'] = do_lang_tempcode('YOU_ARE_BANNED');
+        $out['reasoned_ban'] = $reasoned_ban;
         return $out;
     }
 

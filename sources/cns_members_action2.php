@@ -327,7 +327,7 @@ function cns_member_external_linker($type, $username, $password, $email_check = 
         $validated, // validated
         '', // validated_email_confirm_code
         null, // on_probation_until
-        0, // is_perm_banned
+        '0', // is_perm_banned
         false, // check_correctness
         null, // ip_address
         $type // password_compatibility_scheme
@@ -400,11 +400,11 @@ function cns_read_in_custom_fields($custom_fields, $member_id = null)
  * @param  LONG_TEXT $pt_rules_text Rules that other members must agree to before they may start a PT with the member
  * @param  BINARY $validated Whether the account has been validated
  * @param  ?TIME $on_probation_until When the member is on probation until (null: just finished probation / or effectively was never on it)
- * @param  BINARY $is_perm_banned Whether the member is permanently banned
+ * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  * @return array A tuple: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields($mini_mode = true, $special_type = '', $member_id = null, $username = '', $email_address = '', $primary_group = null, $groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = null, $timezone = null, $language = null, $theme = null, $preview_posts = 0, $reveal_age = 1, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $on_probation_until = null, $is_perm_banned = 0, $adjusted_config_options = null)
+function cns_get_member_fields($mini_mode = true, $special_type = '', $member_id = null, $username = '', $email_address = '', $primary_group = null, $groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = null, $timezone = null, $language = null, $theme = null, $preview_posts = 0, $reveal_age = 1, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $on_probation_until = null, $is_perm_banned = '0', $adjusted_config_options = null)
 {
     $fields = new Tempcode();
     $hidden = new Tempcode();
@@ -456,11 +456,11 @@ function cns_get_member_fields($mini_mode = true, $special_type = '', $member_id
  * @param  LONG_TEXT $pt_rules_text Rules that other members must agree to before they may start a PT with the member
  * @param  BINARY $validated Whether the account has been validated
  * @param  ?TIME $on_probation_until When the member is on probation until (null: just finished probation / or effectively was never on it)
- * @param  BINARY $is_perm_banned Whether the member is permanently banned
+ * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  ?array $adjusted_config_options A map of adjusted config options (null: none)
  * @return array A pair: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $member_id = null, $username = '', $email_address = '', $primary_group = null, $groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $timezone = null, $language = null, $theme = null, $preview_posts = null, $reveal_age = 1, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $on_probation_until = null, $is_perm_banned = 0, $adjusted_config_options = null)
+function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $member_id = null, $username = '', $email_address = '', $primary_group = null, $groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $timezone = null, $language = null, $theme = null, $preview_posts = null, $reveal_age = 1, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $on_probation_until = null, $is_perm_banned = '0', $adjusted_config_options = null)
 {
     require_code('form_templates');
     require_code('cns_members_action');
@@ -754,7 +754,19 @@ function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_MEMBER_VALIDATED'), 'validated', $validated == 1));
             }
             if (($member_id !== null) && ($member_id != get_member())) {// Can't ban someone new, and can't ban yourself
-                $fields->attach(form_input_tick(do_lang_tempcode('BANNED'), do_lang_tempcode('DESCRIPTION_MEMBER_BANNED'), 'is_perm_banned', $is_perm_banned == 1));
+                require_code('input_filter');
+                list(, $reasoned_bans) = load_advanced_banning();
+                if (empty($reasoned_bans)) {
+                    $fields->attach(form_input_tick(do_lang_tempcode('BANNED'), do_lang_tempcode('DESCRIPTION_MEMBER_BANNED'), 'is_perm_banned', $is_perm_banned != '0'));
+                } else {
+                    $reasoned_bans_list = new Tempcode();
+                    $reasoned_bans_list->attach(form_input_list_entry('0', '0' == $is_perm_banned, do_lang_tempcode('NO')));
+                    $reasoned_bans_list->attach(form_input_list_entry('1', '1' == $is_perm_banned, do_lang_tempcode('YES')));
+                    foreach (array_keys($reasoned_bans) as $reasoned_ban) {
+                        $reasoned_bans_list->attach(form_input_list_entry($reasoned_ban, $reasoned_ban == $is_perm_banned));
+                    }
+                    $fields->attach(form_input_list(do_lang_tempcode('BANNED'), do_lang_tempcode('DESCRIPTION_MEMBER_BANNED'), 'is_perm_banned', $reasoned_bans_list, null, false, false));
+                }
             }
         }
 
@@ -919,7 +931,7 @@ function cns_get_member_fields_profile($mini_mode = true, $member_id = null, $gr
  * @param  ?LONG_TEXT $pt_rules_text Rules that other members must agree to before they may start a PT with the member (null: don't change)
  * @param  ?BINARY $validated Whether the account has been validated (null: do not change this) (null: don't change)
  * @param  ?TIME $on_probation_until When the member is on probation until (null: don't change)
- * @param  ?BINARY $is_perm_banned Banned status (null: don't change)
+ * @param  ?ID_TEXT $is_perm_banned Banned status (null: don't change)
  * @param  boolean $check_correctness Whether to check details for correctness and do most of the change-triggered e-mails
  * @param  ?ID_TEXT $password_compatibility_scheme Password compatibility scheme (null: don't change)
  * @param  ?SHORT_TEXT $salt Password salt (null: don't change)
@@ -1340,10 +1352,20 @@ function cns_delete_member($member_id)
  * Ban a member.
  *
  * @param  AUTO_LINK $member_id The ID of the member
+ * @param  ID_TEXT $reasoned_ban The reasoned ban value ('1' is just a regular ban, the norm)
+ * @param  boolean $automatic Whether it is an automatic ban
  */
-function cns_ban_member($member_id)
+function cns_ban_member($member_id, $reasoned_ban = '1', $automatic = false)
 {
-    if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') == 1) {
+    if ($reasoned_ban == '0') {
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    $previous_value = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned');
+
+    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => $reasoned_ban], ['id' => $member_id], '', 1);
+
+    if ($previous_value != '0') {
         return;
     }
 
@@ -1353,9 +1375,7 @@ function cns_ban_member($member_id)
     $email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
     $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
 
-    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => 1], ['id' => $member_id], '', 1);
-
-    log_it('BAN_MEMBER', strval($member_id), $username);
+    log_it($automatic ? 'BAN_MEMBER_AUTOMATIC' : 'BAN_MEMBER', strval($member_id), $username);
 
     require_lang('cns');
     $mail = do_lang('BAN_MEMBER_MAIL', $username, get_site_name(), [], get_lang($member_id));
@@ -1373,7 +1393,7 @@ function cns_ban_member($member_id)
  */
 function cns_unban_member($member_id)
 {
-    if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') == 0) {
+    if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') == '0') {
         return;
     }
 
@@ -1381,7 +1401,7 @@ function cns_unban_member($member_id)
     $email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
     $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
 
-    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => 0], ['id' => $member_id], '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '0'], ['id' => $member_id], '', 1);
 
     log_it('UNBAN_MEMBER', strval($member_id), $username);
 

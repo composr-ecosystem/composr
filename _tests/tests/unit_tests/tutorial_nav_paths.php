@@ -85,6 +85,19 @@ class tutorial_nav_paths_test_set extends cms_test_case
                 $num_matches = preg_match_all('#Admin Zone > Setup > Configuration > (\w[\w /]+\w)( > (\w[\w /]+\w))?#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $category = $matches[1][$i];
+
+                    if (in_array($category, [
+                        'Installation Options',
+                        'Configure field filters',
+                        'Configure breadcrumb overrides',
+                        'Configure advanced banning',
+                        'Composr upgrader',
+                        'RSS/Atom Feeds',
+                        'Code Editor',
+                    ])) {
+                        continue;
+                    }
+
                     $group = isset($matches[3][$i]) ? $matches[3][$i] : '';
                     $total = $matches[0][$i];
 

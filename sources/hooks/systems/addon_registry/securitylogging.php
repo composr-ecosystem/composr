@@ -124,6 +124,7 @@ class Hook_addon_registry_securitylogging
             'sources/hooks/systems/commandr_fs_extended_config/ip_unbannable.php',
             'themes/default/javascript/securitylogging.js',
             'sources/hooks/systems/actionlog/securitylogging.php',
+            'data/xml_config/advanced_banning.xml',
 
             'sources/hooks/modules/admin_stats/security_incidents.php',
         ];

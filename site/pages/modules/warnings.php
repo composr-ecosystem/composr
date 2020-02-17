@@ -338,7 +338,7 @@ class Module_warnings extends Standard_crud_module
         $id = post_param_integer('id');
         $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $id]);
         $banned_member = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'p_banned_member', ['id' => $id]);
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => 0], ['id' => $member_id], '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '0'], ['id' => $member_id], '', 1);
         $GLOBALS['FORUM_DB']->query_update('f_warnings', ['p_banned_member' => 0], ['id' => $id], '', 1);
 
         require_code('cns_general_action2');
@@ -566,8 +566,21 @@ class Module_warnings extends Standard_crud_module
             }
 
             if (has_privilege(get_member(), 'member_maintenance')) {
-                $already_banned = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') == 1);
-                $fields->attach(form_input_tick(do_lang_tempcode('BAN_MEMBER'), do_lang_tempcode('DESCRIPTION_BANNED_MEMBER'), 'banned_member', $spam_mode || $already_banned, null, '1', false, $already_banned));
+                $already_banned = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_is_perm_banned') != '0');
+
+                require_code('input_filter');
+                list(, $reasoned_bans) = load_advanced_banning();
+                if ((empty($reasoned_bans)) || ($already_banned)) {
+                    $fields->attach(form_input_tick(do_lang_tempcode('BAN_MEMBER'), do_lang_tempcode('DESCRIPTION_BANNED_MEMBER'), 'banned_member', $spam_mode || $already_banned, null, '1', false, $already_banned));
+                } else {
+                    $reasoned_bans_list = new Tempcode();
+                    $reasoned_bans_list->attach(form_input_list_entry('0', !$spam_mode, do_lang_tempcode('NO')));
+                    $reasoned_bans_list->attach(form_input_list_entry('1', $spam_mode, do_lang_tempcode('YES')));
+                    foreach (array_keys($reasoned_bans) as $reasoned_ban) {
+                        $reasoned_bans_list->attach(form_input_list_entry($reasoned_ban));
+                    }
+                    $fields->attach(form_input_list(do_lang_tempcode('BAN_MEMBER'), do_lang_tempcode('DESCRIPTION_BANNED_MEMBER'), 'banned_member', $reasoned_bans_list, null, false, false));
+                }
             }
 
             if (has_privilege(get_member(), 'member_maintenance')) {
@@ -1053,15 +1066,15 @@ class Module_warnings extends Standard_crud_module
 
         // Ban member
         if (has_privilege(get_member(), 'member_maintenance')) {
-            $banned_member = post_param_integer('banned_member', 0);
-            if ($banned_member == 1) {
-                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => 1], ['id' => $member_id], '', 1);
+            $banned_member = post_param_string('banned_member', '0');
+            if ($banned_member != '0') {
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => $banned_member], ['id' => $member_id], '', 1);
 
                 require_code('cns_general_action2');
                 cns_mod_log_it('BAN_MEMBER', strval($member_id), $username, $explanation);
             }
         } else {
-            $banned_member = 0;
+            $banned_member = '0';
         }
 
         // IP ban
@@ -1109,7 +1122,7 @@ class Module_warnings extends Standard_crud_module
         $charged_points = post_param_integer('charged_points', 0);
 
         // Make the warning
-        $warning_id = cns_make_warning($member_id, $explanation, null, null, post_param_integer('is_warning', 0), $silence_from_topic, $silence_from_forum, $probation, $banned_ip, $charged_points, $banned_member, $changed_usergroup_from);
+        $warning_id = cns_make_warning($member_id, $explanation, null, null, post_param_integer('is_warning', 0), $silence_from_topic, $silence_from_forum, $probation, $banned_ip, $charged_points, ($banned_member == '0') ? 0 : 1, $changed_usergroup_from);
 
         // Charge points
         if (addon_installed('points')) {

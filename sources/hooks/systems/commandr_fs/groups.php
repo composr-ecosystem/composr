@@ -333,7 +333,10 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         }
         $validated_email_confirm_code = $this->_default_property_str($properties, 'validated_email_confirm_code');
         $on_probation_until = $this->_default_property_time_null($properties, 'on_probation_until');
-        $is_perm_banned = $this->_default_property_int($properties, 'is_perm_banned');
+        $is_perm_banned = $this->_default_property_str($properties, 'is_perm_banned');
+        if ($is_perm_banned == '') {
+            $is_perm_banned = '0';
+        }
 
         $ip_address = $this->_default_property_str_null($properties, 'ip_address');
 

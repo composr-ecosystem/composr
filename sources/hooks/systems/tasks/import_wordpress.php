@@ -115,7 +115,7 @@ class Hook_task_import_wordpress
                                 1, // validated
                                 '', // validated_email_confirm_code
                                 null, // on_probation_until
-                                0, // is_perm_banned
+                                '0', // is_perm_banned
                                 false, // check_correctness
                                 '', // ip_address
                                 'wordpress' // password_compatibility_scheme

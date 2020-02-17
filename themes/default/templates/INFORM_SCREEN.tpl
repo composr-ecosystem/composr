@@ -2,7 +2,7 @@
 
 {$REQUIRE_CSS,messages}
 
-<div class="site-special-message ssm-inform" role="alert">
+<div class="site-special-message ssm-inform" role="alert"{+START,IF_PASSED,IMAGE_URL} style="background-image: url('{IMAGE_URL;*}');"{+END}>
 	<div class="site-special-message-inner">
 		<div class="box box---inform-screen"><div class="box-inner">
 			{TEXT*}

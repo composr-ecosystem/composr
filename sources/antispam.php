@@ -114,7 +114,7 @@ function check_rbls($page_level = false, $user_ip = null)
     require_code('global4');
     $is_already_ip_banned = ip_banned($user_ip, true, true);
     if ($is_already_ip_banned === true) {
-        critical_error('BANNED');
+        critical_error('YOU_ARE_BANNED');
     }
     if ($is_already_ip_banned === false) {
         return; // Cached that we're not banned

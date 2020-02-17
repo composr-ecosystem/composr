@@ -1029,6 +1029,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TREE_LIST_SELECT
         GREETING
         BREADCRUMB_OVERRIDES
+        ADVANCED_BANNING
         DISPLAY_LIKELIHOOD
         MASS_PERMISSION_SETTING
         IDEAL_DENSITY
@@ -1050,6 +1051,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BANNER_VIEWS_TO
         BAN_IP_DESCRIPTION
         BAN_MEMBER
+        BAN_MEMBER_AUTOMATIC
         BAN_MEMBER_DESCRIPTION
         BAN_MEMBER_DOUBLE_DESCRIPTION
         BAN_SUBMITTER_DESCRIPTION
@@ -4631,6 +4633,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_BASE_CONFIGURATION
         DOC_BLOGS
         DOC_BREADCRUMB_OVERRIDES
+        DOC_ADVANCED_BANNING
         DOC_CALENDAR
         DOC_CATALOGUES
         DOC_CHAT

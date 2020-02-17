@@ -699,7 +699,7 @@ class Hook_import_ipb2
                     $validated, // validated
                     '', // validated_email_confirm_code
                     null, // on_probation_until
-                    0, // is_perm_banned
+                    '0', // is_perm_banned
                     false, // check_correctness
                     $row['ip_address'], // ip_address
                     $type, // password_compatibility_scheme
@@ -709,7 +709,7 @@ class Hook_import_ipb2
                 );
 
                 if ($row['mgroup'] == 5) {
-                    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => 1], ['id' => $id_new], '', 1);
+                    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '1'], ['id' => $id_new], '', 1);
                 }
 
                 import_id_remap_put('member', strval($row['id']), $id_new);

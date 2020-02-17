@@ -314,6 +314,11 @@ class Module_login
         } else {
             $text = $feedback['error'];
 
+            if ($text->evaluate() == do_lang('YOU_ARE_BANNED')) {
+                require_code('failure');
+                banned_exit(empty($feedback['reasoned_ban']) ? null : $feedback['reasoned_ban']);
+            }
+
             attach_message($text, 'warn');
 
             if (get_forum_type() == 'cns') {

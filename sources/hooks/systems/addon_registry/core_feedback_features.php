@@ -679,6 +679,7 @@ class Hook_addon_registry_core_feedback_features
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
             'OVERALL_NUM_RATINGS' => placeholder_number(),
+            '_OVERALL_NUM_RATINGS' => placeholder_number(),
         ]);
         return [
             lorem_globalise(do_lorem_template('RATING_DISPLAY_SHARED', [

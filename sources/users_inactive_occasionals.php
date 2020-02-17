@@ -442,6 +442,14 @@ function try_cookie_login()
                 $IS_A_COOKIE_LOGIN = true;
 
                 create_session($member_id, 0, (isset($_COOKIE[get_member_cookie() . '_invisible'])) && ($_COOKIE[get_member_cookie() . '_invisible'] == '1'));
+            } else {
+                if (!empty($login_array['error'])) {
+                    $text = $login_array['error'];
+                    if ($text->evaluate() == do_lang('YOU_ARE_BANNED')) {
+                        require_code('failure');
+                        banned_exit(empty($login_array['reasoned_ban']) ? null : $login_array['reasoned_ban']);
+                    }
+                }
             }
         }
     }

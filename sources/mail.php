@@ -1158,7 +1158,7 @@ abstract class Mail_dispatcher_base
         $to_emails = $to_emails_new;
 
         // To name (an array)
-        if (empty($to_names)) {
+        if (!empty($to_names)) {
             if ($to_emails[0] == $staff_address) {
                 $to_names = [];
                 for ($i = 0; $i < count($to_emails); $i++) {

@@ -395,6 +395,8 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
 
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
+
+        $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_is_perm_banned', 'ID_TEXT');
     }
 
     // If we have the forum installed to this db already, leave
@@ -520,7 +522,7 @@ function install_cns($upgrade_from = null)
             'm_validated' => 'BINARY',
             'm_validated_email_confirm_code' => 'SHORT_TEXT',
             'm_on_probation_until' => '?TIME',
-            'm_is_perm_banned' => 'BINARY',
+            'm_is_perm_banned' => 'ID_TEXT',
 
             // Auto-generated values
             'm_ip_address' => 'IP',
@@ -982,7 +984,7 @@ function install_cns($upgrade_from = null)
             1, // validated
             '', // validated_email_confirm_code
             null, // on_probation_until
-            0, // is_perm_banned
+            '0', // is_perm_banned
             false // check_correctness
         );
         // Make admin user
@@ -1020,7 +1022,7 @@ function install_cns($upgrade_from = null)
             1, // validated
             '', // validated_email_confirm_code
             null, // on_probation_until
-            0, // is_perm_banned
+            '0', // is_perm_banned
             false // check_correctness
         );
         // Make test user
@@ -1058,7 +1060,7 @@ function install_cns($upgrade_from = null)
             1, // validated
             '', // validated_email_confirm_code
             null, // on_probation_until
-            0, // is_perm_banned
+            '0', // is_perm_banned
             false // check_correctness
         );
 

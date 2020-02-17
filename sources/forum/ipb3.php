@@ -1374,9 +1374,10 @@ class Forum_driver_ipb3 extends Forum_driver_base
      * Find out if the given member ID is banned.
      *
      * @param  MEMBER $member The member ID
+     * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned($member)
+    public function is_banned($member, &$reasoned_ban = null)
     {
         // Are they banned
         $banned = $this->db->query_select_value_if_there('members', 'member_banned', ['member_id' => $member]);

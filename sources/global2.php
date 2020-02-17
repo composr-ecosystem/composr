@@ -67,7 +67,7 @@ function init__global2()
         }
     }
 
-    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $FIELD_RESTRICTIONS, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE;
+    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE;
 
     $INVALIDATED_FAST_SPIDER_CACHE = false;
 
@@ -105,7 +105,6 @@ function init__global2()
     $RUNNING_SCRIPT_CACHE = [];
     $WHAT_IS_RUNNING_CACHE = current_script();
     $WORDS_TO_FILTER_CACHE = null;
-    $FIELD_RESTRICTIONS = null;
     $VALID_ENCODING = false;
     $CONVERTED_ENCODING = false;
     $KNOWN_AJAX = false;
@@ -338,7 +337,7 @@ function init__global2()
     require_code('config'); // Config is needed for much active stuff
     if ((!isset($SITE_INFO['known_suexec'])) || ($SITE_INFO['known_suexec'] == '0')) {
         if (ip_banned(get_ip_address())) {
-            critical_error('BANNED');
+            critical_error('YOU_ARE_BANNED');
         }
     }
 
@@ -548,6 +547,15 @@ function init__global2()
         if ($CSRF_TOKENS) {
             require_code('csrf_filter');
             check_csrf_token(post_param_string('csrf_token', null));
+        }
+    }
+
+    $member_id = get_member();
+    if ((!is_guest($member_id)) && (!$GLOBALS['IS_VIA_BACKDOOR'])) { // All hands to the guns
+        $reasoned_ban = null;
+        if ($GLOBALS['FORUM_DRIVER']->is_banned($member_id, $reasoned_ban)) {
+            require_code('failure');
+            banned_exit($reasoned_ban);
         }
     }
 
@@ -1399,13 +1407,15 @@ function inform_exit($text, $support_match_key_messages = null)
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @param  boolean $log_error Whether to log the error
  * @param  ?integer $http_status HTTP status to set (null: none)
+ * @param  ?Tempcode $title Title to use show (null: default)
+ * @param  ?URLPATH $image_url Image to show (null: default)
  * @exits
  */
-function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = 500)
+function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = 500, $title = null, $image_url = null)
 {
     require_code('failure');
     suggest_fatalistic();
-    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, $http_status);
+    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, $http_status, $title, $image_url);
     if (running_script('cron_bridge')) {
         relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), false, 'error_occurred_cron');
     }

@@ -372,13 +372,16 @@ function _sanitise_error_msg($text)
  *
  * @param  mixed $text The error message (string or Tempcode)
  * @param  ID_TEXT $template Name of the terminal page template
+ * @set INFORM_SCREEN WARN_SCREEN FATAL_SCREEN
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)
  * @param  boolean $log_error Whether to log the error
  * @param  ?integer $http_status HTTP status to set (null: none, unless it's a missing resource error in which case 404)
+ * @param  ?Tempcode $title Title to use show (null: default)
+ * @param  ?URLPATH $image_url Image to show (only works for INFORM_SCREEN and WARN_SCREEN) (null: default)
  * @ignore
  * @exits
  */
-function _generic_exit($text, $template, $support_match_key_messages = false, $log_error = false, $http_status = null)
+function _generic_exit($text, $template, $support_match_key_messages = false, $log_error = false, $http_status = null, $title = null, $image_url = null)
 {
     if (($template != 'FATAL_SCREEN') && ((get_param_integer('keep_fatalistic', 0) != 0) || (running_script('commandr')))) {
         _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
@@ -514,10 +517,12 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_last_submit_time' => time() - $restrict_answer - 1], ['id' => get_member()], '', 1);
     }
 
-    if (($template == 'INFORM_SCREEN') && (is_object($GLOBALS['DISPLAYED_TITLE']))) {
-        $title = get_screen_title($GLOBALS['DISPLAYED_TITLE'], false);
-    } else {
-        $title = get_screen_title(($template == 'INFORM_SCREEN') ? 'MESSAGE' : 'ERROR_OCCURRED');
+    if ($title === null) {
+        if (($template == 'INFORM_SCREEN') && (is_object($GLOBALS['DISPLAYED_TITLE']))) {
+            $title = get_screen_title($GLOBALS['DISPLAYED_TITLE'], false);
+        } else {
+            $title = get_screen_title(($template == 'INFORM_SCREEN') ? 'MESSAGE' : 'ERROR_OCCURRED');
+        }
     }
 
     if ($template == 'FATAL_SCREEN') {
@@ -541,6 +546,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         'WEBSERVICE_RESULT' => $webservice_result,
         'MAY_SEE_TRACE' => $may_see_trace,
         'TRACE' => $trace,
+        'IMAGE_URL' => $image_url,
     ]);
     $echo = globalise($middle, null, '', true);
     $echo->evaluate_echo();
@@ -1463,6 +1469,55 @@ function _access_denied($class, $param, $force_login)
     }
 
     warn_exit($message); // Or if no login screen, just show normal error screen
+}
+
+/**
+ * Show a ban screen.
+ *
+ * @param  ?string $reasoned_ban The reasoned ban type (null: none)
+ * @exits
+ */
+function banned_exit($reasoned_ban = null)
+{
+    $text = do_lang_tempcode('YOU_ARE_BANNED');
+
+    if ($reasoned_ban !== null) {
+        require_code('input_filter');
+        list(, $reasoned_bans) = load_advanced_banning();
+        if (array_key_exists($reasoned_ban, $reasoned_bans)) {
+            $_reasoned_ban = $reasoned_bans[$reasoned_ban];
+
+            $http_status = $_reasoned_ban['http_status'];
+
+            if ($_reasoned_ban['message'] !== null) {
+                $text = comcode_to_tempcode(str_replace('{IP_ADDRESS}', get_ip_address(), $_reasoned_ban['message']), null, true);
+            }
+
+            $_GET['wide_high'] = '1'; // FUDGE
+
+            if ($_reasoned_ban['redirect_url'] !== null) {
+                $title = get_screen_title($_reasoned_ban['title'], false);
+                redirect_exit($_reasoned_ban['redirect_url'], $title, $text);
+            }
+
+            if (!empty($_reasoned_ban['title'])) {
+                $title = get_screen_title($_reasoned_ban['title'], false);
+            } else {
+                $title = null;
+            }
+
+            $image_url = $_reasoned_ban['image_url'];
+            if ($image_url !== null) {
+                if (url_is_local($image_url)) {
+                    $image_url = get_custom_base_url() . '/' . $image_url;
+                }
+            }
+
+            warn_exit($text, false, false, $http_status, $title, $image_url);
+        }
+    }
+
+    warn_exit($text);
 }
 
 /**

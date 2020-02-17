@@ -829,9 +829,10 @@ class Forum_driver_smf2 extends Forum_driver_base
      * Find out if the given member ID is banned.
      *
      * @param  MEMBER $member The member ID
+     * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned($member)
+    public function is_banned($member, &$reasoned_ban = null)
     {
         $rows = $this->db->query('SELECT id_ban FROM ' . $this->db->get_table_prefix() . 'banned WHERE id_member=' . strval($member) . ' AND expire_time IS NULL OR expire_time>' . strval(time()), null, 0, true); // Suppress errors in case of other table name
         if ($rows === null) {

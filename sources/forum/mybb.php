@@ -890,9 +890,10 @@ class Forum_driver_mybb extends Forum_driver_base
      * Find out if the given member ID is banned.
      *
      * @param  MEMBER $member The member ID
+     * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned($member)
+    public function is_banned($member, &$reasoned_ban = null)
     {
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'banned WHERE uid=' . strval($member));
         if (empty($rows)) {

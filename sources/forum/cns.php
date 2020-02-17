@@ -1225,11 +1225,18 @@ class Forum_driver_cns extends Forum_driver_base
      * Find out if the given member ID is banned.
      *
      * @param  MEMBER $member The member ID
+     * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned($member)
+    public function is_banned($member, &$reasoned_ban = null)
     {
-        return $this->get_member_row_field($member, 'm_is_perm_banned') == 1;
+        $is_perm_banned = $this->get_member_row_field($member, 'm_is_perm_banned');
+        if (($is_perm_banned == '0') || ($is_perm_banned == '1')) {
+            $reasoned_ban = null;
+        } else {
+            $reasoned_ban = $is_perm_banned;
+        }
+        return ($is_perm_banned != '0');
     }
 
     /**
@@ -1398,7 +1405,7 @@ class Forum_driver_cns extends Forum_driver_base
                 return $id;
             }
         }
-        $row = $this->db->query_select('f_members', ['*'], ['m_email_address' => $email_address], 'ORDER BY m_is_perm_banned,m_join_time DESC', 1);
+        $row = $this->db->query_select('f_members', ['*'], ['m_email_address' => $email_address], 'ORDER BY m_join_time DESC', 1);
         if (!array_key_exists(0, $row)) {
             return null;
         }

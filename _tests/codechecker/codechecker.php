@@ -317,21 +317,26 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
     }
 
     if ((!empty($GLOBALS['FLAG__CODESNIFFER'])) && (substr($FILENAME, -4) == '.php')) {
-        if (strpos(shell_exec('php ' . escapeshellarg($COMPOSR_PATH . '/phpcs.phar') . ' --version'), 'PHP_CodeSniffer') !== false) {
-            $cmd = 'php ' . escapeshellarg($COMPOSR_PATH . '/phpcs.phar');
-        } elseif (strpos(shell_exec('phpcs --version'), 'PHP_CodeSniffer') !== false) {
-            $cmd = 'phpcs';
-        } else {
-			static $complained_once = false;
-			if (!$complained_once) {
-	            echo 'Cannot find PHP CodeSniffer in the path' . cnl();
-				$complained_once = true;
-			}
-			$cmd = null;
+        static $phpcs_cmd = null;
+        static $complained_phpcs_once = false;
+        if ($phpcs_cmd === null) {
+            if ($complained_phpcs_once) {
+                $phpcs_cmd = null;
+            } else {
+                if (strpos(shell_exec('php ' . escapeshellarg($COMPOSR_PATH . '/phpcs.phar') . ' --version'), 'PHP_CodeSniffer') !== false) {
+                    $phpcs_cmd = 'php ' . escapeshellarg($COMPOSR_PATH . '/phpcs.phar');
+                } elseif (strpos(shell_exec('phpcs --version'), 'PHP_CodeSniffer') !== false) {
+                    $phpcs_cmd = 'phpcs';
+                } else {
+                    echo 'Cannot find PHP CodeSniffer in the path' . cnl();
+                    $complained_phpcs_once = true;
+                    $phpcs_cmd = null;
+                }
+            }
         }
 
-		if ($cmd !== null) {
-	        $cmd_line = $cmd . ' ' . $to_use . ' -s -q --report-width=10000';
+		if ($phpcs_cmd !== null) {
+	        $cmd_line = $phpcs_cmd . ' ' . $to_use . ' -s -q --report-width=10000';
 	        //$cmd_line .= ' --standard=PSR12'; Better to just disable sniffs we don't like
 	        $skip_tests_broad = [
 	            // In standards we don't support
