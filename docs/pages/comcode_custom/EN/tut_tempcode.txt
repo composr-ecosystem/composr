@@ -387,7 +387,7 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$STRIP_HTML,&lt;strong&gt;example&lt;/strong&gt;}</td>
-			<td>Turn some HTML into a plain-text string (i.e. no HTML entities either)</td>
+			<td>Turn some HTML into a plain-text string (i.e. no HTML entities either). This is not in itself a security filter: in-fact, it can turn escaped text into unescaped text by decoding entities. If you are therefore embedding the output in HTML it is important you escape the output of the symbol itself.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$ENTITY_DECODE,this &amp;amp; that}</td>
@@ -491,7 +491,7 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$CPF_VALUE,Some Custom Field}</td>
-			<td>Find the raw (unrendered) value of a custom profile field (pass in the ID number of a custom profile field, which can be found from the URL of where you to edit it -- or pass in the human-readable name of the field -- or pass in a field name from the <kbd>f_members</kbd> table). If you pass a second parameter, it will specify the member ID to use (if not passed, it will default to the current member). Note that Tempcode is not context-sensitive apart from the parameters passed into a template. The current member is whoever is logged in; if you are editing a template displaying a member's details (e.g. <kbd>CNS_MEMBER_PROFILE_SCREEN</kbd>) then you will need to explicitly specify the member ID in the second parameter using the member ID passed into that template (typically <kbd>{MEMBER_ID}</kbd>).</td>
+			<td>Find the raw (unrendered) value of a custom profile field (pass in the ID number of a custom profile field, which can be found from the URL of where you to edit it -- or pass in the human-readable name of the field -- or pass in a field name from the <kbd>f_members</kbd> table). If you pass a second parameter, it will specify the member ID to use (if not passed, it will default to the current member). Note that Tempcode is not context-sensitive apart from the parameters passed into a template. The current member is whoever is logged in; if you are editing a template displaying a member's details (e.g. <kbd>CNS_MEMBER_PROFILE_SCREEN</kbd>) then you will need to explicitly specify the member ID in the second parameter using the member ID passed into that template (typically <kbd>{MEMBER_ID}</kbd>). An optional third parameter may be set to '1' to give the rendered value of the CPF (e.g. with Comcode applied); by default the raw inputted value is given.</td>
 		</tr>
 	</tbody>
 </table>
@@ -1238,7 +1238,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$MEMBER_OVERRIDE}</td>
-			<td>The Member-ID of the Account being viewed (e.g. if you're staff looking in somebody else's account then this would find the member ID, otherwise it is your own member ID)</td>
+			<td>The Member-ID of the account most relevant for the current page view. If you're looking at somebody else's account then this would find their member ID, otherwise it is your own member ID. This symbol can be used for displaying user-specific links and information in a panel that changes from your own if you are viewing an account.</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$COOKIE_PATH}</td>

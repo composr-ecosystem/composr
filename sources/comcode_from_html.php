@@ -475,7 +475,7 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false)
     if (preg_match('#^\[semihtml\]([^\[\]<>]*)\[\/semihtml\]$#', $semihtml, $matches) != 0) {
         return $matches[1];
     }
-    if (preg_match('#^([^\[\]<>\{\}]*)$#', $semihtml) != 0) {
+    if (preg_match('#^([^\[\]<>\{\}&]*)$#', $semihtml) != 0) {
         return $semihtml;
     }
 
@@ -1070,11 +1070,10 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false)
     }
 
     // Then, if there is no HTML left, we can avoid the 'semihtml' tag
-    if ((strpos($semihtml2, '<') === false) && (strpos($semihtml2, '&nbsp;') === false) && (strpos($semihtml2, '&#091;') === false) && (strpos($semihtml2, '&#123;') === false)) {
+    if ((strpos($semihtml2, '<') === false) && ((strpos($semihtml2, '&nbsp;') === false) || (get_charset() == 'utf-8')) && (strpos($semihtml2, '&#091;') === false) && (strpos($semihtml2, '&#123;') === false)) {
         //$semihtml2 = str_replace(array('&lt;', '&gt;', '&amp;'), array('___lt___', '___gt___', '___amp___'), $semihtml2);
         $semihtml2 = @html_entity_decode($semihtml2, ENT_QUOTES, get_charset());
         //$semihtml2 = str_replace(array('___lt___', '___gt___', '___amp___'), array('&lt;', '&gt;', '&amp;'), $semihtml2);
-        $semihtml2 = str_replace(chr(hexdec('C2')) . chr(hexdec('A0')), '&nbsp;', $semihtml2); // Make nbsp legible as an entity again, as otherwise we'll have portability issues with this very common non-ASCII entity
         return $semihtml2;
     }
 

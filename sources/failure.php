@@ -433,8 +433,8 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $h
         $GLOBALS['MSN_DB'] = null;
     }
 
-    global $EXITING, $MICRO_BOOTUP;
-    if ((running_script('upgrader')) || ($MICRO_BOOTUP)) {
+    global $EXITING, $MICRO_BOOTUP, $BOOTSTRAPPING;
+    if ((running_script('upgrader')) || ($MICRO_BOOTUP) || ($BOOTSTRAPPING)) {
         critical_error('PASSON', is_object($text) ? $text->evaluate() : escape_html($text));
     }
 
@@ -762,7 +762,8 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     if (!addon_installed('securitylogging')) {
         return false;
     }
-    if ($ip == '') {
+    require_code('type_sanitisation');
+    if (!is_ip_address($ip)) {
         return false;
     }
 

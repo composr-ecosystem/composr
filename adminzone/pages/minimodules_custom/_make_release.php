@@ -22,7 +22,7 @@ i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_
 $title = get_screen_title('Publish new Composr release', false);
 $title->evaluate_echo();
 
-set_mass_import_mode();
+set_mass_import_mode(); // We will be adding multiple categories of the same name
 
 restrictify();
 require_code('permissions2');
@@ -55,8 +55,6 @@ $needed = get_param_string('needed', '', true);
 $justification = get_param_string('justification', '', true);
 
 $urls = array();
-
-set_mass_import_mode(); // We will be adding multiple categories of the same name
 
 // Bugs list
 

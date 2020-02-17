@@ -3833,8 +3833,8 @@ function cms_gethostbyname($hostname)
     }
 
     if ($ip_address == '') {
-        if (php_function_allowed('gethostbyaddr')) {
-            $ip_address = @gethostbyaddr($ip_address);
+        if (php_function_allowed('gethostbyname')) {
+            $ip_address = @gethostbyname($hostname);
         }
     }
 

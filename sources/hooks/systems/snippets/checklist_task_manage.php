@@ -67,6 +67,7 @@ class Hook_snippet_checklist_task_manage
                     '_GUID' => 'e95228a3740dc7eda2d1b0ccc7d3d9d3',
                     'TASK_TITLE' => comcode_to_tempcode(post_param_string('task_title', false, true)),
                     'ADD_DATE' => display_time_period(time()),
+                    'ADD_TIME' => do_lang_tempcode('DAYS_AGO', escape_html(integer_format(0))),
                     'RECUR_INTERVAL' => ($recur_interval == 0) ? '' : integer_format($recur_interval),
                     'RECUR_EVERY' => post_param_string('recur_every'),
                     'TASK_DONE' => 'not_completed',

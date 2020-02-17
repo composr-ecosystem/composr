@@ -2245,7 +2245,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         if ((!array_key_exists('width', $attributes)) || ($attributes['width'] == '')) {
                             $attachment_row['width'] = strval($_width);
                         }
-                        if ((!array_key_exists('width', $attributes)) || ($attributes['height'] == '')) {
+                        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] == '')) {
                             $attachment_row['height'] = strval($_height);
                         }
                     }
@@ -2359,7 +2359,7 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
     $_embed = mixed();
     $title = do_lang_tempcode('CODE');
     if ((file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) && (!in_safe_mode())) {
-            $evaluated = $embed->evaluate();
+        $evaluated = $embed->evaluate();
 
         if (($in_semihtml) || ($is_all_semihtml)) {
             require_code('comcode_from_html');

@@ -189,16 +189,24 @@ function find_sitemap_object($page_link)
             if ($ob->is_active()) {
                 $is_handled = $ob->handles_page_link($page_link);
                 if ($is_handled != SITEMAP_NODE_NOT_HANDLED) {
-                    $matches['_' . strval($is_handled)] = $_hook;
+                    $sup = $_hook;
+                    if ($_hook == 'entry_point') {
+                        $sup = 'aaa'/*high priority (we don't want content category hooks to capture it)*/;
+                    }
+                    if ($_hook == 'page') {
+                        $sup = 'zzz'/*low priority*/;
+                    }
+                    $order_key = '_' . strval($is_handled) . '_' . $sup;
+                    $matches[$order_key] = $_hook;
                 }
             }
         }
         if (count($matches) != 0) {
             ksort($matches);
-            $hook = current($matches);
+            $hook = reset($matches);
             $ob = object_factory('Hook_sitemap_' . $hook);
 
-            $is_handled = intval(substr(key($matches), 1));
+            $is_handled = intval(substr(key($matches), 1, 1));
             $is_virtual = ($is_handled == SITEMAP_NODE_HANDLED_VIRTUALLY);
         }
         if (is_null($hook)) {
@@ -1007,7 +1015,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $f = $table_prefix . '.' . $f;
             }
             if (in_array($f, $select)) {
-                $lang_fields_filtered[$field] = $type;
+                $lang_fields_filtered[$table_prefix . '.' . $field] = $type;
             }
         }
 
@@ -1144,11 +1152,13 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
             $table = $cma_info['parent_spec__table_name'] . ' r';
 
-            $lang_fields = array();
-            $select = $this->select_fields($cma_info, 'r', $lang_fields);
-
+            $lang_fields = [];
             if ($cma_info['parent_spec__table_name'] != $cma_info['table']) {
+                $select = $this->select_fields($cma_info, 'r2', $lang_fields);
+                $select[] = 'r.' . $cma_info['parent_spec__field_name'];
                 $table .= ' JOIN ' . $cma_info['connection']->get_table_prefix() . $cma_info['table'] . ' r2 ON r2.' . $cma_info['id_field'] . '=r.' . $cma_info['parent_spec__field_name'];
+            } else {
+                $select = $this->select_fields($cma_info, 'r', $lang_fields);
             }
 
             if (substr($cma_info['table'], 0, 2) == 'f_') {

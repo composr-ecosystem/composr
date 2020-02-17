@@ -155,6 +155,7 @@ function block_menu__cache_on($map)
         isset($map['title']) ? $map['title'] : '',
         ((isset($map['silent_failure']) ? $map['silent_failure'] : '0') == '1'),
         isset($map['tray_status']) ? $map['tray_status'] : '',
+        tacit_https(),
     );
 
     if (!$javascript_highlighting) {

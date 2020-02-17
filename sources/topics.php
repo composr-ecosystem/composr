@@ -188,10 +188,15 @@ class CMS_Topic
             $reviews_rating_criteria = array();
             if ((get_forum_type() == 'cns') && ($allow_reviews)) {
                 foreach ($this->reviews_rating_criteria as $review_title) {
-                    $_rating = $GLOBALS['SITE_DB']->query_select_value('review_supplement', 'AVG(r_rating)', array('r_rating_type' => $review_title, 'r_topic_id' => $topic_id));
-                    $rating = mixed();
-                    $rating = is_null($_rating) ? null : $_rating;
-                    $reviews_rating_criteria[] = array('REVIEW_TITLE' => $review_title, 'REVIEW_RATING' => make_string_tempcode(is_null($rating) ? '' : float_format($rating)));
+                    $rating = $GLOBALS['SITE_DB']->query_select_value('review_supplement', 'AVG(r_rating)', array('r_rating_type' => $review_title, 'r_topic_id' => $topic_id));
+                    $rating_count = $GLOBALS['SITE_DB']->query_select_value('review_supplement', 'COUNT(r_rating)', array('r_rating_type' => $review_title, 'r_topic_id' => $topic_id));
+                    $reviews_rating_criteria[] = array(
+                        'REVIEW_TITLE' => $review_title,
+                        '_REVIEW_RATING' => ($rating === null) ? '' : float_to_raw_string($rating),
+                        'REVIEW_RATING' => ($rating === null) ? '' : float_format($rating),
+                        '_NUM_REVIEW_RATINGS' => ($rating === null) ? '' : strval($rating_count),
+                        'NUM_REVIEW_RATINGS' => ($rating === null) ? '' : integer_format($rating_count),
+                    );
                     if (!is_null($rating)) {
                         set_extra_request_metadata(array(
                             'rating' => float_to_raw_string($rating),
@@ -785,7 +790,7 @@ class CMS_Topic
                 if ($potential_individual_review_rating['r_post_id'] == $post['id']) {
                     $individual_review_ratings[$potential_individual_review_rating['r_rating_type']] = array(
                         'REVIEW_TITLE' => $potential_individual_review_rating['r_rating_type'],
-                        'REVIEW_RATING' => float_to_raw_string($potential_individual_review_rating['r_rating']),
+                        'REVIEW_RATING' => strval($potential_individual_review_rating['r_rating']),
                     );
                 }
             }

@@ -81,7 +81,7 @@ class Block_main_newsletter_signup
             require_code('type_sanitisation');
             if (!is_email_address($address)) {
                 $msg = do_template('INLINE_WIP_MESSAGE', array('_GUID' => '9ce849d0d2dc879acba609b907317c74', 'MESSAGE' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')));
-                return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', array('_GUID' => '3759e07077d74e6537cab04c897e76d2', 'BLOCK_PARAMS' => block_params_arr_to_str($map), 'URL' => get_self_url(), 'MSG' => $msg));
+                return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', array('_GUID' => '3759e07077d74e6537cab04c897e76d2', 'NEWSLETTER_TITLE' => $newsletter_title, 'NID' => strval($newsletter_id), 'BLOCK_PARAMS' => block_params_arr_to_str($map), 'URL' => get_self_url(), 'MSG' => $msg));
             }
 
             if (!array_key_exists('path', $map)) {

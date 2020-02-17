@@ -68,3 +68,61 @@ function is_email_address($string)
 
     return (preg_match('#^[\w\.\-\+]+@[\w\.\-]+$#', $string) != 0); // Put "\.[a-zA-Z0-9_\-]+" before $ to ensure a two+ part domain
 }
+
+/**
+ * Find whether the specified address is a well-formed IP address or not.
+ *
+ * @param  string $string The string to test (Note: This is typed string, not IP, because it has to function on failure)
+ * @return boolean Whether the string is an IP address or not
+ */
+function is_ip_address($string)
+{
+    // ipv4
+    if (strpos($string, '.') !== false) {
+        $parts = explode('.', $string);
+        if (count($parts) != 4) {
+            return false;
+        }
+        $ok = true;
+        foreach ($parts as $part) {
+            if (preg_match('#^\d+$#', $part) != 0) {
+                if (intval($part) > 255) {
+                    $ok = false;
+                }
+            } else {
+                $ok = false;
+                break;
+            }
+        }
+        return $ok;
+    }
+
+    // ipv6
+    if (strpos($string, ':') !== false) {
+        $parts = explode(':', $string);
+        if (count($parts) > 8) {
+            return false;
+        }
+        $num_empty_sections = 0;
+        $ok = true;
+        foreach ($parts as $part) {
+            if ($part == '') {
+                $num_empty_sections++;
+            } else {
+                if (preg_match('#^[0-9A-F]{1,4}$#i', $part) == 0) {
+                    $ok = false;
+                    break;
+                }
+            }
+        }
+        if ($num_empty_sections > 1) {
+            return false;
+        }
+        if (($num_empty_sections == 0) && (count($parts) < 8)) {
+            return false;
+        }
+        return $ok;
+    }
+
+    return false;
+}

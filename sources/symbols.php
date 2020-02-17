@@ -2264,7 +2264,7 @@ function ecv_CPF_VALUE($lang, $escaped, $param)
             $custom_fields = cns_get_all_custom_fields_match_member(isset($param[1]) ? intval($param[1]) : get_member());
             foreach ($custom_fields as $custom_field) {
                 if ($custom_field['FIELD_ID'] == $param[0]) {
-                    $_value = $custom_field['RAW'];
+                    $_value = $custom_field[empty($param[2]) ? 'RAW' : 'RENDERED'];
                 }
             }
         } elseif ((substr($param[0], 0, 2) == 'm_') && (stripos($param[0], 'hash') === false) && (stripos($param[0], 'salt') === false)) {
@@ -2280,7 +2280,7 @@ function ecv_CPF_VALUE($lang, $escaped, $param)
                     $custom_fields = cns_get_all_custom_fields_match_member(isset($param[1]) ? intval($param[1]) : get_member());
                     foreach ($custom_fields as $custom_field) {
                         if ($custom_field['FIELD_ID'] == strval($cpf_id)) {
-                            $_value = $custom_field['RAW'];
+                            $_value = $custom_field[empty($param[2]) ? 'RAW' : 'RENDERED'];
                         }
                     }
                 }

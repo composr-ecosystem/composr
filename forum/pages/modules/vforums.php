@@ -395,6 +395,7 @@ class Module_vforums
                 '_GUID' => '67356b4daacbed3e3d960d89a57d0a4a',
                 'MAX' => strval($max),
                 'ORDER' => '',
+                'TYPE' => 'vforums',
                 'MAY_CHANGE_MAX' => false,
                 'BREADCRUMBS' => $breadcrumbs,
                 'BUTTONS' => '',

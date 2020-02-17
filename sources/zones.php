@@ -1612,6 +1612,10 @@ function do_block_get_cache_identifier($cache_on, $map)
 
     $_cache_identifier[] = tacit_https();
 
+    if (!empty($map['raw'])) {
+        $_cache_identifier[] = $map['raw'];
+    }
+
     $cache_identifier = serialize($_cache_identifier);
 
     $cache[$sz] = $cache_identifier;
