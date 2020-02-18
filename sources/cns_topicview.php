@@ -87,7 +87,7 @@ function find_first_unread_url($id)
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE id<' . strval($first_unread_id) . ' AND ' . cns_get_topic_where($id), false, true);
         $start = intval(floor(floatval($before) / floatval($max))) * $max;
     } else {
-        $first_unread_id = -2;
+        $first_unread_id = null;
 
         // What page is it on?
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . cns_get_topic_where($id), false, true);
@@ -106,7 +106,7 @@ function find_first_unread_url($id)
     }
     $_redirect = build_url($map, '_SELF', null, true);
     $redirect = $_redirect->evaluate();
-    if ($first_unread_id > 0) {
+    if ($first_unread_id !== null) {
         $redirect .= '#post_' . strval($first_unread_id);
     } else {
         $redirect .= '#first_unread';
