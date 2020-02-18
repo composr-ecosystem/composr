@@ -790,6 +790,10 @@ class Module_warnings extends Standard_crud_module
         $silence_from_topic = post_param_integer('topic_id', null);
         if (!is_null($silence_from_topic)) {
             $_silence_from_topic = post_param_date('silence_from_topic');
+        } else {
+            $_silence_from_topic = null;
+        }
+        if (!is_null($_silence_from_topic)) {
             $GLOBALS['FORUM_DB']->query_delete('member_privileges', array(
                 'member_id' => $member_id,
                 'privilege' => 'submit_lowrange_content',
@@ -798,12 +802,6 @@ class Module_warnings extends Standard_crud_module
                 'category_name' => strval($silence_from_topic),
             ));
 
-            require_code('cns_general_action2');
-            cns_mod_log_it('SILENCE_FROM_TOPIC', strval($member_id), strval($silence_from_topic));
-        } else {
-            $_silence_from_topic = null;
-        }
-        if (!is_null($_silence_from_topic)) {
             $GLOBALS['FORUM_DB']->query_insert('member_privileges', array(
                 'active_until' => $_silence_from_topic,
                 'member_id' => $member_id,
@@ -813,6 +811,9 @@ class Module_warnings extends Standard_crud_module
                 'category_name' => strval($silence_from_topic),
                 'the_value' => '0'
             ));
+
+            require_code('cns_general_action2');
+            cns_mod_log_it('SILENCE_FROM_TOPIC', strval($member_id), strval($silence_from_topic));
         } else {
             $silence_from_topic = null;
         }
@@ -820,28 +821,26 @@ class Module_warnings extends Standard_crud_module
         // Forum silencing
         $silence_from_forum = post_param_integer('forum_id', null);
         if (!is_null($silence_from_forum)) {
-            $GLOBALS['FORUM_DB']->query_delete('member_privileges', array(
-                'member_id' => $member_id,
-                'privilege' => 'submit_lowrange_content',
-                'the_page' => '',
-                'module_the_name' => 'forums',
-                'category_name' => strval($silence_from_forum),
-            ));
-            $GLOBALS['FORUM_DB']->query_delete('member_privileges', array(
-                'member_id' => $member_id,
-                'privilege' => 'submit_midrange_content',
-                'the_page' => '',
-                'module_the_name' => 'forums',
-                'category_name' => strval($silence_from_forum),
-            ));
             $_silence_from_forum = post_param_date('silence_from_forum');
-
-            require_code('cns_general_action2');
-            cns_mod_log_it('SILENCE_FROM_FORUM', strval($member_id), strval($silence_from_forum));
         } else {
             $_silence_from_forum = null;
         }
         if (!is_null($_silence_from_forum)) {
+            $GLOBALS['FORUM_DB']->query_delete('member_privileges', array(
+                'member_id' => $member_id,
+                'privilege' => 'submit_lowrange_content',
+                'the_page' => '',
+                'module_the_name' => 'forums',
+                'category_name' => strval($silence_from_forum),
+            ));
+            $GLOBALS['FORUM_DB']->query_delete('member_privileges', array(
+                'member_id' => $member_id,
+                'privilege' => 'submit_midrange_content',
+                'the_page' => '',
+                'module_the_name' => 'forums',
+                'category_name' => strval($silence_from_forum),
+            ));
+
             $GLOBALS['FORUM_DB']->query_insert('member_privileges', array(
                 'active_until' => $_silence_from_forum,
                 'member_id' => $member_id,
@@ -860,6 +859,9 @@ class Module_warnings extends Standard_crud_module
                 'category_name' => strval($silence_from_forum),
                 'the_value' => '0'
             ));
+
+            require_code('cns_general_action2');
+            cns_mod_log_it('SILENCE_FROM_FORUM', strval($member_id), strval($silence_from_forum));
         } else {
             $silence_from_forum = null;
         }
