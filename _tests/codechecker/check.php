@@ -302,7 +302,7 @@ function check_function($function, $is_closure = false, $inside_class = false)
         if (($ret) && (!in_array('abstract', $function['modifiers'])) && (!isset($LOCAL_VARIABLES['__return']))) {
             log_warning('Function \'' . $function['name'] . '\' is missing a return statement with a value', $function['offset']);
         }
-        if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && (!empty($LOCAL_VARIABLES['__return']['types']))) {
+        if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && (!empty($LOCAL_VARIABLES['__return']['types'])) && (array_unique($LOCAL_VARIABLES['__return']['types']) != ['void'])) {
             if (strpos($function['name'], 'init__') === false/*Composr-specific*/) {
                 log_warning('Function \'' . $function['name'] . '\' has a return with a value, and the function returns void', $LOCAL_VARIABLES['__return']['first_mention']);
             }
@@ -475,11 +475,14 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     $ret_type = check_expression($c[1], false, false, $function_guard);
                     add_variable_reference('__return', $c_pos);
                     set_composr_type('__return', $ret_type);
-                    if (!isset($LOCAL_VARIABLES['__return']['mentions'])) {
-                        $LOCAL_VARIABLES['__return']['mentions'] = [];
-                    }
-                    $LOCAL_VARIABLES['__return']['mentions'][] = $c_pos;
+                } else {
+                    add_variable_reference('__return', $c_pos);
+                    set_composr_type('__return', 'void');
                 }
+                if (!isset($LOCAL_VARIABLES['__return']['mentions'])) {
+                    $LOCAL_VARIABLES['__return']['mentions'] = [];
+                }
+                $LOCAL_VARIABLES['__return']['mentions'][] = $c_pos;
                 if (count($command) - 1 > $i) {
                     log_warning('There is unreachable code (after a return statement)', $c_pos);
                 }
