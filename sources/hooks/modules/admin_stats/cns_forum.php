@@ -54,7 +54,7 @@ class Hook_admin_stats_cns_forum extends CMSStatsProvider
             return null;
         }
         if (get_forum_type() != 'cns') {
-            return;
+            return null;
         }
 
         require_lang('cns');

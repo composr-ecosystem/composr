@@ -2095,7 +2095,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             if ($num_fields == 0) {
                 if (substr($old_name, 0, 1) == '_') {
                     actual_delete_catalogue($old_name);
-                    return;
+                    return null;
                 }
                 warn_exit(do_lang_tempcode('NO_FIELDS'));
             }
