@@ -35,12 +35,8 @@ class Hook_cron_sitemap
         $time = time();
         $last_time = intval(get_value('last_sitemap_time_calc', null, true));
 
-        if (get_value('sitemap_building_in_progress', null, true) == '1' && intval(get_value('last_sitemap_time_calc', null, true)) > time() - 60 * 60 * 24 * 3/*in case it stalled a few days back - force a re-try*/) {
+        if (get_value('sitemap_building_in_progress', null, true) == '1' && $last_time > time() - 60 * 60 * 24 * 3/*in case it stalled a few days back - force a re-try*/) {
             return;
-        }
-
-        if ($last_time > time() - 60 * 60 * 24) {
-            return; // Every day. Contrast to the news sitemap which is built and pinged instantly, so content needing instant promotion should go via news
         }
 
         set_value('last_sitemap_time_calc', strval($time), true);
