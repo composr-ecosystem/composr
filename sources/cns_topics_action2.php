@@ -59,7 +59,7 @@ function cns_edit_topic($topic_id, $description = null, $emoticon = null, $valid
 
         if (!(($info[0]['t_cache_first_member_id'] == get_member()) && (has_privilege(get_member(), 'close_own_topics')))) {
             require_code('cns_topics');
-            if ((!cns_may_edit_topics_by($forum_id, get_member(), $info[0]['t_cache_first_member_id'])) || ((($info[0]['t_pt_from'] != get_member()) && ($info[0]['t_pt_to'] != get_member())) && (!cns_has_special_pt_access($topic_id)) && (!has_privilege(get_member(), 'view_other_pt')) && (is_null($forum_id)))) {
+            if ((!cns_may_edit_topics_by($forum_id, get_member(), $info[0]['t_cache_first_member_id'])) || (!cns_may_access_topic($topic_id, get_member(), $info[0]))) {
                 access_denied('I_ERROR');
             }
         }
@@ -192,18 +192,7 @@ function cns_delete_topic($topic_id, $reason = '', $post_target_topic_id = null,
 
     require_code('cns_topics');
     if ($check_perms) {
-        if (
-            (!cns_may_delete_topics_by($forum_id, get_member(), $info[0]['t_cache_first_member_id'])) ||
-            (
-                (
-                    ((!is_null($info[0]['t_pt_from'])) && ($info[0]['t_pt_from'] != get_member())) &&
-                    ((!is_null($info[0]['t_pt_to'])) && ($info[0]['t_pt_to'] != get_member()))
-                ) &&
-                (!cns_has_special_pt_access($topic_id)) &&
-                (!has_privilege(get_member(), 'view_other_pt')) &&
-                (is_null($forum_id))
-            )
-        ) {
+        if ((!cns_may_delete_topics_by($forum_id, get_member(), $info[0]['t_cache_first_member_id'])) || (!cns_may_access_topic($topic_id, get_member(), $info[0], false))) {
             access_denied('I_ERROR');
         }
     }
@@ -410,7 +399,7 @@ function cns_move_topics($from, $to, $topics = null, $check_perms = true) // NB:
         if (!array_key_exists(0, $topic_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
-        if (($topic_info[0]['t_forum_id'] != $from) || ((($topic_info[0]['t_pt_from'] != get_member()) && ($topic_info[0]['t_pt_to'] != get_member())) && (!cns_has_special_pt_access($topics[0])) && (!has_privilege(get_member(), 'view_other_pt')) && (is_null($topic_info[0]['t_forum_id'])))) {
+        if (($topic_info[0]['t_forum_id'] != $from) || (!cns_may_access_topic($topics[0], get_member(), $topic_info[0], false))) {
             access_denied('I_ERROR');
         }
         if ($topic_info[0]['t_validated'] == 1) {
@@ -448,7 +437,7 @@ function cns_move_topics($from, $to, $topics = null, $check_perms = true) // NB:
                         $topic_count++;
                     }
 
-                    if (($topic_info[0]['t_forum_id'] != $from) || ((($topic_info[0]['t_pt_from'] != get_member()) && ($topic_info[0]['t_pt_to'] != get_member())) && (!cns_has_special_pt_access($topic_id)) && (!has_privilege(get_member(), 'view_other_pt')))) {
+                    if (($topic_info[0]['t_forum_id'] != $from) || (!cns_may_access_topic($topic_id, get_member(), $topic_info[0], false))) {
                         access_denied('I_ERROR');
                     }
                 }

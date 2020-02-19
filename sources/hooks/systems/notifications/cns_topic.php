@@ -184,12 +184,12 @@ class Hook_notification_cns_topic extends Hook_Notification
         }
 
         if (is_numeric($only_if_enabled_on__category)) { // Also merge in people monitoring forum
-            $forum_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => intval($only_if_enabled_on__category)));
-            $forum_id = $forum_details[0]['t_forum_id'];
+            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => intval($only_if_enabled_on__category)));
+            $forum_id = $topic_details[0]['t_forum_id'];
 
             if (is_null($forum_id)) {
                 require_code('cns_topics');
-                if (!(($forum_details[0]['t_pt_from'] == $member_id) || ($forum_details[0]['t_pt_to'] == $member_id) || (cns_has_special_pt_access(intval($only_if_enabled_on__category), $member_id)) || (!has_privilege($member_id, 'view_other_pt')))) {
+                if (!cns_may_access_topic(intval($only_if_enabled_on__category), $member_id, $topic_details[0])) {
                     return false;
                 }
             }
@@ -217,11 +217,11 @@ class Hook_notification_cns_topic extends Hook_Notification
         list($members, $maybe_more) = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
 
         if (is_numeric($category)) { // This is a topic. Also merge in people monitoring forum
-            $forum_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => intval($category)));
-            if (!array_key_exists(0, $forum_details)) {
+            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => intval($category)));
+            if (!array_key_exists(0, $topic_details)) {
                 return array(array(), false); // Topic deleted already?
             }
-            $forum_id = $forum_details[0]['t_forum_id'];
+            $forum_id = $topic_details[0]['t_forum_id'];
 
             if (!is_null($forum_id)) { // Forum
                 list($members2, $maybe_more2) = $this->_all_members_who_have_enabled($notification_code, 'forum:' . strval($forum_id), $to_member_ids, $start, $max);
@@ -231,7 +231,7 @@ class Hook_notification_cns_topic extends Hook_Notification
                 require_code('cns_topics');
                 $members_new = $members;
                 foreach ($members as $member_id => $setting) {
-                    if (($forum_details[0]['t_pt_from'] == $member_id) || ($forum_details[0]['t_pt_to'] == $member_id) || (cns_has_special_pt_access(intval($category), $member_id)) || (!has_privilege($member_id, 'view_other_pt'))) {
+                    if (cns_may_access_topic(intval($category), $member_id, $topic_details[0])) {
                         $members_new[$member_id] = $setting;
                     }
                 }

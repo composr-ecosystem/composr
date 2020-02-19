@@ -102,6 +102,60 @@ function cns_get_topic_where($topic_id, $member_id = null)
 }
 
 /**
+ * Find whether a member may access a topic.
+ *
+ * @param  AUTO_LINK $topic_id The topic
+ * @param  ?MEMBER $member_id The member (null: current member)
+ * @param  ?array $topic_info The topic row (null: look up from $topic_id)
+ * @param  boolean $check_validation Whether to check validation
+ * @return boolean The answer
+ */
+function cns_may_access_topic($topic_id, $member_id = null, $topic_info = null, $check_validation = true)
+{
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
+    if ($topic_info === null) {
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'), array('id' => $topic_id), '', 1);
+
+        if (!array_key_exists(0, $topic_rows)) {
+            return false;
+        }
+
+        $topic_info = $topic_rows[0];
+    }
+
+    if (!has_actual_page_access($member_id, 'topicview')) {
+        return false;
+    }
+
+    if ($check_validation) {
+        if (addon_installed('unvalidated')) {
+            if (($topic_info['t_validated'] == 0) && (addon_installed('unvalidated'))) {
+                if ((!has_privilege($member_id, 'jump_to_unvalidated')) && ((is_guest()) || ($topic_info['t_cache_first_member_id'] != $member_id))) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    if ($topic_info['t_forum_id'] === null) {
+        if (is_guest($member_id)) {
+            return false;
+        }
+
+        if (has_privilege($member_id, 'view_other_pt')) {
+            return true;
+        }
+
+        return (($topic_info['t_pt_to'] == $member_id) || ($topic_info['t_pt_from'] == $member_id) || (cns_has_special_pt_access($topic_id)));
+    }
+
+    return (has_category_access($member_id, 'forums', strval($topic_info['t_forum_id'])));
+}
+
+/**
  * Find whether a member may make a Private Topic.
  *
  * @param  ?MEMBER $member_id The member (null: current member).
@@ -117,11 +171,16 @@ function cns_may_make_private_topic($member_id = null)
         return false;
     }
 
+    if (!has_actual_page_access($member_id, 'topics')) {
+        return false;
+    }
+
     return !is_guest($member_id);
 }
 
 /**
  * Check that a member may make a Private Topic.
+ * Does not check permission to access the 'topics' page, as assumed it is called from that page.
  */
 function cns_check_make_private_topic()
 {
@@ -145,11 +204,16 @@ function cns_may_post_topic($forum_id, $member_id = null)
         $member_id = get_member();
     }
 
+    if ($forum_id === null) {
+        return true;
+    }
+
     if (!has_privilege($member_id, 'submit_midrange_content', 'topics', array('forums', $forum_id))) {
         return false;
     }
-    if (is_null($forum_id)) {
-        return true;
+
+    if (!has_actual_page_access($member_id, 'topics')) {
+        return false;
     }
 
     $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'id', array('p_silence_from_forum' => $forum_id, 'w_member_id' => $member_id));
