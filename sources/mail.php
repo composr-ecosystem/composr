@@ -1176,8 +1176,10 @@ abstract class Mail_dispatcher_base
             $to_names[] = $to_names[0];
         }
         foreach ($to_names as &$_to_name) {
-            $_to_name = preg_replace('#@.*$#', '', $_to_name); // preg_replace is because some servers may reject sending names that look like e-mail addresses. Composr tries this from recommend module.
-            escape_header($_to_name);
+            if ($_to_name !== null) {
+                $_to_name = preg_replace('#@.*$#', '', $_to_name); // preg_replace is because some servers may reject sending names that look like e-mail addresses. Composr tries this from recommend module.
+                escape_header($_to_name);
+            }
         }
 
         // From e-mail

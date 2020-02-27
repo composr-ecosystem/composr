@@ -598,13 +598,7 @@ function autogenerate_new_url_moniker($ob_info, $url_parts, $zone)
     push_db_scope_check(false);
     require_code('content');
     $select = [];
-    append_content_select_for_id($select, $ob_info);
-    if (substr($ob_info['title_field'], 0, 5) != 'CALL:') {
-        $select[] = $ob_info['title_field'];
-    }
-    if ($ob_info['parent_category_field'] !== null) {
-        $select[] = $ob_info['parent_category_field'];
-    }
+    append_content_select_for_fields($select, $ob_info, ['id', 'title', 'parent_category']);
     $db = get_db_for($ob_info['table']);
     $where = get_content_where_for_str_id($effective_id, $ob_info);
     if (isset($where['the_zone'])) {
@@ -620,13 +614,18 @@ function autogenerate_new_url_moniker($ob_info, $url_parts, $zone)
     }
 
     if ($ob_info['id_field_numeric']) {
-        if (substr($ob_info['title_field'], 0, 5) == 'CALL:') {
-            $moniker_src = call_user_func(trim(substr($ob_info['title_field'], 5)), $url_parts);
+        $title_field = $ob_info['title_field'];
+        if (is_array($title_field)) {
+            $title_field = array_pop($title_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
+        }
+
+        if (substr($title_field, 0, 5) == 'CALL:') {
+            $moniker_src = call_user_func(trim(substr($title_field, 5)), $_moniker_src[0]);
         } else {
             if ($ob_info['title_field_dereference']) {
-                $moniker_src = get_translated_text($_moniker_src[0][$ob_info['title_field']]);
+                $moniker_src = get_translated_text($_moniker_src[0][$title_field]);
             } else {
-                $moniker_src = $_moniker_src[0][$ob_info['title_field']];
+                $moniker_src = $_moniker_src[0][$title_field];
             }
         }
     } else {
@@ -909,13 +908,7 @@ function _give_moniker_scope($page, $type, $id, $zone, $main)
         push_db_scope_check(false);
         require_code('content');
         $select = [];
-        append_content_select_for_id($select, $ob_info);
-        if (substr($ob_info['title_field'], 0, 5) != 'CALL:') {
-            $select[] = $ob_info['title_field'];
-        }
-        if ($ob_info['parent_category_field'] !== null) {
-            $select[] = $ob_info['parent_category_field'];
-        }
+        append_content_select_for_fields($select, $ob_info, ['id', 'title', 'parent_category']);
         $where = get_content_where_for_str_id(($type == '') ? $page : $id, $ob_info);
         if (isset($where['the_zone'])) {
             $where['the_zone'] = $zone;
@@ -970,6 +963,7 @@ function find_id_via_url_moniker($content_type, $url_moniker)
 
     require_code($path);
 
+    require_code('content');
     $cma_ob = object_factory('Hook_content_meta_aware_' . filter_naughty_harsh($content_type, true));
     $cma_info = $cma_ob->info();
     if (!$cma_info['support_url_monikers']) {

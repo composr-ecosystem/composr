@@ -50,6 +50,6 @@ class Hook_cleanup_reorganise_uploads
     public function run()
     {
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('REORGANISE_UPLOADS'), null, 'reorganise_uploads');
+        return call_user_func_array__long_task(do_lang('config:REORGANISE_UPLOADS'), null, 'reorganise_uploads');
     }
 }

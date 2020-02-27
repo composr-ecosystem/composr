@@ -722,15 +722,24 @@ class Module_cms_catalogues extends Standard_crud_module
         $map = [];
         require_code('fields');
         require_code('catalogues');
-        foreach ($fields as $field) {
+        foreach ($fields as $i => $field) {
             $object = get_fields_hook($field['cf_type']);
 
             list(, , $storage_type) = $object->get_field_value_row_bits($field);
 
-            $value = $object->inputted_to_field_value($editing_id !== null, $field, 'uploads/catalogues', ($editing_id === null) ? null : _get_catalogue_entry_field($field['id'], $editing_id, $storage_type));
-            if ((fractional_edit()) && ($value != STRING_MAGIC_NULL)) {
-                $rendered = static_evaluate_tempcode($object->render_field_value($field, $value, 0, null, 'catalogue_efv_' . $storage_type, null, 'ce_id', 'cf_id', 'cv_value', $submitter));
-                $_POST['field_' . strval($field['id']) . '__altered_rendered_output'] = $rendered;
+            if (fractional_edit()) {
+                if ($i == 0) {
+                    $value = post_param_string('field_0', null);
+                    if ($value === null) {
+                        $value = post_param_string('field_' . $field['id']);
+                    }
+                    $rendered = static_evaluate_tempcode($object->render_field_value($field, $value, 0, null, 'catalogue_efv_' . $storage_type, null, 'ce_id', 'cf_id', 'cv_value', $submitter));
+                    $_POST['field_' . strval($field['id']) . '__altered_rendered_output'] = $rendered;
+                } else {
+                    $value = STRING_MAGIC_NULL;
+                }
+            } else {
+                $value = $object->inputted_to_field_value($editing_id !== null, $field, 'uploads/catalogues', ($editing_id === null) ? null : _get_catalogue_entry_field($field['id'], $editing_id, $storage_type));
             }
 
             $map[$field['id']] = $value;

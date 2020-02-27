@@ -140,18 +140,8 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=IFIl_
         return [
             'sources_custom/hooks/systems/addon_registry/image_slider.php',
             'sources_custom/blocks/main_image_slider.php',
-            'themes/default/css_custom/skitter.css',
-            'themes/default/images_custom/skitter/ajax-loader.gif',
-            'themes/default/images_custom/skitter/index.html',
-            'themes/default/images_custom/skitter/sprite-clean.png',
-            'themes/default/images_custom/skitter/sprite-default.png',
-            'themes/default/images_custom/skitter/sprite-minimalist.png',
-            'themes/default/images_custom/skitter/sprite-round.png',
-            'themes/default/images_custom/skitter/sprite-square.png',
             'themes/default/templates_custom/BLOCK_MAIN_IMAGE_SLIDER.tpl',
-            'themes/default/javascript_custom/skitter.js',
             'lang_custom/EN/image_slider.ini',
-            'themes/default/javascript_custom/image_slider.js',
         ];
     }
 }

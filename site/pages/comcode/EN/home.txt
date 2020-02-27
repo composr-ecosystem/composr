@@ -1,35 +1,11 @@
 [semihtml]
 [title]{$SITE_NAME*}[/title]
 
-[surround="boxless-space"]
-	[block failsafe="1"]main_news[/block]
+[block]main_multi_content[/block]
 
-	[surround="fp-col-blocks-wrap pale-box"]
-		[surround="fp-col-block left"]
-			[block failsafe="1"]main_poll[/block]
-		[/surround]
+[block failsafe="1"]main_leader_board[/block]
 
-		[surround="fp-col-block right pale-box"]
-			[block failsafe="1" block_id="small_version"]main_image_fader[/block]
-		[/surround]
-	[/surround]
-
-	[surround="fp-col-blocks-wrap pale-box"]
-		[surround="fp-col-block left"]
-			[block failsafe="1"]main_awards[/block]
-		[/surround]
-
-		[surround="fp-col-block right pale-box"]
-			[block failsafe="1"]main_content[/block]
-		[/surround]
-	[/surround]
-
-	<div class="box box---block-main-multi-content"><div class="box-inner">
-		[block="catalogue_entry" failsafe="1" title="Recent entries"]main_multi_content[/block]
-	</div></div>
-
-	[block failsafe="1"]main_quotes[/block]
-[/surround]
+[block failsafe="1"]main_quotes[/block]
 
 [block]main_comcode_page_children[/block]
 [/semihtml]

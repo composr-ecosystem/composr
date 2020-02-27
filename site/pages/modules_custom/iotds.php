@@ -205,7 +205,7 @@ class Module_iotds
      */
     public function iotd_browse()
     {
-        $content = do_block('main_multi_content', ['param' => 'iotd', 'zone' => get_zone_name(), 'sort' => 'recent', 'max' => '10', 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'block_id' => 'module', 'guid' => 'module']);
+        $content = do_block('main_multi_content', ['param' => 'iotd', 'pinned' => '', 'zone' => get_zone_name(), 'sort' => 'recent', 'max' => '10', 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'block_id' => 'module', 'guid' => 'module']);
 
         return do_template('PAGINATION_SCREEN', ['_GUID' => 'd8a493c2b007d98074f104ea433c8091', 'TITLE' => $this->title, 'CONTENT' => $content]);
     }

@@ -445,7 +445,7 @@ function get_product_details_url($type_code, $post_purchase_access_url = false, 
                     list(, , $cma_info) = content_get_details($resource_type, $category_id);
 
                     $page_link = str_replace('_WILD', $category_id, $cma_info['view_page_link_pattern']);
-                    $product_details_url = make_string_tempcode(page_link_to_url($page_link, $email_safe));
+                    $product_details_url = page_link_to_tempcode_url($page_link, $email_safe);
                 }
             }
         }

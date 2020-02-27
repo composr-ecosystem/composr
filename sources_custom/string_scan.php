@@ -1079,7 +1079,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         USE_SITE_NAME_TEXT_AS_LOGO
         BLOCK_CONFIGURATION__PANEL_LEFT
         BLOCK_CONFIGURATION__PANEL_NO
-        BLOCK_CONFIGURATION__PANEL_NONE
         BLOCK_CONFIGURATION__PANEL_RIGHT
         BLOCK_CONFIGURATION__PANEL_YES
         BLOCK_CONFIGURATION__PANEL_YES_CELL
@@ -6291,6 +6290,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NUM_NEW_SINCE
         NUM_QUEUE
         NUM_READERS
+        READERS
         NUM_WINNERS
         OBSCENITY_WARNING
         OEMBED_HTML_WHITELIST

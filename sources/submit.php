@@ -63,7 +63,7 @@ function send_content_validated_notification($content_type, $content_id)
  * Send (by e-mail) a validation request for a submitted item to the admin.
  *
  * @param  ID_TEXT $type The validation request will say one of this type has been submitted. By convention it is the language string codename of what was done, e.g. ADD_DOWNLOAD
- * @param  ?ID_TEXT $table The table saved into (null: unknown)
+ * @param  ID_TEXT $table The table saved into
  * @param  boolean $non_integer_id Whether the ID field is not an integer
  * @param  ID_TEXT $id The validation request will say this ID has been submitted
  * @param  Tempcode $url The validation request will link to this URL
@@ -71,57 +71,39 @@ function send_content_validated_notification($content_type, $content_id)
  */
 function send_validation_request($type, $table, $non_integer_id, $id, $url, $member_id = null)
 {
-    $good = null;
-    if ($table !== null) {
-        $_hooks = find_all_hook_obs('modules', 'admin_unvalidated', 'Hook_unvalidated_');
-        foreach ($_hooks as $object) {
-            $info = $object->info();
-            if ($info === null) {
-                continue;
-            }
-            if ($info['db_table'] == $table) {
-                $good = $info;
-                break;
-            }
-        }
+    require_code('content');
+    require_code('notifications');
+    require_lang('unvalidated');
+
+    $content_type = convert_composr_type_codes('table', $table, 'content_type');
+    $cma_ob = get_content_object($content_type);
+    if (!is_object($cma_ob)) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    $title = '';
-    if (($good !== null) && (!is_array($good['db_identifier']))) {
-        $db = array_key_exists('db', $good) ? $good['db'] : $GLOBALS['SITE_DB'];
-        $where = $good['db_identifier'] . '=' . $id;
-        if ($non_integer_id) {
-            $where = db_string_equal_to($good['db_identifier'], $id);
-        }
-        $rows = $db->query('SELECT ' . $good['db_identifier'] . (array_key_exists('db_title', $good) ? (',' . $good['db_title']) : '') . ' FROM ' . $db->get_table_prefix() . $good['db_table'] . ' WHERE ' . $where, 100, 0, false, true);
-
-        if (array_key_exists('db_title', $good)) {
-            $title = $rows[0][$good['db_title']];
-            if ($good['db_title_dereference']) {
-                $title = get_translated_text($title, $db); // May actually be Comcode (can't be certain), but in which case it will be shown as source
-            }
-        } else {
-            $title = '#' . (is_integer($id) ? strval($id) : $id);
-        }
-    }
-    if ($title == '') {
-        $title = '#' . (is_integer($id) ? strval($id) : $id);
-    }
+    $row = $cma_ob->get_row($non_integer_id ? $id : strval($id));
+    $title = $cma_ob->get_title($row);
+    $id_string = $cma_ob->get_id_string($row);
+    $content_type_label = $cma_ob->get_content_type_label($row);
 
     if ($member_id === null) {
         $member_id = get_member();
     }
-
-    require_lang('unvalidated');
 
     $_type = do_lang($type, null, null, null, null, false);
     if ($_type !== null) {
         $type = $_type;
     }
 
-    require_code('notifications');
-
-    $comcode = do_notification_template('VALIDATION_REQUEST_MAIL', ['_GUID' => '1885be371b2ff7810287715ef2f7b948', 'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id), 'TYPE' => $type, 'ID' => $id, 'URL' => $url], get_site_default_lang(), false, null, '.txt', 'text');
+    $comcode = do_notification_template('VALIDATION_REQUEST_MAIL', [
+        '_GUID' => '1885be371b2ff7810287715ef2f7b948',
+        'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id),
+        'CONTENT_TYPE_LABEL' => $content_type_label,
+        'TITLE' => $title,
+        'TYPE' => $type,
+        'ID' => $id_string,
+        'URL' => $url,
+    ], get_site_default_lang(), false, null, '.txt', 'text');
 
     $subject = do_lang('UNVALIDATED_TITLE', $title, '', '', get_site_default_lang());
     $message = $comcode->evaluate(get_site_default_lang());

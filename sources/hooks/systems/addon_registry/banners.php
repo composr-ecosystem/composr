@@ -137,7 +137,6 @@ class Hook_addon_registry_banners
             'sources/blocks/main_top_sites.php',
             'sources/blocks/main_banner_wave.php',
             'sources/hooks/modules/admin_setupwizard/banners.php',
-            'sources/hooks/modules/admin_unvalidated/banners.php',
             'sources/hooks/systems/ecommerce/banners.php',
             'sources/hooks/systems/page_groupings/banners.php',
             'sources/hooks/systems/content_meta_aware/banner.php',

@@ -2068,7 +2068,7 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
         breadcrumb_set_parents($comcode_breadcrumbs);
 
         set_extra_request_metadata([
-            'title' => ($title_to_use == '') ? null : ('[semihtml]' . $title_to_use . '[/semihtml]'),
+            'title' => ($title_to_use == '') ? null : ('[semihtml]' . $title_to_use . '[/semihtml]'), // We need to pass as we cannot assume we have a cache row in the database
             'identifier' => $zone . ':' . $codename,
         ], $comcode_page_row, 'comcode_page', $zone . ':' . $codename);
     }

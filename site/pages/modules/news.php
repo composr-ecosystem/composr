@@ -211,7 +211,6 @@ class Module_news
     public $title_to_use;
     public $img;
     public $news_full;
-    public $news_cats;
     public $category;
 
     /**
@@ -377,37 +376,24 @@ class Module_news
             seo_meta_load_for('news', strval($id), do_lang(($blog === 1) ? 'BLOG__NEWS' : '_NEWS', get_translated_text($myrow['title'])));
 
             // Category membership
-            $news_cats = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'news_categories WHERE nc_owner IS NULL OR id=' . strval($myrow['news_category']));
-            $news_cats = list_to_map('id', $news_cats);
-            $img = get_news_category_image_url($news_cats[$myrow['news_category']]['nc_img']);
-            if ($img === null) {
-                $img = '';
-            }
-            if ($myrow['news_image'] != '') {
-                $img = $myrow['news_image'];
-                if ((url_is_local($img)) && ($img != '')) {
-                    $img = get_custom_base_url() . '/' . $img;
-                }
-            }
-            $category = get_translated_text($news_cats[$myrow['news_category']]['nc_title']);
+            load_news_cat_rows('nc_owner IS NULL OR id=' . strval($myrow['news_category']));
+            $news_cat_row = get_news_cat_row($myrow['news_category']);
+            $img = get_news_category_image_url($news_cat_row['nc_img']);
+            $category = get_translated_text($news_cat_row['nc_title']);
 
             $news_full = get_translated_tempcode('news', $myrow, 'news_article');
-            $news_full_comcode = get_translated_text($myrow['news_article']);
             $news_summary = get_translated_tempcode('news', $myrow, 'news');
-            $news_summary_comcode = get_translated_text($myrow['news']);
             if ($news_full->is_empty()) {
                 $news_full = $news_summary;
             }
             if ($news_summary->is_empty()) {
                 $news_summary = $news_full;
-                $news_summary_comcode = $news_full_comcode;
             }
 
             // Metadata
             set_extra_request_metadata([
                 'identifier' => '_SEARCH:news:view:' . strval($id),
                 'category' => $category,
-                'description' => $news_summary_comcode,
             ], $myrow, 'news', strval($id));
 
             $this->id = $id;
@@ -417,9 +403,7 @@ class Module_news
             $this->myrow = $myrow;
             $this->_title = $_title;
             $this->title_to_use = $title_to_use;
-            $this->img = $img;
             $this->news_full = $news_full;
-            $this->news_cats = $news_cats;
             $this->category = $category;
         }
 
@@ -631,9 +615,7 @@ class Module_news
         $myrow = $this->myrow;
         $_title = $this->_title;
         $title_to_use = $this->title_to_use;
-        $img = $this->img;
         $news_full = $this->news_full;
-        $news_cats = $this->news_cats;
         $category = $this->category;
 
         // Rating and comments
@@ -717,19 +699,13 @@ class Module_news
 
         $categories = [strval($myrow['news_category']) => $category];
         $all_categories_for_this = $GLOBALS['SITE_DB']->query_select('news_category_entries', ['*'], ['news_entry' => $id]);
-        $NEWS_CATS_CACHE = [];
         foreach ($all_categories_for_this as $category_for_this) {
-            if (!array_key_exists($category_for_this['news_entry_category'], $news_cats)) {
-                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $category_for_this['news_entry_category']], '', 1);
-                if (array_key_exists(0, $_news_cats)) {
-                    $NEWS_CATS_CACHE[$category_for_this['news_entry_category']] = $_news_cats[0];
-                }
-            }
-
-            if (array_key_exists($category_for_this['news_entry_category'], $news_cats)) {
-                $categories[strval($category_for_this['news_entry_category'])] = get_translated_text($news_cats[$category_for_this['news_entry_category']]['nc_title']);
+            $news_cat_row = get_news_cat_row($category_for_this['news_entry_category'], true);
+            if ($news_cat_row !== null) {
+                $categories[strval($category_for_this['news_entry_category'])] = get_translated_text($news_cat_row['nc_title']);
             }
         }
+        $news_cat_row = get_news_cat_row($myrow['news_category']);
 
         // Newsletter tie-in
         $newsletter_url = new Tempcode();
@@ -745,6 +721,7 @@ class Module_news
             $show_comment_count = '1';
         }
 
+        $img = get_news_category_image_url($news_cat_row['nc_img']);
         $img_large = null;
         if (!empty($img)) {
             if (substr($img, -4) === '.svg') {

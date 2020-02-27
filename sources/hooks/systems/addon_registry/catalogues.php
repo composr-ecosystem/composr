@@ -180,7 +180,6 @@ class Hook_addon_registry_catalogues
             'sources/catalogues2.php',
             'sources/hooks/modules/admin_newsletter/catalogues.php',
             'sources/hooks/modules/admin_setupwizard/catalogues.php',
-            'sources/hooks/modules/admin_unvalidated/catalogue_entry.php',
             'sources/hooks/systems/attachments/catalogue_entry.php',
             'sources/blocks/main_cc_embed.php',
             'themes/default/css/catalogues.css',

@@ -26,7 +26,7 @@ class Hook_sw_chat
     /**
      * Run function for blocks in the setup wizard.
      *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
+     * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
     public function get_blocks()
     {
@@ -34,6 +34,6 @@ class Hook_sw_chat
             return [];
         }
 
-        return [[], ['side_shoutbox' => ['PANEL_NONE', 'PANEL_RIGHT']]];
+        return ['side_shoutbox' => [BLOCK_POSITION_PANEL, null]];
     }
 }

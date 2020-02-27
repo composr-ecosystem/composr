@@ -299,7 +299,7 @@ function report_content($content_type, $content_id, $report_post, $anonymous = 0
     require_code('content');
     list($content_title, $content_member_id, $cma_info, $content_row, $content_url) = content_get_details($content_type, $content_id);
     $ob = get_content_object($content_type);
-    $content_rendered = $ob->run($content_row, get_module_zone($cma_info['module']));
+    $content_rendered = $ob->render_box($content_row, get_module_zone($cma_info['module']));
 
     $content_member = $GLOBALS['FORUM_DRIVER']->get_username($content_member_id, true);
 
@@ -489,7 +489,7 @@ function _report_content($content_type, $content_id, $report_title, $report_post
     ]);
     if ($count >= intval(get_option('reported_times'))) {
         // Mark as non-validated
-        if (($cma_info['validated_field'] !== null) && (strpos($cma_info['table'], '(') === false)) {
+        if ($cma_info['validated_field'] !== null) {
             $db = get_db_for($cma_info['table']);
             $db->query_update($cma_info['table'], [$cma_info['validated_field'] => 0], get_content_where_for_str_id($content_id, $cma_info));
         }

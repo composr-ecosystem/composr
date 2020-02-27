@@ -114,7 +114,7 @@ function _real_feedback_type($content_type)
  *
  * @param  ID_TEXT $content_type Content type
  * @param  ID_TEXT $content_id Content ID
- * @return array A tuple: Content title (null means unknown), Submitter (null means unknown), URL (for use within current browser session), URL (for use in e-mails / sharing), Content meta aware info array
+ * @return array A tuple: Content title (null means unknown), Submitter (null means unknown), URL (for use within current browser session), URL (for use in e-mails / sharing), Content meta aware info array, Content row, Content object
  */
 function get_details_behind_feedback_code($content_type, $content_id)
 {
@@ -127,11 +127,11 @@ function get_details_behind_feedback_code($content_type, $content_id)
         require_code('content');
         $cma_ob = get_content_object($real_content_type);
         $info = $cma_ob->info();
-        list($content_title, $submitter_id, $cma_info, , $content_url, $content_url_email_safe) = content_get_details($real_content_type, $content_id);
-        return [$content_title, $submitter_id, $content_url, $content_url_email_safe, $cma_info];
+        list($content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe) = content_get_details($real_content_type, $content_id);
+        return [$content_title, $submitter_id, $content_url, $content_url_email_safe, $cma_info, $content_row, $cma_ob];
     }
 
-    return [null, null, null, null, null];
+    return [null, null, null, null, null, null, null];
 }
 
 /**
@@ -591,7 +591,7 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
         }
     }
 
-    list($_content_title, $submitter, , $safe_content_url, $cma_info) = get_details_behind_feedback_code($content_type, $content_id);
+    list($_content_title, $submitter, , $safe_content_url, $cma_info, $content_row, $cma_ob) = get_details_behind_feedback_code($content_type, $content_id);
     if ($content_title === null) {
         $content_title = $_content_title;
     }
@@ -608,7 +608,7 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
     // Top rating / liked
     if (($rating === 10) && ($type == '') && ($past_rating !== $rating)) {
         if ($cma_info !== null) {
-            $content_type_title = do_lang($cma_info['content_type_label']);
+            $content_type_title = static_evaluate_tempcode($cma_ob->get_content_type_label($content_row));
 
             // Special case. Would prefer not to hard-code, but important for usability
             if (($content_type == 'post') && ($content_title == '') && (get_forum_type() == 'cns')) {
@@ -639,7 +639,7 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
                     $cma_content_row = content_get_row($content_id, $cma_ob->info());
                     if ($cma_content_row !== null) {
                         push_no_keep_context();
-                        $rendered = static_evaluate_tempcode($cma_ob->run($cma_content_row, '_SEARCH', $real_content_type != 'post'/*FUDGE - to conserve space*/, true));
+                        $rendered = static_evaluate_tempcode($cma_ob->render_box($cma_content_row, '_SEARCH', $real_content_type != 'post'/*FUDGE - to conserve space*/, true));
                         pop_no_keep_context();
                     }
                 }
@@ -838,7 +838,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
     $_parent_id = post_param_string('parent_id', '');
     $parent_id = ($_parent_id == '') ? null : intval($_parent_id);
 
-    list(, $submitter, , $safe_content_url, $cma_info) = get_details_behind_feedback_code($content_type, $content_id);
+    list(, $submitter, , $safe_content_url, $cma_info, $content_row, $cma_ob) = get_details_behind_feedback_code($content_type, $content_id);
 
     if (get_forum_type() == 'cns') {
         require_code('cns_posts_action2');
@@ -922,7 +922,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
 
         $content_type_title = $real_content_type;
         if ($cma_info !== null) {
-            $content_type_title = do_lang($cma_info['content_type_label']);
+            $content_type_title = static_evaluate_tempcode($cma_ob->get_content_type_label($content_row));
         }
 
         // Notification

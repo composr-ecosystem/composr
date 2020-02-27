@@ -694,7 +694,7 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
         $content_types = [];
         foreach ($cma_hooks as $content_type => $hook_ob) {
             $info = $hook_ob->info();
-            if (($info !== null) && ($info['views_field'] !== null) && (is_string($info['id_field'])) && ($info['title_field'] !== null) && (strpos($info['title_field'], 'CALL:') === false)) {
+            if (($info !== null) && ($info['views_field'] !== null) && ($info['id_field'] !== null) && ($info['title_field'] !== null)) {
                 $content_types[$content_type] = do_lang($info['content_type_label']);
             }
         }

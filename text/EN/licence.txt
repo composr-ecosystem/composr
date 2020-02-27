@@ -144,6 +144,7 @@ This product includes:
   - Date polyfill (MIT licence)
   - Time polyfill (MIT licence)
   - Select2 (Apache licence)
+  - Skitter (MIT licence)
   - modalwindow.js (PHP-like licence)
   - SoundManager (BSD-like licence)
   - Plupload (used under commercial licence; sponsored by Tom McMasters)

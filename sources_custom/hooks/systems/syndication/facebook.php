@@ -205,7 +205,7 @@ class Hook_syndication_facebook
         $name = $row['a_label_1'];
         require_code('character_sets');
         $name = convert_to_internal_encoding($name, get_charset(), 'utf-8');
-        $link = ($row['a_page_link_1'] == '') ? '' : static_evaluate_tempcode(page_link_to_tempcode($row['a_page_link_1']));
+        $link = ($row['a_page_link_1'] == '') ? '' : page_link_to_url($row['a_page_link_1'], true);
         $message = strip_html($message->evaluate());
         $message = convert_to_internal_encoding($message, get_charset(), 'utf-8');
 

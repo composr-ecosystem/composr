@@ -69,6 +69,7 @@ class filtering_test_set extends cms_test_case
                         'title_field_supports_comcode' => false,
                         'description_field' => null,
                         'description_field_dereference' => false,
+                        'description_field_supports_comcode' => false,
                         'thumb_field' => null,
                         'thumb_field_is_theme_image' => false,
                         'alternate_icon_theme_image' => null,
@@ -99,7 +100,6 @@ class filtering_test_set extends cms_test_case
                         'search_hook' => null,
                         'rss_hook' => null,
                         'attachment_hook' => null,
-                        'unvalidated_hook' => null,
                         'notification_hook' => null,
                         'sitemap_hook' => null,
 
@@ -122,6 +122,8 @@ class filtering_test_set extends cms_test_case
                         'actionlog_regexp' => null,
 
                         'filtercode_protected_fields' => ['t_secret'],
+
+                        'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
                     ];
                 }
             }

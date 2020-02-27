@@ -278,7 +278,14 @@ function do_image_thumb($url, $caption = '', $js_tooltip = false, $is_thumbnail_
         $url = get_custom_base_url() . '/' . $url;
     }
 
-    return do_template('IMG_THUMB', ['_GUID' => 'f1c130b7c3b2922fe273596563cb377c', 'JS_TOOLTIP' => $js_tooltip, 'CAPTION' => $caption, 'URL' => $url]);
+    return do_template('IMG_THUMB', [
+        '_GUID' => 'f1c130b7c3b2922fe273596563cb377c',
+        'JS_TOOLTIP' => $js_tooltip,
+        'CAPTION' => $caption,
+        'URL' => $url,
+        'WIDTH' => strval($width),
+        'HEIGHT' => strval($height),
+    ]);
 }
 
 /**

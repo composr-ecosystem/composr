@@ -764,7 +764,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
         $virtual_order_by = 'r.id';
     }
 
-    $sql = 'SELECT DISTINCT r.* FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . $where_clause;
+    $sql = 'SELECT DISTINCT r.*,' . $virtual_order_by . ' FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . $where_clause;
     if ($in_db_sorting && $do_sorting) {
         $sql .= ' ORDER BY ' . $virtual_order_by . ' ' . $direction;
     }
@@ -1972,8 +1972,6 @@ function render_catalogue_entry_screen($id)
     breadcrumb_set_parents($breadcrumbs);
 
     set_extra_request_metadata([
-        'type' => get_translated_text($catalogue['c_title']) . ' entry',
-        'title' => comcode_escape($title_to_use_2),
         'identifier' => '_SEARCH:catalogues:entry:' . strval($id),
     ], $entry, 'catalogue_entry', strval($id));
 

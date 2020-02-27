@@ -292,7 +292,7 @@ class Forum_driver_cns extends Forum_driver_base
      * Get an array of maps for the topic in the given forum.
      *
      * @param  integer $topic_id The topic ID
-     * @param  integer $count The comment count will be returned here by reference
+     * @param  ?integer $count The comment count will be returned here by reference (null: do not gather it)
      * @param  integer $max Maximum comments to returned
      * @param  integer $start Comment to start at
      * @param  boolean $mark_read Whether to mark the topic read
@@ -304,7 +304,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @set date rating
      * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
      */
-    public function get_forum_topic_posts($topic_id, &$count, $max = 100, $start = 0, $mark_read = true, $reverse = false, $light_if_threaded = false, $posts = null, $load_spacer_posts_too = false, $sort = 'date')
+    public function get_forum_topic_posts($topic_id, &$count = null, $max = 100, $start = 0, $mark_read = true, $reverse = false, $light_if_threaded = false, $posts = null, $load_spacer_posts_too = false, $sort = 'date')
     {
         require_code('cns_forum_driver_helper');
         return _helper_get_forum_topic_posts($this, $topic_id, $count, $max, $start, $mark_read, $reverse, $light_if_threaded, $posts, $load_spacer_posts_too, $sort);
@@ -1214,10 +1214,15 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_topic_count($member)
     {
+        static $cache = [];
+        if (isset($cache[$member])) {
+            return $cache[$member];
+        }
         $ret = $this->db->query_select_value_if_there('f_topics', 'COUNT(*)', ['t_cache_first_member_id' => $member]);
         if ($ret === null) {
             $ret = 0;
         }
+        $cache[$member] = $ret;
         return $ret;
     }
 
@@ -1792,7 +1797,7 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_member_row($member)
     {
-        if (isset($this->MEMBER_ROWS_CACHED[$member])) {
+        if (array_key_exists($member, $this->MEMBER_ROWS_CACHED)) {
             return $this->MEMBER_ROWS_CACHED[$member];
         }
 

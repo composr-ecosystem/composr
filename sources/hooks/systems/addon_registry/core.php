@@ -522,7 +522,26 @@ class Hook_addon_registry_core
             'themes/default/css/carousels.css',
             'themes/default/css/adminzone.css',
             'themes/default/templates/BLOCK_MAIN_CONTENT.tpl',
-            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_BOXES.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_CAROUSEL.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_GRID.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_LIST.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_MOSAIC.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_SLIDER.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_TABLE.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_TILES.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl',
+            'themes/default/css/skitter.css',
+            'themes/default/images/skitter/ajax-loader.gif',
+            'themes/default/images/skitter/index.html',
+            'themes/default/images/skitter/sprite-clean.png',
+            'themes/default/images/skitter/sprite-default.png',
+            'themes/default/images/skitter/sprite-minimalist.png',
+            'themes/default/images/skitter/sprite-round.png',
+            'themes/default/images/skitter/sprite-square.png',
+            'themes/default/javascript/skitter.js',
+            'themes/default/javascript/image_slider.js',
             'sources/blocks/main_content.php',
             'sources/blocks/main_multi_content.php',
             'sources/hooks/systems/symbols/BETA_CSS_PROPERTY.php',
@@ -1579,7 +1598,16 @@ class Hook_addon_registry_core
             'templates/EMAIL_LOG_SCREEN.tpl' => 'email_log_screen',
             'templates/BLOCK_MAIN_CONTENT_FILTERING.tpl' => 'block_main_content_filtering',
             'templates/BLOCK_MAIN_CONTENT.tpl' => 'block_main_content',
-            'templates/BLOCK_MAIN_MULTI_CONTENT.tpl' => 'block_main_multi_content',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_BOXES.tpl' => 'block_main_multi_content_boxes',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_CAROUSEL.tpl' => 'block_main_multi_content_carousel',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_GRID.tpl' => 'block_main_multi_content_grid',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_LIST.tpl' => 'block_main_multi_content_list',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_MOSAIC.tpl' => 'block_main_multi_content_mosaic',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_SLIDER.tpl' => 'block_main_multi_content_slider',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_TABLE.tpl' => 'block_main_multi_content_table',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_TILES.tpl' => 'block_main_multi_content_tiles',
+            'templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl' => 'block_main_multi_content_boxes',
+            'templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl' => 'block_main_multi_content_boxes',
             'templates/MASS_SELECT_FORM_BUTTONS.tpl' => 'mass_select_form_buttons',
             'templates/MASS_SELECT_MARKER.tpl' => 'mass_select_marker',
             'templates/MASS_SELECT_DELETE_FORM.tpl' => 'mass_select_delete_form',
@@ -1608,6 +1636,7 @@ class Hook_addon_registry_core
                 'RAW_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'CONTENT' => lorem_phrase_html(),
+                'ADD_NAME' => lorem_phrase(),
                 'SUBMIT_URL' => placeholder_url(),
                 'ARCHIVE_URL' => placeholder_url(),
             ]), null, '', true)
@@ -1621,29 +1650,226 @@ class Hook_addon_registry_core
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_multi_content()
+    public function tpl_preview__block_main_multi_content_boxes()
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT', [
-                'BLOCK_ID' => lorem_word(),
-                'TYPE' => lorem_phrase(),
-                'CONTENT_TYPE' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => [
-                    lorem_phrase_html(),
-                ],
-                'SUBMIT_URL' => placeholder_url(),
-                'ARCHIVE_URL' => placeholder_url(),
-                'BLOCK_PARAMS' => '',
-                'ADD_STRING' => lorem_phrase(),
-                'CONTENT_DATA' => [],
+        $map = $this->preview_main_multi_content('boxes');
 
-                'START' => '0',
-                'MAX' => '10',
-                'START_PARAM' => 'x_start',
-                'MAX_PARAM' => 'x_max',
-            ]), null, '', true)
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_BOXES', $map), null, '', true)
         ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_carousel()
+    {
+        $map = $this->preview_main_multi_content('carousel');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_CAROUSEL', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_grid()
+    {
+        $map = $this->preview_main_multi_content('grid');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_GRID', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_list()
+    {
+        $map = $this->preview_main_multi_content('list');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_LIST', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_mosaic()
+    {
+        $map = $this->preview_main_multi_content('mosaic');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_MOSAIC', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_slider()
+    {
+        $map = $this->preview_main_multi_content('slider');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_SLIDER', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_table()
+    {
+        $map = $this->preview_main_multi_content('table');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_TABLE', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_tiles()
+    {
+        $map = $this->preview_main_multi_content('tiles');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_TILES', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview of main_multi_content render mode.
+     *
+     * @param  string $render_mode The render mode
+     * @set boxes carousel grid list mosaic slider table tiles
+     * @return array Template map array
+     */
+    public function preview_main_multi_content($render_mode)
+    {
+        $keymap = [
+            'test' => lorem_phrase(),
+        ];
+
+        $content = [];
+        switch ($render_mode) {
+            case 'boxes':
+                $content[] = lorem_phrase_html();
+                break;
+
+            case 'carousel':
+                $content[] = placeholder_image();
+                break;
+
+            case 'grid':
+                $content[] = '';
+                break;
+
+            case 'list':
+                $content[] = placeholder_link();
+                break;
+
+            case 'mosaic':
+                $content[] = '';
+                break;
+
+            case 'slider':
+                $content[] = '';
+                break;
+
+            case 'table':
+                $content = $keymap;
+                break;
+
+            case 'tiles':
+                $content[] = '';
+                break;
+        }
+
+        $content_data = [
+            [
+                'CONTENT_TYPE' => lorem_word(),
+                'CONTENT_TYPE_LABEL' => lorem_phrase(),
+                'CONTENT_TYPE_ICON' => placeholder_image_url(),
+                'CONTENT_ID' => placeholder_id(),
+                'CONTENT_URL' => placeholder_url(),
+                'CONTENT_TITLE_PLAIN' => lorem_phrase(),
+                'CONTENT_TITLE_HTML' => lorem_phrase_html(),
+                'CONTENT_DESCRIPTION' => lorem_paragraph_html(),
+                'CONTENT_THUMB_URL' => placeholder_image_url(),
+                'CONTENT_THUMB' => placeholder_image(),
+                'CONTENT_THUMB_LINKED' => placeholder_image(),
+                'CONTENT_USERNAME' => lorem_word(),
+                'CONTENT_AUTHOR' => lorem_word(),
+                'CONTENT_TIME_LABEL' => lorem_word(),
+                'CONTENT_TIME' => placeholder_date(),
+                '_CONTENT_TIME' => placeholder_date_raw(),
+            ],
+        ];
+
+        if ($render_mode != 'table') {
+            $content_data[0]['CONTENT_KEYMAP'] = $keymap;
+        }
+
+        $shared_keymap_headings = [
+            'test' => lorem_phrase(),
+        ];
+
+        $map = [
+            'BLOCK_ID' => lorem_word(),
+            'BLOCK_PARAMS' => '',
+            'TYPE' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => $content,
+            'CONTENT_TYPE' => lorem_phrase(),
+            'CONTENT_DATA' => $content_data,
+            'SUBMIT_URL' => placeholder_url(),
+            'ARCHIVE_URL' => placeholder_url(),
+            'PAGINATION' => placeholder_pagination(),
+            'ADD_STRING' => lorem_phrase(),
+            'SHARED_KEYMAP_HEADINGS' => $shared_keymap_headings,
+
+            'START' => '0',
+            'MAX' => '10',
+            'START_PARAM' => 'x_start',
+            'MAX_PARAM' => 'x_max',
+            'EXTRA_GET_PARAMS' => '',
+        ];
+
+        return $map;
     }
 
     /**

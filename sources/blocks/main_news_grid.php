@@ -129,11 +129,7 @@ PHP;
         $do_pagination = ((isset($map['pagination']) ? $map['pagination'] : '0') == '1');
 
         // Read in news categories ahead, for performance
-        global $NEWS_CATS_CACHE;
-        if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
-            $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
-        }
+        load_news_cat_rows('nc_owner IS NULL');
 
         // Work out how many days to show
         $days_full = floatval($days) * $multiplier;
@@ -195,12 +191,16 @@ PHP;
         // Read in rows
         $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT r.id) FROM ' . get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : ''), false, true);
         if ($historic == '') {
-            $rows = ($days_full == 0.0) ? [] : $GLOBALS['SITE_DB']->query('SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' AND date_and_time>=' . strval(time() - 60 * 60 * 24 * intval($days_full)) . ' ORDER BY r.date_and_time DESC', max($fallback_full + $fallback_archive, 30)/*reasonable limit*/, 0, false, false, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
+            $query = 'SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' AND date_and_time>=' . strval(time() - 60 * 60 * 24 * intval($days_full)) . ' ORDER BY r.date_and_time DESC';
+            $rows = ($days_full == 0.0) ? [] : $GLOBALS['SITE_DB']->query($query, max($fallback_full + $fallback_archive, 30)/*reasonable limit*/, 0, false, false, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
             if (!isset($rows[0])) { // Nothing recent, so we work to get at least something
-                $rows = ($fallback_full == 0) ? [] : $GLOBALS['SITE_DB']->query('SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' ORDER BY r.date_and_time DESC', $fallback_full, $start, false, true, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
-                $rows2 = ($fallback_archive == 0) ? [] : $GLOBALS['SITE_DB']->query('SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' ORDER BY r.date_and_time DESC', $fallback_archive, $fallback_full + $start, false, true, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
+                $query_full = 'SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' ORDER BY r.date_and_time DESC';
+                $rows = ($fallback_full == 0) ? [] : $GLOBALS['SITE_DB']->query($query_full, $fallback_full, $start, false, true, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
+                $query_fallback = 'SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' ORDER BY r.date_and_time DESC';
+                $rows2 = ($fallback_archive == 0) ? [] : $GLOBALS['SITE_DB']->query($query_fallback, $fallback_archive, $fallback_full + $start, false, true, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
             } else {
-                $rows2 = $GLOBALS['SITE_DB']->query('SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' AND date_and_time>=' . strval(time() - 60 * 60 * 24 * intval($days_full + $days_outline)) . ' AND date_and_time<' . strval(time() - 60 * 60 * 24 * intval($days_full)) . ' ORDER BY r.date_and_time DESC', max($fallback_full + $fallback_archive, 30)/*reasonable limit*/, 0, false, false, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
+                $query_fallback = 'SELECT DISTINCT r.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' AND date_and_time>=' . strval(time() - 60 * 60 * 24 * intval($days_full + $days_outline)) . ' AND date_and_time<' . strval(time() - 60 * 60 * 24 * intval($days_full)) . ' ORDER BY r.date_and_time DESC';
+                $rows2 = $GLOBALS['SITE_DB']->query($query_fallback, max($fallback_full + $fallback_archive, 30)/*reasonable limit*/, 0, false, false, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
             }
         } else {
             $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
@@ -331,16 +331,7 @@ PHP;
             $full_url = build_url($tmp, $zone);
 
             // Category
-            if (!isset($NEWS_CATS_CACHE[$myrow['news_category']])) {
-                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $myrow['news_category']], '', 1);
-                if (isset($_news_cats[0])) {
-                    $NEWS_CATS_CACHE[$myrow['news_category']] = $_news_cats[0];
-                } else {
-                    $myrow['news_category'] = db_get_first_id();
-                }
-            }
-            $news_cat_row = $NEWS_CATS_CACHE[$myrow['news_category']];
-
+            $news_cat_row = get_news_cat_row($row['news_category']);
             $category = get_translated_text($news_cat_row['nc_title']);
             $category_url = build_url(['page' => 'news', 'type' => 'browse', 'id' => $news_cat_row['id']], get_module_zone('news'));
 

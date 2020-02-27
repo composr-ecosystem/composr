@@ -376,7 +376,7 @@ function _get_timezoned_date_time($include_time, $timestamp, $use_contextual_dat
  */
 function get_timezoned_date_time_tempcode($timestamp)
 {
-    return symbol_tempcode('DATE_TIME', [strval($timestamp), '0', '0', '0']);
+    return symbol_tempcode('DATE_TIME', [strval($timestamp), '0']);
 }
 
 /**
@@ -387,7 +387,7 @@ function get_timezoned_date_time_tempcode($timestamp)
  */
 function get_timezoned_date_tempcode($timestamp)
 {
-    return symbol_tempcode('DATE', [strval($timestamp), '0', '0', '0']);
+    return symbol_tempcode('DATE', [strval($timestamp), '0']);
 }
 
 /**

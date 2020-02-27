@@ -110,9 +110,7 @@ class Block_main_rss
             return do_template('INLINE_WIP_MESSAGE', ['_GUID' => 'c2a067db18cd5f14392fa922b06967e4', 'MESSAGE' => htmlentities($error)]);
         }
 
-        global $NEWS_CATS_CACHE;
-        $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
-        $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
+        $news_cats = load_news_cat_rows('nc_owner IS NULL');
 
         if (!array_key_exists('title', $rss->gleamed_feed)) {
             $rss->gleamed_feed['title'] = do_lang_tempcode('RSS_STREAM');
@@ -192,16 +190,13 @@ class Block_main_rss
             if (array_key_exists('category', $item)) {
                 global $THEME_IMAGES_CACHE;
                 $cat = null;
-                foreach ($NEWS_CATS_CACHE as $_cat => $news_cat) {
+                foreach ($news_cats as $_cat => $news_cat) {
                     if (get_translated_text($news_cat['nc_title']) == $item['category']) {
                         $cat = $_cat;
                     }
                 }
                 if ($cat !== null) {
-                    $category_img = ($NEWS_CATS_CACHE[$cat]['nc_img'] == '') ? '' : find_theme_image($NEWS_CATS_CACHE[$cat]['nc_img']);
-                    if ($category_img === null) {
-                        $category_img = '';
-                    }
+                    $category_img = ($news_cats[$cat]['nc_img'] == '') ? '' : find_theme_image($news_cats[$cat]['nc_img']);
                 }
                 $category = $item['category'];
             }

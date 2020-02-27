@@ -123,18 +123,4 @@ class Hook_sw_catalogues
             }
         }
     }
-
-    /**
-     * Run function for blocks in the setup wizard.
-     *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
-     */
-    public function get_blocks()
-    {
-        if (!addon_installed('catalogues')) {
-            return [];
-        }
-
-        return [[], []];
-    }
 }

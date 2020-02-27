@@ -130,18 +130,4 @@ class Hook_sw_galleries
             }
         }
     }
-
-    /**
-     * Run function for blocks in the setup wizard.
-     *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
-     */
-    public function get_blocks()
-    {
-        if (!addon_installed('galleries')) {
-            return [];
-        }
-
-        return [['main_image_fader' => ['NO', 'NO']], ['side_galleries' => ['PANEL_NONE', 'PANEL_NONE']]];
-    }
 }

@@ -408,22 +408,15 @@ function find_search_suggestions($request, $search_type = '')
 
             // Based on keywords
             if ((has_privilege(get_member(), 'autocomplete_keyword_' . $content_type)) && (count($suggestions) < MAXIMUM_AUTOCOMPLETE_SUGGESTIONS)) {
-                if (multi_lang_content()) {
-                    $q = 'SELECT text_original AS search FROM ' . get_table_prefix() . 'seo_meta_keywords m JOIN ' . get_table_prefix() . 'translate t ON t.id=m.meta_keyword';
-                    $q .= ' WHERE meta_keyword LIKE \'' . db_encode_like($request . '%') . '\'';
-                    $q .= ' AND ' . db_string_equal_to('meta_for_type', $feedback_type);
-                    $q .= ' GROUP BY text_original';
-                } else {
-                    $q = 'SELECT meta_keyword AS search FROM ' . get_table_prefix() . 'seo_meta_keywords';
-                    $q .= ' WHERE meta_keyword LIKE \'' . db_encode_like($request . '%') . '\'';
-                    $q .= ' AND ' . db_string_equal_to('meta_for_type', $feedback_type);
-                    $q .= ' GROUP BY meta_keyword';
-                }
+                $q = 'SELECT ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . ' FROM ' . get_table_prefix() . 'seo_meta_keywords';
+                $q .= ' WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . ' LIKE \'' . db_encode_like($request . '%') . '\'';
+                $q .= ' AND ' . db_string_equal_to('meta_for_type', $feedback_type);
+                $q .= ' GROUP BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword');
                 $q .= ' ORDER BY COUNT(*) DESC';
-                $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS);
+                $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
                 foreach ($rows as $search) {
                     if (count($suggestions) < MAXIMUM_AUTOCOMPLETE_SUGGESTIONS) {
-                        $suggestions[$search['search']] = true;
+                        $suggestions[$search['meta_keyword']] = true;
                     }
                 }
             }
@@ -433,27 +426,33 @@ function find_search_suggestions($request, $search_type = '')
                 $cma_ob = get_content_object($content_type);
                 $cma_info = $cma_ob->info();
 
-                if (strpos($cma_info['title_field'], ':') === false) {
-                    if (($cma_info['title_field_dereference']) && (multi_lang_content())) {
-                        $q = 'SELECT text_original AS search FROM ' . get_table_prefix() . $cma_info['table'] . 'r';
-                        $q = ' JOIN ' . get_table_prefix() . 'translate t ON t.id=r.' . $cma_info['title_field'];
+                $title_field = $cma_info['title_field'];
+                if (is_array($title_field)) {
+                    $title_field = array_pop($title_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
+                }
+
+                if (strpos($title_field, 'CALL:') === false) {
+                    if ($cma_info['title_field_dereference']) {
+                        $q = 'SELECT ' . $GLOBALS['SITE_DB']->translate_field_ref($title_field) . ' AS search FROM ' . get_table_prefix() . $cma_info['table'];
                         if ($GLOBALS['SITE_DB']->has_full_text()) {
-                            $q .= ' WHERE ' . preg_replace('#\?#', 'text_original', $GLOBALS['SITE_DB']->full_text_assemble(str_replace('?', '', $request), false));
+                            $q .= ' WHERE ' . preg_replace('#\?#', $GLOBALS['SITE_DB']->translate_field_ref($title_field), $GLOBALS['SITE_DB']->full_text_assemble(str_replace('?', '', $request), false));
                         } else {
-                            $q .= ' WHERE text_original LIKE \'' . db_encode_like($request . '%') . '\'';
+                            $q .= ' WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref($title_field) . ' LIKE \'' . db_encode_like($request . '%') . '\'';
                         }
-                        $q .= ' GROUP BY text_original';
+                        $q .= ' GROUP BY ' . $GLOBALS['SITE_DB']->translate_field_ref($title_field);
+                        $q .= ' ORDER BY COUNT(*) DESC';
+                        $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS, 0, false, false, [$title_field => 'SHORT_TRANS']);
                     } else {
-                        $q = 'SELECT ' . $cma_info['title_field'] . ' AS search FROM ' . get_table_prefix() . $cma_info['table'];
+                        $q = 'SELECT ' . $title_field . ' AS search FROM ' . get_table_prefix() . $cma_info['table'];
                         if ($GLOBALS['SITE_DB']->has_full_text()) {
-                            $q .= ' WHERE ' . preg_replace('#\?#', $cma_info['title_field'], $GLOBALS['SITE_DB']->full_text_assemble(str_replace('?', '', $request), false));
+                            $q .= ' WHERE ' . preg_replace('#\?#', $title_field, $GLOBALS['SITE_DB']->full_text_assemble(str_replace('?', '', $request), false));
                         } else {
-                            $q .= ' WHERE ' . $cma_info['title_field'] . ' LIKE \'' . db_encode_like($request . '%') . '\'';
+                            $q .= ' WHERE ' . $title_field . ' LIKE \'' . db_encode_like($request . '%') . '\'';
                         }
-                        $q .= ' GROUP BY ' . $cma_info['title_field'];
+                        $q .= ' GROUP BY ' . $title_field;
+                        $q .= ' ORDER BY COUNT(*) DESC';
+                        $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS);
                     }
-                    $q .= ' ORDER BY COUNT(*) DESC';
-                    $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS);
                     foreach ($rows as $search) {
                         if (count($suggestions) < MAXIMUM_AUTOCOMPLETE_SUGGESTIONS) {
                             $suggestions[$search['search']] = true;

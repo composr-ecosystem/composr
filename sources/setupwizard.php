@@ -19,6 +19,20 @@
  */
 
 /**
+ * Standard code module initialisation function.
+ *
+ * @ignore
+ */
+function init__setupwizard()
+{
+    if (!defined('BLOCK_POSITION_MAIN')) {
+        define('BLOCK_POSITION_MAIN', 1);
+        define('BLOCK_POSITION_CELL', 2);
+        define('BLOCK_POSITION_PANEL', 4);
+    }
+}
+
+/**
  * Install test content.
  */
 function install_test_content()

@@ -56,8 +56,7 @@ function _page_link_to_static($node)
                 continue; // Probably this is just the utf8 addon
             }
 
-            list($zone, $attributes, $hash) = page_link_decode($page_link);
-            $url_test = _build_url($attributes, $zone, [], false, false, true, $hash);
+            $url_test = page_link_to_url($page_link, true);
             if (strpos($url_test, '?') !== false) {
                 continue;
             }
@@ -69,8 +68,7 @@ function _page_link_to_static($node)
             if (count($langs) != 1) {
                 $extended_page_link .= ':keep_lang=' . $lang . ':max=10000';
             }
-            list($zone, $attributes, $hash) = page_link_decode($extended_page_link);
-            $url = _build_url($attributes, $zone, [], false, false, true, $hash);
+            $url = page_link_to_url($extended_page_link, true);
 
             $target_path = urldecode(preg_replace('#\?.*$#', '', preg_replace('#^' . preg_quote(get_base_url(), '#') . '/#', '', $url)));
 

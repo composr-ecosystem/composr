@@ -53,7 +53,7 @@ class file_naming_test_set extends cms_test_case
             'themes/default/images/jquery_ui/',
             'themes/default/images/realtime_rain/',
             'themes/default/images/select2/',
-            'themes/default/images_custom/skitter/',
+            'themes/default/images/skitter/',
             'themes/default/javascript/mediaelement-and-player.js',
             'themes/default/images/cns_emoticons/',
             'tracker/',

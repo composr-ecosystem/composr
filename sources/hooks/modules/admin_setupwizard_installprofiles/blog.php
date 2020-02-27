@@ -85,12 +85,11 @@ class Hook_admin_setupwizard_installprofiles_blog
     public function default_blocks()
     {
         return [
-            'YES' => [
+            BLOCK_POSITION_MAIN => [
                 'main_news',
             ],
-            'YES_CELL' => [],
-            'PANEL_LEFT' => [],
-            'PANEL_RIGHT' => [
+            BLOCK_POSITION_CELL => [],
+            BLOCK_POSITION_PANEL => [
                 'side_news_categories',
                 'side_news_archive',
                 'main_newsletter_signup',

@@ -176,28 +176,14 @@ class CMSSearchRead
         $boolean_operator = 'AND';
 
         list($w) = build_content_where($keywords, false, $boolean_operator);
-        if (multi_lang_content()) {
-            $search_sql = preg_replace('#\?#', 'trans.text_original', $w);
-            if ($search_sql == '') {
-                $search_sql = '1=1';
-            }
-            $sql = 'FROM ' . $table_prefix . 'f_posts p' . (($search_sql == '1=1') ? '' : $GLOBALS['FORUM_DB']->prefer_index('f_posts', 'p_post'));
-            $sql .= '
-                JOIN ' . $table_prefix . 'translate trans ON trans.id=p.p_post
-                JOIN ' . $table_prefix . 'f_topics t ON p.p_topic_id=t.id
-                JOIN ' . $table_prefix . 'f_forums f ON t.t_forum_id=f.id
-                WHERE ' . $search_sql;
+        if ($w == '') {
+            $search_sql = '1=1';
         } else {
-            $search_sql = preg_replace('#\?#', 'p_post', $w);
-            if ($search_sql == '') {
-                $search_sql = '1=1';
-            }
-            $sql = 'FROM ' . $table_prefix . 'f_posts p' . (($search_sql == '1=1') ? '' : $GLOBALS['FORUM_DB']->prefer_index('f_posts', 'p_post'));
-            $sql .= '
-                JOIN ' . $table_prefix . 'f_topics t ON p.p_topic_id=t.id
-                JOIN ' . $table_prefix . 'f_forums f ON t.t_forum_id=f.id
-                WHERE ' . $search_sql;
+            $search_sql = preg_replace('#\?#', $GLOBALS['FORUM_DB']->translate_field_ref('p_post'), $w);
         }
+        $sql = 'FROM ' . $table_prefix . 'f_posts p' . (($search_sql == '1=1') ? '' : $GLOBALS['FORUM_DB']->prefer_index('f_posts', 'p_post'));
+        $sql .= ' JOIN ' . $table_prefix . 'f_topics t ON p.p_topic_id=t.id JOIN ' . $table_prefix . 'f_forums f ON t.t_forum_id=f.id';
+        $sql .= ' WHERE ' . $search_sql;
         $sql .= ' AND p_cache_forum_id IN (' . get_allowed_forum_sql() . ')';
         if (addon_installed('unvalidated')) {
             $sql .= ' AND p_validated=1';
@@ -250,7 +236,7 @@ class CMSSearchRead
         if ($keywords == '') {
             $full_sql .= ' ORDER BY p_time DESC,p.id DESC';
         }
-        $posts = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query($full_sql, $max, $start);
+        $posts = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query($full_sql, $max, $start, false, false, ['p_post' => 'LONG_TRANS__COMCODE']);
         if ($keywords != '') {
             $count_sql = '(SELECT COUNT(*) FROM (';
             $count_sql .= 'SELECT 1' . $sql;
@@ -258,7 +244,7 @@ class CMSSearchRead
         } else {
             $count_sql = 'SELECT COUNT(*)' . $sql;
         }
-        $total_post_num = (get_allowed_forum_sql() == '') ? 0 : $GLOBALS['FORUM_DB']->query_value_if_there($count_sql);
+        $total_post_num = (get_allowed_forum_sql() == '') ? 0 : $GLOBALS['FORUM_DB']->query_value_if_there($count_sql, false, false, ['p_post' => 'LONG_TRANS__COMCODE']);
 
         return [$total_post_num, $posts];
     }

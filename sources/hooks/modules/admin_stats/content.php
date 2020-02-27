@@ -70,39 +70,32 @@ class Hook_admin_stats_content extends CMSStatsProvider
         $data_buckets['content_views'] = [];
         $data_buckets['content_views_per_content_day'] = [];
 
+        require_code('content');
         $cma_hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
         $content_types = [];
         foreach ($cma_hooks as $content_type => $hook_ob) {
             $info = $hook_ob->info();
-            if (($info !== null) && ($info['views_field'] !== null) && (is_string($info['id_field'])) && ($info['title_field'] !== null) && (strpos($info['title_field'], 'CALL:') === false)) {
+            if (($info !== null) && ($info['views_field'] !== null) && ($info['id_field'] !== null) && ($info['title_field'] !== null)) {
                 $db = $info['db'];
                 $table = $info['table'];
-                $title_field = $info['title_field'];
-                $title_field_dereference = $info['title_field_dereference'];
-                $id_field = $info['id_field'];
                 $views_field = $info['views_field'];
                 $add_time_field = $info['add_time_field'];
 
-                $fields = [$title_field, $id_field, $views_field];
-                if ($add_time_field !== null) {
-                    $fields[] = $add_time_field;
-                }
-                $rows = $db->query_select($table, $fields, [], 'ORDER BY ' . $views_field . ' DESC', $limit_per_content_type);
+                $select = [];
+                append_content_select_for_fields($select, $info, ['title', 'id', 'views', 'add_time']);
+                $rows = $db->query_select($table, $select, [], 'ORDER BY ' . $views_field . ' DESC', $limit_per_content_type);
                 foreach ($rows as $row) {
-                    $title = $title_field_dereference ? get_translated_text($row[$title_field], $db) : $row[$title_field];
-                    $id = $row[$id_field];
-                    if (is_integer($id)) {
-                        $id = strval($id);
-                    }
+                    $title = $hook_ob->get_title($row);
+                    $id = $hook_ob->get_id_string($row);
                     $views = $row[$views_field];
 
-                    $data_buckets['content_views'][$content_type][$title . ' (#' . $id . ')'] = $views;
+                    $data_buckets['content_views'][$content_type][$title . ' (' . $hook_ob->get_id_string($row) . ')'] = $views;
 
                     if ($add_time_field !== null) {
                         $add_time = $row[$add_time_field];
                         if ($add_time !== null) {
                             $days = floatval(time() - $add_time + 1/*prevent divide by zero errors*/) / floatval(60 * 60 * 24);
-                            $data_buckets['content_views_per_content_day'][$content_type][$title . ' (#' . $id . ')'] = floatval($views) / $days;
+                            $data_buckets['content_views_per_content_day'][$content_type][$title . ' (' . $id . ')'] = floatval($views) / $days;
                         }
                     }
                 }

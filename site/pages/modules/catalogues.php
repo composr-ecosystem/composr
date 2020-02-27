@@ -672,7 +672,6 @@ class Module_catalogues
 
             // Metadata
             set_extra_request_metadata([
-                'type' => $catalogue_title . ' category',
                 'identifier' => '_SEARCH:catalogues:category:' . strval($id),
             ], $category, 'catalogue_category', strval($id));
 
@@ -780,12 +779,12 @@ class Module_catalogues
         $max = get_param_integer('catalogues_max', 30);
 
         // Not done via main_multi_content block due to need for custom filtering
-        $query = 'SELECT c.* FROM ' . get_table_prefix() . 'catalogues c WHERE EXISTS (SELECT * FROM ' . get_table_prefix() . 'catalogue_entries e WHERE e.c_name=c.c_name)';
+        $query = 'FROM ' . get_table_prefix() . 'catalogues c WHERE EXISTS (SELECT * FROM ' . get_table_prefix() . 'catalogue_entries e WHERE e.c_name=c.c_name)';
         $query .= ' AND ';
         $query .= ($ecommerce === null) ? '1=1' : ('c_ecommerce=' . strval($ecommerce));
         $query .= ' AND c.c_name NOT LIKE \'' . db_encode_like('\_%') . '\'';
-        $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
-        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT c.c_name) ' . $query);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT c.* ' . $query, $max, $start);
+        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) ' . $query);
         $out = new Tempcode();
         foreach ($rows as $myrow) {
             $first_category = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'MIN(id)', ['c_name' => $myrow['c_name'], 'cc_parent_id' => null]);
@@ -1084,7 +1083,7 @@ class Module_catalogues
 
         // Get category contents
         $cc_sort = $catalogue['c_categories_sort_order'];
-        $subcategories = do_block('main_multi_content', ['param' => 'catalogue_category', 'select' => strval($id) . '>', 'zone' => get_zone_name(), 'sort' => $cc_sort, 'max' => get_option('catalogue_subcats_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'attach_to_url_filter' => '1', 'render_if_empty' => '0', 'guid' => 'module']);
+        $subcategories = do_block('main_multi_content', ['param' => 'catalogue_category', 'pinned' => '', 'select' => strval($id) . '>', 'zone' => get_zone_name(), 'sort' => $cc_sort, 'max' => get_option('catalogue_subcats_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'attach_to_url_filter' => '1', 'render_if_empty' => '0', 'guid' => 'module']);
         if (get_option('catalogues_subcat_narrowin') == '1') {
             $cat_select = strval($id) . '*';
         } else {

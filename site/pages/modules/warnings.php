@@ -681,16 +681,14 @@ class Module_warnings extends Standard_crud_module
             // See also privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
             if (addon_installed('commandr')) {
                 $content = $this->find_member_content($member_id);
-                if (!empty($content)) {
-                    foreach ($content as $content_details) {
-                        list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
-                        if (is_object($content_url)) {
-                            $content_url = $content_url->evaluate();
-                        }
-                        $content_description = do_lang_tempcode('DESCRIPTION_DELETE_THIS', escape_html($content_title), escape_html(get_timezoned_date_time($content_timestamp)), [escape_html($content_url), do_lang($content_type_title)]);
-
-                        $fields->attach(form_input_tick($content_title, $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
+                foreach ($content as $content_details) {
+                    list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
+                    if (is_object($content_url)) {
+                        $content_url = $content_url->evaluate();
                     }
+                    $content_description = do_lang_tempcode('DESCRIPTION_DELETE_THIS', escape_html($content_title), escape_html(get_timezoned_date_time($content_timestamp)), [escape_html($content_url), $content_type_title]);
+
+                    $fields->attach(form_input_tick($content_title, $content_description, 'delete__' . $content_type . '_' . $content_id, $auto_selected));
                 }
             }
         }
@@ -851,8 +849,8 @@ class Module_warnings extends Standard_crud_module
                 (!in_array($hook, ['member', 'topic', 'post'/*topics and posts handled with special support elsewhere*/])) &&
                 ($cma_info['table'] !== null) &&
                 ($cma_info['submitter_field'] !== null) &&
-                (($cma_info['id_field'] !== null) &&
-                (strpos($cma_info['submitter_field'], ':') === false)) &&
+                ($cma_info['id_field'] !== null) &&
+                ($cma_info['add_time_field'] !== null) &&
                 ($cma_info['commandr_filesystem_hook'] !== null)
             ) {
                 $start = 0;
@@ -869,19 +867,18 @@ class Module_warnings extends Standard_crud_module
                     );
 
                     foreach ($rows as $row) {
-                        $content_id = @strval($row[$cma_info['id_field']]);
-                        $content_title = get_content_title($cma_info, $row, $content_id);
-
-                        list($zone, $url_bits, $hash) = page_link_decode(str_replace('_WILD', $content_id, $cma_info['view_page_link_pattern']));
-                        $content_url = build_url($url_bits, $zone, [], false, false, false, $hash);
+                        $content_id = $ob->get_id($row);
+                        $content_title = $ob->get_title($row);
+                        $content_url = $ob->get_view_url($row);
+                        $content_add_time = $ob->get_add_time($row);
 
                         $content[] = [
-                            $cma_info['content_type_label'],
+                            $ob->get_content_type_label($row),
                             $hook,
                             $content_id,
                             $content_title,
                             $content_url,
-                            $row[$cma_info['add_time_field']],
+                            $content_add_time,
                             false
                         ];
                     }

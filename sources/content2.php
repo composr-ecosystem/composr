@@ -105,7 +105,7 @@ function get_order_field($entry_type, $category_type, $current_order, $max = nul
     $ob = get_content_object($entry_type);
     $info = $ob->info();
 
-    $db_order_field = isset($info['order_field']) ? $info['order_field'] : 'order';
+    $db_order_field = $info['order_field'];
 
     if ($max === null) {
         $max = $info['db']->query_value_if_there('SELECT MAX(' . $db_order_field . ') FROM ' . $info['db']->get_table_prefix() . $info['table'] . ' WHERE ' . $db_order_field . '<>' . strval(ORDER_AUTOMATED_CRITERIA));

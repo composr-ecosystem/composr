@@ -950,5 +950,5 @@ function _news_import_grab_image(&$data, $url)
 function reorganise_uploads__news_categories($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
-    reorganise_uploads('news_category', 'uploads/repimages', 'nc_img', $where, null, true, $tolerate_errors);
+    reorganise_uploads('news_category', 'uploads/repimages', 'nc_img', $where, true, $tolerate_errors);
 }

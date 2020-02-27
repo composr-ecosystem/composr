@@ -118,11 +118,7 @@ PHP;
         $interval = !empty($map['interval']) ? intval($map['interval']) : 0;
 
         // Read in news categories ahead, for performance
-        global $NEWS_CATS_CACHE;
-        if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
-            $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
-        }
+        load_news_cat_rows('nc_owner IS NULL');
 
         // News query
         $select = isset($map['select']) ? $map['select'] : '*';
@@ -296,16 +292,7 @@ PHP;
             $full_url = build_url($tmp, $zone);
 
             // Category
-            if (!isset($NEWS_CATS_CACHE[$news_row['news_category']])) {
-                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $news_row['news_category']], '', 1);
-                if (isset($_news_cats[0])) {
-                    $NEWS_CATS_CACHE[$news_row['news_category']] = $_news_cats[0];
-                } else {
-                    $news_row['news_category'] = db_get_first_id();
-                }
-            }
-            $news_cat_row = $NEWS_CATS_CACHE[$news_row['news_category']];
-
+            $news_cat_row = get_news_cat_row($row['news_category']);
             $category = get_translated_text($news_cat_row['nc_title']);
             $tmp = ['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse', 'id' => $news_row['news_category']] + $prop_url;
             $category_url = build_url($tmp, $zone);

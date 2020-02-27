@@ -6777,18 +6777,14 @@ function ecv_STAFF_TOOLTIPS_URL_PATTERNS_JSON($lang, $escaped, $param)
 
             $info = $content_type_ob->info();
             if (isset($info['view_page_link_pattern'])) {
-                list($zone, $attributes,) = page_link_decode($info['view_page_link_pattern']);
-                $url = build_url($attributes, $zone, [], false, false, true);
+                $url = page_link_to_tempcode_url($info['view_page_link_pattern'], true);
                 $pattern = _escape_url_pattern_for_js_regex($url->evaluate());
                 $hook = $content_type;
                 $url_patterns[$pattern] = $hook;
             }
             if (isset($info['edit_page_link_pattern'])) {
-                list($zone, $attributes,) = page_link_decode($info['edit_page_link_pattern']);
-                $url = build_url($attributes, $zone, [], false, false, true);
-
+                $url = page_link_to_tempcode_url($info['edit_page_link_pattern'], true);
                 $pattern = _escape_url_pattern_for_js_regex($url->evaluate());
-
                 $hook = $content_type;
                 $url_patterns[$pattern] = $hook;
             }

@@ -1,0 +1,3 @@
+{+START,IF_NON_EMPTY,{TITLE}}
+	<h2>{TITLE*}</h2>
+{+END}

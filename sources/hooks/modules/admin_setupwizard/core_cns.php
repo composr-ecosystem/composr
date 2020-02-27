@@ -148,13 +148,13 @@ class Hook_sw_core_cns
     /**
      * Run function for blocks in the setup wizard.
      *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
+     * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
     public function get_blocks()
     {
         if (get_forum_type() == 'cns') {
-            return [[], ['side_cns_private_topics' => ['PANEL_NONE', 'PANEL_NONE']]];
+            return ['side_cns_private_topics' => [BLOCK_POSITION_PANEL, null]];
         }
-        return [[], []];
+        return [];
     }
 }

@@ -100,11 +100,7 @@ PHP;
         $select = array_key_exists('select', $map) ? $map['select'] : '*';
         $select_and = array_key_exists('select_and', $map) ? $map['select_and'] : '';
 
-        global $NEWS_CATS_CACHE;
-        if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
-            $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
-        }
+        load_news_cat_rows('nc_owner IS NULL');
 
         $news_items = [];
 
@@ -233,13 +229,7 @@ PHP;
                 $summary = get_translated_tempcode('news', $just_news_row, 'news_article');
             }
 
-            if (!array_key_exists($myrow['news_category'], $NEWS_CATS_CACHE)) {
-                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $myrow['news_category']], '', 1);
-                if (array_key_exists(0, $_news_cats)) {
-                    $NEWS_CATS_CACHE[$myrow['news_category']] = $_news_cats[0];
-                }
-            }
-            $news_cat_row = $NEWS_CATS_CACHE[$myrow['news_category']];
+            $news_cat_row = get_news_cat_row($myrow['news_category']);
 
             $category = get_translated_text($news_cat_row['nc_title']);
             if ($myrow['news_image'] != '') {

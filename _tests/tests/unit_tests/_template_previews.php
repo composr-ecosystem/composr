@@ -195,6 +195,8 @@ class _template_previews_test_set extends cms_test_case
                         'templates/CNS_MEMBER_PROFILE_FIELD.tpl',
                         'templates/ICON.tpl',
                         'templates/RED_ALERT.tpl',
+                        'templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl',
+                        'templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl',
                     ])) {
                         continue;
                     }

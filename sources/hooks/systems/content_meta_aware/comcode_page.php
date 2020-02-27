@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_comcode_page
+class Hook_content_meta_aware_comcode_page extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -61,6 +61,7 @@ class Hook_content_meta_aware_comcode_page
             'title_field_dereference' => false,
             'description_field' => null,
             'description_field_dereference' => null,
+            'description_field_supports_comcode' => null,
             'thumb_field' => null,
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/content_types/page',
@@ -91,7 +92,6 @@ class Hook_content_meta_aware_comcode_page
             'search_hook' => 'comcode_pages',
             'rss_hook' => 'comcode_pages',
             'attachment_hook' => 'comcode_page',
-            'unvalidated_hook' => 'comcode_pages',
             'notification_hook' => null,
             'sitemap_hook' => 'comcode_page',
 
@@ -114,11 +114,14 @@ class Hook_content_meta_aware_comcode_page
             'actionlog_regexp' => '\w+_COMCODE_PAGE',
 
             'extra_where_sql' => 'p_include_on_sitemap=1',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_MEDIUM,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -129,7 +132,7 @@ class Hook_content_meta_aware_comcode_page
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         unset($zone); // Meaningless here
 

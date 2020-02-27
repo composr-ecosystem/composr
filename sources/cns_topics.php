@@ -62,7 +62,7 @@ function render_topic_box($row, $zone = '_SEARCH', $give_context = true, $includ
         'ID' => strval($row['id']),
         'TITLE' => $title,
         'TITLE_PLAIN' => $_title,
-        'SUMMARY' => $row['t_description'],
+        'SUMMARY' => escape_html($row['t_description']),
         'URL' => $url,
         'ENTRY_DETAILS' => $entry_details,
         'BREADCRUMBS' => $breadcrumbs,

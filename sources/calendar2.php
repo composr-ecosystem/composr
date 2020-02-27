@@ -115,6 +115,8 @@ function add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, 
         'allow_comments' => $allow_comments,
         'allow_trackbacks' => $allow_trackbacks,
         'notes' => $notes,
+        'e_previous_recurrence_time' => null,
+        'e_next_recurrence_time' => '?TIME',
     ];
     $map += insert_lang_comcode('e_title', $title, 2);
     if (multi_lang_content()) {
@@ -128,6 +130,10 @@ function add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, 
     if ($id !== null) {
         $map['id'] = $id;
     }
+
+    require_code('calendar');
+    $map['e_next_recurrence_time'] = get_calendar_event_first_date_wrap($map);
+
     $id = $GLOBALS['SITE_DB']->query_insert('calendar_events', $map, true);
 
     require_code('attachments2');

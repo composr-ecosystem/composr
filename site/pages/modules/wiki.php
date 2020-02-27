@@ -322,7 +322,6 @@ class Module_wiki
 
             set_extra_request_metadata([
                 'identifier' => '_SEARCH:wiki:browse:' . strval($page['id']),
-                'description' => (strlen($description_comcode) < 200) ? $description_comcode : '',
                 'numposts' => strval($num_posts),
             ], $page, 'wiki_page', strval($id));
 

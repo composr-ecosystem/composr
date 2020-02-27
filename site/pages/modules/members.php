@@ -144,7 +144,6 @@ class Module_members
 
             set_extra_request_metadata([
                 'identifier' => '_SEARCH:members:view:' . strval($member_id_of),
-                'image' => (($avatar_url == '') && (has_privilege(get_member(), 'view_member_photos'))) ? $photo_url : $avatar_url,
             ], $member_row, 'member', strval($member_id_of));
 
             breadcrumb_set_parents([['_SELF:_SELF:browse' . propagate_filtercode_page_link(), do_lang_tempcode('MEMBERS')]]);

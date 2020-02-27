@@ -163,7 +163,6 @@ class Hook_addon_registry_news
             'sources/blocks/side_news_categories.php',
             'sources/hooks/blocks/main_staff_checklist/news.php',
             'sources/hooks/modules/admin_setupwizard/news.php',
-            'sources/hooks/modules/admin_unvalidated/news.php',
             'sources/hooks/modules/members/news.php',
             'sources/hooks/modules/search/news.php',
             'sources/hooks/systems/attachments/news.php',

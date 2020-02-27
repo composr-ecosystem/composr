@@ -132,7 +132,6 @@ class Hook_addon_registry_quizzes
             'site/pages/modules/quiz.php',
             'sources/hooks/systems/sitemap/quiz.php',
             'sources/hooks/modules/admin_newsletter/quiz.php',
-            'sources/hooks/modules/admin_unvalidated/quiz.php',
             'sources/hooks/modules/search/quiz.php',
             'sources/hooks/modules/members/quiz.php',
             'sources/hooks/systems/page_groupings/quiz.php',

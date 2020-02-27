@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cron_calendar
+class Hook_cron_calendar_reminders
 {
     /**
      * Get info from this hook.

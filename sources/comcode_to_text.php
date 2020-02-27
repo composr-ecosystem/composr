@@ -438,8 +438,7 @@ function _box_callback($matches)
  */
 function _page_callback($matches)
 {
-    list($zone, $attributes, $hash) = page_link_decode($matches[1]);
-    $url = static_evaluate_tempcode(build_url($attributes, $zone, [], false, false, true, $hash));
+    $url = page_link_to_url($matches[1], true);
     return '[url="' . addslashes($url) . '"]' . $matches[2] . '[/url]';
 }
 

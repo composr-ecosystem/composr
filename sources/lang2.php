@@ -356,28 +356,16 @@ function find_lang_content_names($ids)
                 }
             }
 
-            $fields_to_select = [$field['m_name'], $info['id_field']];
-            if ($info !== null) {
-                if (strpos($info['title_field'], 'CALL:') === false) {
-                    $fields_to_select[] = $info['title_field'];
-                }
-            }
+            $fields_to_select = [$field['m_name']];
             if ($field['key'] !== null) {
                 $fields_to_select[] = $field['key'];
             }
-            $test = list_to_map($field['m_name'], $db->query('SELECT ' . implode(',', array_unique($fields_to_select)) . ' FROM ' . $db->get_table_prefix() . $field['m_table'] . ' WHERE ' . $or_list));
+            append_content_select_for_fields($fields_to_select, $info, ['id', 'title']);
+            $test = list_to_map($field['m_name'], $db->query('SELECT ' . implode(',', $fields_to_select) . ' FROM ' . $db->get_table_prefix() . $field['m_table'] . ' WHERE ' . $or_list));
             foreach ($ids as $id) {
                 if (array_key_exists($id, $test)) {
                     if ($info !== null) {
-                        if ($info['title_field_dereference']) {
-                            $ret[$id] = $field['m_table'] . ' \ ' . get_translated_text($test[$id][$info['title_field']]) . ' \ ' . $field['m_name'];
-                        } else {
-                            if (strpos($info['title_field'], 'CALL:') !== false) {
-                                $ret[$id] = call_user_func(trim(substr($info['title_field'], 5)), ['id' => $test[$id][$info['id_field']]], false);
-                            } else {
-                                $ret[$id] = $field['m_table'] . ' \ ' . (is_integer($test[$id][$info['title_field']]) ? strval($test[$id][$info['title_field']]) : $test[$id][$info['title_field']]) . ' \ ' . $field['m_name'];
-                            }
-                        }
+                        $ret[$id] = $field['m_table'] . ' \ ' . $ob->get_title($test[$id]) . ' \ ' . $field['m_name'];
                     } else {
                         $ret[$id] = $field['m_table'] . ' \ ' . (is_integer($test[$id][$field['key']]) ? strval($test[$id][$field['key']]) : $test[$id][$field['key']]) . ' \ ' . $field['m_name'];
                     }

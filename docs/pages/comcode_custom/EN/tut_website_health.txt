@@ -200,7 +200,7 @@ The Health Check focuses on issues likely faced by end-users, and assumes Compos
 The Composr ecosystem also has:
  - Automated testing. This is used for testing a huge array of low-level coding issues (too detailed for Health Check, possibly destructive, and requiring a lot of testing framework code). The tests are regularly run prior to Composr releases being made by the developers.
  - PHP-Info. The Health Check is not intended as a way to report on all your settings, only problematic ones. If you want to list some information about the PHP environment, use Admin Zone > Tools > PHP-Info to do this.
- - Cleanup tools. The Health Check does not attempt to "cleanup" caches and so on, only check for problems. The cleanup tools can be accessed from Admin Zone > Tools > Website cleanup tools.
+ - Cleanup tools. The Health Check does not attempt to "cleanup" caches and so on, only check for problems. The cleanup tools can be accessed from Admin Zone > Tools > Cleanup tools.
  - Staff checklist. The staff checklist (on the Admin Zone dashboard) has detailed information on staff actions that need performing. There is integration of this into the Health Check, but only at a high level.
  - External scanning tools. The Health Check doesn\'t itself directly ensure your website is perfectly optimised, it just focuses on the more major issues, and does sign-posting to other tools. The Health Check will link to various external tools that can perform detailed scans, such as gauging your SSL security.
 
