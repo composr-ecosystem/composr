@@ -431,7 +431,7 @@ function cns_move_topics($from, $to, $topics = null, $check_perms = true) // NB:
             $or_list .= 'id=' . strval($topic_id);
 
             if (is_null($from)) {
-                $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => $topic_id));
+                $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'), array('id' => $topic_id));
                 if (array_key_exists(0, $topic_info)) {
                     if ($topic_info[0]['t_validated'] == 1) {
                         $topic_count++;

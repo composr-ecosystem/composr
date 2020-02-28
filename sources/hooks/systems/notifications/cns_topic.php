@@ -184,7 +184,7 @@ class Hook_notification_cns_topic extends Hook_Notification
         }
 
         if (is_numeric($only_if_enabled_on__category)) { // Also merge in people monitoring forum
-            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => intval($only_if_enabled_on__category)));
+            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'), array('id' => intval($only_if_enabled_on__category)));
             $forum_id = $topic_details[0]['t_forum_id'];
 
             if (is_null($forum_id)) {
@@ -217,7 +217,7 @@ class Hook_notification_cns_topic extends Hook_Notification
         list($members, $maybe_more) = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
 
         if (is_numeric($category)) { // This is a topic. Also merge in people monitoring forum
-            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => intval($category)));
+            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'), array('id' => intval($category)));
             if (!array_key_exists(0, $topic_details)) {
                 return array(array(), false); // Topic deleted already?
             }

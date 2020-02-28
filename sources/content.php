@@ -93,7 +93,7 @@ function may_view_content_behind($member_id, $content_type, $content_id, $type_h
         $topic_id = intval($content_id);
     }
     if (!is_null($topic_id)) {
-        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => $topic_id), '', 1);
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'), array('id' => $topic_id), '', 1);
         if (!array_key_exists(0, $topic_rows)) {
             return false;
         }

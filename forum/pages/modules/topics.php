@@ -2352,10 +2352,6 @@ class Module_topics
         if ($new_topic) { // A new topic
             cns_check_post($post);
 
-            if ($member_id == -1) {
-                warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'to_member_id_0'));
-            }
-
             if ($title == '') {
                 warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'title'));
             }
@@ -2367,6 +2363,10 @@ class Module_topics
             $metadata = actual_metadata_get_fields('topic', null, array('submitter', 'add_time', 'edit_time'));
 
             if ($forum_id == -1) { // New Private Topic
+                if ($member_id == -1) {
+                    warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'to_member_id_0'));
+                }
+
                 cns_check_make_private_topic();
                 require_code('cns_members2');
                 if (!cns_may_whisper($member_id)) {
