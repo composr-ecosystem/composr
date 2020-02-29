@@ -80,7 +80,8 @@ class Hook_health_check_security extends Hook_Health_Check
         }
 
         // external_health_check (on maintenance sheet)
-        $this->stateCheckManual('Check for [url="security configuration issues"]https://observatory.mozilla.org[/url]');
+        $this->stateCheckManual('Check for [url="website security configuration issues"]https://observatory.mozilla.org[/url]');
+        $this->stateCheckManual('Check for [url="server security configuration issues"]https://www.qualys.com/community-edition/[/url]');
     }
 
     /**

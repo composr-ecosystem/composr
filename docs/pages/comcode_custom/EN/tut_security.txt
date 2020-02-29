@@ -667,6 +667,19 @@ This is a long way of saying that the URL moniker exposes content titles to user
 
 If you have sensitive material that might be in a URL moniker, you should either customise that moniker(s), or turn the feature off in the configuration.
 
+[title="2"]Server hardening[/title]
+
+If you are managing your own server, you may want to consider:
+ - Disabling any Internet services you do not actually need, such as FTP
+ - Changing the default SSH port (change the [tt]Port[/tt] setting in [tt]/etc/ssh/sshd_config[/tt] to a [url="random port number"]https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new[/url])
+ - Disabling remote access to the e-mail server (for Postfix set [tt]inet_interfaces localhost[/tt] in [tt]main.cf[/tt])
+ - Disabling remote access to the database server (for MySQL set [tt]bind-address=127.0.0.1[/tt] in [tt]my.cnf[/tt])
+ - Disabling the TRACE feature in the web server (for Apache set [tt]TraceEnable Off[/tt] in [tt]httpd.conf[/tt])
+ - Disabling web server version/architecture disclosure (for Apache set [tt]ServerSignature Off[/tt] and [tt]ServerTokens Prod[/tt] in [tt]httpd.conf[/tt] and typically comment out the contents of [tt]welcome.conf[/tt])
+ - Enabling automatic updates (for RedHat-based releases install the [tt]dnf-automatic[/tt] package and set [tt]apply_updates = yes[/tt] in [tt]/etc/dnf/automatic.conf[/tt] and run [tt]systemctl enable --now dnf-automatic.timer[/tt])
+ - Installing MySQL/MariaDB from an official repository rather than the distribution repository, for faster deployment of security fixes
+ - Running a scanner tool such as [url="OWASP ZAP"]https://owasp.org/www-project-zap/[/url]
+
 [concepts
  1_key="SSL"          1_value="Secure Socket Layer -- encryption over Internet connections so as to avoid interception of information"
  2_key="White-list"   2_value="White lists show what things are allowed, as opposed to what are not (black lists); they are theoretically better (but not always practical), as they guard against changes that could add insecurity (e.g. if a file type suddenly starts supporting dangerous macros and wasn't black-listed, it would spell trouble) or oversights"
