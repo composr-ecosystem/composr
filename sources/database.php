@@ -1823,11 +1823,6 @@ class DatabaseConnector
      */
     public function _query($query, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false, $lang_fields = null, $field_prefix = '', $save_as_volatile = false)
     {
-if (strpos($query,'SELECT main.*,t_p_post.text_original AS t_p_post__text_original,t_p_post.text_parsed AS t_p_post__text_parsed FROM cms11_f_posts main LEFT JOIN cms11_translate t_p_post ON t_p_post.id=p_post AND t_p_post.language=(SELECT language FROM cms11_translate WHERE id=p_post ORDER BY language=\'EN\' LIMIT 1) WHERE (main.id=8') !== false) {
-    static $i=0;
-    $i++;
-    if ($i==1) fatal_exit('!');// TODO
-}
         global $QUERY_COUNT, $QUERY_LOG, $QUERY_LIST, $DEV_MODE, $IN_MINIKERNEL_VERSION, $QUERY_FILE_LOG, $UPON_QUERY_HOOKS_CACHE;
 
         if ($QUERY_FILE_LOG !== null) {
