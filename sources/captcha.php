@@ -569,14 +569,11 @@ function check_captcha($code_entered = null, $regenerate_on_error = true, &$erro
         $data = serialize($_POST);
 
         // Log hack-attack
-        if (
-            (strpos($data, '[url=http://') !== false) ||
-            (strpos($data, '[link=') !== false) ||
-            ((strpos($data, ' href="') !== false) && (strpos($data, '[html') === false) && (strpos($data, '[semihtml') === false) && (strpos($data, '__is_wysiwyg') === false))
-        ) {
-            log_hack_attack_and_exit('CAPTCHAFAIL_HACK', '', '', true);
+        require_code('antispam');
+        if (is_posted_code_alien($data)) {
+            log_hack_attack_and_exit('CAPTCHAFAIL_HACK');
         } else {
-            log_hack_attack_and_exit('CAPTCHAFAIL', '', '', true, false, 1); // Very low-scored, because it may well just be user-error
+            log_hack_attack_and_exit('CAPTCHAFAIL');
         }
     }
     return $passes;

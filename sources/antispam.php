@@ -362,7 +362,7 @@ function handle_perceived_spammer_by_confidence($user_ip, $confidence_level, $bl
             dispatch_notification('spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
         }
 
-        log_hack_attack_and_exit('ANTISPAM', '', '', true, false, 0); // Zero low-scored, because it may well just be false-positive from an anti-spam partner
+        log_hack_attack_and_exit('ANTISPAM', 'ban', float_to_raw_string($confidence_level));
 
         warn_exit(do_lang_tempcode('STOPPED_BY_ANTISPAM', escape_html($user_ip), escape_html($blocked_by)));
     }
@@ -376,7 +376,7 @@ function handle_perceived_spammer_by_confidence($user_ip, $confidence_level, $bl
             $message = do_notification_lang('NOTIFICATION_SPAM_CHECK_BLOCK_BODY_BLOCK', $user_ip, $blocked_by, float_format($confidence_level), get_site_default_lang());
             dispatch_notification('spam_check_block', null, $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED);
 
-            log_hack_attack_and_exit('ANTISPAM', '', '', true, false, 0); // Zero low-scored, because it may well just be false-positive from an anti-spam partner
+            log_hack_attack_and_exit('ANTISPAM', 'block', float_to_raw_string($confidence_level));
 
             warn_exit(do_lang_tempcode('STOPPED_BY_ANTISPAM', escape_html($user_ip), escape_html($blocked_by)));
         }
@@ -557,4 +557,24 @@ function calculation_internal_heuristic_confidence()
     }
 
     return [$confidence_level / 100.0, $scoring];
+}
+
+/**
+ * Find if some posted code looks alien.
+ *
+ * @param  string $data Posted data
+ * @return boolean Whether it does
+ */
+function is_posted_code_alien($data)
+{
+    // FUDGE: Ideally this would be configured in advanced_banning.xml, but it would be excessive to make it configurable given there's some logic involved
+    if (
+        ((strpos($data, '[url=http://') !== false) ||
+        (preg_match('#\[link(\s|\]|=)#', $data) != 0)) ||
+        ((strpos($data, ' href="') !== false) && (strpos($data, '[html') === false) && (strpos($data, '[semihtml') === false) && (strpos($data, '__is_wysiwyg') === false))
+    ) {
+        return true;
+    }
+
+    return false;
 }

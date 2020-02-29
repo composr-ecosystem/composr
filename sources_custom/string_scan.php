@@ -2056,7 +2056,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BROWSE_ID_INSERT
         BRUTEFORCE_LOGIN_HACK
         BRUTE_FORCE
-        BRUTE_FORCE_INSTANT_BAN
         BRUTE_FORCE_LOGIN_MINUTES
         BRUTE_FORCE_THRESHOLD
         BUT_EXPIRED
@@ -3086,7 +3085,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_bottom_show_sitemap_button
         CONFIG_OPTION_bottom_show_top_button
         CONFIG_OPTION_breadcrumb_crop_length
-        CONFIG_OPTION_brute_force_instant_ban
         CONFIG_OPTION_brute_force_login_minutes
         CONFIG_OPTION_brute_force_threshold
         CONFIG_OPTION_call_home

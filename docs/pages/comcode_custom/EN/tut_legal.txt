@@ -117,7 +117,7 @@ It is possible that governments may make legal requests for you to provide data,
 
 [title="2"]Computer mis-use[/title]
 
-It is likely that you will experience attempts to hack into your website by malicious users and 'bots' which automatically probe websites for vulnerabilities. Fortunately Composr is extremely sophisticated when it comes to 'hack attack' detection, and will block, and log, these attempts. Composr provides a two-layer security approach: it is engineered to use secure practices, and proactively detects when its interfaces are being abused.
+It is likely that you will experience attempts to hack into your website by malicious users and 'bots' which automatically probe websites for vulnerabilities. Fortunately Composr is extremely sophisticated when it comes to 'hack-attack' detection, and will block, and log, these attempts. Composr provides a two-layer security approach: it is engineered to use secure practices, and proactively detects when its interfaces are being abused.
 
 However, even with all this, there are 3/4 million (at the time of writing) lines of code that could potentially contain vulnerabilities. You therefore should keep backups, and if you run a high profile website, know how to attempt to track down miscreants and subject them to legal action.
 

@@ -210,7 +210,7 @@ function find_security_alerts($where = [])
 
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('hackattack', 'COUNT(*)', $where);
 
-    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], $where, 'AND percentage_score>=80 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], $where, 'AND percentage_score>=80 AND silent_to_staff_log=0 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
     $result_entries = new Tempcode();
     foreach ($rows as $row) {

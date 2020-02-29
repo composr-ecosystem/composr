@@ -38,7 +38,7 @@ Auditing systems:
  - Logging of all user actions and IP address history
  - Sophisticated tools to analyse the above
  - Logging of failed logins
- - Hack attack detection / logging / banning (described in further detail in this tutorial)
+ - Hack-attack detection / logging / banning (described in further detail in this tutorial)
 
 Framework security:
  - CSRF-attack prevention (Cross-Site-Request-Forgery) via referrer checking and form security tokens
@@ -201,7 +201,7 @@ The point I am trying to convey is that you should decide on an appropriate leve
 
 [title="2"]Security logs[/title]
 
-Composr defines a large number of 'hack attack' situations, and in case of any of these situations occurring it will: stop the execution; send out an e-mail detailing the attack; and log the attack in the security log. These situations are varied, but the most common is when input is found that does not match input constraints (for example, a script parameter which should be a number is not).
+Composr defines a large number of 'hack-attack' situations, and in case of any of these situations occurring it will: stop the execution; send out an e-mail detailing the attack; and log the attack in the security log. These situations are varied, but the most common is when input is found that does not match input constraints (for example, a script parameter which should be a number is not).
 
 Security logs can be reached from:
 Admin Zone > Audit > Security logging
@@ -213,7 +213,7 @@ Most security logs are accidental (caused by mistyped URLs, or buggy software) o
 
 [title="3"]Alert types[/title]
 
-The following types of alert are defined:
+The following types of alert (hack-attack codenames) are defined:
  - [tt]DODGY_GET_HACK[/tt], A suspicious URL was given that includes characters looking like they may be there to do dodgy things. As URLs are generally clean of symbols, it is safe for Composr to detect dangerous looking ones, such as file system paths, new line characters, and HTML symbols
  - [tt]EVIL_POSTED_FORM_HACK[/tt], This may be due to a social engineering attack, where a logged in administrator has been tricked into filling in a form targeted to delete something from the website (CSRF)
  - [tt]VOTE_CHEAT[/tt], The user tried to vote outside the allowed range of options (e.g. 11 or -2). I can think of no way this could be done accidentally
@@ -230,7 +230,13 @@ The following types of alert are defined:
  - [tt]EVAL_HACK[/tt], The EVAL command would have executed arbitrary code if it was not blocked. This is extremely likely to be a hack attempt and should be taken seriously
  - [tt]PATH_HACK[/tt], Tried to use a file path redirection to get outside intended directory
  - [tt]PHP_DOWNLOAD_INNOCENT[/tt], Somehow a PHP file got referenced in the download system. This should have been filtered by 'TRY_TO_DOWNLOAD_SCRIPT', but was not. This is a serious security breach if it happens
- - [tt]BRUTEFORCE_LOGIN_HACK[/tt], Someone gave incorrect login details 30 times over a 15 minute period (brute-force attack)
+ - [tt]BRUTEFORCE_LOGIN_HACK[/tt], Someone gave incorrect login details 30 times over a 15 minute period [or as configured] (brute-force attack)
+ - [tt]ANTISPAM[/tt], The user came up against anti-spam heuristics or an integrated anti-spam service
+ - [tt]CAPTCHAFAIL[/tt], The user failed filling in the CAPTCHA
+ - [tt]CAPTCHAFAIL_HACK[/tt], The user failed filling in the CAPTCHA while simultaneously posting code that looks like it is from other software (the very clearest spam signal)
+ - [tt]HACK_ATTACK_PASSWORD_CHANGE[/tt], The user gave an invalid confirmation code while finalising a password reset
+ - [tt]SQL_INJECTION_HACK[/tt], The user seemed to be trying to extract database data using an SQL [tt]UNION[/tt] operator (a very clear hacker signal when Composr is not expecting it to be used)
+ - [tt]HACK_ATTACK[/tt], A generic hack-attack has been raised with no further explanation given
 
 After a number ("Hack-attack ban threshold" configuration option) of hack-attack attempts an IP address will be banned, if the "Enable auto-banning" configuration option (Admin Zone > Setup > Configuration > Security options > General) is enabled.
 Similarly and more specifically there are a number of options specifically attached to the brute force login detection for automatic bans.
@@ -247,6 +253,25 @@ The error is saying that the server tried to check the URL was valid but that it
 This error could also be caused by some server configuration issue too. For example:
 1) If the server cannot download files from itself properly to check, and whatever it does manage to access is returning HTTP '200' (file found) messages. This seems unlikely but it can be surprising what weird situations happen "in the wild".
 2) If something on the server is interfering with downloads. Something like the new Apache [tt]mod_spdy[/tt] module could cause something like this. That might alter images during transfer and Composr would not receive the file it expected to be checking.
+
+[title="3"]Tuning alert behaviour (advanced)[/title]
+
+You can configure exactly how particular alert types are handled in XML from Admin Zone > Setup > Configuration > Configure advanced banning -- or by hand-editing [tt]data_custom/xml_config/advanced_banning.xml[/tt] based on the default [tt]data/xml_config/advanced_banning.xml[/tt].
+Some sensible default [tt]<hackattack>[/tt] rules are provided that take into account varying commonalities and severities.
+
+Composr starts with the defaults for each setting, then tries matching each rule by the hack-attack codename and the 2 parameters associated with it, in order. Whatever settings are there when all rules are processed are those that will be used. Later rules have precedence. Rules that don't define attributes don't affect the settings behind those attributes.
+
+Each rule can take the following attributes:
+ - Matching attributes:
+  - [tt]codename[/tt] -- the alert type (required)
+  - [tt]param_a_pattern[/tt] -- a wildcard pattern to match against the first parameter (optional, default matches all)
+  - [tt]param_b_pattern[/tt] -- a wildcard pattern to match against the second parameter (optional, default matches all)
+ - Setting attributes:
+  - [tt]silent_to_user[/tt] -- set to [tt]true[/tt] if the user should not be told a hack-attack was raised (optional, default false)
+  - [tt]silent_to_staff_notifications[/tt] -- set to [tt]true[/tt] if the staff should not be sent a notification (optional, default false)
+  - [tt]silent_to_staff_log[/tt] -- set to [tt]true[/tt] if the hack-attack should not show in the UI browser of the logs (optional, default false)
+  - [tt]percentage_score[/tt] -- set to a number if the hack-attack should be scaled when counting the total that have happened before an automatic ban will happening, e.g. 50 for 50% relative importance (optional, default 100)
+  - [tt]syndicate_as_spammer[/tt] -- set to [tt]true[/tt] if the hack-attack is related to spam and thus any ban should be syndicated out to any anti-spam partners (optional, default false)
 
 [title="3"]Failed logins[/title]
 

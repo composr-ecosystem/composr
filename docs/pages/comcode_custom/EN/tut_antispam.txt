@@ -60,6 +60,7 @@ The confidence level is then compared about a number of configured thresholds:
 Other options include:
  - Specifying how long spam results are cached for
  - Specifying how long to trust reports of a spammer that were assigned a "last spam activity" date
+ - Many options for determining the confidence level internally based on various heuristics
 
 [title="2"]Link posting[/title]
 

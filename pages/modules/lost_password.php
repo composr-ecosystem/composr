@@ -273,7 +273,7 @@ class Module_lost_password
             if ($test !== null) {
                 warn_exit(do_lang_tempcode('INCORRECT_PASSWORD_RESET_CODE')); // Just an old code that has expired
             }
-            log_hack_attack_and_exit('HACK_ATTACK_PASSWORD_CHANGE'); // Incorrect code, hack attack
+            log_hack_attack_and_exit('HACK_ATTACK_PASSWORD_CHANGE'); // Incorrect code, hack-attack
         }
 
         $email = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
