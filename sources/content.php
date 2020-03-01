@@ -705,7 +705,7 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
         unset($lang_fields[$lang_field]);
         $lang_fields['r.' . $lang_field] = $lang_field_type;
     }
-    $query = ' FROM ' . get_table_prefix() . $info['table'] . ' r WHERE 1=1' . $extra_where;
+    $query = ' FROM ' . get_table_prefix() . $info['table'] . ' r' . $extra_join . ' WHERE 1=1' . $extra_where;
     list($sql_sort, $dir, $url_sort) = handle_abstract_sorting($sort, $info);
 
     // Run queries
