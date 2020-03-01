@@ -63,7 +63,7 @@ function get_forum_sort_order($_sort = 'first_post', $simplified = false)
             $keyset_field = null;
             break;
 
-        case 'post_time':
+        case 'post_time': // involved_topics vforum
             $sort .= 'pos.p_time DESC';
             $keyset_clause = 'pos.p_time<XXX';
             $keyset_field = 'p_time';
