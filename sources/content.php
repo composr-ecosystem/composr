@@ -682,7 +682,7 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
             $pinned = array_keys($awarded_content_ids);
         }
 
-        foreach ($pinned as $i => $award_id) { // We iterate $pinned to preserve order 
+        foreach ($pinned as $i => $award_id) { // We iterate $pinned to preserve order
             if (!isset($awarded_content_ids[$award_id])) {
                 continue;
             }

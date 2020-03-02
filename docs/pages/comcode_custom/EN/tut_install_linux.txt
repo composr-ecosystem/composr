@@ -171,4 +171,4 @@ Here is some specific advice for people working from our git repository:
  - [page="_SEARCH:tut_install_permissions"]File permissions[/page]
  - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
 
-{$SET,tutorial_tags,linux_helper_scripts,installer,core_database_drivers,Installation,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial covers advanced installation issues on Linux which most users do not need to be concerned with.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,helper_scripts,installer,core_database_drivers,Installation,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial covers advanced installation issues on Linux which most users do not need to be concerned with.}[block]main_tutorial_rating[/block]

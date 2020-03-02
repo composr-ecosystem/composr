@@ -7,7 +7,7 @@
 
 */
 
-/*EXTRA FUNCTIONS: ftp_.**/
+/*EXTRA FUNCTIONS: ftp_.*|fileowner*/
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
@@ -98,7 +98,7 @@ if (($shl === false) || ($shl == '') || ($shl == '0')) {
 require_code('critical_errors');
 require_code('permissions');
 require_code('minikernel');
-require_code('inst_special');
+require_code('file_permissions_check');
 require_code('forum_stub');
 require_code('global3');
 require_code('zones');
@@ -416,13 +416,13 @@ function step_1()
     // Some checks relating to installation permissions
     global $FILE_ARRAY;
     if (!@is_array($FILE_ARRAY)) { // Talk about manual permission setting a bit
-        if ((php_function_allowed('posix_getuid')) && (!isset($_SERVER['HTTP_X_MOSSO_DT'])) && (@posix_getuid() == @fileowner(get_file_base() . '/install.php'))) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
+        if (is_suexec_like()) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
             $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('SUEXEC_SERVER')]));
         } elseif (cms_is_writable(get_file_base() . '/install.php')) {
             $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));
         }
     }
-    if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (!php_function_allowed('posix_getuid')) && ((strtoupper(substr(PHP_OS, 0, 3)) == 'WIN'))) {
+    if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')) {
         $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions')))]));
     }
 
@@ -1617,15 +1617,14 @@ function step_5_ftp()
         // If the file user is different to the FTP user, we need to make it world writeable
         if (!is_suexec_like()) {
             // Chmod
-            $no_chmod = false;
-            global $INSTALL_LANG;
-            $chmod_array = get_chmod_array($INSTALL_LANG);
+            $chmodding_errors = false;
+            $chmod_array = get_chmod_array('*');
             foreach ($chmod_array as $chmod) {
                 if ((file_exists($chmod)) && (!@ftp_site($conn, 'CHMOD 0777 ' . $chmod))) {
-                    $no_chmod = true;
+                    $chmodding_errors = true;
                 }
             }
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2e4ccdd5a0b034125ee62403d5a48319', 'SOMETHING' => do_lang_tempcode((!$no_chmod) ? 'CHMOD_PASS' : 'CHMOD_FAIL')]));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2e4ccdd5a0b034125ee62403d5a48319', 'SOMETHING' => do_lang_tempcode($chmodding_errors ? 'CHMOD_FAIL' : 'CHMOD_PASS')]));
         }
     }
 
@@ -1667,15 +1666,10 @@ function step_5_checks_a()
 
     $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '48b15e3e8486e5654563a7c3b5e6af58', 'SOMETHING' => do_lang_tempcode('GOOD_PATH')]));
 
-    // Check permissions
-    if (!file_exists(get_file_base() . '/_config.php')) {
-        $myfile = @fopen(get_file_base() . '/_config.php', 'wb');
-        @fclose($myfile);
-    }
-    global $INSTALL_LANG;
-    $chmod_array = get_chmod_array($INSTALL_LANG);
-    foreach ($chmod_array as $chmod) {
-        test_writable($chmod);
+    // Check permissions (after extraction known to have happened)
+    list(, , $paths) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_ERROR_MISSING);
+    foreach ($paths as $path) {
+        intelligent_write_error($path);
     }
 
     $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'e2daeaa9060623786decb008289068da', 'SOMETHING' => do_lang_tempcode('FILE_PERM_GOOD')]));
@@ -2884,18 +2878,6 @@ function example($example, $description = '')
     $it->attach('<br />');
     $it->attach(do_lang_tempcode('FOR_EXAMPLE', do_lang_tempcode($example)));
     return $it;
-}
-
-/**
- * Test whether a file exists and is writable.
- *
- * @param  PATH $file The file path
- */
-function test_writable($file)
-{
-    if ((!cms_is_writable($file)) && (file_exists($file))) {
-        intelligent_write_error($file);
-    }
 }
 
 /**

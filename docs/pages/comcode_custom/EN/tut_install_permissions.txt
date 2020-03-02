@@ -27,9 +27,9 @@ suEXEC will save you a lot of headaches doing things like addon management, beca
 
 If you have access to a shell (ask your webhost if you don't know) then you can avoid manually setting permissions, making use of our helper scripts.
 
-[title="3"]On Linux[/title]
+The [tt]helper_scripts[/tt] addon will be required, which is kept by default.
 
-The [tt]linux_helper_scripts[/tt] addon will be required, which is kept by default.
+[title="3"]On Linux[/title]
 
 On Linux a typical shell is brought up using SSH. Set up of SSH is beyond the scope of this tutorial. That said, on a Windows desktop you can use [url="PuTTY"]http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html[/url] to access SSH, and on Linux and Mac an [tt]ssh[/tt] command is built-in.
 
@@ -40,9 +40,7 @@ sh fixperms.sh
 
 [title="3"]On Windows[/title]
 
-The [tt]windows_helper_scripts[/tt] addon will be required, which is kept by default.
-
-Run [tt]fixperms.bat[/tt] from the Composr base directory.
+Run [tt]php fixperms.php[/tt] from the Composr base directory.
 
 [title="2"]Permissions required without suEXEC[/title]
 
@@ -184,4 +182,4 @@ The quick installer handles this automatically.
  - [page="_SEARCH:tut_security"]Security[/page]
  - [page="_SEARCH:sup_chmod"]Linux file permissions[/page]
 
-{$SET,tutorial_tags,windows_helper_scripts,linux_helper_scripts,installer,Installation,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial covers the file permissions Composr needs.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,helper_scripts,installer,Installation,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial covers the file permissions Composr needs.}[block]main_tutorial_rating[/block]

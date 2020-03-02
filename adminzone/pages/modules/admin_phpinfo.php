@@ -18,7 +18,7 @@
  * @package    phpinfo
  */
 
-/*EXTRA FUNCTIONS: shell_exec|get_current_user*/
+/*EXTRA FUNCTIONS: shell_exec|fileowner*/
 
 /**
  * Module page class.
@@ -148,22 +148,14 @@ class Module_admin_phpinfo
             $suexec = ($user == website_file_owner());
             $dets = posix_getpwuid($user);
             $out .= '<p><strong>Running as user</strong>: ' . escape_html($dets['name']) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
-        } elseif (php_function_allowed('shell_exec')) {
-            $test = @shell_exec('whoami');
-            if (!empty($test)) {
-                if (php_function_allowed('get_current_user')) {
-                    $suexec = ($test == get_current_user());
-                } else {
-                    $suexec = null;
-                }
-                $out .= '<p><strong>Running as user</strong>: ' . escape_html($test) . (($suexec === null) ? '' : (' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')')) . '</p>';
-            }
         } else {
             $tmp = cms_tempnam();
             $user = @fileowner($tmp);
             @unlink($tmp);
-            $suexec = ($user == website_file_owner());
-            $out .= '<p><strong>Running as user</strong>: ' . escape_html((($suexec) && (php_function_allowed('get_current_user'))) ? get_current_user() : ('#' . strval($user))) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
+            if ($user != 0) {
+                $suexec = ($user == website_file_owner());
+                $out .= '<p><strong>Running as user</strong>: ' . escape_html('#' . strval($user)) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
+            }
         }
         if (php_function_allowed('php_sapi_name')) {
             $out .= '<p><strong>PHP configured as</strong>: ' . escape_html(php_sapi_name()) . '</p>';

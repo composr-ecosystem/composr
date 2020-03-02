@@ -18,7 +18,7 @@ You may view the Composr error log even if Composr won't start. Just look at the
 
 Changes in the database or to files may be obscured by caching. If you have a problem so severe that you cannot get into the Admin Zone, you can clear caching either:
 1) from the upgrader tool (accessible via [tt]http://yourbaseurl/upgrader.php[/tt])
-2) opening up a command prompt to your base directory and running [tt]sh decache.sh[/tt] (Linux/Mac only) -- this works if the upgrader won't run; it doesn't immediately clear database caching, but it adds a flag for Composr to do that automatically next time the site is loaded
+2) opening up a command prompt to your base directory and running [tt]php decache.php[/tt] (Linux/Mac only) -- this works if the upgrader won't run; it doesn't immediately clear database caching, but it adds a flag for Composr to do that automatically next time the site is loaded
 
 [title="2"]Repairing a corrupted copy of Composr[/title]
 

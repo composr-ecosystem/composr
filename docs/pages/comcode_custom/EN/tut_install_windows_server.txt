@@ -65,7 +65,7 @@ Assign 'IUSR' 'Full control' permissions to your Composr base directory. If ther
 
 [b]Caveat[/b]: If IIS is configured to use a different user then set permissions for [i]that[/i] user. Sometimes webhosts configure IIS differently to the defaults, especially for shared hosting (they almost certainly should for shared hosting).
 
-If you prefer atomic permissions you can use the [tt]fixperms.bat[/tt] script to do this, or you can also do it [page="_SEARCH:tut_install_permissions"]by hand[/page]. It will make things very awkward when managing addons so I don't recommend it!
+If you prefer atomic permissions you can use the [tt]fixperms.php[/tt] script ( [tt]php fixperms.php[/tt]) to do this, or you can also do it [page="_SEARCH:tut_install_permissions"]by hand[/page]. It will make things very awkward when managing addons so I don't recommend it!
 
 [title="3"]Shared hosting[/title]
 
@@ -94,7 +94,7 @@ Now proceed with installing Composr, via launching [tt]install.php[/tt] in your 
 
 [i]This step does not apply if working from a webhosting control panel[/i]
 
-You may want to install [url="git"]https://git-scm.com/[/url] or [url="Cygwin"]http://www.cygwin.com/[/url], so you can make use of some of the [tt]linux_helper_scripts[/tt] (e.g. [tt]decache.sh[/tt]).
+You may want to install [url="git"]https://git-scm.com/[/url] or [url="Cygwin"]http://www.cygwin.com/[/url], so you can make use of some of the [tt]helper_scripts[/tt].
 
 [title="2"]See also[/title]
 
@@ -108,4 +108,4 @@ You may want to install [url="git"]https://git-scm.com/[/url] or [url="Cygwin"]h
  - [page="_SEARCH:tut_sqlserver]Using SQL Server with Composr[/page]
  - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
 
-{$SET,tutorial_tags,windows_helper_scripts,installer,Installation,Webhosting,regular}{$SET,tutorial_add_date,Feb 2018}{$SET,tutorial_summary,How to get a Composr installation running on a Windows server.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,helper_scripts,installer,Installation,Webhosting,regular}{$SET,tutorial_add_date,Feb 2018}{$SET,tutorial_summary,How to get a Composr installation running on a Windows server.}[block]main_tutorial_rating[/block]

@@ -1316,7 +1316,7 @@ function is_browser_decaching()
         return false; // Decaching by mistake is real-bad when Google Cloud Storage is involved
     }
 
-    if ((defined('DO_PLANNED_DECACHE')) && (is_writable(get_file_base() . '/_config.php'))) { // Used by decache.sh
+    if ((defined('DO_PLANNED_DECACHE')) && (is_writable(get_file_base() . '/_config.php'))) { // Used by decache.php
         $config_file_orig = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
         $config_file = $config_file_orig;
         $config_file = rtrim(str_replace(['if (!defined(\'DO_PLANNED_DECACHE\')) ', 'define(\'DO_PLANNED_DECACHE\', true);'], ['', ''], $config_file)) . "\n\n";

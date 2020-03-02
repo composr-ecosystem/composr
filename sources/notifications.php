@@ -897,7 +897,7 @@ function disable_notifications($notification_code, $notification_category, $memb
     }
 
     global $NOTIFICATION_SETTING_CACHE;
-    $NOTIFICATION_SETTING_CACHE[serialize($basic_map)] = A_NA;
+    $NOTIFICATION_SETTING_CACHE[serialize($map)] = A_NA;
 }
 
 /**
