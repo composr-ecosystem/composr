@@ -237,6 +237,9 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_type', 'ID_TEXT');
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_hint', 'ID_TEXT');
 
+        $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'w_topic_id', '?AUTO_LINK');
+        $GLOBALS['FORUM_DB']->add_table_field('f_moderator_logs', 'l_warning_id', '?AUTO_LINK');
+
         // Optionally provide autofill types for bundled CPFs (if any found)
         $autofill_map = [
             'cms_currency' => ['transaction-currency'],
@@ -921,6 +924,7 @@ function install_cns($upgrade_from = null)
             'w_explanation' => 'LONG_TEXT',
             'w_by' => 'MEMBER',
             'w_is_warning' => 'BINARY',
+            'w_topic_id' => '?AUTO_LINK',
             'p_silence_from_topic' => '?AUTO_LINK',
             'p_silence_from_forum' => '?AUTO_LINK',
             'p_probation' => 'INTEGER',
@@ -939,6 +943,7 @@ function install_cns($upgrade_from = null)
             'l_date_and_time' => 'TIME',
             'l_reason' => 'LONG_TEXT',
             'l_by' => 'MEMBER',
+            'l_warning_id' => '?AUTO_LINK'
         ]);
 
         $GLOBALS['FORUM_DB']->create_table('f_member_known_login_ips', [

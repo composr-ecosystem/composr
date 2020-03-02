@@ -147,7 +147,7 @@ class Hook_fields_codename
         require_code('type_sanitisation');
         $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
         if (($value != '') && ($value != STRING_MAGIC_NULL)) {
-            if (!is_alphanumeric($value, true)) {
+            if (!is_alphanumeric($value)) {
                 if (strpos($value, '://') !== false) { // strip out from URL, if full URL was entered
                     $value = basename($value);
                     $_POST[$tmp_name] = $value; // Copy back, so fractional editing knows

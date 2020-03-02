@@ -27,6 +27,9 @@ function init__global4()
 {
     global $ADMIN_LOGGING_ON;
     $ADMIN_LOGGING_ON = true;
+
+    global $RELATED_WARNING_ID;
+    $RELATED_WARNING_ID = null;
 }
 
 /**
@@ -604,15 +607,27 @@ function prevent_double_submit($type, $a = null, $b = null)
 }
 
 /**
+ * Sets global $RELATED_WARNING_ID for use in referencing warning IDs to action and moderator logs.
+ *
+ * @param  ?integer $warning_id The ID of the warning (null: do not reference a warning id anymore in future logs)
+ */
+function set_related_warning_id($warning_id)
+{
+    global $RELATED_WARNING_ID;
+    $RELATED_WARNING_ID = $warning_id;
+}
+
+/**
  * Log an action.
  *
  * @param  ID_TEXT $type The type of activity just carried out (a language string codename)
  * @param  ?SHORT_TEXT $a The most important parameter of the activity (e.g. ID) (null: none)
  * @param  ?SHORT_TEXT $b A secondary (perhaps, human readable) parameter of the activity (e.g. caption) (null: none)
+ * @param  ?integer $related_warning_id The related warning ID (null: none)
  * @return ?AUTO_LINK Log ID (null: did not save a log)
  * @ignore
  */
-function _log_it($type, $a = null, $b = null)
+function _log_it($type, $a = null, $b = null, $related_warning_id = null)
 {
     if (!function_exists('get_member')) {
         return null; // If this is during installation
@@ -671,6 +686,7 @@ function _log_it($type, $a = null, $b = null)
             'param_b' => ($b === null) ? '' : cms_mb_substr($b, 0, 80),
             'date_and_time' => time(),
             'member_id' => get_member(),
+            'warning_id' => $related_warning_id,
             'ip' => $ip,
         ], true);
     }

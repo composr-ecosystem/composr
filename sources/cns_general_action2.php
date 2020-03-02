@@ -277,6 +277,10 @@ function cns_get_forum_multi_code_field($forum_multi_code)
  */
 function cns_mod_log_it($the_type, $param_a = '', $param_b = '', $reason = '', $by = null, $timestamp = null)
 {
+    require_code('global4');
+
+    global $RELATED_WARNING_ID;
+
     if ($timestamp === null) {
         $timestamp = time();
     }
@@ -295,5 +299,6 @@ function cns_mod_log_it($the_type, $param_a = '', $param_b = '', $reason = '', $
         'l_date_and_time' => $timestamp,
         'l_reason' => $reason,
         'l_by' => $by,
+        'l_warning_id' => $RELATED_WARNING_ID,
     ], true);
 }

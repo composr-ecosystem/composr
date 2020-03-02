@@ -3029,14 +3029,17 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
  */
 function log_it($type, $a = null, $b = null, $return_id = false)
 {
+    require_code('global4');
+
+    global $RELATED_WARNING_ID;
+    $related_warning_id = $RELATED_WARNING_ID;
+
     if ($return_id) {
-        require_code('global4');
-        return _log_it($type, $a, $b);
+        return _log_it($type, $a, $b, $related_warning_id);
     }
 
-    cms_register_shutdown_function_safe(function () use ($type, $a, $b) {
-        require_code('global4');
-        return _log_it($type, $a, $b);
+    cms_register_shutdown_function_safe(function () use ($type, $a, $b, $related_warning_id) {
+        return _log_it($type, $a, $b, $related_warning_id);
     });
 
     return null;
