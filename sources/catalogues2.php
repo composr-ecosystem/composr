@@ -1044,12 +1044,21 @@ function actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rat
     static $done_one_posting_field = false;
 
     $id = $GLOBALS['SITE_DB']->query_insert('catalogue_entries', $imap, true);
+
+    $seo_source_map = [];
+
     foreach ($map as $field_id => $val) {
         if ($val == STRING_MAGIC_NULL) {
             $val = '';
         }
 
         $type = $fields[$field_id];
+
+        if ($type === 'codename') {
+            $seo_source_map[] = [$val, false, true];
+        } else {
+            $seo_source_map[] = $val;
+        }
 
         $ob = get_fields_hook($type);
         list($raw_type, , $sup_table_name) = $ob->get_field_value_row_bits($_fields[$field_id]);
@@ -1085,7 +1094,6 @@ function actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rat
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        $seo_source_map = $map;
         $seo_source_map__specific = get_value('catalogue_seo_source_map__' . $catalogue_name);
         if ($seo_source_map__specific !== null) {
             $seo_source_map = [];

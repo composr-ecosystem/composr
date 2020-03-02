@@ -185,7 +185,7 @@ function add_author($author, $url, $member_id, $description, $skills, $meta_keyw
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('authors', $author, [$author, $description, $skills], $description);
+        seo_meta_set_for_implicit('authors', $author, [[$author, false, true], $description, $skills], $description);
     } else {
         seo_meta_set_for_explicit('authors', $author, $meta_keywords, $meta_description);
     }
