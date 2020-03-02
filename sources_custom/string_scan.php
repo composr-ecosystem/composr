@@ -114,6 +114,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        DESCRIPTION_WARNING_TYPE
+        WARNING_FORMAL
+        WARNING_OFF_THE_BOOK
+        WARNINGS_HISTORY_TEXT
+        BAN_IP
+        INCLUDE_PUNITIVE_TEXT
+        DESCRIPTION_INCLUDE_PUNITIVE_TEXT
+        DESCRIPTION_CAN_WARN
+        VIEW_WARNINGS
         SUCCESS_PAGE_TRANSLATION_DELETED
         SUCCESS_PAGE_DELETED
         DELETE_TRANSLATION
@@ -1187,7 +1196,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         OLD_GD_ON_SERVER
         PAGE_AFTER_JOIN
         PAGE_AFTER_LOGIN
-        PUNISH_FORM
+        WARNINGS_FORM
         NOTIFICATION_WITH_AUTO_TICKET_WRAPPER
         TICKETS_STAFF
         MEMBER_HAS_SUBSCRIPTIONS
@@ -4568,7 +4577,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_WHATSNEW_CATEGORIES_SELECT
         DESCRIPTION_WHETHER_BANNED_IP
         DESCRIPTION_WHETHER_CONVERT_COMCODE
-        DESCRIPTION_WHETHER_MAKE_WARNING
         DESCRIPTION_WORD
         DESCRIPTION_WORDPRESS_DB_NAME
         DESCRIPTION_WORDPRESS_DB_PASSWORD
@@ -6749,7 +6757,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PUBLISH_NEWS
         PUNISHMENT_UNDOING
         PUNITIVE_ACTIONS
-        PUNITIVE_HISTORY_TEXT
         PURCHASE_ORDER
         PUT_IN_CATEGORY
         PUT_IN_SEARCH
@@ -7715,7 +7722,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WHATSNEW_TEXT
         WHAT_TO_EXPECT
         WHETHER_BANNED_IP
-        WHETHER_MAKE_WARNING
+        IS_FORMAL_WARNING
         WHITE
         WIKI_ADD_PAGE
         WIKI_DELETE_OWN_POST
@@ -7974,6 +7981,29 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_non_admin_initial = array_map('trim', explode("\n", trim('
+        WARNING
+        WARNING_TYPE
+        POST_IN_NUMBERED
+        POST_IN_TITLED
+        PUNITIVE_HEADER
+        PUNITIVE_HEADER_DESCRIPTION
+        PUNITIVE_UNTIL
+        PUNITIVE_SILENCE_UNTIL
+        PUNITIVE_SILENCE_EXPIRED
+        PUNITIVE_SILENCE_FROM_TOPIC
+        PUNITIVE_SILENCE_FROM_FORUM
+        PUNITIVE_DELETE_POST
+        PUNITIVE_DELETE_POST_AND_FOLLOWING
+        PUNITIVE_PROBATION
+        PUNITIVE_BAN_ACCOUNT
+        PUNITIVE_BAN_IP
+        PUNITIVE_STOP_FORUM_SPAM
+        PUNITIVE_CHANGE_USERGROUP
+        PUNITIVE_CHARGE_POINTS
+        PUNITIVE_DELETE_CONTENT
+        WARNING_NUMBER
+        VIEW_WARNING
+        CHANGED_USERGROUP_FROM
         I_AGREE_RULES
         I_AGREE_PRIVACY
         I_AGREE_UPDATES
@@ -9999,7 +10029,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PT_RULES_PAGE_INTRO
         PT_RULES_TEXT
         PT_RULES_TEXT_DESCRIPTION
-        PUNITIVE_HISTORY
+        REVIEW_WARNING_HISTORY
         PURCHASED_BANNER
         PURCHASE_DISABLED
         PURCHASE_FINISHED

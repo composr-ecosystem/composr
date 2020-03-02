@@ -35,7 +35,7 @@ class Block_main_staff_actions
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 2;
+        $info['version'] = 3;
         $info['locked'] = true;
         $info['parameters'] = ['max', 'filter_by_member', 'include_duplicates', 'include_user_activities', 'sort'];
         return $info;
@@ -85,6 +85,7 @@ PHP;
             'param_a' => 'ID_TEXT',
             'param_b' => 'SHORT_TEXT',
             'member_id' => 'MEMBER',
+            'warning_id' => '?AUTO_LINK',
             'ip' => 'IP',
             'date_and_time' => 'TIME',
         ]);
@@ -93,6 +94,10 @@ PHP;
         $GLOBALS['SITE_DB']->create_index('actionlogs', 'ts', ['date_and_time']);
         $GLOBALS['SITE_DB']->create_index('actionlogs', 'aip', ['ip']);
         $GLOBALS['SITE_DB']->create_index('actionlogs', 'athe_type', ['the_type']);
+
+        if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('actionlogs', 'warning_id', '?AUTO_LINK');
+        }
     }
 
     /**

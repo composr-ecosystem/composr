@@ -278,7 +278,10 @@ function cns_make_warning($member_id, $explanation, $by = null, $time = null, $i
     ], true);
 
     require_code('cns_general_action2');
+    require_code('global4');
+    set_related_warning_id($id);
     cns_mod_log_it('ADD_WARNING', strval($id), strval($member_id));
+    set_related_warning_id(null);
 
     return $id;
 }

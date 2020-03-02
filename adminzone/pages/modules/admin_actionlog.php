@@ -429,9 +429,9 @@ class Module_admin_actionlog
         $id = get_param_integer('id');
 
         if ($mode == 'cns') {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b'], ['id' => $id], '', 1);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['l_reason AS reason', 'id', 'l_by AS member_id', 'l_date_and_time AS date_and_time', 'l_the_type AS the_type', 'l_param_a AS param_a', 'l_param_b AS param_b', 'l_warning_id AS warning_id'], ['id' => $id], '', 1);
         } else {
-            $rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['id', 'member_id', 'date_and_time', 'the_type', 'param_a', 'param_b', 'ip'], ['id' => $id], '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['id', 'member_id', 'date_and_time', 'the_type', 'param_a', 'param_b', 'ip', 'warning_id'], ['id' => $id], '', 1);
         }
 
         if (!array_key_exists(0, $rows)) {
@@ -513,6 +513,10 @@ class Module_admin_actionlog
             }
         }
         $fields['INVESTIGATE_USER'] = hyperlink(build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => (array_key_exists('ip', $row)) ? $row['ip'] : $row['member_id']], '_SELF'), do_lang_tempcode('PROCEED'), false, false);
+
+        if ($row['warning_id'] !== null) {
+            $fields['MODULE_TRANS_NAME_warnings'] = hyperlink(build_url(['page' => 'warnings', 'type' => 'view', 'id' => $row['warning_id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)]), do_lang_tempcode('WARNING_NUMBER', $row['warning_id']), false, false);
+        }
 
         // Is there a revision here?
         require_code('revisions_engine_database');
