@@ -189,9 +189,10 @@ function date_from_week_of_year($year, $week)
  * @param  ?integer $recurrences The number of recurrences (null: none/infinite)
  * @param  ?TIME $period_start The timestamp that found times must exceed. In user-time (null: now)
  * @param  ?TIME $period_end The timestamp that found times must not exceed. In user-time (null: 20 years time)
+ * @param  ?integer $max Maximum to return (null: no limit)
  * @return array A list of pairs for period times (timestamps, in user-time). Actually a series of pairs, 'window-bound timestamps' is first pair, then 'true coverage timestamps', then 'true coverage timestamps without timezone conversions'
  */
-function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences, $period_start = null, $period_end = null)
+function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences, $period_start = null, $period_end = null, $max = null)
 {
     if ($recurrences === 0) {
         return [];
@@ -338,6 +339,10 @@ function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $sta
         $start_hour = null;
         $end_minute = null;
         $end_hour = null;
+
+        $multi_day_event = false;
+    } else {
+        $multi_day_event = ($start_day != $end_day) || ($start_month != $end_month) || ($start_year != $end_year);
     }
 
     if (($end_year !== null) && ($end_month !== null) && ($end_day !== null)) { // Must define end date relative to start date; we will calculate $end_monthly_spec_type. This code is re-run at the end of the loop, as we need to re-sync each time
@@ -380,7 +385,7 @@ function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $sta
             );
         }
         $starts_within = (($a >= $period_start) && ($a < $period_end));
-        $ends_within = (($b > $period_start) && ($b <= $period_end));
+        $ends_within = (($b !== null) && ($multi_day_event) && ($b > $period_start) && ($b <= $period_end));
         $spans = (($a < $period_start) && ($b > $period_end));
         $mask_covers = (in_array($mask[$i % $mask_len], ['1', 'y']));
         if ($mask_covers) {
@@ -438,6 +443,10 @@ function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $sta
             $end_year = null;
         }
 
+        if (($max !== null) && (count($times) >= $max)) {
+            break;
+        }
+
         if ($i == intval(get_option('general_safety_listing_limit'))) {
             break; // Let's be reasonable
         }
@@ -447,7 +456,6 @@ function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $sta
         ($a < $period_end) &&
         (($recurrences === null) || ($happened_count < $recurrences))
     );
-
     return $times;
 }
 
@@ -686,9 +694,10 @@ function date_range($from, $to, $do_time = true, $force_absolute = false, $timez
  * @param  boolean $do_rss Whether to include RSS/iCal events in the results
  * @param  ?BINARY $private Whether to show private events (1) or public events (0) (null: both public and private)
  * @param  boolean $check_perms Whether to check permissions
+ * @param  boolean $now_anchored_window Whether the time window is primarily anchored around the current time, allowing us to use e_previous_recurrence_time/e_next_recurrence_time to limit event search scope
  * @return array A list of events happening, with time details
  */
-function calendar_matches($auth_member_id, $member_id, $restrict, $period_start, $period_end, $filter = null, $do_rss = true, $private = null, $check_perms = true)
+function calendar_matches($auth_member_id, $member_id, $restrict, $period_start, $period_end, $filter = null, $do_rss = true, $private = null, $check_perms = true, $now_anchored_window = false)
 {
     if ($period_start === null) {
         $period_start = utctime_to_usertime(time());
@@ -884,7 +893,11 @@ function calendar_matches($auth_member_id, $member_id, $restrict, $period_start,
         $where .= ' AND ';
     }
     // Limitation: won't find anything that started *over* a month before $period_start. Which is reasonable.
-    $where .= '(((e_start_month>=' . strval(intval(date('m', $period_start)) - 1) . ' AND e_start_year=' . date('Y', $period_start) . ' OR e_start_year>' . date('Y', $period_start) . ') AND (e_start_month<=' . strval(intval(date('m', $period_end)) + 1) . ' AND e_start_year=' . date('Y', $period_end) . ' OR e_start_year<' . date('Y', $period_end) . ')) OR ' . db_string_not_equal_to('e_recurrence', 'none') . ')';
+    $where .= '(((e_start_month>=' . strval(intval(date('m', $period_start))) . ' AND e_start_year=' . date('Y', $period_start) . ' OR e_start_year>' . date('Y', $period_start) . ') AND (e_start_month<=' . strval(intval(date('m', $period_end)) + 1) . ' AND e_start_year=' . date('Y', $period_end) . ' OR e_start_year<' . date('Y', $period_end) . ')) OR ' . db_string_not_equal_to('e_recurrence', 'none') . ')';
+
+    if ($now_anchored_window) {
+        $where .= ' AND (e_previous_recurrence_time>=' . strval($period_start) . ' AND e_previous_recurrence_time<=' . strval($period_end) . ' OR e_next_recurrence_time>=' . strval($period_start) . ' AND e_next_recurrence_time<=' . strval($period_end) . ')';
+    }
 
     $where = ' WHERE ' . $where;
     $event_count = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'calendar_events e' . $privacy_join . ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'calendar_types t ON e.e_type=t.id' . $where);
@@ -1699,6 +1712,35 @@ function end_find_concrete_day_of_month_wrap($event)
 }
 
 /**
+ * Find timestamp of when an event happens. Preferably the next recurrence, but if it is in the past, the first.
+ *
+ * @param  array $row Event row
+ * @return TIME Timestamp
+ */
+function get_calendar_event_first_date_wrap($row)
+{
+    $timezone = $row['e_timezone'];
+    $do_timezone_conv = $row['e_do_timezone_conv'];
+    $start_year = $row['e_start_year'];
+    $start_month = $row['e_start_month'];
+    $start_day = $row['e_start_day'];
+    $start_monthly_spec_type = $row['e_start_monthly_spec_type'];
+    $start_hour = $row['e_start_hour'];
+    $start_minute = $row['e_start_minute'];
+    $end_year = $row['e_end_year'];
+    $end_month = $row['e_end_month'];
+    $end_day = $row['e_end_day'];
+    $end_monthly_spec_type = $row['e_end_monthly_spec_type'];
+    $end_hour = $row['e_end_hour'];
+    $end_minute = $row['e_end_minute'];
+    $recurrence = $row['e_recurrence'];
+    $recurrences = $row['e_recurrences'];
+
+    list(, $timestamp) = get_calendar_event_first_date($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences);
+    return $timestamp;
+}
+
+/**
  * Find details of when an event happens. Preferably the next recurrence, but if it is in the past, the first.
  *
  * @param  ?ID_TEXT $timezone The timezone of the event (null: current user's timezone)
@@ -1731,7 +1773,7 @@ function get_calendar_event_first_date($timezone, $do_timezone_conv, $start_year
     if ($force_first) {
         $times = [];
     } else {
-        $times = find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences);
+        $times = find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences, null, null, 1);
     }
     if (array_key_exists(0, $times)) {
         $from = $times[0][2];

@@ -2,6 +2,5 @@
 [block failsafe="1"]side_calendar[/block]
 [block failsafe="1"]side_stats[/block]
 [block failsafe="1"]main_newsletter_signup[/block]
-[block failsafe="1"]main_forum_topics[/block]
 {+START,IF,{$CONFIG_OPTION,sitewide_im}}[block failsafe="1"]side_friends[/block]
 {+END}[/surround]

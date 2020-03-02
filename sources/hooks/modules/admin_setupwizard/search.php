@@ -26,14 +26,14 @@ class Hook_sw_search
     /**
      * Run function for blocks in the setup wizard.
      *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
+     * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
     public function get_blocks()
     {
         if (!addon_installed('search')) {
-            return [[], []];
+            return [];
         }
 
-        return [[], ['side_tag_cloud' => ['PANEL_NONE', 'PANEL_RIGHT'], 'main_search' => ['PANEL_NONE', 'PANEL_NONE']]];
+        return ['side_tag_cloud' => [BLOCK_POSITION_PANEL, null], 'main_search' => [BLOCK_POSITION_MAIN, null]];
     }
 }

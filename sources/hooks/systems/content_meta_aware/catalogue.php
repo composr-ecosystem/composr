@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_catalogue
+class Hook_content_meta_aware_catalogue extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -41,6 +41,8 @@ class Hook_content_meta_aware_catalogue
 
             'content_type_label' => 'catalogues:CATALOGUE',
             'content_type_universal_label' => 'Catalogue',
+            'content_type_label_override' => 'CALL: generate_catalogue_content_type_label',
+            'content_type_universal_label_override' => 'CALL: generate_catalogue_content_type_universal_label',
 
             'db' => $GLOBALS['SITE_DB'],
             'table' => 'catalogues',
@@ -61,6 +63,7 @@ class Hook_content_meta_aware_catalogue
             'title_field_dereference' => true,
             'description_field' => 'c_description',
             'description_field_dereference' => true,
+            'description_field_supports_comcode' => true,
             'thumb_field' => null,
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/rich_content/catalogues/catalogues',
@@ -91,7 +94,6 @@ class Hook_content_meta_aware_catalogue
             'search_hook' => null,
             'rss_hook' => null,
             'attachment_hook' => null,
-            'unvalidated_hook' => null,
             'notification_hook' => null,
             'sitemap_hook' => 'catalogue',
 
@@ -112,11 +114,47 @@ class Hook_content_meta_aware_catalogue
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_CATALOGUE',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        $headings = [];
+
+        $headings['subcategory_count'] = do_lang_tempcode('CATEGORIES');
+        $headings['entry_count'] = do_lang_tempcode('ENTRIES');
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+
+        $num_children = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $row['c_name']]);
+        $num_entries = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['c_name' => $row['c_name']]);
+        $keymap['subcategory_count'] = escape_html(integer_format($num_children));
+        $keymap['entry_count'] = escape_html(integer_format($num_entries));
+
+        return $keymap;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -127,10 +165,38 @@ class Hook_content_meta_aware_catalogue
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('catalogues');
 
         return render_catalogue_box($row, $zone, $give_context, $guid);
     }
+}
+
+/**
+ * Find an entry content-type language string label.
+ *
+ * @param  array $row Database row of entry
+ * @return Tempcode Label
+ */
+function generate_catalogue_content_type_label($row)
+{
+    if (!array_key_exists('c_title', $row)) {
+        return do_lang_tempcode('catalogues:CATALOGUE');
+    }
+    return make_string_tempcode(get_translated_text($row['c_title']));
+}
+
+/**
+ * Find an entry content-type universal label (doesn't depend on language pack).
+ *
+ * @param  array $row Database row of entry
+ * @return string Label
+ */
+function generate_catalogue_content_type_universal_label($row)
+{
+    if (!array_key_exists('c_title', $row)) {
+        return 'Catalogue';
+    }
+    return get_translated_text($row['c_title']);
 }

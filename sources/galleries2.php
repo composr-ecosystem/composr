@@ -1703,11 +1703,11 @@ function get_potential_gallery_title($cat)
 function reorganise_uploads__galleries($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
-    reorganise_uploads('gallery', 'uploads/repimages', 'rep_image', $where, null, true, $tolerate_errors);
-    reorganise_uploads('gallery', 'uploads/watermarks', 'watermark_top_left', $where, null, false, $tolerate_errors);
-    reorganise_uploads('gallery', 'uploads/watermarks', 'watermark_top_right', $where, null, false, $tolerate_errors);
-    reorganise_uploads('gallery', 'uploads/watermarks', 'watermark_bottom_left', $where, null, false, $tolerate_errors);
-    reorganise_uploads('gallery', 'uploads/watermarks', 'watermark_bottom_right', $where, null, false, $tolerate_errors);
+    reorganise_uploads('gallery', 'uploads/repimages', 'rep_image', $where, true, $tolerate_errors);
+    reorganise_uploads('gallery', 'uploads/watermarks', 'watermark_top_left', $where, false, $tolerate_errors);
+    reorganise_uploads('gallery', 'uploads/watermarks', 'watermark_top_right', $where, false, $tolerate_errors);
+    reorganise_uploads('gallery', 'uploads/watermarks', 'watermark_bottom_left', $where, false, $tolerate_errors);
+    reorganise_uploads('gallery', 'uploads/watermarks', 'watermark_bottom_right', $where, false, $tolerate_errors);
 }
 /**
  * Reorganise the gallery image uploads.
@@ -1718,8 +1718,8 @@ function reorganise_uploads__galleries($where = [], $tolerate_errors = false)
 function reorganise_uploads__gallery_images($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
-    reorganise_uploads('image', 'uploads/galleries', 'url', $where, null, false, $tolerate_errors);
-    reorganise_uploads('image', 'uploads/galleries_thumbs', 'thumb_url', $where, null, false, $tolerate_errors);
+    reorganise_uploads('image', 'uploads/galleries', 'url', $where, false, $tolerate_errors);
+    reorganise_uploads('image', 'uploads/galleries_thumbs', 'thumb_url', $where, false, $tolerate_errors);
 }
 /**
  * Reorganise the gallery video uploads.
@@ -1730,6 +1730,6 @@ function reorganise_uploads__gallery_images($where = [], $tolerate_errors = fals
 function reorganise_uploads__gallery_videos($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
-    reorganise_uploads('video', 'uploads/galleries', 'url', $where, null, false, $tolerate_errors);
-    reorganise_uploads('video', 'uploads/galleries_thumbs', 'thumb_url', $where, null, false, $tolerate_errors);
+    reorganise_uploads('video', 'uploads/galleries', 'url', $where, false, $tolerate_errors);
+    reorganise_uploads('video', 'uploads/galleries_thumbs', 'thumb_url', $where, false, $tolerate_errors);
 }

@@ -247,7 +247,7 @@ class Module_admin_awards extends Standard_crud_module
                 $fr[] = integer_format($row['a_points']);
             }
             $hooks = find_all_hooks('systems', 'content_meta_aware');
-            $hook_title = do_lang('UNKNOWN');
+            $hook_title = do_lang_tempcode('UNKNOWN');
             foreach (array_keys($hooks) as $hook) {
                 if ($hook == $row['a_content_type']) {
                     require_code('content');
@@ -257,7 +257,7 @@ class Module_admin_awards extends Standard_crud_module
                     }
                     $hook_info = $hook_object->info();
                     if ($hook_info !== null) {
-                        $hook_title = do_lang($hook_info['content_type_label']);
+                        $hook_title = do_lang_tempcode($hook_info['content_type_label']);
                     }
                 }
             }
@@ -317,12 +317,12 @@ class Module_admin_awards extends Standard_crud_module
             }
             $hook_info = $hook_object->info();
             if ($hook_info !== null) {
-                $_hooks[$hook] = do_lang($hook_info['content_type_label']);
+                $_hooks[$hook] = do_lang_tempcode($hook_info['content_type_label']);
             }
         }
         asort($_hooks);
         foreach ($_hooks as $hook => $hook_title) {
-            $list->attach(form_input_list_entry($hook, $hook == $content_type, protect_from_escaping($hook_title)));
+            $list->attach(form_input_list_entry($hook, $hook == $content_type, $hook_title));
         }
         if ($list->is_empty()) {
             inform_exit(do_lang_tempcode('NO_CATEGORIES'));

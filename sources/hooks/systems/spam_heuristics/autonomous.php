@@ -26,7 +26,7 @@ class Hook_spam_heuristics_autonomous
     /**
      * Find the confidence score for a particular spam heuristic as applied to the current context.
      *
-     * @param  string $post_data Confidence score
+     * @param  string $post_data Posted data
      * @return integer Confidence score
      */
     public function assess_confidence($post_data)

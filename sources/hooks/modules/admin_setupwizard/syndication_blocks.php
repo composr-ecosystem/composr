@@ -26,7 +26,7 @@ class Hook_sw_syndication_blocks
     /**
      * Run function for blocks in the setup wizard.
      *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
+     * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
     public function get_blocks()
     {
@@ -34,6 +34,6 @@ class Hook_sw_syndication_blocks
             return [];
         }
 
-        return [['main_rss' => ['YES', 'NO']], ['side_rss' => ['PANEL_NONE', 'PANEL_NONE']]];
+        return ['main_rss' => [BLOCK_POSITION_MAIN, null], 'side_rss' => [BLOCK_POSITION_PANEL, null]];
     }
 }

@@ -123,6 +123,8 @@ class Module_calendar
                 'notes' => 'LONG_TEXT',
                 'e_type' => 'AUTO_LINK',
                 'validated' => 'BINARY',
+                'e_previous_recurrence_time' => '?TIME',
+                'e_next_recurrence_time' => '?TIME',
             ]);
             $GLOBALS['SITE_DB']->create_index('calendar_events', 'e_views', ['e_views']);
             $GLOBALS['SITE_DB']->create_index('calendar_events', 'ces', ['e_submitter']);
@@ -256,6 +258,29 @@ class Module_calendar
             $GLOBALS['SITE_DB']->create_index('calendar_events', 'member_calendar', ['e_member_calendar']);
             $GLOBALS['SITE_DB']->create_index('calendar_jobs', 'member_id', ['j_member_id']);
             $GLOBALS['SITE_DB']->create_index('calendar_reminders', 'member_id', ['n_member_id']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('calendar_events', 'e_previous_recurrence_time', '?TIME');
+            $GLOBALS['SITE_DB']->add_table_field('calendar_events', 'e_next_recurrence_time', '?TIME');
+
+            require_code('calendar');
+            $start = 0;
+            do {
+                $rows = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], [], 'ORDER BY id', 100, $start);
+                foreach ($rows as $row) {
+                    $next_recurrence_time = get_calendar_event_first_date_wrap($row);
+                    if ($next_recurrence_time < time()) {
+                        $previous_recurrence_time = $next_recurrence_time;
+                        $next_recurrence_time = null;
+                    } else {
+                        $previous_recurrence_time = null; // Not quite right, but we don't have a way to calculate this at time of writing
+                    }
+                    $GLOBALS['SITE_DB']->query_update('calendar_events', ['e_previous_recurrence_time' => $previous_recurrence_time, 'e_next_recurrence_time' => $next_recurrence_time], ['id' => $row['id']], '', 1);
+                }
+
+                $start += 100;
+            } while (!empty($rows));
         }
     }
 

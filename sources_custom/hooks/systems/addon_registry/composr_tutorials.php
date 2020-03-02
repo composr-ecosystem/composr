@@ -163,6 +163,8 @@ The documentation is primarily maintained on our website, and this archive is on
             'cms/pages/modules_custom/cms_tutorials.php',
             'sources_custom/hooks/modules/search/tutorials_external.php',
             'sources_custom/hooks/systems/actionlog/composr_tutorials.php',
+            'sources_custom/hooks/systems/resource_meta_aware/tutorials_external.php',
+            'sources_custom/hooks/systems/resource_meta_aware/tutorials_internal.php',
 
             'docs/pages/modules_custom/tutorials.php',
             'docs/index.php',

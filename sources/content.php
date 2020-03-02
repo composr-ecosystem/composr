@@ -29,10 +29,36 @@ Notes about hook info...
  - category_type may be '<page>' or '<zone>' (meaning "use page/zone permissions instead")
  - category_type may be null
  - category_type may be missing
- - add_url may contain '!' (meaning "parent category ID goes here")
- - submitter_field may be a field:regexp
 
 */
+
+/**
+ * Standard code module initialisation function.
+ *
+ * @ignore
+ */
+function init__content()
+{
+    if (!defined('FIELD_RENDER_PLAIN')) {
+        define('FIELD_RENDER_PLAIN', 1);
+        define('FIELD_RENDER_COMCODE', 2);
+        define('FIELD_RENDER_HTML', 3);
+
+        define('PROMINENCE_WEIGHT_NONE', 0);
+        define('PROMINENCE_WEIGHT_LOWEST', 1);
+        define('PROMINENCE_WEIGHT_LOW', 2);
+        define('PROMINENCE_WEIGHT_MEDIUM', 3);
+        define('PROMINENCE_WEIGHT_HIGH', 4);
+        define('PROMINENCE_WEIGHT_HIGHEST', 5);
+
+        define('PROMINENCE_FLAG_ACTIVE_ONLY', 1);
+        define('PROMINENCE_FLAG_PINNED', 2);
+
+        define('THUMB_URL_FALLBACK_NONE', 0);
+        define('THUMB_URL_FALLBACK_SOFT', 1);
+        define('THUMB_URL_FALLBACK_HARD', 2);
+    }
+}
 
 /**
  * Given a particular bit of feedback content, check if the user may access it.
@@ -142,10 +168,10 @@ function get_content_object($content_type)
  * Find a different content type code from the one had.
  *
  * @param  ID_TEXT $type_has Content type type we know
- * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook unvalidated_hook notification_hook sitemap_hook
+ * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
  * @param  ID_TEXT $type_id Content type ID we know
  * @param  ID_TEXT $type_wanted Desired content type
- * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook unvalidated_hook notification_hook sitemap_hook
+ * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
  * @return ID_TEXT Corrected content type type (blank: could not find)
  */
 function convert_composr_type_codes($type_has, $type_id, $type_wanted)
@@ -179,7 +205,7 @@ function convert_composr_type_codes($type_has, $type_id, $type_wanted)
  * Find content type info, for a particular content type type we know.
  *
  * @param  ID_TEXT $type_has Content type type we know
- * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook unvalidated_hook notification_hook sitemap_hook
+ * @set addon content_type meta_hook search_hook seo_type_code feedback_type_code permissions_type_code module table commandr_filesystem_hook rss_hook attachment_hook notification_hook sitemap_hook
  * @param  ID_TEXT $type_id Content type ID we know
  * @return array Content type info list (blank: could not find)
  */
@@ -210,7 +236,7 @@ function convert_composr_type_codes_multiple($type_has, $type_id)
  * @param  ID_TEXT $content_type Content type
  * @param  ID_TEXT $content_id Content ID
  * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
- * @return array Tuple: title, submitter, content hook info, the content row, URL (for use within current browser session), URL (for use in e-mails / sharing)
+ * @return array Tuple: title, submitter, content hook info, the content row, URL (for use within current browser session), URL (for use in e-mails / sharing), Content object
  */
 function content_get_details($content_type, $content_id, $resource_fs_style = false)
 {
@@ -221,13 +247,14 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
     $cma_info = $cma_ob->info();
 
     if ($cma_info === null) {
-        return [null, null, null, null, null, null];
+        return [null, null, null, null, null, null, null];
     }
 
     $db = $cma_info['db'];
 
     $content_row = content_get_row($content_id, $cma_info);
     if ($content_row === null) {
+        // FUDGE
         if (($content_type == 'comcode_page') && (strpos($content_id, ':') !== false) && (!$resource_fs_style)) {
             list($zone, $page) = explode(':', $content_id, 2);
 
@@ -257,95 +284,29 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
                 $content_title = $zone . ':' . $page;
             }
 
-            return [$content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe];
+            return [$content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe, $cma_ob];
         }
 
-        return [null, null, $cma_info, null, null, null];
+        return [null, null, $cma_info, null, null, null, $cma_ob];
     }
 
-    $content_title = get_content_title($cma_info, $content_row, $content_type, $content_id, $resource_fs_style);
+    $falled_back_to_id = null;
+    $content_title = $cma_ob->get_title($content_row, FIELD_RENDER_PLAIN, $falled_back_to_id, $resource_fs_style);
 
-    if ($cma_info['submitter_field'] !== null) {
-        if (strpos($cma_info['submitter_field'], ':') !== false) {
-            $bits = explode(':', $cma_info['submitter_field']);
-            $matches = [];
-            if (preg_match('#' . $bits[1] . '#', $content_row[$bits[0]], $matches) != 0) {
-                $submitter_id = intval($matches[1]);
-            } else {
-                $submitter_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-            }
-        } else {
-            $submitter_id = $content_row[$cma_info['submitter_field']];
-        }
-    } else {
+    $submitter_id = $cma_ob->get_submitter($content_row);
+    if ($submitter_id === null) {
         $submitter_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
     }
 
-    $content_url = null;
-    $content_url_email_safe = null;
     if ($cma_info['view_page_link_pattern'] !== null) {
-        list($zone, $url_bits, $hash) = page_link_decode(str_replace('_WILD', $content_id, $cma_info['view_page_link_pattern']));
-        $content_url = build_url($url_bits, $zone, [], false, false, false, $hash);
-        $content_url_email_safe = build_url($url_bits, $zone, [], false, false, true, $hash);
-    }
-
-    return [$content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe];
-}
-
-/**
- * Get the title of a content item.
- *
- * @param  array $cma_info The info array for the content type
- * @param  array $content_row Content row
- * @param  ID_TEXT $content_type Content type
- * @param  ?ID_TEXT $content_id Content ID (null: find from row)
- * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
- * @return string Title
- */
-function get_content_title($cma_info, $content_row, $content_type, $content_id = null, $resource_fs_style = false)
-{
-    $db = $cma_info['db'];
-
-    if ($content_id === null) {
-        $content_id = @strval($content_row[$cma_info['id_field']]);
-    }
-
-    $title_field = $cma_info['title_field'];
-    $title_field_dereference = $cma_info['title_field_dereference'];
-    if (($resource_fs_style) && (array_key_exists('title_field__resource_fs', $cma_info))) {
-        $title_field = $cma_info['title_field__resource_fs'];
-        $title_field_dereference = $cma_info['title_field_dereference__resource_fs'];
-    }
-    if ($title_field === null) {
-        $content_title = do_lang($cma_info['content_type_label']);
+        $content_url = $cma_ob->get_view_url($content_row, false);
+        $content_url_email_safe = $cma_ob->get_view_url($content_row, true);
     } else {
-        if (strpos($title_field, 'CALL:') !== false) {
-            $content_title = call_user_func(trim(substr($title_field, 5)), ['id' => $content_id], $resource_fs_style);
-        } else {
-            $_content_title = $content_row[$title_field];
-            $content_title = $title_field_dereference ? get_translated_text($_content_title, $db) : $_content_title;
-            if (($content_title == '') && (!$resource_fs_style)) {
-                $content_title = do_lang($cma_info['content_type_label']) . ' (#' . (is_string($content_id) ? $content_id : strval($content_id)) . ')';
-                if (($content_type == 'image' || $content_type == 'video') && (addon_installed('galleries'))) { // A bit of a fudge, but worth doing
-                    require_lang('galleries');
-                    $fullname = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', ['name' => $content_row['cat']]);
-                    if ($fullname !== null) {
-                        $content_title = do_lang('VIEW_' . strtoupper($content_type) . '_IN', get_translated_text($fullname));
-                    }
-                }
-            }
-        }
+        $content_url = null;
+        $content_url_email_safe = null;
     }
 
-    if (($content_type == 'post') && ($content_title == '')) {
-        $content_title = do_lang('cns:FORUM_POST_NUMBERED', $content_id);
-    }
-
-    if ($content_title == '') {
-        $content_title = $content_type . ' #' . $content_id;
-    }
-
-    return $content_title;
+    return [$content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe, $cma_ob];
 }
 
 /**
@@ -397,6 +358,36 @@ function extract_content_str_id_from_data($data, $cma_info)
 }
 
 /**
+ * Fill up a SELECT clause with actual fields needed to select particular meta-fields.
+ *
+ * @param  array $select The ID
+ * @param  array $cma_info The info array for the content type
+ * @param  array $fields The list of the standardised field names from hooks
+ * @set id parent_category category title description thumb views order submitter author add_time edit_time date validated video
+ * @param  ?string $table_alias The table alias (null: none)
+ */
+function append_content_select_for_fields(&$select, $cma_info, $fields, $table_alias = null)
+{
+    if (in_array('thumb', $fields)) { // We may actually query against full_image too
+        $fields[] = 'full_image';
+    }
+    if (in_array('title', $fields)) { // We may need a fall-back
+        $fields[] = 'id';
+    }
+
+    foreach ($fields as $field) {
+        if (isset($cma_info[$field . '_field'])) {
+            foreach (is_array($cma_info[$field . '_field']) ? $cma_info[$field . '_field'] : [$cma_info[$field . '_field']] as $field_part) {
+                if (strpos($field_part, 'CALL:') === false) {
+                    $select[] = (($table_alias === null) ? '' : ($table_alias . '.')) . $field_part;
+                }
+            }
+        }
+    }
+    $select = array_unique($select);
+}
+
+/**
  * Given the string content ID get a mapping we could use as a WHERE map.
  *
  * @param  ID_TEXT $str_id The ID
@@ -418,89 +409,90 @@ function get_content_where_for_str_id($str_id, $cma_info, $table_alias = null)
 }
 
 /**
- * Given the string content ID get a list of fields for use in a SELECT clause.
- *
- * @param  array $select The ID
- * @param  array $cma_info The info array for the content type
- * @param  ?string $table_alias The table alias (null: none)
- */
-function append_content_select_for_id(&$select, $cma_info, $table_alias = null)
-{
-    foreach (is_array($cma_info['id_field']) ? $cma_info['id_field'] : [$cma_info['id_field']] as $id_field_part) {
-        $select[] = (($table_alias === null) ? '' : ($table_alias . '.')) . $id_field_part;
-    }
-}
-
-/**
- * Get an action language string for a particular content type based on a stub.
- * If it can't get a match it'll just use the stub.
- *
- * @param  string $content_type The content type
- * @param  string $string The language string stub (must itself be a valid language string)
- * @return Tempcode Tempcode of language string
- */
-function content_language_string($content_type, $string)
-{
-    $object = get_content_object($content_type);
-    $info = $object->info();
-    $regexp = $info['actionlog_regexp'];
-
-    do_lang($info['content_type_label']); // This forces the language file to load if there is one, as it'll include the language file reference within content_type_label
-
-    $string_custom = str_replace('\w+', $string, $regexp);
-    $test = do_lang($string_custom, null, null, null, null, false);
-    if ($test === null) {
-        $test = do_lang($string);
-    }
-
-    //return do_lang_tempcode($string_custom); // Assumes that the lang string stays memory resident, but our probing only guarantees it's resident NOW
-    return protect_from_escaping($test); // But this should work as the string is rolled into the Tempcode permanently
-}
-
-/**
  * Get content rows matching certain parameters, across multiple content types.
  *
  * @param  array $content_types List of content types to return for
  * @param  ?integer $days Day limit for recency (null: no limit)
- * @param  string $extra_where Extra WHERE SQL
- * @param  string $extra_join Extra JOIN SQL
+ * @param  mixed $extra_where Extra WHERE SQL (either a string, or a map between content types and strings)
+ * @param  mixed $extra_join Extra JOIN SQL (either a string, or a map between content types and strings)
  * @param  string $sort URL-style sort parameter
  * @param  integer $start Start offset
  * @param  ?integer $max Maximum results to return (null: no limit)
  * @param  mixed $select Selectcode (either a string, or a map between content types and strings)
- * @param  string $select_b Selectcode for secondary category
+ * @param  mixed $select_b Selectcode for secondary category
  * @param  mixed $filter Filtercode (either a string, or a map between content types and strings)
  * @param  boolean $check_perms Whether to check permissions
- * @param  array $pinned A list of pinned award IDs
+ * @param  ?array $pinned A list of pinned award IDs (null: all awards)
  * @param  ?array $allowed_sorts List of allowed sorts (null: auto-detected for content type)
  * @param  ?MEMBER $member_id Member ID to run as (null: current member)
+ * @param  array $infos Info maps for content types, if not passed will be looked up
  * @return array A pair: Rows, Max count
  */
-function content_rows_for_multi_type($content_types, $days, $extra_where, $extra_join, $sort, $start, $max, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null)
+function content_rows_for_multi_type($content_types, $days, $extra_where, $extra_join, $sort, $start, $max, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null, $infos = [])
 {
     $combined_rows = [];
     $pinned_rows = [];
     $combined_max_rows = 0;
 
+    $current_time = time();
+
     foreach ($content_types as $content_type) {
+        if (array_key_exists($content_type, $infos)) {
+            $info = $infos[$content_type];
+        } else {
+            $object = get_content_object($content_type);
+            $info = $object->info();
+        }
+
+        $sort_order_field_missing = false;
+
         $_start = 0;
         $_max = ($max === null) ? null : ($max + $start); // This is so we can sort the first $max results against those of other content types to get a consistent combined sort order
         $_select = is_array($select) ? (array_key_exists($content_type, $select) ? $select[$content_type] : '') : $select;
+        $_select_b = is_array($select_b) ? (array_key_exists($content_type, $select_b) ? $select_b[$content_type] : '') : $select_b;
         $_filter = is_array($filter) ? (array_key_exists($content_type, $filter) ? $filter[$content_type] : '') : $filter;
-        list($rows, $max_rows, $pinned_rows) = content_rows_for_type($content_type, $days, $extra_where, $extra_join, $sort, $_start, $_max, $_select, $select_b, $_filter, $check_perms, $pinned, $allowed_sorts);
+        $_extra_where = is_array($extra_where) ? (array_key_exists($content_type, $extra_where) ? $extra_where[$content_type] : '') : $extra_where;
+        $_extra_join = is_array($extra_join) ? (array_key_exists($content_type, $extra_join) ? $extra_join[$content_type] : '') : $extra_join;
+        list($rows, $max_rows, $pinned_rows) = content_rows_for_type($content_type, $days, $_extra_where, $_extra_join, $sort, $_start, $_max, $_select, $_select_b, $_filter, $check_perms, $pinned, $allowed_sorts, $member_id, $info);
         foreach ($rows as $row) {
-            $combined_rows[] = $row + ['content_type' => $content_type];
+            $row['content_type'] = $content_type;
+
+            if (array_key_exists('sort_order', $row)) { // If test here for easier debugging queries, allow removing sorting
+                $sort_order = $row['sort_order'];
+                if ($sort == 'prominence') {
+                    if ($sort_order === null) { // Likely sorting by maximum date of entries but there are no entries
+                        $sort_order = PHP_INT_MAX;
+                    } elseif (is_integer($sort_order)) {
+                        $sort_order = intval(floatval(abs(time() - $sort_order)) / floatval($info['default_prominence_weight']));
+                        if (($info['default_prominence_flags'] & PROMINENCE_FLAG_PINNED) != 0) {
+                            $sort_order = PHP_INT_MIN ;
+                        }
+                    }
+
+                    $row['sort_order'] = $sort_order;
+                }
+            } else {
+                $sort_order_field_missing = true;
+            }
+
+            $combined_rows[] = $row;
         }
         foreach ($pinned_rows as $i => $row) {
-            $pinned_rows[$i] = $row + ['content_type' => $content_type];
+            $row['content_type'] = $content_type;
+            $pinned_rows[$i] = $row;
         }
         $combined_max_rows += $max_rows;
     }
 
     ksort($pinned_rows);
 
-    list($url_sort, $dir) = read_abstract_sorting_params($sort, $allowed_sorts);
-    sort_maps_by($combined_rows, ($dir == 'DESC') ? '!sort_order' : 'sort_order', false, ($url_sort == 'title'));
+    if (!$sort_order_field_missing) {
+        list($url_sort, $dir) = read_abstract_sorting_params($sort, $allowed_sorts);
+        if ($sort == 'prominence') { // We flipped the ordering numbers about and this inverted the sequencing
+            $dir = ($dir == 'DESC') ? 'ASC' : 'DESC';
+        }
+        sort_maps_by($combined_rows, ($dir == 'DESC') ? '!sort_order' : 'sort_order', false, ($url_sort == 'title'));
+    }
 
     $final_rows = array_slice(array_merge($pinned_rows, $combined_rows), $start, $max);
 
@@ -521,12 +513,13 @@ function content_rows_for_multi_type($content_types, $days, $extra_where, $extra
  * @param  string $select_b Selectcode for secondary category
  * @param  string $filter Filtercode
  * @param  boolean $check_perms Whether to check permissions
- * @param  array $pinned A list of pinned award IDs
+ * @param  ?array $pinned A list of pinned award IDs (null: all awards)
  * @param  ?array $allowed_sorts List of allowed sorts (null: auto-detected for content type)
  * @param  ?MEMBER $member_id Member ID to run as (null: current member)
+ * @param  ?array $info Info map for content type (null: look up)
  * @return array A tuple: Rows, Max count, Pinned rows
  */
-function content_rows_for_type($content_type, $days, $extra_where, $extra_join, $sort, $start, $max, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null)
+function content_rows_for_type($content_type, $days, $extra_where, $extra_join, $sort, $start, $max, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null, $info = null)
 {
     require_code('content');
 
@@ -540,8 +533,10 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
     }
 
     // Read content object
-    $object = get_content_object($content_type);
-    $info = $object->info();
+    if ($info === null) {
+        $object = get_content_object($content_type);
+        $info = $object->info();
+    }
     if ($info === null) {
         warn_exit(do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type)));
     }
@@ -550,6 +545,10 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
     // Special clauses for content type
     if (array_key_exists('extra_where_sql', $info)) {
         $extra_where .= ' AND ' . $info['extra_where_sql'];
+    }
+
+    if (($sort == 'prominence') && (($info['default_prominence_flags'] & PROMINENCE_FLAG_ACTIVE_ONLY) != 0)) {
+        $extra_where .= ' AND ' . $info['active_only_extra_where_sql'];
     }
 
     // Permissions check
@@ -660,36 +659,40 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
 
     // Find requested pinned awards
     $pinned_rows = [];
-    if ((!empty($pinned)) && (addon_installed('awards'))) {
+    if (($pinned !== []) && (addon_installed('awards'))) {
         $pinned_where = '';
-        foreach ($pinned as $p) {
-            if ($pinned_where != '') {
-                $pinned_where .= ' OR ';
-            }
-            $pinned_where .= 'a_type_id=' . strval($p);
-        }
-        if ($pinned_where == '') {
-            $awarded_content_ids = [];
+        if ($pinned === null) {
+            $pinned_where = db_string_equal_to('a_content_type', $content_type);
         } else {
+            foreach ($pinned as $award_id) {
+                if ($pinned_where != '') {
+                    $pinned_where .= ' OR ';
+                }
+                $pinned_where .= 'a_type_id=' . strval($award_id);
+            }
             $pinned_where = '(' . db_string_equal_to('a_content_type', $content_type) . ') AND ' . $pinned_where;
-            // Complex query to find the most recent, works on assumption you can't just order by timestamp due to possibility of too many matches
-            $award_sql = 'SELECT a.a_type_id,a.content_id FROM ' . get_table_prefix() . 'award_archive a';
-            $award_sql .= ' JOIN (SELECT MAX(date_and_time) AS max_date,a_type_id FROM ' . get_table_prefix() . 'award_archive WHERE ' . $pinned_where . ' GROUP BY a_type_id) b ON b.a_type_id=a.a_type_id AND a.date_and_time=b.max_date';
-            $award_sql .= ' WHERE ' . str_replace('a_type_id', 'a.a_type_id', $pinned_where);
-            $awarded_content_ids = collapse_2d_complexity('a_type_id', 'content_id', $GLOBALS['SITE_DB']->query($award_sql, null, 0, false, true));
         }
 
-        foreach ($pinned as $i => $award_id) {
-            if (!isset($awarded_content_ids[$p])) {
+        $award_sql = 'SELECT a.a_type_id,a.content_id FROM ' . get_table_prefix() . 'award_types t';
+        $award_sql .= $info['db']->singular_join('award_archive', 'a', 'a_type_id=t.id', 'date_and_time', 'MAX', 'JOIN');
+        $award_sql .= ' WHERE ' . $pinned_where;
+        $awarded_content_ids = collapse_2d_complexity('a_type_id', 'content_id', $GLOBALS['SITE_DB']->query($award_sql, null, 0, false, true));
+
+        if ($pinned === null) {
+            $pinned = array_keys($awarded_content_ids);
+        }
+
+        foreach ($pinned as $i => $award_id) { // We iterate $pinned to preserve order 
+            if (!isset($awarded_content_ids[$award_id])) {
                 continue;
             }
-            $awarded_content_id = $awarded_content_ids[$p];
+            $awarded_content_id = $awarded_content_ids[$award_id];
             $award_content_row = content_get_row($awarded_content_id, $info);
             if ($award_content_row !== null) {
                 if (is_integer($awarded_content_id)) {
-                    $extra_where .= ' AND ' . $first_id_field . '<>' . strval($awarded_content_id);
+                    $extra_where .= ' AND r.' . $first_id_field . '<>' . strval($awarded_content_id);
                 } else {
-                    $extra_where .= ' AND ' . db_string_not_equal_to($first_id_field, $awarded_content_id);
+                    $extra_where .= ' AND r.' . db_string_not_equal_to($first_id_field, $awarded_content_id);
                 }
                 if ((!addon_installed('unvalidated')) || (!isset($info['validated_field'])) || ($award_content_row[$info['validated_field']] != 0)) {
                     $pinned_rows[$i] = $award_content_row;
@@ -713,7 +716,8 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
     if ($max == 0) {
         $rows = []; // Optimisation
     } else {
-        $rows = $info['db']->query('SELECT DISTINCT r.*,' . $sql_sort . ' AS sort_order ' . $query . ' ORDER BY ' . $sql_sort, $max, $start, false, true, $lang_fields);
+        $full_query = 'SELECT DISTINCT r.*,' . $sql_sort . ' AS sort_order' . $query . ' ORDER BY ' . $sql_sort;
+        $rows = $info['db']->query($full_query, $max, $start, false, true, $lang_fields);
     }
     return [$rows, $max_rows + count($pinned_rows), $pinned_rows];
 }
@@ -767,6 +771,10 @@ function handle_abstract_sorting($sort, $info, $allowed_sorts = null, $strict_er
             $allowed_sorts[] = 'recent';
         }
 
+        if ((isset($info['prominence_custom_sort'])) || ($info['add_time_field'] !== null)) {
+            $allowed_sorts[] = 'prominence';
+        }
+
         if ((isset($info['title_field'])) && (strpos($info['title_field'], ':') === false)) {
             $allowed_sorts[] = 'title';
         }
@@ -792,6 +800,13 @@ function handle_abstract_sorting($sort, $info, $allowed_sorts = null, $strict_er
 
     if ($url_sort == 'recent') {
         $sql_sort = 'r.' . $info['add_time_field'];
+    } elseif ($url_sort == 'prominence') {
+        if (isset($info['prominence_custom_sort'])) {
+            $sql_sort = $info['prominence_custom_sort'];
+            $dir = $info['prominence_custom_sort_dir'];
+        } else {
+            $sql_sort = 'r.' . $info['add_time_field'];
+        }
     } elseif ($url_sort == 'title') {
         if ($info['title_field_dereference']) {
             $sql_sort = $GLOBALS['SITE_DB']->translate_field_ref($info['title_field']);
@@ -834,6 +849,7 @@ function read_abstract_sorting_params($sort, $allowed_sorts, $strict_error = tru
     $banal_default_sorts = [
         'natural',
         'recent',
+        'prominence',
         'title',
         'random',
         'fixed_random',
@@ -860,4 +876,796 @@ function read_abstract_sorting_params($sort, $allowed_sorts, $strict_error = tru
         $dir = 'ASC';
     }
     return [$url_sort, $dir];
+}
+
+/**
+ * Base class for content hooks.
+ *
+ * @package    core_notifications
+ */
+abstract class Hook_CMA
+{
+    /**
+     * Get content type details.
+     *
+     * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
+     * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
+     * @return ?array Map of content-type info (null: disabled)
+     */
+    abstract public function info($zone = null, $get_extended_data = false);
+
+    /**
+     * Get content type details, with caching.
+     *
+     * @return ?array Map of content-type info (null: disabled)
+     */
+    public function info_basic_cached()
+    {
+        static $info = null;
+        if ($info === null) {
+            $info = $this->info();
+        }
+        return $info;
+    }
+
+    /**
+     * Get a content row.
+     *
+     * @param  ID_TEXT $content_id The content ID
+     * @return ?array The row (null: not found)
+     */
+    public function get_row($content_id)
+    {
+        $info = $this->info_basic_cached();
+        return content_get_row($content_id, $info);
+    }
+
+    /**
+     * Get the content type this object is handling.
+     *
+     * @return string The content type
+     */
+    public function get_content_type()
+    {
+        return preg_replace('#^Hook_(content|resource)_meta_aware_#', '', get_class($this));
+    }
+
+    /**
+     * Get the label for this content type.
+     *
+     * @param  ?array $row The database row for the content (null: no override support)
+     * @return Tempcode The label
+     */
+    public function get_content_type_label($row = null)
+    {
+        $info = $this->info_basic_cached();
+        if ($row !== null) {
+            if (!empty($info['content_type_label_override'])) {
+                $field = $info['content_type_label_override'];
+                if (strpos($field, 'CALL:') !== false) {
+                    return call_user_func(trim(substr($field, 5)), $row);
+                }
+            }
+        }
+        return do_lang_tempcode($info['content_type_label']);
+    }
+
+    /**
+     * Get the universal label for this content type.
+     *
+     * @param  ?array $row The database row for the content (null: no override support)
+     * @return string The universal label
+     */
+    public function get_content_type_universal_label($row = null)
+    {
+        $info = $this->info_basic_cached();
+        if ($row !== null) {
+            if (!empty($info['content_type_universal_label_override'])) {
+                $field = $info['content_type_universal_label_override'];
+                if (strpos($field, 'CALL:') !== false) {
+                    return call_user_func(trim(substr($field, 5)), $row);
+                }
+            }
+        }
+        return $info['content_type_universal_label'];
+    }
+
+    /**
+     * Get an ID for a content row. If there are multiple IDs, then they are colon-separated.
+     *
+     * @param  array $row The database row for the content
+     * @return string ID
+     */
+    public function get_id($row)
+    {
+        $info = $this->info_basic_cached();
+        return extract_content_str_id_from_data($row, $info);
+    }
+
+    /**
+     * Get an ID string for a content row. This is not to be used anywhere as an ID, it is designed to be human-readable.
+     *
+     * @param  array $row The database row for the content
+     * @param  integer $render_type A FIELD_RENDER_* constant
+     * @return mixed ID string (string or Tempcode, depending on $render_type)
+     */
+    public function get_id_string($row, $render_type = 1)
+    {
+        $info = $this->info_basic_cached();
+
+        $ret_arr = [];
+        $id_field = is_array($info['id_field']) ? $info['id_field'] : [$info['id_field']];
+        $id_field = array_reverse($id_field);
+        foreach ($id_field as $_id_field) {
+            $_ret = $row[$_id_field];
+            if (is_integer($_ret)) {
+                $_ret = '#' . strval($_ret);
+            }
+            $ret_arr[] = $_ret;
+        }
+        $ret = implode(', ', $ret_arr);
+
+        switch ($render_type) {
+            case FIELD_RENDER_COMCODE:
+                return comcode_escape($ret);
+
+            case FIELD_RENDER_HTML:
+                return make_string_tempcode(escape_html($ret));
+        }
+
+        // FIELD_RENDER_PLAIN:
+        return $ret;
+    }
+
+    /**
+     * Get content title of a content row.
+     *
+     * @param  array $row The database row for the content
+     * @param  integer $render_type A FIELD_RENDER_* constant
+     * @param  boolean $falled_back_to_id Whether this has had to fall back to an ID due to missing title (returned by reference)
+     * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
+     * @return mixed Content title (string or Tempcode, depending on $render_type)
+     */
+    public function get_title($row, $render_type = 1, &$falled_back_to_id = false, $resource_fs_style = false)
+    {
+        $info = $this->info_basic_cached();
+
+        $falled_back_to_id = false;
+
+        $title_field = $info['title_field'];
+        if (is_array($title_field)) {
+            $title_field = array_pop($title_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
+        }
+        $dereference = $info['title_field_dereference'];
+        $supports_comcode = array_key_exists('title_field_supports_comcode', $info) ? $info['title_field_supports_comcode'] : false;
+        if (($resource_fs_style) && (array_key_exists('title_field__resource_fs', $info))) {
+            $title_field = $info['title_field__resource_fs'];
+            $title_field_dereference = $info['title_field_dereference__resource_fs'];
+        }
+
+        if ($title_field === null) {
+            $falled_back_to_id = true;
+            return $this->get_id_string($row, $render_type);
+        }
+
+        $ret = $this->get_textual_field($row, $render_type, $info, $title_field, $dereference, $supports_comcode, $resource_fs_style);
+
+        if (cms_empty_safe($ret)) {
+            $falled_back_to_id = true;
+            return $this->get_id_string($row, $render_type);
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Get content description of a content row.
+     *
+     * @param  array $row The database row for the content
+     * @param  integer $render_type A FIELD_RENDER_* constant
+     * @return mixed Content description (string or Tempcode, depending on $render_type)
+     */
+    public function get_description($row, $render_type = 1)
+    {
+        $info = $this->info_basic_cached();
+
+        $description_field = $info['description_field'];
+        if (is_array($description_field)) {
+            $description_field = array_pop($description_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
+        }
+        $dereference = $info['description_field_dereference'];
+        $supports_comcode = array_key_exists('description_field_supports_comcode', $info) ? $info['description_field_supports_comcode'] : false;
+
+        if ($description_field === null) {
+            if ($render_type == FIELD_RENDER_HTML) {
+                return new Tempcode();
+            } else {
+                return '';
+            }
+        }
+
+        $ret = $this->get_textual_field($row, $render_type, $info, $description_field, $dereference, $supports_comcode);
+
+        if ($ret === null) {
+            if ($render_type == FIELD_RENDER_HTML) {
+                return new Tempcode();
+            } else {
+                return '';
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Get particular textual information from a content row.
+     *
+     * @param  array $row The database row for the content
+     * @param  integer $render_type A FIELD_RENDER_* constant
+     * @param  array $info The info map for the content type
+     * @param  string $field The field name for what we are looking up
+     * @param  boolean $dereference Whether we need to dereference the field as a language string
+     * @param  boolean $supports_comcode Whether the field supports Comcode
+     * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
+     * @return ?mixed Content title (string or Tempcode, depending on $render_type) (null: could not generate)
+     */
+    protected function get_textual_field($row, $render_type, $info, $field, $dereference, $supports_comcode, $resource_fs_style = false)
+    {
+        if (strpos($field, 'CALL:') !== false) {
+            return call_user_func(trim(substr($field, 5)), $row, $render_type, $resource_fs_style);
+        }
+
+        $id_field = is_array($info['id_field']) ? $info['id_field'] : [$info['id_field']];
+
+        $ret = mixed();
+
+        switch ($render_type) {
+            case FIELD_RENDER_PLAIN:
+                if ($row[$field] === null) {
+                    return '';
+                }
+
+                if ($dereference) {
+                    $ret = get_translated_text($row[$field], $info['db']);
+                } else {
+                    $ret = $row[$field];
+                }
+
+                if ($supports_comcode) {
+                    require_code('comcode');
+                    $ret = strip_comcode($ret);
+                }
+                break;
+
+            case FIELD_RENDER_COMCODE:
+                if ($row[$field] === null) {
+                    return '';
+                }
+
+                if ($dereference) {
+                    $ret = get_translated_text($row[$field], $info['db']);
+                } else {
+                    $ret = $row[$field];
+                }
+
+                if (!$supports_comcode) {
+                    require_code('comcode');
+                    $ret = comcode_escape($ret);
+                }
+                break;
+
+            case FIELD_RENDER_HTML:
+                if ($row[$field] === null) {
+                    return new Tempcode();
+                }
+
+                if ($dereference) {
+                    if ($supports_comcode) {
+                        $just_row = db_map_restrict($row, array_merge($id_field, [$field]));
+                        $ret = get_translated_tempcode($info['table'], $just_row, $field, $info['db']);
+                    } else {
+                        $ret = get_translated_text($row[$field], $info['db']);
+                        $ret = make_string_tempcode(escape_html($ret));
+                    }
+                } else {
+                    $ret = $row[$field];
+
+                    if ($supports_comcode) {
+                        $ret = comcode_to_tempcode($ret, isset($info['submitter_field']) ? $row[$info['submitter_field']] : null);
+                    } else {
+                        $ret = make_string_tempcode(escape_html($ret));
+                    }
+                }
+
+                break;
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Get content image URL for a content row.
+     *
+     * @param  array $row The database row for the content
+     * @param  integer $fallback_method Whether to provide a default image if there is no real image, a THUMB_URL_FALLBACK_* constant
+     * @param  boolean $prefer_large_image Whether we prefer a larger image
+     * @param  boolean $has_fallen_back Returned by reference, set if the image returned is a fallback image
+     * @return URLPATH Image URL (blank: none)
+     */
+    public function get_image_thumb_url($row, $fallback_method = 0, $prefer_large_image = false, &$has_fallen_back = false)
+    {
+        $info = $this->info_basic_cached();
+
+        switch ($fallback_method) {
+            case THUMB_URL_FALLBACK_NONE:
+                $fallback_theme_image = null;
+                break;
+
+            case THUMB_URL_FALLBACK_SOFT:
+                $fallback_theme_image = isset($info['alternate_icon_theme_image']) ? $info['alternate_icon_theme_image'] : null;
+                break;
+
+            case THUMB_URL_FALLBACK_HARD:
+                $fallback_theme_image = isset($info['alternate_icon_theme_image']) ? $info['alternate_icon_theme_image'] : 'icons/no_image';
+                break;
+        }
+
+        if (($prefer_large_image) && (isset($info['full_image_field']))) {
+            $field = $info['full_image_field'];
+        } else {
+            $field = $info['thumb_field'];
+        }
+        if (is_array($field)) {
+            $field = array_pop($field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
+        }
+
+        if (($field === null) && ($info['support_custom_fields']) && (addon_installed('catalogues'))) {
+            require_code('fields');
+            require_code('hooks/systems/content_meta_aware/catalogue_entry');
+            $field = 'CALL: generate_catalogue_entry_thumb_url';
+            $content_type = $this->get_content_type();
+            $catalogue_entry_id = get_bound_content_entry($content_type, $this->get_id($row));
+            $row = ['id' => $catalogue_entry_id, 'c_name' => '_' . $content_type];
+        }
+
+        if ($field === null) {
+            if ($fallback_theme_image !== null) {
+                $has_fallen_back = true;
+                return find_theme_image($fallback_theme_image);
+            }
+
+            return '';
+        }
+
+        if (strpos($field, 'CALL:') !== false) {
+            $ret = call_user_func(trim(substr($field, 5)), $row, $prefer_large_image);
+
+            if (($ret == '') && ($fallback_theme_image !== null)) {
+                $has_fallen_back = true;
+                return find_theme_image($fallback_theme_image);
+            }
+
+            return $ret;
+        }
+
+        $ret = $row[$field];
+        if ($ret == '') {
+            if ($fallback_theme_image !== null) {
+                $has_fallen_back = true;
+                return find_theme_image($fallback_theme_image);
+            }
+
+            return '';
+        }
+
+        if ($info['thumb_field_is_theme_image']) {
+            return find_theme_image($ret);
+        }
+
+        if (url_is_local($ret)) {
+            $ret = get_custom_base_url() . '/' . $ret;
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Get add timestamp for content.
+     *
+     * @param  array $row The database row for the content
+     * @return ?TIME Add time (null: unknown)
+     */
+    public function get_add_time($row)
+    {
+        $info = $this->info_basic_cached();
+        if ($info['add_time_field'] === null) {
+            return null;
+        }
+        return $row[$info['add_time_field']];
+    }
+
+    /**
+     * Get the label for the most relevant timestamp for content. What this actually is depends on the content.
+     *
+     * @return ?Tempcode Label (null: unknown)
+     */
+    public function get_most_relevant_time_label()
+    {
+        return do_lang_tempcode('DATE');
+    }
+
+    /**
+     * Get the most relevant timestamp for content. What this actually is depends on the content.
+     *
+     * @param  array $row The database row for the content
+     * @return ?TIME Add time (null: unknown)
+     */
+    public function get_most_relevant_time($row)
+    {
+        $info = $this->info_basic_cached();
+
+        $field = $info['date_field'];
+        if ($field === null) {
+            $field = $info['add_time_field'];
+        }
+
+        if ($field === null) {
+            return null;
+        }
+        return $row[$field];
+    }
+
+    /**
+     * Get submitter for content.
+     *
+     * @param  array $row The database row for the content
+     * @return ?MEMBER Submitter (null: unknown)
+     */
+    public function get_submitter($row)
+    {
+        $info = $this->info_basic_cached();
+        if ($info['submitter_field'] === null) {
+            return null;
+        }
+        return $row[$info['submitter_field']];
+    }
+
+    /**
+     * Get username for content.
+     *
+     * @param  array $row The database row for the content
+     * @return string Username (or message explaining lack of one)
+     */
+    public function get_username($row)
+    {
+        $submitter = $this->get_submitter($row);
+        if ($submitter === null) {
+            return do_lang('UNKNOWN');
+        }
+        return $GLOBALS['FORUM_DRIVER']->get_username($submitter, true);
+    }
+
+    /**
+     * Get author for content.
+     *
+     * @param  array $row The database row for the content
+     * @return ?string Author (null: unknown)
+     */
+    public function get_author($row)
+    {
+        if (!addon_installed('authors')) {
+            return null;
+        }
+
+        $info = $this->info_basic_cached();
+        if ($info['author_field'] === null) {
+            return null;
+        }
+        return $row[$info['author_field']];
+    }
+
+    /**
+     * Get a view URL for content.
+     *
+     * @param  ?array $row The database row for the content (null: no ID, assume passed in some other way)
+     * @param  boolean $skip_keep Whether to avoid keep_* parameters as it's going in an e-mail
+     * @param  string $append What to append to the edit page-link
+     * @return Tempcode The URL
+     */
+    public function get_view_url($row, $skip_keep = false, $append = '')
+    {
+        $info = $this->info_basic_cached();
+        $pattern = $info['view_page_link_pattern'];
+        if ($pattern === null) {
+            return new Tempcode();
+        }
+        $pattern .= $append;
+        if ($row === null) {
+            $page_link = str_replace(':_WILD', '', $pattern);
+            $page_link = preg_replace('#:\w+=_WILD#', '', $page_link);
+        } else {
+            $page_link = str_replace('_WILD', $this->get_id($row), $pattern);
+        }
+        return page_link_to_tempcode_url($page_link, $skip_keep);
+    }
+
+    /**
+     * Get an edit URL for content.
+     *
+     * @param  ?array $row The database row for the content (null: no ID, assume passed in some other way)
+     * @param  boolean $skip_keep Whether to avoid keep_* parameters as it's going in an e-mail
+     * @param  string $append What to append to the edit page-link
+     * @return Tempcode The URL
+     */
+    public function get_edit_url($row, $skip_keep = false, $append = '')
+    {
+        $info = $this->info_basic_cached();
+        $pattern = $info['edit_page_link_pattern'];
+        if ($pattern === null) {
+            return new Tempcode();
+        }
+        $pattern .= $append;
+        if ($row === null) {
+            $page_link = str_replace(':_WILD', '', $pattern);
+            $page_link = preg_replace('#:\w+=_WILD#', '', $page_link);
+        } else {
+            $page_link = str_replace('_WILD', $this->get_id($row), $pattern);
+        }
+        return page_link_to_tempcode_url($page_link, $skip_keep);
+    }
+
+    /**
+     * Get an add URL for content.
+     *
+     * @return Tempcode The URL
+     */
+    public function get_add_url()
+    {
+        $info = $this->info_basic_cached();
+        if ($info['add_url'] === null) {
+            return new Tempcode();
+        }
+        $url = page_link_to_tempcode_url($info['add_url']);
+        return $url;
+    }
+
+    /**
+     * Get am archive URL for content.
+     *
+     * @return Tempcode The URL
+     */
+    public function get_archive_url()
+    {
+        $info = $this->info_basic_cached();
+        if ($info['archive_url'] === null) {
+            return new Tempcode();
+        }
+        $url = page_link_to_tempcode_url($info['archive_url']);
+        return $url;
+    }
+
+    /**
+     * Render a content box for a content row.
+     *
+     * @param  array $row The database row for the content
+     * @param  ID_TEXT $zone The zone to display in
+     * @param  boolean $give_context Whether to include context (i.e. say WHAT this is, not just show the actual content)
+     * @param  boolean $include_breadcrumbs Whether to include breadcrumbs (if there are any)
+     * @param  ?ID_TEXT $root Virtual root to use (null: none)
+     * @param  boolean $attach_to_url_filter Whether to copy through any filter parameters in the URL, under the basis that they are associated with what this box is browsing
+     * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
+     * @return Tempcode Results
+     */
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    {
+        $info = $this->info_basic_cached();
+
+        $img = $this->get_image_thumb_url($row);
+        if ($img != '') {
+            require_code('images');
+            $rep_image = do_image_thumb($img, $this->get_title($row), false);
+        } else {
+            $rep_image = new Tempcode();
+        }
+
+        return do_template('SIMPLE_PREVIEW_BOX', [
+            '_GUID' => ($guid == '') ? $this->get_content_type_universal_label($row) : $guid,
+            'TITLE' => protect_from_escaping($this->get_title($row, FIELD_RENDER_HTML)),
+            'SUMMARY' => protect_from_escaping($this->get_description($row, FIELD_RENDER_HTML)),
+            'REP_IMAGE' => $rep_image,
+            'URL' => $this->get_view_url($row),
+        ]);
+    }
+
+    /**
+     * Render a hyperlink for a content row.
+     *
+     * @param  array $row The database row for the content
+     * @return Tempcode Hyperlink
+     */
+    public function render_hyperlink($row)
+    {
+        require_code('templates');
+
+        $url = $this->get_view_url($row);
+        $caption = $this->get_title($row, FIELD_RENDER_HTML);
+
+        if ($url->is_empty()) {
+            return $caption;
+        }
+
+        return hyperlink($url, $caption, false, false);
+    }
+
+    /**
+     * Render a thumbnail for a content row.
+     *
+     * @param  array $row The database row for the content
+     * @return Tempcode Hyperlink
+     */
+    public function render_thumbnail($row)
+    {
+        require_code('images');
+
+        $img = $this->get_image_thumb_url($row, THUMB_URL_FALLBACK_HARD);
+
+        return do_image_thumb($img, $this->get_title($row), false);
+    }
+
+    /**
+     * Render a hyperlink with thumbnail for a content row.
+     *
+     * @param  array $row The database row for the content
+     * @return Tempcode Hyperlink
+     */
+    public function render_hyperlink_thumbnail($row)
+    {
+        require_code('images');
+        require_code('templates');
+
+        $img = $this->get_image_thumb_url($row, THUMB_URL_FALLBACK_HARD);
+
+        $url = $this->get_view_url($row);
+        $rep_image = do_image_thumb($img, $this->get_title($row), false);
+
+        if ($url->is_empty()) {
+            return $rep_image;
+        }
+
+        return hyperlink($url, $rep_image, false, false);
+    }
+
+
+    /**
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        $headings = [];
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+        return $keymap;
+    }
+
+    /**
+     * Find what keymap headings are available.
+     *
+     * @return array Tuple: Has author, Has submitter, Has date, Has ratings
+     */
+    protected function which_standard_keymap_headings()
+    {
+        $info = $this->info_basic_cached();
+
+        $has_author = ($info['author_field'] !== null);
+        $has_submitter = (!$has_author) && ($info['submitter_field'] !== null);
+        $has_date = ($info['date_field'] !== null) || ($info['add_time_field'] !== null);
+        $has_ratings = (get_option('is_on_rating') == '1') && ($info['feedback_type_code'] !== null);
+
+        return [$has_author, $has_submitter, $has_date, $has_ratings];
+    }
+
+    /**
+     * Get headings of standardised relevant data.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_standard_keymap_headings()
+    {
+        $headings = [];
+
+        list($has_author, $has_submitter, $has_date, $has_ratings) = $this->which_standard_keymap_headings();
+
+        $headings['title'] = do_lang_tempcode('TITLE');
+        if ($has_author) {
+            $headings['author'] = do_lang_tempcode('AUTHOR');
+        }
+        if ($has_submitter) {
+            $headings['username'] = do_lang_tempcode('USERNAME');
+        }
+        if ($has_date) {
+            $headings['time'] = $this->get_most_relevant_time_label();
+        }
+        if ($has_ratings) {
+            $headings['rating'] = do_lang_tempcode('RATING');
+        }
+
+        return $headings;
+    }
+
+    /**
+     * Get standardised relevant data.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_standard_keymap($row)
+    {
+        $keymap = [];
+
+        $info = $this->info_basic_cached();
+
+        list($has_author, $has_submitter, $has_date, $has_ratings) = $this->which_standard_keymap_headings();
+
+        $keymap['title'] = $this->render_hyperlink($row);
+        if ($has_author) {
+            $author = $this->get_author($row);
+            $keymap['author'] = protect_from_escaping(escape_html(($author === null) ? do_lang('UNKNOWN') : $author));
+        }
+        if ($has_submitter) {
+            $username = $this->get_username($row);
+            $keymap['username'] = protect_from_escaping(escape_html($username));
+        }
+        if ($has_date) {
+            $timestamp = $this->get_most_relevant_time($row);
+            $keymap['time'] = ($timestamp === null) ? new Tempcode() : get_timezoned_date_tempcode($timestamp);
+        }
+        if ($has_ratings) {
+            if ($info['feedback_type_code'] !== null) {
+                require_code('feedback');
+                $submitter = ($info['submitter_field'] === null) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $row[$info['submitter_field']];
+                $keymap['rating'] = display_rating($this->get_view_url($row), $this->get_title($row), $info['feedback_type_code'], $this->get_id($row), 'RATING_INLINE_STATIC', $submitter);
+            } else {
+                $keymap['rating'] = new Tempcode();
+            }
+        }
+
+        return $keymap;
+    }
+
+    /**
+     * Get an action language string for a particular content type based on a stub.
+     * If it can't get a match it'll just use the stub.
+     *
+     * @param  string $string The language string stub, e.g. ADD (must itself be a valid language string)
+     * @return Tempcode Tempcode of language string
+     */
+    public function content_language_string($string)
+    {
+        $info = $this->info_basic_cached();
+
+        $regexp = $info['actionlog_regexp'];
+
+        do_lang($info['content_type_label']); // This forces the language file to load if there is one, as it'll include the language file reference within content_type_label
+
+        $string_custom = str_replace('\w+', $string, $regexp);
+        $test = do_lang($string_custom, null, null, null, null, false);
+        if ($test === null) {
+            $test = do_lang($string);
+        }
+
+        //return do_lang_tempcode($string_custom); // Assumes that the lang string stays memory resident, but our probing only guarantees it's resident NOW
+        return protect_from_escaping($test); // But this should work as the string is rolled into the Tempcode permanently
+    }
 }

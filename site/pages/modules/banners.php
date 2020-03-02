@@ -306,9 +306,7 @@ class Module_banners
             $myrow = $rows[0];
 
             set_extra_request_metadata([
-                'title' => get_translated_text($myrow['caption']), // Different from CMA hook
                 'identifier' => '_SEARCH:banners:view:' . $source,
-                'description' => '', // Different from CMA hook
             ], $myrow, 'banner', $source);
 
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('BANNERS')]]);

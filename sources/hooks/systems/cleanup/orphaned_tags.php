@@ -45,6 +45,7 @@ class Hook_cleanup_orphaned_tags
      */
     public function run()
     {
+        require_code('content');
         $hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
         foreach ($hooks as $hook => $ob) {
             $info = $ob->info();
@@ -67,17 +68,15 @@ class Hook_cleanup_orphaned_tags
                 $sql .= ' WHERE r.' . $id_field . ' IS NULL AND ' . db_string_equal_to('m.meta_for_type', $seo_type_code);
                 $db = get_db_for($table);
                 $orphaned = $db->query($sql);
-                if (!empty($orphaned)) {
-                    foreach ($orphaned as $o) {
-                        $keywords = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword'], ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']]);
-                        foreach ($keywords as $k) {
-                            delete_lang($k['meta_keyword']);
-                        }
-                        $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']]);
-
-                        delete_lang($o['meta_description']);
-                        $GLOBALS['SITE_DB']->query_delete('seo_meta', ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']], '', 1);
+                foreach ($orphaned as $o) {
+                    $keywords = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword'], ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']]);
+                    foreach ($keywords as $k) {
+                        delete_lang($k['meta_keyword']);
                     }
+                    $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']]);
+
+                    delete_lang($o['meta_description']);
+                    $GLOBALS['SITE_DB']->query_delete('seo_meta', ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']], '', 1);
                 }
             }
         }

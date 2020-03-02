@@ -206,8 +206,8 @@ function find_member_content($member_id)
             (!in_array($hook, ['member', 'topic', 'post'/*topics and posts handled with special support elsewhere*/])) &&
             ($cma_info['table'] !== null) &&
             ($cma_info['submitter_field'] !== null) &&
-            (($cma_info['id_field'] !== null) &&
-            (strpos($cma_info['submitter_field'], ':') === false)) &&
+            ($cma_info['id_field'] !== null) &&
+            ($cma_info['add_time_field'] !== null) &&
             ($cma_info['commandr_filesystem_hook'] !== null)
         ) {
             $start = 0;
@@ -224,19 +224,18 @@ function find_member_content($member_id)
                 );
 
                 foreach ($rows as $row) {
-                    $content_id = @strval($row[$cma_info['id_field']]);
-                    $content_title = get_content_title($cma_info, $row, $content_id);
-
-                    list($zone, $url_bits, $hash) = page_link_decode(str_replace('_WILD', $content_id, $cma_info['view_page_link_pattern']));
-                    $content_url = build_url($url_bits, $zone, [], false, false, false, $hash);
+                    $content_id = $ob->get_id($row);
+                    $content_title = $ob->get_title($row);
+                    $content_url = $ob->get_view_url($row);
+                    $content_add_time = $ob->get_add_time($row);
 
                     $content[] = [
-                        $cma_info['content_type_label'],
+                        $ob->get_content_type_label($row),
                         $hook,
                         $content_id,
                         $content_title,
                         $content_url,
-                        $row[$cma_info['add_time_field']],
+                        $content_add_time,
                         false
                     ];
                 }

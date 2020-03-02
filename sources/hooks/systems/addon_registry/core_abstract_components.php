@@ -249,6 +249,8 @@ class Hook_addon_registry_core_abstract_components
                 'JS_TOOLTIP' => lorem_phrase(),
                 'CAPTION' => lorem_phrase(),
                 'URL' => placeholder_image_url(),
+                'WIDTH' => placeholder_number(),
+                'HEIGHT' => placeholder_number(),
             ]), null, '', true)
         ];
     }

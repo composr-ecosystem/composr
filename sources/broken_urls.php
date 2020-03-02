@@ -206,8 +206,7 @@ class BrokenURLScanner
                     $cma_info = $cma_ob->info();
                     if (!empty($cma_info['edit_page_link_pattern'])) {
                         $edit_page_link = str_replace('_WILD', $id, $cma_info['edit_page_link_pattern']);
-                        list($zone, $attributes,) = page_link_decode($edit_page_link);
-                        $edit_url = build_url($attributes, $zone);
+                        $edit_url = page_link_to_tempcode_url($edit_page_link);
                     }
                 }
             }

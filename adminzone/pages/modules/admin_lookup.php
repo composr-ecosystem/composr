@@ -413,8 +413,7 @@ class Module_admin_lookup
 
         $fields['PAGE_LINK'] = $row['page_link'];
 
-        list($zone, $attributes) = page_link_decode($row['page_link']);
-        $fields['URL'] = static_evaluate_tempcode(build_url($attributes, $zone));
+        $fields['URL'] = page_link_to_url($row['page_link']);
 
         $ip_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], get_module_zone('admin_lookup'));
         $fields['IP_ADDRESS'] = hyperlink($ip_url, $row['ip'], false, true);

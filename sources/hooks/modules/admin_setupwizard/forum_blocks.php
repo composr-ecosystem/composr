@@ -26,7 +26,7 @@ class Hook_sw_forum_blocks
     /**
      * Run function for blocks in the setup wizard.
      *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
+     * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
     public function get_blocks()
     {
@@ -35,8 +35,8 @@ class Hook_sw_forum_blocks
         }
 
         if (!has_no_forum()) {
-            return [['main_forum_news' => ['NO', 'NO'], 'main_forum_topics' => ['YES', 'NO']], ['side_forum_news' => ['PANEL_NONE', 'PANEL_NONE'], 'side_users_online' => ['PANEL_LEFT', 'PANEL_RIGHT']]];
+            return ['main_forum_news' => [BLOCK_POSITION_MAIN, null], 'main_forum_topics' => [BLOCK_POSITION_MAIN, null], 'side_forum_news' => [BLOCK_POSITION_PANEL, null], 'side_users_online' => [BLOCK_POSITION_PANEL, null]];
         }
-        return [[], []];
+        return [];
     }
 }

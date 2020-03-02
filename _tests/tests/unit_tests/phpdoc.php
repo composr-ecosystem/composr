@@ -87,6 +87,10 @@ class phpdoc_test_set extends cms_test_case
             'Find metadata about stats graphs that are provided by this stats hook.',
             'Generate final data from preprocessed data.',
             'Generate a stats graph filter form.',
+            'Find an entry content-type language string label.',
+            'Find an entry content-type universal label (doesn\'t depend on language pack).',
+            'Find an entry title.',
+            'Find an entry description.',
         ];
         $exceptions_regexp = '#' . implode('|', array_map('preg_quote', $exceptions)) . '#';
 

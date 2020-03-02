@@ -204,7 +204,7 @@ class Hook_fields_integer
         if (array_key_exists(0, $_value)) {
             $value = $_value[0]['cv_value'];
         } else {
-            $value = intval($default) - 1;
+            $value = (is_integer($default)) ? (intval($default) - 1) : db_get_first_id();
         }
 
         $test = null;

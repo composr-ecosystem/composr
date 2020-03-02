@@ -142,6 +142,8 @@ class Hook_ecommerce_permission
         }
         $fields->attach(form_input_list(do_lang_tempcode('PERMISSION_SCOPE_page'), do_lang_tempcode('DESCRIPTION_PERMISSION_SCOPE_page'), 'privilege_page' . $name_suffix, $pages, null, false, false));
 
+        require_code('content');
+
         $modules = new Tempcode();
         $temp = form_input_list_entry('', false, do_lang_tempcode('NA_EM'));
         $modules->attach($temp);
@@ -465,6 +467,7 @@ class Hook_ecommerce_permission
 
             $attachments = [];
 
+            // FUDGE: Specific implementation for downloads
             if (($row['p_type'] == 'member_category_access') && ($row['p_module'] == 'downloads')) {
                 $all_attached = true;
 
@@ -475,8 +478,8 @@ class Hook_ecommerce_permission
                 $download_category = $_download_category[0];
 
                 require_code('content');
-                list($content_title, , $cma_info, , , $url_safe) = content_get_details('download_category', $row['p_category']);
-                $content_type_label = do_lang($cma_info['content_type_label']);
+                list($content_title, , $cma_info, , , $url_safe, $cma_ob) = content_get_details('download_category', $row['p_category']);
+                $content_type_label = $cma_ob->get_content_type_label($row);
 
                 $cnt = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)', ['category_id' => intval($row['p_category'])]);
                 if ($cnt <= intval(get_option('download_cat_buy_max_emailed_count'))) {

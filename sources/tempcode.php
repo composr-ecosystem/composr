@@ -1164,7 +1164,11 @@ function handle_symbol_preprocessing($seq_part, &$children)
                     return;
                 }
                 if ($url_parts['id'] === null) {
-                    $url_parts['id'] = strval(db_get_first_id());
+                    if (($url_parts['page'] == 'members') && ($url_parts['type'] == 'view')) {
+                        $url_parts['id'] = strval(get_member()); // FUDGE
+                    } else {
+                        $url_parts['id'] = strval(db_get_first_id());
+                    }
                 }
 
                 // Does this URL arrangement support monikers?
@@ -1550,7 +1554,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
             if (isset($param[1])) {
                 foreach ($param as $i => $p) {
                     if (is_object($p)) {
-                        $param[$i] = $p->evaluate();
+                        $param[$i] = @$p->evaluate(); // The "@" is in case something is not passed
                     }
                 }
 

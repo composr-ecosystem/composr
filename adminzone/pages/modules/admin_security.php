@@ -72,6 +72,7 @@ class Module_admin_security
                 'reason_param_a' => 'SHORT_TEXT',
                 'reason_param_b' => 'SHORT_TEXT',
                 'percentage_score' => 'INTEGER',
+                'silent_to_staff_log' => 'BINARY',
             ]);
             $GLOBALS['SITE_DB']->create_index('hackattack', 'otherhacksby', ['ip']);
             $GLOBALS['SITE_DB']->create_index('hackattack', 'h_date_and_time', ['date_and_time']);
@@ -89,6 +90,7 @@ class Module_admin_security
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('hackattack', 'percentage_score', 'INTEGER', 100);
+            $GLOBALS['SITE_DB']->add_table_field('hackattack', 'silent_to_staff_log', 'BINARY');
         }
     }
 

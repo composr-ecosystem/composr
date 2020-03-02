@@ -530,24 +530,9 @@ HTML;
             $breadcrumbs[] = ['', $title_plain];
             breadcrumb_set_parents($breadcrumbs);
 
-            if ($type == 'video') {
-                $extension = get_file_extension($url);
-                require_code('mime_types');
-                $mime_type = get_mime_type($extension, has_privilege($myrow['submitter'], 'comcode_dangerous'));
-                set_extra_request_metadata([
-                    'identifier' => '_SEARCH:galleries:video:' . strval($id),
-                    'image' => $thumb_url,
-                    'video' => $url,
-                    'video:height' => strval($myrow['video_height']),
-                    'video:width' => strval($myrow['video_width']),
-                    'video:type' => $mime_type,
-                ], $myrow, 'video', strval($id));
-            } else {
-                set_extra_request_metadata([
-                    'identifier' => '_SEARCH:galleries:' . $type . ':' . strval($id),
-                    'image' => $url,
-                ], $myrow, 'image', strval($id));
-            }
+            set_extra_request_metadata([
+                'identifier' => '_SEARCH:galleries:' . $type . ':' . strval($id),
+            ], $myrow, $type, strval($id));
 
             $this->id = $id;
             $this->myrow = $myrow;
@@ -641,7 +626,7 @@ HTML;
         }
 
         // Subgalleries
-        $children = do_block('main_multi_content', ['param' => 'gallery', 'select' => $cat . '>', 'zone' => get_zone_name(), 'sort' => get_option('galleries_sort_order'), 'max' => get_option('subgallery_link_limit'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'render_if_empty' => '0', 'guid' => 'module']);
+        $children = do_block('main_multi_content', ['param' => 'gallery', 'pinned' => '', 'select' => $cat . '>', 'zone' => get_zone_name(), 'sort' => get_option('galleries_sort_order'), 'max' => get_option('subgallery_link_limit'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'render_if_empty' => '0', 'guid' => 'module']);
 
         // Views
         cms_register_shutdown_function_safe(function () use ($myrow, $cat) {

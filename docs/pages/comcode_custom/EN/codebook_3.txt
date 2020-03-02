@@ -635,6 +635,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]addon_disabled_<addon>[/tt] -- set this to '1' to disable a particular addon (may not be supported by all addons)
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
+  - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]:
   - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
   - [tt]lots_of_data_in_*[/tt] -- set this to '1', with '*' replaced with a database table name, if you want the Selectcode mechanism to work with recursive DB lookups rather than one huge flat lookup
@@ -936,7 +937,7 @@ Many of these are designed just for programmers, to speed up development. But so
 
 In this section we document all the scripts and tools that may be generally useful to you as a developer, with a few categories of exceptions:
 1) Commandr commands (go to Commandr and type [tt]commands[/tt] to see a list)
-2) Website cleanup tools (go to Admin Zone > Tools > Website cleanup tools)
+2) Cleanup tools (go to Admin Zone > Tools > Cleanup tools)
 3) Tools within the upgrader ([tt]upgrader.php[/tt])
 4) Scripts with code listings provided in the [page="_SEARCH:sup_professional_upgrading"]Professional upgrading[/page] tutorial
 5) IP address lookup (when you do an Investigate User in Composr you get various links to do investigations on the IP address like geographic lookup)

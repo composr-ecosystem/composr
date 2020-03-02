@@ -58,7 +58,7 @@ class Block_side_calendar
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('calendar'),
             date('d', utctime_to_usertime()),
             array_key_exists('days', $map) ? $map['days'] : '30',
-            array_key_exists('param', $map) ? $map['param'] : 'year',
+            array_key_exists('param', $map) ? $map['param'] : 'listing',
             date('Y-m', utctime_to_usertime()),
             array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         ]
@@ -112,7 +112,7 @@ PHP;
         $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
         $member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : get_member();
 
-        $type = empty($map['param']) ? 'year' : $map['param'];
+        $type = empty($map['param']) ? 'listing' : $map['param'];
 
         if ($type != 'listing') {
             $period_start = mktime(0, 0, 0, $month, 1, $year);
@@ -238,7 +238,7 @@ PHP;
         $num_days = array_key_exists('days', $map) ? intval($map['days']) : 30;
         $period_end = $period_start + 60 * 60 * 24 * $num_days;
 
-        $happenings = calendar_matches($member_id, $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start - 100 * 60 * 60 * 24, $period_end, $filter, true, $private, $check_perms);
+        $happenings = calendar_matches($member_id, $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start - 100 * 60 * 60 * 24, $period_end, $filter, true, $private, $check_perms, true);
 
         $days = [];
         for ($hap_i = 0; $hap_i < count($happenings); $hap_i++) {

@@ -26,7 +26,7 @@ class Hook_spam_heuristics_alien_code
     /**
      * Find the confidence score for a particular spam heuristic as applied to the current context.
      *
-     * @param  string $post_data Confidence score
+     * @param  string $post_data Posted data
      * @return integer Confidence score
      */
     public function assess_confidence($post_data)
@@ -36,7 +36,7 @@ class Hook_spam_heuristics_alien_code
             return 0;
         }
 
-        if (((strpos($post_data, '[url=http://') !== false) || (preg_match('#\[link(\s|\])#', $post_data) != 0)) && (preg_match('#<a(\s|\])#', $post_data) != 0)) {
+        if (is_posted_code_alien($post_data)) {
             return $score;
         }
 

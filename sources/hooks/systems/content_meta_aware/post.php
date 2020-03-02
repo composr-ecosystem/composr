@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_post
+class Hook_content_meta_aware_post extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -50,6 +50,7 @@ class Hook_content_meta_aware_post
             'content_type_universal_label' => 'Forum post',
 
             'db' => get_db_for('f_posts'),
+            'extra_where_sql' => 'p_intended_solely_for IS NULL',
             'table' => 'f_posts',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -68,6 +69,7 @@ class Hook_content_meta_aware_post
             'title_field_dereference' => false,
             'description_field' => 'p_post',
             'description_field_dereference' => true,
+            'description_field_supports_comcode' => true,
             'thumb_field' => null,
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/social/forum/forums',
@@ -88,6 +90,7 @@ class Hook_content_meta_aware_post
             'edit_time_field' => 'p_last_edit_time',
             'date_field' => 'p_time',
             'validated_field' => 'p_validated',
+            'validation_is_minor' => true,
 
             'seo_type_code' => null,
 
@@ -98,7 +101,6 @@ class Hook_content_meta_aware_post
             'search_hook' => 'cns_posts',
             'rss_hook' => null,
             'attachment_hook' => 'cns_post',
-            'unvalidated_hook' => 'cns_posts',
             'notification_hook' => null,
             'sitemap_hook' => null,
 
@@ -119,11 +121,33 @@ class Hook_content_meta_aware_post
             'support_spam_heuristics' => 'post',
 
             'actionlog_regexp' => '\w+_POST',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get content title of a content row.
+     *
+     * @param  array $row The database row for the content
+     * @param  integer $render_type A FIELD_RENDER_* constant
+     * @param  boolean $falled_back_to_id Whether this has had to fall back to an ID due to missing title (returned by reference)
+     * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
+     * @return mixed Content title (string or Tempcode, depending on $render_type)
+     */
+    public function get_title($row, $render_type = 1, &$falled_back_to_id = false, $resource_fs_style = false)
+    {
+        $falled_back_to_id = null;
+        $ret = parent::get_title($row, $render_type, $falled_back_to_id, $resource_fs_style);
+        if ($falled_back_to_id) {
+            $ret = do_lang('cns:FORUM_POST_NUMBERED', ltrim($ret, '#'));
+        }
+        return $ret;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -134,7 +158,7 @@ class Hook_content_meta_aware_post
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('cns_posts2');
 

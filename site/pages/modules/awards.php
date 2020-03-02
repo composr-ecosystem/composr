@@ -222,7 +222,7 @@ class Module_awards
                 $award_content_row = content_get_row($myrow['content_id'], $info);
 
                 if ($award_content_row !== null) {
-                    $rendered_content = $ob->run($award_content_row, '_SEARCH', false, true);
+                    $rendered_content = $ob->render_box($award_content_row, '_SEARCH', false, true);
 
                     if (($award_type_row['a_show_awardee'] == 0) || (is_guest($myrow['member_id']))) {
                         $awardee = '';
@@ -291,7 +291,7 @@ class Module_awards
             $award_content_row = content_get_row($myrow['content_id'], $info);
 
             if ($award_content_row !== null) {
-                $rendered_content = $ob->run($award_content_row, '_SEARCH', false, true);
+                $rendered_content = $ob->render_box($award_content_row, '_SEARCH', false, true);
 
                 if (($award_type_row['a_show_awardee'] == 0) || (is_guest($myrow['member_id']))) {
                     $awardee = '';

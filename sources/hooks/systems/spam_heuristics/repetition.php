@@ -26,7 +26,7 @@ class Hook_spam_heuristics_repetition
     /**
      * Find the confidence score for a particular spam heuristic as applied to the current context.
      *
-     * @param  string $post_data Confidence score
+     * @param  string $post_data Posted data
      * @return integer Confidence score
      */
     public function assess_confidence($post_data)
@@ -46,10 +46,14 @@ class Hook_spam_heuristics_repetition
                     $where = [
                         $cma_info['submitter_field'] => get_member(),
                     ];
+                    $description_field = $cma_info['description_field'];
+                    if (is_array($description_field)) {
+                        $description_field = array_shift($description_field); // First bit is actual DB contents
+                    }
                     if ($cma_info['description_field_dereference']) {
-                        $where[$GLOBALS['SITE_DB']->translate_field_ref($cma_info['description_field'])] = $data;
+                        $where[$GLOBALS['SITE_DB']->translate_field_ref($description_field)] = $data;
                     } else {
-                        $where[$cma_info['description_field']] = $data;
+                        $where[$description_field] = $data;
                     }
 
                     $threshold = 60 * 60 * intval(get_option('spam_heuristic_repetition'));

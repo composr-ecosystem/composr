@@ -73,13 +73,13 @@ class Hook_sitemap_topic extends Hook_sitemap_content
      * Also find out what language fields we should load up for the table (returned by reference).
      *
      * @param  ?array $cma_info CMA info (null: standard for this hook)
-     * @param  string $table_prefix Table prefix
+     * @param  ?string $table_alias Table alias (null: none)
      * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
      * @return array Map between field name and field type
      */
-    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
+    protected function select_fields($cma_info = null, $table_alias = null, &$lang_fields_filtered = null)
     {
-        $ret = parent::select_fields($cma_info, $table_prefix, $lang_fields_filtered);
+        $ret = parent::select_fields($cma_info, $table_alias, $lang_fields_filtered);
         $ret[] = 't_cache_num_posts';
         $ret[] = 't_cache_last_time';
         return $ret;

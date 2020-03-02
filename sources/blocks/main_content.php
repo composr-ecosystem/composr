@@ -135,7 +135,7 @@ PHP;
         // Read display parameters
         $guid = isset($map['guid']) ? $map['guid'] : '';
         $zone = isset($map['zone']) ? $map['zone'] : '_SEARCH';
-        $title = isset($map['title']) ? $map['title'] : '';
+        $title = isset($map['title']) ? make_string_tempcode(escape_html($map['title'])) : null;
         $give_context = (isset($map['give_context']) ? $map['give_context'] : '0') == '1';
         $include_breadcrumbs = (isset($map['include_breadcrumbs']) ? $map['include_breadcrumbs'] : '0') == '1';
 
@@ -144,15 +144,6 @@ PHP;
         $info = $object->info($zone, true, ($select_b == '') ? null : $select_b);
         if ($info === null) {
             return do_template('RED_ALERT', ['_GUID' => 'tbt2956j6oneq4j22bap5rbftytfigyg', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
-        }
-
-        // Block title
-        if ($title === null) {
-            if ($content_id === null) {
-                $title = do_lang('RANDOM_CONTENT', do_lang($info['content_type_label']));
-            } else {
-                $title = do_lang($info['content_type_label']);
-            }
         }
 
         // Moniker?
@@ -165,18 +156,17 @@ PHP;
         }
 
         // Submit URL
-        $submit_url = $info['add_url'];
-        if ($submit_url !== null) {
-            $submit_url = page_link_to_url($submit_url);
+        if ($info['add_url'] !== null) {
+            $submit_url = page_link_to_tempcode_url($info['add_url']);
         } else {
-            $submit_url = '';
+            $submit_url = new Tempcode();
         }
         if (!has_actual_page_access(null, $info['cms_page'], null, null)) {
-            $submit_url = '';
+            $submit_url = new Tempcode();
         }
 
         if ($randomise) { // Randomisation mode
-            list($rows) = content_rows_for_type($content_type, $days, '', '', 'random', 1, 1, $select, $select_b, $filter, $check_perms);
+            list($rows) = content_rows_for_type($content_type, $days, '', '', 'random', 0, 1, $select, $select_b, $filter, $check_perms);
         } else { // Select mode
             if ($content_type == 'comcode_page') { // FUDGE
                 // Try and force a parse of the page, so it's in the system
@@ -206,23 +196,39 @@ PHP;
                 return new Tempcode();
             }
 
+            if ($title === null) {
+                if ($content_id === null) {
+                    $title = do_lang('RANDOM_CONTENT', do_lang($info['content_type_label']));
+                } else {
+                    $title = do_lang($info['content_type_label']);
+                }
+            }
+
             return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => ($guid != '') ? $guid : '12d8cdc62cd78480b83c8daaaa68b686',
                 'BLOCK_ID' => $block_id,
                 'HIGH' => true,
                 'TITLE' => $title,
                 'MESSAGE' => do_lang_tempcode('MISSING_RESOURCE', escape_html($content_type)),
-                'ADD_NAME' => content_language_string($content_type, 'ADD'),
-                'SUBMIT_URL' => str_replace('=%21', '__ignore=1', $submit_url),
+                'ADD_NAME' => $object->content_language_string('ADD'),
+                'SUBMIT_URL' => $submit_url,
             ]);
         }
 
         $row = $rows[0];
 
+        // Block title
+        if ($title === null) {
+            if ($content_id === null) {
+                $title = do_lang_tempcode('RANDOM_CONTENT', $object->get_content_type_label($row));
+            } else {
+                $title = $object->get_content_type_label($row);
+            }
+        }
+
         // Links...
 
         $content_id = extract_content_str_id_from_data($row, $info);
-        $submit_url = str_replace('%21', $content_id, $submit_url);
 
         if ($info['archive_url'] !== null) {
             $archive_url = page_link_to_tempcode_url($info['archive_url']);
@@ -231,24 +237,25 @@ PHP;
         }
 
         if ((isset($map['no_links'])) && ($map['no_links'] == '1')) {
-            $submit_url = '';
+            $submit_url = new Tempcode();
             $archive_url = new Tempcode();
         }
 
         // Render...
 
-        $rendered_content = $object->run($row, $zone, $give_context, $include_breadcrumbs, null, false, $guid);
+        $rendered_content = $object->render_box($row, $zone, $give_context, $include_breadcrumbs, null, false, $guid);
 
         $raw_date = ($info['date_field'] == '') ? null : $row[$info['date_field']];
 
         return do_template('BLOCK_MAIN_CONTENT', [
             '_GUID' => ($guid != '') ? $guid : 'fce1eace6008d650afc0283a7be9ec30',
             'BLOCK_ID' => $block_id,
-            'TYPE' => do_lang_tempcode($info['content_type_label']),
+            'TYPE' => $object->get_content_type_label($row),
             'TITLE' => $title,
             'RAW_DATE' => ($raw_date === null) ? '' : strval($raw_date),
             'DATE' => ($raw_date === null) ? new Tempcode() : get_timezoned_date_time_tempcode($raw_date),
             'CONTENT' => $rendered_content,
+            'ADD_NAME' => $object->content_language_string('ADD'),
             'SUBMIT_URL' => $submit_url,
             'ARCHIVE_URL' => $archive_url,
         ]);

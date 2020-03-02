@@ -156,6 +156,7 @@ class Hook_addon_registry_awards
                 'RAW_AWARD_DATE' => placeholder_date_raw(),
                 'AWARD_DATE' => placeholder_date(),
                 'CONTENT' => lorem_phrase_html(),
+                'ADD_NAME' => lorem_phrase(),
                 'SUBMIT_URL' => placeholder_url(),
                 'ARCHIVE_URL' => placeholder_url(),
             ]), null, '', true)

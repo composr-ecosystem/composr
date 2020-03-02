@@ -87,7 +87,7 @@ Composr has 2 advanced banning features to deal with this:
 
 Reasoned bans may often be used to scare a spammer that you have researched but otherwise cannot contact. You can provide customised responses to them to let them know you are treating their spam seriously.
 
-Configure reasoned bans in XML from Admin Zone > Setup > Configuration > Configure advanced banning.
+Configure reasoned bans in XML from Admin Zone > Setup > Configuration > Configure advanced banning -- or by hand-editing [tt]data_custom/xml_config/advanced_banning.xml[/tt] based on the default [tt]data/xml_config/advanced_banning.xml[/tt].
 
 Here's an example based on some actual spam that was affecting the compo.sr forums:
 [code="XML"]
@@ -103,6 +103,9 @@ Here we are automatically banning users posting a link to a certain website; upo
 There is also a [tt]redirect_url[/tt] parameter for [tt]reasonedBan[/tt] that we are not using, that will redirect the banned member to a URL of your choice.
 
 This system may seem extreme, but sometimes extreme measures are needed to deal with the most persistent of spammers. It could also be used to deal with people posting far-right/far-left/Islamist material that is designed to radicalise people into violent revolution -- by banning such people and redirecting those people to a deradicalisation programme. 
+
+Automatic bans are similar to the security alerts (hack-attacks). The difference is hack-attacks are general hacker/spammer signals Composr is hard-coded to be able to detect, are individually logged as incidents, and cumulate towards IP bans -- while automatic bans are custom defined by the webmaster for clear specific threats, resulting in immediate configurable banning.
+The advanced banning configuration also has [tt]<hackattack>[/tt] rules, which are documented in the [page="_SEARCH:tut_security"]Security[/page] tutorial.
 
 [title="2"]The Action Log (audit trails)[/title]
 

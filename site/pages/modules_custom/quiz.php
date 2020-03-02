@@ -26,14 +26,14 @@ function init__site__pages__modules_custom__quiz($in)
     }
 
     $in = override_str_replace_exactly(
-        "\$type = 'Test';",
+        "\$entry_id = \$GLOBALS['SITE_DB']->query_insert('quiz_entries', [",
         "
-        <ditto>
         if (addon_installed('points')) {
             require_code('points2');
             \$cost = \$quiz['q_points_for_passing'] / 2;
             charge_member(get_member(), \$cost, 'Entered a test');
         }
+        <ditto>
         ",
         $in
     );

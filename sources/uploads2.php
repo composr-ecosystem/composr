@@ -36,11 +36,11 @@ function init__uploads2()
  * @param  string $upload_directory Upload directory
  * @param  string $upload_field Upload field
  * @param  ?array $where Limit reorganisation to rows matching this WHERE map (null: none)
- * @param  ?array $cma_info Fake content-meta-aware info (null: load real info from $content_type)
  * @param  boolean $append_content_type_to_upload_dir "$upload_directory" should become "$upload_directory/$content_type"
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
+ * @param  ?array $fake_cma_info A map of CMA info overriddes, for complicated cases (null: real info from $content_type)
  */
-function reorganise_uploads($content_type, $upload_directory, $upload_field, $where = [], $cma_info = null, $append_content_type_to_upload_dir = false, $tolerate_errors = false)
+function reorganise_uploads($content_type, $upload_directory, $upload_field, $where = [], $append_content_type_to_upload_dir = false, $tolerate_errors = false, $fake_cma_info = null)
 {
     global $REORGANISE_UPLOADS_ERRORMSGS;
 
@@ -52,26 +52,20 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
     }
     $flat = ($reorganise_uploads == '1');
 
-    if ($cma_info === null) {
-        require_code('content');
-
-        $ob = get_content_object($content_type);
-        $cma_info = $ob->info();
+    require_code('content');
+    $cma_ob = get_content_object($content_type);
+    if ($fake_cma_info === null) {
+        $cma_info = $cma_ob->info();
+        $table = $cma_info['table'];
+        $table_extended = $table;
+    } else {
+        $cma_info = ['fake' => true] + $fake_cma_info + $cma_ob->info();
+        $table = $cma_info['table'];
+        $table_extended = isset($cma_info['table_extended']) ? $cma_info['table_extended'] : $table;
     }
 
-    $table = $cma_info['table'];
-    $table_extended = isset($cma_info['table_extended']) ? $cma_info['table_extended'] : $table;
-
-    $select = [
-        $cma_info['id_field'],
-        $upload_field,
-    ];
-    if ($cma_info['parent_category_field'] !== null) {
-        $select[] = $cma_info['parent_category_field'];
-    }
-    if ($cma_info['title_field'] !== null) {
-        $select[] = $cma_info['title_field'];
-    }
+    $select = [$upload_field];
+    append_content_select_for_fields($select, $cma_info, ['id', 'title', 'parent_category']);
 
     $start = 0;
     $max = 100;
@@ -92,7 +86,7 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
                 $parts = explode("\n", $current_upload_url);
                 $new_upload_url = '';
                 foreach ($parts as $current_part) {
-                    $new_part = _reorganise_content_row_upload([$upload_field => $current_part] + $row, $content_type, $upload_directory, $upload_field, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors);
+                    $new_part = _reorganise_content_row_upload([$upload_field => $current_part] + $row, $content_type, $upload_directory, $upload_field, $cma_ob, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors);
 
                     if ($current_part != '') {
                         $new_upload_url .= "\n";
@@ -102,7 +96,7 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
             } else {
                 // Single-line...
 
-                $new_upload_url = _reorganise_content_row_upload($row, $content_type, $upload_directory, $upload_field, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors);
+                $new_upload_url = _reorganise_content_row_upload($row, $content_type, $upload_directory, $upload_field, $cma_ob, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors);
             }
 
             // Update database
@@ -129,13 +123,14 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
  * @param  string $content_type Content type
  * @param  string $upload_directory Upload directory
  * @param  string $upload_field Upload field
+ * @param  object $cma_ob Content-meta-aware object
  * @param  array $cma_info Content-meta-aware info
  * @param  boolean $flat Whether to just have a simple flat organisational scheme
  * @param  boolean $append_content_type_to_upload_dir "$upload_directory" should become "$upload_directory/$content_type"
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  * @return ?URLPATH New URL (null: no change)
  */
-function _reorganise_content_row_upload($row, $content_type, $upload_directory, $upload_field, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors)
+function _reorganise_content_row_upload($row, $content_type, $upload_directory, $upload_field, $cma_ob, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors)
 {
     global $REORGANISE_UPLOADS_ERRORMSGS;
 
@@ -175,15 +170,23 @@ function _reorganise_content_row_upload($row, $content_type, $upload_directory, 
     $ext = '.' . get_file_extension(rawurldecode($current_upload_url));
     $optimal_filename_stub = basename(rawurldecode($current_upload_url), $ext);
     $optimal_filename_stub = preg_replace('#\..*$#', '', $optimal_filename_stub); // Strip any secondary file extensions
-    if ($cma_info['title_field'] !== null) {
-        if ($cma_info['title_field_dereference']) {
-            $content_title = get_translated_text($row[$cma_info['title_field']], $cma_info['db']);
-            if (get_option('moniker_transliteration') == '1') {
-                require_code('character_sets');
-                $content_title = transliterate_string($content_title);
-            }
+
+    $title_field = $cma_info['title_field'];
+    if ($title_field !== null) {
+        if (empty($cma_info['fake'])) {
+            $content_title = $cma_ob->get_title($row);
         } else {
-            $content_title = $row[$cma_info['title_field']];
+            // Fake
+            if ($cma_info['title_field_dereference']) {
+                $content_title = get_translated_text($row[$cma_info['title_field']], $cma_info['db']);
+            } else {
+                $content_title = $row[$cma_info['title_field']];
+            }
+        }
+
+        if (get_option('moniker_transliteration') == '1') {
+            require_code('character_sets');
+            $content_title = transliterate_string($content_title);
         }
 
         // Simplify filename back of its suffixing

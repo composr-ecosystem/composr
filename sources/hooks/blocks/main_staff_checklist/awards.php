@@ -78,13 +78,11 @@ class Hook_checklist_awards
 
                 $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-                $url = $details['add_url'];
-                if ($url !== null) {
-                    $url = page_link_to_url($url);
+                if ($details['add_url'] !== null) {
+                    $url = page_link_to_tempcode_url($details['add_url']);
                 } else {
-                    $url = '';
+                    $url = new Tempcode();
                 }
-                $url = str_replace('=!', '_ignore=1', $url);
 
                 $task = do_lang_tempcode('_GIVE_AWARD', escape_html(get_translated_text($award['a_title'])));
 

@@ -56,13 +56,13 @@ function dispatch_member_mention_notifications($content_type, $content_id, $subm
 
         $cma_ob = get_content_object($content_type);
         $info = $cma_ob->info();
-        list($content_title, $submitter_id, $cma_info, , , $content_url_email_safe) = content_get_details($content_type, $content_id);
+        list($content_title, $submitter_id, $cma_info, $row, , $content_url_email_safe, $cma_ob) = content_get_details($content_type, $content_id);
 
         if ($content_title === null) {
             continue;
         }
 
-        $content_type_title = do_lang($cma_info['content_type_label']);
+        $content_type_title = static_evaluate_tempcode($cma_ob->get_content_type_label($row));
 
         // Special case. Would prefer not to hard-code, but important for usability
         if (($content_type == 'post') && ($content_title == '') && (get_forum_type() == 'cns')) {
@@ -74,7 +74,7 @@ function dispatch_member_mention_notifications($content_type, $content_id, $subm
             $cma_content_row = content_get_row($content_id, $info);
             if ($cma_content_row !== null) {
                 push_no_keep_context();
-                $rendered = static_evaluate_tempcode($cma_ob->run($cma_content_row, '_SEARCH', true, true));
+                $rendered = static_evaluate_tempcode($cma_ob->render_box($cma_content_row, '_SEARCH', true, true));
                 pop_no_keep_context();
             }
         }

@@ -411,7 +411,6 @@ class Module_downloads
             // Metadata
             set_extra_request_metadata([
                 'identifier' => '_SEARCH:downloads:view:' . strval($id),
-                'image' => $image_url,
             ], $myrow, 'download', strval($id));
 
             $this->id = $id;
@@ -508,7 +507,7 @@ class Module_downloads
 
         // Get category contents
         //  Subcategories:
-        $subcategories = do_block('main_multi_content', ['param' => 'download_category', 'select' => strval($category_id) . '>', 'zone' => get_zone_name(), 'sort' => 'title', 'max' => get_option('download_subcats_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'render_if_empty' => '0', 'guid' => 'module']);
+        $subcategories = do_block('main_multi_content', ['param' => 'download_category', 'pinned' => '', 'select' => strval($category_id) . '>', 'zone' => get_zone_name(), 'sort' => 'title', 'max' => get_option('download_subcats_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'render_if_empty' => '0', 'guid' => 'module']);
         //  Downloads:
         if (get_option('downloads_subcat_narrowin') == '1') {
             $select = strval($category_id) . '*';
@@ -516,7 +515,7 @@ class Module_downloads
             $select = strval($category_id) . '#';
         }
         $filter = either_param_string('active_filter', '');
-        $downloads = do_block('main_multi_content', ['param' => 'download', 'select' => $select, 'zone' => get_zone_name(), 'sort' => $sort, 'max' => get_option('download_entries_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'attach_to_url_filter' => '1', 'filter' => $filter, 'block_id' => 'module', 'guid' => 'module']);
+        $downloads = do_block('main_multi_content', ['param' => 'download', 'pinned' => '', 'select' => $select, 'zone' => get_zone_name(), 'sort' => $sort, 'max' => get_option('download_entries_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'attach_to_url_filter' => '1', 'filter' => $filter, 'block_id' => 'module', 'guid' => 'module']);
 
         // Management links
         if (has_actual_page_access(null, 'cms_downloads', null, ['downloads', strval($category_id)], 'submit_midrange_content')) {

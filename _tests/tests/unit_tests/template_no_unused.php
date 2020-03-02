@@ -197,6 +197,16 @@ class template_no_unused_test_set extends cms_test_case
             'HEADER_SIDE',
             'HEADER_MODERN',
             'STATS_GRAPH',
+            'BLOCK_MAIN_MULTI_CONTENT_TABLE',
+            'BLOCK_MAIN_MULTI_CONTENT__FOOTER',
+            'BLOCK_MAIN_MULTI_CONTENT_LIST',
+            'BLOCK_MAIN_MULTI_CONTENT_MOSAIC',
+            'BLOCK_MAIN_MULTI_CONTENT_SLIDER',
+            'BLOCK_MAIN_MULTI_CONTENT_GRID',
+            'BLOCK_MAIN_MULTI_CONTENT_TILES',
+            'BLOCK_MAIN_MULTI_CONTENT__HEADER',
+            'BLOCK_MAIN_MULTI_CONTENT_CAROUSEL',
+            'BLOCK_MAIN_MULTI_CONTENT_BOXES',
         ];
 
         $themes = find_all_themes();

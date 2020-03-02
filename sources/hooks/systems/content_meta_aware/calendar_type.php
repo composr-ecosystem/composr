@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_calendar_type
+class Hook_content_meta_aware_calendar_type extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -43,6 +43,7 @@ class Hook_content_meta_aware_calendar_type
             'content_type_universal_label' => 'Calendar type',
 
             'db' => $GLOBALS['SITE_DB'],
+            'extra_where_sql' => 'r.id<>' . strval(db_get_first_id()),
             'table' => 'calendar_types',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -61,6 +62,7 @@ class Hook_content_meta_aware_calendar_type
             'title_field_dereference' => true,
             'description_field' => null,
             'description_field_dereference' => true,
+            'description_field_supports_comcode' => true,
             'thumb_field' => 't_logo',
             'thumb_field_is_theme_image' => true,
             'alternate_icon_theme_image' => null,
@@ -91,7 +93,6 @@ class Hook_content_meta_aware_calendar_type
             'search_hook' => null,
             'rss_hook' => null,
             'attachment_hook' => null,
-            'unvalidated_hook' => null,
             'notification_hook' => null,
             'sitemap_hook' => 'calendar_type',
 
@@ -112,11 +113,14 @@ class Hook_content_meta_aware_calendar_type
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_CALENDAR_TYPE',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -127,10 +131,42 @@ class Hook_content_meta_aware_calendar_type
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('calendar');
 
         return render_calendar_type_box($row, $zone, $give_context, $guid);
+    }
+
+    /**
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        require_lang('calendar');
+
+        $headings = [];
+
+        $headings['entry_count'] = do_lang_tempcode('EVENTS');
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+
+        $num_entries = $GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)', ['e_type' => $row['id'], 'validated' => 1]);
+        $keymap['entry_count'] = escape_html(integer_format($num_entries));
+
+        return $keymap;
     }
 }

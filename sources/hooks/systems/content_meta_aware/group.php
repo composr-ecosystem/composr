@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_group
+class Hook_content_meta_aware_group extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -61,6 +61,7 @@ class Hook_content_meta_aware_group
             'title_field_dereference' => true,
             'description_field' => null,
             'description_field_dereference' => null,
+            'description_field_supports_comcode' => null,
             //'thumb_field' => 'g_rank_image',  Looks ugly, often missing and random sizes
             //'thumb_field_is_theme_image' => true,
             'thumb_field' => null,
@@ -93,7 +94,6 @@ class Hook_content_meta_aware_group
             'search_hook' => null,
             'rss_hook' => null,
             'attachment_hook' => null,
-            'unvalidated_hook' => null,
             'notification_hook' => null,
             'sitemap_hook' => 'group',
 
@@ -114,11 +114,46 @@ class Hook_content_meta_aware_group
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_GROUP',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        $headings = [];
+
+        $headings['entry_count'] = do_lang_tempcode('COUNT_MEMBERS');
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        require_code('cns_groups2');
+
+        $keymap = [];
+
+        $num_members = cns_get_group_members_raw_count($row['id']);
+        $keymap['entry_count'] = escape_html(integer_format($num_members));
+
+        return $keymap;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -129,7 +164,7 @@ class Hook_content_meta_aware_group
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('cns_groups');
 

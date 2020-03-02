@@ -3233,7 +3233,7 @@ END;
     $clauses[] = <<<END
 <RequireAll>
 require all granted
-# IP bans go here (leave this comment here! If this file is writeable, Composr will write in IP bans below, in sync with its own DB-based banning - this makes DOS/hack attack prevention stronger)
+# IP bans go here (leave this comment here! If this file is writeable, Composr will write in IP bans below, in sync with its own DB-based banning - this makes DOS/hack-attack prevention stronger)
 # Require not ip xxx.xx.x.x (leave this comment here!)
 </RequireAll>
 END;

@@ -43,6 +43,6 @@ class currency_test_set extends cms_test_case
     {
         $test = currency_convert(100.00, 'MMK', 'GBP', 0, 'conv_api');
         $this->assertTrue($test > 0.00, 'Expected GBP value to be more than 0.00, got ' . float_format($test, 2));
-        $this->assertTrue($test < 100.00, 'Expected GBP value to be less than 10.00, got ' . float_format($test, 2)); // GBP is worth *much* more
+        $this->assertTrue($test < 110.00, 'Expected GBP value to be less than 110.00, got ' . float_format($test, 2)); // GBP is worth *much* more
     }
 }

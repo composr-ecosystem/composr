@@ -182,7 +182,6 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/edit_under.php',
             'sources/hooks/systems/config/enable_animations.php',
             'sources/hooks/systems/config/breadcrumb_crop_length.php',
-            'sources/hooks/systems/config/brute_force_instant_ban.php',
             'sources/hooks/systems/config/brute_force_login_minutes.php',
             'sources/hooks/systems/config/brute_force_threshold.php',
             'sources/hooks/systems/config/reorganise_uploads.php',

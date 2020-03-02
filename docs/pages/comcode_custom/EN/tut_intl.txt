@@ -436,7 +436,7 @@ If you look under the [tt]themes/default/images/[/tt] directory you will see the
 
 For example, we have [tt]themes/default/images/EN/chatcode_editor/new_room.png[/tt]. It is stored under "EN" because it contains some English text within the image. You could also have [tt]themes/default/images/FR/chatcode_editor/new_room.png[/tt] as the French version of this image.
 
-Make sure you clear your theme image cache (Admin Zone > Tools > Website cleanup tools) after doing the substitution.
+Make sure you clear your theme image cache (Admin Zone > Tools > Cleanup tools) after doing the substitution.
 
 As these are SVG files they may be edited directly in a tool such as Adobe Illustrator.
 

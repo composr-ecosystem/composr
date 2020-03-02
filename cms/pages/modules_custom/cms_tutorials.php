@@ -173,7 +173,7 @@ class Module_cms_tutorials extends Standard_crud_module
         ];
         $fh[] = do_lang_tempcode('ACTIONS');
 
-        $header_row = results_field_title($fh, $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row($fh, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $fields = new Tempcode();
 

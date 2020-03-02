@@ -4,6 +4,7 @@
 {!UNVALIDATED_MAIL_C@}
 
 {!DETAILS_LIST@}
- - {!TYPE@} {TYPE@}
- - {!IDENTIFIER@} {ID@}
+ - {!TITLE@}: {TITLE@}
+ - {!TYPE@}: {CONTENT_TYPE_LABEL@}, {TYPE@}
+ - {!IDENTIFIER@}: {ID@}
  - [url="{!CLICK_TO_EDIT#}"]{URL@}[/url]

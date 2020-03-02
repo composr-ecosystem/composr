@@ -108,10 +108,15 @@ class Hook_sw_news
     /**
      * Run function for blocks in the setup wizard.
      *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
+     * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
     public function get_blocks()
     {
-        return [['main_news' => ['NO', 'YES']], ['side_news_archive' => ['PANEL_NONE', 'PANEL_NONE'], 'side_news_categories' => ['PANEL_RIGHT', 'PANEL_RIGHT'], 'side_news' => ['PANEL_NONE', 'PANEL_NONE']]];
+        return [
+            'main_news' => [BLOCK_POSITION_MAIN, null],
+            'side_news_archive' => [BLOCK_POSITION_PANEL, null],
+            'side_news_categories' => [BLOCK_POSITION_PANEL, null],
+            'side_news' => [BLOCK_POSITION_PANEL, null],
+        ];
     }
 }

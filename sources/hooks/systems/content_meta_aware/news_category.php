@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_news_category
+class Hook_content_meta_aware_news_category extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -61,7 +61,8 @@ class Hook_content_meta_aware_news_category
             'title_field_dereference' => true,
             'description_field' => null,
             'description_field_dereference' => true,
-            'thumb_field' => 'CALL: generate_news_category_thumb_url',
+            'description_field_supports_comcode' => true,
+            'thumb_field' => ['nc_img', 'CALL: generate_news_category_thumb_url'],
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
@@ -91,7 +92,6 @@ class Hook_content_meta_aware_news_category
             'search_hook' => null,
             'rss_hook' => null,
             'attachment_hook' => null,
-            'unvalidated_hook' => null,
             'notification_hook' => null,
             'sitemap_hook' => 'news_category',
 
@@ -112,11 +112,47 @@ class Hook_content_meta_aware_news_category
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_NEWS_CATEGORY',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
+            'prominence_custom_sort' => '(SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'news WHERE news_category=r.id AND validated=1)',
+            'prominence_custom_sort_dir' => 'DESC',
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        $headings = [];
+
+        $headings['entry_count'] = do_lang_tempcode('ENTRIES');
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+
+        $num_entries = $GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)', ['validated' => 1, 'news_category' => $row['id']]);
+        $num_entries += $GLOBALS['SITE_DB']->query_select_value('news n JOIN ' . get_table_prefix() . 'news_category_entries c ON c.news_entry=n.id', 'COUNT(*)', ['validated' => 1, 'news_entry_category' => $row['id']]);
+        $keymap['entry_count'] = escape_html(integer_format($num_entries));
+
+        return $keymap;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -127,7 +163,7 @@ class Hook_content_meta_aware_news_category
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('news');
 
@@ -138,11 +174,10 @@ class Hook_content_meta_aware_news_category
 /**
  * Find an entry thumbnail.
  *
- * @param  array $url_parts The URL parts to search from
  * @param  array $row Database row of entry
  * @return string The thumbnail URL
  */
-function generate_news_category_thumb_url($url_parts, $row)
+function generate_news_category_thumb_url($row)
 {
     require_code('news');
     return get_news_category_image_url($row['nc_img']);

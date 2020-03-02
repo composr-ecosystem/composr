@@ -612,42 +612,34 @@ function workflow_update_handler()
     // Validation is stored, for the most part, in a 'validated' field of the content's table. Those which store it elsewhere must specify this via their content-meta-aware info.
 
     // Grab lookup data from the workflows database
-    $content_details = $GLOBALS['SITE_DB']->query_select('workflow_content', ['content_type', 'content_id'], ['id' => $content_id], '', 1);
-    if (empty($content_details)) {
+    $rows = $GLOBALS['SITE_DB']->query_select('workflow_content', ['content_type', 'content_id'], ['id' => $content_id], '', 1);
+    if (empty($rows)) {
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html('workflow_content->' . strval($content_id))));
     }
+    $row = $rows[0];
 
     // Now use it to find this content's validation field...
 
     require_code('content');
-    $ob = get_content_object($content_details[0]['content_type']);
+    $ob = get_content_object($row['content_type']);
 
     // Grab information about the hook
     $info = $ob->info();
     $content_table = $info['table'];
-    $content_field = $info['id_field'];
-    $title_field = $info['title_field'];
-    $title_field_dereference = false;
-    $content_validated_field = 'validated';
-    if (array_key_exists('validated_field', $info)) {
-        $content_validated_field = $info['validated_field'];
-    }
-    if (array_key_exists('title_field', $info)) {
-        $title_field = $info['title_field'];
-    }
-    if (array_key_exists('title_field_dereference', $info)) {
-        $title_field_dereference = $info['title_field_dereference'];
-    }
+    $content_id_field = $info['id_field'];
+    $content_validated_field = $info['validated_field'];
 
     // Now we have the details required to lookup this entry, wherever it is. Let's get its current validation status and compare to what the workflow would have it be
-    $content_row = $GLOBALS['SITE_DB']->query_select($content_table, [$title_field, $content_validated_field], [$content_field => $info['id_field_numeric'] ? intval($content_details[0]['content_id']) : $content_details[0]['content_id']], '', 1);
+    $select = [];
+    append_content_select_for_fields($select, $info, ['validated', 'title']);
+    $content_rows = $GLOBALS['SITE_DB']->query_select($content_table, $select, [$content_id_field => $info['id_field_numeric'] ? intval($row['content_id']) : $row['content_id']], '', 1);
 
     // Make sure we've actually found something
-    if (!isset($content_row[0])) {
-        $content_id = $content_details[0]['content_id'];
-        $validated_field = $content_id->content_validated_field;
-        warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($content_table . '->' . $content_field . '->' . $validated_field)));
+    if (empty($content_rows)) {
+        $content_id = $row['content_id'];
+        warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($content_table . '->' . $content_id_field . '->' . $content_validated_field)));
     }
+    $content_row = $content_rows[0];
 
     // In order for content to go live all points must be approved. See if all points have been approved. If so, none will have status 0
     $all_points_approved = false;
@@ -656,15 +648,12 @@ function workflow_update_handler()
     }
 
     // We need to act if the validation status is different to the total completion of the workflow
-    if (($content_row[0][$content_validated_field] == 1) != $all_points_approved) {
+    if (($content_row[$content_validated_field] == 1) != $all_points_approved) {
         $success_message = $all_points_approved ? do_lang('APPROVAL_COMPLETE') : do_lang('APPROVAL_REVOKED');
-        $GLOBALS['SITE_DB']->query_update($content_table, [$content_validated_field => $all_points_approved ? 1 : 0], [$content_field => $info['id_field_numeric'] ? intval($content_details[0]['content_id']) : $content_details[0]['content_id']], '', 1);
+        $GLOBALS['SITE_DB']->query_update($content_table, [$content_validated_field => $all_points_approved ? 1 : 0], [$content_id_field => $info['id_field_numeric'] ? intval($row['content_id']) : $row['content_id']], '', 1);
     }
 
-    $content_title = $content_row[$title_field];
-    if ($title_field_dereference) {
-        $content_title = get_translated_text($content_title);
-    }
+    $content_title = $ob->get_title($content_row);
 
     ///////////////////////////////////////////
     // Now inform members about this content //
@@ -720,16 +709,18 @@ function add_content_to_workflow($content_type = '', $content_id = '', $workflow
     // Grab information about the hook
     $info = $ob->info();
     $content_table = $info['table'];
-    $content_field = $info['id_field'];
+    $content_id_field = $info['id_field'];
 
     // Now we have the information required to access the content.
     // However, we still don't know if the provided ID is valid, so we have to check that too!
     // Need different paths based on ID type, to prevent breaking strict databases
 
     // Query the database for content matching the found parameters
-    if (empty($GLOBALS['SITE_DB']->query_select($content_table, [$content_field], [$content_field => $info['id_field_numeric'] ? $content_id : intval($content_id)], '', 1))) {
+    $select = [];
+    append_content_select_for_fields($select, $info, ['id']);
+    if (empty($GLOBALS['SITE_DB']->query_select($content_table, $select, [$content_id_field => $info['id_field_numeric'] ? $content_id : intval($content_id)], '', 1))) {
         // This content doesn't exist, bail out
-        warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($content_table . '/' . $content_field . '/' . $content_id)));
+        warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($content_table . '/' . $content_id_field . '/' . $content_id)));
     }
 
     // If we've made it this far then we have been asked to apply a valid workflow to a valid piece of content, so let's go ahead

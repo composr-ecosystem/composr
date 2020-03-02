@@ -139,7 +139,7 @@ class Hook_syndication_twitter
         require_code('twitter');
 
         list($message) = render_activity($row, false);
-        $link = static_evaluate_tempcode(page_link_to_tempcode($row['a_page_link_1']));
+        $link = page_link_to_url($row['a_page_link_1'], true);
 
         // Shorten message for Twitter purposes
         $chopped_message = strip_html($message->evaluate());

@@ -1450,7 +1450,7 @@ function actual_delete_catalogue_entry($id)
 function reorganise_uploads__catalogue_categories($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
-    reorganise_uploads('catalogue_category', 'uploads/repimages', 'rep_image', $where, null, true, $tolerate_errors);
+    reorganise_uploads('catalogue_category', 'uploads/repimages', 'rep_image', $where, true, $tolerate_errors);
 }
 
 /**
@@ -1474,11 +1474,11 @@ function reorganise_uploads__catalogue_entries($where = [], $tolerate_errors = f
         'parent_spec__field_name' => 'id',
         'parent_spec__parent_name' => 'cc_parent_id',
     ];
-    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'upload'], $fake_cma_info, false, $tolerate_errors);
-    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'picture'], $fake_cma_info, false, $tolerate_errors);
-    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'video'], $fake_cma_info, false, $tolerate_errors);
+    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'upload'], false, $tolerate_errors, $fake_cma_info);
+    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'picture'], false, $tolerate_errors, $fake_cma_info);
+    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'video'], false, $tolerate_errors, $fake_cma_info);
     $fake_cma_info['table'] = 'catalogue_efv_long';
-    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'upload_multi'], $fake_cma_info, false, $tolerate_errors);
-    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'picture_multi'], $fake_cma_info, false, $tolerate_errors);
-    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'video_multi'], $fake_cma_info, false, $tolerate_errors);
+    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'upload_multi'], false, $tolerate_errors, $fake_cma_info);
+    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'picture_multi'], false, $tolerate_errors, $fake_cma_info);
+    reorganise_uploads('catalogue_entry', 'uploads/catalogues', 'cv_value', $where + ['cf_type' => 'video_multi'], false, $tolerate_errors, $fake_cma_info);
 }

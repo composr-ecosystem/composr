@@ -119,10 +119,15 @@ function authors_script()
  */
 function get_author_id_from_name($author)
 {
+    static $cache = [];
+    if (array_key_exists($author, $cache)) {
+        return $cache[$author];
+    }
     $handle = $GLOBALS['SITE_DB']->query_select_value_if_there('authors', 'member_id', ['author' => $author]);
     if ($handle === null) {
         $handle = $GLOBALS['FORUM_DRIVER']->get_member_from_username($author);
     }
+    $cache[$author] = $handle;
     return $handle;
 }
 

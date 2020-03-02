@@ -97,7 +97,7 @@ To configure access permissions, you may edit the resource the permissions are f
 [media width="150" description="Your Installation Options" float="right"]data_custom/images/docs/tut_adv_configuration/installation_options.png[/media]
 {!config:DOC_BASE_CONFIGURATION}
 
-That said, Composr is actually pretty smart about caches. Often you'll find it has automatically realise when your caches need emptying. If you do need to empty caches manually, the cleanup tools can be accessed from Admin Zone > Tools > Website cleanup tools.
+That said, Composr is actually pretty smart about caches. Often you'll find it has automatically realise when your caches need emptying. If you do need to empty caches manually, the cleanup tools can be accessed from Admin Zone > Tools > Cleanup tools.
 
 The Installation Options editor may be accessed by the [tt]http://yourbaseurl/config_editor.php[/tt] script.
 It can also be accessed from:

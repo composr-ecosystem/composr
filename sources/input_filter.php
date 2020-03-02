@@ -844,25 +844,26 @@ class Field_restriction_loader
 /**
  * Find all advanced banning for our page/type.
  *
- * @return array A pair: Automatic rules, Reasoned Bans
+ * @return array A tuple: Automatic rules, Reasoned Bans, Hack-attack handling specifiers
  */
 function load_advanced_banning()
 {
-    static $automatic_rules = null, $reasoned_bans = null;
+    static $automatic_rules = null, $reasoned_bans = null, $hackattack_specifiers = null;
     if ($automatic_rules === null) {
         $automatic_rules = [];
         $reasoned_bans = [];
+        $hackattack_specifiers = [];
 
         if (function_exists('xml_parser_create')) {
             $the_page = get_page_name();
             $the_type = get_param_string('type', array_key_exists('type', $_POST) ? $_POST['type'] : 'browse');
 
             $temp = new Advanced_banning_loader();
-            list($automatic_rules, $reasoned_bans) = $temp->go($the_page, $the_type);
+            list($automatic_rules, $reasoned_bans, $hackattack_specifiers) = $temp->go($the_page, $the_type);
         }
     }
 
-    return [$automatic_rules, $reasoned_bans];
+    return [$automatic_rules, $reasoned_bans, $hackattack_specifiers];
 }
 
 /**
@@ -877,6 +878,7 @@ class Advanced_banning_loader
     private $attribute_stack;
     private $automatic_rules; // Output
     private $reasoned_bans; // Output
+    private $hackattack_specifiers; // Output
 
     /**
      * Run the loader, to load up field-restrictions from the XML file.
@@ -899,6 +901,7 @@ class Advanced_banning_loader
 
         $this->automatic_rules = [];
         $this->reasoned_bans = [];
+        $this->hackattack_specifiers = [];
 
         // Create and setup our parser
         if (function_exists('libxml_disable_entity_loader')) {
@@ -926,7 +929,7 @@ class Advanced_banning_loader
         }
         @xml_parser_free($xml_parser);
 
-        return [$this->automatic_rules, $this->reasoned_bans];
+        return [$this->automatic_rules, $this->reasoned_bans, $this->hackattack_specifiers];
     }
 
     /**
@@ -1000,6 +1003,22 @@ class Advanced_banning_loader
                         'message' => empty($attributes['message']) ? null : $attributes['message'],
                         'image_url' => empty($attributes['image_url']) ? null : $attributes['image_url'],
                         'redirect_url' => empty($attributes['redirect_url']) ? null : $attributes['redirect_url'],
+                    ];
+                }
+                break;
+
+            case 'hackattack':
+                if (!empty($attributes['codename'])) {
+                    $this->hackattack_specifiers[] = [
+                        'codename' => $attributes['codename'],
+                        'param_a_pattern' => array_key_exists('param_a_pattern', $attributes) ? $attributes['param_a_pattern'] : null,
+                        'param_b_pattern' => array_key_exists('param_b_pattern', $attributes) ? $attributes['param_b_pattern'] : null,
+
+                        'silent_to_user' => array_key_exists('silent_to_user', $attributes) ? ($attributes['silent_to_user'] == 'true') : null,
+                        'silent_to_staff_notifications' => array_key_exists('silent_to_staff_notifications', $attributes) ? ($attributes['silent_to_staff_notifications'] == 'true') : null,
+                        'silent_to_staff_log' => array_key_exists('silent_to_staff_log', $attributes) ? ($attributes['silent_to_staff_log'] == 'true') : null,
+                        'percentage_score' => @cms_empty_safe($attributes['percentage_score']) ? null :intval( $attributes['percentage_score']),
+                        'syndicate_as_spammer' => array_key_exists('syndicate_as_spammer', $attributes) ? ($attributes['syndicate_as_spammer'] == 'true') : null,
                     ];
                 }
                 break;

@@ -516,7 +516,7 @@ class Module_groups
         // Leadership
         if (($group['g_group_leader'] !== null) && ($GLOBALS['FORUM_DRIVER']->get_username($group['g_group_leader'], false, USERNAME_DEFAULT_NULL) !== null)) {
             $leader_name = $GLOBALS['FORUM_DRIVER']->get_username($group['g_group_leader'], true);
-            $leader_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $group['g_group_leader']], get_module_zone('members'));
+            $leader_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($group['g_group_leader']);
             $leader_link = hyperlink($leader_url, $leader_name, false, true);
             $leader = paragraph(do_lang_tempcode('GROUP_LED_BY', $leader_link), 'gfgdfggdf');
         } else {

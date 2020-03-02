@@ -385,7 +385,7 @@ function block_helper_script()
                     $list = new Tempcode();
                     $hooks = find_all_hooks($matches[1], $matches[2]);
                     ksort($hooks);
-                    $is_multi_list = (($block == 'main_search') && ($parameter == 'limit_to')) || ($block == 'side_tag_cloud');
+                    $is_multi_list = (($block == 'main_search') && ($parameter == 'limit_to')) || ($block == 'side_tag_cloud') || ($block == 'main_multi_content'); // FUDGE
                     if (($default == '') && ($has_default) && (!$is_multi_list)) {
                         $list->attach(form_input_list_entry('', true));
                     }

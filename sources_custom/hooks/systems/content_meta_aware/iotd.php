@@ -16,14 +16,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_iotd
+class Hook_content_meta_aware_iotd extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -57,6 +57,7 @@ class Hook_content_meta_aware_iotd
             'title_field_supports_comcode' => true,
             'description_field' => 'caption',
             'description_field_dereference' => true,
+            'description_field_supports_comcode' => true,
             'thumb_field' => 'thumb_url',
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
@@ -87,7 +88,6 @@ class Hook_content_meta_aware_iotd
             'search_hook' => 'iotd',
             'rss_hook' => 'iotds',
             'attachment_hook' => null,
-            'unvalidated_hook' => null,
             'notification_hook' => 'iotd_chosen',
             'sitemap_hook' => 'iotd',
 
@@ -108,11 +108,15 @@ class Hook_content_meta_aware_iotd
             'support_spam_heuristics' => 'caption',
 
             'actionlog_regexp' => '\w+_IOTD',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_HIGHEST,
+            'default_prominence_flags' => PROMINENCE_FLAG_ACTIVE_ONLY | PROMINENCE_FLAG_PINNED,
+            'active_only_extra_where_sql' => 'is_current=1',
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -123,7 +127,7 @@ class Hook_content_meta_aware_iotd
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('iotds');
 

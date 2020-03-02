@@ -1088,7 +1088,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         USE_SITE_NAME_TEXT_AS_LOGO
         BLOCK_CONFIGURATION__PANEL_LEFT
         BLOCK_CONFIGURATION__PANEL_NO
-        BLOCK_CONFIGURATION__PANEL_NONE
         BLOCK_CONFIGURATION__PANEL_RIGHT
         BLOCK_CONFIGURATION__PANEL_YES
         BLOCK_CONFIGURATION__PANEL_YES_CELL
@@ -2066,7 +2065,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BROWSE_ID_INSERT
         BRUTEFORCE_LOGIN_HACK
         BRUTE_FORCE
-        BRUTE_FORCE_INSTANT_BAN
         BRUTE_FORCE_LOGIN_MINUTES
         BRUTE_FORCE_THRESHOLD
         BUT_EXPIRED
@@ -3096,7 +3094,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_bottom_show_sitemap_button
         CONFIG_OPTION_bottom_show_top_button
         CONFIG_OPTION_breadcrumb_crop_length
-        CONFIG_OPTION_brute_force_instant_ban
         CONFIG_OPTION_brute_force_login_minutes
         CONFIG_OPTION_brute_force_threshold
         CONFIG_OPTION_call_home
@@ -6299,6 +6296,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NUM_NEW_SINCE
         NUM_QUEUE
         NUM_READERS
+        READERS
         NUM_WINNERS
         OBSCENITY_WARNING
         OEMBED_HTML_WHITELIST

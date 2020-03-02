@@ -170,7 +170,7 @@ class Module_authors
             } else {
                 $message = do_lang_tempcode('NO_SUCH_AUTHOR', escape_html($author));
             }
-            $details = ['author' => $author, 'url' => '', 'member_id' => get_author_id_from_name($author), 'the_description' => null, 'skills' => null,];
+            $details = ['author' => $author, 'url' => '', 'member_id' => get_author_id_from_name($author), 'the_description' => null, 'skills' => null];
         } else {
             $details = $rows[0];
         }

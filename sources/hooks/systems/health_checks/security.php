@@ -51,6 +51,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $this->process_checks_section('testExposedPhpInfoScript', 'Exposed PHP-Info script', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testExposedBackups', 'Exposed backups', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testExposedExecuteTemp', 'Exposed execute_temp.php', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testCAPTCHAMissing', 'Missing CAPTCHA on public website', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
     }
@@ -79,7 +80,8 @@ class Hook_health_check_security extends Hook_Health_Check
         }
 
         // external_health_check (on maintenance sheet)
-        $this->stateCheckManual('Check for [url="security configuration issues"]https://observatory.mozilla.org[/url]');
+        $this->stateCheckManual('Check for [url="website security configuration issues"]https://observatory.mozilla.org[/url]');
+        $this->stateCheckManual('Check for [url="server security configuration issues"]https://www.qualys.com/community-edition/[/url]');
     }
 
     /**
@@ -587,5 +589,30 @@ class Hook_health_check_security extends Hook_Health_Check
         }
 
         $this->assertTrue($ok, 'Exposed non-empty [tt]data_custom/execute_temp.php[/tt]');
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testCAPTCHAMissing($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            return;
+        }
+
+        $hostname = get_base_url_hostname();
+        $intranet = ((is_local_machine($hostname)) || (preg_match('#^\w+$#', $hostname) != 0));
+        $ok = ((addon_installed('captcha')) && (get_option('use_captchas') == '1')) || ($intranet);
+        $this->assertTrue($ok, 'CAPTCHA is not enabled and it looks like your website (based on the domain/IP) -- you could get attacked by spam bots');
     }
 }

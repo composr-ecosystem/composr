@@ -289,8 +289,12 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
         }
 
         // Some general info
-        require_code('content2');
-        list(, $meta_description) = _seo_meta_find_data([], get_translated_text($topic_info['p_post'], $GLOBALS['FORUM_DB']));
+        if ($topic_info['t_description'] == '') {
+            require_code('content2');
+            list(, $good_description) = _seo_meta_find_data([], get_translated_text($topic_info['p_post'], $GLOBALS['FORUM_DB']));
+        } else {
+            $good_description = $topic_info['t_description'];
+        }
         $out = [
             'num_views' => $topic_info['t_num_views'],
             'num_posts' => $topic_info['t_cache_num_posts'],
@@ -312,7 +316,7 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
             'metadata' => [
                 'identifier' => '_SEARCH:topicview:browse:' . strval($topic_id),
                 'numcomments' => strval($topic_info['t_cache_num_posts']),
-                'description' => $meta_description, // There's no meta description, so we'll take this as a description, which will feed through
+                'description' => $good_description, // There's no meta description, so we'll take this as a description, which will feed through
             ],
             'row' => $topic_info,
         ];

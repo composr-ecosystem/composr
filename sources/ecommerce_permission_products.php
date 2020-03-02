@@ -159,8 +159,8 @@ function permission_product_save($resource_type, $old_category_id, $new_category
     switch ($operation) {
         case 'add':
         case 'edit':
-            list($content_title, , $cma_info, , , $url_safe) = content_get_details($resource_type, $new_category_id);
-            $content_type_label = do_lang($cma_info['content_type_label']);
+            list($content_title, , $cma_info, $row, , $url_safe, $cma_ob) = content_get_details($resource_type, $new_category_id);
+            $content_type_label = $cma_ob->get_content_type_label($row);
 
             require_lang('ecommerce');
 

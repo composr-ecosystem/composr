@@ -35,16 +35,13 @@ if (get_forum_type() != 'cns') {
             <th>Number of posts</th>
         </tr>
         </thead>
+        <tbody>
         <?php
 
         $max = array_key_exists('max', $map) ? intval($map['max']) : 10;
 
-        if (multi_lang_content()) {
-            $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', ['text_original']) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'translate t ON t.id=p.p_post WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
-        } else {
-            $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', ['p_post']) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
-        }
-        $members = $GLOBALS['FORUM_DB']->query($sql, $max);
+        $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', [$GLOBALS['FORUM_DB']->translate_field_ref('p_post')]) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
+        $members = $GLOBALS['FORUM_DB']->query($sql, $max, 0, false, false, ['p_post' => 'LONG_TRANS__COMCODE']);
 
         foreach ($members as $_member) {
             $member_id = $_member['id'];
@@ -71,5 +68,6 @@ if (get_forum_type() != 'cns') {
 END;
         }
         ?>
+        </tbody>
     </table>
 </div>

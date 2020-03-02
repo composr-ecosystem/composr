@@ -43,7 +43,7 @@ function render_banner_type_box($row, $zone = '_SEARCH', $give_context = true, $
     }
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('BANNER_TYPE'), $_title) : $_title;
 
-    $num_entries = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)', ['validated' => 1]);
+    $num_entries = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)', ['b_type' => $row['id'], 'validated' => 1]);
     $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries)));
 
     return do_template('SIMPLE_PREVIEW_BOX', [
@@ -782,5 +782,5 @@ function delete_banner_type($id)
 function reorganise_uploads__banners($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
-    reorganise_uploads('banner', 'uploads/banners', 'img_url', $where, null, false, $tolerate_errors);
+    reorganise_uploads('banner', 'uploads/banners', 'img_url', $where, false, $tolerate_errors);
 }

@@ -343,7 +343,7 @@ class Module_admin_shopping
             if (($submitted_by === null) || (is_guest($row['member_id']))) {
                 $member_link = do_lang_tempcode('UNKNOWN');
             } else {
-                $member_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $row['member_id']], get_module_zone('members'));
+                $member_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['member_id']);
                 $member_link = hyperlink($member_url, $submitted_by, false, true, do_lang('CUSTOMER'));
             }
 

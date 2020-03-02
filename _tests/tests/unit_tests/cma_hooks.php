@@ -61,6 +61,16 @@ class cma_hooks_test_set extends cms_test_case
             'title_field_supports_comcode',
             'title_field__resource_fs',
             'extra_where_sql',
+            'active_only_extra_where_sql',
+            'prominence_custom_sort',
+            'prominence_custom_sort_dir',
+            'content_type_label_override',
+            'content_type_universal_label_override',
+            'video_field',
+            'video_generator',
+            'full_image_field',
+            'validation_is_minor',
+            'uses_workflow',
         ];
 
         foreach ($this->all_cma_info as $content_type => $cma_info) {

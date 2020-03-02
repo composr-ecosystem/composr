@@ -1181,12 +1181,13 @@ function page_link_to_url($url, $skip_keep = false)
  * Given a page-link, return an absolute URL.
  *
  * @param  string $page_link Page-link
+ * @param  boolean $skip_keep Whether to avoid keep_* parameters as it's going in an e-mail
  * @return Tempcode URL
  */
-function page_link_to_tempcode_url($page_link)
+function page_link_to_tempcode_url($page_link, $skip_keep = false)
 {
     list($zone, $map, $hash) = page_link_decode($page_link);
-    return build_url($map, $zone, [], false, false, false, $hash);
+    return build_url($map, $zone, [], false, false, $skip_keep, $hash);
 }
 
 /**
@@ -1203,7 +1204,8 @@ function load_moniker_hooks()
         $CONTENT_OBS = function_exists('persistent_cache_get') ? persistent_cache_get('CONTENT_OBS') : null;
         if ($CONTENT_OBS !== null) {
             foreach ($CONTENT_OBS as $ob_info) {
-                if (($ob_info['title_field'] !== null) && (strpos($ob_info['title_field'], 'CALL:') !== false)) {
+                if (($ob_info['title_field'] !== null) && ((is_array($ob_info['title_field'])) || (strpos($ob_info['title_field'], 'CALL:') !== false))) {
+                    require_code('content');
                     require_code('hooks/systems/content_meta_aware/' . $ob_info['_hook']);
                 }
             }
@@ -1221,6 +1223,8 @@ function load_moniker_hooks()
             'wiki_page' => true,
             'wiki_post' => true,
         ];
+
+        require_code('content');
 
         $CONTENT_OBS = [];
         $hooks = find_all_hooks('systems', 'content_meta_aware');
@@ -1243,7 +1247,8 @@ function load_moniker_hooks()
                 $ob_info['_hook'] = $hook;
                 $CONTENT_OBS[$ob_info['view_page_link_pattern']] = $ob_info;
 
-                if (($ob_info['title_field'] !== null) && (strpos($ob_info['title_field'], 'CALL:') !== false)) {
+                if (($ob_info['title_field'] !== null) && ((is_array($ob_info['title_field'])) || (strpos($ob_info['title_field'], 'CALL:') !== false))) {
+                    require_code('content');
                     require_code('hooks/systems/content_meta_aware/' . $hook);
                 }
             }

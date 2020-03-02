@@ -64,18 +64,25 @@ class Hook_checklist_unvalidated
      */
     public function get_num_unvalidated()
     {
+        require_code('content');
+
         $sum = 0;
         $sum2 = 0;
 
-        $_hooks = find_all_hook_obs('modules', 'admin_unvalidated', 'Hook_unvalidated_');
+        $_hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
         foreach ($_hooks as $object) {
             $info = $object->info();
             if ($info === null) {
                 continue;
             }
-            $db = array_key_exists('db', $info) ? $info['db'] : $GLOBALS['SITE_DB'];
-            $amount = $db->query_select_value($info['db_table'], 'COUNT(*)', [$info['db_validated'] => 0]);
-            if (($info === null) || ((array_key_exists('is_minor', $info)) && ($info['is_minor']))) {
+            if ($info['validated_field'] === null) {
+                continue;
+            }
+
+            $db = $info['db'];
+            $amount = $db->query_select_value($info['table'], 'COUNT(*)', [$info['validated_field'] => 0]);
+
+            if (!empty($info['validation_is_minor'])) {
                 $sum2 += $amount;
             } else {
                 $sum += $amount;

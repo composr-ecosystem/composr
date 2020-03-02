@@ -136,11 +136,7 @@ PHP;
         $do_pagination = ((isset($map['pagination']) ? $map['pagination'] : '0') == '1');
 
         // Read in news categories ahead, for performance
-        global $NEWS_CATS_CACHE;
-        if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
-            $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
-        }
+        load_news_cat_rows('nc_owner IS NULL');
 
         // Work out how many days to show
         $days_full = floatval($days) * $multiplier;
@@ -334,15 +330,7 @@ PHP;
             $full_url = build_url($tmp, $zone);
 
             // Category
-            if (!isset($NEWS_CATS_CACHE[$myrow['news_category']])) {
-                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $myrow['news_category']], '', 1);
-                if (isset($_news_cats[0])) {
-                    $NEWS_CATS_CACHE[$myrow['news_category']] = $_news_cats[0];
-                } else {
-                    $myrow['news_category'] = db_get_first_id();
-                }
-            }
-            $news_cat_row = $NEWS_CATS_CACHE[$myrow['news_category']];
+            $news_cat_row = get_news_cat_row($myrow['news_category']);
 
             $category = get_translated_text($news_cat_row['nc_title']);
             if ($myrow['news_image'] != '') {

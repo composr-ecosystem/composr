@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_resource_meta_aware_newsletter
+class Hook_resource_meta_aware_newsletter extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -61,6 +61,7 @@ class Hook_resource_meta_aware_newsletter
             'title_field_dereference' => true,
             'description_field' => null,
             'description_field_dereference' => null,
+            'description_field_supports_comcode' => null,
             'thumb_field' => null,
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
@@ -91,7 +92,6 @@ class Hook_resource_meta_aware_newsletter
             'search_hook' => null,
             'rss_hook' => null,
             'attachment_hook' => null,
-            'unvalidated_hook' => null,
             'notification_hook' => null,
             'sitemap_hook' => null,
 
@@ -112,6 +112,41 @@ class Hook_resource_meta_aware_newsletter
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_NEWSLETTER',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
+    }
+
+    /**
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        require_lang('newsletter');
+
+        $headings = [];
+
+        $headings['entry_count'] = do_lang_tempcode('READERS');
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+
+        $num_subscribers = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribe', 'COUNT(*)', ['newsletter_id' => $row['id']]);
+        $keymap['entry_count'] = escape_html(integer_format($num_subscribers));
+
+        return $keymap;
     }
 }

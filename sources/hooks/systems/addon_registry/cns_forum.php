@@ -277,8 +277,6 @@ class Hook_addon_registry_cns_forum
             'sources/blocks/side_cns_private_topics.php',
             'sources/hooks/systems/cleanup/cns_topics.php',
             'sources/hooks/modules/admin_newsletter/cns_forumview.php',
-            'sources/hooks/modules/admin_unvalidated/cns_posts.php',
-            'sources/hooks/modules/admin_unvalidated/cns_topics.php',
             'sources/hooks/modules/search/cns_own_pt.php',
             'sources/hooks/modules/search/cns_posts.php',
             'sources/hooks/systems/attachments/cns_post.php',

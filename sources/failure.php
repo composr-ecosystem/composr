@@ -573,25 +573,66 @@ function _inet_pton($ip)
 }
 
 /**
- * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
+ * Find if a hackattack specifier matches.
  *
- * @param  ID_TEXT $reason The reason for the hack attack. This has to be a language string codename
- * @param  SHORT_TEXT $reason_param_a A parameter for the hack attack language string (this should be based on a unique ID, preferably)
+ * @param  array $specifier The hackattack specifier
+ * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
+ * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
- * @param  boolean $silent Whether to silently log the hack rather than also exiting
- * @param  boolean $instant_ban Whether a ban should be immediate
- * @param  integer $percentage_score The risk factor
+ * @return boolean Whether it matches
  * @ignore
  * @exits
  */
-function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '', $silent = false, $instant_ban = false, $percentage_score = 100)
+function _log_hack_attack_matches($specifier, $reason, $reason_param_a, $reason_param_b)
 {
+    return ($specifier['codename'] == $reason) &&
+        (($specifier['param_a_pattern'] === null) || (simulated_wildcard_match($reason_param_a, $specifier['param_a_pattern'], true, true))) &&
+        (($specifier['param_b_pattern'] === null) || (simulated_wildcard_match($reason_param_b, $specifier['param_b_pattern'], true, true)));
+}
+
+/**
+ * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
+ *
+ * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
+ * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
+ * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
+ * @ignore
+ * @exits
+ */
+function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '')
+{
+    // Default control settings
+    $silent_to_user = false;
+    $silent_to_staff_notifications = false;
+    $silent_to_staff_log = false;
+    $percentage_score = 100;
+
+    // Read control from XML
+    require_code('input_filter');
+    list(, , $hackattack_specifiers) = load_advanced_banning();
+    foreach ($hackattack_specifiers as $specifier) {
+        if (_log_hack_attack_matches($specifier, $reason, $reason_param_a, $reason_param_b)) {
+            if ($specifier['silent_to_user'] !== null) {
+                $silent_to_user = $specifier['silent_to_user'];
+            }
+            if ($specifier['silent_to_staff_notifications'] !== null) {
+                $silent_to_staff_notifications = $specifier['silent_to_staff_notifications'];
+            }
+            if ($specifier['silent_to_staff_log'] !== null) {
+                $silent_to_staff_log = $specifier['silent_to_staff_log'];
+            }
+            if ($specifier['percentage_score'] !== null) {
+                $percentage_score = $specifier['percentage_score'];
+            }
+        }
+    }
+
     // HTTP statuses...
 
     require_code('site');
     attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
-    if (!$silent) {
+    if (!$silent_to_user) {
         require_code('global3');
         set_http_status_code(403); // Stop spiders ever storing the URL that caused this
     }
@@ -599,7 +640,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     // Special case: no securitylogging addon...
 
     if (!addon_installed('securitylogging')) {
-        if ($silent) {
+        if ($silent_to_user) {
             return;
         }
         warn_exit(do_lang_tempcode('HACK_ATTACK_USER'));
@@ -617,21 +658,16 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     }
 
     $url = $_SERVER['REQUEST_URI'];
-    $post = '';
-    foreach ($_POST as $key => $val) {
-        if (!is_string($val)) {
-            continue;
-        }
-        $post .= $key . ' => ' . $val . "\n\n";
-    }
 
     // Automatic ban needed?...
 
-    $count = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', ['ip' => $ip])) / 100.0;
+    $count = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', ['ip' => $ip]) + $percentage_score) / 100.0;
     $hack_threshold = intval(get_option('hack_ban_threshold'));
     if ((array_key_exists('FORUM_DRIVER', $GLOBALS)) && (function_exists('get_member')) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
         $count = 0.0;
     }
+
+    $post = json_encode($_POST);
 
     $new_row = [
         'user_agent' => cms_mb_substr(get_browser_string(), 0, 255),
@@ -646,10 +682,11 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
         'date_and_time' => time(),
         'ip' => $ip,
         'percentage_score' => $percentage_score,
+        'silent_to_staff_log' => $silent_to_staff_log ? 1 : 0,
     ];
 
     $ip_ban_todo = null;
-    if ((($count >= floatval($hack_threshold)) || ($instant_ban)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
+    if (($count >= floatval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
         // Test we're not banning a good bot...
 
         if ((!is_our_server($ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip))) {
@@ -659,13 +696,14 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
             $rows[] = $new_row;
 
             $summary = '[list]';
-            $is_spammer = false;
+            $syndicate_as_spammer = false;
             foreach ($rows as $row) {
-                if ($row['reason'] == 'LAME_SPAM_HACK') {
-                    $is_spammer = true;
-                }
-                if (preg_match('#^' . str_replace('xxx', '.*', preg_quote(do_lang('IP_BAN_LOG_AUTOBAN_ANTISPAM', 'xxx'))), '$#', $row['reason']) != 0) {
-                    $is_spammer = true;
+                foreach ($hackattack_specifiers as $specifier) {
+                    if (_log_hack_attack_matches($specifier, $row['reason'], $row['reason_param_a'], $row['reason_param_b'])) {
+                        if ($specifier['syndicate_as_spammer'] === true) {
+                            $syndicate_as_spammer = true;
+                        }
+                    }
                 }
 
                 $full_reason = do_lang($row['reason'], $row['reason_param_a'], $row['reason_param_b'], null, get_site_default_lang());
@@ -675,7 +713,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
             // Send report to anti-spam partners...
 
-            if ($is_spammer) {
+            if ($syndicate_as_spammer) {
                 require_code('failure_spammers');
                 syndicate_spammer_report($ip, is_guest() ? '' : $GLOBALS['FORUM_DRIVER']->get_username(get_member()), $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), do_lang('SPAM_REPORT_TRIGGERED_SPAM_HEURISTICS'));
             }
@@ -737,7 +775,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
         // Hack-attack notification...
 
-        if (!in_array($reason, ['CAPTCHAFAIL', 'CAPTCHAFAIL_HACK', 'LAME_SPAM_HACK']/*Don't generate notification noise from very common bot behaviours*/)) {
+        if (!$silent_to_staff_notifications) {
             $subject = do_lang('HACK_ATTACK_SUBJECT', $ip, null, null, get_site_default_lang());
             dispatch_notification('hack_attack', null, $subject, $message->evaluate(get_site_default_lang()), null, A_FROM_SYSTEM_PRIVILEGED);
         }
@@ -752,7 +790,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
     // Finish...
 
-    if ($silent) {
+    if ($silent_to_user) {
         return;
     }
     if ($GLOBALS['DEV_MODE']) {

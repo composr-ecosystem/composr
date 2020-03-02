@@ -125,7 +125,7 @@ function do_emoticon($imgcode)
 }
 
 /**
- * Check the specified URL for potentially malicious JavaScript/etc. If any is found, the hack attack is logged if in an active post request by the submitting member otherwise filtered out.
+ * Check the specified URL for potentially malicious JavaScript/etc. If any is found, the hack-attack is logged if in an active post request by the submitting member otherwise filtered out.
  *
  * @param  MEMBER $source_member The member who submitted the URL
  * @param  URLPATH $url The URL to check

@@ -109,12 +109,11 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
     {
         // Usually these won't be here (except side_personal_stats), because the addons won't have been installed -- but if they were, we do want to represent those block-driven addons
         return [
-            'YES' => [
-                'main_news',
+            BLOCK_POSITION_MAIN => [
+                'main_multi_content',
             ],
-            'YES_CELL' => [],
-            'PANEL_LEFT' => [],
-            'PANEL_RIGHT' => [
+            BLOCK_POSITION_CELL => [],
+            BLOCK_POSITION_PANEL => [
                 'main_newsletter_signup',
                 'main_poll',
             ],

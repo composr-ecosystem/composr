@@ -892,21 +892,23 @@ class Forum_driver_ipb3 extends Forum_driver_base
      * Get an array of maps for the topic in the given forum.
      *
      * @param  integer $topic_id The topic ID
-     * @param  integer $count The comment count will be returned here by reference
+     * @param  ?integer $count The comment count will be returned here by reference (null: do not gather it)
      * @param  integer $max Maximum comments to returned
      * @param  integer $start Comment to start at
      * @param  boolean $mark_read Whether to mark the topic read (ignored for this forum driver)
      * @param  boolean $reverse Whether to show in reverse
      * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
      */
-    public function get_forum_topic_posts($topic_id, &$count, $max = 100, $start = 0, $mark_read = true, $reverse = false)
+    public function get_forum_topic_posts($topic_id, &$count = null, $max = 100, $start = 0, $mark_read = true, $reverse = false)
     {
         if ($topic_id === null) {
             return (-2);
         }
         $order = $reverse ? 'post_date DESC' : 'post_date';
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'posts WHERE topic_id=' . strval($topic_id) . ' AND post NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\' ORDER BY ' . $order, $max, $start);
-        $count = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'posts WHERE topic_id=' . strval($topic_id) . ' AND post NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\'');
+        if ($count !== null) {
+            $count = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'posts WHERE topic_id=' . strval($topic_id) . ' AND post NOT LIKE \'' . db_encode_like(substr(do_lang('SPACER_POST', '', '', '', get_site_default_lang()), 0, 20) . '%') . '\'');
+        }
         $out = [];
         $emoticons_set_dir = $this->get_emo_dir();
         foreach ($rows as $myrow) {
