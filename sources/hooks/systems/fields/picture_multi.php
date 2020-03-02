@@ -212,6 +212,8 @@ class Hook_fields_picture_multi
      */
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
+        require_code('images');
+
         $say_required = ($field['cf_required'] == 1) && (($actual_value == '') || ($actual_value === null));
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         require_code('images');
