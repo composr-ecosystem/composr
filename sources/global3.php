@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: fileowner|filegroup*/
+
 /*
 global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
 */
@@ -252,6 +254,7 @@ function get_file_extension($name, $mime_type = null)
 
 /**
  * Find whether we can get away with natural file access, not messing with AFMs, world-writability, etc.
+ * Always will return false on Windows due to missing Posix - but there's no such thing as chmodding files for non-owners on Windows either.
  *
  * @return boolean Whether we have this
  */
@@ -267,14 +270,23 @@ function is_suexec_like()
 
     static $answer = null;
     if ($answer === null) {
-        $answer = (
-            (php_function_allowed('posix_getuid')) &&
-            (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
-            (is_integer(@posix_getuid())) &&
-            (@posix_getuid() == @fileowner(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))
-        )
-        ||
-        (cms_is_writable(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))));
+        if (is_cli()) {
+            $opts = getopt('', ['is_suexec_like::']);
+            if (array_key_exists('is_suexec_like', $opts)) {
+                $answer = true;
+            } else {
+                $answer = false; // As we cannot know
+            }
+        } else {
+            $answer = (
+                (php_function_allowed('posix_getuid')) &&
+                (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
+                (is_integer(@posix_getuid())) &&
+                (@posix_getuid() == @fileowner(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))
+            )
+            ||
+            (cms_is_writable(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))));
+        }
     }
     return $answer;
 }
@@ -291,8 +303,8 @@ function fix_permissions($path, $perms = null)
         $perms = is_dir($path) ? 0777 : 0666;
     }
 
-    // If the file user is different to the FTP user, we need to make it world writeable
-    if ((!is_suexec_like()) || ($_SERVER['REQUEST_METHOD'] == '')) {
+    // If the file user is different to the web user, we need to make it world writeable
+    if (!is_suexec_like()) {
         if ($perms == 0600) {
             @chmod($path, 0666);
         } else {
@@ -4496,6 +4508,7 @@ function get_login_url()
 
 /**
  * Find the filesystem owner of the website.
+ * Will always return 0 on Windows.
  *
  * @return integer Owner
  */
@@ -4506,6 +4519,7 @@ function website_file_owner()
 
 /**
  * Find the filesystem group of the website.
+ * Will always return 0 on Windows.
  *
  * @return integer Group
  */

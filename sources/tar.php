@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: fileowner|filegroup*/
+
 /**
  * Open up a TAR archive (or tarball if the zlib extension is available and .gz is requested), and return the resource.
  *

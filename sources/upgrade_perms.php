@@ -111,7 +111,7 @@ function upgrader_fix_perms_screen()
  */
 function get_chmod_array_combined()
 {
-    require_code('inst_special');
+    require_code('file_permissions_check');
     require_code('files');
 
     $array = array_merge(get_chmod_array(fallback_lang()), get_chmod_array_2());

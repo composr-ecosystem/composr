@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    linux_helper_scripts
+ * @package    helper_scripts
  */
 
 /**
  * Hook class.
  */
-class Hook_addon_registry_linux_helper_scripts
+class Hook_addon_registry_helper_scripts
 {
     /**
      * Get a list of file permissions to set.
@@ -51,7 +51,7 @@ class Hook_addon_registry_linux_helper_scripts
      */
     public function get_description()
     {
-        return 'Bash shell scripts to help configure permissions on Linux/Unix servers.';
+        return 'Scripts to help maintain sites, mostly for Linux/Unix servers or Windows servers running Cygwin.';
     }
 
     /**
@@ -64,6 +64,7 @@ class Hook_addon_registry_linux_helper_scripts
         return [
             'tut_install_permissions',
             'tut_install_linux',
+            'tut_install_windows',
         ];
     }
 
@@ -99,11 +100,13 @@ class Hook_addon_registry_linux_helper_scripts
     public function get_file_list()
     {
         return [
-            'sources/hooks/systems/addon_registry/linux_helper_scripts.php',
+            'sources/hooks/systems/addon_registry/helper_scripts.php',
+
+            // The following are PHP shell scripts, and the most commonly used
+            'fixperms.php',
+            'decache.php',
 
             // The following are sh shell scripts
-            'decache.sh',
-            'fixperms.sh',
             'themechanges.sh',
             'recentchanges.sh',
             'db_init.sh',

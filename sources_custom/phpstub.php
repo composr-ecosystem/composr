@@ -416,6 +416,7 @@ function checkdate($month, $day, $year)
 
 /**
  * Changes file mode.
+ * Only can set the 'read only' flag on Windows.
  *
  * @param  PATH $filename The file to change the mode of
  * @param  integer $mode The mode (e.g. 0777).
@@ -734,17 +735,6 @@ function filectime($filename)
 }
 
 /**
- * Gets file group.
- *
- * @param  PATH $filename The filename
- * @return ~integer The posix group ID (false: error)
- */
-function filegroup($filename)
-{
-    return 0;
-}
-
-/**
  * Gets file modification time.
  *
  * @param  PATH $filename The filename
@@ -756,18 +746,8 @@ function filemtime($filename)
 }
 
 /**
- * Gets file owner.
- *
- * @param  PATH $filename The filename
- * @return ~integer The posix user ID (false: error)
- */
-function fileowner($filename)
-{
-    return 0;
-}
-
-/**
  * Gets file permissions.
+ * Not very useful on Windows.
  *
  * @param  PATH $filename The filename
  * @return ~integer The permissions (e.g. 0777) (false: error).
@@ -4990,6 +4970,19 @@ function spl_autoload_register($autoload_function, $throw = true, $prepend = fal
     return true;
 }
 
+/**
+ * Gets options from the command line argument list.
+ *
+ * @param  string $options Each character in this string will be used as option characters and matched against options passed to the script starting with a single hyphen (-)
+ * @param  array $longopts Each element in this array will be used as option strings and matched against options passed to the script starting with two hyphens (--)
+ * @param  integer $optind The index where argument parsing stopped
+ * @return array Map of options
+ */
+function getopt($options, $longopts = [], &$optind = 0)
+{
+    return [];
+}
+
 /*
 
 Various things are disabled for various reasons. You may use them, if you use php_function_allowed
@@ -5062,14 +5055,16 @@ lchown
 lchgrp
 lstat
 sys_getloadavg
-getmypid
 getmyuid
-getrusage
+getrusage (on PHP 7.0+ it is available on Windows)
 getmyinode
 getmygid
 get_current_user
 ftok
 mime_content_type
+posix_*
+fileowner
+filegroup
 
 Disabled various legacy synonyms (aliases), such as...
 
@@ -5171,6 +5166,7 @@ restore_include_path
 
 Disabled simply as we don't feel a need to use them (can enable if we find a use)...
 
+getmypid
 idate
 get_called_class
 property_exists
@@ -5192,7 +5188,6 @@ acosh
 atanh
 expm1
 log1p
-getopt
 settype
 dir
 ob_get_flush

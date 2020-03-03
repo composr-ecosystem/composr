@@ -231,7 +231,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             call_user_func ceil chdir checkdate chmod chr chunk_split class_exists clearstatcache closedir
             constant copy cos count crypt current date dechex decoct define defined dirname
             deg2rad error_reporting eval exit explode fclose feof fgets file file_exists
-            file_get_contents filectime filegroup filemtime fileowner fileperms filesize floatval floor
+            file_get_contents filectime filemtime fileperms filesize floatval floor
             get_defined_vars get_declared_classes get_defined_functions fopen fread fseek ftell
             function_exists fwrite get_class get_html_translation_table getcwd
             getdate getenv gmdate header headers_sent hexdec htmlentities is_float ob_get_level

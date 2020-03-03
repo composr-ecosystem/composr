@@ -3,6 +3,6 @@
 
 chdir(dirname(dirname(__FILE__)));
 
-shell_exec('sh fixperms.sh');
+require('fixperms.php');
 
 exit(0);

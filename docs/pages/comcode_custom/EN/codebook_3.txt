@@ -952,20 +952,15 @@ This section is not designed as primary documentation for the tools. Those tools
 ! Addon
 ! Call method
 |-
-| [tt]decache.sh[/tt]
+| [tt]decache.php[/tt]
 | Clear out file-system caches, and leave a mark for the next Composr page load to clear database caches.
-| [tt]linux_helper_scripts[/tt]
-| Command-line via Bash
+| [tt]helper_scripts[/tt]
+| Command-line via PHP interpreter
 |-
-| [tt]fixperms.sh[/tt]
+| [tt]fixperms.php[/tt]
 | Set appropriate file permissions.
-| [tt]linux_helper_scripts[/tt]
-| Command-line via Bash
-|-
-| [tt]fixperms.bat[/tt]
-| Set appropriate file permissions.
-| [tt]windows_helper_scripts[/tt]
-| Command-line prompt on Windows
+| [tt]helper_scripts[/tt]
+| Command-line via PHP interpreter
 |-
 | [tt]data/failover_script.php[/tt]
 | Continually check system load, and initiate/deinitiate failover mode as required.
@@ -1013,17 +1008,17 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]db_export.sh[/tt]
 | Export the live database to an SQL dump.
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |-
 | [tt]db_import.sh[/tt]
 | Import an SQL dump to the live database.
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |-
 | [tt]db_init.sh[/tt]
 | Create an empty database as specified by [tt]_config.php[/tt].
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |-
 | [tt]adminzone:tar_dump[/tt]
@@ -1038,7 +1033,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]recentchanges.sh[/tt]
 | ZIP up recently changed files.
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |-
 | [tt]data_custom/cleanout.php[/tt]
@@ -1087,7 +1082,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]themechanges.sh[/tt]
 | Show a diff of theme changes.
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |}
 

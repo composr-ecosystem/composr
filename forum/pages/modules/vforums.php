@@ -320,7 +320,7 @@ class Module_vforums
             $_query_cnt .= $where;
             $query .= $sql_sup;
             $query .= $sql_sup_order_by;
-            $full_query = 'SELECT t.*,' . (is_guest() ? 'NULL as l_time' : 'l_time' . ',t_cache_last_time AS last_time');
+            $full_query = 'SELECT t.*,' . ((is_guest() ? 'NULL as l_time' : 'l_time') . ',t_cache_last_time AS last_time');
             if (multi_lang_content()) {
                 $full_query .= ',t_cache_first_post AS p_post';
             } else {

@@ -620,7 +620,6 @@ class Hook_addon_registry_core
             'adminzone/pages/modules/admin_group_member_timeouts.php',
             'lang/EN/group_member_timeouts.ini',
             'themes/default/templates/GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN.tpl',
-            'sources/inst_special.php',
             'sources/actionlog.php',
             'themes/admin/javascript/.htaccess',
             'themes/admin/javascript/index.html',

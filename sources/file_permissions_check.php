@@ -18,7 +18,261 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_getuid|posix_getpwnam*/
+/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner*/
+
+// Everything in this file can run without Composr having bootstrapped, although it will run better if it has
+
+/**
+ * Execute a shell command, returning full output, with a guaranteed line break if not blank.
+ *
+ * @param  string $command Command to run
+ * @return string Command output
+ */
+function execute_nicely($command)
+{
+    $ret = @trim(shell_exec($command . ' 2>&1'));
+    if ($ret != '') {
+        $ret .= "\n";
+    }
+    return $ret;
+}
+
+/**
+ * Scan permissions.
+ *
+ * @param  boolean $live_output Whether to produce live output of issues
+ * @param  boolean $live_commands Whether to run commands live
+ * @param  ?string $web_username Username or User ID (null: try and auto-detect, failing that assume suEXEC-style)
+ * @param  ?boolean $has_ftp_loopback_for_write Whether the system has the potential to 'get' write access on non-suEXEC-style servers by (for example) looping through FTP (null: default / auto-detect if possible)
+ * @param  integer $minimum_level Minimum RESULT_TYPE_* level
+ * @return array A tuple: Messages to show, Commands to run, Paths with issues, Whether any issues were found
+ */
+function scan_permissions($live_output = false, $live_commands = false, $web_username = null, $has_ftp_loopback_for_write = null, $minimum_level = 3)
+{
+    $sensitive_paths = [
+        '_config.php',
+        'exports/backups/[^/]*\.tar(\.gz)?',
+        'exports/file_backups/_config.php\.\d+',
+    ];
+
+    $chmod_array = get_chmod_array('**', true);
+    $chmod_paths = [];
+    foreach ($chmod_array as $chmod) {
+        $chmod = preg_quote($chmod, '#');
+        $chmod = str_replace('\*\*', '[^/\.]*', $chmod);
+        $chmod = str_replace('\*', '[^/]*', $chmod);
+        $chmod_paths[] = $chmod;
+    }
+
+    if ($has_ftp_loopback_for_write === null) {
+        $has_ftp_loopback_for_write = ((function_exists('ftp_ssl_connect')) || (function_exists('ftp_connect'))) && ((!function_exists('get_value')) || (get_value('uses_ftp') !== '0'));
+    }
+
+    $ob = new CMSPermissionsScanner();
+
+    $ob->set_path_patterns($sensitive_paths, $chmod_paths);
+
+    $ob->set_live_output($live_output);
+    $ob->set_live_commands($live_commands);
+
+    if ($web_username !== null) {
+        $ob->set_web_username($web_username);
+    }
+
+    $ob->set_minimum_level($minimum_level);
+
+    $ob->set_has_ftp_loopback_for_write($has_ftp_loopback_for_write);
+
+    $subdir = '';
+
+    if (function_exists('get_file_base')) {
+        $stub = get_file_base() . (($subdir == '') ? '' : '/');
+    } else {
+        $stub = dirname(__DIR__) . (($subdir == '') ? '' : '/');
+    }
+
+    $found_any_issue = false;
+
+    $messages = [];
+    $commands = [];
+    $_paths = [];
+
+    list($_messages, $_commands) = $ob->process_directory($stub . $subdir, $subdir, null, true, $_paths, $found_any_issue);
+    $messages = array_merge($messages, $_messages);
+    $commands = array_merge($commands, $_commands);
+
+    if ((function_exists('get_file_base')) && (get_file_base() != get_custom_file_base())) {
+        list($_messages, $_commands) = $ob->process_directory(get_custom_file_base() . (($subdir == '') ? '' : '/') . $subdir, $subdir, null, true, $_paths, $found_any_issue);
+        $messages = array_merge($messages, $_messages);
+        $commands = array_merge($commands, $_commands);
+    }
+
+    $paths = array_keys($_paths);
+
+    return [$messages, $commands, $paths, $found_any_issue];
+}
+
+/**
+ * Get the list of files that need CHmodding for write access.
+ *
+ * @param  string $lang Language to use, may be whatever wildcard syntax the caller supports
+ * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
+ * @return array The list of files
+ */
+function get_chmod_array($lang = '*', $runtime = false)
+{
+    $extra_files = [];
+
+    if (function_exists('find_all_hooks')) {
+        $hooks = find_all_hooks('systems', 'addon_registry');
+        $hook_keys = array_keys($hooks);
+        foreach ($hook_keys as $hook) {
+            /*require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($hook));
+            $object = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
+            $extra_files = array_merge($extra_files, $object->get_chmod_array());*/
+
+            // Save memory compared to above commented code...
+
+            $path = get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
+            if (!file_exists($path)) {
+                $path = get_file_base() . '/sources/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
+            }
+            $matches = [];
+            if (preg_match('#function get_chmod_array\(\)\s*\{([^\}]*)\}#', cms_file_get_contents_safe($path, FILE_READ_LOCK), $matches) != 0) {
+                $extra_files = array_merge($extra_files, cms_eval($matches[1], $path));
+            }
+        }
+    }
+
+    if ($runtime) {
+        $extra_files = array_merge($extra_files, [
+            'adminzone/pages/comcode_custom/*/*.txt',
+            'adminzone/pages/html_custom/*/*.htm',
+            'cms/pages/comcode_custom/*/*.txt',
+            'cms/pages/html_custom/*/*.htm',
+            'data_custom/modules/admin_backup/*',
+            'data_custom/modules/admin_stats/*',
+            'data_custom/modules/chat/*',
+            'data_custom/modules/web_notifications/*',
+            'data_custom/sitemaps/*',
+            'data_custom/spelling/personal_dicts/*',
+            'data_custom/xml_config/*.xml',
+            'exports/*/*',
+            'forum/pages/comcode_custom/*/*.txt',
+            'forum/pages/html_custom/*/*.htm',
+            'imports/*/*',
+            'lang_custom/*/*.ini',
+            'pages/comcode_custom/*/*.txt',
+            'pages/html_custom/*/*.htm',
+            'site/pages/comcode_custom/*/*.txt',
+            'site/pages/html_custom/*/*.htm',
+            'text_custom/*.txt',
+            'text_custom/*/*.txt',
+            'themes/*/css_custom/*',
+            'themes/*/images_custom/*',
+            'themes/*/javascript_custom/*',
+            'themes/*/templates_custom/*',
+            'themes/*/text_custom/*',
+            'themes/*/xml_custom/*',
+            'uploads/attachments/*',
+            'uploads/attachments_thumbs/*',
+            'uploads/auto_thumbs/*',
+            'uploads/banners/*',
+            'uploads/captcha/*',
+            'uploads/catalogues/*',
+            'uploads/cns_avatars/*',
+            'uploads/cns_cpf_upload/*',
+            'uploads/cns_photos/*',
+            'uploads/cns_photos_thumbs/*',
+            'uploads/downloads/*',
+            'uploads/filedump/*',
+            'uploads/galleries/*',
+            'uploads/galleries_thumbs/*',
+            'uploads/personal_sound_effects/*',
+            'uploads/repimages/*',
+            'uploads/watermarks/*',
+            'uploads/website_specific/*',
+        ]);
+    }
+
+    return array_merge(
+        $extra_files,
+        [
+            'adminzone/pages/comcode_custom/' . $lang,
+            'adminzone/pages/html_custom/' . $lang,
+            'caches/static',
+            'caches/lang',
+            'caches/lang/' . $lang,
+            'caches/persistent',
+            'caches/self_learning',
+            'caches/http',
+            'cms/pages/comcode_custom/' . $lang,
+            'cms/pages/html_custom/' . $lang,
+            'data_custom/errorlog.php',
+            'data_custom/firewall_rules.txt',
+            'data_custom/modules/admin_backup',
+            'data_custom/modules/admin_stats',
+            'data_custom/modules/chat',
+            'data_custom/modules/web_notifications',
+            'data_custom/sitemaps',
+            'data_custom/spelling/personal_dicts',
+            'data_custom/xml_config',
+            'data_custom',
+            'exports/addons',
+            'exports/backups',
+            'exports/file_backups',
+            'forum/pages/comcode_custom/' . $lang,
+            'forum/pages/html_custom/' . $lang,
+            'imports/addons',
+            'lang_custom',
+            'lang_custom/' . $lang,
+            'pages/comcode_custom/' . $lang,
+            'pages/html_custom/' . $lang,
+            'temp',
+            'site/pages/comcode_custom/' . $lang,
+            'site/pages/html_custom/' . $lang,
+            'text_custom',
+            'text_custom/' . $lang,
+            'themes',
+            'themes/admin/css_custom',
+            'themes/admin/images_custom',
+            'themes/admin/javascript_custom',
+            'themes/admin/templates_cached/' . $lang,
+            'themes/admin/templates_custom',
+            'themes/admin/text_custom',
+            'themes/admin/xml_custom',
+            'themes/default/css_custom',
+            'themes/default/images_custom',
+            'themes/default/javascript_custom',
+            'themes/default/templates_cached/' . $lang,
+            'themes/default/templates_custom',
+            'themes/default/text_custom',
+            'themes/default/theme.ini',
+            'themes/default/xml_custom',
+            'themes/map.ini',
+            'uploads/attachments',
+            'uploads/attachments_thumbs',
+            'uploads/auto_thumbs',
+            'uploads/banners',
+            'uploads/captcha',
+            'uploads/catalogues',
+            'uploads/cns_avatars',
+            'uploads/cns_cpf_upload',
+            'uploads/cns_photos',
+            'uploads/cns_photos_thumbs',
+            'uploads/downloads',
+            'uploads/filedump',
+            'uploads/galleries',
+            'uploads/galleries_thumbs',
+            'uploads/incoming',
+            'uploads/personal_sound_effects',
+            'uploads/repimages',
+            'uploads/watermarks',
+            'uploads/website_specific',
+            '_config.php',
+        ]
+    );
+}
 
 /**
  * Dispatcher object.
@@ -55,6 +309,7 @@ class CMSPermissionsScanner
     // Options...
 
     protected $web_user;
+    protected $web_user_group;
 
     protected $sensitive_paths = [];
     protected $chmod_paths = [];
@@ -62,8 +317,9 @@ class CMSPermissionsScanner
 
     protected $has_ftp_loopback_for_write = false;
 
-    protected $minimum_level = 3;
+    protected $minimum_level = 1;
     protected $live_output = false;
+    protected $live_commands = false;
 
     // Run-time data...
 
@@ -81,7 +337,7 @@ class CMSPermissionsScanner
         $this->set_path_patterns();
 
         $this->has_lsattr = false;
-        if (($this->php_function_allowed('shell_exec')) && ($this->php_function_allowed('escapeshellarg'))) {
+        if ((!$this->is_windows()) && ($this->php_function_allowed('shell_exec')) && ($this->php_function_allowed('escapeshellarg'))) {
             if (preg_match('#lsattr \d#', shell_exec('lsattr -V 2>&1')) != 0) {
                 $this->has_lsattr = true;
             }
@@ -96,23 +352,49 @@ class CMSPermissionsScanner
     public function set_web_username($username = null)
     {
         $this->web_user = null;
+        $this->web_user_group = 'IIS_IUSRS'; // Only used on Windows
 
-        if ($username === null) {
-            if ($this->php_function_allowed('posix_getuid')) {
-                $this->web_user = posix_getuid();
+        if ($this->is_windows()) {
+            if ($username === null) {
+                if (($this->php_function_allowed('posix_getpwnam')) && (@posix_getpwnam('IUSR') !== false)) {
+                    $this->web_user = 'IUSR';
+                } else {
+                    if (($this->php_function_allowed('posix_getuid')) && ($this->php_function_allowed('posix_getpwuid'))) {
+                        $details = @posix_getpwnam(posix_getpwuid());
+                        if ($details !== false) {
+                            $this->web_user = $details['name'];
+                            if ($this->php_function_allowed('posix_getgrgid')) {
+                                $details_group = posix_getgrgid($details['gid']);
+                                $this->web_user_group = $details_group['name'];
+                            }
+                        } else {
+                            $this->web_user = 'IUSR'; // Fallback, we need something for icacls
+                        }
+                    } else {
+                        $this->web_user = 'IUSR'; // Fallback, we need something for icacls
+                    }
+                }
+            } else {
+                $this->web_user = $username;
             }
         } else {
-            if (is_numeric($username)) {
-                $this->web_user = intval($username);
+            if ($username === null) {
+                if ($this->php_function_allowed('posix_getuid')) {
+                    $this->web_user = posix_getuid();
+                }
             } else {
-                if ($this->php_function_allowed('posix_getpwnam')) {
-                    $details = @posix_getpwnam($username);
-                    if ($details === false) {
-                        throw new Exception('Cannot find user, ' . $username);
-                    }
-                    $this->web_user = $details['uid'];
+                if (is_numeric($username)) {
+                    $this->web_user = intval($username);
                 } else {
-                    throw new Exception('Posix extension is needed if passing a username');
+                    if ($this->php_function_allowed('posix_getpwnam')) {
+                        $details = @posix_getpwnam($username);
+                        if ($details === false) {
+                            throw new Exception('Cannot find user, ' . $username);
+                        }
+                        $this->web_user = $details['uid'];
+                    } else {
+                        throw new Exception('Posix extension is needed if passing a username');
+                    }
                 }
             }
         }
@@ -151,7 +433,7 @@ class CMSPermissionsScanner
     /**
      * Set minimum result level.
      *
-     * @param  boolean $minimum_level Minimum RESULT_TYPE_* level
+     * @param  integer $minimum_level Minimum RESULT_TYPE_* level
      */
     public function set_minimum_level($minimum_level)
     {
@@ -169,16 +451,13 @@ class CMSPermissionsScanner
     }
 
     /**
-     * Get general messages.
+     * Set whether to run live commands, rather than just returning at the end.
      *
-     * @return array A pair: List of messages, List of commands
+     * @param  boolean $live_commands Whether to run commands
      */
-    public function get_general_messages()
+    public function set_live_commands($live_commands)
     {
-        $messages = [];
-        $commands = [];
-
-        return [$messages, $commands];
+        $this->live_commands = $live_commands;
     }
 
     /**
@@ -230,15 +509,17 @@ class CMSPermissionsScanner
      * @param  PATH $rel_path The relative path to the base directory
      * @param  ?string $attr A string of extended attributes from lsattr (null: look up individually, which is slower)
      * @param  boolean $top_level Whether this is the top level of the recursion; don't set this manually
-     * @return array A pair: List of messages, List of commands
+     * @param  array $paths Paths with issues (inverse list), returned by reference
+     * @param  boolean $found_any_issue Whether any issues were found, returned by reference
+     * @return array A tuple: Messages to show, Commands to run
      */
-    public function process_directory($path, $rel_path = '', $attr = null, $top_level = true)
+    public function process_directory($path, $rel_path = '', $attr = null, $top_level = true, &$paths = [], &$found_any_issue = false)
     {
         $messages = [];
         $commands = [];
 
         if ($top_level) {
-            if ($this->php_function_allowed('shell_exec')) {
+            if ((!$this->is_windows()) && ($this->php_function_allowed('shell_exec'))) {
                 if (strpos(shell_exec('sestatus'), 'enabled') !== false) {
                     if (strpos(shell_exec('ps -eZ'), 'httpd_t') !== false) {
                         $found_selinux_rule = false;
@@ -271,7 +552,7 @@ class CMSPermissionsScanner
             $attr = isset($lsattr[$path]) ? $lsattr[$path] : '';
         }
 
-        $_messages = $this->process_node($path, $rel_path, true, $attr);
+        $_messages = $this->process_node($path, $rel_path, true, $attr, $paths, $found_any_issue);
         $messages = array_merge($messages, $_messages[0]);
         $commands = array_merge($commands, $_messages[1]);
 
@@ -294,11 +575,11 @@ class CMSPermissionsScanner
                 $is_directory = @is_dir($_path);
 
                 if ($is_directory) {
-                    $_messages = $this->process_directory($_path, $_rel_path, isset($lsattr[$_path]) ? $lsattr[$_path] : '', false);
+                    $_messages = $this->process_directory($_path, $_rel_path, isset($lsattr[$_path]) ? $lsattr[$_path] : '', false, $paths, $found_any_issue);
                     $messages = array_merge($messages, $_messages[0]);
                     $commands = array_merge($commands, $_messages[1]);
                 } else {
-                    $_messages = $this->process_node($_path, $_rel_path, false, isset($lsattr[$_path]) ? $lsattr[$_path] : '');
+                    $_messages = $this->process_node($_path, $_rel_path, false, isset($lsattr[$_path]) ? $lsattr[$_path] : '', $paths, $found_any_issue);
                     $messages = array_merge($messages, $_messages[0]);
                     $commands = array_merge($commands, $_messages[1]);
                 }
@@ -317,10 +598,14 @@ class CMSPermissionsScanner
      * @param  PATH $rel_path The relative path to the base directory
      * @param  boolean $is_directory Whether this is a directory
      * @param  string $attr A string of extended attributes from lsattr
-     * @return array A pair: List of messages, List of commands
+     * @param  array $paths Paths with issues (inverse list), returned by reference
+     * @param  boolean $found_any_issue Whether any issues were found, returned by reference
+     * @return array A tuple: Messages to show, Commands to run, Paths with issues
      */
-    protected function process_node($path, $rel_path, $is_directory, $attr)
+    protected function process_node($path, $rel_path, $is_directory, $attr, &$paths = [], &$found_any_issue = false)
     {
+        // (We will assume the file owner is not something we want to change, just the permissions to work best with that owner)
+
         $messages = [];
         $commands = [];
 
@@ -363,7 +648,7 @@ class CMSPermissionsScanner
         $perms_dangerous |= self::BITMASK_PERMISSIONS_SETGID;
         $perms_dangerous |= self::BITMASK_PERMISSIONS_SETUID;
 
-        if (($this->web_user === null) || ($file_owner == $this->web_user)) {
+        if (($this->is_windows()/*We are setting against ACLs really anyway*/) || ($this->web_user === null) || ($file_owner == $this->web_user)) {
             // suEXEC style...
 
             $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
@@ -459,6 +744,8 @@ class CMSPermissionsScanner
 
         $found_issue = false;
 
+        $new_file_perms = $file_perms;
+
         // $perms_needed
         if ($this->minimum_level <= self::RESULT_TYPE_ERROR_MISSING) {
             if (($file_perms & $perms_needed) != $perms_needed) {
@@ -467,6 +754,7 @@ class CMSPermissionsScanner
                 if ($command !== null) {
                     $commands[] = $command;
                 }
+                $paths[$path] = true;
                 if ($this->live_output) {
                     echo $message . "\n";
                     if ($command !== null) {
@@ -474,20 +762,36 @@ class CMSPermissionsScanner
                     }
                 }
                 $found_issue = true;
+                $found_any_issue = true;
+                $new_file_perms = $new_file_perms | $perms_needed;
             }
+
+            // Extended attributes checks
             if (($perms_needed & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
                 $extended_attribute_issues = [];
+                $extended_attribute_commands = [];
                 if (strpos($attr, 'a') !== false) {
                     $extended_attribute_issues[] = 'remove "a" append-only attribute';
-                    $commands[] = 'chattr -a ' . escapeshellarg($path);
+                    $command = 'chattr -a ' . escapeshellarg($path);
+                    $extended_attribute_commands[] = $command;
                 }
                 if (strpos($attr, 'i') !== false) {
                     $extended_attribute_issues[] = 'remove "i" immutable attribute';
-                    $commands[] = 'chattr -i ' . escapeshellarg($path);
+                    $command = 'chattr -i ' . escapeshellarg($path);
+                    $extended_attribute_commands[] = $command;
                 }
                 if (!empty($extended_attribute_issues)) {
                     $message = 'Error: extended attributes problem on ' . $path . ' (' . implode(', ', $extended_attribute_issues) . ')';
+                    if ($this->live_output) {
+                        echo $message . "\n";
+                        foreach ($extended_attribute_commands as $command) {
+                            echo $command . "\n";
+                        }
+                    }
                     $found_issue = true;
+                    $found_any_issue = true;
+                    $paths[$path] = true;
+                    $commands = array_merge($commands, $extended_attribute_commands);
                 }
             }
         }
@@ -496,35 +800,20 @@ class CMSPermissionsScanner
         if ($this->minimum_level <= self::RESULT_TYPE_SUGGESTION_MISSING) {
             if (($file_perms & $perms_desired) != $perms_desired) {
                 list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_SUGGESTION_MISSING, ($file_perms ^ $perms_desired) & $perms_desired);
-                $found_issue = true;
                 $messages[] = $message;
                 if ($command !== null) {
                     $commands[] = $command;
                 }
+                $paths[$path] = true;
                 if ($this->live_output) {
                     echo $message . "\n";
                     if ($command !== null) {
                         echo $command . "\n";
                     }
                 }
-            }
-        }
-
-        // $perms_avoided
-        if ($this->minimum_level <= self::RESULT_TYPE_SUGGESTION_EXCESSIVE) {
-            if (($file_perms & $perms_avoided) != 0) {
-                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_SUGGESTION_EXCESSIVE, $file_perms & $perms_avoided);
                 $found_issue = true;
-                $messages[] = $message;
-                if ($command !== null) {
-                    $commands[] = $command;
-                }
-                if ($this->live_output) {
-                    echo $message . "\n";
-                    if ($command !== null) {
-                        echo $command . "\n";
-                    }
-                }
+                $found_any_issue = true;
+                $new_file_perms = $new_file_perms | $perms_desired;
             }
         }
 
@@ -532,17 +821,41 @@ class CMSPermissionsScanner
         if ($this->minimum_level <= self::RESULT_TYPE_ERROR_EXCESSIVE) {
             if (($file_perms & $perms_dangerous) != 0) {
                 list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_ERROR_EXCESSIVE, $file_perms & $perms_dangerous);
-                $found_issue = true;
                 $messages[] = $message;
                 if ($command !== null) {
                     $commands[] = $command;
                 }
+                $paths[$path] = true;
                 if ($this->live_output) {
                     echo $message . "\n";
                     if ($command !== null) {
                         echo $command . "\n";
                     }
                 }
+                $found_issue = true;
+                $found_any_issue = true;
+                $new_file_perms = $new_file_perms & ~$perms_dangerous;
+            }
+        }
+
+        // $perms_avoided
+        if ($this->minimum_level <= self::RESULT_TYPE_SUGGESTION_EXCESSIVE) {
+            if (($file_perms & $perms_avoided) != 0) {
+                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_SUGGESTION_EXCESSIVE, $file_perms & $perms_avoided);
+                $messages[] = $message;
+                if ($command !== null) {
+                    $commands[] = $command;
+                }
+                $paths[$path] = true;
+                if ($this->live_output) {
+                    echo $message . "\n";
+                    if ($command !== null) {
+                        echo $command . "\n";
+                    }
+                }
+                $found_issue = true;
+                $found_any_issue = true;
+                $new_file_perms = $new_file_perms & ~$perms_avoided;
             }
         }
 
@@ -552,6 +865,19 @@ class CMSPermissionsScanner
                 $messages[] = $message;
                 if ($this->live_output) {
                     echo $message . "\n";
+                }
+            }
+        }
+
+        if ($this->live_commands) {
+            foreach ($commands as $command) {
+                if (($this->is_windows()) || (substr($command, 0, 6) != 'chmod ')) {
+                    echo execute_nicely($command);
+                }
+            }
+            if (!$this->is_windows()) {
+                if ($new_file_perms != $file_perms) {
+                    chmod($path, $new_file_perms);
                 }
             }
         }
@@ -617,6 +943,16 @@ class CMSPermissionsScanner
     }
 
     /**
+     * Find if we are running Windows.
+     *
+     * @return boolean Whether we are running Windows
+     */
+    protected function is_windows()
+    {
+        return (strpos(PHP_OS, 'WIN') !== false);
+    }
+
+    /**
      * Generate a chmod command from differential octal permissions.
      *
      * @param  PATH $path The path the command is for
@@ -625,60 +961,110 @@ class CMSPermissionsScanner
      * @set - +
      * @return string Chmod command
      */
-    protected function generate_chmod_command($path, $octal, $operator)
+    public function generate_chmod_command($path, $octal, $operator)
     {
-        $owner_perms = [];
-        if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
-            $owner_perms[] = 's';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
-            $owner_perms[] = 'x';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
-            $owner_perms[] = 'r';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
-            $owner_perms[] = 'w';
-        }
+        if ($this->is_windows()) {
+            // Windows...
 
-        $group_perms = [];
-        if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
-            $group_perms[] = 's';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
-            $group_perms[] = 'x';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
-            $group_perms[] = 'r';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
-            $group_perms[] = 'w';
-        }
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
 
-        $other_perms = [];
-        if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
-            $other_perms[] = 't';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
-            $other_perms[] = 'x';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
-            $other_perms[] = 'r';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
-            $other_perms[] = 'w';
-        }
+            $cmd = ($operator == '+') ? '/grant' : '/deny';
 
-        $chmod = '';
-        foreach (['u' => $owner_perms, 'g' => $group_perms, 'o' => $other_perms] as $permission_class => $perms) {
-            if (!empty($perms)) {
-                if ($chmod != '') {
-                    $chmod .= ',';
-                }
-                $chmod .= $permission_class . $operator . implode('', $perms);
+            $owner_user = $this->web_user;
+            $owner_commands = [];
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
+                $owner_commands[] = '/' . $cmd . ' ' . $owner_user . ':(X)';
             }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
+                $owner_commands[] = '/' . $cmd . ' ' . $owner_user . ':(RD,RA,REA)';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+                $owner_commands[] = '/' . $cmd . ' ' . $owner_user . ':(WD,WA,WEA,AD,D)';
+            }
+
+            $group_user = $this->web_user_group;
+            $group_commands = [];
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
+                $group_commands[] = '/' . $cmd . ' ' . $group_user . ':(X)';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
+                $group_commands[] = '/' . $cmd . ' ' . $group_user . ':(RD,RA,REA)';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
+                $group_commands[] = '/' . $cmd . ' ' . $group_user . ':(WD,WA,WEA,AD,D)';
+            }
+
+            $other_user = 'Users';
+            $other_commands = [];
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
+                $other_commands[] = '/' . $cmd . ' ' . $other_user . ':(X)';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
+                $other_commands[] = '/' . $cmd . ' ' . $other_user . ':(RD,RA,REA)';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
+                $other_commands[] = '/' . $cmd . ' ' . $other_user . ':(WD,WA,WEA,AD,D)';
+            }
+
+            $command = 'icacls ' . escapeshellarg($path) . implode(' ', $owner_commands) . implode(' ', $group_commands) . implode(' ', $other_commands) .  ' /inheritancelevel:r';
+        } else {
+            // MacOS and Linux...
+
+            $owner_perms = [];
+            if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
+                $owner_perms[] = 's';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
+                $owner_perms[] = 'x';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
+                $owner_perms[] = 'r';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+                $owner_perms[] = 'w';
+            }
+
+            $group_perms = [];
+            if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
+                $group_perms[] = 's';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
+                $group_perms[] = 'x';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
+                $group_perms[] = 'r';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
+                $group_perms[] = 'w';
+            }
+
+            $other_perms = [];
+            if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
+                $other_perms[] = 't';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
+                $other_perms[] = 'x';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
+                $other_perms[] = 'r';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
+                $other_perms[] = 'w';
+            }
+
+            $chmod = '';
+            foreach (['u' => $owner_perms, 'g' => $group_perms, 'o' => $other_perms] as $permission_class => $perms) {
+                if (!empty($perms)) {
+                    if ($chmod != '') {
+                        $chmod .= ',';
+                    }
+                    $chmod .= $permission_class . $operator . implode('', $perms);
+                }
+            }
+            $command = 'chmod ' . $chmod . ' ' . escapeshellarg($path);
         }
-        return 'chmod ' . $chmod . ' ' . escapeshellarg($path);
+
+        return $command;
     }
 
     /**
@@ -691,44 +1077,76 @@ class CMSPermissionsScanner
     {
         $perms = [];
 
-        if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
-            $perms[] = 'sticky';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
-            $perms[] = 'setgid';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
-            $perms[] = 'setuid';
-        }
+        if ($this->is_windows()) {
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
+                $perms[] = 'IUSR execute';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
+                $perms[] = 'IUSR read';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+                $perms[] = 'IUSR write';
+            }
 
-        if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
-            $perms[] = 'owner execute';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
-            $perms[] = 'owner read';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
-            $perms[] = 'owner write';
-        }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
+                $perms[] = 'IIS_IUSRS execute';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
+                $perms[] = 'IIS_IUSRS read';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
+                $perms[] = 'IIS_IUSRS write';
+            }
 
-        if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
-            $perms[] = 'group execute';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
-            $perms[] = 'group read';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
-            $perms[] = 'group write';
-        }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
+                $perms[] = 'Users execute';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
+                $perms[] = 'Users read';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
+                $perms[] = 'Users write';
+            }
+        } else {
+            if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
+                $perms[] = 'sticky';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
+                $perms[] = 'setgid';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
+                $perms[] = 'setuid';
+            }
 
-        if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
-            $perms[] = 'other execute';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
-            $perms[] = 'other read';
-        }
-        if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
-            $perms[] = 'other write';
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
+                $perms[] = 'owner execute';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
+                $perms[] = 'owner read';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+                $perms[] = 'owner write';
+            }
+
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
+                $perms[] = 'group execute';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
+                $perms[] = 'group read';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
+                $perms[] = 'group write';
+            }
+
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
+                $perms[] = 'other execute';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
+                $perms[] = 'other read';
+            }
+            if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
+                $perms[] = 'other write';
+            }
         }
 
         return implode(', ', $perms);

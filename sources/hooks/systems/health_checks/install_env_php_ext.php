@@ -190,6 +190,11 @@ class Hook_health_check_install_env_php_ext extends Hook_Health_Check
             return;
         }
 
+        if (strpos(PHP_OS, 'WIN') !== false) {
+            // Windows never has it
+            return;
+        }
+
         $this->assertTrue(function_exists('posix_getuid'), do_lang('NO_POSIX_ON_SERVER'));
     }
 
