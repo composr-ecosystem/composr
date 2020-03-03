@@ -192,6 +192,7 @@ function render_video_box($row, $zone = '_SEARCH', $give_context = true, $includ
         'VIDEO_WIDTH' => strval($row['video_width']),
         'VIDEO_HEIGHT' => strval($row['video_height']),
         'VIDEO_LENGTH' => strval($row['video_length']),
+        'CLOSED_CAPTIONS_URL' => strval($row['closed_captions_url']),
     ]);
 }
 
@@ -487,6 +488,7 @@ function show_video_details($myrow)
         'WIDTH' => integer_format($myrow['video_width']),
         'HEIGHT' => integer_format($myrow['video_height']),
         'LENGTH' => strval($myrow['video_length']),
+        'CLOSED_CAPTIONS_URL' => strval($myrow['closed_captions_url'])
     ]);
 }
 
@@ -1121,9 +1123,10 @@ function get_gallery_content_tree($table, $submitter = null, $gallery = null, $b
  * @param  integer $height Height
  * @param  integer $length Length
  * @param  MEMBER $submitter The entry submitter
+ * @param  URLPATH $closed_captions_url The URL to the closed captions file for this video
  * @return Tempcode Displayed media
  */
-function show_gallery_video_media($url, $thumb_url, $width, $height, $length, $submitter)
+function show_gallery_video_media($url, $thumb_url, $width, $height, $length, $submitter, $closed_captions_url)
 {
     require_code('media_renderer');
     require_code('mime_types');
@@ -1133,6 +1136,7 @@ function show_gallery_video_media($url, $thumb_url, $width, $height, $length, $s
 
     $attributes = [
         'thumb_url' => $thumb_url,
+        'closed_captions_url' => $closed_captions_url,
         'width' => strval($width),
         'height' => strval($height),
         'length' => strval($length),

@@ -4558,6 +4558,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VERSION
         DESCRIPTION_VIDEO_DIMENSIONS
         DESCRIPTION_VIDEO_LENGTH
+        DESCIPTION_CLOSED_CAPTIONS
         DESCRIPTION_VIEW_REPORTS
         DESCRIPTION_VISIBLE
         DESCRIPTION_WATERMARK

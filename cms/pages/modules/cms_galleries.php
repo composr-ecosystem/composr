@@ -617,8 +617,15 @@ class Module_cms_galleries extends Standard_crud_module
                         if ($length === null) {
                             $length = 0;
                         }
+
+                        require_code('images');
+                        $closed_captions_url = get_matching_closed_captions_file($url);
+                        if ($closed_captions_url === null) {
+                            $closed_captions_url = '';
+                        }
+
                         $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
-                        $id = add_video($exif['UserComment'], $cat, '', $url, '', 1, post_param_integer('ss_allow_rating', 0), post_param_integer('ss_allow_reviews', post_param_integer('ss_allow_comments', 0)), post_param_integer('ss_allow_trackbacks', 0), '', $length, $width, $height);
+                        $id = add_video($exif['UserComment'], $cat, '', $url, '', 1, post_param_integer('ss_allow_rating', 0), post_param_integer('ss_allow_reviews', post_param_integer('ss_allow_comments', 0)), post_param_integer('ss_allow_trackbacks', 0), '', $length, $width, $height, $closed_captions_url);
                         store_exif('video', strval($id), $exif);
 
                         require_code('users2');
@@ -734,8 +741,15 @@ class Module_cms_galleries extends Standard_crud_module
                 if ($length === null) {
                     $length = 0;
                 }
+
+                require_code('images');
+                $closed_captions_url = get_matching_closed_captions_file($url);
+                if ($closed_captions_url === null) {
+                    $closed_captions_url = '';
+                }
+
                 $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
-                $id = add_video($exif['UserComment'], $cat, '', $url, '', 1, post_param_integer('allow_rating', 0), post_param_integer('allow_reviews', post_param_integer('allow_comments', 0)), post_param_integer('allow_trackbacks', 0), post_param_string('notes', ''), $length, $width, $height, null, $time);
+                $id = add_video($exif['UserComment'], $cat, '', $url, '', 1, post_param_integer('allow_rating', 0), post_param_integer('allow_reviews', post_param_integer('allow_comments', 0)), post_param_integer('allow_trackbacks', 0), post_param_string('notes', ''), $length, $width, $height, $closed_captions_url, null, $time);
                 store_exif('video', strval($id), $exif);
                 if (addon_installed('content_privacy')) {
                     require_code('content_privacy2');
@@ -1088,7 +1102,7 @@ class Module_cms_galleries extends Standard_crud_module
         $validated = $myrow['validated'];
 
         $delete_fields = null;
-        if (get_option('cleanup_files') == '0') {
+        if (get_option('cleanup_files') == '1') {
             if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', ['galleries', $cat])) {
                 if (has_actual_page_access(get_member(), 'admin_cleanup')) {
                     $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('LEAVE'));
@@ -1416,94 +1430,6 @@ class Module_cms_galleries_alt extends Standard_crud_module
     }
 
     /**
-     * Extract video meta info from any uploaded video.
-     *
-     * @return array A triplet of 3 "?integer"'s: video width, video height, video length
-     */
-    public function get_special_video_info()
-    {
-        $video_length = post_param_integer('video_length', 0);
-        $video_width = post_param_integer('video_width', 0);
-        $video_height = post_param_integer('video_height', 0);
-        if (($video_width == 0) || ($video_height == 0) || ($video_length == 0)) {
-            is_plupload(true);
-            if (((array_key_exists('video__upload', $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES['video__upload']['tmp_name']))))) {
-                $filename = $_FILES['video__upload']['name'];
-                list($_video_width, $_video_height, $_video_length) = get_video_details($_FILES['video__upload']['tmp_name'], $filename);
-            } else {
-                $url = post_param_string('video__url', '', INPUT_FILTER_URL_GENERAL);
-                if ($url == '') {
-                    return [null, null, null];
-                }
-
-                $_video_width = null;
-                $_video_height = null;
-
-                // Try oEmbed
-                require_code('media_renderer');
-                require_code('http');
-                $meta_details = get_webpage_meta_details($url);
-                require_code('hooks/systems/media_rendering/oembed');
-                $oembed_ob = object_factory('Hook_media_rendering_oembed');
-                if ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details) || $oembed_ob->recognises_url($url)) {
-                    $oembed = $oembed_ob->get_oembed_data_result($url, ['width' => get_option('video_width_setting'), 'height' => get_option('video_height_setting')]);
-                    if (isset($oembed['width'])) {
-                        $_video_width = intval($oembed['width']);
-                    }
-                    if (isset($oembed['height'])) {
-                        $_video_height = intval($oembed['height']);
-                    }
-                    $_video_length = null;
-                }
-
-                $filename = null;
-
-                // Try get_video_details
-                if (!isset($_video_width)) {
-                    $download_test = null;
-                    $temp_path = '';
-                    if ($url != '') {
-                        $temp_path = cms_tempnam();
-                        $write_to_file = fopen($temp_path, 'wb');
-                        $download_test = cms_http_request($url, ['byte_limit' => 1024 * 50, 'trigger_error' => false, 'write_to_file' => $write_to_file]);
-                        rewind($write_to_file);
-                        fclose($write_to_file);
-                    }
-                    if (($download_test !== null) && ($download_test->data !== null)) {
-                        $filename = ($download_test->filename === null) ? basename(urldecode($url)) : $download_test->filename;
-                        list($_video_width, $_video_height, $_video_length) = get_video_details($temp_path, $filename);
-                    } else {
-                        list($_video_width, $_video_height, $_video_length) = [null, null, null];
-                    }
-
-                    if ($temp_path != '') {
-                        @unlink($temp_path);
-                    }
-                }
-            }
-
-            if ($filename !== null) {
-                if (strtolower(substr($filename, -4)) == '.mp3') {
-                    $_video_width = 300;
-                    $_video_height = 60;
-                }
-            }
-
-            if ($video_width == 0) {
-                $video_width = ($_video_width === null) ? intval(get_option('default_video_width')) : $_video_width;
-            }
-            if ($video_height == 0) {
-                $video_height = ($_video_height === null) ? intval(get_option('default_video_height')) : $_video_height;
-            }
-            if ($video_length == 0) {
-                $video_length = ($_video_length === null) ? 0 : $_video_length;
-            }
-        }
-
-        return [$video_width, $video_height, $video_length];
-    }
-
-    /**
      * Standard crud_module tree-list function.
      *
      * @return array A triple: The tree field (Tempcode), Search URL, Archive URL
@@ -1549,10 +1475,11 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  ?integer $video_length The length of the video (null: not yet added, so not yet known)
      * @param  ?integer $video_width The width of the video (null: not yet added, so not yet known)
      * @param  ?integer $video_height The height of the video (null: not yet added, so not yet known)
+     * @param  URLPATH $closed_captions_url The URL to the closed captions for this video
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $video_length = null, $video_width = null, $video_height = null, $regions = [])
+    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $video_length = null, $video_width = null, $video_height = null, $closed_captions_url = '', $regions = [])
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -1647,10 +1574,14 @@ class Module_cms_galleries_alt extends Standard_crud_module
             $fields->attach($validated_field);
         }
 
+        // Advanced
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c09d066b272c40ef91f058c40b5c27d0', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
         if (get_option('filter_regions') == '1') {
             require_code('locations');
             $fields->attach(form_input_regions($regions));
         }
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('CLOSED_CAPTIONS'), do_lang_tempcode('DESCRIPTION_CLOSED_CAPTIONS'), $hidden, 'closed_captions_url', null, false, $closed_captions_url, false, 'vtt', false));
+
 
         // Metadata
         require_code('content2');
@@ -1735,7 +1666,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $validated = $myrow['validated'];
 
         $delete_fields = null;
-        if (get_option('cleanup_files') == '0') {
+        if (get_option('cleanup_files') == '1') {
             if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', ['galleries', $cat])) {
                 if (has_actual_page_access(get_member(), 'admin_cleanup')) {
                     $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('LEAVE'));
@@ -1752,7 +1683,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'video', 'content_id' => strval($id)]));
 
-        $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $url, $myrow['thumb_url'], $validated, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['video_length'], $myrow['video_width'], $myrow['video_height'], $regions);
+        $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $url, $myrow['thumb_url'], $validated, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['video_length'], $myrow['video_width'], $myrow['video_height'], $myrow['closed_captions_url'], $regions);
 
         $ret[2] = $delete_fields;
         $ret[3] = '';
@@ -1784,7 +1715,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $notes = post_param_string('notes', '');
         $allow_trackbacks = post_param_integer('allow_trackbacks', 0);
 
-        list($video_width, $video_height, $video_length) = $this->get_special_video_info();
+        require_code('galleries2');
+        list($video_width, $video_height, $video_length) = get_special_video_info();
         if ($video_width === null) {
             $video_width = intval(get_option('default_video_width'));
         }
@@ -1794,6 +1726,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         if ($video_length === null) {
             $video_length = 0;
         }
+
+        $closed_captions_url = post_param_multi_source_upload('closed_captions_url', 'uploads/galleries', false, false);
 
         $filename = '';
         $thumb_url = '';
@@ -1816,7 +1750,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
-        $id = add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
+        $id = add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $closed_captions_url, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
 
         set_url_moniker('video', strval($id));
 
@@ -1876,6 +1810,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             $filename = '';
             $thumb_url = '';
             $url = post_param_multi_source_upload('video', 'uploads/galleries', true, true, $filename, $thumb_url, CMS_UPLOAD_VIDEO);
+            $closed_captions_url = post_param_multi_source_upload('closed_captions_url', 'uploads/galleries', false, false);
 
             if (($thumb_url == '') && ($url != '')) {
                 $thumb_url = create_video_thumb($url);
@@ -1891,6 +1826,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         } else {
             $url = STRING_MAGIC_NULL;
             $thumb_url = STRING_MAGIC_NULL;
+            $closed_captions_url = STRING_MAGIC_NULL;
         }
 
         $allow_rating = post_param_integer('allow_rating', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
@@ -1898,7 +1834,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $notes = post_param_string('notes', fractional_edit() ? STRING_MAGIC_NULL : '');
         $allow_trackbacks = post_param_integer('allow_trackbacks', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         if (!fractional_edit()) {
-            list($video_width, $video_height, $video_length) = $this->get_special_video_info();
+            require_code('galleries2');
+            list($video_width, $video_height, $video_length) = get_special_video_info();
         } else {
             list($video_width, $video_height, $video_length) = [INTEGER_MAGIC_NULL, INTEGER_MAGIC_NULL, INTEGER_MAGIC_NULL];
         }
@@ -1941,7 +1878,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
-        edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
+        edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $closed_captions_url, $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
 
         if (addon_installed('content_reviews')) {
             content_review_set('video', strval($id));

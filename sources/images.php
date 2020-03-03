@@ -556,10 +556,18 @@ function is_video($name, $as_admin, $must_be_true_video = false)
  *
  * @param  string $name A URL or file path to the video
  * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)
+ * @param  boolean $definitive_over_video Whether to favour "no" if it could also be a format with video in it
  * @return boolean Whether the string pointed to a file appeared to be an audio file
  */
-function is_audio($name, $as_admin)
+function is_audio($name, $as_admin, $definitive_over_video = false)
 {
+    require_code('files');
+    require_code('mime_types');
+    $mime_type = get_mime_type(get_file_extension($name), $as_admin);
+    if (substr($mime_type, 0, 6) == 'video/') {
+        return false;
+    }
+
     require_code('media_renderer');
     $acceptable_media = MEDIA_TYPE_AUDIO;
     $hooks = find_media_renderers($name, [], $as_admin, null, $acceptable_media);
@@ -796,4 +804,26 @@ function cms_imagesave($image, $path, $ext = null, $lossy = false, &$unknown_for
     }
 
     return $test;
+}
+
+/**
+ * Get the path to a matching closed captions file, so long as the URL is under a given scope.
+ *
+ * @param  URLPATH $url_direct_filesystem Direct URL to the video
+ * @param  string $scope_limit Only operate under this file path
+ * @return ?URLPATH Path to the closed captions URL file (null: did not find a file)
+ */
+function get_matching_closed_captions_file($url_direct_filesystem, $scope_limit = 'uploads/')
+{
+    $__url = rawurldecode($url_direct_filesystem);
+    if (substr($__url, 0, strlen($scope_limit)) == $scope_limit) {
+        $ext = get_file_extension($__url);
+        $base_path = substr($__url, 0, strlen($__url) - strlen($ext) - 1);
+        foreach (['vtt'] as $subtitle_type) {
+            if (is_file(get_custom_file_base() . '/' . $base_path . '.' . $subtitle_type)) {
+                return get_custom_base_url() . '/' . $base_path . '.' . $subtitle_type;
+            }
+        }
+    }
+    return null;
 }

@@ -105,17 +105,8 @@ class Hook_media_rendering_video_websafe extends Media_renderer_with_fallback
             $closed_captions_url = $attributes['closed_captions_url'];
         }
         if (empty($closed_captions_url)) {
-            $__url = rawurldecode($url_direct_filesystem);
-            if (substr($__url, 0, 17) == 'uploads/filedump/') {
-                $ext = get_file_extension($__url);
-                $base_path = substr($__url, 0, strlen($__url) - strlen($ext) - 1);
-                foreach (['vtt'] as $subtitle_type) {
-                    if (is_file(get_custom_file_base() . '/' . $base_path . '.' . $subtitle_type)) {
-                        $closed_captions_url = get_custom_base_url() . '/' . $base_path . '.' . $subtitle_type;
-                        break;
-                    }
-                }
-            }
+            require_code('images');
+            $closed_captions_url = get_matching_closed_captions_file($url_direct_filesystem, 'uploads/filedump/');
         }
 
         $responsive = ((array_key_exists('responsive', $attributes)) && ($attributes['responsive'] == '1'));

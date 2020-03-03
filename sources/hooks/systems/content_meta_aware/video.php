@@ -70,6 +70,8 @@ class Hook_content_meta_aware_video extends Hook_CMA
             'video_field' => ['url', 'video_width', 'video_height', 'submitter'],
             'video_generator' => 'generate_video_entry_video_details',
 
+            'closed_captions_url_field' => 'closed_captions_url',
+
             'view_page_link_pattern' => '_SEARCH:galleries:video:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_galleries:_edit_other:_WILD',
             'view_category_page_link_pattern' => '_SEARCH:galleries:browse:_WILD',
