@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner*/
+/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_.*|fileowner|get_current_user*/
 
 // Everything in this file can run without Composr having bootstrapped, although it will run better if it has
 
@@ -68,7 +68,11 @@ function scan_permissions($live_output = false, $live_commands = false, $web_use
         $has_ftp_loopback_for_write = ((function_exists('ftp_ssl_connect')) || (function_exists('ftp_connect'))) && ((!function_exists('get_value')) || (get_value('uses_ftp') !== '0'));
     }
 
-    $ob = new CMSPermissionsScanner();
+    if (strpos(PHP_OS, 'WIN') !== false) {
+        $ob = new CMSPermissionsScannerWindows();
+    } else {
+        $ob = new CMSPermissionsScannerLinux();
+    }
 
     $ob->set_path_patterns($sensitive_paths, $chmod_paths);
 
@@ -275,30 +279,13 @@ function get_chmod_array($lang = '*', $runtime = false)
 }
 
 /**
- * Dispatcher object.
- * Used to create a closure for a notification dispatch, so we can then tell that to send in the background (register_shutdown_function), for performance reasons.
+ * Check/fix permissions, base class.
  *
  * @package cms_permissions_scanner
  */
-class CMSPermissionsScanner
+abstract class CMSPermissionsScanner
 {
     // Constants...
-
-    const BITMASK_PERMISSIONS_STICKY = 01000;
-    const BITMASK_PERMISSIONS_SETGID = 02000;
-    const BITMASK_PERMISSIONS_SETUID = 04000;
-
-    const BITMASK_PERMISSIONS_OWNER_EXECUTE = 00100;
-    const BITMASK_PERMISSIONS_OWNER_WRITE = 00200;
-    const BITMASK_PERMISSIONS_OWNER_READ = 00400;
-
-    const BITMASK_PERMISSIONS_GROUP_EXECUTE = 00010;
-    const BITMASK_PERMISSIONS_GROUP_WRITE = 00020;
-    const BITMASK_PERMISSIONS_GROUP_READ = 00040;
-
-    const BITMASK_PERMISSIONS_OTHER_EXECUTE = 00001;
-    const BITMASK_PERMISSIONS_OTHER_WRITE = 00002;
-    const BITMASK_PERMISSIONS_OTHER_READ = 00004;
 
     const RESULT_TYPE_SUCCESS = 0;
     const RESULT_TYPE_SUGGESTION_EXCESSIVE = 1;
@@ -307,9 +294,6 @@ class CMSPermissionsScanner
     const RESULT_TYPE_ERROR_MISSING = 4;
 
     // Options...
-
-    protected $web_user;
-    protected $web_user_group;
 
     protected $sensitive_paths = [];
     protected $chmod_paths = [];
@@ -321,84 +305,14 @@ class CMSPermissionsScanner
     protected $live_output = false;
     protected $live_commands = false;
 
-    // Run-time data...
-
-    protected $has_lsattr;
-
     // Code...
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->set_web_username();
-
-        $this->set_path_patterns();
-
-        $this->has_lsattr = false;
-        if ((!$this->is_windows()) && ($this->php_function_allowed('shell_exec')) && ($this->php_function_allowed('escapeshellarg'))) {
-            if (preg_match('#lsattr \d#', shell_exec('lsattr -V 2>&1')) != 0) {
-                $this->has_lsattr = true;
-            }
-        }
-    }
 
     /**
      * Set username the web user will run as.
      *
      * @param  ?string $username Username or User ID (null: try and auto-detect, failing that assume suEXEC-style)
      */
-    public function set_web_username($username = null)
-    {
-        $this->web_user = null;
-        $this->web_user_group = 'IIS_IUSRS'; // Only used on Windows
-
-        if ($this->is_windows()) {
-            if ($username === null) {
-                if (($this->php_function_allowed('posix_getpwnam')) && (@posix_getpwnam('IUSR') !== false)) {
-                    $this->web_user = 'IUSR';
-                } else {
-                    if (($this->php_function_allowed('posix_getuid')) && ($this->php_function_allowed('posix_getpwuid'))) {
-                        $details = @posix_getpwnam(posix_getpwuid());
-                        if ($details !== false) {
-                            $this->web_user = $details['name'];
-                            if ($this->php_function_allowed('posix_getgrgid')) {
-                                $details_group = posix_getgrgid($details['gid']);
-                                $this->web_user_group = $details_group['name'];
-                            }
-                        } else {
-                            $this->web_user = 'IUSR'; // Fallback, we need something for icacls
-                        }
-                    } else {
-                        $this->web_user = 'IUSR'; // Fallback, we need something for icacls
-                    }
-                }
-            } else {
-                $this->web_user = $username;
-            }
-        } else {
-            if ($username === null) {
-                if ($this->php_function_allowed('posix_getuid')) {
-                    $this->web_user = posix_getuid();
-                }
-            } else {
-                if (is_numeric($username)) {
-                    $this->web_user = intval($username);
-                } else {
-                    if ($this->php_function_allowed('posix_getpwnam')) {
-                        $details = @posix_getpwnam($username);
-                        if ($details === false) {
-                            throw new Exception('Cannot find user, ' . $username);
-                        }
-                        $this->web_user = $details['uid'];
-                    } else {
-                        throw new Exception('Posix extension is needed if passing a username');
-                    }
-                }
-            }
-        }
-    }
+    abstract public function set_web_username($username = null);
 
     /**
      * Set paths patterns.
@@ -476,6 +390,112 @@ class CMSPermissionsScanner
     }
 
     /**
+     * Enumerate a directory for permission checks (actual processing is in process_node).
+     *
+     * @param  PATH $path The absolute path
+     * @param  PATH $rel_path The relative path to the base directory
+     * @param  ?string $attr A string of extended attributes from lsattr (null: look up individually, which is slower)
+     * @param  boolean $top_level Whether this is the top level of the recursion; don't set this manually
+     * @param  array $paths Paths with issues (inverse list), returned by reference
+     * @param  boolean $found_any_issue Whether any issues were found, returned by reference
+     * @return array A tuple: Messages to show, Commands to run
+     */
+    abstract public function process_directory($path, $rel_path = '', $attr = null, $top_level = true, &$paths = [], &$found_any_issue = false);
+
+    /**
+     * Create a success message.
+     *
+     * @param  PATH $path The path the message is about
+     * @return string The message
+     */
+    protected function output_success($path)
+    {
+        $message = 'Success: ' . $path;
+
+        return $message;
+    }
+}
+
+/**
+ * Check/fix permissions on Linux/MacOS.
+ *
+ * @package cms_permissions_scanner
+ */
+class CMSPermissionsScannerLinux extends CMSPermissionsScanner
+{
+    // Constants...
+
+    const BITMASK_PERMISSIONS_STICKY = 01000;
+    const BITMASK_PERMISSIONS_SETGID = 02000;
+    const BITMASK_PERMISSIONS_SETUID = 04000;
+
+    const BITMASK_PERMISSIONS_OWNER_EXECUTE = 00100;
+    const BITMASK_PERMISSIONS_OWNER_WRITE = 00200;
+    const BITMASK_PERMISSIONS_OWNER_READ = 00400;
+
+    const BITMASK_PERMISSIONS_GROUP_EXECUTE = 00010;
+    const BITMASK_PERMISSIONS_GROUP_WRITE = 00020;
+    const BITMASK_PERMISSIONS_GROUP_READ = 00040;
+
+    const BITMASK_PERMISSIONS_OTHER_EXECUTE = 00001;
+    const BITMASK_PERMISSIONS_OTHER_WRITE = 00002;
+    const BITMASK_PERMISSIONS_OTHER_READ = 00004;
+
+    // Run-time data...
+
+    protected $has_lsattr;
+    protected $web_user;
+
+    // Code...
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->set_web_username();
+
+        $this->set_path_patterns();
+
+        $this->has_lsattr = false;
+        if (($this->php_function_allowed('shell_exec')) && ($this->php_function_allowed('escapeshellarg'))) {
+            if (preg_match('#lsattr \d#', shell_exec('lsattr -V 2>&1')) != 0) {
+                $this->has_lsattr = true;
+            }
+        }
+    }
+
+    /**
+     * Set username the web user will run as.
+     *
+     * @param  ?string $username Username or User ID (null: try and auto-detect, failing that assume suEXEC-style)
+     */
+    public function set_web_username($username = null)
+    {
+        $this->web_user = null;
+
+        if ($username === null) {
+            if ($this->php_function_allowed('posix_getuid')) {
+                $this->web_user = posix_getuid();
+            }
+        } else {
+            if (is_numeric($username)) {
+                $this->web_user = intval($username);
+            } else {
+                if ($this->php_function_allowed('posix_getpwnam')) {
+                    $details = @posix_getpwnam($username);
+                    if ($details === false) {
+                        throw new Exception('Cannot find user, ' . $username);
+                    }
+                    $this->web_user = $details['uid'];
+                } else {
+                    throw new Exception('Posix extension is needed if passing a username');
+                }
+            }
+        }
+    }
+
+    /**
      * Find the extended attributes for a path.
      *
      * @param  PATH $path The absolute path
@@ -519,7 +539,7 @@ class CMSPermissionsScanner
         $commands = [];
 
         if ($top_level) {
-            if ((!$this->is_windows()) && ($this->php_function_allowed('shell_exec'))) {
+            if ($this->php_function_allowed('shell_exec')) {
                 if (strpos(shell_exec('sestatus'), 'enabled') !== false) {
                     if (strpos(shell_exec('ps -eZ'), 'httpd_t') !== false) {
                         $found_selinux_rule = false;
@@ -648,7 +668,7 @@ class CMSPermissionsScanner
         $perms_dangerous |= self::BITMASK_PERMISSIONS_SETGID;
         $perms_dangerous |= self::BITMASK_PERMISSIONS_SETUID;
 
-        if (($this->is_windows()/*We are setting against ACLs really anyway*/) || ($this->web_user === null) || ($file_owner == $this->web_user)) {
+        if (($this->web_user === null) || ($file_owner == $this->web_user)) {
             // suEXEC style...
 
             $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
@@ -656,7 +676,7 @@ class CMSPermissionsScanner
             if ($is_directory) {
                 $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
                 $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_READ;
-                if ($on_chmod_list) {
+                if (($on_chmod_list) || (!$this->has_ftp_loopback_for_write)) {
                     $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
                 } else {
                     $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
@@ -676,7 +696,7 @@ class CMSPermissionsScanner
                     $perms_avoided |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
                 }
                 $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_READ;
-                if ($on_chmod_list) {
+                if (($on_chmod_list) || (!$this->has_ftp_loopback_for_write)) {
                     $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
                 } else {
                     $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
@@ -700,17 +720,12 @@ class CMSPermissionsScanner
 
                 $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
                 $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
-                if ($on_chmod_list) {
+                if (($on_chmod_list) || (!$this->has_ftp_loopback_for_write)) {
                     $perms_dangerous |= self::BITMASK_PERMISSIONS_STICKY;
                     $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                 } else {
-                    if ($this->has_ftp_loopback_for_write) {
-                        $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
-                        $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
-                    } else {
-                        $perms_avoided |= self::BITMASK_PERMISSIONS_STICKY;
-                        $perms_desired |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
-                    }
+                    $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
+                    $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                 }
             } else {
                 if ($is_shell_script) {
@@ -727,17 +742,12 @@ class CMSPermissionsScanner
                     $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
                 }
                 $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
-                if ($on_chmod_list) {
+                if (($on_chmod_list) || (!$this->has_ftp_loopback_for_write)) {
                     $perms_dangerous |= self::BITMASK_PERMISSIONS_STICKY;
                     $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                 } else {
-                    if ($this->has_ftp_loopback_for_write) {
-                        $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
-                        $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
-                    } else {
-                        $perms_avoided |= self::BITMASK_PERMISSIONS_STICKY;
-                        $perms_desired |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
-                    }
+                    $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
+                    $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
                 }
             }
         }
@@ -746,26 +756,7 @@ class CMSPermissionsScanner
 
         $new_file_perms = $file_perms;
 
-        // $perms_needed
         if ($this->minimum_level <= self::RESULT_TYPE_ERROR_MISSING) {
-            if (($file_perms & $perms_needed) != $perms_needed) {
-                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_ERROR_MISSING, ($file_perms ^ $perms_needed) & $perms_needed);
-                $messages[] = $message;
-                if ($command !== null) {
-                    $commands[] = $command;
-                }
-                $paths[$path] = true;
-                if ($this->live_output) {
-                    echo $message . "\n";
-                    if ($command !== null) {
-                        echo $command . "\n";
-                    }
-                }
-                $found_issue = true;
-                $found_any_issue = true;
-                $new_file_perms = $new_file_perms | $perms_needed;
-            }
-
             // Extended attributes checks
             if (($perms_needed & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
                 $extended_attribute_issues = [];
@@ -796,66 +787,43 @@ class CMSPermissionsScanner
             }
         }
 
-        // $perms_desired
-        if ($this->minimum_level <= self::RESULT_TYPE_SUGGESTION_MISSING) {
-            if (($file_perms & $perms_desired) != $perms_desired) {
-                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_SUGGESTION_MISSING, ($file_perms ^ $perms_desired) & $perms_desired);
-                $messages[] = $message;
-                if ($command !== null) {
-                    $commands[] = $command;
-                }
-                $paths[$path] = true;
-                if ($this->live_output) {
-                    echo $message . "\n";
-                    if ($command !== null) {
-                        echo $command . "\n";
-                    }
-                }
-                $found_issue = true;
-                $found_any_issue = true;
-                $new_file_perms = $new_file_perms | $perms_desired;
-            }
-        }
+        $check_types = [
+            [self::RESULT_TYPE_ERROR_MISSING, $perms_needed, '+'],
+            [self::RESULT_TYPE_SUGGESTION_MISSING, $perms_desired, '+'],
+            [self::RESULT_TYPE_ERROR_EXCESSIVE, $perms_dangerous, '-'],
+            [self::RESULT_TYPE_SUGGESTION_EXCESSIVE, $perms_avoided, '-'],
+        ];
+        foreach ($check_types as $check_type) {
+            list($check_type_level, $bitmask, $operator) = $check_type;
 
-        // $perms_dangerous
-        if ($this->minimum_level <= self::RESULT_TYPE_ERROR_EXCESSIVE) {
-            if (($file_perms & $perms_dangerous) != 0) {
-                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_ERROR_EXCESSIVE, $file_perms & $perms_dangerous);
-                $messages[] = $message;
-                if ($command !== null) {
-                    $commands[] = $command;
+            if ($this->minimum_level <= $check_type_level) {
+                if ($operator == '+') {
+                    $ok = ($file_perms & $bitmask) == $perms_needed; // Has all
+                } else {
+                    $ok = ($file_perms & $bitmask) == 0; // Has none
                 }
-                $paths[$path] = true;
-                if ($this->live_output) {
-                    echo $message . "\n";
-                    if ($command !== null) {
-                        echo $command . "\n";
+                if (!$ok) {
+                    if ($operator == '+') {
+                        $perms_involved_octal = ($file_perms ^ $bitmask) & $bitmask; // What is missing
+                    } else {
+                        $perms_involved_octal = $file_perms & $bitmask; // What is excessive
                     }
-                }
-                $found_issue = true;
-                $found_any_issue = true;
-                $new_file_perms = $new_file_perms & ~$perms_dangerous;
-            }
-        }
-
-        // $perms_avoided
-        if ($this->minimum_level <= self::RESULT_TYPE_SUGGESTION_EXCESSIVE) {
-            if (($file_perms & $perms_avoided) != 0) {
-                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_SUGGESTION_EXCESSIVE, $file_perms & $perms_avoided);
-                $messages[] = $message;
-                if ($command !== null) {
-                    $commands[] = $command;
-                }
-                $paths[$path] = true;
-                if ($this->live_output) {
-                    echo $message . "\n";
+                    list($message, $command) = $this->output_issue($path, $check_type_level, $perms_involved_octal);
+                    $messages[] = $message;
                     if ($command !== null) {
-                        echo $command . "\n";
+                        $commands[] = $command;
                     }
+                    $paths[$path] = true;
+                    if ($this->live_output) {
+                        echo $message . "\n";
+                        if ($command !== null) {
+                            echo $command . "\n";
+                        }
+                    }
+                    $found_issue = true;
+                    $found_any_issue = true;
+                    $new_file_perms = $new_file_perms | $perms_needed;
                 }
-                $found_issue = true;
-                $found_any_issue = true;
-                $new_file_perms = $new_file_perms & ~$perms_avoided;
             }
         }
 
@@ -871,33 +839,16 @@ class CMSPermissionsScanner
 
         if ($this->live_commands) {
             foreach ($commands as $command) {
-                if (($this->is_windows()) || (substr($command, 0, 6) != 'chmod ')) {
+                if (substr($command, 0, 6) != 'chmod ') {
                     echo execute_nicely($command);
                 }
             }
-            if (!$this->is_windows()) {
-                if ($new_file_perms != $file_perms) {
-                    chmod($path, $new_file_perms);
-                }
+            if ($new_file_perms != $file_perms) {
+                chmod($path, $new_file_perms);
             }
         }
 
         return [$messages, $commands];
-    }
-
-    /**
-     * Create a success message.
-     *
-     * @param  PATH $path The path the message is about
-     * @return string The message
-     */
-    protected function output_success($path)
-    {
-        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
-
-        $message = 'Success: ' . $path;
-
-        return $message;
     }
 
     /**
@@ -910,8 +861,6 @@ class CMSPermissionsScanner
      */
     protected function output_issue($path, $result_type, $perms_involved_octal)
     {
-        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
-
         $perms_involved_written = $this->convert_octal_to_written($perms_involved_octal);
 
         switch ($result_type) {
@@ -943,16 +892,6 @@ class CMSPermissionsScanner
     }
 
     /**
-     * Find if we are running Windows.
-     *
-     * @return boolean Whether we are running Windows
-     */
-    protected function is_windows()
-    {
-        return (strpos(PHP_OS, 'WIN') !== false);
-    }
-
-    /**
      * Generate a chmod command from differential octal permissions.
      *
      * @param  PATH $path The path the command is for
@@ -961,108 +900,60 @@ class CMSPermissionsScanner
      * @set - +
      * @return string Chmod command
      */
-    public function generate_chmod_command($path, $octal, $operator)
+    protected function generate_chmod_command($path, $octal, $operator)
     {
-        if ($this->is_windows()) {
-            // Windows...
-
-            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
-
-            $cmd = ($operator == '+') ? '/grant' : '/deny';
-
-            $owner_user = $this->web_user;
-            $owner_commands = [];
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
-                $owner_commands[] = '/' . $cmd . ' ' . $owner_user . ':(X)';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
-                $owner_commands[] = '/' . $cmd . ' ' . $owner_user . ':(RD,RA,REA)';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
-                $owner_commands[] = '/' . $cmd . ' ' . $owner_user . ':(WD,WA,WEA,AD,D)';
-            }
-
-            $group_user = $this->web_user_group;
-            $group_commands = [];
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
-                $group_commands[] = '/' . $cmd . ' ' . $group_user . ':(X)';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
-                $group_commands[] = '/' . $cmd . ' ' . $group_user . ':(RD,RA,REA)';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
-                $group_commands[] = '/' . $cmd . ' ' . $group_user . ':(WD,WA,WEA,AD,D)';
-            }
-
-            $other_user = 'Users';
-            $other_commands = [];
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
-                $other_commands[] = '/' . $cmd . ' ' . $other_user . ':(X)';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
-                $other_commands[] = '/' . $cmd . ' ' . $other_user . ':(RD,RA,REA)';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
-                $other_commands[] = '/' . $cmd . ' ' . $other_user . ':(WD,WA,WEA,AD,D)';
-            }
-
-            $command = 'icacls ' . escapeshellarg($path) . implode(' ', $owner_commands) . implode(' ', $group_commands) . implode(' ', $other_commands) .  ' /inheritancelevel:r';
-        } else {
-            // MacOS and Linux...
-
-            $owner_perms = [];
-            if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
-                $owner_perms[] = 's';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
-                $owner_perms[] = 'x';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
-                $owner_perms[] = 'r';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
-                $owner_perms[] = 'w';
-            }
-
-            $group_perms = [];
-            if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
-                $group_perms[] = 's';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
-                $group_perms[] = 'x';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
-                $group_perms[] = 'r';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
-                $group_perms[] = 'w';
-            }
-
-            $other_perms = [];
-            if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
-                $other_perms[] = 't';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
-                $other_perms[] = 'x';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
-                $other_perms[] = 'r';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
-                $other_perms[] = 'w';
-            }
-
-            $chmod = '';
-            foreach (['u' => $owner_perms, 'g' => $group_perms, 'o' => $other_perms] as $permission_class => $perms) {
-                if (!empty($perms)) {
-                    if ($chmod != '') {
-                        $chmod .= ',';
-                    }
-                    $chmod .= $permission_class . $operator . implode('', $perms);
-                }
-            }
-            $command = 'chmod ' . $chmod . ' ' . escapeshellarg($path);
+        $owner_perms = [];
+        if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
+            $owner_perms[] = 's';
         }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
+            $owner_perms[] = 'x';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
+            $owner_perms[] = 'r';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+            $owner_perms[] = 'w';
+        }
+
+        $group_perms = [];
+        if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
+            $group_perms[] = 's';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
+            $group_perms[] = 'x';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
+            $group_perms[] = 'r';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
+            $group_perms[] = 'w';
+        }
+
+        $other_perms = [];
+        if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
+            $other_perms[] = 't';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
+            $other_perms[] = 'x';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
+            $other_perms[] = 'r';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
+            $other_perms[] = 'w';
+        }
+
+        $chmod = '';
+        foreach (['u' => $owner_perms, 'g' => $group_perms, 'o' => $other_perms] as $permission_class => $perms) {
+            if (!empty($perms)) {
+                if ($chmod != '') {
+                    $chmod .= ',';
+                }
+                $chmod .= $permission_class . $operator . implode('', $perms);
+            }
+        }
+        $command = 'chmod ' . $chmod . ' ' . escapeshellarg($path);
 
         return $command;
     }
@@ -1077,78 +968,892 @@ class CMSPermissionsScanner
     {
         $perms = [];
 
-        if ($this->is_windows()) {
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
-                $perms[] = 'IUSR execute';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
-                $perms[] = 'IUSR read';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
-                $perms[] = 'IUSR write';
-            }
+        if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
+            $perms[] = 'sticky';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
+            $perms[] = 'setgid';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
+            $perms[] = 'setuid';
+        }
 
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
-                $perms[] = 'IIS_IUSRS execute';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
-                $perms[] = 'IIS_IUSRS read';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
-                $perms[] = 'IIS_IUSRS write';
-            }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
+            $perms[] = 'owner execute';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
+            $perms[] = 'owner read';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+            $perms[] = 'owner write';
+        }
 
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
-                $perms[] = 'Users execute';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
-                $perms[] = 'Users read';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
-                $perms[] = 'Users write';
-            }
-        } else {
-            if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
-                $perms[] = 'sticky';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
-                $perms[] = 'setgid';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
-                $perms[] = 'setuid';
-            }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
+            $perms[] = 'group execute';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
+            $perms[] = 'group read';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
+            $perms[] = 'group write';
+        }
 
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
-                $perms[] = 'owner execute';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
-                $perms[] = 'owner read';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
-                $perms[] = 'owner write';
-            }
-
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
-                $perms[] = 'group execute';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
-                $perms[] = 'group read';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
-                $perms[] = 'group write';
-            }
-
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
-                $perms[] = 'other execute';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
-                $perms[] = 'other read';
-            }
-            if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
-                $perms[] = 'other write';
-            }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
+            $perms[] = 'other execute';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
+            $perms[] = 'other read';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
+            $perms[] = 'other write';
         }
 
         return implode(', ', $perms);
+    }
+}
+
+/**
+ * Check/fix permissions on Windows.
+ *
+ * @package cms_permissions_scanner
+ */
+class CMSPermissionsScannerWindows extends CMSPermissionsScanner
+{
+    // Constants...
+
+    const BITMASK_PERMISSIONS_READ = 1;
+    const BITMASK_PERMISSIONS_WRITE = 2;
+    const BITMASK_PERMISSIONS_EXECUTE = 4;
+
+    // Run-time data...
+
+    protected $key_users = [];
+    protected $common_users = [];
+
+    // Code...
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->set_web_username();
+
+        $this->set_path_patterns();
+    }
+
+    /**
+     * Set username the web user will run as.
+     *
+     * @param  ?string $username Username or User ID (null: try and auto-detect, failing that assume suEXEC-style)
+     */
+    public function set_web_username($username = null)
+    {
+        // Work out key users...
+
+        $this->key_users = [];
+
+        // Web server user
+        if ($username === null) {
+            if (is_cli()) {
+                if ((strpos(__FILE__, 'htdocs') !== false) || (strpos(__FILE__, 'httpdocs') !== false)) {
+                    $this->key_users[] = 'SYSTEM'; // The services user which Apache will use
+                } else {
+                    $this->key_users[] = 'IUSR';
+                    $this->key_users[] = 'IIS_IUSRS'; // This is the usergroup, we'll use it also just to be safe
+                }
+            } else {
+                $this->key_users[] = get_current_user(); // On Windows this returns the user PHP is running as, counter to documentation
+            }
+        } else {
+            $this->key_users[] = $username;
+        }
+
+        // File owner
+        $path = str_replace('/', DIRECTORY_SEPARATOR, __FILE__);
+        if (class_exists('COM')) {
+            $su = new COM('ADsSecurityUtility');
+            $security_info = $su->GetSecurityDescriptor($path, 1, 1);
+            $this->key_users[] = $security_info->owner;
+        } else {
+            $text = shell_exec('dir /a /q ' . escapeshellarg($path));
+            $matches = [];
+            if (preg_match('#\d (.*)\s+' . preg_quote(basename($path), '#') . '$#i', $text, $matches) != 0) {
+                $this->key_users[] = $matches[1];
+            } else {
+                $this->key_users[] = 'Creator Owner'; // Fallback for when we do not know
+            }
+        }
+
+        $this->key_users = array_unique($this->key_users);
+
+        // Work out users to avoid...
+
+        $this->common_users = [];
+
+        $this->common_users[] = 'Everyone';
+        $this->common_users[] = 'Users';
+        $this->common_users[] = 'Local account';
+        $this->common_users[] = 'Authenticated Users';
+        $this->common_users[] = 'ANONYMOUS LOGON';
+        $this->common_users[] = 'Guest';
+        $this->common_users[] = 'Guests';
+        $this->common_users[] = 'CONSOLE LOGON';
+        $this->common_users[] = 'DIALUP';
+        $this->common_users[] = 'NETWORK';
+        $this->common_users[] = 'INTERACTIVE';
+        $this->common_users[] = 'Domain Users';
+        $this->common_users[] = 'Domain Guests';
+        $this->common_users[] = 'Domain Computers';
+    }
+
+    /**
+     * Enumerate a directory for permission checks (actual processing is in process_node).
+     *
+     * @param  PATH $path The absolute path
+     * @param  PATH $rel_path The relative path to the base directory
+     * @param  ?string $attr A string of extended attributes from lsattr (null: look up individually, which is slower)
+     * @param  boolean $top_level Whether this is the top level of the recursion; don't set this manually
+     * @param  array $paths Paths with issues (inverse list), returned by reference
+     * @param  boolean $found_any_issue Whether any issues were found, returned by reference
+     * @return array A tuple: Messages to show, Commands to run
+     */
+    public function process_directory($path, $rel_path = '', $attr = null, $top_level = true, &$paths = [], &$found_any_issue = false)
+    {
+        $messages = [];
+        $commands = [];
+
+        $_messages = $this->process_node($path, $rel_path, true, $paths, $found_any_issue);
+        $messages = array_merge($messages, $_messages[0]);
+        $commands = array_merge($commands, $_messages[1]);
+
+        $dh = @opendir($path);
+        if ($dh !== false) {
+            while (($f = readdir($dh)) !== false) {
+                if (($f == '.') || ($f == '..')) {
+                    continue;
+                }
+                if ($f == '.git') {
+                    // Funky things happen with permissions under .git
+                    continue;
+                }
+
+                $_path = $path . '/' . $f;
+                $_rel_path = $rel_path . (($rel_path == '') ? '' : '/') . $f;
+
+                $is_directory = @is_dir($_path);
+
+                if ($is_directory) {
+                    $_messages = $this->process_directory($_path, $_rel_path, '', false, $paths, $found_any_issue);
+                    $messages = array_merge($messages, $_messages[0]);
+                    $commands = array_merge($commands, $_messages[1]);
+                } else {
+                    $_messages = $this->process_node($_path, $_rel_path, false, $paths, $found_any_issue);
+                    $messages = array_merge($messages, $_messages[0]);
+                    $commands = array_merge($commands, $_messages[1]);
+                }
+            }
+
+            closedir($dh);
+        }
+
+        return [$messages, $commands];
+    }
+
+
+    /**
+     * Process a file or directory for permission checks.
+     *
+     * @param  PATH $path The absolute path
+     * @param  PATH $rel_path The relative path to the base directory
+     * @param  boolean $is_directory Whether this is a directory
+     * @param  array $paths Paths with issues (inverse list), returned by reference
+     * @param  boolean $found_any_issue Whether any issues were found, returned by reference
+     * @return array A tuple: Messages to show, Commands to run, Paths with issues
+     */
+    protected function process_node($path, $rel_path, $is_directory, &$paths = [], &$found_any_issue = false)
+    {
+        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+
+        $messages = [];
+        $commands = [];
+
+        $acl = $this->find_acl($path);
+
+        if (empty($acl)) {
+            return [[], []]; // Likely as parent directory is missing perms, which will be flagged
+        }
+
+        $perms_needed_key_users = 0;
+        $perms_desired_key_users = 0;
+        $perms_irrelevant_key_users = 0;
+        $perms_avoided_key_users = 0;
+        $perms_dangerous_key_users = 0;
+
+        $perms_needed_common_users = 0;
+        $perms_desired_common_users = 0;
+        $perms_irrelevant_common_users = 0;
+        $perms_avoided_common_users = 0;
+        $perms_dangerous_common_users = 0;
+
+        $contains_sensitive = false;
+        foreach ($this->sensitive_paths as $sensitive_path) {
+            if (preg_match('#^' . $sensitive_path . '$#', $rel_path) != 0) {
+                $contains_sensitive = true;
+            }
+        }
+
+        $on_chmod_list = false;
+        foreach ($this->chmod_paths as $chmod_path) {
+            if (preg_match('#^' . $chmod_path . '$#', $rel_path) != 0) {
+                $on_chmod_list = true;
+            }
+        }
+
+        // Note the Windows algorithm is very different from Windows in some ways
+        //  - We are working against ACLs, not permission masks
+        //  - We do not need to worry about chmodding 'others' to have write access and/or relaying through FTP
+        //   - Because we can set permissions both for the executing web user and the owner user i.e. it's irrelevant if they are different (the non-suEXEC case)
+        //   - ACLs are inherited by default for any new files or folders
+        // On how we treat inheritance:
+        //  - Note that Windows copies ACLs down the hierarchy for performance, as a caching mechanism.
+        //  - Our approach is to never set permissions via inheriting for simplicity and speed.
+        //  - However, we respect positive permissions that have been granted by inheriting and don't re-set them.
+        //  - If the webmaster wants to use inheriting manually, that's great. We ourselves can't assume we 'own' the whole base directory.
+        // On permission complexity:
+        //  - Windows has complex overlapping permissions (simple rights, specific rights, generic rights)
+        //  - We use the 'simple rights' when setting
+        //  - When checking we accept other rights as synonyms
+
+        if ($is_directory) {
+            $perms_needed_key_users |= self::BITMASK_PERMISSIONS_EXECUTE;
+        } else {
+            $perms_irrelevant_key_users |= self::BITMASK_PERMISSIONS_EXECUTE; // Doesn't even exist
+        }
+        $perms_needed_key_users |= self::BITMASK_PERMISSIONS_READ;
+        if ($on_chmod_list) {
+            $perms_needed_key_users |= self::BITMASK_PERMISSIONS_WRITE;
+        } else {
+            $perms_desired_key_users |= self::BITMASK_PERMISSIONS_WRITE;
+        }
+
+        if ($is_directory) {
+            $perms_irrelevant_common_users |= self::BITMASK_PERMISSIONS_EXECUTE;
+        } else {
+            $perms_irrelevant_common_users |= self::BITMASK_PERMISSIONS_EXECUTE; // Doesn't even exist
+        }
+        if ($contains_sensitive) {
+            $perms_dangerous_common_users |= self::BITMASK_PERMISSIONS_READ;
+        } else {
+            $perms_irrelevant_common_users |= self::BITMASK_PERMISSIONS_READ;
+        }
+        $perms_dangerous_common_users |= self::BITMASK_PERMISSIONS_WRITE;
+
+        $found_issue = false;
+
+        $check_types = [
+            [self::RESULT_TYPE_ERROR_MISSING, $this->key_users, $perms_needed_key_users, '+'],
+            [self::RESULT_TYPE_SUGGESTION_MISSING, $this->key_users, $perms_desired_key_users, '+'],
+            [self::RESULT_TYPE_ERROR_EXCESSIVE, $this->key_users, $perms_dangerous_key_users, '-'],
+            [self::RESULT_TYPE_SUGGESTION_EXCESSIVE, $this->key_users, $perms_avoided_key_users, '-'],
+            [self::RESULT_TYPE_ERROR_MISSING, $this->common_users, $perms_needed_common_users, '+'],
+            [self::RESULT_TYPE_SUGGESTION_MISSING, $this->common_users, $perms_desired_common_users, '+'],
+            [self::RESULT_TYPE_ERROR_EXCESSIVE, $this->common_users, $perms_dangerous_common_users, '-'],
+            [self::RESULT_TYPE_SUGGESTION_EXCESSIVE, $this->common_users, $perms_avoided_common_users, '-'],
+        ];
+        foreach ($check_types as $check_type) {
+            list($check_type_level, $users, $perms, $operator) = $check_type;
+
+            if ($this->minimum_level <= $check_type_level) {
+                foreach ($users as $sid) {
+                    if ($operator == '+') {
+                        list($perms_involved, $perms_involved_to_remove) = $this->find_missing_file_perms($sid, $acl, $perms);
+
+                        // Special case of having to get rid of particularly troublesome overrides
+                        if (!empty($perms_involved_to_remove)) {
+                            list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_ERROR_EXCESSIVE, $sid, $perms_involved_to_remove); // TODO: This is wrong, it would just do a /deny rather than revoking a deny
+                            $messages[] = $message;
+                            if ($command !== null) {
+                                $commands[] = $command;
+                            }
+                            $paths[$path] = true;
+                            if ($this->live_output) {
+                                echo $message . "\n";
+                                if ($command !== null) {
+                                    echo $command . "\n";
+                                }
+                            }
+                            $found_issue = true;
+                            $found_any_issue = true;
+                        }
+                    } else {
+                        $perms_involved = $this->find_excessive_file_perms($sid, $acl, $perms);
+                    }
+
+                    if (!empty($perms_involved)) {
+                        list($message, $command) = $this->output_issue($path, $check_type_level, $sid, $perms_involved);
+                        $messages[] = $message;
+                        if ($command !== null) {
+                            $commands[] = $command;
+                        }
+                        $paths[$path] = true;
+                        if ($this->live_output) {
+                            echo $message . "\n";
+                            if ($command !== null) {
+                                echo $command . "\n";
+                            }
+                        }
+                        $found_issue = true;
+                        $found_any_issue = true;
+                    }
+                }
+            }
+        }
+
+        if ($this->minimum_level <= self::RESULT_TYPE_SUCCESS) {
+            if (!$found_issue) {
+                $message = $this->output_success($path);
+                $messages[] = $message;
+                if ($this->live_output) {
+                    echo $message . "\n";
+                }
+            }
+        }
+
+        if ($this->live_commands) {
+            foreach ($commands as $command) {
+                echo execute_nicely($command);
+            }
+        }
+
+        return [$messages, $commands];
+    }
+
+    /**
+     * Find the access control list for a path.
+     *
+     * @param  PATH $path The path
+     * @return array ACL
+     */
+    public function find_acl($path)
+    {
+        $acl = [];
+
+        $result = shell_exec('icacls ' . escapeshellarg($path));
+        $lines = explode("\n", $result);
+        foreach ($lines as $line) {
+            if (substr($line, 0, strlen($path) + 1) == $path . ' ') {
+                $line = substr($line, strlen($path));
+            }
+
+            $matches = [];
+            if (preg_match('#^\s*(.*):(\([A-Z]+\)+)#', $matches) != 0) {
+                $sid = $matches[1];
+                $permissions_negative = [];
+                $permissions_positive = [];
+                $permissions_negative_inherited = [];
+                $permissions_positive_inherited = [];
+                $inherits_from_parent = false;
+                $operator = '+';
+
+                $statements = $matches[2];
+                $matches_2 = [];
+                $num_matches_2 = preg_match_all('#\(([A-Z]+)\)#', $statements, $matches_2);
+                for ($i = 0; $i < $num_matches_2; $i++) {
+                    $statement = $statements[1][$i];
+                    if ($statement == 'DENY') {
+                        $operator = '-';
+                    } elseif ($statement == 'I') {
+                        $inherits_from_parent = true;
+                    } elseif (!in_array($statement, ['OI', 'CI', 'IO', 'NP'])) {
+                        if (($operator == '-') && (!$inherits_from_parent)) {
+                            $permissions_negative[$statement] = true;
+                        } elseif (($operator == '+') && (!$inherits_from_parent)) {
+                            $permissions_positive[$statement] = true;
+                        } elseif (($operator == '-') && ($inherits_from_parent)) {
+                            $permissions_negative_inherited[$statement] = true;
+                        } else {
+                            $permissions_positive_inherited[$statement] = true;
+                        }
+                    }
+                }
+
+                if (array_key_exists($sid, $acl)) {
+                    $acl[$sid][0] = array_merge($acl[$sid][0], $permissions_negative);
+                    $acl[$sid][1] = array_merge($acl[$sid][1], $permissions_positive);
+                    $acl[$sid][2] = array_merge($acl[$sid][2], $permissions_negative_inherited);
+                    $acl[$sid][3] = array_merge($acl[$sid][3], $permissions_positive_inherited);
+                    if ($inherits_from_parent) {
+                        $acl[$sid][1] = true;
+                    }
+                } else {
+                    $acl[$sid] = [$permissions_negative, $permissions_positive, $permissions_negative_inherited, $permissions_positive_inherited, $inherits_from_parent/*if at least one rule is inherited from a parent*/];
+                }
+            }
+        }
+
+        return $acl;
+    }
+
+    /**
+     * Find missing file permissions.
+     *
+     * @param  string $sid The user to check for
+     * @param  array $acl The ACL for the file
+     * @param  string $perms A bitmask of permissions that could be missing
+     * @return array A pair: A list of missing permissions (or one's currently negated that will be flipped to be positive), A list of negative permissions to take out
+     */
+    protected function find_missing_file_perms($sid, $acl, $perms)
+    {
+        if (array_key_exists($sid, $acl)) {
+            list($permissions_negative, $permissions_positive, $permissions_negative_inherited, ) = $acl[$sid];
+        } else {
+            $permissions_negative = [];
+            $permissions_positive = [];
+            $permissions_negative_inherited = [];
+        }
+        $_permissions_negative = array_merge($permissions_negative, $permissions_negative_inherited);
+
+        $missing = [];
+
+        // There are many ways to approach this, due to the complexity of having multiple levels of both positive and negative permissions, and multiple ways of defining the same access.
+        //  We'll avoid being clever by undoing negative permissions individually. If we see negativity, we'll just hammer on the maximum positivity that we can.
+        //  Otherwise our algorithm would be incredibly complicated.
+
+        if (($perms & self::BITMASK_PERMISSIONS_READ) != 0) {
+            if (!$this->has_read_access($sid, $acl)) {
+                $complete_hammer = ['GR', 'R', 'RD', 'RA', 'REA', 'RC'];
+                if (!empty(array_intersect(array_keys($_permissions_negative), $complete_hammer))) {
+                    $missing = array_merge($missing, array_diff($complete_hammer, array_diff(array_keys($permissions_positive), array_keys($permissions_negative)))); // We have negatives, so we hammer in all positives
+                } else {
+                    $missing[] = 'R'; // Simple
+                }
+            }
+        }
+
+        if (($perms & self::BITMASK_PERMISSIONS_WRITE) != 0) {
+            if (!$this->has_write_access($sid, $acl)) {
+                $complete_hammer = ['GW', 'W', 'WD', 'WA', 'WEA', 'AD', 'D', 'DC'];
+                if (!empty(array_intersect(array_keys($_permissions_negative), $complete_hammer))) {
+                    $missing = array_merge($missing, array_diff($complete_hammer, array_diff(array_keys($permissions_positive), array_keys($permissions_negative)))); // We have negatives, so we hammer in all positives
+                } else {
+                    $missing[] = 'W'; // Simple
+                }
+            }
+        }
+
+        if (($perms & self::BITMASK_PERMISSIONS_EXECUTE) != 0) {
+            if (!$this->has_execute_access($sid, $acl)) {
+                $complete_hammer = ['GE', 'RX', 'X'];
+                if (!empty(array_intersect(array_keys($_permissions_negative), $complete_hammer))) {
+                    $missing = array_merge($missing, array_diff($complete_hammer, array_diff(array_keys($permissions_positive), array_keys($permissions_negative)))); // We have negatives, so we hammer in all positives
+                } else {
+                    $missing[] = 'X'; // Simple
+                }
+            }
+        }
+
+        // We sometimes can't handle these with the hammer because they cross categories
+        if (isset($_permissions_negative['A'])) {
+            if ((($perms & self::BITMASK_PERMISSIONS_READ) != 0) && (($perms & self::BITMASK_PERMISSIONS_WRITE) != 0) && (($perms & self::BITMASK_PERMISSIONS_EXECUTE) != 0)) {
+                $missing[] = 'A';
+            } else {
+                $negative_remove[] = 'A';
+            }
+        }
+        if (isset($_permissions_negative['M'])) {
+            if ((($perms & self::BITMASK_PERMISSIONS_READ) != 0) && (($perms & self::BITMASK_PERMISSIONS_WRITE) != 0) && (($perms & self::BITMASK_PERMISSIONS_EXECUTE) != 0)) {
+                $missing[] = 'M';
+            } else {
+                $negative_remove[] = 'M';
+            }
+        }
+
+        return [$missing, $negative_remove];
+    }
+
+    /**
+     * Find excessive file permissions.
+     *
+     * @param  string $sid The user to check for
+     * @param  array $acl The ACL for the file
+     * @param  string $perms A bitmask of permissions that would exceesive
+     * @return array A list of excessive permissions
+     */
+    protected function find_excessive_file_perms($sid, $acl, $perms)
+    {
+        $excessive = [];
+
+        if (($perms & self::BITMASK_PERMISSIONS_READ) != 0) {
+            if ($this->has_read_access($sid, $acl, $permissions_involved, true)) {
+                $excessive = array_merge($excessive, $permissions_involved);
+            }
+        }
+
+        if (($perms & self::BITMASK_PERMISSIONS_WRITE) != 0) {
+            if ($this->has_write_access($sid, $acl, $permissions_involved, true)) {
+                $excessive = array_merge($excessive, $permissions_involved);
+            }
+        }
+
+        if (($perms & self::BITMASK_PERMISSIONS_EXECUTE) != 0) {
+            if ($this->has_execute_access($sid, $acl, $permissions_involved, true)) {
+                $excessive = array_merge($excessive, $permissions_involved);
+            }
+        }
+
+        return $excessive;
+    }
+
+    /**
+     * Find if read access is set for the given ACL for the given user.
+     *
+     * @param  string $sid The user to check for
+     * @param  array $acl The ACL for the file
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @param  boolean $partial_access_check Whether to check for partial access
+     * @return boolean Whether it is
+     */
+    protected function has_read_access($sid, $acl, &$permissions_involved = [], $partial_access_check = false)
+    {
+        if (!array_key_exists($sid, $acl)) {
+            return false;
+        }
+
+        list($permissions_negative, $permissions_positive, $permissions_negative_inherited, $permissions_positive_inherited) = $acl[$sid];
+
+        $permissions = [];
+        if ($this->_has_partial_read_setting($permissions_negative, $permissions)) {
+            $permissions_involved = $permissions;
+            return false;
+        }
+
+        $permissions = [];
+        if ($partial_access_check ? $this->_has_partial_read_setting($permissions_positive, $permissions) : $this->_has_complete_read_setting($permissions_positive, $permissions)) {
+            $permissions_involved = $permissions;
+            return true;
+        }
+
+        $permissions = [];
+        if ($this->_has_partial_read_setting($permissions_negative_inherited, $permissions)) {
+            $permissions_involved = $permissions;
+            return false;
+        }
+
+        $permissions = [];
+        if ($partial_access_check ? $this->_has_partial_read_setting($permissions_positive_inherited, $permissions) : $this->_has_complete_read_setting($permissions_positive_inherited, $permissions)) {
+            $permissions_involved = $permissions;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Find if partial read access is set for the given ACE.
+     *
+     * @param  array $permissions The ACE
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @return boolean Whether it is
+     */
+    protected function _has_partial_read_setting($permissions, &$permissions_involved)
+    {
+        $possibilities = ['A', 'M', 'GR', 'R', 'RD', 'RA', 'REA', 'RC'];
+        foreach ($possibilities as $possibility) {
+            if (isset($permissions[$possibility])) {
+                $permissions_involved[] = $possibility;
+            }
+        }
+        return !empty($permissions_involved);
+    }
+
+    /**
+     * Find if complete read access is set for the given ACE.
+     *
+     * @param  array $permissions The ACE
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @return boolean Whether it is
+     */
+    protected function _has_complete_read_setting($permissions, &$permissions_involved)
+    {
+        $possibilities = ['A', 'M', 'GR', 'R', 'RD', 'RA', 'REA', 'RC'];
+        foreach ($possibilities as $possibility) {
+            if (isset($permissions[$possibility])) {
+                $permissions_involved[] = $possibility;
+            }
+        }
+
+        return (
+            (isset($permissions['A'])) || // Everything
+            (isset($permissions['M'])) || // Everythingish
+            (isset($permissions['GR'])) || // Generic
+            (isset($permissions['R'])) || // Simple
+            (isset($permissions['RD'])) && (isset($permissions['RA'])) && (isset($permissions['REA'])) && (isset($permissions['RC'])) // All specific needed (read data/list directory, read [extended] attributes, read control)
+        );
+    }
+
+    /**
+     * Find if write access is set for the given ACL for the given user.
+     *
+     * @param  string $sid The user to check for
+     * @param  array $acl The ACL for the file
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @param  boolean $partial_access_check Whether to check for partial access
+     * @return boolean Whether it is
+     */
+    protected function has_write_access($sid, $acl, &$permissions_involved = [], $partial_access_check = false)
+    {
+        if (!array_key_exists($sid, $acl)) {
+            return false;
+        }
+
+        list($permissions_negative, $permissions_positive, $permissions_negative_inherited, $permissions_positive_inherited) = $acl[$sid];
+
+        $permissions = [];
+        if ($this->_has_partial_write_setting($permissions_negative, $permissions)) {
+            $permissions_involved = $permissions;
+            return false;
+        }
+
+        $permissions = [];
+        if ($partial_access_check ? $this->_has_partial_write_setting($permissions_positive, $permissions) : $this->_has_complete_write_setting($permissions_positive, $permissions)) {
+            $permissions_involved = $permissions;
+            return true;
+        }
+
+        $permissions = [];
+        if ($this->_has_partial_write_setting($permissions_negative_inherited, $permissions)) {
+            $permissions_involved = $permissions;
+            return false;
+        }
+
+        $permissions = [];
+        if ($partial_access_check ? $this->_has_partial_write_setting($permissions_positive_inherited, $permissions) : $this->_has_complete_write_setting($permissions_positive_inherited, $permissions)) {
+            $permissions_involved = $permissions;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Find if partial write access is set for the given ACE.
+     *
+     * @param  array $permissions The ACE
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @return boolean Whether it is
+     */
+    protected function _has_partial_write_setting($permissions, &$permissions_involved)
+    {
+        $possibilities = ['A', 'M', 'GW', 'W', 'WD', 'WA', 'WEA', 'AD', 'D', 'DC'];
+        foreach ($possibilities as $possibility) {
+            if (isset($permissions[$possibility])) {
+                $permissions_involved[] = $possibility;
+            }
+        }
+        return !empty($permissions_involved);
+    }
+
+    /**
+     * Find if complete write access is set for the given ACE.
+     *
+     * @param  array $permissions The ACE
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @return boolean Whether it is
+     */
+    protected function _has_complete_write_setting($permissions, &$permissions_involved)
+    {
+        $possibilities = ['A', 'M', 'GW', 'W', 'WD', 'WA', 'WEA', 'AD', 'D', 'DC'];
+        foreach ($possibilities as $possibility) {
+            if (isset($permissions[$possibility])) {
+                $permissions_involved[] = $possibility;
+            }
+        }
+
+        return (
+            (isset($permissions['A'])) || // Everything
+            (isset($permissions['M'])) || // Everythingish
+            (isset($permissions['GW'])) || // Generic
+            (isset($permissions['W'])) || // Simple
+            (isset($permissions['WD'])) && (isset($permissions['WA'])) && (isset($permissions['WEA'])) && (isset($permissions['AD'])) && (isset($permissions['D'])) && (isset($permissions['DC'])) // All specific needed (write data/add file, write [extended] attributes, delete, delete child)
+        );
+    }
+
+    /**
+     * Find if execute access is set for the given ACL for the given user.
+     *
+     * @param  string $sid The user to check for
+     * @param  array $acl The ACL for the file
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @param  boolean $partial_access_check Whether to check for partial access
+     * @return boolean Whether it is
+     */
+    protected function has_execute_access($sid, $acl, &$permissions_involved = [], $partial_access_check = false)
+    {
+        if (!array_key_exists($sid, $acl)) {
+            return false;
+        }
+
+        list($permissions_negative, $permissions_positive, $permissions_negative_inherited, $permissions_positive_inherited) = $acl[$sid];
+
+        $permissions = [];
+        if ($this->_has_partial_execute_setting($permissions_negative, $permissions)) {
+            $permissions_involved = $permissions;
+            return false;
+        }
+
+        $permissions = [];
+        if ($partial_access_check ? $this->_has_partial_execute_setting($permissions_positive, $permissions) : $this->_has_complete_execute_setting($permissions_positive, $permissions)) {
+            $permissions_involved = $permissions;
+            return true;
+        }
+
+        $permissions = [];
+        if ($this->_has_partial_execute_setting($permissions_negative_inherited, $permissions)) {
+            $permissions_involved = $permissions;
+            return false;
+        }
+
+        $permissions = [];
+        if ($partial_access_check ? $this->_has_partial_execute_setting($permissions_positive_inherited, $permissions) : $this->_has_complete_execute_setting($permissions_positive_inherited, $permissions)) {
+            $permissions_involved = $permissions;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Find if partial execute access is set for the given ACE.
+     *
+     * @param  array $permissions The ACE
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @return boolean Whether it is
+     */
+    protected function _has_partial_execute_setting($permissions, &$permissions_involved)
+    {
+        $possibilities = ['A', 'M', 'GE', 'RX', 'X'];
+        foreach ($possibilities as $possibility) {
+            if (isset($permissions[$possibility])) {
+                $permissions_involved[] = $possibility;
+            }
+        }
+        return !empty($permissions_involved);
+    }
+
+    /**
+     * Find if complete execute access is set for the given ACE.
+     *
+     * @param  array $permissions The ACE
+     * @param  array $permissions_involved A list of permissions involved, returned by reference
+     * @return boolean Whether it is
+     */
+    protected function _has_complete_execute_setting($permissions, &$permissions_involved)
+    {
+        $possibilities = ['A', 'M', 'GE', 'RX', 'X'];
+        foreach ($possibilities as $possibility) {
+            if (isset($permissions[$possibility])) {
+                $permissions_involved[] = $possibility;
+            }
+        }
+
+        return (
+            (isset($permissions['A'])) || // Everything
+            (isset($permissions['M'])) || // Everythingish
+            (isset($permissions['GE'])) || // Generic
+            (isset($permissions['RX'])) || // Simple
+            (isset($permissions['X'])) // All specific needed (execute/traverse)
+        );
+    }
+
+    /**
+     * Create an issue message.
+     *
+     * @param  PATH $path The path the message is about
+     * @param  integer $result_type A RESULT_TYPE_* constant
+     * @param  string $sid The Sid the permission is for
+     * @param  array $perms_involved The permissions the issue is about
+     * @return array A pair: The message, A command (which may be null)
+     */
+    protected function output_issue($path, $result_type, $sid, $perms_involved)
+    {
+        $perms_involved = $this->convert_permissions_to_written($perms_involved);
+
+        switch ($result_type) {
+            case self::RESULT_TYPE_SUGGESTION_MISSING:
+                $message = 'Suggestion: set additional permissions for ' . $path . ' (' . $perms_involved . ' on ' . $sid . ')';
+                $command = $this->generate_chmod_command($path, $sid, $perms_involved, '+');
+                break;
+
+            case self::RESULT_TYPE_ERROR_MISSING:
+                $message = 'Error: set additional permissions for ' . $path . ' (' . $perms_involved . ' on ' . $sid . ')';
+                $command = $this->generate_chmod_command($path, $sid, $perms_involved, '+');
+                break;
+
+            case self::RESULT_TYPE_SUGGESTION_EXCESSIVE:
+                $message = 'Suggestion: remove unnecessary permissions for ' . $path . ' (' . $perms_involved . ' on ' . $sid . ')';
+                $command = $this->generate_chmod_command($path, $sid, $perms_involved, '-');
+                break;
+
+            case self::RESULT_TYPE_ERROR_EXCESSIVE:
+                $message = 'Error: remove dangerous permissions for ' . $path . ' (' . $perms_involved . ' on ' . $sid . ')';
+                $command = $this->generate_chmod_command($path, $sid, $perms_involved, '-');
+                break;
+
+            default:
+                throw new Exception('Internal Error');
+        }
+
+        return [$message, $command];
+    }
+
+    /**
+     * Convert permissions to written ones.
+     *
+     * @param  integer $permissions Permissions
+     * @return string Written permissions
+     */
+    protected function convert_permissions_to_written($permissions)
+    {
+        $perms = [];
+
+        TODO
+
+        if (($bitmask & self::BITMASK_PERMISSIONS_READ) != 0) {
+            $perms[] = 'read';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_WRITE) != 0) {
+            $perms[] = 'write';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_EXECUTE) != 0) {
+            $perms[] = 'execute';
+        }
+
+        return implode(', ', $perms);
+    }
+
+    /**
+     * Generate a chmod command from differential permissions.
+     *
+     * @param  PATH $path The path the command is for
+     * @param  string $sid The user to apply to
+     * @param  array $perms_involved Permissions to set
+     * @param  string $operator Change operator
+     * @set - +
+     * @param  ?boolean $inherits_from_parent Whether inherits permissions (null: do not change)
+     * @return string Chmod command
+     */
+    protected function generate_chmod_command($path, $sid, $perms_involved, $operator, $inherits_from_parent = null)
+    {
+        // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/icacls
+
+        $cmd = ($operator == '+') ? '/grant' : '/deny';
+
+        $command = 'icacls ' . escapeshellarg($path) . ' /' . $cmd . ' ' . escapeshellarg($sid) . ':(' . implode(',', $perms_involved) . ')';
+        if ($inherits_from_parent !== null) {
+            $command .= ' /inheritancelevel:' . ($inherits_from_parent ? 'e' : 'r');
+        }
+
+        return $command;
     }
 }

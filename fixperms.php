@@ -39,15 +39,11 @@ Usage: php fixperms.php [options]
                                               (not guaranteed to work if some basic permissions are missing)
 
     --web_username=<username|user_id>         On Linux/MacOS:
-                                               specify the username or user ID that the website runs under
+                                               specify the username that the website runs under
                                                (if not passed assumes the current user)
                                               On Windows:
                                                specify the username that the website runs under
-                                               (if not passed assumes IUSR if it exists else the current user)
-
-    --is_suexec_like                          flag to Composr that you are on a suEXEC-like server
-                                              (unrelated to permission checks, just helps Composr
-                                              create files properly)
+                                               (if not passed assumes IUSR or SYSTEM depending on base directory)
 
     --has_ftp_loopback_for_write=[true|false] whether irregular file writes like addon management can be
                                               done by PHP via an FTP-loopback
@@ -58,6 +54,10 @@ Usage: php fixperms.php [options]
       2 = handle unimportant suggested permissions
       3 = handle unnecessary dangerous permissions (the default)
       4 = handle necessary missing permissions
+
+    --is_suexec_like                          flag to Composr that you are on a suEXEC-like server
+                                              (unrelated to permission checks, just helps Composr
+                                              create cache files with the right permissions)
 ');
 }
 

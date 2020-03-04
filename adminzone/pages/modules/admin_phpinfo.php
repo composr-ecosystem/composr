@@ -143,17 +143,24 @@ class Module_admin_phpinfo
 
         $out .= '<h2>Run-time details</h2>';
         $out .= '<p><strong>Your IP address</strong>: ' . escape_html(get_ip_address()) . '</p>';
+        $suexec = is_suexec_like();
         if ((php_function_allowed('posix_getuid')) && (php_function_allowed('posix_getpwuid'))) {
+            // Linux or MacOS
             $user = posix_getuid();
-            $suexec = ($user == website_file_owner());
             $dets = posix_getpwuid($user);
             $out .= '<p><strong>Running as user</strong>: ' . escape_html($dets['name']) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
+        } elseif (strpos(PHP_OS, 'WIN') !== false) {
+            // Windows
+            $user = posix_getuid();
+            $dets = posix_getpwuid($user);
+            $username = get_current_user(); // On Windows this returns the user PHP is running as, counter to documentation
+            $out .= '<p><strong>Running as user</strong>: ' . escape_html($username) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
         } else {
+            // Linux or MacOS but crippled with missing POSIX
             $tmp = cms_tempnam();
             $user = @fileowner($tmp);
             @unlink($tmp);
             if ($user != 0) {
-                $suexec = ($user == website_file_owner());
                 $out .= '<p><strong>Running as user</strong>: ' . escape_html('#' . strval($user)) . ' (' . ($suexec ? 'suEXEC or similar' : 'Not suEXEC') . ')</p>';
             }
         }
