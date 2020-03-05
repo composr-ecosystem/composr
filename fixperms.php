@@ -133,13 +133,15 @@ if ($trial) {
     }
 
     // Commonly the uploads directory can be missing in git repositories backing up live sites (due to size); but we need it
-    if (!file_exists(__DIR__ . '/uploads')) {
+    if ((!file_exists(__DIR__ . '/uploads')) && (file_exists(__DIR__ . '/data'))) {
         mkdir(__DIR__ . '/uploads', 0755);
     }
 
     // Clear cache first, as we don't chmod cache files in this code
-    require(__DIR__ . '/decache.php');
-    echo "1/2 Cleared caches\n";
+	if (is_file(__DIR__ . '/decache.php')) {
+		require(__DIR__ . '/decache.php');
+		echo "1/2 Cleared caches\n";
+	}
 
     // Change permissions
     scan_permissions($verbose, true, $web_username, $has_ftp_loopback_for_write, $minimum_level);
