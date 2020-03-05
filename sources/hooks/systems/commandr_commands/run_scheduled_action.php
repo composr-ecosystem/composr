@@ -33,6 +33,12 @@ class Hook_commandr_command_run_scheduled_action
      */
     public function run($options, $parameters, &$commandr_fs)
     {
+        if (!addon_installed('calendar')) {
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
+        }
+
+        require_lang('calendar');
+
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('run_scheduled_action', ['h'], [true, true, true]), '', ''];
         } else {

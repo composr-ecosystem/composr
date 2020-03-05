@@ -34,7 +34,7 @@ class Hook_commandr_command_db_table_sizes
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return ['', do_command_help('db_table_sizes', ['h'], [true, true]), '', ''];
+            return ['', do_command_help('db_table_sizes', ['h'], [true]), '', ''];
         } else {
             require_code('files');
 

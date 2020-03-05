@@ -549,6 +549,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/_oembed.php',
             '_tests/tests/unit_tests/download_indexing.php',
             '_tests/tests/unit_tests/_tasks.php',
+            '_tests/tests/unit_tests/commandr_command_lang_strings.php',
             '_tests/tests/unit_tests/search.php',
             '_tests/tests/unit_tests/_extra_logging.php',
             '_tests/tests/unit_tests/cqc_adminzone.php',

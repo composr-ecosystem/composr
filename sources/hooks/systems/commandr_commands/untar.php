@@ -38,7 +38,7 @@ class Hook_commandr_command_untar
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return ['', do_command_help('untar', ['h'], [true, true]), '', ''];
+            return ['', do_command_help('untar', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
                 return ['', '', '', do_lang('MISSING_PARAM', '1', 'untar')];
