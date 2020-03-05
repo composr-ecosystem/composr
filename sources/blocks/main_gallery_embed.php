@@ -100,6 +100,7 @@ PHP;
         require_code('galleries');
         require_code('images');
         require_code('content');
+        require_code('feedback');
         require_javascript('galleries');
 
         $block_id = get_block_id($map);

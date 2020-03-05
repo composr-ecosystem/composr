@@ -1831,3 +1831,117 @@ function reorganise_uploads__gallery_videos($where = [], $tolerate_errors = fals
     reorganise_uploads('video', 'uploads/galleries', 'closed_captions_url', $where, false, $tolerate_errors);
     reorganise_uploads('video', 'uploads/galleries_thumbs', 'thumb_url', $where, false, $tolerate_errors);
 }
+
+/**
+ * Take a file in the gallery uploads directory, and add it to a gallery.
+ *
+ * @param  URLPATH $url The URL to the file
+ * @param  URLPATH $thumb_url The thumb URL to the file
+ * @param  ID_TEXT $cat The gallery to add to
+ * @param  MEMBER $member_id The ID of the member adding gallery media
+ * @param  integer $allow_rating Post param indicating whether or not ratings should be allowed
+ * @param  integer $allow_comments_reviews Post param combination indicating whether to allow comments or reviews
+ * @param  integer $allow_trackbacks Post param indicating whether or not to allow trackbacks
+ * @param  boolean $watermark Whether or not to apply the gallery's watermarks to the file if it is an image
+ * @param  string $notes Staff notes provided for this entry
+ * @param  ID_TEXT $privacy_level Level of privacy set for this content
+ * @param  array $additional_access Array of additional members who should have access to this content
+ * @param  ?string $file The filename (null: derive from $url)
+ * @param  ?TIME $time Timestamp to use (null: now)
+ * @return ?array A pair: The media type, The media ID (null: error)
+ */
+function add_gallery_media_wrap($url, $thumb_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $file = null, $time = null)
+{
+    require_code('exif');
+
+    if ($file === null) {
+        $file = get_custom_file_base() . '/' . rawurldecode($url);
+    }
+
+    if ($time === null) {
+        $time = time();
+    }
+
+    if (!is_image($url, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous'))) {
+        $thumb_url = create_video_thumb($url);
+        $ret = url_is_local($url) ? get_video_details(get_custom_file_base() . '/' . rawurldecode($url), $file, true) : false;
+        if ($ret !== false) {
+            list($width, $height, $length) = $ret;
+            if ($width === null) {
+                $width = intval(get_option('default_video_width'));
+            }
+            if ($height === null) {
+                $height = intval(get_option('default_video_height'));
+            }
+            if ($length === null) {
+                $length = 0;
+            }
+
+            require_code('images');
+            $closed_captions_url = get_matching_closed_captions_file($url);
+            if ($closed_captions_url === null) {
+                $closed_captions_url = '';
+            }
+
+            $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
+            $id = add_video($exif['UserComment'], $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, $length, $width, $height, $closed_captions_url, null, $time);
+            store_exif('video', strval($id), $exif);
+            if (addon_installed('content_privacy')) {
+                require_code('content_privacy2');
+                save_privacy_form_fields('video', strval($id), $privacy_level, $additional_access);
+            }
+
+            require_code('users2');
+            if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
+                $privacy_ok = true;
+                if (addon_installed('content_privacy')) {
+                    require_code('content_privacy');
+                    $privacy_ok = has_privacy_access('video', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
+                }
+                if ($privacy_ok) {
+                    require_code('activities');
+                    syndicate_described_activity('galleries:ACTIVITY_ADD_VIDEO', ($exif['UserComment'] == '') ? basename($url) : $exif['UserComment'], '', '', '_SEARCH:galleries:video:' . strval($id), '', '', 'galleries');
+                }
+            }
+
+            return ['video', $id];
+        }
+    } else {
+        $thumb_path = get_custom_file_base() . '/' . rawurldecode($thumb_url);
+        $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), true);
+
+        $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
+
+        // Images cleanup pipeline
+        $maximum_dimension = intval(get_option('maximum_image_size'));
+        $watermark = (post_param_integer('watermark', 0) == 1);
+        $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
+        if (url_is_local($url)) {
+            handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), null, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
+        }
+
+        $id = add_image($exif['UserComment'], $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time);
+        store_exif('image', strval($id), $exif);
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy2');
+            save_privacy_form_fields('image', strval($id), $privacy_level, $additional_access);
+        }
+
+        require_code('users2');
+        if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
+            $privacy_ok = true;
+            if (addon_installed('content_privacy')) {
+                require_code('content_privacy');
+                $privacy_ok = has_privacy_access('image', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
+            }
+            if ($privacy_ok) {
+                require_code('activities');
+                syndicate_described_activity('galleries:ACTIVITY_ADD_IMAGE', ($exif['UserComment'] == '') ? basename($url) : $exif['UserComment'], '', '', '_SEARCH:galleries:image:' . strval($id), '', '', 'galleries');
+            }
+        }
+
+        return ['image', $id];
+    }
+
+    return null;
+}

@@ -591,11 +591,21 @@ function is_media($name, $as_admin)
 /**
  * Get a comma-separated list of allowed file types for image upload.
  *
+ * @param  integer $criteria A filter to limit what kinds of images are allowed
  * @return string Allowed file types
  */
-function get_allowed_image_file_types()
+function get_allowed_image_file_types($criteria = 0)
 {
     $supported = str_replace(' ', '', get_option('valid_images'));
+    if ($criteria != 0) {
+        $_supported = [];
+        foreach (explode(',', $supported) as $type) {
+            if (is_image('example.' . $type, $criteria)) {
+                $_supported[] = $type;
+            }
+        }
+        $supported = implode(',', $_supported);
+    }
     return $supported;
 }
 
@@ -780,9 +790,12 @@ function cms_imagesave($image, $path, $ext = null, $lossy = false, &$unknown_for
             $transparent = imagecolortransparent($image, imagecolorallocate($image, 255, 0, 255));
             for ($y = 0; $y < $height; $y++) {
                 for ($x = 0; $x < $width; $x++) {
-                    $components = imagecolorsforindex($temp, imagecolorat($temp, $x, $y));
-                    if ($components['alpha'] >= 64) {
-                        imagesetpixel($image, $x, $y, $transparent);
+                    $color_index = imagecolorat($temp, $x, $y);
+                    $components = @imagecolorsforindex($temp, $color_index);
+                    if ($components !== false) {
+                        if ($components['alpha'] >= 64) {
+                            imagesetpixel($image, $x, $y, $transparent);
+                        }
                     }
                 }
             }
