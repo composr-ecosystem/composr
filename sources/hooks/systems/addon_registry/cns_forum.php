@@ -151,6 +151,8 @@ class Hook_addon_registry_cns_forum
             'sources/hooks/systems/notifications/cns_topic.php',
             'sources/hooks/systems/content_meta_aware/forum.php',
             'sources/hooks/systems/commandr_fs/forums.php',
+            'sources/hooks/systems/commandr_scheduled/publish_post.php',
+            'sources/hooks/systems/commandr_scheduled/publish_topic.php',
             'sources/hooks/systems/sitemap/topic.php',
             'sources/hooks/systems/sitemap/forum.php',
             'themes/default/templates/CNS_FORUM_INTRO_QUESTION_POPUP.tpl',

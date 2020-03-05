@@ -2355,13 +2355,11 @@ class Module_topics
                 $_title = get_screen_title('ADD_TOPIC');
 
                 $_topic_id = strval($topic_id);
-                $schedule_code = <<<END
-:\$GLOBALS['FORUM_DB']->query_update('f_topics',['t_cache_first_time'=>time(],'t_validated'=>1),['id'=>{$_topic_id}],'',1);
-END;
 
                 $schedule = post_param_date('schedule');
 
                 if (($schedule !== null) && (addon_installed('calendar'))) {
+                    $parameters = [];
                     require_code('calendar');
                     $start_year = intval(date('Y', $schedule));
                     $start_month = intval(date('m', $schedule));
@@ -2369,8 +2367,7 @@ END;
                     $start_hour = intval(date('H', $schedule));
                     $start_minute = intval(date('i', $schedule));
                     require_code('calendar2');
-                    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('ADD_SCHEDULED_TOPIC', $topic_title), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
-                    regenerate_event_reminder_jobs($event_id);
+                    schedule_code('publish_topic', strval($topic_id), $parameters, do_lang('ADD_SCHEDULED_TOPIC', $topic_title), $start_year, $start_month, $start_day, $start_hour, $start_minute);
 
                     $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_validated' => 0], ['id' => $topic_id], '', 1);
                 }
@@ -2425,16 +2422,7 @@ END;
                 $schedule = post_param_date('schedule');
 
                 if (($schedule !== null) && (addon_installed('calendar'))) {
-                    $_intended_solely_for = ($intended_solely_for === null) ? 'null' : strval($intended_solely_for);
-                    $_postdetailser_name_if_guest = ($poster_name_if_guest === null) ? 'null' : ('\'' . addslashes($poster_name_if_guest) . '\'');
-                    $_first_post = $first_post ? 'true' : 'false';
-                    $__title = ($title === null) ? 'null' : ('\'' . str_replace("\n", '\'."\n".\'', addslashes($title)) . '\'');
-                    $_postdetails = ($post === null) ? 'null' : ('\'' . str_replace("\n", '\'."\n".\'', addslashes($post)) . '\'');
-                    $_new_title = ($new_title === null) ? 'null' : ('\'' . str_replace("\n", '\'."\n".\'', addslashes($new_title)) . '\'');
-
-                    $schedule_code = <<<END
-:require_code('cns_topics_action2'); require_code('cns_topics_action'); cns_edit_topic($topic_id,null,null,$validated,$open,$pinned,$cascading,'',$_new_title); if (($to!=$forum_id) && ($to !== null)) cns_move_topics($forum_id,$to,[$topic_id]); \$post_id=cns_make_post($topic_id,$__title,$_postdetails,$skip_sig,$_first_post,$validated,$is_emphasised,$_postdetailser_name_if_guest,null,null,null,$_intended_solely_for,null,nullfalse,true,null,true,$topic_title,null,$anonymous==1); if (addon_installed('awards')) { require_code('awards'); handle_award_setting('post',strval(\$post_id)); }
-END;
+                    $parameters = [$topic_id, $validated, $open, $pinned, $cascading, $new_title, $to, $forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous];
                     require_code('calendar');
                     $start_year = intval(date('Y', $schedule));
                     $start_month = intval(date('m', $schedule));
@@ -2442,8 +2430,7 @@ END;
                     $start_hour = intval(date('H', $schedule));
                     $start_minute = intval(date('i', $schedule));
                     require_code('calendar2');
-                    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('ADD_POST'), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
-                    regenerate_event_reminder_jobs($event_id);
+                    schedule_code('publish_post', '', $parameters, do_lang('ADD_POST'), $start_year, $start_month, $start_day, $start_hour, $start_minute);
 
                     $text = do_lang_tempcode('SUCCESS');
                     $map = ['page' => 'topicview', 'type' => 'first_unread', 'id' => $topic_id];

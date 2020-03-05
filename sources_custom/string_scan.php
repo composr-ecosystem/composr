@@ -2474,6 +2474,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_RMDIR_HELP_PARAM_0
         CMD_RM_HELP
         CMD_RM_HELP_PARAM_0
+        CMD_RUN_SCHEDULED_ACTION_HELP
+        CMD_RUN_SCHEDULED_ACTION_HELP_PARAM_0
+        CMD_RUN_SCHEDULED_ACTION_HELP_PARAM_1
+        CMD_RUN_SCHEDULED_ACTION_HELP_PARAM_2
         CMD_SET_COMMENT_FORUM_HELP
         CMD_SET_COMMENT_FORUM_HELP_PARAM_0
         CMD_SET_COMMENT_FORUM_HELP_PARAM_1
@@ -5928,6 +5932,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MISSING_OPTION
         MISSING_PAGE
         MISSING_PARAM
+        MISSING_PARAM_JSON
         MISSING_PHOTO
         MISSING_RESOURCE_COMCODE
         MISSING_SOURCE_FILE
@@ -6223,6 +6228,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOT_ADDON
         NOT_A_DIR
         NOT_A_FILE
+        NOT_A_HOOK
         NOT_CODENAME
         NOT_COMPLETED
         NOT_EMPTY_FORCE

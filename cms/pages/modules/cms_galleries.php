@@ -566,12 +566,12 @@ class Module_cms_galleries extends Standard_crud_module
 
         // Deleting orphaned files should happen immediately; no task necessary
         if ($action === 'delete') {
-            foreach ($_POST as $x => $file) {
-                if (!is_string($file)) {
-                    continue;
-                }
+            if (array_key_exists('ss_files', $_POST)) {
+                foreach ($_POST['ss_files'] as $file) {
+                    if (!is_string($file)) {
+                        continue;
+                    }
 
-                if (substr($x, 0, 5) == 'file_') {
                     $path = get_custom_file_base() . '/uploads/galleries/' . filter_naughty($file);
                     @unlink($path) or intelligent_write_error($path);
                     sync_file($path);
