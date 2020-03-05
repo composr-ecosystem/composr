@@ -35,7 +35,7 @@ $to_delete = [
     'caches/static' => ['htm', 'br', 'gz', 'xml'],
 ];
 
-if (is_dir('sites')) {
+if (is_dir(__DIR__ . '/sites')) {
     $to_delete_sites = [];
     foreach ($to_delete as $directory_glob => $exts) {
         $to_delete_sites['sites/' . $directory_glob] = $exts;
@@ -46,14 +46,14 @@ if (is_dir('sites')) {
 foreach ($to_delete as $directory_glob => $exts) {
     $directories = glob(__DIR__ . '/' . $directory_glob, GLOB_NOSORT);
     foreach ($directories as $directory) {
-        $dh = @opendir(__DIR__ . '/' . $directory);
+        $dh = @opendir($directory);
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
                 foreach ($exts as $ext) {
                     if (substr($f, -4) == '.' . $ext) {
-                        $path = __DIR__ . '/' . $directory . '/' . $f;
+                        $path = $directory . '/' . $f;
                         unlink($path);
-                        echo "Deleted " . $path . "\n";
+                        echo 'Deleted ' . $path . "\n";
                     }
                 }
             }
