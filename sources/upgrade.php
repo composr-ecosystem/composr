@@ -94,21 +94,25 @@ function upgrade_script()
 
         case 'check_perms':
             require_code('file_permissions_check');
-            list($out) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
-            if ($out == '') {
+            list($messages) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+            if (empty($messages)) {
                 echo '<p>' . do_lang('NO_ACTION_REQUIRED') . '</p>';
             } else {
-                echo $out;
+                foreach ($messages as $message) {
+                    echo '<p>' . escape_html($message) . '</p>';
+                }
             }
             break;
 
         case 'fix_perms':
             require_code('file_permissions_check');
-            list($out) = scan_permissions(false, true, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
-            if ($out == '') {
+            list($messages) = scan_permissions(false, true, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+            if (empty($messages)) {
                 echo '<p>' . do_lang('NO_ACTION_REQUIRED') . '</p>';
             } else {
-                echo $out;
+                foreach ($messages as $message) {
+                    echo '<p>' . escape_html($message) . '</p>';
+                }
             }
             break;
 

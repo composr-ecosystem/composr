@@ -37,10 +37,12 @@ class Hook_commandr_command_check_perms
             return ['', do_command_help('check_perms', ['h'], []), '', ''];
         } else {
             require_code('file_permissions_check');
-            list($result) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+            list($messages) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
 
-            if ($result == '') {
+            if (empty($messages)) {
                 $result = do_lang('NO_ACTION_REQUIRED');
+            } else {
+                $result = implode("\n", $messages);
             }
 
             return ['', $result, '', ''];
