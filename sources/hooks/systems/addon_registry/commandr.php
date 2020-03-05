@@ -202,6 +202,7 @@ class Hook_addon_registry_commandr
             'sources/hooks/systems/commandr_commands/reset.php',
             'sources/hooks/systems/commandr_commands/rm.php',
             'sources/hooks/systems/commandr_commands/rmdir.php',
+            'sources/hooks/systems/commandr_commands/run_scheduled_action.php',
             'sources/hooks/systems/commandr_commands/test_mail.php',
             'sources/hooks/systems/commandr_commands/time.php',
             'sources/hooks/systems/commandr_commands/untar.php',

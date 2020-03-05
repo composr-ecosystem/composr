@@ -1393,17 +1393,14 @@ class Module_admin_newsletter extends Standard_crud_module
                 require_code('calendar');
                 require_code('calendar2');
                 $send_details_string_exp = '';
-                foreach ($send_details as $key => $val) {
-                    $send_details_string_exp .= '"' . str_replace("\n", '\n', addslashes($key)) . '"=>"' . str_replace("\n", '\n', addslashes($val)) . '",';
-                }
-                $schedule_code = ':require_code(\'newsletter\'); send_newsletter("' . php_addslashes($message) . '","' . php_addslashes($subject) . '","' . php_addslashes($lang) . '",[' . $send_details_string_exp . '],' . strval($html_only) . ',"' . php_addslashes($from_email) . '","' . php_addslashes($from_name) . '",' . strval($priority) . ',json_decode("' . php_addslashes($spreadsheet_data) . '",true),"' . php_addslashes($template) . '");';
+
+                $parameters = [$message, $subject, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $template];
                 $start_year = intval(date('Y', $schedule));
                 $start_month = intval(date('m', $schedule));
                 $start_day = intval(date('d', $schedule));
                 $start_hour = intval(date('H', $schedule));
                 $start_minute = intval(date('i', $schedule));
-                $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('NEWSLETTER_SEND', $subject), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
-                regenerate_event_reminder_jobs($event_id);
+                schedule_code('send_newsletter', '', $parameters, do_lang('NEWSLETTER_SEND', $subject), $start_year, $start_month, $start_day, $start_hour, $start_minute);
 
                 return inform_screen($this->title, do_lang_tempcode('NEWSLETTER_DEFERRED', get_timezoned_date_time($schedule)));
             }

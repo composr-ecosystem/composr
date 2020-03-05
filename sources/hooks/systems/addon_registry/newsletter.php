@@ -117,6 +117,7 @@ class Hook_addon_registry_newsletter
             'sources/hooks/systems/addon_registry/newsletter.php',
             'sources/hooks/systems/cron/newsletter_drip_send.php',
             'sources/hooks/systems/cron/newsletter_periodic.php',
+            'sources/hooks/systems/commandr_scheduled/publish_newsletter.php',
             'sources/hooks/modules/admin_import_types/newsletter.php',
             'themes/default/text/NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE.txt',
             'themes/default/text/NEWSLETTER_WHATSNEW_SECTION_FCOMCODE.txt',

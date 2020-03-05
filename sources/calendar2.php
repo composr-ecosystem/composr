@@ -619,3 +619,95 @@ function delete_event_type($id)
     require_code('sitemap_xml');
     notify_sitemap_node_delete('_SEARCH:calendar:browse:int_' . strval($id) . '=1');
 }
+
+/**
+ * Helper for getting the Commandr prefix for scheduled calendar events.
+ *
+ * @param  ID_TEXT $hook Hook to run under systems/commandr_scheduled
+ * @param  string $id Unspecified identifier for the resource behind this scheduled event, for future querying to find said event; also passed to the Commandr hook
+ * @return string Commandr command prefix before adding json parameters
+ */
+function _get_schedule_code_prefix($hook, $id)
+{
+    return 'run_scheduled_action ' . $hook . ' "' . $id . '"';
+}
+
+/**
+ * Create a calendar event containing a Commandr command to execute a scheduled task.
+ *
+ * @param  ID_TEXT $hook Hook to run under systems/commandr_scheduled
+ * @param  string $id Unspecified identifier for the resource behind this scheduled event, for future querying to find said event; also passed to the Commandr hook
+ * @param  array $parameters Array of parameters to pass through the Commandr command to the hook
+ * @param  string $title Title of the calendar event to create
+ * @param  integer $start_year Year which to execute the task
+ * @param  integer $start_month Month which to execute the task
+ * @param  integer $start_day Day of the month which to execute the task
+ * @param  integer $start_hour Hour of the day which to execute the task
+ * @param  integer $start_minute Minut of the hour which to execute the task
+ * @return AUTO_LINK The ID of the event that was created
+ */
+function schedule_code($hook, $id, $parameters, $title, $start_year, $start_month, $start_day, $start_hour, $start_minute)
+{
+    // Parameters should be JSON encoded because it can contain a variety of array key lengths and value types.
+    $_parameters = json_encode($parameters);
+
+    // Escape the string
+    $_parameters = str_replace(['\\', '<', '>', '"'], ['\\\\', '\\<', '\\>', '\\"'], $_parameters);
+
+    $schedule_code = _get_schedule_code_prefix($hook, $id) . ' "' . $_parameters . '"';
+
+    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, $title, $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
+    regenerate_event_reminder_jobs($event_id);
+
+    return $event_id;
+}
+
+/**
+ * Get the ID of the calendar_events event for the provided scheduled hook and id.
+ *
+ * @param  ID_TEXT $hook Hook to run under systems/commandr_scheduled
+ * @param  string $id Unspecified identifier for the resource behind this scheduled event, for future querying to find said event; also passed to the Commandr hook
+ * @return ?AUTO_LINK calendar_events id (null: event was not scheduled)
+ */
+function _get_schedule_code_event_id($hook, $id)
+{
+    $schedule_code = _get_schedule_code_prefix($hook, $id);
+    return $GLOBALS['SITE_DB']->query_value_if_there('SELECT id FROM ' . get_table_prefix() . 'calendar_events WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('e_content') . ' LIKE \'' . db_encode_like($schedule_code) . ' %\'');
+}
+
+/**
+ * Remove a run_scheduled_action calendar event based on the provided hook and ID.
+ *
+ * @param  ID_TEXT $hook Hook to run under systems/commandr_scheduled
+ * @param  string $id Unspecified identifier for the resource behind this scheduled event
+ */
+function unschedule_code($hook, $id)
+{
+    $past_event = _get_schedule_code_event_id($hook, $id);
+    if ($past_event !== null) {
+        delete_calendar_event($past_event);
+    }
+}
+
+/**
+ * Get an array containing the time a scheduled event is set, or null if not scheduled.
+ *
+ * @param  ID_TEXT $hook Hook to run under systems/commandr_scheduled
+ * @param  string $id Unspecified identifier for the resource behind this scheduled event, for future querying to find said event; also passed to the Commandr hook
+ * @return ?array Array of minute, hour, month, day, and year if the event is scheduled (null: not scheduled)
+ */
+function get_schedule_code_event_time($hook, $id)
+{
+    $past_event_id = _get_schedule_code_event_id($hook, $id);
+    $scheduled = null;
+    if ($past_event_id !== null) {
+        $past_event = $GLOBALS['SITE_DB']->query_select('calendar_events', ['e_start_day', 'e_start_month', 'e_start_year', 'e_start_hour', 'e_start_minute'], ['id' => $past_event_id], '', 1);
+        if (array_key_exists(0, $past_event)) {
+            $scheduled = [$past_event[0]['e_start_minute'], $past_event[0]['e_start_hour'], $past_event[0]['e_start_month'], $past_event[0]['e_start_day'], $past_event[0]['e_start_year']];
+            if (mktime($scheduled[1], $scheduled[0], 0, $scheduled[2], $scheduled[3], $scheduled[4]) < time()) {
+                $scheduled = null;
+            }
+        }
+    }
+    return $scheduled;
+}
