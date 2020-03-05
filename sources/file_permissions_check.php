@@ -55,12 +55,12 @@ function scan_permissions($live_output = false, $live_commands = false, $web_use
         'exports/file_backups/_config.php\.\d+',
     ];
 
-    $chmod_array = get_chmod_array('**', true);
+    $chmod_array = get_chmod_array();
     $chmod_paths = [];
     foreach ($chmod_array as $chmod) {
         $chmod = preg_quote($chmod, '#');
-        $chmod = str_replace('\*\*', '[^/\.]*', $chmod);
-        $chmod = str_replace('\*', '[^/]*', $chmod);
+        $chmod = str_replace('\*\*', '[^/\.]*', $chmod); // Wildcarded directories
+        $chmod = str_replace('\*', '[^/]*', $chmod); // Wildcarded files
         $chmod_paths[] = $chmod;
     }
 
@@ -119,11 +119,9 @@ function scan_permissions($live_output = false, $live_commands = false, $web_use
 /**
  * Get the list of files that need CHmodding for write access.
  *
- * @param  string $lang Language to use, may be whatever wildcard syntax the caller supports
- * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
  * @return array The list of files
  */
-function get_chmod_array($lang = '*', $runtime = false)
+function get_chmod_array()
 {
     $extra_files = [];
 
@@ -148,132 +146,125 @@ function get_chmod_array($lang = '*', $runtime = false)
         }
     }
 
-    if ($runtime) {
-        $extra_files = array_merge($extra_files, [
-            'adminzone/pages/comcode_custom/*/*.txt',
-            'adminzone/pages/html_custom/*/*.htm',
-            'cms/pages/comcode_custom/*/*.txt',
-            'cms/pages/html_custom/*/*.htm',
-            'data_custom/modules/admin_backup/*',
-            'data_custom/modules/admin_stats/*',
-            'data_custom/modules/chat/*',
-            'data_custom/modules/web_notifications/*',
-            'data_custom/sitemaps/*',
-            'data_custom/spelling/personal_dicts/*',
-            'data_custom/xml_config/*.xml',
-            'exports/*/*',
-            'forum/pages/comcode_custom/*/*.txt',
-            'forum/pages/html_custom/*/*.htm',
-            'imports/*/*',
-            'lang_custom/*/*.ini',
-            'pages/comcode_custom/*/*.txt',
-            'pages/html_custom/*/*.htm',
-            'site/pages/comcode_custom/*/*.txt',
-            'site/pages/html_custom/*/*.htm',
-            'text_custom/*.txt',
-            'text_custom/*/*.txt',
-            'themes/*/css_custom/*',
-            'themes/*/images_custom/*',
-            'themes/*/javascript_custom/*',
-            'themes/*/templates_custom/*',
-            'themes/*/text_custom/*',
-            'themes/*/xml_custom/*',
-            'uploads/attachments/*',
-            'uploads/attachments_thumbs/*',
-            'uploads/auto_thumbs/*',
-            'uploads/banners/*',
-            'uploads/captcha/*',
-            'uploads/catalogues/*',
-            'uploads/cns_avatars/*',
-            'uploads/cns_cpf_upload/*',
-            'uploads/cns_photos/*',
-            'uploads/cns_photos_thumbs/*',
-            'uploads/downloads/*',
-            'uploads/filedump/*',
-            'uploads/galleries/*',
-            'uploads/galleries_thumbs/*',
-            'uploads/personal_sound_effects/*',
-            'uploads/repimages/*',
-            'uploads/watermarks/*',
-            'uploads/website_specific/*',
-        ]);
-    }
-
     return array_merge(
         $extra_files,
         [
-            'adminzone/pages/comcode_custom/' . $lang,
-            'adminzone/pages/html_custom/' . $lang,
-            'caches/static',
-            'caches/lang',
-            'caches/lang/' . $lang,
-            'caches/persistent',
-            'caches/self_learning',
+            '_config.php',
+            'adminzone/pages/comcode_custom/**',
+            'adminzone/pages/comcode_custom/**/*.txt',
+            'adminzone/pages/html_custom/**',
+            'adminzone/pages/html_custom/**/*.htm',
             'caches/http',
-            'cms/pages/comcode_custom/' . $lang,
-            'cms/pages/html_custom/' . $lang,
+            'caches/http/*.bin',
+            'caches/lang',
+            'caches/lang/**',
+            'caches/lang/**/*.lcd',
+            'caches/lang/*.lcd',
+            'caches/persistent',
+            'caches/persistent/*.gcd',
+            'caches/self_learning',
+            'caches/self_learning/*.gcd',
+            'caches/static',
+            'caches/static/*',
+            'cms/pages/comcode_custom/**',
+            'cms/pages/comcode_custom/**/*.txt',
+            'cms/pages/html_custom/**',
+            'cms/pages/html_custom/**/*.htm',
+            'data_custom',
             'data_custom/errorlog.php',
             'data_custom/firewall_rules.txt',
             'data_custom/modules/admin_backup',
+            'data_custom/modules/admin_backup/*',
             'data_custom/modules/admin_stats',
             'data_custom/modules/chat',
+            'data_custom/modules/chat/*.bin',
             'data_custom/modules/web_notifications',
+            'data_custom/modules/web_notifications/*.bin',
             'data_custom/sitemaps',
+            'data_custom/sitemaps/* ',
             'data_custom/spelling/personal_dicts',
+            'data_custom/spelling/personal_dicts/*',
             'data_custom/xml_config',
-            'data_custom',
-            'exports/addons',
-            'exports/backups',
-            'exports/file_backups',
-            'forum/pages/comcode_custom/' . $lang,
-            'forum/pages/html_custom/' . $lang,
-            'imports/addons',
+            'data_custom/xml_config/*.xml',
+            'exports/**',
+            'exports/**/*.tar',
+            'forum/pages/comcode_custom/**',
+            'forum/pages/comcode_custom/**/*.txt',
+            'forum/pages/html_custom/**',
+            'forum/pages/html_custom/**/*.htm',
+            'imports/**',
+            'imports/**/*.tar',
             'lang_custom',
-            'lang_custom/' . $lang,
-            'pages/comcode_custom/' . $lang,
-            'pages/html_custom/' . $lang,
+            'lang_custom/**',
+            'lang_custom/**/*.ini',
+            'pages/comcode_custom/**',
+            'pages/comcode_custom/**/*.txt',
+            'pages/html_custom/**',
+            'pages/html_custom/**/*.htm',
+            'site/pages/comcode_custom/**',
+            'site/pages/comcode_custom/**/*.txt',
+            'site/pages/html_custom/**',
+            'site/pages/html_custom/**/*.htm',
             'temp',
-            'site/pages/comcode_custom/' . $lang,
-            'site/pages/html_custom/' . $lang,
+            'temp/*',
             'text_custom',
-            'text_custom/' . $lang,
+            'text_custom/**',
+            'text_custom/**/*.txt',
+            'text_custom/*.txt',
             'themes',
-            'themes/admin/css_custom',
-            'themes/admin/images_custom',
-            'themes/admin/javascript_custom',
-            'themes/admin/templates_cached/' . $lang,
-            'themes/admin/templates_custom',
-            'themes/admin/text_custom',
-            'themes/admin/xml_custom',
-            'themes/default/css_custom',
-            'themes/default/images_custom',
-            'themes/default/javascript_custom',
-            'themes/default/templates_cached/' . $lang,
-            'themes/default/templates_custom',
-            'themes/default/text_custom',
-            'themes/default/theme.ini',
-            'themes/default/xml_custom',
+            'themes/**/css_custom',
+            'themes/**/css_custom/*.css',
+            'themes/**/images_custom',
+            'themes/**/images_custom/*',
+            'themes/**/javascript_custom',
+            'themes/**/javascript_custom/*.js',
             'themes/map.ini',
+            'themes/**/templates_cached/**',
+            'themes/**/templates_cached/**/*',
+            'themes/**/templates_custom',
+            'themes/**/templates_custom/*.tpl',
+            'themes/**/text_custom',
+            'themes/**/text_custom/*.txt',
+            'themes/**/theme.ini',
+            'themes/**/xml_custom',
+            'themes/**/xml_custom/*.xml',
             'uploads/attachments',
+            'uploads/attachments/*',
             'uploads/attachments_thumbs',
+            'uploads/attachments_thumbs/*',
             'uploads/auto_thumbs',
+            'uploads/auto_thumbs/*',
             'uploads/banners',
+            'uploads/banners/*',
             'uploads/captcha',
+            'uploads/captcha/*',
             'uploads/catalogues',
+            'uploads/catalogues/*',
             'uploads/cns_avatars',
+            'uploads/cns_avatars/*',
             'uploads/cns_cpf_upload',
+            'uploads/cns_cpf_upload/*',
             'uploads/cns_photos',
+            'uploads/cns_photos/*',
             'uploads/cns_photos_thumbs',
+            'uploads/cns_photos_thumbs/*',
             'uploads/downloads',
+            'uploads/downloads/*',
             'uploads/filedump',
+            'uploads/filedump/*',
             'uploads/galleries',
+            'uploads/galleries/*',
             'uploads/galleries_thumbs',
+            'uploads/galleries_thumbs/*',
             'uploads/incoming',
             'uploads/personal_sound_effects',
+            'uploads/personal_sound_effects/*',
             'uploads/repimages',
+            'uploads/repimages/*',
             'uploads/watermarks',
+            'uploads/watermarks/*',
             'uploads/website_specific',
-            '_config.php',
+            'uploads/website_specific/*',
         ]
     );
 }
@@ -615,7 +606,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      * Process a file or directory for permission checks.
      *
      * @param  PATH $path The absolute path
-     * @param  PATH $rel_path The relative path to the base directory
+     * @param  PATH $rel_path The relative path to the file
      * @param  boolean $is_directory Whether this is a directory
      * @param  string $attr A string of extended attributes from lsattr
      * @param  array $paths Paths with issues (inverse list), returned by reference
@@ -633,7 +624,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
         $file_perms = @fileperms($path);
 
         if (($file_owner === false) || ($file_perms === false)) {
-            return [[], []]; // Likely as parent directory is missing perms, which will be flagged
+            return [[], [], []]; // Likely as parent directory is missing perms, which will be flagged
         }
 
         $perms_needed = 0;
@@ -844,7 +835,11 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
                 }
             }
             if ($new_file_perms != $file_perms) {
-                chmod($path, $new_file_perms);
+                if (function_exists('afm_chmod')) {
+                    afm_chmod($rel_path, $new_file_perms);
+                } else {
+                    chmod($path, $new_file_perms);
+                }
             }
         }
 
@@ -1082,7 +1077,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         } else {
             $text = shell_exec('dir /a /q ' . escapeshellarg($path));
             $matches = [];
-			// FUDGE: We have to parse knowing the character offsets, as there's no other way to parse (date formats may vary, usernames often have spaces and numbers)
+            // FUDGE: We have to parse knowing the character offsets, as there's no other way to parse (date formats may vary, usernames often have spaces and numbers)
             if (preg_match('#^.{38} (.*?) +' . preg_quote(basename($path), '#') . ' *$#im', $text, $matches) != 0) {
                 $this->key_users[] = preg_replace('#^.*\\\#', '', $matches[1]);
             } else {
@@ -1091,7 +1086,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         }
 
         $this->key_users = array_unique($this->key_users);
-		$this->key_users = array_map('strtolower', $this->key_users);
+        $this->key_users = array_map('strtolower', $this->key_users);
 
         // Work out users to avoid...
 
@@ -1112,7 +1107,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         $this->common_users[] = 'Domain Guests';
         $this->common_users[] = 'Domain Computers';
 
-		$this->common_users = array_map('strtolower', $this->common_users);
+        $this->common_users = array_map('strtolower', $this->common_users);
     }
 
     /**
@@ -1188,7 +1183,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
         $acl = $this->find_acl($path);
         if (empty($acl)) {
-            return [[], []]; // Likely as parent directory is missing perms, which will be flagged
+            return [[], [], []]; // Likely as parent directory is missing perms, which will be flagged
         }
 
         $perms_needed_key_users = 0;
@@ -1302,19 +1297,19 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                         }
                         if ($do_reset) {
                             if ($operator == '+') {
-								if (!empty($problematic_denys)) {
-									if (!array_key_exists($sid, $will_do_reset_for)) {
-										$will_do_reset_for[$sid] = [[], []];
-									}
-									$will_do_reset_for[$sid][1] = array_merge($will_do_reset_for[$sid][1], $problematic_denys);
-								}
+                                if (!empty($problematic_denys)) {
+                                    if (!array_key_exists($sid, $will_do_reset_for)) {
+                                        $will_do_reset_for[$sid] = [[], []];
+                                    }
+                                    $will_do_reset_for[$sid][1] = array_merge($will_do_reset_for[$sid][1], $problematic_denys);
+                                }
                             } else {
-								if (!empty($problematic_grants)) {
-									if (!array_key_exists($sid, $will_do_reset_for)) {
-										$will_do_reset_for[$sid] = [[], []];
-									}
-									$will_do_reset_for[$sid][0] = array_merge($will_do_reset_for[$sid][0], $problematic_grants);
-								}
+                                if (!empty($problematic_grants)) {
+                                    if (!array_key_exists($sid, $will_do_reset_for)) {
+                                        $will_do_reset_for[$sid] = [[], []];
+                                    }
+                                    $will_do_reset_for[$sid][0] = array_merge($will_do_reset_for[$sid][0], $problematic_grants);
+                                }
                             }
                         }
                     }
@@ -1370,34 +1365,34 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 }
             }
             $acl[$sid][0] = $permissions_negative;
-			if (!empty($permissions_negative)) {
-				$command = $this->generate_chmod_command($path, $sid, array_keys($permissions_negative), '-');
-				if ($command !== null) {
-					$commands[] = $command;
-				}
-				if ($this->live_output) {
-					if ($command !== null) {
-						echo $command . "\n";
-					}
-				}
-			}
+            if (!empty($permissions_negative)) {
+                $command = $this->generate_chmod_command($path, $sid, array_keys($permissions_negative), '-');
+                if ($command !== null) {
+                    $commands[] = $command;
+                }
+                if ($this->live_output) {
+                    if ($command !== null) {
+                        echo $command . "\n";
+                    }
+                }
+            }
             foreach (array_keys($permissions_positive) as $grant) {
                 if (in_array($grant, $dont_want_back_grants)) {
                     unset($permissions_positive[$grant]);
                 }
             }
             $acl[$sid][1] = $permissions_positive;
-			if (!empty($permissions_positive)) {
-				$command = $this->generate_chmod_command($path, $sid, array_keys($permissions_positive), '+');
-				if ($command !== null) {
-					$commands[] = $command;
-				}
-				if ($this->live_output) {
-					if ($command !== null) {
-						echo $command . "\n";
-					}
-				}
-			}
+            if (!empty($permissions_positive)) {
+                $command = $this->generate_chmod_command($path, $sid, array_keys($permissions_positive), '+');
+                if ($command !== null) {
+                    $commands[] = $command;
+                }
+                if ($this->live_output) {
+                    if ($command !== null) {
+                        echo $command . "\n";
+                    }
+                }
+            }
         }
 
         // Main scan
@@ -1406,34 +1401,34 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
             foreach ($_check_types as $j => $check_type) {
                 list($check_type_level, $perms, $operator) = $check_type;
 
-				if ($this->minimum_level <= $check_type_level) {
-					foreach ($users as $sid) {
-						if ($operator == '+') {
-							list($perms_involved, , $disable_inheritance, $do_reset) = $this->find_missing_file_perms($sid, $acl, $perms);
-						} else {
-							list($perms_involved, $disable_inheritance, $do_reset) = $this->find_excessive_file_perms($sid, $acl, $perms);
-						}
+                if ($this->minimum_level <= $check_type_level) {
+                    foreach ($users as $sid) {
+                        if ($operator == '+') {
+                            list($perms_involved, , $disable_inheritance, $do_reset) = $this->find_missing_file_perms($sid, $acl, $perms);
+                        } else {
+                            list($perms_involved, $disable_inheritance, $do_reset) = $this->find_excessive_file_perms($sid, $acl, $perms);
+                        }
 
-						if (!empty($perms_involved)) {
-							list($message, $command) = $this->output_issue($path, $check_type_level, $sid, $perms_involved);
-							$messages[] = $message;
-							if ($command !== null) {
-								$commands[] = $command;
-							}
-							$paths[$path] = true;
-							if ($this->live_output) {
-								echo $message . "\n";
-								if ($command !== null) {
-									echo $command . "\n";
-								}
-							}
-							$found_issue = true;
-							$found_any_issue = true;
-						}
-					}
-				}
-			}
-		}
+                        if (!empty($perms_involved)) {
+                            list($message, $command) = $this->output_issue($path, $check_type_level, $sid, $perms_involved);
+                            $messages[] = $message;
+                            if ($command !== null) {
+                                $commands[] = $command;
+                            }
+                            $paths[$path] = true;
+                            if ($this->live_output) {
+                                echo $message . "\n";
+                                if ($command !== null) {
+                                    echo $command . "\n";
+                                }
+                            }
+                            $found_issue = true;
+                            $found_any_issue = true;
+                        }
+                    }
+                }
+            }
+        }
 
         // Handle results...
 
@@ -1487,23 +1482,23 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                 $num_matches_2 = preg_match_all('#\(([A-Z,]+)\)#', $matches[2], $matches_2);
                 for ($i = 0; $i < $num_matches_2; $i++) {
                     $_statement = $matches_2[1][$i];
-					foreach (explode(',', $_statement) as $statement) {
-						if ($statement == 'DENY') {
-							$operator = '-';
-						} elseif ($statement == 'I') {
-							$inherits_from_parent = true;
-						} elseif (!in_array($statement, ['OI', 'CI', 'IO', 'NP'])) {
-							if (($operator == '-') && (!$inherits_from_parent)) {
-								$permissions_negative[$statement] = true;
-							} elseif (($operator == '+') && (!$inherits_from_parent)) {
-								$permissions_positive[$statement] = true;
-							} elseif (($operator == '-') && ($inherits_from_parent)) {
-								$permissions_negative_inherited[$statement] = true;
-							} else {
-								$permissions_positive_inherited[$statement] = true;
-							}
-						}
-					}
+                    foreach (explode(',', $_statement) as $statement) {
+                        if ($statement == 'DENY') {
+                            $operator = '-';
+                        } elseif ($statement == 'I') {
+                            $inherits_from_parent = true;
+                        } elseif (!in_array($statement, ['OI', 'CI', 'IO', 'NP'])) {
+                            if (($operator == '-') && (!$inherits_from_parent)) {
+                                $permissions_negative[$statement] = true;
+                            } elseif (($operator == '+') && (!$inherits_from_parent)) {
+                                $permissions_positive[$statement] = true;
+                            } elseif (($operator == '-') && ($inherits_from_parent)) {
+                                $permissions_negative_inherited[$statement] = true;
+                            } else {
+                                $permissions_positive_inherited[$statement] = true;
+                            }
+                        }
+                    }
                 }
 
                 if (array_key_exists($sid, $acl)) {

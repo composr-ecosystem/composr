@@ -36,8 +36,9 @@ class Hook_commandr_command_check_perms
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('check_perms', ['h'], []), '', ''];
         } else {
-            require_code('upgrade_perms');
-            $result = upgrader_check_perms_screen();
+            require_code('file_permissions_check');
+            list($result) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+
             if ($result == '') {
                 $result = do_lang('NO_ACTION_REQUIRED');
             }

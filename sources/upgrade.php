@@ -93,13 +93,23 @@ function upgrade_script()
             break;
 
         case 'check_perms':
-            require_code('upgrade_perms');
-            echo upgrader_check_perms_screen();
+            require_code('file_permissions_check');
+            list($out) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+            if ($out == '') {
+                echo '<p>' . do_lang('NO_ACTION_REQUIRED') . '</p>';
+            } else {
+                echo $out;
+            }
             break;
 
         case 'fix_perms':
-            require_code('upgrade_perms');
-            echo upgrader_fix_perms_screen();
+            require_code('file_permissions_check');
+            list($out) = scan_permissions(false, true, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+            if ($out == '') {
+                echo '<p>' . do_lang('NO_ACTION_REQUIRED') . '</p>';
+            } else {
+                echo $out;
+            }
             break;
 
         case 'open_site':

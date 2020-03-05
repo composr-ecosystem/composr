@@ -232,8 +232,9 @@ class Hook_health_check_integrity extends Hook_Health_Check
             return;
         }
 
-        require_code('upgrade_perms');
+        require_code('file_permissions_check');
+        list($out) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
 
-        $this->assertTrue(upgrader_check_perms_screen() == do_lang('UPGRADER_ALL_CHMODDED_GOOD'), 'File permissions (chmodding) are not complete, see upgrader for details');
+        $this->assertTrue($out == '', 'File permissions (chmodding) are not complete, see upgrader for details');
     }
 }

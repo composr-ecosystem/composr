@@ -5276,7 +5276,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FULL_BACKUP
         FUSED_CONTENT_LANG_STRINGS
         UPGRADER_ADDON_MANAGEMENT
-        UPGRADER_ALL_CHMODDED_GOOD
         UPGRADER_AUTO_HANDLE
         UPGRADER_BUGS
         UPGRADER_CHECK_ALL
@@ -5308,8 +5307,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_LOGIN_INFO_PASS_FORGET
         UPGRADER_MAINTENANCE
         UPGRADER_MUST_UPGRADE_CNS
-        UPGRADER_NEEDS_CHMOD
-        UPGRADER_NEEDS_UNCHMOD
         UPGRADER_NOT_FOR_PATCH
         UPGRADER_NO_CNS_UPGRADE
         UPGRADER_OPEN_SITE
@@ -7649,7 +7646,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WARNING_DISK_SPACE
         WARNING_FILE_ADDON
         WARNING_FILE_ALIEN
-        WARNING_FILE_CHMOD
         WARNING_FILE_OVERRIDE_FROM_UNINSTALLED_ADDON
         WARNING_FILE_FUTURE_FILES
         WARNING_FILE_MISSING_FILE_ENTIRELY

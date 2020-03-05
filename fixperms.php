@@ -125,11 +125,14 @@ if ($trial) {
     // Git hooks should be writable, and linked in correctly
     if (file_exists(__DIR__ . '/.git')) {
         echo "0/2 Setting up git hooks to run correctly\n";
-        echo execute_nicely('git config core.hooksPath git-hooks');
-        $ob = new CMSPermissionsScanner();
-        $ob->generate_chmod_command('git-hooks/*', 0100, '+');
 
+        echo execute_nicely('git config core.hooksPath git-hooks');
         echo execute_nicely('git config core.fileMode false');
+
+        if (strpos(PHP_OS, 'WIN') === false) {
+            $ob = new CMSPermissionsScannerLinux();
+            $ob->generate_chmod_command('git-hooks/*', 0100, '+');
+        }
     }
 
     // Commonly the uploads directory can be missing in git repositories backing up live sites (due to size); but we need it
@@ -138,10 +141,10 @@ if ($trial) {
     }
 
     // Clear cache first, as we don't chmod cache files in this code
-	if (is_file(__DIR__ . '/decache.php')) {
-		require(__DIR__ . '/decache.php');
-		echo "1/2 Cleared caches\n";
-	}
+    if (is_file(__DIR__ . '/decache.php')) {
+        require(__DIR__ . '/decache.php');
+        echo "1/2 Cleared caches\n";
+    }
 
     // Change permissions
     scan_permissions($verbose, true, $web_username, $has_ftp_loopback_for_write, $minimum_level);

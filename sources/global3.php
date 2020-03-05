@@ -282,10 +282,10 @@ function is_suexec_like()
                 (php_function_allowed('posix_getuid')) &&
                 (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
                 (is_integer(@posix_getuid())) &&
-                (@posix_getuid() == @fileowner(website_file_owner()))
+                (posix_getuid() == website_file_owner())
             )
             ||
-            (cms_is_writable(website_file_owner()));
+            (cms_is_writable(get_file_base() . (running_script('install') ? '/install.php' : '/sources/global.php')));
         }
     }
     return $answer;
