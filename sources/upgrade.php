@@ -106,12 +106,12 @@ function upgrade_script()
 
         case 'fix_perms':
             require_code('file_permissions_check');
-            list($messages) = scan_permissions(false, true, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
-            if (empty($messages)) {
+            list(, $commands) = scan_permissions(false, true, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+            if (empty($commands)) {
                 echo '<p>' . do_lang('NO_ACTION_REQUIRED') . '</p>';
             } else {
-                foreach ($messages as $message) {
-                    echo '<p>' . escape_html($message) . '</p>';
+                foreach ($commands as $command) {
+                    echo '<p>Ran command: ' . escape_html($command) . '</p>';
                 }
             }
             break;
@@ -558,8 +558,13 @@ function upgrader_menu_screen()
 
             <ul class=\"spaced-list\">";
     if ($show_permission_buttons) {
-        $out .= "
+        if (is_suexec_like()) {
+            $out .= "
                 <li>{$l_check_perms} / {$l_fix_perms}</li>";
+        } else {
+            $out .= "
+                <li>{$l_check_perms}</li>";
+        }
     }
     $out .= "
                 <li>{$l_safe_mode}</li>

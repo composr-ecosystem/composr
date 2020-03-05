@@ -38,7 +38,7 @@ function execute_nicely($command)
 }
 
 /**
- * Scan permissions.
+ * Scan permissions. Composr-specific wrapper for the CMSPermissionsScanner* classes.
  *
  * @param  boolean $live_output Whether to produce live output of issues
  * @param  boolean $live_commands Whether to run commands live
@@ -53,6 +53,13 @@ function scan_permissions($live_output = false, $live_commands = false, $web_use
         '_config.php',
         'exports/backups/[^/]*\.tar(\.gz)?',
         'exports/file_backups/_config.php\.\d+',
+    ];
+
+    $skip_paths = [ // For performance, often lots of files on dev machines
+        '_tests/screens_tested',
+        'exports/builds',
+        'uploads/website_specific/cms',
+        'uploads/website_specific/test',
     ];
 
     $chmod_array = get_chmod_array();
@@ -74,7 +81,7 @@ function scan_permissions($live_output = false, $live_commands = false, $web_use
         $ob = new CMSPermissionsScannerLinux();
     }
 
-    $ob->set_path_patterns($sensitive_paths, $chmod_paths);
+    $ob->set_path_patterns($sensitive_paths, $chmod_paths, null, $skip_paths);
 
     $ob->set_live_output($live_output);
     $ob->set_live_commands($live_commands);
@@ -289,6 +296,7 @@ abstract class CMSPermissionsScanner
     protected $sensitive_paths = [];
     protected $chmod_paths = [];
     protected $script_paths = null;
+    protected $skip_paths = [];
 
     protected $has_ftp_loopback_for_write = false;
 
@@ -297,6 +305,20 @@ abstract class CMSPermissionsScanner
     protected $live_commands = false;
 
     // Code...
+
+    /**
+     * Generate a message prefix, based on whether we are only showing messages of one level or not.
+     *
+     * @param  string $prefix The raw prefix
+     * @return string The prefix
+     */
+    protected function message_prefix($prefix)
+    {
+        if ($this->minimum_level >= self::RESULT_TYPE_ERROR_EXCESSIVE) {
+            return '';
+        }
+        return $prefix . ': ';
+    }
 
     /**
      * Set username the web user will run as.
@@ -311,8 +333,9 @@ abstract class CMSPermissionsScanner
      * @param  array $sensitive_paths A list of sensitive path regexps that really should have minimal read permission
      * @param  array $chmod_paths A list of path regexps that should be chmodded as writable for non-suEXEC-style servers
      * @param  ?array $script_paths A list of path regexps for scripts that need Unix execute permission (null: .sh files)
+     * @param  array $skip_paths A list of paths to skip
      */
-    public function set_path_patterns($sensitive_paths = [], $chmod_paths = [], $script_paths = null)
+    public function set_path_patterns($sensitive_paths = [], $chmod_paths = [], $script_paths = null, $skip_paths = [])
     {
         $this->sensitive_paths = $sensitive_paths;
         $this->chmod_paths = $chmod_paths;
@@ -323,6 +346,7 @@ abstract class CMSPermissionsScanner
         } else {
             $this->script_paths = $script_paths;
         }
+        $this->skip_paths = $skip_paths;
     }
 
     /**
@@ -547,7 +571,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
                         } while (($path_up != '.') && (!empty($path_up)) && ($path_up != $_path_up));
 
                         if (!$found_selinux_rule) {
-                            $message = 'Error: selinux is running and httpd_sys_rw_content_t is not set in the directory tree of ' . $path;
+                            $message = $this->message_prefix('Error') . 'Selinux is running and httpd_sys_rw_content_t is not set in the directory tree of ' . $path;
                             $messages[] = $message;
                             if ($this->live_output) {
                                 echo $message . "\n";
@@ -582,6 +606,10 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
 
                 $_path = $path . '/' . $f;
                 $_rel_path = $rel_path . (($rel_path == '') ? '' : '/') . $f;
+
+                if (in_array($_rel_path, $this->skip_paths)) {
+                    continue;
+                }
 
                 $is_directory = @is_dir($_path);
 
@@ -763,7 +791,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
                     $extended_attribute_commands[] = $command;
                 }
                 if (!empty($extended_attribute_issues)) {
-                    $message = 'Error: extended attributes problem on ' . $path . ' (' . implode(', ', $extended_attribute_issues) . ')';
+                    $message = $this->message_prefix('Error') . 'Extended attributes problem on ' . $path . ' (' . implode(', ', $extended_attribute_issues) . ')';
                     if ($this->live_output) {
                         echo $message . "\n";
                         foreach ($extended_attribute_commands as $command) {
@@ -789,17 +817,19 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
 
             if ($this->minimum_level <= $check_type_level) {
                 if ($operator == '+') {
-                    $ok = ($file_perms & $bitmask) == $perms_needed; // Has all
+                    $ok = ($file_perms & $bitmask) == $bitmask; // Has all
                 } else {
                     $ok = ($file_perms & $bitmask) == 0; // Has none
                 }
                 if (!$ok) {
                     if ($operator == '+') {
                         $perms_involved_octal = ($file_perms ^ $bitmask) & $bitmask; // What is missing
+                        $new_file_perms = $new_file_perms | $bitmask;
                     } else {
                         $perms_involved_octal = $file_perms & $bitmask; // What is excessive
+                        $new_file_perms = $new_file_perms & ~$bitmask;
                     }
-                    list($message, $command) = $this->output_issue($path, $check_type_level, $perms_involved_octal);
+                    list($message, $command) = $this->output_issue($path, $check_type_level, $operator, $perms_involved_octal);
                     $messages[] = $message;
                     if ($command !== null) {
                         $commands[] = $command;
@@ -813,7 +843,6 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
                     }
                     $found_issue = true;
                     $found_any_issue = true;
-                    $new_file_perms = $new_file_perms | $perms_needed;
                 }
             }
         }
@@ -851,32 +880,34 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      *
      * @param  PATH $path The path the message is about
      * @param  integer $result_type A RESULT_TYPE_* constant
+     * @param  string $operator The operator involved
+     * @set + -
      * @param  integer $perms_involved_octal The permissions the issue is about
      * @return array A pair: The message, A command (which may be null)
      */
-    protected function output_issue($path, $result_type, $perms_involved_octal)
+    protected function output_issue($path, $result_type, $operator, $perms_involved_octal)
     {
         $perms_involved_written = $this->convert_octal_to_written($perms_involved_octal);
 
         switch ($result_type) {
             case self::RESULT_TYPE_SUGGESTION_MISSING:
-                $message = 'Suggestion: set additional permissions for ' . $path . ' (' . $perms_involved_written . ')';
-                $command = $this->generate_chmod_command($path, $perms_involved_octal, '+');
+                $message = $this->message_prefix('Suggestion') . 'Set additional permissions for ' . $path . ' (' . $perms_involved_written . ')';
+                $command = $this->generate_chmod_command($path, $perms_involved_octal, $operator);
                 break;
 
             case self::RESULT_TYPE_ERROR_MISSING:
-                $message = 'Error: set additional permissions for ' . $path . ' (' . $perms_involved_written . ')';
-                $command = $this->generate_chmod_command($path, $perms_involved_octal, '+');
+                $message = $this->message_prefix('Error') . 'Set additional permissions for ' . $path . ' (' . $perms_involved_written . ')';
+                $command = $this->generate_chmod_command($path, $perms_involved_octal, $operator);
                 break;
 
             case self::RESULT_TYPE_SUGGESTION_EXCESSIVE:
-                $message = 'Suggestion: remove unnecessary permissions for ' . $path . ' (' . $perms_involved_written . ')';
-                $command = $this->generate_chmod_command($path, $perms_involved_octal, '-');
+                $message = $this->message_prefix('Suggestion') . 'Remove unnecessary permissions for ' . $path . ' (' . $perms_involved_written . ')';
+                $command = $this->generate_chmod_command($path, $perms_involved_octal, $operator);
                 break;
 
             case self::RESULT_TYPE_ERROR_EXCESSIVE:
-                $message = 'Error: remove dangerous permissions for ' . $path . ' (' . $perms_involved_written . ')';
-                $command = $this->generate_chmod_command($path, $perms_involved_octal, '-');
+                $message = $this->message_prefix('Error') . 'Remove dangerous permissions for ' . $path . ' (' . $perms_involved_written . ')';
+                $command = $this->generate_chmod_command($path, $perms_involved_octal, $operator);
                 break;
 
             default:
@@ -895,7 +926,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
      * @set - +
      * @return string Chmod command
      */
-    protected function generate_chmod_command($path, $octal, $operator)
+    public function generate_chmod_command($path, $octal, $operator)
     {
         $owner_perms = [];
         if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
@@ -1143,6 +1174,10 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
                 $_path = $path . '/' . $f;
                 $_rel_path = $rel_path . (($rel_path == '') ? '' : '/') . $f;
+
+                if (in_array($_rel_path, $this->skip_paths)) {
+                    continue;
+                }
 
                 $is_directory = @is_dir($_path);
 
@@ -1410,7 +1445,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
                         }
 
                         if (!empty($perms_involved)) {
-                            list($message, $command) = $this->output_issue($path, $check_type_level, $sid, $perms_involved);
+                            list($message, $command) = $this->output_issue($path, $check_type_level, $operator, $sid, $perms_involved);
                             $messages[] = $message;
                             if ($command !== null) {
                                 $commands[] = $command;
@@ -2004,33 +2039,35 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      *
      * @param  PATH $path The path the message is about
      * @param  integer $result_type A RESULT_TYPE_* constant
+     * @param  string $operator The operator involved
+     * @set + -
      * @param  string $sid The Sid the permission is for
      * @param  array $perms_involved The permissions the issue is about
      * @return array A pair: The message, A command (which may be null)
      */
-    protected function output_issue($path, $result_type, $sid, $perms_involved)
+    protected function output_issue($path, $result_type, $operator, $sid, $perms_involved)
     {
         $written_perms = $this->convert_permissions_to_written($perms_involved);
 
         switch ($result_type) {
             case self::RESULT_TYPE_SUGGESTION_MISSING:
-                $message = 'Suggestion: set additional permissions for ' . $path . ' (' . $sid . ': ' . $written_perms . ')';
-                $command = $this->generate_chmod_command($path, $sid, $perms_involved, '+');
+                $message = $this->message_prefix('Suggestion') . 'Set additional permissions for ' . $path . ' (' . $sid . ': ' . $written_perms . ')';
+                $command = $this->generate_chmod_command($path, $sid, $perms_involved, $operator);
                 break;
 
             case self::RESULT_TYPE_ERROR_MISSING:
-                $message = 'Error: set additional permissions for ' . $path . ' (' . $sid . ': ' . $written_perms . ')';
-                $command = $this->generate_chmod_command($path, $sid, $perms_involved, '+');
+                $message = $this->message_prefix('Error') . 'Set additional permissions for ' . $path . ' (' . $sid . ': ' . $written_perms . ')';
+                $command = $this->generate_chmod_command($path, $sid, $perms_involved, $operator);
                 break;
 
             case self::RESULT_TYPE_SUGGESTION_EXCESSIVE:
-                $message = 'Suggestion: remove unnecessary permissions for ' . $path . ' (' . $sid . ': ' . $written_perms . ')';
-                $command = $this->generate_chmod_command($path, $sid, $perms_involved, '-');
+                $message = $this->message_prefix('Suggestion') . 'Remove unnecessary permissions for ' . $path . ' (' . $sid . ': ' . $written_perms . ')';
+                $command = $this->generate_chmod_command($path, $sid, $perms_involved, $operator);
                 break;
 
             case self::RESULT_TYPE_ERROR_EXCESSIVE:
-                $message = 'Error: remove dangerous permissions for ' . $path . ' (' . $sid . ': ' . $written_perms . ')';
-                $command = $this->generate_chmod_command($path, $sid, $perms_involved, '-');
+                $message = $this->message_prefix('Error') . 'Remove dangerous permissions for ' . $path . ' (' . $sid . ': ' . $written_perms . ')';
+                $command = $this->generate_chmod_command($path, $sid, $perms_involved, $operator);
                 break;
 
             default:
@@ -2090,7 +2127,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
      * @param  boolean $reset Reset permissions for the SID
      * @return string Chmod command
      */
-    protected function generate_chmod_command($path, $sid, $perms_involved, $operator, $reset = false)
+    public function generate_chmod_command($path, $sid, $perms_involved, $operator, $reset = false)
     {
         // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/icacls
 
