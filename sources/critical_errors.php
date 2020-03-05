@@ -143,9 +143,9 @@ if (!function_exists('critical_error')) {
                     $install_url = '../install.php';
                 }
                 if (file_exists($install_url)) {
-                    $error = 'The top-level configuration file (<kbd>_config.php</kbd>) is empty. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.';
+                    $error = 'The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.';
                 } else {
-                    $error = 'The top-level configuration file (<kbd>_config.php</kbd>) is empty. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.';
+                    $error = 'The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official ocProducts installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.';
                 }
                 break;
             case '_CONFIG.PHP_CORRUPTED':

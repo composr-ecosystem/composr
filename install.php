@@ -416,7 +416,7 @@ function step_1()
     // Some checks relating to installation permissions
     global $FILE_ARRAY;
     if (!@is_array($FILE_ARRAY)) { // Talk about manual permission setting a bit
-        if (is_suexec_like()) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
+        if ((is_suexec_like()) && (strpos(PHP_OS, 'WIN') === false)) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
             $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('SUEXEC_SERVER')]));
         } elseif (cms_is_writable(get_file_base() . '/install.php')) {
             $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));

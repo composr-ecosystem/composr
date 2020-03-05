@@ -292,7 +292,7 @@ function ce_is_suexec_like()
         $answer = (function_exists('posix_getuid')) &&
             (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
             (is_integer(@posix_getuid())) &&
-            (@posix_getuid() == @fileowner(get_file_base() . '/index.php'));
+            (posix_getuid() == @fileowner(get_file_base() . '/sources/global.php'));
     }
     return $answer;
 }

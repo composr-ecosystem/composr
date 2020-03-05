@@ -39,15 +39,11 @@ Usage: php fixperms.php [options]
                                               (not guaranteed to work if some basic permissions are missing)
 
     --web_username=<username|user_id>         On Linux/MacOS:
-                                               specify the username or user ID that the website runs under
+                                               specify the username that the website runs under
                                                (if not passed assumes the current user)
                                               On Windows:
                                                specify the username that the website runs under
-                                               (if not passed assumes IUSR if it exists else the current user)
-
-    --is_suexec_like                          flag to Composr that you are on a suEXEC-like server
-                                              (unrelated to permission checks, just helps Composr
-                                              create files properly)
+                                               (if not passed assumes IUSR or SYSTEM depending on base directory)
 
     --has_ftp_loopback_for_write=[true|false] whether irregular file writes like addon management can be
                                               done by PHP via an FTP-loopback
@@ -58,6 +54,10 @@ Usage: php fixperms.php [options]
       2 = handle unimportant suggested permissions
       3 = handle unnecessary dangerous permissions (the default)
       4 = handle necessary missing permissions
+
+    --is_suexec_like                          flag to Composr that you are on a suEXEC-like server
+                                              (unrelated to permission checks, just helps Composr
+                                              create cache files with the right permissions)
 ');
 }
 
@@ -125,21 +125,26 @@ if ($trial) {
     // Git hooks should be writable, and linked in correctly
     if (file_exists(__DIR__ . '/.git')) {
         echo "0/2 Setting up git hooks to run correctly\n";
-        echo execute_nicely('git config core.hooksPath git-hooks');
-        $ob = new CMSPermissionsScanner();
-        $ob->generate_chmod_command('git-hooks/*', 0100, '+');
 
+        echo execute_nicely('git config core.hooksPath git-hooks');
         echo execute_nicely('git config core.fileMode false');
+
+        if (strpos(PHP_OS, 'WIN') === false) {
+            $ob = new CMSPermissionsScannerLinux();
+            $ob->generate_chmod_command('git-hooks/*', 0100, '+');
+        }
     }
 
     // Commonly the uploads directory can be missing in git repositories backing up live sites (due to size); but we need it
-    if (!file_exists(__DIR__ . '/uploads')) {
+    if ((!file_exists(__DIR__ . '/uploads')) && (file_exists(__DIR__ . '/data'))) {
         mkdir(__DIR__ . '/uploads', 0755);
     }
 
     // Clear cache first, as we don't chmod cache files in this code
-    require(__DIR__ . '/decache.php');
-    echo "1/2 Cleared caches\n";
+    if (is_file(__DIR__ . '/decache.php')) {
+        require(__DIR__ . '/decache.php');
+        echo "1/2 Cleared caches\n";
+    }
 
     // Change permissions
     scan_permissions($verbose, true, $web_username, $has_ftp_loopback_for_write, $minimum_level);

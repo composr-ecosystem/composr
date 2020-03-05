@@ -225,15 +225,13 @@ class Hook_health_check_integrity extends Hook_Health_Check
      */
     public function testChmod($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
-        if ($check_context == CHECK_CONTEXT__INSTALL) {
-            return;
-        }
         if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
             return;
         }
 
-        require_code('upgrade_perms');
+        require_code('file_permissions_check');
+        list($messages) = scan_permissions(false, false, null, null, ($check_context == CHECK_CONTEXT__INSTALL) ? CMSPermissionsScanner::RESULT_TYPE_ERROR_EXCESSIVE : CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
 
-        $this->assertTrue(upgrader_check_perms_screen() == do_lang('UPGRADER_ALL_CHMODDED_GOOD'), 'File permissions (chmodding) are not complete, see upgrader for details');
+        $this->assertTrue(empty($messages), implode("\n", $messages));
     }
 }

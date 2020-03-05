@@ -449,18 +449,17 @@ function _rescope_path($path)
  * Sets permissions over the open AFM connection.
  *
  * @param  PATH $basic_path The path of the file/directory we are setting permissions of
- * @param  boolean $world_access Whether world access is required
+ * @param  integer $bitmask File permissions bitmask
  */
-function afm_set_perms($basic_path, $world_access)
+function afm_set_perms($basic_path, $bitmask)
 {
-    $access = is_dir(get_file_base() . '/' . $basic_path) ? _translate_dir_access($world_access) : _translate_file_access($world_access);
     $path = _rescope_path($basic_path);
 
     $conn = _ftp_info();
     if ($conn !== false) {
-        @ftp_chmod($conn, $access, $path);
+        ftp_chmod($conn, $bitmask, $path);
     } else {
-        @chmod($path, $access);
+        chmod($path, $bitmask);
     }
 }
 
