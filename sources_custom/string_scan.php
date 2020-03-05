@@ -4558,6 +4558,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VERSION
         DESCRIPTION_VIDEO_DIMENSIONS
         DESCRIPTION_VIDEO_LENGTH
+        DESCIPTION_CLOSED_CAPTIONS
         DESCRIPTION_VIEW_REPORTS
         DESCRIPTION_VISIBLE
         DESCRIPTION_WATERMARK
@@ -7080,6 +7081,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SUBSCRIPTION_STATUS
         SUCCESSFULLY_SCHEDULED_BACKUP
         SUCCESS_ADDED_DOWNLOADS
+        SUCCESS_ADDED_GALLERIES
         SUCCESS_NOW_NEXT_SCREEN
         SUEXEC_SERVER
         SUGGEST_ADD_CATEGORY_NEXT

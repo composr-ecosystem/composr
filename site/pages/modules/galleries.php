@@ -145,6 +145,7 @@ class Module_galleries
                 'cat' => 'ID_TEXT',
                 'url' => 'URLPATH',
                 'thumb_url' => 'URLPATH',
+                'closed_captions_url' => 'URLPATH',
                 'the_description' => 'LONG_TRANS__COMCODE',
                 'allow_rating' => 'BINARY',
                 'allow_comments' => 'SHORT_INTEGER',
@@ -312,6 +313,7 @@ HTML;
 
         if (($upgrade_from !== null) && ($upgrade_from < 11)) {
             $GLOBALS['SITE_DB']->add_table_field('galleries', 'layout_mode', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('videos', 'closed_captions_url', 'URLPATH');
 
             $GLOBALS['SITE_DB']->query_update('galleries', ['layout_mode' => GALLERY_LAYOUT_MODE_GRID], ['flow_mode_interface' => '0']);
             $GLOBALS['SITE_DB']->query_update('galleries', ['layout_mode' => GALLERY_LAYOUT_MODE_CAROUSEL], ['flow_mode_interface' => '1']);
@@ -355,6 +357,7 @@ HTML;
     public $title_to_use_2;
     public $url;
     public $thumb_url;
+    public $closed_captions_url;
     public $true_category_name;
     public $category_name;
 
@@ -495,6 +498,13 @@ HTML;
             if (url_is_local($thumb_url)) {
                 $thumb_url = get_custom_base_url() . '/' . $thumb_url;
             }
+            $closed_captions_url = '';
+            if ($type == 'video') {
+                $closed_captions_url = $myrow['closed_captions_url'];
+                if (url_is_local($closed_captions_url)) {
+                    $closed_captions_url = get_custom_base_url() . '/' . $closed_captions_url;
+                }
+            }
 
             if (!has_category_access(get_member(), 'galleries', $cat)) {
                 access_denied('CATEGORY_ACCESS');
@@ -539,6 +549,7 @@ HTML;
             $this->cat = $cat;
             $this->url = $url;
             $this->thumb_url = $thumb_url;
+            $this->closed_captions_url = $closed_captions_url;
             $this->category_name = $category_name;
             $this->root = $root;
         }
@@ -774,9 +785,10 @@ HTML;
                 }
 
                 // Video HTML
+                $closed_captions_url = $row['closed_captions_url'];
                 $thumb_url = $row['thumb_url'];
                 $url = $row['url'];
-                $video_player = show_gallery_video_media($url, $thumb_url, $row['video_width'], $row['video_height'], $row['video_length'], $row['submitter']);
+                $video_player = show_gallery_video_media($url, $thumb_url, $row['video_width'], $row['video_height'], $row['video_length'], $row['submitter'], $closed_captions_url);
                 $view_url = build_url(['page' => '_SELF', 'type' => 'video', 'id' => $row['id'], 'days' => (get_param_string('days', '') == '') ? null : get_param_string('days'), 'sort' => ($url_sort . ' ' . $dir == 'add_date DESC') ? null : ($url_sort . ' ' . $dir), 'select' => ($image_select == '*') ? null : $image_select, 'video_select' => ($video_select == '*') ? null : $video_select], '_SELF');
 
                 // Some extra variables relating to the currently selected entry
@@ -1229,7 +1241,7 @@ HTML;
 
                 if ($content_type === 'video') {
                     // Video HTML
-                    $current_video = show_gallery_video_media($current_url, $thumb_url, $row['video_width'], $row['video_height'], $row['video_length'], $row['submitter']);
+                    $current_video = show_gallery_video_media($current_url, $thumb_url, $row['video_width'], $row['video_height'], $row['video_length'], $row['submitter'], $row['closed_captions_url']);
                 }
 
                 list($current_rating_details, $current_comment_details, $current_trackback_details) = embed_feedback_systems(
@@ -1437,6 +1449,7 @@ HTML;
         $cat = $this->cat;
         $url = $this->url;
         $thumb_url = $this->thumb_url;
+        $closed_captions_url = $this->closed_captions_url;
         $true_category_name = $this->category_name;
         if ($category_name === null) {
             $category_name = $true_category_name;
@@ -1503,7 +1516,7 @@ HTML;
         $edit_date = ($myrow['edit_date'] === null) ? '' : get_timezoned_date_time($myrow['edit_date']);
 
         // Video HTML
-        $video = show_gallery_video_media($url, $thumb_url, $myrow['video_width'], $myrow['video_height'], $myrow['video_length'], $myrow['submitter']);
+        $video = show_gallery_video_media($url, $thumb_url, $myrow['video_width'], $myrow['video_height'], $myrow['video_length'], $myrow['submitter'], $myrow['closed_captions_url']);
 
         $extra_where = ' AND ' . db_string_equal_to('cat', $cat);
         list($n, $x, $nav) = $this->build_set_navigation($extra_where, '', $category_name, $id, $root, 'video', get_param_integer('wide_high', 0), get_param_integer('module_start', 0), get_param_integer('module_max', get_default_gallery_max()), $cat, $url_sort, $dir, $image_select, $video_select, $days);

@@ -43,10 +43,12 @@ function tasks_script()
 
     $where = [
         'id' => $id,
-        't_locked' => 0,
     ];
     if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
         $where['t_secure_ref'] = $secure_ref;
+    }
+    if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || (get_param_integer('respect_locking', 1) == 1)) {
+        $where['t_locked'] = 0;
     }
     $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], $where, '', 1);
     if (!array_key_exists(0, $task_rows)) {

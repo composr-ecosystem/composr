@@ -108,6 +108,94 @@ function get_video_details($file_path, $filename, $delay_errors = false)
 }
 
 /**
+ * Extract video meta info from any uploaded video.
+ *
+ * @return array A triplet of 3 "?integer"'s: video width, video height, video length
+ */
+function get_special_video_info()
+{
+    $video_length = post_param_integer('video_length', 0);
+    $video_width = post_param_integer('video_width', 0);
+    $video_height = post_param_integer('video_height', 0);
+    if (($video_width == 0) || ($video_height == 0) || ($video_length == 0)) {
+        is_plupload(true);
+        if (((array_key_exists('video__upload', $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES['video__upload']['tmp_name']))))) {
+            $filename = $_FILES['video__upload']['name'];
+            list($_video_width, $_video_height, $_video_length) = get_video_details($_FILES['video__upload']['tmp_name'], $filename);
+        } else {
+            $url = post_param_string('video__url', '', INPUT_FILTER_URL_GENERAL);
+            if ($url == '') {
+                return [null, null, null];
+            }
+
+            $_video_width = null;
+            $_video_height = null;
+
+            // Try oEmbed
+            require_code('media_renderer');
+            require_code('http');
+            $meta_details = get_webpage_meta_details($url);
+            require_code('hooks/systems/media_rendering/oembed');
+            $oembed_ob = object_factory('Hook_media_rendering_oembed');
+            if ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details) || $oembed_ob->recognises_url($url)) {
+                $oembed = $oembed_ob->get_oembed_data_result($url, ['width' => get_option('video_width_setting'), 'height' => get_option('video_height_setting')]);
+                if (isset($oembed['width'])) {
+                    $_video_width = intval($oembed['width']);
+                }
+                if (isset($oembed['height'])) {
+                    $_video_height = intval($oembed['height']);
+                }
+                $_video_length = null;
+            }
+
+            $filename = null;
+
+            // Try get_video_details
+            if (!isset($_video_width)) {
+                $download_test = null;
+                $temp_path = '';
+                if ($url != '') {
+                    $temp_path = cms_tempnam();
+                    $write_to_file = fopen($temp_path, 'wb');
+                    $download_test = cms_http_request($url, ['byte_limit' => 1024 * 50, 'trigger_error' => false, 'write_to_file' => $write_to_file]);
+                    rewind($write_to_file);
+                    fclose($write_to_file);
+                }
+                if (($download_test !== null) && ($download_test->data !== null)) {
+                    $filename = ($download_test->filename === null) ? basename(urldecode($url)) : $download_test->filename;
+                    list($_video_width, $_video_height, $_video_length) = get_video_details($temp_path, $filename);
+                } else {
+                    list($_video_width, $_video_height, $_video_length) = [null, null, null];
+                }
+
+                if ($temp_path != '') {
+                    @unlink($temp_path);
+                }
+            }
+        }
+
+        if ($filename !== null) {
+            if (is_audio($filename, true, true)) {
+                $_video_width = 300;
+                $_video_height = 60;
+            }
+        }
+
+        if ($video_width == 0) {
+            $video_width = ($_video_width === null) ? intval(get_option('default_video_width')) : $_video_width;
+        }
+        if ($video_height == 0) {
+            $video_height = ($_video_height === null) ? intval(get_option('default_video_height')) : $_video_height;
+        }
+        if ($video_length == 0) {
+            $video_length = ($_video_length === null) ? 0 : $_video_length;
+        }
+    }
+
+    return [$video_width, $video_height, $video_length];
+}
+
+/**
  * Read an integer from the given binary chunk. The integer is in intel endian form.
  *
  * @param  string $buffer The binary chunk
@@ -720,7 +808,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
 
     // Audio ones should have automatic thumbnails
     require_code('images');
-    if (is_audio($src_url, true)) {
+    if (is_audio($src_url, true, true)) {
         $ret = find_theme_image('audio_thumb', true);
         if ($ret != '') {
             if ($expected_output_path !== null) {
@@ -850,6 +938,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
  * @param  integer $video_length The length of the video
  * @param  integer $video_width The width of the video
  * @param  integer $video_height The height of the video
+ * @param  URLPATH $closed_captions_url The URL to the closed captions file for the video
  * @param  ?MEMBER $submitter The submitter (null: current member)
  * @param  ?TIME $add_date The time of adding (null: now)
  * @param  ?TIME $edit_date The time of editing (null: never)
@@ -860,7 +949,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the new entry
  */
-function add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
+function add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $closed_captions_url = '', $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
 {
     if (get_param_string('type', null) !== '__import') {
         require_code('global4');
@@ -893,6 +982,7 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
         'video_length' => $video_length,
         'video_width' => $video_width,
         'video_height' => $video_height,
+        'closed_captions_url' => $closed_captions_url,
     ];
     $map += insert_lang('title', $title, 2);
     $map += insert_lang_comcode('the_description', $description, 3);
@@ -904,6 +994,8 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
     foreach ($regions as $region) {
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'video', 'content_id' => strval($id), 'region' => $region]);
     }
+
+    $consider_deferring = (!url_is_local($url)) || (filesize(get_custom_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
 
     reorganise_uploads__gallery_videos(['id' => $id]);
 
@@ -944,7 +1036,6 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
     if ((is_file(get_file_base() . '/sources_custom/gallery_syndication.php')) && (!in_safe_mode())) {
         require_code('gallery_syndication');
         if (function_exists('sync_video_syndication')) {
-            $consider_deferring = (!url_is_local($url)) || (filesize(get_custom_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
             sync_video_syndication($id, true, false, $consider_deferring);
         }
     }
@@ -977,6 +1068,7 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
  * @param  integer $video_height The height of the video
  * @param  SHORT_TEXT $meta_keywords Meta keywords
  * @param  LONG_TEXT $meta_description Meta description
+ * @param  ?URLPATH $closed_captions_url The URL to the closed captions for this video (null: do not change)
  * @param  ?TIME $edit_time Edit time (null: either means current time, or if $null_is_literal, means reset to to null)
  * @param  ?TIME $add_time Add time (null: do not change)
  * @param  ?integer $views Number of views (null: do not change)
@@ -984,13 +1076,13 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
+function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $meta_keywords, $meta_description, $closed_captions_url = null, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('images', ['title', 'the_description', 'cat', 'url'], ['id' => $id]);
+    $rows = $GLOBALS['SITE_DB']->query_select('videos', ['title', 'the_description', 'cat', 'url'], ['id' => $id]);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'video'));
     }
@@ -1034,6 +1126,9 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
     $update_map += lang_remap_comcode('the_description', $_description, $description);
 
     $update_map['edit_date'] = $edit_time;
+    if ($closed_captions_url !== null) {
+        $update_map['closed_captions_url'] = $closed_captions_url;
+    }
     if ($add_time !== null) {
         $update_map['add_date'] = $add_time;
     }
@@ -1068,6 +1163,8 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
         dispatch_notification('gallery_entry', $cat, $subject, $mail, $privacy_limits);
     }
 
+    $consider_deferring = (!url_is_local($url)) || (filesize(get_custom_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
+
     reorganise_uploads__gallery_videos(['id' => $id]);
 
     log_it('EDIT_VIDEO', strval($id), $title);
@@ -1096,7 +1193,6 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
     if ((is_file(get_file_base() . '/sources_custom/gallery_syndication.php')) && (!in_safe_mode()) && ($url != STRING_MAGIC_NULL)) {
         require_code('gallery_syndication');
         if (function_exists('sync_video_syndication')) {
-            $consider_deferring = (!url_is_local($url)) || (filesize(get_custom_file_base() . '/' . rawurldecode($url)) > 1024 * 1024 * 20);
             sync_video_syndication($id, false, $orig_url != $url, $orig_url != $url && $consider_deferring);
         }
     }
@@ -1131,6 +1227,7 @@ function delete_video($id, $delete_full = true)
     if ($delete_full) {
         require_code('files2');
         delete_upload('uploads/galleries', 'videos', 'url', 'id', $id);
+        delete_upload('uploads/galleries', 'videos', 'closed_captions_url', 'id', $id);
         delete_upload('uploads/galleries_thumbs', 'videos', 'thumb_url', 'id', $id);
     }
 
@@ -1731,5 +1828,120 @@ function reorganise_uploads__gallery_videos($where = [], $tolerate_errors = fals
 {
     require_code('uploads2');
     reorganise_uploads('video', 'uploads/galleries', 'url', $where, false, $tolerate_errors);
+    reorganise_uploads('video', 'uploads/galleries', 'closed_captions_url', $where, false, $tolerate_errors);
     reorganise_uploads('video', 'uploads/galleries_thumbs', 'thumb_url', $where, false, $tolerate_errors);
+}
+
+/**
+ * Take a file in the gallery uploads directory, and add it to a gallery.
+ *
+ * @param  URLPATH $url The URL to the file
+ * @param  URLPATH $thumb_url The thumb URL to the file
+ * @param  ID_TEXT $cat The gallery to add to
+ * @param  MEMBER $member_id The ID of the member adding gallery media
+ * @param  integer $allow_rating Post param indicating whether or not ratings should be allowed
+ * @param  integer $allow_comments_reviews Post param combination indicating whether to allow comments or reviews
+ * @param  integer $allow_trackbacks Post param indicating whether or not to allow trackbacks
+ * @param  boolean $watermark Whether or not to apply the gallery's watermarks to the file if it is an image
+ * @param  string $notes Staff notes provided for this entry
+ * @param  ID_TEXT $privacy_level Level of privacy set for this content
+ * @param  array $additional_access Array of additional members who should have access to this content
+ * @param  ?string $file The filename (null: derive from $url)
+ * @param  ?TIME $time Timestamp to use (null: now)
+ * @return ?array A pair: The media type, The media ID (null: error)
+ */
+function add_gallery_media_wrap($url, $thumb_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $file = null, $time = null)
+{
+    require_code('exif');
+
+    if ($file === null) {
+        $file = get_custom_file_base() . '/' . rawurldecode($url);
+    }
+
+    if ($time === null) {
+        $time = time();
+    }
+
+    if (!is_image($url, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous'))) {
+        $thumb_url = create_video_thumb($url);
+        $ret = url_is_local($url) ? get_video_details(get_custom_file_base() . '/' . rawurldecode($url), $file, true) : false;
+        if ($ret !== false) {
+            list($width, $height, $length) = $ret;
+            if ($width === null) {
+                $width = intval(get_option('default_video_width'));
+            }
+            if ($height === null) {
+                $height = intval(get_option('default_video_height'));
+            }
+            if ($length === null) {
+                $length = 0;
+            }
+
+            require_code('images');
+            $closed_captions_url = get_matching_closed_captions_file($url);
+            if ($closed_captions_url === null) {
+                $closed_captions_url = '';
+            }
+
+            $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
+            $id = add_video($exif['UserComment'], $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, $length, $width, $height, $closed_captions_url, null, $time);
+            store_exif('video', strval($id), $exif);
+            if (addon_installed('content_privacy')) {
+                require_code('content_privacy2');
+                save_privacy_form_fields('video', strval($id), $privacy_level, $additional_access);
+            }
+
+            require_code('users2');
+            if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
+                $privacy_ok = true;
+                if (addon_installed('content_privacy')) {
+                    require_code('content_privacy');
+                    $privacy_ok = has_privacy_access('video', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
+                }
+                if ($privacy_ok) {
+                    require_code('activities');
+                    syndicate_described_activity('galleries:ACTIVITY_ADD_VIDEO', ($exif['UserComment'] == '') ? basename($url) : $exif['UserComment'], '', '', '_SEARCH:galleries:video:' . strval($id), '', '', 'galleries');
+                }
+            }
+
+            return ['video', $id];
+        }
+    } else {
+        $thumb_path = get_custom_file_base() . '/' . rawurldecode($thumb_url);
+        $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), true);
+
+        $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
+
+        // Images cleanup pipeline
+        $maximum_dimension = intval(get_option('maximum_image_size'));
+        $watermark = (post_param_integer('watermark', 0) == 1);
+        $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
+        if (url_is_local($url)) {
+            handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), null, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
+        }
+
+        $id = add_image($exif['UserComment'], $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time);
+        store_exif('image', strval($id), $exif);
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy2');
+            save_privacy_form_fields('image', strval($id), $privacy_level, $additional_access);
+        }
+
+        require_code('users2');
+        if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
+            $privacy_ok = true;
+            if (addon_installed('content_privacy')) {
+                require_code('content_privacy');
+                $privacy_ok = has_privacy_access('image', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
+            }
+            if ($privacy_ok) {
+                require_code('activities');
+                syndicate_described_activity('galleries:ACTIVITY_ADD_IMAGE', ($exif['UserComment'] == '') ? basename($url) : $exif['UserComment'], '', '', '_SEARCH:galleries:image:' . strval($id), '', '', 'galleries');
+            }
+        }
+
+        return ['image', $id];
+    }
+
+    return null;
 }

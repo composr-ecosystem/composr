@@ -375,6 +375,7 @@ class Hook_addon_registry_galleries
             'VIDEO_WIDTH' => placeholder_number(),
             'VIDEO_HEIGHT' => placeholder_number(),
             'VIDEO_LENGTH' => placeholder_number(),
+            'CLOSED_CAPTIONS_URL' => placeholder_url(),
             'GIVE_CONTEXT' => true,
         ]);
         return [

@@ -963,6 +963,7 @@ function handle_upload_post_processing($enforce_type, $path, $upload_folder, $fi
     }
 
     // Check space
+    require_code('files2');
     check_shared_space_usage(filesize($path));
 
     return null;

@@ -365,8 +365,9 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
             if ($video_height === null) {
                 $video_height = 576;
             }
+            $closed_captions_url = $this->_default_property_urlpath($properties, 'closed_captions_url');
 
-            $id = add_video($label, $category, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $submitter, $add_date, $edit_date, $views, null, $meta_keywords, $meta_description, $regions);
+            $id = add_video($label, $category, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $closed_captions_url, $submitter, $add_date, $edit_date, $views, null, $meta_keywords, $meta_description, $regions);
 
             $this->_resource_save_extend('video', strval($id), $filename, $label, $properties);
         }
@@ -418,6 +419,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
                 'video_length' => $row['video_length'],
                 'video_width' => $row['video_width'],
                 'video_height' => $row['video_height'],
+                'closed_captions_url' => remap_urlpath_as_portable($row['closed_captions_url']),
             ];
         } else {
             $properties += [
@@ -500,7 +502,9 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
                 $video_height = 576;
             }
 
-            edit_video(intval($resource_id), $label, $category, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $meta_keywords, $meta_description, $edit_time, $add_time, $views, $submitter, $regions, true);
+            $closed_captions_url = $this->_default_property_urlpath($properties, 'closed_captions_url', true);
+
+            edit_video(intval($resource_id), $label, $category, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $meta_keywords, $meta_description, $closed_captions_url, $edit_time, $add_time, $views, $submitter, $regions, true);
 
             $this->_resource_save_extend('video', $resource_id, $filename, $label, $properties);
         }

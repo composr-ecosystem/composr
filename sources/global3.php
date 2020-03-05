@@ -954,7 +954,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
         }
 
         if ((!isset($METADATA['video'])) && (isset($cma_info['video_generator']))) {
-            list($METADATA['video'], $METADATA['video:width'], $METADATA['video:height'], $METADATA['video:type']) = call_user_func($cma_info['video_generator']);
+            list($METADATA['video'], $METADATA['video:width'], $METADATA['video:height'], $METADATA['video:type']) = call_user_func($cma_info['video_generator'], $row);
         }
 
         // Add all $cma_info

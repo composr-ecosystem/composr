@@ -58,7 +58,7 @@ function render_chat_box($row, $zone = '_SEARCH', $give_context = true, $guid = 
     $_title = $row['room_name'];
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('CHATROOM'), $_title) : $_title;
 
-    $num_in_room = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'chat_active WHERE room_id=' . strval($row['id']) . ' date_and_time<' . strval(time() - CHAT_ACTIVITY_PRUNE));
+    $num_in_room = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'chat_active WHERE room_id=' . strval($row['id']) . ' AND date_and_time<' . strval(time() - CHAT_ACTIVITY_PRUNE));
     $entry_details = escape_html(integer_format($num_in_room));
 
     return do_template('SIMPLE_PREVIEW_BOX', [

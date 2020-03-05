@@ -53,14 +53,14 @@ class Hook_preview_video
         } else {
             $object = object_factory('Module_' . filter_naughty_harsh('cms_galleries'));
         }
-        $object->alt_crud_module = class_exists('Mx_cms_galleries_alt') ? new Mx_cms_galleries_alt() : new Module_cms_galleries_alt();
-        list($width, $height, $length) = $object->alt_crud_module->get_special_video_info();
+        list($width, $height, $length) = get_special_video_info();
 
         $filename = '';
         $thumb_url = '';
-        $url = post_param_multi_source_upload('video', 'uploads/auto_thumbs', false, false, $filename, $thumb_url);
+        $url = post_param_multi_source_upload('video', 'uploads/galleries', false, false, $filename, $thumb_url);
+        $closed_captions_url = post_param_multi_source_upload('closed_captions_url', 'uploads/galleries', false, false);
 
-        $preview = show_gallery_video_media($url, $thumb_url, $width, $height, $length, get_member());
+        $preview = show_gallery_video_media($url, $thumb_url, $width, $height, $length, get_member(), $closed_captions_url);
 
         return [$preview, null];
     }
