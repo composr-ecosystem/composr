@@ -124,156 +124,169 @@ function scan_permissions($live_output = false, $live_commands = false, $web_use
 }
 
 /**
- * Get the list of files that need CHmodding for write access.
+ * Get the list of folders/files that need CHmodding for write access.
  *
+ * @param  boolean $runtime Include folders/files that are created dynamically
+ * @param  boolean $non_bundled Whether to look at requirements of non-bundled addons
  * @return array The list of files
  */
-function get_chmod_array()
+function get_chmod_array($runtime = true, $non_bundled = true)
 {
-    $extra_files = [];
+    $chmod = [];
 
     if (function_exists('find_all_hooks')) {
         $hooks = find_all_hooks('systems', 'addon_registry');
         $hook_keys = array_keys($hooks);
-        foreach ($hook_keys as $hook) {
+        foreach ($hooks as $hook => $place) {
+            if (($place == 'sources_custom') && (!$non_bundled)) {
+                continue;
+            }
+
             /*require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($hook));
             $object = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
-            $extra_files = array_merge($extra_files, $object->get_chmod_array());*/
+            $chmod = array_merge($chmod, $object->get_chmod_array());*/
 
             // Save memory compared to above commented code...
 
-            $path = get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
-            if (!file_exists($path)) {
-                $path = get_file_base() . '/sources/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
-            }
+            $path = get_file_base() . '/' . $place . '/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
             $matches = [];
             if (preg_match('#function get_chmod_array\(\)\s*\{([^\}]*)\}#', cms_file_get_contents_safe($path, FILE_READ_LOCK), $matches) != 0) {
-                $extra_files = array_merge($extra_files, cms_eval($matches[1], $path));
+                $chmod = array_merge($chmod, cms_eval($matches[1], $path));
             }
         }
     }
 
-    return array_merge(
-        $extra_files,
+    if ($runtime) {
+        $chmod = array_merge(
+            $chmod,
+            [
+                'adminzone/pages/comcode_custom/**/*.txt',
+                'adminzone/pages/html_custom/**/*.htm',
+                'caches/http/*.bin',
+                'caches/lang/**/*.lcd',
+                'caches/lang/*.lcd',
+                'caches/persistent/*.gcd',
+                'caches/self_learning/*.gcd',
+                'caches/static/*',
+                'cms/pages/comcode_custom/**/*.txt',
+                'cms/pages/html_custom/**/*.htm',
+                'data_custom/modules/admin_backup/*',
+                'data_custom/modules/chat/*.bin',
+                'data_custom/modules/web_notifications/*.bin',
+                'data_custom/sitemaps/* ',
+                'data_custom/spelling/personal_dicts/*',
+                'data_custom/xml_config/*.xml',
+                'exports/**/*.tar',
+                'forum/pages/comcode_custom/**/*.txt',
+                'forum/pages/html_custom/**/*.htm',
+                'imports/**/*.tar',
+                'lang_custom/**/*.ini',
+                'pages/comcode_custom/**/*.txt',
+                'pages/html_custom/**/*.htm',
+                'site/pages/comcode_custom/**/*.txt',
+                'site/pages/html_custom/**/*.htm',
+                'temp/*',
+                'text_custom/**/*.txt',
+                'text_custom/*.txt',
+                'themes/**/css_custom/*.css',
+                'themes/**/images_custom/*',
+                'themes/**/javascript_custom/*.js',
+                'themes/**/templates_cached/**/*',
+                'themes/**/templates_custom/*.tpl',
+                'themes/**/text_custom/*.txt',
+                'themes/**/xml_custom/*.xml',
+                'themes/**/theme.ini',
+                'uploads/attachments/*',
+                'uploads/attachments_thumbs/*',
+                'uploads/auto_thumbs/*',
+                'uploads/banners/*',
+                'uploads/captcha/*',
+                'uploads/catalogues/*',
+                'uploads/cns_avatars/*',
+                'uploads/cns_cpf_upload/*',
+                'uploads/cns_photos/*',
+                'uploads/cns_photos_thumbs/*',
+                'uploads/downloads/*',
+                'uploads/filedump/*',
+                'uploads/galleries/*',
+                'uploads/galleries_thumbs/*',
+                'uploads/personal_sound_effects/*',
+                'uploads/repimages/*',
+                'uploads/watermarks/*',
+                'uploads/website_specific/*',
+            ]
+        );
+    }
+
+    $chmod = array_merge(
+        $chmod,
         [
             '_config.php',
             'adminzone/pages/comcode_custom/**',
-            'adminzone/pages/comcode_custom/**/*.txt',
             'adminzone/pages/html_custom/**',
-            'adminzone/pages/html_custom/**/*.htm',
             'caches/http',
-            'caches/http/*.bin',
             'caches/lang',
             'caches/lang/**',
-            'caches/lang/**/*.lcd',
-            'caches/lang/*.lcd',
             'caches/persistent',
-            'caches/persistent/*.gcd',
             'caches/self_learning',
-            'caches/self_learning/*.gcd',
             'caches/static',
-            'caches/static/*',
             'cms/pages/comcode_custom/**',
-            'cms/pages/comcode_custom/**/*.txt',
             'cms/pages/html_custom/**',
-            'cms/pages/html_custom/**/*.htm',
             'data_custom',
             'data_custom/errorlog.php',
             'data_custom/firewall_rules.txt',
             'data_custom/modules/admin_backup',
-            'data_custom/modules/admin_backup/*',
             'data_custom/modules/admin_stats',
             'data_custom/modules/chat',
-            'data_custom/modules/chat/*.bin',
             'data_custom/modules/web_notifications',
-            'data_custom/modules/web_notifications/*.bin',
             'data_custom/sitemaps',
-            'data_custom/sitemaps/* ',
             'data_custom/spelling/personal_dicts',
-            'data_custom/spelling/personal_dicts/*',
             'data_custom/xml_config',
-            'data_custom/xml_config/*.xml',
             'exports/**',
-            'exports/**/*.tar',
             'forum/pages/comcode_custom/**',
-            'forum/pages/comcode_custom/**/*.txt',
             'forum/pages/html_custom/**',
-            'forum/pages/html_custom/**/*.htm',
             'imports/**',
-            'imports/**/*.tar',
             'lang_custom',
             'lang_custom/**',
-            'lang_custom/**/*.ini',
             'pages/comcode_custom/**',
-            'pages/comcode_custom/**/*.txt',
             'pages/html_custom/**',
-            'pages/html_custom/**/*.htm',
             'site/pages/comcode_custom/**',
-            'site/pages/comcode_custom/**/*.txt',
             'site/pages/html_custom/**',
-            'site/pages/html_custom/**/*.htm',
             'temp',
-            'temp/*',
             'text_custom',
             'text_custom/**',
-            'text_custom/**/*.txt',
-            'text_custom/*.txt',
             'themes',
             'themes/**/css_custom',
-            'themes/**/css_custom/*.css',
             'themes/**/images_custom',
-            'themes/**/images_custom/*',
             'themes/**/javascript_custom',
-            'themes/**/javascript_custom/*.js',
             'themes/map.ini',
             'themes/**/templates_cached/**',
-            'themes/**/templates_cached/**/*',
             'themes/**/templates_custom',
-            'themes/**/templates_custom/*.tpl',
             'themes/**/text_custom',
-            'themes/**/text_custom/*.txt',
-            'themes/**/theme.ini',
             'themes/**/xml_custom',
-            'themes/**/xml_custom/*.xml',
             'uploads/attachments',
-            'uploads/attachments/*',
             'uploads/attachments_thumbs',
-            'uploads/attachments_thumbs/*',
             'uploads/auto_thumbs',
-            'uploads/auto_thumbs/*',
             'uploads/banners',
-            'uploads/banners/*',
             'uploads/captcha',
-            'uploads/captcha/*',
             'uploads/catalogues',
-            'uploads/catalogues/*',
             'uploads/cns_avatars',
-            'uploads/cns_avatars/*',
             'uploads/cns_cpf_upload',
-            'uploads/cns_cpf_upload/*',
             'uploads/cns_photos',
-            'uploads/cns_photos/*',
             'uploads/cns_photos_thumbs',
-            'uploads/cns_photos_thumbs/*',
             'uploads/downloads',
-            'uploads/downloads/*',
             'uploads/filedump',
-            'uploads/filedump/*',
             'uploads/galleries',
-            'uploads/galleries/*',
             'uploads/galleries_thumbs',
-            'uploads/galleries_thumbs/*',
             'uploads/incoming',
             'uploads/personal_sound_effects',
-            'uploads/personal_sound_effects/*',
             'uploads/repimages',
-            'uploads/repimages/*',
             'uploads/watermarks',
-            'uploads/watermarks/*',
             'uploads/website_specific',
-            'uploads/website_specific/*',
         ]
     );
+
+    return $chmod;
 }
 
 /**
