@@ -156,6 +156,8 @@ class Hook_addon_registry_galleries
             'sources/hooks/systems/sitemap/gallery.php',
             'sources/hooks/systems/sitemap/image.php',
             'sources/hooks/systems/sitemap/video.php',
+            'sources/hooks/systems/tasks/import_orphaned_gallery_media.php',
+            'sources/hooks/systems/tasks/import_gallery_media.php',
             'themes/default/templates/GALLERY_POPULAR.tpl',
             'themes/default/templates/GALLERY_ENTRY_WRAP.tpl',
             'themes/default/templates/BLOCK_MAIN_GALLERY_EMBED.tpl',

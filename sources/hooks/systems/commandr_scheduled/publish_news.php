@@ -30,8 +30,12 @@ class Hook_commandr_scheduled_publish_news
      */
     public function info()
     {
+        if (!addon_installed('news')) {
+            return null;
+        }
+
         return [
-          'required_parameters' => 0
+            'required_parameters' => 0,
         ];
     }
 

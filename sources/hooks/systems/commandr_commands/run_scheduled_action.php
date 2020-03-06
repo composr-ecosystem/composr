@@ -68,6 +68,9 @@ class Hook_commandr_command_run_scheduled_action
 
             // Get the required number of parameters for this hook
             $hook_info = $hook_obs[$parameters[0]]->info();
+            if ($hook_info === null) {
+                return ['', '', '', do_lang('NOT_A_HOOK', '1')];
+            }
             $required_parameters = $hook_info['required_parameters'];
 
             // Parameter 3 is json_encoded as an array to account for variable types and lengths. Decode it.

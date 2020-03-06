@@ -60,13 +60,13 @@ class calendar_events_test_set extends cms_test_case
         $_period_start = 2 * $period_start - tz_time($period_start, 'America/New_York');
         $_period_end = 2 * $period_end - tz_time($period_end, 'America/New_York');
         $periods = find_periods_recurrence('Europe/Amsterdam', 0, 2015/*year*/, 4/*month*/, 6/*day*/, 'day_of_month', null, null, null, null, null, 'day_of_month', null, null, 'none', null, $_period_start, $_period_end);
-        $this->assertTrue(count($periods) == 1); // We expect to see it because it has not finished before our behind-USA-day ends
+        $this->assertTrue(count($periods) == 0, 'Got ' . strval(count($periods)) . ' periods');
 
         // Check in Amsterdam
         $_period_start = 2 * $period_start - tz_time($period_start, 'Europe/Amsterdam');
         $_period_end = 2 * $period_end - tz_time($period_end, 'Europe/Amsterdam');
         $periods = find_periods_recurrence('Europe/Amsterdam', 0, 2015/*year*/, 4/*month*/, 6/*day*/, 'day_of_month', null, null, null, null, null, 'day_of_month', null, null, 'none', null, $_period_start, $_period_end);
-        $this->assertTrue(count($periods) == 1); // We expect to see it
+        $this->assertTrue(count($periods) == 1, 'Got ' . strval(count($periods)) . ' periods'); // We expect to see it
     }
 
     public function testApiShiftRecurrence()

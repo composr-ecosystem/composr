@@ -66,7 +66,10 @@ class Hook_profiles_tabs_warnings
         require_code('cns_groups');
 
         require_lang('fields');
-        require_lang('submitban');
+
+        if (addon_installed('securitylogging')) {
+            require_lang('submitban');
+        }
 
         $header_row = columned_table_header_row([
             do_lang_tempcode('DATE'),
@@ -105,8 +108,10 @@ class Hook_profiles_tabs_warnings
             }
 
             // Punitive actions
-            if ($row['p_banned_ip'] != '') {
-                $row_contents->attach('<br />' . do_lang('IP_BANNED')); // XHTMLXHTML
+            if (addon_installed('securitylogging')) {
+                if ($row['p_banned_ip'] != '') {
+                    $row_contents->attach('<br />' . do_lang('IP_BANNED')); // XHTMLXHTML
+                }
             }
             if ($row['p_banned_member'] > 0) {
                 $row_contents->attach('<br />' . do_lang('BANNED')); // XHTMLXHTML

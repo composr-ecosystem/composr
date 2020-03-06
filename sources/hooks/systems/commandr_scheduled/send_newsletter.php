@@ -26,12 +26,16 @@ class Hook_commandr_scheduled_send_newsletter
     /**
      * Get information about this hook.
      *
-     * @return array Map of hook details
+     * @return ?array Map of hook details (null: disabled)
      */
     public function info()
     {
+        if (!addon_installed('newsletter')) {
+            return null;
+        }
+
         return [
-          'required_parameters' => 4
+            'required_parameters' => 4,
         ];
     }
 

@@ -30,8 +30,12 @@ class Hook_commandr_scheduled_publish_topic
      */
     public function info()
     {
+        if (!addon_installed('cns_forum')) {
+            return null;
+        }
+
         return [
-          'required_parameters' => 0
+            'required_parameters' => 0,
         ];
     }
 

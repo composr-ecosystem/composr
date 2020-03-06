@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    wiki
+ * @package    cns_warnings
  */
 
 /**
@@ -30,7 +30,7 @@ class Hook_preview_warnings
      */
     public function applies()
     {
-        $applies = get_page_name() == 'warnings';
+        $applies = (addon_installed('cns_warnings')) && (addon_installed('cns_forum')) && (get_page_name() == 'warnings');
         return [$applies, 'warnings', true];
     }
 
