@@ -434,6 +434,10 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 }
             }
 
+            if (trim($description) == '') {
+                attach_message('There is an empty function description for \'' .  rtrim($line) . '\'', 'warn');
+            }
+
             $function = [
                 'filename' => $filename,
                 'parameters' => $parameters,
