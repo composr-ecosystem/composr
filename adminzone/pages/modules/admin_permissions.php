@@ -427,7 +427,7 @@ class Module_admin_permissions
         }
 
         require_code('themes2');
-        $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+        $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
         // Standard editing matrix
         // NB: For permissions tree editor, default access is shown as -1 in editor for clarity (because the parent permissions are easily findable which implies the default access would mean something else which would confuse [+ this would be hard to do due to the dynamicness of the interface])
@@ -456,7 +456,7 @@ class Module_admin_permissions
     {
         $css_path = get_custom_file_base() . '/themes/' . $GLOBALS['FORUM_DRIVER']->get_theme() . '/templates_cached/' . user_lang() . '/global.css';
         require_code('themes2');
-        $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+        $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
         require_code('character_sets');
 

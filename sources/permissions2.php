@@ -413,7 +413,7 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
     }
 
     require_code('themes2');
-    $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+    $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
     // For heading up the table matrix
     $overrides_array = [];

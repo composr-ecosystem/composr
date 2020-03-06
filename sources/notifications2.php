@@ -197,7 +197,7 @@ function notifications_ui($member_id_of)
     }
 
     require_code('themes2');
-    $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+    $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
     $auto_monitor_contrib_content = null;
     $smart_topic_notification = null;
@@ -356,7 +356,7 @@ function notifications_ui_advanced($notification_code, $enable_message = null, $
     }
 
     require_code('themes2');
-    $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+    $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
     return do_template('NOTIFICATIONS_MANAGE_ADVANCED_SCREEN', [
         '_GUID' => '21337e54cc87d82269bec89e70690543',

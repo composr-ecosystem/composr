@@ -324,7 +324,7 @@ class Module_admin_notifications
         }
 
         require_code('themes2');
-        $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+        $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
         $notification_types_titles = [];
         foreach ($_notification_types as $possible => $ntype) {
