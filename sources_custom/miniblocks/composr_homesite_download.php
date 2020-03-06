@@ -19,7 +19,7 @@ if (!function_exists('do_release')) {
      *
      * @param  ?SHORT_TEXT $version_pretty Version we want (null: don't care)
      * @param  string $type_wanted Installer/etc type
-     * @set manual quick "bleeding-edge" "bleeding-edge manual"
+     * @set "" "manual" "bleeding-edge" "bleeding-edge manual"
      * @param  string $prefix Prefix to put on the template params.
      * @param  ?string $version_must_be_newer_than The version this must be newer than (null: no check).
      * @return ?array Map of template variables (null: could not find).
@@ -85,7 +85,7 @@ $releases_tpl_map = array();
 if ($latest_version_pretty !== null) {
     $latest = $latest_version_pretty;
 
-    $release_quick = do_release($latest, 'quick', 'QUICK_');
+    $release_quick = do_release($latest, '', 'QUICK_');
     $release_manual = do_release($latest, 'manual', 'MANUAL_');
     $release_bleedingquick = do_release(null, 'bleeding-edge', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
     $release_bleedingmanual = do_release(null, 'bleeding-edge, manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
