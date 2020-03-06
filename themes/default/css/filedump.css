@@ -38,6 +38,7 @@
 	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;
 	margin: -0.5em 0 0 -0.5em;
+	width: 100%;
 }
 
 .filedump-filter #type_filter_filedump_1, .filedump-filter #type_filter_filedump_2 {
@@ -49,8 +50,8 @@
 }
 
 .filedump-thumbnails .box .box-inner {
-	width: {$CONFIG_OPTION,thumb_width}px;
-	height: {$CONFIG_OPTION,thumb_width}px;
+	width: 200px;
+	height: 200px;
 	text-align: center;
 	vertical-align: middle;
 	display: table-cell;
