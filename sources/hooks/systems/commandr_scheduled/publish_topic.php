@@ -46,7 +46,7 @@ class Hook_commandr_scheduled_publish_topic
      */
     public function run($options, $id, $parameters, &$commandr_fs)
     {
-        $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_cache_first_time'=>time(), 't_validated'=>1], ['id'=> $id], '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_cache_first_time' => time(), 't_validated' => 1], ['id' => $id], '', 1);
         return ['', '', do_lang('SUCCESS'), ''];
     }
 }

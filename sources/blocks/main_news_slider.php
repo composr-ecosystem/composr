@@ -292,7 +292,7 @@ PHP;
             $full_url = build_url($tmp, $zone);
 
             // Category
-            $news_cat_row = get_news_cat_row($row['news_category']);
+            $news_cat_row = get_news_cat_row($news_row['news_category']);
             $category = get_translated_text($news_cat_row['nc_title']);
             $tmp = ['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse', 'id' => $news_row['news_category']] + $prop_url;
             $category_url = build_url($tmp, $zone);

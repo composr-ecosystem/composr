@@ -64,7 +64,8 @@ class Hook_addon_registry_helper_scripts
         return [
             'tut_install_permissions',
             'tut_install_linux',
-            'tut_install_windows',
+            'tut_install_windows_server',
+            'tut_install_windows_desktop',
         ];
     }
 

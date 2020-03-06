@@ -118,11 +118,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WARNING_FORMAL
         WARNING_OFF_THE_BOOK
         WARNINGS_HISTORY_TEXT
-        BAN_IP
         INCLUDE_PUNITIVE_TEXT
         DESCRIPTION_INCLUDE_PUNITIVE_TEXT
         DESCRIPTION_CAN_WARN
-        VIEW_WARNINGS
         SUCCESS_PAGE_TRANSLATION_DELETED
         SUCCESS_PAGE_DELETED
         DELETE_TRANSLATION
@@ -2233,7 +2231,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CC_ADDRESS
         CDN
         CHANGE
-        CHANGED_USERGROUP
         CHANGE_BLOCK_BACKGROUND
         EDIT_TIME
         MODULE_TRANS_NAME_admin_robots_txt
@@ -6581,7 +6578,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PUBLICATION_TIME
         PUBLIC_VIEW
         PUBLISH_NEWS
-        PUNISHMENT_UNDOING
         PUNITIVE_ACTIONS
         PURCHASE_ORDER
         PUT_IN_CATEGORY
@@ -9323,7 +9319,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MEMBER_TITLE_TOO_BIG
         MEMBER_TO_INVITE
         MEMBER_VALIDATED
-        MEMBER_WARNING
         MENU
         MERGE_WIKI_POSTS
         MESSAGE
@@ -10059,7 +10054,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SKIP
         SKIP_NAVIGATION
         SKIP_SIGNATURE
-        SLASH_OR
         SLIDESHOW
         SMALLEST_FIRST
         SMART_TOPIC_NOTIFICATION

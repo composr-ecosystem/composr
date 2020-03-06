@@ -85,9 +85,9 @@ function generate_punitive_text()
 
     // Usergroup change
     if (has_privilege(get_member(), 'member_maintenance')) {
-        if ($changed_usergroup_from !== null && $changed_usergroup_from != '') {
-            $changed_usergroup_from = cns_get_group_name($changed_usergroup_from, true);
-            array_push($punitive_messages, do_lang('PUNITIVE_CHANGE_USERGROUP', strval($changed_usergroup_from), null, null, null, false));
+        if ($changed_usergroup_from !== null) {
+            $_changed_usergroup_from = cns_get_group_name($changed_usergroup_from, true);
+            array_push($punitive_messages, do_lang('PUNITIVE_CHANGE_USERGROUP', $_changed_usergroup_from, null, null, null, false));
         }
     }
 

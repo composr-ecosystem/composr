@@ -537,7 +537,8 @@ class Module_cms_galleries extends Standard_crud_module
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
 
-        log_it('GALLERY_IMPORT');
+        $title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('galleries', 'fullname', ['name' => $cat]));
+        log_it('GALLERY_IMPORT', $cat, $title);
 
         require_code('tasks');
         $ret_message = call_user_func_array__long_task(do_lang('GALLERY_IMPORT'), null, 'import_gallery_media', [$files, $member_id, $cat, $set_title, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access]);
@@ -634,7 +635,8 @@ class Module_cms_galleries extends Standard_crud_module
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
 
-        log_it('GALLERY_IMPORT');
+        $title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('galleries', 'fullname', ['name' => $cat]));
+        log_it('GALLERY_IMPORT', $cat, $title);
 
         require_code('tasks');
         $ret_message = call_user_func_array__long_task(do_lang('GALLERY_IMPORT'), null, 'import_orphaned_gallery_media', [$files, $member_id, $cat, $set_title, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access]);

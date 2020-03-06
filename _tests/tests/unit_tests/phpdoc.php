@@ -91,6 +91,10 @@ class phpdoc_test_set extends cms_test_case
             'Find an entry content-type universal label (doesn\'t depend on language pack).',
             'Find an entry title.',
             'Find an entry description.',
+            'Find if running as CLI (i.e. on the command prompt). This implies admin credentials (web users can\'t initiate a CLI call), and text output.',
+            'Find whether we can get away with natural file access, not messing with AFMs, world-writability, etc.',
+            'Set username the web user will run as.',
+            'Enumerate a directory for permission checks (actual processing is in process_node).',
         ];
         $exceptions_regexp = '#' . implode('|', array_map('preg_quote', $exceptions)) . '#';
 

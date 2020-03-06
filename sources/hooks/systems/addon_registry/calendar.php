@@ -206,6 +206,8 @@ class Hook_addon_registry_calendar
             'sources/hooks/systems/config/search_calendar.php',
             'themes/default/javascript/calendar.js',
             'sources/hooks/systems/actionlog/calendar.php',
+            'sources/hooks/systems/commandr_scheduled/.htaccess',
+            'sources/hooks/systems/commandr_scheduled/index.html',
         ];
     }
 

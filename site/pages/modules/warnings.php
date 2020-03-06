@@ -118,9 +118,9 @@ class Module_warnings extends Standard_crud_module
         }
 
         if ($type == 'view') {
-            $this->title = get_screen_title('WARNING_NUMBER', true, [get_param_integer('id')]);
+            $this->title = get_screen_title('WARNING_NUMBER', true, [strval(get_param_integer('id'))]);
             $member_id = get_param_integer('member_id', null);
-            breadcrumb_set_self(do_lang_tempcode('WARNING_NUMBER', get_param_integer('id')));
+            breadcrumb_set_self(do_lang_tempcode('WARNING_NUMBER', strval(get_param_integer('id'))));
             if ($member_id !== null) {
                 $breadcrumbs = [['_SEARCH:members', do_lang_tempcode('MEMBERS')], ['_SEARCH:members:view:' . strval($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id)], ['_SEARCH:warnings:history:' . strval($member_id), do_lang_tempcode('WARNINGS')]];
                 breadcrumb_set_parents($breadcrumbs);

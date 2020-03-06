@@ -331,7 +331,7 @@ PHP;
             $full_url = build_url($tmp, $zone);
 
             // Category
-            $news_cat_row = get_news_cat_row($row['news_category']);
+            $news_cat_row = get_news_cat_row($myrow['news_category']);
             $category = get_translated_text($news_cat_row['nc_title']);
             $category_url = build_url(['page' => 'news', 'type' => 'browse', 'id' => $news_cat_row['id']], get_module_zone('news'));
 

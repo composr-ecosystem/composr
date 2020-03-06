@@ -186,6 +186,8 @@ class Hook_profiles_tabs_warnings
             'TITLE' => '',
             'TEXT' => $warn_members_text,
             'TABLE' => $table,
+            'SUBMIT_ICON' => null,
+            'JS_FUNCTION_CALLS' => [],
         ]);
 
         $content = do_template('CNS_MEMBER_PROFILE_WARNINGS', ['_GUID' => 'fea98858f6bf89f1d9dc3ec995785a39', 'MEMBER_ID' => strval($member_id_of), 'WARNINGS' => $_content]);
