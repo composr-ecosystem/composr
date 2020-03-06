@@ -411,7 +411,8 @@ class Module_cms_downloads extends Standard_crud_module
             $fields->attach(form_input_line(do_lang_tempcode('ORIGINAL_FILENAME'), do_lang_tempcode('DESCRIPTION_ORIGINAL_FILENAME'), 'original_filename', $original_filename, false));
         }
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('FILE'), '', $hidden, 'file', null, true, $url, false, null, false));
+        require_code('images');
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('FILE'), '', $hidden, 'file', null, true, $url));
 
         if (has_privilege(get_member(), 'draw_to_server')) {
             $fields->attach(form_input_tick(do_lang_tempcode('COPY_TO_SERVER'), do_lang_tempcode('DESCRIPTION_COPY_TO_SERVER'), 'copy_to_server', false));
@@ -429,7 +430,7 @@ class Module_cms_downloads extends Standard_crud_module
             $fields->attach(form_input_author(do_lang_tempcode('AUTHOR'), do_lang_tempcode('DESCRIPTION_AUTHOR', 'download'), 'author', $author, true));
         }
         $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, false));
-        $image_upload_field = form_input_upload(do_lang_tempcode('IMAGE'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_IMAGE_SHORTCUT'), 'img_file', false, null, null, true, get_allowed_image_file_types());
+        $image_upload_field = form_input_upload(do_lang_tempcode('IMAGE'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_IMAGE_SHORTCUT'), 'img_file', false, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE));
         if (($id === null) && (addon_installed('galleries'))) {
             $fields->attach($image_upload_field);
         }
@@ -986,7 +987,8 @@ class Module_cms_downloads_cat extends Standard_crud_module
             $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
         }
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE', 'download_category'), $hidden, 'image', null, false, $rep_image));
+        require_code('images');
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE', 'download_category'), $hidden, 'image', null, false, $rep_image, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         $fields->attach(metadata_get_fields('download_category', ($id === null) ? null : strval($id)));
         require_code('content2');

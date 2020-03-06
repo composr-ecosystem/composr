@@ -790,11 +790,11 @@ class Module_cms_galleries extends Standard_crud_module
             $hidden->attach(form_input_hidden('cat', $cat));
         }
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $url));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $url, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         if (!function_exists('imagetypes')) {
             $thumb_width = get_option('thumb_width');
-            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'image__thumb', null, true, $thumb_url));
+            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'image__thumb', null, true, $thumb_url, false, null, IMAGE_CRITERIA_WEBSAFE));
         }
         $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION_ACCESSIBILITY'), 'description', $description, false));
         if ($validated == 0) {
@@ -1342,7 +1342,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $supported = get_allowed_video_file_types();
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('VIDEO'), '', $hidden, 'video', null, true, $url, false, null, false));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('VIDEO'), '', $hidden, 'video', null, true, $url));
 
         if ($validated == 0) {
             $validated = get_param_integer('validated', 0);
@@ -1367,7 +1367,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         }
 
         $thumbnail_required = false;//(!$no_thumb_needed) && (get_option('allow_audio_videos') == '0') && (find_theme_image('video_thumb', true) == ''); Vimeo won't require one for example
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('_DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'video__thumb', null, $thumbnail_required, $thumb_url));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('_DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'video__thumb', null, $thumbnail_required, $thumb_url, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         if (!$no_thumb_needed) {
             $fields->attach($description_field);
@@ -1384,7 +1384,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             require_code('locations');
             $fields->attach(form_input_regions($regions));
         }
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('CLOSED_CAPTIONS'), do_lang_tempcode('DESCRIPTION_CLOSED_CAPTIONS'), $hidden, 'closed_captions_url', null, false, $closed_captions_url, false, 'vtt', false));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('CLOSED_CAPTIONS'), do_lang_tempcode('DESCRIPTION_CLOSED_CAPTIONS'), $hidden, 'closed_captions_url', null, false, $closed_captions_url, false, 'vtt'));
 
 
         // Metadata
@@ -1850,7 +1850,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
         if ($request_rep_image || $request_member_synced) {
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '94d1f77eb9fdca010cb9d1eac5d19b9b', 'SECTION_HIDDEN' => ($rep_image == '') && ($is_member_synched == 0), 'TITLE' => do_lang_tempcode('ADVANCED')]));
             if ($request_rep_image) {
-                $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE_GALLERY'), $hidden, 'image', null, false, $rep_image));
+                $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE_GALLERY'), $hidden, 'image', null, false, $rep_image, false, null, IMAGE_CRITERIA_WEBSAFE));
             }
             if ($request_member_synced) {
                 $fields->attach(form_input_tick(do_lang_tempcode('IS_MEMBER_SYNCHED', 'gallery'), do_lang_tempcode('DESCRIPTION_IS_MEMBER_SYNCHED_GALLERY', 'gallery'), 'is_member_synched', $is_member_synched == 1));

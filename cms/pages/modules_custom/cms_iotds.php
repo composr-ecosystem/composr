@@ -187,11 +187,13 @@ class Module_cms_iotds extends Standard_crud_module
 
         $fields->attach(form_input_line_comcode(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $url));
+        require_code('images');
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $url, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         if (!function_exists('imagetypes')) {
             $thumb_width = get_option('thumb_width');
-            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'image__thumb', null, true, $thumb_url));
+            require_code('images');
+            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'image__thumb', null, true, $thumb_url, false, null, IMAGE_CRITERIA_WEBSAFE));
         }
 
         $fields->attach(form_input_text_comcode(do_lang_tempcode('CAPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'caption', $caption, false));

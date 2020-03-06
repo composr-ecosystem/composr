@@ -69,7 +69,7 @@ function get_upload_syndication_json($file_handling_types)
             if ($syndicatable_filetypes != '') {
                 $syndicatable_filetypes .= ',';
             }
-            $syndicatable_filetypes .= get_allowed_image_file_types();
+            $syndicatable_filetypes .= get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE);
         }
         if (($all_hook_file_handling_types & CMS_UPLOAD_VIDEO) != 0) {
             if ($syndicatable_filetypes != '') {

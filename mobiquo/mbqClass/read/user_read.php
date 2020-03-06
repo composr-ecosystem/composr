@@ -118,7 +118,7 @@ class CMSUserRead
                 return cns_get_member_best_group_property($user_id, 'max_attachments_per_post');
             case 'allowed_extensions':
                 require_code('images');
-                return get_allowed_image_file_types();
+                return get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE);
             case 'max_attachment_size':
             case 'max_png_size':
             case 'max_jpg_size':
