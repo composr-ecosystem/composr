@@ -1184,9 +1184,9 @@ function _get_preview_environment_comcode($tag)
 
                 $description = post_param_string('description', '');
 
-                $error_msg = add_filedump_file($subpath, $filename, $file['tmp_name'], $description);
-                if ($error_msg !== null) {
-                    warn_exit($error_msg);
+                $filedump_error_msg = add_filedump_file($subpath, $filename, $file['tmp_name'], $description, null, true, 'rename');
+                if ($filedump_error_msg['error'] !== null) {
+                    warn_exit($filedump_error_msg['error']);
                 }
 
                 $tag_contents = 'uploads/filedump' . $subpath . $filename;

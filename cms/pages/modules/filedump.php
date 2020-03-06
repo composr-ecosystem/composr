@@ -187,7 +187,7 @@ class Module_filedump
             $this->title = get_screen_title('FILEDUMP_EMBED');
         }
 
-        if ($type == 'add') {
+        if ($type == 'add' || $type == 'add_resolved_conflicts') {
             $this->title = get_screen_title('FILEDUMP_UPLOAD');
         }
 
@@ -257,6 +257,9 @@ class Module_filedump
         }
         if ($type == 'add') {
             return $this->do_upload();
+        }
+        if ($type == 'add_resolved_conflicts') {
+            return $this->do_uploaded_resolved_conflicts();
         }
         if ($type == 'broken') {
             return $this->broken();
@@ -1297,13 +1300,14 @@ class Module_filedump
     public function do_upload()
     {
         $subpath = filter_naughty(post_param_string('subpath'));
+        $description = post_param_string('description', '');
 
         require_code('uploads');
         is_plupload(true);
 
         $new_files = [];
-
-        foreach ($_FILES as $file) {
+        $conflict_files = [];
+        foreach ($_FILES as $attach_name => $file) {
             $error_msg = check_filedump_uploaded($file);
             if ($error_msg !== null) {
                 attach_message($error_msg, 'warn');
@@ -1314,18 +1318,146 @@ class Module_filedump
 
             $tmp_path = $file['tmp_name'];
 
-            $description = post_param_string('description', '');
-
-            $error_msg = add_filedump_file($subpath, $filename, $tmp_path, $description);
-            if ($error_msg !== null) {
-                attach_message($error_msg, 'warn');
+            $filedump_error_msg = add_filedump_file($subpath, $filename, $tmp_path, $description);
+            if ($filedump_error_msg['conflict']) {
+                $unsessioned_filename = null;
+                $target_path = get_temporary_upload_path($attach_name, true, $unsessioned_filename);
+                $last_modified = $filedump_error_msg['last_modified'];
+                $conflict_files[] = [$filename, $unsessioned_filename, $last_modified, $filedump_error_msg['can_overwrite']];
+                continue;
+            } elseif ($filedump_error_msg['error'] !== null) {
+                attach_message($filedump_error_msg['error'], 'warn');
                 continue;
             }
 
             $new_files[] = $filename;
         }
 
-        // Done
+        // Done...
+
+        if (count($conflict_files) > 0) {
+            require_code('templates');
+            require_code('form_templates');
+            require_code('templates_results_table');
+
+            $f = [do_lang_tempcode('FILENAME'), do_lang_tempcode('MODIFIED'), do_lang_tempcode('ACTIONS')];
+            $header_row = results_header_row($f, []);
+
+            $out = new Tempcode();
+            $hidden = new Tempcode();
+            $hidden->attach(form_input_hidden('subpath', $subpath));
+            $hidden->attach(form_input_hidden('description', $description));
+
+            foreach ($conflict_files as $index => $c_file) {
+                list($final_filename, $unsessioned_filename, $last_modified, $can_overwrite) = $c_file;
+
+                $c_name = 'a_file_' . $index;
+
+                $_actions = new Tempcode();
+                $_actions->attach(form_input_list_entry('leave_alone', true, do_lang_tempcode('ACTION_LEAVE_ALONE')));
+                $_actions->attach(form_input_list_entry('rename', false, do_lang_tempcode('ACTION_RENAME')));
+                $_actions->attach(form_input_list_entry('overwrite', false, do_lang_tempcode('ACTION_OVERWRITE'), false, !$can_overwrite, !$can_overwrite ? do_lang('ACTION_OVERWRITE_DISABLED_TITLE') : ''));
+                $list = do_template('COLUMNED_TABLE_ROW_CELL_SELECT', [
+                    '_GUID' => '3e62f96fe4484957ba66fe81bd304793',
+                    'NAME' => $c_name,
+                    'LABEL' => $final_filename,
+                    'LIST' => $_actions,
+                ]);
+
+                $actions = new Tempcode();
+                $actions->attach($list);
+
+                $hidden->attach(form_input_hidden('n_file_' . $index, $final_filename));
+                $hidden->attach(form_input_hidden('t_file_' . $index, $unsessioned_filename));
+
+                $modified = get_timezoned_date_time_tempcode($last_modified);
+
+                $g = [$final_filename, $modified, $actions];
+                $out->attach(results_entry($g, false));
+            }
+
+            $results_table = results_table(do_lang_tempcode('OVERWRITE_ERROR'), 0, 'start', count($conflict_files), 'max', count($conflict_files), $header_row, $out);
+
+            $submit_name = do_lang_tempcode('PROCEED');
+
+            $url_map = ['page' => '_SELF', 'type' => 'add_resolved_conflicts'];
+            $post_url = build_url($url_map, '_SELF');
+            $text = do_lang_tempcode('DESCRIPTION_OVERWRITE_ERROR');
+
+            $tpl = do_template('FORM_SCREEN', [
+                '_GUID' => '5490648c4dd94049bc5d4c12ddb9f9d5',
+                'SKIP_WEBSTANDARDS' => true,
+                'HIDDEN' => $hidden,
+                'TITLE' => $this->title,
+                'URL' => $post_url,
+                'FIELDS' => $results_table,
+                'SUBMIT_ICON' => 'buttons/proceed',
+                'SUBMIT_NAME' => $submit_name,
+                'TEXT' => $text,
+            ]);
+
+            require_code('templates_internalise_screen');
+            return internalise_own_screen($tpl);
+        }
+
+        $url_map = ['page' => '_SELF', 'subpath' => $subpath];
+        if (count($new_files) == 1) {
+            $url_map['filename'] = $new_files[0];
+        }
+
+        $redirect_url = build_url($url_map, '_SELF');
+        return redirect_screen($this->title, $redirect_url, do_lang_tempcode('SUCCESS'));
+    }
+
+    /**
+     * Process chosen conflict actions by the user.
+     *
+     * @return Tempcode The result
+     */
+    public function do_uploaded_resolved_conflicts()
+    {
+        $subpath = filter_naughty(post_param_string('subpath'));
+        $description = post_param_string('description', '');
+
+        // Map chosen actions to their files
+        $conflict_files_map = [];
+        foreach ($_POST as $key => $value) {
+            if (strpos($key, 'n_file_') === 0) {
+                $final_filename = filter_naughty(post_param_string($key));
+                $_index = str_replace('n_file_', '', $key);
+                $temp_filename = filter_naughty(post_param_string('t_file_' . $_index));
+                $specified_action = post_param_string('a_file_' . $_index);
+                $conflict_files_map[$temp_filename] = [$final_filename, $specified_action];
+            }
+        }
+
+        // Process conflicts
+        $new_files = [];
+        foreach ($conflict_files_map as $temp_filename => $data) {
+            list($final_filename, $specified_action) = $data;
+
+            $sessioned_filename = get_session_id() . '_' . $temp_filename;
+            $sessioned_path = get_custom_file_base() . '/temp/' . $sessioned_filename;
+            $nonsessioned_path = get_custom_file_base() . '/temp/' . $temp_filename;
+
+            // Get rid of the session ID security before proceeding
+            $test = @rename($sessioned_path, $nonsessioned_path);
+            if (!$test) {
+                return do_lang_tempcode('FILE_MOVE_ERROR', escape_html($final_filename), escape_html('temp'));
+            }
+            sync_file_move($sessioned_path, $nonsessioned_path);
+
+            $filedump_error_msg = add_filedump_file($subpath, $final_filename, $nonsessioned_path, $description, true, true, $specified_action);
+
+            // Do not prompt for conflicts again; fail them. Should not happen.
+            if ($filedump_error_msg['error'] !== null) {
+                attach_message($filedump_error_msg['error'], 'warn');
+                continue;
+            }
+
+            $new_files[] = $final_filename;
+        }
+
         $url_map = ['page' => '_SELF', 'subpath' => $subpath];
         if (count($new_files) == 1) {
             $url_map['filename'] = $new_files[0];

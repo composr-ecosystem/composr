@@ -114,6 +114,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        DESCRIPTION_OVERWRITE_ERROR
+        ACTION_OVERWRITE
+        ACTION_OVERWRITE_DISABLED_TITLE
+        ACTION_LEAVE_ALONE
+        ACTION_RENAME
         CMD_ALIEN_CHECK_HELP
         CMD_ANTISPAM_CHECK_HELP
         CMD_ANTISPAM_CHECK_HELP_PARAM_0
@@ -299,6 +304,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_WRITE_HELP
         CMD_WRITE_HELP_PARAM_0
         CMD_WRITE_HELP_PARAM_1
+>>>>>>> ffa55017d48862a3b20eec7b8c9d2c4cad8027d2
         DESCRIPTION_WARNING_TYPE
         WARNING_FORMAL
         WARNING_OFF_THE_BOOK
