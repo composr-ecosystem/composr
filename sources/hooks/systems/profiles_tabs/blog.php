@@ -68,7 +68,7 @@ class Hook_profiles_tabs_blog
 
             $rss_url = make_string_tempcode('?type=rss2&mode=news&select=' . strval($category_id));
 
-            $recent_blog_posts = do_block('main_news', ['select' => strval($category_id), 'blogs' => '1', 'member_based' => '1', 'zone' => '_SEARCH', 'days' => '0', 'fallback_full' => '10', 'fallback_archive' => '5', 'no_links' => '1', 'pagination' => '1']);
+            $recent_blog_posts = do_block('main_news', ['select' => strval($category_id) . '*', 'blogs' => '1', 'member_based' => '1', 'zone' => '_SEARCH', 'days' => '0', 'fallback_full' => '10', 'fallback_archive' => '5', 'no_links' => '1', 'pagination' => '1']);
         }
 
         // Add link
