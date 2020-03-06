@@ -733,7 +733,7 @@ hr.cns_sig_barrier {
 	/*{+END}*/
 	/*{+START,IF,{$NOT,{$MOBILE}}}*/
 		margin-bottom: 3em;
-		padding: 4em 2em 4em 4em;
+		padding: 3em 1.5em 3em 3em;
 		width: 50%;
 		{$BETA_CSS_PROPERTY,box-sizing: border-box;}
 	/*{+END}*/
@@ -743,7 +743,7 @@ hr.cns_sig_barrier {
 }
 .cns_whisper_choose_box.right {
 	/*{+START,IF,{$NOT,{$MOBILE}}}*/
-		padding: 4em 4em 4em 2em;
+		padding: 3em 3em 3em 1.5em;
 	/*{+END}*/
 }
 

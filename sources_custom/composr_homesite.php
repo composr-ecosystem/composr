@@ -103,6 +103,35 @@ function is_release_discontinued($version)
     return (preg_match('#^(' . implode('|', array_map('preg_quote', $discontinued)) . ')($|\.)#', $version) != 0);
 }
 
+function find_version_download_fast($version_pretty, $type_wanted = 'manual', $version_must_be_newer_than = null)
+{
+    if ($GLOBALS['DEV_MODE']) {
+        $t = 'Composr version 1337';
+
+        $myrow = array(
+            'd_id' => 123,
+            'num_downloads' => 321,
+            'name' => $t . '(' . $type_wanted . ')',
+            'file_size' => 12345,
+        );
+    } else {
+        $sql = 'SELECT d.num_downloads,d.name,d.file_size,d.id AS d_id FROM ' . get_table_prefix() . 'download_downloads d';
+        if (strpos(get_db_type(), 'mysql') !== false) {
+            $sql .= ' FORCE INDEX (downloadauthor)';
+        }
+        $sql .= ' WHERE ' . db_string_equal_to('author', 'ocProducts') . ' AND validated=1';
+        $sql .= ' AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('Composr Version ' . (($version_pretty === null) ? '%' : $version_pretty) . ' (' . $type_wanted . ')') . '\'';
+        $sql .= ' ORDER BY add_date DESC';
+        $rows = $GLOBALS['SITE_DB']->query($sql, 1, null, false, false, array('name' => 'SHORT_TRANS'));
+        if (!array_key_exists(0, $rows)) {
+            return null; // Shouldn't happen, but let's avoid transitional errors
+        }
+
+        $myrow = $rows[0];
+    }
+    return $myrow;
+}
+
 function find_version_download($version_pretty, $type_wanted = 'manual')
 {
     global $DOWNLOAD_ROWS;

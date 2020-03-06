@@ -181,6 +181,13 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
             cns_check_post($post, $topic_id, $poster);
             cms_profile_end_for('cns_make_post:cns_check_post');
         }
+
+        if ($intended_solely_for !== null) {
+            require_code('cns_members2');
+            if (!cns_may_whisper($intended_solely_for)) {
+                warn_exit(do_lang_tempcode('NO_PT_FROM_ALLOW'));
+            }
+        }
     }
 
     if (is_null($ip_address)) {
@@ -200,7 +207,7 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
         }
     }
 
-    if ((is_null($forum_id)) || (($topic_title == '') && (!$is_starter) && ($check_permissions || $update_caching || $send_notification))) {
+    if (($check_permissions || $update_caching || $send_notification)) {
         $info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_is_open', 't_pt_from', 't_pt_to', 't_forum_id', 't_cache_last_member_id', 't_cache_first_title'), array('id' => $topic_id), '', 1);
         if (!array_key_exists(0, $info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
@@ -210,19 +217,6 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
         if ($topic_title == '') {
             $topic_title = $title;
         }
-
-        if ($check_permissions) {
-            if (((($info[0]['t_pt_from'] != $poster) && ($info[0]['t_pt_to'] != $poster) && (!cns_has_special_pt_access($topic_id))) && (!has_privilege($poster, 'view_other_pt')) && (is_null($forum_id)))) {
-                access_denied('I_ERROR');
-            }
-        }
-    }
-    if (is_null($forum_id)) {
-        if (($check_permissions) && ($poster == $GLOBALS['CNS_DRIVER']->get_guest_id())) {
-            access_denied('I_ERROR');
-        }
-        $validated = 1; // Personal posts always validated
-    } else {
         if ($check_permissions) {
             $last_member_id = $is_starter ? null : $info[0]['t_cache_last_member_id'];
             $closed = $is_starter ? false : ($info[0]['t_is_open'] == 0);
@@ -230,6 +224,9 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
                 access_denied('I_ERROR');
             }
         }
+    }
+    if ($forum_id === null) {
+        $validated = 1; // Personal posts always validated
     }
 
     // Ensure parent post is from the same topic

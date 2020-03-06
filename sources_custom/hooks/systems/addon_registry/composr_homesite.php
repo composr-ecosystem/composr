@@ -158,6 +158,7 @@ This addon does not contain the compo.sr install code and the overall site and t
             'lang_custom/EN/composr_homesite.ini',
             'pages/minimodules_custom/licence.php',
             'site/pages/modules_custom/sites.php',
+            'data_custom/download_composr.php',
             'uploads/website_specific/compo.sr/scripts/build_personal_upgrader.php',
             'sources_custom/composr_homesite.php',
             'sources_custom/hooks/systems/cron/site_cleanup.php',

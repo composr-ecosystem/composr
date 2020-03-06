@@ -129,6 +129,12 @@ function gd_text_script()
             $fg_color = isset($map['seed']) ? $map['seed'] : '000000';
         }
     }
+    if (strlen($fg_color) == 3) {
+        $fg_color = $fg_color[0] . $fg_color[0] . $fg_color[1] . $fg_color[1] . $fg_color[2] . $fg_color[2];
+    }
+    if (preg_match('#^[\dA-F]{6}$#i', $fg_color) == 0) {
+        $fg_color = '000000';
+    }
     $color = imagecolorallocate($img, hexdec(substr($fg_color, 0, 2)), hexdec(substr($fg_color, 2, 2)), hexdec(substr($fg_color, 4, 2)));
     if (!has_ttf()) {
         $trans = imagecolorallocate($img, hexdec(substr($trans_color, 0, 2)), hexdec(substr($trans_color, 2, 2)), hexdec(substr($trans_color, 4, 2)));
