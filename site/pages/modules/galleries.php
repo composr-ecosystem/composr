@@ -1165,6 +1165,8 @@ HTML;
     }
 
     /**
+     * Start a gallery slideshow.
+     *
      * @return Tempcode The UI
      */
     public function start_slideshow()

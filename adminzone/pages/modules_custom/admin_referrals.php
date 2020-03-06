@@ -229,6 +229,6 @@ class Module_admin_referrals
 
         // Show it worked / Refresh
         $member_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id);
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+        return redirect_screen($this->title, $member_url, do_lang_tempcode('SUCCESS'));
     }
 }

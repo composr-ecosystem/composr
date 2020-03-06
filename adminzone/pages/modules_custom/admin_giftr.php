@@ -294,7 +294,8 @@ class Module_admin_giftr extends Standard_crud_module
 
         $fields->attach(form_input_line(do_lang_tempcode('CATEGORY'), do_lang_tempcode('DESCRIPTION_GIFT_CATEGORY'), 'category', $category, true));
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $image));
+        require_code('images');
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $image, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         $fields->attach(form_input_integer(do_lang_tempcode('PRICE'), '', 'price', $price, true));
 

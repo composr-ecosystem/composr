@@ -2232,6 +2232,7 @@ class Module_topics
     }
 
     /**
+     * The actualiser to add a reply (shared for adding topics, adding posts, and new topics with polls).
      * @return array
      */
     public function _add_reply_and_return_info()

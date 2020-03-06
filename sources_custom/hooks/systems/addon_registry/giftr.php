@@ -26,9 +26,15 @@ class Hook_addon_registry_giftr
      */
     public function get_chmod_array($runtime = false)
     {
-        return [
+        $ret = [
             'uploads/giftr_addon',
         ];
+        if ($runtime) {
+            $ret = array_merge($ret, [
+                'uploads/giftr_addon/*',
+            ]);
+        }
+        return $ret;
     }
 
     /**

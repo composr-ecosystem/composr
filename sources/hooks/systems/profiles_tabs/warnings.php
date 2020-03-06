@@ -66,7 +66,10 @@ class Hook_profiles_tabs_warnings
         require_code('cns_groups');
 
         require_lang('fields');
-        require_lang('submitban');
+
+        if (addon_installed('securitylogging')) {
+            require_lang('submitban');
+        }
 
         $header_row = columned_table_header_row([
             do_lang_tempcode('DATE'),
@@ -105,8 +108,10 @@ class Hook_profiles_tabs_warnings
             }
 
             // Punitive actions
-            if ($row['p_banned_ip'] != '') {
-                $row_contents->attach('<br />' . do_lang('IP_BANNED')); // XHTMLXHTML
+            if (addon_installed('securitylogging')) {
+                if ($row['p_banned_ip'] != '') {
+                    $row_contents->attach('<br />' . do_lang('IP_BANNED')); // XHTMLXHTML
+                }
             }
             if ($row['p_banned_member'] > 0) {
                 $row_contents->attach('<br />' . do_lang('BANNED')); // XHTMLXHTML
@@ -186,6 +191,8 @@ class Hook_profiles_tabs_warnings
             'TITLE' => '',
             'TEXT' => $warn_members_text,
             'TABLE' => $table,
+            'SUBMIT_ICON' => null,
+            'JS_FUNCTION_CALLS' => [],
         ]);
 
         $content = do_template('CNS_MEMBER_PROFILE_WARNINGS', ['_GUID' => 'fea98858f6bf89f1d9dc3ec995785a39', 'MEMBER_ID' => strval($member_id_of), 'WARNINGS' => $_content]);

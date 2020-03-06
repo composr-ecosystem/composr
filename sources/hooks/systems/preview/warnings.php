@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    wiki
+ * @package    cns_warnings
  */
 
 /**
@@ -30,7 +30,7 @@ class Hook_preview_warnings
      */
     public function applies()
     {
-        $applies = get_page_name() == 'warnings';
+        $applies = (addon_installed('cns_warnings')) && (addon_installed('cns_forum')) && (get_page_name() == 'warnings');
         return [$applies, 'warnings', true];
     }
 
@@ -60,10 +60,11 @@ class Hook_preview_warnings
         }
 
         // No preview if message is empty
-        if ($message == '')
+        if ($message == '') {
             return [new Tempcode(), null];
+        }
 
-        $message = comcode_to_tempcode($message);
+        $message_tempcode = comcode_to_tempcode($message);
 
         $post_owner = get_member();
         $_post_date = time();
@@ -167,14 +168,14 @@ class Hook_preview_warnings
             'POST_AVATAR' => $post_avatar,
             'POSTER_TITLE' => $poster_title,
             'RANK_IMAGES' => $rank_images,
-            'POST' => $message,
+            'POST' => $message_tempcode,
             'LAST_EDITED' => $last_edited,
             'SIGNATURE' => $signature,
             'BUTTONS' => '',
             'POSTER_ID' => strval($post_owner),
         ];
         $post = do_template('CNS_TOPIC_POST', $map);
-        $out = do_template('CNS_POST_BOX', ['_GUID' => '62bbfabfa5c16c2aa6724a0b79839626', 'GIVE_CONTEXT' => false, 'POST' => $post] + $map + ['ACTUAL_POST' => $message]);
+        $out = do_template('CNS_POST_BOX', ['_GUID' => '62bbfabfa5c16c2aa6724a0b79839626', 'GIVE_CONTEXT' => false, 'POST' => $post] + $map + ['ACTUAL_POST' => $message_tempcode]);
 
         return [$out, null];
     }

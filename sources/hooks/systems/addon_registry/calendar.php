@@ -147,6 +147,7 @@ class Hook_addon_registry_calendar
             'themes/default/templates/BLOCK_SIDE_CALENDAR.tpl',
             'themes/default/templates/BLOCK_SIDE_CALENDAR_LISTING.tpl',
             'themes/default/templates/CALENDAR_EVENT_BOX.tpl',
+            'sources/hooks/systems/commandr_commands/run_scheduled_action.php',
             'sources/hooks/systems/trackback/events.php',
             'cms/pages/modules/cms_calendar.php',
             'lang/EN/calendar.ini',
@@ -206,6 +207,8 @@ class Hook_addon_registry_calendar
             'sources/hooks/systems/config/search_calendar.php',
             'themes/default/javascript/calendar.js',
             'sources/hooks/systems/actionlog/calendar.php',
+            'sources/hooks/systems/commandr_scheduled/.htaccess',
+            'sources/hooks/systems/commandr_scheduled/index.html',
         ];
     }
 

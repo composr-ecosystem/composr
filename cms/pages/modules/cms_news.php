@@ -430,7 +430,8 @@ class Module_cms_news extends Standard_crud_module
         $hidden = new Tempcode();
 
         if (get_value('disable_news_repimages') !== '1') {
-            $fields2->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_NEWS_IMAGE_OVERRIDE'), $hidden, 'image', 'icons/news', false, $image));
+            require_code('images');
+            $fields2->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_NEWS_IMAGE_OVERRIDE'), $hidden, 'image', 'icons/news', true, $image, false, null, IMAGE_CRITERIA_WEBSAFE));
         }
 
         if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
@@ -978,7 +979,8 @@ class Module_cms_news_cat extends Standard_crud_module
         $fields->attach(form_input_line_comcode(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
 
         if (get_value('disable_news_repimages') !== '1') {
-            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', 'icons/news', false, $img));
+            require_code('images');
+            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', 'icons/news', false, $img, false, null, IMAGE_CRITERIA_WEBSAFE));
         }
 
         if (get_option('enable_staff_notes') == '1') {

@@ -1618,7 +1618,7 @@ function step_5_ftp()
         if (!is_suexec_like()) {
             // Chmod
             $chmodding_errors = false;
-            $chmod_array = get_chmod_array('*');
+            $chmod_array = get_chmod_array();
             foreach ($chmod_array as $chmod) {
                 if ((file_exists($chmod)) && (!@ftp_site($conn, 'CHMOD 0777 ' . $chmod))) {
                     $chmodding_errors = true;

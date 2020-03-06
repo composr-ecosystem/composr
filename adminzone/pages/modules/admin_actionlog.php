@@ -515,7 +515,7 @@ class Module_admin_actionlog
         $fields['INVESTIGATE_USER'] = hyperlink(build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => (array_key_exists('ip', $row)) ? $row['ip'] : $row['member_id']], '_SELF'), do_lang_tempcode('PROCEED'), false, false);
 
         if ($row['warning_id'] !== null) {
-            $fields['MODULE_TRANS_NAME_warnings'] = hyperlink(build_url(['page' => 'warnings', 'type' => 'view', 'id' => $row['warning_id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)]), do_lang_tempcode('WARNING_NUMBER', $row['warning_id']), false, false);
+            $fields['MODULE_TRANS_NAME_warnings'] = hyperlink(build_url(['page' => 'warnings', 'type' => 'view', 'id' => $row['warning_id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)]), do_lang_tempcode('WARNING_NUMBER', strval($row['warning_id'])), false, false);
         }
 
         // Is there a revision here?

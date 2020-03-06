@@ -26,9 +26,15 @@ class Hook_addon_registry_disastr
      */
     public function get_chmod_array($runtime = false)
     {
-        return [
+        $ret = [
             'uploads/disastr_addon',
         ];
+        if ($runtime) {
+            $ret = array_merge($ret, [
+                'uploads/disastr_addon/*',
+            ]);
+        }
+        return $ret;
     }
 
     /**

@@ -85,13 +85,13 @@ class Hook_profiles_tabs_edit_photo
         $set_title = do_lang_tempcode('PHOTO');
 
         if (get_value('disable_multi_homed_upload__cns_photo') === '1') {
-            $fields->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'photo_file', false, null, null, true, get_allowed_image_file_types()));
+            $fields->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'photo_file', false, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
 
             $hidden->attach(form_input_hidden('photo_url', $photo_url));
         } else {
             $field_set = alternate_fields_set__start($set_name);
 
-            $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'photo_file', false, null, null, true, get_allowed_image_file_types()));
+            $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'photo_file', false, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
 
             $field_set->attach(form_input_url(do_lang_tempcode('URL'), '', 'photo_url', $photo_url, false));
 
@@ -106,13 +106,13 @@ class Hook_profiles_tabs_edit_photo
             $set_title = do_lang_tempcode('THUMBNAIL');
 
             if (get_value('disable_multi_homed_upload__cns_photo') === '1') {
-                $fields->attach(form_input_upload(do_lang_tempcode('THUMBNAIL'), '', 'photo_thumb_file', false, null, null, true, get_allowed_image_file_types()));
+                $fields->attach(form_input_upload(do_lang_tempcode('THUMBNAIL'), '', 'photo_thumb_file', false, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
 
                 $hidden->attach(form_input_hidden('photo_thumb_url', $thumb_url));
             } else {
                 $field_set = alternate_fields_set__start($set_name);
 
-                $field_set->attach(form_input_upload(do_lang_tempcode('THUMBNAIL'), '', 'photo_thumb_file', false, null, null, true, get_allowed_image_file_types()));
+                $field_set->attach(form_input_upload(do_lang_tempcode('THUMBNAIL'), '', 'photo_thumb_file', false, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
 
                 $field_set->attach(form_input_url(do_lang_tempcode('URL'), '', 'photo_thumb_url', $thumb_url, false));
 

@@ -42,7 +42,7 @@ if (array_key_exists('base_path', $options)) {
     $COMPOSR_PATH = '.';
 }
 
-require_code('php');
+require_code('phpdoc');
 
 $enable_custom = false;
 if ((isset($_GET['allow_custom'])) && ($_GET['allow_custom'] == '1')) {

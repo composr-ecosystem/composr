@@ -145,6 +145,8 @@ class Module_admin_svg_sprites
     }
 
     /**
+     * The do-next manager for before content management.
+     *
      * @return Tempcode The browse UI
      */
     public function browse()
@@ -162,7 +164,9 @@ class Module_admin_svg_sprites
     }
 
     /**
-     * @return Tempcode The Choose theme to preview UI
+     * Choose a theme for previewing SVG sprite.
+     *
+     * @return Tempcode The UI
      */
     public function preview_svg_sprite()
     {
@@ -196,7 +200,9 @@ class Module_admin_svg_sprites
     }
 
     /**
-     * @return Tempcode The Preview SVG sprite UI
+     * Generate a UI to preview the SVG sprite.
+     *
+     * @return Tempcode The UI
      */
     public function _preview_svg_sprite()
     {
@@ -239,6 +245,8 @@ class Module_admin_svg_sprites
     }
 
     /**
+     * Choose a theme for re-generating the SVG sprite.
+     *
      * @return Tempcode The Choose Theme UI
      */
     public function generate_svg_sprite()
@@ -273,6 +281,8 @@ class Module_admin_svg_sprites
     }
 
     /**
+     * The actualiser to generate the SVG sprite.
+     *
      * @return Tempcode The Generating Sprite UI
      */
     public function _generate_svg_sprite()

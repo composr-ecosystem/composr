@@ -651,7 +651,7 @@ class Module_admin_zones
                 $field_set = (empty($ids)) ? new Tempcode() : alternate_fields_set__start($set_name);
 
                 require_code('images');
-                $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'logo_upload_' . $theme, $required, null, null, true, get_allowed_image_file_types()));
+                $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'logo_upload_' . $theme, $required, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
 
                 $current_logo = 'logo/' . $zone . '-logo';
                 if (!in_array($current_logo, $ids)) {

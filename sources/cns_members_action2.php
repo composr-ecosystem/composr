@@ -1405,6 +1405,8 @@ function cns_unban_member($member_id)
 
     log_it('UNBAN_MEMBER', strval($member_id), $username);
 
+    require_code('mail');
+
     require_lang('cns');
     $mail = do_lang('UNBAN_MEMBER_MAIL', $username, get_site_name(), [], get_lang($member_id));
     dispatch_mail(do_lang('UNBAN_MEMBER_MAIL_SUBJECT', null, null, null, get_lang($member_id)), $mail, [$email_address], $username, '', '', ['priority' => 2, 'require_recipient_valid_since' => $join_time]);

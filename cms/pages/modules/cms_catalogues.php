@@ -1312,7 +1312,8 @@ class Module_cms_catalogues_cat extends Standard_crud_module
             $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
         }
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE', 'catalogue_category'), $hidden, 'image', null, false, $rep_image));
+        require_code('images');
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE', 'catalogue_category'), $hidden, 'image', null, false, $rep_image, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         // Is the catalogue a tree?
         $is_tree = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_is_tree', ['c_name' => $catalogue_name]);

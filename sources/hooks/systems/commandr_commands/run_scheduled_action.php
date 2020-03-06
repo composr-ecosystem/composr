@@ -33,6 +33,12 @@ class Hook_commandr_command_run_scheduled_action
      */
     public function run($options, $parameters, &$commandr_fs)
     {
+        if (!addon_installed('calendar')) {
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
+        }
+
+        require_lang('calendar');
+
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('run_scheduled_action', ['h'], [true, true, true]), '', ''];
         } else {
@@ -62,6 +68,9 @@ class Hook_commandr_command_run_scheduled_action
 
             // Get the required number of parameters for this hook
             $hook_info = $hook_obs[$parameters[0]]->info();
+            if ($hook_info === null) {
+                return ['', '', '', do_lang('NOT_A_HOOK', '1')];
+            }
             $required_parameters = $hook_info['required_parameters'];
 
             // Parameter 3 is json_encoded as an array to account for variable types and lengths. Decode it.

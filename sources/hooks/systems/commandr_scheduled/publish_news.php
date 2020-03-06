@@ -26,12 +26,16 @@ class Hook_commandr_scheduled_publish_news
     /**
      * Get information about this hook.
      *
-     * @return array Map of hook details
+     * @return ?array Map of hook details (null: addon not available)
      */
     public function info()
     {
+        if (!addon_installed('news')) {
+            return null;
+        }
+
         return [
-          'required_parameters' => 0
+            'required_parameters' => 0,
         ];
     }
 

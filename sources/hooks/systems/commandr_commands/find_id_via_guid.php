@@ -34,7 +34,7 @@ class Hook_commandr_command_find_id_via_guid
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return ['', do_command_help('find_id_via_guid', ['h'], [true, true]), '', ''];
+            return ['', do_command_help('find_id_via_guid', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
                 return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_id_via_guid')];

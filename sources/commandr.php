@@ -1401,7 +1401,7 @@ function do_command_help($command, $options, $parameters)
     }
 
     foreach (array_keys($parameters) as $parameter_number) {
-        $_parameter = do_lang('CMD_' . strtoupper($command) . '_HELP_PARAM_' . strval($parameter_number), null, null, null, null, false);
+        $_parameter = do_lang('CMD_' . strtoupper($command) . '_HELP_PARAM_' . strval($parameter_number));
         if ($_parameter === null) {
             continue;
         }

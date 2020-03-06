@@ -388,7 +388,7 @@ function cms_verify_parameters_phpdoc($dev_only = false)
 
     static $api = [];
     if (!isset($api[$filename])) {
-        require_code('php');
+        require_code('phpdoc');
         $api[$filename] = get_php_file_api($filename, false);
     }
 

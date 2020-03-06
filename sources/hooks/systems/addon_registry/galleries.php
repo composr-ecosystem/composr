@@ -156,6 +156,8 @@ class Hook_addon_registry_galleries
             'sources/hooks/systems/sitemap/gallery.php',
             'sources/hooks/systems/sitemap/image.php',
             'sources/hooks/systems/sitemap/video.php',
+            'sources/hooks/systems/tasks/import_orphaned_gallery_media.php',
+            'sources/hooks/systems/tasks/import_gallery_media.php',
             'themes/default/templates/GALLERY_POPULAR.tpl',
             'themes/default/templates/GALLERY_ENTRY_WRAP.tpl',
             'themes/default/templates/BLOCK_MAIN_GALLERY_EMBED.tpl',
@@ -661,6 +663,7 @@ class Hook_addon_registry_galleries
                 'HEIGHT' => placeholder_number(),
                 'WIDTH' => placeholder_number(),
                 'LENGTH' => placeholder_number(),
+                'CLOSED_CAPTIONS_URL' => placeholder_url(),
             ]), null, '', true),
         ];
     }
@@ -955,6 +958,7 @@ class Hook_addon_registry_galleries
             'HEIGHT' => placeholder_number(),
             'WIDTH' => placeholder_number(),
             'LENGTH' => placeholder_number(),
+            'CLOSED_CAPTIONS_URL' => placeholder_url(),
         ]);
         $map = [
             'MEDIA_TYPE' => 'video',
@@ -1207,6 +1211,7 @@ class Hook_addon_registry_galleries
             'HEIGHT' => placeholder_number(),
             'WIDTH' => placeholder_number(),
             'LENGTH' => placeholder_number(),
+            'CLOSED_CAPTIONS_URL' => placeholder_url(),
         ]);
 
         foreach (placeholder_array() as $k => $v) {
@@ -1291,6 +1296,7 @@ class Hook_addon_registry_galleries
             'HEIGHT' => placeholder_number(),
             'WIDTH' => placeholder_number(),
             'LENGTH' => placeholder_number(),
+            'CLOSED_CAPTIONS_URL' => placeholder_url(),
         ]);
 
         foreach (placeholder_array() as $k => $v) {
