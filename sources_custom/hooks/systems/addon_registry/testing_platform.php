@@ -180,7 +180,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/libs/index.html',
             '_tests/libs/.htaccess',
             'lang_custom/EN/phpdoc.ini',
-            'sources_custom/php.php',
+            'sources_custom/phpdoc.php',
             'sources_custom/phpstub.php',
             'data_custom/continuous_integration.php',
             'sources_custom/continuous_integration.php',

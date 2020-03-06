@@ -22,7 +22,7 @@ Here is the code used to extract PHPDoc style function comments  from PHP code.
  *
  * @ignore
  */
-function init__php()
+function init__phpdoc()
 {
     global $LANG_TD_MAP;
     $LANG_TD_MAP = null;
@@ -233,7 +233,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
 
                         $arg_counter++;
                         if (!array_key_exists($arg_counter, $parameters)) {
-                            attach_message(do_lang_tempcode('PARAMETER_MISMATCH', escape_html($function_name)), 'warn');
+                            attach_message('There is an API parameter mismatch in function ' . $function_name, 'warn');
                             continue 2;
                         }
 
@@ -342,7 +342,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             }
 
             if (array_key_exists($arg_counter + 1, $parameters)) {
-                attach_message(do_lang_tempcode('PARAMETER_MISMATCH', escape_html($function_name)), 'warn');
+                attach_message('There is an API parameter mismatch in function ' . $function_name, 'warn');
                 continue;
             }
 
@@ -362,16 +362,16 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 } else {
                     $default = null;
                     if ($found_a_default) {
-                        attach_message(do_lang_tempcode('DEFAULT_DEFINED_BEFORE_NON_DEFAULT', escape_html($function_name)), 'warn');
+                        attach_message('You defined a defaulted parameter before a parameter that has no default, for ' . $function_name, 'warn');
                         $found_a_default = false;
                     }
                 }
 
                 if ($parameters[$arg_counter]['phpdoc_name'] == '') {
-                    attach_message(do_lang_tempcode('MISSING_PARAMETER_NAME', escape_html($function_name)), 'warn');
+                    attach_message('You did not give the name of a parameter in the phpdoc for ' . $function_name, 'warn');
                 } else {
                     if ($parameter['name'] != $parameter['phpdoc_name']) {
-                        attach_message(do_lang_tempcode('NAME_MISMATCH', escape_html($parameter['name']), escape_html($parameter['phpdoc_name']), [escape_html($function_name)]), 'warn');
+                        attach_message('Parameter naming mismatch, ' . $parameter['name'] . ' vs ' . $parameter['phpdoc_name'] . ' for a parameter in ' . $function_name, 'warn');
                     }
                 }
 
@@ -488,7 +488,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             if (!function_exists('do_lang_tempcode')) {
                 exit('Missing function comment for: ' . $line);
             }
-            attach_message(do_lang_tempcode('MISSING_FUNCTION_COMMENT', rtrim($line)), 'warn');
+            attach_message('There is a missing function comment for \'' .  rtrim($line) . '\'', 'warn');
         }
     }
 
@@ -502,7 +502,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             if (!function_exists('do_lang_tempcode')) {
                 exit('Missing class comment for: ' . $line);
             }
-            attach_message(do_lang_tempcode('MISSING_CLASS_COMMENT', rtrim($class)), 'warn');
+            attach_message('There is a missing class comment for ' . rtrim($class), 'warn');
 
             $classes[$class]['comment'] = '';
         } else {
@@ -646,7 +646,7 @@ function _read_php_function_line($_line)
 
             case 'done':
                 if ($char == '{') {
-                    attach_message(do_lang_tempcode('UNEXPECTED_TEXT_AFTER_FUNCTION', rtrim($_line)), 'warn');
+                    attach_message('Unexpected opening brace on function line, brace needs to be on next line, for ' .  rtrim($_line), 'warn');
                 }
                 break;
         }
@@ -681,9 +681,8 @@ function _cleanup_array($in)
  * @param  ?mixed $value The parameters value (null: value actually is null)
  * @param  ?string $range The string of value range of the parameter (null: no range constraint)
  * @param  ?string $set The string of value set limitation for the parameter (null: no set constraint)
- * @param  boolean $echo Whether we just echo errors instead of exiting
  */
-function check_function_type($type, $function_name, $name, $value, $range, $set, $echo = false)
+function check_function_type($type, $function_name, $name, $value, $range, $set)
 {
     $valid_types = [
         'AUTO_LINK',
@@ -719,11 +718,11 @@ function check_function_type($type, $function_name, $name, $value, $range, $set,
     $_type = ltrim($type, '?~');
 
     if (!in_array($_type, $valid_types)) {
-        attach_message(do_lang_tempcode('INVALID_PARAMETER_TYPE', escape_html($type), escape_html($function_name)), 'warn');
+        attach_message('The type ' . $type . ' used in ' . $function_name . ' is not valid', 'warn');
     }
 
     if ($value !== null) {
-        test_fail_php_type_check($type, $function_name, $name, $value, $echo);
+        test_fail_php_type_check($type, $function_name, $name, $value);
     }
 
     // Check range
@@ -743,7 +742,7 @@ function check_function_type($type, $function_name, $name, $value, $range, $set,
             'string',
         ];
         if ((!in_array($_type, $allowed)) && (!in_array($_type, $allowed_string)) && ($type != 'array') && ($type != 'list') && ($type != 'map')) {
-            attach_message(do_lang_tempcode('BAD_RANGE_SPECIFICATION', escape_html($_type), escape_html($function_name)), 'warn');
+            attach_message('A range was specified for a parameter type ' . $_type . ' in function name ' . $function_name . '; this parameter type cannot have a range', 'warn');
         }
 
         list($min, $max) = explode(' ', $range);
@@ -811,9 +810,8 @@ function check_function_type($type, $function_name, $name, $value, $range, $set,
  * @param  string $function_name The functions name (used in error message)
  * @param  string $name The parameter name (used in error message)
  * @param  mixed $value The parameters value (cannot be null)
- * @param  boolean $echo Whether we just echo errors instead of exiting
  */
-function test_fail_php_type_check($type, $function_name, $name, $value, $echo = false)
+function test_fail_php_type_check($type, $function_name, $name, $value)
 {
     $null_allowed = (strpos($type, '?') !== false);
     $false_allowed = (strpos($type, '~') !== false);
@@ -838,88 +836,88 @@ function test_fail_php_type_check($type, $function_name, $name, $value, $echo = 
     switch ($_type) {
         case 'integer':
             if ((!is_integer($value)) && ((!is_float($value)) || (strval(intval(round($value))) != strval($value)))) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'UINTEGER':
             if ((!is_integer($value)) && ((!is_float($value)) || (strval(intval(round($value))) != strval($value))) || ($value < 0)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'resource':
             if (!is_resource($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'object':
             if (!is_object($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'Tempcode':
             if ((!is_object($value)) || (!is_a($value, 'Tempcode'))) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'REAL':
         case 'float':
             if (!is_float($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'boolean':
             if (!is_bool($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'list':
             if (!is_array($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'map':
             if (!is_array($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'array':
             if (!is_array($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'string':
             if (!is_string($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'PATH':
             if (!is_string($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'EMAIL':
             if ((!is_string($value)) || ((!is_email_address($value)) && ($value != ''))) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'URLPATH':
             if ((!is_string($value)) || (strlen($value) > 127)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'LONG_TEXT':
             if (!is_string($value)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'MINIID_TEXT':
             if ((!is_string($value)) || (strlen($value) > 40)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'ID_TEXT':
             if ((!is_string($value)) || (strlen($value) > 80)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'LANGUAGE_NAME':
@@ -929,42 +927,42 @@ function test_fail_php_type_check($type, $function_name, $name, $value, $echo = 
                 $LANG_TD_MAP = cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini');
             }
             if ((!is_string($value)) || (!array_key_exists($value, $LANG_TD_MAP))) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'IP':
             if ((!is_string($value)) || (strlen($value) > 40) || ((strlen($value) < 7) && ($value != '')) || ((count(explode('.', $value)) != 4) && ($value != '') && (count(explode(':', $value)) < 3))) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'SHORT_TEXT':
             if ((!is_string($value)) || (strlen($value) > 255)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'SHORT_INTEGER':
             if ((!is_integer($value)) || ($value > 255) || ($value < 0)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'AUTO_LINK':
             if ((!is_integer($value)) || ($value < -1)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo); // -1 means something different to null
+                _fail_php_type_check($type, $function_name, $name, $value); // -1 means something different to null
             }
             break;
         case 'BINARY':
             if ((!is_integer($value)) || (($value != 0) && ($value != 1))) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'MEMBER':
             if ((!is_integer($value)) || ($value < $GLOBALS['FORUM_DRIVER']->get_guest_id())) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
         case 'TIME':
             if ((!is_integer($value)) || ($value > time() + 500000000)) {
-                _fail_php_type_check($type, $function_name, $name, $value, $echo);
+                _fail_php_type_check($type, $function_name, $name, $value);
             }
             break;
     }
@@ -977,13 +975,9 @@ function test_fail_php_type_check($type, $function_name, $name, $value, $echo = 
  * @param  string $function_name The function involved
  * @param  string $name The parameter name involved
  * @param  string $value The value involved
- * @param  boolean $echo Whether we just echo errors instead of exiting
  */
-function _fail_php_type_check($type, $function_name, $name, $value, $echo = false)
+function _fail_php_type_check($type, $function_name, $name, $value)
 {
-    if ($echo) {
-        echo 'TYPE_MISMATCH in \'' . $function_name . '\' (' . $name . ' is ' . (is_string($value) ? $value : strval($value)) . ' which is not a ' . $type . ')<br />';
-    } else {
-        attach_message(do_lang_tempcode('TYPE_MISMATCH', escape_html($function_name), escape_html($name), is_string($value) ? $value : strval($value)/*, $type*/), 'warn');
-    }
+    $str = 'A type value (' . (is_string($value) ? $value : strval($value)) . ') was used with the function ' . $function_name . ' (parameter ' . $name . '), causing a type mismatch error';
+    attach_message($str, 'warn');
 }
