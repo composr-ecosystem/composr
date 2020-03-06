@@ -120,7 +120,12 @@ function find_version_download_fast($version_pretty, $type_wanted = 'manual', $v
             $sql .= ' FORCE INDEX (downloadauthor)';
         }
         $sql .= ' WHERE ' . db_string_equal_to('author', 'ocProducts') . ' AND validated=1';
-        $sql .= ' AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('Composr Version ' . (($version_pretty === null) ? '%' : $version_pretty) . ' (' . $type_wanted . ')') . '\'';
+        $like = 'Composr Version ';
+        $like .= (($version_pretty === null) ? '%' : $version_pretty);
+        if ($type_wanted != '') {
+            $like .= ' (' . $type_wanted . ')';
+        }
+        $sql .= ' AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like($like) . '\'';
         $sql .= ' ORDER BY add_date DESC';
         $rows = $GLOBALS['SITE_DB']->query($sql, 1, null, false, false, array('name' => 'SHORT_TRANS'));
         if (!array_key_exists(0, $rows)) {
