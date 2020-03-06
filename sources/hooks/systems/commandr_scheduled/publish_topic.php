@@ -26,7 +26,7 @@ class Hook_commandr_scheduled_publish_topic
     /**
      * Get information about this hook.
      *
-     * @return array Map of hook details
+     * @return ?array Map of hook details (null: addon not available)
      */
     public function info()
     {

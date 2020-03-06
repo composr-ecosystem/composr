@@ -26,7 +26,7 @@ class Hook_commandr_scheduled_send_newsletter
     /**
      * Get information about this hook.
      *
-     * @return ?array Map of hook details (null: disabled)
+     * @return ?array Map of hook details (null: addon not available)
      */
     public function info()
     {
