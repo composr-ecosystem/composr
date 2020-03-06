@@ -788,37 +788,37 @@ class Module_warnings extends Standard_crud_module
         if ($new) {
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c7eb70b13be74d8f3bd1f1c5e739d9ab', 'TITLE' => do_lang_tempcode('DELETE'), 'HELP' => do_lang_tempcode('DESCRIPTION_DELETE_CONTENT')]));
 
-            foreach ($posts_deletable as $post_id => $_post_deletable) {
-                list($post_context, $post_id, $topic_id, $topic_title, $post_time, $forum_id) = $_post_deletable;
-                $post_url = $GLOBALS['FORUM_DRIVER']->post_url($post_id, $forum_id, true);
+            foreach ($posts_deletable as $_post_id => $_post_deletable) {
+                list($post_context, $_post_id, $topic_id, $topic_title, $post_time, $forum_id) = $_post_deletable;
+                $post_url = $GLOBALS['FORUM_DRIVER']->post_url($_post_id, $forum_id, true);
 
                 $list_options = new Tempcode();
                 $list_options->attach(form_input_list_entry('', !$spam_mode, do_lang_tempcode('HANDLE_POST__NOTHING')));
                 switch ($post_context) {
                     case POST_STANDALONE_AT_END:
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_AT_END', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())]);
-                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())])));
+                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_AT_END', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())]);
+                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())])));
                         break;
 
                     case POST_STANDALONE_IN_MIDDLE:
                         $num_replies = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($post_time));
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_IN_MIDDLE', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))]);
-                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST_WITH_GAP', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', false, do_lang_tempcode('HANDLE_POST__DELETE_POST_AND_FOLLOWING', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
+                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_STANDALONE_IN_MIDDLE', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))]);
+                        $list_options->attach(form_input_list_entry('delete_post', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_POST_WITH_GAP', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
+                        $list_options->attach(form_input_list_entry('delete_post_and_following', false, do_lang_tempcode('HANDLE_POST__DELETE_POST_AND_FOLLOWING', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
                         break;
 
                     case POST_AS_TOPIC_FULL:
                         $num_replies = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval($post_time));
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_FULL', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))]);
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC_WITH_REPLIES', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
+                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_FULL', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))]);
+                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC_WITH_REPLIES', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate()), escape_html(integer_format($num_replies))])));
                         break;
 
                     case POST_AS_TOPIC_STARTER:
-                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_STARTER', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())]);
-                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC', escape_html($topic_title), escape_html(integer_format($post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())])));
+                        $handle_label = do_lang_tempcode('HANDLE_POST__POST_AS_TOPIC_STARTER', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())]);
+                        $list_options->attach(form_input_list_entry('delete_post_and_following', $spam_mode, do_lang_tempcode('HANDLE_POST__DELETE_TOPIC', escape_html($topic_title), escape_html(integer_format($_post_id)), [escape_html(integer_format($topic_id)), escape_html($post_url->evaluate())])));
                         break;
                 }
-                $fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($post_id), $list_options, null, false, false));
+                $fields->attach(form_input_list($handle_label, '', 'handle_post__' . strval($_post_id), $list_options, null, false, false));
             }
 
             // See also privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
