@@ -39,7 +39,7 @@ class Hook_cron_leader_board
         return [
             'label' => 'Leader-board generation',
             'num_queued' => null,
-            'minutes_between_runs' => 0, // Allow it to regenerate quickly
+            'minutes_between_runs' => 60,
         ];
     }
 

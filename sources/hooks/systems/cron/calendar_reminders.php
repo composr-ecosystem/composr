@@ -46,7 +46,7 @@ class Hook_cron_calendar_reminders
         return [
             'label' => 'Send calendar reminders',
             'num_queued' => $num_queued,
-            'minutes_between_runs' => 0,
+            'minutes_between_runs' => 1,
         ];
     }
 

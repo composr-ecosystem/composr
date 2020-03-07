@@ -1496,4 +1496,6 @@ function uninstall_addon_soft($addon_name)
             $ob->uninstall();
         }
     }
+
+    set_value('kill_cron_looping', '1', true);
 }

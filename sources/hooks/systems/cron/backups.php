@@ -51,7 +51,7 @@ class Hook_cron_backups
         return [
             'label' => 'Backups',
             'num_queued' => $num_queued,
-            'minutes_between_runs' => 0,
+            'minutes_between_runs' => 60,
         ];
     }
 

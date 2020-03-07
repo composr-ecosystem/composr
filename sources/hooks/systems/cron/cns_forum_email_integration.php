@@ -49,7 +49,7 @@ class Hook_cron_cns_forum_email_integration
         return [
             'label' => 'Forum email integration',
             'num_queued' => null,
-            'minutes_between_runs' => 0,
+            'minutes_between_runs' => 1,
         ];
     }
 

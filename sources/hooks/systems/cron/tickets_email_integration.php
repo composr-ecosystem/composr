@@ -43,7 +43,7 @@ class Hook_cron_tickets_email_integration
         return [
             'label' => 'Process e-mailed support tickets',
             'num_queued' => null, // Too time-consuming to calculate
-            'minutes_between_runs' => 0,
+            'minutes_between_runs' => 1,
         ];
     }
 

@@ -139,7 +139,7 @@ The following command might work for a Composr installation in the [tt]/home/exa
 [code="Bash"]
 php -C -q -c /home/examplesite/htdocs/.user.ini /home/examplesite/htdocs/data/cron_bridge.php
 [/code]
-The above command is just an example. Your real path will obviously be different, but also the PHP program may have a different name. Composr may be able to detect the correct command to use for you. Try opening up [tt]http://yourbaseurl/data/cron_bridge.php?querymode=1[/tt]. The script should output the Cron command for you to use.
+The above command is just an example. Your real path will obviously be different, but also the PHP program may have a different name. Composr may be able to detect the correct command to use for you. Try opening up [tt]http://yourbaseurl/data/cron_bridge.php?query_mode=1[/tt]. The script should output the Cron command for you to use.
 
 A good test is to try running the command you end up choosing manually in a command prompt, to check it is correct.
 
@@ -197,6 +197,27 @@ In the event your hosting platform does not allow you access to Cron, there are 
  - Other free options are http://www.setcronjob.com/ (up to every 5 minutes but the schedule needs to be re-set every week) and http://www.onlinecronjobs.com/ (up to 5 jobs twice a day).
 
 Simply sign up and  add the URL i.e. [tt]http://yourbaseurl/data/cron_bridge.php[/tt] to the scheduler and set how often you want it to run.
+
+[title="3"]Parameters[/title]
+
+There are a number of parameters you can pass to [tt]cron_bridge.php[/tt], either as URL parameters, or command line parameters.
+
+ - [tt]limit_hooks[/tt] -- Pass the name of PHP files in [tt]sources[_custom]/hooks/systems/cron[/tt] to limit to just those scheduler items; useful if you want to force certain items to run more regularly; if you pass just a single item name then normal wait times for processing that item will be ignored
+ - [tt]include_msn[/tt] -- When Composr has multi-site-network sub-sites, whether to run the system scheduler on all those sub-sites
+ - Debugging:
+  - [tt]verbose[/tt] -- Whether to put out extra output (not recommended when tied into Cron, as it will likely e-mail you every time it runs -- for that enable logging instead from Admin Zone > Audit > Error Log)
+  - [tt]query_mode[/tt] -- Whether to just spit out a Cron configuration command instead of running the scheduler
+  - [tt]force[/tt] -- Whether to ignore scheduler item locking (for developers only); can be useful for testing and also clearing out stale locks
+ - Loop configuration:
+  - [tt]loop[/tt] -- Whether to not exit and just keep looping, for maximum processing speed (shared web-hosts may not like this)
+  - [tt]loop_wait_seconds[/tt] -- The number of seconds to wait between each loop cycles, to avoid constantly querying the database (default 3 seconds)
+  - [tt]loop_max_seconds[/tt] -- The number of seconds before finishing the loop, in case memory usage keeps creeping up (default 3595 seconds, which is 5 seconds less than an hour, intended to align with the next Cron call)
+
+For example, to call the system scheduler but only to execute tasks, with verbose info...
+Via URL:
+[tt]http://yourbaseurl/data_custom/cron_bridge.php?limit_hooks=tasks&verbose=1[/tt]
+Via command line:
+php cron_bridge.php --limit_hook=tasks --verbose
 
 [title="3"]Debugging the system scheduler[/title]
 
