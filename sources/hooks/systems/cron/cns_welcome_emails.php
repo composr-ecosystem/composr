@@ -116,7 +116,7 @@ class Hook_cron_cns_welcome_emails
         return [
             'label' => 'Send welcome e-mails',
             'num_queued' => $num_queued,
-            'minutes_between_runs' => 0,
+            'minutes_between_runs' => 60,
         ];
     }
 

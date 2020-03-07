@@ -516,6 +516,8 @@ function uninstall_module($zone, $module)
             cms_eval($functions[0], $module_path);
         }
     }
+
+    set_value('kill_cron_looping', '1', true);
 }
 
 /**
@@ -739,6 +741,8 @@ function uninstall_block($block)
             cms_eval($functions[0], $block_path);
         }
     }
+
+    set_value('kill_cron_looping', '1', true);
 }
 
 /**
