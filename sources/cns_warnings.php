@@ -181,9 +181,10 @@ function generate_punitive_text()
 * Find a member's content.
 *
 * @param  MEMBER $member_id Member ID
+* @param  integer $max Maximum results
 * @return array List of content rows
 */
-function find_member_content($member_id)
+function find_member_content($member_id, $max = 30)
 {
     if (!has_privilege(get_member(), 'delete_highrange_content')) {
         return [];
@@ -199,6 +200,7 @@ function find_member_content($member_id)
 
     // All content using hooks...
 
+    $content_types = [];
     $hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
     foreach ($hooks as $hook => $ob) {
         $cma_info = $ob->info();
@@ -210,39 +212,30 @@ function find_member_content($member_id)
             ($cma_info['add_time_field'] !== null) &&
             ($cma_info['commandr_filesystem_hook'] !== null)
         ) {
-            $start = 0;
-            $max = 100;
-
-            do {
-                $rows = $cma_info['db']->query_select(
-                    $cma_info['table'],
-                    ['*'],
-                    [$cma_info['submitter_field'] => $member_id],
-                    '',
-                    $max,
-                    $start
-                );
-
-                foreach ($rows as $row) {
-                    $content_id = $ob->get_id($row);
-                    $content_title = $ob->get_title($row);
-                    $content_url = $ob->get_view_url($row);
-                    $content_add_time = $ob->get_add_time($row);
-
-                    $content[] = [
-                        $ob->get_content_type_label($row),
-                        $hook,
-                        $content_id,
-                        $content_title,
-                        $content_url,
-                        $content_add_time,
-                        false
-                    ];
-                }
-
-                $start += $max;
-            } while (!empty($rows));
+            $content_types[] = $hook;
         }
+    }
+
+    require_code('content');
+    list($rows) = content_rows_for_multi_type($content_types, null, '', '', 'recent DESC', 0, $max);
+
+    foreach ($rows as $row) {
+        $ob = get_content_object($row['content_type']);
+
+        $content_id = $ob->get_id($row);
+        $content_title = $ob->get_title($row);
+        $content_url = $ob->get_view_url($row);
+        $content_add_time = $ob->get_add_time($row);
+
+        $content[] = [
+            $ob->get_content_type_label($row),
+            $hook,
+            $content_id,
+            $content_title,
+            $content_url,
+            $content_add_time,
+            false
+        ];
     }
 
     return $content;

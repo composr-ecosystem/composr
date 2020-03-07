@@ -428,7 +428,7 @@ function get_content_where_for_str_id($str_id, $cma_info, $table_alias = null)
  * @param  array $infos Info maps for content types, if not passed will be looked up
  * @return array A pair: Rows, Max count
  */
-function content_rows_for_multi_type($content_types, $days, $extra_where, $extra_join, $sort, $start, $max, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null, $infos = [])
+function content_rows_for_multi_type($content_types, $days = null, $extra_where = '', $extra_join = '', $sort = 'title ASC', $start = 0, $max = null, $select = '', $select_b = '', $filter = '', $check_perms = true, $pinned = [], $allowed_sorts = null, $member_id = null, $infos = [])
 {
     $combined_rows = [];
     $pinned_rows = [];
@@ -775,7 +775,7 @@ function handle_abstract_sorting($sort, $info, $allowed_sorts = null, $strict_er
             $allowed_sorts[] = 'prominence';
         }
 
-        if ((isset($info['title_field'])) && (strpos($info['title_field'], ':') === false)) {
+        if ((isset($info['title_field'])) && (!is_array($info)) && (strpos($info['title_field'], ':') === false)) {
             $allowed_sorts[] = 'title';
         }
 
