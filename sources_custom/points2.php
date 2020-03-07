@@ -20,6 +20,7 @@ if (!function_exists('system_gift_transfer')) {
      * @param  SHORT_TEXT $reason The reason for the transfer
      * @param  integer $amount The size of the transfer
      * @param  MEMBER $member_id The member the transfer is to
+     * @return ?AUTO_LINK ID of the gifts record if include_in_log was true (null: log was not created)
      */
     function system_gift_transfer($reason, $amount, $member_id)
     {
@@ -27,10 +28,10 @@ if (!function_exists('system_gift_transfer')) {
         require_code('points');
 
         if (is_guest($member_id)) {
-            return;
+            return null;
         }
         if ($amount == 0) {
-            return;
+            return null;
         }
 
         $map = [
@@ -41,7 +42,7 @@ if (!function_exists('system_gift_transfer')) {
             'anonymous' => 1,
         ];
         $map += insert_lang_comcode('reason', $reason, 4);
-        $GLOBALS['SITE_DB']->query_insert('gifts', $map);
+        $id = $GLOBALS['SITE_DB']->query_insert('gifts', $map, true);
         $_before = point_info($member_id);
         $before = array_key_exists('points_gained_given', $_before) ? $_before['points_gained_given'] : 0;
         $new = strval($before + $amount);
@@ -89,5 +90,7 @@ if (!function_exists('system_gift_transfer')) {
             require_code('cns_posts_action2');
             cns_member_handle_promotion($member_id);
         }
+
+        return $id;
     }
 }
