@@ -859,15 +859,17 @@ function _chat_post_message_ajax($room_id, $message, $font, $colour, $first_mess
  */
 function chat_post_message($room_id, $message, $font_name, $text_colour)
 {
+    $member_id = get_member();
+
     // Have we been blocked by flood control?
     $is_im = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'is_im', ['id' => $room_id]);
     if ($is_im == 1) { // No flood control for IMs
         $time_last_message = null;
     } else {
-        if (is_guest()) {
+        if (is_guest($member_id)) {
             $time_last_map = ['ip_address' => get_ip_address(), 'system_message' => 0];
         } else {
-            $time_last_map = ['member_id' => get_member(), 'system_message' => 0];
+            $time_last_map = ['member_id' => $member_id, 'system_message' => 0];
         }
         $time_last_message = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_messages', 'MAX(date_and_time)', $time_last_map);
         if ($time_last_message !== null) {
@@ -893,7 +895,7 @@ function chat_post_message($room_id, $message, $font_name, $text_colour)
             'system_message' => 0,
             'ip_address' => get_ip_address(),
             'room_id' => $room_id,
-            'member_id' => get_member(),
+            'member_id' => $member_id,
             'date_and_time' => time(),
             'text_colour' => $text_colour,
             'font_name' => $font_name,
@@ -950,7 +952,7 @@ function chat_post_message($room_id, $message, $font_name, $text_colour)
                     $is_starter = false;
                 }
                 require_code('cns_posts_action');
-                cns_make_post($topic_id, $is_starter ? do_lang('INSTANT_MESSAGING_CONVO') : '', $message, 0, $is_starter, 1, 0, null, null, null, get_member(), null, null, null, false, true, null, false, '', null, false, true);
+                cns_make_post($topic_id, $is_starter ? do_lang('INSTANT_MESSAGING_CONVO') : '', $message, 0, $is_starter, 1, 0, null, null, null, $member_id, null, null, null, false, true, null, false, '', null, false, true);
                 require_code('cns_topics');
                 for ($i = 0; $i < count($members); $i++) {
                     cns_ping_topic_read($topic_id, $members[$i]);
@@ -961,9 +963,13 @@ function chat_post_message($room_id, $message, $font_name, $text_colour)
         // Update points
         if (addon_installed('points')) {
             require_code('points');
-            $_count = point_info(get_member());
+            $_count = point_info($member_id);
             $count = array_key_exists('points_gained_chat', $_count) ? $_count['points_gained_chat'] : 0;
-            $GLOBALS['FORUM_DRIVER']->set_custom_field(get_member(), 'points_gained_chat', $count + 1);
+            $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_chat', $count + 1);
+
+            global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
+            unset($POINT_INFO_CACHE[$member_id]);
+            unset($TOTAL_POINTS_CACHE[$member_id]);
         }
 
         delete_cache_entry('side_shoutbox');
@@ -977,12 +983,12 @@ function chat_post_message($room_id, $message, $font_name, $text_colour)
         'system_message' => 1,
         'ip_address' => get_ip_address(),
         'room_id' => $room_id,
-        'member_id' => get_member(),
+        'member_id' => $member_id,
         'date_and_time' => time(),
         'text_colour' => get_option('chat_default_post_colour'),
         'font_name' => get_option('chat_default_post_font'),
     ];
-    $map += insert_lang_comcode('the_message', '[private="' . $GLOBALS['FORUM_DRIVER']->get_username(get_member()) . '"]' . do_lang('FLOOD_CONTROL_BLOCKED', integer_format($time_left)) . '[/private]', 4, null, false, null);
+    $map += insert_lang_comcode('the_message', '[private="' . $GLOBALS['FORUM_DRIVER']->get_username($member_id) . '"]' . do_lang('FLOOD_CONTROL_BLOCKED', integer_format($time_left)) . '[/private]', 4, null, false, null);
     $message_id = $GLOBALS['SITE_DB']->query_insert('chat_messages', $map, true);
     require_code('files');
     cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/modules/chat/chat_last_msg.bin', strval($message_id), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);

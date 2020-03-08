@@ -44,7 +44,7 @@ class Hook_points_chat
             $points_gained_chat -= min($points_gained_chat, $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'chat_messages WHERE date_and_time>' . strval($timestamp) . ' AND member_id=' . strval($member_id)));
         }
 
-        return $points_gained_chat;
+        return $points_gained_chat * $points_chat;
     }
 
     /**

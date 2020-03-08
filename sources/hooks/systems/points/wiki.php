@@ -44,7 +44,7 @@ class Hook_points_wiki
             $points_gained_wiki -= min($points_gained_wiki, $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'wiki_posts WHERE date_and_time>' . strval($timestamp) . ' AND member_id=' . strval($member_id)));
         }
 
-        return $points_gained_wiki;
+        return $points_gained_wiki * $points_wiki;
     }
 
     /**

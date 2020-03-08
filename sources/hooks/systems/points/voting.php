@@ -44,7 +44,7 @@ class Hook_points_voting
             $points_gained_voting -= min($points_gained_voting, $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'poll_votes v JOIN ' . get_table_prefix() . 'poll p ON p.id=v.v_poll_id WHERE add_time>' . strval($timestamp) . ' AND v_voter_id=' . strval($member_id)));
         }
 
-        return $points_gained_voting;
+        return $points_gained_voting * $points_voting;
     }
 
     /**

@@ -495,9 +495,22 @@ function cns_force_update_member_post_count($member_id, $member_post_count_dif =
             $member_post_count += $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)', $map);
         }
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_num_posts' => $member_post_count], ['id' => $member_id]);
+
+        // Update run-time caching
+        if (isset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id])) {
+            $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id]['m_cache_num_posts'] = $member_post_count;
+        }
     } else {
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_cache_num_posts=(m_cache_num_posts+' . strval($member_post_count_dif) . ') WHERE id=' . strval($member_id));
+
+        // Update run-time caching
+        if (isset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id])) {
+            $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id]['m_cache_num_posts'] += $member_post_count_dif;
+        }
     }
+
+    global $TOTAL_POINTS_CACHE;
+    unset($TOTAL_POINTS_CACHE[$member_id]);
 }
 
 /**

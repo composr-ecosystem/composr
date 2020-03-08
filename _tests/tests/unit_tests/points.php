@@ -81,7 +81,7 @@ class points_test_set extends cms_test_case
         $reversed_points_to_give = get_gift_points_to_give(2);
         $reversed_points = available_points(3);
 
-        $reversed_correct = (($reversed_points_used == $initial_points_used) && ($reversed_points_to_give == $initial_points_to_give) && ($reversed_points == $current_points));
+        $reversed_correct = (($reversed_points_used == $initial_points_used) && ($reversed_points_to_give == $initial_points_to_give) && ($reversed_points == $initial_points));
 
         $this->assertTrue($used_points_correct, 'Used points did not increase as expected.');
         $this->assertTrue($to_give_points_correct, 'Points to give did not decrease as expected.');
@@ -97,15 +97,15 @@ class points_test_set extends cms_test_case
         $initial_points = available_points(2);
 
         $this->topic_id = cns_make_topic(db_get_first_id(), 'Test');
-        $this->post_id = cns_make_post($this->topic_id, 'Welcome', 'Welcome to the posts', 0, false, null, 0, null, null, null, null, null, null, null, true, true, null, true, '', null, false, false, false);
+        $this->post_id = cns_make_post($this->topic_id, 'Welcome', 'Welcome to the posts', 0, true, null, 0, null, null, null, 2, null, null, null, true, true, null, true, '', null, false, false, false);
 
         $current_points = available_points(2);
 
-        $points_to_earn = get_option('points_posting');
+        $points_to_earn = intval(get_option('points_posting'));
 
         $change = ($current_points - $initial_points);
 
-        $this->assertTrue(($change == $points_to_earn), 'Points to spend did not increase for a forum post as expected. The change was ' . $change);
+        $this->assertTrue($change == $points_to_earn, 'Points to spend did not increase for a forum post as expected (' . strval($points_to_earn) . '). The change was ' . strval($change));
 
         // Tear down
         if (!cns_delete_posts_topic($this->topic_id, [$this->post_id], 'Nothing')) {
@@ -201,6 +201,4 @@ class points_test_set extends cms_test_case
 
         parent::tearDown();
     }
-
-
 }

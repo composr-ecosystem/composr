@@ -545,11 +545,17 @@ function actualise_rating($allow_rating, $content_type, $content_id, $content_ur
  */
 function actualise_give_rating_points()
 {
-    if ((!is_guest()) && (addon_installed('points'))) {
+    $member_id = get_member();
+
+    if ((!is_guest($member_id)) && (addon_installed('points'))) {
         require_code('points');
-        $_count = point_info(get_member());
+        $_count = point_info($member_id);
         $count = array_key_exists('points_gained_rating', $_count) ? $_count['points_gained_rating'] : 0;
         $GLOBALS['FORUM_DRIVER']->set_custom_field(get_member(), 'points_gained_rating', $count + 1);
+
+        global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
+        unset($POINT_INFO_CACHE[$member_id]);
+        unset($TOTAL_POINTS_CACHE[$member_id]);
     }
 }
 

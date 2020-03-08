@@ -190,12 +190,15 @@ function charge_member($member_id, $amount, $reason)
     $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_used', strval($new));
     $id = add_to_charge_log($member_id, $amount, $reason);
 
-    global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
+    global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE, $POINTS_USED_CACHE;
     if (array_key_exists($member_id, $TOTAL_POINTS_CACHE)) {
         $TOTAL_POINTS_CACHE[$member_id] -= $amount;
     }
     if ((array_key_exists($member_id, $POINT_INFO_CACHE)) && (array_key_exists('points_used', $POINT_INFO_CACHE[$member_id]))) {
         $POINT_INFO_CACHE[$member_id]['points_used'] += $amount;
+    }
+    if (array_key_exists($member_id, $POINTS_USED_CACHE)) {
+        $POINTS_USED_CACHE[$member_id] += $amount;
     }
 
     return $id;
@@ -240,14 +243,19 @@ function reverse_point_gift_transaction($id)
     $sender_id = $myrow['gift_from'];
     $recipient_id = $myrow['gift_to'];
 
+    global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
+
     $GLOBALS['SITE_DB']->query_delete('gifts', ['id' => $id], '', 1);
     if (!is_guest($sender_id)) {
         $_sender_gift_points_used = point_info($sender_id);
         $sender_gift_points_used = array_key_exists('gift_points_used', $_sender_gift_points_used) ? $_sender_gift_points_used['gift_points_used'] : 0;
         $GLOBALS['FORUM_DRIVER']->set_custom_field($sender_id, 'gift_points_used', strval($sender_gift_points_used - $amount));
+        unset($POINT_INFO_CACHE[$sender_id]);
     }
     $recipient_point_info = point_info($recipient_id);
     $GLOBALS['FORUM_DRIVER']->set_custom_field($recipient_id, 'points_gained_given', strval((array_key_exists('points_gained_given', $recipient_point_info) ? $recipient_point_info['points_gained_given'] : 0) - $amount));
+    unset($POINT_INFO_CACHE[$recipient_id]);
+    unset($TOTAL_POINTS_CACHE[$recipient_id]);
 }
 
 /**
@@ -265,10 +273,15 @@ function reverse_charge_transaction($id)
     $amount = $myrow['amount'];
     $member_id = $myrow['member_id'];
 
+    global $POINT_INFO_CACHE, $POINTS_USED_CACHE, $TOTAL_POINTS_CACHE;
+
     $GLOBALS['SITE_DB']->query_delete('chargelog', ['id' => $id], '', 1);
     if (!is_guest($member_id)) {
         $_points_charged = point_info($member_id);
         $points_charged = array_key_exists('points_used', $_points_charged) ? $_points_charged['points_used'] : 0;
         $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_used', strval($points_charged - $amount));
+        unset($POINT_INFO_CACHE[$member_id]);
+        unset($POINTS_USED_CACHE[$member_id]);
+        unset($TOTAL_POINTS_CACHE[$member_id]);
     }
 }
