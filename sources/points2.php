@@ -145,7 +145,7 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
 
     global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
     if (array_key_exists($recipient_id, $TOTAL_POINTS_CACHE)) {
-        $TOTAL_POINTS_CACHE[$recipient_id] = $recipient_points_given_new;
+        $TOTAL_POINTS_CACHE[$recipient_id] += $amount;
     }
     if ((array_key_exists($recipient_id, $POINT_INFO_CACHE)) && (array_key_exists('points_gained_given', $POINT_INFO_CACHE[$recipient_id]))) {
         $POINT_INFO_CACHE[$recipient_id]['points_gained_given'] = $recipient_points_given_new;
@@ -190,10 +190,8 @@ function charge_member($member_id, $amount, $reason)
     $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_used', strval($new));
     $id = add_to_charge_log($member_id, $amount, $reason);
 
-    global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE, $POINTS_USED_CACHE;
-    if (array_key_exists($member_id, $TOTAL_POINTS_CACHE)) {
-        $TOTAL_POINTS_CACHE[$member_id] -= $amount;
-    }
+    global $POINT_INFO_CACHE, $POINTS_USED_CACHE;
+    // TOTAL_POINTS_CACHE is not reduced as the total points does NOT go down when charged, points-used goes up!
     if ((array_key_exists($member_id, $POINT_INFO_CACHE)) && (array_key_exists('points_used', $POINT_INFO_CACHE[$member_id]))) {
         $POINT_INFO_CACHE[$member_id]['points_used'] += $amount;
     }

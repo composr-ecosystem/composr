@@ -127,7 +127,7 @@ class points_test_set extends cms_test_case
 
         $current_points = available_points(3);
 
-        $this->assertTrue((($current_points - $initial_points) == $points_to_give), 'Points to spend did not increase with system gift transfer as expected.');
+        $this->assertTrue(($current_points - $initial_points) == $points_to_give, 'Points to spend did not increase with system gift transfer as expected.');
 
         // Tear down
         reverse_point_gift_transaction($this->system_gift_transfer);
@@ -147,7 +147,7 @@ class points_test_set extends cms_test_case
 
         $current_points = available_points(3);
 
-        $this->assertTrue((($current_points - $initial_points) == $points_to_give), 'Points to spend did not decrease as expected with negative system gift transfer.');
+        $this->assertTrue(($current_points - $initial_points) == $points_to_give, 'Points to spend did not decrease as expected with negative system gift transfer.');
 
         // Tear down
         reverse_point_gift_transaction($this->negative_system_gift_transfer);
@@ -167,7 +167,7 @@ class points_test_set extends cms_test_case
 
         $current_points = available_points(3);
 
-        $this->assertTrue((($initial_points - $current_points) == $points_to_charge), 'Points to spend did not decrease as expected for charge member.');
+        $this->assertTrue(($initial_points - $current_points) == $points_to_charge, 'Points to spend did not decrease as expected for charge member.');
 
         // Tear down
         reverse_charge_transaction($this->charge_member);
@@ -187,7 +187,7 @@ class points_test_set extends cms_test_case
 
         $current_points = available_points(3);
 
-        $this->assertTrue((($initial_points - $current_points) == $points_to_charge), 'Points did not increase as expected for negative charge member.');
+        $this->assertTrue(($initial_points - $current_points) == $points_to_charge, 'Points did not increase as expected for negative charge member.');
 
         // Tear down
         reverse_charge_transaction($this->negative_charge_member);
