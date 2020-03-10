@@ -44,6 +44,36 @@ class Hook_cron_tasks
     }
 
     /**
+     * Show a tooltip of further details about the queue.
+     *
+     * @return Tempcode Queue details
+     */
+    public function queued_details_tooltip()
+    {
+        $rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['t_title', 't_member_id', 't_locked', 't_add_time'], [], 'ORDER BY t_add_time');
+
+        require_code('templates_columned_table');
+        $header_row = columned_table_header_row([
+            do_lang_tempcode('TITLE'),
+            do_lang_tempcode('MEMBER'),
+            do_lang_tempcode('CURRENT'),
+            do_lang_tempcode('ADDED'),
+        ]);
+
+        $_rows = new Tempcode();
+        foreach ($rows as $row) {
+            $_rows->attach(columned_table_row([
+                $row['t_title'],
+                $GLOBALS['FORUM_DRIVER']->get_username($row['t_member_id']),
+                do_lang_tempcode(($row['t_locked'] == 1) ? 'YES' : 'NO'),
+                do_lang_tempcode('_AGO', escape_html(display_time_period(time() - $row['t_add_time']))),
+            ], false));
+        }
+
+        return do_template('COLUMNED_TABLE', ['HEADER_ROW' => $header_row, 'ROWS' => $_rows]);
+    }
+
+    /**
      * Run function for system scheduler scripts. Searches for things to do. ->info(..., true) must be called before this method.
      *
      * @param  ?TIME $last_run Last time run (null: never)

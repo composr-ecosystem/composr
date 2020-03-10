@@ -890,6 +890,7 @@ class Module_admin_version
                 't_secure_ref' => 'ID_TEXT', // Used like a temporary password to initiate the task
                 't_send_notification' => 'BINARY',
                 't_locked' => 'BINARY',
+                't_add_time' => 'TIME',
             ]);
 
             require_code('users_active_actions');
@@ -1118,6 +1119,8 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->drop_table_if_exists('link_tracker');
 
             $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_include_on_sitemap', 'BINARY', 1);
+
+            $GLOBALS['SITE_DB']->add_table_field('task_queue', 't_add_time', 'TIME', time());
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 18)) {

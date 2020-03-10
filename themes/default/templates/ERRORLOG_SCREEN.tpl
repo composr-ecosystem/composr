@@ -9,6 +9,8 @@
 </ul>
 
 {+START,LOOP,LOGS}
+	<a id="log_{_loop_key%}"></a>
+
 	<h2>{_loop_key*}</h2>
 
 	{+START,IF_PASSED,LOG}

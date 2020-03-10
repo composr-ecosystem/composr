@@ -471,14 +471,28 @@ class Module_admin_errorlog
                 ]));
             }
 
-            $_label = make_string_tempcode(escape_html($label));
+            $_label = new Tempcode();
+            $_label->attach(do_template('ANCHOR', ['NAME' => 'cron_' . $hook]));
+            $_label->attach(make_string_tempcode(escape_html($label)));
             if (!$available) {
                 $_label->attach(' (' . do_lang('UNAVAILABLE') . ')');
             }
 
+            if ($num_queued === null) {
+                $queue = do_lang_tempcode('UNKNOWN_EM');
+            } else {
+                $queue = make_string_tempcode(escape_html(integer_format($num_queued)));
+                if (array_key_exists('queued_details_url', $info)) {
+                    $queue = hyperlink($info['queued_details_url'], $queue, false, false);
+                }
+                if (method_exists($object, 'queued_details_tooltip')) {
+                    $_label->attach(div($object->queued_details_tooltip()));
+                }
+            }
+
             $_result_entries[$label] = results_entry([
                 $_label,
-                ($num_queued === null) ? do_lang_tempcode('UNKNOWN_EM') : make_string_tempcode(escape_html(integer_format($num_queued))),
+                $queue,
                 ($minutes_between_runs == 0) ? make_string_tempcode('<em>(0)</em>') : display_time_period($minutes_between_runs * 60),
                 ($last_run === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(get_timezoned_date_time($last_run))),
                 ($last_execution_secs === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($last_execution_secs))),
@@ -488,7 +502,7 @@ class Module_admin_errorlog
             ], true);
         }
 
-        cms_mb_asort($_result_entries, SORT_NATURAL | SORT_FLAG_CASE);
+        cms_mb_ksort($_result_entries, SORT_NATURAL | SORT_FLAG_CASE);
 
         $result_entries = new Tempcode();
         foreach ($_result_entries as $results_entry) {

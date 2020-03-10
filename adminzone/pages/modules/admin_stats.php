@@ -121,6 +121,7 @@ class Module_admin_stats extends Standard_crud_module
                 't_secure_ref' => $secure_ref, // Used like a temporary password to initiate the task
                 't_send_notification' => 0,
                 't_locked' => 0,
+                't_add_time' => time(),
             ], true);
         }
 

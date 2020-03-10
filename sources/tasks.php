@@ -338,6 +338,7 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
         't_secure_ref' => $secure_ref, // Used like a temporary password to initiate the task
         't_send_notification' => $send_notification ? 1 : 0,
         't_locked' => 0,
+        't_add_time' => time(),
     ], true);
 
     if (GOOGLE_APPENGINE) {
@@ -347,10 +348,15 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
         $task_name = $task->add();
     }
 
-    if ($title === null) {
-        return do_lang_tempcode('NEW_TASK_RUNNING');
+    $message = do_lang_tempcode('NEW_TASK_RUNNING');
+    if (has_actual_page_access(get_member(), 'admin_errorlog')) {
+        $message = do_lang_tempcode('NEW_TASK_RUNNING_LOGGING', $message, build_url(['page' => 'admin_errorlog'], get_module_zone('admin_errorlog'), [], false, false, false, 'cron_tasks'));
     }
-    return inform_screen($title, do_lang_tempcode('NEW_TASK_RUNNING'));
+
+    if ($title === null) {
+        return $message;
+    }
+    return inform_screen($title, $message);
 }
 
 /**
