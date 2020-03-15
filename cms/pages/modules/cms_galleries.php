@@ -1290,7 +1290,7 @@ class Module_cms_galleries extends Standard_crud_module
         $validated = $myrow['validated'];
 
         $delete_fields = mixed();
-        if (get_option('cleanup_files') == '0') {
+        if (get_option('cleanup_files') == '1') {
             if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', array('galleries', $cat))) {
                 if ($GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {
                     $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('LEAVE'));
@@ -1901,7 +1901,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $validated = $myrow['validated'];
 
         $delete_fields = mixed();
-        if (get_option('cleanup_files') == '0') {
+        if (get_option('cleanup_files') == '1') {
             if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', array('galleries', $cat))) {
                 if ($GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {
                     $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('LEAVE'));
