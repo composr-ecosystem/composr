@@ -74,7 +74,7 @@ function get_users_online($longer_time, $filter, &$count)
         return [];
     }
 
-    $max_to_show = 200;
+    $max_to_show = 200; // FUDGE - Hard-coded value
 
     $users_online_time_seconds = intval($longer_time ? (60.0 * 60.0 * floatval(get_option('session_expiry_time'))) : (60.0 * floatval(get_option('users_online_time'))));
     $cutoff = time() - $users_online_time_seconds;
