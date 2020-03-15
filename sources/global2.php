@@ -1730,7 +1730,7 @@ function get_base_url($https = null, $zone_for = null)
         $script_name_path = dirname(isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '');
         $script_name_path = str_replace(DIRECTORY_SEPARATOR, '/', $script_name_path);
         if (($GLOBALS['RELATIVE_PATH'] === '') || (strpos($script_name_path, $GLOBALS['RELATIVE_PATH']) !== false)) {
-            $script_name_path = preg_replace('#/' . preg_quote($GLOBALS['RELATIVE_PATH'], '#') . '$#', '', $script_name_path);
+            $script_name_path = preg_replace('#(^|/)' . preg_quote($GLOBALS['RELATIVE_PATH'], '#') . '$#', '', $script_name_path);
         } else {
             $cnt = substr_count($GLOBALS['RELATIVE_PATH'], '/');
             for ($i = 0; $i <= $cnt; $i++) {

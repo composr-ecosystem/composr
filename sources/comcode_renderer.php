@@ -2302,21 +2302,30 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         }
                     } elseif ((addon_installed('galleries')) && (is_video($original_filename, $as_admin, true)) && (url_is_local($url))) {
                         require_code('galleries2');
-                        $attributes['thumb_url'] = create_video_thumb(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url);
+                        $attributes['thumb_url'] = video_get_default_thumb_url(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url);
                     }
                 }
 
                 // Width/height auto-detection
                 if ((addon_installed('galleries')) && (is_video($original_filename, $as_admin)) && (url_is_local($url))) {
                     require_code('galleries2');
-                    $vid_details = url_is_local($url) ? get_video_details(get_custom_file_base() . '/' . rawurldecode($url), $original_filename, true) : false;
+                    if (url_is_local($url)) {
+                        $vid_details = video_get_default_metadata($url, '', $original_filename);
+                    } else {
+                        $vid_details = false;
+                    }
+
                     if ($vid_details !== false) {
-                        list($_width, $_height,) = $vid_details;
-                        if ((!array_key_exists('width', $attributes)) || ($attributes['width'] == '')) {
-                            $attachment_row['width'] = strval($_width);
+                        list($_width, $_height) = $vid_details;
+                        if ($_width !== null) {
+                            if ((!array_key_exists('width', $attributes)) || ($attributes['width'] == '')) {
+                                $attachment_row['width'] = strval($_width);
+                            }
                         }
-                        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] == '')) {
-                            $attachment_row['height'] = strval($_height);
+                        if ($_height !== null) {
+                            if ((!array_key_exists('height', $attributes)) || ($attributes['height'] == '')) {
+                                $attachment_row['height'] = strval($_height);
+                            }
                         }
                     }
                 }

@@ -57,10 +57,9 @@ class Hook_task_import_gallery_media
 
         task_log($this, 'Processing ' . integer_format(count($files)) . ' files for importing into gallery ' . $cat);
 
-        foreach ($files as $path => $file) {
+        foreach ($files as $path => $filename) {
             if ((is_image($path, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous'))) || (is_video($path, has_privilege($member_id, 'comcode_dangerous')))) {
-                list($new_path, $new_url, $new_filename) = find_unique_path('uploads/galleries', filter_naughty($file), true);
-                list(, $thumb_url) = find_unique_path('uploads/galleries_thumbs', filter_naughty($file), true);
+                list($new_path, $new_url, $new_filename) = find_unique_path('uploads/galleries', filter_naughty($filename), true);
 
                 // Store on server
                 if (rename($path, $new_path) === false) {
@@ -72,7 +71,7 @@ class Hook_task_import_gallery_media
 
                 // Post-process
                 require_code('uploads');
-                $test = handle_upload_post_processing(is_image($path, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous')) ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_VIDEO, $new_path, 'uploads/galleries', $file, 0);
+                $test = handle_upload_post_processing(is_image($path, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous')) ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_VIDEO, $new_path, 'uploads/galleries', $filename, 0);
                 if ($test !== null) {
                     unlink($new_path);
                     sync_file($new_path);
@@ -80,7 +79,7 @@ class Hook_task_import_gallery_media
                 }
 
                 // Add to database
-                $import_details = add_gallery_media_wrap($new_url, $thumb_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $new_filename);
+                $import_details = add_gallery_media_wrap($new_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $new_filename);
 
                 if ($import_details !== null) {
                     $media_imported[] = $import_details;
@@ -108,6 +107,7 @@ class Hook_task_import_gallery_media
         }
 
         $ret = do_lang_tempcode('GALLERY_IMPORT_SUCCESS_EDIT_TITLES_INLINE', escape_html(integer_format(count($media_imported))));
+
         return ['text/html', $ret];
     }
 }

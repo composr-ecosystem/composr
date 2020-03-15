@@ -61,7 +61,6 @@ class Hook_task_import_orphaned_gallery_media
         foreach ($files as $url => $filename) {
             if ((is_image($url, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous'))) || (is_video($url, has_privilege($member_id, 'comcode_dangerous')))) {
                 list($target_path, $target_url, $target_filename) = find_unique_path('uploads/galleries', filter_naughty($filename), true);
-                list(, $thumb_url) = find_unique_path('uploads/galleries_thumbs', filter_naughty($filename), true);
                 if (rename($url, $target_path) === false) {
                     intelligent_write_error($target_path);
                 }
@@ -69,7 +68,7 @@ class Hook_task_import_orphaned_gallery_media
                 sync_file_move($url, $target_path);
 
                 // Add to database
-                $import_details = add_gallery_media_wrap($target_url, $thumb_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $target_filename);
+                $import_details = add_gallery_media_wrap($target_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $target_filename);
 
                 if ($import_details !== null) {
                     $media_imported[] = $import_details;

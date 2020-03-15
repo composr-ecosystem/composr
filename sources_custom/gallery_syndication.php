@@ -282,7 +282,7 @@ function _sync_onlylocal_video($ob, $local_video)
         // Now copy over thumbnail, if applicable
         if ((find_theme_image('video_thumb', true) === $local_video['thumb_url']) || ($local_video['thumb_url'] == '')) { // Is currently on default thumb (i.e. none explicitly chosen)
             require_code('galleries2');
-            $thumb_url = create_video_thumb($remote_video['url']);
+            $thumb_url = video_get_default_thumb_url($remote_video['url']);
             $GLOBALS['SITE_DB']->query_update('videos', ['thumb_url' => $thumb_url], ['id' => $local_video['local_id']], '', 1);
         }
     }

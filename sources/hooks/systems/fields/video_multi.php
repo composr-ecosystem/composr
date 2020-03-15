@@ -242,7 +242,7 @@ class Hook_fields_video_multi
                         require_code('galleries');
                         require_code('galleries2');
 
-                        $thumb_url = create_video_thumb($ev);
+                        $thumb_url = video_get_default_thumb_url($ev);
                     } else {
                         $thumb_url = '';
                     }
@@ -256,7 +256,7 @@ class Hook_fields_video_multi
                         $height = intval(get_option('attachment_default_height'));
                         $length = 0;
                     } else {
-                        list($width, $height, $length) = get_video_details(get_custom_file_base() . '/' . rawurldecode($stripped_ev), basename($stripped_ev));
+                        list($width, $height, $length) = video_get_default_metadata($stripped_ev);
                     }
 
                     if ($value != '') {

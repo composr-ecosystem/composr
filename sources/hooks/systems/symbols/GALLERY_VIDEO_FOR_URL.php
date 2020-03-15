@@ -42,49 +42,31 @@ class Hook_symbol_GALLERY_VIDEO_FOR_URL
             if (strpos($url, ' ') !== false) {
                 $url = rawurlencode(str_replace('%2F', '/', $url)); // In case was not properly encoded as URL
             }
-            if ((url_is_local($url)) && (is_file(get_custom_file_base() . '/' . rawurldecode($url)))) {
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'id', ['url' => $url]);
-                if ($test !== null) {
-                    $value = strval($test);
-                } else {
-                    require_code('galleries2');
-                    require_code('exif');
 
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'id', ['url' => $url]);
+            if ($test !== null) {
+                $value = strval($test);
+            } else {
+                require_code('galleries2');
+                list($width, $height, $length, $title, $cat) = video_get_default_metadata($url);
+
+                if (!empty($param[1])) {
+                    $title = $param[1];
+                }
+
+                if (!empty($param[2])) {
+                    $cat = $param[2];
+                }
+
+                if (($width !== null) && ($height !== null) && ($length !== null) && ($title != '') && ($cat != '')) {
+                    require_code('galleries2');
                     require_lang('galleries');
 
-                    $file = rawurldecode(basename($url));
+                    $allow_rating = isset($param[3]) ? ((intval($param[3]) == 1) ? 1 : 0) : 1;
+                    $allow_comments = isset($param[4]) ? ((intval($param[4]) == 1) ? 1 : 0) : 1;
+                    $allow_trackbacks = isset($param[5]) ? ((intval($param[5]) == 1) ? 1 : 0) : 1;
 
-                    $ret = get_video_details(get_custom_file_base() . '/' . rawurldecode($url), $file, true);
-                    if ($ret !== false) {
-                        list($width, $height, $length) = $ret;
-                        if ($width === null) {
-                            $width = intval(get_option('default_video_width'));
-                        }
-                        if ($height === null) {
-                            $height = intval(get_option('default_video_height'));
-                        }
-                        if ($length === null) {
-                            $length = 0;
-                        }
-                        $exif = get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file);
-
-                        $title = isset($param[1]) ? $param[1] : '';
-                        if ($title == '') {
-                            $title = $exif['UserComment'];
-                        }
-
-                        $cat = isset($param[2]) ? $param[1] : '';
-                        if ($cat == '') {
-                            $cat = 'root';
-                        }
-
-                        $allow_rating = isset($param[3]) ? ((intval($param[3]) == 1) ? 1 : 0) : 1;
-                        $allow_comments = isset($param[4]) ? ((intval($param[4]) == 1) ? 1 : 0) : 1;
-                        $allow_trackbacks = isset($param[5]) ? ((intval($param[5]) == 1) ? 1 : 0) : 1;
-
-                        $id = add_video($title, $cat, '', $url, '', 1, $allow_rating, $allow_comments, $allow_trackbacks, do_lang('VIDEO_WAS_AUTO_IMPORTED'), $length, $width, $height);
-                        store_exif('video', strval($id), $exif);
-                    }
+                    $id = add_video($title, $cat, '', $url, '', 1, $allow_rating, $allow_comments, $allow_trackbacks, do_lang('VIDEO_WAS_AUTO_IMPORTED'), $length, $width, $height);
                 }
             }
         }

@@ -41,7 +41,6 @@ class Hook_preview_video
      */
     public function run()
     {
-        require_code('uploads');
         require_code('galleries');
         require_code('galleries2');
 
@@ -53,12 +52,28 @@ class Hook_preview_video
         } else {
             $object = object_factory('Module_' . filter_naughty_harsh('cms_galleries'));
         }
-        list($width, $height, $length) = get_special_video_info();
 
-        $filename = '';
-        $thumb_url = '';
-        $url = post_param_multi_source_upload('video', 'uploads/galleries', false, false, $filename, $thumb_url);
-        $closed_captions_url = post_param_multi_source_upload('closed_captions_url', 'uploads/galleries', false, false);
+        list(
+            $url,
+            $thumb_url,
+            $filename,
+            $width,
+            $height,
+            $length,
+            $closed_captions_url,
+        ) = video_get_defaults__post();
+
+        if ($url == '') {
+            if (post_param_integer('id', null) !== null) {
+                $rows = $GLOBALS['SITE_DB']->query_select('videos', ['url', 'thumb_url'], ['id' => post_param_integer('id')], '', 1);
+                $urls = $rows[0];
+
+                $url = $urls['url'];
+                $thumb_url = $urls['thumb_url'];
+            } else {
+                warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+            }
+        }
 
         $preview = show_gallery_video_media($url, $thumb_url, $width, $height, $length, get_member(), $closed_captions_url);
 

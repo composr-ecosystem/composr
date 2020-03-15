@@ -71,8 +71,12 @@ function cms_getimagesize_url($url, $only_if_local = false)
             $ext = null;
         }
 
+        $_details = cms_getimagesizefromstring($http_result->data, $ext);
+        if ($_details === false) {
+            return false;
+        }
         $details = array_merge(
-            cms_getimagesizefromstring($http_result->data, $ext),
+            $_details,
             [
                 $http_result->download_size,
                 $ext
@@ -339,7 +343,7 @@ function ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thumb
                 } else {
                     if (addon_installed('galleries')) {
                         require_code('galleries2');
-                        create_video_thumb($full_url, $thumb_path);
+                        video_get_default_thumb_url($full_url, $thumb_path);
                     }
                 }
             }
@@ -822,19 +826,22 @@ function cms_imagesave($image, $path, $ext = null, $lossy = false, &$unknown_for
 /**
  * Get the path to a matching closed captions file, so long as the URL is under a given scope.
  *
- * @param  URLPATH $url_direct_filesystem Direct URL to the video
- * @param  string $scope_limit Only operate under this file path
+ * @param  URLPATH $url URL to the video
+ * @param  string $scope_limit Only operate under this file path (relative to the base directory)
  * @return ?URLPATH Path to the closed captions URL file (null: did not find a file)
  */
-function get_matching_closed_captions_file($url_direct_filesystem, $scope_limit = 'uploads/')
+function get_matching_closed_captions_file($url, $scope_limit = 'uploads/')
 {
-    $__url = rawurldecode($url_direct_filesystem);
-    if (substr($__url, 0, strlen($scope_limit)) == $scope_limit) {
-        $ext = get_file_extension($__url);
-        $base_path = substr($__url, 0, strlen($__url) - strlen($ext) - 1);
+    $path = convert_url_to_path($url);
+    $stem = get_custom_file_base() . '/' . $scope_limit . '/';
+    if (substr($path, 0, strlen($stem)) == $stem) {
+        require_code('files');
+        $ext = get_file_extension($path);
+        $base_path = substr($path, 0, strlen($path) - strlen($ext) - 1);
         foreach (['vtt'] as $subtitle_type) {
-            if (is_file(get_custom_file_base() . '/' . $base_path . '.' . $subtitle_type)) {
-                return get_custom_base_url() . '/' . $base_path . '.' . $subtitle_type;
+            if (is_file($base_path . '.' . $subtitle_type)) {
+                $_base_path = substr($base_path, strlen(get_custom_file_base()) + 1);
+                return str_replace('%2F', '/', rawurlencode($_base_path . '.' . $subtitle_type));
             }
         }
     }

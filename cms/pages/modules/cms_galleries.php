@@ -351,7 +351,8 @@ class Module_cms_galleries extends Standard_crud_module
         // To choose to batch import from multiple attached files
         $post_url = build_url(['page' => '_SELF', 'type' => '__import', 'cat' => $cat, 'uploading' => 1, 'redirect' => protect_url_parameter(get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL))], '_SELF');
         $fields = new Tempcode();
-        $fields->attach(form_input_upload_multi(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_ARCHIVE_MEDIA', escape_html(str_replace(',', ', ', get_option('valid_images') . ',' . get_allowed_video_file_types()))), 'file', true, null, null, true, str_replace(' ', '', get_option('valid_images'))));
+        $supported = get_option('valid_images') . ',' . get_allowed_video_file_types();
+        $fields->attach(form_input_upload_multi(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_ARCHIVE_MEDIA', escape_html(str_replace(',', ', ', $supported))), 'file', true, null, null, true, str_replace(' ', '', $supported)));
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_GALLERY_IMPORT_TITLE'), 'set_title', '', get_option('gallery_media_title_required') == '2'));
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
@@ -938,16 +939,21 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function add_actualisation()
     {
-        $title = post_param_string('title', '');
-        $description = post_param_string('description', '');
-
-        $cat = post_param_string('cat');
+        list(
+            $url,
+            $thumb_url,
+            $filename,
+            $title,
+            $cat,
+        ) = image_get_defaults__post();
 
         if (can_submit_to_gallery($cat) === false) {
             access_denied('SUBMIT_HERE');
         }
         make_member_gallery_if_needed($cat);
         $this->check_images_allowed($cat);
+
+        $description = post_param_string('description', '');
 
         $validated = post_param_integer('validated', 0);
         $allow_rating = post_param_integer('allow_rating', 0);
@@ -960,11 +966,6 @@ class Module_cms_galleries extends Standard_crud_module
         $watermark = (post_param_integer('watermark', 0) == 1);
         $watermarks = $watermark ? find_gallery_watermarks($cat) : null;
         set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
-
-        $filename = '';
-        $thumb_url = '';
-        require_code('themes2');
-        $url = post_param_image('image', 'uploads/galleries', null, true, false, $filename, $thumb_url);
 
         reset_images_cleanup_pipeline_settings();
 
@@ -1023,10 +1024,14 @@ class Module_cms_galleries extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $title = post_param_string('title');
-        $description = post_param_string('description', STRING_MAGIC_NULL);
+        list(
+            $url,
+            $thumb_url,
+            $filename,
+            $title,
+            $cat,
+        ) = image_get_defaults__post(true);
 
-        $cat = post_param_string('cat', STRING_MAGIC_NULL);
         if ($cat != STRING_MAGIC_NULL) {
             if (can_submit_to_gallery($cat) === false) {
                 access_denied('SUBMIT_HERE');
@@ -1035,6 +1040,8 @@ class Module_cms_galleries extends Standard_crud_module
             make_member_gallery_if_needed($cat);
             $this->check_images_allowed($cat);
         }
+
+        $description = post_param_string('description', STRING_MAGIC_NULL);
 
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
@@ -1045,16 +1052,8 @@ class Module_cms_galleries extends Standard_crud_module
         set_images_cleanup_pipeline_settings(IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
 
         if (!fractional_edit()) {
-            $filename = '';
-            $thumb_url = '';
-            require_code('themes2');
-            $url = post_param_image('image', 'uploads/galleries', null, true, true, $filename, $thumb_url);
-
             require_code('upload_syndication');
             $url = handle_upload_syndication('image__upload', $title, $description, $url, $filename, false);
-        } else {
-            $url = STRING_MAGIC_NULL;
-            $thumb_url = STRING_MAGIC_NULL;
         }
 
         reset_images_cleanup_pipeline_settings();
@@ -1342,7 +1341,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $supported = get_allowed_video_file_types();
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('VIDEO'), '', $hidden, 'video', null, true, $url));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('VIDEO'), '', $hidden, 'video', null, true, $url, false, $supported));
 
         if ($validated == 0) {
             $validated = get_param_integer('validated', 0);
@@ -1502,10 +1501,17 @@ class Module_cms_galleries_alt extends Standard_crud_module
      */
     public function add_actualisation()
     {
-        $title = post_param_string('title');
-        $description = post_param_string('description', '');
-
-        $cat = post_param_string('cat');
+        list(
+            $url,
+            $thumb_url,
+            $filename,
+            $video_width,
+            $video_height,
+            $video_length,
+            $closed_captions_url,
+            $title,
+            $cat,
+        ) = video_get_defaults__post();
 
         if (can_submit_to_gallery($cat) === false) {
             access_denied('SUBMIT_HERE');
@@ -1513,37 +1519,19 @@ class Module_cms_galleries_alt extends Standard_crud_module
         make_member_gallery_if_needed($cat);
         $this->check_videos_allowed($cat);
 
+        $description = post_param_string('description', '');
+
         $validated = post_param_integer('validated', 0);
         $allow_rating = post_param_integer('allow_rating', 0);
         $allow_comments = post_param_integer('allow_comments', 0);
         $notes = post_param_string('notes', '');
         $allow_trackbacks = post_param_integer('allow_trackbacks', 0);
 
-        $closed_captions_url = post_param_multi_source_upload('closed_captions_url', 'uploads/galleries', false, false);
-
-        $filename = '';
-        $thumb_url = '';
-        $url = post_param_multi_source_upload('video', 'uploads/galleries', false, false, $filename, $thumb_url);
-
-        if (($thumb_url == '') && ($url != '')) {
-            $thumb_url = create_video_thumb($url);
-            if ($thumb_url == '') {
-                warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_THUMBNAIL'));
-            }
-        }
-
-        if (($url == '') || ($thumb_url == '')) {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
-        }
-
         $this->donext_type = $cat;
 
         $metadata = actual_metadata_get_fields('video', null);
 
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
-
-        require_code('galleries2');
-        list($video_width, $video_height, $video_length) = get_special_video_info();
 
         $id = add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $closed_captions_url, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
 
@@ -1587,10 +1575,18 @@ class Module_cms_galleries_alt extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $title = post_param_string('title');
-        $description = post_param_string('description', STRING_MAGIC_NULL);
+        list(
+            $url,
+            $thumb_url,
+            $filename,
+            $video_width,
+            $video_height,
+            $video_length,
+            $closed_captions_url,
+            $title,
+            $cat,
+        ) = video_get_defaults__post(true);
 
-        $cat = post_param_string('cat', STRING_MAGIC_NULL);
         if ($cat != STRING_MAGIC_NULL) {
             if (can_submit_to_gallery($cat) === false) {
                 access_denied('SUBMIT_HERE');
@@ -1599,42 +1595,14 @@ class Module_cms_galleries_alt extends Standard_crud_module
             $this->check_videos_allowed($cat);
         }
 
+        $description = post_param_string('description', STRING_MAGIC_NULL);
+
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
-
-        if (!fractional_edit()) {
-            $filename = '';
-            $thumb_url = '';
-            $url = post_param_multi_source_upload('video', 'uploads/galleries', true, true, $filename, $thumb_url, CMS_UPLOAD_VIDEO);
-            $closed_captions_url = post_param_multi_source_upload('closed_captions_url', 'uploads/galleries', false, true);
-
-            if (($thumb_url == '') && ($url != '')) {
-                $thumb_url = create_video_thumb($url);
-            }
-
-            if ($thumb_url == '') {
-                $rows = $GLOBALS['SITE_DB']->query_select('videos', ['url', 'thumb_url'], ['id' => $id], '', 1);
-                $thumb_url = $rows[0]['thumb_url'];
-            }
-            if (($url == '') || ($thumb_url == '')) {
-                warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
-            }
-        } else {
-            $url = STRING_MAGIC_NULL;
-            $thumb_url = STRING_MAGIC_NULL;
-            $closed_captions_url = STRING_MAGIC_NULL;
-        }
 
         $allow_rating = post_param_integer('allow_rating', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $allow_comments = post_param_integer('allow_comments', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $notes = post_param_string('notes', fractional_edit() ? STRING_MAGIC_NULL : '');
         $allow_trackbacks = post_param_integer('allow_trackbacks', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
-
-        require_code('galleries2');
-        if (!fractional_edit()) {
-            list($video_width, $video_height, $video_length) = get_special_video_info();
-        } else {
-            list($video_width, $video_height, $video_length) = [INTEGER_MAGIC_NULL, INTEGER_MAGIC_NULL, INTEGER_MAGIC_NULL];
-        }
 
         $this->donext_type = $cat;
 

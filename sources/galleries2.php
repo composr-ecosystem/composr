@@ -21,16 +21,565 @@
 /*EXTRA FUNCTIONS: shell_exec*/
 
 /**
+ * Standard code module initialisation function.
+ *
+ * @ignore
+ */
+function init__galleries2()
+{
+    if (!defined('DEFAULT_AUDIO_WIDTH')) {
+        define('DEFAULT_AUDIO_WIDTH', 300);
+        define('DEFAULT_AUDIO_HEIGHT', 60);
+    }
+}
+
+/**
+ * Get image details from POST environment and details/metadata.
+ *
+ * @param  boolean $is_edit Whether this is for an edit operation
+ * @param  URLPATH $url URL to the image (blank: not known yet, calculate here if possible)
+ * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet, calculate here if possible)
+ * @param  ?string $filename Filename of image (null: not known yet, calculate here if possible)
+ * @param  string $title Title of image (blank: not known yet, calculate here if possible)
+ * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
+ * @return array Tuple of image details
+ */
+function image_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', $filename = null, $title = '', $cat = '')
+{
+    if (($is_edit) && (fractional_edit())) {
+        if ($title == '') {
+            $title = post_param_string('title', '');
+        }
+        if (($title == '') && (get_option('gallery_media_title_required') != '0')) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'title'));
+        }
+
+        return [
+            STRING_MAGIC_NULL,
+            STRING_MAGIC_NULL,
+            STRING_MAGIC_NULL,
+            $title,
+            STRING_MAGIC_NULL,
+        ];
+    }
+
+    require_code('uploads');
+
+    if (($url == '') || ($thumb_url == '')) {
+        $_filename = '';
+        $_thumb_url = '';
+        require_code('themes2');
+        $_url = post_param_image('image', 'uploads/galleries', null, true, $is_edit, $_filename, $_thumb_url);
+        if ($url == '') {
+            if ($_url != '') {
+                $url = $_url;
+            }
+        }
+        if ($url == '') {
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+        }
+        if ($thumb_url == '') {
+            if ($_thumb_url != '') {
+                $thumb_url = $_thumb_url;
+            }
+        }
+        if ($filename === null) {
+            if ($_filename != '') {
+                $filename = $_filename;
+            }
+        }
+    }
+
+    $thumb_url = image_get_default_thumb_url($url, $thumb_url, $filename);
+    if ($thumb_url == '') {
+        warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+    }
+
+    if ($title == '') {
+        $title = post_param_string('title', '');
+    }
+
+    list(
+        $title,
+        $cat,
+    ) = image_get_default_metadata($url, $thumb_url, $filename, $title, $cat);
+    if (($title == '') && (get_option('gallery_media_title_required') != '0')) {
+        warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'title'));
+    }
+    if ($cat == '') {
+        warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'cat'));
+    }
+
+    return [
+        $url,
+        $thumb_url,
+        $filename,
+        $title,
+        $cat,
+    ];
+}
+
+/**
+ * Get image details from metadata.
+ *
+ * @param  URLPATH $url URL to the image (blank: not known yet)
+ * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet)
+ * @param  ?string $filename Filename of image (null: not known yet)
+ * @param  string $title Title of image (blank: not known yet, calculate here if possible)
+ * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
+ * @return array Tuple of image details
+ */
+function image_get_default_metadata($url = '', $thumb_url = '', $filename = null, $title = '', $cat = '')
+{
+    if ($title == '') {
+        if ($url != '') {
+            $path = convert_url_to_path($url);
+            if ($path !== null) {
+                require_code('exif');
+                $exif = get_exif_data($path, $filename);
+                if ($exif['UserComment'] != '') {
+                    $title = $exif['UserComment'];
+                }
+            }
+        }
+    }
+
+    if ($cat == '') {
+        $cat = 'root';
+    }
+
+    return [
+        $title,
+        $cat,
+    ];
+}
+
+/**
+ * Create an image thumbnail.
+ *
+ * @param  URLPATH $url URL to the image (blank: not known yet)
+ * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet, calculate here if possible)
+ * @param  ?string $filename Filename of image (null: not known yet, calculate here if possible)
+ * @return URLPATH Thumbnail URL (blank: could not generate)
+ */
+function image_get_default_thumb_url($url = '', $thumb_url = '', $filename = null)
+{
+    if ($thumb_url == '') {
+        if ($url != '') {
+            if ($filename === null) {
+                $filename = rawurldecode(basename($url));
+            }
+            if (empty($filename)) {
+                $filename = get_secure_random_string() . '.png';
+            }
+
+            list($thumb_path, $thumb_url) = find_unique_path('uploads/galleries_thumbs', filter_naughty($filename), true);
+            $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), true);
+        }
+    }
+
+    return $thumb_url;
+}
+
+/**
+ * Get video details from POST environment and details/metadata.
+ *
+ * @param  boolean $is_edit Whether this is for an edit operation
+ * @param  URLPATH $url URL to the video (blank: not known yet, calculate here if possible)
+ * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet, calculate here if possible)
+ * @param  ?string $filename Filename of video (null: not known yet, calculate here if possible)
+ * @param  ?integer $video_width Video width (null: not known yet, calculate here if possible)
+ * @param  ?integer $video_height Video height (null: not known yet, calculate here if possible)
+ * @param  ?integer $video_length Video length (null: not known yet, calculate here if possible)
+ * @param  URLPATH $closed_captions_url Video width (blank: not known yet, calculate here if possible)
+ * @param  string $title Title of video (blank: not known yet, calculate here if possible)
+ * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
+ * @return array Tuple of video details
+ */
+function video_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', $filename = null, $video_width = null, $video_height = null, $video_length = null, $closed_captions_url = '', $title = '', $cat = '')
+{
+    if (($is_edit) && (fractional_edit())) {
+        $title = post_param_string('title', '');
+        if (($title == '') && (get_option('gallery_media_title_required') != '0')) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'title'));
+        }
+
+        return [
+            $title,
+            STRING_MAGIC_NULL,
+            STRING_MAGIC_NULL,
+            STRING_MAGIC_NULL,
+            STRING_INTEGER_NULL,
+            STRING_INTEGER_NULL,
+            STRING_INTEGER_NULL,
+            STRING_MAGIC_NULL,
+            STRING_MAGIC_NULL,
+            STRING_MAGIC_NULL,
+        ];
+    }
+
+    require_code('uploads');
+
+    if (($url == '') || ($thumb_url == '')) {
+        $_filename = '';
+        $_thumb_url = '';
+        $_url = post_param_multi_source_upload('video', 'uploads/galleries', false, $is_edit, $_filename, $_thumb_url, CMS_UPLOAD_VIDEO);
+        if ($url == '') {
+            if ($_url != '') {
+                $url = $_url;
+            }
+        }
+        if ($url == '') {
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+        }
+        if ($thumb_url == '') {
+            if ($_thumb_url != '') {
+                $thumb_url = $_thumb_url;
+            }
+        }
+        if ($filename === null) {
+            if ($_filename != '') {
+                $filename = $_filename;
+            }
+        }
+    }
+
+    $thumb_url = video_get_default_thumb_url($url, $thumb_url, $filename);
+    if ($thumb_url == '') {
+        warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+    }
+
+    if ($title == '') {
+        $title = post_param_string('title', '');
+    }
+
+    list(
+        $video_width,
+        $video_height,
+        $video_length,
+        $title,
+        $cat,
+    ) = video_get_default_metadata($url, $thumb_url, $filename, $video_width, $video_height, $video_length, $title, $cat);
+
+    if (($title == '') && (get_option('gallery_media_title_required') != '0')) {
+        warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'title'));
+    }
+    if ($cat == '') {
+        warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'cat'));
+    }
+
+    $closed_captions_url = post_param_multi_source_upload('closed_captions_url', 'uploads/galleries', false, $is_edit);
+
+    if ($closed_captions_url == '') {
+        if ($url != '') {
+            require_code('images');
+            $closed_captions_url = get_matching_closed_captions_file($url);
+            if ($closed_captions_url === null) {
+                $closed_captions_url = '';
+            }
+        }
+    }
+
+    return [
+        $url,
+        $thumb_url,
+        $filename,
+        $video_width,
+        $video_height,
+        $video_length,
+        $closed_captions_url,
+        $title,
+        $cat,
+    ];
+}
+
+/**
+ * Create a video thumbnail.
+ *
+ * @param  URLPATH $url URL to the video (blank: not known yet)
+ * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet, calculate here if possible)
+ * @param  ?string $filename Filename of video (null: not known yet, calculate here if possible)
+ * @return URLPATH Thumbnail URL (blank: could not generate)
+ */
+function video_get_default_thumb_url($url = '', $thumb_url = '', $filename = null)
+{
+    require_code('crypt');
+    require_code('images');
+    require_code('files');
+    require_code('media_renderer');
+    require_code('http');
+
+    if ($url != '') {
+        if ($filename === null) {
+            if ($url != '') {
+                $filename = rawurldecode(basename($url));
+            }
+        }
+        $image_filename = null;
+        if ($filename !== null) {
+            $image_filename = basename($filename, '.' . get_file_extension($filename)) . '.png';
+        }
+        if (empty($image_filename)) {
+            $image_filename = get_secure_random_string() . '.png';
+        }
+
+        // Try to find a hook that can get a thumbnail easily
+        $hooks = find_media_renderers($url, [], true, null);
+        if ($hooks !== null) {
+            foreach ($hooks as $hook) {
+                $ve_ob = object_factory('Hook_media_rendering_' . filter_naughty_harsh($hook));
+                if (method_exists($ve_ob, 'get_video_thumbnail')) {
+                    $ret = $ve_ob->get_video_thumbnail($url);
+                    if ($ret !== null) {
+                        return $ret;
+                    }
+                }
+            }
+        }
+
+        // oEmbed etc
+        $meta_details = get_webpage_meta_details($url);
+        if ($meta_details['t_image_url'] != '') {
+            return $meta_details['t_image_url'];
+        }
+
+        // Audio default
+        if (is_audio($filename, true, true)) {
+            return find_theme_image('audio_thumb', true);
+        }
+
+        // Ok, gonna try hard using what FFMPEG techniques we can...
+
+        $path = convert_url_to_path($url);
+        if ($path !== null) {
+            if (class_exists('ffmpeg_movie')) {
+                $movie = @(new ffmpeg_movie($path, false));
+                if ($movie !== false) {
+                    if ($movie->getFrameCount() == 0) {
+                        return '';
+                    }
+
+                    $frame = $movie->getFrame(min($movie->getFrameCount(), 25));
+                    $gd_img = $frame->toGDImage();
+
+                    list($output_path, $thumb_url) = find_unique_path('uploads/galleries_thumbs', filter_naughty($filename), true);
+
+                    if (method_exists($frame, 'toGDImage')) {
+                        $gd_img = $frame->toGDImage();
+                        @imagepng($gd_img, $output_path);
+                    } else {
+                        $frame->save($output_path); // New-style
+                    }
+
+                    if (file_exists($output_path)) {
+                        convert_image($output_path, $output_path, null, null, intval(get_option('thumb_width')), true, null, true);
+                        return $thumb_url;
+                    }
+                }
+            }
+
+            $ffmpeg_path = get_option('ffmpeg_path');
+            if (($ffmpeg_path != '') && (php_function_allowed('shell_exec'))) {
+                list($output_path, $thumb_url) = find_unique_path('uploads/galleries_thumbs', filter_naughty($filename), true);
+
+                $at = '00:00:01';
+                $shell_command = '"' . $ffmpeg_path . 'ffmpeg" -i ' . cms_escapeshellarg($path) . ' -an -ss ' . $at . ' -r 1 -vframes 1 -y ' . cms_escapeshellarg($output_path);
+
+                $shell_commands = [$shell_command, $shell_command . ' -map 0.0:0.0', $shell_command . ' -map 0.1:0.0'];
+                foreach ($shell_commands as $shell_command) {
+                    shell_exec($shell_command);
+                    if (@filesize($output_path)) {
+                        break;
+                    }
+                }
+
+                if (file_exists($output_path)) {
+                    convert_image($output_path, $output_path, null, null, intval(get_option('thumb_width')), true, null, true);
+                    return $thumb_url;
+                }
+            }
+        }
+    } else {
+        // Audio default
+        if (is_audio($filename, true, true)) {
+            return find_theme_image('audio_thumb', true);
+        }
+    }
+
+    // Default
+    return find_theme_image('video_thumb', true);
+}
+
+/**
+ * Get video details from metadata.
+ *
+ * @param  URLPATH $url URL to the video (blank: not known yet)
+ * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet)
+ * @param  ?string $filename Filename of video (null: not known yet, calculate here if possible)
+ * @param  ?integer $video_width Video width (null: not known yet, calculate here if possible)
+ * @param  ?integer $video_height Video height (null: not known yet, calculate here if possible)
+ * @param  ?integer $video_length Video length (null: not known yet, calculate here if possible)
+ * @param  string $title Title of video (blank: not known yet, calculate here if possible)
+ * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
+ * @return array Tuple of video details
+ */
+function video_get_default_metadata($url = '', $thumb_url = '', $filename = null, $video_width = null, $video_height = null, $video_length = null, $title = '', $cat = '')
+{
+    if ($url != '') {
+        if (($video_width === null) || ($video_height === null) || ($video_length === null)) {
+            $path = convert_url_to_path($url);
+            if ($path === null) {
+                $download_test = null;
+                $temp_path = null;
+                if ($url != '') {
+                    $temp_path = cms_tempnam();
+                    $write_to_file = fopen($temp_path, 'wb');
+                    $download_test = cms_http_request($url, ['byte_limit' => 1024 * 50, 'trigger_error' => false, 'write_to_file' => $write_to_file]);
+                    rewind($write_to_file);
+                    fclose($write_to_file);
+                }
+                if (($download_test !== null) && ($download_test->data !== null)) {
+                    if ($download_test->filename !== null) {
+                        $filename = $download_test->filename;
+                    }
+                    list(
+                        $meta_video_width,
+                        $meta_video_height,
+                        $meta_video_length,
+                    ) = get_video_details_from_file($temp_path, $filename);
+                } else {
+                    list(
+                        $meta_video_width,
+                        $meta_video_height,
+                        $meta_video_length,
+                    ) = [null, null, null];
+                }
+
+                if ($temp_path !== null) {
+                    @unlink($temp_path);
+                }
+            } else {
+                list(
+                    $meta_video_width,
+                    $meta_video_height,
+                    $meta_video_length,
+                ) = get_video_details_from_file($path, $filename, true);
+            }
+
+            if ($video_width === null) {
+                if ($meta_video_width !== null) {
+                    $video_width = $meta_video_width;
+                }
+            }
+            if ($video_height === null) {
+                if ($meta_video_height !== null) {
+                    $video_height = $meta_video_height;
+                }
+            }
+            if ($video_length === null) {
+                if ($meta_video_length !== null) {
+                    $video_length = $meta_video_length;
+                }
+            }
+        }
+
+        if (($video_width === null) || ($video_height === null)) {
+            // Try oEmbed
+            require_code('media_renderer');
+            require_code('http');
+            $meta_details = get_webpage_meta_details($url);
+            require_code('hooks/systems/media_rendering/oembed');
+            $oembed_ob = object_factory('Hook_media_rendering_oembed');
+            if ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details) || $oembed_ob->recognises_url($url)) {
+                $oembed = $oembed_ob->get_oembed_data_result($url, ['width' => get_option('video_width_setting'), 'height' => get_option('video_height_setting')]);
+                if (isset($oembed['width'])) {
+                    if ($video_width === null) {
+                        $video_width = intval($oembed['width']);
+                    }
+                }
+                if (isset($oembed['height'])) {
+                    if ($video_height === null) {
+                        $video_height = intval($oembed['height']);
+                    }
+                }
+            }
+        }
+
+        if ($filename === null) {
+            $filename = rawurldecode(basename($url));
+        }
+    }
+
+    if ($filename !== null) {
+        if (($video_width === null) || ($video_height === null)) {
+            require_code('images');
+            $is_audio = is_audio($filename, true, true);
+        } else {
+            $is_audio = false;
+        }
+    } else {
+        $is_audio = false;
+    }
+
+    if ($video_width === null) {
+        if ($is_audio) {
+            $video_width = DEFAULT_AUDIO_WIDTH;
+        } else {
+            $video_width = intval(get_option('default_video_width'));
+        }
+    }
+    if ($video_height === null) {
+        if ($is_audio) {
+            $video_height = DEFAULT_AUDIO_HEIGHT;
+        } else {
+            $video_height = intval(get_option('default_video_height'));
+        }
+    }
+    if ($video_length === null) {
+        $video_length = 0;
+    }
+
+    if ($title == '') {
+        if ($url != '') {
+            $path = convert_url_to_path($url);
+            if ($path !== null) {
+                require_code('exif');
+                $exif = get_exif_data($path, $filename);
+                if ($exif['UserComment'] != '') {
+                    $title = $exif['UserComment'];
+                }
+            }
+        }
+    }
+
+    if ($cat == '') {
+        $cat = 'root';
+    }
+
+    return [
+        $video_width,
+        $video_height,
+        $video_length,
+        $title,
+        $cat,
+    ];
+}
+
+/**
  * Get width,height,length of a video file. Note: unfortunately mpeg is not possible without huge amounts of code.
  *
  * @param  PATH $file_path The path to the video file
- * @param  string $filename The original filename of the video file (so we can find the file type from the file extension)
+ * @param  ?string $filename The original filename of the video file (so we can find the file type from the file extension) (null: derive from $file_path)
  * @param  boolean $delay_errors Whether to skip over errored files instead of dying. We don't currently make use of this as our readers aren't sophisticated enough to properly spot erroneous situations.
  * @return ~array The triplet of width/height/length (possibly containing nulls for when we can't detect properties) (false: error)
  */
-function get_video_details($file_path, $filename, $delay_errors = false)
+function get_video_details_from_file($file_path, $filename, $delay_errors = false)
 {
     $info = null;
+
+    if ($filename === null) {
+        $filename = basename($file_path);
+    }
 
     $extension = get_file_extension($filename);
 
@@ -41,13 +590,6 @@ function get_video_details($file_path, $filename, $delay_errors = false)
     flock($file, LOCK_SH);
 
     switch ($extension) {
-        case 'wmv':
-        case 'asf':
-            $info = _get_wmv_details($file);
-            break;
-        case 'avi':
-            $info = _get_avi_details($file);
-            break;
         case 'qt':
         case 'mov':
         case 'f4v':
@@ -94,105 +636,9 @@ function get_video_details($file_path, $filename, $delay_errors = false)
     fclose($file);
 
     if ($info === null) {
-        require_code('mime_types');
-        $mime_type = get_mime_type($extension, true);
-        if (substr($mime_type, 0, 6) == 'audio/') {
-            $info = [intval(get_option('video_width_setting')), 20, null];
-        }
-    }
-
-    if ($info === null) {
         return [null, null, null];
     }
     return $info;
-}
-
-/**
- * Extract video meta info from any uploaded video.
- *
- * @return array A triplet of 3 "?integer"'s: video width, video height, video length
- */
-function get_special_video_info()
-{
-    $video_length = post_param_integer('video_length', 0);
-    $video_width = post_param_integer('video_width', 0);
-    $video_height = post_param_integer('video_height', 0);
-    if (($video_width == 0) || ($video_height == 0) || ($video_length == 0)) {
-        is_plupload(true);
-        if (((array_key_exists('video__upload', $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES['video__upload']['tmp_name']))))) {
-            $filename = $_FILES['video__upload']['name'];
-            list($_video_width, $_video_height, $_video_length) = get_video_details($_FILES['video__upload']['tmp_name'], $filename);
-        } else {
-            $url = post_param_string('video__url', '', INPUT_FILTER_URL_GENERAL);
-            if ($url == '') {
-                return [null, null, null];
-            }
-
-            $_video_width = null;
-            $_video_height = null;
-
-            // Try oEmbed
-            require_code('media_renderer');
-            require_code('http');
-            $meta_details = get_webpage_meta_details($url);
-            require_code('hooks/systems/media_rendering/oembed');
-            $oembed_ob = object_factory('Hook_media_rendering_oembed');
-            if ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details) || $oembed_ob->recognises_url($url)) {
-                $oembed = $oembed_ob->get_oembed_data_result($url, ['width' => get_option('video_width_setting'), 'height' => get_option('video_height_setting')]);
-                if (isset($oembed['width'])) {
-                    $_video_width = intval($oembed['width']);
-                }
-                if (isset($oembed['height'])) {
-                    $_video_height = intval($oembed['height']);
-                }
-                $_video_length = null;
-            }
-
-            $filename = null;
-
-            // Try get_video_details
-            if (!isset($_video_width)) {
-                $download_test = null;
-                $temp_path = '';
-                if ($url != '') {
-                    $temp_path = cms_tempnam();
-                    $write_to_file = fopen($temp_path, 'wb');
-                    $download_test = cms_http_request($url, ['byte_limit' => 1024 * 50, 'trigger_error' => false, 'write_to_file' => $write_to_file]);
-                    rewind($write_to_file);
-                    fclose($write_to_file);
-                }
-                if (($download_test !== null) && ($download_test->data !== null)) {
-                    $filename = ($download_test->filename === null) ? basename(urldecode($url)) : $download_test->filename;
-                    list($_video_width, $_video_height, $_video_length) = get_video_details($temp_path, $filename);
-                } else {
-                    list($_video_width, $_video_height, $_video_length) = [null, null, null];
-                }
-
-                if ($temp_path != '') {
-                    @unlink($temp_path);
-                }
-            }
-        }
-
-        if ($filename !== null) {
-            if (is_audio($filename, true, true)) {
-                $_video_width = 300;
-                $_video_height = 60;
-            }
-        }
-
-        if ($video_width == 0) {
-            $video_width = ($_video_width === null) ? intval(get_option('default_video_width')) : $_video_width;
-        }
-        if ($video_height == 0) {
-            $video_height = ($_video_height === null) ? intval(get_option('default_video_height')) : $_video_height;
-        }
-        if ($video_length == 0) {
-            $video_length = ($_video_length === null) ? 0 : $_video_length;
-        }
-    }
-
-    return [$video_width, $video_height, $video_length];
 }
 
 /**
@@ -227,112 +673,6 @@ function read_network_endian_int($buffer)
         warn_exit(do_lang_tempcode('CORRUPT_FILE', do_lang('VIDEO'))); // Error
     }
     return ord($buffer[3]) | (ord($buffer[2]) << 8) | (ord($buffer[1]) << 16) | (ord($buffer[0]) << 24);
-}
-
-/**
- * Get width,height,length of a .wmv video file.
- *
- * @param  resource $file The file handle
- * @return array The triplet (possibly containing nulls for when we can't detect properties)
- * @ignore
- */
-function _get_wmv_details($file)
-{
-    // Read in chunks
-    list($_, $width, $height, $length) = _get_wmv_details_do_chunk_list($file);
-    return [$width, $height, $length];
-}
-
-/**
- * Get chunk-bytes-read,width,height,length of a chunk list of a .wmv video file.
- *
- * @param  resource $file The file handle
- * @param  ?integer $chunk_length The length of the current chunk list (null: covers full file)
- * @return ?array The quartet (possibly containing nulls for when we can't detect properties) (null: error)
- * @ignore
- */
-function _get_wmv_details_do_chunk_list($file, $chunk_length = null)
-{
-    $length = null;
-    $width = null;
-    $height = null;
-
-    $count = 0;
-    while ((!feof($file)) && (($chunk_length === null) || ($count < $chunk_length)) && (($length === null) || ($width === null) || ($height === null))) {
-        // Read in chunk info
-        $a = read_intel_endian_int(fread($file, 4));
-        $b = read_intel_endian_int(fread($file, 4));
-        $c = read_intel_endian_int(fread($file, 4));
-        $d = read_intel_endian_int(fread($file, 4));
-        $sub_chunk_length = read_intel_endian_int(fread($file, 4));
-        $count += $sub_chunk_length;
-        if ($sub_chunk_length <= 24) {
-            return null; // Some kind of error that would cause mayhem
-        }
-        fseek($file, 4, SEEK_CUR); // Can't read 64 bit
-
-        // Header chunk
-        if (($a == intval(0x75B22630)) && ($b == intval(0x11CF668E)) && ($c == intval(0xAA00D9A6)) && ($d == intval(0x6CCE6200))) {
-            fseek($file, 6, SEEK_CUR);
-            $info = _get_wmv_details_do_chunk_list($file, $sub_chunk_length - 30);
-            $sub_chunk_length = 24;
-            if ($info[1] !== null) {
-                $width = $info[1];
-            }
-            if ($info[2] !== null) {
-                $height = $info[2];
-            }
-            if ($info[3] !== null) {
-                $length = $info[3];
-            }
-        }
-
-        // Header object
-        if (($a == intval(0x8CABDCA1)) && ($b == intval(0x11CFA947)) && ($c == intval(0xC000E48E)) && ($d == intval(0x6553200C))) {
-            fseek($file, 48, SEEK_CUR);
-            $length = intval(round(read_intel_endian_int(fread($file, 4)) / 10000000));
-            $sub_chunk_length -= 52;
-        }
-
-        // Stream header object
-        if (($a == intval(0xB7DC0791)) && ($b == intval(0x11CFA9B7)) && ($c == intval(0xC000E68E)) && ($d == intval(0x6553200C))) {
-            // Read in chunk info
-            $a = read_intel_endian_int(fread($file, 4));
-            $b = read_intel_endian_int(fread($file, 4));
-            $c = read_intel_endian_int(fread($file, 4));
-            $d = read_intel_endian_int(fread($file, 4));
-            $sub_chunk_length -= 16;
-            if (($a == intval(0xBC19EFC0)) && ($b == intval(0x11CF5B4D)) && ($c == intval(0x8000FDA8)) && ($d == intval(0x2B445C5F))) { // Video chunk
-                fseek($file, 38, SEEK_CUR);
-                $width = read_intel_endian_int(fread($file, 4));
-                $height = read_intel_endian_int(fread($file, 4));
-                $sub_chunk_length -= 46;
-            }
-        }
-        fseek($file, $sub_chunk_length - 24, SEEK_CUR);
-    }
-
-    return [$count, $width, $height, $length];
-}
-
-/**
- * Get width,height,length of a .avi video file.
- *
- * @param  resource $file The file handle
- * @return array The triplet (possibly containing nulls for when we can't detect properties)
- * @ignore
- */
-function _get_avi_details($file)
-{
-    fseek($file, 32, SEEK_CUR);
-    $microseconds_per_frame = read_intel_endian_int(fread($file, 4));
-    fseek($file, 12, SEEK_CUR);
-    $num_frames = read_intel_endian_int(fread($file, 4));
-    $length = intval(round(floatval($num_frames * $microseconds_per_frame) / 1000 / 1000));
-    fseek($file, 12, SEEK_CUR);
-    $width = read_intel_endian_int(fread($file, 4));
-    $height = read_intel_endian_int(fread($file, 4));
-    return [$width, $height, $length];
 }
 
 /**
@@ -759,167 +1099,6 @@ function delete_image($id, $delete_full = true)
 
     require_code('sitemap_xml');
     notify_sitemap_node_delete('_SEARCH:galleries:image:' . strval($id));
-}
-
-/**
- * Create a video thumbnail.
- *
- * @param  URLPATH $src_url Video to get thumbnail from (must be local)
- * @param  ?PATH $expected_output_path Where to save to (null: decide for ourselves)
- * @return URLPATH Thumbnail, only valid if expected_output_path was passed as null (blank: could not generate)
- */
-function create_video_thumb($src_url, $expected_output_path = null)
-{
-    // Try to find a hook that can get a thumbnail easily
-    require_code('media_renderer');
-    $hooks = find_media_renderers($src_url, [], true, null);
-    if ($hooks !== null) {
-        foreach ($hooks as $hook) {
-            $ve_ob = object_factory('Hook_media_rendering_' . filter_naughty_harsh($hook));
-            if (method_exists($ve_ob, 'get_video_thumbnail')) {
-                $ret = $ve_ob->get_video_thumbnail($src_url);
-                if ($ret !== null) {
-                    if ($expected_output_path === null) {
-                        require_code('crypt');
-                        $filename = 'thumb_' . get_secure_random_string() . '.png';
-                        $expected_output_path = get_custom_file_base() . '/uploads/galleries/' . $filename;
-                    }
-                    require_code('files');
-                    $_expected_output_path = @fopen($expected_output_path, 'wb');
-                    if ($_expected_output_path !== false) {
-                        flock($_expected_output_path, LOCK_EX);
-                        http_get_contents($ret, ['write_to_file' => $_expected_output_path]);
-                        flock($_expected_output_path, LOCK_UN);
-                        fclose($_expected_output_path);
-                    }
-
-                    return $ret;
-                }
-            }
-        }
-    }
-
-    // oEmbed etc
-    require_code('http');
-    $meta_details = get_webpage_meta_details($src_url);
-    if ($meta_details['t_image_url'] != '') {
-        return $meta_details['t_image_url'];
-    }
-
-    // Audio ones should have automatic thumbnails
-    require_code('images');
-    if (is_audio($src_url, true, true)) {
-        $ret = find_theme_image('audio_thumb', true);
-        if ($ret != '') {
-            if ($expected_output_path !== null) {
-                require_code('files');
-                $_expected_output_path = @fopen($expected_output_path, 'wb');
-                if ($_expected_output_path !== false) {
-                    flock($_expected_output_path, LOCK_EX);
-                    http_get_contents($ret, ['write_to_file' => $_expected_output_path]);
-                    flock($_expected_output_path, LOCK_UN);
-                    fclose($_expected_output_path);
-                }
-            }
-        }
-        return $ret;
-    }
-
-    // Ok, gonna try hard using what FFMPEG techniques we can...
-
-    if (substr($src_url, 0, strlen(get_custom_base_url() . '/')) == get_custom_base_url() . '/') {
-        $src_url = substr($src_url, strlen(get_custom_base_url() . '/'));
-    }
-    if (url_is_local($src_url)) {
-        $src_file = get_custom_file_base() . '/' . rawurldecode($src_url);
-        $src_file = preg_replace('#(\\\|/)#', DIRECTORY_SEPARATOR, $src_file);
-
-        if (class_exists('ffmpeg_movie')) {
-            require_code('crypt');
-            $filename = 'thumb_' . get_secure_random_string() . '1.jpg';
-            if ($expected_output_path === null) {
-                $expected_output_path = get_custom_file_base() . '/uploads/galleries/' . $filename;
-            }
-            if (file_exists($expected_output_path)) {
-                return cms_rawurlrecode('uploads/galleries/' . rawurlencode(basename($expected_output_path)));
-            }
-
-            $movie = @(new ffmpeg_movie($src_file, false));
-            if ($movie !== false) {
-                if ($movie->getFrameCount() == 0) {
-                    return '';
-                }
-
-                $frame = $movie->getFrame(min($movie->getFrameCount(), 25));
-                $gd_img = $frame->toGDImage();
-
-                if (method_exists($frame, 'toGDImage')) {
-                    $gd_img = $frame->toGDImage();
-                    @imagejpeg($gd_img, $expected_output_path, intval(get_option('jpeg_quality')));
-                } else {
-                    $frame->save($expected_output_path); // New-style
-                }
-
-                if (file_exists($expected_output_path)) {
-                    require_code('images');
-                    return convert_image($expected_output_path, $expected_output_path, null, null, intval(get_option('thumb_width')), true, null, true);
-                }
-            }
-        }
-
-        $ffmpeg_path = get_option('ffmpeg_path');
-
-        if (($ffmpeg_path != '') && (php_function_allowed('shell_exec'))) {
-            $filename = 'thumb_' . md5(uniqid(strval(post_param_integer('thumbnail_auto_position', 1)), true)) . '%d.jpg';
-            $dest_file = get_custom_file_base() . '/uploads/galleries/' . $filename;
-            if ($expected_output_path === null) {
-                $expected_output_path = str_replace('%d', '1', $dest_file);
-            }
-
-            if ((file_exists($dest_file)) && (post_param_integer('thumbnail_auto_position', null) === null)) {
-                return cms_rawurlrecode('uploads/galleries/' . rawurlencode(basename($expected_output_path)));
-            }
-            @unlink($dest_file); // So "if (@filesize($expected_output_path)) break;" will definitely fail if error
-
-            $dest_file = preg_replace('#(\\\|/)#', DIRECTORY_SEPARATOR, $dest_file);
-
-            $at = display_seconds_period(post_param_integer('thumbnail_auto_position', 1));
-            if (strlen($at) == 5) {
-                $at = '00:' . $at;
-            }
-
-            $shell_command = '"' . $ffmpeg_path . 'ffmpeg" -i ' . cms_escapeshellarg($src_file) . ' -an -ss ' . $at . ' -r 1 -vframes 1 -y ' . cms_escapeshellarg($dest_file);
-
-            $shell_commands = [$shell_command, $shell_command . ' -map 0.0:0.0', $shell_command . ' -map 0.1:0.0'];
-            foreach ($shell_commands as $shell_command) {
-                shell_exec($shell_command);
-                if (@filesize($expected_output_path)) {
-                    break;
-                }
-            }
-
-            if (file_exists(str_replace('%d', '1', $dest_file))) {
-                require_code('images');
-                return convert_image(str_replace('%d', '1', $dest_file), $expected_output_path, null, null, intval(get_option('thumb_width')), true, null, true);
-            }
-        }
-    }
-
-    // Default
-    $ret = find_theme_image('video_thumb', true);
-    if ($ret != '') {
-        if ($expected_output_path !== null) {
-            require_code('files');
-            $_expected_output_path = @fopen($expected_output_path, 'wb');
-            if ($_expected_output_path !== false) {
-                flock($_expected_output_path, LOCK_EX);
-                http_get_contents($ret, ['write_to_file' => $_expected_output_path]);
-                flock($_expected_output_path, LOCK_UN);
-                fclose($_expected_output_path);
-            }
-        }
-    }
-    return $ret;
 }
 
 /**
@@ -1834,9 +2013,9 @@ function reorganise_uploads__gallery_videos($where = [], $tolerate_errors = fals
 
 /**
  * Take a file in the gallery uploads directory, and add it to a gallery.
+ * Intended for bulk operations, where many mixed media files are imported with common settings and other settings derived from metadata/defaults.
  *
- * @param  URLPATH $url The URL to the file
- * @param  URLPATH $thumb_url The thumb URL to the file
+ * @param  URLPATH $url The URL to the file (must be a URL relative to the base URL)
  * @param  ID_TEXT $cat The gallery to add to
  * @param  MEMBER $member_id The ID of the member adding gallery media
  * @param  integer $allow_rating Post param indicating whether or not ratings should be allowed
@@ -1846,16 +2025,19 @@ function reorganise_uploads__gallery_videos($where = [], $tolerate_errors = fals
  * @param  string $notes Staff notes provided for this entry
  * @param  ID_TEXT $privacy_level Level of privacy set for this content
  * @param  array $additional_access Array of additional members who should have access to this content
- * @param  ?string $file The filename (null: derive from $url)
+ * @param  ?string $filename The filename (null: derive from $url)
  * @param  ?TIME $time Timestamp to use (null: now)
  * @return ?array A pair: The media type, The media ID (null: error)
  */
-function add_gallery_media_wrap($url, $thumb_url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $file = null, $time = null)
+function add_gallery_media_wrap($url, $cat, $member_id, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $watermark, $notes, $privacy_level, $additional_access, $filename = null, $time = null)
 {
     require_code('exif');
 
-    if ($file === null) {
-        $file = get_custom_file_base() . '/' . rawurldecode($url);
+    if ($filename === null) {
+        $filename = rawurldecode(basename($url));
+    }
+    if (empty($filename)) {
+        $filename = null;
     }
 
     if ($time === null) {
@@ -1863,54 +2045,53 @@ function add_gallery_media_wrap($url, $thumb_url, $cat, $member_id, $allow_ratin
     }
 
     if (!is_image($url, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous'))) {
-        $thumb_url = create_video_thumb($url);
-        $ret = url_is_local($url) ? get_video_details(get_custom_file_base() . '/' . rawurldecode($url), $file, true) : false;
-        if ($ret !== false) {
-            list($width, $height, $length) = $ret;
-            if ($width === null) {
-                $width = intval(get_option('default_video_width'));
-            }
-            if ($height === null) {
-                $height = intval(get_option('default_video_height'));
-            }
-            if ($length === null) {
-                $length = 0;
-            }
+        // Video...
 
-            require_code('images');
-            $closed_captions_url = get_matching_closed_captions_file($url);
-            if ($closed_captions_url === null) {
-                $closed_captions_url = '';
-            }
+        list(
+            $width,
+            $height,
+            $length,
+            $title,
+            $cat,
+        ) = video_get_default_metadata($url, '', $filename, null, null, null, '', $cat);
 
-            $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
-            $id = add_video($exif['UserComment'], $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, $length, $width, $height, $closed_captions_url, null, $time);
-            store_exif('video', strval($id), $exif);
-            if (addon_installed('content_privacy')) {
-                require_code('content_privacy2');
-                save_privacy_form_fields('video', strval($id), $privacy_level, $additional_access);
-            }
+        $thumb_url = video_get_default_thumb_url($url, '', $filename);
 
-            require_code('users2');
-            if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
-                $privacy_ok = true;
-                if (addon_installed('content_privacy')) {
-                    require_code('content_privacy');
-                    $privacy_ok = has_privacy_access('video', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
-                }
-                if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity('galleries:ACTIVITY_ADD_VIDEO', ($exif['UserComment'] == '') ? basename($url) : $exif['UserComment'], '', '', '_SEARCH:galleries:video:' . strval($id), '', '', 'galleries');
-                }
-            }
-
-            return ['video', $id];
+        require_code('images');
+        $closed_captions_url = get_matching_closed_captions_file($url);
+        if ($closed_captions_url === null) {
+            $closed_captions_url = '';
         }
-    } else {
-        $thumb_path = get_custom_file_base() . '/' . rawurldecode($thumb_url);
-        $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), true);
 
-        $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
+        $id = add_video($title, $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, $length, $width, $height, $closed_captions_url, null, $time);
+        $path = convert_url_to_path($url);
+        if ($path !== null) {
+            $exif = get_exif_data($path, $filename);
+            store_exif('video', strval($id), $exif);
+        }
+        if (addon_installed('content_privacy')) {
+            require_code('content_privacy2');
+            save_privacy_form_fields('video', strval($id), $privacy_level, $additional_access);
+        }
+
+        require_code('users2');
+        if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
+            $privacy_ok = true;
+            if (addon_installed('content_privacy')) {
+                require_code('content_privacy');
+                $privacy_ok = has_privacy_access('video', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
+            }
+            if ($privacy_ok) {
+                require_code('activities');
+                syndicate_described_activity('galleries:ACTIVITY_ADD_VIDEO', ($title == '') ? basename($url) : $title, '', '', '_SEARCH:galleries:video:' . strval($id), '', '', 'galleries');
+            }
+        }
+
+        return ['video', $id];
+    } else {
+        // Image...
+
+        $thumb_url = image_get_default_thumb_url($url, '', $filename);
 
         // Images cleanup pipeline
         $maximum_dimension = intval(get_option('maximum_image_size'));
@@ -1920,8 +2101,17 @@ function add_gallery_media_wrap($url, $thumb_url, $cat, $member_id, $allow_ratin
             handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), null, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
         }
 
-        $id = add_image($exif['UserComment'], $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time);
-        store_exif('image', strval($id), $exif);
+        list(
+            $title,
+            $cat,
+        ) = image_get_default_metadata($url, $thumb_url, $filename);
+
+        $id = add_image($title, $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time);
+        $path = convert_url_to_path($url);
+        if ($path !== null) {
+            $exif = get_exif_data($path, $filename);
+            store_exif('image', strval($id), $exif);
+        }
         if (addon_installed('content_privacy')) {
             require_code('content_privacy2');
             save_privacy_form_fields('image', strval($id), $privacy_level, $additional_access);
@@ -1936,7 +2126,7 @@ function add_gallery_media_wrap($url, $thumb_url, $cat, $member_id, $allow_ratin
             }
             if ($privacy_ok) {
                 require_code('activities');
-                syndicate_described_activity('galleries:ACTIVITY_ADD_IMAGE', ($exif['UserComment'] == '') ? basename($url) : $exif['UserComment'], '', '', '_SEARCH:galleries:image:' . strval($id), '', '', 'galleries');
+                syndicate_described_activity('galleries:ACTIVITY_ADD_IMAGE', ($title == '') ? basename($url) : $title, '', '', '_SEARCH:galleries:image:' . strval($id), '', '', 'galleries');
             }
         }
 

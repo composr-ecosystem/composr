@@ -50,10 +50,11 @@ class Hook_cron_tasks
      */
     public function queued_details_tooltip()
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['t_title', 't_member_id', 't_locked', 't_add_time'], [], 'ORDER BY t_add_time');
+        $rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['id', 't_title', 't_member_id', 't_locked', 't_add_time'], [], 'ORDER BY t_add_time');
 
         require_code('templates_columned_table');
         $header_row = columned_table_header_row([
+            do_lang_tempcode('IDENTIFIER'),
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('MEMBER'),
             do_lang_tempcode('CURRENT'),
@@ -63,6 +64,7 @@ class Hook_cron_tasks
         $_rows = new Tempcode();
         foreach ($rows as $row) {
             $_rows->attach(columned_table_row([
+                '#' . strval($row['id']),
                 $row['t_title'],
                 $GLOBALS['FORUM_DRIVER']->get_username($row['t_member_id']),
                 do_lang_tempcode(($row['t_locked'] == 1) ? 'YES' : 'NO'),
