@@ -672,7 +672,8 @@ function schedule_code($hook, $id, $parameters, $title, $start_year, $start_mont
 function _get_schedule_code_event_id($hook, $id)
 {
     $schedule_code = _get_schedule_code_prefix($hook, $id);
-    return $GLOBALS['SITE_DB']->query_value_if_there('SELECT id FROM ' . get_table_prefix() . 'calendar_events WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('e_content') . ' LIKE \'' . db_encode_like($schedule_code) . ' %\'');
+    $sql = 'SELECT e.id FROM ' . get_table_prefix() . 'calendar_events e WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('e_content') . ' LIKE \'' . db_encode_like($schedule_code) . ' %\'';
+    return $GLOBALS['SITE_DB']->query_value_if_there($sql, false, false, ['e_content' => 'LONG_TRANS__COMCODE']);
 }
 
 /**
