@@ -34,7 +34,7 @@ class Hook_commandr_command_antispam_check
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('antispam_check', array('h'), array(true, true)), '', '');
+            return array('', do_command_help('antispam_check', array('h'), array(true)), '', '');
         } else {
             if (!array_key_exists(0, $parameters)) {
                 return array('', '', '', do_lang('MISSING_PARAM', '1', 'antispam_check'));
