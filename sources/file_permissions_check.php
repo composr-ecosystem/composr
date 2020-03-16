@@ -150,10 +150,9 @@ function get_chmod_array($runtime = true, $non_bundled = true)
             // Save memory compared to above commented code...
 
             $path = get_file_base() . '/' . $place . '/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
-            $matches = [];
-            if (preg_match('#function get_chmod_array\(\)\s*\{([^\}]*)\}#', cms_file_get_contents_safe($path, FILE_READ_LOCK), $matches) != 0) {
-                $chmod = array_merge($chmod, cms_eval($matches[1], $path));
-            }
+            $_hook_bits = extract_module_functions($path, ['get_chmod_array']);
+            $_chmod = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
+            $chmod = array_merge($chmod, $_chmod);
         }
     }
 
@@ -319,6 +318,50 @@ abstract class CMSPermissionsScanner
     protected $live_commands = false;
 
     // Code...
+
+    /**
+     * Find out whether a directory will be filtered out from checks.
+     *
+     * @param  PATH $rel_path The relative path to the base directory
+     * @return boolean Whether it is filtered
+     */
+    protected function filtered($rel_path)
+    {
+        if ($rel_path == '') {
+            return false;
+        }
+
+        // Optimisation
+        if ($this->minimum_level == self::RESULT_TYPE_ERROR_MISSING) {
+            static $unwrapped_chmodded_list = null;
+            if ($unwrapped_chmodded_list === null) {
+                $unwrapped_chmodded_list = [];
+                foreach ($this->chmod_paths as $chmod_path) {
+                    do {
+                        $unwrapped_chmodded_list[] = $chmod_path;
+                        if (strpos($chmod_path, '/') === false) {
+                            break;
+                        }
+                        $chmod_path = preg_replace('#/([^/]*|\[[^\]]*\][^/]*)$#', '', $chmod_path);
+                    } while (true);
+                }
+                $unwrapped_chmodded_list = array_unique($unwrapped_chmodded_list);
+                sort($unwrapped_chmodded_list);
+            }
+
+            $on_chmod_list = false;
+            foreach ($unwrapped_chmodded_list as $chmod_path) {
+                if (preg_match('#^' . $chmod_path . '$#', $rel_path) != 0) {
+                    $on_chmod_list = true;
+                }
+            }
+            if (!$on_chmod_list) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Generate a message prefix, based on whether we are only showing messages of one level or not.
@@ -567,6 +610,10 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
         $messages = [];
         $commands = [];
 
+        if ($this->filtered($rel_path)) {
+            return [$messages, $commands];
+        }
+
         if ($top_level) {
             if ($this->php_function_allowed('shell_exec')) {
                 if (strpos(shell_exec('sestatus'), 'enabled') !== false) {
@@ -662,13 +709,6 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
         $messages = [];
         $commands = [];
 
-        $file_owner = @fileowner($path);
-        $file_perms = @fileperms($path);
-
-        if (($file_owner === false) || ($file_perms === false)) {
-            return [[], [], []]; // Likely as parent directory is missing perms, which will be flagged
-        }
-
         $perms_needed = 0;
         $perms_desired = 0;
         $perms_irrelevant = 0;
@@ -696,6 +736,17 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
             if (preg_match('#^' . $chmod_path . '$#', $rel_path) != 0) {
                 $on_chmod_list = true;
             }
+        }
+
+        if (($this->minimum_level == self::RESULT_TYPE_ERROR_MISSING) && (!$on_chmod_list)) {
+            return [$messages, $commands]; // Optimisation
+        }
+
+        $file_owner = @fileowner($path);
+        $file_perms = @fileperms($path);
+
+        if (($file_owner === false) || ($file_perms === false)) {
+            return [[], [], []]; // Likely as parent directory is missing perms, which will be flagged
         }
 
         $perms_dangerous |= self::BITMASK_PERMISSIONS_SETGID;
@@ -1171,6 +1222,10 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         $messages = [];
         $commands = [];
 
+        if ($this->filtered($rel_path)) {
+            return [$messages, $commands];
+        }
+
         $_messages = $this->process_node($path, $rel_path, true, $paths, $found_any_issue);
         $messages = array_merge($messages, $_messages[0]);
         $commands = array_merge($commands, $_messages[1]);
@@ -1230,11 +1285,6 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         $messages = [];
         $commands = [];
 
-        $acl = $this->find_acl($path);
-        if (empty($acl)) {
-            return [[], [], []]; // Likely as parent directory is missing perms, which will be flagged
-        }
-
         $perms_needed_key_users = 0;
         $perms_desired_key_users = 0;
         $perms_irrelevant_key_users = 0;
@@ -1259,6 +1309,15 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
             if (preg_match('#^' . $chmod_path . '$#', $rel_path) != 0) {
                 $on_chmod_list = true;
             }
+        }
+
+        if (($this->minimum_level == self::RESULT_TYPE_ERROR_MISSING) && (!$on_chmod_list)) {
+            return [$messages, $commands]; // Optimisation
+        }
+
+        $acl = $this->find_acl($path);
+        if (empty($acl)) {
+            return [[], [], []]; // Likely as parent directory is missing perms, which will be flagged
         }
 
         // Note the Windows algorithm is very different from Windows in some ways:
