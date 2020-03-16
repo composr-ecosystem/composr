@@ -3648,12 +3648,12 @@ class Hook_import_cms_merge
                 $silence_from_forum = null;
             }
 
-            $changed_usergroup_from = import_id_remap_get('group', strval($row['w_changed_usergroup_from']), true);
-            if ($changed_usergroup_from === null) {
-                $changed_usergroup_from = null;
+            $changed_usergroup_to = import_id_remap_get('group', strval($row['w_changed_usergroup_to']), true);
+            if ($changed_usergroup_to === null) {
+                $changed_usergroup_to = null;
             }
 
-            cns_make_warning($member_id, $row['w_explanation'], $by, $row['w_time'], $row['w_is_warning'], $silence_from_topic, $silence_from_forum, $row['w_probation'], $row['w_banned_ip'], $row['w_charged_points'], $row['w_banned_member'], $changed_usergroup_from);
+            cns_make_warning($member_id, $row['w_explanation'], $by, $row['w_time'], $row['w_is_warning'], $silence_from_topic, $silence_from_forum, $row['w_probation'], $row['w_banned_ip'], $row['w_charged_points'], $row['w_banned_member'], $changed_usergroup_to);
         }
     }
 

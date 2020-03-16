@@ -156,6 +156,25 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{1}',
                 ],
             ],
+            'GROUP_CHANGE' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
+                    'USERGROUP' => '_SEARCH:groups:view:{1}',
+                ],
+            ],
+            'UNDO_GROUP_CHANGE' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
+                ],
+            ],
             'REVIEW_WARNING_HISTORY' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => 'member',

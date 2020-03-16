@@ -342,10 +342,10 @@ class Module_admin_actionlog
             $_best = null;
             foreach ($rows as $x => $row) {
                 if (($best === null)
-                    || (($row['date_and_time'] < $_best) && ($sortable == 'date_and_time') && ($sort_order == 'ASC'))
-                    || (($row['date_and_time'] > $_best) && ($sortable == 'date_and_time') && ($sort_order == 'DESC'))
-                    || ((intval($row['the_type']) < $_best) && ($sortable == 'the_type') && ($sort_order == 'ASC'))
-                    || ((intval($row['the_type']) > $_best) && ($sortable == 'the_type') && ($sort_order == 'DESC'))
+                    || (($sortable == 'date_and_time') && ($sort_order == 'ASC') && ($row['date_and_time'] < $_best))
+                    || (($sortable == 'date_and_time') && ($sort_order == 'DESC') && ($row['date_and_time'] > $_best))
+                    || (($sortable == 'the_type') && ($sort_order == 'ASC') && (strcmp($row['the_type'], $_best) < 0))
+                    || (($sortable == 'the_type') && ($sort_order == 'DESC') && (strcmp($row['the_type'], $_best) > 0))
                 ) {
                     $best = $x;
                     if ($sortable == 'date_and_time') {

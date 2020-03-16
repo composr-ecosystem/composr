@@ -400,6 +400,8 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
 
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_is_perm_banned', 'ID_TEXT');
+
+        $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'p_changed_usergroup_to', '?GROUP');
     }
 
     // If we have the forum installed to this db already, leave
@@ -932,6 +934,7 @@ function install_cns($upgrade_from = null)
             'p_charged_points' => 'INTEGER',
             'p_banned_member' => 'BINARY',
             'p_changed_usergroup_from' => '?GROUP',
+            'p_changed_usergroup_to' => '?GROUP',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_warnings', 'warningsmemberid', ['w_member_id']);
 

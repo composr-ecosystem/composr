@@ -238,10 +238,10 @@ function warnings_script()
  * @param  IP $banned_ip The IP address being banned (blank: none)
  * @param  integer $charged_points The points being charged
  * @param  BINARY $banned_member Whether the member is being banned
- * @param  ?GROUP $changed_usergroup_from The usergroup being changed from (null: no change)
+ * @param  ?GROUP $changed_usergroup_to The usergroup being changed to (null: no change)
  * @return AUTO_LINK The ID of the newly created warning
  */
-function cns_make_warning($member_id, $explanation, $by = null, $time = null, $is_warning = 1, $silence_from_topic = null, $silence_from_forum = null, $probation = 0, $banned_ip = '', $charged_points = 0, $banned_member = 0, $changed_usergroup_from = null)
+function cns_make_warning($member_id, $explanation, $by = null, $time = null, $is_warning = 1, $silence_from_topic = null, $silence_from_forum = null, $probation = 0, $banned_ip = '', $charged_points = 0, $banned_member = 0, $changed_usergroup_to = null)
 {
     if (!addon_installed('cns_warnings')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_warnings')));
@@ -262,7 +262,13 @@ function cns_make_warning($member_id, $explanation, $by = null, $time = null, $i
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_cache_warnings=(m_cache_warnings+1) WHERE id=' . strval($member_id), 1);
     }
 
-    $id = $GLOBALS['FORUM_DB']->query_insert('f_warnings', [
+    if ($changed_usergroup_to === null) {
+        $changed_usergroup_from = null;
+    } else {
+        $changed_usergroup_from = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_primary_group');
+    }
+
+    $map = [
         'w_member_id' => $member_id,
         'w_time' => $time,
         'w_explanation' => $explanation,
@@ -275,7 +281,10 @@ function cns_make_warning($member_id, $explanation, $by = null, $time = null, $i
         'p_charged_points' => $charged_points,
         'p_banned_member' => $banned_member,
         'p_changed_usergroup_from' => $changed_usergroup_from,
-    ], true);
+        'p_changed_usergroup_to' => $changed_usergroup_to,
+    ];
+
+    $id = $GLOBALS['FORUM_DB']->query_insert('f_warnings', $map, true);
 
     require_code('cns_general_action2');
     require_code('global4');

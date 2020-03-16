@@ -45,7 +45,7 @@ function generate_punitive_text()
     $banned_member = post_param_integer('banned_member', 0);
     $stopforumspam = post_param_integer('stopforumspam', 0);
     $banned_ip = post_param_integer('banned_ip', 0);
-    $changed_usergroup_from = post_param_integer('changed_usergroup_from');
+    $changed_usergroup_to = post_param_integer('changed_usergroup_to');
 
     // Prepare punitive actions
     $punitive_messages = [];
@@ -85,9 +85,9 @@ function generate_punitive_text()
 
     // Usergroup change
     if (has_privilege(get_member(), 'member_maintenance')) {
-        if ($changed_usergroup_from !== null) {
-            $_changed_usergroup_from = cns_get_group_name($changed_usergroup_from, true);
-            array_push($punitive_messages, do_lang('PUNITIVE_CHANGE_USERGROUP', $_changed_usergroup_from, null, null, null, false));
+        if ($changed_usergroup_to !== null) {
+            $_changed_usergroup_to = cns_get_group_name($changed_usergroup_to, true);
+            array_push($punitive_messages, do_lang('PUNITIVE_CHANGE_USERGROUP', $_changed_usergroup_to, null, null, null, false));
         }
     }
 

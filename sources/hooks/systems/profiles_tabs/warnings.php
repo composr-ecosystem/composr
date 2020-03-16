@@ -117,13 +117,15 @@ class Hook_profiles_tabs_warnings
                 $row_contents->attach('<br />' . do_lang('BANNED')); // XHTMLXHTML
             }
             if ($row['p_probation'] > 0) {
-                $row_contents->attach('<br />' . do_lang('PROBATION') . ': ' . do_lang('DAYS', $row['p_probation'])); // XHTMLXHTML
+                $row_contents->attach('<br />' . do_lang('PROBATION') . ': ' . escape_html(do_lang('DAYS', $row['p_probation']))); // XHTMLXHTML
             }
             if ($row['p_charged_points'] !== 0) {
-                $row_contents->attach('<br />' . do_lang('CHARGED_POINTS') . ': ' . integer_format($row['p_charged_points'])); // XHTMLXHTML
+                $row_contents->attach('<br />' . do_lang('CHARGED_POINTS') . ': ' . escape_html(integer_format($row['p_charged_points']))); // XHTMLXHTML
             }
-            if ($row['p_changed_usergroup_from'] !== null) {
-                $row_contents->attach('<br />' . do_lang('CHANGED_USERGROUP_FROM') . ' ' . cns_get_group_name($row['p_changed_usergroup_from'], true)); // XHTMLXHTML
+            if (($row['p_changed_usergroup_from'] !== null) && ($row['p_changed_usergroup_to'] !== null)) {
+                $html = '<br />' . do_lang('CHANGED_USERGROUP_TO') . ' ' . escape_html(cns_get_group_name($row['p_changed_usergroup_to'], true));
+                $html .= ', ' . do_lang('FROM') . ' ' . escape_html(cns_get_group_name($row['p_changed_usergroup_from'], true));
+                $row_contents->attach($html); // XHTMLXHTML
             }
             if ($row['p_silence_from_forum'] !== null) {
                 $silence_from_forum_title = '#' . strval($row['p_silence_from_forum']);

@@ -429,6 +429,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _GOOGLE_ANALYTICS
         _INCOME
         GIFTS
+        RESTORE_USERGROUP_TO
+        UNDO_GROUP_CHANGE
+        GROUP_CHANGE
         DAYS_TO_KEEP__CRON_LOG
         CONFIG_OPTION_days_to_keep__cron_log
         DAYS_TO_KEEP__DEBUG_FS_LOG
@@ -8012,7 +8015,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PUNITIVE_DELETE_CONTENT
         WARNING_NUMBER
         VIEW_WARNING
-        CHANGED_USERGROUP_FROM
+        CHANGED_USERGROUP_TO
         I_AGREE_RULES
         I_AGREE_PRIVACY
         I_AGREE_UPDATES
