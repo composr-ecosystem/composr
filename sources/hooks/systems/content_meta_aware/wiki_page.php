@@ -163,7 +163,8 @@ function generate_wiki_page_entry_description($row, $render_type = 1, $resource_
             return $ret;
 
         case FIELD_RENDER_HTML:
-            return get_translated_tempcode('wiki_pages', $row, 'the_description');
+            $just_row = db_map_restrict($row, ['id', 'the_description']);
+            return get_translated_tempcode('wiki_pages', $just_row, 'the_description');
     }
 
     return strip_comcode($ret);
