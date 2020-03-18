@@ -3486,7 +3486,7 @@ function log10($arg)
  * Converts an (IPv4) Internet network address into a string in Internet standard dotted format.
  *
  * @param  integer $proper_address The IP address
- * @return integer The long form
+ * @return string  The long form
  */
 function long2ip($proper_address)
 {
