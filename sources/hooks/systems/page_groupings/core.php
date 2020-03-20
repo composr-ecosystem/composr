@@ -92,6 +92,7 @@ class Hook_page_groupings_core
 
             ['security', 'menu/adminzone/security/permissions/permission_tree_editor', ['admin_permissions', ['type' => 'browse'], get_module_zone('admin_permissions')], do_lang_tempcode('permissions:PERMISSIONS_TREE'), 'permissions:DOC_PERMISSIONS_TREE'],
             addon_installed('match_key_permissions') ? ['security', 'menu/adminzone/security/permissions/match_keys', ['admin_permissions', ['type' => 'match_keys'], get_module_zone('admin_permissions')], do_lang_tempcode('permissions:PAGE_MATCH_KEY_ACCESS'), 'permissions:DOC_PAGE_MATCH_KEY_ACCESS'] : null,
+            ['security', 'spare/content', ['admin_permissions', ['type' => 'content_access'], get_module_zone('admin_permissions')], do_lang_tempcode('permissions:CONTENT_ACCESS'), 'permissions:DOC_CONTENT_ACCESS'],
             addon_installed('securitylogging') ? ['security', 'menu/adminzone/security/ip_ban', ['admin_ip_ban', ['type' => 'browse'], get_module_zone('admin_ip_ban')], do_lang_tempcode('submitban:BANNED_ADDRESSES'), 'submitban:DOC_IP_BAN'] : null,
             ['security', 'menu/adminzone/security/permissions/privileges', ['admin_permissions', ['type' => 'privileges'], get_module_zone('admin_permissions')], do_lang_tempcode('permissions:GLOBAL_PRIVILEGES'), 'permissions:DOC_PRIVILEGES'],
             (get_forum_type() != 'cns') ? null : ['security', 'menu/social/members', ['admin_cns_members', [], get_module_zone('admin_cns_members')], do_lang_tempcode('MEMBERS'), 'cns:DOC_MEMBERS'],

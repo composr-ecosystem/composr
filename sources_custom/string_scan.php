@@ -304,7 +304,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_WRITE_HELP
         CMD_WRITE_HELP_PARAM_0
         CMD_WRITE_HELP_PARAM_1
->>>>>>> ffa55017d48862a3b20eec7b8c9d2c4cad8027d2
+        CONTENT_ACCESS
+        _CONTENT_ACCESS
+        DOC_CONTENT_PERMISSIONS
         DESCRIPTION_WARNING_TYPE
         WARNING_FORMAL
         WARNING_OFF_THE_BOOK

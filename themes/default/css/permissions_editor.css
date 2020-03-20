@@ -38,3 +38,19 @@
 	display: block;
 	text-align: left;
 }
+
+.content-access-table-wrap {
+	overflow-x: scroll;
+}
+
+.content-access-table {
+	table-layout: fixed;
+}
+
+.content-access-table-label {
+	width: 20em !important;
+}
+
+.content-access-table-setting {
+	width: 5em !important;
+}

@@ -95,6 +95,8 @@ class template_no_unused_test_set extends cms_test_case
             'FORM_STANDARD_END',
             'GALLERY_POPULAR',
             'GLOBAL_HELPER_PANEL',
+            'PERMISSIONS_CONTENT_ACCESS_LIST',
+            'PERMISSIONS_CONTENT_ACCESS_TICK',
             'HANDLE_CONFLICT_RESOLUTION',
             'HTML_HEAD',
             'HTML_HEAD_POLYFILLS',
