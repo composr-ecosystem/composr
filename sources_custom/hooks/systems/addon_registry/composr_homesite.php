@@ -195,7 +195,6 @@ This addon does not contain the compo.sr install code and the overall site and t
             'themes/default/templates_custom/CMS_DOWNLOAD_BLOCK.tpl',
             'themes/default/templates_custom/CMS_DOWNLOAD_RELEASES.tpl',
             'themes/default/templates_custom/CMS_HOSTING_COPY_SUCCESS_SCREEN.tpl',
-            'themes/default/templates_custom/CMS_SITE.tpl',
             'themes/default/templates_custom/CMS_SITES_SCREEN.tpl',
             'themes/default/templates_custom/CMS_BLOCK_MAIN_VERSION_SUPPORT.tpl',
             'uploads/website_specific/compo.sr/.htaccess',
