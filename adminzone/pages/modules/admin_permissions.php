@@ -281,9 +281,13 @@ class Module_admin_permissions
         if ($type == '_content_access') {
             $group_id = get_param_integer('group_id');
             $filters = get_param_string('filters', null);
+            $max = get_param_integer('max', null);
             $page_link = '_SELF:_SELF:content_access:group_id=' . strval($group_id);
             if ($filters !== null) {
                 $page_link .= ':filters=' . urlencode($filters);
+            }
+            if ($max !== null) {
+                $page_link .= ':max=' . strval($max);
             }
             breadcrumb_set_parents([[$page_link, do_lang_tempcode('CONTENT_ACCESS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
@@ -768,7 +772,7 @@ class Module_admin_permissions
 
         $_filters = get_param_string('filters', null);
         $filters = ($_filters === null) ? null : explode(',', $_filters);
-        $max = get_param_integer('max', 30);
+        $max = get_param_integer('max', 50);
 
         $zones = [];
         $_zones = find_all_zones(false, true, false, 0, $max);
@@ -820,7 +824,7 @@ class Module_admin_permissions
         $hook_obs = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
         foreach ($hook_obs as $hook_ob) {
             $info = $hook_ob->info();
-            if (($info !== null) && ($info['category_type'] !== null) && ($info['cms_page'] !== null) && ($info['is_category']) && (!$info['is_entry']) && ($info['parent_spec__table_name'] == $info['table'])) {
+            if (($info !== null) && ($info['category_type'] !== null) && ($info['cms_page'] !== null) && ($info['is_category']) && (!$info['is_entry'])) {
                 require_code('zones2');
                 $page = $info['cms_page'];
                 $zone = get_module_zone($page, 'modules', null, 'php', true, false);
@@ -916,6 +920,10 @@ class Module_admin_permissions
         append_content_select_for_fields($select, $info, ['id', 'title', 'parent_category']);
         $rows = $info['db']->query_select($info['table'], $select);
         $root_parent = $info['id_field_numeric'] ? null : '';
+
+        if ($info['parent_spec__table_name'] !== $info['table']) {
+            $info['parent_spec__parent_name'] = null;
+        }
 
         $items = [];
         if ($info['parent_spec__parent_name'] === null) {
