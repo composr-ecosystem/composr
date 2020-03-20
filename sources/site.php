@@ -1113,8 +1113,11 @@ function do_site()
             $timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', '3');
             require_code('version2');
+            $num_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
+            $num_hits_per_day = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
+            $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/user.php?url=' . urlencode(get_base_url()) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()) . '&num_members=' . urlencode(strval($num_members)) . '&num_hits_per_day=' . urlencode(strval($num_hits_per_day));
             require_code('http');
-            cache_and_carry('cms_http_request', ['https://compo.sr/uploads/website_specific/compo.sr/scripts/user.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()), ['trigger_error' => false]], 60 * 24/*once a day*/);
+            cache_and_carry('cms_http_request', [$url, ['trigger_error' => false]], 60 * 24/*once a day*/);
             cms_ini_set('default_socket_timeout', $timeout_before);
         }
     }
