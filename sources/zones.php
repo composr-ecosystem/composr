@@ -1101,7 +1101,7 @@ function do_block($codename, $map = [])
 
     $object = null;
     $new_security_scope = null;
-    if (has_caching_for('block')) {
+    if (has_caching_for('block', $codename)) {
         // See if the block may be cached (else cannot, or is yet unknown)
         if ($map['cache'] === '0') {
             $row = null;
@@ -1251,7 +1251,7 @@ function do_block($codename, $map = [])
     pop_query_limiting();
 
     // May it be added to cache_on?
-    if ((!$DO_NOT_CACHE_THIS) && (method_exists($object, 'caching_environment')) && (has_caching_for('block'))) {
+    if ((!$DO_NOT_CACHE_THIS) && (method_exists($object, 'caching_environment')) && (has_caching_for('block', $codename))) {
         $info = $object->caching_environment($map);
         if ($info !== null) {
             if ($ttl === null) {

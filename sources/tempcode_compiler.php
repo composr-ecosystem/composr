@@ -1214,7 +1214,7 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
     cms_profile_end_for('_do_template', $codename . $suffix);
 
     // Save into cache
-    if (($CACHE_TEMPLATES) && ($parameters === null) && (!$IS_TEMPLATE_PREVIEW_OP_CACHE)) {
+    if (($CACHE_TEMPLATES) && (has_caching_for('template', $codename)) && ($parameters === null) && (!$IS_TEMPLATE_PREVIEW_OP_CACHE)) {
         $path2 = get_custom_file_base() . '/themes/' . $theme_orig . '/templates_cached/' . filter_naughty($lang);
         $_path2 = $path2 . '/' . filter_naughty($_codename) . $suffix . '.tcp';
 

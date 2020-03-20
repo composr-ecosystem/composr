@@ -132,7 +132,7 @@ function generate_notifications($member_id)
         return $notifications_cache[$member_id];
     }
 
-    $do_caching = has_caching_for('block');
+    $do_caching = has_caching_for('block', '_new_pp');
 
     $notifications = null;
     if ($do_caching) {

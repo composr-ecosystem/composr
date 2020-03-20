@@ -75,7 +75,7 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
     $content->handle_symbol_preprocessing(); // Optimisation: we are likely to have lots of page-links in here, so we want to spawn them to be detected for mass moniker loading
 
     $flattened = false;
-    if (has_caching_for('block')) {
+    if (has_caching_for('block', 'menu')) {
         if ($is_sitemap_menu) {
             $flattened = true; // We can assume that a Sitemap menu will not include keep_* parameters
         } else {

@@ -567,17 +567,22 @@ function erase_static_cache()
  *
  * @param  string $type Cache type
  * @set block lang comcode_page template
+ * @param  ?string $name The name (filename? codename?) of what we are using the cache for, so we can support low-level cache avoidance via URL parameter (null: none)
  * @return boolean Whether it has the caching
  */
-function has_caching_for($type)
+function has_caching_for($type, $name = null)
 {
     if (!function_exists('get_option')) {
         return false;
     }
 
+    $cache_avoid_for = get_param_string('keep_cache_avoid_for', null);
+
     static $cache = [];
-    if (isset($cache[$type])) {
-        return $cache[$type];
+    if ($cache_avoid_for === null || $name === null) {
+        if (isset($cache[$type])) {
+            return $cache[$type];
+        }
     }
 
     $setting = (get_option('is_on_' . $type . '_cache') == '1');
@@ -586,8 +591,12 @@ function has_caching_for($type)
 
     $not_negative = (get_param_integer('keep_cache', null) !== 0) && (get_param_integer('cache', null) !== 0) && (get_param_integer('keep_cache_' . $type . 's', null) !== 0) && (get_param_integer('cache_' . $type . 's', null) !== 0);
 
-    $ret = ($setting || $positive) && $not_negative;
-    $cache[$type] = $ret;
+    $specific_avoid = ($cache_avoid_for !== null) && ($name !== null) && (preg_match('#' . str_replace('#', '\#', $cache_avoid_for) . '#', $name) != 0);
+
+    $ret = ($setting || $positive) && $not_negative && !$specific_avoid;
+    if ($cache_avoid_for === null || $name === null) {
+        $cache[$type] = $ret;
+    }
     return $ret;
 }
 

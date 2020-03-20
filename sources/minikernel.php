@@ -1176,9 +1176,10 @@ function simulated_wildcard_match($context, $word, $full_cover = false, $case_se
  *
  * @param  string $type Cache type
  * @set block lang comcode_page template
+ * @param  ?string $name The name (filename? codename?) of what we are using the cache for, so we can support low-level cache avoidance via URL parameter (null: none)
  * @return boolean Whether it has the caching
  */
-function has_caching_for($type)
+function has_caching_for($type, $name = null)
 {
     return true;
 }

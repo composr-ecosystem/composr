@@ -878,11 +878,11 @@ function do_template($codename, $parameters = [], $lang = null, $light_error = f
     $found = null;
     $may_use_template_cache =
         ($CACHE_TEMPLATES) &&
+        (has_caching_for('template', $codename)) &&
         (!$IS_TEMPLATE_PREVIEW_OP_CACHE) &&
         ((!$POSSIBLY_IN_SAFE_MODE_CACHE) || (isset($GLOBALS['SITE_INFO']['safe_mode'])) || (!in_safe_mode())) &&
         (!$RECORD_LANG_STRINGS/*Tempcode compilation embeds lang strings*/) &&
-        !$inlining_mode
-        ;
+        !$inlining_mode;
     if (!$loaded_this_once) {
         $found = find_template_place($codename, $lang, $theme, $suffix, $directory, $non_custom_only);
         $TEMPLATE_DISK_ORIGIN_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only] = $found;

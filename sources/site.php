@@ -1921,7 +1921,7 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
     ];
 
     global $KEEP_MARKERS, $SHOW_EDIT_LINKS, $INJECT_HIDDEN_TEMPLATE_NAMES;
-    if ((has_caching_for('comcode_page')) && (get_param_integer('keep_print', 0) == 0) && !$KEEP_MARKERS && !$SHOW_EDIT_LINKS && !$INJECT_HIDDEN_TEMPLATE_NAMES) {
+    if ((has_caching_for('comcode_page', $codename)) && (get_param_integer('keep_print', 0) == 0) && !$KEEP_MARKERS && !$SHOW_EDIT_LINKS && !$INJECT_HIDDEN_TEMPLATE_NAMES) {
         $support_smart_decaching = support_smart_decaching();
 
         if (is_browser_decaching()) {

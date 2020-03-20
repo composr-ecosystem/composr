@@ -567,7 +567,7 @@ function _helper_get_emoticon_chooser($this_ref, $field_name)
 
     $use_special = has_privilege(get_member(), 'use_special_emoticons');
 
-    $do_caching = has_caching_for('block');
+    $do_caching = has_caching_for('block', '_emoticon_chooser');
 
     $em = null;
     if ($do_caching) {

@@ -684,6 +684,7 @@ Values are like hidden configuration options. They are either hidden because the
 
 The 'keep' parameters available are:
  - [tt]keep_cache[/tt] -- set to '1' to temporarily enable caching or '0' to temporarily disable. You can also use [tt]cache[/tt] so it works on a per-page basis, with the exception of this not affecting the template and language caching.
+ - [tt]keep_cache_avoid_for[/tt] -- set to a regular expression of codenames to not cache for (e.g. [tt]GLOBAL_HTML_WRAP|STANDALONE_HTML_WRAP[/tt] would disable caching for the [tt]GLOBAL_HTML_WRAP[/tt] and [tt]STANDALONE_HTML_WRAP[/tt] templates; this is useful if smart decacheing is either disabled or doesn't work because a template edited is included in another (smart decaching cannot handle this case; although you can also set [tt]$SITE_INFO['dependency__<path>'] = '[<path>,]*';[/tt] settings in [tt]_config.php[/tt] to inform the smart cache of dependencies)
  - [tt]keep_dev_mode[/tt] -- set to '0' to disable development mode (which only runs if you're working out of a subversion repository anyway)
  - [tt]keep_hide_dev_mode_message[/tt] -- set to '1' if you don't want the "Dev-mode is on" message to show if dev-mode is on (maybe you're taking screenshots?)
  - [tt]keep_ext_check[/tt] -- set to '0' to force the webstandards checker to not check dependency files

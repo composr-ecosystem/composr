@@ -537,7 +537,7 @@ class Module_cms_comcode_pages
             $db_row = null;
             if ($path_bits[1] === null) {
                 $db_rows = $GLOBALS['SITE_DB']->query_select('comcode_pages c LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON c.the_page=a.the_page AND c.the_zone=a.the_zone', ['c.*', 'cc_page_title'], ['c.the_zone' => $zone, 'c.the_page' => $page], '', 1);
-                if ((!isset($db_rows[0])) && ($number_pages_parsed_for_titles < 3/*Too intensive to do much at all*/) && (has_caching_for('comcode_page'))) {
+                if ((!isset($db_rows[0])) && ($number_pages_parsed_for_titles < 3/*Too intensive to do much at all*/) && (has_caching_for('comcode_page', $page))) {
                     $result = request_page($page, false, $zone, 'comcode_custom', true);
                     $db_rows = $GLOBALS['SITE_DB']->query_select('comcode_pages c LEFT JOIN ' . get_table_prefix() . 'cached_comcode_pages a ON c.the_page=a.the_page AND c.the_zone=a.the_zone', ['c.*', 'cc_page_title'], ['c.the_zone' => $zone, 'c.the_page' => $page], '', 1);
                     $number_pages_parsed_for_titles++;
