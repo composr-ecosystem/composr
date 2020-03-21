@@ -77,7 +77,8 @@ class Hook_whatsnew_cns_forumview
                 $member_id = (is_guest($row['t_cache_first_member_id'])) ? null : strval($row['t_cache_first_member_id']);
                 $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '14a328f973ac44eb54aa9b31e5a4ae34', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'CONTENT_TYPE' => 'topic', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
-                handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
+                require_code('urls2');
+                mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
             }
         }
 

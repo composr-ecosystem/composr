@@ -192,6 +192,18 @@ class _broken_links_test_set extends cms_test_case
         if (preg_match('#^https?://shareddemo\.composr\.info/#', $url) != 0) {
             return;
         }
+        if (preg_match('#^https://www\.linkedin\.com/shareArticle\?url=#', $url) != 0) {
+            return;
+        }
+        if (preg_match('#^http://tumblr\.com/widgets/share/tool\?canonicalUrl=#', $url) != 0) {
+            return;
+        }
+        if (preg_match('#^https://vk\.com/share\.php\?url=#', $url) != 0) {
+            return;
+        }
+        if (preg_match('#^http://v\.t\.qq\.com/share/share\.php\?url=#', $url) != 0) {
+            return;
+        }
         if (in_array($url, [ // These just won't check from a bot guest user
             'https://www.optimizely.com/',
             'https://cloud.google.com/console',
@@ -211,10 +223,9 @@ class _broken_links_test_set extends cms_test_case
             return;
         }
 
-        $exists = check_url_exists($url, 60 * 60 * 24 * 100);
-        if (!$exists) {
-            $exists = check_url_exists($url, 0); // Re-try without caching, maybe we fixed a scanner bug or it's erratic
-        }
-        $this->assertTrue($exists, 'Broken URL: ' . str_replace('%', '%%', $url) . ' in ' . $context);
+        require_code('urls2');
+        $message = '';
+        $exists = check_url_exists($url, null, false, 3, $message);
+        $this->assertTrue($exists, 'Broken URL: ' . str_replace('%', '%%', $url) . ' (' . $message . ') in ' . $context);
     }
 }

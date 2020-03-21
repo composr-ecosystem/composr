@@ -1488,67 +1488,14 @@ function ensure_protocol_suitability($url)
 
     $https_url = 'https://' . substr($url, 7);
 
-    $https_exists = check_url_exists($https_url, 60 * 60 * 24 * 31);
+    require_code('urls2');
+    $https_exists = check_url_exists($https_url);
 
     if ($https_exists) {
         return $https_url;
     }
 
     return find_script('external_url_proxy') . '?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter($url)));
-}
-
-/**
- * Check to see if a URL exists.
- *
- * @param  string $url The URL to check
- * @param  integer $test_freq_secs Cache must be newer than this many seconds
- * @return boolean Whether it does
- */
-function check_url_exists($url, $test_freq_secs)
-{
-    if (preg_match('#^https://www\.linkedin\.com/shareArticle\?url=#', $url) != 0) {
-        return true;
-    }
-    if (preg_match('#^http://tumblr\.com/widgets/share/tool\?canonicalUrl=#', $url) != 0) {
-        return true;
-    }
-    if (preg_match('#^https://vk\.com/share\.php\?url=#', $url) != 0) {
-        return true;
-    }
-    if (preg_match('#^http://v\.t\.qq\.com/share/share\.php\?url=#', $url) != 0) {
-        return true;
-    }
-
-    $test1 = $GLOBALS['SITE_DB']->query_select('urls_checked', ['url_check_time', 'url_exists'], ['url' => $url], 'ORDER BY url_check_time DESC', 1);
-
-    if ((!isset($test1[0])) || ($test1[0]['url_check_time'] < time() - $test_freq_secs)) {
-        $test2 = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 0]);
-        if (($test2 !== null) && (in_array($test2->message, ['401', '403', '405', '416', '500', '501', '503', '520']))) {
-            $test2 = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 1]); // Try without HEAD, sometimes it's not liked
-        }
-        $exists = ($test2->data === null) ? 0 : 1;
-
-        if (isset($test1[0])) {
-            $GLOBALS['SITE_DB']->query_delete('urls_checked', [
-                'url' => $url,
-            ]);
-        }
-
-        $GLOBALS['SITE_DB']->query_insert_or_replace(
-            'urls_checked',
-            [
-                'url_exists' => $exists,
-                'url_check_time' => time(),
-            ],
-            [
-                'url' => $url,
-            ]
-        );
-    } else {
-        $exists = $test1[0]['url_exists'];
-    }
-
-    return ($exists == 1);
 }
 
 /**

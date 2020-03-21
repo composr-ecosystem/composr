@@ -91,7 +91,8 @@ class Hook_whatsnew_calendar
             $member_id = (is_guest($row['e_submitter'])) ? null : strval($row['e_submitter']);
             $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '654cafa75ec9f9b8e0e0fb666f28fb37', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'event', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
-            handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
+            require_code('urls2');
+            mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
         return [$new, do_lang('CALENDAR', '', '', '', $lang)];

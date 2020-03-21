@@ -297,10 +297,10 @@ function page_not_found($codename, $zone)
         $_did_mean = null;
     }
 
-    require_code('global4');
-    if (($_SERVER['HTTP_REFERER'] != '') && (!handle_has_checked_recently('request-' . $zone . ':' . $codename))) {
+    if (($_SERVER['HTTP_REFERER'] != '') && (get_value_newer_than('gave-error-notificiation-for-request-' . $zone . ':' . $codename, time() - 60 * 60 * 24 * 30) === null)) {
         require_code('failure');
         relay_error_notification(do_lang('_MISSING_RESOURCE', $zone . ':' . $codename, do_lang('PAGE')) . ' ' . do_lang('REFERRER', $_SERVER['HTTP_REFERER'], substr(get_browser_string(), 0, 255)), false, 'error_occurred_missing_page');
+        set_value('gave-error-notificiation-for-request-' . $zone . ':' . $codename, '1', true);
     }
 
     $title = get_screen_title('ERROR_OCCURRED');

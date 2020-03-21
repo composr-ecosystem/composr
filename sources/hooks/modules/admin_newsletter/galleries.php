@@ -118,7 +118,8 @@ class Hook_whatsnew_galleries
             }
             $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => 'dfe5850aa67c0cd00ff7d465248b87a5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'video', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
-            handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
+            require_code('urls2');
+            mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
         return [$new, do_lang('GALLERIES', '', '', '', $lang)];

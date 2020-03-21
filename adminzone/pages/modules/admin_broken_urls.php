@@ -264,7 +264,7 @@ class Module_admin_broken_urls
         sort_maps_by($urls, 'FULL_URL');
 
         if (empty($urls)) {
-            warn_exit(do_lang_tempcode('NO_ENTRIES'));
+            inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
         $table = do_template('BROKEN_URLS', ['_GUID' => '98816b6ea5f175cb5d46550a5fbc37aa', 'URLS' => $urls, 'DONE' => false]);

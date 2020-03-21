@@ -94,11 +94,10 @@ class _special_links_test_set extends cms_test_case
                 $this->assertTrue(is_string($result->data), 'External link (' . $url . ') not working (' . $result->message . '), fix test and use within Composr (separate)');
                 $this->assertTrue($result->download_url == $url, 'External link (' . $url . ') redirecting elsewhere (' . $result->download_url . '), fix test and use within Composr (separate)');
             } else {
-                $exists = check_url_exists($url, 60 * 60 * 24 * 100);
-                if (!$exists) {
-                    $exists = check_url_exists($url, 0); // Re-try without caching, maybe we fixed a scanner bug or it's erratic
-                }
-                $this->assertTrue($exists, 'External link (' . $url . ') not working, fix test and use within Composr (separate)');
+                require_code('urls2');
+                $message = '';
+                $exists = check_url_exists($url, null, false, 3, $message);
+                $this->assertTrue($exists, 'External link (' . str_replace('%', '%%', $url) . ') not working (' . $message . '), fix test and use within Composr (separate)');
             }
         }
     }
@@ -114,11 +113,10 @@ class _special_links_test_set extends cms_test_case
             'https://duckduckgo.com/?q=tile+background&iax=images&ia=images',
         ];
         foreach ($urls as $url) {
-            $exists = check_url_exists($url, 60 * 60 * 24 * 100);
-            if (!$exists) {
-                $exists = check_url_exists($url, 0); // Re-try without caching, maybe we fixed a scanner bug or it's erratic
-            }
-            $this->assertTrue($exists, 'External link (' . $url . ') not working, fix test and use within Composr (separate)');
+            require_code('urls2');
+            $message = '';
+            $exists = check_url_exists($url, null, false, 3, $message);
+            $this->assertTrue($exists, 'External link (' . str_replace('%', '%%', $url) . ') not working (' . $message . '), fix test and use within Composr (separate)');
         }
     }
 }

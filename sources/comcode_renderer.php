@@ -34,9 +34,6 @@ function init__comcode_renderer()
     global $STRUCTURE_LIST;
     $STRUCTURE_LIST = [];
 
-    global $DONT_CARE_MISSING_PAGES;
-    $DONT_CARE_MISSING_PAGES = ['topics', 'chat', 'forumview', 'topicview', 'search'];
-
     if (!defined('MAX_URLS_TO_READ')) {
         define('MAX_URLS_TO_READ', 5);
     }
@@ -535,51 +532,44 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
         return new Tempcode();
     }
 
-    global $COMCODE_PARSE_URLS_CHECKED, $COMCODE_URLS, $DONT_CARE_MISSING_PAGES;
+    global $COMCODE_PARSE_URLS_CHECKED, $COMCODE_URLS;
 
-    if (isset($COMCODE_URLS)) {
+    if (isset($COMCODE_URLS)) { // This is a request to collect the URLs rather than immediately check them
         $COMCODE_URLS[$url_full] = true;
     }
 
-    $temp_tpl = new Tempcode();
-    require_code('global4');
-    if (!handle_has_checked_recently($url_full)) {
-        $COMCODE_PARSE_URLS_CHECKED++;
-        if ($COMCODE_PARSE_URLS_CHECKED >= MAX_URLS_TO_READ) {
-            return new Tempcode();
-        }
+    $COMCODE_PARSE_URLS_CHECKED++;
+    if ($COMCODE_PARSE_URLS_CHECKED >= MAX_URLS_TO_READ) {
+        return new Tempcode();
+    }
 
-        $test = cms_http_request($url_full, ['trigger_error' => false, 'byte_limit' => 0]);
-        if (($test === null) && ($test->message == '403')) {
-            $test = cms_http_request($url_full, ['trigger_error' => false, 'byte_limit' => 1]); // Try without HEAD, sometimes it's not liked
-        }
-        if (($test->data === null) && (in_array($test->message, ['404']))) {
-            if ($test->message != 'could not connect to host'/*don't show for random connectivity issue*/) {
-                $temp_tpl = do_template('WARNING_BOX', [
-                    '_GUID' => '7bcea67226f89840394614d88020e3ac',
-                    'RESTRICT_VISIBILITY' => strval($source_member),
-                    //'INLINE' => true, Looks awful
-                    'WARNING' => do_lang_tempcode('MISSING_URL_COMCODE', escape_html($tag_type), escape_html($url_full)),
-                ]);
+    $temp_tpl = new Tempcode();
+    require_code('urls2');
+    if (!check_url_exists($url_full)) {
+        $temp_tpl = do_template('WARNING_BOX', [
+            '_GUID' => '7bcea67226f89840394614d88020e3ac',
+            'RESTRICT_VISIBILITY' => strval($source_member),
+            //'INLINE' => true, Looks awful
+            'WARNING' => do_lang_tempcode('MISSING_URL_COMCODE', escape_html($tag_type), escape_html($url_full)),
+        ]);
+
+        if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
+            $found_in_post = false; // We don't want to send e-mail if someone's just posting it right now, because they'll see the error on their screen, and we don't want staff spammed by member mistakes
+            foreach ($_POST as $val) {
+                if (is_array($_POST)) {
+                    continue;
+                }
+                if ((is_string($val)) && (strpos($val, $given_url) !== false)) {
+                    $found_in_post = true;
+                }
             }
-            if ((!in_array(get_page_name(), $DONT_CARE_MISSING_PAGES)) && (running_script('index'))) {
-                $found_in_post = false; // We don't want to send e-mail if someone's just posting it right now, because they'll see the error on their screen, and we don't want staff spammed by member mistakes
-                foreach ($_POST as $val) {
-                    if (is_array($_POST)) {
-                        continue;
-                    }
-                    if ((is_string($val)) && (strpos($val, $given_url) !== false)) {
-                        $found_in_post = true;
-                    }
-                }
-                if (!$found_in_post) {
-                    require_code('failure');
-                    relay_error_notification(
-                        do_lang('MISSING_URL_COMCODE', $tag_type, $url_full),
-                        false,
-                        $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference'
-                    );
-                }
+            if (!$found_in_post) {
+                require_code('failure');
+                relay_error_notification(
+                    do_lang('MISSING_URL_COMCODE', $tag_type, $url_full),
+                    false,
+                    $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference'
+                );
             }
         }
     }
@@ -1192,7 +1182,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     '_GUID' => '1d617fd24b632640dddeeadd8432d7a9',
                     'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'include', hyperlink(build_url(['page' => 'cms_comcode_pages', 'type' => '_edit', 'page_link' => $zone . ':' . $codename], get_module_zone('cms_comcode_pages')), $zone . ':' . $codename, false, true)),
                 ]);
-                if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
+                if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
                     require_code('failure');
                     relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'include', $zone . ':' . $codename), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
                 }
@@ -1942,7 +1932,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
                 if ($ptest === false) {
                     //$temp_tpl->attach(' [' . do_lang('MISSING_RESOURCE') . ']');  // Don't want this as we might be making the page immediately
-                    if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (!in_array($page, $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
+                    if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
                         if ($ignore_if_hidden) {
                             $temp_tpl = do_template('COMCODE_DEL', ['_GUID' => 'df638c61bc17ca975e95cf5f749836f5', 'CONTENT' => $caption]);
                         } else {
@@ -2255,7 +2245,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $attachment_rows = $db->query_select('attachments', ['*'], ['id' => $__id], '', 1);
                 if (!array_key_exists(0, $attachment_rows)) { // Missing attachment!
                     $temp_tpl = do_template('WARNING_BOX', ['_GUID' => 'be1c9c26a8802a00955fbd7a55b08bd3', 'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'attachment', escape_html(strval($__id)))]);
-                    if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
+                    if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
                         require_code('failure');
                         relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'attachment', strval($__id)), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
                     }

@@ -1027,3 +1027,79 @@ function find_unique_path($subdir, $filename = null, $lock_in = false, $conflict
 
     return [$path, $url, $adjusted_filename];
 }
+
+/**
+ * Check to see if a URL exists.
+ *
+ * @param  URLPATH $url The URL to check
+ * @param  ?integer $test_freq_secs Cache must be newer than this many seconds (null: default of 31 days)
+ * @param  boolean $retry_on_failed Whether to automatic retry if previously failed, rather than trusting that previous result
+ * @param  integer $attempts Number of times to attempt before considering failing this time
+ * @param  string $message HTTP response code, returned by reference
+ * @param  string $destination_url HTTP destination URL
+ * @return boolean Whether it does
+ */
+function check_url_exists($url, $test_freq_secs = null, $retry_on_failed = true, $attempts = 1, &$message = '', &$destination_url = '')
+{
+    if ($test_freq_secs === null) {
+        $test_freq_secs = 2678400;
+    }
+
+    $url = qualify_url($url, get_base_url());
+
+    if (substr($url, 0, 1) == '#') {
+        return true;
+    }
+    if (substr($url, 0, 7) == 'mailto:') {
+        return true;
+    }
+
+    $test1 = $GLOBALS['SITE_DB']->query_select('urls_checked', ['*'], ['url' => $url], 'ORDER BY url_check_time DESC', 1);
+
+    if ((!isset($test1[0])) || ($test1[0]['url_check_time'] < time() - $test_freq_secs) || (($retry_on_failed) && ($test1[0]['url_exists'] == 0))) {
+        for ($i = 0; $i < $attempts; $i++) {
+            $test2 = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 0]);
+            if (($test2 !== null) && (in_array($test2->message, ['401', '403', '405', '416', '500', '501', '503', '520']))) {
+                $test2 = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 1]); // Try without HEAD, sometimes it's not liked
+            }
+            $exists = ($test2->data !== null);
+            if ($exists) {
+                break;
+            }
+        }
+
+        mark_if_url_exists($url, $exists, ($test2->message === null) ? '' : $test2->message);
+        $message = $test2->message;
+        $destination_url = $test2->download_url;
+    } else {
+        $exists = ($test1[0]['url_exists'] == 1);
+        $message = $test1[0]['url_message'];
+        $destination_url = $test1[0]['url_destination_url'];
+    }
+
+    return $exists;
+}
+
+/**
+ * Mark if a URL exists.
+ *
+ * @param  URLPATH $url The URL
+ * @param  boolean $exists Whether it exists
+ * @param  string $message HTTP response code (blank: unknown)
+ * @param  URLPATH $destination_url Destination URL (blank: unknown)
+ */
+function mark_if_url_exists($url, $exists = true, $message = '', $destination_url = '')
+{
+    $GLOBALS['SITE_DB']->query_insert_or_replace(
+        'urls_checked',
+        [
+            'url_exists' => $exists ? 1 : 0,
+            'url_message' => $message,
+            'url_destination_url' => $destination_url,
+            'url_check_time' => time(),
+        ],
+        [
+            'url' => $url,
+        ]
+    );
+}

@@ -480,25 +480,6 @@ function member_personal_links_and_details($member_id)
 }
 
 /**
- * Use the url_title_cache table (a bit of a hack but saved changed the DB structure) to see if a check-op was performed has been performed within the last 30 days.
- *
- * @param  ID_TEXT $id_code Special check code (often a URL but does not need to be)
- * @return boolean Whether the check has happened recently
- */
-function handle_has_checked_recently($id_code)
-{
-    $last_check_test = $GLOBALS['SITE_DB']->query_select_value_if_there('url_title_cache', 't_title', ['t_url' => substr('!' . $id_code, 0, 255)]);
-    if (($last_check_test === null) || (substr($last_check_test, 0, 1) != '!') || (intval(substr($last_check_test, 1)) + 60 * 60 * 24 * 30 < time())) { // only re-checks every 30 days
-        // Record when it was last tested (i.e. it will be tested now, so put this into the DB)
-        $GLOBALS['SITE_DB']->query_insert_or_replace('url_title_cache', ['t_meta_title' => '', 't_keywords' => '', 't_description' => '', 't_image_url' => '', 't_title' => '!' . strval(time()), 't_mime_type' => '', 't_json_discovery' => '', 't_xml_discovery' => ''], ['t_url' => substr('!' . $id_code, 0, 255)]);
-
-        return false; // Make sure to test it after getting this result, else the above assumption wouldn't be valid
-    }
-
-    return true;
-}
-
-/**
  * Convert a string to an array, with utf-8 awareness where possible/required.
  *
  * @param  string $str Input

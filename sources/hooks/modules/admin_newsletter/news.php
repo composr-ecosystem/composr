@@ -105,7 +105,8 @@ class Hook_whatsnew_news
             }
             $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '4eaf5ec00db1f0b89cef5120c2486521', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'news', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
-            handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
+            require_code('urls2');
+            mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
         return [$new, do_lang('NEWS', '', '', '', $lang)];

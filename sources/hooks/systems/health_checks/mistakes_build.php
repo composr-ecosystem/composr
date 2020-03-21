@@ -198,19 +198,17 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             $_urls[] = $url;
         }
 
+        require_code('urls2');
+
         foreach ($_urls as $url) {
             // Check
             /*
             $data = http_get_contents($url, ['byte_limit' => 0, 'trigger_error' => false]);
             $ok = ($data !== null);
             */
-            for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue
-                $ok = check_url_exists($url, 60 * 60 * 24 * 1);
-                if ($ok) {
-                    break;
-                }
-            }
-            $this->assertTrue($ok, do_lang('BROKEN_LINK_PROBLEM', $url));
+            $message = '';
+            $ok = check_url_exists($url, 60 * 60 * 24 * 1, true, 3, $message);
+            $this->assertTrue($ok, do_lang('BROKEN_LINK_PROBLEM', $url, $message));
         }
     }
 

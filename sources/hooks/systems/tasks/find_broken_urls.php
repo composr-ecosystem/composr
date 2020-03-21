@@ -41,7 +41,8 @@ class Hook_task_find_broken_urls
         foreach ($urls as $url => &$url_bits) {
             task_log($this, 'Checking URL', $i, count($urls));
 
-            $passed = $url_scanner->check_url($url);
+            $message = '';
+            $passed = $url_scanner->check_url($url, $message);
 
             if ((!$show_passes) && ($passed)) {
                 unset($urls[$url]);
@@ -49,6 +50,7 @@ class Hook_task_find_broken_urls
             }
 
             $url_bits['STATUS'] = $passed;
+            $url_bits['MESSAGE'] = $message;
 
             $i++;
         }

@@ -58,7 +58,8 @@ class Hook_whatsnew_quiz
             $member_id = null;
             $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '1a8cad8defc5b92eded5aee376250ae5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'quiz', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
-            handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
+            require_code('urls2');
+            mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
         return [$new, do_lang('QUIZZES', '', '', '', $lang)];

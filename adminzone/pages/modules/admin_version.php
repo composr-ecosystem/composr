@@ -953,6 +953,8 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'url' => 'LONG_TEXT', // Support arbitrary length
                 'url_exists' => 'BINARY',
+                'url_message' => 'SHORT_TEXT',
+                'url_destination_url' => 'URLPATH',
                 'url_check_time' => 'TIME',
             ]);
             $GLOBALS['SITE_DB']->create_index('urls_checked', 'url', ['url(200)']);
@@ -1121,6 +1123,9 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_include_on_sitemap', 'BINARY', 1);
 
             $GLOBALS['SITE_DB']->add_table_field('task_queue', 't_add_time', 'TIME', time());
+
+            $GLOBALS['SITE_DB']->add_table_field('urls_checked', 'url_message', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('urls_checked', 'url_destination_url', 'URLPATH');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 18)) {

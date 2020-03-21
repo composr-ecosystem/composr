@@ -215,6 +215,7 @@ class Hook_addon_registry_core_cleanup_tools
                 'IDENTIFIERS' => [['IDENTIFIER' => placeholder_id(), 'EDIT_URL' => '']],
                 'CONTENT_TYPES' => [lorem_phrase()],
                 'STATUS' => true,
+                'MESSAGE' => '',
             ];
         }
 
