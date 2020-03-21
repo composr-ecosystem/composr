@@ -138,6 +138,16 @@ class Hook_content_meta_aware_wiki_page extends Hook_CMA
 
         return render_wiki_page_box($row, $zone, $give_context, $include_breadcrumbs, ($root === null) ? null : intval($root), $guid);
     }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return 'choose_wiki_page';
+    }
 }
 
 

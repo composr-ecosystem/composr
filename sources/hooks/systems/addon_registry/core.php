@@ -581,6 +581,7 @@ class Hook_addon_registry_core
             'themes/default/css/install.css',
             'lang/EN/installer.ini',
             'lang/EN/encryption.ini',
+            'sources/hooks/systems/block_ui_renderers/core.php',
             'sources/locations.php',
             'sources/locations_geocoding.php',
             'sources/locations_cpfs.php',

@@ -174,4 +174,14 @@ class Hook_content_meta_aware_download_category extends Hook_CMA
 
         return render_download_category_box($row, $zone, $give_context, $include_breadcrumbs, ($root === null) ? null : intval($root), $attach_to_url_filter, $guid);
     }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return 'choose_download_category';
+    }
 }

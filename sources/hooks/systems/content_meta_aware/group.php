@@ -170,4 +170,17 @@ class Hook_content_meta_aware_group extends Hook_CMA
 
         return render_group_box($row, $zone, $give_context);
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('cns_groups');
+
+        return cns_create_selection_list_usergroups(($id === null) ? null : intval($id));
+    }
 }

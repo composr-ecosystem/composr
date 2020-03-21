@@ -182,4 +182,14 @@ class Hook_content_meta_aware_topic extends Hook_CMA
 
         return render_topic_box($row, $zone, $give_context, $include_breadcrumbs, ($root === null) ? null : intval($root), $guid);
     }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return 'choose_topic';
+    }
 }

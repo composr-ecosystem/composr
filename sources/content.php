@@ -1668,4 +1668,49 @@ abstract class Hook_CMA
         //return do_lang_tempcode($string_custom); // Assumes that the lang string stays memory resident, but our probing only guarantees it's resident NOW
         return protect_from_escaping($test); // But this should work as the string is rolled into the Tempcode permanently
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        $info = $this->info();
+
+        $select = [];
+        append_content_select_for_fields($select, $info, ['id', 'title']);
+
+        if ($info['add_time_field'] === null) {
+            $extra = '';
+        } else {
+            $extra = 'ORDER BY ' . $info['add_time_field'] . ' DESC';
+        }
+
+        $cnt = $info['db']->get_table_count_approx($info['table']);
+        if (($cnt < intval(get_option('general_safety_listing_limit'))) && (is_string($info['title_field'])) && (strpos($info['title_field'], 'CALL:') !== false)) {
+            $extra = 'ORDER BY ' . $info['title_field_dereference'] ? $info['db']->translate_field_ref($info['title_field']) : $info['title_field'];
+        }
+
+        $rows = $info['db']->query_select($info['table'], $select, [], $extra, intval(get_option('general_safety_listing_limit')));
+        $list = new Tempcode();
+        foreach ($rows as $row) {
+            $_id = $this->get_id($row);
+            $_title = $this->get_title($row);
+            $list->attach(form_input_list_entry($_id, $id == $_id, $_title));
+        }
+
+        return $list;
+    }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return null;
+    }
 }

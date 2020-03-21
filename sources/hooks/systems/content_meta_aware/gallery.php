@@ -183,6 +183,16 @@ class Hook_content_meta_aware_gallery extends Hook_CMA
 
         return render_gallery_box($row, ($root === null) ? $root : 'root', false, $zone, false, false, $give_context, $include_breadcrumbs, $attach_to_url_filter, $guid);
     }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return 'choose_gallery';
+    }
 }
 
 /**

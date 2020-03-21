@@ -169,4 +169,17 @@ class Hook_content_meta_aware_calendar_type extends Hook_CMA
 
         return $keymap;
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('calendar');
+
+        return create_selection_list_event_types(($id === null) ? null : intval($id));
+    }
 }

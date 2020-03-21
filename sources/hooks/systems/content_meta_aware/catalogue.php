@@ -171,6 +171,19 @@ class Hook_content_meta_aware_catalogue extends Hook_CMA
 
         return render_catalogue_box($row, $zone, $give_context, $guid);
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('catalogues');
+
+        return create_selection_list_catalogues($id);
+    }
 }
 
 /**

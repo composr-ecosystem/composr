@@ -136,6 +136,19 @@ class Hook_content_meta_aware_news extends Hook_CMA
 
         return render_news_box($row, $zone, $give_context, false, $guid);
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('news');
+
+        return create_selection_list_news(($id === null) ? null : intval($id));
+    }
 }
 
 /**

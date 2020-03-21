@@ -180,4 +180,17 @@ class Hook_content_meta_aware_forum extends Hook_CMA
 
         return render_forum_box($row, $zone, $give_context, $include_breadcrumbs, ($root === null) ? null : intval($root), $guid);
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('cns_forums2');
+
+        return create_selection_list_forum_tree(null, null, ($id === null) ? null : intval($id));
+    }
 }

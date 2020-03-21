@@ -168,4 +168,17 @@ class Hook_content_meta_aware_banner_type extends Hook_CMA
 
         return render_banner_type_box($row, $zone, $give_context, $guid);
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('banners2');
+
+        return create_selection_list_banner_types($id);
+    }
 }

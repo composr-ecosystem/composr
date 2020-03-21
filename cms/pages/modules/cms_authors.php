@@ -182,7 +182,6 @@ class Module_cms_authors
             comcode_lang_string('DOC_AUTHORS'),
             array_merge([
                 has_privilege(get_member(), 'set_own_author_profile') ? ['menu/cms/author_set_own_profile', ['_SELF', ['type' => '_add'], '_SELF'], do_lang('EDIT_MY_AUTHOR_PROFILE')] : null,
-                has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? ['admin/add', ['_SELF', ['type' => '_add'], '_SELF'], do_lang('ADD_AUTHOR')] : null,
                 has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_MERGE_AUTHORS')] : null,
             ], manage_custom_fields_donext_link('author')),
             do_lang('AUTHOR_MANAGE')

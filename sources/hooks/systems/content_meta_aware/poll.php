@@ -173,4 +173,17 @@ class Hook_content_meta_aware_poll extends Hook_CMA
 
         return render_poll_box(true, $row, $zone, false, $give_context, $guid);
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('polls');
+
+        return create_selection_list_polls(($id === null) ? null : intval($id));
+    }
 }

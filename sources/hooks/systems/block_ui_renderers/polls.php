@@ -24,6 +24,24 @@
 class Hook_block_ui_renderers_polls
 {
     /**
+     * See if a particular block parameter's UI input can be handled as a hidden field.
+     *
+     * @param  ID_TEXT $block The block
+     * @param  ID_TEXT $parameter The parameter of the block
+     * @param  boolean $has_default Whether there is a default value for the field, due to this being an edit
+     * @param  string $default Default value for field
+     * @return ?Tempcode Rendered field (null: not handled)
+     */
+    public function render_block_ui_parameter_hidden($block, $parameter, $has_default, $default)
+    {
+        if (!addon_installed('polls')) {
+            return null;
+        }
+
+        return null;
+    }
+
+    /**
      * See if a particular block parameter's UI input can be rendered by this.
      *
      * @param  ID_TEXT $block The block
@@ -33,7 +51,7 @@ class Hook_block_ui_renderers_polls
      * @param  Tempcode $description Field description
      * @return ?Tempcode Rendered field (null: not handled)
      */
-    public function render_block_ui($block, $parameter, $has_default, $default, $description)
+    public function render_block_ui_parameter($block, $parameter, $has_default, $default, $description)
     {
         if (!addon_installed('polls')) {
             return null;
