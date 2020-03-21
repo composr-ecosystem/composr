@@ -748,7 +748,7 @@ class Block_main_multi_content
 
         require_code('selectcode');
 
-        $sql = selectcode_to_sqlfragment($select, 'r.' . (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']), $parent_spec__table_name, $parent_spec__parent_name, 'r.' . $parent_field_name, $parent_spec__field_name, $id_field_numeric, !$category_is_string);
+        $sql = selectcode_to_sqlfragment($select, 'r.' . (is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field']), $parent_spec__table_name, $parent_spec__parent_name, 'r.' . $parent_field_name, $parent_spec__field_name, $id_field_numeric, !$category_is_string);
         return $sql;
     }
 }
