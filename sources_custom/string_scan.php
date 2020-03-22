@@ -911,7 +911,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACCESS_DENIED__I_ERROR
         ACCESS_DENIED__PRIVILEGE
         ACCESS_DENIED__STAFF_ONLY
-        PARTNER_SITES
         REFERRER
         SUPPORT_TICKETS_MAIL
         _COMCODE_PAGES
@@ -1389,7 +1388,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_TRANS_NAME_side_friends
         BLOCK_TRANS_NAME_side_galleries
         BLOCK_TRANS_NAME_side_language
-        BLOCK_TRANS_NAME_side_network
         BLOCK_TRANS_NAME_side_news
         BLOCK_TRANS_NAME_side_news_archive
         BLOCK_TRANS_NAME_side_news_categories
@@ -2119,8 +2117,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_side_galleries_USE
         BLOCK_side_language_DESCRIPTION
         BLOCK_side_language_USE
-        BLOCK_side_network_DESCRIPTION
-        BLOCK_side_network_USE
         BLOCK_side_news_DESCRIPTION
         BLOCK_side_news_PARAM_as_guest
         BLOCK_side_news_PARAM_as_guest_TITLE
@@ -3475,7 +3471,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_minutes_between_sends
         CONFIG_OPTION_mobile_support
         CONFIG_OPTION_modal_user
-        CONFIG_OPTION_network_links
         CONFIG_OPTION_news_categories_per_page
         CONFIG_OPTION_news_entries_per_page
         CONFIG_OPTION_news_update_time
@@ -6073,7 +6068,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MULTI_MODERATION_WILL_POST
         MULTI_MODERATION_WILL_TITLE_SUFFIX
         MULTI_MODERATION_WILL_UNPIN
-        MULTI_SITE_NETWORKING
         MUST_BE_EMAIL_DOMAIN
         MUST_DELETE_INSTALLER
         MUST_MOVE_POSTS_SOMEWHERE
@@ -6098,7 +6092,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NAG_VALIDATE
         NEED_FTP
         NETWORKING
-        NETWORK_LINKS
         NET_PROFIT
         NEWSLETTER_ARCHIVE
         NEWSLETTER_CNS
@@ -9608,7 +9601,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NC_entertainment
         NC_general
         NC_technology
-        NETWORK
         NETWORK_DOWN
         NEW
         NEWEST_FIRST
