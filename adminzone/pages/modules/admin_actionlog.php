@@ -336,6 +336,8 @@ class Module_admin_actionlog
         $result_entries = new Tempcode();
         $pos = 0;
         while ((!empty($rows)) && (($pos - $start) < $max)) {
+            $_best = mixed();
+
             $best = 0; // Initialise type to integer
             $_best = 0; // Initialise type to integer
             $best = null;

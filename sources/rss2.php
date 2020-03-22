@@ -48,7 +48,6 @@ function backend_cloud_script()
     }
     $port = post_param_integer('port', 80);
     // $watching_channel = $_POST['channels'];
-    $status = _cloud_register_them($path, $procedure, $protocol, $port, get_param_string('type', ''));
     $GLOBALS['SITE_DB']->query_insert_or_replace('news_rss_cloud', ['register_time' => time()], ['watching_channel' => get_param_string('type', ''), 'rem_procedure' => $procedure, 'rem_port' => $port, 'rem_path' => $path, 'rem_protocol' => $protocol, 'rem_ip' => get_ip_address()]);
     exit('true');
 }

@@ -85,11 +85,12 @@ class points_test_set extends cms_test_case
 
         $this->assertTrue($used_points_correct, 'Used points did not increase as expected.');
         $this->assertTrue($to_give_points_correct, 'Points to give did not decrease as expected.');
-        $this->assertTrue($points_correct, 'Points to spend did not increase as expected. It was at ' . $current_points . ' when it should have been at ' . ($initial_points + $points_to_give));
+        $this->assertTrue($points_correct, 'Points to spend did not increase as expected. It was at ' . strval($current_points) . ' when it should have been at ' . strval($initial_points + $points_to_give));
         $this->assertTrue($reversed_correct, 'Points did not reverse as expected for reverse transaction.');
     }
 
-    public function testForumPoints() {
+    public function testForumPoints()
+    {
         if (get_forum_type() != 'cns' || !addon_installed('points')) {
             return;
         }

@@ -1048,18 +1048,16 @@ class Module_admin_permissions
         foreach ($_POST as $key => $val) {
             $matches = [];
 
-            // Zone view access
             if (preg_match('#^perm__([^:]*)$#', $key, $matches) != 0) {
+                // Zone view access
                 $zone_name = $matches[1];
                 if ($val == '0') {
                     $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['zone_name' => $zone_name, 'group_id' => $group_id]);
                 } else {
                     $GLOBALS['SITE_DB']->query_insert_or_replace('group_zone_access', [], ['zone_name' => $zone_name, 'group_id' => $group_id]);
                 }
-            }
-
-            // Module privilege override
-            elseif (preg_match('#^perm__([^:]*):([^:]*)__(\w+)$#', $key, $matches) != 0) {
+            } elseif (preg_match('#^perm__([^:]*):([^:]*)__(\w+)$#', $key, $matches) != 0) {
+                // Module privilege override
                 $page_name = $matches[2];
                 $privilege = $matches[3];
                 if ($val == '-1') {
@@ -1067,10 +1065,8 @@ class Module_admin_permissions
                 } else {
                     $GLOBALS['SITE_DB']->query_insert_or_replace('group_privileges', ['the_value' => intval($val)], ['module_the_name' => '', 'category_name' => '', 'the_page' => $page_name, 'privilege' => $privilege, 'group_id' => $group_id]);
                 }
-            }
-
-            // Page view access
-            elseif (preg_match('#^perm__([^:]*):([^:]*)$#', $key, $matches) != 0) {
+            } elseif (preg_match('#^perm__([^:]*):([^:]*)$#', $key, $matches) != 0) {
+                // Page view access
                 $zone_name = $matches[1];
                 $page_name = $matches[2];
                 if ($val == '0') {
@@ -1079,10 +1075,8 @@ class Module_admin_permissions
                 } else {
                     $GLOBALS['SITE_DB']->query_delete('group_page_access', ['zone_name' => $zone_name, 'page_name' => $page_name, 'group_id' => $group_id]);
                 }
-            }
-
-            // Category privilege override
-            elseif (preg_match('#^perm__([^:]*):([^:]*):([^:]*)__(\w+)$#', $key, $matches) != 0) {
+            } elseif (preg_match('#^perm__([^:]*):([^:]*):([^:]*)__(\w+)$#', $key, $matches) != 0) {
+                // Category privilege override
                 $module = $matches[2];
                 $category_name = $matches[3];
                 $privilege = $matches[4];
@@ -1091,10 +1085,8 @@ class Module_admin_permissions
                 } else {
                     $GLOBALS['SITE_DB']->query_insert_or_replace('group_privileges', ['the_value' => intval($val)], ['module_the_name' => $module, 'category_name' => $category_name, 'the_page' => '', 'privilege' => $privilege, 'group_id' => $group_id]);
                 }
-            }
-
-            // Category view access
-            elseif (preg_match('#^perm__([^:]*):([^:]*):([^:]*)$#', $key, $matches) != 0) {
+            } elseif (preg_match('#^perm__([^:]*):([^:]*):([^:]*)$#', $key, $matches) != 0) {
+                // Category view access
                 $module = $matches[2];
                 $category_name = $matches[3];
                 if ($val == '0') {

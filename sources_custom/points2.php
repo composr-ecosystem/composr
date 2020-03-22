@@ -46,6 +46,7 @@ function system_gift_transfer($reason, $amount, $member_id, $include_in_log = tr
             $new = strval($before + $amount);
             $GLOBALS['FORUM_DRIVER']->set_custom_field($mentor_id, 'points_gained_given', $new);
 
+            global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
             if (array_key_exists($mentor_id, $TOTAL_POINTS_CACHE)) {
                 $TOTAL_POINTS_CACHE[$mentor_id] += $amount;
             }

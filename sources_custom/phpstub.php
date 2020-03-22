@@ -3490,7 +3490,7 @@ function log10($arg)
  */
 function long2ip($proper_address)
 {
-    return 0;
+    return '';
 }
 
 /**

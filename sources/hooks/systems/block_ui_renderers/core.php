@@ -66,9 +66,7 @@ class Hook_block_ui_renderers_core
      */
     public function render_block_ui_parameter($block, $parameter, $has_default, $default, $description)
     {
-        // Content block...
-
-        if ($block . ':' . $parameter == 'main_content:id') { // Content choice
+        if ($block . ':' . $parameter == 'main_content:id') { // Content block: Content choice
             $content_type = get_param_string('default_param', '');
             if ($content_type != '') {
                 require_code('content');
@@ -87,11 +85,7 @@ class Hook_block_ui_renderers_core
                     return $field;
                 }
             }
-        }
-
-        // Custom graphics block...
-
-        elseif ($parameter == 'font') { // font choice
+        } elseif ($parameter == 'font') { // Custom graphics block: Font choice
             $list = new Tempcode();
             require_code('fonts');
             $fonts = find_all_fonts();
@@ -99,11 +93,7 @@ class Hook_block_ui_renderers_core
                 $list->attach(form_input_list_entry($font, $font == $default, $font_label));
             }
             return form_input_list(do_lang_tempcode('comcode:FONT'), escape_html($description), $parameter, $list, null, false, false);
-        }
-
-        // Forum blocks...
-
-        elseif ((($default == '') || (is_numeric(str_replace(',', '', $default)))) && ((($parameter == 'forum') || (($parameter == 'param') && (in_array($block, ['main_forum_topics'])))) && (get_forum_type() == 'cns'))) { // Conversr forum list
+        } elseif ((($default == '') || (is_numeric(str_replace(',', '', $default)))) && ((($parameter == 'forum') || (($parameter == 'param') && (in_array($block, ['main_forum_topics'])))) && (get_forum_type() == 'cns'))) { // Forum blocks: Conversr forum list
             require_code('cns_forums');
             require_code('cns_forums2');
             if (!addon_installed('cns_forum')) {
@@ -111,11 +101,7 @@ class Hook_block_ui_renderers_core
             }
             $list = create_selection_list_forum_tree(null, null, array_map('intval', explode(',', $default)));
             return form_input_multi_list(do_lang_tempcode('FORUM'), escape_html($description), $parameter, $list);
-        }
-
-        // Menu blocks...
-
-        elseif ($block . ':' . $parameter == 'menu:type') {
+        } elseif ($block . ':' . $parameter == 'menu:type') { // Menu blocks: Type
             $matches = [];
             $dh = opendir(get_file_base() . '/themes/default/templates/');
             $options = [];
@@ -138,9 +124,7 @@ class Hook_block_ui_renderers_core
                 $list->attach(form_input_list_entry($option, $has_default && $option == $default));
             }
             return form_input_list(do_lang_tempcode('TYPE'), escape_html($description), $parameter, $list, null, false, false);
-        }
-
-        elseif ($block . ':' . $parameter == 'menu:param') {
+        } elseif ($block . ':' . $parameter == 'menu:param') { // Menu blocks: Menu
             $list = new Tempcode();
             $rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['DISTINCT i_menu'], [], 'ORDER BY i_menu');
             foreach ($rows as $row) {

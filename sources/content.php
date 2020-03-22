@@ -1690,7 +1690,7 @@ abstract class Hook_CMA
 
         $cnt = $info['db']->get_table_count_approx($info['table']);
         if (($cnt < intval(get_option('general_safety_listing_limit'))) && (is_string($info['title_field'])) && (strpos($info['title_field'], 'CALL:') !== false)) {
-            $extra = 'ORDER BY ' . $info['title_field_dereference'] ? $info['db']->translate_field_ref($info['title_field']) : $info['title_field'];
+            $extra = 'ORDER BY ' . ($info['title_field_dereference'] ? $info['db']->translate_field_ref($info['title_field']) : $info['title_field']);
         }
 
         $rows = $info['db']->query_select($info['table'], $select, [], $extra, intval(get_option('general_safety_listing_limit')));
