@@ -188,8 +188,6 @@ class Hook_addon_registry_cns_forum
             'themes/default/templates/CNS_POST_BOX.tpl',
             'themes/default/templates/CNS_MEMBER_BAR.tpl',
             'themes/default/templates/MEMBER_BAR_SEARCH.tpl',
-            'themes/default/templates/CNS_NOTIFICATION.tpl',
-            'themes/default/templates/BLOCK_MAIN_PT_NOTIFICATIONS.tpl',
             'themes/default/templates/CNS_MEMBER_PROFILE_PTS.tpl',
             'themes/default/templates/CNS_PINNED_DIVIDER.tpl',
             'themes/default/templates/CNS_POSTER_GUEST.tpl',
@@ -367,8 +365,6 @@ class Hook_addon_registry_cns_forum
             'templates/CNS_POST_BOX.tpl' => 'cns_isolated_post',
             'templates/BLOCK_MAIN_CNS_INVOLVED_TOPICS.tpl' => 'block_main_cns_involved_topics',
             'templates/BLOCK_SIDE_CNS_PRIVATE_TOPICS.tpl' => 'block_side_cns_private_topics',
-            'templates/BLOCK_MAIN_PT_NOTIFICATIONS.tpl' => 'block_pt_notifications',
-            'templates/CNS_NOTIFICATION.tpl' => 'block_pt_notifications',
             'templates/CNS_FORUM_TOPIC_ROW_LAST_POST.tpl' => 'cns_forum',
             'templates/CNS_PT_BETWEEN.tpl' => 'cns_forum',
             'templates/CNS_TOPIC_MARKER.tpl' => 'cns_forum',
@@ -919,47 +915,6 @@ class Hook_addon_registry_cns_forum
 
         return [
             lorem_globalise($member_bar, null, '', true)
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__block_pt_notifications()
-    {
-        require_css('cns');
-
-        require_lang('cns');
-
-        $notifications = do_lorem_template('CNS_NOTIFICATION', [
-            'ADDITIONAL_POSTS' => placeholder_number(),
-            '_ADDITIONAL_POSTS' => lorem_phrase(),
-            'ID' => placeholder_id(),
-            'U_TITLE' => lorem_phrase(),
-            'IGNORE_URL' => placeholder_url(),
-            'IGNORE_URL_2' => placeholder_url(),
-            'REPLY_URL' => placeholder_url(),
-            'TOPIC_URL' => placeholder_url(),
-            'POST' => lorem_phrase(),
-            'DESCRIPTION' => lorem_paragraph_html(),
-            'DATE' => placeholder_date(),
-            'TIME_RAW' => placeholder_date_raw(),
-            'BY' => lorem_phrase(),
-            'PROFILE_URL' => placeholder_url(),
-            'TYPE' => lorem_phrase(),
-        ]);
-
-        $notifications_bar = do_lorem_template('BLOCK_MAIN_PT_NOTIFICATIONS', [
-            'BLOCK_ID' => lorem_word(),
-            'NOTIFICATIONS' => $notifications,
-        ]);
-
-        return [
-            lorem_globalise($notifications_bar, null, '', true)
         ];
     }
 

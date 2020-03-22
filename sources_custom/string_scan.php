@@ -1353,7 +1353,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_TRANS_NAME_main_notes
         BLOCK_TRANS_NAME_main_personal_galleries_list
         BLOCK_TRANS_NAME_main_poll
-        BLOCK_TRANS_NAME_main_pt_notifications
         BLOCK_TRANS_NAME_main_quotes
         BLOCK_TRANS_NAME_main_rating
         BLOCK_TRANS_NAME_main_rss
@@ -1962,8 +1961,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_poll_PARAM_zone
         BLOCK_main_poll_PARAM_zone_TITLE
         BLOCK_main_poll_USE
-        BLOCK_main_pt_notifications_DESCRIPTION
-        BLOCK_main_pt_notifications_USE
         BLOCK_main_quotes_DESCRIPTION
         BLOCK_main_quotes_PARAM_param
         BLOCK_main_quotes_PARAM_param_TITLE
@@ -8185,7 +8182,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADDED_TO_CART
         ADDITIONAL_CUSTOM
         ADDITIONAL_INFO
-        ADDITIONAL_PT_POSTS
         ADDRESS
         ADDRESS_CURRENT
         ADDRESS_DESIRED
@@ -9651,7 +9647,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NEW_PRIVATE_TOPIC_SHORT
         NEW_PRIVATE_TOPIC_SUBJECT
         NEW_PT_NOTIFICATION
-        NEW_PT_NOTIFICATION_DETAILS
         NEW_TICKET_WELCOME
         NEW_TOPICS
         NEW_UGROUP_SUB_FOR
