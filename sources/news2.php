@@ -359,33 +359,9 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
         generate_resource_fs_moniker('news', strval($id), null, null, true);
     }
 
-    if (php_function_allowed('fsockopen')) {
-        $old_limit = cms_disable_time_limit();
-
-        // Send out on RSS cloud
-        cms_register_shutdown_function_safe(function () {
-            if (!$GLOBALS['SITE_DB']->table_is_locked('news_rss_cloud')) {
-                $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'news_rss_cloud WHERE register_time<' . strval(time() - 25 * 60 * 60), null, 0, true); // Errors suppressed in case DB write access broken
-            }
-        });
-        $start = 0;
-        do {
-            send_http_output_ping();
-
-            $listeners = $GLOBALS['SITE_DB']->query_select('news_rss_cloud', ['*'], [], '', 100, $start);
-            foreach ($listeners as $listener) {
-                $data = $listener['watching_channel'];
-                if ($listener['rem_protocol'] == 'xml-rpc') {
-                    require_code('xmlrpc');
-                    xml_rpc('http://' . $listener['rem_ip'] . ':' . strval($listener['rem_port']) . '/' . $listener['rem_path'], $listener['rem_procedure'], $data, true);
-                }
-                // Other protocols not supported
-            }
-            $start += 100;
-        } while (array_key_exists(0, $listeners));
-
-        cms_set_time_limit($old_limit);
-    }
+    require_code('tasks');
+    require_lang('news');
+    call_user_func_array__long_task(do_lang('RSS_CLOUD_UPDATE'), get_screen_title('RSS_CLOUD_UPDATE'), 'rss_cloud_update');
 
     require_code('content2');
     if (get_option('enable_seo_fields') === '0') {
