@@ -180,6 +180,7 @@ class Hook_addon_registry_iotds
             'sources_custom/hooks/systems/config/search_iotds.php',
             'themes/default/javascript_custom/iotds.js',
             'sources_custom/hooks/systems/actionlog/iotds.php',
+            'themes/default/templates_custom/IOTD_ARCHIVE_SCREEN.tpl',
         ];
     }
 
@@ -195,6 +196,7 @@ class Hook_addon_registry_iotds
             'templates/BLOCK_MAIN_IOTD.tpl' => 'block_main_iotd',
             'templates/IOTD_BOX.tpl' => 'iotd_view_screen_iotd',
             'templates/IOTD_ENTRY_SCREEN.tpl' => 'iotd_view_screen',
+            'templates/IOTD_ARCHIVE_SCREEN.tpl' => 'iotd_archive_screen',
         ];
     }
 
@@ -404,6 +406,22 @@ class Hook_addon_registry_iotds
                 'COMMENT_DETAILS' => $comment_details,
                 'EDIT_URL' => placeholder_url(),
                 'URL' => placeholder_image_url(),
+            ]), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__iotd_archive_screen()
+    {
+        return [
+            lorem_globalise(do_lorem_template('IOTD_ARCHIVE_SCREEN', [
+                'TITLE' => lorem_title(),
             ]), null, '', true)
         ];
     }

@@ -13,10 +13,11 @@
 	{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,gallery,{CAT}}}
 	{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}
 
-	{+START,IF_NON_EMPTY,{CHILDREN}}
+	{$SET,children,{$BLOCK,block=main_multi_content,param=gallery,pinned=,select={CAT}>,zone,{$ZONE},sort={$CONFIG_OPTION,galleries_sort_order},max={$CONFIG_OPTION,subgallery_link_limit},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,render_if_empty=0,guid=module}}
+	{+START,IF_NON_EMPTY,{$GET,children}}
 		<h2 class="heading-subgalleries">{!SUBGALLERIES}</h2>
 
-		{CHILDREN}
+		{$GET,children}
 
 		<h2 class="heading-images-and-videos">{!IMAGES_AND_VIDEOS_IN,{_TITLE}}</h2>
 	{+END}
@@ -64,7 +65,7 @@
 
 	{$SET,support_mass_select,}
 
-	{+START,IF_EMPTY,{ENTRIES}{CURRENT_ENTRY}{CHILDREN}}
+	{+START,IF_EMPTY,{ENTRIES}{CURRENT_ENTRY}{$GET,children}}
 		<p class="nothing-here">
 			{!NO_ENTRIES}
 		</p>

@@ -11,19 +11,18 @@
 {$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,download_category,{ID}}}
 {+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}
 
-{+START,IF_NON_EMPTY,{SUBCATEGORIES}}
+{$SET,subcategories,{$BLOCK,block=main_multi_content,param=download_category,pinned=,select={ID}>,efficient=0,zone={$ZONE},sort=title=max={$CONFIG_OPTION,download_subcats_per_page},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,render_if_empty=0,guid=module}}
+{+START,IF_NON_EMPTY,{$GET,subcategories}}
 	<div class="box box---download-category-screen"><div class="box-inner compacted-subbox-stream">
 		<h2>{$?,{$EQ,{ID},1},{!CATEGORIES},{!SUBCATEGORIES_HERE}}</h2>
 
 		<div>
-			{SUBCATEGORIES}
+			{$GET,subcategories}
 		</div>
 	</div></div>
 {+END}
 
-{+START,IF_NON_EMPTY,{DOWNLOADS}}
-	{DOWNLOADS}
-{+END}
+{$BLOCK,block=main_multi_content,param=download,pinned=,select={SELECT},efficient=0=zone={$ZONE},sort={SORT},max={$CONFIG_OPTION,download_entries_per_page},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,attach_to_url_filter=1,filter={FILTER},block_id=module,guid=module}
 
 <div class="right">
 	{+START,INCLUDE,NOTIFICATION_BUTTONS}
@@ -60,7 +59,7 @@
 
 {+START,IF,{$THEME_OPTION,show_screen_actions}}{$BLOCK,failsafe=1,block=main_screen_actions,title={$METADATA,title}}{+END}
 
-{+START,IF_NON_EMPTY,{SUBCATEGORIES}}{+START,IF,{$EQ,{ID},1}}
+{+START,IF_NON_EMPTY,{$GET,subcategories}}{+START,IF,{$EQ,{ID},1}}
 	<hr class="spaced-rule" />
 
 	<div class="boxless-space">

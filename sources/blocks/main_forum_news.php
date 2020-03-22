@@ -206,13 +206,14 @@ PHP;
                 'NEWS_TITLE_PLAIN' => $news_title,
                 'CATEGORY' => '',
                 '_CATEGORY' => '',
+                'CATEGORY_URL' => '',
                 'IMG' => '',
                 '_IMG' => '',
                 'AUTHOR' => $author,
                 'AUTHOR_URL' => $author_url,
                 'NEWS' => $news,
                 'FORUM_ID' => isset($myrow['forum_id']) ? strval($myrow['forum_id']) : '',
-                'BRIEF' => null,
+                'BRIEF_CONTENT' => null,
             ]));
 
             $i++;
@@ -243,7 +244,7 @@ PHP;
             'TITLE' => $_title,
             'FORUM_NAME' => array_key_exists('forum', $map) ? $map['forum'] : do_lang('NEWS'),
             'CONTENT' => $news_text,
-            'BRIEF' => new Tempcode(),
+            'BRIEF_CONTENT' => new Tempcode(),
             'ARCHIVE_URL' => $archive_url,
             'SUBMIT_URL' => $submit_url,
             'RSS_URL' => '',

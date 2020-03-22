@@ -120,6 +120,8 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
     $news_cat_row = get_news_cat_row($row['news_category']);
 
     $category = get_translated_text($news_cat_row['nc_title']);
+    $category_url = build_url(['page' => 'news', 'type' => 'browse', 'id' => $news_cat_row['id']], $zone);
+
     if ($row['news_image'] != '') {
         require_code('images');
         $img_raw = $row['news_image'];
@@ -158,6 +160,7 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
         'AUTHOR_URL' => $author_url,
         'CATEGORY' => $category,
         '_CATEGORY' => strval($row['news_category']),
+        'CATEGORY_URL' => $category_url,
         'IMG' => $img,
         '_IMG' => $img_raw,
         'NEWS' => $news,

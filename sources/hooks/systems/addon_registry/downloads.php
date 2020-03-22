@@ -194,7 +194,7 @@ class Hook_addon_registry_downloads
         return [
             'templates/DOWNLOAD_LIST_LINE.tpl' => 'download_list_line',
             'templates/DOWNLOAD_LIST_LINE_2.tpl' => 'download_list_line_2',
-            'templates/DOWNLOAD_BOX.tpl' => 'download_category_screen',
+            'templates/DOWNLOAD_BOX.tpl' => 'download_box',
             'templates/DOWNLOAD_AND_IMAGES_SIMPLE_BOX.tpl' => 'download_and_images_simple_box',
             'templates/DOWNLOAD_CATEGORY_SCREEN.tpl' => 'download_category_screen',
             'templates/DOWNLOAD_ALL_SCREEN.tpl' => 'download_all_screen',
@@ -258,6 +258,44 @@ class Hook_addon_registry_downloads
         ];
     }
 
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__download_box()
+    {
+        return [
+            lorem_globalise(do_lorem_template('DOWNLOAD_BOX', [
+                'ORIGINAL_FILENAME' => lorem_phrase(),
+                'AUTHOR' => lorem_phrase(),
+                'ID' => placeholder_id(),
+                'VIEWS' => placeholder_number(),
+                'SUBMITTER' => placeholder_id(),
+                'DESCRIPTION' => lorem_sentence(),
+                'FILE_SIZE' => placeholder_number(),
+                'DOWNLOADS' => placeholder_number(),
+                'DATE_RAW' => placeholder_date_raw(),
+                'DATE' => placeholder_date(),
+                'EDIT_DATE_RAW' => '',
+                'URL' => placeholder_url(),
+                'NAME' => lorem_phrase(),
+                'BREADCRUMBS' => placeholder_breadcrumbs(),
+                'IMGCODE' => '',
+                'GIVE_CONTEXT' => false,
+                'MAY_DOWNLOAD' => true,
+                'DOWNLOAD_URL' => placeholder_url(),
+                'IMG_URL' => placeholder_image_url(),
+                'FULL_IMG_URL' => placeholder_image_url(),
+                'LICENCE_TITLE' => lorem_phrase(),
+                'LICENCE_HYPERLINK' => placeholder_link(),
+            ]), null, '', true)
+        ];
+    }
+
     /**
      * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
      * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
@@ -267,33 +305,6 @@ class Hook_addon_registry_downloads
      */
     public function tpl_preview__download_category_screen()
     {
-        $subcategories = lorem_paragraph_html();
-
-        $downloads = do_lorem_template('DOWNLOAD_BOX', [
-            'ORIGINAL_FILENAME' => lorem_phrase(),
-            'AUTHOR' => lorem_phrase(),
-            'ID' => placeholder_id(),
-            'VIEWS' => placeholder_number(),
-            'SUBMITTER' => placeholder_id(),
-            'DESCRIPTION' => lorem_sentence(),
-            'FILE_SIZE' => placeholder_number(),
-            'DOWNLOADS' => placeholder_number(),
-            'DATE_RAW' => placeholder_date_raw(),
-            'DATE' => placeholder_date(),
-            'EDIT_DATE_RAW' => '',
-            'URL' => placeholder_url(),
-            'NAME' => lorem_phrase(),
-            'BREADCRUMBS' => placeholder_breadcrumbs(),
-            'IMGCODE' => '',
-            'GIVE_CONTEXT' => false,
-            'MAY_DOWNLOAD' => true,
-            'DOWNLOAD_URL' => placeholder_url(),
-            'IMG_URL' => placeholder_image_url(),
-            'FULL_IMG_URL' => placeholder_image_url(),
-            'LICENCE_TITLE' => lorem_phrase(),
-            'LICENCE_HYPERLINK' => placeholder_link(),
-        ]);
-
         return [
             lorem_globalise(do_lorem_template('DOWNLOAD_CATEGORY_SCREEN', [
                 'TAGS' => lorem_sentence_html(),
@@ -304,11 +315,12 @@ class Hook_addon_registry_downloads
                 'ADD_CAT_TITLE' => do_lang_tempcode('ADD_DOWNLOAD_CATEGORY'),
                 'EDIT_CAT_URL' => placeholder_url(),
                 'DESCRIPTION' => lorem_paragraph_html(),
-                'SUBCATEGORIES' => $subcategories,
-                'DOWNLOADS' => $downloads,
                 'SORTING' => lorem_phrase(),
                 'ID' => placeholder_id(),
                 'PRICE' => null,
+                'SELECT' => '*',
+                'SORT' => 'title',
+                'FILTER' => '',
             ]), null, '', true)
         ];
     }

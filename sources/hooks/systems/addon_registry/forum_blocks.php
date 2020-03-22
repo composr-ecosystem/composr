@@ -231,6 +231,7 @@ class Hook_addon_registry_forum_blocks
                 'NEWS_TITLE_PLAIN' => lorem_word(),
                 'CATEGORY' => '',
                 '_CATEGORY' => placeholder_id(),
+                'CATEGORY_URL' => placeholder_url(),
                 'IMG' => '',
                 '_IMG' => '',
                 'AUTHOR' => lorem_word(),
@@ -251,7 +252,7 @@ class Hook_addon_registry_forum_blocks
                 'LASTUSERNAME' => lorem_word(),
                 'FIRSTMEMBERID' => placeholder_id(),
                 'LASTMEMBERID' => placeholder_id(),
-                'BRIEF' => lorem_sentence_html(),
+                'BRIEF_CONTENT' => lorem_sentence_html(),
             ]));
         }
 
@@ -265,7 +266,7 @@ class Hook_addon_registry_forum_blocks
                 'SUBMIT_URL' => placeholder_url(),
                 'RSS_URL' => placeholder_url(),
                 'ATOM_URL' => placeholder_url(),
-                'BRIEF' => lorem_sentence_html(),
+                'BRIEF_CONTENT' => lorem_sentence_html(),
             ]), null, '', true)
         ];
     }

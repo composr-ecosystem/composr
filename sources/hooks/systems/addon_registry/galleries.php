@@ -288,16 +288,16 @@ class Hook_addon_registry_galleries
             'templates/BLOCK_MAIN_IMAGE_FADER.tpl' => 'block_main_image_fader',
             'templates/GALLERY_IMPORT_SCREEN.tpl' => 'administrative__gallery_import_screen',
             'templates/GALLERY_POPULAR.tpl' => 'gallery_popular',
-            'templates/GALLERY_IMAGE.tpl' => 'gallery_image',
-            'templates/GALLERY_ENTRY_WRAP.tpl' => 'gallery_grid_mode_screen',
-            'templates/GALLERY_VIDEO.tpl' => 'gallery_grid_mode_screen',
+            'templates/GALLERY_IMAGE.tpl' => 'gallery_entries',
+            'templates/GALLERY_ENTRY_WRAP.tpl' => 'gallery_entries',
+            'templates/GALLERY_VIDEO.tpl' => 'gallery_entries',
             'templates/BLOCK_MAIN_GALLERY_EMBED.tpl' => 'block_main_gallery_embed',
             'templates/BLOCK_SIDE_GALLERIES_LINE_DEPTH.tpl' => 'block_side_galleries',
             'templates/BLOCK_SIDE_GALLERIES_LINE.tpl' => 'block_side_galleries',
             'templates/BLOCK_SIDE_GALLERIES_LINE_CONTAINER.tpl' => 'block_side_galleries',
             'templates/BLOCK_SIDE_GALLERIES.tpl' => 'block_side_galleries',
             'templates/GALLERY_VIDEO_INFO.tpl' => 'gallery_video_info',
-            'templates/GALLERY_BOX.tpl' => 'gallery_grid_mode_screen',
+            'templates/GALLERY_BOX.tpl' => 'gallery_gallery_box',
             'templates/GALLERY_ENTRY_LIST_LINE.tpl' => 'gallery_entry_list_line',
             'templates/GALLERY_CAROUSEL_MODE_IMAGE.tpl' => 'gallery_carousel_mode_image',
             'templates/GALLERY_CAROUSEL_MODE_VIDEO.tpl' => 'gallery_carousel_mode_video',
@@ -317,7 +317,6 @@ class Hook_addon_registry_galleries
             'templates/GALLERY_MOSAIC_MODE_SCREEN.tpl' => 'gallery_mosaic_mode_screen',
             'templates/GALLERY_SLIDESHOW_CAROUSEL_ENTRY.tpl' => 'gallery_slideshow_screen',
             'templates/GALLERY_SLIDESHOW_SCREEN.tpl' => 'gallery_slideshow_screen',
-
         ];
     }
 
@@ -782,7 +781,6 @@ class Hook_addon_registry_galleries
                 'TITLE' => lorem_title(),
                 'MEMBER_DETAILS' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph_html(),
-                'CHILDREN' => lorem_paragraph_html(),
                 'CURRENT_ENTRY' => $video,
                 'ENTRIES' => $entries,
                 'EDIT_URL' => placeholder_url(),
@@ -897,7 +895,6 @@ class Hook_addon_registry_galleries
                 'TITLE' => lorem_title(),
                 'MEMBER_DETAILS' => lorem_paragraph_html(),
                 'DESCRIPTION' => lorem_paragraph_html(),
-                'CHILDREN' => lorem_paragraph_html(),
                 'CURRENT_ENTRY' => $image,
                 'ENTRIES' => $entries,
                 'EDIT_URL' => placeholder_url(),
@@ -928,7 +925,37 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_grid_mode_screen()
+    public function tpl_preview__gallery_gallery_box()
+    {
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_BOX', [
+                'GIVE_CONTEXT' => false,
+                'THUMB' => '',
+                'NUM_VIDEOS' => placeholder_number(),
+                'NUM_IMAGES' => placeholder_number(),
+                'NUM_CHILDREN' => placeholder_number(),
+                'ID' => placeholder_id(),
+                'LANG' => lorem_word(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
+                'ADD_DATE' => placeholder_date(),
+                'MEMBER_INFO' => lorem_paragraph(),
+                'URL' => placeholder_url(),
+                'PIC' => placeholder_image_url(),
+                'TITLE' => lorem_phrase(),
+                'DESCRIPTION' => lorem_paragraph(),
+                'COMMENT_COUNT' => placeholder_number(),
+            ]), null, '', true),
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__gallery_entries()
     {
         $entry = new Tempcode();
         $map = [
@@ -982,24 +1009,20 @@ class Hook_addon_registry_galleries
         $entry = do_lorem_template('GALLERY_VIDEO', $map);
         $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
 
-        $children = do_lorem_template('GALLERY_BOX', [
-            'GIVE_CONTEXT' => false,
-            'THUMB' => '',
-            'NUM_VIDEOS' => placeholder_number(),
-            'NUM_IMAGES' => placeholder_number(),
-            'NUM_CHILDREN' => placeholder_number(),
-            'ID' => placeholder_id(),
-            'LANG' => lorem_word(),
-            'ADD_DATE_RAW' => placeholder_date_raw(),
-            'ADD_DATE' => placeholder_date(),
-            'MEMBER_INFO' => lorem_paragraph(),
-            'URL' => placeholder_url(),
-            'PIC' => placeholder_image_url(),
-            'TITLE' => lorem_phrase(),
-            'DESCRIPTION' => lorem_paragraph(),
-            'COMMENT_COUNT' => placeholder_number(),
-        ]);
+        return [
+            lorem_globalise($entries, null, '', true),
+        ];
+    }
 
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__gallery_grid_mode_screen()
+    {
         $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
@@ -1034,18 +1057,21 @@ class Hook_addon_registry_galleries
                 'COMMENT_DETAILS' => $comment_details,
                 'ADD_GALLERY_URL' => placeholder_url(),
                 'EDIT_URL' => placeholder_url(),
-                'CHILDREN' => $children,
                 'TITLE' => lorem_title(),
                 'DESCRIPTION' => lorem_paragraph_html(),
                 'IMAGE_URL' => placeholder_url(),
                 'VIDEO_URL' => placeholder_url(),
                 'MAY_DOWNLOAD' => lorem_phrase(),
-                'ENTRIES' => $entries,
                 'MEMBER_ID' => placeholder_id(),
                 'ACCEPT_IMAGES' => true,
                 'ACCEPT_VIDEOS' => true,
                 'VIEWS' => placeholder_number(),
                 'OWNER' => placeholder_id(),
+                'CAT_SELECT' => '*',
+                'DAYS' => '',
+                'IMAGE_SELECT' => '*',
+                'VIDEO_SELECT' => '*',
+                'FILTER' => '',
             ]), null, '', true),
         ];
     }
@@ -1266,70 +1292,11 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_mosaic_mode_screen()
     {
-        $entries = new Tempcode();
-
-        foreach (placeholder_array() as $k => $v) {
-            $map = [
-                'RATING_DETAILS' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph(),
-                'ID' => placeholder_random_id(),
-                'MEDIA_TYPE' => 'image',
-                'FILE_SIZE' => lorem_word(),
-                'SUBMITTER' => placeholder_id(),
-                'FULL_URL' => placeholder_url(),
-                'THUMB_URL' => placeholder_url(),
-                'CAT' => lorem_word(),
-                'THUMB' => placeholder_image(),
-                'VIEW_URL' => placeholder_url(),
-                'VIEWS' => placeholder_id(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                '_EDIT_URL' => placeholder_url(),
-                'COMMENT_COUNT' => true,
-            ];
-
-            $entries->attach(do_lorem_template('GALLERY_MOSAIC_IMAGE', $map));
-        }
-
-        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', [
-            'HEIGHT' => placeholder_number(),
-            'WIDTH' => placeholder_number(),
-            'LENGTH' => placeholder_number(),
-            'CLOSED_CAPTIONS_URL' => placeholder_url(),
-        ]);
-
-        foreach (placeholder_array() as $k => $v) {
-            $map = [
-                'RATING_DETAILS' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'DESCRIPTION' => lorem_paragraph(),
-                'ID' => placeholder_random_id(),
-                'MEDIA_TYPE' => 'image',
-                'FILE_SIZE' => lorem_word(),
-                'SUBMITTER' => placeholder_id(),
-                'FULL_URL' => placeholder_url(),
-                'THUMB_URL' => placeholder_url(),
-                'CAT' => lorem_word(),
-                'THUMB' => placeholder_image(),
-                'VIEW_URL' => placeholder_url(),
-                'VIDEO_DETAILS' => $video_details,
-                'VIEWS' => placeholder_id(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                '_EDIT_URL' => placeholder_url(),
-                'COMMENT_COUNT' => true,
-            ];
-
-            $entries->attach(do_lorem_template('GALLERY_MOSAIC_VIDEO', $map));
-        }
-
         $block = do_lorem_template('BLOCK_MAIN_GALLERY_MOSAIC', [
             'BLOCK_ID' => placeholder_id(),
             'BLOCK_PARAMS' => '',
             'SLIDESHOW_URL' => null,
             'PAGINATION' => placeholder_pagination(),
-            'ENTRIES' => $entries,
             'START' => strval(0),
             'MAX' => strval(10),
             'START_PARAM' => placeholder_id() . '_start',
@@ -1350,7 +1317,6 @@ class Hook_addon_registry_galleries
                 'COMMENT_DETAILS' => '',
                 'ADD_GALLERY_URL' => placeholder_url(),
                 'EDIT_URL' => placeholder_url(),
-                'CHILDREN' => '',
                 'TITLE' => lorem_title(),
                 'DESCRIPTION' => lorem_paragraph(),
                 'IMAGE_URL' => placeholder_url(),
@@ -1361,6 +1327,11 @@ class Hook_addon_registry_galleries
                 'ACCEPT_VIDEOS' => true,
                 'VIEWS' => strval(123),
                 'OWNER' => null,
+                'CAT_SELECT' => '*',
+                'DAYS' => '',
+                'IMAGE_SELECT' => '*',
+                'VIDEO_SELECT' => '*',
+                'FILTER' => '',
             ]), null, '', true),
         ];
     }

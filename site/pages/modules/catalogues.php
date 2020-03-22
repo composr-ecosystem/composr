@@ -1081,16 +1081,13 @@ class Module_catalogues
                 break;
         }
 
-        // Get category contents
         $cc_sort = $catalogue['c_categories_sort_order'];
-        $subcategories = do_block('main_multi_content', ['param' => 'catalogue_category', 'pinned' => '', 'select' => strval($id) . '>', 'zone' => get_zone_name(), 'sort' => $cc_sort, 'max' => get_option('catalogue_subcats_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'attach_to_url_filter' => '1', 'render_if_empty' => '0', 'guid' => 'module']);
         if (get_option('catalogues_subcat_narrowin') == '1') {
             $cat_select = strval($id) . '*';
         } else {
             $cat_select = strval($id) . '#';
         }
         $filter = either_param_string('active_filter', '');
-        $entries = do_block('main_cc_embed', ['param' => strval($id), 'select' => $cat_select, 'zone' => get_zone_name(), 'max' => get_option('catalogue_entries_per_page'), 'pagination' => '1', 'sorting' => '1', 'filter' => $filter, 'block_id' => 'module']);
 
         // Render
         return do_template('CATALOGUE_' . $tpl_set . '_CATEGORY_SCREEN', [
@@ -1107,9 +1104,10 @@ class Module_catalogues
             'ADD_CAT_TITLE' => do_lang_tempcode('ADD_CATALOGUE_CATEGORY'),
             'EDIT_CAT_URL' => $edit_cat_url,
             'EDIT_CATALOGUE_URL' => $edit_catalogue_url,
-            'ENTRIES' => $entries,
-            'SUBCATEGORIES' => $subcategories,
             'DESCRIPTION' => get_translated_tempcode('catalogue_categories', $category, 'cc_description'),
+            'CC_SORT' => $cc_sort,
+            'CAT_SELECT' => $cat_select,
+            'FILTER' => $filter,
         ], null, false, 'CATALOGUE_DEFAULT_CATEGORY_SCREEN');
     }
 

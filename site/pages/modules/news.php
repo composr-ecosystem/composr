@@ -513,7 +513,13 @@ class Module_news
         require_code('templates_pagination');
         $pagination = pagination(do_lang_tempcode('NEWS_CATEGORIES'), $start, 'news_categories_start', $max, 'news_categories_max', $max_rows);
 
-        $tpl = do_template('PAGINATION_SCREEN', ['_GUID' => 'c61c945e0453c2145a819ca60e8faf09', 'TITLE' => $this->title, 'SUBMIT_URL' => $submit_url, 'CONTENT' => $content, 'PAGINATION' => $pagination]);
+        $tpl = do_template('PAGINATION_SCREEN', [
+            '_GUID' => 'c61c945e0453c2145a819ca60e8faf09',
+            'TITLE' => $this->title,
+            'SUBMIT_URL' => $submit_url,
+            'CONTENT' => $content,
+            'PAGINATION' => $pagination,
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -526,8 +532,6 @@ class Module_news
      */
     public function news_archive()
     {
-        $content = new Tempcode();
-
         $blog = $this->blog;
         $select = $this->select;
         $select_and = $this->select_and;
@@ -537,40 +541,6 @@ class Module_news
         // Get category contents
         $inline = get_param_integer('inline', 0) == 1;
         $filter = either_param_string('active_filter', '');
-
-        $items_in_the_slider = 0;
-
-        if (($select === '*')  && ($select_and === '*') && !$inline && (get_param_integer('module_start', 0) === 0)) {
-            // ^ Only show the slider when not doing a custom query and not using pagination
-            $items_in_the_slider = min($max, 9);
-            $content->attach(do_block('main_news_slider', [
-                'select' => $select,
-                'select_and' => $select_and,
-                'interval' => '6000',
-                'max' => strval($items_in_the_slider)
-            ]));
-        }
-
-        if ($items_in_the_slider < $max) {
-            $content->attach(do_block('main_news_grid', [
-                'block_id' => 'module',
-                'param' => '0',
-                'title' => '',
-                'select' => $select,
-                'select_and' => $select_and,
-                'blogs' => ($blog === null) ? '-1' : strval($blog),
-                'member_based' => ($blog === 1) ? '1' : '0',
-                'zone' => '_SELF',
-                'days' => '0',
-                'fallback_full' => $inline ? '0' : strval($max - $items_in_the_slider),
-                'fallback_archive' => $inline ? strval($max) : '0',
-                'no_links' => '1',
-                'pagination' => '1',
-                'attach_to_url_filter' => '1',
-                'filter' => $filter,
-                'start' => strval($items_in_the_slider), // Pickup where 'main_news_slider' ends
-            ]));
-        }
 
         // Management links
         if ((($blog !== 1) || (has_privilege(get_member(), 'have_personal_category', 'cms_news'))) && (has_actual_page_access(null, ($blog === 1) ? 'cms_blogs' : 'cms_news', null, null)) && (has_submit_permission(($blog === 1) ? 'mid' : 'high', get_member(), get_ip_address(), 'cms_news'))) {
@@ -592,12 +562,17 @@ class Module_news
         // Render
         return do_template('NEWS_ARCHIVE_SCREEN', [
             '_GUID' => '228918169ab1db445ee0c2d71f85983c',
+            'TITLE' => $this->title,
             'CAT' => is_numeric($select) ? $select : null,
             'SUBMIT_URL' => $submit_url,
             'EDIT_CAT_URL' => $edit_cat_url,
             'BLOG' => $blog === 1,
-            'TITLE' => $this->title,
-            'CONTENT' => $content,
+            'BLOGS' => ($blog === null) ? '-1' : strval($blog),
+            'FILTER' => $filter,
+            'SELECT' => $select,
+            'SELECT_AND' => $select_and,
+            'MAX' => strval($max),
+            'INLINE' => $inline,
         ]);
     }
 
@@ -722,14 +697,6 @@ class Module_news
         }
 
         $img = get_news_category_image_url($news_cat_row['nc_img']);
-        $img_large = null;
-        if (!empty($img)) {
-            if (substr($img, -4) === '.svg') {
-                $img_large = $img;
-            } elseif ((substr($img, -4) === '.png') && starts_with($img, get_custom_base_url() . '/') && file_exists(substr($img, strlen(get_custom_base_url() . '/'), -4))) {
-                $img_large = substr($img, 0, -4); // Remove '.png' extension
-            }
-        }
 
         $prev_article_url   = null;
         $prev_article_title = null;
@@ -765,7 +732,6 @@ class Module_news
             'SUBMITTER' => strval($myrow['submitter']),
             'CATEGORY' => $category,
             'IMG' => $img,
-            'IMG_LARGE' => $img_large,
             'VIEWS' => integer_format($myrow['news_views']),
             'COMMENT_DETAILS' => $comment_details,
             'RATING_DETAILS' => $rating_details,
