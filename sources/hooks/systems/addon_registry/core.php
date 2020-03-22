@@ -1231,7 +1231,6 @@ class Hook_addon_registry_core
             'sources/blocks/index.html',
             'sources/blocks/main_db_notes.php',
             'sources/blocks/main_notes.php',
-            'sources/blocks/main_only_if_match.php',
             'sources/blocks/side_personal_stats.php',
             'sources/blocks/top_login.php',
             'sources/blocks/top_personal_stats.php',

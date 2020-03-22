@@ -1351,7 +1351,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_TRANS_NAME_main_news
         BLOCK_TRANS_NAME_main_newsletter_signup
         BLOCK_TRANS_NAME_main_notes
-        BLOCK_TRANS_NAME_main_only_if_match
         BLOCK_TRANS_NAME_main_personal_galleries_list
         BLOCK_TRANS_NAME_main_poll
         BLOCK_TRANS_NAME_main_pt_notifications
@@ -1949,12 +1948,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_notes_PARAM_title_TITLE
         BLOCK_main_notes_USE
         NO_DOWNLOAD_ACCESS
-        BLOCK_main_only_if_match_DESCRIPTION
-        BLOCK_main_only_if_match_PARAM_caption
-        BLOCK_main_only_if_match_PARAM_caption_TITLE
-        BLOCK_main_only_if_match_PARAM_param
-        BLOCK_main_only_if_match_PARAM_param_TITLE
-        BLOCK_main_only_if_match_USE
         BLOCK_main_personal_galleries_list_DESCRIPTION
         BLOCK_main_personal_galleries_list_PARAM_max
         BLOCK_main_personal_galleries_list_PARAM_max_TITLE
