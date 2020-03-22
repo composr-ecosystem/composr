@@ -882,11 +882,10 @@ function get_site_name()
 /**
  * Get the base URL (the minimum fully qualified URL to our installation).
  *
- * @param  ?boolean $https Whether to get the HTTPS base URL (null: do so only if the current page uses the HTTPS base URL)
  * @param  string $zone_for What zone this is running in
  * @return URLPATH The base URL
  */
-function get_base_url($https = null, $zone_for = '')
+function get_base_url($zone_for = '')
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['base_url'])) {
@@ -910,12 +909,11 @@ function get_base_url($https = null, $zone_for = '')
 /**
  * Get the base URL (the minimum fully qualified URL to our personal data installation). For a shared install only, this is different to the base URL.
  *
- * @param  ?boolean $https Whether to get the HTTPS base URL (null: do so only if the current page uses the HTTPS base URL)
  * @return URLPATH The base URL
  */
-function get_custom_base_url($https = null)
+function get_custom_base_url()
 {
-    return get_base_url($https);
+    return get_base_url();
 }
 
 /**

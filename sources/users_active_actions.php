@@ -369,7 +369,7 @@ function cms_setcookie($name, $value, $session = false, $httponly = false, $days
 
     $domain = get_cookie_domain();
 
-    $secure = (substr(get_base_url(null), 0, 7) === 'https://');
+    $secure = (substr(get_base_url(), 0, 7) === 'https://');
 
     if (version_compare(PHP_VERSION, '7.3.0', '>=')) { // LEGACY
         $options = [

@@ -55,7 +55,7 @@ if (!function_exists('do_release')) {
         $num_downloads = $myrow['num_downloads'];
 
         $keep = symbol_tempcode('KEEP');
-        $url = find_script('dload', false, 1) . '?id=' . strval($id) . $keep->evaluate();
+        $url = find_script('dload', 1) . '?id=' . strval($id) . $keep->evaluate();
 
         require_code('version2');
         $t = $GLOBALS['DEV_MODE'] ? $myrow['name'] : get_translated_text($myrow['name']);

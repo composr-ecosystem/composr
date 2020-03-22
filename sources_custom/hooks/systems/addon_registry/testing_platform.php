@@ -629,7 +629,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/index.html',
             '_tests/tests/unit_tests/iotds.php',
             '_tests/tests/unit_tests/persistent_cache.php',
-            '_tests/tests/unit_tests/ssl.php',
             '_tests/tests/unit_tests/points.php',
             '_tests/tests/unit_tests/geocoding.php',
             '_tests/tests/unit_tests/optimisations_fragile.php',

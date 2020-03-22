@@ -66,8 +66,7 @@ function check_input_field_string($name, &$val, $posted, $filters)
     if ((($filters & INPUT_FILTER_URL_DESTINATION) != 0) && (!$posted)) { // Don't allow redirections to non-trusted sites
         if (!url_is_local($val)) {
             $bus = [
-                get_base_url(false) . '/',
-                get_base_url(true) . '/',
+                get_base_url() . '/',
                 get_forum_base_url() . '/',
                 'https://compo.sr/',
                 'https://compo.sr/',
@@ -88,17 +87,15 @@ function check_input_field_string($name, &$val, $posted, $filters)
                 if (function_exists('build_url')) {
                     $val = static_evaluate_tempcode(build_url(['page' => ''], 'site'));
                 } else {
-                    $val = get_base_url(false);
+                    $val = get_base_url();
                 }
             }
         }
     }
 
     if (($filters & INPUT_FILTER_MODSECURITY_URL_PARAMETER) != 0) {
-        if (substr($val, 0, 10) == 'https-cms:') {
-            $val = get_base_url(true) . '/' . substr($val, 10);
-        } elseif (substr($val, 0, 9) == 'http-cms:') {
-            $val = get_base_url(false) . '/' . substr($val, 9);
+        if ((substr($val, 0, 9) == 'http-cms:') || (substr($val, 0, 10) == 'https-cms:')) {
+            $val = get_base_url() . '/' . substr($val, 10);
         }
     }
 

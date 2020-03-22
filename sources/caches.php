@@ -689,11 +689,10 @@ function get_cache_entry($codename, $cache_identifier, $special_cache_flags = CA
  * @param  ?SHORT_TEXT $groups Sorted permissive usergroup list to limit to (null: Get from environment)
  * @param  ?BINARY $is_bot Bot status to limit to (null: Get from environment)
  * @param  ?MINIID_TEXT $timezone Timezone to limit to (null: Get from environment)
- * @param  ?BINARY $is_ssl SSL status to limit to (null: Get from environment)
  * @param  ?ID_TEXT $theme The theme this is being cached for (null: Get from environment)
  * @param  ?LANGUAGE_NAME $lang The language this is being cached for (null: Get from environment)
  */
-function get_cache_signature_details($special_cache_flags, &$staff_status, &$member_id, &$groups, &$is_bot, &$timezone, &$is_ssl, &$theme, &$lang)
+function get_cache_signature_details($special_cache_flags, &$staff_status, &$member_id, &$groups, &$is_bot, &$timezone, &$theme, &$lang)
 {
     if ($staff_status === null) {
         $staff_status = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) !== 0)) ? ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()) ? 1 : 0) : null;
@@ -734,16 +733,6 @@ function get_cache_signature_details($special_cache_flags, &$staff_status, &$mem
         require_code('temporal');
         $timezone = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_TIMEZONE) !== 0)) ? get_users_timezone(get_member()) : '';
     }
-    if ($is_ssl === null) {
-        if (!addon_installed('ssl')) {
-            $https = tacit_https();
-        } else {
-            $https = ((tacit_https()) || (function_exists('is_page_https')) && (function_exists('get_zone_name')) && (is_page_https(get_zone_name(), get_page_name())));
-        }
-
-        $is_ssl = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_SSL) !== 0)) ? ($https ? 1 : 0) : null;
-    }
-
     if ($theme === null) {
         $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
     }
@@ -776,10 +765,9 @@ function _get_cache_entries($dets, $special_cache_flags = null)
     $groups = null;
     $is_bot = null;
     $timezone = null;
-    $is_ssl = null;
     $theme = null;
     $lang = null;
-    get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl, $theme, $lang);
+    get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $theme, $lang);
 
     // Bulk load
     if ($GLOBALS['PERSISTENT_CACHE'] === null) {
@@ -811,11 +799,6 @@ function _get_cache_entries($dets, $special_cache_flags = null)
             $sql .= ' AND ' . db_string_equal_to('timezone', '');
         } else {
             $sql .= ' AND ' . db_string_equal_to('timezone', $timezone);
-        }
-        if ($is_ssl === null) {
-            $sql .= ' AND is_ssl IS NULL';
-        } else {
-            $sql .= ' AND is_ssl=' . strval($is_ssl);
         }
 
         $sql .= ' AND ' . db_string_equal_to('the_theme', $theme);
@@ -854,7 +837,7 @@ function _get_cache_entries($dets, $special_cache_flags = null)
         if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
             $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
             $lang = user_lang();
-            $cache_row = persistent_cache_get(['CACHE', $codename, $md5_cache_identifier, $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl]);
+            $cache_row = persistent_cache_get(['CACHE', $codename, $md5_cache_identifier, $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone]);
 
             if ($cache_row === null) { // No
                 if ($caching_via_cron) {

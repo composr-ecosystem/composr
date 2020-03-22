@@ -3018,7 +3018,7 @@ function ecv_BANNER($lang, $escaped, $param)
                 $is_on_banners = false;
             }
         }
-        if (($is_on_banners) && (!is_page_https(get_zone_name(), get_page_name()))) { // We can't show when HTTPS, due to HTTPS security warnings (can't show HTTP requests on HTTPS page, and banner has them by nature).
+        if ($is_on_banners) {
             require_code('banners');
 
             $b_type = isset($param[0]) ? $param[0] : '';
@@ -3942,7 +3942,7 @@ function ecv_FIND_SCRIPT($lang, $escaped, $param)
     }
 
     if ((!empty($param[0])) && (function_exists('find_script'))) {
-        $value = find_script($param[0], false, (!empty($param[1])) ? intval($param[1]) : 0);
+        $value = find_script(false, (!empty($param[1])) ? intval($param[1]) : 0);
     } else { // Running from installer's compilation of JS, so let's assume it's a simple case
         $value = get_base_url() . '/data/' . $param[0] . '.php';
     }
@@ -5914,7 +5914,7 @@ function ecv_COPYRIGHT($lang, $escaped, $param)
  */
 function ecv_CUSTOM_BASE_URL($lang, $escaped, $param)
 {
-    $value = get_custom_base_url(@cms_empty_safe($param[0]) ? null : !empty($param[0]));
+    $value = get_custom_base_url();
 
     if (!empty($param[1])) {
         $value = cdn_filter($value);
@@ -5992,7 +5992,7 @@ function ecv_CUSTOM_BASE_URL_NOHTTP($lang, $escaped, $param)
  */
 function ecv_BASE_URL($lang, $escaped, $param)
 {
-    $value = get_base_url(isset($param[0]) ? !empty($param[0]) : null);
+    $value = get_base_url();
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);

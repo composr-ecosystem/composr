@@ -557,15 +557,6 @@ function do_site_prep()
     if ((running_script('index')) && (!is_cli())) {
         $request_hostname = get_request_hostname();
 
-        // Detect bad access protocol (also see handle_bad_access_context function)
-        if (addon_installed('ssl')) {
-            if ((!whole_site_https()) && (is_page_https(get_zone_name(), get_page_name()) != tacit_https())) {
-                set_http_status_code(301);
-                header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
-                exit();
-            }
-        }
-
         if (get_value('disable_cookie_checks') !== '1') {
             // Detect bad cookie domain (reasonable approximation)
             $cookie_domain = @ltrim(get_cookie_domain(), '.');
@@ -1301,8 +1292,7 @@ function save_static_caching($out, $mime_type = 'text/html')
 
         if (!empty($SITE_INFO['failover_apache_rewritemap_file'])) {
             $url_stem = $url;
-            $url_stem = str_replace(get_base_url(true) . '/', '', $url_stem);
-            $url_stem = str_replace(get_base_url(false) . '/', '', $url_stem);
+            $url_stem = str_replace(get_base_url() . '/', '', $url_stem);
             if (preg_match('#^' . $SITE_INFO['failover_apache_rewritemap_file'] . '$#', $url_stem) != 0) {
                 if (is_mobile()) {
                     $rewritemap_file = get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt';

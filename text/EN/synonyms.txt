@@ -127,7 +127,7 @@ price	cost	amount	quantity	gross	fee
 tax	vat	duty	tariff
 coupon	voucher	discount	credit	reduce	reduction
 cache	decache	cleanup
-ssl	https
+ssl	https	tls
 seed	theme wizard
 chart	graph
 author	bio	biography

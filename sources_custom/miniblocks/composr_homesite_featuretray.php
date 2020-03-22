@@ -170,7 +170,6 @@ $feature_tree = [
                 ['Multiple payment gateways', 'Accepts payments via PayPal, or other gateways developers may add (e.g. WorldPay, or CC-Bill), and manual transactions (cash/cheque)'],
                 ['Invoicing support', 'Including status tracking and online payment tracking'],
                 ['Basic accounting support', 'Input your incoming and outgoing transactions to get basic ledger, profit-and-loss, and cashflow charting'],
-                (!is_maintained('ssl')) ? false : ['<abbr title="Secure Socket Layer">SSL</abbr>/<abbr title="Transport Layer Security">TLS</abbr>/HTTPS certificate support', 'Make key pages of your choice run over SSL (e.g. the join and payment pages)'],
                 (!is_maintained('currency')) ? false : ['Currency conversions', 'Perform automatic currency conversions within your website pages'],
             ],
         ],

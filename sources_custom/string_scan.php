@@ -73,7 +73,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         'lookup.ini',
         'profiling.ini',
         'realtime_rain.ini',
-        'ssl.ini',
         'staff_checklist.ini',
         'stats.ini',
         'submitban.ini',
@@ -4735,7 +4734,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_SETUP
         DOC_SETUPWIZARD
         DOC_SITEMAP_EDITOR
-        DOC_SSL
         DOC_STATISTICS
         DOC_STRUCTURE
         DOC_STYLE
@@ -6022,7 +6020,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_admin_security
         MODULE_TRANS_NAME_admin_setupwizard
         MODULE_TRANS_NAME_admin_sitemap
-        MODULE_TRANS_NAME_admin_ssl
         MODULE_TRANS_NAME_admin_svg_sprites
         MODULE_TRANS_NAME_admin_stats
         MODULE_TRANS_NAME_admin_themes
@@ -7046,8 +7043,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPEED_UP
         SQL_BACKUP
         SQL_INJECTION_HACK
-        SSL_CONFIGURATION
-        SSL_PAGE_SELECT
         SSW
         STACK_TRACE
         STACK_TRACE_DENIED_ERROR_NOTIFICATION

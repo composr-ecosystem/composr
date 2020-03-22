@@ -558,7 +558,7 @@ function _get_web_resources_env($_seed = null, $_minify = null, $_https = null, 
     if ($_https !== null) {
         $https = $_https;
     } elseif ($https_cached === null) {
-        $https = ((addon_installed('ssl')) && function_exists('is_page_https') && function_exists('get_zone_name') && ((tacit_https()) || is_page_https(get_zone_name(), get_page_name())));
+        $https = tacit_https();
         $https_cached = $https;
     } else {
         $https = $https_cached;

@@ -461,7 +461,7 @@ function init__global2()
 
     if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
         // Clear caching if needed
-        $changed_base_url = (get_value('last_base_url', null) !== get_base_url(false)) && (get_value('disable_base_check') !== '1');
+        $changed_base_url = (get_value('last_base_url', null) !== get_base_url()) && (get_value('disable_base_check') !== '1');
         if ((running_script('index')) && ((is_browser_decaching()) || ($changed_base_url))) {
             require_code('caches3');
             auto_decache($changed_base_url);
@@ -1627,11 +1627,9 @@ function in_safe_mode()
  *
  * @param  string $name The codename of the needed script
  * @param  boolean $append_keep Whether to append keep variables
- * @param  integer $base_url_code Code representing what base URL type to use (0=guess, 1=http, 2=https)
- * @set 0 1 2
  * @return URLPATH The URL to the script
  */
-function find_script($name, $append_keep = false, $base_url_code = 0)
+function find_script($name, $append_keep = false)
 {
     $append = '';
     if ($append_keep) {
@@ -1648,8 +1646,8 @@ function find_script($name, $append_keep = false, $base_url_code = 0)
             $find_script_cache = [];
         }
     }
-    if (isset($find_script_cache[$name][$append_keep][$base_url_code])) {
-        return $find_script_cache[$name][$append_keep][$base_url_code] . $append;
+    if (isset($find_script_cache[$name][$append_keep])) {
+        return $find_script_cache[$name][$append_keep] . $append;
     }
 
     $zones = [];
@@ -1666,15 +1664,15 @@ function find_script($name, $append_keep = false, $base_url_code = 0)
     foreach ($zones as $zone) {
         if (is_file(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . $name . '.php')) {
             $ret = get_base_url() . '/' . $zone . (($zone == '') ? '' : '/') . $name . '.php';
-            $find_script_cache[$name][$append_keep][$base_url_code] = $ret;
+            $find_script_cache[$name][$append_keep] = $ret;
             if (function_exists('persistent_cache_set')) {
                 persistent_cache_set('SCRIPT_PLACES', $find_script_cache);
             }
             return $ret . $append;
         }
     }
-    $ret = get_base_url(($base_url_code == 0) ? null : ($base_url_code == 2)) . '/site/' . $name . '.php';
-    $find_script_cache[$name][$append_keep][$base_url_code] = $ret;
+    $ret = get_base_url() . '/site/' . $name . '.php';
+    $find_script_cache[$name][$append_keep] = $ret;
     if (function_exists('persistent_cache_set')) {
         persistent_cache_set('SCRIPT_PLACES', $find_script_cache);
     }
@@ -1684,44 +1682,21 @@ function find_script($name, $append_keep = false, $base_url_code = 0)
 /**
  * Get the base URL (the minimum fully qualified URL to our installation).
  *
- * @param  ?boolean $https Whether to get the HTTPS base URL (null: do so only if the current page uses the HTTPS base URL)
  * @param  ?ID_TEXT $zone_for The zone the link is for (null: root zone)
  * @return URLPATH The base URL
  */
-function get_base_url($https = null, $zone_for = null)
+function get_base_url($zone_for = null)
 {
-    if ($https === null) { // If we don't know, we go by what the current page is
-        static $currently_https_cache = null;
-        $https = $currently_https_cache;
-        if ($https === null) {
-            require_code('urls');
-            if (running_script('index')) {
-                if (addon_installed('ssl')) {
-                    $https = ((tacit_https()) || (function_exists('is_page_https')) && (function_exists('get_zone_name')) && (is_page_https(get_zone_name(), get_page_name())));
-                } else {
-                    $https = tacit_https();
-                }
-            } else {
-                $https = function_exists('tacit_https') && tacit_https();
-            }
-            $currently_https_cache = $https;
-        }
-    }
-
     global $VIRTUALISED_ZONES_CACHE;
-    static $base_url_http_cache = null;
-    static $base_url_https_cache = null;
+    static $base_url_cache = null;
 
     if ($VIRTUALISED_ZONES_CACHE === null) {
         require_code('zones');
         get_zone_name();
     }
 
-    if (($base_url_http_cache !== null) && (!$https) && ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null))) {
-        return $base_url_http_cache . (empty($zone_for) ? '' : ('/' . $zone_for));
-    }
-    if (($base_url_https_cache !== null) && ($https) && ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null))) {
-        return $base_url_https_cache . (empty($zone_for) ? '' : ('/' . $zone_for));
+    if (($base_url_cache !== null) && ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null))) {
+        return $base_url_cache . (empty($zone_for) ? '' : ('/' . $zone_for));
     }
 
     global $SITE_INFO;
@@ -1764,13 +1739,8 @@ function get_base_url($https = null, $zone_for = null)
     }
 
     // Work out correct variant
-    if ($https) {
-        $base_url = 'https://' . preg_replace('#^\w*://#', '', $base_url);
-        if ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null)) {
-            $base_url_https_cache = $base_url;
-        }
-    } elseif ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null)) {
-        $base_url_http_cache = $base_url;
+    if ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null)) {
+        $base_url_cache = $base_url;
     }
 
     if (!$found_mapping) { // Scope inside the correct zone
@@ -1784,23 +1754,22 @@ function get_base_url($https = null, $zone_for = null)
 /**
  * Get the base URL (the minimum fully qualified URL to our personal data installation). For a shared install, or a GAE-install, this is different to the base URL.
  *
- * @param  ?boolean $https Whether to get the HTTPS base URL (null: do so only if the current page uses the HTTPS base URL)
  * @return URLPATH The base URL
  */
-function get_custom_base_url($https = null)
+function get_custom_base_url()
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['custom_base_url'])) {
         return $SITE_INFO['custom_base_url'];
     }
     if (empty($SITE_INFO['custom_base_url_stub'])) {
-        return get_base_url($https);
+        return get_base_url();
     }
 
     // Note that HTTPS is not supported for shared installs
     $u = current_share_user();
     if ($u === null) {
-        return get_base_url($https);
+        return get_base_url();
     }
     return $SITE_INFO['custom_base_url_stub'] . '/' . $u;
 }

@@ -72,7 +72,6 @@ function init__continuous_integration()
             'unit_tests/_static_caching',
 
             // Can not run over HTTPS
-            'unit_tests/ssl',
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_copyright' : null,
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_tracker_categories' : null,
         ]);

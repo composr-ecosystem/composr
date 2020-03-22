@@ -317,56 +317,6 @@ function skippable_keep($key, $val)
 }
 
 /**
- * Find whether the specified page is to use HTTPS (if not -- it will use HTTP).
- * All images (etc) on a HTTPS page should use HTTPS to avoid mixed-content browser notices.
- *
- * @param  ID_TEXT $zone The zone the page is in
- * @param  ID_TEXT $page The page codename
- * @return boolean Whether the page is to run across an HTTPS connection
- */
-function is_page_https($zone, $page)
-{
-    if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
-        return false;
-    }
-
-    static $off = null;
-    if ($off === null) {
-        global $SITE_INFO;
-        $off = (!addon_installed('ssl')) || (in_safe_mode()) || (!function_exists('persistent_cache_get') || (!empty($SITE_INFO['no_ssl'])));
-    }
-    if ($off) {
-        return false;
-    }
-
-    if (($page === 'login') && (get_page_name() === 'login')) { // Because how login can be called from any arbitrary page, which may or may not be on HTTPS. We want to maintain HTTPS if it is there to avoid warning on form submission
-        if (tacit_https()) {
-            return true;
-        }
-    }
-
-    global $HTTPS_PAGES_CACHE;
-    if (($HTTPS_PAGES_CACHE === null) && (function_exists('persistent_cache_get'))) {
-        $HTTPS_PAGES_CACHE = persistent_cache_get('HTTPS_PAGES_CACHE');
-    }
-    if ($HTTPS_PAGES_CACHE === null) {
-        if (isset($GLOBALS['SITE_DB'])) {
-            $results = $GLOBALS['SITE_DB']->query_select('https_pages', ['*']);
-            $HTTPS_PAGES_CACHE = [];
-            if ($results !== null) {
-                foreach ($results as $r) {
-                    $HTTPS_PAGES_CACHE[$r['https_page_name']] = true;
-                }
-            }
-            if (function_exists('persistent_cache_set')) {
-                persistent_cache_set('HTTPS_PAGES_CACHE', $HTTPS_PAGES_CACHE);
-            }
-        }
-    }
-    return isset($HTTPS_PAGES_CACHE[$zone . ':' . $page]);
-}
-
-/**
  * Find if a URL Scheme is in use.
  *
  * @param  boolean $avoid_remap Whether to explicitly avoid using URL Schemes. While it might seem weird to put this in as a function parameter, it removes duplicated logic checks in the code.
@@ -590,7 +540,7 @@ function _build_url($parameters, $zone_name = '', $skip = [], $keep_all = false,
     }
 
     // Build up our URL base
-    $stub = get_base_url(is_page_https($zone_name, $has_page ? $parameters['page'] : ''), $zone_name);
+    $stub = get_base_url($zone_name);
     $stub .= '/';
 
     // For bots we explicitly unset skippable injected 'keep_' params because it bloats the crawl-space

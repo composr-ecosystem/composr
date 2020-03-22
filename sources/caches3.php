@@ -59,7 +59,7 @@ function auto_decache($changed_base_url)
     erase_persistent_cache();
     if ($changed_base_url) {
         erase_comcode_page_cache();
-        set_value('last_base_url', get_base_url(false));
+        set_value('last_base_url', get_base_url());
     }
 }
 

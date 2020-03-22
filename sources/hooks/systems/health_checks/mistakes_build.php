@@ -185,10 +185,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             }
 
             // Don't check local URLs, we're interested in broken remote links (local validation is too much)
-            if (substr($url, 0, strlen(get_base_url(false)) + 1) == get_base_url(false) . '/') {
-                continue;
-            }
-            if (substr($url, 0, strlen(get_base_url(true)) + 1) == get_base_url(true) . '/') {
+            if (substr($url, 0, strlen(get_base_url()) + 1) == get_base_url() . '/') {
                 continue;
             }
             if (strpos($url, '://') === false) {

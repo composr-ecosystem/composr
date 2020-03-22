@@ -1051,10 +1051,6 @@ function may_optimise_out_symbol($symbol)
             return false; // May be experimenting with different base URLs, e.g. both http and https
         }
 
-        if (addon_installed('ssl')) {
-            return false;
-        }
-
         foreach (array_keys($SITE_INFO) as $key) {
             if (substr($key, 0, 13) === 'ZONE_MAPPING_') {
                 return false;

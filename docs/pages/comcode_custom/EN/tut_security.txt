@@ -508,23 +508,15 @@ To force members to be vetted, you need to enable the 'Require member validation
 
 [title="3"]SSL[/title]
 
-{!ssl:DOC_SSL}
+When you access a website via an HTTPS URL, rather than an HTTP URL, you are using <abbr title="Transport Layer Security">TLS</abbr> (or the older protocol, <abbr title="Secure Sockets Layer">SSL</abbr>).
 
-SSL certificates vary in price immensely, but the price generally depends on the strength of encryption, the prominence of the root certificate authority (a more respected authority may charge more because it carries out more checks, and thus experienced users feel more confident with it), the distance from the root certificate authority the certificate is, and the validity length.
+An HTTPS page view encrypts bi-directional traffic securely (to avoid unauthorised tampering and interception by third-parties) but also imposes a small performance cost on the server. Nowadays websites will warn users if they visit a non-HTTPS site.
 
-You may decide to do this if the pages transmit confidential information; obvious targets are the login and join pages.
+To use HTTPS you must have an SSL/TLS certificate installed on your server. SSL certificates vary in price immensely, but you can get a free one from the [url="Let's Encrypt"]https://letsencrypt.org/[/url] project (this requires provisioning via their software installed on your server).
 
-Assuming you have already installed the SSL certificate on the server, you can set up SSL in Composr as follows:
-Go to the Admin Zone > Security > SSL/TLS (HTTPS) configuration, and tick (check) the boxes for the following pages... [tt]:join[/tt], [tt]:login[/tt], [tt]site:purchase[/tt], [tt]site:shopping[/tt], [tt]site:members[/tt]. (These are the pages that purchases or passwords happen on -- but you can enable for other pages too if you like)
-(this assumes that you have the [tt]ssl[/tt] addon installed)
+You set HTTPS in Composr by choosing a base URL that starts [tt]https://[/tt].
 
-If you are not able to use SSL, don't think that your site is very insecure: it probably is possible for a hacker to gather the password during transit, but it would not be easy. Sometimes when we consider computer security we lose sight of the insecurities we face every day: it is possible a death cult could take over your office for a week while fighting off the military with heavy rocket propelled grenades: likelihoods need to be kept within proportion. This said, if you have very sensitive information, or run an eCommerce site, SSL is essential, as the stakes are high enough for criminal interest to be stimulated. There may also be concerns with government surveillance.
-
-Note that a page viewed under HTTPS must use HTTPS for all images and other embedded files. The banner will be disabled on any page set to use HTTPS via the [tt]ssl[/tt] addon to make sure this requirement is enforced (if your whole base URL is https then banners will display and it is up to the webmaster to make sure they are HTTPS-compliant). The reason for this is that users should not get mixed environment messages that warn them about potential security problems, or in some browsers lock out the whole page. Template makers and coders should be careful to use the proper Composr mechanisms for referencing resources.
-
-Under HTTPS user provided media that is not linked under HTTPS will either be automatically upgraded or proxied.
-
-You can set HTTPS for a whole site via changing the base URL. In this situation the banners restriction will not be applied, as the webmasters are assumed to have set up HTTPS-compatible banners for everything.
+Note that a page viewed under HTTPS must use HTTPS for all images and other embedded files. The reason for this is that users should not get mixed environment messages that warn them about potential security problems, or in some browsers lock out the whole page. Template makers and coders should be careful to use the proper Composr mechanisms for referencing resources. Under HTTPS user provided media that is not linked under HTTPS will either be automatically upgraded or proxied.
 
 [title="4"]Migrating HTTP websites[/title]
 
@@ -727,4 +719,4 @@ If you are managing your own server, you may want to consider:
  - [page="_SEARCH:codebook_standards"]Code Book, part 4 (Coding Standards)[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
 
-{$SET,tutorial_tags,ssl,securitylogging,robots_txt,rootkit_detector,Security,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Details and guidance on the advanced security protections available in Composr.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,securitylogging,robots_txt,rootkit_detector,Security,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Details and guidance on the advanced security protections available in Composr.}[block]main_tutorial_rating[/block]

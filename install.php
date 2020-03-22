@@ -2167,11 +2167,6 @@ function step_5_core_2()
     $GLOBALS['SITE_DB']->create_index('sessions', 'member_id', ['member_id']);
     $GLOBALS['SITE_DB']->create_index('sessions', 'userat', ['the_zone', 'the_page', 'the_id']);
 
-    $GLOBALS['SITE_DB']->drop_table_if_exists('https_pages');
-    $GLOBALS['SITE_DB']->create_table('https_pages', [
-        'https_page_name' => '*ID_TEXT',
-    ]);
-
     // What usergroups may view this category
     $GLOBALS['SITE_DB']->drop_table_if_exists('group_category_access');
     $GLOBALS['SITE_DB']->create_table('group_category_access', [

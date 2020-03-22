@@ -2585,12 +2585,6 @@ class Hook_import_cms_merge
             $GLOBALS['SITE_DB']->query_insert('group_zone_access', $row);
         }
 
-        $rows = $db->query_select('https_pages', ['*']);
-        foreach ($rows as $row) {
-            $GLOBALS['SITE_DB']->query_delete('https_pages', $row);
-            $GLOBALS['SITE_DB']->query_insert('https_pages', $row);
-        }
-
         $rows = $db->query_select('group_category_access', ['*']);
         foreach ($rows as $row) {
             $row['group_id'] = $on_same_msn ? $row['group_id'] : import_id_remap_get('group', strval($row['group_id']), true);

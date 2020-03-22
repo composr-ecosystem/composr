@@ -514,7 +514,6 @@ class Module_admin_setupwizard
             'realtime_rain',
             'recommend',
             'shopping',
-            'ssl',
             'welcome_emails',
             'wiki',
             'zone_logos',
