@@ -627,7 +627,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/phpstub_accuracy.php',
             '_tests/tests/unit_tests/lang_grammar.php',
             '_tests/tests/unit_tests/index.html',
-            '_tests/tests/unit_tests/iotds.php',
             '_tests/tests/unit_tests/persistent_cache.php',
             '_tests/tests/unit_tests/points.php',
             '_tests/tests/unit_tests/geocoding.php',

@@ -108,32 +108,6 @@ The first parameter is the page-link to what we are embedding, which in the abov
 In the screenshots on the right I have shown a quirky example where I am embedding the recommend page directly into a news post.
 [/surround]
 
-[title="2"]Image of the day[/title]
-
-[i]As of Composr version 10, the IOTDs addon is not bundled[/i]
-
-[surround]
-[media width="150" description="Choosing an IOTD" float="right"]data_custom/images/docs/tut_featured/featured_iotd_choose.png[/media]
-[media width="150" description="Adding an IOTD" float="right"]data_custom/images/docs/tut_featured/featured_iotd_add.png[/media]
-[media width="150" description="The IOTD block displays like this" float="right"]data_custom/images/docs/tut_featured/featured_iotd_view.png[/media]
-{!iotds:DOC_IOTDS}
-
-IOTDs are added from:
-Content > Images of the day > Add image of the day
-
-Often website users are the best source of IOTDs, and if you have granted submit access (configurable in the Permissions Tree Editor), they will be able to submit them into your queue.
-
-The IOTD system does not manage IOTDs for you: you need to change IOTD yourself. To make this easy, we recommend that you keep on top of the IOTDs that users submit, deleting the poor ones, so as to make picking new ones straight-forward.
-
-To pick an IOTD, you select one from those shown on the IOTD queue page (Content > Images of the day > Edit image of the day), editing it so as to 'use it immediately'. Old IOTDs may be browsed from the IOTD archive page, which is linked to from the IOTD block.
-
-You can delete an IOTD from the bottom of its edit form.
-
-You may change 'of the day' to anything of your choosing by editing language strings in the Composr language editor (the [tt]iotds[/tt] language file).
-
-If you do not wish to use both the IOTD and gallery systems on the same website then you may wish to avoid the use of IOTDs in favour of an image award.
-[/surround]
-
 [title="2"]Random quotes[/title]
 
 {!quotes:DOC_QUOTES} To access quote administration, go to: Admin Zone > Style > Edit quotes.
@@ -175,10 +149,9 @@ You may place as many independent hit counters as you like.
 Community billboard messages are covered in the [page="_SEARCH:tut_points"]Creating an economy/reward-system for members via points[/page] tutorial.
 
 [concepts
- 1_key="IOTD"   1_value="[Image of the day]. An image and associated caption, generally shown on your front page, intended for regular changing"
- 2_key="DOTW"   2_value="[Download of the week]"
- 3_key="Award system"   3_value="A system for picking out content for prominent display"
- 4_key="Award"  4_value="Awards are created for a specific content type with specific details and then content of that content type may be given the award; past holders of the award are displayed in an archive"
+ 1_key="DOTW"           1_value="[Download of the week]"
+ 2_key="Award system"   2_value="A system for picking out content for prominent display"
+ 3_key="Award"          3_value="Awards are created for a specific content type with specific details and then content of that content type may be given the award; past holders of the award are displayed in an archive"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
@@ -189,4 +162,4 @@ Community billboard messages are covered in the [page="_SEARCH:tut_points"]Creat
  - [page="_SEARCH:tut_adv_comcode_pages"]Using blocks[/page]
  - [page="_SEARCH:tut_selectcode"]Filtering using Selectcode syntax[/page]
 
-{$SET,tutorial_tags,iotds,random_quotes,forum_blocks,counting_blocks,awards,Structure and navigation,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,How to pull out content from your website, and put it in a featured spot. There are a number of methods available.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,random_quotes,forum_blocks,counting_blocks,awards,Structure and navigation,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,How to pull out content from your website, and put it in a featured spot. There are a number of methods available.}[block]main_tutorial_rating[/block]

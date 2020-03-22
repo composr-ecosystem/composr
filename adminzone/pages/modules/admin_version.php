@@ -593,10 +593,6 @@ class Module_admin_version
                     'comments',
                     'description',
                 ],
-                'iotd' => [
-                    'i_title',
-                    'caption',
-                ],
                 'news' => [
                     'title',
                     'news',

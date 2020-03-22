@@ -48,7 +48,6 @@ function get_table_purpose_flags()
         'diseases' => TABLE_PURPOSE__NORMAL,
         'giftr' => TABLE_PURPOSE__NORMAL,
         'group_points' => TABLE_PURPOSE__NORMAL,
-        'iotd' => TABLE_PURPOSE__NORMAL,
         'locations' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC,
         'logged' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'may_feature' => TABLE_PURPOSE__NORMAL,

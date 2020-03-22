@@ -88,7 +88,7 @@ class Hook_addon_registry_purrrr
      */
     public function get_description()
     {
-        return 'Populate your image of the day gallery with 40 LOLCAT images. After installing the addon select the image of the day in the usual way by going to Admin zone > Content > Images of the day and select the image you want to display.';
+        return 'Populate your galleries with 40 LOLCAT images.';
     }
 
     /**
@@ -110,7 +110,7 @@ class Hook_addon_registry_purrrr
     {
         return [
             'requires' => [
-                'iotds',
+                'galleries',
             ],
             'recommends' => [],
             'conflicts_with' => [],
@@ -235,62 +235,59 @@ class Hook_addon_registry_purrrr
      */
     public function install($upgrade_from = null)
     {
-        if (!module_installed('iotds')) {
+        if (!module_installed('galleries')) {
             return;
         }
 
         if ($upgrade_from === null) {
-            require_lang('iotds');
-            require_code('iotds2');
-            require_css('iotds');
-            require_code('uploads');
-            require_code('images');
+            require_lang('galleries');
+            require_code('galleries2');
 
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-has-trophy-wife.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-trophy-wife.jpg', 'TROPHY WIFE', 'TROPHY WIFE', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-is-on-steroids.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-on-steroids.jpg', 'STREROIDS', 'STREROIDS', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-is-a-hoarder.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-a-hoarder.jpg', 'Tonight on A&E', 'Tonight on A&E', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-winks-at-you.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-winks-at-you.jpg', 'Hey there', 'Hey there', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-does-not-see-your-point.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-does-not-see-your-point.jpg', '...your point?', '...your point?', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-asks-you-to-pay-fine.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-asks-you-to-pay-fine.jpg', 'just pay the fine', 'just pay the fine', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-is-a-people-lady.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-a-people-lady.jpg', 'Walter never showed up ...', 'Walter never showed up ...', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-looks-like-a-vase.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-looks-like-a-vase.jpg', 'Feline Dynasty', 'Feline Dynasty', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-can-poop-rainbows.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-can-poop-rainbows.jpg', 'And I can poop dem too ...', 'And I can poop dem too ...', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-does-math.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-does-math.jpg', 'You and your wife have 16 kittens ...', 'You and your wife have 16 kittens ...', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-kittens-dispose-of-boyfriend.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kittens-dispose-of-boyfriend.jpg', 'Itteh Bitteh Kitteh Boyfriend Disposal Committeh', 'Itteh Bitteh Kitteh Boyfriend Disposal Committeh', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-has-had-fun.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-had-fun.jpg', 'Now DAT', 'Now DAT', '', 0, 0, 0, 1);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-kitten-tries-to-stay-neutral.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kitten-tries-to-stay-neutral.jpg', 'Mah bottom is twyin to take ovuh', 'Mah bottom is twyin to take ovuh', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-decides-what-to-do.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-decides-what-to-do.jpg', 'Crap! Here he comes...!', 'Crap! Here he comes...!', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-looks-like-boots.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-looks-like-boots.jpg', 'GET GLASSES!', 'GET GLASSES!', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cats-have-war.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cats-have-war.jpg', 'How wars start.', 'How wars start.', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-is-stuck-in-drawer.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-stuck-in-drawer.jpg', 'Dog can\'t take a joke.', 'Dog can\'t take a joke.', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-kitten-drops-a-nickel-under-couch.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kitten-drops-a-nickel-under-couch.jpg', 'I drop a nikel under der.', 'I drop a nikel under der.', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-asks-you-for-a-favor.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-asks-you-for-a-favor.jpg', 'Do me a favor', 'Do me a favor', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-kitten-fixes-puppy.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kitten-fixes-puppy.jpg', 'I fix puppy so now he listen.', 'I fix puppy so now he listen.', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-is-very-comfortable.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-very-comfortable.jpg', 'i is sooooooooo comfurbals...', 'i is sooooooooo comfurbals...', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-kitten-ends-meeting2.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kitten-ends-meeting2.jpg', 'This meeting is over.', 'This meeting is over.', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cats-are-in-a-musical.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cats-are-in-a-musical.jpg', 'When you\'re a cat ...', 'When you\'re a cat ...', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-hates-your-tablecloth.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-hates-your-tablecloth.jpg', 'No, thanks.', 'No, thanks.', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-eyes-steak.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-eyes-steak.jpg', 'is it dun yet?', 'is it dun yet?', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-basement-cat-has-pink-sheets.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-basement-cat-has-pink-sheets.jpg', 'PINK??!', 'PINK??!', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-kittens-yell-at-eachother.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kittens-yell-at-eachother.jpg', 'WAIT YOUR TURN!', 'WAIT YOUR TURN!', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-sits-in-box.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-sits-in-box.jpg', 'Sittin in ur mails', 'Sittin in ur mails', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-has-a-beatle.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-a-beatle.jpg', 'GEORGE', 'GEORGE', '', 0, 0, 0, 1);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-sits-on-your-laptop.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-sits-on-your-laptop.jpg', 'Rebutting ...', 'Rebutting ...', '', 0, 0, 0, 1);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-has-a-close-encounter.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-a-close-encounter.jpg', 'CLOSE  ENCOUNTRES ...', 'CLOSE  ENCOUNTRES ...', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/ridiculous_poses_moddles.jpg', 'data_custom/images/lolcats/thumbs/ridiculous_poses_moddles.jpg', 'Ridiculous poses', 'Ridiculous poses', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-is-a-doctor.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-a-doctor.jpg', 'Dr. House cat...', 'Dr. House cat...', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-pounces-on-deer.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-pounces-on-deer.jpg', 'National Geographic', 'National Geographic', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-fish-and-cat-judge-your-outfit.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-fish-and-cat-judge-your-outfit.jpg', 'Bad outfit', 'Bad outfit', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-comes-to-save-day.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-comes-to-save-day.jpg', 'Here I come to save the day!!', 'Here I come to save the day!!', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-ok-captain-obvious.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-ok-captain-obvious.jpg', 'Okay, Captain Obvious', 'Okay, Captain Obvious', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-kermit-was-about.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-kermit-was-about.jpg', 'Kermit makes a discovery', 'Kermit makes a discovery', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-ai-calld-jenny-craig.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-ai-calld-jenny-craig.jpg', 'Jenny Craig', 'Jenny Craig', '', 0, 0, 0, 0);
-            $this->add_iotds('data_custom/images/lolcats/funny-pictures-cat-special-delivery.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-special-delivery.jpg', 'Special Delivery', 'Special Delivery', '', 0, 0, 0, 0);
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-has-trophy-wife.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-trophy-wife.jpg', 'TROPHY WIFE', 'TROPHY WIFE', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-is-on-steroids.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-on-steroids.jpg', 'STREROIDS', 'STREROIDS', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-is-a-hoarder.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-a-hoarder.jpg', 'Tonight on A&E', 'Tonight on A&E', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-winks-at-you.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-winks-at-you.jpg', 'Hey there', 'Hey there', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-does-not-see-your-point.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-does-not-see-your-point.jpg', '...your point?', '...your point?', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-asks-you-to-pay-fine.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-asks-you-to-pay-fine.jpg', 'just pay the fine', 'just pay the fine', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-is-a-people-lady.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-a-people-lady.jpg', 'Walter never showed up ...', 'Walter never showed up ...', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-looks-like-a-vase.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-looks-like-a-vase.jpg', 'Feline Dynasty', 'Feline Dynasty', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-can-poop-rainbows.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-can-poop-rainbows.jpg', 'And I can poop dem too ...', 'And I can poop dem too ...', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-does-math.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-does-math.jpg', 'You and your wife have 16 kittens ...', 'You and your wife have 16 kittens ...', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-kittens-dispose-of-boyfriend.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kittens-dispose-of-boyfriend.jpg', 'Itteh Bitteh Kitteh Boyfriend Disposal Committeh', 'Itteh Bitteh Kitteh Boyfriend Disposal Committeh', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-has-had-fun.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-had-fun.jpg', 'Now DAT', 'Now DAT', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-kitten-tries-to-stay-neutral.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kitten-tries-to-stay-neutral.jpg', 'Mah bottom is twyin to take ovuh', 'Mah bottom is twyin to take ovuh', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-decides-what-to-do.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-decides-what-to-do.jpg', 'Crap! Here he comes...!', 'Crap! Here he comes...!', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-looks-like-boots.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-looks-like-boots.jpg', 'GET GLASSES!', 'GET GLASSES!', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cats-have-war.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cats-have-war.jpg', 'How wars start.', 'How wars start.', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-is-stuck-in-drawer.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-stuck-in-drawer.jpg', 'Dog can\'t take a joke.', 'Dog can\'t take a joke.', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-kitten-drops-a-nickel-under-couch.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kitten-drops-a-nickel-under-couch.jpg', 'I drop a nikel under der.', 'I drop a nikel under der.', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-asks-you-for-a-favor.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-asks-you-for-a-favor.jpg', 'Do me a favor', 'Do me a favor', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-kitten-fixes-puppy.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kitten-fixes-puppy.jpg', 'I fix puppy so now he listen.', 'I fix puppy so now he listen.', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-is-very-comfortable.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-very-comfortable.jpg', 'i is sooooooooo comfurbals...', 'i is sooooooooo comfurbals...', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-kitten-ends-meeting2.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kitten-ends-meeting2.jpg', 'This meeting is over.', 'This meeting is over.', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cats-are-in-a-musical.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cats-are-in-a-musical.jpg', 'When you\'re a cat ...', 'When you\'re a cat ...', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-hates-your-tablecloth.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-hates-your-tablecloth.jpg', 'No, thanks.', 'No, thanks.', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-eyes-steak.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-eyes-steak.jpg', 'is it dun yet?', 'is it dun yet?', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-basement-cat-has-pink-sheets.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-basement-cat-has-pink-sheets.jpg', 'PINK??!', 'PINK??!', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-kittens-yell-at-eachother.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-kittens-yell-at-eachother.jpg', 'WAIT YOUR TURN!', 'WAIT YOUR TURN!', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-sits-in-box.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-sits-in-box.jpg', 'Sittin in ur mails', 'Sittin in ur mails', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-has-a-beatle.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-a-beatle.jpg', 'GEORGE', 'GEORGE', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-sits-on-your-laptop.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-sits-on-your-laptop.jpg', 'Rebutting ...', 'Rebutting ...', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-has-a-close-encounter.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-a-close-encounter.jpg', 'CLOSE  ENCOUNTRES ...', 'CLOSE  ENCOUNTRES ...', '');
+            $this->add_image('data_custom/images/lolcats/ridiculous_poses_moddles.jpg', 'data_custom/images/lolcats/thumbs/ridiculous_poses_moddles.jpg', 'Ridiculous poses', 'Ridiculous poses', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-is-a-doctor.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-a-doctor.jpg', 'Dr. House cat...', 'Dr. House cat...', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-pounces-on-deer.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-pounces-on-deer.jpg', 'National Geographic', 'National Geographic', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-fish-and-cat-judge-your-outfit.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-fish-and-cat-judge-your-outfit.jpg', 'Bad outfit', 'Bad outfit', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-comes-to-save-day.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-comes-to-save-day.jpg', 'Here I come to save the day!!', 'Here I come to save the day!!', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-ok-captain-obvious.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-ok-captain-obvious.jpg', 'Okay, Captain Obvious', 'Okay, Captain Obvious', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-kermit-was-about.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-kermit-was-about.jpg', 'Kermit makes a discovery', 'Kermit makes a discovery', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-ai-calld-jenny-craig.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-ai-calld-jenny-craig.jpg', 'Jenny Craig', 'Jenny Craig', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-cat-special-delivery.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-special-delivery.jpg', 'Special Delivery', 'Special Delivery', '');
         }
     }
 
-    public function add_iotds($url = '', $thumb_url = '', $title = '', $caption = '', $notes = '', $allow_rating = 0, $allow_comments = 0, $allow_trackbacks = 0, $current = 0)
+    public function add_image($url = '', $thumb_url = '', $title = '', $description = '', $notes = '')
     {
-        add_iotd($url, $title, $caption, $thumb_url, $current, $allow_rating, $allow_comments, $allow_trackbacks, $notes, time(), $GLOBALS['FORUM_DRIVER']->get_guest_id());
+        add_image($title, 'root', $description, $url, $thumb_url, 1, 1, 1, 1, $notes);
     }
 }

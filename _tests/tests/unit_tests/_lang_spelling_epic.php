@@ -1811,8 +1811,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'io',
             'iodbc',
             'ios',
-            'iotd',
-            'iotds',
             'ip',
             'ipad',
             'ipall',
