@@ -975,31 +975,6 @@ class Module_admin_zones
 
             $this->title = get_screen_title('EDIT_ZONE'); // Re-get title late, as we might be changing the theme this title is got from
 
-            // Handle logos
-            if (addon_installed('zone_logos')) {
-                require_code('themes2');
-                require_code('uploads');
-                $themes = find_all_themes();
-                foreach (array_keys($themes) as $theme) {
-                    $iurl = '';
-                    if ((is_plupload()) || (((array_key_exists('logo_upload_' . $theme, $_FILES)) && (is_uploaded_file($_FILES['logo_upload_' . $theme]['tmp_name']))))) {
-                        $urls = get_url('', 'logo_upload_' . $theme, 'themes/' . $theme . '/images_custom', 0, CMS_UPLOAD_IMAGE);
-                        $iurl = $urls[0];
-                    }
-                    if ($iurl == '') {
-                        $theme_img_code = post_param_string('logo_select_' . $theme, '');
-                        if ($theme_img_code == '') {
-                            continue; // Probably a theme was added half-way
-                            //warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
-                        }
-                        $iurl = find_theme_image($theme_img_code, false, true, $theme);
-                    }
-                    $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => 'logo/' . $new_zone . '-logo', 'theme' => $theme, 'lang' => get_site_default_lang()], '', 1);
-                    $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => 'logo/' . $new_zone . '-logo', 'theme' => $theme, 'url' => $iurl, 'lang' => get_site_default_lang()]);
-                    Self_learning_cache::erase_smart_cache();
-                }
-            }
-
             sync_htaccess_with_zones();
 
             // Show it worked / Refresh

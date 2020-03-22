@@ -516,7 +516,6 @@ class Module_admin_setupwizard
             'shopping',
             'welcome_emails',
             'wiki',
-            'zone_logos',
         ];*/
 
         // These are on by default regardless of install profile. It's useful, because we don't want install profiles to have to be too prescriptive, and we want old ones to keep working well even if new addons have been introduced.

@@ -291,10 +291,6 @@ function attach_message($message, $type = 'inform', $put_in_helper_panel = false
  */
 function get_logo_url($zone_name = null)
 {
-    if (!addon_installed('zone_logos')) {
-        return find_theme_image('logo/-logo');
-    }
-
     global $ZONE;
     if ($zone_name === null) {
         $zone_name = $ZONE['zone_name'];

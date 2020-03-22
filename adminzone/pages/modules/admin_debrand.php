@@ -250,25 +250,6 @@ class Module_admin_debrand
             }
         }
 
-        // Clean up the theme images
-        //  background-image
-        $theme = $GLOBALS['FORUM_DRIVER']->get_theme('');
-        find_theme_image('background_image');
-        //  logo/*
-        if (addon_installed('zone_logos')) {
-            $main_logo_url = find_theme_image('logo/-logo', false, true);
-
-            $test = find_theme_image('logo/adminzone-logo', true);
-            if ($test != '') {
-                $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $main_logo_url], ['id' => 'logo/adminzone-logo', 'theme' => $theme], '', 1);
-            }
-
-            $test = find_theme_image('logo/cms-logo', true);
-            if ($test != '') {
-                $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $main_logo_url], ['id' => 'logo/cms-logo', 'theme' => $theme], '', 1);
-            }
-        }
-
         // Various other icons
         require_code('uploads');
         $urls = get_url('', 'favicon', 'themes/default/images_custom');

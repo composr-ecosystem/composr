@@ -253,4 +253,4 @@ It's not advertised in the interface, but it is possible for a user to join a cl
  - [page="_SEARCH:tut_adv_configuration"]Advanced configuration[/page]
  - [page="_SEARCH:tut_notifications"]Notifications[/page]
 
-{$SET,tutorial_tags,zone_logos,setupwizard,help_page,core_configuration,Configuration,Installation,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Once Composr is installed, there is some basic configuration to do before your website is ready to open. We discuss it here.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,setupwizard,help_page,core_configuration,Configuration,Installation,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Once Composr is installed, there is some basic configuration to do before your website is ready to open. We discuss it here.}[block]main_tutorial_rating[/block]
