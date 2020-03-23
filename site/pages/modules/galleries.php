@@ -179,63 +179,58 @@ class Module_galleries
 
             /* Setup homepage hero slider slides */
 
+            require_lang('homepage_hero_slider');
+
             add_gallery('homepage_hero_slider', 'Homepage Hero Slider', 'Slides for the homepage hero slider', '', 'root', 1, 1, 0, GALLERY_LAYOUT_MODE_DEFAULT, '', '', '', '', '', 0, 0);
             set_global_category_access('galleries', 'homepage_hero_slider');
 
-            $slide_1_contents = <<<HTML
-                [semihtml]<p class="h1 contrast-box">Content Management System for Next Generation Websites</p>
-                <br />
-                <h3 class="contrast-box">Need a website? Tired of primitive systems that don't meet your requirements?</h3>
-                <br />
-                <div style="max-width: 660px; line-height: 1.8;" class="h5 contrast-box">
-                    <div style="margin-bottom: 10px;">
-                        Composr is Open Source so our community download runs without limits. Our services will give you that critical 'pro edge'.
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                        <a href="#!" style="margin: 10px;" class="btn btn-lg btn-outline-light">See How it Works</a>
-                        <a href="#!" style="margin: 10px;" class="btn btn-lg btn-light">Download Now</a>
-                    </div>
-                </div>[/semihtml]
-HTML;
-
-            $slide_2_contents = <<<HTML
-                [semihtml]<p class="h1 contrast-box">Leader In Design</p>
-                <br />
-                <h3 class="contrast-box">Form and Function Revolutionized!</h3>
-                <br />
-                <div style="max-width: 675px; line-height: 1.8;" class="h5 contrast-box">
-                    <div style="margin-bottom: 10px;">
-                        We have created an awesome new theme that will help users, designers, developers,
-                        and companies create websites for their startups quickly and easily.
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                        <a href="#!" style="margin: 10px;" class="btn btn-lg btn-outline-light">See How it Works</a>
-                        <a href="#!" style="margin: 10px;" class="btn btn-lg btn-light">Download Now</a>
-                    </div>
-                </div>[/semihtml]
-HTML;
-
-            $slide_3_contents = <<<HTML
-                [semihtml]<p class="h1 contrast-box">Think Ahead.</p>
-                <br />
-                <h3 class="contrast-box">Boost your online business growth!</h3>
-                <br />
-                <div style="max-width: 630px; line-height: 1.8;" class="h5 contrast-box">
-                    <div style="margin-bottom: 10px;">
-                        With tons of features at your fingertips, let your creativity loose. Welcome your visitors with elegance and flexibility.
-                    </div>
-                    <div>
-                        <a href="#!" style="margin: 10px;" class="btn btn-lg btn-outline-light">See How it Works</a>
-                        <a href="#!" style="margin: 10px;" class="btn btn-lg btn-light">Download Now</a>
-                    </div>
-                </div>[/semihtml]
-HTML;
-
             $image_owner_id = get_first_admin_user();
+            foreach (['bastei_bridge', 'rustic', 'waterfall'] as $i => $img) {
+                $slider_insert_map = null;
+                $langs = find_all_langs();
+                $langs = [user_lang() => $langs[user_lang()]] + $langs;
+                foreach ($langs as $lang => $lang_type) {
+                    if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub
+                        $slide_contents = ltrim('
+                            [semihtml]<p class="h1 contrast-box">' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '</p>
+                            <br />
+                            <h3 class="contrast-box">' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '</h3>
+                            <br />
+                            <div style="max-width: 660px; line-height: 1.8;" class="h5 contrast-box">
+                                <div style="margin-bottom: 10px;">
+                                    ' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <a href="https://compo.sr/features.htm" style="margin: 10px;" class="btn btn-lg btn-outline-light">' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '</a>
+                                    <a href="https://compo.sr/forum/forumview.htm" style="margin: 10px;" class="btn btn-lg btn-light">' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '</a>
+                                </div>
+                            </div>[/semihtml]') . "\n";
 
-            add_image('Slide 1', 'homepage_hero_slider', trim($slide_1_contents) . "\n", 'data/images/homepage_hero_slider/full/bastei_bridge.jpg', 'data/images/homepage_hero_slider/thumbs/bastei_bridge.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
-            add_image('Slide 2', 'homepage_hero_slider', trim($slide_2_contents) . "\n", 'data/images/homepage_hero_slider/full/rustic.jpg', 'data/images/homepage_hero_slider/thumbs/rustic.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
-            add_image('Slide 3', 'homepage_hero_slider', trim($slide_3_contents) . "\n", 'data/images/homepage_hero_slider/full/waterfall.jpg', 'data/images/homepage_hero_slider/thumbs/waterfall.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
+                        if ($lang == user_lang()) {
+                            $slider_insert_map = insert_lang('the_description', $slide_contents, 3, null, true);
+                        } elseif (multi_lang_content()) {
+                            insert_lang('the_description', $slide_contents, 3, null, true, $slider_insert_map['the_description'], $lang);
+                        }
+                    }
+                }
+
+                add_image(
+                    lang_code_to_default_content('title', 'DEFAULT_SLIDE_X', false, 2, null, integer_format($i + 1)),
+                    'homepage_hero_slider',
+                    $slider_insert_map,
+                    'data/images/homepage_hero_slider/full/' . $img . '.jpg',
+                    'data/images/homepage_hero_slider/thumbs/' . $img . '.png',
+                    1,
+                    0,
+                    0,
+                    0,
+                    '',
+                    $image_owner_id,
+                    null,
+                    null,
+                    0
+                );
+            }
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 7)) {

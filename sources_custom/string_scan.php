@@ -7975,6 +7975,18 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_non_admin_initial = array_map('trim', explode("\n", trim('
+        DEFAULT_SLIDE_X
+        DEFAULT_SLIDE1_HEADLINE
+        DEFAULT_SLIDE1_SUBLINE
+        DEFAULT_SLIDE1_TEXT
+        DEFAULT_SLIDE2_HEADLINE
+        DEFAULT_SLIDE2_SUBLINE
+        DEFAULT_SLIDE2_TEXT
+        DEFAULT_SLIDE3_HEADLINE
+        DEFAULT_SLIDE3_SUBLINE
+        DEFAULT_SLIDE3_TEXT
+        DEFAULT_LINK1_TEXT
+        DEFAULT_LINK2_TEXT
         WARNING
         WARNING_TYPE
         POST_IN_NUMBERED

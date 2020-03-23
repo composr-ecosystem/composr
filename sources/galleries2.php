@@ -782,11 +782,27 @@ function _get_mp4_details_do_atom_list($file, $atom_size = null)
 }
 
 /**
+ * Decache gallery blocks.
+ */
+function decache_gallery_blocks()
+{
+    if (!running_script('install')) {
+        delete_cache_entry('side_galleries');
+        delete_cache_entry('main_personal_galleries_list');
+        delete_cache_entry('main_gallery_embed');
+        delete_cache_entry('main_gallery_mosaic');
+        delete_cache_entry('main_image_fader');
+        delete_cache_entry('main_image_slider');
+        delete_cache_entry('main_hero_slider');
+    }
+}
+
+/**
  * Add an image to a specified gallery.
  *
- * @param  SHORT_TEXT $title Image title
+ * @param  mixed $title Image title (either language string map or string)
  * @param  ID_TEXT $cat The gallery name
- * @param  LONG_TEXT $description The image description
+ * @param  mixed $description The image description (either language string map or string)
  * @param  URLPATH $url The URL to the actual image
  * @param  URLPATH $thumb_url The URL to the thumbnail of the actual image
  * @param  BINARY $validated Whether the image has been validated for display on the site
@@ -806,7 +822,7 @@ function _get_mp4_details_do_atom_list($file, $atom_size = null)
  */
 function add_image($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
 {
-    if (get_param_string('type', null) !== '__import') {
+    if ((get_param_string('type', null) !== '__import') && (is_string($title))) {
         require_code('global4');
         prevent_double_submit('ADD_IMAGE', null, $title);
     }
@@ -835,10 +851,18 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
         'cat' => $cat,
         'validated' => $validated,
     ];
-    $map += insert_lang('title', $title, 2);
+    if (!is_array($title)) {
+        $map += insert_lang('title', $title, 2);
+    } else {
+        $map += $title;
+    }
     global $OVERRIDE_MEMBER_ID_COMCODE;
     $OVERRIDE_MEMBER_ID_COMCODE = $submitter; // Needed for installer, which uses complex HTML
-    $map += insert_lang_comcode('the_description', $description, 3);
+    if (!is_array($description)) {
+        $map += insert_lang_comcode('the_description', $description, 3);
+    } else {
+        $map += $description;
+    }
     $OVERRIDE_MEMBER_ID_COMCODE = null;
     if ($id !== null) {
         $map['id'] = $id;
@@ -850,6 +874,10 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
     }
 
     reorganise_uploads__gallery_images(['id' => $id]);
+
+    if (is_array($title)) {
+        $title = get_translated_text($title['title']);
+    }
 
     log_it('ADD_IMAGE', strval($id), $title);
 
@@ -883,14 +911,7 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
         dispatch_notification('gallery_entry', $cat, $subject, $mail, $privacy_limits);
     }
 
-    if (!running_script('install')) {
-        delete_cache_entry('side_galleries');
-        delete_cache_entry('main_personal_galleries_list');
-        delete_cache_entry('main_gallery_embed');
-        delete_cache_entry('main_gallery_mosaic');
-        delete_cache_entry('main_image_fader');
-        delete_cache_entry('main_image_slider');
-    }
+    decache_gallery_blocks();
 
     require_code('member_mentions');
     dispatch_member_mention_notifications('image', strval($id), $submitter);
@@ -942,7 +963,7 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
     require_code('urls2');
     suggest_new_idmoniker_for('galleries', 'image', strval($id), '', ($title == '') ? $description : $title);
 
-    delete_cache_entry('main_gallery_embed');
+    decache_gallery_blocks();
 
     require_code('files2');
     delete_upload('uploads/galleries', 'images', 'url', 'id', $id, $url);
@@ -1018,8 +1039,7 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
     require_code('content2');
     seo_meta_set_for_explicit('image', strval($id), $meta_keywords, $meta_description);
 
-    delete_cache_entry('main_image_fader');
-    delete_cache_entry('main_image_slider');
+    decache_gallery_blocks();
 
     require_lang('galleries');
     require_code('feedback');
@@ -1078,11 +1098,7 @@ function delete_image($id, $delete_full = true)
     require_code('content2');
     seo_meta_erase_storage('image', strval($id));
 
-    delete_cache_entry('side_galleries');
-    delete_cache_entry('main_personal_galleries_list');
-    delete_cache_entry('main_gallery_embed');
-    delete_cache_entry('main_image_fader');
-    delete_cache_entry('main_image_slider');
+    decache_gallery_blocks();
 
     $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'galleries', 'm_resource_type' => 'image', 'm_resource_id' => strval($id)]);
 
@@ -1208,9 +1224,7 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
         seo_meta_set_for_explicit('video', strval($id), $meta_keywords, $meta_description);
     }
 
-    delete_cache_entry('side_galleries');
-    delete_cache_entry('main_personal_galleries_list');
-    delete_cache_entry('main_gallery_embed');
+    decache_gallery_blocks();
 
     if ((is_file(get_file_base() . '/sources_custom/gallery_syndication.php')) && (!in_safe_mode())) {
         require_code('gallery_syndication');
@@ -1356,7 +1370,7 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
     require_code('content2');
     seo_meta_set_for_explicit('video', strval($id), $meta_keywords, $meta_description);
 
-    delete_cache_entry('main_gallery_embed');
+    decache_gallery_blocks();
 
     require_lang('galleries');
     require_code('feedback');
@@ -1421,9 +1435,7 @@ function delete_video($id, $delete_full = true)
     require_code('content2');
     seo_meta_erase_storage('video', strval($id));
 
-    delete_cache_entry('side_galleries');
-    delete_cache_entry('main_personal_galleries_list');
-    delete_cache_entry('main_gallery_embed');
+    decache_gallery_blocks();
 
     if ((is_file(get_file_base() . '/sources_custom/gallery_syndication.php')) && (!in_safe_mode())) {
         require_code('gallery_syndication');
@@ -1615,10 +1627,7 @@ function add_gallery($name, $fullname, $description, $notes, $parent_id, $accept
         seo_meta_set_for_explicit('gallery', $name, $meta_keywords, $meta_description);
     }
 
-    if (function_exists('delete_cache_entry')) {
-        delete_cache_entry('side_galleries');
-        delete_cache_entry('main_personal_galleries_list');
-    }
+    decache_gallery_blocks();
 
     require_code('member_mentions');
     dispatch_member_mention_notifications('gallery', $name, $g_owner);
@@ -1789,8 +1798,7 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
 
     $GLOBALS['SITE_DB']->query_update('group_category_access', ['category_name' => $name], ['module_the_name' => 'galleries', 'category_name' => $old_name]);
 
-    delete_cache_entry('side_galleries');
-    delete_cache_entry('main_personal_galleries_list');
+    decache_gallery_blocks();
 
     require_code('feedback');
     update_spacer_post(
@@ -1871,8 +1879,7 @@ function delete_gallery($name)
     $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'galleries', 'category_name' => $name]);
     $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => 'galleries', 'category_name' => $name]);
 
-    delete_cache_entry('side_galleries');
-    delete_cache_entry('main_personal_galleries_list');
+    decache_gallery_blocks();
 
     $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'galleries', 'm_resource_type' => 'browse', 'm_resource_id' => $name]);
 

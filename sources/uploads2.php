@@ -56,6 +56,9 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
     $cma_ob = get_content_object($content_type);
     if ($fake_cma_info === null) {
         $cma_info = $cma_ob->info();
+        if ($cma_info === null) { // Possibly in process of reinstalling a module
+            return;
+        }
         $table = $cma_info['table'];
         $table_extended = $table;
     } else {

@@ -6,8 +6,6 @@
 	[block failsafe="1"]main_greeting[/block]
 	[surround="hero-button"][page="site:home"]{$SITE_NAME*}[/page][/surround]
 [/surround]
-
-[block failsafe="1"]main_image_fader_news[/block]
 {+END}
 
 {+START,IF,{$CONFIG_OPTION,single_public_zone}}

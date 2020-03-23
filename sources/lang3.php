@@ -261,17 +261,20 @@ function _create_selection_list_langs($select_lang = null, $show_unset = false)
  * @param  boolean $comcode Whether the given codes value is to be parsed as Comcode
  * @param  integer $level The level of importance this content language string holds
  * @param  ?object $db The database connector to use (null: standard site connector)
+ * @param  ?mixed $parameter1 The first parameter [string or Tempcode] (replaces {1}) (null: none)
+ * @param  ?mixed $parameter2 The second parameter [string or Tempcode] (replaces {2}) (null: none)
+ * @param  ?mixed $parameter3 The third parameter (replaces {3}). May be an array of [of string or Tempcode], to allow any number of additional args (null: none)
  * @return array The content language string save fields
  */
-function lang_code_to_default_content($field_name, $code, $comcode = false, $level = 2, $db = null)
+function lang_code_to_default_content($field_name, $code, $comcode = false, $level = 2, $db = null, $parameter1 = null, $parameter2 = null, $parameter3 = null)
 {
-    $insert_map = insert_lang($field_name, do_lang($code), $level, null, $comcode);
+    $insert_map = insert_lang($field_name, do_lang($code, $parameter1, $parameter2, $parameter3), $level, $db, $comcode);
     if (multi_lang_content()) {
         $langs = find_all_langs();
         foreach ($langs as $lang => $lang_type) {
             if ($lang != user_lang()) {
-                if (is_file(get_file_base() . '/' . $lang_type . '/' . $lang . '/critical_error.ini')) { // Make sure it's a reasonable looking pack, not just a stub
-                    insert_lang($field_name, do_lang($code, '', '', '', $lang), $level, $db, true, $insert_map[$field_name], $lang);
+                if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub
+                    insert_lang($field_name, do_lang($code, $parameter1, $parameter2, $parameter3, $lang), $level, $db, $comcode, $insert_map[$field_name], $lang);
                 }
             }
         }
@@ -296,7 +299,7 @@ function lang_code_to_static_content($field_name, $str, $comcode = false, $level
         $langs = find_all_langs();
         foreach ($langs as $lang => $lang_type) {
             if ($lang != user_lang()) {
-                if (is_file(get_file_base() . '/' . $lang_type . '/' . $lang . '/critical_error.ini')) { // Make sure it's a reasonable looking pack, not just a stub
+                if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub
                     insert_lang($field_name, $str, $level, $db, $comcode, $insert_map[$field_name], $lang);
                 }
             }
