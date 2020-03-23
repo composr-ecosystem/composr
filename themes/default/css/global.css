@@ -7546,11 +7546,6 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 =========================
 */
 
-.box---block-bottom-about-us .social-buttons .btn .icon {
-	width: 25px;
-	height: 25px;
-}
-
 @keyframes cms-fade-in {
 	from { opacity: 0; }
 	to { opacity: 1; }
