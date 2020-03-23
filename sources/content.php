@@ -119,12 +119,12 @@ function may_view_content_behind($member_id, $content_type, $content_id, $type_h
         $topic_id = intval($content_id);
     }
     if ($topic_id !== null) {
-        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id', 't_pt_from', 't_pt_to'], ['id' => $topic_id], '', 1);
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_rows)) {
             return false;
         }
         require_code('cns_topics');
-        if (($topic_rows[0]['t_forum_id'] === null) && (($topic_rows[0]['t_pt_from'] != $member_id) && ($topic_rows[0]['t_pt_to'] != $member_id) && (!cns_has_special_pt_access($topic_id, $member_id)) || (is_guest($member_id)))) {
+        if (!cns_may_access_topic($topic_id, $member_id, $topic_rows[0])) {
             return false;
         }
     }
@@ -743,7 +743,7 @@ function build_selectcode_select_for_content_type($select, $info, $category_fiel
     $category_is_string = ((array_key_exists('category_is_string', $info)) && (is_array($info['category_is_string']) ? $info['category_is_string'][1] : $info['category_is_string']));
 
     require_code('selectcode');
-    return selectcode_to_sqlfragment($select, 'r.' . (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']), $parent_spec__table_name, $parent_spec__parent_name, 'r.' . $parent_field_name, $parent_spec__field_name, $id_field_numeric, !$category_is_string);
+    return selectcode_to_sqlfragment($select, 'r.' . (is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field']), $parent_spec__table_name, $parent_spec__parent_name, 'r.' . $parent_field_name, $parent_spec__field_name, $id_field_numeric, !$category_is_string);
 }
 
 /**

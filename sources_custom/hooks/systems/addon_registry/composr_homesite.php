@@ -168,6 +168,7 @@ This addon does not contain the compo.sr install code and the overall site and t
             'site/pages/comcode_custom/EN/maintenance_status.txt',
             'site/pages/minimodules_custom/themeing_changes.php',
             'site/pages/modules_custom/sites.php',
+            'data_custom/download_composr.php',
             'sources_custom/cns_forumview.php',
             'sources_custom/composr_homesite.php',
             'sources_custom/errorservice.php',

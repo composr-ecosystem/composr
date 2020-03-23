@@ -1107,7 +1107,7 @@ class Module_warnings extends Standard_crud_module
             $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $row['w_topic_id']], '', 1);
             if (array_key_exists(0, $topic_rows)) {
                 $topic_row = $topic_rows[0];
-                if (has_topic_access($row['w_topic_id'])) {
+                if (cns_may_access_topic($row['w_topic_id'])) {
                     $pt_url = build_url(['page' => 'topicview', 'id' => $row['w_topic_id']], get_module_zone('topicview'));
                     $fields['PRIVATE_TOPIC'] = hyperlink($pt_url, do_lang('VIEW_TOPIC'), false, false);
                 }

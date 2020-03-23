@@ -384,6 +384,9 @@ class Module_cms_news extends Standard_crud_module
         }
 
         $cats1 = create_selection_list_news_categories($main_news_category, false, true, is_integer($main_news_category), null, true);
+        if ($cats1->is_empty()) {
+            warn_exit(do_lang_tempcode('NO_CATEGORIES', 'news_category'));
+        }
         $cats2 = create_selection_list_news_categories(($news_category === null) ? [] : $news_category, false, true, is_integer($main_news_category), null, true);
 
         $fields = new Tempcode();

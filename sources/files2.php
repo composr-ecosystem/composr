@@ -496,7 +496,7 @@ function get_upload_limit_config_url()
 {
     $config_url = null;
     if (has_actual_page_access(get_member(), 'admin_config')) {
-        $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'));
+        $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'FEATURE'], get_module_zone('admin_config'));
         $config_url = $_config_url->evaluate();
         $config_url .= '#group_UPLOAD';
     }

@@ -54,9 +54,8 @@ class Hook_attachments_cns_post
         if (($intended_solely_for !== null) && ($poster != get_member()) && ($intended_solely_for != get_member())) {
             return false;
         }
-        if ($forum_id === null) {
-            $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from'], ['id' => $info[0]['p_topic_id']], '', 1);
-            return (($topic_info[0]['t_pt_to'] == get_member()) || ($topic_info[0]['t_pt_from'] == get_member()) || (cns_has_special_pt_access($info[0]['p_topic_id'])));
+        if (cns_may_access_topic($info[0]['p_topic_id'])) {
+            return true;
         }
         if (addon_installed('tickets')) {
             $tf = get_option('ticket_forum_name', true);
@@ -78,6 +77,6 @@ class Hook_attachments_cns_post
                 }
             }
         }
-        return has_category_access(get_member(), 'forums', strval($forum_id));
+        return false;
     }
 }

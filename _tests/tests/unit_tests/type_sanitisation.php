@@ -73,6 +73,8 @@ class type_sanitisation_test_set extends cms_test_case
             '127.0.0.1' => true,
             '255.255.255.255' => true,
             '0.0.0.0' => true,
+            '-0.0.0.0' => false,
+            '-1.0.0.0' => false,
             '0.0.0.' => false,
             '.0.0.0' => false,
             ' 0.0.0.0' => false,
@@ -85,12 +87,15 @@ class type_sanitisation_test_set extends cms_test_case
             'a.a.a.a' => false,
 
             'FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF' => true,
-            'FFFF::FFFF:FFFF:FFFF:FFFF' => true,
+            'FFFF::FFFF:FFFF:FFFF:FFFF' => true, // Double colon allows shortening
+            'FFFF::FFFF:FFFF::FFFF' => false, // Only 1 double colon allowed
             'FFFF::FFFF:1:FFFF:FFFF' => true,
+            'A:0:1:2:3:4:5:6' => true, // Leading zeroes can be omitted
             '0000:0000:0000:0000:0000:0000:0000:0000' => true,
             'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => true,
             'gggg:gggg:gggg:gggg:gggg:gggg:gggg:gggg' => false,
             'FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF' => false,
+            'FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF' => false, // Too short for when no double colons
         ];
 
         foreach ($expectations as $string => $status) {

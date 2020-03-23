@@ -896,7 +896,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             $struct['permissions'][] = [
                 'type' => 'category',
                 'permission_module' => $cma_info['permissions_type_code'],
-                'category_name' => @strval($cma_info['is_category'] ? $content_id : $row[$cma_info['category_field']]),
+                'category_name' => @strval($cma_info['is_entry'] ? $row[$cma_info['category_field']] : $content_id),
                 'page_name' => $page,
                 'is_owned_at_this_level' => true,
             ];

@@ -17,37 +17,23 @@ if (!function_exists('do_release')) {
     /**
      * Get template variables for a release.
      *
-     * @param  SHORT_TEXT $name_suffix A substring of the title of the download
+     * @param  ?SHORT_TEXT $version_pretty Version we want (null: don't care)
+     * @param  string $type_wanted Installer/etc type
+     * @set "" "manual" "bleeding-edge" "bleeding-edge manual"
      * @param  string $prefix Prefix to put on the template params
      * @param  ?string $version_must_be_newer_than The version this must be newer than (null: no check)
      * @return ?array Map of template variables (null: could not find)
      */
-    function do_release($name_suffix, $prefix, $version_must_be_newer_than = null)
+    function do_release($version_pretty, $type_wanted, $prefix, $version_must_be_newer_than = null)
     {
-        if ($GLOBALS['DEV_MODE']) {
-            $t = 'Composr version 1337';
-
-            $myrow = [
-                'd_id' => 123,
-                'num_downloads' => 321,
-                'name' => $name_suffix,
-                'file_size' => 12345,
-            ];
-        } else {
-            $sql = 'SELECT d.num_downloads,d.name,d.file_size,d.id AS d_id,d.add_date FROM ' . get_table_prefix() . 'download_downloads d' . $GLOBALS['SITE_DB']->prefer_index('download_downloads', 'downloadauthor');
-            $sql .= ' WHERE ' . db_string_equal_to('author', 'ocProducts') . ' AND validated=1 AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('%' . $name_suffix) . '\' ORDER BY add_date DESC';
-            $rows = $GLOBALS['SITE_DB']->query($sql, 1, 0, false, false, ['name' => 'SHORT_TRANS']);
-            if (!array_key_exists(0, $rows)) {
-                return null; // Shouldn't happen, but let's avoid transitional errors
-            }
-
-            $myrow = $rows[0];
+        $latest_version_pretty = get_latest_version_pretty();
+        if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
+            $latest_version_pretty = '1337';
         }
 
-        if ($version_must_be_newer_than !== null) {
-            if (strpos($version_must_be_newer_than, '.') === false) {
-                $version_must_be_newer_than .= '.0.0'; // Weird, but PHP won't do version_compare right without it
-            }
+        $myrow = find_version_download_fast($version_pretty, $type_wanted, $version_must_be_newer_than);
+        if ($myrow === null) {
+            return $myrow;
         }
 
         $id = $myrow['d_id'];
@@ -56,6 +42,9 @@ if (!function_exists('do_release')) {
 
         $keep = symbol_tempcode('KEEP');
         $url = find_script('dload', 1) . '?id=' . strval($id) . $keep->evaluate();
+        if (($version_pretty == $latest_version_pretty) && ($version_must_be_newer_than === null)) {
+            $url = find_script('download_composr') . '?type=' . urlencode($type_wanted) . $keep->evaluate();
+        }
 
         require_code('version2');
         $t = $GLOBALS['DEV_MODE'] ? $myrow['name'] : get_translated_text($myrow['name']);
@@ -96,26 +85,28 @@ require_code('composr_homesite');
 require_lang('downloads');
 
 // Put together details about releases
-$t = get_latest_version_pretty();
-if (($t === null) && ($GLOBALS['DEV_MODE'])) {
-    $t = '1337';
+$latest_version_pretty = get_latest_version_pretty();
+if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
+    $latest_version_pretty = '1337';
 }
-$releases_tpl_map = [];
-if ($t !== null) {
-    $latest = $t;
-    $release_quick = do_release('Composr version ' . $latest, 'QUICK_');
+$releases_tpl_map = array();
+if ($latest_version_pretty !== null) {
+    $latest = $latest_version_pretty;
+
+    $release_quick = do_release($latest, '', 'QUICK_');
+    $release_manual = do_release($latest, 'manual', 'MANUAL_');
+    $release_bleedingquick = do_release(null, 'bleeding-edge', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
+    $release_bleedingmanual = do_release(null, 'bleeding-edge, manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
+
     if ($release_quick !== null) {
         $releases_tpl_map += $release_quick;
     }
-    $release_manual = do_release('Composr version ' . $latest . ' (manual)', 'MANUAL_');
     if ($release_manual !== null) {
         $releases_tpl_map += $release_manual;
     }
-    $release_bleedingquick = do_release('(bleeding-edge)', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
     if ($release_bleedingquick !== null) {
         $releases_tpl_map += $release_bleedingquick;
     }
-    $release_bleedingmanual = do_release('(bleeding-edge, manual)', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
     if ($release_bleedingmanual !== null) {
         $releases_tpl_map += $release_bleedingmanual;
     }

@@ -64,7 +64,7 @@ function has_post_access($post_id, $member_id = null, $post_details = null)
         }
     }
 
-    if (!has_topic_access($post_details['topic_id'], $member_id, $post_details/*Contains topic details too*/)) {
+    if (!cns_may_access_topic($post_details['topic_id'], $member_id, $post_details/*Contains topic details too*/)) {
         return false;
     }
 
@@ -88,36 +88,45 @@ function cns_may_post_in_topic($forum_id, $topic_id, $last_member_id = null, $cl
         $member_id = get_member();
     }
 
+    if (!has_actual_page_access($member_id, 'topics')) {
+        return false;
+    }
+
     require_code('cns_forums');
     if (($closed) && (!cns_may_moderate_forum($forum_id, $member_id))) {
         return false;
     }
 
-    if ($forum_id === null) {
-        return true; // A private topic
+    $sql = 'SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings WHERE (p_silence_from_topic=' . strval($topic_id);
+    if ($forum_id !== null) {
+        $sql .= ' OR p_silence_from_forum=' . strval($forum_id);
     }
-
-    if (!has_privilege($member_id, 'submit_lowrange_content', 'topics', ['forums', $forum_id, 'topics', $topic_id])) {
-        return false;
-    }
-    if ($last_member_id === null) {
-        return true;
-    }
-    if (($last_member_id == $member_id) && (!$will_be_private_post)) {
-        if (!has_privilege($member_id, 'double_post')) {
-            return false;
-        }
-    }
-
-    static $silencing_cache = [];
-    if (isset($silencing_cache[$forum_id][$topic_id][$member_id])) {
-        $test = $silencing_cache[$forum_id][$topic_id][$member_id][0];
-    } else {
-        $test = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings WHERE (p_silence_from_topic=' . strval($topic_id) . ' OR p_silence_from_forum=' . strval($forum_id) . ') AND w_member_id=' . strval($member_id));
-        $silencing_cache[$forum_id][$topic_id][$member_id] = [$test];
-    }
+    $sql .= ') AND w_member_id=' . strval($member_id);
+    $test = $GLOBALS['FORUM_DB']->query_value_if_there($sql, false, true);
     if ($test !== null) {
         return false;
+    }
+
+    if (!cns_may_access_topic($topic_id, $member_id)) {
+        return false;
+    }
+
+    if ($forum_id === null) {
+        // No extra checks for private topics...
+
+        return true;
+    }
+
+    // Extra checks for regular topics...
+
+    if (!has_privilege($member_id, 'submit_lowrange_content', 'topics', array('forums', $forum_id, 'topics', $topic_id))) {
+        return false;
+    }
+
+    if (($last_member_id !== null) && (!has_privilege($member_id, 'double_post'))) {
+        if (($last_member_id == $member_id) && (!$will_be_private_post)) {
+            return false;
+        }
     }
 
     return true;

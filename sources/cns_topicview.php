@@ -87,7 +87,7 @@ function find_first_unread_url($id)
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE id<' . strval($first_unread_id) . ' AND ' . cns_get_topic_where($id), false, true);
         $start = intval(floor(floatval($before) / floatval($max))) * $max;
     } else {
-        $first_unread_id = -2;
+        $first_unread_id = null;
 
         // What page is it on?
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . cns_get_topic_where($id), false, true);
@@ -106,7 +106,7 @@ function find_first_unread_url($id)
     }
     $_redirect = build_url($map, '_SELF', [], true);
     $redirect = $_redirect->evaluate();
-    if ($first_unread_id > 0) {
+    if ($first_unread_id !== null) {
         $redirect .= '#post-' . strval($first_unread_id);
     } else {
         $redirect .= '#first-unread';
@@ -254,16 +254,13 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
         $forum_id = $topic_info['t_forum_id'];
         if ($forum_id !== null) {
             if ($check_perms) {
-                if (!has_category_access(get_member(), 'forums', strval($forum_id))) {
+                if (!cns_may_access_topic($topic_id, get_member(), $topic_info, false)) {
                     access_denied('CATEGORY_ACCESS_LEVEL');
                 }
             }
         } else {
             // It must be a private topic. Do we have access?
-            $from = $topic_info['t_pt_from'];
-            $to = $topic_info['t_pt_to'];
-
-            if (($from != get_member()) && ($to != get_member()) && (!cns_has_special_pt_access($topic_id)) && (!has_privilege(get_member(), 'view_other_pt'))) {
+            if (!cns_may_access_topic($topic_id, get_member(), $topic_info, false)) {
                 access_denied('PRIVILEGE', 'view_other_pt');
             }
 
@@ -727,8 +724,26 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         }
     }
 
-    if ((array_key_exists('may_pt_members', $topic_info)) && ($may_reply_private_post) && ($_postdetails['poster'] != get_member()) && ($_postdetails['poster'] != $GLOBALS['CNS_DRIVER']->get_guest_id()) && (cns_may_whisper($_postdetails['poster'])) && (get_option('overt_whisper_suggestion') == '1')) {
+    $may_pt_members = array_key_exists('may_pt_members', $topic_info);
+    $may_inline_pp = $may_reply_private_post;
+    if (get_option('inline_pp_advertise') == '0') {
         $whisper_type = (get_option('inline_pp_advertise') == '0') ? 'new_pt' : 'whisper';
+    } elseif (($may_inline_pp) && ($may_pt_members)) {
+        $whisper_type = 'whisper';
+    } elseif ($may_inline_pp) {
+        $whisper_type = 'new_post';
+    } elseif ($may_pt_members) {
+        $whisper_type = 'new_pt';
+    } else {
+        $whisper_type = null;
+    }
+    if (
+        ($whisper_type !== null) &&
+        ($_postdetails['poster'] != get_member()) &&
+        ($_postdetails['poster'] != $GLOBALS['CNS_DRIVER']->get_guest_id()) &&
+        (cns_may_whisper($_postdetails['poster'])) &&
+        (get_option('overt_whisper_suggestion') == '1')
+    ) {
         $action_url = build_url(['page' => 'topics', 'type' => $whisper_type, 'id' => $_postdetails['topic_id'], 'quote' => $_postdetails['id'], 'intended_solely_for' => $_postdetails['poster']], get_module_zone('topics'));
         $_title = do_lang_tempcode('WHISPER');
         $_title_full = new Tempcode();

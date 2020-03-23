@@ -113,7 +113,7 @@ class CMSPtRead
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
 
-        if (!has_topic_access($topic_id, null, $topic_details[0])) {
+        if (!cns_may_access_topic($topic_id, null, $topic_details[0])) {
             access_denied('I_ERROR');
         }
 

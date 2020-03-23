@@ -195,8 +195,14 @@ function cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $send
 
     require_code('notifications');
 
+    if (is_guest($sender_member_id)) {
+        $sender_displayname_link = '[page="_SEARCH:admin_lookup:view:param=' . comcode_escape($GLOBALS['FORUM_DRIVER']->get_member_ip($sender_member_id)) . '"]' . comcode_escape($sender_displayname) . '[/page]';
+    } else {
+        $sender_displayname_link = '{{' . $sender_displayname . '}}';
+    }
+
     $subject = do_lang($is_starter ? 'TOPIC_NOTIFICATION_MAIL_SUBJECT' : 'POST_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $topic_title, [$sender_displayname, $sender_username]);
-    $mail = do_notification_lang($is_starter ? 'TOPIC_NOTIFICATION_MAIL' : 'POST_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($url), [comcode_escape($sender_displayname), $post, $topic_title, ((is_guest($sender_member_id)) && ($poster_name !== null)) ? $poster_name : strval($sender_member_id), comcode_escape($sender_username), strval($sender_member_id)]);
+    $mail = do_notification_lang($is_starter ? 'TOPIC_NOTIFICATION_MAIL' : 'POST_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($url), [$sender_displayname_link, $post, $topic_title, ((is_guest($sender_member_id)) && ($poster_name !== null)) ? $poster_name : strval($sender_member_id), comcode_escape($sender_username), strval($sender_member_id)]);
 
     $limit_to = ($_limit_to === null) ? [] : [$_limit_to];
 

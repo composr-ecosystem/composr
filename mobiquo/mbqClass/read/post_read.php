@@ -115,7 +115,7 @@ class CMSPostRead
     {
         cms_verify_parameters_phpdoc();
 
-        if (!has_topic_access($topic_id)) {
+        if (!cns_may_access_topic($topic_id)) {
             access_denied('I_ERROR');
         }
 
