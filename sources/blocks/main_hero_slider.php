@@ -112,7 +112,11 @@ PHP;
         }
 
         if ($gallery_name === null) {
-            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '19737ba0c9c84c36b92690b7c896040d', 'TEXT' => escape_html('Block main_hero_slider: Gallery named "' . $gallery_name . '" not found.')]);
+            if ($blank_if_empty) {
+                return new Tempcode();
+            } else {
+                return do_template('RED_ALERT', ['_GUID' => '19737ba0c9c84c36b92690b7c896040d', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'gallery')]);
+            }
         }
 
         if ($gallery_name === 'root') {
