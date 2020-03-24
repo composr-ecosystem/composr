@@ -87,6 +87,7 @@ PHP;
 
         require_code('galleries');
         require_code('content');
+        require_css('galleries');
 
         $blank_if_empty = isset($map['blank_if_empty']) ? !empty($map['blank_if_empty']) : false;
 
@@ -203,8 +204,6 @@ PHP;
                 'EDIT_URL' => $edit_url,
             ];
         }
-
-        require_css('galleries');
 
         return do_template('BLOCK_MAIN_HERO_SLIDER', [
             '_GUID' => '3afebc2955314f1fbc1b2d4935e998e4',

@@ -65,7 +65,7 @@ class Hook_preview_image
         }
 
         require_code('images');
-        $thumb = do_image_thumb(url_is_local($thumb_url) ? (get_custom_base_url() . '/' . $thumb_url) : $thumb_url, post_param_string('description'), true);
+        $thumb = do_image_thumb(url_is_local($thumb_url) ? (get_custom_base_url() . '/' . $thumb_url) : $thumb_url, protect_from_escaping(comcode_to_tempcode(post_param_string('description'))), true);
         $preview = hyperlink(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url, $thumb, false, true);
 
         return [$preview, null];

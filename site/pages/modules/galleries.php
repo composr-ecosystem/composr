@@ -191,20 +191,15 @@ class Module_galleries
                 $langs = [user_lang() => $langs[user_lang()]] + $langs;
                 foreach ($langs as $lang => $lang_type) {
                     if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub
-                        $slide_contents = ltrim('
-                            [semihtml]<p class="h1 contrast-box">' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '</p>
-                            <br />
-                            <h3 class="contrast-box">' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '</h3>
-                            <br />
-                            <div style="max-width: 660px; line-height: 1.8;" class="h5 contrast-box">
-                                <div style="margin-bottom: 10px;">
-                                    ' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
-                                </div>
-                                <div style="margin-bottom: 10px;">
-                                    <a href="https://compo.sr/features.htm" style="margin: 10px;" class="btn btn-lg btn-outline-light">' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '</a>
-                                    <a href="https://compo.sr/forum/forumview.htm" style="margin: 10px;" class="btn btn-lg btn-light">' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '</a>
-                                </div>
-                            </div>[/semihtml]') . "\n";
+                        $slide_contents = trim('
+{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}
+    HEADLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '
+    SUBLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '
+    TEXT=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
+    LINK1_TEXT=' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '
+    LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
+{+END}
+                        ');
 
                         if ($lang == user_lang()) {
                             $slider_insert_map = insert_lang('the_description', $slide_contents, 3, null, true);

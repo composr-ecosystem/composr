@@ -274,6 +274,7 @@ class Hook_addon_registry_galleries
             'data/images/homepage_hero_slider/thumbs/bastei_bridge.png',
             'data/images/homepage_hero_slider/thumbs/rustic.png',
             'data/images/homepage_hero_slider/thumbs/waterfall.png',
+            'themes/default/templates/GALLERY_HOMEPAGE_HERO_SLIDE.tpl',
         ];
     }
 
@@ -311,6 +312,7 @@ class Hook_addon_registry_galleries
             'templates/GALLERY_VIDEO_BOX.tpl' => 'gallery_video_box',
             'templates/GALLERY_IMAGE_BOX.tpl' => 'gallery_image_box',
             'templates/BLOCK_MAIN_HERO_SLIDER.tpl' => 'block_main_hero_slider',
+            'templates/GALLERY_HOMEPAGE_HERO_SLIDE.tpl' => 'block_main_hero_slider',
             'templates/BLOCK_MAIN_GALLERY_MOSAIC.tpl' => 'block_main_gallery_mosaic',
             'templates/GALLERY_MOSAIC_IMAGE.tpl' => 'block_main_gallery_mosaic',
             'templates/GALLERY_MOSAIC_VIDEO.tpl' => 'block_main_gallery_mosaic',
@@ -1141,13 +1143,21 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__block_main_hero_slider()
     {
+        $content_html = do_lorem_template('GALLERY_HOMEPAGE_HERO_SLIDE', [
+            'HEADLINE' => lorem_phrase(),
+            'SUBLINE' => lorem_phrase(),
+            'TEXT' => lorem_chunk_html(),
+            'LINK1_TEXT' => lorem_phrase(),
+            'LINK2_TEXT' => lorem_phrase(),
+        ]);
+
         $items = [
             [
                 'BACKGROUND_ID' => placeholder_id(),
                 'BACKGROUND_TYPE' => lorem_word(),
                 'BACKGROUND_URL' => placeholder_url(),
                 'BACKGROUND_THUMB_URL' => placeholder_image_url(),
-                'CONTENT_HTML' => lorem_chunk_html(),
+                'CONTENT_HTML' => $content_html,
                 'EDIT_URL' => placeholder_url(),
             ],
         ];

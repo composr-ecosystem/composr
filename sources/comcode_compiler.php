@@ -1010,7 +1010,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                                             } else {
                                                 require_code('tempcode_compiler');
                                                 $ret = template_to_tempcode($p_opener . '{DIRECTIVE_EMBEDMENT}' . $p_closer);
-                                                if (substr($comcode, $pos - 1, strlen('{+START,CASES,')) === '{+START,CASES,') {
+                                                if ((substr($comcode, $pos - 1, strlen('{+START,CASES,')) === '{+START,CASES,') || (substr($comcode, $pos - 1, strlen('{+START,INCLUDE,')) === '{+START,INCLUDE,')) {
                                                     $p_portion_comcode = make_string_tempcode($p_portion); // We can't evaluate the middle as Comcode as it can interfere
                                                 } else {
                                                     $p_portion_comcode = comcode_to_tempcode($p_portion, $source_member, $as_admin, $pass_id, $db, _incorporate_flags_state($flags, $in_semihtml, $in_code_tag), $highlight_bits, $on_behalf_of_member);
