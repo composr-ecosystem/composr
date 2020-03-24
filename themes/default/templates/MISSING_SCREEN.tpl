@@ -23,13 +23,11 @@
 {+END}
 {+START,IF_NON_EMPTY,{$TRIM,{$GET,BUTTONS}}}
 	<div class="clearfix">
-		<div class="trinav-left">
-			<p class="buttons-group">
-				<span class="buttons-group-inner">
-					{$GET,BUTTONS}
-				</span>
-			</p>
-		</div>
+		<p class="buttons-group">
+			<span class="buttons-group-inner">
+				{$GET,BUTTONS}
+			</span>
+		</p>
 	</div>
 {+END}
 
