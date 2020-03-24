@@ -539,7 +539,6 @@ class Hook_addon_registry_downloads
             'rating_time' => time(),
             'rating' => 3,
         ]);
-        set_mass_import_mode(false); // Needed for $update_caching
         $GLOBALS['FORUM_DRIVER']->make_post_forum_topic(
             get_option('comments_forum_name'),
             'downloads_' . strval($content_id),
@@ -554,7 +553,6 @@ class Hook_addon_registry_downloads
             1,
             1
         );
-        set_mass_import_mode(true);
         $GLOBALS['SITE_DB']->query_insert('review_supplement', [
             'r_rating' => 3,
             'r_rating_for_type' => 'downloads',

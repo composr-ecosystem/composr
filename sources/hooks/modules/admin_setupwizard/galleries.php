@@ -32,8 +32,12 @@ class Hook_sw_galleries
     {
         $settings = [];
 
+        // --
+
         $test = $GLOBALS['SITE_DB']->query_select_value('group_privileges', 'COUNT(*)', ['privilege' => 'have_personal_category', 'the_page' => 'cms_galleries']);
         $settings['keep_personal_galleries'] = ($test == 0) ? '0' : '1';
+
+        // --
 
         $default_homepage_hero_slider_category = 'homepage_hero_slider';
 
@@ -89,14 +93,6 @@ class Hook_sw_galleries
             return;
         }
 
-        $default_homepage_hero_slider_category = 'homepage_hero_slider';
-
-        $default_homepage_hero_slides_urls = [
-            'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
-            'data/images/homepage_hero_slider/full/rustic.jpg',
-            'data/images/homepage_hero_slider/full/waterfall.jpg',
-        ];
-
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         $GLOBALS['SITE_DB']->query_delete('group_privileges', ['privilege' => 'have_personal_category', 'the_page' => 'cms_galleries']);
@@ -111,21 +107,26 @@ class Hook_sw_galleries
         if (post_param_integer('have_default_homepage_hero_slides', 0) === 0) {
             require_code('galleries2');
 
+            $default_homepage_hero_slider_category = 'homepage_hero_slider';
+
+            // Delete default slide images
+            $default_homepage_hero_slides_urls = [
+                'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
+                'data/images/homepage_hero_slider/full/rustic.jpg',
+                'data/images/homepage_hero_slider/full/waterfall.jpg',
+            ];
             $where = [];
             foreach ($default_homepage_hero_slides_urls as $url) {
                 $where[] = '(' . db_string_equal_to('cat', $default_homepage_hero_slider_category) . ' AND ' . db_string_equal_to('url', $url) . ')';
             }
-
             $rows = $GLOBALS['SITE_DB']->query('SELECT id FROM ' . get_table_prefix() . 'images WHERE ' . implode(' OR ', $where));
-
             foreach ($rows as $row) {
                 delete_image($row['id']);
             }
 
-            $rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) AS c FROM ' . get_table_prefix() . 'images WHERE ' . implode(' OR ', $where));
-
-            if (intval($rows[0]['c']) === 0) {
-                // Delete the category as well if now empty
+            // Delete the category as well if now empty
+            $image_count = $GLOBALS['SITE_DB']->query_select_value_if_there('SELECT COUNT(*) AS c FROM ' . get_table_prefix() . 'images WHERE ' . db_string_equal_to('cat', $default_homepage_hero_slider_category));
+            if ($image_count == 0) {
                 $GLOBALS['SITE_DB']->query_delete('galleries', ['name' => $default_homepage_hero_slider_category]);
             }
         }

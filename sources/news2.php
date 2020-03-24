@@ -363,7 +363,7 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
 
     require_code('tasks');
     require_lang('news');
-    call_user_func_array__long_task(do_lang('RSS_CLOUD_UPDATE'), get_screen_title('RSS_CLOUD_UPDATE'), 'rss_cloud_update');
+    call_user_func_array__long_task(do_lang('RSS_CLOUD_UPDATE'), null, 'rss_cloud_update');
 
     require_code('content2');
     if (get_option('enable_seo_fields') === '0') {

@@ -497,11 +497,7 @@ class Hook_addon_registry_tickets
             $ticket_type_id = add_ticket_type(lorem_phrase());
         }
 
-        set_mass_import_mode(false); // Needed for $update_caching
-
         $ticket_id = uniqid('', true);
         ticket_add_post($ticket_id, $ticket_type_id, lorem_phrase(), lorem_chunk(), false, get_member());
-
-        set_mass_import_mode(true);
     }
 }

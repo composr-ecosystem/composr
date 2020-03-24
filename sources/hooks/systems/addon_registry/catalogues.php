@@ -751,7 +751,7 @@ class Hook_addon_registry_catalogues
         require_code('catalogues2');
         require_code('fields');
 
-        $catalogues = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['c_name', 'MIN(cf_order)', 'cf_type'], [], 'GROUP BY c_name');
+        $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues c' . $GLOBALS['SITE_DB']->singular_join('catalogue_fields', 'f', 'f.c_name=c.c_name', 'cf_order', 'MIN', 'JOIN'), ['c.c_name', 'f.cf_order', 'f.cf_type'], [], 'ORDER BY id');
         foreach ($catalogues as $catalogue) {
             if (($catalogue['cf_type'] == 'short_text') || ($catalogue['cf_type'] == 'short_trans')) { // Only if first field is 'short'
                 $is_tree = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_is_tree', ['c_name' => $catalogue['c_name']]);
@@ -782,10 +782,10 @@ class Hook_addon_registry_catalogues
                                     $map[$field['id']] = lorem_paragraph();
                                     break;
                                 case 'float':
-                                    $map[$field['id']] = 0.9;
+                                    $map[$field['id']] = float_to_raw_string(0.9);
                                     break;
                                 case 'integer':
-                                    $map[$field['id']] = 56;
+                                    $map[$field['id']] = strval(56);
                                     break;
                             }
 

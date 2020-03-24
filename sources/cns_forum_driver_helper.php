@@ -136,8 +136,10 @@ function _helper_make_post_forum_topic($this_ref, $forum_name, $topic_identifier
     $update_caching = false;
     $support_attachments = false;
     if (!get_mass_import_mode()) {
-        $update_caching = true;
         $support_attachments = true;
+    }
+    if ((!get_mass_import_mode()) || (get_page_name() != 'admin_import')) {
+        $update_caching = true;
     }
 
     if ($topic_id === null) {

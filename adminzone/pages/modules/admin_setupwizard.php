@@ -90,7 +90,7 @@ class Module_admin_setupwizard
             $step = 1;
         }
 
-        if ($type != 'browse') {
+        if (!in_array($type, ['browse', 'install_test_content', 'uninstall_test_content'])) {
             //breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('START')]]);
 
             $step = min(10, intval(substr($type, 4)));

@@ -106,13 +106,9 @@ function execute_task_background($task_row)
     task_log(null, 'Starting task ' . $hook);
     $mim_before = get_mass_import_mode();
     $result = call_user_func_array([$ob, 'run'], $args);
-    if (!$mim_before) {
-        set_mass_import_mode(false);
-    }
+    set_mass_import_mode($mim_before);
     task_log(null, 'Finished task ' . $hook);
     task_log_close();
-
-    set_mass_import_mode(false);
 
     if ($task_row['t_send_notification'] == 1) {
         $attachments = [];
@@ -244,10 +240,7 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
         task_log(null, 'Starting task ' . $hook);
         $mim_before = get_mass_import_mode();
         $result = call_user_func_array([$ob, 'run'], $args);
-        if (!$mim_before) {
-            set_mass_import_mode(false);
-        }
-        set_mass_import_mode(false);
+        set_mass_import_mode($mim_before);
         if ($result === false) {
             $result = [null, do_lang_tempcode('INTERNAL_ERROR')];
         }

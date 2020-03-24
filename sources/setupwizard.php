@@ -39,10 +39,10 @@ function install_test_content()
 {
     require_code('lorem');
 
+    uninstall_test_content();
+
     push_query_limiting(false);
     set_mass_import_mode(true);
-
-    uninstall_test_content();
 
     $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
     foreach ($hooks as $ob) {

@@ -1040,7 +1040,7 @@ abstract class Hook_CMA
         $supports_comcode = array_key_exists('title_field_supports_comcode', $info) ? $info['title_field_supports_comcode'] : false;
         if (($resource_fs_style) && (array_key_exists('title_field__resource_fs', $info))) {
             $title_field = $info['title_field__resource_fs'];
-            $title_field_dereference = $info['title_field_dereference__resource_fs'];
+            $dereference = $info['title_field_dereference__resource_fs'];
         }
 
         if ($title_field === null) {
