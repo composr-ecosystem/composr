@@ -406,6 +406,7 @@ function do_work()
             'v_voter_id' => 2,
             'v_voter_ip' => $ip,
             'v_vote_for' => $cast,
+            'v_vote_time' => time(),
         ]);
     }
     echo 'done polls stuff' . "\n";
@@ -456,6 +457,7 @@ function do_work()
             'reason_param_a' => '',
             'reason_param_b' => '',
             'percentage_score' => 100,
+            'silent_to_staff_log' => 0,
         ]);
     }
     // logged hits in one day

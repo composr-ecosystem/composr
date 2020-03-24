@@ -274,6 +274,7 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
                 'notes' => '',
                 'nc_owner' => $submitter,
             ];
+            require_lang('news');
             $map += insert_lang('nc_title', do_lang('MEMBER_CATEGORY', $GLOBALS['FORUM_DRIVER']->get_username($submitter, true)), 2);
 
             $main_news_category_id = $GLOBALS['SITE_DB']->query_insert('news_categories', $map, true);
@@ -326,6 +327,7 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
                     'notes' => '',
                     'nc_owner' => $submitter,
                 ];
+                require_lang('news');
                 $map += insert_lang('nc_title', do_lang('MEMBER_CATEGORY', $GLOBALS['FORUM_DRIVER']->get_username($submitter, true)), 2);
                 $news_category_id = $GLOBALS['SITE_DB']->query_insert('news_categories', $map, true);
 
