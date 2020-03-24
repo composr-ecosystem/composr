@@ -113,6 +113,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        STOCK_DEFAULT_BANNER_FALLBACK
+        STOCK_DEFAULT_BANNER
         HTML
         EFFECT
         BILLING
