@@ -262,6 +262,8 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             $hidden->attach(form_input_hidden('type', $type));
         }
 
+        require_lang('cns_autofill');
+
         $possible_autofill_types = [
             'autocomplete-disabled',
             'name',

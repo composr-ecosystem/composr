@@ -328,6 +328,8 @@ class Hook_addon_registry_core_cns
             'lang/EN/cns_ranks.ini',
             'lang/EN/cns_special_cpf.ini',
             'lang/EN/cns_components.ini',
+            'lang/EN/cns_mailinglists.ini',
+            'lang/EN/cns_autofill.ini',
             'lang/EN/cns_config.ini',
             'sources/forum/cns.php',
             'sources/cns_forum_driver_helper.php',

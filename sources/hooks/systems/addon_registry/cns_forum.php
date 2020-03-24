@@ -1913,6 +1913,7 @@ class Hook_addon_registry_cns_forum
     public function tpl_preview__cns_post_from_mailing_list()
     {
         require_lang('cns');
+        require_lang('cns_mailinglists');
 
         return [
             lorem_globalise(do_lorem_template('CNS_POST_FROM_MAILING_LIST', [

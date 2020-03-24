@@ -204,6 +204,8 @@ function notifications_ui($member_id_of)
     $mailing_list_style = null;
     $mlsn_description = new Tempcode();
     if (get_forum_type() == 'cns') {
+        require_lang('cns_mailinglists');
+
         $auto_monitor_contrib_content = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_auto_monitor_contrib_content') == 1);
 
         if (addon_installed('cns_forum')) {

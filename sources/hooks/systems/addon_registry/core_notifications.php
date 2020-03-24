@@ -391,6 +391,7 @@ class Hook_addon_registry_core_notifications
     public function tpl_preview__notifications_regular()
     {
         require_css('notifications');
+        require_lang('cns_mailinglists');
 
         $notification_types = [];
         $notification_types[] = [
