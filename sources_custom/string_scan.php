@@ -4694,8 +4694,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_MENUS
         DOC_MERGE_MEMBERS
         DOC_MULTI_MODERATIONS
-        DOC_NETLINK
-        DOC_NETLINK_1
         DOC_NEWS
         DOC_NEWSLETTER
         DOC_NOTIFICATIONS
@@ -5533,7 +5531,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         IMPORT_WORDPRESS_DONE
         IMPORT_WORDPRESS_USERS
         IMPROPERLY_FILLED_IN_BANNERS
-        IMPROPERLY_FILLED_IN_THUMBNAIL
         IMPROPERLY_FILLED_IN_UPLOAD
         IMPROPERLY_FILLED_IN_UPLOAD_BANNERS
         INBUILT_CPF_LANG_STRING

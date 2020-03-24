@@ -122,6 +122,7 @@ class _lang_no_unused_test_set extends cms_test_case
             'HEALTH_CHECK_SUBJECT_',
             'RECAPTCHA_ERROR_',
             'AUTOFILL_TYPE_DESCRIPTION_',
+            'DEFAULT_SLIDE',
         ];
         $_skip_prefixes = '#^(' . implode('|', $skip_prefixes) . ')#';
 

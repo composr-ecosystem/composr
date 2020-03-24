@@ -132,7 +132,7 @@ class Hook_cron_newsletter_drip_send
                     }
                 }
 
-                $success = dispatch_mail(
+                $mail_ob = dispatch_mail(
                     $subject,
                     $newsletter_message_substituted,
                     [$mail['d_to_email']],
@@ -159,7 +159,7 @@ class Hook_cron_newsletter_drip_send
                     ]
                 );
 
-                if ($success) {
+                if ($mail_ob->worked) {
                     $sent[] = $mail['id'];
                 }
             }

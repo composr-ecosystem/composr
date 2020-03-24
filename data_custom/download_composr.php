@@ -52,7 +52,6 @@ if ($myrow === null) {
 $id = $myrow['d_id'];
 
 $keep = symbol_tempcode('KEEP');
-$url = find_script('dload', false, 1) . '?id=' . strval($id) . $keep->evaluate();
+$url = find_script('dload') . '?id=' . strval($id) . $keep->evaluate();
 
 header('Location: ' . $url);
-

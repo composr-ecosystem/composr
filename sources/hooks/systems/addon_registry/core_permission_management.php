@@ -342,8 +342,10 @@ class Hook_addon_registry_core_permission_management
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function administrative__content_access_screen()
+    public function tpl_preview__administrative__content_access_screen()
     {
+        require_lang('permissions');
+
         $zones = [];
         $pages = [];
         $pages[] = [
@@ -379,6 +381,7 @@ class Hook_addon_registry_core_permission_management
             'DEPTH' => '0',
             'ITEM_PRIVILEGES' => $item_privileges,
             'SAVE_ID' => lorem_word() . ':' . lorem_word() . ':' . lorem_word(),
+            'HAS_ACCESS' => true,
         ];
         $items[] = [
             'ITEM_LABEL' => lorem_phrase(),
@@ -393,16 +396,14 @@ class Hook_addon_registry_core_permission_management
             'SAVE_ID' => lorem_word() . ':' . lorem_word(),
         ];
 
-        $out = do_lorem_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
-            'TITLE' => lorem_title(),
-            'ZONES' => $zones,
-            'MODULES' => $modules,
-            'URL' => placeholder_url(),
-            'COLOR' => 'FFFFFF',
-        ]);
-
         return [
-            lorem_globalise($out, null, '', true)
+            lorem_globalise(do_lorem_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
+                'TITLE' => lorem_title(),
+                'ZONES' => $zones,
+                'MODULES' => $modules,
+                'URL' => placeholder_url(),
+                'COLOR' => 'FFFFFF',
+            ]), null, '', true)
         ];
     }
 }

@@ -564,7 +564,7 @@ class Module_admin_cns_forums extends Standard_crud_module
                         $edit_url = config_option_url($hook);
                         $message = do_lang_tempcode(
                             'CANNOT_DELETE_FORUM_OPTION',
-                            escape_html($edit_url),
+                            escape_html_tempcode($edit_url),
                             escape_html(do_lang_tempcode($details['human_name']))
                         );
                         attach_message($message, 'notice');

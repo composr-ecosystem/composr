@@ -1,6 +1,9 @@
 [title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Advanced techniques for multi-site-networks[/title]
 
-{!menus:DOC_NETLINK}
+The linking of different installations, linked via a forum, into a 'multi-site-network' (an M.S.N.) is a {$IS_MAINTAINED,msn,feature in the software}. This is an important feature for networks of websites which share a common community, but are segmented, for reasons such as:
+ - Division of staff, either on a hierarchical basis or a basis of co-operation by a loose-knit alliance of websites
+ - Strong division of content, perhaps for sub-branding or clarity
+ - A balance between autonomy and co-operation between websites that wish to share a visitor-base
 
 [contents]decimal,lower-alpha[/contents]
 
@@ -372,4 +375,4 @@ Composr does not contain a way for individual sites to be set up automatically o
 
  - [page="_SEARCH:tut_subcom"]Tools for subsites and subcommunities[/page]
 
-{$SET,tutorial_tags,msn,Structure and navigation,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,You can link multiple installations, via a forum, into a 'multi-site-network'. Read more about it here.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Structure and navigation,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,You can link multiple installations, via a forum, into a 'multi-site-network'. Read more about it here.}[block]main_tutorial_rating[/block]

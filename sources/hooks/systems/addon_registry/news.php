@@ -194,8 +194,6 @@ class Hook_addon_registry_news
             'themes/default/templates/BLOCK_MAIN_NEWS_GRID_ITEM.tpl',
             'themes/default/templates/BLOCK_MAIN_NEWS_SLIDER.tpl',
             'themes/default/templates/BLOCK_MAIN_NEWS_SLIDER_SLIDE.tpl',
-            'sources/blocks/bottom_latest_news.php',
-            'themes/default/templates/BLOCK_BOTTOM_LATEST_NEWS.tpl',
         ];
     }
 
@@ -220,7 +218,6 @@ class Hook_addon_registry_news
             'templates/NEWS_BOX.tpl' => 'block_main_news',
             'templates/CNS_MEMBER_PROFILE_BLOG.tpl' => 'cns_member_profile_blog',
             'templates/BLOCK_MAIN_IMAGE_FADER_NEWS.tpl' => 'block_main_image_fader_news',
-            'templates/BLOCK_BOTTOM_LATEST_NEWS.tpl' => 'block_bottom_latest_news',
             'templates/BLOCK_MAIN_NEWS_GRID.tpl' => 'block_main_news_grid',
             'templates/BLOCK_MAIN_NEWS_GRID_ITEM.tpl' => 'block_main_news_grid',
             'templates/BLOCK_MAIN_NEWS_SLIDER.tpl' => 'block_main_news_grid',
@@ -607,37 +604,6 @@ class Hook_addon_registry_news
                 'BLOCK_ID' => lorem_word(),
                 'BLOG' => true,
                 'POSTS' => $contents_arr,
-            ]), null, '', true)
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__block_bottom_latest_news()
-    {
-        require_lang('news');
-
-        $news_items = [];
-        foreach (placeholder_array() as $k => $v) {
-            $news_items[] = [
-                'DATE' => placeholder_date(),
-                '_DATE' => placeholder_date_raw(),
-                'FULL_URL' => placeholder_url(),
-                'NEWS_TITLE' => lorem_phrase(),
-                'IMG_URL' => placeholder_image_url(),
-            ];
-        }
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_BOTTOM_LATEST_NEWS', [
-                'TITLE' => lorem_title(),
-                'NEWS_ITEMS' => $news_items,
-                'BLOCK_ID' => placeholder_id(),
-                'BLOG' => false,
             ]), null, '', true)
         ];
     }

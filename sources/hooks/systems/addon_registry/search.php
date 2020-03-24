@@ -147,8 +147,6 @@ class Hook_addon_registry_search
             'sources/hooks/systems/config/maximum_autocomplete_suggestions.php',
             'sources/hooks/systems/config/minimum_autocomplete_past_search.php',
             'sources/hooks/systems/config/block_top_search.php',
-            'sources/blocks/bottom_tag_cloud.php',
-            'themes/default/templates/BLOCK_BOTTOM_TAG_CLOUD.tpl',
             'themes/default/javascript/search.js',
 
             'sources/hooks/modules/admin_stats/searches.php',
@@ -184,7 +182,6 @@ class Hook_addon_registry_search
             'templates/SEARCH_FOR_SEARCH_DOMAIN_OPTION_DATE.tpl' => 'search_form_screen',
             'templates/SEARCH_FOR_SEARCH_DOMAIN_OPTION_JUST_DATE.tpl' => 'search_form_screen',
             'templates/SEARCH_FOR_SEARCH_DOMAIN_OPTION_JUST_TIME.tpl' => 'search_form_screen',
-            'templates/BLOCK_BOTTOM_TAG_CLOUD.tpl' => 'block_bottom_tag_cloud',
         ];
     }
 
@@ -323,33 +320,6 @@ class Hook_addon_registry_search
             do_lorem_template('OPENSEARCH', [
                 'DESCRIPTION' => lorem_paragraph(),
             ], null, false, null, '.xml', 'xml')
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__block_bottom_tag_cloud()
-    {
-        $tpl_tags = [];
-
-        foreach (placeholder_array() as $v) {
-            $tpl_tags[] = [
-                'TAG' => lorem_word(),
-                'URL' => placeholder_url(),
-            ];
-        }
-
-        return [
-            do_lorem_template('BLOCK_BOTTOM_TAG_CLOUD', [
-                'BLOCK_ID' => lorem_word(),
-                'TITLE' => lorem_title(),
-                'TAGS' => $tpl_tags,
-            ])
         ];
     }
 

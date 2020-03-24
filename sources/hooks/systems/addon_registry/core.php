@@ -1543,8 +1543,6 @@ class Hook_addon_registry_core
             'themes/admin/templates_cached/.htaccess',
             'themes/admin/templates_cached/EN/index.html',
             'themes/admin/templates_cached/index.html',
-            'sources/blocks/bottom_about_us.php',
-            'themes/default/templates/BLOCK_BOTTOM_ABOUT_US.tpl',
 
             // These are not used by default, as have text links - but may be useful for some
             'themes/default/images/icons/tool_buttons/version_desktop.svg',
@@ -1614,7 +1612,6 @@ class Hook_addon_registry_core
             'templates/GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN.tpl' => 'group_member_timeout_manage_screen',
             'templates/SPONSORS_SCREEN.tpl' => 'sponsors_screen',
             'templates/TRANSLATION_LINKS.tpl' => 'translation_links',
-            'templates/BLOCK_BOTTOM_ABOUT_US.tpl' => 'block_bottom_about_us',
         ];
     }
 
@@ -2636,26 +2633,6 @@ class Hook_addon_registry_core
             do_lorem_template('TRANSLATION_LINKS', [
                 'ALT_LANGS' => ['FR', 'DE'],
             ])
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declaritive.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__block_bottom_about_us()
-    {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_BOTTOM_ABOUT_US', [
-                'SITE_DESCRIPTION' => lorem_paragraph(),
-                'FAEBOOK_URL'      => placeholder_url(),
-                'TWITTER_URL'      => placeholder_url(),
-                'INSTAGRAM_URL'    => placeholder_url(),
-                'YOUTUBE_URL'      => placeholder_url(),
-            ]), null, '', true)
         ];
     }
 }

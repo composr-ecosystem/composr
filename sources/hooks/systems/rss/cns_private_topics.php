@@ -86,9 +86,7 @@ class Hook_rss_cns_private_topics
             $category = do_lang('NA');
             $category_raw = '';
 
-            $_view_url = build_url(['page' => 'topicview', 'id' => $row['t_id']], get_module_zone('forumview'));
-            $view_url = $_view_url->evaluate();
-            $view_url .= '#post_' . $id;
+            $view_url = build_url(['page' => 'topicview', 'id' => $row['t_id']], get_module_zone('forumview'), [], false, false, false, 'post_' . $id);
 
             if ($prefix == 'RSS_') {
                 $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => '448f736ecf0154960177c131dde76125', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');

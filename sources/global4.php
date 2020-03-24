@@ -470,7 +470,7 @@ function member_personal_links_and_details($member_id)
 
     if (get_forum_type() == 'cns') {
         require_code('cns_notifications');
-        list(, $num_unread_pps) = generate_notifications($member_id);
+        $num_unread_pps = generate_notifications_count($member_id);
     } else {
         $num_unread_pps = 0;
     }

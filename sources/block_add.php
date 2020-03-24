@@ -343,7 +343,7 @@ function block_helper_script()
                         continue 2;
                     }
                 }
-                
+
                 if ($parameter == 'zone') { // zone list
                     $list = new Tempcode();
                     $list->attach(form_input_list_entry('_SEARCH', ($default == '')));

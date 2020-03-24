@@ -607,7 +607,7 @@ function has_caching_for($type, $name = null)
  */
 function decache_private_topics($member_id = null)
 {
-    delete_cache_entry(['side_cns_private_topics', '_new_pp', '_get_pts'], null, $member_id);
+    delete_cache_entry(['side_cns_private_topics', '_new_pts', '_get_pts'], null, $member_id);
 }
 
 /**

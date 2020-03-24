@@ -25,7 +25,7 @@
 				</tr>
 			</thead>
 
-			<body>
+			<tbody>
 				{+START,LOOP,ZONES}
 					<tr>
 						<td>
@@ -87,7 +87,7 @@
 				</tr>
 			</thead>
 
-			<body>
+			<tbody>
 				<tr>
 					<td>
 						{!MODULE}

@@ -117,7 +117,7 @@ function cns_may_access_topic($topic_id, $member_id = null, $topic_info = null, 
     }
 
     if ($topic_info === null) {
-        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'), array('id' => $topic_id), '', 1);
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => $topic_id], '', 1);
 
         if (!array_key_exists(0, $topic_rows)) {
             return false;
@@ -208,7 +208,7 @@ function cns_may_post_topic($forum_id, $member_id = null)
         return true;
     }
 
-    if (!has_privilege($member_id, 'submit_midrange_content', 'topics', array('forums', $forum_id))) {
+    if (!has_privilege($member_id, 'submit_midrange_content', 'topics', ['forums', $forum_id])) {
         return false;
     }
 

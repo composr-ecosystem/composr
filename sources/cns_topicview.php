@@ -51,9 +51,8 @@ function find_post_id_url($post_id)
     if ($test_threaded !== null) {
         $map['threaded'] = $test_threaded;
     }
-    $_redirect = build_url($map, '_SELF', [], true);
+    $_redirect = build_url($map, '_SELF', [], true, false, false, 'post_' . strval($post_id));
     $redirect = $_redirect->evaluate();
-    $redirect .= '#post_' . strval($post_id);
 
     return $redirect;
 }
@@ -104,13 +103,13 @@ function find_first_unread_url($id)
             $map[$key] = $val;
         }
     }
-    $_redirect = build_url($map, '_SELF', [], true);
-    $redirect = $_redirect->evaluate();
     if ($first_unread_id !== null) {
-        $redirect .= '#post-' . strval($first_unread_id);
+        $hash = 'post-' . strval($first_unread_id);
     } else {
-        $redirect .= '#first-unread';
+        $hash = 'first-unread';
     }
+    $_redirect = build_url($map, '_SELF', [], true, false, false, $hash);
+    $redirect = $_redirect->evaluate();
 
     return $redirect;
 }

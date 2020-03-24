@@ -152,7 +152,10 @@ function dispatch_mail($subject_line, $message_raw, $to_emails = null, $to_names
         }
     }
 
-    $dispatcher->dispatch($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+    list($worked, $error) = $dispatcher->dispatch($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+
+    $dispatcher->worked = $worked;
+    $dispatcher->error = $error;
 
     return $dispatcher;
 }

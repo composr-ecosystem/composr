@@ -209,7 +209,7 @@ There are a number of parameters you can pass to [tt]cron_bridge.php[/tt], eithe
   - [tt]query_mode[/tt] -- Whether to just spit out a Cron configuration command instead of running the scheduler
   - [tt]force[/tt] -- Whether to ignore scheduler item locking (for developers only); can be useful for testing and also clearing out stale locks
  - Loop configuration:
-  - [tt]loop[/tt] -- Whether to not exit and just keep looping, for maximum processing speed (shared web-hosts may not like this)
+  - [tt]loop[/tt] -- Whether to not exit and just keep looping, for maximum processing speed (shared webhosts may not like this)
   - [tt]loop_wait_seconds[/tt] -- The number of seconds to wait between each loop cycles, to avoid constantly querying the database (default 3 seconds)
   - [tt]loop_max_seconds[/tt] -- The number of seconds before finishing the loop, in case memory usage keeps creeping up (default 3595 seconds, which is 5 seconds less than an hour, intended to align with the next Cron call)
 

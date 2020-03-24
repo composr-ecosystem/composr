@@ -41,7 +41,7 @@ if (!function_exists('do_release')) {
         $num_downloads = $myrow['num_downloads'];
 
         $keep = symbol_tempcode('KEEP');
-        $url = find_script('dload', 1) . '?id=' . strval($id) . $keep->evaluate();
+        $url = find_script('dload') . '?id=' . strval($id) . $keep->evaluate();
         if (($version_pretty == $latest_version_pretty) && ($version_must_be_newer_than === null)) {
             $url = find_script('download_composr') . '?type=' . urlencode($type_wanted) . $keep->evaluate();
         }
@@ -62,7 +62,6 @@ if (!function_exists('do_release')) {
 
         $ret = [];
         $ret[$prefix . 'VERSION'] = $version;
-        $ret[$prefix . 'NAME'] = $name_suffix;
         $ret[$prefix . 'FILESIZE'] = $filesize;
         $ret[$prefix . 'NUM_DOWNLOADS'] = integer_format($num_downloads);
         $ret[$prefix . 'URL'] = $url;

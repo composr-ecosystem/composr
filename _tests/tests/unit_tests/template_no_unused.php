@@ -35,6 +35,9 @@ class template_no_unused_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'BLOCK_MAIN_NEWS_GRID',
+            'BLOCK_MAIN_NEWS_GRID_ITEM',
+            'BLOCK_MAIN_NEWS',
             'MAIL_RAW',
             'BLOCK_MAIN_MEMBERS',
             'BLOCK_MAIN_MEMBERS_COMPLEX',

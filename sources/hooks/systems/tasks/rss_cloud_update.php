@@ -30,6 +30,10 @@ class Hook_task_rss_cloud_update
      */
     public function run()
     {
+        if (!addon_installed('news')) {
+            return null;
+        }
+
         // Send out on RSS cloud
         if (php_function_allowed('fsockopen')) {
             $start = 0;

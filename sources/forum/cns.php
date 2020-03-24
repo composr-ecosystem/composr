@@ -848,12 +848,11 @@ class Forum_driver_cns extends Forum_driver_base
 
         unset($forum);
 
-        $_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $id], get_module_zone('topicview'), [], false, false, !$tempcode_okay);
+        $_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $id], get_module_zone('topicview'), [], false, false, !$tempcode_okay, 'post_' . strval($id));
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
         $url = $_url->evaluate();
-        $url .= '#post_' . strval($id);
         if (get_option('forum_in_portal') == '0') {
             $url = str_replace(get_base_url(), get_forum_base_url(), $url);
         }

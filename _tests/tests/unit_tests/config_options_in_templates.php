@@ -38,6 +38,7 @@ class config_options_in_templates_test_set extends cms_test_case
                         'themes/default/templates/COMMENTS_POSTING_FORM_CAPTCHA.tpl',
                         'themes/default/templates/CATALOGUE_products_ENTRY_SCREEN.tpl',
                         'themes/default/templates/CATALOGUE_products_GRID_ENTRY_WRAP.tpl',
+                        'themes/default/templates/CATALOGUE_products_CATEGORY_SCREEN.tpl',
                         'themes/default/templates/ECOM_SHOPPING_CART_SCREEN.tpl',
                         'themes/default/javascript_custom/shoutr.js',
                     ])) {

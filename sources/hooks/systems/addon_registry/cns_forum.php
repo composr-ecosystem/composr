@@ -286,7 +286,6 @@ class Hook_addon_registry_cns_forum
             'sources/hooks/modules/admin_stats/cns_forum.php',
             'sources/blocks/main_bottom_bar.php',
             'sources/blocks/main_member_bar.php',
-            'sources/blocks/main_pt_notifications.php',
             'themes/default/templates/BLOCK_MAIN_MEMBER_BAR.tpl',
             'sources/cns_forumview.php',
             'sources/cns_forumview_pt.php',

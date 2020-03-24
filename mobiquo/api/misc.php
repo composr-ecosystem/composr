@@ -37,7 +37,7 @@ function get_real_url_func($raw_params)
             $url = static_evaluate_tempcode(build_url(['page' => 'topicview', 'type' => 'browse', 'id' => $id], get_module_zone('topicview'), [], false, false, true));
             break;
         case 'post':
-            $url = static_evaluate_tempcode(build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $id], get_module_zone('topicview'), [], false, false, true, '#post_' . strval($id)));
+            $url = static_evaluate_tempcode(build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $id], get_module_zone('topicview'), [], false, false, true, 'post_' . strval($id)));
             break;
         default:
             warn_exit('Unknown content type');

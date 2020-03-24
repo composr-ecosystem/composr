@@ -541,37 +541,6 @@ class Hook_addon_registry_galleries
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__gallery_image()
-    {
-        return [
-            lorem_globalise(do_lorem_template('GALLERY_IMAGE', [
-                'TITLE' => lorem_phrase(),
-                'VIEW_URL' => placeholder_url(),
-                'THUMB' => placeholder_image(),
-                'DESCRIPTION' => lorem_phrase(),
-                'ADD_DATE_RAW' => placeholder_date_raw(),
-                'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'VIEWS' => placeholder_number(),
-                'SUBMITTER' => placeholder_id(),
-                'ID' => placeholder_id(),
-                '_EDIT_URL' => placeholder_url(),
-                'MEDIA_TYPE' => 'image',
-                'FILE_SIZE' => lorem_word(),
-                'FULL_URL' => placeholder_url(),
-                'THUMB_URL' => placeholder_url(),
-                'CAT' => lorem_word(),
-                'COMMENT_COUNT' => true,
-            ]), null, '', true),
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
     public function tpl_preview__block_main_gallery_embed()
     {
         // Create the 'GALLERY_ENTRY_WRAP' template
@@ -1292,20 +1261,6 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_mosaic_mode_screen()
     {
-        $block = do_lorem_template('BLOCK_MAIN_GALLERY_MOSAIC', [
-            'BLOCK_ID' => placeholder_id(),
-            'BLOCK_PARAMS' => '',
-            'SLIDESHOW_URL' => null,
-            'PAGINATION' => placeholder_pagination(),
-            'START' => strval(0),
-            'MAX' => strval(10),
-            'START_PARAM' => placeholder_id() . '_start',
-            'MAX_PARAM' => placeholder_id() . '_max',
-            'EXTRA_GET_PARAMS' => null,
-            'TITLE' => lorem_phrase(),
-            'CAT' => lorem_word(),
-        ]);
-
         return [
             lorem_globalise(do_lorem_template('GALLERY_MOSAIC_MODE_SCREEN', [
                 '_TITLE' => lorem_phrase(),
@@ -1322,7 +1277,6 @@ class Hook_addon_registry_galleries
                 'IMAGE_URL' => placeholder_url(),
                 'VIDEO_URL' => placeholder_url(),
                 'MAY_DOWNLOAD' => true,
-                'ENTRIES' => $block,
                 'ACCEPT_IMAGES' => true,
                 'ACCEPT_VIDEOS' => true,
                 'VIEWS' => strval(123),

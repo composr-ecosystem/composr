@@ -119,7 +119,7 @@ function cns_may_post_in_topic($forum_id, $topic_id, $last_member_id = null, $cl
 
     // Extra checks for regular topics...
 
-    if (!has_privilege($member_id, 'submit_lowrange_content', 'topics', array('forums', $forum_id, 'topics', $topic_id))) {
+    if (!has_privilege($member_id, 'submit_lowrange_content', 'topics', ['forums', $forum_id, 'topics', $topic_id])) {
         return false;
     }
 

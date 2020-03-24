@@ -3942,7 +3942,7 @@ function ecv_FIND_SCRIPT($lang, $escaped, $param)
     }
 
     if ((!empty($param[0])) && (function_exists('find_script'))) {
-        $value = find_script($param[0], (!empty($param[1])) ? intval($param[1]) : 0);
+        $value = find_script($param[0]);
     } else { // Running from installer's compilation of JS, so let's assume it's a simple case
         $value = get_base_url() . '/data/' . $param[0] . '.php';
     }

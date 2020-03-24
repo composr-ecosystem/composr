@@ -199,7 +199,7 @@ class Hook_notification_cns_topic extends Hook_Notification
         }
 
         if (is_numeric($only_if_enabled_on__category)) { // Also merge in people monitoring forum
-            $forum_details = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => intval($only_if_enabled_on__category)]);
+            $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_forum_id', 't_validated', 't_cache_first_member_id'], ['id' => intval($only_if_enabled_on__category)]);
             $forum_id = $forum_details[0]['t_forum_id'];
 
             if ($forum_id === null) {

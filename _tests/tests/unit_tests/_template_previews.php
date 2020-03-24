@@ -197,6 +197,8 @@ class _template_previews_test_set extends cms_test_case
                         'templates/RED_ALERT.tpl',
                         'templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl',
                         'templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl',
+                        'templates/PERMISSIONS_CONTENT_ACCESS_LIST.tpl',
+                        'templates/PERMISSIONS_CONTENT_ACCESS_TICK.tpl',
                     ])) {
                         continue;
                     }

@@ -2450,9 +2450,8 @@ class Module_topics
                     if ($test_threaded !== null) {
                         $map['threaded'] = $test_threaded;
                     }
-                    $_url = build_url($map, get_module_zone('topicview'));
+                    $_url = build_url($map, get_module_zone('topicview'), [], false, false, false, 'first-unread');
                     $url = $_url->evaluate();
-                    $url .= '#first-unread';
                     $url = get_param_string('redirect', $url, INPUT_FILTER_URL_INTERNAL);
 
                     $info = [
@@ -2533,9 +2532,8 @@ class Module_topics
                 if ($test_threaded !== null) {
                     $map['threaded'] = $test_threaded;
                 }
-                $_url = build_url($map, get_module_zone('topicview'));
+                $_url = build_url($map, get_module_zone('topicview'), [], false, false, false, 'post_' . strval($post_id));
                 $url = $_url->evaluate();
-                $url .= '#post_' . strval($post_id);
             }
         }
 

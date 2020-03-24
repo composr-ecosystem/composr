@@ -143,45 +143,6 @@ html.is-touch-enabled .cns-information-bar-outer html.is-touch-enabled .toggleab
 	font-weight: bold;
 }
 
-.cns-notification {
-	margin: 1em;
-	padding: 0 0.2em;
-	font-size: 0.95em;
-	border: 0px solid !important;
-	border-radius: 15px !important;
-}
-
-.cns-notification .associated-links-block-group {
-	margin-top: 0.5em !important;
-}
-
-.cns-notification strong {
-	white-space: nowrap;
-}
-
-.cns-notification-intro-line {
-	font-size: 1.05em;
-	cursor: pointer;
-}
-.cns-notification-type {
-}
-.cns-notification-type-title {
-	font-weight: bold;
-}
-.cns-notification-by {
-	font-style: italic;
-}
-.cns-notification-time {
-	font-style: italic;
-}
-
-.cns-notification-post {
-	margin: 0.5em 1em 0 1em;
-	padding: 2em;
-	border: 1px solid {$GET,pale_border};
-	background-color: {$GET,area_background};
-}
-
 .cns-search-box {
 	margin-bottom: 1em;
 }
