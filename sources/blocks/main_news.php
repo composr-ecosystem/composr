@@ -576,7 +576,7 @@ PHP;
         $seo_bits = (get_value('disable_tags') === '1') ? ['', ''] : seo_meta_get_for('news', strval($id));
 
         // Render
-        $map = [
+        $map2 = [
             'GIVE_CONTEXT' => false,
             'TAGS' => get_loaded_tags('news', explode(',', $seo_bits[0])),
             'ID' => strval($id),
@@ -598,10 +598,10 @@ PHP;
             'FULL_URL' => $full_url,
         ];
         if (($allow_comments_shared) && ($myrow['allow_comments'] >= 1)) {
-            $map['COMMENT_COUNT'] = '1';
+            $map2['COMMENT_COUNT'] = '1';
         }
 
-        return $map;
+        return $map2;
     }
 
     /**

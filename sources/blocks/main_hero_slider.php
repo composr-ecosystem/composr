@@ -38,7 +38,14 @@ class Block_main_hero_slider
         $info['version'] = 1;
         $info['locked'] = false;
         $info['parameters'] = [
-            'gallery_name', 'effect', 'fullscreen', 'show_indicators', 'show_scroll_down', 'interval', 'check_perms', 'blank_if_empty'
+            'gallery_name',
+            'effect',
+            'fullscreen',
+            'show_indicators',
+            'show_scroll_down',
+            'interval',
+            'check',
+            'blank_if_empty',
         ];
 
         return $info;
@@ -60,7 +67,7 @@ class Block_main_hero_slider
             !empty($map['show_indicators']),
             !empty($map['show_scroll_down']),
             isset($map['interval']) ? strval(intval($map['interval'])) : false,
-            isset($map['check_perms']) ? !empty($map['check_perms']) : true,
+            isset($map['check']) ? !empty($map['check']) : true,
             isset($map['gallery_name']) ? $map['gallery_name'] : '',
         ]
 PHP;
@@ -101,7 +108,7 @@ PHP;
 
         $interval = isset($map['interval']) ? strval(intval($map['interval'])) : false;
 
-        $check_perms = isset($map['check_perms']) ? !empty($map['check_perms']) : true;
+        $check_perms = isset($map['check']) ? !empty($map['check']) : true;
 
         // Check if the gallery exists
         $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $gallery_name]);

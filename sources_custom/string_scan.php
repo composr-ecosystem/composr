@@ -113,6 +113,186 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        HTML
+        EFFECT
+        BILLING
+        FULLSCREEN
+        MATCH_TYPE
+        CAROUSEL_MODE
+        MOSAIC_MODE
+        CYCLE_DURATION
+        ALL_MEMBERS
+        GRAPH_NOT_FOUND
+        GRID_MODE
+        HOMEPAGE_HERO_SLIDER
+        DESCRIPTION_SORTABLE
+        LAYOUT_MODE
+        ALLOW_TEMPLATE_SEARCH
+        ADD_BLOCK
+        HAVE_DEFAULT_HOMEPAGE_HERO_SLIDES
+        NOT_SUPPORTED_ON_DB
+        DESCRIPTION_ALLOW_TEMPLATE_SEARCH
+        DESCRIPTION_AUTOFILL_HINT
+        DESCRIPTION_AUTOFILL_TYPE
+        DESCRIPTION_CLOSED_CAPTIONS
+        DESCRIPTION_HAVE_DEFAULT_HOMEPAGE_HERO_SLIDES
+        DESCRIPTION_INCLUDE_IN_MAIN_SEARCH
+        DESCRIPTION_INCLUDE_ON_SITEMAP
+        DESCRIPTION_LAYOUT_MODE
+        DESCRIPTION_MATCH_TYPE
+        DESCRIPTION_REPLACE_WITH_GRAWLIXES
+        CONFIG_OPTION_galleries_sort_order_VALUE_name__ASC
+        BLOCK_main_gallery_mosaic_PARAM_guid
+        INCLUDE_IN_MAIN_SEARCH
+        INCLUDE_ON_SITEMAP
+        NEW_TASK_RUNNING_LOGGING
+        REPLACED_WITH_GRAWLIXES
+        REPLACE_WITH_GRAWLIXES
+        SLIDE_TRANSITION_EFFECT
+        SQL_DUMP_SAVED_TO
+        STICKY_HEADER
+        STRETCH_SMALL_MEDIA
+        THEME_HEADER_TYPE
+        WORDFILTER_MATCH_TYPE_full
+        WORDFILTER_MATCH_TYPE_prefix
+        WORDFILTER_MATCH_TYPE_substring
+        AUTOFILL_HINT
+        AUTOFILL_TYPE
+        AUTOFILL_TYPE_DESCRIPTION_additional_name
+        AUTOFILL_TYPE_DESCRIPTION_address_level1
+        AUTOFILL_TYPE_DESCRIPTION_address_level2
+        AUTOFILL_TYPE_DESCRIPTION_address_level3
+        AUTOFILL_TYPE_DESCRIPTION_address_level4
+        AUTOFILL_TYPE_DESCRIPTION_autocomplete_disabled
+        AUTOFILL_TYPE_DESCRIPTION_bday
+        AUTOFILL_TYPE_DESCRIPTION_cc_additional_name
+        AUTOFILL_TYPE_DESCRIPTION_cc_csc
+        AUTOFILL_TYPE_DESCRIPTION_cc_exp
+        AUTOFILL_TYPE_DESCRIPTION_cc_exp_month
+        AUTOFILL_TYPE_DESCRIPTION_cc_exp_year
+        AUTOFILL_TYPE_DESCRIPTION_cc_family_name
+        AUTOFILL_TYPE_DESCRIPTION_cc_given_name
+        AUTOFILL_TYPE_DESCRIPTION_cc_name
+        AUTOFILL_TYPE_DESCRIPTION_cc_number
+        AUTOFILL_TYPE_DESCRIPTION_cc_type
+        AUTOFILL_TYPE_DESCRIPTION_country
+        AUTOFILL_TYPE_DESCRIPTION_country_name
+        AUTOFILL_TYPE_DESCRIPTION_email
+        AUTOFILL_TYPE_DESCRIPTION_family_name
+        AUTOFILL_TYPE_DESCRIPTION_given_name
+        AUTOFILL_TYPE_DESCRIPTION_honorific_prefix
+        AUTOFILL_TYPE_DESCRIPTION_honorific_suffix
+        AUTOFILL_TYPE_DESCRIPTION_impp
+        AUTOFILL_TYPE_DESCRIPTION_language
+        AUTOFILL_TYPE_DESCRIPTION_name
+        AUTOFILL_TYPE_DESCRIPTION_nickname
+        AUTOFILL_TYPE_DESCRIPTION_organization
+        AUTOFILL_TYPE_DESCRIPTION_organization_title
+        AUTOFILL_TYPE_DESCRIPTION_postal_code
+        AUTOFILL_TYPE_DESCRIPTION_sex
+        AUTOFILL_TYPE_DESCRIPTION_street_address
+        AUTOFILL_TYPE_DESCRIPTION_tel
+        AUTOFILL_TYPE_DESCRIPTION_tel_national
+        AUTOFILL_TYPE_DESCRIPTION_transaction_currency
+        AUTOFILL_TYPE_DESCRIPTION_url
+        AUTOFILL_TYPE_DESCRIPTION_username
+        BLOCK_TRANS_NAME_main_gallery_mosaic
+        BLOCK_TRANS_NAME_main_hero_slider
+        BLOCK_main_content_PARAM_days
+        BLOCK_main_content_PARAM_days_TITLE
+        BLOCK_main_content_PARAM_filter
+        BLOCK_main_content_PARAM_filter_TITLE
+        BLOCK_main_gallery_embed_PARAM_show_sorting
+        BLOCK_main_gallery_embed_PARAM_show_sorting_TITLE
+        BLOCK_main_gallery_mosaic_DESCRIPTION
+        BLOCK_main_gallery_mosaic_PARAM_as_guest
+        BLOCK_main_gallery_mosaic_PARAM_as_guest_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_check
+        BLOCK_main_gallery_mosaic_PARAM_check_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_days
+        BLOCK_main_gallery_mosaic_PARAM_days_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_filter
+        BLOCK_main_gallery_mosaic_PARAM_filter_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_filtercode
+        BLOCK_main_gallery_mosaic_PARAM_guid_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_max
+        BLOCK_main_gallery_mosaic_PARAM_max_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_pagination
+        BLOCK_main_gallery_mosaic_PARAM_pagination_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_param
+        BLOCK_main_gallery_mosaic_PARAM_param_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_render_if_empty
+        BLOCK_main_gallery_mosaic_PARAM_render_if_empty_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_root
+        BLOCK_main_gallery_mosaic_PARAM_root_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_select
+        BLOCK_main_gallery_mosaic_PARAM_select_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_show_sorting
+        BLOCK_main_gallery_mosaic_PARAM_show_sorting_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_sort
+        BLOCK_main_gallery_mosaic_PARAM_sort_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_start
+        BLOCK_main_gallery_mosaic_PARAM_start_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_title
+        BLOCK_main_gallery_mosaic_PARAM_title_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_video_filter
+        BLOCK_main_gallery_mosaic_PARAM_video_filter_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_video_select
+        BLOCK_main_gallery_mosaic_PARAM_video_select_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_zone
+        BLOCK_main_gallery_mosaic_PARAM_zone_TITLE
+        BLOCK_main_gallery_mosaic_USE
+        BLOCK_main_hero_slider_DESCRIPTION
+        BLOCK_main_hero_slider_PARAM_blank_if_empty
+        BLOCK_main_hero_slider_PARAM_blank_if_empty_TITLE
+        BLOCK_main_hero_slider_PARAM_check
+        BLOCK_main_hero_slider_PARAM_check_TITLE
+        BLOCK_main_hero_slider_PARAM_effect
+        BLOCK_main_hero_slider_PARAM_effect_TITLE
+        BLOCK_main_hero_slider_PARAM_fullscreen
+        BLOCK_main_hero_slider_PARAM_fullscreen_TITLE
+        BLOCK_main_hero_slider_PARAM_gallery_name
+        BLOCK_main_hero_slider_PARAM_gallery_name_TITLE
+        BLOCK_main_hero_slider_PARAM_interval
+        BLOCK_main_hero_slider_PARAM_interval_TITLE
+        BLOCK_main_hero_slider_PARAM_show_indicators
+        BLOCK_main_hero_slider_PARAM_show_indicators_TITLE
+        BLOCK_main_hero_slider_PARAM_show_scroll_down
+        BLOCK_main_hero_slider_PARAM_show_scroll_down_TITLE
+        BLOCK_main_hero_slider_USE
+        BLOCK_main_multi_content_PARAM_render_mode
+        BLOCK_main_multi_content_PARAM_render_mode_TITLE
+        BLOCK_main_news_PARAM_display_briefs
+        BLOCK_main_news_PARAM_display_briefs_TITLE
+        BLOCK_main_news_PARAM_display_slides
+        BLOCK_main_news_PARAM_display_slides_TITLE
+        BLOCK_main_news_PARAM_display_summaries
+        BLOCK_main_news_PARAM_display_summaries_TITLE
+        BLOCK_main_news_PARAM_news_articles_per_slide
+        BLOCK_main_news_PARAM_news_articles_per_slide_TITLE
+        BLOCK_main_news_PARAM_render_mode
+        BLOCK_main_news_PARAM_render_mode_TITLE
+        BLOCK_main_news_PARAM_slider_interval
+        BLOCK_main_news_PARAM_slider_interval_TITLE
+        CONFIG_OPTION_galleries_sort_order_VALUE_recent__ASC
+        CONFIG_OPTION_galleries_sort_order_VALUE_recent__DESC
+        CONFIG_OPTION_galleries_sort_order_VALUE_title__ASC
+        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_recent__ASC
+        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_recent__DESC
+        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_title__ASC
+        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_title__DESC
+        CONFIG_OPTION_homepage_slider_cycle_duration
+        CONFIG_OPTION_homepage_slider_effect
+        CONFIG_OPTION_homepage_slider_effect_VALUE_fade
+        CONFIG_OPTION_homepage_slider_effect_VALUE_slide
+        CONFIG_OPTION_homepage_slider_enabled
+        CONFIG_OPTION_homepage_slider_fullscreen
+        CONFIG_OPTION_homepage_slider_gallery
+        CONFIG_OPTION_sticky_header
+        CONFIG_OPTION_theme_header_type
+        CONFIG_OPTION_theme_header_type_VALUE_classic
+        CONFIG_OPTION_theme_header_type_VALUE_modern
+        CONFIG_OPTION_theme_header_type_VALUE_side
         RSS_CLOUD_UPDATE
         DESCRIPTION_OVERWRITE_ERROR
         ACTION_OVERWRITE
@@ -531,12 +711,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CATEGORIES_SORT_ORDER
         GALLERY_DEFAULT_SORT_ORDER
         DESCRIPTION_CATEGORIES_SORT_ORDER
-        CONFIG_OPTION_galleries_sort_order_VALUE_add_date__ASC
-        CONFIG_OPTION_galleries_sort_order_VALUE_add_date__DESC
         CONFIG_OPTION_galleries_sort_order_VALUE_average_rating__DESC
         CONFIG_OPTION_galleries_sort_order_VALUE_compound_rating__DESC
-        CONFIG_OPTION_galleries_sort_order_VALUE_fullname__ASC
-        CONFIG_OPTION_galleries_sort_order_VALUE_name__ASC
         CONFIG_GROUP_DESCRIP_BLOCKS_AT_TOP
         CONFIG_OPTION_block_top_login
         CONFIG_OPTION_block_top_notifications
@@ -1891,18 +2067,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_news_PARAM_attach_to_url_filter_TITLE
         BLOCK_main_news_PARAM_blogs
         BLOCK_main_news_PARAM_blogs_TITLE
-        BLOCK_main_news_PARAM_fallback_archive
-        BLOCK_main_news_PARAM_fallback_archive_TITLE
-        BLOCK_main_news_PARAM_fallback_full
-        BLOCK_main_news_PARAM_fallback_full_TITLE
         BLOCK_main_news_PARAM_filter
         BLOCK_main_news_PARAM_filter_TITLE
         BLOCK_main_news_PARAM_historic
         BLOCK_main_news_PARAM_historic_TITLE
         BLOCK_main_news_PARAM_member_based
         BLOCK_main_news_PARAM_member_based_TITLE
-        BLOCK_main_news_PARAM_multiplier
-        BLOCK_main_news_PARAM_multiplier_TITLE
         BLOCK_main_news_PARAM_no_links
         BLOCK_main_news_PARAM_no_links_TITLE
         BLOCK_main_news_PARAM_optimise
@@ -2506,7 +2676,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CLONE
         CLOSED_SITE
         CLOSED_SITE_OPTION
-        CLOSED_SITE_SCREEN
         CLOSE_TIME
         CLOSING_BALANCE
         CLUB_FORUM_PARENT_FORUM
@@ -3252,8 +3421,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_forw_url
         CONFIG_OPTION_fractional_editing
         CONFIG_OPTION_gallery_media_default_sort_order
-        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_add_date__ASC
-        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_add_date__DESC
         CONFIG_OPTION_gallery_media_default_sort_order_VALUE_average_rating__DESC
         CONFIG_OPTION_gallery_media_default_sort_order_VALUE_compound_rating__DESC
         CONFIG_OPTION_gallery_media_default_sort_order_VALUE_fixed_random__ASC
@@ -4281,7 +4448,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_FIX_PAST_RECURRENCES
         DESCRIPTION_FLOOD_CONTROL_ACCESS_SECS
         DESCRIPTION_FLOOD_CONTROL_SUBMIT_SECS
-        DESCRIPTION_CAROUSEL_MODE_INTERFACE
         DESCRIPTION_FOLDER_NAME
         DESCRIPTION_FORCE_TEMPORARY_PASSWORD
         DESCRIPTION_FORUM_GROUPING
@@ -4564,7 +4730,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_VERSION
         DESCRIPTION_VIDEO_DIMENSIONS
         DESCRIPTION_VIDEO_LENGTH
-        DESCIPTION_CLOSED_CAPTIONS
         DESCRIPTION_VIEW_REPORTS
         DESCRIPTION_VISIBLE
         DESCRIPTION_WATERMARK
@@ -7972,6 +8137,33 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_non_admin_initial = array_map('trim', explode("\n", trim('
+        OFF
+        ON
+        LIST
+        FADE
+        DARK
+        LIGHT
+        QUOTE
+        COMCODE_ADD_TAG
+        BACKGROUND_COLOR
+        APPLY_CHANGES
+        ADD_BOX
+        ADD_LINK
+        COMMENTS_DISABLED
+        IMAGES_AND_VIDEOS_IN
+        PLAY_OR_PAUSE
+        TOGGLE_FULLSCREEN
+        SUBGALLERIES
+        SORTABLE
+        SLIDE
+        SHOW_OR_HIDE_CAPTIONS
+        SHOW_OR_HIDE_COMMENTS
+        SHOW_OR_HIDE_SETTINGS
+        SCROLL_DOWN
+        SHOW_DETAILS
+        PUNITIVE_SILENCED_UNTIL
+        PREVIOUS_ARTICLE
+        NEXT_ARTICLE
         DEFAULT_SLIDE_X
         DEFAULT_SLIDE1_HEADLINE
         DEFAULT_SLIDE1_SUBLINE

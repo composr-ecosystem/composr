@@ -7091,7 +7091,7 @@ function ecv_COLOR_LIGHTEN($lang, $escaped, $param)
         $green = hexdec(substr($hex_color, 3, 2));
         $blue  = hexdec(substr($hex_color, 5, 2));
 
-        $lighten_by = floatval(substr($param[1], 0, -1)) / 100; // Remove trailing '%' sign
+        $lighten_by = floatval(substr($param[1], 0, -1)) / 100.0; // Remove trailing '%' sign
 
         list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
 
@@ -7134,7 +7134,7 @@ function ecv_COLOR_DARKEN($lang, $escaped, $param)
         $green = hexdec(substr($hex_color, 3, 2));
         $blue  = hexdec(substr($hex_color, 5, 2));
 
-        $darken_by = floatval(substr($param[1], 0, -1)) / 100; // Remove trailing '%' sign
+        $darken_by = floatval(substr($param[1], 0, -1)) / 100.0; // Remove trailing '%' sign
 
         list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
 

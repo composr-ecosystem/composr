@@ -82,6 +82,10 @@ class sitemap_test_set extends cms_test_case
             return;
         }
 
+        if ($this->sitemap === null) {
+            return null;
+        }
+
         $properties_compare = [
             'content_type',
             'content_id',
