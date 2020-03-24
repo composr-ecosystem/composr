@@ -334,20 +334,20 @@ class LangFilter_EN extends LangFilter
                     $value = '%m-%d-%Y';
                     break;
 
-                case 'calendar_date_verbose=%a %e%o %B %Y':
-                    $value = '%a %B %e%o %Y';
+                case 'calendar_date_verbose=%a %e%o %b %Y':
+                    $value = '%a %b %e%o %Y';
                     break;
 
                 case 'calendar_date_range_single_long=%l:%M %p (%e%o %b)':
                     $value = '%l:%M %p (%b %e%o)';
                     break;
 
-                case 'date_date=%e%o %B %Y':
-                    $value = '%B %e%o %Y';
+                case 'date_date=%e%o %b %Y':
+                    $value = '%b %e%o %Y';
                     break;
 
-                case 'date_no_year=%e%o %B':
-                    $value = '%B %e%o';
+                case 'date_no_year=%e%o %b':
+                    $value = '%b %e%o';
                     break;
 
                 case 'locale=en-GB.UTF-8,en_GB.UTF-8,en-US.UTF-8,en_US.UTF-8,en.UTF-8,en-GB,en_GB,en-US,en_US,en':
