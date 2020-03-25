@@ -895,21 +895,21 @@ class Hook_addon_registry_calendar
     {
         require_lang('calendar');
 
-        $event_types = $this->predefined_event_types();
-        $_event_types = [];
-        foreach ($event_types as $icon) {
-            $_event_types[] = db_string_equal_to('t_logo', 'icons/calendar/' . $icon);
-        }
-        $or_list = implode(' OR ', $_event_types);
-        $installed = ($GLOBALS['SITE_DB']->query_select_value('calendar_types', 'COUNT(*)', [], ' AND (' . $or_list . ')') > 0);
+        $ret = [];
 
-        return [
-            'keep_calendar_types' => [
-                'title' => do_lang_tempcode('HAVE_DEFAULT_EVENT_TYPES'),
-                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_EVENT_TYPES'),
+        $_event_types = [];
+        $event_types = $this->predefined_event_types();
+        foreach ($event_types as $type) {
+            $installed = ($GLOBALS['SITE_DB']->query_select_value_if_there('calendar_types', 'id', ['t_logo' => 'icons/calendar/' . $type]) !== null);
+
+            $ret[$type] = [
+                'title' => do_lang_tempcode('DEFAULT_CALENDAR_TYPE__' . $type),
+                'description' => new Tempcode(),
                 'installed' => $installed,
-            ],
-        ];
+            ];
+        }
+
+        return $ret;
     }
 
     /**
@@ -919,12 +919,11 @@ class Hook_addon_registry_calendar
      */
     public function install_predefined_content($content = null)
     {
-        if ((($content === null) || (in_array('keep_calendar_types', $content))) && (!has_predefined_content('calendar', 'keep_calendar_types'))) {
-            require_code('lang3');
-            require_lang('calendar');
-            $default_types = $this->predefined_event_types();
-            require_code('lang3');
-            foreach ($default_types as $type) {
+        $event_types = $this->predefined_event_types();
+        foreach ($event_types as $type) {
+            if ((($content === null) || (in_array($type, $content))) && (!has_predefined_content('calendar', $type))) {
+                require_code('lang3');
+                require_lang('calendar');
                 $map = [
                     't_external_feed' => '',
                     't_logo' => 'icons/calendar/' . $type,
@@ -942,17 +941,12 @@ class Hook_addon_registry_calendar
      */
     public function uninstall_predefined_content($content = null)
     {
-        if ((($content === null) || (in_array('keep_calendar_types', $content))) && (has_predefined_content('calendar', 'keep_calendar_types'))) {
-            $default_types = $this->predefined_event_types();
-            $_default_types = [];
-            foreach ($default_types as $type) {
-                $_default_types[] = db_string_equal_to('t_logo', 'icons/calendar/' . $type);
-            }
-            $or_list = implode(' OR ', $_default_types);
-            $event_types = $GLOBALS['SITE_DB']->query_select('calendar_types', ['id'], [], ' AND (' . $or_list . ')');
-            foreach ($event_types as $event_type) {
+        $event_types = $this->predefined_event_types();
+        foreach ($event_types as $type) {
+            if ((($content === null) || (in_array($type, $content))) && (has_predefined_content('calendar', $type))) {
+                $id = $GLOBALS['SITE_DB']->query_select_value('calendar_types', 'id', ['t_logo' => 'icons/calendar/' . $type]);
                 require_code('calendar2');
-                delete_event_type($event_type['id']);
+                delete_event_type($id);
             }
         }
     }

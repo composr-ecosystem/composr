@@ -35,7 +35,26 @@ class Hook_sw_news
         $test = $GLOBALS['SITE_DB']->query_select_value('group_privileges', 'COUNT(*)', ['privilege' => 'have_personal_category', 'the_page' => 'cms_news']);
         $settings['keep_blogs'] = ($test == 0) ? '0' : '1';
 
-        $settings['keep_news_categories'] = has_predefined_content('news', 'keep_news_categories') ? '1' : '0';
+        $keep_news_categories = false;
+        if (has_predefined_content('news', 'technology')) {
+            $keep_news_categories = true;
+        }
+        if (has_predefined_content('news', 'difficulties')) {
+            $keep_news_categories = true;
+        }
+        if (has_predefined_content('news', 'community')) {
+            $keep_news_categories = true;
+        }
+        if (has_predefined_content('news', 'entertainment')) {
+            $keep_news_categories = true;
+        }
+        if (has_predefined_content('news', 'business')) {
+            $keep_news_categories = true;
+        }
+        if (has_predefined_content('news', 'art')) {
+            $keep_news_categories = true;
+        }
+        $settings['keep_news_categories'] = $keep_news_categories ? '1' : '0';
 
         return $settings;
     }
@@ -86,7 +105,12 @@ class Hook_sw_news
         }
 
         install_predefined_content('news', [
-           'keep_news_categories' => (post_param_integer('keep_news_categories', 0) == 1),
+           'technology' => (post_param_integer('keep_news_categories', 0) == 1),
+           'difficulties' => (post_param_integer('keep_news_categories', 0) == 1),
+           'community' => (post_param_integer('keep_news_categories', 0) == 1),
+           'entertainment' => (post_param_integer('keep_news_categories', 0) == 1),
+           'business' => (post_param_integer('keep_news_categories', 0) == 1),
+           'art' => (post_param_integer('keep_news_categories', 0) == 1),
         ]);
     }
 

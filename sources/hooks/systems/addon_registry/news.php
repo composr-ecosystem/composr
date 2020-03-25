@@ -767,7 +767,7 @@ class Hook_addon_registry_news
             set_global_category_access('news', $news_category_id);
         }
 
-        add_news(lorem_phrase(), lorem_chunk(), $GLOBALS['FORUM_DRIVER']->get_username(get_member()), 1, 1, 1, 1, '', lorem_paragraph(), db_get_first_id());
+        add_news(lorem_phrase(), lorem_chunk(), $GLOBALS['FORUM_DRIVER']->get_username(get_member()), 1, 1, 1, 1, '', lorem_paragraph(), $news_category_id);
     }
 
     /**
@@ -789,21 +789,21 @@ class Hook_addon_registry_news
     {
         require_lang('news');
 
-        $news_categories = $this->have_i_got_news_for_you();
-        $_news_categories = [];
-        foreach ($news_categories as $icon) {
-            $_news_categories[] = db_string_equal_to('nc_img', 'icons/news/' . $icon);
-        }
-        $or_list = implode(' OR ', $_news_categories);
-        $installed = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'COUNT(*)', [], ' AND (' . $or_list . ')') > 0);
+        $ret = [];
 
-        return [
-            'keep_news_categories' => [
-                'title' => do_lang_tempcode('EXTENDED_NEWS_CATEGORIES_SET'),
-                'description' => do_lang_tempcode('DESCRIPTION_KEEP_DEFAULT_NEWS_CATEGORIES'),
+        $_news_categories = [];
+        $news_categories = $this->have_i_got_news_for_you();
+        foreach ($news_categories as $category) {
+            $installed = ($GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', ['nc_img' => 'icons/news/' . $category]) !== null);
+
+            $ret[$category] = [
+                'title' => do_lang_tempcode('NC_' . $category),
+                'description' => new Tempcode(),
                 'installed' => $installed,
-            ],
-        ];
+            ];
+        }
+
+        return $ret;
     }
 
     /**
@@ -813,11 +813,11 @@ class Hook_addon_registry_news
      */
     public function install_predefined_content($content = null)
     {
-        if ((($content === null) || (in_array('keep_news_categories', $content))) && (!has_predefined_content('news', 'keep_news_categories'))) {
-            require_code('lang3');
-            require_lang('news');
-            $news_categories = $this->have_i_got_news_for_you();
-            foreach ($news_categories as $category) {
+        $news_categories = $this->have_i_got_news_for_you();
+        foreach ($news_categories as $category) {
+            if ((($content === null) || (in_array($category, $content))) && (!has_predefined_content('news', $category))) {
+                require_code('lang3');
+                require_lang('news');
                 $map = [
                     'notes' => '',
                     'nc_img' => 'icons/news/' . $category,
@@ -836,17 +836,12 @@ class Hook_addon_registry_news
      */
     public function uninstall_predefined_content($content = null)
     {
-        if ((($content === null) || (in_array('keep_news_categories', $content))) && (has_predefined_content('news', 'keep_news_categories'))) {
-            $news_categories = $this->have_i_got_news_for_you();
-            $_news_categories = [];
-            foreach ($news_categories as $icon) {
-                $_news_categories[] = db_string_equal_to('nc_img', 'icons/news/' . $icon);
-            }
-            $or_list = implode(' OR ', $_news_categories);
-            $news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['id'], [], ' AND (' . $or_list . ')');
-            foreach ($news_cats as $news_cat) {
+        $news_categories = $this->have_i_got_news_for_you();
+        foreach ($news_categories as $category) {
+            if ((($content === null) || (in_array($category, $content))) && (has_predefined_content('news', $category))) {
+                $id = $GLOBALS['SITE_DB']->query_select_value('news_categories', 'id', ['nc_img' => 'icons/news/' . $category]);
                 require_code('news2');
-                delete_news_category($news_cat['id']);
+                delete_news_category($id);
             }
         }
     }
