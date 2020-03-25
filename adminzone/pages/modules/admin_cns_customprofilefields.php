@@ -52,6 +52,10 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             return null;
         }
 
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
         $ret = [];
 
         if (!$be_deferential && !$support_crosslinks) {
@@ -62,11 +66,16 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         $ret += [
             'stats' => ['CUSTOM_PROFILE_FIELD_STATS', 'menu/adminzone/tools/users/custom_profile_fields'],
-            'predefined_content' => ['PREDEFINED_FIELDS', 'admin/import'],
         ];
 
         if (!$be_deferential && !$support_crosslinks) {
             $ret += parent::get_entry_points();
+        }
+
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_FIELDS', 'admin/import'],
+            ];
         }
 
         return $ret;
@@ -182,7 +191,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             [
                 ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_CUSTOM_PROFILE_FIELD')],
                 ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_CUSTOM_PROFILE_FIELD')],
-                ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_FIELDS')],
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_FIELDS')] : null,
             ],
             do_lang('CUSTOM_PROFILE_FIELDS')
         );
@@ -717,9 +726,10 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      */
     public function predefined_content()
     {
-        $fields = _cns_predefined_custom_field_details();
+        check_privilege('mass_import');
 
-        require_lang('fields');
+        require_code('content2');
+        $enumerated = enumerate_predefined_content('core_cns');
 
         require_code('templates_columned_table');
         $header_row = columned_table_header_row([
@@ -730,26 +740,21 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             do_lang_tempcode('CHOOSE'),
         ]);
 
-        $_existing_fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_name']);
-        $existing_fields = [];
-        foreach ($_existing_fields as $field) {
-            $existing_fields[get_translated_text($field['cf_name'])] = $field['id'];
-        }
-
-        foreach (array_keys($fields) as $field_code) {
-            $fields[$field_code]['title'] = do_lang('DEFAULT_CPF_' . $field_code . '_NAME');
-        }
-        sort_maps_by($fields, 'title', false, true);
-
         $rows = new Tempcode();
-        foreach ($fields as $field_code => $details) {
+        foreach ($enumerated as $codename => $_details) {
+            if ($codename == 'have_default_full_emoticon_set') {
+                continue;
+            }
+
+            $details = $_details['_details'];
+
             if ($details['icon'] == '') {
                 $icon = '';
             } else {
                 $icon = '<img width="24" height="24" alt="" src="' . escape_html(find_theme_image($details['icon'])) . '" />';
             }
 
-            $title = escape_html($details['title']);
+            $title = $_details['title'];
 
             if ($details['section'] == '') {
                 $section = do_lang_tempcode('NA');
@@ -762,10 +767,10 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             $choose_action = do_template('COLUMNED_TABLE_ROW_CELL_TICK', [
                 '_GUID' => 'c355b82d286c3f10180b8a0ecddf070f',
                 'LABEL' => do_lang_tempcode('CHOOSE'),
-                'NAME' => 'select__' . $field_code,
+                'NAME' => 'select__' . $codename,
                 'VALUE' => '1',
                 'HIDDEN' => '',
-                'TICKED' => isset($existing_fields[$details['title']]),
+                'TICKED' => $_details['installed'],
             ]);
 
             $rows->attach(columned_table_row([
@@ -798,31 +803,8 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      */
     public function _predefined_content()
     {
-        $fields = _cns_predefined_custom_field_details();
-
-        $_existing_fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_name']);
-        $existing_fields = [];
-        foreach ($_existing_fields as $field) {
-            $existing_fields[get_translated_text($field['cf_name'])] = $field['id'];
-        }
-
-        foreach (array_keys($fields) as $field_code) {
-            $ticked = (post_param_integer('select__' . $field_code, 0) == 1);
-
-            $_title = do_lang('DEFAULT_CPF_' . $field_code . '_NAME');
-
-            if ($ticked) {
-                if (!isset($existing_fields[$_title])) {
-                    cns_make_predefined_content_field($field_code);
-                }
-            } else {
-                if (isset($existing_fields[$_title])) {
-                    cns_delete_custom_field($existing_fields[$_title]);
-                }
-            }
-        }
-
-        return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
+        require_code('content2');
+        return predefined_content_changes_actualiser('core_cns', $this->title, ['have_default_full_emoticon_set']);
     }
 
     /**

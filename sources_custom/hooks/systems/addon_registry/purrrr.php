@@ -288,6 +288,6 @@ class Hook_addon_registry_purrrr
 
     public function add_image($url = '', $thumb_url = '', $title = '', $description = '', $notes = '')
     {
-        add_image($title, 'root', $description, $url, $thumb_url, 1, 1, 1, 1, $notes);
+        add_image($title, 'root', $description, $url, $thumb_url, 1, 1, 1, 1, $notes, db_get_first_id());
     }
 }

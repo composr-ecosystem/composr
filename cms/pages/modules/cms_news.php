@@ -59,6 +59,10 @@ class Module_cms_news extends Standard_crud_module
 
         $this->cat_crud_module = class_exists('Mx_cms_news_cat') ? new Mx_cms_news_cat() : new Module_cms_news_cat();
 
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
         $ret = [
             'browse' => ['MANAGE_NEWS', 'menu/rich_content/news'],
         ] + parent::get_entry_points();
@@ -66,6 +70,12 @@ class Module_cms_news extends Standard_crud_module
         if ($support_crosslinks) {
             require_code('fields');
             $ret += manage_custom_fields_entry_points('news_category') + manage_custom_fields_entry_points('news');
+        }
+
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
         }
 
         return $ret;
@@ -154,6 +164,18 @@ class Module_cms_news extends Standard_crud_module
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWS')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return parent::pre_run($top_level);
     }
 
@@ -183,6 +205,12 @@ class Module_cms_news extends Standard_crud_module
         if ($type == '_import_news') {
             return $this->_import_news();
         }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
 
         return new Tempcode();
     }
@@ -205,6 +233,7 @@ class Module_cms_news extends Standard_crud_module
                 has_privilege(get_member(), 'submit_highrange_content', 'cms_news') ? ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_NEWS')] : null,
                 has_privilege(get_member(), 'edit_own_highrange_content', 'cms_news') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_NEWS')] : null,
                 has_privilege(get_member(), 'mass_import', 'cms_news') ? ['admin/import', ['_SELF', ['type' => 'import'], '_SELF'], do_lang('IMPORT_NEWS')] : null,
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ], manage_custom_fields_donext_link('news')),
             do_lang('MANAGE_NEWS')
         );
@@ -871,6 +900,28 @@ class Module_cms_news extends Standard_crud_module
         $ret = call_user_func_array__long_task(do_lang('IMPORT_NEWS'), $this->title, 'import_rss', [$is_validated, $download_images, $to_own_account, $import_blog_comments, $import_to_blog, $rss]);
 
         return $ret;
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('news', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('news', $this->title);
     }
 }
 

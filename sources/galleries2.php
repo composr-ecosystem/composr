@@ -889,7 +889,9 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
     if (!running_script('install')) {
         require_code('content2');
         if (($meta_keywords == '') && ($meta_description == '')) {
-            seo_meta_set_for_implicit('image', strval($id), [$description], $description);
+            if (!is_array($description)) {
+                seo_meta_set_for_implicit('image', strval($id), [$description], $description);
+            }
         } else {
             seo_meta_set_for_explicit('image', strval($id), $meta_keywords, $meta_description);
         }

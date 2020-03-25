@@ -32,18 +32,10 @@ class Hook_sw_news
     {
         $settings = [];
 
-        $keep_news_categories = false;
-        $news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['id'], ['nc_owner' => null]);
-        foreach ($news_cats as $news_cat) {
-            if (($news_cat['id'] > db_get_first_id()) && ($news_cat['id'] < db_get_first_id() + 7)) {
-                $keep_news_categories = true;
-                break;
-            }
-        }
-        $settings['keep_news_categories'] = $keep_news_categories ? '1' : '0';
-
         $test = $GLOBALS['SITE_DB']->query_select_value('group_privileges', 'COUNT(*)', ['privilege' => 'have_personal_category', 'the_page' => 'cms_news']);
         $settings['keep_blogs'] = ($test == 0) ? '0' : '1';
+
+        $settings['keep_news_categories'] = has_predefined_content('news', 'keep_news_categories') ? '1' : '0';
 
         return $settings;
     }
@@ -68,9 +60,7 @@ class Hook_sw_news
 
         $fields->attach(form_input_tick(do_lang_tempcode('KEEP_BLOGS'), do_lang_tempcode('DESCRIPTION_KEEP_BLOGS'), 'keep_blogs', $field_defaults['keep_blogs'] == '1'));
 
-        if ($current_settings['keep_news_categories'] == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('EXTENDED_NEWS_CATEGORIES_SET'), do_lang_tempcode('DESCRIPTION_KEEP_DEFAULT_NEWS_CATEGORIES'), 'keep_news_categories', $field_defaults['keep_news_categories'] == '1'));
-        }
+        $fields->attach(form_input_tick(do_lang_tempcode('EXTENDED_NEWS_CATEGORIES_SET'), do_lang_tempcode('DESCRIPTION_KEEP_DEFAULT_NEWS_CATEGORIES'), 'keep_news_categories', $field_defaults['keep_news_categories'] == '1'));
 
         return [$fields, new Tempcode()];
     }
@@ -94,15 +84,10 @@ class Hook_sw_news
                 }
             }
         }
-        if (post_param_integer('keep_news_categories', 0) == 0) {
-            $news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['id'], ['nc_owner' => null]);
-            foreach ($news_cats as $news_cat) {
-                if (($news_cat['id'] > db_get_first_id()) && ($news_cat['id'] < db_get_first_id() + 7)) {
-                    require_code('news2');
-                    delete_news_category($news_cat['id']);
-                }
-            }
-        }
+
+        install_predefined_content('news', [
+           'keep_news_categories' => (post_param_integer('keep_news_categories', 0) == 1),
+        ]);
     }
 
     /**

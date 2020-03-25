@@ -102,6 +102,12 @@ class Module_cms_galleries extends Standard_crud_module
             $ret += manage_custom_fields_entry_points('image') + manage_custom_fields_entry_points('video') + manage_custom_fields_entry_points('gallery');
         }
 
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
+        }
+
         return $ret;
     }
 
@@ -195,6 +201,18 @@ class Module_cms_galleries extends Standard_crud_module
             $this->title = get_screen_title('GALLERY_IMPORT');
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         set_helper_panel_tutorial('tut_galleries');
 
         return parent::pre_run($top_level);
@@ -258,6 +276,12 @@ class Module_cms_galleries extends Standard_crud_module
         if ($type == '_orphaned') {
             return $this->_orphaned();
         }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
 
         return new Tempcode();
     }
@@ -285,6 +309,7 @@ class Module_cms_galleries extends Standard_crud_module
                 (!$allow_images) ? null : (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? ['menu/cms/galleries/edit_one_image', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_IMAGE')] : null),
                 (!$allow_videos) ? null : (has_privilege(get_member(), 'submit_midrange_content', 'cms_galleries') ? [(get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/add_one_multimedia' : 'menu/cms/galleries/add_one_video', ['_SELF', ['type' => 'add_other'], '_SELF'], do_lang('ADD_VIDEO')] : null),
                 (!$allow_videos) ? null : (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? [(get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video', ['_SELF', ['type' => 'edit_other'], '_SELF'], do_lang('EDIT_VIDEO')] : null),
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ], manage_custom_fields_donext_link('image'), manage_custom_fields_donext_link('video'), manage_custom_fields_donext_link('gallery')),
             do_lang('MANAGE_GALLERIES')
         );
@@ -1168,6 +1193,28 @@ class Module_cms_galleries extends Standard_crud_module
     public function do_next_manager($title, $description, $id = null)
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id));
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('galleries', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('galleries', $this->title);
     }
 }
 

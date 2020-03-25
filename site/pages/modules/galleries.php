@@ -177,55 +177,9 @@ class Module_galleries
             require_code('permissions2');
             set_global_category_access('galleries', 'root');
 
-            /* Setup homepage hero slider slides */
-
-            require_lang('homepage_hero_slider');
-
-            add_gallery('homepage_hero_slider', 'Homepage Hero Slider', 'Slides for the homepage hero slider', '', 'root', 1, 1, 0, GALLERY_LAYOUT_MODE_DEFAULT, '', '', '', '', '', 0, 0);
-            set_global_category_access('galleries', 'homepage_hero_slider');
-
-            $image_owner_id = get_first_admin_user();
-            foreach (['bastei_bridge', 'rustic', 'waterfall'] as $i => $img) {
-                $slider_insert_map = null;
-                $langs = find_all_langs();
-                $langs = [user_lang() => $langs[user_lang()]] + $langs;
-                foreach ($langs as $lang => $lang_type) {
-                    if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub
-                        $slide_contents = trim('
-{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}
-    HEADLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '
-    SUBLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '
-    TEXT=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
-    LINK1_TEXT=' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '
-    LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
-{+END}
-                        ');
-
-                        if ($lang == user_lang()) {
-                            $slider_insert_map = insert_lang('the_description', $slide_contents, 3, null, true);
-                        } elseif (multi_lang_content()) {
-                            insert_lang('the_description', $slide_contents, 3, null, true, $slider_insert_map['the_description'], $lang);
-                        }
-                    }
-                }
-
-                add_image(
-                    lang_code_to_default_content('title', 'DEFAULT_SLIDE_X', false, 2, null, integer_format($i + 1)),
-                    'homepage_hero_slider',
-                    $slider_insert_map,
-                    'data/images/homepage_hero_slider/full/' . $img . '.jpg',
-                    'data/images/homepage_hero_slider/thumbs/' . $img . '.png',
-                    1,
-                    0,
-                    0,
-                    0,
-                    '',
-                    $image_owner_id,
-                    null,
-                    null,
-                    0
-                );
-            }
+            // Setup homepage hero slider slides
+            require_code('content2');
+            install_predefined_content('galleries');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 7)) {

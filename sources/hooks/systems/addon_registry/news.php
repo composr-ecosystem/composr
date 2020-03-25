@@ -769,4 +769,85 @@ class Hook_addon_registry_news
 
         add_news(lorem_phrase(), lorem_chunk(), $GLOBALS['FORUM_DRIVER']->get_username(get_member()), 1, 1, 1, 1, '', lorem_paragraph(), db_get_first_id());
     }
+
+    /**
+     * Find predefined news category icons.
+     *
+     * @return array Predefined news category icons
+     */
+    protected function have_i_got_news_for_you()
+    {
+        return ['technology', 'difficulties', 'community', 'entertainment', 'business', 'art'];
+    }
+
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content()
+    {
+        require_lang('news');
+
+        $news_categories = $this->have_i_got_news_for_you();
+        $_news_categories = [];
+        foreach ($news_categories as $icon) {
+            $_news_categories[] = db_string_equal_to('nc_img', 'icons/news/' . $icon);
+        }
+        $or_list = implode(' OR ', $_news_categories);
+        $installed = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'COUNT(*)', [], ' AND (' . $or_list . ')') > 0);
+
+        return [
+            'keep_news_categories' => [
+                'title' => do_lang_tempcode('EXTENDED_NEWS_CATEGORIES_SET'),
+                'description' => do_lang_tempcode('DESCRIPTION_KEEP_DEFAULT_NEWS_CATEGORIES'),
+                'installed' => $installed,
+            ],
+        ];
+    }
+
+    /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('keep_news_categories', $content))) && (!has_predefined_content('news', 'keep_news_categories'))) {
+            require_code('lang3');
+            require_lang('news');
+            $news_categories = $this->have_i_got_news_for_you();
+            foreach ($news_categories as $category) {
+                $map = [
+                    'notes' => '',
+                    'nc_img' => 'icons/news/' . $category,
+                    'nc_owner' => null,
+                ];
+                $map += lang_code_to_default_content('nc_title', 'NC_' . $category);
+                $GLOBALS['SITE_DB']->query_insert('news_categories', $map);
+            }
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('keep_news_categories', $content))) && (has_predefined_content('news', 'keep_news_categories'))) {
+            $news_categories = $this->have_i_got_news_for_you();
+            $_news_categories = [];
+            foreach ($news_categories as $icon) {
+                $_news_categories[] = db_string_equal_to('nc_img', 'icons/news/' . $icon);
+            }
+            $or_list = implode(' OR ', $_news_categories);
+            $news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['id'], [], ' AND (' . $or_list . ')');
+            foreach ($news_cats as $news_cat) {
+                require_code('news2');
+                delete_news_category($news_cat['id']);
+            }
+        }
+    }
 }

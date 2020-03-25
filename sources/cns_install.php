@@ -457,14 +457,6 @@ function install_cns($upgrade_from = null)
             'mf_member_id' => '*MEMBER',
         ]);
 
-        cns_make_predefined_content_field('about');
-        cns_make_predefined_content_field('interests');
-        cns_make_predefined_content_field('occupation');
-        cns_make_predefined_content_field('staff_notes');
-        if (!addon_installed('user_mappr')) {
-            cns_make_predefined_content_field('location');
-        }
-
         $GLOBALS['FORUM_DB']->create_table('f_invites', [
             'id' => '*AUTO',
             'i_inviter' => 'MEMBER',
@@ -556,102 +548,26 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->create_index('f_members', 'primary_group', ['m_primary_group']);
         $GLOBALS['FORUM_DB']->create_index('f_members', 'avatar_url', ['m_avatar_url']); // Used for uniform avatar randomisation
 
-        $no_use_topics = [
-            'party' => true,
-            'christmas' => true,
-            'offtopic' => true,
-            'rockon' => true,
-            'guitar' => true,
-            'sinner' => true,
-            'wink' => true,
-            'kiss' => true,
-            'nod' => true,
-            'smile' => true,
-            'mellow' => true,
-            'whistle' => true,
-            'shutup' => true,
-            'cyborg' => true,
-            'idea' => true,
-            'boat' => true,
-            'fishing' => true,
-            'reallybadday' => true,
-            'hug' => true,
-            'tired' => true,
-            'whew' => true,
-        ];
         $core_emoticons = [
-            ':P' => 'cheeky',
-            ":'(" => 'cry',
-            ':dry:' => 'dry',
-            ':$' => 'blush',
-            ';)' => 'wink',
-            'O_o' => 'blink',
-            ':wub:' => 'wub',
-            ':cool:' => 'cool',
-            ':lol:' => 'lol',
-            ':(' => 'sad',
-            ':)' => 'smile',
-            ':thumbs:' => 'thumbs',
-            ':|' => 'mellow',
-            ':ninja:' => 'ph34r',
-            ':o' => 'shocked',
+            ':P' => ['cheeky', false],
+            ":'(" => ['cry', false],
+            ':(' => ['sad', false],
+            ':)' => ['smile', true],
+            ':thumbs:' => ['thumbs', false],
+            ':o' => ['shocked', false],
+            ';)' => ['wink', true],
         ];
-        $supported_emoticons = [
-            ':offtopic:' => 'offtopic', // Larger than normal, so don't put in core set
-            ':rolleyes:' => 'rolleyes',
-            ':D' => 'grin',
-            '^_^' => 'glee',
-            '(K)' => 'kiss',
-            ':S' => 'confused',
-            ':@' => 'angry',
-            ':shake:' => 'shake',
-            ':hand:' => 'hand',
-            ':drool:' => 'drool',
-            ':devil:' => 'devil',
-            ':party:' => 'party',
-            ':constipated:' => 'constipated',
-            ':depressed:' => 'depressed',
-            ':zzz:' => 'zzz',
-            ':whistle:' => 'whistle',
-            ':upsidedown:' => 'upsidedown',
-            ':sick:' => 'sick',
-            ':shutup:' => 'shutup',
-            ':sarcy:' => 'sarcy',
-            ':puppyeyes:' => 'puppyeyes',
-            ':nod:' => 'nod',
-            ':nerd:' => 'nerd',
-            ':king:' => 'king',
-            ':birthday:' => 'birthday',
-            ':cyborg:' => 'cyborg',
-            ':hippie:' => 'hippie',
-            ':ninja2:' => 'ninja2',
-            ':rockon:' => 'rockon',
-            ':sinner:' => 'sinner',
-            ':guitar:' => 'guitar',
-            ':angel:' => 'angel',
-            ':cowboy:' => 'cowboy',
-            ':fight:' => 'fight',
-            ':goodbye:' => 'goodbye',
-            ':idea:' => 'idea',
-            ':boat:' => 'boat',
-            ':fishing:' => 'fishing',
-            ':reallybadday:' => 'reallybadday',
-            ':hug:' => 'hug',
-            ':tired:' => 'tired',
-            ':whew:' => 'whew',
-        ];
-        $unused_emoticons = [
-            ':christmas:' => 'christmas',
-        ];
-        foreach ($core_emoticons as $a => $b) {
-            cns_make_emoticon($a, 'cns_emoticons/' . $b, 0, array_key_exists($b, $no_use_topics) ? 0 : 1);
+        foreach ($core_emoticons as $type_code => $_) {
+            list($theme_image_code, $no_use_topics) = $_;
+            cns_make_emoticon($type_code, 'cns_emoticons/' . $theme_image_code, 0, $no_use_topics ? 0 : 1);
         }
-        foreach ($supported_emoticons as $a => $b) {
-            cns_make_emoticon($a, 'cns_emoticons/' . $b, 1, array_key_exists($b, $no_use_topics) ? 0 : 1);
+
+        require_code('content2');
+        $content = ['have_default_full_emoticon_set' => true, 'about' => true, 'interests' => true, 'occupation' => true, 'staff_notes' => true];
+        if (!addon_installed('user_mappr')) {
+            $content['location'] = true;
         }
-        foreach ($unused_emoticons as $a => $b) {
-            cns_make_emoticon($a, 'cns_emoticons/' . $b, 1, array_key_exists($b, $no_use_topics) ? 0 : 1);
-        }
+        install_predefined_content('core_cns', $content);
 
         $GLOBALS['FORUM_DB']->create_table('f_groups', [
             'id' => '*AUTO',

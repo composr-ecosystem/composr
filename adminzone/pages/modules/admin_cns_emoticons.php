@@ -51,9 +51,25 @@ class Module_admin_cns_emoticons extends Standard_crud_module
             return null;
         }
 
-        return [
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
+        $ret = [];
+
+        $ret += [
             'browse' => ['EMOTICONS', 'menu/adminzone/style/emoticons'],
-        ] + parent::get_entry_points();
+        ];
+
+        $ret += parent::get_entry_points();
+
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
+        }
+
+        return $ret;
     }
 
     public $title;
@@ -88,6 +104,18 @@ class Module_admin_cns_emoticons extends Standard_crud_module
 
         if ($type == 'import' || $type == '_import') {
             $this->title = get_screen_title('IMPORT_EMOTICONS');
+        }
+
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('EMOTICONS')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
         }
 
         return parent::pre_run($top_level);
@@ -128,6 +156,12 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         if ($type == '_import') {
             return $this->_import();
         }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
         return new Tempcode();
     }
 
@@ -146,6 +180,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
                 ['admin/import', ['_SELF', ['type' => 'import'], '_SELF'], do_lang('IMPORT_EMOTICONS')],
                 ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_EMOTICON')],
                 ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_EMOTICON')],
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ],
             do_lang('EMOTICONS')
         );
@@ -422,5 +457,27 @@ class Module_admin_cns_emoticons extends Standard_crud_module
     public function delete_actualisation($id)
     {
         cns_delete_emoticon($id);
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('core_cns', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'), [], ['have_default_full_emoticon_set']);
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('core_cns', $this->title, [], ['have_default_full_emoticon_set']);
     }
 }

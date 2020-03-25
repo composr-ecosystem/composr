@@ -2127,19 +2127,3 @@ function update_member_username_caching($member_id, $username)
         $db->query_update($table, [$field => $username], [$updating_field => $member_id]);
     }
 }
-
-/**
- * Delete a Custom Profile Field from one of the predefined templates (this is often used by importers).
- *
- * @param  ID_TEXT $field The identifier of the predefined Custom Profile Field
- */
-function cns_delete_predefined_content_field($field)
-{
-    require_lang('cns_special_cpf');
-
-    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('cf_name') => do_lang('DEFAULT_CPF_' . $field . '_NAME')]);
-    if ($test !== null) {
-        require_code('cns_members_action');
-        cns_delete_custom_field($test);
-    }
-}

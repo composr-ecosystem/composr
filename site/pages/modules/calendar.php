@@ -141,7 +141,7 @@ class Module_calendar
                 't_logo' => 'SHORT_TEXT',
                 't_external_feed' => 'URLPATH',
             ]);
-            $default_types = ['system_command', 'general', 'birthday', 'public_holiday', 'vacation', 'appointment', 'commitment', 'anniversary'];
+            $default_types = ['system_command', 'general'];
             require_code('lang3');
             foreach ($default_types as $type) {
                 $map = [
@@ -151,6 +151,8 @@ class Module_calendar
                 $map += lang_code_to_default_content('t_title', 'DEFAULT_CALENDAR_TYPE__' . $type, true);
                 $GLOBALS['SITE_DB']->query_insert('calendar_types', $map);
             }
+            require_code('content2');
+            install_predefined_content('calendar');
 
             $GLOBALS['SITE_DB']->create_table('calendar_reminders', [
                 'id' => '*AUTO',

@@ -1012,3 +1012,157 @@ function seo_meta_set_for_implicit($type, $id, $keyword_sources, $description)
 
     return $imp;
 }
+
+/**
+ * Find if some predefined content is installed.
+ *
+ * @param  string $addon Addon to do for
+ * @param  string $codename Predefined content codename
+ * @return boolean Whether it is
+ */
+function has_predefined_content($addon, $codename)
+{
+    $enumerated = enumerate_predefined_content($addon);
+    return $enumerated[$codename]['installed'];
+}
+
+/**
+ * Find available predefined content, and what is installed.
+ *
+ * @param  string $addon Addon to do for
+ * @return array A map of available predefined content codenames, and details (if installed, and title)
+ */
+function enumerate_predefined_content($addon)
+{
+    static $ret = [];
+    if (!array_key_exists($addon, $ret)) {
+        require_code('hooks/systems/addon_registry/' . filter_naughty($addon));
+        $ob = object_factory('Hook_addon_registry_' . $addon);
+        $ret[$addon] = $ob->enumerate_predefined_content();
+    }
+
+    return $ret[$addon];
+}
+
+/**
+ * Install/uninstall predefined content.
+ *
+ * @param  string $addon Addon to do for
+ * @param  ?array $content A map of predefined content labels to install, codename to installation state (null: install all)
+ */
+function install_predefined_content($addon, $content = null)
+{
+    require_code('hooks/systems/addon_registry/' . filter_naughty($addon));
+    $ob = object_factory('Hook_addon_registry_' . $addon);
+
+    if ($content === null) {
+        $ob->install_predefined_content();
+    } else {
+        $install = [];
+        $uninstall = [];
+        foreach ($content as $codename => $intended) {
+            if ($intended) {
+                $install[] = $codename;
+            } else {
+                $uninstall[] = $codename;
+            }
+        }
+
+        $ob->install_predefined_content($install);
+        $ob->uninstall_predefined_content($uninstall);
+    }
+}
+
+/**
+ * Generate a UI for predefined content installation/uninstallation.
+ *
+ * @param  string $addon Addon to do for
+ * @param  Tempcode $title Screen title
+ * @param  Tempcode $url POST URL
+ * @param  array $skip List of predefined content codenames to skip
+ * @param  ?array $only List of predefined content codenames to limit to (null: no limit)
+ * @return Tempcode UI
+ */
+function predefined_content_changes_ui($addon, $title, $url, $skip = [], $only = null)
+{
+    check_privilege('mass_import');
+
+    require_code('content2');
+    $enumerated = enumerate_predefined_content($addon);
+
+    require_code('templates_columned_table');
+    $header_row = columned_table_header_row([
+        do_lang_tempcode('TITLE'),
+        do_lang_tempcode('DESCRIPTION'),
+        do_lang_tempcode('CHOOSE'),
+    ]);
+
+    $rows = new Tempcode();
+    foreach ($enumerated as $codename => $details) {
+        if (in_array($codename, $skip)) {
+            continue;
+        }
+        if (($only !== null) && (!in_array($codename, $only))) {
+            continue;
+        }
+
+        $choose_action = do_template('COLUMNED_TABLE_ROW_CELL_TICK', [
+            '_GUID' => 'c355b82d286c3f10180b8a0ecddf070g',
+            'LABEL' => do_lang_tempcode('CHOOSE'),
+            'NAME' => 'select__' . $codename,
+            'VALUE' => '1',
+            'HIDDEN' => '',
+            'TICKED' => $details['installed'],
+        ]);
+
+        $rows->attach(columned_table_row([
+            $details['title'],
+            $details['description'],
+            $choose_action,
+        ], false));
+    }
+
+    $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a7', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
+
+    return do_template('COLUMNED_TABLE_SCREEN', [
+        '_GUID' => 'ddfa0fb6ea396d3b57cb447bc228a886',
+        'TITLE' => $title,
+        'TEXT' => do_lang_tempcode('PREDEFINED_CONTENT_DESCRIPTION'),
+        'TABLE' => $table,
+        'SUBMIT_ICON' => 'buttons/save',
+        'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+        'POST_URL' => $url,
+        'JS_FUNCTION_CALLS' => [],
+    ]);
+}
+
+/**
+ * Actualiser for predefined content installation/uninstallation.
+ *
+ * @param  string $addon Addon to do for
+ * @param  Tempcode $title Screen title
+ * @param  array $skip List of predefined content codenames to skip
+ * @param  ?array $only List of predefined content codenames to limit to (null: no limit)
+ * @return Tempcode UI
+ */
+function predefined_content_changes_actualiser($addon, $title, $skip = [], $only = null)
+{
+    check_privilege('mass_import');
+
+    $enumerated = enumerate_predefined_content($addon);
+
+    $content = [];
+    foreach (array_keys($enumerated) as $codename) {
+        if (in_array($codename, $skip)) {
+            continue;
+        }
+        if (($only !== null) && (!in_array($codename, $only))) {
+            continue;
+        }
+
+        $content[$codename] = (post_param_integer('select__' . $codename, 0) == 1);
+    }
+    install_predefined_content($addon, $content);
+
+    return inform_screen($title, do_lang_tempcode('SUCCESS'));
+}

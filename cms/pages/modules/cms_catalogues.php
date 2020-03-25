@@ -122,6 +122,12 @@ class Module_cms_catalogues extends Standard_crud_module
             }
         }
 
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
+        }
+
         return $ret;
     }
 
@@ -222,6 +228,18 @@ class Module_cms_catalogues extends Standard_crud_module
             }
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_CATALOGUES')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return $ret;
     }
 
@@ -260,6 +278,12 @@ class Module_cms_catalogues extends Standard_crud_module
         }
         if ($type == 'export') {
             return $this->export_catalogue();
+        }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
         }
 
         return new Tempcode();
@@ -309,6 +333,7 @@ class Module_cms_catalogues extends Standard_crud_module
                 (!$has_categories) ? null : (has_privilege(get_member(), 'edit_midrange_content', 'cms_catalogues') ? ['admin/edit', ['_SELF', array_merge($extra_map, ['type' => 'edit_entry']), '_SELF'], ($catalogue_name != '') ? do_lang('NEXT_ITEM_edit') : do_lang('EDIT_CATALOGUE_ENTRY')] : null),
                 (!$has_categories) ? null : (has_privilege(get_member(), 'mass_import', 'cms_catalogues') ? ['admin/import_spreadsheet', ['_SELF', array_merge($extra_map, ['type' => 'import']), '_SELF'], do_lang('IMPORT_CATALOGUE_ENTRIES')] : null),
                 (!$has_categories) ? null : ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? ['admin/export_spreadsheet', ['_SELF', array_merge($extra_map, ['type' => 'export']), '_SELF'], do_lang('EXPORT_CATALOGUE_ENTRIES')] : null),
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ], manage_custom_fields_donext_link('catalogue'), manage_custom_fields_donext_link('catalogue_category')),
             ($catalogue_name != '') ? escape_html(get_translated_text($cat_title)) : do_lang('MANAGE_CATALOGUES')
         );
@@ -1164,6 +1189,28 @@ class Module_cms_catalogues extends Standard_crud_module
 
         require_code('tasks');
         return call_user_func_array__long_task(do_lang('EXPORT_CATALOGUE_ENTRIES'), $this->title, 'export_catalogue', [$catalogue_name]);
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('catalogues', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('catalogues', $this->title);
     }
 }
 

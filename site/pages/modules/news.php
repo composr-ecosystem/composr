@@ -106,7 +106,7 @@ class Module_news
             $GLOBALS['SITE_DB']->create_index('news_categories', 'ncs', ['nc_owner']);
 
             require_code('lang3');
-            $default_categories = ['general', 'technology', 'difficulties', 'community', 'entertainment', 'business', 'art'];
+            $default_categories = ['general'];
             require_lang('news');
             foreach ($default_categories as $category) {
                 $map = [
@@ -117,6 +117,9 @@ class Module_news
                 $map += lang_code_to_default_content('nc_title', 'NC_' . $category);
                 $GLOBALS['SITE_DB']->query_insert('news_categories', $map);
             }
+
+            require_code('content2');
+            install_predefined_content('news');
 
             $GLOBALS['SITE_DB']->create_table('news_rss_cloud', [
                 'id' => '*AUTO',

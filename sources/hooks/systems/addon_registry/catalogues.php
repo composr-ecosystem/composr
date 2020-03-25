@@ -796,4 +796,232 @@ class Hook_addon_registry_catalogues
             }
         }
     }
+
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content()
+    {
+        require_lang('catalogues');
+
+        return [
+            'have_default_catalogues_projects' => [
+                'title' => do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_PROJECTS'),
+                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_PROJECTS'),
+                'installed' => $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'projects']) !== null,
+            ],
+            'have_default_catalogues_faqs' => [
+                'title' => do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_FAQS'),
+                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_FAQS'),
+                'installed' => $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'faqs']) !== null,
+            ],
+            'have_default_catalogues_links' => [
+                'title' => do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_LINKS'),
+                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_LINKS'),
+                'installed' => $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'links']) !== null,
+            ],
+            'have_default_catalogues_contacts' => [
+                'title' => do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_CONTACTS'),
+                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_CONTACTS'),
+                'installed' => $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'contacts']) !== null,
+            ],
+        ];
+    }
+
+    /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('have_default_catalogues_projects', $content))) && (!has_predefined_content('catalogues', 'have_default_catalogues_projects'))) {
+            require_lang('catalogues');
+            require_code('permissions2');
+            require_code('catalogues2');
+            require_code('lang3');
+            actual_add_catalogue('projects', lang_code_to_default_content('c_title', 'DEFAULT_CATALOGUE_PROJECTS_TITLE', false, 2), '', C_DT_FIELDMAPS, 0, '', 30);
+            $fields = [
+                ['NAME', 'DESCRIPTION_NAME', 'short_trans', 1, 1, ''],
+                ['MAINTAINER', 'DESCRIPTION_MAINTAINER', 'member', 0, 1, '!'],
+                ['DESCRIPTION', 'DESCRIPTION_DESCRIPTION', 'long_trans', 0, 1, ''],
+                ['PROJECT_PROGRESS', 'DESCRIPTION_PROJECT_PROGRESS', 'integer', 0, 1, '0'],
+            ];
+            foreach ($fields as $i => $field) {
+                actual_add_catalogue_field(
+                    'projects', // $c_name
+                    lang_code_to_default_content('cf_name', $field[0], false, 2), // $name
+                    lang_code_to_default_content('cf_description', $field[1], false, 3), // $description
+                    $field[2], // $type
+                    $i, // $order
+                    $field[3], // $defines_order
+                    1, // $visible
+                    $field[5], // $default
+                    $field[4], // $required
+                    1, // $is_sortable
+                    1, // $include_in_main_search
+                    0 // $allow_template_search
+                );
+            }
+            $cat_id = actual_add_catalogue_category('projects', lang_code_to_default_content('cc_title', 'DEFAULT_CATALOGUE_PROJECTS_TITLE', false, 2), lang_code_to_default_content('cc_description', 'DEFAULT_CATALOGUE_PROJECTS_DESCRIPTION', true, 3), '', null, '');
+            set_global_category_access('catalogues_catalogue', 'projects');
+            set_global_category_access('catalogues_category', $cat_id);
+        }
+
+        if ((($content === null) || (in_array('have_default_catalogues_faqs', $content))) && (!has_predefined_content('catalogues', 'have_default_catalogues_faqs'))) {
+            require_lang('catalogues');
+            require_code('permissions2');
+            require_code('catalogues2');
+            require_code('lang3');
+            actual_add_catalogue('faqs', lang_code_to_default_content('c_title', 'DEFAULT_CATALOGUE_FAQS_TITLE', false, 2), '', C_DT_FIELDMAPS, 0, '', 0);
+            $fields = [
+                ['QUESTION', 'DESCRIPTON_QUESTION', 'short_trans', 0, 1, 1, ''],
+                ['ANSWER', '_DESCRIPTION_ANSWER', 'long_trans', 0, 1, 1, ''],
+                ['ORDER', 'DESCRIPTION_ORDER', 'integer', 1, 0, 0, 'default=AUTO_INCREMENT'],
+            ];
+            foreach ($fields as $i => $field) {
+                actual_add_catalogue_field(
+                    'faqs', // $c_name
+                    lang_code_to_default_content('cf_name', $field[0], false, 2), // $name
+                    lang_code_to_default_content('cf_description', $field[1], false, 3), // $description
+                    $field[2], // $type
+                    $i, // $order
+                    $field[3], // $defines_order
+                    $field[5], // $visible
+                    '', // $default
+                    $field[4], // $required
+                    1,
+                    1,
+                    0,
+                    1, // $put_in_category
+                    1, // $put_in_search
+                    $field[6] // $options
+                );
+            }
+            $cat_id = actual_add_catalogue_category('faqs', lang_code_to_default_content('cc_title', 'DEFAULT_CATALOGUE_FAQS_TITLE', false, 2), lang_code_to_default_content('cc_description', 'DEFAULT_CATALOGUE_FAQS_DESCRIPTION', true, 3), '', null, '');
+            set_global_category_access('catalogues_catalogue', 'faqs');
+            set_global_category_access('catalogues_category', $cat_id);
+        }
+
+        if ((($content === null) || (in_array('have_default_catalogues_links', $content))) && (!has_predefined_content('catalogues', 'have_default_catalogues_links'))) {
+            require_lang('catalogues');
+            require_code('permissions2');
+            require_code('catalogues2');
+            require_code('lang3');
+            actual_add_catalogue('links', lang_code_to_default_content('c_title', 'DEFAULT_CATALOGUE_LINKS_TITLE', false, 2), lang_code_to_default_content('c_description', 'DEFAULT_CATALOGUE_LINKS_DESCRIPTION', true, 3), C_DT_TABULAR, 1, '', 0);
+            $fields = [
+                // Name, Description, Type, Defines order, Required, Put in category
+                ['TITLE', 'DESCRIPTION_TITLE', 'short_trans', 1, 1, 1],
+                ['URL', 'DESCRIPTION_URL', 'url', 0, 1, 0],
+                ['DESCRIPTION', 'DESCRIPTION_DESCRIPTION', 'long_trans', 0, 0, 1],
+            ];
+            foreach ($fields as $i => $field) {
+                actual_add_catalogue_field(
+                    'links', // $c_name
+                    lang_code_to_default_content('cf_name', $field[0], false, 2), // $name
+                    lang_code_to_default_content('cf_description', $field[1], false, 3), // $description
+                    $field[2], // $type
+                    $i, // $order
+                    $field[3], // $defines_order
+                    1, // $visible
+                    '', // $default
+                    $field[4], // $required
+                    1,
+                    1,
+                    0,
+                    $field[5] // $put_in_category
+                );
+            }
+            $cat_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', ['c_name' => 'links']);
+            set_global_category_access('catalogues_catalogue', 'links');
+            set_global_category_access('catalogues_category', $cat_id);
+        }
+
+        if ((($content === null) || (in_array('have_default_catalogues_contacts', $content))) && (!has_predefined_content('catalogues', 'have_default_catalogues_contacts'))) {
+            require_lang('catalogues');
+            require_code('permissions2');
+            require_code('catalogues2');
+            require_code('lang3');
+            actual_add_catalogue('contacts', lang_code_to_default_content('c_title', 'CONTACTS', false, 2), lang_code_to_default_content('c_description', 'DEFAULT_CATALOGUE_CONTACTS_DESCRIPTION', true, 2), C_DT_FIELDMAPS, 0, '', 30);
+            $fields = [
+                ['CONTACT_FIRST_NAME', '', 'short_text', 0, 1],
+                ['CONTACT_LAST_NAME', '', 'short_text', 1, 1],
+                ['EMAIL_ADDRESS', '', 'short_text', 0, 0],
+                ['CONTACT_COMPANY', '', 'short_text', 0, 0],
+                ['CONTACT_HOMEADDRESS', '', 'short_text', 0, 0],
+                ['CONTACT_CITY', '', 'short_text', 0, 0],
+                ['CONTACT_HOMEPHONE', '', 'short_text', 0, 0],
+                ['CONTACT_WORKPHONE', '', 'short_text', 0, 0],
+                ['CONTACT_HOMEPAGE', '', 'short_text', 0, 0],
+                ['CONTACT_IM', '', 'short_text', 0, 0],
+                ['NOTES', '', 'long_text', 0, 0],
+                ['CONTACT_PHOTO', '', 'picture', 0, 0],
+            ];
+            foreach ($fields as $i => $field) {
+                actual_add_catalogue_field(
+                    'contacts', // $c_name
+                    lang_code_to_default_content('cf_name', $field[0], false, 2), // $name
+                    insert_lang('cf_description', '', 3), // $description
+                    $field[2], // $type
+                    $i, // $order
+                    $field[3], // $defines_order
+                    1, // $visible
+                    '', // $default
+                    $field[4], // $required
+                    1,
+                    1,
+                    0
+                );
+            }
+            actual_add_catalogue_category('contacts', lang_code_to_default_content('cc_title', 'CONTACTS', false, 2), '', '', null, '');
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('have_default_catalogues_projects', $content))) && (has_predefined_content('catalogues', 'have_default_catalogues_projects'))) {
+            require_lang('catalogues');
+            require_code('catalogues2');
+            actual_delete_catalogue('projects');
+
+            require_code('menus2');
+            delete_menu_item_simple(do_lang('DEFAULT_CATALOGUE_PROJECTS_TITLE'));
+            delete_menu_item_simple('_SEARCH:cms_catalogues:add_entry:catalogue_name=projects');
+            delete_menu_item_simple('_SEARCH:catalogues:index:projects');
+        }
+
+        if ((($content === null) || (in_array('have_default_catalogues_faqs', $content))) && (has_predefined_content('catalogues', 'have_default_catalogues_faqs'))) {
+            require_lang('catalogues');
+            require_code('catalogues2');
+            actual_delete_catalogue('faqs');
+
+            require_code('menus2');
+            delete_menu_item_simple('_SEARCH:catalogues:index:faqs');
+        }
+
+        if ((($content === null) || (in_array('have_default_catalogues_links', $content))) && (has_predefined_content('catalogues', 'have_default_catalogues_links'))) {
+            require_lang('catalogues');
+            require_code('catalogues2');
+            actual_delete_catalogue('links');
+
+            require_code('menus2');
+            delete_menu_item_simple('_SEARCH:catalogues:index:links');
+        }
+
+        if ((($content === null) || (in_array('have_default_catalogues_contacts', $content))) && (has_predefined_content('catalogues', 'have_default_catalogues_contacts'))) {
+            require_lang('catalogues');
+            require_code('catalogues2');
+            actual_delete_catalogue('contacts');
+
+            require_code('menus2');
+            delete_menu_item_simple('_SEARCH:catalogues:index:contacts');
+        }
+    }
 }

@@ -1403,4 +1403,133 @@ class Hook_addon_registry_galleries
 
         add_image(lorem_phrase(), 'member_' . strval(get_member()) . '_lorem_2', lorem_chunk(), placeholder_image_url(), '', 1, 1, 1, 1, '');
     }
+
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content()
+    {
+        require_lang('homepage_hero_slider');
+
+        $default_homepage_hero_slider_category = 'homepage_hero_slider';
+
+        $default_homepage_hero_slides_urls = [
+            'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
+            'data/images/homepage_hero_slider/full/rustic.jpg',
+            'data/images/homepage_hero_slider/full/waterfall.jpg',
+        ];
+
+        $where = [];
+        foreach ($default_homepage_hero_slides_urls as $url) {
+            $where[] = '(' . db_string_equal_to('cat', $default_homepage_hero_slider_category) . ' AND ' . db_string_equal_to('url', $url) . ')';
+        }
+        $or_list = implode(' OR ', $where);
+
+        $installed = ($GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', [], ' AND (' . $or_list . ')') > 0);
+
+        return [
+            'have_default_homepage_hero_slides' => [
+                'title' => do_lang_tempcode('HAVE_DEFAULT_HOMEPAGE_HERO_SLIDES'),
+                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_HOMEPAGE_HERO_SLIDES'),
+                'installed' => $installed,
+            ],
+        ];
+    }
+
+    /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('have_default_homepage_hero_slides', $content))) && (!has_predefined_content('galleries', 'have_default_homepage_hero_slides'))) {
+            require_lang('homepage_hero_slider');
+            require_code('galleries2');
+            require_code('lang3');
+
+            add_gallery('homepage_hero_slider', 'Homepage Hero Slider', 'Slides for the homepage hero slider', '', 'root', 1, 1, 0, GALLERY_LAYOUT_MODE_DEFAULT, '', '', '', '', '', 0, 0);
+            set_global_category_access('galleries', 'homepage_hero_slider');
+
+            $image_owner_id = get_first_admin_user();
+            foreach (['bastei_bridge', 'rustic', 'waterfall'] as $i => $img) {
+                $slider_insert_map = null;
+                $langs = find_all_langs();
+                $langs = [user_lang() => $langs[user_lang()]] + $langs;
+                foreach ($langs as $lang => $lang_type) {
+                    if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub
+                        $slide_contents = trim('
+{+START,INCLUDE,GALLERY_HOMEPAGE_HERO_SLIDE}
+    HEADLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_HEADLINE', null, null, null, $lang) . '
+    SUBLINE=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_SUBLINE', null, null, null, $lang) . '
+    TEXT=' . do_lang('DEFAULT_SLIDE' . strval($i + 1) . '_TEXT', null, null, null, $lang) . '
+    LINK1_TEXT=' . do_lang('DEFAULT_LINK1_TEXT', null, null, null, $lang) . '
+    LINK2_TEXT=' . do_lang('DEFAULT_LINK2_TEXT', null, null, null, $lang) . '
+{+END}
+                        ');
+
+                        if ($lang == user_lang()) {
+                            $slider_insert_map = insert_lang('the_description', $slide_contents, 3, null, true, null, true);
+                        } elseif (multi_lang_content()) {
+                            insert_lang('the_description', $slide_contents, 3, null, true, $slider_insert_map['the_description'], $lang, true);
+                        }
+                    }
+                }
+
+                add_image(
+                    lang_code_to_default_content('title', 'DEFAULT_SLIDE_X', false, 2, null, integer_format($i + 1)),
+                    'homepage_hero_slider',
+                    $slider_insert_map,
+                    'data/images/homepage_hero_slider/full/' . $img . '.jpg',
+                    'data/images/homepage_hero_slider/thumbs/' . $img . '.png',
+                    1,
+                    0,
+                    0,
+                    0,
+                    '',
+                    $image_owner_id,
+                    null,
+                    null,
+                    0
+                );
+            }
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('have_default_homepage_hero_slides', $content))) && (has_predefined_content('galleries', 'have_default_homepage_hero_slides'))) {
+            require_code('galleries2');
+
+            $default_homepage_hero_slider_category = 'homepage_hero_slider';
+
+            // Delete default slide images
+            $default_homepage_hero_slides_urls = [
+                'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
+                'data/images/homepage_hero_slider/full/rustic.jpg',
+                'data/images/homepage_hero_slider/full/waterfall.jpg',
+            ];
+            $where = [];
+            foreach ($default_homepage_hero_slides_urls as $url) {
+                $where[] = '(' . db_string_equal_to('cat', $default_homepage_hero_slider_category) . ' AND ' . db_string_equal_to('url', $url) . ')';
+            }
+            $rows = $GLOBALS['SITE_DB']->query('SELECT id FROM ' . get_table_prefix() . 'images WHERE ' . implode(' OR ', $where));
+            foreach ($rows as $row) {
+                delete_image($row['id']);
+            }
+
+            // Delete the category as well if now empty
+            $image_count = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', ['cat' => $default_homepage_hero_slider_category]);
+            if ($image_count == 0) {
+                $GLOBALS['SITE_DB']->query_delete('galleries', ['name' => $default_homepage_hero_slider_category]);
+            }
+        }
+    }
 }

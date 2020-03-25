@@ -76,7 +76,6 @@ class Module_banners
         if ($upgrade_from === null) {
             require_lang('banners');
             require_code('banners');
-            require_code('lang3');
 
             $GLOBALS['SITE_DB']->create_table('banners', [
                 'name' => '*ID_TEXT',
@@ -109,59 +108,8 @@ class Module_banners
             $GLOBALS['SITE_DB']->create_index('banners', 'campaign_remaining', ['campaign_remaining']);
             $GLOBALS['SITE_DB']->create_index('banners', 'bvalidated', ['validated']);
 
-            $map = [
-                'name' => 'advertise_here',
-                'title_text' => '',
-                'direct_code' => '',
-                'deployment_agreement' => BANNER_FALLBACK,
-                'img_url' => 'data/images/advertise_here.png',
-                'campaign_remaining' => 0,
-                'site_url' => get_base_url() . '/index.php?page=advertise',
-                'hits_from' => 0,
-                'views_from' => 0,
-                'hits_to' => 0,
-                'views_to' => 0,
-                'display_likelihood' => 10,
-                'notes' => do_lang('STOCK_DEFAULT_BANNER_FALLBACK'),
-                'validated' => 1,
-                'add_date' => time(),
-                'submitter' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                'b_type' => '',
-                'expiry_date' => null,
-                'edit_date' => null,
-            ];
-            $map += lang_code_to_default_content('caption', 'ADVERTISE_HERE', true, 1);
-            $GLOBALS['SITE_DB']->query_insert('banners', $map);
-            $banner_a = 'advertise_here';
-
-            $map = [
-                'name' => 'donate',
-                'title_text' => '',
-                'direct_code' => '',
-                'deployment_agreement' => BANNER_PERMANENT,
-                'img_url' => 'data/images/donate.png',
-                'campaign_remaining' => 0,
-                'site_url' => get_base_url() . '/index.php?page=donate',
-                'hits_from' => 0,
-                'views_from' => 0,
-                'hits_to' => 0,
-                'views_to' => 0,
-                'display_likelihood' => 30,
-                'notes' => do_lang('STOCK_DEFAULT_BANNER'),
-                'validated' => 1,
-                'add_date' => time(),
-                'submitter' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                'b_type' => '',
-                'expiry_date' => null,
-                'edit_date' => null,
-            ];
-            $map += lang_code_to_default_content('caption', 'DONATION', true, 1);
-            $GLOBALS['SITE_DB']->query_insert('banners', $map);
-            $banner_b = 'donate';
-
-            require_code('permissions2');
-            set_global_category_access('banners', $banner_a);
-            set_global_category_access('banners', $banner_b);
+            require_code('content2');
+            install_predefined_content('banners');
 
             add_privilege('BANNERS', 'full_banner_setup', false);
             add_privilege('BANNERS', 'view_anyones_banner_stats', false);

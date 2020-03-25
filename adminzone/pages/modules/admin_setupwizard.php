@@ -119,6 +119,7 @@ class Module_admin_setupwizard
         require_css('setupwizard');
         require_code('setupwizard');
         require_javascript('setupwizard');
+        require_code('content2');
 
         $type = get_param_string('type', 'browse');
 

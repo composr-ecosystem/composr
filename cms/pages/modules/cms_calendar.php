@@ -72,6 +72,12 @@ class Module_cms_calendar extends Standard_crud_module
             $ret += manage_custom_fields_entry_points('event');
         }
 
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
+        }
+
         return $ret;
     }
 
@@ -148,6 +154,18 @@ class Module_cms_calendar extends Standard_crud_module
             $this->title = get_screen_title('EXPORT_ICAL');
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_CALENDARS')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return parent::pre_run($top_level);
     }
 
@@ -190,6 +208,12 @@ class Module_cms_calendar extends Standard_crud_module
         if ($type == '_export') {
             $this->_export_ical();
         }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
 
         return new Tempcode();
     }
@@ -213,6 +237,7 @@ class Module_cms_calendar extends Standard_crud_module
                 has_privilege(get_member(), 'edit_own_lowrange_content', 'cms_calendar') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_CALENDAR_EVENT')] : null,
                 has_privilege(get_member(), 'mass_import', 'cms_calendar') ? ['admin/import', ['_SELF', ['type' => 'import'], '_SELF'], do_lang('IMPORT_ICAL')] : null,
                 ['admin/export', ['_SELF', ['type' => 'export'], '_SELF'], do_lang('EXPORT_ICAL')],
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ], manage_custom_fields_donext_link('event')),
             do_lang('MANAGE_CALENDARS')
         );
@@ -1302,6 +1327,28 @@ class Module_cms_calendar extends Standard_crud_module
     {
         require_code('calendar_ical');
         output_ical();
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('calendar', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('calendar', $this->title);
     }
 }
 
