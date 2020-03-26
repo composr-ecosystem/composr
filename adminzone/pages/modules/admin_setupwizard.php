@@ -786,16 +786,22 @@ class Module_admin_setupwizard
         }
 
         $main_blocks = [];
+        $either_blocks = [];
         $side_blocks = [];
         $hooks = find_all_hook_obs('modules', 'admin_setupwizard', 'Hook_sw_');
         foreach ($hooks as $hook => $ob) {
-            if (post_param_integer('addon_' . $hook, 0) == 1) {
+            if ((post_param_integer('addon_' . $hook, 0) == 1) || (substr($hook, 0, 5) == 'core_') || ($hook == 'core')) {
                 if (method_exists($ob, 'get_blocks')) {
                     $ret = $ob->get_blocks();
                     foreach ($ret as $block_name => $block_details) {
-                        if (substr($block_name, 0, 5) != 'side_') {
+                        $can_be_main = (($block_details[0] & BLOCK_POSITION_MAIN) != 0) || (($block_details[0] & BLOCK_POSITION_CELL) != 0);
+                        $can_be_side = (($block_details[0] & BLOCK_POSITION_PANEL) != 0);
+
+                        if (($can_be_main) && ($can_be_side)) {
+                            $either_blocks[$block_name] = $block_details;
+                        } elseif ($can_be_main) {
                             $main_blocks[$block_name] = $block_details;
-                        } else {
+                        } elseif ($can_be_side) {
                             $side_blocks[$block_name] = $block_details;
                         }
                     }
@@ -803,9 +809,10 @@ class Module_admin_setupwizard
             }
         }
         ksort($main_blocks);
+        ksort($either_blocks);
         ksort($side_blocks);
 
-        if (empty($main_blocks) && empty($side_blocks)) {
+        if (empty($main_blocks) && empty($either_blocks) && empty($side_blocks)) {
             return $this->step7();
         }
 
@@ -820,9 +827,11 @@ class Module_admin_setupwizard
         require_lang('zones');
         require_code('zones2');
 
-        foreach (['HOME' => $main_blocks, 'PANELS' => $side_blocks] as $block_section_header => $block_set) {
+        foreach (['HOME' => $main_blocks, 'GENERAL' => $either_blocks, 'PANELS' => $side_blocks] as $block_section_header => $block_set) {
             $tmp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'dfc20251e4f6b37ec1e046d0903250aa', 'TITLE' => do_lang_tempcode($block_section_header)]);
             $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
+
+            ksort($block_set);
 
             foreach ($block_set as $block => $block_details) {
                 if ((!file_exists(get_file_base() . '/sources_custom/blocks/' . $block . '.php')) && (!file_exists(get_file_base() . '/sources/blocks/' . $block . '.php'))) {
@@ -842,6 +851,7 @@ class Module_admin_setupwizard
                         }
                     }
                 }
+
                 $main_list = new Tempcode();
                 $main_list->attach(form_input_list_entry('NO', $position === null, do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_NO')));
                 if (($block_details[0] & BLOCK_POSITION_MAIN) != 0) {
