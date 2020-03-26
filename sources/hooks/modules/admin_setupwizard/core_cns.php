@@ -99,7 +99,8 @@ class Hook_sw_core_cns
             }
             $fields->attach(form_input_list(do_lang_tempcode('RANK_SET'), do_lang_tempcode('DESCRIPTION_RANK_SET'), 'rank_set', $rank_set_options));
 
-            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_FULL_EMOTICON_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_FULL_EMOTICON_SET'), 'have_default_full_emoticon_set', $field_defaults['have_default_full_emoticon_set'] == '1'));
+            require_code('cns_general_action2');
+            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_FULL_EMOTICON_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_FULL_EMOTICON_SET', escape_html(integer_format(cns_get_num_emoticons_on_disk()))), 'have_default_full_emoticon_set', $field_defaults['have_default_full_emoticon_set'] == '1'));
 
             $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CPF_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CPF_SET'), 'have_default_cpf_set', $field_defaults['have_default_cpf_set'] == '1'));
         }

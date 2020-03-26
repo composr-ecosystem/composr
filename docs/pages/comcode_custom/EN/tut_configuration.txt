@@ -60,8 +60,6 @@ This is described in more detail in the [page="_SEARCH:tut_notifications"]Notifi
 [media width="150" description="The most important area of the configuration are the General options in Site options" float="right"]data_custom/images/docs/tut_configuration/configuration_actual.png[/media]
 You'll want to configure your configuration, at Admin Zone > Setup > Configuration.
 
-If you didn't use the Setup Wizard you will probably have noticed by now that many options are initially set to derivatives of '(Unnamed)'. Don't worry, all these can all be changed as suits your website.
-
 When you visit the full configuration page to fine tune your configuration, you will see that configuration options are split into a number of sections and subsections.
 
 The most important options are in 'Site options', choose that and scroll down your browser window until you find the subsection entitled, 'General'. Once done, scroll to the bottom of the page and click the 'Save' button.

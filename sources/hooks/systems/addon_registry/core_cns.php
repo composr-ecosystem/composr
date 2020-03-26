@@ -1820,21 +1820,20 @@ class Hook_addon_registry_core_cns
         $ret = [];
 
         require_lang('cns');
+        require_code('cns_general_action2');
         list($core_emoticons, $supported_emoticons) = $this->extended_emoticons();
         $_extended_emoticons = [];
-        foreach ($core_emoticons as $_) {
-            list($emoticon) = $_;
-            $_extended_emoticons[] = db_string_not_equal_to('e_code', $emoticon);
+        foreach (array_keys($core_emoticons) as $code) {
+            $_extended_emoticons[] = db_string_equal_to('e_code', $code);
         }
-        foreach ($supported_emoticons as $_) {
-            list($emoticon) = $_;
-            $_extended_emoticons[] = db_string_not_equal_to('e_code', $emoticon);
+        foreach (array_keys($supported_emoticons) as $code) {
+            $_extended_emoticons[] = db_string_equal_to('e_code', $code);
         }
         $or_list = implode(' OR ', $_extended_emoticons);
         $installed = ($GLOBALS['FORUM_DB']->query_select_value('f_emoticons', 'COUNT(*)', [], ' AND (' . $or_list . ')') > 0);
         $ret['have_default_full_emoticon_set'] = [
             'title' => do_lang_tempcode('HAVE_DEFAULT_FULL_EMOTICON_SET'),
-            'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_FULL_EMOTICON_SET'),
+            'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_FULL_EMOTICON_SET', escape_html(integer_format(cns_get_num_emoticons_on_disk()))),
             'installed' => $installed,
         ];
 
@@ -1900,13 +1899,11 @@ class Hook_addon_registry_core_cns
         if ((($content === null) || (in_array('have_default_full_emoticon_set', $content))) && (has_predefined_content('core_cns', 'have_default_full_emoticon_set'))) {
             list($core_emoticons, $supported_emoticons) = $this->extended_emoticons();
             $_extended_emoticons = [];
-            foreach ($core_emoticons as $_) {
-                list($emoticon) = $_;
-                $_extended_emoticons[] = db_string_not_equal_to('e_code', $emoticon);
+            foreach (array_keys($core_emoticons) as $code) {
+                $_extended_emoticons[] = db_string_equal_to('e_code', $code);
             }
-            foreach ($supported_emoticons as $_) {
-                list($emoticon) = $_;
-                $_extended_emoticons[] = db_string_not_equal_to('e_code', $emoticon);
+            foreach (array_keys($supported_emoticons) as $code) {
+                $_extended_emoticons[] = db_string_equal_to('e_code', $code);
             }
             $GLOBALS['FORUM_DB']->query('DELETE FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_emoticons WHERE (' . implode(' OR ', $_extended_emoticons) . ')');
         }

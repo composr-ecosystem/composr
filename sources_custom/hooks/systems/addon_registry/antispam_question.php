@@ -122,7 +122,7 @@ class Hook_addon_registry_antispam_question
      */
     public function get_default_icon()
     {
-        return 'themes/default/images/icons/48x48/menu/adminzone/security.png';
+        return 'themes/default/images/icons/menu/adminzone/security.svg';
     }
 
     /**

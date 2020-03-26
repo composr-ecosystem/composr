@@ -5175,7 +5175,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EVIL_POSTED_FORM_UNKNOWN_TOKEN_HACK
         EXAMPLE_COPYRIGHT
         EXAMPLE_DESCRIPTION
-        EXAMPLE_HEADER_TEXT
         EXAMPLE_KEYWORDS
         EXAMPLE_QUESTIONS
         EXAMPLE_SITE_NAME
@@ -7095,6 +7094,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SETUPWIZARD
         SETUPWIZARD_10_DESCRIBE
         SETUPWIZARD_1_DESCRIBE
+        SETUPWIZARD_1_DESCRIBE_SUP
         SETUPWIZARD_1_DESCRIBE_ALT
         SETUPWIZARD_2_DESCRIBE
         SETUPWIZARD_2_DESCRIBE_EXPECTATIONS
@@ -7199,7 +7199,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         STACK_TRACE_INFORMATION
         STAFF_CHECKLIST_MAIL_BODY
         STAFF_CHECKLIST_MAIL_SUBJECT
-        STAFF_EMAIL
         STAFF_LINKS
         STAFF_NEW_TICKET_AS
         STAFF_USERNAME_CHANGED_MAIL

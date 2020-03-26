@@ -54,9 +54,6 @@ class Hook_config_site_name
      */
     public function get_default()
     {
-        if (!function_exists('do_lang')) {
-            return 'Unnamed';
-        }
-        return do_lang('UNNAMED');
+        return get_domain();
     }
 }

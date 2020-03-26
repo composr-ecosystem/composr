@@ -180,6 +180,25 @@ function cns_delete_emoticon($code)
 }
 
 /**
+ * Count the number of emoticons available on disk.
+ *
+ * @return integer Number of emoticons
+ */
+function cns_get_num_emoticons_on_disk()
+{
+    require_code('themes2');
+
+    $cnt = 0;
+    $images = get_all_image_ids_type('cns_emoticons');
+    foreach ($images as $image) {
+        if ((substr($image, -4) != '.gif') && ($image != 'cns_emoticons/none')) {
+            $cnt++;
+        }
+    }
+    return $cnt;
+}
+
+/**
  * Edit a Welcome E-mail.
  *
  * @param  AUTO_LINK $id The ID

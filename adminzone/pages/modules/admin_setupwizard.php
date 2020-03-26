@@ -203,7 +203,16 @@ class Module_admin_setupwizard
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true]);
         $text = new Tempcode();
         $addons_url = build_url(['page' => 'admin_addons'], get_module_zone('admin_addons'));
-        $text->attach(paragraph(do_lang_tempcode($done_once ? 'SETUPWIZARD_1_DESCRIBE_ALT' : 'SETUPWIZARD_1_DESCRIBE', escape_html($addons_url->evaluate()))));
+        if ($done_once) {
+            $text_1 = do_lang_tempcode('SETUPWIZARD_1_DESCRIBE_ALT', escape_html($addons_url->evaluate()));
+        } else {
+            $text_1 = do_lang_tempcode('SETUPWIZARD_1_DESCRIBE', escape_html($addons_url->evaluate()));
+            if (get_param_integer('came_from_installer', 0) == 0) {
+                $text_1->attach(do_lang_tempcode('SETUPWIZARD_1_DESCRIBE_SUP', escape_html($addons_url->evaluate())));
+                $text_1 = protect_from_escaping($text_1);
+            }
+        }
+        $text->attach(paragraph($text_1));
         $rescue_url = build_url(['page' => '', 'keep_safe_mode' => '1'], '');
         $text->attach(paragraph(do_lang_tempcode('SETUPWIZARD_SAFE_MODE', escape_html($rescue_url->evaluate()), do_template('ICON', ['_GUID' => '049d21a64c40a98fc06229bb3985c85a', 'NAME' => 'tool_buttons/software_chat']))));
         $submit_name = do_lang_tempcode('START');
@@ -342,10 +351,7 @@ class Module_admin_setupwizard
         $site_name = get_option('site_name');
         $description = get_option('description');
         $site_scope = get_option('site_scope');
-        $_header_text = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', ['zone_name' => '']);
-        $header_text = get_translated_text($_header_text);
         $copyright = get_option('copyright');
-        $staff_address = get_option('staff_address');
         $keywords = get_option('keywords');
         $google_analytics = get_option('google_analytics');
         $timezone = get_site_timezone();
@@ -359,10 +365,7 @@ class Module_admin_setupwizard
         if ($site_scope == '???') {
             $site_scope = do_lang('EXAMPLE_SITE_SCOPE');
         }
-        if ($header_text == 'A site about ???') {
-            $header_text = do_lang('EXAMPLE_HEADER_TEXT');
-        }
-        if ($copyright == 'Copyright &copy;, ???, 2006') {
+        if (strpos($copyright, '???') !== false) {
             $copyright = do_lang('EXAMPLE_COPYRIGHT');
         }
         if ($keywords == '') {
@@ -375,12 +378,6 @@ class Module_admin_setupwizard
 
         $fields->attach(form_input_line(do_lang_tempcode('SITE_SCOPE'), do_lang_tempcode('CONFIG_OPTION_site_scope'), 'site_scope', $site_scope, true));
 
-        $fields->attach(form_input_line(do_lang_tempcode('HEADER_TEXT'), do_lang_tempcode('DESCRIPTION_HEADER_TEXT'), 'header_text', $header_text, false));
-
-        $fields->attach(form_input_line(do_lang_tempcode('COPYRIGHT'), do_lang_tempcode('CONFIG_OPTION_copyright'), 'copyright', $copyright, false));
-
-        $fields->attach(form_input_line(do_lang_tempcode('STAFF_EMAIL'), do_lang_tempcode('CONFIG_OPTION_staff_address'), 'staff_address', $staff_address, true));
-
         $fields->attach(form_input_line(do_lang_tempcode('KEYWORDS'), do_lang_tempcode('CONFIG_OPTION_keywords'), 'keywords', $keywords, false));
 
         $timezone_list = '';
@@ -391,15 +388,8 @@ class Module_admin_setupwizard
 
         $fields->attach(form_input_line(do_lang_tempcode('GOOGLE_ANALYTICS'), do_lang_tempcode('CONFIG_OPTION_google_analytics'), 'google_analytics', $google_analytics, false));
 
-        $fixed_width = get_theme_option('fixed_width', null, post_param_string('source_theme', 'default'));
-        if (get_theme_option('setupwizard__lock_fixed_width_choice', null, post_param_string('source_theme', 'default')) == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('FIXED_WIDTH'), do_lang_tempcode('CONFIG_OPTION_fixed_width'), 'fixed_width', $fixed_width == '1'));
-        } else {
-            $hidden .= static_evaluate_tempcode(form_input_hidden('fixed_width', $fixed_width));
-        }
-
         if (get_theme_option('setupwizard__provide_cms_advert_choice', null, post_param_string('source_theme', 'default')) == '1') {
-            $panel_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt';
+            $panel_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt';
             if (file_exists($panel_path)) {
                 $include_cms_advert = strpos(cms_file_get_contents_safe($panel_path, FILE_READ_LOCK), 'logos/') !== false;
             } else {
@@ -411,13 +401,13 @@ class Module_admin_setupwizard
         }
 
         switch (get_option('minimum_password_length')) {
-            case '8':
+            case '10':
                 $security_level = 'high';
                 break;
             case '5':
                 $security_level = 'low';
                 break;
-            case '6':
+            case '8':
             default:
                 $security_level = 'medium';
                 break;
@@ -1073,7 +1063,6 @@ class Module_admin_setupwizard
         require_code('files');
         require_code('images');
 
-        $header_text = post_param_string('header_text');
         require_code('fonts');
         $font = post_param_string('font', find_default_font());
         $installprofile = post_param_string('installprofile', '');
@@ -1174,20 +1163,10 @@ class Module_admin_setupwizard
             set_option('copyright', 'Copyright &copy; ' . $name . ' ' . date('Y'));
             set_option('description', post_param_string('description'));
             set_option('site_scope', post_param_string('site_scope'));
-            set_option('copyright', post_param_string('copyright'));
-            set_option('staff_address', post_param_string('staff_address'));
+            set_option('copyright', 'Copyright &copy; $CURRENT_YEAR=2020 ' . $name);
             set_option('keywords', post_param_string('keywords'));
             set_option('timezone', post_param_string('timezone'));
             set_option('google_analytics', post_param_string('google_analytics'));
-            set_option('fixed_width', post_param_string('fixed_width', '0'));
-
-            $a = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', ['zone_name' => '']);
-            $GLOBALS['SITE_DB']->query_update('zones', lang_remap('zone_header_text', $a, $header_text), ['zone_name' => ''], '', 1);
-
-            $b = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => 'site']);
-            if ($b !== null) {
-                $GLOBALS['SITE_DB']->query_update('zones', lang_remap('zone_header_text', $b, $header_text), ['zone_name' => 'site'], '', 1);
-            }
 
             // Security level...
 
@@ -1216,8 +1195,8 @@ class Module_admin_setupwizard
                 ],
                 'minimum_password_length' => [
                     'low' => '5',
-                    'medium' => '6',
-                    'high' => '8',
+                    'medium' => '8',
+                    'high' => '10',
                 ],
                 'minimum_password_strength' => [
                     'low' => '2',
