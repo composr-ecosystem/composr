@@ -366,7 +366,14 @@ class Module_admin_addons
         $addons_installed = find_installed_addons(false, false); // addon name => addon details
         $addons_available_for_installation = find_available_addons(false); // filename => addon details
 
-        $_tpl_addons = ['red' => [], 'green' => []];
+        $tpl_addons = [];
+        $_tpl_addons = [
+            'COLOURS' => [
+                'red' => ['ADDONS' => []],
+                'green' => ['ADDONS' => []],
+                'orange' => ['ADDONS' => []],
+            ],
+        ];
 
         $updated_addons_arr = find_updated_addons();
         $updated_addons = '';
@@ -392,7 +399,7 @@ class Module_admin_addons
                 $cache_identifier = $addon_name;
                 $test = get_cache_entry('_addon_installed_tpl', $cache_identifier, CACHE_AGAINST_NOTHING_SPECIAL, 10000);
                 if (is_array($test)) {
-                    list($colour, $addon_tpl) = $test;
+                    list($category, $colour, $addon_tpl) = $test;
                 }
             }
 
@@ -400,6 +407,8 @@ class Module_admin_addons
                 if ($row === null) {
                     $row = read_addon_info($addon_name);
                 }
+
+                $category = $row['category'];
 
                 $actions = new Tempcode();
                 $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
@@ -441,24 +450,31 @@ class Module_admin_addons
 
                 if ($do_caching) {
                     require_code('caches2');
-                    set_cache_entry('_addon_installed_tpl', 60 * 24, $cache_identifier, [$colour, $addon_tpl]);
+                    set_cache_entry('_addon_installed_tpl', 60 * 24, $cache_identifier, [$category, $colour, $addon_tpl]);
                 }
             }
 
-            $_tpl_addons[$colour][$addon_name] = $addon_tpl;
+            if (!array_key_exists($category, $tpl_addons)) {
+                $tpl_addons[$category] = $_tpl_addons;
+            }
+            $tpl_addons[$category]['COLOURS'][$colour]['ADDONS'][$addon_name] = $addon_tpl;
         }
 
         // Show addons available for installation
         foreach ($addons_available_for_installation as $filename => $addon_info) {
-            if (!array_key_exists($addon_info['name'], $addons_installed)) {
-                $colour = null;
+            $addon_name = $addon_info['name'];
+
+            if (!array_key_exists($addon_name, $addons_installed)) {
+                $colour = 'orange';
                 $addon_tpl = null;
 
+                $category = $addon_info['category'];
+
                 if ($do_caching) {
-                    $cache_identifier = $addon_info['name'];
+                    $cache_identifier = $addon_name;
                     $test = get_cache_entry('_addon_available_tpl', $cache_identifier, CACHE_AGAINST_NOTHING_SPECIAL, 10000);
                     if (is_array($test)) {
-                        list($colour, $addon_tpl) = $test;
+                        list($category, $colour, $addon_tpl) = $test;
                     }
                 }
 
@@ -466,14 +482,14 @@ class Module_admin_addons
                     $actions = new Tempcode();
                     $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => 'e6e2bdac62c0d3afcd5251b3d525a1c9',
-                        'NAME' => $addon_info['name'],
+                        'NAME' => $addon_name,
                         'URL' => build_url(['page' => '_SELF', 'type' => 'addon_install', 'file' => $filename], '_SELF'),
                         'ACTION_TITLE' => do_lang_tempcode('INSTALL'),
                         'ICON' => 'admin/install',
                         'GET' => true,
                     ]));
                     $actions->attach(do_template('COLUMNED_TABLE_ACTION', ['_GUID' => '657b47e4039d573b98417add3c3a3f11',
-                        'NAME' => $addon_info['name'],
+                        'NAME' => $addon_name,
                         'URL' => build_url(['page' => '_SELF', 'type' => 'addon_tar_delete', 'file' => $filename], '_SELF'),
                         'ACTION_TITLE' => do_lang_tempcode('DELETE'),
                         'ICON' => 'admin/delete',
@@ -487,8 +503,8 @@ class Module_admin_addons
                     }
                     $pretty_name = do_template('ADDON_NAME', [
                         '_GUID' => '4802523382da01432bf04120ad01c677',
-                        'IMAGE_URL' => find_addon_icon($addon_info['name'], false, $addon_info['tar_path']),
-                        'NAME' => $addon_info['name'],
+                        'IMAGE_URL' => find_addon_icon($addon_name, false, $addon_info['tar_path']),
+                        'NAME' => $addon_name,
                     ]);
 
                     $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', [
@@ -497,10 +513,10 @@ class Module_admin_addons
                         'DESCRIPTION' => $description,
                         'DESCRIPTION_PARSED' => comcode_to_tempcode($description),
                         'FILE_LIST' => $file_list,
-                        'COLOUR' => 'orange',
+                        'COLOUR' => $colour,
                         'STATUS' => $status,
                         'PRETTY_NAME' => $pretty_name,
-                        'NAME' => $addon_info['name'],
+                        'NAME' => $addon_name,
                         'FILENAME' => $filename,
                         'AUTHOR' => $addon_info['author'],
                         'ORGANISATION' => $addon_info['organisation'],
@@ -515,20 +531,21 @@ class Module_admin_addons
 
                     if ($do_caching) {
                         require_code('caches2');
-                        set_cache_entry('_addon_available_tpl', 60 * 24, $cache_identifier, [$colour, $addon_tpl]);
+                        set_cache_entry('_addon_available_tpl', 60 * 24, $cache_identifier, [$category, $colour, $addon_tpl]);
                     }
                 }
 
-                $_tpl_addons[$colour][$addon_info['name']] = $addon_tpl;
+                if (!array_key_exists($category, $tpl_addons)) {
+                    $tpl_addons[$category] = $_tpl_addons;
+                }
+                $tpl_addons[$category]['COLOURS'][$colour]['ADDONS'][$addon_name] = $addon_tpl;
             }
         }
 
-        $tpl_addons = new Tempcode();
-        foreach ($_tpl_addons as $__tpl_addons) {
-            ksort($__tpl_addons);
-
-            foreach ($__tpl_addons as $t) {
-                $tpl_addons->attach($t);
+        ksort($tpl_addons, SORT_NATURAL | SORT_FLAG_CASE); // Sort by Category
+        foreach ($tpl_addons as $category => &$_tpl_addons) {
+            foreach ($_tpl_addons['COLOURS'] as $colour => &$__tpl_addons) {
+                ksort($__tpl_addons['ADDONS'], SORT_NATURAL | SORT_FLAG_CASE); // Sort by addon name within Category & Colour
             }
         }
 
@@ -537,7 +554,7 @@ class Module_admin_addons
         return do_template('ADDON_SCREEN', [
             '_GUID' => 'ed6c80c29fcae333323ef03619954b6b',
             'TITLE' => $this->title,
-            'ADDONS' => $tpl_addons,
+            'ADDON_STRUCTURE' => $tpl_addons,
             'MULTI_ACTION' => $multi_action,
             'UPDATED_ADDONS' => $updated_addons,
         ]);
@@ -1236,6 +1253,9 @@ class Module_admin_addons
                 'Information Display',
                 'New Features',
                 'Third Party Integration',
+                'Architecture',
+                'Community',
+                'eCommerce',
                 'Uncategorised/Alpha',
             ];
             $category = 'Uncategorised/Alpha';

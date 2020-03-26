@@ -45,6 +45,16 @@ class Hook_addon_registry_core_html_abstractions
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Architecture';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon

@@ -132,6 +132,21 @@ function find_addon_category_download_category($category_name, $parent_id = null
                     $has_submit_access = true;
                     break;
 
+                case 'Architecture':
+                    $theme_image = 'icons/admin/component';
+                    $has_submit_access = true;
+                    break;
+
+                case 'Community':
+                    $theme_image = 'icons/news/community';
+                    $has_submit_access = true;
+                    break;
+
+                case 'eCommerce':
+                    $theme_image = 'icons/menu/adminzone/audit/ecommerce/ecommerce';
+                    $has_submit_access = true;
+                    break;
+
                 case 'Uncategorised/Alpha':
                     $theme_image = 'icons/spare/maintenance';
                     $has_submit_access = true;

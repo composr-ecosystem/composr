@@ -46,7 +46,7 @@ class Hook_addon_registry_classified_ads
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'eCommerce';
     }
 
     /**

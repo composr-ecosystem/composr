@@ -457,7 +457,7 @@ class Module_admin_setupwizard
         $_addons_not_installed = find_available_addons(false, false);
         $addons_not_installed = list_to_map('name', $_addons_not_installed);
 
-        $fields = '';
+        $fields = [];
         $fields_advanced = '';
 
         $installprofile = post_param_string('installprofile', '');
@@ -644,22 +644,32 @@ class Module_admin_setupwizard
                 if ($advanced) {
                     $fields_advanced .= $field->evaluate();
                 } else {
-                    $fields .= $field->evaluate();
+                    if (!array_key_exists($row['category'], $fields)) {
+                        $fields[$row['category']] = '';
+                    }
+                    $fields[$row['category']] .= $field->evaluate();
                 }
             } elseif (!$is_core) {
                 $hidden .= static_evaluate_tempcode(form_input_hidden('addon_' . $addon_name, '1'));
             }
         }
 
-        $fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '00948cc876d0ecb8b511800eabd8cae2', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
-        $fields .= $fields_advanced;
+        ksort($fields, SORT_NATURAL | SORT_FLAG_CASE); // Sort by category name
+
+        $_fields = '';
+        foreach ($fields as $category => $category_fields) {
+            $_fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '10948cc876d0ecb8b511800eabd8cae2', 'SECTION_HIDDEN' => false, 'TITLE' => $category]));
+            $_fields .= $category_fields;
+        }
+        $_fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '00948cc876d0ecb8b511800eabd8cae2', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $_fields .= $fields_advanced;
 
         $inner = do_template('FORM', [
             '_GUID' => '0f361a3ac0e020ba71f3a7a900eca0e4',
             'NO_SIZING' => true,
             'SKIP_WEBSTANDARDS' => true,
             'SKIPPABLE' => 'skip_4',
-            'FIELDS' => $fields,
+            'FIELDS' => $_fields,
             'URL' => $post_url,
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',

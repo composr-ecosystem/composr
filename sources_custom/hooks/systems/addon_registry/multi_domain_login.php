@@ -46,7 +46,7 @@ class Hook_addon_registry_multi_domain_login
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Architecture';
     }
 
     /**

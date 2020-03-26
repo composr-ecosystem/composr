@@ -46,7 +46,9 @@ class Hook_addon_registry_facebook_support
      */
     public function get_category()
     {
-        return is_maintained('facebook') ? 'Third Party Integration' : 'Development';
+        // Best to just categorise properly as it's not bundled 
+        //return is_maintained('facebook') ? 'Third Party Integration' : 'Development';
+        return 'Third Party Integration';
     }
 
     /**

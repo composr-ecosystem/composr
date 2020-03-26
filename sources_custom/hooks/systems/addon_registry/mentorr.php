@@ -46,7 +46,7 @@ class Hook_addon_registry_mentorr
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Community';
     }
 
     /**

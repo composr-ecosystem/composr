@@ -46,7 +46,7 @@ class Hook_addon_registry_less
      */
     public function get_category()
     {
-        return 'Admin Utilities';
+        return 'Development';
     }
 
     /**

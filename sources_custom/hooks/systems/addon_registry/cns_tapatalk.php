@@ -46,7 +46,9 @@ class Hook_addon_registry_cns_tapatalk
      */
     public function get_category()
     {
-        return is_maintained('tapatalk') ? 'New Features' : 'Development';
+        // Best to just categorise properly as it's not bundled 
+        //return is_maintained('tapatalk') ? 'Community' : 'Development';
+        return 'Community';
     }
 
     /**

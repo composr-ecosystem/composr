@@ -46,6 +46,8 @@ class Hook_addon_registry_google_analytics
      */
     public function get_category()
     {
+        // Best to just categorise properly as it's not bundled 
+        //return is_maintained('google_analytics') ? 'Third Party Integration' : 'Development';
         return 'Third Party Integration';
     }
 

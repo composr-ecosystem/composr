@@ -46,7 +46,7 @@ class Hook_addon_registry_usergroup_field_match
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Architecture';
     }
 
     /**

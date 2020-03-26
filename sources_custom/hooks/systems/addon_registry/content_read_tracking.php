@@ -46,7 +46,7 @@ class Hook_addon_registry_content_read_tracking
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Architecture';
     }
 
     /**

@@ -45,6 +45,16 @@ class Hook_addon_registry_quizzes
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'New Features';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon

@@ -46,7 +46,7 @@ class Hook_addon_registry_pagination_protection
      */
     public function get_category()
     {
-        return 'Development';
+        return 'Architecture';
     }
 
     /**

@@ -46,7 +46,7 @@ class Hook_addon_registry_comcode_html_whitelist
      */
     public function get_category()
     {
-        return 'Admin Utilities';
+        return 'Community';
     }
 
     /**

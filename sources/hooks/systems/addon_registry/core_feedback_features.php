@@ -45,6 +45,16 @@ class Hook_addon_registry_core_feedback_features
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Information Display';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon

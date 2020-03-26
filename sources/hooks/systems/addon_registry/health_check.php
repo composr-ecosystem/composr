@@ -51,7 +51,7 @@ class Hook_addon_registry_health_check
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Admin Utilities';
     }
 
     /**

@@ -45,6 +45,16 @@ class Hook_addon_registry_chat
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Community';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
