@@ -1170,10 +1170,9 @@ class Module_admin_setupwizard
         // Set options
         if (post_param_integer('skip_3', 0) == 0) {
             set_option('site_name', $name);
-            set_option('copyright', 'Copyright &copy; ' . $name . ' ' . date('Y'));
             set_option('description', post_param_string('description'));
             set_option('site_scope', post_param_string('site_scope'));
-            set_option('copyright', 'Copyright &copy; $CURRENT_YEAR=2020 ' . $name);
+            set_option('copyright', do_lang('COPYRIGHTED') . ' &copy; $CURRENT_YEAR=' . date('Y') . ' ' . $name . ', ' . do_lang('POWERED_BY', 'Composr CMS'));
             set_option('keywords', post_param_string('keywords'));
             set_option('timezone', post_param_string('timezone'));
             set_option('google_analytics', post_param_string('google_analytics'));
