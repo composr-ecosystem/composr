@@ -1735,7 +1735,7 @@ class DatabaseConnector
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $skip_safety_check Whether to skip the query safety check
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
      * @param  string $field_prefix All the core fields have a prefix of this on them, so when we fiddle with language lookup we need to use this (only consider this if you're setting $lang_fields)
      * @return ?mixed The results (null: no result set) (empty array: empty result set)
      */
@@ -1816,7 +1816,7 @@ class DatabaseConnector
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $get_insert_id Whether to get an insert ID
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
      * @param  string $field_prefix All the core fields have a prefix of this on them, so when we fiddle with language lookup we need to use this (only consider this if you're setting $lang_fields)
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
      * @return ?mixed The results (null: no result set) (empty array: empty result set)

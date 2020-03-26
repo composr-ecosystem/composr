@@ -1546,7 +1546,7 @@ class Module_admin_setupwizard
      */
     public function install_test_content()
     {
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+        if (($_SERVER['REQUEST_METHOD'] != 'POST') && (strpos($_SERVER['HTTP_REFERER'], get_base_url() . '/install.php?') !== 0)) {
             $post_url = build_url(['page' => '_SELF', 'type' => 'install_test_content'], '_SELF');
 
             return do_template('CONFIRM_SCREEN', [
@@ -1561,6 +1561,11 @@ class Module_admin_setupwizard
         }
 
         install_test_content();
+
+        if (get_param_integer('came_from_installer', 0) == 1) {
+            require_code('templates_redirect_screen');
+            return redirect_screen($this->title, build_url(['page' => ''], ''), do_lang_tempcode('INSTALLED_TEST_CONTENT'));
+        }
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }

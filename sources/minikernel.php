@@ -1241,3 +1241,41 @@ function cms_empty_safe($var)
 {
     return (empty($var)) && ($var !== '0');
 }
+
+/**
+ * Get the Composr cookie path.
+ *
+ * @return ?string The Composr cookie path (null: no special path, global)
+ */
+function get_cookie_path()
+{
+    global $SITE_INFO;
+    $ret = array_key_exists('cookie_path', $SITE_INFO) ? $SITE_INFO['cookie_path'] : '/';
+    return ($ret == '') ? null : $ret;
+}
+
+/**
+ * Get the Composr cookie domain.
+ *
+ * @return string The Composr cookie domain (blank: current domain)
+ */
+function get_cookie_domain()
+{
+    global $SITE_INFO;
+    $ret = array_key_exists('cookie_domain', $SITE_INFO) ? $SITE_INFO['cookie_domain'] : '';
+    return ($ret == '') ? '' : $ret;
+}
+
+/**
+ * Get the session cookie's name.
+ *
+ * @return string The session ID cookie's name
+ */
+function get_session_cookie()
+{
+    global $SITE_INFO;
+    if (empty($SITE_INFO['session_cookie'])) {
+        $SITE_INFO['session_cookie'] = 'cms_session';
+    }
+    return $SITE_INFO['session_cookie'];
+}

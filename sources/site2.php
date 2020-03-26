@@ -170,8 +170,8 @@ function assign_refresh($url, $multiplier = 0.0)
 
     $must_show_message = ($multiplier != 0.0);
 
-    // Fudge so that redirects can't count as flooding
-    if (get_forum_type() == 'cns') {
+    // FUDGE so that redirects can't count as flooding
+    if ((function_exists('get_member')) && (get_forum_type() == 'cns')) {
         require_code('cns_groups');
         $restrict_answer = cns_get_best_group_property($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()), 'flood_control_access_secs');
         if ($restrict_answer != 0) {

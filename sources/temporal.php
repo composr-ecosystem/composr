@@ -114,6 +114,10 @@ function get_site_timezone()
 function get_users_timezone($member_id = null)
 {
     if ($member_id === null) {
+        if (!function_exists('get_member')) {
+            return get_site_timezone();
+        }
+
         $member_id = get_member();
     }
 

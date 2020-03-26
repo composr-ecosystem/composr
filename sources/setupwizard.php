@@ -39,7 +39,9 @@ function install_test_content()
 {
     require_code('lorem');
 
-    uninstall_test_content();
+    if (!running_script('install')) {
+        uninstall_test_content();
+    }
 
     push_query_limiting(false);
     set_mass_import_mode(true);

@@ -64,7 +64,7 @@
 function add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, $title, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year = null, $end_month = null, $end_day = null, $end_monthly_spec_type = 'day_of_month', $end_hour = null, $end_minute = null, $timezone = null, $do_timezone_conv = 1, $member_calendar = null, $validated = 1, $allow_rating = 1, $allow_comments = 1, $allow_trackbacks = 1, $notes = '', $submitter = null, $views = 0, $add_time = null, $edit_time = null, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
 {
     if ($submitter === null) {
-        $submitter = get_member();
+        $submitter = function_exists('get_member') ? get_member() : get_first_admin_user();
     }
     if ($add_time === null) {
         $add_time = time();
@@ -150,7 +150,9 @@ function add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, 
         seo_meta_set_for_explicit('event', strval($id), $meta_keywords, $meta_description);
     }
 
-    delete_cache_entry('side_calendar');
+    if (function_exists('delete_cache_entry')) {
+        delete_cache_entry('side_calendar');
+    }
 
     if ($validated == 1) {
         if (addon_installed('content_privacy')) {

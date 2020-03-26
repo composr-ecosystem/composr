@@ -113,6 +113,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        LAUNCH_WITH_TEST_CONTENT
+        LAUNCH_IN_BLANK_STATE
         STOCK_DEFAULT_BANNER_FALLBACK
         STOCK_DEFAULT_BANNER
         HTML
@@ -687,6 +689,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNKNOWN_CSS_MODE
         CORRUPT_CSS_MODE
         INSTALL_TEST_CONTENT
+        INSTALLED_TEST_CONTENT
         DESCRIPTION_INSTALL_TEST_CONTENT
         WARNING_SERVER_SOFTWARE
         WARNING_ISSUE_WITH_ALWAYS_POPULATE_RAW_POST_DATA
@@ -5346,7 +5349,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FINAL_INSTRUCTIONS_A
         FINAL_INSTRUCTIONS_A_SUP
         FINAL_INSTRUCTIONS_B
-        FINAL_INSTRUCTIONS_C
         FIND_BROKEN_FILEDUMP_LINKS
         FIND_IN_SITEMAP
         FIND_IN_SITEMAP_EDITOR
@@ -5383,6 +5385,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LOGIN_ERROR_SECRECY
         CONFIG_OPTION_login_error_secrecy
         FORUM_BASE_URL_EXAMPLE
+        INSTALLER_EMAIL_ADDRESS
         FORUM_BASE_URL_INVALID
         FORUM_BASE_URL_UNCHANGED
         FORUM_CACHE_CLEAR
