@@ -3,6 +3,7 @@
 /safe_mode_temp
 
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
+/lorem
 /psalm.xml
 /composer.phar
 /phpcs.phar
