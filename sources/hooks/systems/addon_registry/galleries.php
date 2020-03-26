@@ -1471,7 +1471,7 @@ class Hook_addon_registry_galleries
                         ');
 
                         if ($lang == user_lang()) {
-                            $slider_insert_map = insert_lang('the_description', $slide_contents, 3, null, true, null, true);
+                            $slider_insert_map = insert_lang('the_description', $slide_contents, 3, null, true, null, null, true);
                         } elseif (multi_lang_content()) {
                             insert_lang('the_description', $slide_contents, 3, null, true, $slider_insert_map['the_description'], $lang, true);
                         }
