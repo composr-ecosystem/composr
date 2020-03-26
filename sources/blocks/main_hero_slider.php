@@ -95,30 +95,22 @@ PHP;
             return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '8692692a208449e3862d6ff482dce94b', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('galleries'))]);
         }
 
-        $gallery_name = @cms_empty_safe($map['gallery_name']) ? 'root' : $map['gallery_name'];
-
         $block_id = get_block_id($map);
 
+        $gallery_name = @cms_empty_safe($map['gallery_name']) ? 'root' : $map['gallery_name'];
         $effect = !empty($map['effect']) ? $map['effect'] : 'slide'; // Valid values: 'fade' or 'slide'
-
         $fullscreen = !empty($map['fullscreen']);
-
         $show_indicators = !empty($map['show_indicators']);
-
         $show_scroll_down = !empty($map['show_scroll_down']);
-
         $interval = isset($map['interval']) ? strval(intval($map['interval'])) : false;
-
         $check_perms = isset($map['check']) ? !empty($map['check']) : true;
 
         // Check if the gallery exists
         $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $gallery_name]);
-
         if ($gallery_name === null) {
-            // Maybe the user specified a gallery's full name instead of the code name?
+            // Maybe the user specified a gallery's full name instead of the codename?
             $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['fullname' => $gallery_name]);
         }
-
         if ($gallery_name === null) {
             if ($blank_if_empty) {
                 return new Tempcode();

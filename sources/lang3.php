@@ -344,21 +344,28 @@ function _insert_lang($field_name, $text, $level, $db = null, $comcode = false, 
     if ($comcode && !get_mass_import_mode()) {
         if ($text_parsed === null) {
             if ((function_exists('get_member')) && (!$insert_as_admin)) {
-                $member_id = get_member();
+                $comcode_member_id = get_member();
             } else {
-                $member_id = is_object($GLOBALS['FORUM_DRIVER']) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : 0;
+                // During installation, or when $insert_as_admin explicitly set
+                if (is_object($GLOBALS['FORUM_DRIVER'])) {
+                    require_code('users_active_actions');
+                    $comcode_member_id = get_first_admin_user();
+                } else {
+                    $comcode_member_id = db_get_first_id() + 1;
+                }
                 $insert_as_admin = true;
+                $source_user = $comcode_member_id;
             }
 
             global $OVERRIDE_MEMBER_ID_COMCODE;
             if ($OVERRIDE_MEMBER_ID_COMCODE !== null) {
-                $member = $OVERRIDE_MEMBER_ID_COMCODE;
+                $comcode_member_id = $OVERRIDE_MEMBER_ID_COMCODE;
                 $insert_as_admin = false;
                 $source_user = $OVERRIDE_MEMBER_ID_COMCODE;
             }
 
             require_code('comcode');
-            $_text_parsed = comcode_to_tempcode($text, $member_id, $insert_as_admin, $pass_id, $db, $preparse_mode ? COMCODE_PREPARSE_MODE : COMCODE_NORMAL);
+            $_text_parsed = comcode_to_tempcode($text, $comcode_member_id, $insert_as_admin, $pass_id, $db, $preparse_mode ? COMCODE_PREPARSE_MODE : COMCODE_NORMAL);
             $text_parsed = $_text_parsed->to_assembly();
         }
     } else {
