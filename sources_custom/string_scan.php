@@ -122,6 +122,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BILLING
         FULLSCREEN
         MATCH_TYPE
+        CONFIG_OPTION_password_reset_privacy
+        CONFIG_OPTION_password_reset_privacy_VALUE_disclose
+        CONFIG_OPTION_password_reset_privacy_VALUE_email
+        CONFIG_OPTION_password_reset_privacy_VALUE_silent
+        PASSWORD_RESET_PRIVACY
         CAROUSEL_MODE
         MOSAIC_MODE
         CYCLE_DURATION
@@ -9283,7 +9288,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXPLAINED_BLOCK_MEMBER
         EXPLAINED_UNBLOCK_MEMBER
         EXPLANATION
-        EXT_NO_PASSWORD_CHANGE
+        NO_PASSWORD_RESET_EXTERNAL_ARCHITECTURE
         FAILED
         FAILED_TO_OPEN_POPUP
         FAILURE_UPLOAD_SYNDICATION_AUTH
@@ -9582,15 +9587,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LOGOUT
         LONGITUDE
         LOST_PASSWORD
-        LOST_PASSWORD_CONFIRM
-        LOST_PASSWORD_FINAL
+        LOST_PASSWORD_SUBJECT
+        MAIL_NEW_PASSWORD_SUBJECT
         LOST_PASSWORD_TEXT
         LOST_PASSWORD_TEXT_TEMPORARY
         LOW_STOCK_DISPATCH_FAILED
         MAIL_FORW_A
         MAIL_FORW_B
-        MAIL_NEW_PASSWORD
-        MAIL_NEW_PASSWORD_EMAIL_LOGIN
+        MAIL_NEW_PASSWORD_TEXT
+        MAIL_NEW_PASSWORD_TEXT_EMAIL_LOGIN
         MAIL_POP3_A
         MAIL_POP3_B
         MAIL_QUOTA_A
@@ -9983,7 +9988,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_POSTS
         NO_POSTS_YET
         NO_PT_FROM_ALLOW
-        NO_RESET_ACCESS
+        NO_PASSWORD_RESET_ACCESS
         NO_RESULTS
         NO_RESULTS_DAYS
         NO_RESULTS_SEARCH
@@ -10047,8 +10052,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PASSWORD_MISMATCH
         PASSWORD_NOT_COMPLEX_ENOUGH
         PASSWORD_RESET_BUTTON
-        PASSWORD_RESET_ERROR
-        PASSWORD_RESET_ERROR_2
+        PASSWORD_RESET_ERROR_NO_ACCOUNT_GIVEN
+        PASSWORD_RESET_ERROR_ACCOUNT_NOT_FOUND
         PASSWORD_RESET_ULTRA_BODY
         PASSWORD_RESET_ULTRA_FROM
         PASSWORD_RESET_ULTRA_SUBJECT
@@ -10880,6 +10885,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         YEARLY
         YELLOW
         YES
+        LOST_PASSWORD_NO_ACCOUNT_BODY
+        LOST_PASSWORD_NO_ACCOUNT_SUBJECT
+        LOST_PASSWORD_RESET_ERROR_SUBJECT
+        RESET_CODE_ENTER_MANUALLY
+        RESET_CODE_MAILED_IF_EXISTS
         YESTERDAY
         BILLING_ADDRESS
         CARD_CV2

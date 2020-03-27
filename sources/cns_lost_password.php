@@ -36,38 +36,127 @@ function get_password_reset_process()
  * Send out a lost password e-mail.
  *
  * @param  string $username Username to reset for (may be blank if other is not)
- * @param  EMAIL $email_address E-mail address to set for (may be blank if other is not)
- * @return array A tuple: e-mail address, obfuscated e-mail address that is safe(ish) to display, member ID
+ * @param  EMAIL $email E-mail address to set for (may be blank if other is not)
+ * @return array A tuple: e-mail address (may be blank), member ID (may be null if no member existed but we're not revealing such)
  */
-function lost_password_emailer_step($username, $email_address)
+function lost_password_emailer_step($username, $email)
 {
-    if (($username == '') && ($email_address == '')) {
-        warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR'));
+    require_lang('cns_lost_password');
+
+    // No account specified
+    if (($username == '') && ($email == '')) {
+        warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_NO_ACCOUNT_GIVEN'));
     }
 
+    $password_reset_privacy = get_option('password_reset_privacy');
+    $password_reset_process = get_password_reset_process();
+
+    // Find member
     if ($username != '') {
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
     } else {
-        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email_address);
+        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
     }
     if ($member_id === null) {
-        warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_2'));
+        // No member found...
+
+        if (($email == '') && ($password_reset_privacy == 'email')) {
+            $password_reset_privacy = 'silent'; // Nothing to e-mail!
+        }
+
+        switch ($password_reset_privacy) {
+            case 'disclose':
+                warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_ACCOUNT_NOT_FOUND'));
+                break;
+
+            case 'silent':
+                return [$email, null];
+
+            case 'email':
+                require_code('mail');
+                $subject = do_lang('LOST_PASSWORD_NO_ACCOUNT_SUBJECT', get_site_name());
+                $message = do_lang('LOST_PASSWORD_NO_ACCOUNT_BODY', get_site_name());
+                dispatch_mail($subject, $message, [$email], null, '', '', ['bypass_queue' => true]);
+
+                return [$email, null];
+        }
     }
+
+    // Get account details from the $member_id we now know
+    $email = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-    if (($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == '') && (has_privilege($member_id, 'disable_lost_passwords')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
-        warn_exit(do_lang_tempcode('NO_RESET_ACCESS'));
+
+    // Check we are allowed to do a reset
+    $error_msg = has_lost_password_error($member_id);
+    if ($error_msg !== null) {
+        switch ($password_reset_privacy) {
+            case 'disclose':
+                warn_exit($error_msg);
+                break;
+
+            case 'silent':
+            case 'email':
+                require_code('mail');
+                $subject = do_lang('LOST_PASSWORD_RESET_ERROR_SUBJECT', get_site_name());
+                $message = '[semihtml]' . $error_msg->evaluate() . '[/semihtml]';
+                dispatch_mail($subject, $message, [$email], null, '', '', ['bypass_queue' => true]);
+
+                return [$email, null];
+        }
     }
+
+    // Save new code
+    $code = generate_and_save_password_reset_code($password_reset_process, $member_id);
+
+    // Logging
+    log_it('LOST_PASSWORD', strval($member_id), $username);
+
+    // Send confirm mail
+    send_lost_password_reset_code($password_reset_process, $member_id, $code);
+
+    // Done
+    return [$email, $member_id];
+}
+
+/**
+ * Find if there is something stopping password reset working for a given member.
+ *
+ * @param  MEMBER $member_id Member
+ * @return ?Tempcode Error message (null: none)
+ */
+function has_lost_password_error($member_id)
+{
+    $email = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
+    if ($email == '') {
+        return do_lang_tempcode('MEMBER_NO_EMAIL_ADDRESS_RESET_TO');
+    }
+
     if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'httpauth') {
-        warn_exit(do_lang_tempcode('NO_PASSWORD_RESET_HTTPAUTH'));
+        return do_lang_tempcode('NO_PASSWORD_RESET_HTTPAUTH');
     }
+
     $is_ldap = cns_is_ldap_member($member_id);
     $is_httpauth = cns_is_httpauth_member($member_id);
     if (($is_ldap)/* || ($is_httpauth  Actually covered more explicitly above - over mock-httpauth, like Facebook, may have passwords reset to break the integrations)*/) {
-        warn_exit(do_lang_tempcode('EXT_NO_PASSWORD_CHANGE'));
+        return do_lang_tempcode('NO_PASSWORD_RESET_EXTERNAL_ARCHITECTURE');
     }
 
-    $password_reset_process = get_password_reset_process();
+    if ((has_privilege($member_id, 'disable_lost_passwords')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+        return do_lang_tempcode('NO_PASSWORD_RESET_ACCESS');
+    }
 
+    return null;
+}
+
+/**
+ * Generate and save lost password reset code.
+ *
+ * @param  string $password_reset_process Password reset process being used
+ * @param  MEMBER $member_id Member ID
+ * @return ID_TEXT Reset code
+ */
+function generate_and_save_password_reset_code($password_reset_process, $member_id)
+{
     require_code('crypt');
     $code = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code'); // Re-use existing code if possible, so that overlapping reset e-mails don't cause chaos
     if ($code != '') {
@@ -84,27 +173,35 @@ function lost_password_emailer_step($username, $email_address)
         }
     }
 
+    return $code;
+}
+
+/**
+ * Send a lost password reset code.
+ *
+ * @param  string $password_reset_process Password reset process being used
+ * @set emailed temporary ultra
+ * @param  MEMBER $member_id Member ID
+ * @param  ID_TEXT $code Reset code
+ */
+function send_lost_password_reset_code($password_reset_process, $member_id, $code)
+{
+    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
     $email = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
-    if ($email == '') {
-        warn_exit(do_lang_tempcode('MEMBER_NO_EMAIL_ADDRESS_RESET_TO'));
-    }
-
-    log_it('LOST_PASSWORD', strval($member_id), $code);
-
     $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
 
     $temporary_passwords = ($password_reset_process != 'emailed');
 
-    // Send confirm mail
     if ($password_reset_process != 'ultra') {
+        require_code('mail');
+        $subject = do_lang('LOST_PASSWORD_SUBJECT', get_site_name(), null, null, get_lang($member_id));
         $zone = get_module_zone('lost_password');
         $_url = build_url(['page' => 'lost_password', 'type' => 'step3', 'code' => $code, 'member' => $member_id], $zone, [], false, false, true);
         $url = $_url->evaluate();
         $_url_simple = build_url(['page' => 'lost_password', 'type' => 'step3', 'code' => null, 'username' => null, 'member' => null], $zone, [], false, false, true);
         $url_simple = $_url_simple->evaluate();
         $message = do_lang($temporary_passwords ? 'LOST_PASSWORD_TEXT_TEMPORARY' : 'LOST_PASSWORD_TEXT', comcode_escape(get_site_name()), comcode_escape($username), [$url, comcode_escape($url_simple), strval($member_id), $code], get_lang($member_id));
-        require_code('mail');
-        dispatch_mail(do_lang('LOST_PASSWORD_CONFIRM', null, null, null, get_lang($member_id)), $message, [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['bypass_queue' => true, 'require_recipient_valid_since' => $join_time]);
+        dispatch_mail($subject, $message, [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['bypass_queue' => true, 'require_recipient_valid_since' => $join_time]);
     } else {
         $old_php_self = $_SERVER['PHP_SELF'];
         $old_server_name = $_SERVER['SERVER_NAME'];
@@ -116,16 +213,52 @@ function lost_password_emailer_step($username, $email_address)
         $from_email = get_option('website_email');
         //$from_email = 'noreply@' . $_SERVER['SERVER_ADDR'];  Won't work on most hosting
         $from_name = do_lang('PASSWORD_RESET_ULTRA_FROM');
-        $subject = do_lang('PASSWORD_RESET_ULTRA_SUBJECT', $code);
-        $body = do_lang('PASSWORD_RESET_ULTRA_BODY', $code);
+        $subject = do_lang('PASSWORD_RESET_ULTRA_SUBJECT', $code, get_site_name());
+        $body = do_lang('PASSWORD_RESET_ULTRA_BODY', $code, get_site_name());
         mail($email, $subject, $body, 'From: ' . $from_name . ' <' . $from_email . '>' . "\r\n" . 'Reply-To: ' . $from_name . ' <' . $from_email . '>');
 
         // Put env details back to how they should be
         $_SERVER['PHP_SELF'] = $old_php_self;
         $_SERVER['SERVER_NAME'] = $old_server_name;
     }
+}
 
-    $email_address_masked = preg_replace('#^(\w).*@.*(\w\.\w+)$#', '${1}...@...${2}', $email);
+/**
+ * Generate a message about how a reset code has been e-mailed (or potentially not).
+ *
+ * @param  string $password_reset_process Password reset process being used
+ * @set emailed temporary ultra
+ * @param  EMAIL $email E-mail address
+ * @return Tempcode Message
+ */
+function lost_password_mailed_message($password_reset_process, $email)
+{
+    $email_masked = mask_email($email);
+    if ($password_reset_process == 'ultra') {
+        $zone = get_module_zone('lost_password');
+        $screen_message = do_lang_tempcode('RESET_CODE_ENTER_MANUALLY', escape_html(static_evaluate_tempcode(build_url(['page' => 'lost_password', 'type' => 'step3'], $zone))));
+    } else {
+        if (get_option('password_reset_privacy') == 'disclose') {
+            $screen_message = do_lang_tempcode('RESET_CODE_MAILED', escape_html($email_masked), escape_html($email));
+        } else {
+            $screen_message = do_lang_tempcode('RESET_CODE_MAILED_IF_EXISTS', escape_html($email_masked), escape_html($email));
+        }
+    }
+    return $screen_message;
+}
 
-    return [$email, $email_address_masked, $member_id];
+/**
+ * Make an e-mail address disclosable by making most of it.
+ * By default this isn't used in the RESET_CODE_MAILED language string, as any disclosure is a potential privacy leak.
+ *
+ * @param  EMAIL $email E-mail address (blank: none)
+ * @return string Masked address
+ */
+function mask_email($email)
+{
+    if ($email == '') {
+        $email = '?...@...?';
+    }
+
+    return preg_replace('#^(\w).*@.*(\w\.\w+)$#', '${1}...@...${2}', $email);
 }

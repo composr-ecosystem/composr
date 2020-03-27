@@ -35,6 +35,7 @@ class Hook_actionlog_core_cns extends Hook_actionlog
         }
 
         require_lang('cns');
+        require_lang('cns_lost_password');
 
         return [
             'ADD_EMOTICON' => [

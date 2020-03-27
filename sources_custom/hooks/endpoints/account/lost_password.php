@@ -35,15 +35,19 @@ class Hook_endpoint_account_lost_password
             warn_exit(do_lang_tempcode('NO_CNS'));
         }
 
-        $username = trim(either_param_string('username', ''));
-        $email_address = trim(either_param_string('email', ''));
+        $_username = trim(post_param_string('username', ''));
+        $_email = trim(post_param_string('email', ''));
 
         require_code('cns_lost_password');
         require_lang('cns');
-        lost_password_emailer_step($username, $email_address);
+        list($email, $member_id) = lost_password_emailer_step($_username, $_email);
+
+        $password_reset_process = get_password_reset_process();
+
+        $mailed_message = lost_password_mailed_message($password_reset_process, $email);
 
         return [
-            'message' => do_lang('RESET_CODE_MAILED'),
+            'message' => $mailed_message->evaluate(),
         ];
     }
 }

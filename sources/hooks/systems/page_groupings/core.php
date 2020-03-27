@@ -118,7 +118,7 @@ class Hook_page_groupings_core
             (get_forum_type() != 'none' || is_guest($member_id)) ? null : ['site_meta', 'tool_buttons/notifications', ['notifications', [], get_module_zone('notifications')], do_lang_tempcode('notifications:NOTIFICATIONS')],
             //(get_forum_type() == 'none' || is_guest($member_id)) ? null : ['site_meta', 'menu/site_meta/user_actions/logout', ['login', [], ''), do_lang_tempcode('LOGOUT')], Don't show an immediate action, don't want accidental preloading
             (get_forum_type() != 'cns') ? null : ['site_meta', 'menu/site_meta/user_actions/join', ['join', [], get_module_zone('join')], do_lang_tempcode('_JOIN')],
-            (get_forum_type() != 'cns') ? null : ['site_meta', 'menu/site_meta/user_actions/lost_password', ['lost_password', [], get_module_zone('lost_password')], do_lang_tempcode('cns:LOST_PASSWORD')],
+            (get_forum_type() != 'cns') ? null : ['site_meta', 'menu/site_meta/user_actions/lost_password', ['lost_password', [], get_module_zone('lost_password')], do_lang_tempcode('cns_lost_password:LOST_PASSWORD')],
 
             (get_forum_type() != 'cns') ? null : ['social', 'menu/social/groups', ['groups', [], get_module_zone('groups')], do_lang_tempcode('USERGROUPS')],
             (get_forum_type() != 'cns') ? null : ['social', 'menu/social/members', ['members', [], get_module_zone('members')], do_lang_tempcode('cns:MEMBER_DIRECTORY')],

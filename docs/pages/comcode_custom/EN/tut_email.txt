@@ -11,7 +11,7 @@ Composr constructs its e-mails using language strings: each different e-mail is 
 
 Composr goes to great lengths to reduce the chance of e-mails being marked as spam, and (by default) embeds all CSS and images inside the e-mail instead of linking (so that the user does not need images enabled to see them -- most users do not as it can aid spammer tracking).
 
-Just taking one example, the [tt]MAIL_NEW_PASSWORD[/tt] language string from the [tt]cns[/tt] language file, which is:
+Just taking one example, the [tt]MAIL_NEW_PASSWORD_TEXT[/tt] language string from the [tt]cns[/tt] language file, which is:
 [code="Comcode"]
 The password for your account (username: {4}) has successfully been changed to '{1}'. You may log back into {3} from...
 

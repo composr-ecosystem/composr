@@ -333,7 +333,7 @@ class Module_login
 
                 if ($text->evaluate() == do_lang('MEMBER_NOT_VALIDATED_EMAIL')) {
                     $lost_password_url = build_url(['page' => 'lost_password'], get_module_zone('lost_password'));
-                    $extra = do_lang_tempcode('IF_NO_CONFIRM', escape_html($lost_password_url->evaluate()));
+                    $extra = do_lang_tempcode('cns_lost_password:IF_NO_CONFIRM', escape_html($lost_password_url->evaluate()));
 
                     attach_message($extra, 'inform');
                 }
