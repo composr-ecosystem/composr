@@ -518,7 +518,7 @@
         notificationWrapper = getWrapper(notification);
         //Auto-close notification
         if (Number(settings.autoClose) !== 0 && notification && !notification.ieVerification && notification.addEventListener) {
-            notification.addEventListener("show", function () {
+            notification.addEventListener('show', function () {
                 var notification = notificationWrapper;
                 setTimeout(function () {
                     notification.close();

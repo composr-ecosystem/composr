@@ -157,21 +157,34 @@ class Module_lost_password
      */
     public function step1()
     {
+        $password_reset_process = get_password_reset_process();
+        $temporary_passwords = ($password_reset_process != 'emailed');
+
+        $text = do_lang_tempcode('_PASSWORD_RESET_TEXT_' . $password_reset_process);
+
         $fields = new Tempcode();
+        $hidden = new Tempcode();
+
         $fields->attach($this->input_identifying_field());
 
-        $password_reset_process = get_password_reset_process();
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            if (use_captcha()) {
+                $fields->attach(form_input_captcha($hidden));
+                $text->attach(' ');
+                $text->attach(do_lang_tempcode('FORM_TIME_SECURITY'));
+            }
+        }
 
-        $temporary_passwords = ($password_reset_process != 'emailed');
-        $text = do_lang_tempcode('_PASSWORD_RESET_TEXT_' . $password_reset_process);
         $submit_name = do_lang_tempcode('PASSWORD_RESET_BUTTON');
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF');
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '080e516fef7c928dbb9fb85beb6e435a',
+            'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? [captcha_ajax_check_function()] : [],
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
-            'HIDDEN' => '',
+            'HIDDEN' => $hidden,
             'FIELDS' => $fields,
             'TEXT' => $text,
             'SUBMIT_ICON' => 'menu/site_meta/user_actions/lost_password',
@@ -187,6 +200,11 @@ class Module_lost_password
      */
     public function step2()
     {
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            enforce_captcha();
+        }
+
         $_username = trim(post_param_string('username', ''));
         $_email = trim(post_param_string('email', ''));
 
