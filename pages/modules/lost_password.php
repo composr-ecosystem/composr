@@ -382,7 +382,19 @@ class Module_lost_password
 
         // Mark temporary reset code used
         unset($_GET['code']);
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated_email_confirm_code' => '', 'm_password_compat_scheme' => $password_compatibility_scheme, 'm_password_change_code' => '', 'm_password_change_code_time' => null, 'm_pass_hash_salted' => $new], ['id' => $member_id], '', 1);
+        $update_map = [
+            'm_validated_email_confirm_code' => '',
+            'm_password_compat_scheme' => $password_compatibility_scheme,
+            'm_pass_hash_salted' => $new,
+        ];
+        if (!$temporary_passwords) {
+            // Mark code used if it has instant effect only - otherwise we cannot do it as the link could have been pre-clicked by a virus scanner - rely on password_reset_minutes to expire it
+            $update_map += [
+                'm_password_change_code' => '',
+                'm_password_change_code_time' => null,
+            ];
+        }
+        $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['id' => $member_id], '', 1);
 
         // For temporary passwords: Log them in, then invite them to change their password
         if ($temporary_passwords) {
