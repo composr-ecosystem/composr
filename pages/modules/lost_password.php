@@ -330,6 +330,10 @@ class Module_lost_password
             }
             log_hack_attack_and_exit('HACK_ATTACK_PASSWORD_CHANGE'); // Incorrect code, hack-attack
         }
+        $correct_code_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code_time');
+        if ($correct_code_time < time() - 60 * 60 * intval(get_option('password_reset_minutes'))) {
+            warn_exit(do_lang_tempcode('RESET_CODE_EXPIRED', escape_html(display_time_period(60 * intval(get_option('password_reset_minutes'))))));
+        }
 
         // Lookup member details
         $email = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
@@ -378,7 +382,7 @@ class Module_lost_password
 
         // Mark temporary reset code used
         unset($_GET['code']);
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated_email_confirm_code' => '', 'm_password_compat_scheme' => $password_compatibility_scheme, 'm_password_change_code' => '', 'm_pass_hash_salted' => $new], ['id' => $member_id], '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated_email_confirm_code' => '', 'm_password_compat_scheme' => $password_compatibility_scheme, 'm_password_change_code' => '', 'm_password_change_code_time' => null, 'm_pass_hash_salted' => $new], ['id' => $member_id], '', 1);
 
         // For temporary passwords: Log them in, then invite them to change their password
         if ($temporary_passwords) {

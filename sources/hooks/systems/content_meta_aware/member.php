@@ -118,7 +118,7 @@ class Hook_content_meta_aware_member extends Hook_CMA
             'actionlog_regexp' => '\w+_MEMBER',
 
             'filtercode' => 'cns_members2::_members_filtercode',
-            'filtercode_protected_fields' => ['m_pass_hash_salted', 'm_pass_salt', 'm_password_change_code'], // These are ones even some staff should never know
+            'filtercode_protected_fields' => ['m_pass_hash_salted', 'm_pass_salt', 'm_password_change_code', 'm_password_change_code_time'], // These are ones even some staff should never know
 
             'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
             'default_prominence_flags' => 0,

@@ -975,6 +975,7 @@ function cns_edit_member($member_id, $username = null, $password = null, $email_
         if (($password_compatibility_scheme === null) && (get_value('disable_password_hashing') === '1')) {
             $password_compatibility_scheme = 'plain';
             $update['m_password_change_code'] = '';
+            $update['m_password_change_code_time'] = null;
             $salt = '';
         }
 
@@ -989,6 +990,7 @@ function cns_edit_member($member_id, $username = null, $password = null, $email_
         } else {
             require_code('crypt');
             $update['m_password_change_code'] = '';
+            $update['m_password_change_code_time'] = null;
             $salt = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
             $update['m_pass_hash_salted'] = ratchet_hash($password, $salt);
             $update['m_password_compat_scheme'] = '';

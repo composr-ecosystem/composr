@@ -1765,6 +1765,7 @@ class Forum_driver_cns extends Forum_driver_base
                     $change_map['m_last_submit_time'] = time();
                 }
                 $change_map['m_password_change_code'] = ''; // Security, to stop resetting password when account actively in use (stops people planting reset bombs then grabbing the details much later)
+                $change_map['m_password_change_code_time'] = null;
 
                 if (get_page_name() != 'lost_password') {
                     if (get_db_type() != 'xml') {

@@ -449,6 +449,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/config/password_expiry_days.php',
             'sources/hooks/systems/config/password_reset_process.php',
             'sources/hooks/systems/config/password_reset_privacy.php',
+            'sources/hooks/systems/config/password_reset_minutes.php',
             'sources/hooks/systems/config/primary_members_per_page.php',
             'sources/hooks/systems/config/secondary_members_per_page.php',
             'sources/hooks/systems/config/show_empty_cpfs.php',

@@ -122,6 +122,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BILLING
         FULLSCREEN
         MATCH_TYPE
+        PASSWORD_RESET_MINUTES
+        CONFIG_OPTION_password_reset_minutes
         CONFIG_OPTION_password_reset_privacy
         CONFIG_OPTION_password_reset_privacy_VALUE_disclose
         CONFIG_OPTION_password_reset_privacy_VALUE_email
@@ -10044,6 +10046,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LINKS_STRIPPED
         PASSWORD
         PASSWORD_ALREADY_RESET
+        RESET_CODE_EXPIRED
         PASSWORD_CHANGED_MAIL_BODY
         PASSWORD_CHANGED_MAIL_BODY_2
         PASSWORD_CHANGED_MAIL_SUBJECT

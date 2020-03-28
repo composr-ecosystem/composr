@@ -396,6 +396,7 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_smart_topic_notification', 'BINARY', 0);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_mailing_list_style', 'BINARY', 1);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
+        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_password_change_code_time', '?TIME');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
 
@@ -481,6 +482,7 @@ function install_cns($upgrade_from = null)
             'm_pass_hash_salted' => 'SHORT_TEXT', // Not MD5 type because it could store different things according to password_compatibility_scheme
             'm_pass_salt' => 'SHORT_TEXT',
             'm_password_change_code' => 'SHORT_TEXT',
+            'm_password_change_code_time' => '?TIME',
             'm_password_compat_scheme' => 'ID_TEXT',
             'm_email_address' => 'SHORT_TEXT',
             'm_primary_group' => 'GROUP',

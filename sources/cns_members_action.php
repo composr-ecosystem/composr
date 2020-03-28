@@ -277,6 +277,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
         'm_password_compat_scheme' => $password_compatibility_scheme,
         'm_pass_salt' => $salt,
         'm_password_change_code' => '',
+        'm_password_change_code_time' => null,
         'm_email_address' => $email_address,
         'm_primary_group' => $primary_group,
         'm_dob_day' => $dob_day,
