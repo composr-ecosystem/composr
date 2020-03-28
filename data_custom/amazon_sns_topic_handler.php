@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    aws
+ * @package    aws_ses
  */
 
 // Fixup SCRIPT_FILENAME potentially being missing
@@ -55,5 +55,5 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-require_code('aws');
+require_code('aws_ses');
 amazon_sns_topic_handler_script();

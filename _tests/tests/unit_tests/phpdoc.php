@@ -100,14 +100,21 @@ class phpdoc_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
+        require_code('third_party_code');
         require_code('files2');
         $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
 
         foreach ($files as $file) {
-            if (preg_match('#^(tracker|_tests|sources_custom/photobucket|sources_custom/ILess|sources_custom/swift_mailer|sources_custom/spout|sources_custom/sabredav|sources_custom/aws|mobiquo/lib)/#', $file) != 0) {
+            $exceptions = array_merge(list_untouchable_third_party_directories(), [
+                '_tests';
+            ]);
+            if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-            if (preg_match('#^(sources_custom/facebook/facebook.php|sources/mail_dkim\.php|sources/firephp\.php|sources_custom/twitter\.php|sources_custom/browser_detect\.php)$#', $file) != 0) {
+
+            $exceptions = array_merge(list_untouchable_third_party_files(), [
+            ]);
+            if (in_array($path, $exceptions)) {
                 continue;
             }
 

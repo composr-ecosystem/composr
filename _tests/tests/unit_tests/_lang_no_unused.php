@@ -20,6 +20,7 @@ class _lang_no_unused_test_set extends cms_test_case
 {
     public function testNothingUnused()
     {
+        require_code('third_party_code');
         require_code('files2');
         require_code('lang_compile');
 
@@ -30,7 +31,15 @@ class _lang_no_unused_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
-            if (preg_match('#^sources_custom/aws/|sources_custom/geshi/|sources_custom/getid3/|sources_custom/ILess/|sources_custom/photobucket/|sources_custom/sabredav/|sources_custom/spout/|sources_custom/swift_mailer/|sources_custom/Transliterator/|tracker/#', $path) != 0) {
+            $exceptions = array_merge(list_untouchable_third_party_directories(), [
+            ]);
+            if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
+                continue;
+            }
+
+            $exceptions = array_merge(list_untouchable_third_party_files(), [
+            ]);
+            if (in_array($path, $exceptions)) {
                 continue;
             }
 

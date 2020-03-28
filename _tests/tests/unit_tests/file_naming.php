@@ -41,7 +41,7 @@ class file_naming_test_set extends cms_test_case
             'data_custom/sitemaps/',
             'data_custom/upload-crop/',
             'mobiquo/',
-            'sources_custom/aws/',
+            'sources_custom/aws_ses/',
             'sources_custom/geshi/',
             'sources_custom/getid3/',
             'sources_custom/photobucket/',

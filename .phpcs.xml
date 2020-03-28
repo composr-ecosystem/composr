@@ -20,7 +20,7 @@
 	<exclude-pattern>sources/lang_stemmer_EN.php</exclude-pattern>
 	<exclude-pattern>sources/m_zip.php</exclude-pattern>
 	<exclude-pattern>sources/mail_dkim.php</exclude-pattern>
-	<exclude-pattern>sources_custom/aws</exclude-pattern>
+	<exclude-pattern>sources_custom/aws_ses</exclude-pattern>
 	<exclude-pattern>sources_custom/browser_detect.php</exclude-pattern>
 	<exclude-pattern>sources_custom/Cloudinary</exclude-pattern>
 	<exclude-pattern>sources_custom/composr_mobile_sdk/ios</exclude-pattern>
