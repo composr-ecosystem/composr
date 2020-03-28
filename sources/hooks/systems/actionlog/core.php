@@ -597,7 +597,7 @@ class Hook_actionlog_core extends Hook_actionlog
             case 'CONFIGURATION':
                 require_code('config2');
                 $bindings += [
-                    'CONFIG_URL' => config_option_url($identifier),
+                    'CONFIG_URL' => static_evaluate_tempcode(config_option_url($identifier)),
                 ];
                 break;
 
