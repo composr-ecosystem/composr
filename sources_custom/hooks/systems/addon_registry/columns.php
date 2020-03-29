@@ -92,7 +92,7 @@ class Hook_addon_registry_columns
 
 Here is an example in Comcode...
 [code]
-[surround="column_wrapper"]
+[surround="column-wrapper"]
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare mi ut convallis molestie. Morbi finibus sagittis sem vel vehicula. Duis aliquet pretium sapien, quis congue risus lacinia eu. Nunc gravida venenatis posuere. Vestibulum ac arcu magna. Integer libero leo, iaculis in lacus eget, fringilla accumsan dui. Quisque augue sem, commodo a suscipit et, suscipit sit amet sapien. Proin iaculis massa mi. Cras auctor, augue id lobortis fringilla, lectus ligula tempus sapien, quis ornare dolor mi a mi. Ut felis elit, vestibulum egestas dignissim a, consectetur at nisl. Sed semper ex sed felis pharetra, at pellentesque turpis porttitor. Nunc laoreet efficitur dui sed iaculis. Nunc nisi enim, dictum imperdiet semper non, molestie sit amet justo. In hac habitasse platea dictumst.
 
 Mauris sit amet metus sit amet velit fermentum convallis. Maecenas dapibus at justo nec maximus. Vestibulum metus odio, vehicula nec ultricies eget, sagittis sit amet ligula. Morbi nec risus metus. In egestas malesuada magna ac interdum. In hac habitasse platea dictumst. Suspendisse pretium, felis laoreet eleifend condimentum, leo risus aliquam magna, in dapibus dolor mauris ac mauris. In at mollis purus. Vestibulum varius vehicula nunc. Sed blandit lobortis turpis ut finibus. Vivamus quis ante auctor massa volutpat rhoncus. Praesent sit amet sapien nunc.
