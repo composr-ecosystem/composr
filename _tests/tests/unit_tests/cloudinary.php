@@ -32,6 +32,11 @@ class cloudinary_test_set extends cms_test_case
 
     public function testCloudinaryTransfer()
     {
+        if (!addon_installed('cloudinary')) {
+            $this->assertTrue(false, 'The cloudinary addon must be installed for this test to run');
+            return;
+        }
+
         require_code('uploads');
         require_code('hooks/systems/cdn_transfer/cloudinary');
         $ob = new Hook_cdn_transfer_cloudinary();
