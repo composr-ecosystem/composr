@@ -90,7 +90,7 @@ class Hook_addon_registry_browser_detect
     {
         return 'A [tt]browser_upgrade_suggest[/tt] block to advise the visitor on doing an upgrade from old versions of IE or other browsers.
 
-[code][block ie_needed="9.0"]browser_upgrade_suggest[/block][/code]
+[code][block ie_needed="12.0"]browser_upgrade_suggest[/block][/code]
 
 If you would like to show the message as a Composr warning (at the top of the screen), use [tt]attach="1"[/tt] in the parameters.';
     }
