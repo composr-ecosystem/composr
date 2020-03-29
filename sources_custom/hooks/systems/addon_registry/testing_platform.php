@@ -476,6 +476,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/url_monikers.php',
             '_tests/tests/unit_tests/calendar_events.php',
             '_tests/tests/unit_tests/calendar_event_types.php',
+            '_tests/tests/unit_tests/transliteration.php',
             '_tests/tests/unit_tests/gallery_images.php',
             '_tests/tests/unit_tests/template_xss.php',
             '_tests/tests/unit_tests/module_names_defined.php',
