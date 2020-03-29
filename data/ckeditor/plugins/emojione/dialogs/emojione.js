@@ -1,4 +1,4 @@
-CKEDITOR.dialog.add( 'emojioneDialog', function( editor ) {
+﻿CKEDITOR.dialog.add( 'emojioneDialog', function( editor ) {
 	var config = editor.config, columns = 10, i;
 	var dialog;
 	var onClick = function( evt ) {
