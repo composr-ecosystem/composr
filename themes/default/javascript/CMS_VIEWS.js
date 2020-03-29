@@ -1057,7 +1057,6 @@
                         href: pageLinkPrivacy,
                     },
                 };
-console.log(cookieConsentOptions);//TODO
 
                 if ($cms.getCountry()) {
                     cookieConsentOptions['law'] = {
