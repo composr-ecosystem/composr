@@ -1046,8 +1046,8 @@
                         domain: $cms.getCookieDomain(),
                     },
                     palette: {
-                        popup: {'background': '#000'},
-                        button: {'background': '#FFF'},
+                        popup: {'background': '#000', 'text': '#FFF', 'link': '#FFF'},
+                        button: {'background': '#FFF', 'text': '#000'},
                     },
                     theme: 'block',
                     content: {
@@ -1057,6 +1057,7 @@
                         href: pageLinkPrivacy,
                     },
                 };
+console.log(cookieConsentOptions);//TODO
 
                 if ($cms.getCountry()) {
                     cookieConsentOptions['law'] = {
