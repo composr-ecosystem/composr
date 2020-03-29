@@ -157,7 +157,7 @@ This product includes:
   - JW-Player (used under commercial licence)
   - Sew, autocomplete implementation (BSD-like licence / public domain)
   - Modernizr (MIT & BSD-like licences)
-  - Silktide Cookie consent (GPL licence, but remotely linked)
+  - Osano Cookie consent (MIT licence)
   - Invoice template (MIT licence)
   - Browser detection code (http://stackoverflow.com/a/9851769/362006, public domain)
   - Camel case code (http://stackoverflow.com/a/32604073/362006, public domain)

@@ -552,6 +552,7 @@ class Hook_addon_registry_core
             'themes/default/images/skitter/sprite-square.png',
             'themes/default/javascript/skitter.js',
             'themes/default/javascript/image_slider.js',
+            'themes/default/javascript/cookie_consent.js',
             'sources/blocks/main_content.php',
             'sources/blocks/main_multi_content.php',
             'sources/hooks/systems/symbols/BETA_CSS_PROPERTY.php',
