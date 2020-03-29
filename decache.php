@@ -50,7 +50,7 @@ foreach ($to_delete as $directory_glob => $exts) {
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
                 foreach ($exts as $ext) {
-                    if (substr($f, -4) == '.' . $ext) {
+                    if (substr($f, -strlen($ext) - 1) == '.' . $ext) {
                         $path = $directory . '/' . $f;
                         unlink($path);
                         echo 'Deleted ' . $path . "\n";
