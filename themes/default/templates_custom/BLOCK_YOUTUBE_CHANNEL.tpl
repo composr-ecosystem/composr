@@ -1,12 +1,12 @@
 <section class="box box---block-main-quotes"><div class="box-inner">
 	{+START,IF_NON_EMPTY,{CHANNEL_TITLE}}<h3>{CHANNEL_TITLE*}</h3>{+END}
 	{+START,IF_EMPTY,{CHANNEL_ERROR}}
-		<div class="xhtml-validator-off">
+		<div class="webstandards-checker-off">
 			{CONTENT`}
 		</div>
 	{+END}
 	{+START,IF_NON_EMPTY,{CHANNEL_ERROR}}
-		<div class="xhtml-validator-off">
+		<div class="webstandards-checker-off">
 			{+START,IF,{$IS_ADMIN}}
 				<b>Channel Name:</b> <a href='{CHANNEL_URL}' target='_blank'>{CHANNEL_NAME}</a> <br />
 				{CHANNEL_ERROR} <br />
