@@ -430,8 +430,8 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
     if ($see_php_errors) {
         if (!headers_sent()) {
             require_code('firephp');
-            if (function_exists('fb')) {
-                fb($template . ': ' . $text_eval);
+            if (function_exists('fb_wrap')) {
+                fb_wrap($template . ': ' . $text_eval);
             }
         }
     }

@@ -1853,8 +1853,8 @@ class DatabaseConnector
             @header('Query: ' . $query . "\n");
             */
         }
-        if ((!headers_sent()) && (function_exists('fb')) && (get_param_integer('keep_firephp_queries', 0) === 1)) {
-            fb('Query: ' . $query);
+        if ((!headers_sent()) && (function_exists('fb_wrap')) && (get_param_integer('keep_firephp_queries', 0) === 1)) {
+            fb_wrap('Query: ' . $query);
         }
 
         if (($QUERY_COUNT === DEV_MODE_QUERY_LIMIT) && (get_param_integer('keep_query_limit', null) !== 0) && ($GLOBALS['RELATIVE_PATH'] !== '_tests') && (count($_POST) === 0) && (!$IN_MINIKERNEL_VERSION) && (get_param_string('special_page_type', '') !== 'query')) {
