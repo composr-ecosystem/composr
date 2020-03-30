@@ -1,10 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.archive.zip.php                                      //
@@ -13,170 +14,211 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
+if (!defined('GETID3_INCLUDEPATH')) { // prevent path-exposing attacks that access modules directly on public webservers
+	exit;
+}
 
-class getid3_zip
+class getid3_zip extends getid3_handler
 {
+	/**
+	 * @return bool
+	 */
+	public function Analyze() {
+		$info = &$this->getid3->info;
 
-	function __construct(&$fd, &$ThisFileInfo) {
+		$info['fileformat']      = 'zip';
+		$info['zip']['encoding'] = 'ISO-8859-1';
+		$info['zip']['files']    = array();
 
-		$ThisFileInfo['fileformat']      = 'zip';
-		$ThisFileInfo['zip']['encoding'] = 'ISO-8859-1';
-		$ThisFileInfo['zip']['files']    = array();
+		$info['zip']['compressed_size']   = 0;
+		$info['zip']['uncompressed_size'] = 0;
+		$info['zip']['entries_count']     = 0;
 
-		$ThisFileInfo['zip']['compressed_size']   = 0;
-		$ThisFileInfo['zip']['uncompressed_size'] = 0;
-		$ThisFileInfo['zip']['entries_count']     = 0;
-
-		if ($ThisFileInfo['filesize'] < pow(2, 31)) {
+		if (!getid3_lib::intValueSupported($info['filesize'])) {
+			$this->error('File is larger than '.round(PHP_INT_MAX / 1073741824).'GB, not supported by PHP');
+			return false;
+		} else {
 			$EOCDsearchData    = '';
 			$EOCDsearchCounter = 0;
 			while ($EOCDsearchCounter++ < 512) {
 
-				fseek($fd, -128 * $EOCDsearchCounter, SEEK_END);
-				$EOCDsearchData = fread($fd, 128).$EOCDsearchData;
+				$this->fseek(-128 * $EOCDsearchCounter, SEEK_END);
+				$EOCDsearchData = $this->fread(128).$EOCDsearchData;
 
 				if (strstr($EOCDsearchData, 'PK'."\x05\x06")) {
 
 					$EOCDposition = strpos($EOCDsearchData, 'PK'."\x05\x06");
-					fseek($fd, (-128 * $EOCDsearchCounter) + $EOCDposition, SEEK_END);
-					$ThisFileInfo['zip']['end_central_directory'] = $this->ZIPparseEndOfCentralDirectory($fd);
+					$this->fseek((-128 * $EOCDsearchCounter) + $EOCDposition, SEEK_END);
+					$info['zip']['end_central_directory'] = $this->ZIPparseEndOfCentralDirectory();
 
-					fseek($fd, $ThisFileInfo['zip']['end_central_directory']['directory_offset'], SEEK_SET);
-					$ThisFileInfo['zip']['entries_count'] = 0;
-					while ($centraldirectoryentry = $this->ZIPparseCentralDirectory($fd)) {
-						$ThisFileInfo['zip']['central_directory'][] = $centraldirectoryentry;
-						$ThisFileInfo['zip']['entries_count']++;
-						$ThisFileInfo['zip']['compressed_size']   += $centraldirectoryentry['compressed_size'];
-						$ThisFileInfo['zip']['uncompressed_size'] += $centraldirectoryentry['uncompressed_size'];
+					$this->fseek($info['zip']['end_central_directory']['directory_offset']);
+					$info['zip']['entries_count'] = 0;
+					while ($centraldirectoryentry = $this->ZIPparseCentralDirectory()) {
+						$info['zip']['central_directory'][] = $centraldirectoryentry;
+						$info['zip']['entries_count']++;
+						$info['zip']['compressed_size']   += $centraldirectoryentry['compressed_size'];
+						$info['zip']['uncompressed_size'] += $centraldirectoryentry['uncompressed_size'];
 
-						if ($centraldirectoryentry['uncompressed_size'] > 0) {
-							$ThisFileInfo['zip']['files'] = getid3_lib::array_merge_clobber($ThisFileInfo['zip']['files'], getid3_lib::CreateDeepArray($centraldirectoryentry['filename'], '/', $centraldirectoryentry['uncompressed_size']));
+						//if ($centraldirectoryentry['uncompressed_size'] > 0) { zero-byte files are valid
+						if (!empty($centraldirectoryentry['filename'])) {
+							$info['zip']['files'] = getid3_lib::array_merge_clobber($info['zip']['files'], getid3_lib::CreateDeepArray($centraldirectoryentry['filename'], '/', $centraldirectoryentry['uncompressed_size']));
 						}
 					}
 
-					if ($ThisFileInfo['zip']['entries_count'] == 0) {
-						$ThisFileInfo['error'][] = 'No Central Directory entries found (truncated file?)';
+					if ($info['zip']['entries_count'] == 0) {
+						$this->error('No Central Directory entries found (truncated file?)');
 						return false;
 					}
 
-					if (!empty($ThisFileInfo['zip']['end_central_directory']['comment'])) {
-						$ThisFileInfo['zip']['comments']['comment'][] = $ThisFileInfo['zip']['end_central_directory']['comment'];
+					if (!empty($info['zip']['end_central_directory']['comment'])) {
+						$info['zip']['comments']['comment'][] = $info['zip']['end_central_directory']['comment'];
 					}
 
-					if (isset($ThisFileInfo['zip']['central_directory'][0]['compression_method'])) {
-						$ThisFileInfo['zip']['compression_method'] = $ThisFileInfo['zip']['central_directory'][0]['compression_method'];
+					if (isset($info['zip']['central_directory'][0]['compression_method'])) {
+						$info['zip']['compression_method'] = $info['zip']['central_directory'][0]['compression_method'];
 					}
-					if (isset($ThisFileInfo['zip']['central_directory'][0]['flags']['compression_speed'])) {
-						$ThisFileInfo['zip']['compression_speed']  = $ThisFileInfo['zip']['central_directory'][0]['flags']['compression_speed'];
+					if (isset($info['zip']['central_directory'][0]['flags']['compression_speed'])) {
+						$info['zip']['compression_speed']  = $info['zip']['central_directory'][0]['flags']['compression_speed'];
 					}
-					if (isset($ThisFileInfo['zip']['compression_method']) && ($ThisFileInfo['zip']['compression_method'] == 'store') && !isset($ThisFileInfo['zip']['compression_speed'])) {
-						$ThisFileInfo['zip']['compression_speed']  = 'store';
+					if (isset($info['zip']['compression_method']) && ($info['zip']['compression_method'] == 'store') && !isset($info['zip']['compression_speed'])) {
+						$info['zip']['compression_speed']  = 'store';
+					}
+
+					// secondary check - we (should) already have all the info we NEED from the Central Directory above, but scanning each
+					// Local File Header entry will
+					foreach ($info['zip']['central_directory'] as $central_directory_entry) {
+						$this->fseek($central_directory_entry['entry_offset']);
+						if ($fileentry = $this->ZIPparseLocalFileHeader()) {
+							$info['zip']['entries'][] = $fileentry;
+						} else {
+							$this->warning('Error parsing Local File Header at offset '.$central_directory_entry['entry_offset']);
+						}
+					}
+
+					if (!empty($info['zip']['files']['[Content_Types].xml']) &&
+					    !empty($info['zip']['files']['_rels']['.rels'])      &&
+					    !empty($info['zip']['files']['docProps']['app.xml']) &&
+					    !empty($info['zip']['files']['docProps']['core.xml'])) {
+							// http://technet.microsoft.com/en-us/library/cc179224.aspx
+							$info['fileformat'] = 'zip.msoffice';
+							if (!empty($ThisFileInfo['zip']['files']['ppt'])) {
+								$info['mime_type'] = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+							} elseif (!empty($ThisFileInfo['zip']['files']['xl'])) {
+								$info['mime_type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+							} elseif (!empty($ThisFileInfo['zip']['files']['word'])) {
+								$info['mime_type'] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+							}
 					}
 
 					return true;
-
 				}
 			}
 		}
 
-		if ($this->getZIPentriesFilepointer($fd, $ThisFileInfo)) {
-
-			// central directory couldn't be found and/or parsed
-			// scan through actual file data entries, recover as much as possible from probable trucated file
-			if ($ThisFileInfo['zip']['compressed_size'] > ($ThisFileInfo['filesize'] - 46 - 22)) {
-				$ThisFileInfo['error'][] = 'Warning: Truncated file! - Total compressed file sizes ('.$ThisFileInfo['zip']['compressed_size'].' bytes) is greater than filesize minus Central Directory and End Of Central Directory structures ('.($ThisFileInfo['filesize'] - 46 - 22).' bytes)';
-			}
-			$ThisFileInfo['error'][] = 'Cannot find End Of Central Directory - returned list of files in [zip][entries] array may not be complete';
-			foreach ($ThisFileInfo['zip']['entries'] as $key => $valuearray) {
-				$ThisFileInfo['zip']['files'][$valuearray['filename']] = $valuearray['uncompressed_size'];
-			}
-			return true;
-
-		} else {
-
-			unset($ThisFileInfo['zip']);
-			$ThisFileInfo['fileformat'] = '';
-			$ThisFileInfo['error'][] = 'Cannot find End Of Central Directory (truncated file?)';
+		if (!$this->getZIPentriesFilepointer()) {
+			unset($info['zip']);
+			$info['fileformat'] = '';
+			$this->error('Cannot find End Of Central Directory (truncated file?)');
 			return false;
-
 		}
+
+		// central directory couldn't be found and/or parsed
+		// scan through actual file data entries, recover as much as possible from probable trucated file
+		if ($info['zip']['compressed_size'] > ($info['filesize'] - 46 - 22)) {
+			$this->error('Warning: Truncated file! - Total compressed file sizes ('.$info['zip']['compressed_size'].' bytes) is greater than filesize minus Central Directory and End Of Central Directory structures ('.($info['filesize'] - 46 - 22).' bytes)');
+		}
+		$this->error('Cannot find End Of Central Directory - returned list of files in [zip][entries] array may not be complete');
+		foreach ($info['zip']['entries'] as $key => $valuearray) {
+			$info['zip']['files'][$valuearray['filename']] = $valuearray['uncompressed_size'];
+		}
+		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function getZIPHeaderFilepointerTopDown() {
+		$info = &$this->getid3->info;
 
-	function getZIPHeaderFilepointerTopDown(&$fd, &$ThisFileInfo) {
-		$ThisFileInfo['fileformat'] = 'zip';
+		$info['fileformat'] = 'zip';
 
-		$ThisFileInfo['zip']['compressed_size']   = 0;
-		$ThisFileInfo['zip']['uncompressed_size'] = 0;
-		$ThisFileInfo['zip']['entries_count']     = 0;
+		$info['zip']['compressed_size']   = 0;
+		$info['zip']['uncompressed_size'] = 0;
+		$info['zip']['entries_count']     = 0;
 
-		rewind($fd);
-		while ($fileentry = $this->ZIPparseLocalFileHeader($fd)) {
-			$ThisFileInfo['zip']['entries'][] = $fileentry;
-			$ThisFileInfo['zip']['entries_count']++;
+		rewind($this->getid3->fp);
+		while ($fileentry = $this->ZIPparseLocalFileHeader()) {
+			$info['zip']['entries'][] = $fileentry;
+			$info['zip']['entries_count']++;
 		}
-		if ($ThisFileInfo['zip']['entries_count'] == 0) {
-			$ThisFileInfo['error'][] = 'No Local File Header entries found';
+		if ($info['zip']['entries_count'] == 0) {
+			$this->error('No Local File Header entries found');
 			return false;
 		}
 
-		$ThisFileInfo['zip']['entries_count']     = 0;
-		while ($centraldirectoryentry = $this->ZIPparseCentralDirectory($fd)) {
-			$ThisFileInfo['zip']['central_directory'][] = $centraldirectoryentry;
-			$ThisFileInfo['zip']['entries_count']++;
-			$ThisFileInfo['zip']['compressed_size']   += $centraldirectoryentry['compressed_size'];
-			$ThisFileInfo['zip']['uncompressed_size'] += $centraldirectoryentry['uncompressed_size'];
+		$info['zip']['entries_count']     = 0;
+		while ($centraldirectoryentry = $this->ZIPparseCentralDirectory()) {
+			$info['zip']['central_directory'][] = $centraldirectoryentry;
+			$info['zip']['entries_count']++;
+			$info['zip']['compressed_size']   += $centraldirectoryentry['compressed_size'];
+			$info['zip']['uncompressed_size'] += $centraldirectoryentry['uncompressed_size'];
 		}
-		if ($ThisFileInfo['zip']['entries_count'] == 0) {
-			$ThisFileInfo['error'][] = 'No Central Directory entries found (truncated file?)';
+		if ($info['zip']['entries_count'] == 0) {
+			$this->error('No Central Directory entries found (truncated file?)');
 			return false;
 		}
 
-		if ($EOCD = $this->ZIPparseEndOfCentralDirectory($fd)) {
-			$ThisFileInfo['zip']['end_central_directory'] = $EOCD;
+		if ($EOCD = $this->ZIPparseEndOfCentralDirectory()) {
+			$info['zip']['end_central_directory'] = $EOCD;
 		} else {
-			$ThisFileInfo['error'][] = 'No End Of Central Directory entry found (truncated file?)';
+			$this->error('No End Of Central Directory entry found (truncated file?)');
 			return false;
 		}
 
-		if (!empty($ThisFileInfo['zip']['end_central_directory']['comment'])) {
-			$ThisFileInfo['zip']['comments']['comment'][] = $ThisFileInfo['zip']['end_central_directory']['comment'];
+		if (!empty($info['zip']['end_central_directory']['comment'])) {
+			$info['zip']['comments']['comment'][] = $info['zip']['end_central_directory']['comment'];
 		}
 
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function getZIPentriesFilepointer() {
+		$info = &$this->getid3->info;
 
-	function getZIPentriesFilepointer(&$fd, &$ThisFileInfo) {
-		$ThisFileInfo['zip']['compressed_size']   = 0;
-		$ThisFileInfo['zip']['uncompressed_size'] = 0;
-		$ThisFileInfo['zip']['entries_count']     = 0;
+		$info['zip']['compressed_size']   = 0;
+		$info['zip']['uncompressed_size'] = 0;
+		$info['zip']['entries_count']     = 0;
 
-		rewind($fd);
-		while ($fileentry = $this->ZIPparseLocalFileHeader($fd)) {
-			$ThisFileInfo['zip']['entries'][] = $fileentry;
-			$ThisFileInfo['zip']['entries_count']++;
-			$ThisFileInfo['zip']['compressed_size']   += $fileentry['compressed_size'];
-			$ThisFileInfo['zip']['uncompressed_size'] += $fileentry['uncompressed_size'];
+		rewind($this->getid3->fp);
+		while ($fileentry = $this->ZIPparseLocalFileHeader()) {
+			$info['zip']['entries'][] = $fileentry;
+			$info['zip']['entries_count']++;
+			$info['zip']['compressed_size']   += $fileentry['compressed_size'];
+			$info['zip']['uncompressed_size'] += $fileentry['uncompressed_size'];
 		}
-		if ($ThisFileInfo['zip']['entries_count'] == 0) {
-			$ThisFileInfo['error'][] = 'No Local File Header entries found';
+		if ($info['zip']['entries_count'] == 0) {
+			$this->error('No Local File Header entries found');
 			return false;
 		}
 
 		return true;
 	}
 
+	/**
+	 * @return array|false
+	 */
+	public function ZIPparseLocalFileHeader() {
+		$LocalFileHeader['offset'] = $this->ftell();
 
-	function ZIPparseLocalFileHeader(&$fd) {
-		$LocalFileHeader['offset'] = ftell($fd);
-
-		$ZIPlocalFileHeader = fread($fd, 30);
+		$ZIPlocalFileHeader = $this->fread(30);
 
 		$LocalFileHeader['raw']['signature']          = getid3_lib::LittleEndian2Int(substr($ZIPlocalFileHeader,  0, 4));
-		if ($LocalFileHeader['raw']['signature'] != 0x04034B50) {
+		if ($LocalFileHeader['raw']['signature'] != 0x04034B50) { // "PK\x03\x04"
 			// invalid Local File Header Signature
-			fseek($fd, $LocalFileHeader['offset'], SEEK_SET); // seek back to where filepointer originally was so it can be handled properly
+			$this->fseek($LocalFileHeader['offset']); // seek back to where filepointer originally was so it can be handled properly
 			return false;
 		}
 		$LocalFileHeader['raw']['extract_version']    = getid3_lib::LittleEndian2Int(substr($ZIPlocalFileHeader,  4, 2));
@@ -200,7 +242,7 @@ class getid3_zip
 
 		$FilenameExtrafieldLength = $LocalFileHeader['raw']['filename_length'] + $LocalFileHeader['raw']['extra_field_length'];
 		if ($FilenameExtrafieldLength > 0) {
-			$ZIPlocalFileHeader .= fread($fd, $FilenameExtrafieldLength);
+			$ZIPlocalFileHeader .= $this->fread($FilenameExtrafieldLength);
 
 			if ($LocalFileHeader['raw']['filename_length'] > 0) {
 				$LocalFileHeader['filename']                = substr($ZIPlocalFileHeader, 30, $LocalFileHeader['raw']['filename_length']);
@@ -210,30 +252,71 @@ class getid3_zip
 			}
 		}
 
-		$LocalFileHeader['data_offset'] = ftell($fd);
-		//$LocalFileHeader['compressed_data'] = fread($fd, $LocalFileHeader['raw']['compressed_size']);
-		fseek($fd, $LocalFileHeader['raw']['compressed_size'], SEEK_CUR);
+		if ($LocalFileHeader['compressed_size'] == 0) {
+			// *Could* be a zero-byte file
+			// But could also be a file written on the fly that didn't know compressed filesize beforehand.
+			// Correct compressed filesize should be in the data_descriptor located after this file data, and also in Central Directory (at end of zip file)
+			if (!empty($this->getid3->info['zip']['central_directory'])) {
+				foreach ($this->getid3->info['zip']['central_directory'] as $central_directory_entry) {
+					if ($central_directory_entry['entry_offset'] == $LocalFileHeader['offset']) {
+						if ($central_directory_entry['compressed_size'] > 0) {
+							// overwrite local zero value (but not ['raw']'compressed_size']) so that seeking for data_descriptor (and next file entry) works correctly
+							$LocalFileHeader['compressed_size'] = $central_directory_entry['compressed_size'];
+						}
+						break;
+					}
+				}
+			}
+
+		}
+		$LocalFileHeader['data_offset'] = $this->ftell();
+		$this->fseek($LocalFileHeader['compressed_size'], SEEK_CUR); // this should (but may not) match value in $LocalFileHeader['raw']['compressed_size'] -- $LocalFileHeader['compressed_size'] could have been overwritten above with value from Central Directory
 
 		if ($LocalFileHeader['flags']['data_descriptor_used']) {
-			$DataDescriptor = fread($fd, 12);
-			$LocalFileHeader['data_descriptor']['crc_32']            = getid3_lib::LittleEndian2Int(substr($DataDescriptor,  0, 4));
-			$LocalFileHeader['data_descriptor']['compressed_size']   = getid3_lib::LittleEndian2Int(substr($DataDescriptor,  4, 4));
-			$LocalFileHeader['data_descriptor']['uncompressed_size'] = getid3_lib::LittleEndian2Int(substr($DataDescriptor,  8, 4));
-		}
+			$DataDescriptor = $this->fread(16);
+			$LocalFileHeader['data_descriptor']['signature']         = getid3_lib::LittleEndian2Int(substr($DataDescriptor,  0, 4));
+			if ($LocalFileHeader['data_descriptor']['signature'] != 0x08074B50) { // "PK\x07\x08"
+				$this->getid3->warning('invalid Local File Header Data Descriptor Signature at offset '.($this->ftell() - 16).' - expecting 08 07 4B 50, found '.getid3_lib::PrintHexBytes($LocalFileHeader['data_descriptor']['signature']));
+				$this->fseek($LocalFileHeader['offset']); // seek back to where filepointer originally was so it can be handled properly
+				return false;
+			}
+			$LocalFileHeader['data_descriptor']['crc_32']            = getid3_lib::LittleEndian2Int(substr($DataDescriptor,  4, 4));
+			$LocalFileHeader['data_descriptor']['compressed_size']   = getid3_lib::LittleEndian2Int(substr($DataDescriptor,  8, 4));
+			$LocalFileHeader['data_descriptor']['uncompressed_size'] = getid3_lib::LittleEndian2Int(substr($DataDescriptor, 12, 4));
+			if (!$LocalFileHeader['raw']['compressed_size'] && $LocalFileHeader['data_descriptor']['compressed_size']) {
+				foreach ($this->getid3->info['zip']['central_directory'] as $central_directory_entry) {
+					if ($central_directory_entry['entry_offset'] == $LocalFileHeader['offset']) {
+						if ($LocalFileHeader['data_descriptor']['compressed_size'] == $central_directory_entry['compressed_size']) {
+							// $LocalFileHeader['compressed_size'] already set from Central Directory
+						} else {
+							$this->warning('conflicting compressed_size from data_descriptor ('.$LocalFileHeader['data_descriptor']['compressed_size'].') vs Central Directory ('.$central_directory_entry['compressed_size'].') for file at offset '.$LocalFileHeader['offset']);
+						}
 
+						if ($LocalFileHeader['data_descriptor']['uncompressed_size'] == $central_directory_entry['uncompressed_size']) {
+							$LocalFileHeader['uncompressed_size'] = $LocalFileHeader['data_descriptor']['uncompressed_size'];
+						} else {
+							$this->warning('conflicting uncompressed_size from data_descriptor ('.$LocalFileHeader['data_descriptor']['uncompressed_size'].') vs Central Directory ('.$central_directory_entry['uncompressed_size'].') for file at offset '.$LocalFileHeader['offset']);
+						}
+						break;
+					}
+				}
+			}
+		}
 		return $LocalFileHeader;
 	}
 
+	/**
+	 * @return array|false
+	 */
+	public function ZIPparseCentralDirectory() {
+		$CentralDirectory['offset'] = $this->ftell();
 
-	function ZIPparseCentralDirectory(&$fd) {
-		$CentralDirectory['offset'] = ftell($fd);
-
-		$ZIPcentralDirectory = fread($fd, 46);
+		$ZIPcentralDirectory = $this->fread(46);
 
 		$CentralDirectory['raw']['signature']            = getid3_lib::LittleEndian2Int(substr($ZIPcentralDirectory,  0, 4));
 		if ($CentralDirectory['raw']['signature'] != 0x02014B50) {
 			// invalid Central Directory Signature
-			fseek($fd, $CentralDirectory['offset'], SEEK_SET); // seek back to where filepointer originally was so it can be handled properly
+			$this->fseek($CentralDirectory['offset']); // seek back to where filepointer originally was so it can be handled properly
 			return false;
 		}
 		$CentralDirectory['raw']['create_version']       = getid3_lib::LittleEndian2Int(substr($ZIPcentralDirectory,  4, 2));
@@ -265,7 +348,7 @@ class getid3_zip
 
 		$FilenameExtrafieldCommentLength = $CentralDirectory['raw']['filename_length'] + $CentralDirectory['raw']['extra_field_length'] + $CentralDirectory['raw']['file_comment_length'];
 		if ($FilenameExtrafieldCommentLength > 0) {
-			$FilenameExtrafieldComment = fread($fd, $FilenameExtrafieldCommentLength);
+			$FilenameExtrafieldComment = $this->fread($FilenameExtrafieldCommentLength);
 
 			if ($CentralDirectory['raw']['filename_length'] > 0) {
 				$CentralDirectory['filename']                  = substr($FilenameExtrafieldComment, 0, $CentralDirectory['raw']['filename_length']);
@@ -281,15 +364,18 @@ class getid3_zip
 		return $CentralDirectory;
 	}
 
-	function ZIPparseEndOfCentralDirectory(&$fd) {
-		$EndOfCentralDirectory['offset'] = ftell($fd);
+	/**
+	 * @return array|false
+	 */
+	public function ZIPparseEndOfCentralDirectory() {
+		$EndOfCentralDirectory['offset'] = $this->ftell();
 
-		$ZIPendOfCentralDirectory = fread($fd, 22);
+		$ZIPendOfCentralDirectory = $this->fread(22);
 
 		$EndOfCentralDirectory['signature']                   = getid3_lib::LittleEndian2Int(substr($ZIPendOfCentralDirectory,  0, 4));
 		if ($EndOfCentralDirectory['signature'] != 0x06054B50) {
 			// invalid End Of Central Directory Signature
-			fseek($fd, $EndOfCentralDirectory['offset'], SEEK_SET); // seek back to where filepointer originally was so it can be handled properly
+			$this->fseek($EndOfCentralDirectory['offset']); // seek back to where filepointer originally was so it can be handled properly
 			return false;
 		}
 		$EndOfCentralDirectory['disk_number_current']         = getid3_lib::LittleEndian2Int(substr($ZIPendOfCentralDirectory,  4, 2));
@@ -301,15 +387,37 @@ class getid3_zip
 		$EndOfCentralDirectory['comment_length']              = getid3_lib::LittleEndian2Int(substr($ZIPendOfCentralDirectory, 20, 2));
 
 		if ($EndOfCentralDirectory['comment_length'] > 0) {
-			$EndOfCentralDirectory['comment']                 = fread($fd, $EndOfCentralDirectory['comment_length']);
+			$EndOfCentralDirectory['comment']                 = $this->fread($EndOfCentralDirectory['comment_length']);
 		}
 
 		return $EndOfCentralDirectory;
 	}
 
-
-	function ZIPparseGeneralPurposeFlags($flagbytes, $compressionmethod) {
-		$ParsedFlags['encrypted'] = (bool) ($flagbytes & 0x0001);
+	/**
+	 * @param int $flagbytes
+	 * @param int $compressionmethod
+	 *
+	 * @return array
+	 */
+	public static function ZIPparseGeneralPurposeFlags($flagbytes, $compressionmethod) {
+		// https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip-printable.html
+		$ParsedFlags = array();
+		$ParsedFlags['encrypted']               = (bool) ($flagbytes & 0x0001);
+		//                                                             0x0002 -- see below
+		//                                                             0x0004 -- see below
+		$ParsedFlags['data_descriptor_used']    = (bool) ($flagbytes & 0x0008);
+		$ParsedFlags['enhanced_deflation']      = (bool) ($flagbytes & 0x0010);
+		$ParsedFlags['compressed_patched_data'] = (bool) ($flagbytes & 0x0020);
+		$ParsedFlags['strong_encryption']       = (bool) ($flagbytes & 0x0040);
+		//                                                             0x0080 - unused
+		//                                                             0x0100 - unused
+		//                                                             0x0200 - unused
+		//                                                             0x0400 - unused
+		$ParsedFlags['language_encoding']       = (bool) ($flagbytes & 0x0800);
+		//                                                             0x1000 - reserved
+		$ParsedFlags['mask_header_values']      = (bool) ($flagbytes & 0x2000);
+		//                                                             0x4000 - reserved
+		//                                                             0x8000 - reserved
 
 		switch ($compressionmethod) {
 			case 6:
@@ -335,13 +443,16 @@ class getid3_zip
 				}
 				break;
 		}
-		$ParsedFlags['data_descriptor_used']       = (bool) ($flagbytes & 0x0008);
 
 		return $ParsedFlags;
 	}
 
-
-	function ZIPversionOSLookup($index) {
+	/**
+	 * @param int $index
+	 *
+	 * @return string
+	 */
+	public static function ZIPversionOSLookup($index) {
 		static $ZIPversionOSLookup = array(
 			0  => 'MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)',
 			1  => 'Amiga',
@@ -360,13 +471,21 @@ class getid3_zip
 			14 => 'VFAT',
 			15 => 'Alternate MVS',
 			16 => 'BeOS',
-			17 => 'Tandem'
+			17 => 'Tandem',
+			18 => 'OS/400',
+			19 => 'OS/X (Darwin)',
 		);
 
 		return (isset($ZIPversionOSLookup[$index]) ? $ZIPversionOSLookup[$index] : '[unknown]');
 	}
 
-	function ZIPcompressionMethodLookup($index) {
+	/**
+	 * @param int $index
+	 *
+	 * @return string
+	 */
+	public static function ZIPcompressionMethodLookup($index) {
+		// http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/ZIP.html
 		static $ZIPcompressionMethodLookup = array(
 			0  => 'store',
 			1  => 'shrink',
@@ -378,13 +497,31 @@ class getid3_zip
 			7  => 'tokenize',
 			8  => 'deflate',
 			9  => 'deflate64',
-			10 => 'PKWARE Date Compression Library Imploding'
+			10 => 'Imploded (old IBM TERSE)',
+			11 => 'RESERVED[11]',
+			12 => 'BZIP2',
+			13 => 'RESERVED[13]',
+			14 => 'LZMA (EFS)',
+			15 => 'RESERVED[15]',
+			16 => 'RESERVED[16]',
+			17 => 'RESERVED[17]',
+			18 => 'IBM TERSE (new)',
+			19 => 'IBM LZ77 z Architecture (PFS)',
+			96 => 'JPEG recompressed',
+			97 => 'WavPack compressed',
+			98 => 'PPMd version I, Rev 1',
 		);
 
 		return (isset($ZIPcompressionMethodLookup[$index]) ? $ZIPcompressionMethodLookup[$index] : '[unknown]');
 	}
 
-	function DOStime2UNIXtime($DOSdate, $DOStime) {
+	/**
+	 * @param int $DOSdate
+	 * @param int $DOStime
+	 *
+	 * @return int
+	 */
+	public static function DOStime2UNIXtime($DOSdate, $DOStime) {
 		// wFatDate
 		// Specifies the MS-DOS date. The date is a packed 16-bit value with the following format:
 		// Bits      Contents
@@ -411,6 +548,3 @@ class getid3_zip
 	}
 
 }
-
-
-?>

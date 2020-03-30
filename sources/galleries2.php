@@ -605,6 +605,9 @@ function get_video_details_from_file($file_path, $filename, $delay_errors = fals
                     define('GETID3_HELPERAPPSDIR', get_file_base() . '/sources_custom/getid3/helperapps');
                 }
 
+                $ret = ini_get('ocproducts.type_strictness');
+                cms_ini_set('ocproducts.type_strictness', '0');
+
                 require_code('getid3/getid3');
                 if (class_exists('getID3')) {
                     $id3_ob = new getID3();
@@ -628,6 +631,8 @@ function get_video_details_from_file($file_path, $filename, $delay_errors = fals
                         $info[1] = null;
                     }
                 }
+
+                cms_ini_set('ocproducts.type_strictness', $ret);
             }
             break;
     }
