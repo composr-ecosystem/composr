@@ -20,6 +20,11 @@ class geshi_test_set extends cms_test_case
 {
     public function testGeshiWorks()
     {
+        if (!addon_installed('geshi')) {
+            $this->assertTrue(false, 'The geshi addon must be installed for this test to run');
+            return;
+        }
+
         // GeSHI is third party code and not maintained any more, so we need to ensure it keeps working
 
         require_code('geshi');
