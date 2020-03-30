@@ -28,7 +28,7 @@ class Hook_login_provider_facebook
     public function try_login($member_id, $quick_only = false) // NB: if $member_id is set (but not Guest), then it will bind to that account
     {
         if (!addon_installed('facebook_support')) {
-            return null;
+            return $member_id;
         }
 
         /*if (($member_id !== null) && (!is_guest($member_id))) {     Speeds up slightly, but we don't want to test with this because we need to ensure startup always works right, and it also stops some stuff working

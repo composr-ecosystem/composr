@@ -26,16 +26,18 @@ class Hook_symbol_FB_CONNECT_UID
             return '';
         }
 
-        if ((is_guest()) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
-            return ''; // Theoretically unneeded, but if FB cookie is invalid then we need to assume getUser may be wrong (if Guest, and not SU, it implies we found it was invalid in facebook_connect.php)
-        }
-
         $value = '';
         if (get_forum_type() == 'cns') {
             require_code('facebook_connect');
-            $value = facebook_get_current_user_id();
+            $errormsg = null;
+            $value = facebook_get_current_user_id(null, $errormsg);
             if ($value === null) {
-                $value = '';
+                $value = ($errormsg === null) ? '' : '-1'/*Signal there's an error to JS*/;
+            } else {
+                // Invalidate if we're not actually logged in
+                if ((is_guest()) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+                    $value = ''; // Theoretically unneeded, but if FB cookie is invalid then we need to assume getUser may be wrong (if Guest, and not SU, it implies we found it was invalid in facebook_connect.php)
+                }
             }
         }
         return $value;

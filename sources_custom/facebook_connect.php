@@ -88,22 +88,22 @@ function facebook_get_access_token_from_js_sdk()
     return ($access_token === null) ? null : $access_token->__toString();
 }
 
-function facebook_get_current_user_id($access_token = null)
+function facebook_get_current_user_id($access_token = null, &$errormsg = null)
 {
-    $me = facebook_get_current_user($access_token);
+    $me = facebook_get_current_user($access_token, $errormsg);
     return ($me === null) ? null : $me['id'];
 }
 
-function facebook_get_current_user($access_token = null)
+function facebook_get_current_user($access_token = null, &$errormsg = null)
 {
     static $me = null;
     if ($me === null) {
-        $me = facebook_get_api_request('/me?fields=id,name,email,about,website,currency,first_name,last_name,gender,location,hometown,picture,timezone,locale,birthday', $access_token);
+        $me = facebook_get_api_request('/me?fields=id,name,email,about,website,currency,first_name,last_name,gender,location,hometown,picture,timezone,locale,birthday', $access_token, $errormsg);
     }
     return $me;
 }
 
-function facebook_get_api_request($graph_path, $access_token = null)
+function facebook_get_api_request($graph_path, $access_token = null, &$errormsg = null)
 {
     global $FACEBOOK_CONNECT;
     if ($FACEBOOK_CONNECT === null) {
@@ -123,6 +123,8 @@ function facebook_get_api_request($graph_path, $access_token = null)
     try {
         $response = $FACEBOOK_CONNECT->get($graph_path, $access_token);
     } catch (Exception $e) {
+        $errormsg = $e->getMessage();
+
         if (php_function_allowed('error_log')) {
             @error_log('Facebook returned an error: ' . $e->__toString());
         }
