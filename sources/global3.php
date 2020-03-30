@@ -1038,14 +1038,6 @@ function find_template_place($codename, $lang, $theme, $suffix, $directory, $non
         return $tp_cache[$sz];
     }
 
-    if (addon_installed('less') && $suffix == '.css') {
-        $test = find_template_place($codename, $lang, $theme, '.less', $directory, $non_custom_only, false);
-        if ($test !== null) {
-            $tp_cache[$sz] = $test;
-            return $test;
-        }
-    }
-
     $prefix_default = get_file_base() . '/themes/';
     $prefix = ($theme == 'default' || $theme == 'admin') ? $prefix_default : (get_custom_file_base() . '/themes/');
 
