@@ -134,7 +134,7 @@ This product includes:
   - animated gif detection (from php.net comment by ZeBadger, Creative Commons Attribution License)
   - Exif transfer code (from php.net comment by ebashkoff, Creative Commons Attribution License)
   - Stemmer (BSD-like licence)
-  - jsmin (MIT licence)
+  - JShrink (BSD licence)
   - cssmin (MIT licence)
   - HMAC calculation code (public domain by Lance Rushing)
   - php-mail-signature (LGPL licence)
