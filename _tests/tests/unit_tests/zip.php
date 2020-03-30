@@ -1,0 +1,71 @@
+<?php /*
+
+ Composr
+ Copyright (c) ocProducts, 2004-2020
+
+ See text/EN/licence.txt for full licensing information.
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  ocProducts Ltd
+ * @package    testing_platform
+ */
+
+/**
+ * Composr test case class (unit testing).
+ */
+class zip_test_set extends cms_test_case
+{
+    public function setUp()
+    {
+        parent::setUp();
+
+        require_code('m_zip');
+    }
+
+    public function testMZip()
+    {
+        // Test m-zip is working
+        $this->doPrefixedFunctionTest('m_');
+    }
+
+    public function testZip()
+    {
+        // Test PHP's internal zip extension, or m-zip again if that's not available (but via standard PHP function names)
+        $this->doPrefixedFunctionTest('');
+    }
+
+    protected function doPrefixedFunctionTest($prefix)
+    {
+        if (!addon_installed('composr_homesite')) {
+            $this->assertTrue(false, 'The composr_homesite addon must be installed for this test to run'); // That's where our test zip file is from
+            return;
+        }
+
+        $expected = [
+            'ad-banner/banner-468x60.psd' => 419653,
+            'ad-banner/banner-728x90.psd' => 4178180,
+            'ad-banner/composr-banner-468x60.gif' => 89272,
+            'ad-banner/composr-banner-728x90.gif' => 643225,
+            'mini/a.png' => 3570,
+            'mini/b.png' => 3293,
+        ];
+
+        $path = get_file_base() . '/uploads/website_specific/compo.sr/banners.zip';
+        $zip_file = call_user_func($prefix . 'zip_open', $path);
+        $files = [];
+        if (!is_integer($zip_file)) {
+            while (($f = call_user_func($prefix . 'zip_read', $zip_file)) !== false) {
+                $filename = call_user_func($prefix . 'zip_entry_name', $f);
+                if (substr($filename, -1) != '/') {
+                    $files[$filename] = call_user_func($prefix . 'zip_entry_filesize', $f);
+                }
+            }
+            call_user_func($prefix . 'zip_close', $zip_file);
+        }
+        ksort($files);
+        $this->assertTrue($files == $expected);
+    }
+}
