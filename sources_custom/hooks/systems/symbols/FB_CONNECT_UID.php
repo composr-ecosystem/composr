@@ -33,14 +33,9 @@ class Hook_symbol_FB_CONNECT_UID
         $value = '';
         if (get_forum_type() == 'cns') {
             require_code('facebook_connect');
-            global $FACEBOOK_CONNECT;
-            if ($FACEBOOK_CONNECT !== null) {
-                cms_ini_set('ocproducts.type_strictness', '0');
-                $value = strval($FACEBOOK_CONNECT->getUser());
-                cms_ini_set('ocproducts.type_strictness', '1');
-                if ($value == '0') {
-                    $value = '';
-                }
+            $value = facebook_get_current_user_id();
+            if ($value === null) {
+                $value = '';
             }
         }
         return $value;

@@ -986,7 +986,7 @@ class HttpDownloaderCurl extends HttpDownloader
         $this->url_parts = @parse_url(normalise_idn_url($url));
         $this->read_in_options($options);
 
-        if (!function_exists('curl_version')) {
+        if (!function_exists('curl_init')) {
             return HttpDownloader::RUN_PRIORITY_NO;
         }
 

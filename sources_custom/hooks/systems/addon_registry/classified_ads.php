@@ -66,9 +66,7 @@ class Hook_addon_registry_classified_ads
      */
     public function get_copyright_attribution()
     {
-        return [
-            'Icon by Andrey Kem',
-        ];
+        return [];
     }
 
     /**

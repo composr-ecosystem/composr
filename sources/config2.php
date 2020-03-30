@@ -488,7 +488,7 @@ function config_option_url($name)
     $details = $ob->get_details();
 
     $url_map = ['page' => 'admin_config', 'type' => 'category', 'id' => $details['category']];
-    return build_url($url_map, get_module_zone('admin_config'), [], false, false, false, 'group_' . $details['group']);
+    return build_url($url_map, get_module_zone('admin_config'), [], false, false, false, 'group-' . $details['group']);
 }
 
 /**

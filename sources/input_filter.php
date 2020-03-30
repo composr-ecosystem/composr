@@ -94,7 +94,9 @@ function check_input_field_string($name, &$val, $posted, $filters)
     }
 
     if (($filters & INPUT_FILTER_MODSECURITY_URL_PARAMETER) != 0) {
-        if ((substr($val, 0, 9) == 'http-cms:') || (substr($val, 0, 10) == 'https-cms:')) {
+        if (substr($val, 0, 9) == 'http-cms:') {
+            $val = get_base_url() . '/' . substr($val, 9);
+        } elseif (substr($val, 0, 10) == 'https-cms:') {
             $val = get_base_url() . '/' . substr($val, 10);
         }
     }

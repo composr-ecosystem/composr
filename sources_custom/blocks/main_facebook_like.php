@@ -55,10 +55,8 @@ class Block_main_facebook_like
             return do_template('RED_ALERT', ['_GUID' => '5ldkzkb0bo25j30gmw653k5t7keqb1nv', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
         }
         if (!function_exists('session_status')) {
-            return do_template('RED_ALERT', ['_GUID' => '2kii599c4uz2g43k69ogp53wob87650o', 'TEXT' => 'PHP session extension missing']);
+            return do_template('RED_ALERT', ['_GUID' => '4kii599c4uz2g43k69ogp53wob87650o', 'TEXT' => 'PHP session extension missing']);
         }
-
-        require_code('facebook_connect');
 
         $block_id = get_block_id($map);
 

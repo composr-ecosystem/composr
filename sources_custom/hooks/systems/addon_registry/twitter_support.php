@@ -69,7 +69,6 @@ class Hook_addon_registry_twitter_support
     public function get_copyright_attribution()
     {
         return [
-            'Icon by leslienayibe',
             'Class by Tijs Verkoyen',
         ];
     }

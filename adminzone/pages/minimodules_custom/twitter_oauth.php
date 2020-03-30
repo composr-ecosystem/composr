@@ -38,7 +38,7 @@ $api_key = get_option('twitter_api_key');
 $api_secret = get_option('twitter_api_secret');
 
 if ($api_key == '' || $api_secret == '') {
-    $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'COMPOSR_APIS', 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_config'), [], false, false, false, 'group_TWITTER_SYNDICATION');
+    $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'COMPOSR_APIS', 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_config'), [], false, false, false, 'group-TWITTER_SYNDICATION');
     $echo = redirect_screen($title, $config_url, do_lang_tempcode('TWITTER_SETUP_FIRST'));
     $echo->evaluate_echo();
     return;

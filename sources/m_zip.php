@@ -93,7 +93,7 @@ function init__m_zip()
 
             $bits = explode(' ', UNZIP_CMD);
             if (@strpos(shell_exec($bits[0] . ' -h'), 'UnZip') === false) { // Check that InfoZip is where it is configured to be
-                $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group_ARCHIVES');
+                $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group-ARCHIVES');
                 attach_message(do_lang_tempcode('NO_SHELL_ZIP_POSSIBLE2', escape_html_tempcode($config_url)), 'warn', false, true);
 
                 return constant('ZIPARCHIVE::ER_INTERNAL');

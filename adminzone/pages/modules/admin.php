@@ -656,7 +656,7 @@ class Module_admin
                 $value = array_key_exists('c_value', $p) ? $p['c_value'] : get_option($name);
 
                 if ((($this->_keyword_match($name)) || ($this->_keyword_match($n->evaluate())) || ($this->_keyword_match($t)) || ($this->_keyword_match($value)))) {
-                    $url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $p['category']], get_module_zone('admin_config'), [], false, false, false, 'group_' . $p['group']);
+                    $url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $p['category']], get_module_zone('admin_config'), [], false, false, false, 'group-' . $p['group']);
                     if ($t === null) {
                         $t = '';
                     }
@@ -741,7 +741,7 @@ class Module_admin
                         } else {
                             $group_description = do_lang_tempcode('CONFIG_GROUP_DESCRIP_' . $group, escape_html($post_max_size), escape_html($upload_max_filesize), escape_html(get_base_url()));
                         }
-                        $url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $category_codename], get_module_zone('admin_config'), [], false, false, false, 'group_' . $group);
+                        $url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $category_codename], get_module_zone('admin_config'), [], false, false, false, 'group-' . $group);
                         $breadcrumbs = new Tempcode();
                         $breadcrumbs->attach(hyperlink(build_url(['page' => 'admin', 'type' => 'setup'], 'adminzone'), do_lang_tempcode('SETUP'), false, false));
                         $breadcrumbs->attach(do_template('BREADCRUMB_SEPARATOR'));

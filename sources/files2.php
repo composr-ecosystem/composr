@@ -496,7 +496,7 @@ function get_upload_limit_config_url()
 {
     $config_url = null;
     if (has_actual_page_access(get_member(), 'admin_config')) {
-        $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'FEATURE'], get_module_zone('admin_config'), [], false, false, false, 'group_UPLOAD');
+        $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'FEATURE'], get_module_zone('admin_config'), [], false, false, false, 'group-UPLOAD');
     }
     return $config_url;
 }
@@ -661,7 +661,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
         }
         $message = do_lang_tempcode('INVALID_FILE_TYPE', escape_html($ext), escape_html(str_replace(',', ', ', $_types)));
         if (has_actual_page_access(get_member(), 'admin_config')) {
-            $link = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SECURITY'], get_module_zone('admin_config'), [], false, false, false, 'group_UPLOAD');
+            $link = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SECURITY'], get_module_zone('admin_config'), [], false, false, false, 'group-UPLOAD');
             $message = do_lang_tempcode('INVALID_FILE_TYPE_ADMIN', escape_html($ext), escape_html(str_replace(',', ', ', $_types)), escape_html_tempcode($link));
         }
         if ($accept_errors) {

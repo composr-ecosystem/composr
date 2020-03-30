@@ -458,7 +458,7 @@ function upgrader_menu_screen()
     $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), get_option('site_closed') == '1');
     $l_open_site = upgrader_link('upgrader.php?type=open_site', do_lang('UPGRADER_OPEN_SITE'), get_option('site_closed') == '0');
     $closed = comcode_to_tempcode(get_option('closed'), null, true);
-    $closed_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group_CLOSED_SITE');
+    $closed_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group-CLOSED_SITE');
 
     // Transfer files link
     $news_id = post_param_integer('news_id', null);

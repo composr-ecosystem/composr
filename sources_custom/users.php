@@ -13,15 +13,6 @@
  * @package    facebook_support
  */
 
-function init__users()
-{
-    if (!addon_installed('facebook_support')) {
-        return;
-    }
-
-    require_code('facebook_connect');
-}
-
 function unused_other_func()
 {
     // Just works as a flag that this isn't a "pure" file and hence to run the original's init function

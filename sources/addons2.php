@@ -758,6 +758,9 @@ function has_feature($dependency)
             return true;
         }
     }
+    if ((strtolower($dependency) == 'ssl') && (substr(get_base_url(), 0, 8) == 'https://')) {
+        return true;
+    }
 
     // ---
 

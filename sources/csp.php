@@ -200,19 +200,21 @@ function load_csp($options = null, $enable_more_open_html_for = null)
 
     $clauses = [];
 
+    $master_sources_list = _csp_extract_sources_list(2);
+
     // default-src
-    $_sources_list = _csp_extract_sources_list(2);
+    $_sources_list = $master_sources_list;
     $clauses[] = 'default-src ' . implode(' ', $_sources_list);
 
     // style-src
-    $_sources_list = _csp_extract_sources_list(2);
+    $_sources_list = $master_sources_list;
     $_sources_list[] = "*"; // Allow external stylesheets
     $_sources_list[] = "'unsafe-inline'"; // It's not feasible for us to remove all inline CSS
     //$_sources_list[] = "'nonce-{$CSP_NONCE}'"; Incompatible with unsafe-inline
     $clauses[] = 'style-src ' . implode(' ', $_sources_list);
 
     // script-src
-    $_sources_list = _csp_extract_sources_list(2, '', !$csp_allow_dyn_js);
+    $_sources_list = $csp_allow_dyn_js ? [] : _csp_extract_sources_list(2, '', !$csp_allow_dyn_js);
     if ($csp_allow_inline_js) {
         $_sources_list[] = "'unsafe-inline'"; // Not usually configurable but may be forced
     } else {
@@ -236,11 +238,11 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     $clauses[] = 'frame-src ' . implode(' ', $_sources_list);
 
     // worker-src
-    $_sources_list = _csp_extract_sources_list(2);
+    $_sources_list = $master_sources_list;
     $clauses[] = 'worker-src ' . implode(' ', $_sources_list);
 
     // connect-src
-    $_sources_list = _csp_extract_sources_list(2);
+    $_sources_list = $master_sources_list;
     $clauses[] = 'connect-src ' . implode(' ', $_sources_list);
 
     // font-src (unlimited)
@@ -280,7 +282,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     }
 
     // form-action
-    $_sources_list = _csp_extract_sources_list(2);
+    $_sources_list = $master_sources_list;
     $clauses[] = 'form-action ' . implode(' ', $_sources_list);
 
     // frame-ancestors
@@ -357,7 +359,7 @@ function _csp_extract_sources_list($level, $sources_csp = '', $include_self = tr
 
     require_code('input_filter');
     $_trusted_sites = get_trusted_sites($level, $include_self);
-    if (empty($_trusted_sites)) {
+    if (!empty($_trusted_sites)) {
         foreach ($_trusted_sites as $partner) {
             $sources_list[] = $partner;
         }
