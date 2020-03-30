@@ -1,3 +1,14 @@
+(function ($cms) {
+    'use strict';
+
+    $cms.templates.comcodeFlip = function comcodeFlip(params, container) {
+        var $container = window.jQuery(container);
+        $container.flip({
+            speed: params.speed
+        });
+    };
+}(window.$cms));
+
 /*! flip - v1.1.2 - 2016-10-20
 * https://github.com/nnattawat/flip
 * Copyright (c) 2016 Nattawat Nonsung; Licensed MIT */
