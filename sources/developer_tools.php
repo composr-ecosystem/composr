@@ -129,7 +129,10 @@ function semi_dev_mode_startup()
             }
         }
 
-        register_shutdown_function('dev_mode_aftertests');
+        register_shutdown_function(function() {
+            // Nested so it will run last
+            register_shutdown_function('dev_mode_aftertests');
+        });
     }
 
     if (($_SERVER['SCRIPT_NAME'] != '') && (empty($GLOBALS['EXTERNAL_CALL'])) && ($DEV_MODE) && (strpos($_SERVER['SCRIPT_NAME'], 'data_custom') === false)) {

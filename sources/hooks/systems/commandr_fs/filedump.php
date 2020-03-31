@@ -288,11 +288,15 @@ class Hook_commandr_fs_filedump
         if ((is_dir($path)) && (((file_exists($path . '/' . $file_name)) && (cms_is_writable($path . '/' . $file_name))) || ((!file_exists($path . '/' . $file_name)) && (cms_is_writable($path))))) {
             $input = json_decode($contents, true);
 
-            $data = @base64_decode($input['data']);
-            if ($data === false) {
-                $data = $input['data'];
+            if ($input === null) {
+                $data = $contents; // Raw binary
+            } else {
+                $data = @base64_decode($input['data']);
+                if ($data === false) {
+                    $data = $input['data'];
+                }
+                unset($input['data']);
             }
-            unset($input['data']);
 
             require_code('files');
             cms_file_put_contents_safe($path . '/' . $file_name, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);

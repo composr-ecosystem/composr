@@ -44,6 +44,8 @@ function webdav_script()
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('commandr')));
     }
 
+    cms_ini_set('ocproducts.type_strictness', '0');
+
     header('X-Robots-Tag: noindex');
 
     require_code('sabredav/vendor/autoload');
@@ -90,6 +92,9 @@ function webdav_script()
 
     $tffp = new DAV\TemporaryFileFilterPlugin(get_custom_file_base() . '/data_custom/modules/webdav/tmp');
     $server->addPlugin($tffp);
+
+    $plugin = new DAV\Browser\Plugin();
+    $server->addPlugin($plugin);
 
     $server->exec();
 
