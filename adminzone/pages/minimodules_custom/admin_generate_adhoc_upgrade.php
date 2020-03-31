@@ -13,7 +13,7 @@
  * @package    meta_toolkit
  */
 
-/*EXTRA FUNCTIONS: diff_simple_2*/
+/*EXTRA FUNCTIONS: diff_simple_text*/
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
@@ -144,7 +144,7 @@ if ($type == 'auto_probe') {
                                     $theme_file_old = preg_replace('#/\*.*\*/#sU', '', $theme_file_old);
                                     $theme_file_new = preg_replace('#/\*.*\*/#sU', '', $theme_file_new);
                                     if ($theme_file_new != $theme_file_old) {
-                                        $manual_changes['css_diff'][basename($override_file, 'editfrom')] = diff_simple_2($theme_file_old, $theme_file_new, true);
+                                        $manual_changes['css_diff'][basename($override_file, 'editfrom')] = diff_simple_text($theme_file_old, $theme_file_new);
                                     }
                                 }
                             }
@@ -159,7 +159,7 @@ if ($type == 'auto_probe') {
                                     $new_install_code = $matches[3];
                                 }
                                 if ($new_install_code != $old_install_code) {
-                                    $manual_changes['install_diff'][$file] = diff_simple_2($old_install_code, $new_install_code, true);
+                                    $manual_changes['install_diff'][$file] = diff_simple_text($old_install_code, $new_install_code);
                                 }
                             }
                         }

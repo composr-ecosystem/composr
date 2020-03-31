@@ -573,6 +573,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/cqc_cns.php',
             '_tests/tests/unit_tests/cqc_persistent_caching.php',
             '_tests/tests/unit_tests/sql_compat.php',
+            '_tests/tests/unit_tests/diff.php',
             '_tests/tests/unit_tests/zip.php',
             '_tests/tests/unit_tests/_web_resources.php',
             '_tests/tests/unit_tests/log_refs.php',
