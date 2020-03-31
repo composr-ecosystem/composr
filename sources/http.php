@@ -1179,9 +1179,8 @@ class HttpDownloaderCurl extends HttpDownloader
         curl_close($ch);
 
         // Process HTTP status
-        switch ($this->message) {
+        switch ((substr($this->message, 0, 1) == '2') ? '200' : $this->message) {
             case '200':
-            case '201':
             case '301':
             case '302':
             case '307':
@@ -1288,7 +1287,7 @@ class HttpDownloaderCurl extends HttpDownloader
         if ($this->curl_body === null) {
             $this->curl_body = '';
         }
-        if ((!in_array($this->message, ['200', '201'])) && (!$this->ignore_http_status)) {
+        if ((substr($this->message, 0, 1) != '2') && (!$this->ignore_http_status)) {
             $this->curl_body = null;
         }
 
@@ -1626,9 +1625,8 @@ class HttpDownloaderSockets extends HttpDownloader
 
                             $this->message = $this->fix_non_standard_statuses($matches[2]);
 
-                            switch ($this->message) {
+                            switch ((substr($this->message, 0, 1) == '2') ? '200' : $this->message) {
                                 case '200':
-                                case '201':
                                     // Good
                                     break;
 

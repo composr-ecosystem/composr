@@ -816,6 +816,10 @@ function handle_bad_access_context()
         return;
     }
 
+    if (strpos(get_self_url_easy(), '/webdav/') !== false) {
+        return;
+    }
+
     $request_hostname = get_request_hostname();
 
     // Detect bad access domain
@@ -826,6 +830,7 @@ function handle_bad_access_context()
         if ($base_url_hostname != $request_hostname) {
             if (empty($SITE_INFO['ZONE_MAPPING_' . get_zone_name()])) {
                 if (($GLOBALS['FORUM_DRIVER'] !== null) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+                    require_code('site');
                     attach_message(do_lang_tempcode('BAD_ACCESS_DOMAIN', escape_html($base_url_hostname), escape_html($request_hostname)), 'warn');
                 }
 

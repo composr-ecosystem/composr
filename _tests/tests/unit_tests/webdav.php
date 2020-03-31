@@ -64,10 +64,11 @@ class webdav_test_set extends cms_test_case
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?>
         <D:propfind xmlns:D="DAV:">
             <D:prop>
+                <D:resourcetype />
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url, [
+        $result = http_get_contents($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
             'raw_post' => true,
             'post_params' => [$xml],
@@ -90,7 +91,7 @@ class webdav_test_set extends cms_test_case
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(strpos($result, '191805') !== false);
+        $this->assertTrue(strpos($result, '259941') !== false); // Higher file-size than actual file due to JSON encoding
 
         // Test download
         $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
@@ -98,23 +99,9 @@ class webdav_test_set extends cms_test_case
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue($result == $file_data);
-
-        // Test lock gives no error
-        $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
-            'http_verb' => 'LOCK',
-            'trigger_error' => false,
-            'cookies' => $cookies,
-        ]);
-        $this->assertTrue($result == $file_data);
-
-        // Test unlock gives no error
-        $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
-            'http_verb' => 'UNLOCK',
-            'trigger_error' => false,
-            'cookies' => $cookies,
-        ]);
-        $this->assertTrue($result == $file_data);
+        $_result = json_decode($result, true);
+        $__result = is_array($_result) ? base64_decode($_result['data']) : null;
+        $this->assertTrue($__result === $file_data);
 
         // Test edit
         $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
@@ -140,7 +127,7 @@ class webdav_test_set extends cms_test_case
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(strpos($result, '12343') !== false);
+        $this->assertTrue(strpos($result, '16605') !== false); // Higher file-size than actual file due to JSON encoding
 
         // Test delete
         $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
@@ -157,7 +144,7 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url, [
+        $result = http_get_contents($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
             'raw_post' => true,
             'post_params' => [$xml],
@@ -167,7 +154,7 @@ class webdav_test_set extends cms_test_case
         $this->assertTrue(strpos($result, 'early_cinema.mp4') === false);
 
         // Test create folder
-        $result = http_get_contents($webdav_filedump_base_url . '/xxx123', [
+        $result = http_get_contents($webdav_filedump_base_url . '/xxx123/', [
             'http_verb' => 'MKCOL',
             'trigger_error' => false,
             'cookies' => $cookies,
@@ -181,7 +168,7 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url, [
+        $result = http_get_contents($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
             'raw_post' => true,
             'post_params' => [$xml],
@@ -191,7 +178,7 @@ class webdav_test_set extends cms_test_case
         $this->assertTrue(strpos($result, 'xxx123') !== false);
 
         // Test delete folder
-        $result = http_get_contents($webdav_filedump_base_url . '/xxx123', [
+        $result = http_get_contents($webdav_filedump_base_url . '/xxx123/', [
             'http_verb' => 'DELETE',
             'trigger_error' => false,
             'cookies' => $cookies,
@@ -205,7 +192,7 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url, [
+        $result = http_get_contents($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
             'raw_post' => true,
             'post_params' => [$xml],

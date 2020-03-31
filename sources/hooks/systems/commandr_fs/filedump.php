@@ -77,7 +77,7 @@ class Hook_commandr_fs_filedump
                     $listing[] = [
                         $file,
                         is_dir($path . '/' . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
-                        is_dir($path . '/' . $file) ? null : filesize($path . '/' . $file),
+                        null/*don't calculate a filesize*/,
                         filemtime($path . '/' . $file),
                     ];
                 }
@@ -140,7 +140,7 @@ class Hook_commandr_fs_filedump
 
         if ((is_dir($path)) && (file_exists($path . '/' . $dir_name)) && (cms_is_writable($path . '/' . $dir_name))) {
             require_code('files');
-            $success = @deldir_contents($path . '/' . $dir_name);
+            $success = @deldir_contents($path . '/' . $dir_name, false, true);
             if (!$success) {
                 warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path . '/' . $dir_name)), false, true);
             }
