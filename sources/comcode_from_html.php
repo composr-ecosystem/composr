@@ -54,6 +54,7 @@ function _img_tag_fixup($matches)
         $params = preg_replace('# ' . $ex . '="[^"]*"#', '', $params);
     }
     $params = str_replace(' ismap', '', $params);
+    $params = preg_replace('#\sdata-[\w\-]+="[^"]*"#', '', $params);
 
     /*$referer = post_param_string('http_referer', $_SERVER['HTTP_REFERER']);*/ // CKEditor allows us to specify the base, so we know get_base_url() is right
     $caller_url = /*looks_like_url($referer) ? preg_replace('#/[^/]*$#', '', $referer) : */get_base_url();

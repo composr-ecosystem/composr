@@ -307,7 +307,10 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $incl
     ], $tags_to_preserve);
     foreach ($tags_to_strip_just_tags as $s) {
         if (stripos($text, '[' . $s) !== false) {
-            $text = preg_replace('#\[' . $s . '[^\]]*\](.*)\[/' . $s . '\]#U', '\1', $text);
+            do {
+                $text_before = $text;
+                $text = preg_replace('#\[' . $s . '[^\]]*\](.*)\[/' . $s . '\]#Usi', '\1', $text);
+            } while ($text_before != $text);
         }
     }
 

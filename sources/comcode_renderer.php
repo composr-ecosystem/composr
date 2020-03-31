@@ -1573,7 +1573,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 break;
             }
             $tpl_map = [
-                'ID' => (substr($pass_id, 0, 5) == 'panel') ? null : $uniq_id,
+                'ID' => ((substr($pass_id, 0, 5) == 'panel') || (strpos($pass_id, ':') !== false)) ? null : $uniq_id,
                 'TITLE' => $embed,
                 'HELP_URL' => '',
                 'HELP_TERM' => '',

@@ -250,22 +250,24 @@ function strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $inclu
         return '';
     }
 
+    $sz = serialize([$in, $for_extract, $tags_to_preserve, $include_urls]);
+
     static $done = [];
-    if (isset($done[$text])) {
-        return $done[$text];
+    if (isset($done[$sz])) {
+        return $done[$sz];
     }
 
     $input_text = $text;
 
     $matches = [];
     if (preg_match('#^(\[semihtml\])?([\w\-\(\) \.,:;/"\'\!\?]*)(\[/semihtml\])?$#', $text, $matches) != 0) {
-        $done[$text] = $matches[2];
+        $done[$sz] = $matches[2];
         return $matches[2]; // Optimisation
     }
 
     require_code('comcode_to_text');
     $text = _strip_comcode($text, $for_extract, $tags_to_preserve, $include_urls);
 
-    $done[$text] = $text;
+    $done[$sz] = $text;
     return $text;
 }

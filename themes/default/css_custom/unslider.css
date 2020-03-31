@@ -22,7 +22,7 @@
 	direction: ltr;
 }
 .unslider, .unslider a {
-	color: {$GET,box_title_text} !important;
+	color: {$GET,text_light} !important;
 }
 .unslider>ul {
 	list-style: none;
@@ -68,7 +68,7 @@
 	line-height: 52px;
 	margin-top: 0;
 	border-bottom: 0;
-	color: {$GET,box_title_text};
+	color: {$GET,text_light};
 }
 
 .unslider .dots {

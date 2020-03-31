@@ -74,6 +74,7 @@ function clean_comcode_for_spellcheck($comcode)
     }
 
     $text = strip_comcode($comcode);
+
     return $text;
 }
 
@@ -159,11 +160,13 @@ function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = t
     }
     if ($skip_known_words_in_db) {
         $okay_words = [
-            // Some common Composr terms that should not be corrected
+            // Some common Composr etc terms that should not be corrected
             'comcode',
             'tempcode',
             'selectcode',
             'filtercode',
+            'composr',
+            'jquery',
         ];
 
         $or_list = '';
