@@ -43,7 +43,7 @@ Once files are transferred, you need to replicate the correct file permissions s
 
 If you have 'shell access' on your new server, typing the following from a shell inside your Composr installation directory will quickly fix your permissions to what they should be:
 [code="Bash"]
-sh fixperms.sh
+php fixperms.php
 [/code]
 
 If you do not have such access:

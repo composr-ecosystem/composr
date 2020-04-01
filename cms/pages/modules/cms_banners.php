@@ -56,9 +56,23 @@ class Module_cms_banners extends Standard_crud_module
 
         $this->cat_crud_module = class_exists('Mx_cms_banners_cat') ? new Mx_cms_banners_cat() : new Module_cms_banners_cat();
 
-        return [
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
+        $ret = [
             'browse' => ['MANAGE_BANNERS', 'menu/cms/banners'],
-        ] + parent::get_entry_points();
+        ];
+
+        $ret += parent::get_entry_points();
+
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
+        }
+
+        return $ret;
     }
 
     /**
@@ -107,6 +121,18 @@ class Module_cms_banners extends Standard_crud_module
             }
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_BANNERS')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return parent::pre_run($top_level);
     }
 
@@ -142,6 +168,13 @@ class Module_cms_banners extends Standard_crud_module
             $this->cat_crud_module->js_function_calls[] = 'moduleCmsBannersRunStartAddCategory';
         }
 
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
+
         return new Tempcode();
     }
 
@@ -162,6 +195,7 @@ class Module_cms_banners extends Standard_crud_module
                 has_privilege(get_member(), 'submit_midrange_content', 'cms_banners') ? ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_BANNER')] : null,
                 has_privilege(get_member(), 'edit_own_midrange_content', 'cms_banners') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_BANNER')] : null,
                 ['admin/export_spreadsheet', ['_SELF', ['type' => 'export_spreadsheet'], '_SELF'], do_lang('EXPORT_SPREADSHEET_BANNERS')],
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ],
             do_lang('MANAGE_BANNERS')
         );
@@ -641,6 +675,28 @@ class Module_cms_banners extends Standard_crud_module
         $sheet_writer->output_and_exit($filename, true);
 
         return new Tempcode();
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('banners', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('banners', $this->title);
     }
 }
 

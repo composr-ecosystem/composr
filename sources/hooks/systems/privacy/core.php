@@ -414,7 +414,7 @@ class Hook_privacy_core extends Hook_privacy_base
                     'allowed_handle_methods' => PRIVACY_METHOD__DELETE,
                 ],
                 'task_queue' => [
-                    'timestamp_field' => null,
+                    'timestamp_field' => 't_add_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD__LEAVE,
                     'member_id_fields' => ['t_member_id'],

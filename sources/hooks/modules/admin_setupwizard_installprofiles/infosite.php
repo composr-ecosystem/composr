@@ -80,14 +80,13 @@ class Hook_admin_setupwizard_installprofiles_infosite
     public function default_blocks()
     {
         return [
-            'YES' => [
-                'main_news',
+            BLOCK_POSITION_MAIN => [
+                'main_multi_content',
                 'main_rss',
                 'main_quotes',
             ],
-            'YES_CELL' => [],
-            'PANEL_LEFT' => [],
-            'PANEL_RIGHT' => [
+            BLOCK_POSITION_CELL => [],
+            BLOCK_POSITION_PANEL => [
                 'main_newsletter_signup',
                 'side_calendar',
                 'main_poll',

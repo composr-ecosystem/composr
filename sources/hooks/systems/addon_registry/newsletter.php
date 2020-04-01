@@ -45,6 +45,16 @@ class Hook_addon_registry_newsletter
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'New Features';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -172,6 +182,7 @@ class Hook_addon_registry_newsletter
             'sources/hooks/systems/preview/newsletter_whatsnew.php',
             'sources/hooks/systems/actionlog/newsletter.php',
             'sources/hooks/systems/tasks/export_newsletter_subscribers.php',
+            'sources/hooks/systems/commandr_scheduled/send_newsletter.php',
 
             'sources/hooks/modules/admin_stats/newsletter_subscriptions.php',
         ];

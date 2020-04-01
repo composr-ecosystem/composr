@@ -122,6 +122,12 @@ class Module_cms_catalogues extends Standard_crud_module
             }
         }
 
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
+        }
+
         return $ret;
     }
 
@@ -222,6 +228,18 @@ class Module_cms_catalogues extends Standard_crud_module
             }
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_CATALOGUES')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return $ret;
     }
 
@@ -260,6 +278,12 @@ class Module_cms_catalogues extends Standard_crud_module
         }
         if ($type == 'export') {
             return $this->export_catalogue();
+        }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
         }
 
         return new Tempcode();
@@ -309,6 +333,7 @@ class Module_cms_catalogues extends Standard_crud_module
                 (!$has_categories) ? null : (has_privilege(get_member(), 'edit_midrange_content', 'cms_catalogues') ? ['admin/edit', ['_SELF', array_merge($extra_map, ['type' => 'edit_entry']), '_SELF'], ($catalogue_name != '') ? do_lang('NEXT_ITEM_edit') : do_lang('EDIT_CATALOGUE_ENTRY')] : null),
                 (!$has_categories) ? null : (has_privilege(get_member(), 'mass_import', 'cms_catalogues') ? ['admin/import_spreadsheet', ['_SELF', array_merge($extra_map, ['type' => 'import']), '_SELF'], do_lang('IMPORT_CATALOGUE_ENTRIES')] : null),
                 (!$has_categories) ? null : ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? ['admin/export_spreadsheet', ['_SELF', array_merge($extra_map, ['type' => 'export']), '_SELF'], do_lang('EXPORT_CATALOGUE_ENTRIES')] : null),
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ], manage_custom_fields_donext_link('catalogue'), manage_custom_fields_donext_link('catalogue_category')),
             ($catalogue_name != '') ? escape_html(get_translated_text($cat_title)) : do_lang('MANAGE_CATALOGUES')
         );
@@ -722,15 +747,24 @@ class Module_cms_catalogues extends Standard_crud_module
         $map = [];
         require_code('fields');
         require_code('catalogues');
-        foreach ($fields as $field) {
+        foreach ($fields as $i => $field) {
             $object = get_fields_hook($field['cf_type']);
 
             list(, , $storage_type) = $object->get_field_value_row_bits($field);
 
-            $value = $object->inputted_to_field_value($editing_id !== null, $field, 'uploads/catalogues', ($editing_id === null) ? null : _get_catalogue_entry_field($field['id'], $editing_id, $storage_type));
-            if ((fractional_edit()) && ($value != STRING_MAGIC_NULL)) {
-                $rendered = static_evaluate_tempcode($object->render_field_value($field, $value, 0, null, 'catalogue_efv_' . $storage_type, null, 'ce_id', 'cf_id', 'cv_value', $submitter));
-                $_POST['field_' . strval($field['id']) . '__altered_rendered_output'] = $rendered;
+            if (fractional_edit()) {
+                if ($i == 0) {
+                    $value = post_param_string('field_0', null);
+                    if ($value === null) {
+                        $value = post_param_string('field_' . $field['id']);
+                    }
+                    $rendered = static_evaluate_tempcode($object->render_field_value($field, $value, 0, null, 'catalogue_efv_' . $storage_type, null, 'ce_id', 'cf_id', 'cv_value', $submitter));
+                    $_POST['field_' . strval($field['id']) . '__altered_rendered_output'] = $rendered;
+                } else {
+                    $value = STRING_MAGIC_NULL;
+                }
+            } else {
+                $value = $object->inputted_to_field_value($editing_id !== null, $field, 'uploads/catalogues', ($editing_id === null) ? null : _get_catalogue_entry_field($field['id'], $editing_id, $storage_type));
             }
 
             $map[$field['id']] = $value;
@@ -1156,6 +1190,28 @@ class Module_cms_catalogues extends Standard_crud_module
         require_code('tasks');
         return call_user_func_array__long_task(do_lang('EXPORT_CATALOGUE_ENTRIES'), $this->title, 'export_catalogue', [$catalogue_name]);
     }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('catalogues', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('catalogues', $this->title);
+    }
 }
 
 /**
@@ -1303,7 +1359,8 @@ class Module_cms_catalogues_cat extends Standard_crud_module
             $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
         }
 
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE', 'catalogue_category'), $hidden, 'image', null, false, $rep_image));
+        require_code('images');
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE', 'catalogue_category'), $hidden, 'image', null, false, $rep_image, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         // Is the catalogue a tree?
         $is_tree = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_is_tree', ['c_name' => $catalogue_name]);
@@ -2095,7 +2152,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             if ($num_fields == 0) {
                 if (substr($old_name, 0, 1) == '_') {
                     actual_delete_catalogue($old_name);
-                    return;
+                    return null;
                 }
                 warn_exit(do_lang_tempcode('NO_FIELDS'));
             }

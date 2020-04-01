@@ -46,7 +46,7 @@ class Hook_addon_registry_weather
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Information Display';
     }
 
     /**

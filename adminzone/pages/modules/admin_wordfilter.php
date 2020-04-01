@@ -69,14 +69,6 @@ class Module_admin_wordfilter extends Standard_crud_module
     {
         require_code('wordfilter');
 
-        $naughties = [
-            'arsehole', 'asshole', 'arse', 'bastard', 'cock', 'cocked', 'cocksucker', 'cunt', 'cum',
-            'blowjob', 'bollocks', 'bondage', 'bugger', 'buggery', 'dickhead', 'dildo', 'faggot', 'fuck', 'fucked', 'fucking',
-            'fucker', 'gayboy', 'jackoff', 'jerk-off', 'motherfucker', 'nigger', 'piss', 'pissed', 'puffter', 'pussy',
-            'queers', 'retard', 'shag', 'shagged',
-            'shat', 'shit', 'slut', 'twat', 'wank', 'wanker', 'whore',
-        ];
-
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('wordfilter', [
                 'id' => '*AUTO',
@@ -85,9 +77,8 @@ class Module_admin_wordfilter extends Standard_crud_module
                 'w_match_type' => 'ID_TEXT', // One of 'WORDFILTER_MATCH_TYPES'
             ]);
 
-            foreach ($naughties as $word) {
-                $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES, 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL]);
-            }
+            require_code('content2');
+            install_predefined_content('wordfilter');
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
@@ -104,10 +95,7 @@ class Module_admin_wordfilter extends Standard_crud_module
             $GLOBALS['SITE_DB']->query_update('wordfilter', ['w_match_type' => WORDFILTER_MATCH_TYPE_FULL], ['w_substr' => 0]);
             $GLOBALS['SITE_DB']->query_update('wordfilter', ['w_match_type' => WORDFILTER_MATCH_TYPE_SUBSTRING], ['w_substr' => 1]);
             $GLOBALS['SITE_DB']->delete_table_field('wordfilter', 'w_substr');
-
-            foreach ($naughties as $word) {
-                $GLOBALS['SITE_DB']->query_update('wordfilter', ['w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES], ['word' => $word, 'w_replacement' => '', 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL]);
-            }
+            $GLOBALS['SITE_DB']->query_update('wordfilter', ['w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES], ['w_replacement' => '', 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL]);
         }
     }
 
@@ -126,9 +114,21 @@ class Module_admin_wordfilter extends Standard_crud_module
             return null;
         }
 
-        return [
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
+        $ret = [
             'browse' => ['MANAGE_WORDFILTER', 'menu/adminzone/security/wordfilter'],
         ];
+
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
+        }
+
+        return $ret;
     }
 
     public $title;
@@ -159,6 +159,18 @@ class Module_admin_wordfilter extends Standard_crud_module
             $this->title = get_screen_title('MANAGE_WORDFILTER');
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_WORDFILTER')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return parent::pre_run($top_level, $type);
     }
 
@@ -182,6 +194,13 @@ class Module_admin_wordfilter extends Standard_crud_module
             $this->js_function_calls[] = 'adminWordfilterWordForm';
         }
 
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
+
         return new Tempcode();
     }
 
@@ -199,6 +218,7 @@ class Module_admin_wordfilter extends Standard_crud_module
             [
                 ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_WORDFILTER')],
                 ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_WORDFILTER')],
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ],
             do_lang('MANAGE_WORDFILTER')
         );
@@ -375,5 +395,27 @@ class Module_admin_wordfilter extends Standard_crud_module
         }
 
         return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false];
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('wordfilter', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('wordfilter', $this->title);
     }
 }

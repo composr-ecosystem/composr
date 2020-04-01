@@ -201,13 +201,8 @@ class Hook_search_news extends FieldsSearchHook
      */
     public function render($myrow)
     {
-        global $NEWS_CATS_CACHE;
-        if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
-            $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
-        }
-
         require_code('news');
+        load_news_cat_rows('nc_owner IS NULL');
         return render_news_box($myrow);
     }
 }

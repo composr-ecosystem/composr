@@ -77,7 +77,7 @@ class Hook_commandr_fs_filedump
                     $listing[] = [
                         $file,
                         is_dir($path . '/' . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
-                        is_dir($path . '/' . $file) ? null : filesize($path . '/' . $file),
+                        null/*don't calculate a filesize*/,
                         filemtime($path . '/' . $file),
                     ];
                 }
@@ -140,7 +140,7 @@ class Hook_commandr_fs_filedump
 
         if ((is_dir($path)) && (file_exists($path . '/' . $dir_name)) && (cms_is_writable($path . '/' . $dir_name))) {
             require_code('files');
-            $success = @deldir_contents($path . '/' . $dir_name);
+            $success = @deldir_contents($path . '/' . $dir_name, false, true);
             if (!$success) {
                 warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path . '/' . $dir_name)), false, true);
             }
@@ -288,11 +288,15 @@ class Hook_commandr_fs_filedump
         if ((is_dir($path)) && (((file_exists($path . '/' . $file_name)) && (cms_is_writable($path . '/' . $file_name))) || ((!file_exists($path . '/' . $file_name)) && (cms_is_writable($path))))) {
             $input = json_decode($contents, true);
 
-            $data = @base64_decode($input['data']);
-            if ($data === false) {
-                $data = $input['data'];
+            if ($input === null) {
+                $data = $contents; // Raw binary
+            } else {
+                $data = @base64_decode($input['data']);
+                if ($data === false) {
+                    $data = $input['data'];
+                }
+                unset($input['data']);
             }
-            unset($input['data']);
 
             require_code('files');
             cms_file_put_contents_safe($path . '/' . $file_name, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);

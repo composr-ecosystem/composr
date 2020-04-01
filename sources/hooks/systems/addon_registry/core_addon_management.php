@@ -45,6 +45,16 @@ class Hook_addon_registry_core_addon_management
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Architecture';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -169,7 +179,15 @@ class Hook_addon_registry_core_addon_management
      */
     public function tpl_preview__administrative__addon_screen()
     {
-        $add_ons = new Tempcode();
+        $addons = [
+            'Test' => [
+                'COLOURS' => [
+                    'green' => [
+                        'ADDONS' => [],
+                    ],
+                ],
+            ],
+        ];
 
         foreach (placeholder_array() as $value) {
             $actions = do_lorem_template('COLUMNED_TABLE_ACTION', [
@@ -190,7 +208,7 @@ class Hook_addon_registry_core_addon_management
                 'NAME' => lorem_word(),
             ]);
 
-            $add_ons->attach(do_lorem_template('ADDON_SCREEN_ADDON', [
+            $addon['Test']['COLOURS']['green']['ADDONS'][$value] = do_lorem_template('ADDON_SCREEN_ADDON', [
                 'DESCRIPTION' => lorem_paragraph(),
                 'DESCRIPTION_PARSED' => lorem_paragraph_html(),
                 'FILE_LIST' => [lorem_phrase()],
@@ -209,13 +227,13 @@ class Hook_addon_registry_core_addon_management
                 'TYPE' => 'uninstall',
                 'PASSTHROUGH' => lorem_phrase(),
                 'UPDATED_ADDONS' => false,
-            ]));
+            ]);
         }
 
         return [
             lorem_globalise(do_lorem_template('ADDON_SCREEN', [
                 'TITLE' => lorem_title(),
-                'ADDONS' => $add_ons,
+                'ADDON_STRUCTURE' => $addons,
                 'MULTI_ACTION' => placeholder_url(),
                 'UPDATED_ADDONS' => '',
             ]), null, '', true)

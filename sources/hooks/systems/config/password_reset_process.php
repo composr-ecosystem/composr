@@ -34,11 +34,11 @@ class Hook_config_password_reset_process
             'human_name' => 'PASSWORD_RESET_PROCESS',
             'type' => 'list',
             'category' => 'SECURITY',
-            'group' => 'USERNAMES_AND_PASSWORDS',
+            'group' => 'LOST_PASSWORD',
             'explanation' => 'CONFIG_OPTION_password_reset_process',
             'shared_hosting_restricted' => '0',
             'list_options' => 'emailed|temporary|ultra',
-            'order_in_category_group' => 8,
+            'order_in_category_group' => 1,
             'required' => true,
 
             'public' => false,

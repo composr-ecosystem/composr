@@ -61,7 +61,6 @@
 
     $cms.functions.captchaCaptchaAjaxCheck = function captchaCaptchaAjaxCheck() {
         var form = document.getElementById('main-form'),
-            captchaEl = form.elements['captcha'],
             submitBtn = document.getElementById('submit-button');
 
         if (!form) {
@@ -72,25 +71,29 @@
             return;
         }
 
-        var validValue;
-        form.addEventListener('submit', function submitCheck(e) {
-            var value = captchaEl.value;
+        // Need to set a timeout because CAPTCHA might appear via JS
+        setTimeout(function() {
+            var captchaEl = form.elements['captcha'],
+                validValue;
+            form.addEventListener('submit', function submitCheck(e) {
+                var value = captchaEl.value;
 
-            if (value === validValue) {
-                return;
-            }
-
-            var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(value) + $cms.keep();
-            e.preventDefault();
-            submitBtn.disabled = true;
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
-                if (valid) {
-                    validValue = value;
-                    $dom.submit(form);
-                } else {
-                    document.getElementById('captcha').src += '&'; // Force it to reload latest captcha
-                    submitBtn.disabled = false;
+                if (value === validValue) {
+                    return;
                 }
+
+                var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(value) + $cms.keep();
+                e.preventDefault();
+                submitBtn.disabled = true;
+                $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                    if (valid) {
+                        validValue = value;
+                        $dom.submit(form);
+                    } else {
+                        document.getElementById('captcha').src += '&'; // Force it to reload latest captcha
+                        submitBtn.disabled = false;
+                    }
+                });
             });
         });
     };

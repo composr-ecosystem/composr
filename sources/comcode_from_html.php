@@ -54,6 +54,7 @@ function _img_tag_fixup($matches)
         $params = preg_replace('# ' . $ex . '="[^"]*"#', '', $params);
     }
     $params = str_replace(' ismap', '', $params);
+    $params = preg_replace('#\sdata-[\w\-]+="[^"]*"#', '', $params);
 
     /*$referer = post_param_string('http_referer', $_SERVER['HTTP_REFERER']);*/ // CKEditor allows us to specify the base, so we know get_base_url() is right
     $caller_url = /*looks_like_url($referer) ? preg_replace('#/[^/]*$#', '', $referer) : */get_base_url();
@@ -1077,10 +1078,11 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false, $member_
     }
 
     // Then, if there is no HTML left, we can avoid the 'semihtml' tag
-    if ((strpos($semihtml2, '<') === false) && (strpos($semihtml2, '&nbsp;') === false) && (strpos($semihtml2, '&#091;') === false) && (strpos($semihtml2, '&#123;') === false)) {
-        //$semihtml2 = str_replace(['&lt;', '&gt;', '&amp;'], ['___lt___', '___gt___', '___amp___'], $semihtml2);
-        $semihtml2 = @html_entity_decode($semihtml2, ENT_QUOTES);
-        //$semihtml2 = str_replace(['___lt___', '___gt___', '___amp___'], ['&lt;', '&gt;', '&amp;'], $semihtml2);
+    if (
+        (strpos($semihtml2, '<') === false) && /* No remaining HTML tags */
+        (strpos($semihtml2, '&#091;') === false) && (strpos($semihtml2, '&#123;') === false) /* No [ ] which will interfere with Comcode */
+    ) {
+        $semihtml2 = @html_entity_decode($semihtml2, ENT_NOQUOTES/*Quotes may interfere with Comcode if inside Comcode attributes, so leave as entities*/, get_charset());
         return $semihtml2;
     }
 

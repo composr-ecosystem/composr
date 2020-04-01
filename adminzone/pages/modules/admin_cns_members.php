@@ -427,7 +427,7 @@ class Module_admin_cns_members
             $validated, // validated
             '', // validated_email_confirm_code
             null, // on_probation_until
-            0, // is_perm_banned
+            '0', // is_perm_banned
             true, // check_correctness
             '', // ip_address
             $password_compatibility_scheme // password_compatibility_scheme

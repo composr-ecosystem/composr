@@ -1,339 +1,380 @@
-/*
- * Flip! jQuery Plugin (http://nnattawat.github.io/flip/)
- * @author Luca Manno (luca@smashup.it) [http://i.smashup.it]
- *			  [Original idea by Nicola Rizzo (thanks!)]
- *
- * @version 0.9.9 [Nov. 2009]
- *
- * @changelog
- * v 0.9.9	  ->	  Fix transparency over non-colored background. Added dontChangeColor option.
- *					  Added $clone and $this parameters to on.. callback functions.
- *					  Force hexadecimal color values. Made safe for noConflict use.
- *					  Some refactoring. [Henrik Hjelte, Jul. 10, 2009]
- * 						Added revert options, fixes and improvements on color management.
- * 						Released in Nov 2009
- * v 0.5		->	  Added patch to make it work with Opera (thanks to Peter Siewert), Added callbacks [Feb. 1, 2008]
- * v 0.4.1	  ->	  Fixed a regression in Chrome and Safari caused by getTransparent [Oct. 1, 2008]
- * v 0.4		->	  Fixed some bugs with transparent color. Now Flip! works on non-white backgrounds | Update: jquery.color.js plugin or jqueryUI still needed :( [Sept. 29, 2008]
- * v 0.3		->	  Now is possibile to define the content after the animation.
- *							  (jQuery object or text/html is allowed) [Sept. 25, 2008]
- * v 0.2		->	  Fixed chainability and buggy innertext rendering (xNephilimx thanks!)
- * v 0.1		->	  Starting release [Sept. 11, 2008]
- *
- */
-(function($) {
+(function ($cms) {
+    'use strict';
 
-function int_prop(fx){
-	fx.elem.style[ fx.prop ] = parseInt(fx.now,10) + fx.unit;
-}
+    $cms.templates.comcodeFlip = function comcodeFlip(params, container) {
+        var $container = window.jQuery(container);
+        $container.flip({
+            speed: params.speed
+        });
+    };
+}(window.$cms));
 
-var throwError=function(message) {
-	throw({name:"jquery.flip.js plugin error",message:message});
-};
+/*! flip - v1.1.2 - 2016-10-20
+* https://github.com/nnattawat/flip
+* Copyright (c) 2016 Nattawat Nonsung; Licensed MIT */
+(function( $ ) {
+  /*
+   * Private attributes and method
+   */
 
-var isIE6orOlder=function() {
-	// User agent sniffing is clearly out of fashion and $.browser will be be deprectad.
-	// Now, I can't think of a way to feature detect that IE6 doesn't show transparent
-	// borders in the correct way.
-	// Until then, this function will do, and be partly political correct, allowing
-	// 0.01 percent of the internet users to tweak with their UserAgent string.
-	//
-	// Not leadingWhiteSpace is to separate IE family from, well who knows?
-	// Maybe some version of Opera?
-	// The second guess behind this is that IE7+  will keep supporting maxHeight in the future.
+  // Function from David Walsh: http://davidwalsh.name/css-animation-callback licensed with http://opensource.org/licenses/MIT
+  var whichTransitionEvent = function() {
+    var t, el = document.createElement("fakeelement"),
+    transitions = {
+      "transition"      : "transitionend",
+      "OTransition"     : "oTransitionEnd",
+      "MozTransition"   : "transitionend",
+      "WebkitTransition": "webkitTransitionEnd"
+    };
 
-	// First guess changed to dean edwards ie sniffing http://dean.edwards.name/weblog/2007/03/sniff/
-	return (/*@cc_on!@*/false && (typeof document.body.style.maxHeight === "undefined"));
-};
+    for (t in transitions) {
+      if (el.style[t] !== undefined) {
+        return transitions[t];
+      }
+    }
+  };
+
+  /*
+   * Model declaration
+   */
+  var Flip = function($el, options, callback) {
+    // Define default setting
+    this.setting = {
+      axis: "y",
+      reverse: false,
+      trigger: "click",
+      speed: 500,
+      forceHeight: false,
+      forceWidth: false,
+      autoSize: true,
+      front: '.front',
+      back: '.back'
+    };
+
+    this.setting = $.extend(this.setting, options);
+
+    if (typeof options.axis === 'string' && (options.axis.toLowerCase() === 'x' || options.axis.toLowerCase() === 'y')) {
+      this.setting.axis = options.axis.toLowerCase();
+    }
+
+    if (typeof options.reverse === "boolean") {
+      this.setting.reverse = options.reverse;
+    }
+
+    if (typeof options.trigger === 'string') {
+      this.setting.trigger = options.trigger.toLowerCase();
+    }
+
+    var speed = parseInt(options.speed);
+    if (!isNaN(speed)) {
+      this.setting.speed = speed;
+    }
+
+    if (typeof options.forceHeight === "boolean") {
+      this.setting.forceHeight = options.forceHeight;
+    }
+
+    if (typeof options.forceWidth === "boolean") {
+      this.setting.forceWidth = options.forceWidth;
+    }
+
+    if (typeof options.autoSize === "boolean") {
+      this.setting.autoSize = options.autoSize;
+    }
+
+    if (typeof options.front === 'string' || options.front instanceof $) {
+      this.setting.front = options.front;
+    }
+
+    if (typeof options.back === 'string' || options.back instanceof $) {
+      this.setting.back = options.back;
+    }
+
+    // Other attributes
+    this.element = $el;
+    this.frontElement = this.getFrontElement();
+    this.backElement = this.getBackElement();
+    this.isFlipped = false;
+
+    this.init(callback);
+  };
+
+  /*
+   * Public methods
+   */
+  $.extend(Flip.prototype, {
+
+    flipDone: function(callback) {
+      var self = this;
+      // Providing a nicely wrapped up callback because transform is essentially async
+      self.element.one(whichTransitionEvent(), function() {
+        self.element.trigger('flip:done');
+        if (typeof callback === 'function') {
+          callback.call(self.element);
+        }
+      });
+    },
+
+    flip: function(callback) {
+      if (this.isFlipped) {
+        return;
+      }
+
+      this.isFlipped = true;
+
+      var rotateAxis = "rotate" + this.setting.axis;
+      this.frontElement.css({
+        transform: rotateAxis + (this.setting.reverse ? "(-180deg)" : "(180deg)"),
+        "z-index": "0"
+      });
+
+      this.backElement.css({
+        transform: rotateAxis + "(0deg)",
+        "z-index": "1"
+      });
+      this.flipDone(callback);
+    },
+
+    unflip: function(callback) {
+      if (!this.isFlipped) {
+        return;
+      }
+
+      this.isFlipped = false;
+
+      var rotateAxis = "rotate" + this.setting.axis;
+      this.frontElement.css({
+        transform: rotateAxis + "(0deg)",
+        "z-index": "1"
+      });
+
+      this.backElement.css({
+        transform: rotateAxis + (this.setting.reverse ? "(180deg)" : "(-180deg)"),
+        "z-index": "0"
+      });
+      this.flipDone(callback);
+    },
+
+    getFrontElement: function() {
+      if (this.setting.front instanceof $) {
+        return this.setting.front;
+      } else {
+        return this.element.find(this.setting.front);
+      }
+    },
+
+    getBackElement: function() {
+      if (this.setting.back instanceof $) {
+        return this.setting.back;
+      } else {
+        return this.element.find(this.setting.back);
+      }
+    },
+
+    init: function(callback) {
+      var self = this;
+
+      var faces = self.frontElement.add(self.backElement);
+      var rotateAxis = "rotate" + self.setting.axis;
+      var perspective = self.element["outer" + (rotateAxis === "rotatex" ? "Height" : "Width")]() * 2;
+      var elementCss = {
+        'perspective': perspective,
+        'position': 'relative'
+      };
+      var backElementCss = {
+        "transform": rotateAxis + "(" + (self.setting.reverse ? "180deg" : "-180deg") + ")",
+        "z-index": "0",
+        "position": "relative"
+      };
+      var faceElementCss = {
+        "backface-visibility": "hidden",
+        "transform-style": "preserve-3d",
+        "position": "absolute",
+        "z-index": "1"
+      };
+
+      if (self.setting.forceHeight) {
+        faces.outerHeight(self.element.height());
+      } else if (self.setting.autoSize) {
+        faceElementCss.height = '100%';
+      }
+
+      if (self.setting.forceWidth) {
+        faces.outerWidth(self.element.width());
+      } else if (self.setting.autoSize) {
+        faceElementCss.width = '100%';
+      }
+
+      // Back face always visible on Chrome #39
+      if ((window.chrome || (window.Intl && Intl.v8BreakIterator)) && 'CSS' in window) {
+        //Blink Engine, add preserve-3d to self.element
+        elementCss["-webkit-transform-style"] = "preserve-3d";
+      }
 
 
-// Some named colors to work with
-// From Interface by Stefan Petre
-// http://interface.eyecon.ro/
+      faces.css(faceElementCss).find('*').css({
+        "backface-visibility": "hidden"
+      });
 
-var colors = {
-	aqua:[0,255,255],
-	azure:[240,255,255],
-	beige:[245,245,220],
-	black:[0,0,0],
-	blue:[0,0,255],
-	brown:[165,42,42],
-	cyan:[0,255,255],
-	darkblue:[0,0,139],
-	darkcyan:[0,139,139],
-	darkgrey:[169,169,169],
-	darkgreen:[0,100,0],
-	darkkhaki:[189,183,107],
-	darkmagenta:[139,0,139],
-	darkolivegreen:[85,107,47],
-	darkorange:[255,140,0],
-	darkorchid:[153,50,204],
-	darkred:[139,0,0],
-	darksalmon:[233,150,122],
-	darkviolet:[148,0,211],
-	fuchsia:[255,0,255],
-	gold:[255,215,0],
-	green:[0,128,0],
-	indigo:[75,0,130],
-	khaki:[240,230,140],
-	lightblue:[173,216,230],
-	lightcyan:[224,255,255],
-	lightgreen:[144,238,144],
-	lightgrey:[211,211,211],
-	lightpink:[255,182,193],
-	lightyellow:[255,255,224],
-	lime:[0,255,0],
-	magenta:[255,0,255],
-	maroon:[128,0,0],
-	navy:[0,0,128],
-	olive:[128,128,0],
-	orange:[255,165,0],
-	pink:[255,192,203],
-	purple:[128,0,128],
-	violet:[128,0,128],
-	red:[255,0,0],
-	silver:[192,192,192],
-	white:[255,255,255],
-	yellow:[255,255,0],
-	transparent: [255,255,255]
-};
+      self.element.css(elementCss);
+      self.backElement.css(backElementCss);
 
-var acceptHexColor=function(color) {
-	if(color && color.indexOf("#")===-1 && color.indexOf("(")===-1){
-		return "rgb("+colors[color].toString()+")";
-	} else {
-		return color;
-	}
-};
+      // #39
+      // not forcing width/height may cause an initial flip to show up on
+      // page load when we apply the style to reverse the backface...
+      // To prevent self we first apply the basic styles and then give the
+      // browser a moment to apply them. Only afterwards do we add the transition.
+      setTimeout(function() {
+        // By now the browser should have applied the styles, so the transition
+        // will only affect subsequent flips.
+        var speedInSec = self.setting.speed / 1000 || 0.5;
+        faces.css({
+          "transition": "all " + speedInSec + "s ease-out"
+        });
 
-$.extend( $.fx.step, {
-	borderTopWidth : int_prop,
-	borderBottomWidth : int_prop,
-	borderLeftWidth: int_prop,
-	borderRightWidth: int_prop
-});
+        // This allows flip to be called for setup with only a callback (default settings)
+        if (typeof callback === 'function') {
+          callback.call(self.element);
+        }
 
-$.fn.revertFlip = function(){
-	return this.each( function(){
-		var $this = $(this);
-		$this.flip($this.data('flipRevertedSettings'));
-	});
-};
+        // While this used to work with a setTimeout of zero, at some point that became
+        // unstable and the initial flip returned. The reason for this is unknown but we
+        // will temporarily use a short delay of 20 to mitigate this issue.
+      }, 20);
 
-$.fn.flip = function(settings){
-	return this.each( function() {
-		var $this=$(this), flipObj, $clone, dirOption, dirOptions, newContent, ie6=isIE6orOlder();
+      self.attachEvents();
+    },
 
-		if($this.data('flipLock')){
-			return false;
-		}
+    clickHandler: function(event) {
+      if (!event) { event = window.event; }
+      if (this.element.find($(event.target).closest('button, a, input[type="submit"]')).length) {
+        return;
+      }
 
-		var revertedSettings = {
-			direction: (function(direction){
-				switch(direction)
-				{
-				case "tb":
-				  return "bt";
-				case "bt":
-				  return "tb";
-				case "lr":
-				  return "rl";
-				case "rl":
-				  return "lr";
-				default:
-				  return "bt";
-				}
-			})(settings.direction),
-			bgColor: acceptHexColor(settings.color) || "#999",
-			color: acceptHexColor(settings.bgColor) || $this.css("background-color"),
-			content: $this.html(),
-			speed: settings.speed || 500,
-			onBefore: settings.onBefore || function(){},
-			onEnd: settings.onEnd || function(){},
-			onAnimation: settings.onAnimation || function(){}
-		};
+      if (this.isFlipped) {
+        this.unflip();
+      } else {
+        this.flip();
+      }
+    },
 
-		$this
-			.data('flipRevertedSettings',revertedSettings)
-			.data('flipLock',1)
-			.data('flipSettings',revertedSettings);
+    hoverHandler: function() {
+      var self = this;
+      self.element.off('mouseleave.flip');
 
-		flipObj = {
-			width: $this.width(),
-			height: $this.height(),
-			bgColor: acceptHexColor(settings.bgColor) || $this.css("background-color"),
-			fontSize: $this.css("font-size") || "12px",
-			direction: settings.direction || "tb",
-			toColor: acceptHexColor(settings.color) || "#999",
-			speed: settings.speed || 500,
-			top: $this.offset().top,
-			left: $this.offset().left,
-			target: settings.content || null,
-			transparent: "transparent",
-			dontChangeColor: settings.dontChangeColor || false,
-			onBefore: settings.onBefore || function(){},
-			onEnd: settings.onEnd || function(){},
-			onAnimation: settings.onAnimation || function(){}
-		};
+      self.flip();
 
-		// This is the first part of a trick to support
-		// transparent borders using chroma filter for IE6
-		// The color below is arbitrary, lets just hope it is not used in the animation
-		ie6 && (flipObj.transparent="#123456");
+      setTimeout(function() {
+        self.element.on('mouseleave.flip', $.proxy(self.unflip, self));
+        if (!self.element.is(":hover")) {
+          self.unflip();
+        }
+      }, (self.setting.speed + 150));
+    },
 
-		$clone= $this.css("visibility","hidden")
-			.clone(true)
-			.data('flipLock',1)
-			.appendTo("body")
-			.html("")
-			.css({visibility:"visible",position:"absolute",left:flipObj.left,top:flipObj.top,margin:0,zIndex:9999});
+    attachEvents: function() {
+      var self = this;
+      if (self.setting.trigger === "click") {
+        self.element.on($.fn.tap ? "tap.flip" : "click.flip", $.proxy(self.clickHandler, self));
+      } else if (self.setting.trigger === "hover") {
+        self.element.on('mouseenter.flip', $.proxy(self.hoverHandler, self));
+        self.element.on('mouseleave.flip', $.proxy(self.unflip, self));
+      }
+    },
 
-		var defaultStart=function() {
-			return {
-				backgroundColor: flipObj.transparent,
-				fontSize:0,
-				lineHeight:0,
-				borderTopWidth:0,
-				borderLeftWidth:0,
-				borderRightWidth:0,
-				borderBottomWidth:0,
-				borderTopColor:flipObj.transparent,
-				borderBottomColor:flipObj.transparent,
-				borderLeftColor:flipObj.transparent,
-				borderRightColor:flipObj.transparent,
-				background: "none",
-				borderStyle:'solid',
-				height:0,
-				width:0
-			};
-		};
-		var defaultHorizontal=function() {
-			var waist=(flipObj.height/100)*25;
-			var start=defaultStart();
-			start.width=flipObj.width;
-			return {
-				"start": start,
-				"first": {
-					borderTopWidth: 0,
-					borderLeftWidth: waist,
-					borderRightWidth: waist,
-					borderBottomWidth: 0,
-					borderTopColor: '#999',
-					borderBottomColor: '#999',
-					top: (flipObj.top+(flipObj.height/2)),
-					left: (flipObj.left-waist)},
-				"second": {
-					borderBottomWidth: 0,
-					borderTopWidth: 0,
-					borderLeftWidth: 0,
-					borderRightWidth: 0,
-					borderTopColor: flipObj.transparent,
-					borderBottomColor: flipObj.transparent,
-					top: flipObj.top,
-					left: flipObj.left}
-			};
-		};
-		var defaultVertical=function() {
-			var waist=(flipObj.height/100)*25;
-			var start=defaultStart();
-			start.height=flipObj.height;
-			return {
-				"start": start,
-				"first": {
-					borderTopWidth: waist,
-					borderLeftWidth: 0,
-					borderRightWidth: 0,
-					borderBottomWidth: waist,
-					borderLeftColor: '#999',
-					borderRightColor: '#999',
-					top: flipObj.top-waist,
-					left: flipObj.left+(flipObj.width/2)},
-				"second": {
-					borderTopWidth: 0,
-					borderLeftWidth: 0,
-					borderRightWidth: 0,
-					borderBottomWidth: 0,
-					borderLeftColor: flipObj.transparent,
-					borderRightColor: flipObj.transparent,
-					top: flipObj.top,
-					left: flipObj.left}
-			};
-		};
+    flipChanged: function(callback) {
+      this.element.trigger('flip:change');
+      if (typeof callback === 'function') {
+        callback.call(this.element);
+      }
+    },
 
-		dirOptions = {
-			"tb": function () {
-				var d=defaultHorizontal();
-				d.start.borderTopWidth=flipObj.height;
-				d.start.borderTopColor=flipObj.bgColor;
-				d.second.borderBottomWidth= flipObj.height;
-				d.second.borderBottomColor= flipObj.toColor;
-				return d;
-			},
-			"bt": function () {
-				var d=defaultHorizontal();
-				d.start.borderBottomWidth=flipObj.height;
-				d.start.borderBottomColor= flipObj.bgColor;
-				d.second.borderTopWidth= flipObj.height;
-				d.second.borderTopColor= flipObj.toColor;
-				return d;
-			},
-			"lr": function () {
-				var d=defaultVertical();
-				d.start.borderLeftWidth=flipObj.width;
-				d.start.borderLeftColor=flipObj.bgColor;
-				d.second.borderRightWidth= flipObj.width;
-				d.second.borderRightColor= flipObj.toColor;
-				return d;
-			},
-			"rl": function () {
-				var d=defaultVertical();
-				d.start.borderRightWidth=flipObj.width;
-				d.start.borderRightColor=flipObj.bgColor;
-				d.second.borderLeftWidth= flipObj.width;
-				d.second.borderLeftColor= flipObj.toColor;
-				return d;
-			}
-		};
+    changeSettings: function(options, callback) {
+      var self = this;
+      var changeNeeded = false;
 
-		dirOption=dirOptions[flipObj.direction]();
+      if (options.axis !== undefined && self.setting.axis !== options.axis.toLowerCase()) {
+        self.setting.axis = options.axis.toLowerCase();
+        changeNeeded = true;
+      }
 
-		// Second part of IE6 transparency trick.
-		ie6 && (dirOption.start.filter="chroma(color="+flipObj.transparent+")");
+      if (options.reverse !== undefined && self.setting.reverse !== options.reverse) {
+        self.setting.reverse = options.reverse;
+        changeNeeded = true;
+      }
 
-		newContent = function(){
-			var target = flipObj.target;
-			return target && target.jquery ? target.html() : target;
-		};
+      if (changeNeeded) {
+        var faces = self.frontElement.add(self.backElement);
+        var savedTrans = faces.css(["transition-property", "transition-timing-function", "transition-duration", "transition-delay"]);
 
-		$clone.queue(function(){
-			flipObj.onBefore($clone,$this);
-			$clone.html('').css(dirOption.start);
-			$clone.dequeue();
-		});
+        faces.css({
+          transition: "none"
+        });
 
-		$clone.animate(dirOption.first,flipObj.speed);
+        // This sets up the first flip in the new direction automatically
+        var rotateAxis = "rotate" + self.setting.axis;
 
-		$clone.queue(function(){
-			flipObj.onAnimation($clone,$this);
-			$clone.dequeue();
-		});
-		$clone.animate(dirOption.second,flipObj.speed);
+        if (self.isFlipped) {
+          self.frontElement.css({
+            transform: rotateAxis + (self.setting.reverse ? "(-180deg)" : "(180deg)"),
+            "z-index": "0"
+          });
+        } else {
+          self.backElement.css({
+            transform: rotateAxis + (self.setting.reverse ? "(180deg)" : "(-180deg)"),
+            "z-index": "0"
+          });
+        }
+        // Providing a nicely wrapped up callback because transform is essentially async
+        setTimeout(function() {
+          faces.css(savedTrans);
+          self.flipChanged(callback);
+        }, 0);
+      } else {
+        // If we didnt have to set the axis we can just call back.
+        self.flipChanged(callback);
+      }
+    }
 
-		$clone.queue(function(){
-			if (!flipObj.dontChangeColor) {
-				$this.css({backgroundColor: flipObj.toColor});
-			}
-			$this.css({visibility: "visible"});
+  });
 
-			var nC = newContent();
-			if(nC) {
-			    $this.html(nC);
-			}
-			$clone.remove();
-			flipObj.onEnd($clone,$this);
-			$this.removeData('flipLock');
-			$clone.dequeue();
-		});
-	});
-};
-})(jQuery);
+  /*
+   * jQuery collection methods
+   */
+  $.fn.flip = function (options, callback) {
+    if (typeof options === 'function') {
+      callback = options;
+    }
+
+    if (typeof options === "string" || typeof options === "boolean") {
+      this.each(function() {
+        var flip = $(this).data('flip-model');
+
+        if (options === "toggle") {
+          options = !flip.isFlipped;
+        }
+
+        if (options) {
+          flip.flip(callback);
+        } else {
+          flip.unflip(callback);
+        }
+      });
+    } else {
+      this.each(function() {
+        if ($(this).data('flip-model')) { // The element has been initiated, all we have to do is change applicable settings
+          var flip = $(this).data('flip-model');
+
+          if (options && (options.axis !== undefined || options.reverse !== undefined)) {
+            flip.changeSettings(options, callback);
+          }
+        } else { // Init
+          $(this).data('flip-model', new Flip($(this), (options || {}), callback));
+        }
+      });
+    }
+
+    return this;
+  };
+
+}( jQuery ));

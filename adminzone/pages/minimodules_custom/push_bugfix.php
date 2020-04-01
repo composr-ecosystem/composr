@@ -38,8 +38,8 @@ if (!addon_installed__messaged('composr_release_build', $error_msg)) {
 restrictify();
 cms_ini_set('ocproducts.xss_detect', '0');
 
-if (!is_suexec_like()) {
-    $user = posix_getpwuid(posix_geteuid());
+if ((!is_suexec_like()) && (function_exists('posix_getpwuid')) && (function_exists('posix_getuid'))) {
+    $user = posix_getpwuid(posix_getuid());
     attach_message('Warning: Not running an suEXEC-like environment (web user is ' . $user['name'] . '), your file permissions will likely get mangled.', 'warn');
 }
 
@@ -250,7 +250,7 @@ $do_full_scan = (get_param_integer('full_scan', 0) == 1);
 if (($do_full_scan) || (empty($git_found))) {
     $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
     if (empty($files)) {
-        $checkout_seconds = time() - filemtime(get_file_base() . '/index.php');
+        $checkout_seconds = time() - website_creation_time();
         $days = min(14, intval(round($checkout_seconds / (60 * 60 * 24) - 1)));
         $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * $days);
     }

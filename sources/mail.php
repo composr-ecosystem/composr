@@ -152,7 +152,10 @@ function dispatch_mail($subject_line, $message_raw, $to_emails = null, $to_names
         }
     }
 
-    $dispatcher->dispatch($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+    list($worked, $error) = $dispatcher->dispatch($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
+
+    $dispatcher->worked = $worked;
+    $dispatcher->error = $error;
 
     return $dispatcher;
 }
@@ -1158,7 +1161,7 @@ abstract class Mail_dispatcher_base
         $to_emails = $to_emails_new;
 
         // To name (an array)
-        if (empty($to_names)) {
+        if ((is_array($to_names)) && (!empty($to_names))) {
             if ($to_emails[0] == $staff_address) {
                 $to_names = [];
                 for ($i = 0; $i < count($to_emails); $i++) {
@@ -1176,8 +1179,10 @@ abstract class Mail_dispatcher_base
             $to_names[] = $to_names[0];
         }
         foreach ($to_names as &$_to_name) {
-            $_to_name = preg_replace('#@.*$#', '', $_to_name); // preg_replace is because some servers may reject sending names that look like e-mail addresses. Composr tries this from recommend module.
-            escape_header($_to_name);
+            if ($_to_name !== null) {
+                $_to_name = preg_replace('#@.*$#', '', $_to_name); // preg_replace is because some servers may reject sending names that look like e-mail addresses. Composr tries this from recommend module.
+                escape_header($_to_name);
+            }
         }
 
         // From e-mail

@@ -571,6 +571,7 @@ function init__webstandards()
         'noscript' => true,
         'li' => true,
         'embed' => true,
+        'iframe' => true,
     ];
 
     global $MUST_SELFCLOSE_TAGS;

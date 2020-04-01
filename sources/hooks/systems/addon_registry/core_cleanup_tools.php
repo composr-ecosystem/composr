@@ -45,6 +45,16 @@ class Hook_addon_registry_core_cleanup_tools
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Admin Utilities';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -215,6 +225,7 @@ class Hook_addon_registry_core_cleanup_tools
                 'IDENTIFIERS' => [['IDENTIFIER' => placeholder_id(), 'EDIT_URL' => '']],
                 'CONTENT_TYPES' => [lorem_phrase()],
                 'STATUS' => true,
+                'MESSAGE' => '',
             ];
         }
 

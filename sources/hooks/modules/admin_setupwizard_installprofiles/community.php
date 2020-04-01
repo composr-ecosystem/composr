@@ -80,19 +80,14 @@ class Hook_admin_setupwizard_installprofiles_community
     public function default_blocks()
     {
         return [
-            'YES' => [
+            BLOCK_POSITION_MAIN => [
                 'main_greeting',
-                'main_forum_news',
+                'main_multi_content',
                 'main_leader_board',
-                'main_forum_topics',
                 'main_quotes',
             ],
-            'YES_CELL' => [
-                'main_content',
-                'main_poll',
-            ],
-            'PANEL_LEFT' => [],
-            'PANEL_RIGHT' => [
+            BLOCK_POSITION_CELL => [],
+            BLOCK_POSITION_PANEL => [
                 'side_users_online',
                 'side_stats',
                 'side_calendar',

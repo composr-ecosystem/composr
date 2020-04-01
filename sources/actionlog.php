@@ -46,9 +46,10 @@ abstract class Hook_actionlog
      * Get extended action log details if the action log entry type is handled by this hook and we have them.
      *
      * @param  array $actionlog_row Action log row
+     * @param  boolean $show_view_profile Show view profile links
      * @return ?~array Map of extended data in standard format (null: not available from this hook) (false: hook has responsibility but has failed)
      */
-    public function get_extended_actionlog_data($actionlog_row)
+    public function get_extended_actionlog_data($actionlog_row, $show_view_profile = true)
     {
         $handlers = $this->get_handlers();
 
@@ -81,6 +82,9 @@ abstract class Hook_actionlog
             $followup_urls = [];
             $followup_page_links = $handler_data['followup_page_links'];
             foreach ($followup_page_links as $caption => $page_link) {
+                if (($caption == 'VIEW_PROFILE') && (!$show_view_profile)) {
+                    continue;
+                }
                 if ($page_link !== null) {
                     if (is_array($page_link)) {
                         // Some kind of special encoding where a page-link isn't going to work for us
@@ -266,9 +270,10 @@ function get_handler_flags($the_type)
  * @param  array $actionlog_row Action log row
  * @param  ?integer $crop_length_a Crop length for parameter (null: no cropping)
  * @param  ?integer $crop_length_b Crop length for parameter (null: no cropping)
+ * @param  boolean $show_view_profile Show view profile links
  * @return ?array Tuple: enhanced label, enhanced label that may be null, flags, map of followup URLs (null: could not construct a nice link)
  */
-function actionlog_linkage($actionlog_row, $crop_length_a = null, $crop_length_b = null)
+function actionlog_linkage($actionlog_row, $crop_length_a = null, $crop_length_b = null, $show_view_profile = true)
 {
     static $hook_obs = null;
     if ($hook_obs === null) {
@@ -276,7 +281,7 @@ function actionlog_linkage($actionlog_row, $crop_length_a = null, $crop_length_b
     }
 
     foreach ($hook_obs as $hook => $ob) {
-        $extended_data = $ob->get_extended_actionlog_data($actionlog_row);
+        $extended_data = $ob->get_extended_actionlog_data($actionlog_row, $show_view_profile);
         if ($extended_data !== null) {
             if ($extended_data === false) {
                 return null;

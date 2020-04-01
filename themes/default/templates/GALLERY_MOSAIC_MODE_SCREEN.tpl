@@ -10,21 +10,24 @@
 	{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,gallery,{CAT}}}
 	{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}
 
-	{+START,IF_NON_EMPTY,{CHILDREN}}
+	{$SET,children,{$BLOCK,block=main_multi_content,param=gallery,pinned=,select={CAT}>,zone,{$ZONE},sort={$CONFIG_OPTION,galleries_sort_order},max={$CONFIG_OPTION,subgallery_link_limit},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,render_if_empty=0,guid=module}}
+	{$SET,entries,{$BLOCK,block=main_gallery_mosaic,param={CAT_SELECT},zone={$ZONE},days={DAYS},max={$CONFIG_OPTION,gallery_entries_grid_per_page},show_sorting=1,pagination=1,select={IMAGE_SELECT},video_select={VIDEO_SELECT},filter={FILTER},video_filter={FILTER},block_id=module,render_if_empty=1}}
+
+	{+START,IF_NON_EMPTY,{$GET,children}}
 		<h2 class="heading-subgalleries">{!SUBGALLERIES}</h2>
 
-		{CHILDREN}
+		{$GET,children}
 	{+END}
 
-	{+START,IF_NON_EMPTY,{CHILDREN}}{+START,IF_NON_EMPTY,{ENTRIES}}
+	{+START,IF_NON_EMPTY,{$GET,children}}{+START,IF_NON_EMPTY,{$GET,entries}}
 		<h2 class="heading-images-and-videos">{!IMAGES_AND_VIDEOS_IN,{_TITLE}}</h2>
 	{+END}{+END}
 
-	{+START,IF_NON_EMPTY,{ENTRIES}}
-		{ENTRIES}
+	{+START,IF_NON_EMPTY,{$GET,entries}}
+		{$GET,entries}
 	{+END}
 
-	{+START,IF_EMPTY,{ENTRIES}{CHILDREN}}
+	{+START,IF_EMPTY,{$GET,entries}{$GET,children}}
 		<p class="nothing-here">
 			{!NO_ENTRIES}
 		</p>
@@ -51,7 +54,7 @@
 		2_TITLE={!ADD_VIDEO}
 		2_REL=add
 		2_ICON=menu/cms/galleries/add_one_video
-		3_URL={$?,{$OR,{$NOT,{$HAS_PRIVILEGE,may_download_gallery}},{$IS_EMPTY,{ENTRIES}}},,{$FIND_SCRIPT*,download_gallery}?cat={CAT*}{$KEEP*,0,1}}
+		3_URL={$?,{$OR,{$NOT,{$HAS_PRIVILEGE,may_download_gallery}},{$IS_EMPTY,{$GET,entries}}},,{$FIND_SCRIPT*,download_gallery}?cat={CAT*}{$KEEP*,0,1}}
 		3_TITLE={!DOWNLOAD_GALLERY_CONTENTS}
 		3_ICON=links/download_as_archive
 		4_URL={ADD_GALLERY_URL*}
@@ -81,7 +84,7 @@
 				</div></div>
 			</div>
 
-			{+START,IF_NON_EMPTY,{ENTRIES}}
+			{+START,IF_NON_EMPTY,{$GET,entries}}
 				<div class="ratings right">
 					{RATING_DETAILS}
 				</div>
@@ -89,7 +92,7 @@
 		{+END}
 	</div>
 
-	{+START,IF_NON_EMPTY,{ENTRIES}}
+	{+START,IF_NON_EMPTY,{$GET,entries}}
 		<div class="content-screen-comments">
 			{COMMENT_DETAILS}
 		</div>

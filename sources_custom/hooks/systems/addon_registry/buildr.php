@@ -26,9 +26,15 @@ class Hook_addon_registry_buildr
      */
     public function get_chmod_array($runtime = false)
     {
-        return [
-            'buildr_addon',
+        $ret = [
+            'uploads/buildr_addon',
         ];
+        if ($runtime) {
+            $ret = array_merge($ret, [
+                'uploads/buildr_addon/*',
+            ]);
+        }
+        return $ret;
     }
 
     /**

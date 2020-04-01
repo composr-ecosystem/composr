@@ -45,6 +45,16 @@ class Hook_addon_registry_quizzes
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'New Features';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -132,7 +142,6 @@ class Hook_addon_registry_quizzes
             'site/pages/modules/quiz.php',
             'sources/hooks/systems/sitemap/quiz.php',
             'sources/hooks/modules/admin_newsletter/quiz.php',
-            'sources/hooks/modules/admin_unvalidated/quiz.php',
             'sources/hooks/modules/search/quiz.php',
             'sources/hooks/modules/members/quiz.php',
             'sources/hooks/systems/page_groupings/quiz.php',

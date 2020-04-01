@@ -105,7 +105,7 @@ function show_gallery_video_script()
     }
 
     require_code('galleries');
-    $video = show_gallery_video_media($url, $thumb_url, $myrow['video_width'], $myrow['video_height'], $myrow['video_length'], $myrow['submitter']);
+    $video = show_gallery_video_media($url, $thumb_url, $myrow['video_width'], $myrow['video_height'], $myrow['video_length'], $myrow['submitter'], $myrow['closed_captions_url']);
 
     require_code('web_resources');
     echo css_tempcode()->evaluate();

@@ -26,7 +26,7 @@ class Hook_sw_newsletter
     /**
      * Run function for blocks in the setup wizard.
      *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
+     * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
     public function get_blocks()
     {
@@ -34,6 +34,6 @@ class Hook_sw_newsletter
             return [];
         }
 
-        return [[], ['main_newsletter_signup' => ['PANEL_NONE', 'PANEL_RIGHT']]];
+        return ['main_newsletter_signup' => [BLOCK_POSITION_MAIN | BLOCK_POSITION_PANEL, BLOCK_POSITION_PANEL]];
     }
 }

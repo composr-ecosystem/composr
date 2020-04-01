@@ -635,6 +635,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]addon_disabled_<addon>[/tt] -- set this to '1' to disable a particular addon (may not be supported by all addons)
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
+  - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]:
   - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
   - [tt]lots_of_data_in_*[/tt] -- set this to '1', with '*' replaced with a database table name, if you want the Selectcode mechanism to work with recursive DB lookups rather than one huge flat lookup
@@ -683,6 +684,7 @@ Values are like hidden configuration options. They are either hidden because the
 
 The 'keep' parameters available are:
  - [tt]keep_cache[/tt] -- set to '1' to temporarily enable caching or '0' to temporarily disable. You can also use [tt]cache[/tt] so it works on a per-page basis, with the exception of this not affecting the template and language caching.
+ - [tt]keep_cache_avoid_for[/tt] -- set to a regular expression of codenames to not cache for (e.g. [tt]GLOBAL_HTML_WRAP|STANDALONE_HTML_WRAP[/tt] would disable caching for the [tt]GLOBAL_HTML_WRAP[/tt] and [tt]STANDALONE_HTML_WRAP[/tt] templates; this is useful if smart decaching is either disabled or doesn't work because a template edited is included in another (smart decaching cannot handle this case; although you can also set [tt]$SITE_INFO['dependency__<path>'] = '[<path>,]*';[/tt] settings in [tt]_config.php[/tt] to inform the smart cache of dependencies)
  - [tt]keep_dev_mode[/tt] -- set to '0' to disable development mode (which only runs if you're working out of a subversion repository anyway)
  - [tt]keep_hide_dev_mode_message[/tt] -- set to '1' if you don't want the "Dev-mode is on" message to show if dev-mode is on (maybe you're taking screenshots?)
  - [tt]keep_ext_check[/tt] -- set to '0' to force the webstandards checker to not check dependency files
@@ -705,7 +707,7 @@ The 'keep' parameters available are:
  - [tt]keep_safe_mode[/tt] -- set this to '1' so that where possible, any customised files will be ignored; the default theme will be used
  - [tt]keep_fatalistic[/tt] -- set this to '1' if terminal warning errors should be handled as terminal fatal errors (which include stack traces), and '2' if you want to show extra detail (which may be risky, it could use a lot of server RAM); useful for debugging the origin of an error message
  - [tt]keep_firephp[/tt] -- set this to '1' to dump permissions checks that occurred to [url="FirePHP"]http://www.firephp.org/[/url]. It only works for authenticated administrators, but if the administrator is using [tt]keep_su[/tt] to masquerade as another user it will work (which is particularly useful for debugging permissions problems).
- - [tt]keep_firephp_queries[/tt] -- set this to '1' to dump queries that occurred to [url="FirePHP"]http://www.firephp.org/[/url]. It only works for authenticated administrators, but if the administrator is using [tt]keep_su[/tt] to masquerade as another user it will work.
+ - [tt]keep_firephp_queries[/tt] -- set this to '1' to dump queries that occurred to [url="FirePHP"]http://www.firephp.org/[/url]. It only works for authenticated administrators, but if the administrator is using [tt]keep_su[/tt] to masquerade as another user it will work. [tt]keep_firephp[/tt] must also be set.
  - [tt]keep_show_parse_errors[/tt] -- set this to '1' if you think you have a corrupt PHP file but you can't tell which as your PHP display errors option isn't on (and hence just get blank screens). This will allow Composr to generate stack traces for most corrupt files it tries to include. Note another cause of blank screens can be the PHP memory limit being exceeded.
  - [tt]keep_send_immediately[/tt] -- set this to '1' if you want to debug newsletter code, and not have newsletters sent in the background
  - [tt]keep_su_online[/tt] -- set this to '1' if you want the user [tt]keep_su[/tt] is used with to also show as online, and for their last online/submit statuses to be updated
@@ -936,7 +938,7 @@ Many of these are designed just for programmers, to speed up development. But so
 
 In this section we document all the scripts and tools that may be generally useful to you as a developer, with a few categories of exceptions:
 1) Commandr commands (go to Commandr and type [tt]commands[/tt] to see a list)
-2) Website cleanup tools (go to Admin Zone > Tools > Website cleanup tools)
+2) Cleanup tools (go to Admin Zone > Tools > Cleanup tools)
 3) Tools within the upgrader ([tt]upgrader.php[/tt])
 4) Scripts with code listings provided in the [page="_SEARCH:sup_professional_upgrading"]Professional upgrading[/page] tutorial
 5) IP address lookup (when you do an Investigate User in Composr you get various links to do investigations on the IP address like geographic lookup)
@@ -951,20 +953,15 @@ This section is not designed as primary documentation for the tools. Those tools
 ! Addon
 ! Call method
 |-
-| [tt]decache.sh[/tt]
+| [tt]decache.php[/tt]
 | Clear out file-system caches, and leave a mark for the next Composr page load to clear database caches.
-| [tt]linux_helper_scripts[/tt]
-| Command-line via Bash
+| [tt]helper_scripts[/tt]
+| Command-line via PHP interpreter
 |-
-| [tt]fixperms.sh[/tt]
+| [tt]fixperms.php[/tt]
 | Set appropriate file permissions.
-| [tt]linux_helper_scripts[/tt]
-| Command-line via Bash
-|-
-| [tt]fixperms.bat[/tt]
-| Set appropriate file permissions.
-| [tt]windows_helper_scripts[/tt]
-| Command-line prompt on Windows
+| [tt]helper_scripts[/tt]
+| Command-line via PHP interpreter
 |-
 | [tt]data/failover_script.php[/tt]
 | Continually check system load, and initiate/deinitiate failover mode as required.
@@ -1012,17 +1009,17 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]db_export.sh[/tt]
 | Export the live database to an SQL dump.
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |-
 | [tt]db_import.sh[/tt]
 | Import an SQL dump to the live database.
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |-
 | [tt]db_init.sh[/tt]
 | Create an empty database as specified by [tt]_config.php[/tt].
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |-
 | [tt]adminzone:tar_dump[/tt]
@@ -1037,7 +1034,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]recentchanges.sh[/tt]
 | ZIP up recently changed files.
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |-
 | [tt]data_custom/cleanout.php[/tt]
@@ -1086,7 +1083,7 @@ This section is not designed as primary documentation for the tools. Those tools
 |-
 | [tt]themechanges.sh[/tt]
 | Show a diff of theme changes.
-| [tt]linux_helper_scripts[/tt]
+| [tt]helper_scripts[/tt]
 | Command-line via Bash
 |}
 

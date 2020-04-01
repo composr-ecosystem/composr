@@ -164,7 +164,7 @@ $profile .= <<<END
     public function default_blocks()
     {
         return [
-            'YES' => [
+            BLOCK_POSITION_MAIN => [
 
 END;
 $blocks = find_blocks_in_page(DEFAULT_ZONE_PAGE_NAME);
@@ -173,20 +173,15 @@ foreach (array_keys($blocks) as $block) {
 }
 $profile .= <<<END
             ],
-            'YES_CELL' => [
+            BLOCK_POSITION_CELL => [
             ],
-            'PANEL_LEFT' => [
+            BLOCK_POSITION_PANEL => [
 
 END;
 $blocks = find_blocks_in_page('panel_left');
 foreach (array_keys($blocks) as $block) {
     $profile .= "\t\t\t\t\"" . php_addslashes($block) . "\",\n";
 }
-$profile .= <<<END
-            ],
-            'PANEL_RIGHT' => [
-
-END;
 $blocks = find_blocks_in_page('panel_right');
 foreach (array_keys($blocks) as $block) {
     $profile .= "\t\t\t\t\"" . php_addslashes($block) . "\",\n";

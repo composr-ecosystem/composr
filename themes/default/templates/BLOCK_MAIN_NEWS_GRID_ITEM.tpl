@@ -16,8 +16,8 @@
 		{$INC,has_mass_select}
 	{+END}
 
-	{+START,IF,{$AND,{$NOT,{BLOG}},{$IS_NON_EMPTY,{IMG}}}}
-		<a class="news-grid-item-image is-associated" href="{FULL_URL*}"><img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG_LARGE}}" alt="" /></a>
+	{+START,IF,{$NOT,{BLOG}}}
+		<a class="news-grid-item-image is-associated" href="{FULL_URL*}"><img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG}}" alt="" /></a>
 	{+END}
 
 	{+START,IF,{$AND,{BLOG},{$IS_EMPTY,{IMG}}}}{+START,IF_NON_EMPTY,{$AVATAR,{SUBMITTER}}}

@@ -155,7 +155,7 @@ function cns_edit_post($post_id, $validated, $title, $post, $skip_sig, $is_empha
     // Logging
     require_code('cns_general_action2');
     $moderatorlog_id = cns_mod_log_it('EDIT_POST', strval($post_id), $title, $reason);
-    if (addon_installed('actionlog')) {
+    if ((addon_installed('actionlog')) && (addon_installed('cns_forum'))) {
         $ticket_forum = get_option('ticket_forum_name', true);
         if (($ticket_forum === null) || ($forum_id != $GLOBALS['FORUM_DRIVER']->forum_id_from_name($ticket_forum))) {
             require_code('revisions_engine_database');
@@ -291,7 +291,7 @@ function cns_delete_posts_topic($topic_id, $posts, $reason = '', $check_perms = 
     } else {
         $moderatorlog_id = cns_mod_log_it('DELETE_POSTS', strval($topic_id), strval(count($posts)), $reason);
     }
-    if ((addon_installed('actionlog')) && ($save_revision)) {
+    if ((addon_installed('actionlog')) && ($save_revision) && (addon_installed('cns_forum'))) {
         require_code('revisions_engine_database');
         foreach ($_postdetails as $post) {
             $revision_engine = new RevisionEngineDatabase(true);

@@ -57,6 +57,7 @@ class Hook_commandr_command_passwd
 
             $update = [];
             $update['m_password_change_code'] = '';
+            $update['m_password_change_code_time'] = null;
             $salt = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
             if ($salt === null) {
                 return ['', '', '', do_lang('_MEMBER_NO_EXIST', array_key_exists('username', $options) ? $options['username'] : $options['u'])];

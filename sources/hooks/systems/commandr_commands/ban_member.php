@@ -34,7 +34,7 @@ class Hook_commandr_command_ban_member
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return ['', do_command_help('ban_member', ['h', 'u'], [true, true]), '', ''];
+            return ['', do_command_help('ban_member', ['h', 'u'], [true]), '', ''];
         } else {
             if (get_forum_type() != 'cns') {
                 return ['', '', '', do_lang('NO_CNS')];

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-echo 'Note the build-config.js that can be used to download the latest CKEditor version';
+echo 'Use builder with our existing build-config.js to create downloadable package, the Optimized version';
 
 echo 'Make sure data/ckeditor/plugins/{composr|imagepaste|spellchecktoggle|showcomcodeblocks} is preserved'
 
 echo 'Manually download and place moono and moonocolor skins which we like to also bundle, place in skins/';
 
-echo 'Manually download and extract codemirror, dialogadvtab and emojione plugins; codemirror has additional changes we have not documented that need merging in manually';
+echo 'Manually download and extract codemirror, dialogadvtab and emojione plugins';
 
-echo 'Manually apply the new lines that were put in the old plugins/table/dialogs/table.js (11-30)';
+echo 'Manually apply the obvious new lines that were put in the old plugins/table/dialogs/table.js';
 
-echo 'Manually replace "http://" with (window.location.protocol+"//")';
+echo 'Manually replace "http://" with (window.location.protocol+"//") in link.js and ckeditor.js';
 
 echo "Removing unneeded files"
 rm -rf CHANGES.md samples _source ckeditor.pack config.js adapters

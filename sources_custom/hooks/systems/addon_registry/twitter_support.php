@@ -46,7 +46,9 @@ class Hook_addon_registry_twitter_support
      */
     public function get_category()
     {
-        return is_maintained('twitter') ? 'Third Party Integration' : 'Development';
+        // Best to just categorise properly as it's not bundled 
+        //return is_maintained('twitter') ? 'Third Party Integration' : 'Development';
+        return 'Third Party Integration';
     }
 
     /**
@@ -67,7 +69,6 @@ class Hook_addon_registry_twitter_support
     public function get_copyright_attribution()
     {
         return [
-            'Icon by leslienayibe',
             'Class by Tijs Verkoyen',
         ];
     }

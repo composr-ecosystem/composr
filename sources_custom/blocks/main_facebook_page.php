@@ -77,11 +77,10 @@ PHP;
             return do_template('RED_ALERT', ['_GUID' => 'gyh8q02fa42oidxizj593su3fs6qc9zm', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
         }
         if (!function_exists('session_status')) {
-            return do_template('RED_ALERT', ['_GUID' => '1srcvdkreexgjcjhfhywyu9hntjjwh1l', 'TEXT' => 'PHP session extension missing']);
+            return do_template('RED_ALERT', ['_GUID' => '3kii599c4uz2g43k69ogp53wob87650o', 'TEXT' => 'PHP session extension missing']);
         }
 
         require_lang('facebook');
-        require_code('facebook_connect');
 
         $block_id = get_block_id($map);
 

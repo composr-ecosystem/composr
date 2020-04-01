@@ -34,11 +34,9 @@
 		</ul>
 	</div>
 
-	{+START,IF_PASSED,IMG_LARGE}
-		<div class="news-entry-image">
-			<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG_LARGE}}" alt="" />
-		</div>
-	{+END}
+	<div class="news-entry-image">
+		<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG_LARGE}}" alt="" />
+	</div>
 
 	<div itemprop="articleBody" class="clearfix">
 		{NEWS_FULL}

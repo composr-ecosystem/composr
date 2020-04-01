@@ -21,15 +21,15 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_catalogue_entry
+class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
      * @param  ?ID_TEXT $catalogue_name Catalogue name for entry (null: unknown / N/A)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false, $catalogue_name = null)
     {
@@ -42,6 +42,8 @@ class Hook_content_meta_aware_catalogue_entry
 
             'content_type_label' => 'catalogues:CATALOGUE_ENTRY',
             'content_type_universal_label' => 'Catalogue entry',
+            'content_type_label_override' => 'CALL: generate_catalogue_entry_content_type_label',
+            'content_type_universal_label_override' => 'CALL: generate_catalogue_entry_content_type_universal_label',
 
             'db' => $GLOBALS['SITE_DB'],
             'extra_where_sql' => 'c_name NOT LIKE \'' . db_encode_like('\_%') . '\'',
@@ -59,11 +61,13 @@ class Hook_content_meta_aware_catalogue_entry
             'parent_spec__field_name' => 'id',
             'category_is_string' => [true, false],
 
-            'title_field' => 'CALL: generate_catalogue_entry_title',
+            'title_field' => ['id', 'c_name', 'CALL: generate_catalogue_entry_title'],
             'title_field_dereference' => false,
+            'title_field_post' => 'field_0',
             'description_field' => null,
             'description_field_dereference' => null,
-            'thumb_field' => 'CALL: generate_catalogue_entry_thumb_url',
+            'description_field_supports_comcode' => null,
+            'thumb_field' => ['id', 'c_name', 'CALL: generate_catalogue_entry_thumb_url'],
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
@@ -93,7 +97,6 @@ class Hook_content_meta_aware_catalogue_entry
             'search_hook' => 'catalogue_entries',
             'rss_hook' => 'catalogues',
             'attachment_hook' => 'catalogue_entry',
-            'unvalidated_hook' => 'catalogue_entry',
             'notification_hook' => 'catalogue_entry',
             'sitemap_hook' => 'catalogue_entry',
 
@@ -117,11 +120,46 @@ class Hook_content_meta_aware_catalogue_entry
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_CATALOGUE_ENTRY',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        $headings = [];
+
+        // TODO
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+
+        /*TODO
+        require_code('catalogues');
+        return render_catalogue_category_entry_buildup(null, $c_names[0], null, 'CATEGORY', '', null, 0, null, null, C_DT_TABULAR, false, $rows);
+        */
+
+        return $keymap;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -132,33 +170,36 @@ class Hook_content_meta_aware_catalogue_entry
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('catalogues');
 
         return render_catalogue_entry_box($row, $zone, $give_context, $include_breadcrumbs, ($root === null) ? null : intval($root), $guid);
     }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return 'choose_catalogue_entry';
+    }
 }
 
 /**
- * Find a catalogue entry title.
+ * Find an entry title.
  *
- * @param  array $url_parts The URL parts to search from
- * @param  boolean $resource_fs_style Whether to get the field title using resource-fs style
- * @return string The field title
+ * @param  array $row Database row of entry
+ * @param  integer $render_type A FIELD_RENDER_* constant
+ * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
+ * @return ?mixed Content title (string or Tempcode, depending on $render_type) (null: could not generate)
  */
-function generate_catalogue_entry_title($url_parts, $resource_fs_style = false)
+function generate_catalogue_entry_title($row, $render_type = 1, $resource_fs_style = false)
 {
-    $catalogue_name = null;
+    $catalogue_name = $row['c_name'];
     $fields = null;
-
-    global $CMA_HOOK_CATALOGUE_NAME_CACHE;
-    if (isset($CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']])) {
-        $catalogue_name = $CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']];
-    } else {
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => intval($url_parts['id'])]);
-        $CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']] = $catalogue_name;
-    }
 
     $unique_key_num = 0;
     if ($resource_fs_style) {
@@ -172,46 +213,63 @@ function generate_catalogue_entry_title($url_parts, $resource_fs_style = false)
     }
 
     require_code('catalogues');
-    $field_values = get_catalogue_entry_field_values($catalogue_name, intval($url_parts['id']), [$unique_key_num], $fields);
+
+    $field_values = get_catalogue_entry_field_values($catalogue_name, $row['id'], [$unique_key_num], $fields);
     if (!isset($field_values[$unique_key_num])) {
-        return uniqid('', true);
+        return null;
     }
     $field = $field_values[$unique_key_num];
-    if ($field === null) {
-        return uniqid('', true);
-    }
+
     $value = $field['effective_value'];
-    return strip_html(is_object($value) ? $value->evaluate() : $value);
+
+    switch ($render_type) {
+        case FIELD_RENDER_COMCODE:
+            if (is_object($field['effective_value'])) { // Implies Comcode was involved
+                return $field['effective_value_pure'];
+            }
+            return comcode_escape($field['effective_value_pure']);
+
+        case FIELD_RENDER_HTML:
+            if (is_object($field['effective_value'])) {
+                return $field['effective_value'];
+            }
+            return make_string_tempcode(escape_html($field['effective_value']));
+    }
+
+    // FIELD_RENDER_PLAIN:
+    if (is_object($field['effective_value'])) {
+        return strip_html($field['effective_value']->evaluate());
+    }
+    return $field['effective_value'];
 }
 
 /**
  * Find an entry thumbnail.
  *
- * @param  array $url_parts The URL parts to search from
  * @param  array $row Database row of entry
- * @return URLPATH The thumbnail URL
+ * @param  boolean $prefer_large_image Whether we prefer a larger image
+ * @return URLPATH The thumbnail URL (blank: none)
  */
-function generate_catalogue_entry_thumb_url($url_parts, $row)
+function generate_catalogue_entry_thumb_url($row, $prefer_large_image = false)
 {
-    $unique_key_num = null;
+    require_code('catalogues');
 
-    global $CMA_HOOK_CATALOGUE_NAME_CACHE;
-    if (isset($CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']])) {
-        $catalogue_name = $CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']];
-    } else {
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => intval($url_parts['id'])]);
-        $CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']] = $catalogue_name;
-    }
+    $unique_key_num = null;
+    $field_type = null;
+
+    $catalogue_name = $row['c_name'];
 
     global $CAT_FIELDS_CACHE;
     if (array_key_exists($catalogue_name, $CAT_FIELDS_CACHE)) {
         $fields = $CAT_FIELDS_CACHE[$catalogue_name];
     } else {
         $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $CAT_FIELDS_CACHE[$catalogue_name] = $fields;
     }
     foreach ($fields as $i => $f) {
-        if ($f['cf_type'] == 'picture') {
+        if (in_array($f['cf_type'], ['picture', 'theme_image', 'picture_multi'])) {
             $unique_key_num = $i;
+            $field_type = $f['cf_type'];
             break;
         }
     }
@@ -220,12 +278,62 @@ function generate_catalogue_entry_thumb_url($url_parts, $row)
         return '';
     }
 
-    require_code('catalogues');
-    $field_values = get_catalogue_entry_field_values($catalogue_name, intval($url_parts['id']), [$unique_key_num], $fields);
+    $field_values = get_catalogue_entry_field_values($catalogue_name, $row['id'], [$unique_key_num], $fields);
     $field = $field_values[$unique_key_num];
-    if ($field === null) {
+    if (empty($field)) {
         return '';
     }
-    $value = $field['effective_value_pure'];
+
+    switch ($field_type) {
+        case 'picture':
+            $value = $field['effective_value_pure'];
+            if (url_is_local($value)) {
+                $value = get_custom_base_url() . '/' . $value;
+            }
+            break;
+
+        case 'theme_image':
+            $value = find_theme_image($field['effective_value_pure']);
+            break;
+
+        case 'picture_multi':
+            $_value = explode("\n", $field['effective_value_pure']);
+            $value = $_value[0];
+            if (url_is_local($value)) {
+                $value = get_custom_base_url() . '/' . $value;
+            }
+            break;
+    }
+
     return $value;
+}
+
+/**
+ * Find an entry content-type language string label.
+ *
+ * @param  array $row Database row of entry
+ * @return Tempcode Label
+ */
+function generate_catalogue_entry_content_type_label($row)
+{
+    if (!array_key_exists('c_name', $row)) {
+        return do_lang_tempcode('catalogues:CATALOGUE_ENTRY');
+    }
+    $catalogue = load_catalogue_row($row['c_name']);
+    return do_lang_tempcode('catalogues:CATALOGUE_GENERIC', get_translated_text($catalogue['c_title']));
+}
+
+/**
+ * Find an entry content-type universal label (doesn't depend on language pack).
+ *
+ * @param  array $row Database row of entry
+ * @return string Label
+ */
+function generate_catalogue_entry_content_type_universal_label($row)
+{
+    if (!array_key_exists('c_name', $row)) {
+        return 'Catalogue entry';
+    }
+    $catalogue = load_catalogue_row($row['c_name']);
+    return get_translated_text($catalogue['c_title']) . ' entry';
 }

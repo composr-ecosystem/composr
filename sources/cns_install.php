@@ -237,6 +237,9 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_type', 'ID_TEXT');
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_hint', 'ID_TEXT');
 
+        $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'w_topic_id', '?AUTO_LINK');
+        $GLOBALS['FORUM_DB']->add_table_field('f_moderator_logs', 'l_warning_id', '?AUTO_LINK');
+
         // Optionally provide autofill types for bundled CPFs (if any found)
         $autofill_map = [
             'cms_currency' => ['transaction-currency'],
@@ -393,8 +396,13 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_smart_topic_notification', 'BINARY', 0);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_mailing_list_style', 'BINARY', 1);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
+        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_password_change_code_time', '?TIME');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
+
+        $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_is_perm_banned', 'ID_TEXT');
+
+        $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'p_changed_usergroup_to', '?GROUP');
     }
 
     // If we have the forum installed to this db already, leave
@@ -450,14 +458,6 @@ function install_cns($upgrade_from = null)
             'mf_member_id' => '*MEMBER',
         ]);
 
-        cns_make_predefined_content_field('about');
-        cns_make_predefined_content_field('interests');
-        cns_make_predefined_content_field('occupation');
-        cns_make_predefined_content_field('staff_notes');
-        if (!addon_installed('user_mappr')) {
-            cns_make_predefined_content_field('location');
-        }
-
         $GLOBALS['FORUM_DB']->create_table('f_invites', [
             'id' => '*AUTO',
             'i_inviter' => 'MEMBER',
@@ -482,6 +482,7 @@ function install_cns($upgrade_from = null)
             'm_pass_hash_salted' => 'SHORT_TEXT', // Not MD5 type because it could store different things according to password_compatibility_scheme
             'm_pass_salt' => 'SHORT_TEXT',
             'm_password_change_code' => 'SHORT_TEXT',
+            'm_password_change_code_time' => '?TIME',
             'm_password_compat_scheme' => 'ID_TEXT',
             'm_email_address' => 'SHORT_TEXT',
             'm_primary_group' => 'GROUP',
@@ -520,7 +521,7 @@ function install_cns($upgrade_from = null)
             'm_validated' => 'BINARY',
             'm_validated_email_confirm_code' => 'SHORT_TEXT',
             'm_on_probation_until' => '?TIME',
-            'm_is_perm_banned' => 'BINARY',
+            'm_is_perm_banned' => 'ID_TEXT',
 
             // Auto-generated values
             'm_ip_address' => 'IP',
@@ -549,102 +550,26 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->create_index('f_members', 'primary_group', ['m_primary_group']);
         $GLOBALS['FORUM_DB']->create_index('f_members', 'avatar_url', ['m_avatar_url']); // Used for uniform avatar randomisation
 
-        $no_use_topics = [
-            'party' => true,
-            'christmas' => true,
-            'offtopic' => true,
-            'rockon' => true,
-            'guitar' => true,
-            'sinner' => true,
-            'wink' => true,
-            'kiss' => true,
-            'nod' => true,
-            'smile' => true,
-            'mellow' => true,
-            'whistle' => true,
-            'shutup' => true,
-            'cyborg' => true,
-            'idea' => true,
-            'boat' => true,
-            'fishing' => true,
-            'reallybadday' => true,
-            'hug' => true,
-            'tired' => true,
-            'whew' => true,
-        ];
         $core_emoticons = [
-            ':P' => 'cheeky',
-            ":'(" => 'cry',
-            ':dry:' => 'dry',
-            ':$' => 'blush',
-            ';)' => 'wink',
-            'O_o' => 'blink',
-            ':wub:' => 'wub',
-            ':cool:' => 'cool',
-            ':lol:' => 'lol',
-            ':(' => 'sad',
-            ':)' => 'smile',
-            ':thumbs:' => 'thumbs',
-            ':|' => 'mellow',
-            ':ninja:' => 'ph34r',
-            ':o' => 'shocked',
+            ':P' => ['cheeky', false],
+            ":'(" => ['cry', false],
+            ':(' => ['sad', false],
+            ':)' => ['smile', true],
+            ':thumbs:' => ['thumbs', false],
+            ':o' => ['shocked', false],
+            ';)' => ['wink', true],
         ];
-        $supported_emoticons = [
-            ':offtopic:' => 'offtopic', // Larger than normal, so don't put in core set
-            ':rolleyes:' => 'rolleyes',
-            ':D' => 'grin',
-            '^_^' => 'glee',
-            '(K)' => 'kiss',
-            ':S' => 'confused',
-            ':@' => 'angry',
-            ':shake:' => 'shake',
-            ':hand:' => 'hand',
-            ':drool:' => 'drool',
-            ':devil:' => 'devil',
-            ':party:' => 'party',
-            ':constipated:' => 'constipated',
-            ':depressed:' => 'depressed',
-            ':zzz:' => 'zzz',
-            ':whistle:' => 'whistle',
-            ':upsidedown:' => 'upsidedown',
-            ':sick:' => 'sick',
-            ':shutup:' => 'shutup',
-            ':sarcy:' => 'sarcy',
-            ':puppyeyes:' => 'puppyeyes',
-            ':nod:' => 'nod',
-            ':nerd:' => 'nerd',
-            ':king:' => 'king',
-            ':birthday:' => 'birthday',
-            ':cyborg:' => 'cyborg',
-            ':hippie:' => 'hippie',
-            ':ninja2:' => 'ninja2',
-            ':rockon:' => 'rockon',
-            ':sinner:' => 'sinner',
-            ':guitar:' => 'guitar',
-            ':angel:' => 'angel',
-            ':cowboy:' => 'cowboy',
-            ':fight:' => 'fight',
-            ':goodbye:' => 'goodbye',
-            ':idea:' => 'idea',
-            ':boat:' => 'boat',
-            ':fishing:' => 'fishing',
-            ':reallybadday:' => 'reallybadday',
-            ':hug:' => 'hug',
-            ':tired:' => 'tired',
-            ':whew:' => 'whew',
-        ];
-        $unused_emoticons = [
-            ':christmas:' => 'christmas',
-        ];
-        foreach ($core_emoticons as $a => $b) {
-            cns_make_emoticon($a, 'cns_emoticons/' . $b, 0, array_key_exists($b, $no_use_topics) ? 0 : 1);
+        foreach ($core_emoticons as $type_code => $_) {
+            list($theme_image_code, $no_use_topics) = $_;
+            cns_make_emoticon($type_code, 'cns_emoticons/' . $theme_image_code, 0, $no_use_topics ? 0 : 1);
         }
-        foreach ($supported_emoticons as $a => $b) {
-            cns_make_emoticon($a, 'cns_emoticons/' . $b, 1, array_key_exists($b, $no_use_topics) ? 0 : 1);
+
+        require_code('content2');
+        $content = ['have_default_full_emoticon_set' => true, 'about' => true, 'interests' => true, 'occupation' => true, 'staff_notes' => true];
+        if (!addon_installed('user_mappr')) {
+            $content['location'] = true;
         }
-        foreach ($unused_emoticons as $a => $b) {
-            cns_make_emoticon($a, 'cns_emoticons/' . $b, 1, array_key_exists($b, $no_use_topics) ? 0 : 1);
-        }
+        install_predefined_content('core_cns', $content);
 
         $GLOBALS['FORUM_DB']->create_table('f_groups', [
             'id' => '*AUTO',
@@ -919,6 +844,7 @@ function install_cns($upgrade_from = null)
             'w_explanation' => 'LONG_TEXT',
             'w_by' => 'MEMBER',
             'w_is_warning' => 'BINARY',
+            'w_topic_id' => '?AUTO_LINK',
             'p_silence_from_topic' => '?AUTO_LINK',
             'p_silence_from_forum' => '?AUTO_LINK',
             'p_probation' => 'INTEGER',
@@ -926,6 +852,7 @@ function install_cns($upgrade_from = null)
             'p_charged_points' => 'INTEGER',
             'p_banned_member' => 'BINARY',
             'p_changed_usergroup_from' => '?GROUP',
+            'p_changed_usergroup_to' => '?GROUP',
         ]);
         $GLOBALS['FORUM_DB']->create_index('f_warnings', 'warningsmemberid', ['w_member_id']);
 
@@ -937,6 +864,7 @@ function install_cns($upgrade_from = null)
             'l_date_and_time' => 'TIME',
             'l_reason' => 'LONG_TEXT',
             'l_by' => 'MEMBER',
+            'l_warning_id' => '?AUTO_LINK'
         ]);
 
         $GLOBALS['FORUM_DB']->create_table('f_member_known_login_ips', [
@@ -982,14 +910,14 @@ function install_cns($upgrade_from = null)
             1, // validated
             '', // validated_email_confirm_code
             null, // on_probation_until
-            0, // is_perm_banned
+            '0', // is_perm_banned
             false // check_correctness
         );
         // Make admin user
         cns_make_member(
             post_param_string('admin_username', 'admin'), // username
             post_param_string('cns_admin_password', 'admin', INPUT_FILTER_NONE), // password
-            '', // email_address
+            post_param_string('email', ''), // email_address
             $administrator_group, // primary_group
             null, // secondary_groups
             null, // dob_day
@@ -1020,7 +948,7 @@ function install_cns($upgrade_from = null)
             1, // validated
             '', // validated_email_confirm_code
             null, // on_probation_until
-            0, // is_perm_banned
+            '0', // is_perm_banned
             false // check_correctness
         );
         // Make test user
@@ -1058,7 +986,7 @@ function install_cns($upgrade_from = null)
             1, // validated
             '', // validated_email_confirm_code
             null, // on_probation_until
-            0, // is_perm_banned
+            '0', // is_perm_banned
             false // check_correctness
         );
 

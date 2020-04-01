@@ -59,6 +59,10 @@ class Module_cms_news extends Standard_crud_module
 
         $this->cat_crud_module = class_exists('Mx_cms_news_cat') ? new Mx_cms_news_cat() : new Module_cms_news_cat();
 
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
         $ret = [
             'browse' => ['MANAGE_NEWS', 'menu/rich_content/news'],
         ] + parent::get_entry_points();
@@ -66,6 +70,12 @@ class Module_cms_news extends Standard_crud_module
         if ($support_crosslinks) {
             require_code('fields');
             $ret += manage_custom_fields_entry_points('news_category') + manage_custom_fields_entry_points('news');
+        }
+
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
         }
 
         return $ret;
@@ -154,6 +164,18 @@ class Module_cms_news extends Standard_crud_module
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWS')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return parent::pre_run($top_level);
     }
 
@@ -183,6 +205,12 @@ class Module_cms_news extends Standard_crud_module
         if ($type == '_import_news') {
             return $this->_import_news();
         }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
 
         return new Tempcode();
     }
@@ -205,6 +233,7 @@ class Module_cms_news extends Standard_crud_module
                 has_privilege(get_member(), 'submit_highrange_content', 'cms_news') ? ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_NEWS')] : null,
                 has_privilege(get_member(), 'edit_own_highrange_content', 'cms_news') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_NEWS')] : null,
                 has_privilege(get_member(), 'mass_import', 'cms_news') ? ['admin/import', ['_SELF', ['type' => 'import'], '_SELF'], do_lang('IMPORT_NEWS')] : null,
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ], manage_custom_fields_donext_link('news')),
             do_lang('MANAGE_NEWS')
         );
@@ -384,6 +413,9 @@ class Module_cms_news extends Standard_crud_module
         }
 
         $cats1 = create_selection_list_news_categories($main_news_category, false, true, is_integer($main_news_category), null, true);
+        if ($cats1->is_empty()) {
+            warn_exit(do_lang_tempcode('NO_CATEGORIES', 'news_category'));
+        }
         $cats2 = create_selection_list_news_categories(($news_category === null) ? [] : $news_category, false, true, is_integer($main_news_category), null, true);
 
         $fields = new Tempcode();
@@ -430,11 +462,12 @@ class Module_cms_news extends Standard_crud_module
         $hidden = new Tempcode();
 
         if (get_value('disable_news_repimages') !== '1') {
-            $fields2->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_NEWS_IMAGE_OVERRIDE'), $hidden, 'image', 'icons/news', false, $image));
+            require_code('images');
+            $fields2->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_NEWS_IMAGE_OVERRIDE'), $hidden, 'image', 'icons/news', true, $image, false, null, IMAGE_CRITERIA_WEBSAFE));
         }
 
         if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
-            $fields2->attach(form_input_date__cron(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, true, ($scheduled === null), $scheduled, intval(date('Y')) - 1970 + 2, 1970));
+            $fields2->attach(form_input_date__cron(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, ($scheduled === null), true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
         }
 
         require_code('activities');
@@ -526,12 +559,8 @@ class Module_cms_news extends Standard_crud_module
         $scheduled = null;
 
         if (addon_installed('calendar')) {
-            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id) . '],\'\',1);';
-            $past_event = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], [$GLOBALS['SITE_DB']->translate_field_ref('e_content') => $schedule_code], '', 1);
-            $scheduled = array_key_exists(0, $past_event) ? [$past_event[0]['e_start_minute'], $past_event[0]['e_start_hour'], $past_event[0]['e_start_month'], $past_event[0]['e_start_day'], $past_event[0]['e_start_year']] : null;
-            if (($scheduled !== null) && (mktime($scheduled[1], $scheduled[0], 0, $scheduled[2], $scheduled[3], $scheduled[4]) < time())) {
-                $scheduled = null;
-            }
+            require_code('calendar2');
+            $scheduled = get_schedule_code_event_time('publish_news', strval($id));
         } else {
             $scheduled = null;
         }
@@ -633,15 +662,15 @@ class Module_cms_news extends Standard_crud_module
 
         if ($schedule !== null) {
             require_code('calendar');
-            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id) . '],\'\',1);';
+
+            $parameters = [];
             $start_year = intval(date('Y', $schedule));
             $start_month = intval(date('m', $schedule));
             $start_day = intval(date('d', $schedule));
             $start_hour = intval(date('H', $schedule));
             $start_minute = intval(date('i', $schedule));
             require_code('calendar2');
-            $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('PUBLISH_NEWS', $title), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
-            regenerate_event_reminder_jobs($event_id, true);
+            schedule_code('publish_news', strval($id), $parameters, do_lang('PUBLISH_NEWS', $title), $start_year, $start_month, $start_day, $start_hour, $start_minute);
         }
 
         if (addon_installed('content_reviews')) {
@@ -703,23 +732,18 @@ class Module_cms_news extends Standard_crud_module
 
         if ((addon_installed('calendar')) && (!fractional_edit()) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
             require_code('calendar2');
-            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id) . '],\'\',1);';
-            $past_event = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('e_content') => $schedule_code]);
-            require_code('calendar');
-            if ($past_event !== null) {
-                delete_calendar_event($past_event);
-            }
+            unschedule_code('publish_news', strval($id));
 
             if (($schedule !== null) && ($schedule > time())) {
                 $validated = 0;
 
+                $parameters = [];
                 $start_year = intval(date('Y', $schedule));
                 $start_month = intval(date('m', $schedule));
                 $start_day = intval(date('d', $schedule));
                 $start_hour = intval(date('H', $schedule));
                 $start_minute = intval(date('i', $schedule));
-                $event_id = add_calendar_event(db_get_first_id(), 'none', null, 0, do_lang('PUBLISH_NEWS', 0, post_param_string('title')), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
-                regenerate_event_reminder_jobs($event_id, true);
+                schedule_code('publish_news', strval($id), $parameters, do_lang('PUBLISH_NEWS', post_param_string('title')), $start_year, $start_month, $start_day, $start_hour, $start_minute);
             }
         }
 
@@ -877,6 +901,28 @@ class Module_cms_news extends Standard_crud_module
 
         return $ret;
     }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('news', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('news', $this->title);
+    }
 }
 
 /**
@@ -987,7 +1033,8 @@ class Module_cms_news_cat extends Standard_crud_module
         $fields->attach(form_input_line_comcode(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
 
         if (get_value('disable_news_repimages') !== '1') {
-            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', 'icons/news', false, $img));
+            require_code('images');
+            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', 'icons/news', false, $img, false, null, IMAGE_CRITERIA_WEBSAFE));
         }
 
         if (get_option('enable_staff_notes') == '1') {

@@ -15,7 +15,10 @@
 				<input maxlength="255" class="form-control form-control-wide" id="email" name="email" type="text" placeholder="{!EMAIL_ADDRESS_FOR_NEWSLETTER}" size="25" />
 			</div>
 
-			<p><input type="checkbox" checked="checked" value="1" name="advertise_on" id="advertise_on" /><label for="advertise_on">{!ADVERTISE_ON_COMPOSR}</label></p>
+			<p>
+				<input type="checkbox" checked="checked" value="1" name="advertise_on" id="advertise_on" />
+				<label for="advertise_on">{!ADVERTISE_ON_COMPOSR}</label>
+			</p>
 		</div>
 
 		<p>{!EMAIL_NEWSLETTER}</p>

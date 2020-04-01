@@ -269,6 +269,7 @@ class Module_admin_cns_forums extends Standard_crud_module
 
         if (function_exists('imap_open')) {
             require_lang('config');
+            require_lang('cns_mailinglists');
 
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'ab47ed06695dc2cd99211772fe4c5643', 'SECTION_HIDDEN' => $mail_username == '', 'TITLE' => do_lang_tempcode('MAILING_LIST'), 'DESCRIPTION' => do_lang_tempcode('DESCRIPTION_MAILING_LIST')]));
 
@@ -564,7 +565,7 @@ class Module_admin_cns_forums extends Standard_crud_module
                         $edit_url = config_option_url($hook);
                         $message = do_lang_tempcode(
                             'CANNOT_DELETE_FORUM_OPTION',
-                            escape_html($edit_url),
+                            escape_html_tempcode($edit_url),
                             escape_html(do_lang_tempcode($details['human_name']))
                         );
                         attach_message($message, 'notice');
@@ -618,6 +619,8 @@ class Module_admin_cns_forums extends Standard_crud_module
      */
     public function input_and_check_mail_parameters($id = null)
     {
+        require_lang('cns_mailinglists');
+
         $mail_email_address = post_param_string('mail_email_address', '');
         $mail_server_type = post_param_string('mail_server_type', '');
         $mail_server_host = post_param_string('mail_server_host', '');

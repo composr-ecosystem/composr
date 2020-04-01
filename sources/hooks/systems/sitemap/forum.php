@@ -189,17 +189,17 @@ class Hook_sitemap_forum extends Hook_sitemap_content
      * Also find out what language fields we should load up for the table (returned by reference).
      *
      * @param  ?array $cma_info CMA info (null: standard for this hook)
-     * @param  string $table_prefix Table prefix
+     * @param  ?string $table_alias Table alias (null: none)
      * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
      * @return array Map between field name and field type
      */
-    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
+    protected function select_fields($cma_info = null, $table_alias = null, &$lang_fields_filtered = null)
     {
         if ($cma_info === null) {
             $cma_info = $this->_get_cma_info();
         }
 
-        $ret = parent::select_fields($cma_info, $table_prefix, $lang_fields_filtered);
+        $ret = parent::select_fields($cma_info, $table_alias, $lang_fields_filtered);
         if ($cma_info['table'] == 'f_forums') {
             $ret[] = 'f_order';
         }
@@ -292,7 +292,6 @@ class Hook_sitemap_forum extends Hook_sitemap_content
             $explicit_order_by_entries = 't_cache_first_title ASC';
         }
         $explicit_order_by_categories = null;
-        $per_page = intval(get_option('forum_posts_per_page'));
         $backup_meta_gather = $meta_gather;
         $meta_gather |= SITEMAP_GATHER_DB_ROW;
         $children = $this->_get_children_nodes($content_id, $page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row, '', $explicit_order_by_entries, $explicit_order_by_categories);
@@ -304,15 +303,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
                     if (($backup_meta_gather & SITEMAP_GATHER_DB_ROW) == 0) {
                         $child['extra_meta']['db_row'] = null;
                     }
-                    $num_posts = $child_row['t_cache_num_posts'];
                     $children2[] = $child;
-                    for ($i = $per_page; $i < $num_posts; $i += $per_page) {
-                        $paginated_page_link = $child['page_link'];
-                        if ($i != 0) {
-                            $paginated_page_link .= ':forum_start=' . strval($i);
-                        }
-                        $children2[] = ['page_link' => $paginated_page_link] + $child;
-                    }
                 } else {
                     $children2[] = $child;
                 }

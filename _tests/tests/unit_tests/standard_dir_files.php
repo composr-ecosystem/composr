@@ -123,7 +123,16 @@ class standard_dir_files_test_set extends cms_test_case
                 if (
                     (!file_exists($dir . '/index.php')) // Not in a zone (needs to run as default)
                 ) {
-                    $this->assertTrue(file_exists($dir . '/index.html'), 'touch "' . $dir . '/index.html" ; git add -f "' . $dir . '/index.html"');
+                    $ok = file_exists($dir . '/index.html');
+                    $msg = 'touch "' . $dir . '/index.html"';
+                    $git_msg = ' ; git add -f "' . $dir . '/index.html"';
+                    if ($this->debug) {
+                        if (!$ok) {
+                            echo $msg . "\n";
+                        }
+                    } else {
+                        $this->assertTrue($ok, $msg . $git_msg);
+                    }
                 }
             }
 
@@ -146,7 +155,16 @@ class standard_dir_files_test_set extends cms_test_case
                 } else {
                     $best_htaccess = 'sources_custom/.htaccess';
                 }
-                $this->assertTrue(file_exists($dir . '/.htaccess'), 'cp "' . get_file_base() . '/' . $best_htaccess . '" "' . $dir . '/.htaccess" ; git add "' . $dir . '/.htaccess"');
+                $ok = file_exists($dir . '/.htaccess');
+                $msg = 'cp "' . get_file_base() . '/' . $best_htaccess . '" "' . $dir . '/.htaccess"';
+                $git_msg = ' ; git add "' . $dir . '/.htaccess"';
+                if ($this->debug) {
+                    if (!$ok) {
+                        echo $msg . "\n";
+                    }
+                } else {
+                    $this->assertTrue($ok, $msg . $git_msg);
+                }
             }
         }
     }

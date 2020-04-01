@@ -129,7 +129,7 @@ class Hook_profiles_tabs_edit_avatar
             $set_title = do_lang_tempcode('IMAGE');
             $field_set = alternate_fields_set__start($set_name);
 
-            $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'avatar_file', false, null, null, true, get_allowed_image_file_types()));
+            $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'avatar_file', false, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
 
             if (get_value('disable_multi_homed_upload__cns_avatar') === '1') {
                 $hidden->attach(form_input_hidden('avatar_alt_url', $found_it ? '' : $avatar_url));

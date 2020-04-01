@@ -36,6 +36,13 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         // Many of these aren't real words, but they appear for good reasons so we whitelist them
         $okay_words = [
+            'revolutionised',
+            'visualisation',
+            'fileowner',
+            'filegroup',
+            'acls',
+            'vforum',
+            'vtt',
             'doformpreview',
             'switcheroo',
             'prev',
@@ -1806,8 +1813,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'io',
             'iodbc',
             'ios',
-            'iotd',
-            'iotds',
             'ip',
             'ipad',
             'ipall',
@@ -3449,7 +3454,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                             'themes/default/javascript_custom/unslider.js',
                             'themes/default/javascript_custom/columns.js',
                             'themes/default/javascript/mediaelement-and-player.js',
-                            'themes/default/javascript_custom/skitter.js',
+                            'themes/default/javascript/skitter.js',
                             'themes/default/javascript_custom/jquery_flip.js',
                             'themes/default/javascript_custom/sortable_tables.js',
                             'themes/default/javascript/charts.js',

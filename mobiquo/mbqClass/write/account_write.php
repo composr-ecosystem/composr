@@ -312,63 +312,59 @@ class CMSAccountWrite
         cms_verify_parameters_phpdoc();
 
         cns_require_all_forum_stuff();
+        require_code('cns_lost_password');
+        require_lang('cns_lost_password');
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_BLANK);
         $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
 
         // Basic validation
-        if ($username == '') {
+        if ($username == '') { // Should not be possible
             return [
                 'status' => false,
-                'data' => do_lang('PASSWORD_RESET_ERROR'),
-            ];
-        }
-        if ($email == '') {
-            return [
-                'status' => false,
-                'data' => do_lang('MEMBER_NO_EMAIL_ADDRESS_RESET_TO'),
+                'data' => do_lang('PASSWORD_RESET_ERROR_NO_ACCOUNT_GIVEN'),
             ];
         }
 
         // Check we are allowed to do a reset
-        if (($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == '') && (has_privilege($member_id, 'disable_lost_passwords'))) {
-            return [
-                'status' => false,
-                'data' => do_lang('NO_RESET_ACCESS'),
-            ];
-        }
-        if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'httpauth') {
-            return [
-                'status' => false,
-                'data' => do_lang('NO_PASSWORD_RESET_HTTPAUTH'),
-            ];
-        }
-        $is_ldap = cns_is_ldap_member($member_id);
-        $is_httpauth = cns_is_httpauth_member($member_id);
-        if (($is_ldap)/* || ($is_httpauth  Actually covered more explicitly above - over mock-httpauth, like Facebook, may have passwords reset to break the integrations)*/) {
-            warn_exit(do_lang_tempcode('EXT_NO_PASSWORD_CHANGE'));
+        $error_msg = has_lost_password_error($member_id);
+        if ($error_msg !== null) {
+            switch ($password_reset_privacy) {
+                case 'disclose':
+                    return [
+                        'status' => false,
+                        'data' => $error_msg->evaluate(),
+                    ];
+
+                case 'silent':
+                case 'email':
+                    require_code('mail');
+                    $subject = do_lang('LOST_PASSWORD_RESET_ERROR_SUBJECT', get_site_name());
+                    $message = '[semihtml]' . $error_msg->evaluate() . '[/semihtml]';
+                    dispatch_mail($subject, $message, [$email], null, '', '', ['bypass_queue' => true]);
+
+                    return [$email, null];
+            }
         }
 
-        // Start the reset process by generating a reset code
-        require_code('crypt');
-        $code = get_secure_random_number();
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_change_code' => strval($code)], ['id' => $member_id], '', 1);
-        log_it('LOST_PASSWORD', strval($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
+        $password_reset_process = get_password_reset_process();
+
+        // Save new code
+        $code = generate_and_save_password_reset_code($password_reset_process, $member_id);
+
+        // Logging
+        log_it('LOST_PASSWORD', strval($member_id), $username);
 
         // Send confirm mail
-        $zone = get_module_zone('lost_password');
-        $_url = build_url(['page' => 'lost_password', 'type' => 'step3', 'code' => $code, 'member' => $member_id], $zone, [], false, false, true);
-        $url = $_url->evaluate();
-        $_url_simple = build_url(['page' => 'lost_password', 'type' => 'step3', 'code' => null, 'username' => null, 'member' => null], $zone, [], false, false, true);
-        $url_simple = $_url_simple->evaluate();
-        $message = do_lang('LOST_PASSWORD_TEXT', comcode_escape(get_site_name()), comcode_escape($username), [comcode_escape($url), $url_simple, strval($member_id), strval($code)], get_lang($member_id));
-        require_code('mail');
-        dispatch_mail(do_lang('LOST_PASSWORD', null, null, null, get_lang($member_id)), $message, [$email], $username, '', '', ['bypass_queue' => true]);
+        list(, $member_id) = send_lost_password_reset_code($password_reset_process, $member_id, $code);
+
+        // Generate message
+        $mailed_message = lost_password_mailed_message($password_reset_process, $email);
 
         // Return
         return [
             'status' => true,
-            'data' => do_lang('RESET_CODE_MAILED'),
+            'data' => $mailed_message->evaluate(),
         ];
     }
 

@@ -142,7 +142,6 @@ The above example creates a flip between text A and text B, taking 400ms. This i
             'themes/default/templates_custom/COMCODE_FLIP.tpl',
             'themes/default/javascript_custom/jquery_flip.js',
             'sources_custom/hooks/systems/comcode/flip.php',
-            'themes/default/javascript_custom/comcode_flip_tag.js',
         ];
     }
 }

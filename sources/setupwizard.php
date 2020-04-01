@@ -19,16 +19,32 @@
  */
 
 /**
+ * Standard code module initialisation function.
+ *
+ * @ignore
+ */
+function init__setupwizard()
+{
+    if (!defined('BLOCK_POSITION_MAIN')) {
+        define('BLOCK_POSITION_MAIN', 1);
+        define('BLOCK_POSITION_CELL', 2);
+        define('BLOCK_POSITION_PANEL', 4);
+    }
+}
+
+/**
  * Install test content.
  */
 function install_test_content()
 {
     require_code('lorem');
 
+    if (!running_script('install')) {
+        uninstall_test_content();
+    }
+
     push_query_limiting(false);
     set_mass_import_mode(true);
-
-    uninstall_test_content();
 
     $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
     foreach ($hooks as $ob) {
@@ -183,14 +199,14 @@ function _get_zone_pages($installprofileblocks, $block_options, $collapse_zones,
             }
         }
         $comcode .= $left;
-        if (post_param_integer('include_cms_advert', 0) == 1) {
-            $comcode .= '[center][url="' . get_brand_base_url() . '/?from=logo"][img="Powered by Composr"]' . get_brand_base_url() . '/uploads/website_specific/compo.sr/logos/a.png[/img][/url][/center]';
-        }
         $page_structure[$zone]['left'] = $comcode;
 
         // Right panel
         $comcode = '';
         $comcode .= $right;
+        if (post_param_integer('include_cms_advert', 0) == 1) {
+            $comcode .= '[center][url="' . get_brand_base_url() . '/?from=logo"][img="Powered by Composr"]' . get_brand_base_url() . '/uploads/website_specific/compo.sr/logos/a.png[/img][/url][/center]';
+        }
         $page_structure[$zone]['right'] = $comcode;
     }
 

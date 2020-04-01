@@ -73,7 +73,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         'lookup.ini',
         'profiling.ini',
         'realtime_rain.ini',
-        'ssl.ini',
         'staff_checklist.ini',
         'stats.ini',
         'submitban.ini',
@@ -114,6 +113,398 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        LAUNCH_WITH_TEST_CONTENT
+        LAUNCH_IN_BLANK_STATE
+        STOCK_DEFAULT_BANNER_FALLBACK
+        STOCK_DEFAULT_BANNER
+        HTML
+        EFFECT
+        BILLING
+        FULLSCREEN
+        MATCH_TYPE
+        PASSWORD_RESET_MINUTES
+        CONFIG_OPTION_password_reset_minutes
+        CONFIG_OPTION_password_reset_privacy
+        CONFIG_OPTION_password_reset_privacy_VALUE_disclose
+        CONFIG_OPTION_password_reset_privacy_VALUE_email
+        CONFIG_OPTION_password_reset_privacy_VALUE_silent
+        PASSWORD_RESET_PRIVACY
+        CAROUSEL_MODE
+        MOSAIC_MODE
+        CYCLE_DURATION
+        ALL_MEMBERS
+        GRAPH_NOT_FOUND
+        GRID_MODE
+        HOMEPAGE_HERO_SLIDER
+        DESCRIPTION_SORTABLE
+        LAYOUT_MODE
+        ALLOW_TEMPLATE_SEARCH
+        ADD_BLOCK
+        HAVE_DEFAULT_HOMEPAGE_HERO_SLIDES
+        NOT_SUPPORTED_ON_DB
+        DESCRIPTION_ALLOW_TEMPLATE_SEARCH
+        DESCRIPTION_AUTOFILL_HINT
+        DESCRIPTION_AUTOFILL_TYPE
+        DESCRIPTION_CLOSED_CAPTIONS
+        DESCRIPTION_HAVE_DEFAULT_HOMEPAGE_HERO_SLIDES
+        DESCRIPTION_INCLUDE_IN_MAIN_SEARCH
+        DESCRIPTION_INCLUDE_ON_SITEMAP
+        DESCRIPTION_LAYOUT_MODE
+        DESCRIPTION_MATCH_TYPE
+        DESCRIPTION_REPLACE_WITH_GRAWLIXES
+        CONFIG_OPTION_galleries_sort_order_VALUE_name__ASC
+        BLOCK_main_gallery_mosaic_PARAM_guid
+        INCLUDE_IN_MAIN_SEARCH
+        INCLUDE_ON_SITEMAP
+        NEW_TASK_RUNNING_LOGGING
+        REPLACED_WITH_GRAWLIXES
+        REPLACE_WITH_GRAWLIXES
+        SLIDE_TRANSITION_EFFECT
+        SQL_DUMP_SAVED_TO
+        STICKY_HEADER
+        STRETCH_SMALL_MEDIA
+        THEME_HEADER_TYPE
+        WORDFILTER_MATCH_TYPE_full
+        WORDFILTER_MATCH_TYPE_prefix
+        WORDFILTER_MATCH_TYPE_substring
+        AUTOFILL_HINT
+        AUTOFILL_TYPE
+        AUTOFILL_TYPE_DESCRIPTION_additional_name
+        AUTOFILL_TYPE_DESCRIPTION_address_level1
+        AUTOFILL_TYPE_DESCRIPTION_address_level2
+        AUTOFILL_TYPE_DESCRIPTION_address_level3
+        AUTOFILL_TYPE_DESCRIPTION_address_level4
+        AUTOFILL_TYPE_DESCRIPTION_autocomplete_disabled
+        AUTOFILL_TYPE_DESCRIPTION_bday
+        AUTOFILL_TYPE_DESCRIPTION_cc_additional_name
+        AUTOFILL_TYPE_DESCRIPTION_cc_csc
+        AUTOFILL_TYPE_DESCRIPTION_cc_exp
+        AUTOFILL_TYPE_DESCRIPTION_cc_exp_month
+        AUTOFILL_TYPE_DESCRIPTION_cc_exp_year
+        AUTOFILL_TYPE_DESCRIPTION_cc_family_name
+        AUTOFILL_TYPE_DESCRIPTION_cc_given_name
+        AUTOFILL_TYPE_DESCRIPTION_cc_name
+        AUTOFILL_TYPE_DESCRIPTION_cc_number
+        AUTOFILL_TYPE_DESCRIPTION_cc_type
+        AUTOFILL_TYPE_DESCRIPTION_country
+        AUTOFILL_TYPE_DESCRIPTION_country_name
+        AUTOFILL_TYPE_DESCRIPTION_email
+        AUTOFILL_TYPE_DESCRIPTION_family_name
+        AUTOFILL_TYPE_DESCRIPTION_given_name
+        AUTOFILL_TYPE_DESCRIPTION_honorific_prefix
+        AUTOFILL_TYPE_DESCRIPTION_honorific_suffix
+        AUTOFILL_TYPE_DESCRIPTION_impp
+        AUTOFILL_TYPE_DESCRIPTION_language
+        AUTOFILL_TYPE_DESCRIPTION_name
+        AUTOFILL_TYPE_DESCRIPTION_nickname
+        AUTOFILL_TYPE_DESCRIPTION_organization
+        AUTOFILL_TYPE_DESCRIPTION_organization_title
+        AUTOFILL_TYPE_DESCRIPTION_postal_code
+        AUTOFILL_TYPE_DESCRIPTION_sex
+        AUTOFILL_TYPE_DESCRIPTION_street_address
+        AUTOFILL_TYPE_DESCRIPTION_tel
+        AUTOFILL_TYPE_DESCRIPTION_tel_national
+        AUTOFILL_TYPE_DESCRIPTION_transaction_currency
+        AUTOFILL_TYPE_DESCRIPTION_url
+        AUTOFILL_TYPE_DESCRIPTION_username
+        BLOCK_TRANS_NAME_main_gallery_mosaic
+        BLOCK_TRANS_NAME_main_hero_slider
+        BLOCK_main_content_PARAM_days
+        BLOCK_main_content_PARAM_days_TITLE
+        BLOCK_main_content_PARAM_filter
+        BLOCK_main_content_PARAM_filter_TITLE
+        BLOCK_main_gallery_embed_PARAM_show_sorting
+        BLOCK_main_gallery_embed_PARAM_show_sorting_TITLE
+        BLOCK_main_gallery_mosaic_DESCRIPTION
+        BLOCK_main_gallery_mosaic_PARAM_as_guest
+        BLOCK_main_gallery_mosaic_PARAM_as_guest_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_check
+        BLOCK_main_gallery_mosaic_PARAM_check_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_days
+        BLOCK_main_gallery_mosaic_PARAM_days_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_filter
+        BLOCK_main_gallery_mosaic_PARAM_filter_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_filtercode
+        BLOCK_main_gallery_mosaic_PARAM_guid_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_max
+        BLOCK_main_gallery_mosaic_PARAM_max_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_pagination
+        BLOCK_main_gallery_mosaic_PARAM_pagination_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_param
+        BLOCK_main_gallery_mosaic_PARAM_param_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_render_if_empty
+        BLOCK_main_gallery_mosaic_PARAM_render_if_empty_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_root
+        BLOCK_main_gallery_mosaic_PARAM_root_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_select
+        BLOCK_main_gallery_mosaic_PARAM_select_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_show_sorting
+        BLOCK_main_gallery_mosaic_PARAM_show_sorting_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_sort
+        BLOCK_main_gallery_mosaic_PARAM_sort_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_start
+        BLOCK_main_gallery_mosaic_PARAM_start_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_title
+        BLOCK_main_gallery_mosaic_PARAM_title_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_video_filter
+        BLOCK_main_gallery_mosaic_PARAM_video_filter_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_video_select
+        BLOCK_main_gallery_mosaic_PARAM_video_select_TITLE
+        BLOCK_main_gallery_mosaic_PARAM_zone
+        BLOCK_main_gallery_mosaic_PARAM_zone_TITLE
+        BLOCK_main_gallery_mosaic_USE
+        BLOCK_main_hero_slider_DESCRIPTION
+        BLOCK_main_hero_slider_PARAM_blank_if_empty
+        BLOCK_main_hero_slider_PARAM_blank_if_empty_TITLE
+        BLOCK_main_hero_slider_PARAM_check
+        BLOCK_main_hero_slider_PARAM_check_TITLE
+        BLOCK_main_hero_slider_PARAM_effect
+        BLOCK_main_hero_slider_PARAM_effect_TITLE
+        BLOCK_main_hero_slider_PARAM_fullscreen
+        BLOCK_main_hero_slider_PARAM_fullscreen_TITLE
+        BLOCK_main_hero_slider_PARAM_gallery_name
+        BLOCK_main_hero_slider_PARAM_gallery_name_TITLE
+        BLOCK_main_hero_slider_PARAM_interval
+        BLOCK_main_hero_slider_PARAM_interval_TITLE
+        BLOCK_main_hero_slider_PARAM_show_indicators
+        BLOCK_main_hero_slider_PARAM_show_indicators_TITLE
+        BLOCK_main_hero_slider_PARAM_show_scroll_down
+        BLOCK_main_hero_slider_PARAM_show_scroll_down_TITLE
+        BLOCK_main_hero_slider_USE
+        BLOCK_main_multi_content_PARAM_render_mode
+        BLOCK_main_multi_content_PARAM_render_mode_TITLE
+        BLOCK_main_news_PARAM_display_briefs
+        BLOCK_main_news_PARAM_display_briefs_TITLE
+        BLOCK_main_news_PARAM_display_slides
+        BLOCK_main_news_PARAM_display_slides_TITLE
+        BLOCK_main_news_PARAM_display_summaries
+        BLOCK_main_news_PARAM_display_summaries_TITLE
+        BLOCK_main_news_PARAM_news_articles_per_slide
+        BLOCK_main_news_PARAM_news_articles_per_slide_TITLE
+        BLOCK_main_news_PARAM_render_mode
+        BLOCK_main_news_PARAM_render_mode_TITLE
+        BLOCK_main_news_PARAM_slider_interval
+        BLOCK_main_news_PARAM_slider_interval_TITLE
+        CONFIG_OPTION_galleries_sort_order_VALUE_recent__ASC
+        CONFIG_OPTION_galleries_sort_order_VALUE_recent__DESC
+        CONFIG_OPTION_galleries_sort_order_VALUE_title__ASC
+        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_recent__ASC
+        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_recent__DESC
+        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_title__ASC
+        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_title__DESC
+        CONFIG_OPTION_homepage_slider_cycle_duration
+        CONFIG_OPTION_homepage_slider_effect
+        CONFIG_OPTION_homepage_slider_effect_VALUE_fade
+        CONFIG_OPTION_homepage_slider_effect_VALUE_slide
+        CONFIG_OPTION_homepage_slider_enabled
+        CONFIG_OPTION_homepage_slider_fullscreen
+        CONFIG_OPTION_homepage_slider_gallery
+        CONFIG_OPTION_sticky_header
+        CONFIG_OPTION_theme_header_type
+        CONFIG_OPTION_theme_header_type_VALUE_classic
+        CONFIG_OPTION_theme_header_type_VALUE_modern
+        CONFIG_OPTION_theme_header_type_VALUE_side
+        RSS_CLOUD_UPDATE
+        DESCRIPTION_OVERWRITE_ERROR
+        ACTION_OVERWRITE
+        ACTION_OVERWRITE_DISABLED_TITLE
+        ACTION_LEAVE_ALONE
+        ACTION_RENAME
+        CMD_ALIEN_CHECK_HELP
+        CMD_ANTISPAM_CHECK_HELP
+        CMD_ANTISPAM_CHECK_HELP_PARAM_0
+        CMD_APPEND_HELP
+        CMD_APPEND_HELP_PARAM_0
+        CMD_APPEND_HELP_PARAM_1
+        CMD_BAN_IP_HELP
+        CMD_BAN_IP_HELP_PARAM_0
+        CMD_BAN_IP_HELP_PARAM_1
+        CMD_BAN_IP_HELP_U
+        CMD_BAN_MEMBER_HELP
+        CMD_BAN_MEMBER_HELP_PARAM_0
+        CMD_BAN_MEMBER_HELP_U
+        CMD_BSOD_HELP
+        CMD_CALL_HELP
+        CMD_CALL_HELP_PARAM_0
+        CMD_CAT_HELP
+        CMD_CAT_HELP_L
+        CMD_CAT_HELP_PARAM_0
+        CMD_CD_HELP
+        CMD_CD_HELP_PARAM_0
+        CMD_CHECK_PERMS_HELP
+        CMD_CLEAR_CACHES_HELP
+        CMD_CLEAR_CACHES_HELP_PARAM_0
+        CMD_CLEAR_HELP
+        CMD_CLOSED_HELP
+        CMD_CLOSED_HELP_C
+        CMD_CLOSED_HELP_O
+        CMD_CLOSED_HELP_PARAM_0
+        CMD_COMMANDS_HELP
+        CMD_CONTINUE_IMPORT_HELP
+        CMD_CONTINUE_IMPORT_HELP_PARAM_0
+        CMD_CONTINUE_IMPORT_HELP_PARAM_1
+        CMD_CPDIR_HELP
+        CMD_CPDIR_HELP_PARAM_0
+        CMD_CPDIR_HELP_PARAM_1
+        CMD_CP_HELP
+        CMD_CP_HELP_PARAM_0
+        CMD_CP_HELP_PARAM_1
+        CMD_CSS_CLEANUP_HELP
+        CMD_CSS_CLEANUP_HELP_PARAM_0
+        CMD_CSS_CLEANUP_HELP_PARAM_1
+        CMD_DATABASE_UPGRADE_HELP
+        CMD_DATE_HELP
+        CMD_DB_SEARCH_HELP
+        CMD_DB_SEARCH_HELP_PARAM_0
+        CMD_DB_SEARCH_HELP_PARAM_1
+        CMD_DB_TABLE_SIZES_HELP
+        CMD_DB_TABLE_SIZES_HELP_PARAM_0
+        CMD_DEEP_CLEAN_HELP
+        CMD_DEEP_CLEAN_HELP_PARAM_0
+        CMD_DEEP_CLEAN_HELP_PARAM_1
+        CMD_DEEP_CLEAN_HELP_PARAM_2
+        CMD_DIRECTORY_SIZES_HELP
+        CMD_ECHO_HELP
+        CMD_ECHO_HELP_PARAM_0
+        CMD_EDIT_HELP
+        CMD_EDIT_HELP_PARAM_0
+        CMD_EXIT_HELP
+        CMD_FEED_DISPLAY_HELP
+        CMD_FEED_DISPLAY_HELP_M
+        CMD_FEED_DISPLAY_HELP_PARAM_0
+        CMD_FIND_CODES_HELP
+        CMD_FIND_CODES_HELP_PARAM_0
+        CMD_FIND_COMMANDRFS_FILENAME_VIA_ID_HELP
+        CMD_FIND_COMMANDRFS_FILENAME_VIA_ID_HELP_PARAM_0
+        CMD_FIND_COMMANDRFS_FILENAME_VIA_ID_HELP_PARAM_1
+        CMD_FIND_COMMANDR_FS_FILENAME_VIA_ID_HELP
+        CMD_FIND_COMMANDR_FS_FILENAME_VIA_ID_HELP_PARAM_0
+        CMD_FIND_COMMANDR_FS_FILENAME_VIA_ID_HELP_PARAM_1
+        CMD_FIND_ENTRY_POINTS_HELP
+        CMD_FIND_ENTRY_POINTS_HELP_PARAM_0
+        CMD_FIND_FUNCTION_HELP
+        CMD_FIND_FUNCTION_HELP_PARAM_0
+        CMD_FIND_GUID_VIA_ID_HELP
+        CMD_FIND_GUID_VIA_ID_HELP_PARAM_0
+        CMD_FIND_GUID_VIA_ID_HELP_PARAM_1
+        CMD_FIND_HELP
+        CMD_FIND_HELP_D
+        CMD_FIND_HELP_F
+        CMD_FIND_HELP_P
+        CMD_FIND_HELP_PARAM_0
+        CMD_FIND_HELP_PARAM_1
+        CMD_FIND_HELP_R
+        CMD_FIND_ID_VIA_COMMANDRFS_FILENAME_HELP
+        CMD_FIND_ID_VIA_COMMANDRFS_FILENAME_HELP_PARAM_0
+        CMD_FIND_ID_VIA_COMMANDRFS_FILENAME_HELP_PARAM_1
+        CMD_FIND_ID_VIA_COMMANDR_FS_FILENAME_HELP
+        CMD_FIND_ID_VIA_COMMANDR_FS_FILENAME_HELP_PARAM_0
+        CMD_FIND_ID_VIA_COMMANDR_FS_FILENAME_HELP_PARAM_1
+        CMD_FIND_ID_VIA_GUID_HELP
+        CMD_FIND_ID_VIA_GUID_HELP_PARAM_0
+        CMD_FIND_ID_VIA_LABEL_HELP
+        CMD_FIND_ID_VIA_LABEL_HELP_PARAM_0
+        CMD_FIND_ID_VIA_LABEL_HELP_PARAM_1
+        CMD_FIND_ID_VIA_LABEL_HELP_PARAM_2
+        CMD_FIND_LABEL_VIA_ID_HELP
+        CMD_FIND_LABEL_VIA_ID_HELP_PARAM_0
+        CMD_FIND_LABEL_VIA_ID_HELP_PARAM_1
+        CMD_FS_SEARCH_HELP
+        CMD_FS_SEARCH_HELP_PARAM_0
+        CMD_FS_SEARCH_HELP_PARAM_1
+        CMD_FS_SEARCH_HELP_PARAM_2
+        CMD_GIVE_HELP
+        CMD_GIVE_HELP_A
+        CMD_GIVE_HELP_PARAM_0
+        CMD_GIVE_HELP_PARAM_1
+        CMD_GIVE_HELP_PARAM_2
+        CMD_GREP_HELP
+        CMD_GREP_HELP_PARAM_0
+        CMD_GREP_HELP_PARAM_1
+        CMD_HEALTH_CHECK_HELP
+        CMD_HEALTH_CHECK_HELP_PARAM_0
+        CMD_HEALTH_CHECK_HELP_V
+        CMD_HEALTH_CHECK_PAGES_HELP
+        CMD_HEALTH_CHECK_PAGES_HELP_PARAM_0
+        CMD_HEALTH_CHECK_PAGES_HELP_V
+        CMD_INTEGRITY_CHECK_HELP
+        CMD_LS_HELP
+        CMD_LS_HELP_PARAM_0
+        CMD_MKDIR_HELP
+        CMD_MKDIR_HELP_PARAM_0
+        CMD_MVDIR_HELP
+        CMD_MVDIR_HELP_PARAM_0
+        CMD_MVDIR_HELP_PARAM_1
+        CMD_MVDIR_HELP_PARAM_2
+        CMD_MV_HELP
+        CMD_MV_HELP_PARAM_0
+        CMD_MV_HELP_PARAM_1
+        CMD_PASSWD_HELP
+        CMD_PASSWD_HELP_PARAM_0
+        CMD_PASSWD_HELP_U
+        CMD_PHPINFO_HELP
+        CMD_PWD_HELP
+        CMD_READ_HELP
+        CMD_READ_HELP_PARAM_0
+        CMD_RESET_HELP
+        CMD_RMDIR_HELP
+        CMD_RMDIR_HELP_F
+        CMD_RMDIR_HELP_PARAM_0
+        CMD_RM_HELP
+        CMD_RM_HELP_PARAM_0
+        CMD_RUN_SCHEDULED_ACTION_HELP
+        CMD_RUN_SCHEDULED_ACTION_HELP_PARAM_0
+        CMD_RUN_SCHEDULED_ACTION_HELP_PARAM_1
+        CMD_RUN_SCHEDULED_ACTION_HELP_PARAM_2
+        CMD_SEND_CHATMESSAGE_HELP
+        CMD_SEND_CHATMESSAGE_HELP_PARAM_0
+        CMD_SEND_CHATMESSAGE_HELP_PARAM_1
+        CMD_SET_COMMENT_FORUM_HELP
+        CMD_SET_COMMENT_FORUM_HELP_PARAM_0
+        CMD_SET_COMMENT_FORUM_HELP_PARAM_1
+        CMD_SET_COMMENT_FORUM_HELP_PARAM_2
+        CMD_SQL_DUMP_HELP
+        CMD_SQL_DUMP_HELP_PARAM_0
+        CMD_SQL_DUMP_HELP_PARAM_1
+        CMD_SQL_DUMP_HELP_PARAM_2
+        CMD_TEST_MAIL_HELP
+        CMD_TEST_MAIL_HELP_PARAM_0
+        CMD_THEMEWIZARD_COMPUTE_EQUATION_HELP
+        CMD_THEMEWIZARD_COMPUTE_EQUATION_HELP_PARAM_0
+        CMD_THEMEWIZARD_COMPUTE_EQUATION_HELP_PARAM_1
+        CMD_THEMEWIZARD_FIND_COLOR_HELP
+        CMD_THEMEWIZARD_FIND_COLOR_HELP_PARAM_0
+        CMD_THEMEWIZARD_FIND_COLOR_HELP_PARAM_1
+        CMD_TIME_HELP
+        CMD_UNTAR_HELP
+        CMD_UNTAR_HELP_PARAM_0
+        CMD_USERS_ONLINE_HELP
+        CMD_VERSION_HELP
+        CMD_VERSION_HELP_F
+        CMD_VERSION_HELP_G
+        CMD_VERSION_HELP_M
+        CMD_VERSION_HELP_T
+        CMD_VERSION_HELP_V
+        CMD_WHOAMI_HELP
+        CMD_WHOIS_HELP
+        CMD_WHOIS_HELP_F
+        CMD_WHOIS_HELP_M
+        CMD_WHOIS_HELP_O
+        CMD_WHOIS_HELP_PARAM_0
+        CMD_WHOIS_HELP_S
+        CMD_WRITE_HELP
+        CMD_WRITE_HELP_PARAM_0
+        CMD_WRITE_HELP_PARAM_1
+        CONTENT_ACCESS
+        _CONTENT_ACCESS
+        DOC_CONTENT_PERMISSIONS
+        DESCRIPTION_WARNING_TYPE
+        WARNING_FORMAL
+        WARNING_OFF_THE_BOOK
+        WARNINGS_HISTORY_TEXT
+        INCLUDE_PUNITIVE_TEXT
+        DESCRIPTION_INCLUDE_PUNITIVE_TEXT
+        DESCRIPTION_CAN_WARN
         SUCCESS_PAGE_TRANSLATION_DELETED
         SUCCESS_PAGE_DELETED
         DELETE_TRANSLATION
@@ -231,6 +622,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _GOOGLE_ANALYTICS
         _INCOME
         GIFTS
+        RESTORE_USERGROUP_TO
+        UNDO_GROUP_CHANGE
+        GROUP_CHANGE
         DAYS_TO_KEEP__CRON_LOG
         CONFIG_OPTION_days_to_keep__cron_log
         DAYS_TO_KEEP__DEBUG_FS_LOG
@@ -302,6 +696,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UNKNOWN_CSS_MODE
         CORRUPT_CSS_MODE
         INSTALL_TEST_CONTENT
+        INSTALLED_TEST_CONTENT
         DESCRIPTION_INSTALL_TEST_CONTENT
         WARNING_SERVER_SOFTWARE
         WARNING_ISSUE_WITH_ALWAYS_POPULATE_RAW_POST_DATA
@@ -328,12 +723,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CATEGORIES_SORT_ORDER
         GALLERY_DEFAULT_SORT_ORDER
         DESCRIPTION_CATEGORIES_SORT_ORDER
-        CONFIG_OPTION_galleries_sort_order_VALUE_add_date__ASC
-        CONFIG_OPTION_galleries_sort_order_VALUE_add_date__DESC
         CONFIG_OPTION_galleries_sort_order_VALUE_average_rating__DESC
         CONFIG_OPTION_galleries_sort_order_VALUE_compound_rating__DESC
-        CONFIG_OPTION_galleries_sort_order_VALUE_fullname__ASC
-        CONFIG_OPTION_galleries_sort_order_VALUE_name__ASC
         CONFIG_GROUP_DESCRIP_BLOCKS_AT_TOP
         CONFIG_OPTION_block_top_login
         CONFIG_OPTION_block_top_notifications
@@ -449,10 +840,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SESSION_ID
         BROWSING_ENVIRONMENT
         PAGES_SEEN
-        CMD_FS_SEARCH_HELP
-        CMD_FS_SEARCH_HELP_PARAM_0
-        CMD_FS_SEARCH_HELP_PARAM_1
-        CMD_FS_SEARCH_HELP_PARAM_2
         CONFIG_GROUP_DESCRIP_DASHBOARD
         CONFIG_OPTION_allow_audio_videos_VALUE_0
         CONFIG_OPTION_allow_audio_videos_VALUE_1
@@ -573,10 +960,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HERE_SURVEY_RESULTS
         HERE_TEST_RESULTS
         METADATA
-        CMD_HEALTH_CHECK_HELP_V
-        CMD_HEALTH_CHECK_PAGES_HELP
-        CMD_HEALTH_CHECK_PAGES_HELP_PARAM_0
-        CMD_HEALTH_CHECK_PAGES_HELP_V
         DEAD_LINE_PROBLEM
         DELURK_NON_CONFIRMED
         DELURK_NON_CONFIRMED_DESCRIPTION
@@ -716,7 +1099,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACCESS_DENIED__I_ERROR
         ACCESS_DENIED__PRIVILEGE
         ACCESS_DENIED__STAFF_ONLY
-        PARTNER_SITES
         REFERRER
         SUPPORT_TICKETS_MAIL
         _COMCODE_PAGES
@@ -1029,6 +1411,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TREE_LIST_SELECT
         GREETING
         BREADCRUMB_OVERRIDES
+        ADVANCED_BANNING
         DISPLAY_LIKELIHOOD
         MASS_PERMISSION_SETTING
         IDEAL_DENSITY
@@ -1050,6 +1433,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BANNER_VIEWS_TO
         BAN_IP_DESCRIPTION
         BAN_MEMBER
+        BAN_MEMBER_AUTOMATIC
         BAN_MEMBER_DESCRIPTION
         BAN_MEMBER_DOUBLE_DESCRIPTION
         BAN_SUBMITTER_DESCRIPTION
@@ -1077,7 +1461,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         USE_SITE_NAME_TEXT_AS_LOGO
         BLOCK_CONFIGURATION__PANEL_LEFT
         BLOCK_CONFIGURATION__PANEL_NO
-        BLOCK_CONFIGURATION__PANEL_NONE
         BLOCK_CONFIGURATION__PANEL_RIGHT
         BLOCK_CONFIGURATION__PANEL_YES
         BLOCK_CONFIGURATION__PANEL_YES_CELL
@@ -1156,10 +1539,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_TRANS_NAME_main_news
         BLOCK_TRANS_NAME_main_newsletter_signup
         BLOCK_TRANS_NAME_main_notes
-        BLOCK_TRANS_NAME_main_only_if_match
         BLOCK_TRANS_NAME_main_personal_galleries_list
         BLOCK_TRANS_NAME_main_poll
-        BLOCK_TRANS_NAME_main_pt_notifications
         BLOCK_TRANS_NAME_main_quotes
         BLOCK_TRANS_NAME_main_rating
         BLOCK_TRANS_NAME_main_rss
@@ -1185,7 +1566,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         OLD_GD_ON_SERVER
         PAGE_AFTER_JOIN
         PAGE_AFTER_LOGIN
-        PUNISH_FORM
+        WARNINGS_FORM
         NOTIFICATION_WITH_AUTO_TICKET_WRAPPER
         TICKETS_STAFF
         MEMBER_HAS_SUBSCRIPTIONS
@@ -1193,7 +1574,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_TRANS_NAME_side_friends
         BLOCK_TRANS_NAME_side_galleries
         BLOCK_TRANS_NAME_side_language
-        BLOCK_TRANS_NAME_side_network
         BLOCK_TRANS_NAME_side_news
         BLOCK_TRANS_NAME_side_news_archive
         BLOCK_TRANS_NAME_side_news_categories
@@ -1319,11 +1699,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_comments_PARAM_title
         BLOCK_main_comments_PARAM_title_TITLE
         BLOCK_main_comments_USE
-        CMD_CSS_CLEANUP_HELP
-        CMD_CSS_CLEANUP_HELP_PARAM_0
-        CMD_CSS_CLEANUP_HELP_PARAM_1
-        CMD_TEST_MAIL_HELP
-        CMD_TEST_MAIL_HELP_PARAM_0
         DESCRIPTION__THEME__OPTION_OVERRIDES
         IS_ALSO_THEME_SETTING
         NAG_UNINSTALL_TEST_CONTENT
@@ -1704,18 +2079,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_news_PARAM_attach_to_url_filter_TITLE
         BLOCK_main_news_PARAM_blogs
         BLOCK_main_news_PARAM_blogs_TITLE
-        BLOCK_main_news_PARAM_fallback_archive
-        BLOCK_main_news_PARAM_fallback_archive_TITLE
-        BLOCK_main_news_PARAM_fallback_full
-        BLOCK_main_news_PARAM_fallback_full_TITLE
         BLOCK_main_news_PARAM_filter
         BLOCK_main_news_PARAM_filter_TITLE
         BLOCK_main_news_PARAM_historic
         BLOCK_main_news_PARAM_historic_TITLE
         BLOCK_main_news_PARAM_member_based
         BLOCK_main_news_PARAM_member_based_TITLE
-        BLOCK_main_news_PARAM_multiplier
-        BLOCK_main_news_PARAM_multiplier_TITLE
         BLOCK_main_news_PARAM_no_links
         BLOCK_main_news_PARAM_no_links_TITLE
         BLOCK_main_news_PARAM_optimise
@@ -1760,12 +2129,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_notes_PARAM_title_TITLE
         BLOCK_main_notes_USE
         NO_DOWNLOAD_ACCESS
-        BLOCK_main_only_if_match_DESCRIPTION
-        BLOCK_main_only_if_match_PARAM_caption
-        BLOCK_main_only_if_match_PARAM_caption_TITLE
-        BLOCK_main_only_if_match_PARAM_param
-        BLOCK_main_only_if_match_PARAM_param_TITLE
-        BLOCK_main_only_if_match_USE
         BLOCK_main_personal_galleries_list_DESCRIPTION
         BLOCK_main_personal_galleries_list_PARAM_max
         BLOCK_main_personal_galleries_list_PARAM_max_TITLE
@@ -1780,8 +2143,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_poll_PARAM_zone
         BLOCK_main_poll_PARAM_zone_TITLE
         BLOCK_main_poll_USE
-        BLOCK_main_pt_notifications_DESCRIPTION
-        BLOCK_main_pt_notifications_USE
         BLOCK_main_quotes_DESCRIPTION
         BLOCK_main_quotes_PARAM_param
         BLOCK_main_quotes_PARAM_param_TITLE
@@ -1928,8 +2289,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_side_galleries_USE
         BLOCK_side_language_DESCRIPTION
         BLOCK_side_language_USE
-        BLOCK_side_network_DESCRIPTION
-        BLOCK_side_network_USE
         BLOCK_side_news_DESCRIPTION
         BLOCK_side_news_PARAM_as_guest
         BLOCK_side_news_PARAM_as_guest_TITLE
@@ -2055,7 +2414,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BROWSE_ID_INSERT
         BRUTEFORCE_LOGIN_HACK
         BRUTE_FORCE
-        BRUTE_FORCE_INSTANT_BAN
         BRUTE_FORCE_LOGIN_MINUTES
         BRUTE_FORCE_THRESHOLD
         BUT_EXPIRED
@@ -2237,7 +2595,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CC_ADDRESS
         CDN
         CHANGE
-        CHANGED_USERGROUP
         CHANGE_BLOCK_BACKGROUND
         EDIT_TIME
         MODULE_TRANS_NAME_admin_robots_txt
@@ -2331,170 +2688,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CLONE
         CLOSED_SITE
         CLOSED_SITE_OPTION
-        CLOSED_SITE_SCREEN
         CLOSE_TIME
         CLOSING_BALANCE
         CLUB_FORUM_PARENT_FORUM
         CLUB_FORUM_PARENT_FORUM_GROUPING
-        CMD_ALIEN_CHECK_HELP
-        CMD_ANTISPAM_CHECK_HELP
-        CMD_ANTISPAM_CHECK_HELP_PARAM_0
-        CMD_APPEND_HELP
-        CMD_APPEND_HELP_PARAM_0
-        CMD_APPEND_HELP_PARAM_1
-        CMD_BAN_IP_HELP
-        CMD_BAN_IP_HELP_PARAM_0
-        CMD_BAN_IP_HELP_PARAM_1
-        CMD_BAN_IP_HELP_U
-        CMD_BAN_MEMBER_HELP
-        CMD_BAN_MEMBER_HELP_PARAM_0
-        CMD_BAN_MEMBER_HELP_U
-        CMD_BSOD_HELP
-        CMD_CALL_HELP
-        CMD_CALL_HELP_PARAM_0
-        CMD_CAT_HELP
-        CMD_CAT_HELP_L
-        CMD_CAT_HELP_PARAM_0
-        CMD_CD_HELP
-        CMD_CD_HELP_PARAM_0
-        CMD_CHECK_PERMS_HELP
-        CMD_CLEAR_CACHES_HELP
-        CMD_CLEAR_CACHES_HELP_PARAM_0
-        CMD_CLEAR_HELP
-        CMD_CLOSED_HELP
-        CMD_CLOSED_HELP_C
-        CMD_CLOSED_HELP_O
-        CMD_CLOSED_HELP_PARAM_0
-        CMD_COMMANDS_HELP
-        CMD_CONTINUE_IMPORT_HELP
-        CMD_CONTINUE_IMPORT_HELP_PARAM_0
-        CMD_CONTINUE_IMPORT_HELP_PARAM_1
-        CMD_CPDIR_HELP
-        CMD_CPDIR_HELP_PARAM_0
-        CMD_CPDIR_HELP_PARAM_1
-        CMD_CP_HELP
-        CMD_CP_HELP_PARAM_0
-        CMD_CP_HELP_PARAM_1
-        CMD_DATABASE_UPGRADE_HELP
-        CMD_DATE_HELP
-        CMD_DB_SEARCH_HELP
-        CMD_DB_SEARCH_HELP_PARAM_0
-        CMD_DB_SEARCH_HELP_PARAM_1
-        CMD_DEEP_CLEAN_HELP
-        CMD_DEEP_CLEAN_HELP_PARAM_0
-        CMD_DEEP_CLEAN_HELP_PARAM_1
-        CMD_DEEP_CLEAN_HELP_PARAM_2
-        CMD_DIRECTORY_SIZES_HELP
-        CMD_ECHO_HELP
-        CMD_ECHO_HELP_PARAM_0
-        CMD_EDIT_HELP
-        CMD_EDIT_HELP_PARAM_0
-        CMD_EXIT_HELP
-        CMD_FEED_DISPLAY_HELP
-        CMD_FEED_DISPLAY_HELP_M
-        CMD_FEED_DISPLAY_HELP_PARAM_0
-        CMD_FIND_CODES_HELP
-        CMD_FIND_CODES_HELP_PARAM_0
-        CMD_FIND_COMMANDRFS_FILENAME_VIA_ID_HELP
-        CMD_FIND_COMMANDRFS_FILENAME_VIA_ID_HELP_PARAM_0
-        CMD_FIND_COMMANDRFS_FILENAME_VIA_ID_HELP_PARAM_1
-        CMD_FIND_ENTRY_POINTS_HELP
-        CMD_FIND_ENTRY_POINTS_HELP_PARAM_0
-        CMD_FIND_FUNCTION_HELP
-        CMD_FIND_FUNCTION_HELP_PARAM_0
-        CMD_FIND_GUID_VIA_ID_HELP
-        CMD_FIND_GUID_VIA_ID_HELP_PARAM_0
-        CMD_FIND_GUID_VIA_ID_HELP_PARAM_1
-        CMD_FIND_HELP
-        CMD_FIND_HELP_D
-        CMD_FIND_HELP_F
-        CMD_FIND_HELP_P
-        CMD_FIND_HELP_PARAM_0
-        CMD_FIND_HELP_PARAM_1
-        CMD_FIND_HELP_R
-        CMD_FIND_ID_VIA_COMMANDRFS_FILENAME_HELP
-        CMD_FIND_ID_VIA_COMMANDRFS_FILENAME_HELP_PARAM_0
-        CMD_FIND_ID_VIA_COMMANDRFS_FILENAME_HELP_PARAM_1
-        CMD_FIND_ID_VIA_GUID_HELP
-        CMD_FIND_ID_VIA_GUID_HELP_PARAM_0
-        CMD_FIND_ID_VIA_LABEL_HELP
-        CMD_FIND_ID_VIA_LABEL_HELP_PARAM_0
-        CMD_FIND_ID_VIA_LABEL_HELP_PARAM_1
-        CMD_FIND_ID_VIA_LABEL_HELP_PARAM_2
-        CMD_FIND_LABEL_VIA_ID_HELP
-        CMD_FIND_LABEL_VIA_ID_HELP_PARAM_0
-        CMD_FIND_LABEL_VIA_ID_HELP_PARAM_1
-        CMD_GIVE_HELP
-        CMD_GIVE_HELP_A
-        CMD_GIVE_HELP_PARAM_0
-        CMD_GIVE_HELP_PARAM_1
-        CMD_GIVE_HELP_PARAM_2
-        CMD_GREP_HELP
-        CMD_GREP_HELP_PARAM_0
-        CMD_GREP_HELP_PARAM_1
-        CMD_INTEGRITY_CHECK_HELP
-        CMD_LS_HELP
-        CMD_LS_HELP_PARAM_0
-        CMD_MKDIR_HELP
-        CMD_MKDIR_HELP_PARAM_0
-        CMD_MVDIR_HELP
-        CMD_MVDIR_HELP_PARAM_0
-        CMD_MVDIR_HELP_PARAM_1
-        CMD_MVDIR_HELP_PARAM_2
-        CMD_MV_HELP
-        CMD_MV_HELP_PARAM_0
-        CMD_MV_HELP_PARAM_1
-        CMD_DB_TABLE_SIZES_HELP
-        CMD_DB_TABLE_SIZES_HELP_PARAM_0
-        NOT_SUPPORTED_ON_DB
-        CMD_SQL_DUMP_HELP
-        CMD_SQL_DUMP_HELP_PARAM_0
-        CMD_SQL_DUMP_HELP_PARAM_1
-        CMD_SQL_DUMP_HELP_PARAM_2
-        SQL_DUMP_SAVED_TO
-        CMD_PASSWD_HELP
-        CMD_PASSWD_HELP_PARAM_0
-        CMD_PASSWD_HELP_U
-        CMD_PHPINFO_HELP
-        CMD_PWD_HELP
-        CMD_READ_HELP
-        CMD_READ_HELP_PARAM_0
-        CMD_RESET_HELP
-        CMD_RMDIR_HELP
-        CMD_RMDIR_HELP_F
-        CMD_RMDIR_HELP_PARAM_0
-        CMD_RM_HELP
-        CMD_RM_HELP_PARAM_0
-        CMD_SET_COMMENT_FORUM_HELP
-        CMD_SET_COMMENT_FORUM_HELP_PARAM_0
-        CMD_SET_COMMENT_FORUM_HELP_PARAM_1
-        CMD_SET_COMMENT_FORUM_HELP_PARAM_2
-        CMD_THEMEWIZARD_COMPUTE_EQUATION_HELP
-        CMD_THEMEWIZARD_COMPUTE_EQUATION_HELP_PARAM_0
-        CMD_THEMEWIZARD_COMPUTE_EQUATION_HELP_PARAM_1
-        CMD_THEMEWIZARD_FIND_COLOR_HELP
-        CMD_THEMEWIZARD_FIND_COLOR_HELP_PARAM_0
-        CMD_THEMEWIZARD_FIND_COLOR_HELP_PARAM_1
-        CMD_TIME_HELP
-        CMD_UNTAR_HELP
-        CMD_UNTAR_HELP_PARAM_0
-        CMD_USERS_ONLINE_HELP
-        CMD_VERSION_HELP
-        CMD_VERSION_HELP_F
-        CMD_VERSION_HELP_G
-        CMD_VERSION_HELP_M
-        CMD_VERSION_HELP_T
-        CMD_VERSION_HELP_V
-        CMD_WHOAMI_HELP
-        CMD_WHOIS_HELP
-        CMD_WHOIS_HELP_F
-        CMD_WHOIS_HELP_M
-        CMD_WHOIS_HELP_O
-        CMD_WHOIS_HELP_PARAM_0
-        CMD_WHOIS_HELP_S
-        CMD_WRITE_HELP
-        CMD_WRITE_HELP_PARAM_0
-        CMD_WRITE_HELP_PARAM_1
         CMS_ZONE
         CNS_CONVERTED_INFO
         CODE_EDITOR
@@ -3085,7 +3282,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_bottom_show_sitemap_button
         CONFIG_OPTION_bottom_show_top_button
         CONFIG_OPTION_breadcrumb_crop_length
-        CONFIG_OPTION_brute_force_instant_ban
         CONFIG_OPTION_brute_force_login_minutes
         CONFIG_OPTION_brute_force_threshold
         CONFIG_OPTION_call_home
@@ -3237,8 +3433,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_forw_url
         CONFIG_OPTION_fractional_editing
         CONFIG_OPTION_gallery_media_default_sort_order
-        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_add_date__ASC
-        CONFIG_OPTION_gallery_media_default_sort_order_VALUE_add_date__DESC
         CONFIG_OPTION_gallery_media_default_sort_order_VALUE_average_rating__DESC
         CONFIG_OPTION_gallery_media_default_sort_order_VALUE_compound_rating__DESC
         CONFIG_OPTION_gallery_media_default_sort_order_VALUE_fixed_random__ASC
@@ -3446,7 +3640,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_minutes_between_sends
         CONFIG_OPTION_mobile_support
         CONFIG_OPTION_modal_user
-        CONFIG_OPTION_network_links
         CONFIG_OPTION_news_categories_per_page
         CONFIG_OPTION_news_entries_per_page
         CONFIG_OPTION_news_update_time
@@ -4267,7 +4460,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_FIX_PAST_RECURRENCES
         DESCRIPTION_FLOOD_CONTROL_ACCESS_SECS
         DESCRIPTION_FLOOD_CONTROL_SUBMIT_SECS
-        DESCRIPTION_CAROUSEL_MODE_INTERFACE
         DESCRIPTION_FOLDER_NAME
         DESCRIPTION_FORCE_TEMPORARY_PASSWORD
         DESCRIPTION_FORUM_GROUPING
@@ -4566,7 +4758,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_WHATSNEW_CATEGORIES_SELECT
         DESCRIPTION_WHETHER_BANNED_IP
         DESCRIPTION_WHETHER_CONVERT_COMCODE
-        DESCRIPTION_WHETHER_MAKE_WARNING
         DESCRIPTION_WORD
         DESCRIPTION_WORDPRESS_DB_NAME
         DESCRIPTION_WORDPRESS_DB_PASSWORD
@@ -4631,6 +4822,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_BASE_CONFIGURATION
         DOC_BLOGS
         DOC_BREADCRUMB_OVERRIDES
+        DOC_ADVANCED_BANNING
         DOC_CALENDAR
         DOC_CATALOGUES
         DOC_CHAT
@@ -4679,8 +4871,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_MENUS
         DOC_MERGE_MEMBERS
         DOC_MULTI_MODERATIONS
-        DOC_NETLINK
-        DOC_NETLINK_1
         DOC_NEWS
         DOC_NEWSLETTER
         DOC_NOTIFICATIONS
@@ -4704,7 +4894,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_SETUP
         DOC_SETUPWIZARD
         DOC_SITEMAP_EDITOR
-        DOC_SSL
         DOC_STATISTICS
         DOC_STRUCTURE
         DOC_STYLE
@@ -4993,7 +5182,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EVIL_POSTED_FORM_UNKNOWN_TOKEN_HACK
         EXAMPLE_COPYRIGHT
         EXAMPLE_DESCRIPTION
-        EXAMPLE_HEADER_TEXT
         EXAMPLE_KEYWORDS
         EXAMPLE_QUESTIONS
         EXAMPLE_SITE_NAME
@@ -5167,7 +5355,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FINAL_INSTRUCTIONS_A
         FINAL_INSTRUCTIONS_A_SUP
         FINAL_INSTRUCTIONS_B
-        FINAL_INSTRUCTIONS_C
         FIND_BROKEN_FILEDUMP_LINKS
         FIND_IN_SITEMAP
         FIND_IN_SITEMAP_EDITOR
@@ -5204,6 +5391,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LOGIN_ERROR_SECRECY
         CONFIG_OPTION_login_error_secrecy
         FORUM_BASE_URL_EXAMPLE
+        INSTALLER_EMAIL_ADDRESS
         FORUM_BASE_URL_INVALID
         FORUM_BASE_URL_UNCHANGED
         FORUM_CACHE_CLEAR
@@ -5268,7 +5456,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FULL_BACKUP
         FUSED_CONTENT_LANG_STRINGS
         UPGRADER_ADDON_MANAGEMENT
-        UPGRADER_ALL_CHMODDED_GOOD
         UPGRADER_AUTO_HANDLE
         UPGRADER_BUGS
         UPGRADER_CHECK_ALL
@@ -5300,8 +5487,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_LOGIN_INFO_PASS_FORGET
         UPGRADER_MAINTENANCE
         UPGRADER_MUST_UPGRADE_CNS
-        UPGRADER_NEEDS_CHMOD
-        UPGRADER_NEEDS_UNCHMOD
         UPGRADER_NOT_FOR_PATCH
         UPGRADER_NO_CNS_UPGRADE
         UPGRADER_OPEN_SITE
@@ -5522,7 +5707,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         IMPORT_WORDPRESS_DONE
         IMPORT_WORDPRESS_USERS
         IMPROPERLY_FILLED_IN_BANNERS
-        IMPROPERLY_FILLED_IN_THUMBNAIL
         IMPROPERLY_FILLED_IN_UPLOAD
         IMPROPERLY_FILLED_IN_UPLOAD_BANNERS
         INBUILT_CPF_LANG_STRING
@@ -5922,6 +6106,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MISSING_OPTION
         MISSING_PAGE
         MISSING_PARAM
+        MISSING_PARAM_JSON
         MISSING_PHOTO
         MISSING_RESOURCE_COMCODE
         MISSING_SOURCE_FILE
@@ -5993,7 +6178,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_admin_security
         MODULE_TRANS_NAME_admin_setupwizard
         MODULE_TRANS_NAME_admin_sitemap
-        MODULE_TRANS_NAME_admin_ssl
         MODULE_TRANS_NAME_admin_svg_sprites
         MODULE_TRANS_NAME_admin_stats
         MODULE_TRANS_NAME_admin_themes
@@ -6047,7 +6231,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MULTI_MODERATION_WILL_POST
         MULTI_MODERATION_WILL_TITLE_SUFFIX
         MULTI_MODERATION_WILL_UNPIN
-        MULTI_SITE_NETWORKING
         MUST_BE_EMAIL_DOMAIN
         MUST_DELETE_INSTALLER
         MUST_MOVE_POSTS_SOMEWHERE
@@ -6072,7 +6255,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NAG_VALIDATE
         NEED_FTP
         NETWORKING
-        NETWORK_LINKS
         NET_PROFIT
         NEWSLETTER_ARCHIVE
         NEWSLETTER_CNS
@@ -6217,6 +6399,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOT_ADDON
         NOT_A_DIR
         NOT_A_FILE
+        NOT_A_HOOK
         NOT_CODENAME
         NOT_COMPLETED
         NOT_EMPTY_FORCE
@@ -6288,6 +6471,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NUM_NEW_SINCE
         NUM_QUEUE
         NUM_READERS
+        READERS
         NUM_WINNERS
         OBSCENITY_WARNING
         OEMBED_HTML_WHITELIST
@@ -6744,9 +6928,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PUBLICATION_TIME
         PUBLIC_VIEW
         PUBLISH_NEWS
-        PUNISHMENT_UNDOING
         PUNITIVE_ACTIONS
-        PUNITIVE_HISTORY_TEXT
         PURCHASE_ORDER
         PUT_IN_CATEGORY
         PUT_IN_SEARCH
@@ -6919,6 +7101,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SETUPWIZARD
         SETUPWIZARD_10_DESCRIBE
         SETUPWIZARD_1_DESCRIBE
+        SETUPWIZARD_1_DESCRIBE_SUP
         SETUPWIZARD_1_DESCRIBE_ALT
         SETUPWIZARD_2_DESCRIBE
         SETUPWIZARD_2_DESCRIBE_EXPECTATIONS
@@ -7017,15 +7200,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SPEED_UP
         SQL_BACKUP
         SQL_INJECTION_HACK
-        SSL_CONFIGURATION
-        SSL_PAGE_SELECT
         SSW
         STACK_TRACE
         STACK_TRACE_DENIED_ERROR_NOTIFICATION
         STACK_TRACE_INFORMATION
         STAFF_CHECKLIST_MAIL_BODY
         STAFF_CHECKLIST_MAIL_SUBJECT
-        STAFF_EMAIL
         STAFF_LINKS
         STAFF_NEW_TICKET_AS
         STAFF_USERNAME_CHANGED_MAIL
@@ -7470,8 +7650,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TOP_LINK
         TOP_RIGHT
         BING_GEOCODE_API_KEY
-        CMD_HEALTH_CHECK_HELP
-        CMD_HEALTH_CHECK_HELP_PARAM_0
         CONFIG_OPTION_bing_geocoding_api_key
         CONFIG_OPTION_mapquest_geocoding_api_key
         GEOCODING
@@ -7641,7 +7819,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WARNING_DISK_SPACE
         WARNING_FILE_ADDON
         WARNING_FILE_ALIEN
-        WARNING_FILE_CHMOD
         WARNING_FILE_OVERRIDE_FROM_UNINSTALLED_ADDON
         WARNING_FILE_FUTURE_FILES
         WARNING_FILE_MISSING_FILE_ENTIRELY
@@ -7712,7 +7889,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         WHATSNEW_TEXT
         WHAT_TO_EXPECT
         WHETHER_BANNED_IP
-        WHETHER_MAKE_WARNING
+        IS_FORMAL_WARNING
         WHITE
         WIKI_ADD_PAGE
         WIKI_DELETE_OWN_POST
@@ -7971,6 +8148,67 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_non_admin_initial = array_map('trim', explode("\n", trim('
+        OFF
+        ON
+        LIST
+        FADE
+        DARK
+        LIGHT
+        QUOTE
+        COMCODE_ADD_TAG
+        BACKGROUND_COLOR
+        APPLY_CHANGES
+        ADD_BOX
+        ADD_LINK
+        COMMENTS_DISABLED
+        IMAGES_AND_VIDEOS_IN
+        PLAY_OR_PAUSE
+        TOGGLE_FULLSCREEN
+        SUBGALLERIES
+        SORTABLE
+        SLIDE
+        SHOW_OR_HIDE_CAPTIONS
+        SHOW_OR_HIDE_COMMENTS
+        SHOW_OR_HIDE_SETTINGS
+        SCROLL_DOWN
+        SHOW_DETAILS
+        PUNITIVE_SILENCED_UNTIL
+        PREVIOUS_ARTICLE
+        NEXT_ARTICLE
+        DEFAULT_SLIDE_X
+        DEFAULT_SLIDE1_HEADLINE
+        DEFAULT_SLIDE1_SUBLINE
+        DEFAULT_SLIDE1_TEXT
+        DEFAULT_SLIDE2_HEADLINE
+        DEFAULT_SLIDE2_SUBLINE
+        DEFAULT_SLIDE2_TEXT
+        DEFAULT_SLIDE3_HEADLINE
+        DEFAULT_SLIDE3_SUBLINE
+        DEFAULT_SLIDE3_TEXT
+        DEFAULT_LINK1_TEXT
+        DEFAULT_LINK2_TEXT
+        WARNING
+        WARNING_TYPE
+        POST_IN_NUMBERED
+        POST_IN_TITLED
+        PUNITIVE_HEADER
+        PUNITIVE_HEADER_DESCRIPTION
+        PUNITIVE_UNTIL
+        PUNITIVE_SILENCE_EXPIRED
+        PUNITIVE_SILENCE_FROM_TOPIC
+        PUNITIVE_SILENCE_FROM_FORUM
+        PUNITIVE_DELETE_POST
+        PUNITIVE_DELETE_POST_AND_FOLLOWING
+        PUNITIVE_PROBATION
+        PUNITIVE_BAN_ACCOUNT
+        PUNITIVE_BAN_IP
+        PUNITIVE_STOP_FORUM_SPAM
+        PUNITIVE_CHANGE_USERGROUP
+        PUNITIVE_CHARGE_POINTS
+        PUNITIVE_DELETE_CONTENT
+        WARNING_NUMBER
+        VIEW_WARNING
+        CHANGED_USERGROUP_TO
         I_AGREE_RULES
         I_AGREE_PRIVACY
         I_AGREE_UPDATES
@@ -8156,7 +8394,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADDED_TO_CART
         ADDITIONAL_CUSTOM
         ADDITIONAL_INFO
-        ADDITIONAL_PT_POSTS
         ADDRESS
         ADDRESS_CURRENT
         ADDRESS_DESIRED
@@ -9053,7 +9290,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EXPLAINED_BLOCK_MEMBER
         EXPLAINED_UNBLOCK_MEMBER
         EXPLANATION
-        EXT_NO_PASSWORD_CHANGE
+        NO_PASSWORD_RESET_EXTERNAL_ARCHITECTURE
         FAILED
         FAILED_TO_OPEN_POPUP
         FAILURE_UPLOAD_SYNDICATION_AUTH
@@ -9352,15 +9589,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LOGOUT
         LONGITUDE
         LOST_PASSWORD
-        LOST_PASSWORD_CONFIRM
-        LOST_PASSWORD_FINAL
+        LOST_PASSWORD_SUBJECT
+        MAIL_NEW_PASSWORD_SUBJECT
         LOST_PASSWORD_TEXT
         LOST_PASSWORD_TEXT_TEMPORARY
         LOW_STOCK_DISPATCH_FAILED
         MAIL_FORW_A
         MAIL_FORW_B
-        MAIL_NEW_PASSWORD
-        MAIL_NEW_PASSWORD_EMAIL_LOGIN
+        MAIL_NEW_PASSWORD_TEXT
+        MAIL_NEW_PASSWORD_TEXT_EMAIL_LOGIN
         MAIL_POP3_A
         MAIL_POP3_B
         MAIL_QUOTA_A
@@ -9466,7 +9703,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MEMBER_TITLE_TOO_BIG
         MEMBER_TO_INVITE
         MEMBER_VALIDATED
-        MEMBER_WARNING
         MENU
         MERGE_WIKI_POSTS
         MESSAGE
@@ -9566,7 +9802,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NC_entertainment
         NC_general
         NC_technology
-        NETWORK
         NETWORK_DOWN
         NEW
         NEWEST_FIRST
@@ -9624,7 +9859,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NEW_PRIVATE_TOPIC_SHORT
         NEW_PRIVATE_TOPIC_SUBJECT
         NEW_PT_NOTIFICATION
-        NEW_PT_NOTIFICATION_DETAILS
         NEW_TICKET_WELCOME
         NEW_TOPICS
         NEW_UGROUP_SUB_FOR
@@ -9756,7 +9990,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_POSTS
         NO_POSTS_YET
         NO_PT_FROM_ALLOW
-        NO_RESET_ACCESS
+        NO_PASSWORD_RESET_ACCESS
         NO_RESULTS
         NO_RESULTS_DAYS
         NO_RESULTS_SEARCH
@@ -9812,6 +10046,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LINKS_STRIPPED
         PASSWORD
         PASSWORD_ALREADY_RESET
+        RESET_CODE_EXPIRED
         PASSWORD_CHANGED_MAIL_BODY
         PASSWORD_CHANGED_MAIL_BODY_2
         PASSWORD_CHANGED_MAIL_SUBJECT
@@ -9820,8 +10055,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PASSWORD_MISMATCH
         PASSWORD_NOT_COMPLEX_ENOUGH
         PASSWORD_RESET_BUTTON
-        PASSWORD_RESET_ERROR
-        PASSWORD_RESET_ERROR_2
+        PASSWORD_RESET_ERROR_NO_ACCOUNT_GIVEN
+        PASSWORD_RESET_ERROR_ACCOUNT_NOT_FOUND
         PASSWORD_RESET_ULTRA_BODY
         PASSWORD_RESET_ULTRA_FROM
         PASSWORD_RESET_ULTRA_SUBJECT
@@ -9996,7 +10231,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PT_RULES_PAGE_INTRO
         PT_RULES_TEXT
         PT_RULES_TEXT_DESCRIPTION
-        PUNITIVE_HISTORY
+        REVIEW_WARNING_HISTORY
         PURCHASED_BANNER
         PURCHASE_DISABLED
         PURCHASE_FINISHED
@@ -10202,7 +10437,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SKIP
         SKIP_NAVIGATION
         SKIP_SIGNATURE
-        SLASH_OR
         SLIDESHOW
         SMALLEST_FIRST
         SMART_TOPIC_NOTIFICATION
@@ -10654,6 +10888,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         YEARLY
         YELLOW
         YES
+        LOST_PASSWORD_NO_ACCOUNT_BODY
+        LOST_PASSWORD_NO_ACCOUNT_SUBJECT
+        LOST_PASSWORD_RESET_ERROR_SUBJECT
+        RESET_CODE_ENTER_MANUALLY
+        RESET_CODE_MAILED_IF_EXISTS
         YESTERDAY
         BILLING_ADDRESS
         CARD_CV2

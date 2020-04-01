@@ -46,7 +46,7 @@ class Hook_addon_registry_better_mail
      */
     public function get_category()
     {
-        return 'Third Party Integration';
+        return 'Architecture';
     }
 
     /**

@@ -46,7 +46,7 @@ class Hook_addon_registry_enhanced_spreadsheets
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Information Display';
     }
 
     /**
@@ -164,6 +164,7 @@ Note the old-style Excel format ([tt].xls[/tt]) is intentionally not supported b
             'sources_custom/spout/Common/Entity/Style/BorderPart.php',
             'sources_custom/spout/Common/Entity/Style/Style.php',
             'sources_custom/spout/Common/Entity/Style/index.html',
+            'sources_custom/spout/Common/Entity/Style/CellAlignment.php',
             'sources_custom/spout/Common/Entity/Style/Color.php',
             'sources_custom/spout/Common/Entity/Style/Border.php',
             'sources_custom/spout/Common/Entity/Style/.htaccess',

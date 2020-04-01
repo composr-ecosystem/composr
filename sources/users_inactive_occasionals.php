@@ -92,9 +92,11 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
     global $SESSION_CACHE, $MEMBER_CACHED, $SITE_INFO;
     $MEMBER_CACHED = $member_id;
 
-    require_code('static_cache');
-    if (can_static_cache_request()) {
-        return ''; // We should not even try and count/distinguish sessions for guests if the static cache may be involved
+    if (!running_script('install')) {
+        require_code('static_cache');
+        if (can_static_cache_request()) {
+            return ''; // We should not even try and count/distinguish sessions for guests if the static cache may be involved
+        }
     }
 
     if (($invisible) && (get_option('is_on_invisibility') == '0')) {
@@ -103,7 +105,7 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
 
     $new_session = null;
     $prior_session_row = null;
-    $restored_session = delete_expired_sessions_or_recover($member_id);
+    $restored_session = running_script('install') ? null : delete_expired_sessions_or_recover($member_id);
     if ($restored_session === null) { // We're force to make a new one
         // Generate random session
         require_code('crypt');
@@ -237,7 +239,7 @@ function set_session_id($id, $guest_session = false)  // NB: Guests sessions can
         $_GET['keep_session'] = $id;
     }
 
-    if (($id != get_session_id()) && (running_script('index'))) {
+    if ((function_exists('get_session_id')) && ($id != get_session_id()) && (running_script('index'))) {
         delete_cache_entry('side_users_online');
     }
 }
@@ -442,6 +444,14 @@ function try_cookie_login()
                 $IS_A_COOKIE_LOGIN = true;
 
                 create_session($member_id, 0, (isset($_COOKIE[get_member_cookie() . '_invisible'])) && ($_COOKIE[get_member_cookie() . '_invisible'] == '1'));
+            } else {
+                if (!empty($login_array['error'])) {
+                    $text = $login_array['error'];
+                    if ($text->evaluate() == do_lang('YOU_ARE_BANNED')) {
+                        require_code('failure');
+                        banned_exit(empty($login_array['reasoned_ban']) ? null : $login_array['reasoned_ban']);
+                    }
+                }
             }
         }
     }

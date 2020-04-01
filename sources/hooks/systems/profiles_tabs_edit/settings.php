@@ -191,11 +191,11 @@ class Hook_profiles_tabs_edit_settings
                     }
                 }
 
-                $is_perm_banned = post_param_integer('is_perm_banned', 0);
+                $is_perm_banned = post_param_string('is_perm_banned', '0');
                 $old_is_perm_banned = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_is_perm_banned');
                 if ($old_is_perm_banned != $is_perm_banned) {
-                    if ($is_perm_banned == 1) {
-                        cns_ban_member($member_id_of);
+                    if ($is_perm_banned != '0') {
+                        cns_ban_member($member_id_of, $is_perm_banned);
                     } else {
                         cns_unban_member($member_id_of);
                     }

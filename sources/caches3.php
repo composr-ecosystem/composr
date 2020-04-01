@@ -59,7 +59,7 @@ function auto_decache($changed_base_url)
     erase_persistent_cache();
     if ($changed_base_url) {
         erase_comcode_page_cache();
-        set_value('last_base_url', get_base_url(false));
+        set_value('last_base_url', get_base_url());
     }
 }
 
@@ -335,11 +335,6 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
 
     $relevant_templates_in_cache = [];
     foreach ($themes as $theme) {
-        $using_less =
-            (addon_installed('less')) || /*LESS-regeneration is too intensive and assumed cache-safe anyway*/
-            is_file(get_custom_file_base() . '/themes/' . $theme . '/css/global.less') ||
-            is_file(get_custom_file_base() . '/themes/' . $theme . '/css_custom/global.less');
-
         foreach (array_keys($langs) as $lang) {
             $path = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang . '/';
             $_dir = @opendir($path);
@@ -361,11 +356,6 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
                     }
 
                     $file_template_name = preg_replace('#(\.tcp|\.gz|\.br|_mobile|_non_minified|_ssl)#', '', $file);
-
-                    // $using_less filter (we never want to force the main global.less file to be decached, too expensive)
-                    if (($using_less) && ($file_template_name == 'global.less')) {
-                        continue;
-                    }
 
                     // $preserve_some filter
                     if (

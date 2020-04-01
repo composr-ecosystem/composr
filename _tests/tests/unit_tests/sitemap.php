@@ -78,6 +78,14 @@ class sitemap_test_set extends cms_test_case
 
     public function testIsSearchable()
     {
+        if (($this->only !== null) && ($this->only != 'testIsSearchable')) {
+            return;
+        }
+
+        if ($this->sitemap === null) {
+            return null;
+        }
+
         $properties_compare = [
             'content_type',
             'content_id',
@@ -120,6 +128,10 @@ class sitemap_test_set extends cms_test_case
 
     public function testIsConclusive()
     {
+        if (($this->only !== null) && ($this->only != 'testIsConclusive')) {
+            return;
+        }
+
         if ($this->sitemap === null) {
             return;
         }
@@ -133,6 +145,10 @@ class sitemap_test_set extends cms_test_case
 
     public function testPageGroupingHelpDocsDefined()
     {
+        if (($this->only !== null) && ($this->only != 'testPageGroupingHelpDocsDefined')) {
+            return;
+        }
+
         if ($this->sitemap === null) {
             return;
         }
@@ -184,6 +200,10 @@ class sitemap_test_set extends cms_test_case
 
     public function testHasIcons()
     {
+        if (($this->only !== null) && ($this->only != 'testHasIcons')) {
+            return;
+        }
+
         if ($this->sitemap === null) {
             return;
         }
@@ -214,6 +234,10 @@ class sitemap_test_set extends cms_test_case
 
     public function testNoOrphans()
     {
+        if (($this->only !== null) && ($this->only != 'testNoOrphans')) {
+            return;
+        }
+
         if ($this->sitemap === null) {
             return;
         }
@@ -225,6 +249,10 @@ class sitemap_test_set extends cms_test_case
 
     public function testNoIncompleteNodes()
     {
+        if (($this->only !== null) && ($this->only != 'testNoIncompleteNodes')) {
+            return;
+        }
+
         if ($this->sitemap === null) {
             return;
         }

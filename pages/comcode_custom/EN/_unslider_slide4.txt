@@ -2,6 +2,6 @@
 <div class="feature-background-image" style="background-image: url('{$IMG;*,unslider_backgrounds/subway}');">
 	[title="2"]Based on the Unslider jQuery plugin.[/title]
 
-	Unslider is Open Source and hosted on [url="GitHub"]http://github.com/idiot/unslider[/url].
+	Unslider is Open Source.
 </div>
 [/semihtml]

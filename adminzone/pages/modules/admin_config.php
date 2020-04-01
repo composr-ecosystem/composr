@@ -66,6 +66,10 @@ class Module_admin_config
                 $ret['xml_breadcrumbs'] = ['BREADCRUMB_OVERRIDES', 'menu/adminzone/structure/breadcrumbs'];
             }
 
+            if (addon_installed('securitylogging')) {
+                $ret['advanced_banning'] = ['ADVANCED_BANNING', 'menu/adminzone/security/ip_ban'];
+            }
+
             if (get_value('brand_base_url') === null) {
                 $ret['upgrader'] = ['UPGRADER_UPGRADER_TITLE', 'menu/adminzone/tools/upgrade'];
             }
@@ -181,6 +185,17 @@ class Module_admin_config
             $this->title = get_screen_title('BREADCRUMB_OVERRIDES');
         }
 
+        if ($type == 'advanced_banning') {
+            set_helper_panel_tutorial('tut_censor');
+            set_helper_panel_text(comcode_lang_string('DOC_ADVANCED_BANNING'));
+
+            $this->title = get_screen_title('ADVANCED_BANNING');
+        }
+
+        if ($type == '_advanced_banning') {
+            $this->title = get_screen_title('ADVANCED_BANNING');
+        }
+
         return null;
     }
 
@@ -219,6 +234,14 @@ class Module_admin_config
             }
             if ($type == '_xml_breadcrumbs') {
                 return $this->_xml_breadcrumbs();
+            }
+        }
+        if (addon_installed('securitylogging')) {
+            if ($type == 'advanced_banning') {
+                return $this->advanced_banning();
+            }
+            if ($type == '_advanced_banning') {
+                return $this->advanced_banning();
             }
         }
 
@@ -345,6 +368,14 @@ class Module_admin_config
             'URL' => build_url(['page' => '_SELF', 'type' => 'xml_breadcrumbs'], '_SELF'),
             'NAME' => do_lang_tempcode('BREADCRUMB_OVERRIDES'),
             'DESCRIPTION' => do_lang_tempcode('DOC_BREADCRUMB_OVERRIDES'),
+        ]));
+        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
+            '_GUID' => '123e99ae81367fb7405e94b6731a7d9a',
+            'COUNT' => null,
+            'TITLE' => '',
+            'URL' => build_url(['page' => '_SELF', 'type' => 'advanced_banning'], '_SELF'),
+            'NAME' => do_lang_tempcode('ADVANCED_BANNING'),
+            'DESCRIPTION' => do_lang_tempcode('DOC_ADVANCED_BANNING'),
         ]));
         $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
             '_GUID' => '9fde99ae81367fb7405e94b6731a7d9a',
@@ -689,6 +720,40 @@ class Module_admin_config
         cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         log_it('BREADCRUMB_OVERRIDES');
+
+        return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
+    }
+
+    /**
+     * The UI to edit the advanced banning XML file.
+     *
+     * @return Tempcode The UI
+     */
+    public function advanced_banning()
+    {
+        $post_url = build_url(['page' => '_SELF', 'type' => '_advanced_banning'], '_SELF');
+
+        return do_template('XML_CONFIG_SCREEN', [
+            '_GUID' => '123f56149832d459bce72ca63a1578b9',
+            'TITLE' => $this->title,
+            'POST_URL' => $post_url,
+            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/breadcrumbs.xml', FILE_READ_LOCK | FILE_READ_BOM),
+        ]);
+    }
+
+    /**
+     * The UI actualiser edit the advanced banning XML file.
+     *
+     * @return Tempcode The UI
+     */
+    public function _advanced_banning()
+    {
+        require_code('files');
+        $full_path = get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml';
+        $xml = post_param_string('xml');
+        cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+
+        log_it('ADVANCED_BANNING');
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }

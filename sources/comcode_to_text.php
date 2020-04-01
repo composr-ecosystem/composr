@@ -307,7 +307,10 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $incl
     ], $tags_to_preserve);
     foreach ($tags_to_strip_just_tags as $s) {
         if (stripos($text, '[' . $s) !== false) {
-            $text = preg_replace('#\[' . $s . '[^\]]*\](.*)\[/' . $s . '\]#U', '\1', $text);
+            do {
+                $text_before = $text;
+                $text = preg_replace('#\[' . $s . '[^\]]*\](.*)\[/' . $s . '\]#Usi', '\1', $text);
+            } while ($text_before != $text);
         }
     }
 
@@ -438,8 +441,7 @@ function _box_callback($matches)
  */
 function _page_callback($matches)
 {
-    list($zone, $attributes, $hash) = page_link_decode($matches[1]);
-    $url = static_evaluate_tempcode(build_url($attributes, $zone, [], false, false, true, $hash));
+    $url = page_link_to_url($matches[1], true);
     return '[url="' . addslashes($url) . '"]' . $matches[2] . '[/url]';
 }
 

@@ -365,12 +365,16 @@ function js_minify($js)
         return str_replace('/*no minify*/', '', $js);
     }
 
+    $ret = ini_get('ocproducts.type_strictness');
+    cms_ini_set('ocproducts.type_strictness', '0');
+
     require_code('jsmin');
 
-    if (class_exists('JSMin')) {
-        $jsmin = new JSMin($js);
-        $js = $jsmin->min();
+    if (class_exists('\JShrink\Minifier')) {
+        $js = \JShrink\Minifier::minify($js);
     }
+
+    cms_ini_set('ocproducts.type_strictness', $ret);
 
     return $js;
 }

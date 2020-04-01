@@ -93,13 +93,27 @@ function upgrade_script()
             break;
 
         case 'check_perms':
-            require_code('upgrade_perms');
-            echo upgrader_check_perms_screen();
+            require_code('file_permissions_check');
+            list($messages) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+            if (empty($messages)) {
+                echo '<p>' . do_lang('NO_ACTION_REQUIRED') . '</p>';
+            } else {
+                foreach ($messages as $message) {
+                    echo '<p>' . escape_html($message) . '</p>';
+                }
+            }
             break;
 
         case 'fix_perms':
-            require_code('upgrade_perms');
-            echo upgrader_fix_perms_screen();
+            require_code('file_permissions_check');
+            list(, $commands) = scan_permissions(false, true, null, null, CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+            if (empty($commands)) {
+                echo '<p>' . do_lang('NO_ACTION_REQUIRED') . '</p>';
+            } else {
+                foreach ($commands as $command) {
+                    echo '<p>Ran command: ' . escape_html($command) . '</p>';
+                }
+            }
             break;
 
         case 'open_site':
@@ -444,7 +458,7 @@ function upgrader_menu_screen()
     $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), get_option('site_closed') == '1');
     $l_open_site = upgrader_link('upgrader.php?type=open_site', do_lang('UPGRADER_OPEN_SITE'), get_option('site_closed') == '0');
     $closed = comcode_to_tempcode(get_option('closed'), null, true);
-    $closed_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group_CLOSED_SITE');
+    $closed_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group-CLOSED_SITE');
 
     // Transfer files link
     $news_id = post_param_integer('news_id', null);
@@ -544,8 +558,13 @@ function upgrader_menu_screen()
 
             <ul class=\"spaced-list\">";
     if ($show_permission_buttons) {
-        $out .= "
+        if (is_suexec_like()) {
+            $out .= "
                 <li>{$l_check_perms} / {$l_fix_perms}</li>";
+        } else {
+            $out .= "
+                <li>{$l_check_perms}</li>";
+        }
     }
     $out .= "
                 <li>{$l_safe_mode}</li>

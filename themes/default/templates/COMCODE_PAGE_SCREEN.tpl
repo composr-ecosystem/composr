@@ -54,7 +54,7 @@
 					1_URL={EDIT_URL*}
 					1_TITLE={$?,{BEING_INCLUDED},&uarr; {!EDIT},{!EDIT_PAGE}}
 					1_NOREDIRECT=1
-					1_ACCESSKEY=q
+					1_ACCESSKEY={$?,{$NOR,{IS_PANEL},{BEING_INCLUDED}},q}
 					1_REL=edit
 					1_ICON=admin/edit_this
 					2_URL={$?,{$GET,has_comcode_page_children_block},{ADD_CHILD_URL*}}

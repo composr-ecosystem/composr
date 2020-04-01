@@ -168,7 +168,8 @@ class Hook_fields_content_link_multi
             return form_input_tree_list($_cf_name, $_cf_description, $input_name, null, 'choose_' . $type, $options, $field['cf_required'] == 1, str_replace("\n", ',', $actual_value), false, null, true);
         }
 
-        // Simple list selection
+        // Simple list selection...
+
         require_code('content');
         $ob = get_content_object($type);
         $info = $ob->info();
@@ -177,37 +178,27 @@ class Hook_fields_content_link_multi
         }
         $db = get_db_for($info['table']);
         $select = [];
-        append_content_select_for_id($select, $info);
-        if ($type == 'comcode_page') { // FUDGE
-            $select[] = 'the_zone';
-        }
-        if ($info['title_field'] !== null) {
-            $select[] = $info['title_field'];
-        }
-        if ($info['add_time_field'] !== null) {
-            $select[] = $info['add_time_field'];
-        }
+        append_content_select_for_fields($select, $info, ['id', 'title', 'add_field']);
         $rows = $db->query_select($info['table'], $select, [], ($info['add_time_field'] === null) ? '' : ('ORDER BY ' . $info['add_time_field'] . ' DESC'), 2000/*reasonable limit*/);
+
         $list = new Tempcode();
         $_list = [];
         foreach ($rows as $row) {
-            $id = extract_content_str_id_from_data($row, $info);
-            if ($info['title_field'] === null) {
-                $text = $id;
-            } else {
-                $text = $info['title_field_dereference'] ? get_translated_text($row[$info['title_field']], $info['db']) : $row[$info['title_field']];
-            }
+            $id = $ob->get_id($row);
+            $text = $ob->get_title($row);
             $_list[$id] = $text;
         }
         if (count($_list) < 2000) {
             cms_mb_asort($_list, SORT_NATURAL | SORT_FLAG_CASE);
         }
+
         foreach ($_list as $id => $text) {
             if (!is_string($id)) {
                 $id = strval($id);
             }
             $list->attach(form_input_list_entry($id, (($actual_value === null) || $id == '') ? false : (strpos("\n" . $actual_value . "\n", $id) !== false), $text));
         }
+
         return form_input_multi_list($_cf_name, $_cf_description, $input_name, $list, null, 5, $field['cf_required'] == 1);
     }
 

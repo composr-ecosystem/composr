@@ -256,12 +256,15 @@ function check_filedump_uploaded($file)
  * @param  string $filename The filename
  * @param  string $tmp_path The temporary file path
  * @param  string $description The description
- * @param  ?boolean $plupload_based Whether this is a Plupload (i.e. from a faked $_FILES-array-row) (null: work out from environment)
+ * @param  ?boolean $plupload_based Whether this is a Plupload or similar (i.e. from a faked $_FILES-array-row) (null: work out from environment)
  * @param  boolean $check_permissions Check access permissions
- * @return ?Tempcode Error message (null: no error)
+ * @param  ?ID_TEXT $conflict_action Specify what should be done if a file with the same name already exists (null: return as a conflict error)
+ * @set overwrite ignore
+ * @return array Map: Information about the status of the filedump add
  */
-function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $plupload_based = null, $check_permissions = true)
+function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $plupload_based = null, $check_permissions = true, $conflict_action = null)
 {
+    require_code('uploads');
     require_lang('filedump');
 
     if ($plupload_based === null) {
@@ -278,25 +281,65 @@ function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $
 
     $full = get_custom_file_base() . '/uploads/filedump' . $subpath . $filename;
 
-    // Conflict?
-    $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', ['name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
-    if ((!$check_permissions) || (($owner !== null) && ($owner == get_member())) || (has_privilege(get_member(), 'delete_anything_filedump'))) {
-        @unlink($full);
+    // If conflict action is to rename, ensure unique file name.
+    if ($conflict_action === 'rename') {
+        list($full, , $filename) = find_unique_path('uploads/filedump' . $subpath, filter_naughty($filename), true);
     }
-    if (file_exists($full)) { // Could not delete apparently
-        return do_lang_tempcode('OVERWRITE_ERROR');
+
+    $conflicts = file_exists($full);
+
+    // If requested to leave alone when conflicting, delete the tmp_path file and exit.
+    if (($conflicts) && ($conflict_action === 'leave_alone')) {
+        @unlink($tmp_path);
+        sync_file($tmp_path);
+        return [
+            'error' => null,
+            'conflict' => false,
+            'can_overwrite' => false,
+            'last_modified' => null,
+        ];
+    }
+
+    $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', ['name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
+    $can_overwrite = (($owner !== null) && ($owner == get_member())) || (has_privilege(get_member(), 'delete_anything_filedump'));
+
+    // If requested to overwrite conflicts, or if we have permission to overwrite immediately, overwrite conflicting file.
+    if (((!$check_permissions) && ($conflicts)) || (($conflict_action === 'overwrite') && ($can_overwrite))) {
+        @unlink($full);
+        sync_file($full);
+        $conflicts = false;
+    }
+
+    // Unresolved conflict? Exit with an error.
+    if (($conflicts) && ($conflict_action === null)) {
+        return [
+            'error' => do_lang_tempcode('OVERWRITE_ERROR'),
+            'conflict' => true,
+            'can_overwrite' => $can_overwrite,
+            'last_modified' => filemtime($full),
+        ];
     }
 
     // Save in file
     if ($plupload_based) {
         $test = @rename($tmp_path, $full);
         if (!$test) {
-            return do_lang_tempcode('FILE_MOVE_ERROR', escape_html($filename), escape_html('uploads/filedump' . $subpath));
+            return [
+                'error' => do_lang_tempcode('FILE_MOVE_ERROR', escape_html($filename), escape_html('uploads/filedump' . $subpath)),
+                'conflict' => false,
+                'can_overwrite' => false,
+                'last_modified' => null,
+            ];
         }
     } else {
         $test = @move_uploaded_file($tmp_path, $full);
         if (!$test) {
-            return do_lang_tempcode('FILE_MOVE_ERROR', escape_html($filename), escape_html('uploads/filedump' . $subpath));
+            return [
+                'error' => do_lang_tempcode('FILE_MOVE_ERROR', escape_html($filename), escape_html('uploads/filedump' . $subpath)),
+                'conflict' => false,
+                'can_overwrite' => false,
+                'last_modified' => null,
+            ];
         }
     }
     fix_permissions($full);
@@ -328,7 +371,12 @@ function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $
         syndicate_described_activity('filedump:ACTIVITY_FILEDUMP_UPLOAD', $subpath . '/' . $filename, '', '', '', '', '', 'filedump');
     }
 
-    return null;
+    return [
+        'error' => null,
+        'conflict' => false,
+        'can_overwrite' => false,
+        'last_modified' => null,
+    ];
 }
 
 /**

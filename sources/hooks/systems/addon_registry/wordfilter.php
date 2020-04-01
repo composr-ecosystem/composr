@@ -45,6 +45,16 @@ class Hook_addon_registry_wordfilter
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Community';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -111,5 +121,77 @@ class Hook_addon_registry_wordfilter
             'sources/hooks/systems/actionlog/wordfilter.php',
             'themes/default/javascript/wordfilter.js',
         ];
+    }
+
+    /**
+     * Find naughty words.
+     *
+     * @return array Find naughty words
+     */
+    protected function youre_a_naughty_boy_fawlty()
+    {
+        return [
+            'arsehole', 'asshole', 'arse', 'bastard', 'cock', 'cocked', 'cocksucker', 'cunt', 'cum',
+            'blowjob', 'bollocks', 'bondage', 'bugger', 'buggery', 'dickhead', 'dildo', 'faggot', 'fuck', 'fucked', 'fucking',
+            'fucker', 'gayboy', 'jackoff', 'jerk-off', 'motherfucker', 'nigger', 'piss', 'pissed', 'puffter', 'pussy',
+            'queers', 'retard', 'shag', 'shagged',
+            'shat', 'shit', 'slut', 'twat', 'wank', 'wanker', 'whore',
+        ];
+    }
+
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content()
+    {
+        require_lang('wordfilter');
+
+        $naughties = $this->youre_a_naughty_boy_fawlty();
+        $_naughties = [];
+        foreach ($naughties as $naughty) {
+            $_naughties[] = db_string_equal_to('word', $naughty);
+        }
+        $or_list = implode(' OR ', $_naughties);
+        $installed = ($GLOBALS['SITE_DB']->query_select_value('wordfilter', 'COUNT(*)', [], ' AND (' . $or_list . ')') > 0);
+
+        return [
+            'have_default_wordfilter' => [
+                'title' => do_lang_tempcode('KEEP_WORDFILTER'),
+                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_WORDFILTER'),
+                'installed' => $installed,
+            ],
+        ];
+    }
+
+    /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('have_default_wordfilter', $content))) && (!has_predefined_content('wordfilter', 'have_default_wordfilter'))) {
+            $naughties = $this->youre_a_naughty_boy_fawlty();
+            foreach ($naughties as $word) {
+                $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES, 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL]);
+            }
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('have_default_wordfilter', $content))) && (has_predefined_content('wordfilter', 'have_default_wordfilter'))) {
+            $naughties = $this->youre_a_naughty_boy_fawlty();
+            foreach ($naughties as $word) {
+                $GLOBALS['SITE_DB']->query_delete('wordfilter', ['word' => $word], '', 1);
+            }
+        }
     }
 }

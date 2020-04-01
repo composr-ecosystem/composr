@@ -136,8 +136,10 @@ function _helper_make_post_forum_topic($this_ref, $forum_name, $topic_identifier
     $update_caching = false;
     $support_attachments = false;
     if (!get_mass_import_mode()) {
-        $update_caching = true;
         $support_attachments = true;
+    }
+    if ((!get_mass_import_mode()) || (get_page_name() != 'admin_import')) {
+        $update_caching = true;
     }
 
     if ($topic_id === null) {
@@ -272,7 +274,7 @@ function _helper_show_forum_topics($this_ref, $name, $limit, $start, &$max_rows,
     $post_query_where = 'p_validated=1 AND p_topic_id=t.id ' . not_like_spacer_posts($this_ref->db->translate_field_ref('p_post'));
     $post_query_sql = 'SELECT ' . $post_query_select . ' FROM ' . $this_ref->db->get_table_prefix() . 'f_posts p' . $this_ref->db->prefer_index('f_posts', 'in_topic', false);
     if (multi_lang_content()) {
-        $post_query_sql .= ' LEFT JOIN ' . $this_ref->db->get_table_prefix() . 'translate t_p_post ON t_p_post.id=p.p_post ';
+        $post_query_sql .= $GLOBALS['FORUM_DB']->translate_field_join('p.p_post', 't_p_post'); // It's inside a subquery, so we can't use regular mechanism
     }
     $post_query_sql .= ' WHERE ' . $post_query_where;
 
@@ -431,7 +433,9 @@ function not_like_spacer_posts($field)
 function _helper_get_forum_topic_posts($this_ref, $topic_id, &$count, $max, $start, $mark_read = true, $reverse = false, $light_if_threaded = false, $post_ids = null, $load_spacer_posts_too = false, $sort = 'date')
 {
     if ($topic_id === null) {
-        $count = 0;
+        if ($count !== null) {
+            $count = 0;
+        }
         return (-2);
     }
 
@@ -442,7 +446,9 @@ function _helper_get_forum_topic_posts($this_ref, $topic_id, &$count, $max, $sta
     $extra_where = '';
     if ($post_ids !== null) {
         if (empty($post_ids)) {
-            $count = 0;
+            if ($count !== null) {
+                $count = 0;
+            }
             return [];
         }
         $extra_where = ' AND (';
@@ -478,12 +484,14 @@ function _helper_get_forum_topic_posts($this_ref, $topic_id, &$count, $max, $sta
         $select .= ',' . db_function('COALESCE', ['(SELECT SUM(rating-1) FROM ' . $this_ref->db->get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', 'post') . ' AND rating_for_id=' . db_cast('p.id', 'CHAR') . ')', '0']) . ' AS compound_rating';
     }
     $rows = $this_ref->db->query('SELECT ' . $select . ' FROM ' . $this_ref->db->get_table_prefix() . 'f_posts p' . $this_ref->db->prefer_index('f_posts', 'in_topic', false) . ' WHERE ' . $where . ' ORDER BY ' . $order, $max, $start, false, true, ['p_post' => 'LONG_TRANS__COMCODE']);
-    $count = $this_ref->db->query_select_value_if_there('f_topics', 't_cache_num_posts', ['id' => $topic_id]); // This may be slow for large topics: $this_ref->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this_ref->db->get_table_prefix() . 'f_posts p' . $this_ref->db->prefer_index('f_posts', 'in_topic', false) . ' WHERE ' . $where, false, true, ['p_post' => 'LONG_TRANS__COMCODE']);
-    if ($count === null) {
-        return -2;
-    }
-    if ($count >= 1) {
-        $count--; // Spacer post should not count
+    if ($count !== null) {
+        $count = $this_ref->db->query_select_value_if_there('f_topics', 't_cache_num_posts', ['id' => $topic_id]); // This may be slow for large topics: $this_ref->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this_ref->db->get_table_prefix() . 'f_posts p' . $this_ref->db->prefer_index('f_posts', 'in_topic', false) . ' WHERE ' . $where, false, true, ['p_post' => 'LONG_TRANS__COMCODE']);
+        if ($count === null) {
+            return -2;
+        }
+        if ($count >= 1) {
+            $count--; // Spacer post should not count
+        }
     }
 
     $out = [];
@@ -536,7 +544,7 @@ function _helper_get_forum_topic_posts($this_ref, $topic_id, &$count, $max, $sta
  */
 function _helper_get_post_remaining_details($this_ref, $topic_id, $post_ids)
 {
-    $count = 0;
+    $count = null;
     $ret = _helper_get_forum_topic_posts($this_ref, $topic_id, $count, null, 0, false, false, false, $post_ids, true);
     if (is_integer($ret)) {
         return [];
@@ -561,7 +569,7 @@ function _helper_get_emoticon_chooser($this_ref, $field_name)
 
     $use_special = has_privilege(get_member(), 'use_special_emoticons');
 
-    $do_caching = has_caching_for('block');
+    $do_caching = has_caching_for('block', '_emoticon_chooser');
 
     $em = null;
     if ($do_caching) {

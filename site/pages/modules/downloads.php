@@ -411,7 +411,6 @@ class Module_downloads
             // Metadata
             set_extra_request_metadata([
                 'identifier' => '_SEARCH:downloads:view:' . strval($id),
-                'image' => $image_url,
             ], $myrow, 'download', strval($id));
 
             $this->id = $id;
@@ -506,17 +505,12 @@ class Module_downloads
         $sort_url = get_self_url(false, false, ['sort' => null], false, true);
         $sorting = do_template('PAGINATION_SORT', ['_GUID' => 'f4112dcd72d1dd04afbe7277a3871399', 'SORT' => 'sort', 'URL' => $sort_url, 'SELECTORS' => $selectors]);
 
-        // Get category contents
-        //  Subcategories:
-        $subcategories = do_block('main_multi_content', ['param' => 'download_category', 'select' => strval($category_id) . '>', 'zone' => get_zone_name(), 'sort' => 'title', 'max' => get_option('download_subcats_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'render_if_empty' => '0', 'guid' => 'module']);
-        //  Downloads:
         if (get_option('downloads_subcat_narrowin') == '1') {
             $select = strval($category_id) . '*';
         } else {
             $select = strval($category_id) . '#';
         }
         $filter = either_param_string('active_filter', '');
-        $downloads = do_block('main_multi_content', ['param' => 'download', 'select' => $select, 'zone' => get_zone_name(), 'sort' => $sort, 'max' => get_option('download_entries_per_page'), 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'attach_to_url_filter' => '1', 'filter' => $filter, 'block_id' => 'module', 'guid' => 'module']);
 
         // Management links
         if (has_actual_page_access(null, 'cms_downloads', null, ['downloads', strval($category_id)], 'submit_midrange_content')) {
@@ -566,19 +560,20 @@ class Module_downloads
         // Render
         return do_template('DOWNLOAD_CATEGORY_SCREEN', [
             '_GUID' => 'ebb3c8708695f6a30dbd4a03f8632047',
+            'TITLE' => $this->title,
             'ID' => strval($category_id),
             'TAGS' => get_loaded_tags('download_categories'),
-            'TITLE' => $this->title,
             'WARNING_DETAILS' => $warning_details,
             'SUBMIT_URL' => $submit_url,
             'ADD_CAT_URL' => $add_cat_url,
             'ADD_CAT_TITLE' => do_lang_tempcode('ADD_DOWNLOAD_CATEGORY'),
             'EDIT_CAT_URL' => $edit_cat_url,
             'DESCRIPTION' => $description,
-            'SUBCATEGORIES' => $subcategories,
-            'DOWNLOADS' => $downloads,
             'SORTING' => $sorting,
             'PRICE' => $price,
+            'SELECT' => $select,
+            'SORT' => $sort,
+            'FILTER' => $filter,
         ]);
     }
 

@@ -4,18 +4,9 @@
 	/*overflow-x: scroll; If you want this the visibility: hidden must be removed*/
 }
 
-.website-body .column-wrapper .column {
-	width: 230px;
-	visibility: visible;
-}
-
-.website-body .column-wrapper-2 .column {
-	width: 420px;
-	visibility: visible;
-}
-
 .column {
-	margin: 0 15px;
+	visibility: visible;
+	padding: 0 15px;
 	color: #535353;
 	font-size: 0.95em;
 	text-align: justify;
@@ -30,7 +21,7 @@
 }
 
 .column.first {
-	margin-left: 0;
+	padding-left: 0;
 }
 
 .column.first::first-letter {
@@ -38,7 +29,7 @@
 }
 
 .column.last {
-	margin-right: 0;
+	padding-right: 0;
 }
 
 .column img:not([width]):not([height]) {

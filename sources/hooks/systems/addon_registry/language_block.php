@@ -45,6 +45,16 @@ class Hook_addon_registry_language_block
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Architecture';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon

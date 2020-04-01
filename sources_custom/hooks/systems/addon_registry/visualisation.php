@@ -46,7 +46,7 @@ class Hook_addon_registry_visualisation
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Information Display';
     }
 
     /**
@@ -86,7 +86,7 @@ class Hook_addon_registry_visualisation
      */
     public function get_description()
     {
-        return 'This addon provides various visualization blocks for Composr, including:
+        return 'This addon provides various visualisation blocks for Composr, including:
  - Sortable tables served from spreadsheets or database tables ([tt]main_sortable_table[/tt])
  - Bar charts from spreadsheets ([tt]graph_bar_chart[/tt])
  - Line charts from spreadsheets ([tt]graph_line_chart[/tt])

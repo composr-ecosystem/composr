@@ -424,8 +424,8 @@ function cns_get_members_groups($member_id = null, $skip_secret = false, $handle
     );
 
     global $GROUP_MEMBERS_CACHE;
-    if (isset($GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$handle_probation][$include_implicit])) {
-        return $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$handle_probation][$include_implicit];
+    if (isset($GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit])) {
+        return $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$include_implicit];
     }
 
     $groups = [];
@@ -467,21 +467,21 @@ function cns_get_members_groups($member_id = null, $skip_secret = false, $handle
             $groups[$group['gm_group_id']] = true;
         }
 
-        $GROUP_MEMBERS_CACHE[$member_id][false][$handle_probation][$include_implicit] = $groups;
+        $GROUP_MEMBERS_CACHE[$member_id][false][$include_implicit] = $groups;
         $groups2 = $groups;
         foreach ($_groups as $group) { // For each secondary group
             if ($group['g_hidden'] == 1) {
                 unset($groups2[$group['gm_group_id']]);
             }
         }
-        $GROUP_MEMBERS_CACHE[$member_id][true][$handle_probation][$include_implicit] = $groups2;
+        $GROUP_MEMBERS_CACHE[$member_id][true][$include_implicit] = $groups2;
         if ($skip_secret) {
             $groups = $groups2;
         }
     } else {
         $groups = cns_get_members_groups_ldap($member_id);
-        $GROUP_MEMBERS_CACHE[$member_id][false][$handle_probation][$include_implicit] = $groups;
-        $GROUP_MEMBERS_CACHE[$member_id][true][$handle_probation][$include_implicit] = $groups;
+        $GROUP_MEMBERS_CACHE[$member_id][false][$include_implicit] = $groups;
+        $GROUP_MEMBERS_CACHE[$member_id][true][$include_implicit] = $groups;
 
         // Mirror to f_group_members table, so direct queries will also get it (we need to do listings of group members, for instance)
         $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $member_id]);

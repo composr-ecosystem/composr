@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_quiz
+class Hook_content_meta_aware_quiz extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -41,6 +41,8 @@ class Hook_content_meta_aware_quiz
 
             'content_type_label' => 'quiz:QUIZ',
             'content_type_universal_label' => 'Quiz',
+            'content_type_label_override' => 'CALL: generate_quiz_content_type_label',
+            'content_type_universal_label_override' => 'CALL: generate_quiz_content_type_universal_label',
 
             'db' => $GLOBALS['SITE_DB'],
             'table' => 'quizzes',
@@ -61,6 +63,7 @@ class Hook_content_meta_aware_quiz
             'title_field_dereference' => true,
             'description_field' => 'q_start_text',
             'description_field_dereference' => true,
+            'description_field_supports_comcode' => true,
             'thumb_field' => null,
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/rich_content/quiz',
@@ -91,7 +94,6 @@ class Hook_content_meta_aware_quiz
             'search_hook' => 'quiz',
             'rss_hook' => null,
             'attachment_hook' => null,
-            'unvalidated_hook' => 'quiz',
             'notification_hook' => null,
             'sitemap_hook' => 'quiz',
 
@@ -112,11 +114,43 @@ class Hook_content_meta_aware_quiz
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_QUIZ',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_MEDIUM,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        $headings = [];
+
+        $headings['type'] = do_lang_tempcode('TYPE');
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+
+        $keymap['type'] = do_lang_tempcode($row['q_type']);
+
+        return $keymap;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -127,10 +161,52 @@ class Hook_content_meta_aware_quiz
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('quiz');
 
         return render_quiz_box($row, $zone, $give_context, $guid);
     }
+}
+
+/**
+ * Find an entry content-type language string label.
+ *
+ * @param  array $row Database row of entry
+ * @return Tempcode Label
+ */
+function generate_quiz_content_type_label($row)
+{
+    if (!array_key_exists('q_type', $row)) {
+        return do_lang_tempcode('quiz:QUIZ');
+    }
+    return do_lang_tempcode($row['q_type']);
+}
+
+/**
+ * Find an entry content-type universal label (doesn't depend on language pack).
+ *
+ * @param  array $row Database row of entry
+ * @return string Label
+ */
+function generate_quiz_content_type_universal_label($row)
+{
+    $type = 'Quiz';
+    if (!array_key_exists('q_type', $row)) {
+        return $type;
+    }
+    switch ($row['q_type']) {
+        case 'COMPETITION':
+            $type = 'Competition';
+            break;
+
+        case 'SURVEY':
+            $type = 'Survey';
+            break;
+
+        case 'TEST':
+            $type = 'Test';
+            break;
+    }
+    return $type;
 }

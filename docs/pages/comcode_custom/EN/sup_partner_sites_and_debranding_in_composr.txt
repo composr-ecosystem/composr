@@ -1,28 +1,7 @@
-[title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: Partner Sites and De-Branding in Composr[/title]
+[title sub="Written by Steve Jarvis, Sponsored by Arvixe hosting"]Composr Supplementary: De-Branding in Composr[/title]
 
 [media width="150" description="Setting debranding" float="right"]data_custom/images/docs/sup_partner_sites_and_debranding_in_composr/b174fee9dcdde94b06a8f869cca8422e.jpg[/media]
-In this tutorial I will talk about a couple of slightly-related features that are useful to agencies deploying Composr on a large scale:
-1) partner sites options
-2) rebranding the site software
-
-[title="2"]Composr Partner sites[/title]
-
-The Composr Partner sites functionality is used to configure the list of partner links exported by this website and used by Composr [tt]side_network[/tt] block. This feature of Composr is designed to make it easy for you to centrally manage one set of partner links, and display them on all of your partner sites.
-
-I do need to add that this should not under any circumstances be used to create a link network as this can have dire consequences in terms of search engine rankings. This is primarily to display links to your associated sites. It could be used for example be used to display a list of micro sites related to your main site and allow you to update the links quickly instead of updating multiple sites at once.
-
-The set of links will be used by any Composr site that has been configured (via the &ldquo;Network membership URL&rdquo; option) to draw their links from:
-[tt]http://yourbaseurl/netlink.php[/tt]
-
-To add new links, simply place them on a new line, with an equals symbol between the link caption and the link URL. For example:
-[code="Text"]
-Example site 1=http://something.example.com/
-Example site 2=http://something-else.example.com/
-[/code]
-
-If you are not using the [tt]side_network[/tt] block and nobody is linking to your [tt]netlink.php[/tt] file, then just ignore this feature.
-
-[title="2"]Rebranding your site software[/title]
+In this tutorial I will talk about a feature that is useful to agencies deploying Composr on a large scale: rebranding the site software.
 
 Should you wish to remove almost every reference to Composr, you can do this through the de-branding options in Admin Zone > Style > Debranding. It is primarily designed if you need to give third party limited access to the Admin Zone and want to direct them to your website with queries rather than compo.sr.
 

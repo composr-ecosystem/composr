@@ -33,9 +33,9 @@ class Hook_syndication_facebook
             return false;
         }
 
-        $appapikey = get_option('facebook_appid');
-        $appsecret = get_option('facebook_secret_code');
-        if (($appapikey == '') || ($appsecret == '')) {
+        $appid = get_option('facebook_appid');
+        $app_secret = get_option('facebook_secret_code');
+        if (($appid == '') || ($app_secret == '')) {
             return false;
         }
 
@@ -66,19 +66,26 @@ class Hook_syndication_facebook
 
     public function auth_set($member_id, $oauth_url)
     {
-        require_lang('facebook');
         require_code('facebook_connect');
+
         global $FACEBOOK_CONNECT;
+        if ($FACEBOOK_CONNECT === null) {
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        require_lang('facebook');
 
         $code = get_param_string('code', '', INPUT_FILTER_GET_COMPLEX);
 
         if ($code == '') {
-            $scope = ['publish_actions'];
             if ($member_id === null) {
                 $scope[] = 'manage_pages';
                 $scope[] = 'publish_pages';
             }
-            $oauth_redir_url = $FACEBOOK_CONNECT->getLoginUrl(['redirect_uri' => $oauth_url->evaluate(), 'scope' => $scope]);
+
+            $helper = $FACEBOOK_CONNECT->getRedirectLoginHelper();
+
+            $oauth_redir_url = $helper->getLoginUrl($oauth_url->evaluate(), $scope);
             require_code('site2');
             redirect_exit($oauth_redir_url);
         }
@@ -88,45 +95,62 @@ class Hook_syndication_facebook
             return false;
         }
 
-        // oauth apparently worked
-        $access_token = $FACEBOOK_CONNECT->getAccessToken();
+        // oAuth apparently worked
+        $helper = $FACEBOOK_CONNECT->getRedirectLoginHelper();
+        try {
+            $access_token = $helper->getAccessToken();
+        } catch (Exception $e) {
+            if (php_function_allowed('error_log')) {
+                @error_log('Facebook returned an error: ' . $e->__toString());
+            }
+            $access_token = null;
+        }
         if ($access_token === null) { // Actually it didn't
             attach_message(do_lang_tempcode('FACEBOOK_OAUTH_FAIL', escape_html(do_lang('UNKNOWN'))), 'warn', false, true);
             return false;
         }
 
-        if ($member_id === null) {
-            /*$FACEBOOK_CONNECT->setExtendedAccessToken();
-            $FACEBOOK_CONNECT->api('/oauth/access_token', 'POST',
-                [
-                    'grant_type' => 'fb_exchange_token',
-                    'client_id' => get_option('facebook_appid'),
-                    'client_secret' => get_option('facebook_secret_code'),
-                    'fb_exchange_token' => $access_token
-                ]
-            );*/
+        // Extend token
+        $oauth2_client = $FACEBOOK_CONNECT->getOAuth2Client();
+        if (!$access_token->isLongLived()) {
+            try {
+                $access_token_extended = $oauth2_client->getLongLivedAccessToken($access_token);
+            } catch (Exception $e) {
+                if (php_function_allowed('error_log')) {
+                    @error_log('Facebook returned an error: ' . $e->__toString());
+                }
+                $access_token_extended = null;
+            }
+            if ($access_token_extended !== null) {
+                $access_token = $access_token_extended;
+            }
+        }
 
+        // For website, not user
+        if ($member_id === null) {
+            // Auto-detect facebook_uid option
             if (get_option('facebook_uid') == '') {
                 require_code('config2');
-                $facebook_uid = $FACEBOOK_CONNECT->getUser();
-                set_option('facebook_uid', strval($facebook_uid));
+                $facebook_uid = facebook_get_current_user_id($access_token);
+                if ($facebook_uid !== null) {
+                    set_option('facebook_uid', $facebook_uid);
+                }
             }
         }
 
-        if ((strpos($access_token, '|') === false) || ($member_id === null)) { // If for users, not if application access token, which will happen on a refresh (as user token will not confirm twice)
-            $save_to = 'facebook_oauth_token';
-            if ($member_id !== null) {
-                $save_to .= '__' . strval($member_id);
-            }
-            set_value($save_to, $access_token, true);
-
-            $facebook_syndicate_to_page = get_param_string('facebook_syndicate_to_page', null);
-            if ($facebook_syndicate_to_page !== null) {
-                set_value('facebook_syndicate_to_page__' . strval($member_id), $facebook_syndicate_to_page, true);
-            }
+        // Save token
+        $save_to = 'facebook_oauth_token';
+        if ($member_id !== null) {
+            $save_to .= '__' . strval($member_id);
+        }
+        set_value($save_to, $access_token->__toString(), true);
+        $facebook_syndicate_to_page = get_param_string('facebook_syndicate_to_page', null);
+        if ($facebook_syndicate_to_page !== null) {
+            set_value('facebook_syndicate_to_page__' . strval($member_id), $facebook_syndicate_to_page, true);
         }
 
-        if (get_page_name() != 'facebook_oauth') { // Take member back to page that implicitly shows their results
+        // Take member back to page that implicitly shows their results
+        if (get_page_name() != 'facebook_oauth') {
             require_code('site2');
             $target_url = $oauth_url->evaluate();
             $target_url = preg_replace('#oauth_in_progress=\d+#', '', $target_url);
@@ -163,12 +187,15 @@ class Hook_syndication_facebook
 
     public function auth_is_set_site()
     {
+        require_code('facebook_connect');
+
         global $FACEBOOK_CONNECT;
-        if (!isset($FACEBOOK_CONNECT)) {
+        if ($FACEBOOK_CONNECT === null) {
             return false;
         }
 
-        if (get_value('facebook_oauth_token', null, true) === null) {
+        $access_token = get_value('facebook_oauth_token', null, true);
+        if ($access_token === null) {
             return false;
         }
 
@@ -176,7 +203,7 @@ class Hook_syndication_facebook
             return false; // No configured target
         }
 
-        if (($this->auth_is_set(get_member())) && (get_option('facebook_uid') == strval($FACEBOOK_CONNECT->getUser()))) {
+        if (($this->auth_is_set(get_member())) && (get_option('facebook_uid') == facebook_get_current_user_id($access_token))) {
             return false; // Avoid double syndication, will already go to the user
         }
 
@@ -195,26 +222,27 @@ class Hook_syndication_facebook
         return false;
     }
 
-    protected function _send($token, $row, $post_to_uid = 'me', $member_id = null, $silent_warn = false)
+    protected function _send($access_token, $row, $post_to_uid = 'me', $member_id = null, $silent_warn = false)
     {
-        require_lang('facebook');
         require_code('facebook_connect');
+
+        global $FACEBOOK_CONNECT;
+        if ($FACEBOOK_CONNECT === null) {
+            return false;
+        }
+
+        require_lang('facebook');
 
         // Prepare message
         list($message) = render_activity($row, false);
         $name = $row['a_label_1'];
         require_code('character_sets');
         $name = convert_to_internal_encoding($name, get_charset(), 'utf-8');
-        $link = ($row['a_page_link_1'] == '') ? '' : static_evaluate_tempcode(page_link_to_tempcode($row['a_page_link_1']));
+        $link = ($row['a_page_link_1'] == '') ? '' : page_link_to_url($row['a_page_link_1'], true);
         $message = strip_html($message->evaluate());
         $message = convert_to_internal_encoding($message, get_charset(), 'utf-8');
 
         // Send message
-        $appid = get_option('facebook_appid');
-        $appsecret = get_option('facebook_secret_code');
-        $fb = new Facebook(['appId' => $appid, 'secret' => $appsecret]);
-        $fb->setAccessToken($token);
-
         $attachment = ['description' => $message];
         if (($name != '') && ($name != $message)) {
             $attachment['name'] = $name;
@@ -225,19 +253,16 @@ class Hook_syndication_facebook
         if (count($attachment) == 1) {
             $attachment = ['message' => $message];
         }
-
-        if ($post_to_uid == 'me') {
-            $post_to_uid = $fb->getUser(); // May not be needed, but just in case
-        }
-
         try {
-            $ret = $fb->api('/' . $post_to_uid . '/feed', 'POST', $attachment);
+            $ret = $FACEBOOK_CONNECT->post('/' . $post_to_uid . '/feed', $attachment, $access_token);
         } catch (Exception $e) {
             if (($member_id !== null) && (!has_interesting_post_fields()) && (running_script('index')) && (!headers_sent())) {
                 $this->auth_set($member_id, get_self_url());
             }
 
-            header('Facebook-Error: ' . escape_header($e->getMessage()));
+            if (php_function_allowed('error_log')) {
+                @error_log('Facebook returned an error: ' . $e->__toString());
+            }
 
             if (!$silent_warn) {
                 attach_message($e->getMessage(), 'warn', false, true);

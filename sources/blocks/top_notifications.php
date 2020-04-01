@@ -57,6 +57,8 @@ class Block_top_notifications
 
         $max = isset($map['max']) ? intval($map['max']) : 5;
 
+        require_lang('notifications');
+
         require_code('notification_poller');
 
         list($notifications, $num_unread_web_notifications) = get_web_notifications($max);

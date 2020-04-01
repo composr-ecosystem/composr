@@ -1,0 +1,18 @@
+<advancedBans>
+	<!-- Zero low-scored, because it may well just be false-positive from an anti-spam partner and because our spam confidence thresholds already can result in their own banning / Common so silence it to staff -->
+	<hackattack codename="ANTISPAM" silent_to_user="true" percentage_score="0" syndicate_as_spammer="true" silent_to_staff_notifications="true" silent_to_staff_log="true" />
+
+	<!-- Silent to user because we have a normal CAPTCHA-failed error message / Common so silence it to staff -->
+	<hackattack codename="CAPTCHAFAIL_HACK" silent_to_user="true" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" />
+
+	<!-- Very low-scored, because it may well just be user-error /  Silent to user because we have a normal CAPTCHA-failed error message / Common so silence it to staff -->
+	<hackattack codename="CAPTCHAFAIL" silent_to_user="true" percentage_score="1" silent_to_staff_notifications="true" silent_to_staff_log="true" />
+
+	<!-- Common spam so silence it to staff -->
+	<hackattack codename="LAME_SPAM_HACK" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" />
+
+	<!-- Very high-scored, enough to cause an instant ban by default, because we do not want to allow too much brute forcing; also see brute_force_login_minutes and brute_force_threshold options -->
+	<hackattack codename="BRUTEFORCE_LOGIN_HACK" percentage_score="1000" />
+
+	<!-- See hack_ban_threshold option to know how many normalised hack-attacks until a ban happens -->
+</advancedBans>

@@ -152,7 +152,8 @@ class Hook_whatsnew_catalogues
 
             $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '4ae604e5d0e9cf4d28e7d811dc4558e5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'CATALOGUE' => $catalogue, 'NAME' => $name, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'catalogue_entry', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
-            handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
+            require_code('urls2');
+            mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
         return [$new, do_lang('CATALOGUE_ENTRIES', '', '', '', $lang)];

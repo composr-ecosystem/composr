@@ -38,7 +38,14 @@ class Block_main_hero_slider
         $info['version'] = 1;
         $info['locked'] = false;
         $info['parameters'] = [
-            'gallery_name', 'effect', 'fullscreen', 'show_indicators', 'show_scroll_down', 'interval', 'check_perms', 'blank_if_empty'
+            'gallery_name',
+            'effect',
+            'fullscreen',
+            'show_indicators',
+            'show_scroll_down',
+            'interval',
+            'check',
+            'blank_if_empty',
         ];
 
         return $info;
@@ -60,7 +67,7 @@ class Block_main_hero_slider
             !empty($map['show_indicators']),
             !empty($map['show_scroll_down']),
             isset($map['interval']) ? strval(intval($map['interval'])) : false,
-            isset($map['check_perms']) ? !empty($map['check_perms']) : true,
+            isset($map['check']) ? !empty($map['check']) : true,
             isset($map['gallery_name']) ? $map['gallery_name'] : '',
         ]
 PHP;
@@ -80,6 +87,7 @@ PHP;
 
         require_code('galleries');
         require_code('content');
+        require_css('galleries');
 
         $blank_if_empty = isset($map['blank_if_empty']) ? !empty($map['blank_if_empty']) : false;
 
@@ -87,32 +95,28 @@ PHP;
             return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '8692692a208449e3862d6ff482dce94b', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('galleries'))]);
         }
 
-        $gallery_name = @cms_empty_safe($map['gallery_name']) ? 'root' : $map['gallery_name'];
-
         $block_id = get_block_id($map);
 
+        $gallery_name = @cms_empty_safe($map['gallery_name']) ? 'root' : $map['gallery_name'];
         $effect = !empty($map['effect']) ? $map['effect'] : 'slide'; // Valid values: 'fade' or 'slide'
-
         $fullscreen = !empty($map['fullscreen']);
-
         $show_indicators = !empty($map['show_indicators']);
-
         $show_scroll_down = !empty($map['show_scroll_down']);
-
         $interval = isset($map['interval']) ? strval(intval($map['interval'])) : false;
-
-        $check_perms = isset($map['check_perms']) ? !empty($map['check_perms']) : true;
+        $check_perms = isset($map['check']) ? !empty($map['check']) : true;
 
         // Check if the gallery exists
         $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $gallery_name]);
-
         if ($gallery_name === null) {
-            // Maybe the user specified a gallery's full name instead of the code name?
+            // Maybe the user specified a gallery's full name instead of the codename?
             $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['fullname' => $gallery_name]);
         }
-
         if ($gallery_name === null) {
-            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '19737ba0c9c84c36b92690b7c896040d', 'TEXT' => escape_html('Block main_hero_slider: Gallery named "' . $gallery_name . '" not found.')]);
+            if ($blank_if_empty) {
+                return new Tempcode();
+            } else {
+                return do_template('RED_ALERT', ['_GUID' => '19737ba0c9c84c36b92690b7c896040d', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'gallery')]);
+            }
         }
 
         if ($gallery_name === 'root') {
@@ -192,8 +196,6 @@ PHP;
                 'EDIT_URL' => $edit_url,
             ];
         }
-
-        require_css('galleries');
 
         return do_template('BLOCK_MAIN_HERO_SLIDER', [
             '_GUID' => '3afebc2955314f1fbc1b2d4935e998e4',

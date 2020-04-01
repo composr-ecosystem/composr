@@ -2,7 +2,7 @@
 	<input type="hidden" name="cmd" value="_xclick-subscriptions" />
 	<input type="hidden" name="charset" value="{!charset}" />
 	<input type="hidden" name="business" value="{PAYMENT_ADDRESS*}" />
-	<input type="hidden" name="notify_url" value="{$FIND_SCRIPT*,ecommerce,1}?from=paypal&amp;type_code={TYPE_CODE*}" />
+	<input type="hidden" name="notify_url" value="{$FIND_SCRIPT*,ecommerce}?from=paypal&amp;type_code={TYPE_CODE*}" />
 	<input type="hidden" name="return" value="{$PAGE_LINK*,_SEARCH:purchase:finish:type_code={TYPE_CODE}:from=paypal}" />
 	<input type="hidden" name="cancel_return" value="{$PAGE_LINK*,_SEARCH:purchase:finish:type_code={TYPE_CODE}:cancel=1:from=paypal}" />
 	<input type="hidden" name="no_shipping" value="1" />

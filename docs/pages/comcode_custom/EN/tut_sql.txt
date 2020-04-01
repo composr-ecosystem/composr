@@ -27,7 +27,7 @@ MySQL has an unfortunate tendency to corrupt when a server crashes, or is stoppe
  - Table was marked as crashed and should be repaired
  - (...) is marked as crashed and last automatic repair failed
 
-Composr does provide an interface to the repair mechanism as an option under Admin Zone > Tools > Website cleanup tools, but if corruption is bad, you may not be able to reach it. In this case, you will need to use phpMyAdmin, as shown in the screen-shot.
+Composr does provide an interface to the repair mechanism as an option under Admin Zone > Tools > Cleanup tools, but if corruption is bad, you may not be able to reach it. In this case, you will need to use phpMyAdmin, as shown in the screen-shot.
 
 Note that if it looks like corruption has happened due to a physical disk problem, then it is absolutely crucial you back up Composr (and anything else on the server) as soon as humanely possible and make sure the server gets a disk scan, and if necessary, a new hard disk. Disk issues tend to spread, and files that touch the damaged area are 'scarred': an initially small problem could quickly irreparably destroy all your data.
 [/surround]

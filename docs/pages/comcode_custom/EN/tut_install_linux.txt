@@ -109,7 +109,7 @@ enchant freetype php-gd php-imap php-pecl-zip php-mysqlnd php-mbstring php-pspel
 php-xml php-intl php-json openssl mysql-server mysql \
 sendmail nano wget lynx hunspell hunspell-en aspell aspell-en git openssh-server sysstat iotop \
 screen zip unzip bzip2 gzip tar whois dnsutils bind-utils \
-lsof mlocate certbot python-certbot-apache
+lsof mlocate certbot python-certbot-apache dnf-automatic
 [/code]
 
 You may have selinux installed, you can see if you do with [tt]sestatus[/tt]:
@@ -171,4 +171,4 @@ Here is some specific advice for people working from our git repository:
  - [page="_SEARCH:tut_install_permissions"]File permissions[/page]
  - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
 
-{$SET,tutorial_tags,linux_helper_scripts,installer,core_database_drivers,Installation,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial covers advanced installation issues on Linux which most users do not need to be concerned with.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,helper_scripts,installer,core_database_drivers,Installation,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial covers advanced installation issues on Linux which most users do not need to be concerned with.}[block]main_tutorial_rating[/block]

@@ -30,7 +30,7 @@ class Module_admin_cmsusers
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 2;
+        $info['version'] = 3;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         return $info;
@@ -63,16 +63,23 @@ class Module_admin_cmsusers
                 'id' => '*AUTO',
                 'website_url' => 'URLPATH',
                 'website_name' => 'SHORT_TEXT',
-                'is_registered' => 'BINARY',    // NOT CURRENTLY USED
-                'log_key' => 'INTEGER',    // NOT CURRENTLY USED
-                'expire' => 'INTEGER', // 0 means never   // NOT CURRENTLY USED
                 'l_version' => 'ID_TEXT',
                 'hittime' => 'TIME',
+                'num_members' => 'INTEGER',
+                'num_hits_per_day' => 'INTEGER',
             ]);
         }
 
-        if ($upgrade_from !== null) {
+        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
             $GLOBALS['SITE_DB']->rename_table('mayfeature', 'may_feature');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('logged', 'num_members', 'INTEGER');
+            $GLOBALS['SITE_DB']->add_table_field('logged', 'num_hits_per_day', 'INTEGER');
+            $GLOBALS['SITE_DB']->delete_table_field('logged', 'is_registered');
+            $GLOBALS['SITE_DB']->delete_table_field('logged', 'log_key');
+            $GLOBALS['SITE_DB']->delete_table_field('logged', 'expire');
         }
     }
 
@@ -145,53 +152,50 @@ class Module_admin_cmsusers
      */
     public function users()
     {
-        $sortby = get_param_string('sortby', '');
-
-        $nameord = '';
-        $acpord = '';
-        $keyord = '';
-        $versord = '';
-
-        $orderby = get_param_string('orderby', 'desc');
-
-        if ($orderby == 'desc') {
-            if ($sortby == 'name') {
-                $nameord = ':orderby=asc';
-            } elseif ($sortby == 'acp') {
-                $acpord = ':orderby=asc';
-            } elseif ($sortby == 'vers') {
-                $versord = ':orderby=asc';
-            } elseif ($sortby == '') {
-                $acpord = ':orderby=asc';
-            }
-        }
+        $_sort = get_param_string('sort', 'num_hits_per_day DESC');
+        list($sort, $dir) = explode(' ', $_sort);
+        $anti_dir = (($dir == 'ASC') ? 'DESC' : 'ASC');
 
         $order_by = '';
-        if ($sortby == 'name') {
-            $order_by = 'ORDER BY website_name ';
-        } elseif ($sortby == 'acp') {
-            $order_by = 'ORDER BY hittime ';
-        } elseif ($sortby == 'version') {
-            $order_by = 'ORDER BY l_version ';
-        } else {
-            $order_by = 'ORDER BY hittime ';
-        }
+        switch ($sort) {
+            case 'website_name':
+                $order_by = ' ORDER BY website_name';
+                break;
 
-        $order_by .= ($orderby == 'desc') ? 'DESC' : 'ASC';
+            case 'hittime':
+                $order_by = ' ORDER BY hittime';
+                break;
+
+            case 'l_version':
+                $order_by = ' ORDER BY l_version';
+                break;
+
+            case 'num_members':
+                $order_by = ' ORDER BY num_members';
+                break;
+
+            case 'num_hits_per_day':
+                $order_by = ' ORDER BY num_hits_per_day';
+                break;
+
+            default:
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+        $order_by .= ' ' . $dir;
 
         $max = 500;
-        if ($sortby != 'acp') {
-            $order_by = 'GROUP BY website_url,website_name ' . $order_by;
-        } else {
-            $order_by = 'GROUP BY website_url ' . $order_by;
-            $max = 1000;
-        }
 
-        $rows = $GLOBALS['SITE_DB']->query('SELECT website_url,website_name,MAX(l_version) AS l_version,MAX(hittime) AS hittime FROM ' . get_table_prefix() . 'logged WHERE website_url NOT LIKE \'%.composr.info%\' AND ' . db_string_not_equal_to('website_name', '') . ' AND ' . db_string_not_equal_to('website_name', '(unnamed)') . ' ' . $order_by, $max);
+        $select = 'website_url,website_name,MAX(l_version) AS l_version,MAX(hittime) AS hittime,MAX(num_members) AS num_members,MAX(num_hits_per_day) AS num_hits_per_day';
+        $where = 'website_url NOT LIKE \'%.composr.info%\'';
+        if (!$GLOBALS['DEV_MODE']) {
+            $where .= ' AND ' . db_string_not_equal_to('website_name', '') . ' AND ' . db_string_not_equal_to('website_name', '(unnamed)');
+        }
+        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ' GROUP BY website_url,website_name ' . $order_by;
+        $rows = $GLOBALS['SITE_DB']->query($sql, $max);
 
         $seen_before = [];
 
-        $_rows = new Tempcode();
+        $_rows = [];
         foreach ($rows as $i => $r) {
             // Test that they give feature permission
             $url_parts = parse_url($r['website_url']);
@@ -204,11 +208,16 @@ class Module_admin_cmsusers
             }
 
             $rt = [];
-            $rt['VERSION'] = $r['l_version'];
+
+            $rt['L_VERSION'] = $r['l_version'];
+
             $rt['WEBSITE_URL'] = $r['website_url'];
+
             $rt['WEBSITE_NAME'] = $r['website_name'];
-            $rt['LAST_ACP_ACCESS'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60)));
-            $rt['LAST_ACP_ACCESS_2'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60 / 24)));
+
+            $rt['HITTIME'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60)));
+            $rt['HITTIME_2'] = integer_format(intval(round((time() - $r['hittime']) / 60 / 60 / 24)));
+
             if ($i < 100) {
                 $active = get_value_newer_than('testing__' . $r['website_url'] . '/_config.php', time() - 60 * 60 * 10, true);
                 if ($active === null) {
@@ -232,17 +241,23 @@ class Module_admin_cmsusers
 
             $rt['NOTE'] = $perm ? do_lang('CMS_MAY_FEATURE') : do_lang('CMS_KEEP_PRIVATE');
 
-            $_rows->attach(do_template('CMS_SITE', $rt));
+            $rt['NUM_MEMBERS'] = integer_format($r['num_members']);
+
+            $rt['NUM_HITS_PER_DAY'] = integer_format($r['num_hits_per_day']);
+
+            $_rows[] = $rt;
         }
 
         return do_template('CMS_SITES_SCREEN', [
             '_GUID' => '7f4b56c730f2b613994a3fe6f00ed525',
             'TITLE' => $this->title,
             'ROWS' => $_rows,
-            'NAMEORD' => $nameord,
-            'ACPORD' => $acpord,
-            'KEYORD' => $keyord,
-            'VERORD' => $versord,
+
+            'WEBSITE_NAME_DIR' => ($sort == 'website_name') ? $anti_dir : 'ASC',
+            'HITTIME_DIR' => ($sort == 'hittime') ? $anti_dir : 'DESC',
+            'L_VERSION_DIR' => ($sort == 'l_version') ? $anti_dir : 'ASC',
+            'NUM_MEMBERS_DIR' => ($sort == 'num_members') ? $anti_dir : 'DESC',
+            'NUM_HITS_PER_DAY_DIR' => ($sort == 'num_hits_per_day') ? $anti_dir : 'DESC',
         ]);
     }
 }

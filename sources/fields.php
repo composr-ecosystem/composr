@@ -740,7 +740,7 @@ function create_selection_list_field_type($type = '', $limit_to_storage_set = fa
         return $cache[$cache_sig];
     }
 
-    $do_caching = has_caching_for('block');
+    $do_caching = has_caching_for('block', '_field_type_selection');
 
     $ret = null;
     if ($do_caching) {

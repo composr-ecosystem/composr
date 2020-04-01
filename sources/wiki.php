@@ -194,6 +194,10 @@ function wiki_add_post($page_id, $message, $validated = 1, $member_id = null, $s
         $_count = point_info($member_id);
         $count = array_key_exists('points_gained_wiki', $_count) ? $_count['points_gained_wiki'] : 0;
         $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_wiki', $count + 1);
+
+        global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
+        unset($POINT_INFO_CACHE[$member_id]);
+        unset($TOTAL_POINTS_CACHE[$member_id]);
     }
 
     // Stat
@@ -403,6 +407,10 @@ function wiki_add_page($title, $description, $notes, $show_posts, $member_id = n
         $_count = point_info($member_id);
         $count = array_key_exists('points_gained_wiki', $_count) ? $_count['points_gained_wiki'] : 0;
         $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_wiki', $count + 1);
+
+        global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
+        unset($POINT_INFO_CACHE[$member_id]);
+        unset($TOTAL_POINTS_CACHE[$member_id]);
     }
 
     $map = [

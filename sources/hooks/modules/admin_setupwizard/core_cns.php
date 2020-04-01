@@ -36,9 +36,6 @@ class Hook_sw_core_cns
             return [];
         }
 
-        require_lang('cns');
-        require_lang('cns_special_cpf');
-
         if (!is_on_multi_site_network()) {
             require_code('cns_groups2');
             $ladder_groups = get_default_rank_ladder_groups();
@@ -55,22 +52,20 @@ class Hook_sw_core_cns
                     break;
             }
 
-            $sql = 'SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_emoticons WHERE 1=1';
-            $sql .= ' AND ' . db_string_not_equal_to('e_code', ':P');
-            $sql .= ' AND ' . db_string_not_equal_to('e_code', ';)');
-            $sql .= ' AND ' . db_string_not_equal_to('e_code', ':)');
-            $sql .= ' AND ' . db_string_not_equal_to('e_code', ':\'(');
-            $test = $GLOBALS['FORUM_DB']->query($sql);
-            $settings['have_default_full_emoticon_set'] = (!empty($test)) ? '1' : '0';
+            $settings['have_default_full_emoticon_set'] = has_predefined_content('core_cns', 'have_default_full_emoticon_set') ? '1' : '0';
 
             $have_default_cpf_set = false;
-            $fields_l = ['interests', 'location', 'occupation'];
-            foreach ($fields_l as $field) {
-                $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => do_lang('DEFAULT_CPF_' . $field . '_NAME')]);
-                if ($test !== null) {
-                    $have_default_cpf_set = true;
-                    break;
-                }
+            if (has_predefined_content('core_cns', 'about')) {
+                $have_default_cpf_set = true;
+            }
+            if (has_predefined_content('core_cns', 'interests')) {
+                $have_default_cpf_set = true;
+            }
+            if (has_predefined_content('core_cns', 'occupation')) {
+                $have_default_cpf_set = true;
+            }
+            if (has_predefined_content('core_cns', 'staff_notes')) {
+                $have_default_cpf_set = true;
             }
             $settings['have_default_cpf_set'] = $have_default_cpf_set ? '1' : '0';
         }
@@ -104,11 +99,10 @@ class Hook_sw_core_cns
             }
             $fields->attach(form_input_list(do_lang_tempcode('RANK_SET'), do_lang_tempcode('DESCRIPTION_RANK_SET'), 'rank_set', $rank_set_options));
 
-            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_FULL_EMOTICON_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_FULL_EMOTICON_SET'), 'have_default_full_emoticon_set', $field_defaults['have_default_full_emoticon_set'] == '1'));
+            require_code('cns_general_action2');
+            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_FULL_EMOTICON_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_FULL_EMOTICON_SET', escape_html(integer_format(cns_get_num_emoticons_on_disk()))), 'have_default_full_emoticon_set', $field_defaults['have_default_full_emoticon_set'] == '1'));
 
-            if ($current_settings['have_default_cpf_set'] == '1') {
-                $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CPF_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CPF_SET'), 'have_default_cpf_set', $field_defaults['have_default_cpf_set'] == '1'));
-            }
+            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CPF_SET'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CPF_SET'), 'have_default_cpf_set', $field_defaults['have_default_cpf_set'] == '1'));
         }
 
         return [$fields, new Tempcode()];
@@ -123,38 +117,34 @@ class Hook_sw_core_cns
             return;
         }
 
-        require_lang('cns');
         if (!is_on_multi_site_network()) {
             $rank_set = post_param_string('rank_set', null);
             if ($rank_set !== null) {
                 require_code('cns_groups_action');
+                require_lang('cns');
                 cns_make_rank_set($rank_set);
             }
 
-            if (post_param_integer('have_default_full_emoticon_set', 0) == 0) {
-                $GLOBALS['FORUM_DB']->query('DELETE FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_emoticons WHERE e_code<>\':P\' AND e_code<>\';)\' AND e_code<>\':)\' AND e_code<>\':)\' AND e_code<>\':\\\'(\'');
-            }
-
-            if (post_param_integer('have_default_cpf_set', 0) == 0) {
-                $fields = ['interests', 'location', 'occupation'];
-                foreach ($fields as $field) {
-                    require_code('cns_members_action2');
-                    cns_delete_predefined_content_field($field);
-                }
-            }
+            install_predefined_content('core_cns', [
+               'have_default_full_emoticon_set' => (post_param_integer('have_default_full_emoticon_set', 0) == 1),
+               'about' => (post_param_integer('have_default_cpf_set', 0) == 1),
+               'interests' => (post_param_integer('have_default_cpf_set', 0) == 1),
+               'occupation' => (post_param_integer('have_default_cpf_set', 0) == 1),
+               'staff_notes' => (post_param_integer('have_default_cpf_set', 0) == 1),
+            ]);
         }
     }
 
     /**
      * Run function for blocks in the setup wizard.
      *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
+     * @return array A map between block names and pairs (BLOCK_POSITION_* constants for what is supported, then a BLOCK_POSITION_* constant for what is the default)
      */
     public function get_blocks()
     {
         if (get_forum_type() == 'cns') {
-            return [[], ['side_cns_private_topics' => ['PANEL_NONE', 'PANEL_NONE']]];
+            return ['side_cns_private_topics' => [BLOCK_POSITION_PANEL, null]];
         }
-        return [[], []];
+        return [];
     }
 }

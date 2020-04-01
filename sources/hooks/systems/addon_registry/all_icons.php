@@ -45,6 +45,16 @@ class Hook_addon_registry_all_icons
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Graphical';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -536,7 +546,6 @@ class Hook_addon_registry_all_icons
             'themes/default/images/icons/menu/adminzone/security/permissions/match_keys.svg',
             'themes/default/images/icons/menu/adminzone/security/permissions/permission_tree_editor.svg',
             'themes/default/images/icons/menu/adminzone/security/permissions/privileges.svg',
-            'themes/default/images/icons/menu/adminzone/security/ssl.svg',
             'themes/default/images/icons/menu/adminzone/security/usergroups_temp.svg',
             'themes/default/images/icons/menu/adminzone/security/wordfilter.svg',
             'themes/default/images/icons/menu/adminzone/security.svg',
@@ -558,7 +567,6 @@ class Hook_addon_registry_all_icons
             'themes/default/images/icons/menu/adminzone/structure/forum/multi_moderations.svg',
             'themes/default/images/icons/menu/adminzone/structure/forum/post_templates.svg',
             'themes/default/images/icons/menu/adminzone/structure/menus.svg',
-            'themes/default/images/icons/menu/adminzone/structure/multi_site_network.svg',
             'themes/default/images/icons/menu/adminzone/structure/redirects.svg',
             'themes/default/images/icons/menu/adminzone/structure/sitemap/sitemap_editor.svg',
             'themes/default/images/icons/menu/adminzone/structure/zones/zone_editor.svg',
@@ -1181,7 +1189,6 @@ class Hook_addon_registry_all_icons
             'themes/default/images/icons_monochrome/menu/adminzone/security/permissions/match_keys.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security/permissions/permission_tree_editor.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security/permissions/privileges.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/security/ssl.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security/usergroups_temp.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security/wordfilter.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security.svg',
@@ -1203,7 +1210,6 @@ class Hook_addon_registry_all_icons
             'themes/default/images/icons_monochrome/menu/adminzone/structure/forum/multi_moderations.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/forum/post_templates.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/menus.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/structure/multi_site_network.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/redirects.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/sitemap/sitemap_editor.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/zones/zone_editor.svg',

@@ -71,8 +71,6 @@ class Module_admin_awards extends Standard_crud_module
      */
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
-        require_code('lang3');
-
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('award_archive', [
                 'a_type_id' => '*AUTO_LINK',
@@ -93,16 +91,8 @@ class Module_admin_awards extends Standard_crud_module
                 'a_update_time_hours' => 'INTEGER',
             ]);
 
-            require_lang('awards');
-            $map = [
-                'a_points' => 0,
-                'a_content_type' => 'download',
-                'a_show_awardee' => 0,
-                'a_update_time_hours' => 168,
-            ];
-            $map += lang_code_to_default_content('a_title', 'DOTW');
-            $map += lang_code_to_default_content('a_description', 'DESCRIPTION_DOTW', true);
-            $GLOBALS['SITE_DB']->query_insert('award_types', $map);
+            require_code('content2');
+            install_predefined_content('awards');
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
@@ -126,9 +116,19 @@ class Module_admin_awards extends Standard_crud_module
             return null;
         }
 
-        return [
+        $ret = [
             'browse' => ['MANAGE_AWARDS', 'menu/adminzone/setup/awards'],
-        ] + parent::get_entry_points();
+        ];
+
+        $ret += parent::get_entry_points();
+
+        if (has_privilege($member_id, 'mass_import')) {
+            $ret += [
+                'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],
+            ];
+        }
+
+        return $ret;
     }
 
     public $title;
@@ -153,6 +153,18 @@ class Module_admin_awards extends Standard_crud_module
 
         set_helper_panel_tutorial('tut_featured');
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_AWARDS')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return parent::pre_run($top_level);
     }
 
@@ -176,6 +188,13 @@ class Module_admin_awards extends Standard_crud_module
         if ($type == 'browse') {
             return $this->browse();
         }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
+
         return new Tempcode();
     }
 
@@ -193,6 +212,7 @@ class Module_admin_awards extends Standard_crud_module
             [
                 ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_AWARD_TYPE')],
                 ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_AWARD_TYPE')],
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ],
             do_lang('MANAGE_AWARDS')
         );
@@ -247,7 +267,7 @@ class Module_admin_awards extends Standard_crud_module
                 $fr[] = integer_format($row['a_points']);
             }
             $hooks = find_all_hooks('systems', 'content_meta_aware');
-            $hook_title = do_lang('UNKNOWN');
+            $hook_title = do_lang_tempcode('UNKNOWN');
             foreach (array_keys($hooks) as $hook) {
                 if ($hook == $row['a_content_type']) {
                     require_code('content');
@@ -257,7 +277,7 @@ class Module_admin_awards extends Standard_crud_module
                     }
                     $hook_info = $hook_object->info();
                     if ($hook_info !== null) {
-                        $hook_title = do_lang($hook_info['content_type_label']);
+                        $hook_title = do_lang_tempcode($hook_info['content_type_label']);
                     }
                 }
             }
@@ -317,12 +337,12 @@ class Module_admin_awards extends Standard_crud_module
             }
             $hook_info = $hook_object->info();
             if ($hook_info !== null) {
-                $_hooks[$hook] = do_lang($hook_info['content_type_label']);
+                $_hooks[$hook] = do_lang_tempcode($hook_info['content_type_label']);
             }
         }
         asort($_hooks);
         foreach ($_hooks as $hook => $hook_title) {
-            $list->attach(form_input_list_entry($hook, $hook == $content_type, protect_from_escaping($hook_title)));
+            $list->attach(form_input_list_entry($hook, $hook == $content_type, $hook_title));
         }
         if ($list->is_empty()) {
             inform_exit(do_lang_tempcode('NO_CATEGORIES'));
@@ -409,5 +429,27 @@ class Module_admin_awards extends Standard_crud_module
     public function delete_actualisation($id)
     {
         delete_award_type(intval($id));
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('awards', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content()
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('awards', $this->title);
     }
 }

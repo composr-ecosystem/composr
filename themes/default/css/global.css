@@ -6358,7 +6358,7 @@ a.tab, a.tab:visited, a.tab:hover {
 
 .tab {
 	float: left;
-	padding: 3px 8px 0 8px !important;
+	padding: 0 8px 0 8px !important;
 	height: 23px;
 	text-align: center;
 	cursor: pointer;
@@ -7545,11 +7545,6 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 ==========Misc===========
 =========================
 */
-
-.box---block-bottom-about-us .social-buttons .btn .icon {
-	width: 25px;
-	height: 25px;
-}
 
 @keyframes cms-fade-in {
 	from { opacity: 0; }

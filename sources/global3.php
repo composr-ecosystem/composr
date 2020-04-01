@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: fileowner|filegroup*/
+
 /*
 global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
 */
@@ -252,6 +254,7 @@ function get_file_extension($name, $mime_type = null)
 
 /**
  * Find whether we can get away with natural file access, not messing with AFMs, world-writability, etc.
+ * Always will return false on Windows due to missing Posix - but there's no such thing as chmodding files for non-owners on Windows either.
  *
  * @return boolean Whether we have this
  */
@@ -267,14 +270,23 @@ function is_suexec_like()
 
     static $answer = null;
     if ($answer === null) {
-        $answer = (
-            (php_function_allowed('posix_getuid')) &&
-            (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
-            (is_integer(@posix_getuid())) &&
-            (@posix_getuid() == @fileowner(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))
-        )
-        ||
-        (cms_is_writable(get_file_base() . '/' . (running_script('install') ? 'install.php' : 'index.php'))));
+        if (is_cli()) {
+            $opts = getopt('', ['is_suexec_like::']);
+            if (array_key_exists('is_suexec_like', $opts)) {
+                $answer = true;
+            } else {
+                $answer = false; // As we cannot know
+            }
+        } else {
+            $answer = (
+                (php_function_allowed('posix_getuid')) &&
+                (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
+                (is_integer(@posix_getuid())) &&
+                (posix_getuid() == website_file_owner())
+            )
+            ||
+            (cms_is_writable(get_file_base() . (running_script('install') ? '/install.php' : '/sources/global.php')));
+        }
     }
     return $answer;
 }
@@ -291,8 +303,8 @@ function fix_permissions($path, $perms = null)
         $perms = is_dir($path) ? 0777 : 0666;
     }
 
-    // If the file user is different to the FTP user, we need to make it world writeable
-    if ((!is_suexec_like()) || ($_SERVER['REQUEST_METHOD'] == '')) {
+    // If the file user is different to the web user, we need to make it world writeable
+    if (!is_suexec_like()) {
         if ($perms == 0600) {
             @chmod($path, 0666);
         } else {
@@ -856,33 +868,25 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
 
         $cma_mappings = [
             'created' => 'add_time_field',
+            'modified' => 'edit_time_field',
             'creator' => isset($cma_info['author_field']) ? 'author_field' : 'submitter_field',
             'publisher' => 'submitter_field',
-            'modified' => 'edit_time_field',
-            'title' => 'title_field',
-            'description' => 'description_field',
             'views' => 'views_field',
             'validated' => 'validated_field',
-            'type' => 'content_type_universal_label',
         ];
 
         foreach ($cma_mappings as $meta_type => $cma_field) {
             if (!isset($METADATA[$meta_type])) {
-                if ($cma_field == 'content_type_universal_label' || isset($row[$cma_info[$cma_field]])) {
+                if (isset($cma_info[$cma_field]) && isset($row[$cma_info[$cma_field]])) {
                     switch ($meta_type) {
-                        case 'type':
-                            $val_raw = $cma_info[$cma_field];
-                            $val = $val_raw;
-                            break;
-
                         case 'created':
                         case 'modified':
                             $val_raw = strval($row[$cma_info[$cma_field]]);
                             $val = date('Y-m-d', $row[$cma_info[$cma_field]]);
                             break;
 
-                        case 'publisher':
                         case 'creator':
+                        case 'publisher':
                             if ($cma_field == 'author_field') {
                                 $val_raw = $row[$cma_info[$cma_field]];
                                 $val = $val_raw;
@@ -890,38 +894,6 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
                                 $val_raw = strval($row[$cma_info[$cma_field]]);
                                 $val = $GLOBALS['FORUM_DRIVER']->get_username($row[$cma_info[$cma_field]]);
                             }
-                            break;
-
-                        case 'title':
-                            if ($cma_info['title_field_dereference']) {
-                                $val_raw = get_translated_text($row[$cma_info[$cma_field]], $cma_info['db']);
-                            } else {
-                                $val_raw = $row[$cma_info[$cma_field]];
-                            }
-
-                            if ($content_type === 'comcode_page') {
-                                // FUDGE
-                                if ($content_id === ':' . DEFAULT_ZONE_PAGE_NAME) {
-                                    $val_raw = get_site_name();
-                                } else {
-                                    $val_raw = titleify($val_raw);
-                                }
-                            }
-
-                            if ((!isset($cma_info['title_field_supports_comcode'])) || (!$cma_info['title_field_supports_comcode'])) {
-                                $val = comcode_escape($val_raw);
-                            } else {
-                                $val = $val_raw;
-                            }
-                            break;
-
-                        case 'description':
-                            if (is_integer($row[$cma_info[$cma_field]])) {
-                                $val_raw = get_translated_text($row[$cma_info[$cma_field]], $cma_info['db']);
-                            } else {
-                                $val_raw = $row[$cma_info[$cma_field]];
-                            }
-                            $val = $val_raw;
                             break;
 
                         case 'views':
@@ -948,48 +920,47 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
             }
         }
 
-        // Add in image (which is much more fiddly)...
+        // Add in fields that are a bit more difficult...
+
+        if (!isset($METADATA['title'])) {
+            $val_raw = $cma_ob->get_title($row);
+
+            if ($content_type === 'comcode_page') {
+                // FUDGE
+                if ($content_id === ':' . DEFAULT_ZONE_PAGE_NAME) {
+                    $val_raw = get_site_name();
+                } else {
+                    $val_raw = titleify($val_raw);
+                }
+            }
+
+            $METADATA['title'] = $val_raw;
+        }
+
+        if (!isset($METADATA['description'])) {
+            $METADATA['description'] = $cma_ob->get_description($row);
+        }
+
+        if (!isset($METADATA['type'])) {
+            $METADATA['type'] = $cma_ob->get_content_type_universal_label($row);
+        }
 
         if (!isset($METADATA['image'])) {
-            $image_url = '';
-            if ($cma_info['thumb_field'] !== null) {
-                if ((strpos($cma_info['thumb_field'], 'CALL:') !== false) && ($content_id !== null)) {
-                    $image_url = call_user_func(trim(substr($cma_info['thumb_field'], 5)), ['id' => $content_id], $row);
-                } else {
-                    if ($content_type === 'image') {
-                        $image_url = $row['url']; // FUDGE
-                    } else {
-                        $image_url = $row[$cma_info['thumb_field']];
-                    }
-                }
-                if ($image_url != '') {
-                    if ($cma_info['thumb_field_is_theme_image']) {
-                        $image_url = find_theme_image($image_url, true);
-                    } else {
-                        if (url_is_local($image_url)) {
-                            $image_url = get_custom_base_url() . '/' . $image_url;
-                        }
-                    }
-                }
-                if (!is_valid_opengraph_image($image_url)) {
-                    $image_url = ''; // Cannot use it
-                }
-            }
-            if ((empty($image_url)) && ($cma_info['alternate_icon_theme_image'] != '') && ($content_id !== ':' . DEFAULT_ZONE_PAGE_NAME)) {
-                $image_url = find_theme_image($cma_info['alternate_icon_theme_image'], true);
-                if (!is_valid_opengraph_image($image_url)) {
-                    $image_url = ''; // Cannot use it
-                }
-            }
-            if (!empty($image_url)) {
+            $image_url = $cma_ob->get_image_thumb_url($row, (($content_type == 'comcode_page') && ($content_id === ':' . DEFAULT_ZONE_PAGE_NAME)) ? THUMB_URL_FALLBACK_NONE : THUMB_URL_FALLBACK_SOFT, true);
+
+            if (($image_url != '') && (is_valid_opengraph_image($image_url))) {
                 $METADATA['image'] = $image_url;
             }
+        }
+
+        if ((!isset($METADATA['video'])) && (isset($cma_info['video_generator']))) {
+            list($METADATA['video'], $METADATA['video:width'], $METADATA['video:height'], $METADATA['video:type']) = call_user_func($cma_info['video_generator'], $row);
         }
 
         // Add all $cma_info
         $METADATA += $cma_info;
         unset($METADATA['db']);
-        $METADATA['content_type_label_trans'] = do_lang($cma_info['content_type_label']);
+        $METADATA['content_type_label_trans'] = $cma_ob->get_content_type_label($row);
     }
 
     // And let's throw in some more useful stuff...
@@ -1065,14 +1036,6 @@ function find_template_place($codename, $lang, $theme, $suffix, $directory, $non
     $sz = serialize([$codename, $lang, $theme, $suffix, $directory, $non_custom_only]);
     if (isset($tp_cache[$sz])) {
         return $tp_cache[$sz];
-    }
-
-    if (addon_installed('less') && $suffix == '.css') {
-        $test = find_template_place($codename, $lang, $theme, '.less', $directory, $non_custom_only, false);
-        if ($test !== null) {
-            $tp_cache[$sz] = $test;
-            return $test;
-        }
     }
 
     $prefix_default = get_file_base() . '/themes/';
@@ -3058,14 +3021,17 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
  */
 function log_it($type, $a = null, $b = null, $return_id = false)
 {
+    require_code('global4');
+
+    global $RELATED_WARNING_ID;
+    $related_warning_id = $RELATED_WARNING_ID;
+
     if ($return_id) {
-        require_code('global4');
-        return _log_it($type, $a, $b);
+        return _log_it($type, $a, $b, $related_warning_id);
     }
 
-    cms_register_shutdown_function_safe(function () use ($type, $a, $b) {
-        require_code('global4');
-        return _log_it($type, $a, $b);
+    cms_register_shutdown_function_safe(function () use ($type, $a, $b, $related_warning_id) {
+        return _log_it($type, $a, $b, $related_warning_id);
     });
 
     return null;
@@ -3960,9 +3926,14 @@ function make_fractionable_editable($content_type, $id, $title)
     $ob = get_content_object($content_type);
     $info = $ob->info();
 
+    $title_field = array_key_exists('title_field_post', $info) ? $info['title_field_post'] : $info['title_field'];
+    if (is_array($title_field)) {
+        return $title;
+    }
+
     $parameters = [
         is_object($title) ? $title->evaluate() : $title,
-        array_key_exists('edit_page_link_field', $info) ? $info['edit_page_link_field'] : preg_replace('#^\w\w?_#', '', array_key_exists('title_field_post', $info) ? $info['title_field_post'] : $info['title_field']),
+        array_key_exists('edit_page_link_field', $info) ? $info['edit_page_link_field'] : preg_replace('#^\w\w?_#', '', $title_field),
         array_key_exists('edit_page_link_pattern_post', $info) ? str_replace('_WILD', is_integer($id) ? strval($id) : $id, $info['edit_page_link_pattern_post']) : preg_replace('#:_(.*)#', ':__${1}', str_replace('_WILD', is_integer($id) ? strval($id) : $id, $info['edit_page_link_pattern'])),
         (array_key_exists('title_field_supports_comcode', $info) && $info['title_field_supports_comcode']) ? '1' : '0',
     ];
@@ -4529,6 +4500,7 @@ function get_login_url()
 
 /**
  * Find the filesystem owner of the website.
+ * Will always return 0 on Windows.
  *
  * @return integer Owner
  */
@@ -4539,6 +4511,7 @@ function website_file_owner()
 
 /**
  * Find the filesystem group of the website.
+ * Will always return 0 on Windows.
  *
  * @return integer Group
  */

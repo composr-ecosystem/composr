@@ -56,6 +56,7 @@ class Module_lost_password
         $type = get_param_string('type', 'browse');
 
         require_lang('cns');
+        require_lang('cns_lost_password');
         require_css('cns');
 
         if ($type == 'browse') {
@@ -128,13 +129,12 @@ class Module_lost_password
     }
 
     /**
-     * The UI to ask for the username to get the lost password for.
+     * Get an account-specifier field inputter.
      *
-     * @return Tempcode The UI
+     * @return Tempcode The field inputter
      */
-    public function step1()
+    protected function input_identifying_field()
     {
-        $fields = new Tempcode();
         require_code('form_templates');
 
         $set_name = 'account';
@@ -142,25 +142,49 @@ class Module_lost_password
         $set_title = do_lang_tempcode('ACCOUNT');
         $field_set = alternate_fields_set__start($set_name);
 
+        $field_set->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), '', 'email', trim(get_param_string('email', '', INPUT_FILTER_GET_COMPLEX)), false));
+
         $field_set->attach(form_input_line(do_lang_tempcode('USERNAME'), '', 'username', trim(get_param_string('username', '')), false));
         // form_input_username not used, so as to stop someone accidentally autocompleting to someone else's similar name - very possible for a person already known to be forgetful
 
-        $field_set->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), '', 'email', trim(get_param_string('email', '', INPUT_FILTER_GET_COMPLEX)), false));
+        return alternate_fields_set__end($set_name, $set_title, '', $field_set, $required);
+    }
 
-        $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));
-
+    /**
+     * The UI to ask for the username to get the lost password for.
+     *
+     * @return Tempcode The UI
+     */
+    public function step1()
+    {
         $password_reset_process = get_password_reset_process();
-
         $temporary_passwords = ($password_reset_process != 'emailed');
+
         $text = do_lang_tempcode('_PASSWORD_RESET_TEXT_' . $password_reset_process);
+
+        $fields = new Tempcode();
+        $hidden = new Tempcode();
+
+        $fields->attach($this->input_identifying_field());
+
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            if (use_captcha()) {
+                $fields->attach(form_input_captcha($hidden));
+                $text->attach(' ');
+                $text->attach(do_lang_tempcode('FORM_TIME_SECURITY'));
+            }
+        }
+
         $submit_name = do_lang_tempcode('PASSWORD_RESET_BUTTON');
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF');
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '080e516fef7c928dbb9fb85beb6e435a',
+            'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? [captcha_ajax_check_function()] : [],
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
-            'HIDDEN' => '',
+            'HIDDEN' => $hidden,
             'FIELDS' => $fields,
             'TEXT' => $text,
             'SUBMIT_ICON' => 'menu/site_meta/user_actions/lost_password',
@@ -170,23 +194,28 @@ class Module_lost_password
     }
 
     /**
-     * The UI and actualisation for sending out the confirm e-mail.
+     * The UI and actualisation for sending out the confirmation e-mail.
      *
      * @return Tempcode The UI
      */
     public function step2()
     {
-        $username = trim(post_param_string('username', ''));
-        $email_address = trim(post_param_string('email', ''));
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            enforce_captcha();
+        }
 
-        list($email, $email_address_masked, $member_id) = lost_password_emailer_step($username, $email_address);
+        $_username = trim(post_param_string('username', ''));
+        $_email = trim(post_param_string('email', ''));
+
+        list($email, $member_id) = lost_password_emailer_step($_username, $_email);
 
         $password_reset_process = get_password_reset_process();
 
         if ($password_reset_process == 'ultra') {
             // Input UI (as code will be typed immediately, there's no link in the e-mail for 'ultra' mode)
             $zone = get_module_zone('lost_password');
-            $_url = build_url(['page' => 'lost_password', 'type' => 'step3', 'member' => $member_id], $zone);
+            $_url = build_url(['page' => 'lost_password', 'type' => 'step3', 'email' => $_email, 'username' => $_username], $zone);
             require_code('form_templates');
             $fields = new Tempcode();
             $fields->attach(form_input_line(do_lang_tempcode('CODE'), '', 'code', null, true));
@@ -205,7 +234,10 @@ class Module_lost_password
             ]);
         }
 
-        return inform_screen($this->title, do_lang_tempcode('RESET_CODE_MAILED', escape_html($email_address_masked), escape_html($email)));
+        // Generate message
+        $mailed_message = lost_password_mailed_message($password_reset_process, $email);
+
+        return inform_screen($this->title, $mailed_message);
     }
 
     /**
@@ -221,13 +253,16 @@ class Module_lost_password
 
         $password_reset_process = get_password_reset_process();
 
+        // Lookup code
         $code = trim(get_param_string('code', ''));
         if ($code == '') {
-            require_code('form_templates');
+            // Code being manually typed
             $fields = new Tempcode();
-            $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), '', 'username', null, true));
+            $fields->attach($this->input_identifying_field());
             $fields->attach(form_input_line(do_lang_tempcode('CODE'), '', 'code', null, true));
+
             $submit_name = do_lang_tempcode('PROCEED');
+
             return do_template('FORM_SCREEN', [
                 '_GUID' => '6e4db5c6f3c75faa999251339533d22a',
                 'TITLE' => $this->title,
@@ -241,16 +276,36 @@ class Module_lost_password
                 'SUBMIT_NAME' => $submit_name,
             ]);
         }
-        $username = get_param_string('username', null);
-        if ($username !== null) {
-            $username = trim($username);
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-            if ($member_id === null) {
-                warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_2'));
+
+        // Find member involved
+        $member_id = get_param_integer('member', null);
+        if ($member_id === null) {
+            $username = get_param_string('username', null);
+            if ($username !== null) {
+                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
+                if ($member_id === null) {
+                    if (get_option('password_reset_privacy') != 'disclose') {
+                        warn_exit(do_lang_tempcode('INCORRECT_PASSWORD_RESET_CODE')); // This is a lie we have to give. They wouldn't have been given a reset code to try though!
+                    }
+                    warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_ACCOUNT_NOT_FOUND'));
+                }
+            } else {
+                $email = get_param_string('email', null, INPUT_FILTER_GET_COMPLEX);
+                if ($email !== null) {
+                    $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
+                    if ($member_id === null) {
+                        if (get_option('password_reset_privacy') != 'disclose') {
+                            warn_exit(do_lang_tempcode('INCORRECT_PASSWORD_RESET_CODE')); // This is a lie we have to give. They wouldn't have been given a reset code to try though!
+                        }
+                        warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_ACCOUNT_NOT_FOUND'));
+                    }
+                } else {
+                    warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_NO_ACCOUNT_GIVEN'));
+                }
             }
-        } else {
-            $member_id = get_param_integer('member');
         }
+
+        // Check code given is valid
         $correct_code = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code');
         if ($correct_code == '') {
             if (get_member() == $member_id) { // Already reset and already logged in
@@ -273,13 +328,19 @@ class Module_lost_password
             if ($test !== null) {
                 warn_exit(do_lang_tempcode('INCORRECT_PASSWORD_RESET_CODE')); // Just an old code that has expired
             }
-            log_hack_attack_and_exit('HACK_ATTACK_PASSWORD_CHANGE'); // Incorrect code, hack attack
+            log_hack_attack_and_exit('HACK_ATTACK_PASSWORD_CHANGE'); // Incorrect code, hack-attack
+        }
+        $correct_code_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code_time');
+        if ($correct_code_time < time() - 60 * 60 * intval(get_option('password_reset_minutes'))) {
+            warn_exit(do_lang_tempcode('RESET_CODE_EXPIRED', escape_html(display_time_period(60 * intval(get_option('password_reset_minutes'))))));
         }
 
+        // Lookup member details
         $email = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_email_address');
         $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
+        // Generate new password
         require_code('crypt');
         $new_password = get_secure_random_string();
 
@@ -287,19 +348,21 @@ class Module_lost_password
 
         if (!$temporary_passwords) {
             // Send password in mail
+            require_code('mail');
+            $subject = do_lang('MAIL_NEW_PASSWORD_SUBJECT', get_site_name());
             $_login_url = build_url(['page' => 'login', 'type' => 'browse', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id)], get_module_zone('login'), [], false, false, true);
             $login_url = $_login_url->evaluate();
             $account_edit_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, true, 'tab--edit');
             if (get_option('one_per_email_address') != '0') {
-                $lang_string = 'MAIL_NEW_PASSWORD_EMAIL_LOGIN';
+                $lang_string = 'MAIL_NEW_PASSWORD_TEXT_EMAIL_LOGIN';
             } else {
-                $lang_string = 'MAIL_NEW_PASSWORD';
+                $lang_string = 'MAIL_NEW_PASSWORD_TEXT';
             }
             $message = do_lang($lang_string, comcode_escape($new_password), $login_url, [comcode_escape(get_site_name()), comcode_escape($username), $account_edit_url->evaluate(), comcode_escape($email)]);
-            require_code('mail');
-            dispatch_mail(do_lang('LOST_PASSWORD_FINAL'), $message, [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['require_recipient_valid_since' => $join_time]);
+            dispatch_mail($subject, $message, [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['require_recipient_valid_since' => $join_time]);
         }
 
+        // Update stored password
         if ((get_value('disable_password_hashing') === '1') && (!$temporary_passwords)) {
             $password_compatibility_scheme = 'plain';
             $new = $new_password;
@@ -309,10 +372,6 @@ class Module_lost_password
             $salt = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
             $new = ratchet_hash($new_password, $salt);
         }
-
-        unset($_GET['code']);
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated_email_confirm_code' => '', 'm_password_compat_scheme' => $password_compatibility_scheme, 'm_password_change_code' => '', 'm_pass_hash_salted' => $new], ['id' => $member_id], '', 1);
-
         $password_change_days = get_option('password_change_days');
         if (intval($password_change_days) > 0) {
             if ($password_compatibility_scheme == '') {
@@ -321,7 +380,24 @@ class Module_lost_password
             }
         }
 
-        if ($temporary_passwords) { // Log them in, then invite them to change their password
+        // Mark temporary reset code used
+        unset($_GET['code']);
+        $update_map = [
+            'm_validated_email_confirm_code' => '',
+            'm_password_compat_scheme' => $password_compatibility_scheme,
+            'm_pass_hash_salted' => $new,
+        ];
+        if (!$temporary_passwords) {
+            // Mark code used if it has instant effect only - otherwise we cannot do it as the link could have been pre-clicked by a virus scanner - rely on password_reset_minutes to expire it
+            $update_map += [
+                'm_password_change_code' => '',
+                'm_password_change_code_time' => null,
+            ];
+        }
+        $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['id' => $member_id], '', 1);
+
+        // For temporary passwords: Log them in, then invite them to change their password
+        if ($temporary_passwords) {
             require_code('users_inactive_occasionals');
             create_session($member_id, 1);
 
@@ -331,7 +407,7 @@ class Module_lost_password
             return redirect_screen($this->title, $redirect_url, do_lang_tempcode('YOU_HAVE_TEMPORARY_PASSWORD', escape_html($username)));
         }
 
-        // Email new password
+        // Otherwise: Email new password
         return inform_screen($this->title, do_lang_tempcode('NEW_PASSWORD_MAILED', escape_html($email), escape_html($new_password)));
     }
 }

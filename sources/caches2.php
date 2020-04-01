@@ -102,10 +102,9 @@ function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
     $groups = null;
     $is_bot = null;
     $timezone = null;
-    $is_ssl = null;
     $theme = null;
     $lang = null;
-    get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl, $theme, $lang);
+    get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $theme, $lang);
 
     global $TEMPCODE_SETGET;
     $map = [
@@ -117,7 +116,6 @@ function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
         'c_groups' => $groups,
         'c_is_bot' => $is_bot,
         'c_timezone' => $timezone,
-        'c_is_ssl' => $is_ssl,
         'c_theme' => $theme,
         'c_lang' => $lang,
     ];
@@ -143,13 +141,12 @@ function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
  * @param  ?SHORT_TEXT $groups Sorted permissive usergroup list to limit to (null: Get from environment)
  * @param  ?BINARY $is_bot Bot status to limit to (null: Get from environment)
  * @param  ?MINIID_TEXT $timezone Timezone to limit to (null: Get from environment)
- * @param  ?BINARY $is_ssl SSL status to limit to (null: Get from environment)
  * @param  ?ID_TEXT $theme The theme this is being cached for (null: Get from environment)
  * @param  ?LANGUAGE_NAME $lang The language this is being cached for (null: Get from environment)
  */
-function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_cache_flags = CACHE_AGAINST_DEFAULT, $_langs_required = [], $_javascripts_required = [], $_csss_required = [], $tempcode = false, $staff_status = null, $member_id = null, $groups = null, $is_bot = null, $timezone = null, $is_ssl = null, $theme = null, $lang = null)
+function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_cache_flags = CACHE_AGAINST_DEFAULT, $_langs_required = [], $_javascripts_required = [], $_csss_required = [], $tempcode = false, $staff_status = null, $member_id = null, $groups = null, $is_bot = null, $timezone = null, $theme = null, $lang = null)
 {
-    get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl, $theme, $lang);
+    get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $theme, $lang);
 
     global $KEEP_MARKERS, $SHOW_EDIT_LINKS, $INJECT_HIDDEN_TEMPLATE_NAMES;
     if ($KEEP_MARKERS || $SHOW_EDIT_LINKS || $INJECT_HIDDEN_TEMPLATE_NAMES) {
@@ -169,7 +166,7 @@ function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_ca
 
     if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
         $pcache = ['dependencies' => $dependencies, 'date_and_time' => time(), 'the_value' => $cache];
-        persistent_cache_set(['CACHE', $codename, md5($cache_identifier), $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl], $pcache, false, $ttl * 60);
+        persistent_cache_set(['CACHE', $codename, md5($cache_identifier), $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone], $pcache, false, $ttl * 60);
     } else {
         $GLOBALS['SITE_DB']->query_insert_or_replace(
             'cache',
@@ -180,7 +177,6 @@ function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_ca
                 'the_groups' => $groups,
                 'is_bot' => $is_bot,
                 'timezone' => $timezone,
-                'is_ssl' => $is_ssl,
                 'the_value' => $tempcode ? $cache->to_assembly($lang) : serialize($cache),
                 'date_and_time' => time(),
             ],

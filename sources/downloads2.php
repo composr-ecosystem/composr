@@ -1396,7 +1396,7 @@ function log_download($id, $size, $got_before)
 function reorganise_uploads__download_categories($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
-    reorganise_uploads('download_category', 'uploads/repimages', 'rep_image', $where, null, true, $tolerate_errors);
+    reorganise_uploads('download_category', 'uploads/repimages', 'rep_image', $where, true, $tolerate_errors);
 }
 
 /**
@@ -1408,5 +1408,5 @@ function reorganise_uploads__download_categories($where = [], $tolerate_errors =
 function reorganise_uploads__downloads($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
-    reorganise_uploads('download', 'uploads/downloads', 'url', $where, null, false, $tolerate_errors);
+    reorganise_uploads('download', 'uploads/downloads', 'url', $where, false, $tolerate_errors);
 }

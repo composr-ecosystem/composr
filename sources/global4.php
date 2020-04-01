@@ -27,6 +27,9 @@ function init__global4()
 {
     global $ADMIN_LOGGING_ON;
     $ADMIN_LOGGING_ON = true;
+
+    global $RELATED_WARNING_ID;
+    $RELATED_WARNING_ID = null;
 }
 
 /**
@@ -467,32 +470,13 @@ function member_personal_links_and_details($member_id)
 
     if (get_forum_type() == 'cns') {
         require_code('cns_notifications');
-        list(, $num_unread_pps) = generate_notifications($member_id);
+        $num_unread_pps = generate_notifications_count($member_id);
     } else {
         $num_unread_pps = 0;
     }
 
     $cache[$member_id] = [$links, $links_ecommerce, $details, $num_unread_pps];
     return $cache[$member_id];
-}
-
-/**
- * Use the url_title_cache table (a bit of a hack but saved changed the DB structure) to see if a check-op was performed has been performed within the last 30 days.
- *
- * @param  ID_TEXT $id_code Special check code (often a URL but does not need to be)
- * @return boolean Whether the check has happened recently
- */
-function handle_has_checked_recently($id_code)
-{
-    $last_check_test = $GLOBALS['SITE_DB']->query_select_value_if_there('url_title_cache', 't_title', ['t_url' => substr('!' . $id_code, 0, 255)]);
-    if (($last_check_test === null) || (substr($last_check_test, 0, 1) != '!') || (intval(substr($last_check_test, 1)) + 60 * 60 * 24 * 30 < time())) { // only re-checks every 30 days
-        // Record when it was last tested (i.e. it will be tested now, so put this into the DB)
-        $GLOBALS['SITE_DB']->query_insert_or_replace('url_title_cache', ['t_meta_title' => '', 't_keywords' => '', 't_description' => '', 't_image_url' => '', 't_title' => '!' . strval(time()), 't_mime_type' => '', 't_json_discovery' => '', 't_xml_discovery' => ''], ['t_url' => substr('!' . $id_code, 0, 255)]);
-
-        return false; // Make sure to test it after getting this result, else the above assumption wouldn't be valid
-    }
-
-    return true;
 }
 
 /**
@@ -604,15 +588,27 @@ function prevent_double_submit($type, $a = null, $b = null)
 }
 
 /**
+ * Sets global $RELATED_WARNING_ID for use in referencing warning IDs to action and moderator logs.
+ *
+ * @param  ?integer $warning_id The ID of the warning (null: do not reference a warning id anymore in future logs)
+ */
+function set_related_warning_id($warning_id)
+{
+    global $RELATED_WARNING_ID;
+    $RELATED_WARNING_ID = $warning_id;
+}
+
+/**
  * Log an action.
  *
  * @param  ID_TEXT $type The type of activity just carried out (a language string codename)
  * @param  ?SHORT_TEXT $a The most important parameter of the activity (e.g. ID) (null: none)
  * @param  ?SHORT_TEXT $b A secondary (perhaps, human readable) parameter of the activity (e.g. caption) (null: none)
+ * @param  ?integer $related_warning_id The related warning ID (null: none)
  * @return ?AUTO_LINK Log ID (null: did not save a log)
  * @ignore
  */
-function _log_it($type, $a = null, $b = null)
+function _log_it($type, $a = null, $b = null, $related_warning_id = null)
 {
     if (!function_exists('get_member')) {
         return null; // If this is during installation
@@ -671,6 +667,7 @@ function _log_it($type, $a = null, $b = null)
             'param_b' => ($b === null) ? '' : cms_mb_substr($b, 0, 80),
             'date_and_time' => time(),
             'member_id' => get_member(),
+            'warning_id' => $related_warning_id,
             'ip' => $ip,
         ], true);
     }

@@ -536,14 +536,8 @@ function render_post_to_tapatalk($post_id, $return_html, $post_row = null, $beha
 
         $where = [];
         $where['gift_to'] = $post_author_id;
-        if (multi_lang_content()) {
-            $table = 'gifts g JOIN ' . $table_prefix . 'translate t ON t.id=g.reason';
-            $where['text_original'] = do_lang('TAPATALK_THANK_POST', strval($post_id));
-        } else {
-            $table = 'gifts';
-            $where['reason'] = do_lang('TAPATALK_THANK_POST', strval($post_id));
-        }
-        $thank_count = $GLOBALS['FORUM_DB']->query_select_value($table, 'COUNT(*)', $where);
+        $where[$GLOBALS['SITE_DB']->translate_field_ref('reason')] = do_lang('TAPATALK_THANK_POST', strval($post_id));
+        $thank_count = $GLOBALS['FORUM_DB']->query_select_value('gifts', 'COUNT(*)', $where);
         $arr['thank_count'] = mobiquo_val($thank_count, 'int');
     } else {
         $arr['thank_count'] = mobiquo_val(0, 'int');

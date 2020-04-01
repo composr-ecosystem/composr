@@ -177,7 +177,7 @@ function user_sync__inbound($since = null)
             $allow_emails_from_staff = $user_data['allow_emails_from_staff'];
             $validated = $user_data['validated'];
             $on_probation_until = $user_data['on_probation_until'];
-            $is_perm_banned = $user_data['is_perm_banned'];
+            $is_perm_banned = @strval($user_data['is_perm_banned']);
             $join_time = $user_data['join_time'];
 
             // Collate CPFs
@@ -423,6 +423,19 @@ function user_sync_handle_field_remap($field_name, $remap_scheme, $remote_data, 
                 return $data[0];
             }
             return ($data[0] === null) ? null : intval($data[0]);
+        // Ban value
+        case 'is_perm_banned':
+            if ($data[0] === null) {
+                return null;
+            }
+            $data[0] = strtolower(@strval($data[0]));
+            if (($data[0] == '0') || ($data[0] == 'false') || ($data[0] == 'no') || ($data[0] == 'off')) {
+                return '0';
+            }
+            if (($data[0] == '1') || ($data[0] == 'true') || ($data[0] == 'yes') || ($data[0] == 'on')) {
+                return '1';
+            }
+            return $data[0];
         // Timestamps
         case 'join_time':
             if (is_integer($data[0])) {
@@ -431,7 +444,6 @@ function user_sync_handle_field_remap($field_name, $remap_scheme, $remote_data, 
             return ($data[0] === null) ? null : (is_numeric($data[0]) ? intval($data[0]) : strtotime($data[0]));
         // Binary values
         case 'validated':
-        case 'is_perm_banned':
         case 'reveal_age':
         case 'allow_emails':
         case 'allow_emails_from_staff':
@@ -482,7 +494,7 @@ function user_sync_get_field_default($field_name)
         case 'validated':
             return 1;
         case 'is_perm_banned':
-            return 0;
+            return '0';
         case 'allow_emails':
             return 0;
         case 'allow_emails_from_staff':

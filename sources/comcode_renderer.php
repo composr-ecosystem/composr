@@ -34,9 +34,6 @@ function init__comcode_renderer()
     global $STRUCTURE_LIST;
     $STRUCTURE_LIST = [];
 
-    global $DONT_CARE_MISSING_PAGES;
-    $DONT_CARE_MISSING_PAGES = ['topics', 'chat', 'forumview', 'topicview', 'search'];
-
     if (!defined('MAX_URLS_TO_READ')) {
         define('MAX_URLS_TO_READ', 5);
     }
@@ -125,7 +122,7 @@ function do_emoticon($imgcode)
 }
 
 /**
- * Check the specified URL for potentially malicious JavaScript/etc. If any is found, the hack attack is logged if in an active post request by the submitting member otherwise filtered out.
+ * Check the specified URL for potentially malicious JavaScript/etc. If any is found, the hack-attack is logged if in an active post request by the submitting member otherwise filtered out.
  *
  * @param  MEMBER $source_member The member who submitted the URL
  * @param  URLPATH $url The URL to check
@@ -535,51 +532,44 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
         return new Tempcode();
     }
 
-    global $COMCODE_PARSE_URLS_CHECKED, $COMCODE_URLS, $DONT_CARE_MISSING_PAGES;
+    global $COMCODE_PARSE_URLS_CHECKED, $COMCODE_URLS;
 
-    if (isset($COMCODE_URLS)) {
+    if (isset($COMCODE_URLS)) { // This is a request to collect the URLs rather than immediately check them
         $COMCODE_URLS[$url_full] = true;
     }
 
-    $temp_tpl = new Tempcode();
-    require_code('global4');
-    if (!handle_has_checked_recently($url_full)) {
-        $COMCODE_PARSE_URLS_CHECKED++;
-        if ($COMCODE_PARSE_URLS_CHECKED >= MAX_URLS_TO_READ) {
-            return new Tempcode();
-        }
+    $COMCODE_PARSE_URLS_CHECKED++;
+    if ($COMCODE_PARSE_URLS_CHECKED >= MAX_URLS_TO_READ) {
+        return new Tempcode();
+    }
 
-        $test = cms_http_request($url_full, ['trigger_error' => false, 'byte_limit' => 0]);
-        if (($test === null) && ($test->message == '403')) {
-            $test = cms_http_request($url_full, ['trigger_error' => false, 'byte_limit' => 1]); // Try without HEAD, sometimes it's not liked
-        }
-        if (($test->data === null) && (in_array($test->message, ['404']))) {
-            if ($test->message != 'could not connect to host'/*don't show for random connectivity issue*/) {
-                $temp_tpl = do_template('WARNING_BOX', [
-                    '_GUID' => '7bcea67226f89840394614d88020e3ac',
-                    'RESTRICT_VISIBILITY' => strval($source_member),
-                    //'INLINE' => true, Looks awful
-                    'WARNING' => do_lang_tempcode('MISSING_URL_COMCODE', escape_html($tag_type), escape_html($url_full)),
-                ]);
+    $temp_tpl = new Tempcode();
+    require_code('urls2');
+    if (!check_url_exists($url_full)) {
+        $temp_tpl = do_template('WARNING_BOX', [
+            '_GUID' => '7bcea67226f89840394614d88020e3ac',
+            'RESTRICT_VISIBILITY' => strval($source_member),
+            //'INLINE' => true, Looks awful
+            'WARNING' => do_lang_tempcode('MISSING_URL_COMCODE', escape_html($tag_type), escape_html($url_full)),
+        ]);
+
+        if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
+            $found_in_post = false; // We don't want to send e-mail if someone's just posting it right now, because they'll see the error on their screen, and we don't want staff spammed by member mistakes
+            foreach ($_POST as $val) {
+                if (is_array($_POST)) {
+                    continue;
+                }
+                if ((is_string($val)) && (strpos($val, $given_url) !== false)) {
+                    $found_in_post = true;
+                }
             }
-            if ((!in_array(get_page_name(), $DONT_CARE_MISSING_PAGES)) && (running_script('index'))) {
-                $found_in_post = false; // We don't want to send e-mail if someone's just posting it right now, because they'll see the error on their screen, and we don't want staff spammed by member mistakes
-                foreach ($_POST as $val) {
-                    if (is_array($_POST)) {
-                        continue;
-                    }
-                    if ((is_string($val)) && (strpos($val, $given_url) !== false)) {
-                        $found_in_post = true;
-                    }
-                }
-                if (!$found_in_post) {
-                    require_code('failure');
-                    relay_error_notification(
-                        do_lang('MISSING_URL_COMCODE', $tag_type, $url_full),
-                        false,
-                        $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference'
-                    );
-                }
+            if (!$found_in_post) {
+                require_code('failure');
+                relay_error_notification(
+                    do_lang('MISSING_URL_COMCODE', $tag_type, $url_full),
+                    false,
+                    $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference'
+                );
             }
         }
     }
@@ -1192,7 +1182,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     '_GUID' => '1d617fd24b632640dddeeadd8432d7a9',
                     'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'include', hyperlink(build_url(['page' => 'cms_comcode_pages', 'type' => '_edit', 'page_link' => $zone . ':' . $codename], get_module_zone('cms_comcode_pages')), $zone . ':' . $codename, false, true)),
                 ]);
-                if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
+                if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
                     require_code('failure');
                     relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'include', $zone . ':' . $codename), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
                 }
@@ -1583,7 +1573,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 break;
             }
             $tpl_map = [
-                'ID' => (substr($pass_id, 0, 5) == 'panel') ? null : $uniq_id,
+                'ID' => ((substr($pass_id, 0, 5) == 'panel') || (strpos($pass_id, ':') !== false)) ? null : $uniq_id,
                 'TITLE' => $embed,
                 'HELP_URL' => '',
                 'HELP_TERM' => '',
@@ -1942,7 +1932,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
                 if ($ptest === false) {
                     //$temp_tpl->attach(' [' . do_lang('MISSING_RESOURCE') . ']');  // Don't want this as we might be making the page immediately
-                    if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (!in_array($page, $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
+                    if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
                         if ($ignore_if_hidden) {
                             $temp_tpl = do_template('COMCODE_DEL', ['_GUID' => 'df638c61bc17ca975e95cf5f749836f5', 'CONTENT' => $caption]);
                         } else {
@@ -2255,7 +2245,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $attachment_rows = $db->query_select('attachments', ['*'], ['id' => $__id], '', 1);
                 if (!array_key_exists(0, $attachment_rows)) { // Missing attachment!
                     $temp_tpl = do_template('WARNING_BOX', ['_GUID' => 'be1c9c26a8802a00955fbd7a55b08bd3', 'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'attachment', escape_html(strval($__id)))]);
-                    if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
+                    if (($GLOBALS['FORUM_DRIVER']->is_staff($source_member)) && (running_script('index'))) {
                         require_code('failure');
                         relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'attachment', strval($__id)), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
                     }
@@ -2302,21 +2292,30 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         }
                     } elseif ((addon_installed('galleries')) && (is_video($original_filename, $as_admin, true)) && (url_is_local($url))) {
                         require_code('galleries2');
-                        $attributes['thumb_url'] = create_video_thumb(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url);
+                        $attributes['thumb_url'] = video_get_default_thumb_url(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url);
                     }
                 }
 
                 // Width/height auto-detection
                 if ((addon_installed('galleries')) && (is_video($original_filename, $as_admin)) && (url_is_local($url))) {
                     require_code('galleries2');
-                    $vid_details = url_is_local($url) ? get_video_details(get_custom_file_base() . '/' . rawurldecode($url), $original_filename, true) : false;
+                    if (url_is_local($url)) {
+                        $vid_details = video_get_default_metadata($url, '', $original_filename);
+                    } else {
+                        $vid_details = false;
+                    }
+
                     if ($vid_details !== false) {
-                        list($_width, $_height,) = $vid_details;
-                        if ((!array_key_exists('width', $attributes)) || ($attributes['width'] == '')) {
-                            $attachment_row['width'] = strval($_width);
+                        list($_width, $_height) = $vid_details;
+                        if ($_width !== null) {
+                            if ((!array_key_exists('width', $attributes)) || ($attributes['width'] == '')) {
+                                $attachment_row['width'] = strval($_width);
+                            }
                         }
-                        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] == '')) {
-                            $attachment_row['height'] = strval($_height);
+                        if ($_height !== null) {
+                            if ((!array_key_exists('height', $attributes)) || ($attributes['height'] == '')) {
+                                $attachment_row['height'] = strval($_height);
+                            }
                         }
                     }
                 }

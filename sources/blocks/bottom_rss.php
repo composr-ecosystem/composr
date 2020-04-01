@@ -81,10 +81,6 @@ class Block_bottom_rss
             return do_template('WARNING_BOX', ['_GUID' => '7ae6a91db7c7ac7d607b9e29ddafc344', 'WARNING' => $rss->error]);
         }
 
-        global $NEWS_CATS_CACHE;
-        $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
-        $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
-
         $_postdetailss = [];
 
         // Now for the actual stream contents

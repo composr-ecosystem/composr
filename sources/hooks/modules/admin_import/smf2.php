@@ -436,7 +436,7 @@ class Hook_import_smf2
                     $validated, // validated
                     '', // validated_email_confirm_code
                     null, // on_probation_until
-                    0, // is_perm_banned
+                    '0', // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
                     $type, // password_compatibility_scheme
@@ -740,7 +740,7 @@ class Hook_import_smf2
 
                 if (($uid !== null) && ($uid != 1 && $uid != 2)) {
                     if ($ban_till === null) {
-                        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => 1], ['id' => $uid]);
+                        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => '1'], ['id' => $uid]);
                     } else {
                         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $ban_till], ['id' => $uid]);
                     }

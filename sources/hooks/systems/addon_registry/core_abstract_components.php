@@ -45,6 +45,16 @@ class Hook_addon_registry_core_abstract_components
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Architecture';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -249,6 +259,8 @@ class Hook_addon_registry_core_abstract_components
                 'JS_TOOLTIP' => lorem_phrase(),
                 'CAPTION' => lorem_phrase(),
                 'URL' => placeholder_image_url(),
+                'WIDTH' => placeholder_number(),
+                'HEIGHT' => placeholder_number(),
             ]), null, '', true)
         ];
     }

@@ -45,6 +45,16 @@ class Hook_addon_registry_ldap
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return is_maintained('ldap') ? 'Third Party Integration' : 'Development';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon

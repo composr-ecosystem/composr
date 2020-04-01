@@ -2153,6 +2153,10 @@ abstract class Resource_fs_base
      */
     protected function _resource_save_extend($resource_type, $resource_id, $filename, $label, $properties)
     {
+        if (cms_mb_strlen($filename) > 80) { // Filename has may just have been the label from an add operation, in which case we must chop it down
+            $filename = cms_mb_substr($filename, 0, 80);
+        }
+
         $cma_info = $this->_get_cma_info($resource_type);
         $db = $cma_info['db'];
 
@@ -2583,21 +2587,7 @@ abstract class Resource_fs_base
             }
 
             $select = [];
-            append_content_select_for_id($select, $file_info);
-            if ($file_info['add_time_field'] !== null) {
-                $select[] = $file_info['add_time_field'];
-            }
-            if ($file_info['edit_time_field'] !== null) {
-                $select[] = $file_info['edit_time_field'];
-            }
-            if (!is_array($file_info['id_field'])) {
-                $select[] = 'main.' . $file_info['id_field'];
-            } else {
-                foreach ($file_info['id_field'] as $id_field) {
-                    $select[] = 'main.' . $id_field;
-                }
-            }
-            $select = array_unique($select);
+            append_content_select_for_fields($select, $file_info, ['id', 'add_time', 'edit_time'], 'main');
             $files = $file_info['db']->query_select($file_info['table'], $select, $where, '', 10000/*Reasonable limit*/);
             foreach ($files as $file) {
                 $str_id = extract_content_str_id_from_data($file, $file_info);

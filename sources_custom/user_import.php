@@ -108,7 +108,7 @@ function do_user_import()
         $allow_emails = isset($USER_IMPORT_WANTED['m_allow_emails']) ? $row[$USER_IMPORT_WANTED['m_allow_emails']] : 1;
         $allow_emails_from_staff = isset($USER_IMPORT_WANTED['m_allow_emails_from_staff']) ? $row[$USER_IMPORT_WANTED['m_allow_emails_from_staff']] : 1;
         $validated = isset($USER_IMPORT_WANTED['m_validated']) ? $row[$USER_IMPORT_WANTED['m_validated']] : 1;
-        $is_perm_banned = isset($USER_IMPORT_WANTED['m_is_perm_banned']) ? $row[$USER_IMPORT_WANTED['m_is_perm_banned']] : 0;
+        $is_perm_banned = isset($USER_IMPORT_WANTED['m_is_perm_banned']) ? @strval($row[$USER_IMPORT_WANTED['m_is_perm_banned']]) : '0';
 
         if ($member_id === null) {
             if ($username !== null) {

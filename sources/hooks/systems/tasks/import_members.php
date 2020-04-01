@@ -250,7 +250,17 @@ class Hook_task_import_members
                 }
             }
             $signature = array_key_exists('Signature', $line) ? $line['Signature'] : '';
-            $is_perm_banned = array_key_exists('Banned', $line) ? ((strtoupper($line['Banned']) == 'YES' || $line['Banned'] == '1' || strtoupper($line['Banned']) == 'Y' || strtoupper($line['Banned']) == 'ON') ? 1 : 0) : 0;
+            if ((array_key_exists('Banned', $line)) && ($line['Banned'] != '')) {
+                if (strtoupper($line['Banned']) == 'YES' || $line['Banned'] == '1' || strtoupper($line['Banned']) == 'Y' || strtoupper($line['Banned']) == 'ON') {
+                    $is_perm_banned = '1';
+                } elseif (strtoupper($line['Banned']) == 'NO' || $line['Banned'] == '0' || strtoupper($line['Banned']) == 'N' || strtoupper($line['Banned']) == 'OFF') {
+                    $is_perm_banned = '0';
+                } else {
+                    $is_perm_banned = $line['Banned'];
+                }
+            } else {
+                $is_perm_banned = '0';
+            }
             $reveal_age = array_key_exists('Reveal age', $line) ? ((strtoupper($line['Reveal age']) == 'YES' || $line['Reveal age'] == '1' || strtoupper($line['Reveal age']) == 'Y' || strtoupper($line['Reveal age']) == 'ON') ? 1 : 0) : 0;
             $language = array_key_exists('Language', $line) ? $line['Language'] : '';
             $allow_emails = array_key_exists('Accept member e-mails', $line) ? ((strtoupper($line['Accept member e-mails']) == 'YES' || $line['Accept member e-mails'] == '1' || strtoupper($line['Accept member e-mails']) == 'Y' || strtoupper($line['Accept member e-mails']) == 'ON') ? 1 : 0) : 0;

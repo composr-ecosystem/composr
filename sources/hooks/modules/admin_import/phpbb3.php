@@ -444,7 +444,7 @@ class Hook_import_phpbb3
                     $validated, // validated
                     '', // validated_email_confirm_code
                     null, // on_probation_until
-                    ($row['ban_id'] === null) ? 0 : 1, // is_perm_banned
+                    ($row['ban_id'] === null) ? '0' : '1', // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
                     $type, // password_compatibility_scheme

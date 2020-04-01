@@ -87,7 +87,7 @@ function cns_join_form($url, $captcha_if_enabled = true, $intro_message_if_enabl
     }
 
     url_default_parameters__enable();
-    list($fields, $_hidden, $added_section) = cns_get_member_fields(true, '', null, '', '', null, $groups, null, null, null, null, null, null, null, 0, 1, 1, null, null, null, 1, null, 1, 1, 0, '*', '', 1, null, 0, $adjusted_config_options);
+    list($fields, $_hidden, $added_section) = cns_get_member_fields(true, '', null, '', '', null, $groups, null, null, null, null, null, null, null, 0, 1, 1, null, null, null, 1, null, 1, 1, 0, '*', '', 1, null, '0', $adjusted_config_options);
     url_default_parameters__disable();
     $hidden->attach($_hidden);
 
@@ -362,7 +362,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
             $validated, // validated
             $validated_email_confirm_code, // validated_email_confirm_code
             null, // on_probation_until
-            0, // is_perm_banned
+            '0', // is_perm_banned
             true // check_correctness
         );
     } else {

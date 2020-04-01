@@ -878,11 +878,11 @@ function do_template($codename, $parameters = [], $lang = null, $light_error = f
     $found = null;
     $may_use_template_cache =
         ($CACHE_TEMPLATES) &&
+        (has_caching_for('template', $codename)) &&
         (!$IS_TEMPLATE_PREVIEW_OP_CACHE) &&
         ((!$POSSIBLY_IN_SAFE_MODE_CACHE) || (isset($GLOBALS['SITE_INFO']['safe_mode'])) || (!in_safe_mode())) &&
         (!$RECORD_LANG_STRINGS/*Tempcode compilation embeds lang strings*/) &&
-        !$inlining_mode
-        ;
+        !$inlining_mode;
     if (!$loaded_this_once) {
         $found = find_template_place($codename, $lang, $theme, $suffix, $directory, $non_custom_only);
         $TEMPLATE_DISK_ORIGIN_CACHE[$codename][$lang][$theme][$suffix][$directory][$non_custom_only] = $found;
@@ -1164,7 +1164,11 @@ function handle_symbol_preprocessing($seq_part, &$children)
                     return;
                 }
                 if ($url_parts['id'] === null) {
-                    $url_parts['id'] = strval(db_get_first_id());
+                    if (($url_parts['page'] == 'members') && ($url_parts['type'] == 'view')) {
+                        $url_parts['id'] = strval(get_member()); // FUDGE
+                    } else {
+                        $url_parts['id'] = strval(db_get_first_id());
+                    }
                 }
 
                 // Does this URL arrangement support monikers?
@@ -1550,7 +1554,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
             if (isset($param[1])) {
                 foreach ($param as $i => $p) {
                     if (is_object($p)) {
-                        $param[$i] = $p->evaluate();
+                        $param[$i] = @$p->evaluate(); // The "@" is in case something is not passed
                     }
                 }
 

@@ -18,6 +18,23 @@
  * @package    cns_forum
  */
 
+/*
+Overview of permissions we check...
+
+New regular topic:
+ - cns_may_post_topic
+
+New private topic:
+ - cns_may_make_private_topic / cns_check_make_private_topic
+ - cns_may_whisper
+
+Reply to regular or private topic:
+ - cns_may_post_in_topic
+ - cns_may_access_topic
+... and an inline personal post:
+ - cns_may_whisper
+*/
+
 /**
  * Module page class.
  */
@@ -58,7 +75,8 @@ class Module_topics
         if (get_forum_type() != 'cns') {
             return null;
         }
-        if ($check_perms && is_guest($member_id)) {
+        require_code('cns_topics');
+        if ($check_perms && !cns_may_make_private_topic($member_id)) {
             return [];
         }
 
@@ -1487,9 +1505,6 @@ class Module_topics
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
             }
             if ($_postdetails[0]['p_cache_forum_id'] !== null) {
-                if (!has_category_access(get_member(), 'forums', strval($_postdetails[0]['p_cache_forum_id']))) {
-                    access_denied('I_ERROR');
-                }
                 if ((is_guest()) && ($_postdetails[0]['p_intended_solely_for'] !== null)) {
                     access_denied('I_ERROR');
                 } elseif ((!has_privilege(get_member(), 'view_other_pt')) && ($_postdetails[0]['p_intended_solely_for'] != get_member()) && ($_postdetails[0]['p_poster'] != get_member()) && ($_postdetails[0]['p_intended_solely_for'] !== null)) {
@@ -1503,17 +1518,12 @@ class Module_topics
                 if (!array_key_exists(0, $_topic)) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
                 }
-            } else {
-                $_topic = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_cache_first_title'], ['id' => $_postdetails[0]['p_topic_id']], '', 1);
-                if (!array_key_exists(0, $_topic)) {
-                    warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
-                }
-                $from = $_topic[0]['t_pt_from'];
-                $to = $_topic[0]['t_pt_to'];
-                if (($from != get_member()) && ($to != get_member()) && (!cns_has_special_pt_access($_postdetails[0]['p_topic_id'])) && (!has_privilege(get_member(), 'view_other_pt'))) {
-                    access_denied('I_ERROR');
-                }
             }
+
+            if (!cns_may_access_topic($_postdetails[0]['p_topic_id'])) {
+                access_denied('I_ERROR');
+            }
+
             $post->attach(do_template('CNS_QUOTE_FCOMCODE', [
                 '_GUID' => '5542508cad43a0cd5798afbb06f9e616',
                 'ID' => strval($quote),
@@ -1597,8 +1607,6 @@ class Module_topics
 
         // Breadcrumbs etc
         if ($private_topic) {
-            cns_check_make_private_topic();
-
             breadcrumb_set_parents([['_SEARCH:forumview:pt', do_lang_tempcode('PRIVATE_TOPICS')]]);
 
             $username = mixed();
@@ -1655,7 +1663,6 @@ class Module_topics
 
             if ($member_id == get_member()) {
                 $specialisation->attach(form_input_username_multi(do_lang_tempcode('TO'), '', 'to_member_id_', [], 1, true, 1));
-                cns_check_make_private_topic();
             } else {
                 $hidden_fields->attach(form_input_hidden('member_id', strval($member_id)));
             }
@@ -1949,18 +1956,8 @@ class Module_topics
         if ($topic_title === null) {
             $topic_title = '';
         }
-        if ($forum_id !== null) {
-            if (!has_category_access(get_member(), 'forums', strval($forum_id))) {
-                access_denied('CATEGORY_ACCESS'); // Can happen if trying to reply to a stated whisper made to you in a forum you don't have access to
-            }
-        } else {
-            // It must be a Private Topic. Do we have access?
-            $from = $topic_info['t_pt_from'];
-            $to = $topic_info['t_pt_to'];
-
-            if (($from != get_member()) && ($to != get_member()) && (!cns_has_special_pt_access($topic_id)) && (!has_privilege(get_member(), 'view_other_pt'))) {
-                access_denied('PRIVILEGE', 'view_other_pt');
-            }
+        if (!cns_may_access_topic($topic_id)) { // cns_may_post_in_topic will be checked on actualiser, we can't check now as we don't know if it will be an inline personal post or not
+            access_denied('I_ERROR');
         }
         $this->handle_topic_breadcrumbs($forum_id, $topic_id, $topic_title, do_lang_tempcode('ADD_POST'));
 
@@ -2232,6 +2229,7 @@ class Module_topics
     }
 
     /**
+     * The actualiser to add a reply (shared for adding topics, adding posts, and new topics with polls).
      * @return array
      */
     public function _add_reply_and_return_info()
@@ -2330,6 +2328,16 @@ class Module_topics
             $metadata = actual_metadata_get_fields('topic', null, ['submitter', 'add_time', 'edit_time']);
 
             if ($forum_id === null) { // New Private Topic
+                if ($member_id == -1) {
+                    warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'to_member_id_0'));
+                }
+
+                cns_check_make_private_topic();
+                require_code('cns_members2');
+                if (!cns_may_whisper($member_id)) {
+                    warn_exit(do_lang_tempcode('NO_PT_FROM_ALLOW'));
+                }
+
                 if ($anonymous == 1) {
                     if (cns_forum_allows_anonymous_posts(null)) {
                         $poster_name_if_guest = null;
@@ -2355,13 +2363,11 @@ class Module_topics
                 $_title = get_screen_title('ADD_TOPIC');
 
                 $_topic_id = strval($topic_id);
-                $schedule_code = <<<END
-:\$GLOBALS['FORUM_DB']->query_update('f_topics',['t_cache_first_time'=>time(],'t_validated'=>1),['id'=>{$_topic_id}],'',1);
-END;
 
                 $schedule = post_param_date('schedule');
 
                 if (($schedule !== null) && (addon_installed('calendar'))) {
+                    $parameters = [];
                     require_code('calendar');
                     $start_year = intval(date('Y', $schedule));
                     $start_month = intval(date('m', $schedule));
@@ -2369,8 +2375,7 @@ END;
                     $start_hour = intval(date('H', $schedule));
                     $start_minute = intval(date('i', $schedule));
                     require_code('calendar2');
-                    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('ADD_SCHEDULED_TOPIC', $topic_title), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
-                    regenerate_event_reminder_jobs($event_id);
+                    schedule_code('publish_topic', strval($topic_id), $parameters, do_lang('ADD_SCHEDULED_TOPIC', $topic_title), $start_year, $start_month, $start_day, $start_hour, $start_minute);
 
                     $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_validated' => 0], ['id' => $topic_id], '', 1);
                 }
@@ -2425,16 +2430,7 @@ END;
                 $schedule = post_param_date('schedule');
 
                 if (($schedule !== null) && (addon_installed('calendar'))) {
-                    $_intended_solely_for = ($intended_solely_for === null) ? 'null' : strval($intended_solely_for);
-                    $_postdetailser_name_if_guest = ($poster_name_if_guest === null) ? 'null' : ('\'' . addslashes($poster_name_if_guest) . '\'');
-                    $_first_post = $first_post ? 'true' : 'false';
-                    $__title = ($title === null) ? 'null' : ('\'' . str_replace("\n", '\'."\n".\'', addslashes($title)) . '\'');
-                    $_postdetails = ($post === null) ? 'null' : ('\'' . str_replace("\n", '\'."\n".\'', addslashes($post)) . '\'');
-                    $_new_title = ($new_title === null) ? 'null' : ('\'' . str_replace("\n", '\'."\n".\'', addslashes($new_title)) . '\'');
-
-                    $schedule_code = <<<END
-:require_code('cns_topics_action2'); require_code('cns_topics_action'); cns_edit_topic($topic_id,null,null,$validated,$open,$pinned,$cascading,'',$_new_title); if (($to!=$forum_id) && ($to !== null)) cns_move_topics($forum_id,$to,[$topic_id]); \$post_id=cns_make_post($topic_id,$__title,$_postdetails,$skip_sig,$_first_post,$validated,$is_emphasised,$_postdetailser_name_if_guest,null,null,null,$_intended_solely_for,null,nullfalse,true,null,true,$topic_title,null,$anonymous==1); if (addon_installed('awards')) { require_code('awards'); handle_award_setting('post',strval(\$post_id)); }
-END;
+                    $parameters = [$topic_id, $validated, $open, $pinned, $cascading, $new_title, $to, $forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous];
                     require_code('calendar');
                     $start_year = intval(date('Y', $schedule));
                     $start_month = intval(date('m', $schedule));
@@ -2442,8 +2438,7 @@ END;
                     $start_hour = intval(date('H', $schedule));
                     $start_minute = intval(date('i', $schedule));
                     require_code('calendar2');
-                    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('ADD_POST'), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
-                    regenerate_event_reminder_jobs($event_id);
+                    schedule_code('publish_post', '', $parameters, do_lang('ADD_POST'), $start_year, $start_month, $start_day, $start_hour, $start_minute);
 
                     $text = do_lang_tempcode('SUCCESS');
                     $map = ['page' => 'topicview', 'type' => 'first_unread', 'id' => $topic_id];
@@ -2455,9 +2450,8 @@ END;
                     if ($test_threaded !== null) {
                         $map['threaded'] = $test_threaded;
                     }
-                    $_url = build_url($map, get_module_zone('topicview'));
+                    $_url = build_url($map, get_module_zone('topicview'), [], false, false, false, 'first-unread');
                     $url = $_url->evaluate();
-                    $url .= '#first-unread';
                     $url = get_param_string('redirect', $url, INPUT_FILTER_URL_INTERNAL);
 
                     $info = [
@@ -2538,9 +2532,8 @@ END;
                 if ($test_threaded !== null) {
                     $map['threaded'] = $test_threaded;
                 }
-                $_url = build_url($map, get_module_zone('topicview'));
+                $_url = build_url($map, get_module_zone('topicview'), [], false, false, false, 'post_' . strval($post_id));
                 $url = $_url->evaluate();
-                $url .= '#post_' . strval($post_id);
             }
         }
 
@@ -3079,6 +3072,10 @@ END;
             $topic_id = $info['topic_id'];
         }
 
+        if (!cns_may_access_topic($topic_id)) {
+            access_denied('I_ERROR');
+        }
+
         require_code('cns_polls_action');
         require_code('cns_polls_action2');
 
@@ -3091,10 +3088,6 @@ END;
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
             }
             $row = $_poll_row[0];
-            $existing_forum_id = $row['t_forum_id'];
-            if (!has_category_access(get_member(), 'forums', strval($existing_forum_id))) {
-                access_denied('CATEGORY_ACCESS_LEVEL');
-            }
 
             $answer_rows = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['pa_answer'], ['pa_poll_id' => $existing], (get_db_type() == 'xml') ? 'ORDER BY pa_answer' : 'ORDER BY id');
             $answers = [];
@@ -3407,27 +3400,14 @@ END;
 
     /**
      * Check there is at least some moderation access over the given topic.
+     * This is here to prevent snooping into the details of things (the backend provides the true security).
      *
      * @param  AUTO_LINK $topic_id The topic ID
      */
-    public function check_has_mod_access($topic_id) // This is here to prevent snooping into the details of things (the backend provides the true security)
+    public function check_has_mod_access($topic_id)
     {
-        $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
-        if (!array_key_exists(0, $_topic_info)) {
-            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
-        }
-        $topic_info = $_topic_info[0];
-        $forum_id = $topic_info['t_forum_id'];
-        $private_topic = ($forum_id === null);
-
-        if (($private_topic) && ($topic_info['t_pt_from'] != get_member()) && ($topic_info['t_pt_to'] != get_member()) && (!cns_has_special_pt_access($topic_id)) && (!has_privilege(get_member(), 'view_other_pt'))) {
+        if (!cns_may_access_topic($topic_id, get_member(), null, false)) {
             access_denied('I_ERROR');
-        }
-
-        if (!$private_topic) {
-            if (!has_category_access(get_member(), 'forums', strval($forum_id))) {
-                access_denied('I_ERROR');
-            }
         }
     }
 

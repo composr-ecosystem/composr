@@ -123,6 +123,7 @@ function external_db_user_sync($member_id, $record)
         'm_validated_email_confirm_code' => '',
         'm_password_compat_scheme' => '',
         'm_password_change_code' => '',
+        'm_password_change_code_time' => null,
         'm_pass_hash_salted' => $new,
         'm_pass_salt' => $salt,
     ];

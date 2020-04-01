@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: curl_.*|imagefilledrectangle*/
+/*EXTRA FUNCTIONS: curl_.*|imagefilledrectangle|usleep*/
 
 /**
  * Script to make a nice textual image, vertical writing.
@@ -123,6 +123,12 @@ function gd_text_script()
         } else {
             $fg_color = get_theme_option('seed');
         }
+    }
+    if (strlen($fg_color) == 3) {
+        $fg_color = $fg_color[0] . $fg_color[0] . $fg_color[1] . $fg_color[1] . $fg_color[2] . $fg_color[2];
+    }
+    if (preg_match('#^[\dA-F]{6}$#i', $fg_color) == 0) {
+        $fg_color = '000000';
     }
     $color = imagecolorallocate($img, hexdec(substr($fg_color, 0, 2)), hexdec(substr($fg_color, 2, 2)), hexdec(substr($fg_color, 4, 2)));
     if (!has_ttf()) {
@@ -232,8 +238,45 @@ function cron_bridge_script($caller)
 {
     header('X-Robots-Tag: noindex');
 
+    // Read options
+    $loop = false;
+    $loop_wait_seconds = 3;
+    $loop_max_seconds = 3595;
+    if (is_cli()) {
+        $cli_options = getopt('', ['limit_hooks:', 'verbose', 'query_mode', 'force', 'include_msn', 'loop', 'loop_wait_seconds:', 'loop_max_seconds:']);
+
+        $_limit_hooks = isset($cli_options['limit_hooks']) ? $cli_options['limit_hooks'] : '';
+        $verbose = isset($cli_options['verbose']);
+        $query_mode = isset($cli_options['query_mode']);
+        $force = isset($cli_options['force']);
+        $include_msn = isset($cli_options['include_msn']);
+
+        // Read looping options
+        $loop = isset($cli_options['loop']);
+        if (!@cms_empty_safe($cli_options['loop_wait_seconds'])) {
+            $loop_wait_seconds = intval($cli_options['loop_wait_seconds']);
+        }
+        if (!@cms_empty_safe($cli_options['loop_max_seconds'])) {
+            $loop_max_seconds = intval($cli_options['loop_max_seconds']);
+        }
+    } else {
+        $_limit_hooks = get_param_string('limit_hooks', '');
+        $verbose = (get_param_integer('verbose', 0) == 1);
+        $query_mode = (get_param_integer('query_mode', 0) == 1);
+        $force = (get_param_integer('force', 0) == 1);
+        $include_msn = (get_param_integer('include_msn', 0) == 1);
+    }
+    if ($_limit_hooks == '') {
+        $limit_hooks = [];
+    } else {
+        $limit_hooks = explode(',', $_limit_hooks);
+        foreach ($limit_hooks as &$limit_hook) {
+            $limit_hook = preg_replace('#\.php$#', '', $limit_hook);
+        }
+    }
+
     // In query mode, Composr will just give advice on the system scheduler settings to use
-    if (get_param_integer('querymode', 0) == 1) {
+    if ($query_mode) {
         header('Content-Type: text/plain; charset=' . get_charset());
         cms_ini_set('ocproducts.xss_detect', '0');
         require_code('files2');
@@ -242,29 +285,44 @@ function cron_bridge_script($caller)
         exit();
     }
 
-    // Upgrade pending?
-    $version_files = float_to_raw_string(cms_version_number(), 10, true);
-    if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files)) {
-        return;
-    }
-
     // Get ready
-    $limit_hook = get_param_string('limit_hook', '');
-    $manual_run = (get_param_integer('manual_run', 0) == 1);
-    if ($manual_run) {
+    if ($verbose) {
+        cms_ini_set('ocproducts.xss_detect', '0');
         header('Content-Type: text/plain; charset=' . get_charset());
     }
     require_code('failure');
 
-    // For multi-site installs, run for each install
-    global $CURRENT_SHARE_USER, $SITE_INFO;
-    if (($CURRENT_SHARE_USER === null) && (!empty($SITE_INFO['custom_share_domain']))) {
-        require_code('files');
+    // Upgrade pending?
+    $version_files = float_to_raw_string(cms_version_number(), 10, true);
+    if ((get_value('version') != $version_files) || (get_value('cns_version') != $version_files)) {
+        if ($verbose) {
+            echo loggable_date() . ' An upgrade is pending, cannot run' . "\n";
+        }
+        return;
+    }
 
-        foreach ($SITE_INFO as $key => $val) {
-            if (substr($key, 0, 12) == 'custom_user_') {
-                $url = preg_replace('#://[\w\.]+#', '://' . substr($key, 12) . '.' . $SITE_INFO['custom_share_domain'], get_base_url()) . '/data/cron_bridge.php';
-                http_get_contents($url);
+    // Check global locking, but only in looping mode
+    if ($loop) {
+        if ((get_value_newer_than('cron_currently_running', time() - 60 * 60/*large 1 hour timeout in case an instance is stuck doing something very slow*/, true) === '1') && (!$force)) {
+            if ($verbose) {
+                echo loggable_date() . ' Cron is still locked' . "\n";
+            }
+            return;
+        }
+        set_value('cron_currently_running', '1', true);
+    }
+
+    // For multi-site installs, run for each install
+    if ($include_msn) {
+        global $CURRENT_SHARE_USER, $SITE_INFO;
+        if (($CURRENT_SHARE_USER === null) && (!empty($SITE_INFO['custom_share_domain']))) {
+            require_code('files');
+
+            foreach ($SITE_INFO as $key => $val) {
+                if (substr($key, 0, 12) == 'custom_user_') {
+                    $url = preg_replace('#://[\w\.]+#', '://' . substr($key, 12) . '.' . $SITE_INFO['custom_share_domain'], get_base_url()) . '/data/cron_bridge.php';
+                    http_get_contents($url, ['timeout' => 180.0]);
+                }
             }
         }
     }
@@ -272,142 +330,252 @@ function cron_bridge_script($caller)
     // Starting logging
     $_log_file = get_custom_file_base() . '/data_custom/cron.log';
     $log_file = null;
+    $log_message = loggable_date() . '  (CRON STARTING)' . "\n";
+    if ($verbose) {
+        echo $log_message;
+    }
     if (is_file($_log_file)) {
         require_code('files');
         $log_file = cms_fopen_text_write($_log_file, true, 'ab');
-        fwrite($log_file, loggable_date() . '  (CRON STARTING)' . "\n");
+        fwrite($log_file, $log_message);
         flock($log_file, LOCK_UN);
     }
+
+    // Hook details
+    $cron_hooks = find_all_hook_obs('systems', 'cron', 'Hook_cron_');
+    $cron_hooks_info = [];
 
     // Load progression data
     $cron_progression = list_to_map('c_hook', $GLOBALS['SITE_DB']->query_select('cron_progression', ['*']));
 
-    // Logging of timings
-    set_value('last_cron', strval(time()));
-    set_value('last_cron_started', '-', true);
+    // So the block knows the system scheduler has run
     if (intval(get_value('last_cron')) < time() - 60 * 60 * 12) {
-        delete_cache_entry('main_staff_checklist'); // So the block knows the system scheduler has run
+        delete_cache_entry('main_staff_checklist');
     }
 
-    // Call the hooks which do the real work
-    $cron_hooks = find_all_hook_obs('systems', 'cron', 'Hook_cron_');
-    foreach ($cron_hooks as $hook => $object) {
-        // Whitelisted?
-        if (($limit_hook != '') && ($limit_hook != $hook)) {
-            continue;
-        }
+    do {
+        // Logging of timings
+        set_value('last_cron', strval(time()));
+        set_value('last_cron_started', strval(time()), true);
 
-        // Find Cron-progression data
-        if (isset($cron_progression[$hook])) {
-            $last_run = $cron_progression[$hook]['c_last_run'];
-
-            // Manually disabled?
-            if ($cron_progression[$hook]['c_enabled'] == 0) {
+        // Call the hooks which do the real work
+        foreach ($cron_hooks as $hook => $object) {
+            // Whitelisted?
+            if (($limit_hooks !== null) && (!in_array($hook, $limit_hooks))) {
+                unset($cron_hooks[$hook]);
                 continue;
             }
-        } else {
-            $last_run = null;
-        }
 
-        // Not available?
-        $info = $object->info($last_run, true); // Need to do this so that any calculations done in here can then be used by ->run()
-        if ($info === null) {
-            continue;
-        }
-
-        // Is it time to run it?
-        if ($limit_hook == '') { // Only if not directly requested
-            if (($last_run !== null) && ($last_run + $info['minutes_between_runs'] * 60 > time())) {
-                continue;
-            }
-        }
-
-        // Run, with basic locking support
-        if ($GLOBALS['DEV_MODE'] || get_value_newer_than('cron_currently_running__' . $hook, time() - 60 * 60 * 5, true) !== '1' || get_param_integer('force', 0) == 1) {
-            // Update log to say starting
-            if ($log_file !== null) {
-                flock($log_file, LOCK_EX);
-                fseek($log_file, 0, SEEK_END);
-                fwrite($log_file, loggable_date() . '  STARTING ' . $hook . ' (' . $info['label'] . ')' . "\n");
-                flock($log_file, LOCK_UN);
-            }
-
-            // Lock
-            set_value('cron_currently_running__' . $hook, '1', true);
-
-            // Run, with timing and error catching
-            $last_error = '';
-            $time_before = time();
-            if ($manual_run) {
-                $object->run($last_run);
-            } else {
-                set_throw_errors(true);
-                try {
-                    $object->run($last_run);
-                } catch (Exception $e) {
-                    $last_error = $e->getMessage();
-                }
-                set_throw_errors(false);
-            }
-            $time_after = time();
-
-            // Reset time limit (hook may have overwritten / we provide same max time for each hook)
-            cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
-
-            // Update cron_progression table
+            // Find Cron-progression data
             if (isset($cron_progression[$hook])) {
-                $GLOBALS['SITE_DB']->query_update(
-                    'cron_progression',
-                    [
+                // Manually disabled?
+                if ($cron_progression[$hook]['c_enabled'] == 0) {
+                    unset($cron_hooks[$hook]);
+                    continue;
+                }
+
+                $last_run = $cron_progression[$hook]['c_last_run'];
+            } else {
+                $last_run = null;
+            }
+
+            // Not available?
+            if (array_key_exists($hook, $cron_hooks_info)) {
+                $info = $cron_hooks_info[$hook];
+            } else {
+                $info = $object->info($last_run, true); // Need to do this so that any calculations done in here can then be used by ->run()
+                if ($info === null) {
+                    unset($cron_hooks[$hook]);
+                    continue;
+                }
+                $cron_hooks_info[$hook] = $info;
+            }
+
+            // Is it time to run it?
+            if (($limit_hooks === null) || ($limit_hooks !== [$hook])) { // Only if not directly requested
+                if (($last_run !== null) && ($last_run + $info['minutes_between_runs'] * 60 > time())) {
+                    if ($verbose) {
+                        echo loggable_date() . ' Not yet time to run ' . $hook . "\n";
+                    }
+
+                    continue;
+                }
+            }
+
+            // Run, with basic locking support
+            if ((get_value_newer_than('cron_currently_running__' . $hook, time() - 60 * 60 * 5/*huge 5 hour timeout in case a particular hook is badly broken and we do not want frequent trip ups*/, true) !== '1') || ($force)) {
+                // Update log to say starting
+                $log_message = loggable_date() . '  STARTING ' . $hook . ' (' . $info['label'] . ')' . "\n";
+                if ($verbose) {
+                    echo $log_message;
+                }
+                if ($log_file !== null) {
+                    flock($log_file, LOCK_EX);
+                    fseek($log_file, 0, SEEK_END);
+                    fwrite($log_file, $log_message);
+                    flock($log_file, LOCK_UN);
+                }
+
+                // Lock
+                set_value('cron_currently_running__' . $hook, '1', true);
+
+                // Run, with timing and error catching
+                $last_error = '';
+                $time_before = time();
+                if ($verbose) {
+                    $object->run($last_run);
+                } else {
+                    set_throw_errors(true);
+                    try {
+                        $object->run($last_run);
+                    } catch (Exception $e) {
+                        $last_error = $e->getMessage();
+                    }
+                    set_throw_errors(false);
+                }
+                $time_after = time();
+
+                // Reset time limit (hook may have overwritten / we provide same max time for each hook)
+                cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+
+                // Update cron_progression table
+                if (isset($cron_progression[$hook])) {
+                    $cron_progression[$hook]['c_last_run'] = time();
+                    $cron_progression[$hook]['c_last_execution_secs'] = $time_after - $time_before;
+                    $cron_progression[$hook]['c_last_error'] = $last_error;
+
+                    $GLOBALS['SITE_DB']->query_update(
+                        'cron_progression',
+                        [
+                            'c_last_run' => time(),
+                            'c_last_execution_secs' => $time_after - $time_before,
+                            'c_last_error' => $last_error,
+                        ],
+                        [
+                            'c_hook' => $hook,
+                        ],
+                        '',
+                        1
+                    );
+                } else {
+                    $cron_progression[$hook] = [
+                        'c_hook' => $hook,
                         'c_last_run' => time(),
                         'c_last_execution_secs' => $time_after - $time_before,
                         'c_last_error' => $last_error,
-                    ],
-                    [
-                        'c_hook' => $hook,
-                    ],
-                    '',
-                    1
-                );
+                        'c_enabled' => 1,
+                    ];
+                    $GLOBALS['SITE_DB']->query_insert('cron_progression', $cron_progression[$hook]);
+                }
+
+                // Unlock
+                delete_value('cron_currently_running__' . $hook, true);
+
+                // Update log to say finished
+                $log_message = loggable_date() . '  FINISHED ' . $hook . ' (' . $info['label'] . ')' . "\n";
+                if ($verbose) {
+                    echo $log_message;
+                }
+                if ($log_file !== null) {
+                    flock($log_file, LOCK_EX);
+                    fseek($log_file, 0, SEEK_END);
+                    fwrite($log_file, $log_message);
+                    flock($log_file, LOCK_UN);
+                }
             } else {
-                $GLOBALS['SITE_DB']->query_insert('cron_progression', [
-                    'c_hook' => $hook,
-                    'c_last_run' => time(),
-                    'c_last_execution_secs' => $time_after - $time_before,
-                    'c_last_error' => $last_error,
-                    'c_enabled' => 1,
-                ]);
-            }
-
-            // Unlock
-            delete_value('cron_currently_running__' . $hook, true);
-
-            // Update log to say finished
-            if ($log_file !== null) {
-                flock($log_file, LOCK_EX);
-                fseek($log_file, 0, SEEK_END);
-                fwrite($log_file, loggable_date() . '  FINISHED ' . $hook . ' (' . $info['label'] . ')' . "\n");
-                flock($log_file, LOCK_UN);
-            }
-        } else {
-            // Update log to say locked
-            if ($log_file !== null) {
-                flock($log_file, LOCK_EX);
-                fseek($log_file, 0, SEEK_END);
-                fwrite($log_file, loggable_date() . '  WAS LOCKED ' . $hook . ' (' . $info['label'] . ')' . "\n");
-                flock($log_file, LOCK_UN);
+                // Update log to say locked
+                $log_message = loggable_date() . '  WAS LOCKED ' . $hook . ' (' . $info['label'] . ')' . "\n";
+                if ($verbose) {
+                    echo $log_message;
+                }
+                if ($log_file !== null) {
+                    flock($log_file, LOCK_EX);
+                    fseek($log_file, 0, SEEK_END);
+                    fwrite($log_file, $log_message);
+                    flock($log_file, LOCK_UN);
+                }
             }
         }
+
+        // Logging of timings
+        set_value('last_cron_finished', strval(time()), true);
+
+        if ($loop) {
+            $loop_ending = (time() - $_SERVER['REQUEST_TIME'] >= $loop_max_seconds);
+
+            if ($loop_ending) {
+                $log_message = loggable_date() . '  REACHED END OF LOOPING' . "\n";
+            } else {
+                $log_message = loggable_date() . '  PAUSED FOR ' . integer_format($loop_wait_seconds) . ' SECONDS BEFORE LOOPING' . "\n";
+            }
+            if ($verbose) {
+                echo $log_message;
+            }
+            if ($log_file !== null) {
+                flock($log_file, LOCK_EX);
+                fseek($log_file, 0, SEEK_END);
+                fwrite($log_file, $log_message);
+                flock($log_file, LOCK_UN);
+            }
+
+            if ($loop_ending) {
+                break;
+            }
+
+            if ($loop_wait_seconds != 0) {
+                if (php_function_allowed('sleep')) {
+                    sleep($loop_wait_seconds);
+                } elseif (php_function_allowed('usleep')) {
+                    usleep($loop_wait_seconds * 1000000);
+                } else {
+                    $log_message = loggable_date() . '  PHP sleep and usleep functions are missing so loop_wait_seconds will be ignored' . "\n";
+                    if ($verbose) {
+                        echo $log_message;
+                    }
+                    if ($log_file !== null) {
+                        flock($log_file, LOCK_EX);
+                        fseek($log_file, 0, SEEK_END);
+                        fwrite($log_file, $log_message);
+                        flock($log_file, LOCK_UN);
+                    }
+                }
+            }
+
+            $kill_cron_looping = get_value('kill_cron_looping', '0', true);
+            clearstatcache(false, get_file_base() . '/sources/version.php');
+            if (($kill_cron_looping == '1') || (filemtime(get_file_base() . '/sources/version.php') > $_SERVER['REQUEST_TIME'])) {
+                $log_message = loggable_date() . '  LOOPING KILL SIGNAL DETECTED' . "\n";
+                if ($verbose) {
+                    echo $log_message;
+                }
+                if ($log_file !== null) {
+                    flock($log_file, LOCK_EX);
+                    fseek($log_file, 0, SEEK_END);
+                    fwrite($log_file, $log_message);
+                    flock($log_file, LOCK_UN);
+                }
+
+                // Composr has sent itself a signal that it needs to stop looping over Cron
+                delete_value('kill_cron_looping');
+                break;
+            }
+        }
+    } while ($loop); // Don't manually set $loop to false to terminate, do a break - we still rely on $loop being correct below
+
+    if ($loop) {
+        // Unlock
+        delete_value('cron_currently_running', true);
     }
 
-    // Logging of timings
-    set_value('last_cron_finished', '-', true);
-
     // Ending logging
+    $log_message = loggable_date() . '  (CRON ENDING)' . "\n";
+    if ($verbose) {
+        echo $log_message;
+    }
     if ($log_file !== null) {
         flock($log_file, LOCK_EX);
         fseek($log_file, 0, SEEK_END);
-        fwrite($log_file, loggable_date() . '  (CRON ENDING)' . "\n");
+        fwrite($log_file, $log_message);
         flock($log_file, LOCK_UN);
 
         fclose($log_file);
@@ -415,10 +583,6 @@ function cron_bridge_script($caller)
 
     if (!headers_sent()) {
         header('Content-Type: text/plain; charset=' . get_charset());
-    }
-
-    if ($manual_run) {
-        echo 'Finished' . "\n";
     }
 }
 

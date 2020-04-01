@@ -31,7 +31,7 @@ class weather_test_set extends cms_test_case
 
         $errormsg = '';
         $result = weather_lookup('Medina', null, null, 'metric', null, $errormsg, 'openweathermap');
-        $this->assertTrue(($result !== null) && ($result[0]['city_name'] == 'Medina'), 'Failed to lookup weather current conditions by location string; ' . $errormsg);
-        $this->assertTrue(($result !== null) && (array_key_exists(0, $result[1])) && ($result[1][0]['city_name'] == 'Medina'), 'Failed to lookup weather forecast by location string; ' . $errormsg);
+        $this->assertTrue(($result !== null) && (preg_match('#Medina|Munawwarah#', $result[0]['city_name']) != 0), 'Failed to lookup weather current conditions by location string; ' . $errormsg);
+        $this->assertTrue(($result !== null) && (array_key_exists(0, $result[1])) && (preg_match('#Medina|Munawwarah#', $result[1][0]['city_name']) != 0), 'Failed to lookup weather forecast by location string; ' . $errormsg);
     }
 }

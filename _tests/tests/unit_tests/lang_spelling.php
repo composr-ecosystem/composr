@@ -133,7 +133,6 @@ class lang_spelling_test_set extends cms_test_case
                     'APACHE_TOO_OLD',
                     'LOW_MEMORY_LIMIT',
                     'NO_ZIP_ON_SERVER',
-                    'CONFIG_OPTION_network_links',
                     'WARNING_MBSTRING_FUNC_OVERLOAD',
                     'DISABLED_FUNCTION',
                     'DASHBOARD_COMPOSR_NEWS',
@@ -141,6 +140,7 @@ class lang_spelling_test_set extends cms_test_case
                     'CONFIG_OPTION_dashboard_tips',
                     'CONFIG_OPTION_keywords',
                     'DESCRIPTION_META_KEYWORDS',
+                    'DEFAULT_SLIDE3_TEXT',
                 ])) &&
                 (!in_array($file, [
                     'lang.ini',

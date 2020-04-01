@@ -389,7 +389,9 @@ class Forum_driver_base
         if ($usergroup_list_cache === null) {
             $usergroup_list_cache = [];
         }
-        $usergroup_list_cache[$hide_hidden][$only_permissive][$force_show_all][serialize($force_find)][$for_member][$skip_hidden] = $ret;
+        if (!running_script('install')) {
+            $usergroup_list_cache[$hide_hidden][$only_permissive][$force_show_all][serialize($force_find)][$for_member][$skip_hidden] = $ret;
+        }
         return $ret;
     }
 

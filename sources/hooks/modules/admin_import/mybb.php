@@ -415,7 +415,7 @@ class Hook_import_mybb
                     $validated, // validated
                     '', // validated_email_confirm_code
                     $row['lifted'], // on_probation_until
-                    ($row['lifted'] > time()) ? 1 : 0, // is_perm_banned
+                    ($row['lifted'] > time()) ? '1' : '0', // is_perm_banned
                     false, // check_correctness
                     '', // ip_address
                     $type, // password_compatibility_scheme

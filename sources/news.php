@@ -19,6 +19,54 @@
  */
 
 /**
+ * Load up some news category rows. We do this here because these are consumed in many areas of Composr so need some run-time caching.
+ *
+ * @param  string $sql SQL defining what rows to load
+ * @return array List of all rows cached (not just the ones loaded now)
+ */
+function load_news_cat_rows($sql)
+{
+    static $cache = [], $loaded_queries = [];
+
+    if (isset($loaded_queries[$sql])) {
+        return $cache;
+    }
+
+    $_sql = 'SELECT *,r.id AS id FROM ' . get_table_prefix() . 'news_categories r WHERE ' . str_replace('id=', 'r.id=', $sql);
+    $news_cats = $GLOBALS['SITE_DB']->query($_sql, null, 0, false, false, ['nc_title' => 'SHORT_TRANS']);
+    $news_cats = list_to_map('id', $news_cats);
+
+    foreach (array_keys($news_cats) as $id) {
+        $loaded_queries['id=' . strval($id)] = true;
+    }
+    $loaded_queries[$sql] = true;
+
+    $cache += $news_cats;
+
+    return $cache;
+}
+
+/**
+ * Get a news category database row.
+ *
+ * @param  integer $id News category ID
+ * @param  boolean $null_ok Whether to return null if not found (as opposed to exiting)
+ * @return ?array Row (null: could not load)
+ */
+function get_news_cat_row($id, $null_ok = false)
+{
+    $rows = load_news_cat_rows('id=' . strval($id));
+    if (!array_key_exists($id, $rows)) {
+        if ($null_ok) {
+            return null;
+        }
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'news_category'));
+    }
+
+    return $rows[$id];
+}
+
+/**
  * Find a news category image from a string that may have multiple interpretations.
  *
  * @param  string $nc_img URL / theme image code / blank
@@ -26,8 +74,6 @@
  */
 function get_news_category_image_url($nc_img)
 {
-    require_code('images');
-
     if ($nc_img == '') {
         $image = '';
     } elseif (looks_like_url($nc_img)) {
@@ -71,22 +117,11 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
     $title = get_translated_tempcode('news', $just_news_row, 'title');
     $title_plain = get_translated_text($row['title']);
 
-    global $NEWS_CATS_CACHE;
-    if (!isset($NEWS_CATS_CACHE)) {
-        $NEWS_CATS_CACHE = [];
-    }
-    if (!array_key_exists($row['news_category'], $NEWS_CATS_CACHE)) {
-        $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $row['news_category']], '', 1);
-        if (array_key_exists(0, $_news_cats)) {
-            $NEWS_CATS_CACHE[$row['news_category']] = $_news_cats[0];
-        }
-    }
-    if ((!array_key_exists($row['news_category'], $NEWS_CATS_CACHE)) || (!array_key_exists('nc_title', $NEWS_CATS_CACHE[$row['news_category']]))) {
-        $row['news_category'] = db_get_first_id();
-    }
-    $news_cat_row = $NEWS_CATS_CACHE[$row['news_category']];
+    $news_cat_row = get_news_cat_row($row['news_category']);
 
     $category = get_translated_text($news_cat_row['nc_title']);
+    $category_url = build_url(['page' => 'news', 'type' => 'browse', 'id' => $news_cat_row['id']], $zone);
+
     if ($row['news_image'] != '') {
         require_code('images');
         $img_raw = $row['news_image'];
@@ -125,6 +160,7 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
         'AUTHOR_URL' => $author_url,
         'CATEGORY' => $category,
         '_CATEGORY' => strval($row['news_category']),
+        'CATEGORY_URL' => $category_url,
         'IMG' => $img,
         '_IMG' => $img_raw,
         'NEWS' => $news,
@@ -350,7 +386,7 @@ function create_selection_list_news($it, $only_owned = null, $editable_filter = 
     if ($only_in_blog) {
         $rows = $GLOBALS['SITE_DB']->query('SELECT n.id,n.news_category,submitter,title,date_and_time FROM ' . get_table_prefix() . 'news n JOIN ' . get_table_prefix() . 'news_categories c ON c.id=n.news_category AND ' . $where . ' AND nc_owner IS NOT NULL ORDER BY date_and_time DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     } else {
-        $rows = $GLOBALS['SITE_DB']->query('SELECT n.id,n.news_category,submitter,title,date_and_time FROM ' . get_table_prefix() . 'news WHERE ' . $where . ' ORDER BY date_and_time DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/, 0, false, true);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT id,news_category,submitter,title,date_and_time FROM ' . get_table_prefix() . 'news WHERE ' . $where . ' ORDER BY date_and_time DESC', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/, 0, false, true);
     }
 
     if (count($rows) == intval(get_option('general_safety_listing_limit'))) {

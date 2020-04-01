@@ -1,4 +1,3 @@
-{$REQUIRE_CSS,galleries}
 {$REQUIRE_JAVASCRIPT,news}
 {$SET,id,slider-{$REPLACE,_,-,{$REPLACE|,-,_,{BLOCK_ID}}}}
 <div id="{$GET*,id}" class="block-main-news-slider cms-slider cms-slider-slide" data-cms-slider="{ interval: {INTERVAL%}, disableIntervalOnMobile: true }" data-tpl="blockMainNewsSlider">

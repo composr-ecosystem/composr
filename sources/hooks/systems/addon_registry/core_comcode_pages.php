@@ -45,6 +45,16 @@ class Hook_addon_registry_core_comcode_pages
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Architecture';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -117,7 +127,6 @@ class Hook_addon_registry_core_comcode_pages
             'cms/pages/modules/cms_comcode_pages.php',
             'sources/hooks/systems/preview/comcode_page.php',
             'sources/hooks/systems/attachments/comcode_page.php',
-            'sources/hooks/modules/admin_unvalidated/comcode_pages.php',
             'sources/hooks/modules/admin_newsletter/comcode_pages.php',
             'sources/hooks/systems/config/comcode_page_default_review_freq.php',
             'sources/hooks/systems/config/is_on_comcode_page_children.php',

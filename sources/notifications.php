@@ -824,11 +824,12 @@ function enable_notifications($notification_code, $notification_category, $membe
 
     $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
 
-    $map = [
+    $basic_map = [
         'l_member_id' => $member_id,
         'l_notification_code' => substr($notification_code, 0, 80),
         'l_code_category' => ($notification_category === null) ? '' : $notification_category,
     ];
+    $map = $basic_map;
     if (!$reset_for_all_types) {
         $map['l_setting'] = $setting;
     }
@@ -850,11 +851,7 @@ function enable_notifications($notification_code, $notification_category, $membe
         }
     }
 
-    if ($setting == A_NA) {
-        $db->query_delete('notifications_enabled', $map);
-    } else {
-        $db->query_insert_or_replace('notifications_enabled', ['l_setting' => $setting], $map);
-    }
+    $db->query_insert_or_replace('notifications_enabled', ['l_setting' => $setting], $map);
 
     if (($notification_code == 'comment_posted') && (get_forum_type() == 'cns') && ($notification_category !== null)) { // Sync comment_posted ones to also monitor the forum ones; no need for opposite way as comment ones already trigger forum ones
         $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $notification_category, do_lang('COMMENT'));
@@ -864,7 +861,7 @@ function enable_notifications($notification_code, $notification_category, $membe
     }
 
     global $NOTIFICATION_SETTING_CACHE;
-    $NOTIFICATION_SETTING_CACHE = [];
+    $NOTIFICATION_SETTING_CACHE[serialize($basic_map)] = $setting;
 }
 
 /**
@@ -885,11 +882,12 @@ function disable_notifications($notification_code, $notification_category, $memb
 
     $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
 
-    $db->query_delete('notifications_enabled', [
+    $map = [
         'l_member_id' => $member_id,
         'l_notification_code' => substr($notification_code, 0, 80),
         'l_code_category' => ($notification_category === null) ? '' : $notification_category,
-    ]);
+    ];
+    $db->query_delete('notifications_enabled', $map);
 
     if (($notification_code == 'comment_posted') && (get_forum_type() == 'cns')) { // Sync comment_posted ones to the forum ones
         $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $notification_category, do_lang('COMMENT'));
@@ -899,7 +897,7 @@ function disable_notifications($notification_code, $notification_category, $memb
     }
 
     global $NOTIFICATION_SETTING_CACHE;
-    $NOTIFICATION_SETTING_CACHE = [];
+    $NOTIFICATION_SETTING_CACHE[serialize($map)] = A_NA;
 }
 
 /**

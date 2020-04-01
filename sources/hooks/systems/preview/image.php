@@ -42,13 +42,15 @@ class Hook_preview_image
     public function run()
     {
         require_code('uploads');
+        require_code('galleries2');
 
-        $cat = post_param_string('cat');
-
-        $filename = '';
-        $thumb_url = '';
-        require_code('themes2');
-        $url = post_param_image('image', 'uploads/galleries', null, true, false, $filename, $thumb_url);
+        list(
+            $url,
+            $thumb_url,
+            $filename,
+            $title,
+            $cat,
+        ) = image_get_defaults__post();
 
         if ($url == '') {
             if (post_param_integer('id', null) !== null) {
@@ -63,7 +65,7 @@ class Hook_preview_image
         }
 
         require_code('images');
-        $thumb = do_image_thumb(url_is_local($thumb_url) ? (get_custom_base_url() . '/' . $thumb_url) : $thumb_url, post_param_string('description'), true);
+        $thumb = do_image_thumb(url_is_local($thumb_url) ? (get_custom_base_url() . '/' . $thumb_url) : $thumb_url, protect_from_escaping(comcode_to_tempcode(post_param_string('description'))), true);
         $preview = hyperlink(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url, $thumb, false, true);
 
         return [$preview, null];

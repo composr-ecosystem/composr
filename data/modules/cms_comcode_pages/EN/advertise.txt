@@ -1,6 +1,6 @@
 [title]Advertising Opportunities[/title]
 
-{$SITE_NAME*} has created a banner exchange program so that various {$SITE_SCOPE*} related sites can share their visitors to increase the awareness of all of our sites.
+{$SITE_NAME*} has created a banner exchange program so that related sites can share their visitors to increase the awareness of all of our sites.
 
 The system uses a database (located on our systems) and works by tracking all of the clicks from every site. For it to work for you, you need to insert a small piece of code at an appropriate place on your website. We have a number of options open to you...
 

@@ -21,7 +21,7 @@
 
 	<ul class="horizontal-links associated-links-block-group force-margin">
 		{+START,IF_NON_EMPTY,{SUBMIT_URL}}
-			<li><a rel="add" href="{SUBMIT_URL*}">{!ADD}</a></li>
+			<li><a rel="add" href="{SUBMIT_URL*}">{ADD_NAME*}</a></li>
 		{+END}
 		<li><a href="{ARCHIVE_URL*}" title="{!ARCHIVES}: {TYPE*}">{!ARCHIVES}</a></li>
 	</ul>

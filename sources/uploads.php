@@ -264,9 +264,11 @@ function is_plupload($fake_prepopulation = false)
  * Take an uploaded file and move it into Composr's temporary directory, for future processing outside this web request.
  *
  * @param  string $attach_name Field name
+ * @param  boolean $prepend_session_id Prepend the current session ID to the beginning of the filename without returning it in the path (security), 'sessioning'
+ * @param  ?string $unsessioned_filename The unsessioned filename (null: not set yet)
  * @return PATH Upload path
  */
-function get_temporary_upload_path($attach_name)
+function get_temporary_upload_path($attach_name, $prepend_session_id = false, &$unsessioned_filename = null)
 {
     require_code('files2');
 
@@ -280,7 +282,13 @@ function get_temporary_upload_path($attach_name)
             make_missing_directory($temp_path);
         }
 
-        $target_path = $temp_path . '/' . basename($_FILES[$attach_name]['tmp_name'], '.' . get_file_extension($_FILES[$attach_name]['tmp_name'])) . '.' . $ext;
+        $unsessioned_filename = basename($_FILES[$attach_name]['name']);
+        if ($prepend_session_id) {
+            $sessioned_filename = get_session_id() . '_' . $unsessioned_filename;
+            $target_path = $temp_path . '/' . basename($sessioned_filename, '.' . get_file_extension($sessioned_filename)) . '.' . $ext;
+        } else {
+            $target_path = $temp_path . '/' . basename($unsessioned_filename, '.' . get_file_extension($unsessioned_filename)) . '.' . $ext;
+        }
         if ($_FILES[$attach_name]['type'] != 'plupload') {
             $test = @move_uploaded_file($_FILES[$attach_name]['tmp_name'], $target_path);
         } else {
@@ -963,6 +971,7 @@ function handle_upload_post_processing($enforce_type, $path, $upload_folder, $fi
     }
 
     // Check space
+    require_code('files2');
     check_shared_space_usage(filesize($path));
 
     return null;

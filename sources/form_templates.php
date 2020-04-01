@@ -1528,15 +1528,15 @@ function form_input_various_ticks($options, $description, $_tabindex = null, $_p
  * @param  ?string $default The default value for the field (null: none) (blank: none). Should only be passed if $required is false, because it creates a delete button for the existing file, implying that leaving it with no file is valid
  * @param  boolean $support_syndication Whether to syndicate the file off
  * @param  ?string $filter File type filter (null: autodetect)
- * @param  boolean $images_only Whether to accept images only
+ * @param  ?integer $images_only IMAGE_CRITERIA_* bitmask for images (null: not restricted to images)
  * @return Tempcode The input field
  */
-function form_input_upload_multi_source($set_title, $set_description, &$hidden, $set_name = 'image', $theme_image_type = null, $required = true, $default = null, $support_syndication = false, $filter = null, $images_only = true)
+function form_input_upload_multi_source($set_title, $set_description, &$hidden, $set_name = 'image', $theme_image_type = null, $required = true, $default = null, $support_syndication = false, $filter = null, $images_only = 0)
 {
     require_code('images');
 
     // Remap theme image to URL if needed
-    if ($images_only) {
+    if ($images_only !== null) {
         if (($theme_image_type !== null) && (get_option('allow_theme_image_selector') == '1')) {
             require_code('themes2');
             $ids = get_all_image_ids_type($theme_image_type);
@@ -1561,8 +1561,8 @@ function form_input_upload_multi_source($set_title, $set_description, &$hidden, 
         $syndication_json = null;
     }
     if ($filter === null) {
-        if ($images_only) {
-            $filter = get_allowed_image_file_types(); // We don't use the filter from get_upload_syndication_json because we're not restricted to what can syndicate
+        if ($images_only !== null) {
+            $filter = get_allowed_image_file_types($images_only); // We don't use the filter from get_upload_syndication_json because we're not restricted to what can syndicate
         } else {
             $filter = '';
         }
@@ -1587,7 +1587,7 @@ function form_input_upload_multi_source($set_title, $set_description, &$hidden, 
 
     $field_set->attach($upload_widget);
 
-    if ($images_only) {
+    if ($images_only !== null) {
         handle_max_file_size($hidden, 'image');
     }
 
@@ -1620,8 +1620,8 @@ function form_input_upload_multi_source($set_title, $set_description, &$hidden, 
             require_lang('filedump');
 
             $filedump_url = build_url(['page' => 'filedump'], get_module_zone('filedump'));
-            if ($images_only) {
-                $filedump_options = ['images_only' => '1'];
+            if ($images_only !== null) {
+                $filedump_options = ['images_only' => strval($images_only)];
             } else {
                 $filedump_options = [];
             }
@@ -1639,7 +1639,7 @@ function form_input_upload_multi_source($set_title, $set_description, &$hidden, 
     // Theme image
     // -----------
 
-    if ($images_only) {
+    if ($images_only !== null) {
         if (($theme_image_type !== null) && (get_option('allow_theme_image_selector') == '1')) {
             if (!empty($ids)) {
                 $field_choose = $set_name . '__theme_image';

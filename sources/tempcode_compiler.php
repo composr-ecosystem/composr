@@ -1051,10 +1051,6 @@ function may_optimise_out_symbol($symbol)
             return false; // May be experimenting with different base URLs, e.g. both http and https
         }
 
-        if (addon_installed('ssl')) {
-            return false;
-        }
-
         foreach (array_keys($SITE_INFO) as $key) {
             if (substr($key, 0, 13) === 'ZONE_MAPPING_') {
                 return false;
@@ -1110,81 +1106,6 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
         $template_contents = cms_file_get_contents_safe($_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
     }
 
-    //$final_css_path = null;
-
-    // Special case: LESS support
-    if ((addon_installed('less')) && ($suffix === '.less')) {
-        // Up our resources
-        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
-        disable_php_memory_limit();
-
-        // Stop parallel compilation of the same file by a little hack; without this it could knock out a server
-        /*$final_css_path = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang . '/' . $codename . '.css'; Actually this is architecturally messy, just let it happen - it's not as slow as it was
-        if ((is_file($final_css_path)) && (cms_file_get_contents_safe($final_css_path, FILE_READ_LOCK) === 'GENERATING')) {
-            header('Content-Type: text/plain; charset=' . get_charset());
-            exit('We are doing a code update. Please refresh in around 2 minutes.');
-        }
-        require_code('files');
-        cms_file_put_contents_safe($final_css_path, 'GENERATING', FILE_WRITE_FIX_PERMISSIONS);
-        */
-
-        if (!empty($SITE_INFO['nodejs_binary_path'])) {
-            $less_path = get_custom_file_base() . '/node_modules/less/bin/lessc';
-
-            if (!file_exists($less_path)) {
-                fatal_exit('Unable to find the less NPM module. Please `cd` to your Composr directory and run `npm install less` to install it.');
-            }
-
-            $cmd = sprintf('%s %s --no-color %s', $SITE_INFO['nodejs_binary_path'], cms_escapeshellarg($less_path), cms_escapeshellarg($_path));
-            $descriptorspec = [
-                0 => ['pipe', 'r'], // stdin
-                1 => ['pipe', 'w'], // stdout
-                2 => ['pipe', 'w'], // stderr
-            ];
-            $pipes = [];
-            $process = proc_open($cmd, $descriptorspec, $pipes);
-
-            if ($process === false) {
-                fatal_exit('Unable to execute the Node.js binary, please make sure it exists and proper permissions are set.');
-            }
-
-            $stdout = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-
-            $stderr = stream_get_contents($pipes[2]);
-            fclose($pipes[2]);
-
-            $return_code = proc_close($process);
-
-            if ($return_code !== 0) {
-                fatal_exit('.less problem: ' . $stderr);
-            }
-
-            $template_contents = $stdout;
-        } else {
-            // Heavy-weight, newer (iLess)
-            require_code('ILess/Autoloader');
-            ILess_Autoloader::register();
-            $less = new ILess_Parser(
-                [
-                    'import_dirs' => [dirname($_path)],
-                ],
-                new ILess_Cache_FileSystem([
-                    'cache_dir' => get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang,
-                ])
-            );
-            try {
-                $less->parseString($template_contents);
-                $template_contents = $less->getCSS();
-            } catch (Exception $ex) {
-                fatal_exit('.less problem: ' . $ex->getMessage());
-            }
-        }
-
-        cms_set_time_limit($old_limit);
-    }
-
-
     // Special case: HTML template file
     $matches = [];
     if (!$GLOBALS['IN_MINIKERNEL_VERSION'] && ($GLOBALS['SEMI_DEV_MODE']) && ($suffix === '.tpl') && (preg_match('#<script[^>]*>.*<\/script>#is', $template_contents, $matches) > 0)) {
@@ -1214,7 +1135,7 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
     cms_profile_end_for('_do_template', $codename . $suffix);
 
     // Save into cache
-    if (($CACHE_TEMPLATES) && ($parameters === null) && (!$IS_TEMPLATE_PREVIEW_OP_CACHE)) {
+    if (($CACHE_TEMPLATES) && (has_caching_for('template', $codename)) && ($parameters === null) && (!$IS_TEMPLATE_PREVIEW_OP_CACHE)) {
         $path2 = get_custom_file_base() . '/themes/' . $theme_orig . '/templates_cached/' . filter_naughty($lang);
         $_path2 = $path2 . '/' . filter_naughty($_codename) . $suffix . '.tcp';
 

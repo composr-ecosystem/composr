@@ -111,19 +111,16 @@ PHP;
 
         // Submit URL
         $submit_url = $info['add_url'];
-        if ($submit_url !== null) {
-            $submit_url = page_link_to_url($submit_url);
+        if ($info['add_url'] !== null) {
+            $submit_url = page_link_to_tempcode_url($info['add_url'] . ':award=' . strval($award));
         } else {
-            $submit_url = '';
+            $submit_url = new Tempcode();
         }
         if (!has_actual_page_access(null, $info['cms_page'], null, null)) {
-            $submit_url = '';
+            $submit_url = new Tempcode();
         }
         if (!has_category_access(get_member(), 'award', strval($award))) {
-            $submit_url = '';
-        }
-        if ($submit_url != '') {
-            extend_url($submit_url, 'award=' . strval($award));
+            $submit_url = new Tempcode();
         }
 
         // Find latest award that exists
@@ -137,13 +134,11 @@ PHP;
                     'HIGH' => false,
                     'TITLE' => $award_title,
                     'MESSAGE' => do_lang_tempcode('NO_AWARD'),
-                    'ADD_NAME' => content_language_string($award_type_row['a_content_type'], 'ADD'),
-                    'SUBMIT_URL' => str_replace('=!', '__ignore=1', $submit_url),
+                    'ADD_NAME' => $object->content_language_string('ADD'),
+                    'SUBMIT_URL' => $submit_url,
                 ]);
             }
             $myrow = $rows[0];
-
-            $submit_url = str_replace('!', $myrow['content_id'], $submit_url);
 
             $award_content_row = content_get_row($myrow['content_id'], $info);
             $sup = ' AND date_and_time<' . strval($myrow['date_and_time']);
@@ -153,7 +148,7 @@ PHP;
 
         $archive_url = build_url(['page' => 'awards', 'type' => 'award', 'id' => $award], get_module_zone('awards'));
 
-        $rendered_content = $object->run($award_content_row, $zone, $give_context, $include_breadcrumbs, null, false, $guid);
+        $rendered_content = $object->render_box($award_content_row, $zone, $give_context, $include_breadcrumbs, null, false, $guid);
 
         if (($award_type_row['a_show_awardee'] == 0) || (is_guest($myrow['member_id']))) {
             $awardee = '';
@@ -177,6 +172,7 @@ PHP;
             'RAW_AWARD_DATE' => strval($myrow['date_and_time']),
             'AWARD_DATE' => get_timezoned_date_time_tempcode($myrow['date_and_time']),
             'CONTENT' => $rendered_content,
+            'ADD_NAME' => $object->content_language_string('ADD'),
             'SUBMIT_URL' => $submit_url,
             'ARCHIVE_URL' => $archive_url,
         ]);

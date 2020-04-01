@@ -317,56 +317,6 @@ function skippable_keep($key, $val)
 }
 
 /**
- * Find whether the specified page is to use HTTPS (if not -- it will use HTTP).
- * All images (etc) on a HTTPS page should use HTTPS to avoid mixed-content browser notices.
- *
- * @param  ID_TEXT $zone The zone the page is in
- * @param  ID_TEXT $page The page codename
- * @return boolean Whether the page is to run across an HTTPS connection
- */
-function is_page_https($zone, $page)
-{
-    if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
-        return false;
-    }
-
-    static $off = null;
-    if ($off === null) {
-        global $SITE_INFO;
-        $off = (!addon_installed('ssl')) || (in_safe_mode()) || (!function_exists('persistent_cache_get') || (!empty($SITE_INFO['no_ssl'])));
-    }
-    if ($off) {
-        return false;
-    }
-
-    if (($page === 'login') && (get_page_name() === 'login')) { // Because how login can be called from any arbitrary page, which may or may not be on HTTPS. We want to maintain HTTPS if it is there to avoid warning on form submission
-        if (tacit_https()) {
-            return true;
-        }
-    }
-
-    global $HTTPS_PAGES_CACHE;
-    if (($HTTPS_PAGES_CACHE === null) && (function_exists('persistent_cache_get'))) {
-        $HTTPS_PAGES_CACHE = persistent_cache_get('HTTPS_PAGES_CACHE');
-    }
-    if ($HTTPS_PAGES_CACHE === null) {
-        if (isset($GLOBALS['SITE_DB'])) {
-            $results = $GLOBALS['SITE_DB']->query_select('https_pages', ['*']);
-            $HTTPS_PAGES_CACHE = [];
-            if ($results !== null) {
-                foreach ($results as $r) {
-                    $HTTPS_PAGES_CACHE[$r['https_page_name']] = true;
-                }
-            }
-            if (function_exists('persistent_cache_set')) {
-                persistent_cache_set('HTTPS_PAGES_CACHE', $HTTPS_PAGES_CACHE);
-            }
-        }
-    }
-    return isset($HTTPS_PAGES_CACHE[$zone . ':' . $page]);
-}
-
-/**
  * Find if a URL Scheme is in use.
  *
  * @param  boolean $avoid_remap Whether to explicitly avoid using URL Schemes. While it might seem weird to put this in as a function parameter, it removes duplicated logic checks in the code.
@@ -590,7 +540,7 @@ function _build_url($parameters, $zone_name = '', $skip = [], $keep_all = false,
     }
 
     // Build up our URL base
-    $stub = get_base_url(is_page_https($zone_name, $has_page ? $parameters['page'] : ''), $zone_name);
+    $stub = get_base_url($zone_name);
     $stub .= '/';
 
     // For bots we explicitly unset skippable injected 'keep_' params because it bloats the crawl-space
@@ -1181,12 +1131,13 @@ function page_link_to_url($url, $skip_keep = false)
  * Given a page-link, return an absolute URL.
  *
  * @param  string $page_link Page-link
+ * @param  boolean $skip_keep Whether to avoid keep_* parameters as it's going in an e-mail
  * @return Tempcode URL
  */
-function page_link_to_tempcode_url($page_link)
+function page_link_to_tempcode_url($page_link, $skip_keep = false)
 {
     list($zone, $map, $hash) = page_link_decode($page_link);
-    return build_url($map, $zone, [], false, false, false, $hash);
+    return build_url($map, $zone, [], false, false, $skip_keep, $hash);
 }
 
 /**
@@ -1203,7 +1154,8 @@ function load_moniker_hooks()
         $CONTENT_OBS = function_exists('persistent_cache_get') ? persistent_cache_get('CONTENT_OBS') : null;
         if ($CONTENT_OBS !== null) {
             foreach ($CONTENT_OBS as $ob_info) {
-                if (($ob_info['title_field'] !== null) && (strpos($ob_info['title_field'], 'CALL:') !== false)) {
+                if (($ob_info['title_field'] !== null) && ((is_array($ob_info['title_field'])) || (strpos($ob_info['title_field'], 'CALL:') !== false))) {
+                    require_code('content');
                     require_code('hooks/systems/content_meta_aware/' . $ob_info['_hook']);
                 }
             }
@@ -1221,6 +1173,8 @@ function load_moniker_hooks()
             'wiki_page' => true,
             'wiki_post' => true,
         ];
+
+        require_code('content');
 
         $CONTENT_OBS = [];
         $hooks = find_all_hooks('systems', 'content_meta_aware');
@@ -1243,7 +1197,8 @@ function load_moniker_hooks()
                 $ob_info['_hook'] = $hook;
                 $CONTENT_OBS[$ob_info['view_page_link_pattern']] = $ob_info;
 
-                if (($ob_info['title_field'] !== null) && (strpos($ob_info['title_field'], 'CALL:') !== false)) {
+                if (($ob_info['title_field'] !== null) && ((is_array($ob_info['title_field'])) || (strpos($ob_info['title_field'], 'CALL:') !== false))) {
+                    require_code('content');
                     require_code('hooks/systems/content_meta_aware/' . $hook);
                 }
             }
@@ -1483,67 +1438,14 @@ function ensure_protocol_suitability($url)
 
     $https_url = 'https://' . substr($url, 7);
 
-    $https_exists = check_url_exists($https_url, 60 * 60 * 24 * 31);
+    require_code('urls2');
+    $https_exists = check_url_exists($https_url);
 
     if ($https_exists) {
         return $https_url;
     }
 
     return find_script('external_url_proxy') . '?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter($url)));
-}
-
-/**
- * Check to see if a URL exists.
- *
- * @param  string $url The URL to check
- * @param  integer $test_freq_secs Cache must be newer than this many seconds
- * @return boolean Whether it does
- */
-function check_url_exists($url, $test_freq_secs)
-{
-    if (preg_match('#^https://www\.linkedin\.com/shareArticle\?url=#', $url) != 0) {
-        return true;
-    }
-    if (preg_match('#^http://tumblr\.com/widgets/share/tool\?canonicalUrl=#', $url) != 0) {
-        return true;
-    }
-    if (preg_match('#^https://vk\.com/share\.php\?url=#', $url) != 0) {
-        return true;
-    }
-    if (preg_match('#^http://v\.t\.qq\.com/share/share\.php\?url=#', $url) != 0) {
-        return true;
-    }
-
-    $test1 = $GLOBALS['SITE_DB']->query_select('urls_checked', ['url_check_time', 'url_exists'], ['url' => $url], 'ORDER BY url_check_time DESC', 1);
-
-    if ((!isset($test1[0])) || ($test1[0]['url_check_time'] < time() - $test_freq_secs)) {
-        $test2 = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 0]);
-        if (($test2 !== null) && (in_array($test2->message, ['401', '403', '405', '416', '500', '501', '503', '520']))) {
-            $test2 = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 1]); // Try without HEAD, sometimes it's not liked
-        }
-        $exists = ($test2->data === null) ? 0 : 1;
-
-        if (isset($test1[0])) {
-            $GLOBALS['SITE_DB']->query_delete('urls_checked', [
-                'url' => $url,
-            ]);
-        }
-
-        $GLOBALS['SITE_DB']->query_insert_or_replace(
-            'urls_checked',
-            [
-                'url_exists' => $exists,
-                'url_check_time' => time(),
-            ],
-            [
-                'url' => $url,
-            ]
-        );
-    } else {
-        $exists = $test1[0]['url_exists'];
-    }
-
-    return ($exists == 1);
 }
 
 /**

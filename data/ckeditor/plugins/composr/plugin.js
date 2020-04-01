@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
 
 	CKEDITOR.plugins.add('composr', {
 		hidpi: true,

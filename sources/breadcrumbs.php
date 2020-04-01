@@ -51,8 +51,7 @@ function load_breadcrumb_substitutions($segments)
         }
 
         $loader = new Breadcrumb_substitution_loader();
-        $loader->go($data);
-        $substitutions = $loader->substitutions;
+        $substitutions = $loader->go($data);
 
         persistent_cache_set('BREADCRUMBS_CACHE_' . user_lang(), $substitutions);
     }
@@ -144,12 +143,13 @@ class Breadcrumb_substitution_loader
     private $attribute_stack;
     private $text_so_far;
     private $substitution_current_links;
-    public $substitutions; // output
+    private $substitutions; // Output
 
     /**
      * Run the loader, to load up field-restrictions from the XML file.
      *
      * @param  string $data The breadcrumb XML data
+     * @return array Breadcrumb substitutions data
      */
     public function go($data)
     {
@@ -167,7 +167,7 @@ class Breadcrumb_substitution_loader
         }
         $xml_parser = @xml_parser_create(get_charset());
         if ($xml_parser === false) {
-            return; // PHP5 default build on windows comes with this function disabled, so we need to be able to escape on error
+            return []; // PHP5 default build on windows comes with this function disabled, so we need to be able to escape on error
         }
         xml_set_object($xml_parser, $this);
         @xml_parser_set_option($xml_parser, XML_OPTION_TARGET_ENCODING, get_charset());
@@ -180,9 +180,11 @@ class Breadcrumb_substitution_loader
             $err_code = xml_get_error_code($xml_parser);
             $err_msg = xml_error_string($err_code) . ' [#' . strval($err_code) . ' @ ' . strval(xml_get_current_line_number($xml_parser)) . ']';
             attach_message('breadcrumbs.xml: ' . $err_msg, 'warn', false, true);
-            return;
+            return [];
         }
         @xml_parser_free($xml_parser);
+
+        return $this->substitutions;
     }
 
     /**

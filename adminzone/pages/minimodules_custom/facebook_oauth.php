@@ -32,7 +32,6 @@ if (!function_exists('session_status')) {
 require_code('developer_tools');
 destrictify();
 
-require_code('facebook/facebook');
 require_lang('facebook');
 
 $title = get_screen_title('FACEBOOK_OAUTH');
@@ -40,7 +39,7 @@ $title = get_screen_title('FACEBOOK_OAUTH');
 $facebook_appid = get_option('facebook_appid');
 
 if ($facebook_appid == '') {
-    $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'COMPOSR_APIS', 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_config'), [], false, false, false, 'group_FACEBOOK_SYNDICATION');
+    $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'COMPOSR_APIS', 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_config'), [], false, false, false, 'group-FACEBOOK_SYNDICATION');
     $echo = redirect_screen($title, $config_url, do_lang_tempcode('FACEBOOK_SETUP_FIRST'));
     $echo->evaluate_echo();
     return;

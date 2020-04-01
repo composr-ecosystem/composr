@@ -46,7 +46,7 @@ class Hook_addon_registry_activity_feed
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Community';
     }
 
     /**

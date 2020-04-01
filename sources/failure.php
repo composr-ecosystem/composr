@@ -372,13 +372,16 @@ function _sanitise_error_msg($text)
  *
  * @param  mixed $text The error message (string or Tempcode)
  * @param  ID_TEXT $template Name of the terminal page template
+ * @set INFORM_SCREEN WARN_SCREEN FATAL_SCREEN
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)
  * @param  boolean $log_error Whether to log the error
  * @param  ?integer $http_status HTTP status to set (null: none, unless it's a missing resource error in which case 404)
+ * @param  ?Tempcode $title Title to use show (null: default)
+ * @param  ?URLPATH $image_url Image to show (only works for INFORM_SCREEN and WARN_SCREEN) (null: default)
  * @ignore
  * @exits
  */
-function _generic_exit($text, $template, $support_match_key_messages = false, $log_error = false, $http_status = null)
+function _generic_exit($text, $template, $support_match_key_messages = false, $log_error = false, $http_status = null, $title = null, $image_url = null)
 {
     if (($template != 'FATAL_SCREEN') && ((get_param_integer('keep_fatalistic', 0) != 0) || (running_script('commandr')))) {
         _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
@@ -427,8 +430,8 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
     if ($see_php_errors) {
         if (!headers_sent()) {
             require_code('firephp');
-            if (function_exists('fb')) {
-                fb($template . ': ' . $text_eval);
+            if (function_exists('fb_wrap')) {
+                fb_wrap($template . ': ' . $text_eval);
             }
         }
     }
@@ -514,10 +517,12 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_last_submit_time' => time() - $restrict_answer - 1], ['id' => get_member()], '', 1);
     }
 
-    if (($template == 'INFORM_SCREEN') && (is_object($GLOBALS['DISPLAYED_TITLE']))) {
-        $title = get_screen_title($GLOBALS['DISPLAYED_TITLE'], false);
-    } else {
-        $title = get_screen_title(($template == 'INFORM_SCREEN') ? 'MESSAGE' : 'ERROR_OCCURRED');
+    if ($title === null) {
+        if (($template == 'INFORM_SCREEN') && (is_object($GLOBALS['DISPLAYED_TITLE']))) {
+            $title = get_screen_title($GLOBALS['DISPLAYED_TITLE'], false);
+        } else {
+            $title = get_screen_title(($template == 'INFORM_SCREEN') ? 'MESSAGE' : 'ERROR_OCCURRED');
+        }
     }
 
     if ($template == 'FATAL_SCREEN') {
@@ -541,6 +546,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         'WEBSERVICE_RESULT' => $webservice_result,
         'MAY_SEE_TRACE' => $may_see_trace,
         'TRACE' => $trace,
+        'IMAGE_URL' => $image_url,
     ]);
     $echo = globalise($middle, null, '', true);
     $echo->evaluate_echo();
@@ -567,25 +573,66 @@ function _inet_pton($ip)
 }
 
 /**
- * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
+ * Find if a hackattack specifier matches.
  *
- * @param  ID_TEXT $reason The reason for the hack attack. This has to be a language string codename
- * @param  SHORT_TEXT $reason_param_a A parameter for the hack attack language string (this should be based on a unique ID, preferably)
+ * @param  array $specifier The hackattack specifier
+ * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
+ * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
- * @param  boolean $silent Whether to silently log the hack rather than also exiting
- * @param  boolean $instant_ban Whether a ban should be immediate
- * @param  integer $percentage_score The risk factor
+ * @return boolean Whether it matches
  * @ignore
  * @exits
  */
-function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '', $silent = false, $instant_ban = false, $percentage_score = 100)
+function _log_hack_attack_matches($specifier, $reason, $reason_param_a, $reason_param_b)
 {
+    return ($specifier['codename'] == $reason) &&
+        (($specifier['param_a_pattern'] === null) || (simulated_wildcard_match($reason_param_a, $specifier['param_a_pattern'], true, true))) &&
+        (($specifier['param_b_pattern'] === null) || (simulated_wildcard_match($reason_param_b, $specifier['param_b_pattern'], true, true)));
+}
+
+/**
+ * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
+ *
+ * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
+ * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
+ * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
+ * @ignore
+ * @exits
+ */
+function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '')
+{
+    // Default control settings
+    $silent_to_user = false;
+    $silent_to_staff_notifications = false;
+    $silent_to_staff_log = false;
+    $percentage_score = 100;
+
+    // Read control from XML
+    require_code('input_filter');
+    list(, , $hackattack_specifiers) = load_advanced_banning();
+    foreach ($hackattack_specifiers as $specifier) {
+        if (_log_hack_attack_matches($specifier, $reason, $reason_param_a, $reason_param_b)) {
+            if ($specifier['silent_to_user'] !== null) {
+                $silent_to_user = $specifier['silent_to_user'];
+            }
+            if ($specifier['silent_to_staff_notifications'] !== null) {
+                $silent_to_staff_notifications = $specifier['silent_to_staff_notifications'];
+            }
+            if ($specifier['silent_to_staff_log'] !== null) {
+                $silent_to_staff_log = $specifier['silent_to_staff_log'];
+            }
+            if ($specifier['percentage_score'] !== null) {
+                $percentage_score = $specifier['percentage_score'];
+            }
+        }
+    }
+
     // HTTP statuses...
 
     require_code('site');
     attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
-    if (!$silent) {
+    if (!$silent_to_user) {
         require_code('global3');
         set_http_status_code(403); // Stop spiders ever storing the URL that caused this
     }
@@ -593,7 +640,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     // Special case: no securitylogging addon...
 
     if (!addon_installed('securitylogging')) {
-        if ($silent) {
+        if ($silent_to_user) {
             return;
         }
         warn_exit(do_lang_tempcode('HACK_ATTACK_USER'));
@@ -611,21 +658,16 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     }
 
     $url = $_SERVER['REQUEST_URI'];
-    $post = '';
-    foreach ($_POST as $key => $val) {
-        if (!is_string($val)) {
-            continue;
-        }
-        $post .= $key . ' => ' . $val . "\n\n";
-    }
 
     // Automatic ban needed?...
 
-    $count = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', ['ip' => $ip])) / 100.0;
+    $count = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', ['ip' => $ip]) + $percentage_score) / 100.0;
     $hack_threshold = intval(get_option('hack_ban_threshold'));
     if ((array_key_exists('FORUM_DRIVER', $GLOBALS)) && (function_exists('get_member')) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
         $count = 0.0;
     }
+
+    $post = json_encode($_POST);
 
     $new_row = [
         'user_agent' => cms_mb_substr(get_browser_string(), 0, 255),
@@ -640,10 +682,11 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
         'date_and_time' => time(),
         'ip' => $ip,
         'percentage_score' => $percentage_score,
+        'silent_to_staff_log' => $silent_to_staff_log ? 1 : 0,
     ];
 
     $ip_ban_todo = null;
-    if ((($count >= floatval($hack_threshold)) || ($instant_ban)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
+    if (($count >= floatval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
         // Test we're not banning a good bot...
 
         if ((!is_our_server($ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip))) {
@@ -653,13 +696,14 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
             $rows[] = $new_row;
 
             $summary = '[list]';
-            $is_spammer = false;
+            $syndicate_as_spammer = false;
             foreach ($rows as $row) {
-                if ($row['reason'] == 'LAME_SPAM_HACK') {
-                    $is_spammer = true;
-                }
-                if (preg_match('#^' . str_replace('xxx', '.*', preg_quote(do_lang('IP_BAN_LOG_AUTOBAN_ANTISPAM', 'xxx'))), '$#', $row['reason']) != 0) {
-                    $is_spammer = true;
+                foreach ($hackattack_specifiers as $specifier) {
+                    if (_log_hack_attack_matches($specifier, $row['reason'], $row['reason_param_a'], $row['reason_param_b'])) {
+                        if ($specifier['syndicate_as_spammer'] === true) {
+                            $syndicate_as_spammer = true;
+                        }
+                    }
                 }
 
                 $full_reason = do_lang($row['reason'], $row['reason_param_a'], $row['reason_param_b'], null, get_site_default_lang());
@@ -669,7 +713,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
             // Send report to anti-spam partners...
 
-            if ($is_spammer) {
+            if ($syndicate_as_spammer) {
                 require_code('failure_spammers');
                 syndicate_spammer_report($ip, is_guest() ? '' : $GLOBALS['FORUM_DRIVER']->get_username(get_member()), $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), do_lang('SPAM_REPORT_TRIGGERED_SPAM_HEURISTICS'));
             }
@@ -731,7 +775,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
         // Hack-attack notification...
 
-        if (!in_array($reason, ['CAPTCHAFAIL', 'CAPTCHAFAIL_HACK', 'LAME_SPAM_HACK']/*Don't generate notification noise from very common bot behaviours*/)) {
+        if (!$silent_to_staff_notifications) {
             $subject = do_lang('HACK_ATTACK_SUBJECT', $ip, null, null, get_site_default_lang());
             dispatch_notification('hack_attack', null, $subject, $message->evaluate(get_site_default_lang()), null, A_FROM_SYSTEM_PRIVILEGED);
         }
@@ -746,7 +790,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
     // Finish...
 
-    if ($silent) {
+    if ($silent_to_user) {
         return;
     }
     if ($GLOBALS['DEV_MODE']) {
@@ -1463,6 +1507,55 @@ function _access_denied($class, $param, $force_login)
     }
 
     warn_exit($message); // Or if no login screen, just show normal error screen
+}
+
+/**
+ * Show a ban screen.
+ *
+ * @param  ?string $reasoned_ban The reasoned ban type (null: none)
+ * @exits
+ */
+function banned_exit($reasoned_ban = null)
+{
+    $text = do_lang_tempcode('YOU_ARE_BANNED');
+
+    if ($reasoned_ban !== null) {
+        require_code('input_filter');
+        list(, $reasoned_bans) = load_advanced_banning();
+        if (array_key_exists($reasoned_ban, $reasoned_bans)) {
+            $_reasoned_ban = $reasoned_bans[$reasoned_ban];
+
+            $http_status = $_reasoned_ban['http_status'];
+
+            if ($_reasoned_ban['message'] !== null) {
+                $text = comcode_to_tempcode(str_replace('{IP_ADDRESS}', get_ip_address(), $_reasoned_ban['message']), null, true);
+            }
+
+            $_GET['wide_high'] = '1'; // FUDGE
+
+            if ($_reasoned_ban['redirect_url'] !== null) {
+                $title = get_screen_title($_reasoned_ban['title'], false);
+                redirect_exit($_reasoned_ban['redirect_url'], $title, $text);
+            }
+
+            if (!empty($_reasoned_ban['title'])) {
+                $title = get_screen_title($_reasoned_ban['title'], false);
+            } else {
+                $title = null;
+            }
+
+            $image_url = $_reasoned_ban['image_url'];
+            if ($image_url !== null) {
+                if (url_is_local($image_url)) {
+                    $image_url = get_custom_base_url() . '/' . $image_url;
+                }
+            }
+
+            warn_exit($text, false, false, $http_status, $title, $image_url);
+        }
+    }
+
+    warn_exit($text);
 }
 
 /**

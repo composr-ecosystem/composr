@@ -335,7 +335,7 @@ class Hook_ajax_tree_choose_theme_files
         if ($filter !== null) {
             $where['param_a'] = $filter;
         }
-        $_action_log_times = $GLOBALS['SITE_DB']->query_select('actionlogs', ['MAX(date_and_time)', 'param_a', 'member_id'], $where, 'GROUP BY param_a');
+        $_action_log_times = $GLOBALS['SITE_DB']->query_select('actionlogs', ['MAX(date_and_time)', 'param_a', 'member_id'], $where, 'GROUP BY param_a,member_id');
         $action_log_times = list_to_map('param_a', $_action_log_times);
         return $action_log_times;
     }
@@ -353,7 +353,7 @@ class Hook_ajax_tree_choose_theme_files
         if ($filter !== null) {
             $where['param_a'] = $filter;
         }
-        $_action_log_times = $GLOBALS['SITE_DB']->query_select('actionlogs', ['MAX(date_and_time)', 'param_a', 'member_id'], $where, 'GROUP BY param_a');
+        $_action_log_times = $GLOBALS['SITE_DB']->query_select('actionlogs', ['MAX(date_and_time)', 'param_a', 'member_id'], $where, 'GROUP BY param_a,member_id');
         $action_log_times = list_to_map('param_a', $_action_log_times);
         return $action_log_times;
     }

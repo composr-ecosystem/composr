@@ -78,6 +78,10 @@
     };
 
     function facebookInit(appId, channelUrl, justLoggedOut, serversideFbuid, homePageUrl, logoutPageUrl) {
+        if (serversideFbuid == '-1') {
+            return; // Some kind of error, so don't continue
+        }
+
         window.fbAsyncInit = function fbAsyncInit() {
             window.FB.init({
                 appId: appId,

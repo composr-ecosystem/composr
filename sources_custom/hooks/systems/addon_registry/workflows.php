@@ -46,7 +46,7 @@ class Hook_addon_registry_workflows
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Admin Utilities';
     }
 
     /**
@@ -145,13 +145,13 @@ Note that this addon only affects galleries at the moment, and it requires the "
             'lang_custom/EN/workflows.ini',
             'cms/pages/modules_custom/cms_galleries.php',
             'adminzone/pages/modules_custom/admin_workflow.php',
+            'sources_custom/hooks/systems/content_meta_aware/image.php',
+            'sources_custom/hooks/systems/content_meta_aware/video.php',
             'sources_custom/workflows.php',
             'sources_custom/workflows2.php',
             'sources_custom/galleries2.php',
             'sources_custom/form_templates.php',
             'sources_custom/hooks/systems/page_groupings/workflows.php',
-            'sources_custom/hooks/modules/admin_unvalidated/images.php',
-            'sources_custom/hooks/modules/admin_unvalidated/videos.php',
             'themes/default/templates_custom/FORM_SCREEN_INPUT_VARIOUS_TICKS.tpl',
             'site/pages/modules_custom/galleries.php',
             'adminzone/pages/modules_custom/admin_unvalidated.php',

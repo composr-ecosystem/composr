@@ -132,6 +132,10 @@ Note that privileges are not inherited through category trees, so setting privil
 Similarly, you do not need view permission on parent categories to view child categories, although it would be hard to find a category if you did not have access to view its parents.
 [/surround]
 
+[title="2"]Content permissions[/title]
+
+{!DOC_CONTENT_PERMISSIONS}
+
 [title="2"]Usergroup settings[/title]
 
 Usergroups have a number of settings that are "privilege"-like. They're not actual privileges only because they aren't binary on/off, they take a value. This includes maximum post lengths, upload/attachment quotas, avatar sizing, and flood control settings. These settings are accessed by adding/editing usergroups.

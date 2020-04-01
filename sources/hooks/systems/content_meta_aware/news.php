@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_news
+class Hook_content_meta_aware_news extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -61,7 +61,8 @@ class Hook_content_meta_aware_news
             'title_field_supports_comcode' => true,
             'description_field' => 'news',
             'description_field_dereference' => true,
-            'thumb_field' => 'news_image',
+            'description_field_supports_comcode' => true,
+            'thumb_field' => ['news_image', 'news_category', 'CALL: generate_news_thumb_url'],
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
@@ -91,7 +92,6 @@ class Hook_content_meta_aware_news
             'search_hook' => 'news',
             'rss_hook' => 'news',
             'attachment_hook' => 'news',
-            'unvalidated_hook' => 'news',
             'notification_hook' => 'news_entry',
             'sitemap_hook' => 'news',
 
@@ -112,11 +112,14 @@ class Hook_content_meta_aware_news
             'support_spam_heuristics' => 'post',
 
             'actionlog_regexp' => '\w+_NEWS',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_HIGHEST,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -127,10 +130,44 @@ class Hook_content_meta_aware_news
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('news');
 
         return render_news_box($row, $zone, $give_context, false, $guid);
     }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('news');
+
+        return create_selection_list_news(($id === null) ? null : intval($id));
+    }
+}
+
+/**
+ * Find an entry thumbnail.
+ *
+ * @param  array $row Database row of entry
+ * @return string The thumbnail URL
+ */
+function generate_news_thumb_url($row)
+{
+    if ($row['news_image'] != '') {
+        $ret = $row['news_image'];
+        if (url_is_local($ret)) {
+            $ret = get_custom_base_url() . '/' . $ret;
+        }
+        return $ret;
+    }
+
+    require_code('news');
+    $news_cat_row = get_news_cat_row($row['news_category']);
+    return get_news_category_image_url($news_cat_row['nc_img']);
 }

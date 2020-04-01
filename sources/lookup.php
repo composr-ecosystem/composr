@@ -210,7 +210,7 @@ function find_security_alerts($where = [])
 
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('hackattack', 'COUNT(*)', $where);
 
-    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], $where, 'AND percentage_score>=80 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], $where, 'AND percentage_score>=80 AND silent_to_staff_log=0 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
     $result_entries = new Tempcode();
     foreach ($rows as $row) {
@@ -456,8 +456,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
 
             $h[$l_date_time] = get_timezoned_date(tz_time($myrow['date_and_time'], get_server_timezone()), false);
 
-            list($zone, $attributes) = page_link_decode($myrow['page_link']);
-            $h[$l_url] = static_evaluate_tempcode(build_url($attributes, $zone));
+            $h[$l_url] = page_link_to_url($myrow['page_link']);
 
             if (($myrow['member_id'] != $member_id) && (($advanced) || (!is_guest($myrow['member_id'])))) {
                 if (is_guest($myrow['member_id'])) {

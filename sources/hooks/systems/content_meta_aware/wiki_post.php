@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_wiki_post
+class Hook_content_meta_aware_wiki_post extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -61,6 +61,7 @@ class Hook_content_meta_aware_wiki_post
             'title_field_dereference' => true,
             'description_field' => 'the_message',
             'description_field_dereference' => true,
+            'description_field_supports_comcode' => true,
             'thumb_field' => null,
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/rich_content/wiki',
@@ -81,6 +82,7 @@ class Hook_content_meta_aware_wiki_post
             'edit_time_field' => 'edit_date',
             'date_field' => 'date_and_time',
             'validated_field' => 'validated',
+            'validation_is_minor' => true,
 
             'seo_type_code' => null,
 
@@ -91,7 +93,6 @@ class Hook_content_meta_aware_wiki_post
             'search_hook' => 'wiki_posts',
             'rss_hook' => null,
             'attachment_hook' => 'wiki_post',
-            'unvalidated_hook' => 'wiki',
             'notification_hook' => 'wiki',
             'sitemap_hook' => null,
 
@@ -112,11 +113,14 @@ class Hook_content_meta_aware_wiki_post
             'support_spam_heuristics' => 'post',
 
             'actionlog_regexp' => '\w+_WIKI_POST',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -127,7 +131,7 @@ class Hook_content_meta_aware_wiki_post
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('wiki');
 

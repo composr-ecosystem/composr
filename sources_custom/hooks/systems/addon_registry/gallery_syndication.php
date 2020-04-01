@@ -46,7 +46,7 @@ class Hook_addon_registry_gallery_syndication
      */
     public function get_category()
     {
-        return 'Development'; // $MAINTAINED_STATUS: Change to 'Development' if the integration breaks and is not fixed
+        return 'Development'; // TODO #3166 Turn back to 'Third Party Integration' once fixed
     }
 
     /**

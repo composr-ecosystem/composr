@@ -267,23 +267,7 @@ class Module_quiz
 
             breadcrumb_set_self(get_translated_text($quiz['q_name']));
 
-            $type = 'Quiz';
-            switch ($quiz['q_type']) {
-                case 'COMPETITION':
-                    $type = 'Competition';
-                    break;
-
-                case 'SURVEY':
-                    $type = 'Survey';
-                    break;
-
-                case 'TEST':
-                    $type = 'Test';
-                    break;
-            }
-
             set_extra_request_metadata([
-                'type' => $type,
                 'identifier' => '_SEARCH:quiz:do:' . strval($quiz_id),
             ], $quiz, 'quiz', strval($quiz_id));
 

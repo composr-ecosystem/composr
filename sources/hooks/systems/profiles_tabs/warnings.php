@@ -61,25 +61,143 @@ class Hook_profiles_tabs_warnings
         require_lang('cns');
         require_css('cns');
 
-        $warnings = new Tempcode();
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['w_member_id' => $member_id_of, 'w_is_warning' => 1], 'ORDER BY w_time');
-        foreach ($rows as $row) {
-            $warning_by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_by']);
-            $date = get_timezoned_date_time($row['w_time']);
-            if ($row['w_explanation'] == '') {
-                $row['w_explanation'] = '?';
-            } else {
-                $row['w_explanation'] = str_replace("\n", ' ', $row['w_explanation']);
-            }
-            $row['w_explanation_orig'] = $row['w_explanation'];
-            if (strlen($row['w_explanation']) > 30) {
-                $row['w_explanation'] = substr($row['w_explanation'], 0, 27) . '...';
-            }
-            $explanation = hyperlink(build_url(['page' => 'warnings', 'type' => '_edit', 'id' => $row['id'], 'redirect' => protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))], get_module_zone('warnings')), $row['w_explanation'], false, true, $row['w_explanation_orig']);
-            $warnings->attach(paragraph(do_lang_tempcode('MEMBER_WARNING', $explanation, $warning_by, [make_string_tempcode(escape_html($date))]), 'treyerhy34y'));
+        require_code('templates_columned_table');
+        require_code('cns_topics');
+        require_code('cns_groups');
+
+        require_lang('fields');
+
+        if (addon_installed('securitylogging')) {
+            require_lang('submitban');
         }
 
-        $content = do_template('CNS_MEMBER_PROFILE_WARNINGS', ['_GUID' => 'fea98858f6bf89f1d9dc3ec995785a39', 'MEMBER_ID' => strval($member_id_of), 'WARNINGS' => $warnings]);
+        $header_row = columned_table_header_row([
+            do_lang_tempcode('DATE'),
+            do_lang_tempcode('BY'),
+            do_lang_tempcode('PRIVATE_TOPIC'),
+            do_lang_tempcode('ADDITIONAL_INFO')
+        ]);
+
+        $table_rows = new Tempcode();
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['w_member_id' => $member_id_of, 'w_is_warning' => 1], 'ORDER BY w_time DESC');
+        foreach ($rows as $row) {
+            $row_contents = new Tempcode();
+            // Basic warning info
+            if ($row['w_explanation'] == '') {
+                $explanation = do_lang('EXPLANATION') . ': ?';
+            } else {
+                $explanation = do_lang('EXPLANATION') . ': ' . str_replace("\n", ' ', $row['w_explanation']);
+            }
+            $row['w_explanation_orig'] = $row['w_explanation'];
+            if (cms_mb_strlen($row['w_explanation']) > 61) {
+                $explanation = do_lang('EXPLANATION') . ': ' . cms_mb_substr(str_replace("\n", ' ', $row['w_explanation']), 0, 61) . '...';
+            }
+            $row_contents->attach($explanation);
+
+            // Warning private topic
+            $private_topic = do_lang('NA');
+            if ($row['w_topic_id'] !== null) {
+                $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $row['w_topic_id']], '', 1);
+                if (array_key_exists(0, $topic_rows)) {
+                    $topic_row = $topic_rows[0];
+                    if (cns_may_access_topic($row['w_topic_id'])) {
+                        $pt_url = build_url(['page' => 'topicview', 'id' => $row['w_topic_id']], get_module_zone('topicview'));
+                        $private_topic = hyperlink($pt_url, do_lang('VIEW_TOPIC'), false, true);
+                    }
+                }
+            }
+
+            // Punitive actions
+            if (addon_installed('securitylogging')) {
+                if ($row['p_banned_ip'] != '') {
+                    $row_contents->attach('<br />' . do_lang('IP_BANNED')); // XHTMLXHTML
+                }
+            }
+            if ($row['p_banned_member'] > 0) {
+                $row_contents->attach('<br />' . do_lang('BANNED')); // XHTMLXHTML
+            }
+            if ($row['p_probation'] > 0) {
+                $row_contents->attach('<br />' . do_lang('PROBATION') . ': ' . escape_html(do_lang('DAYS', $row['p_probation']))); // XHTMLXHTML
+            }
+            if ($row['p_charged_points'] !== 0) {
+                $row_contents->attach('<br />' . do_lang('CHARGED_POINTS') . ': ' . escape_html(integer_format($row['p_charged_points']))); // XHTMLXHTML
+            }
+            if (($row['p_changed_usergroup_from'] !== null) && ($row['p_changed_usergroup_to'] !== null)) {
+                $html = '<br />' . do_lang('CHANGED_USERGROUP_TO') . ' ' . escape_html(cns_get_group_name($row['p_changed_usergroup_to'], true));
+                $html .= ', ' . do_lang('FROM') . ' ' . escape_html(cns_get_group_name($row['p_changed_usergroup_from'], true));
+                $row_contents->attach($html); // XHTMLXHTML
+            }
+            if ($row['p_silence_from_forum'] !== null) {
+                $silence_from_forum_title = '#' . strval($row['p_silence_from_forum']);
+                if (get_forum_type() == 'cns') {
+                    $silence_from_forum_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['p_silence_from_forum']]);
+                    if ($silence_from_forum_title === null) {
+                        $silence_from_forum_title = '#' . strval($row['p_silence_from_forum']);
+                    }
+                }
+                $silence_until = $GLOBALS['FORUM_DB']->query_select_value_if_there('member_privileges', 'active_until', [
+                    'member_id' => $row['w_member_id'],
+                    'privilege' => 'submit_midrange_content',
+                    'the_page' => '',
+                    'module_the_name' => 'forums',
+                    'category_name' => strval($row['p_silence_from_forum']),
+                ], 'ORDER BY active_until DESC');
+                if ($silence_until !== null) {
+                    $silence_until = do_lang('PUNITIVE_SILENCED_UNTIL', get_timezoned_date_time($silence_until, false, false, get_member()));
+                } else {
+                    $silence_until = do_lang('PUNITIVE_SILENCE_EXPIRED');
+                }
+                $row_contents->attach('<br />' . do_lang('SILENCE_FROM_FORUM') . ': ' . $silence_from_forum_title . ' ' . $silence_until); // XHTMLXHTML
+            }
+            if ($row['p_silence_from_topic'] !== null) {
+                $silence_from_topic_title = '#' . strval($row['p_silence_from_topic']);
+                if (get_forum_type() == 'cns') {
+                    $silence_from_topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_silence_from_topic']]);
+                    if ($silence_from_topic_title === null) {
+                        $silence_from_topic_title = '#' . strval($row['p_silence_from_topic']);
+                    }
+                }
+                $silence_until = $GLOBALS['FORUM_DB']->query_select_value_if_there('member_privileges', 'active_until', [
+                    'member_id' => $row['w_member_id'],
+                    'privilege' => 'submit_lowrange_content',
+                    'the_page' => '',
+                    'module_the_name' => 'topics',
+                    'category_name' => strval($row['p_silence_from_topic']),
+                ], 'ORDER BY active_until DESC');
+                if ($silence_until !== null) {
+                    $silence_until = do_lang('PUNITIVE_SILENCED_UNTIL', get_timezoned_date_time($silence_until, false, false, get_member()));
+                } else {
+                    $silence_until = do_lang('PUNITIVE_SILENCE_EXPIRED');
+                }
+                $row_contents->attach('<br />' . do_lang('SILENCE_FROM_TOPIC') . ': ' . $silence_from_topic_title . ' ' . $silence_until); // XHTMLXHTML
+            }
+
+            $table_rows->attach(columned_table_row([
+                get_timezoned_date_time($row['w_time']),
+                $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_by']),
+                $private_topic,
+                $row_contents,
+            ], false));
+        }
+
+        $warn_members_text = new Tempcode();
+        if (has_privilege($member_id_viewing, 'warn_members')) {
+            $full_warnings_url = build_url(['page' => 'warnings', 'type' => 'history', 'id' => $member_id_of], get_module_zone('warnings'));
+            $warn_members_text = do_lang_tempcode('DESCRIPTION_CAN_WARN', hyperlink($full_warnings_url, do_lang_tempcode('REVIEW_WARNING_HISTORY'), false, false));
+        }
+
+        $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a6', 'HEADER_ROW' => $header_row, 'ROWS' => $table_rows]);
+
+        $_content = do_template('COLUMNED_TABLE_SCREEN', [
+            '_GUID' => '9dfa0fb6ea396d3b57cb447bc228a885',
+            'TITLE' => '',
+            'TEXT' => $warn_members_text,
+            'TABLE' => $table,
+            'SUBMIT_ICON' => null,
+            'JS_FUNCTION_CALLS' => [],
+        ]);
+
+        $content = do_template('CNS_MEMBER_PROFILE_WARNINGS', ['_GUID' => 'fea98858f6bf89f1d9dc3ec995785a39', 'MEMBER_ID' => strval($member_id_of), 'WARNINGS' => $_content]);
 
         return [$title, $content, $order, 'menu/social/warnings'];
     }

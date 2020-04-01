@@ -66,6 +66,7 @@ class Block_main_join
         require_code('cns_members_action');
         require_code('cns_members_action2');
         require_code('cns_join');
+        require_lang('cns_components');
 
         $guid = isset($map['guid']) ? $map['guid'] : '2953c83685df4970de8f23fcd5dd15bb';
 

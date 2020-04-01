@@ -35,6 +35,7 @@ function init__points2()
  * @param  integer $amount The size of the transfer
  * @param  MEMBER $member_id The member the transfer is to
  * @param  boolean $include_in_log Whether to include a log line
+ * @return ?AUTO_LINK ID of the gifts record if include_in_log was true (null: log was not created)
  */
 function system_gift_transfer($reason, $amount, $member_id, $include_in_log = true)
 {
@@ -42,11 +43,13 @@ function system_gift_transfer($reason, $amount, $member_id, $include_in_log = tr
     require_code('points');
 
     if (is_guest($member_id)) {
-        return;
+        return null;
     }
     if ($amount == 0) {
-        return;
+        return null;
     }
+
+    $id = null;
 
     if ($include_in_log) {
         $map = [
@@ -57,7 +60,7 @@ function system_gift_transfer($reason, $amount, $member_id, $include_in_log = tr
             'anonymous' => 1,
         ];
         $map += insert_lang_comcode('reason', $reason, 4);
-        $GLOBALS['SITE_DB']->query_insert('gifts', $map);
+        $id = $GLOBALS['SITE_DB']->query_insert('gifts', $map, true);
     }
 
     $_before = point_info($member_id);
@@ -78,6 +81,8 @@ function system_gift_transfer($reason, $amount, $member_id, $include_in_log = tr
         require_code('cns_posts_action2');
         cns_member_handle_promotion($member_id);
     }
+
+    return $id;
 }
 
 /**
@@ -89,6 +94,7 @@ function system_gift_transfer($reason, $amount, $member_id, $include_in_log = tr
  * @param  SHORT_TEXT $reason The reason for the gift
  * @param  boolean $anonymous Does the sender want to remain anonymous?
  * @param  boolean $send_email Whether to send out an e-mail about it
+ * @return AUTO_LINK The ID of the gift point record created
  */
 function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = false, $send_email = true)
 {
@@ -103,7 +109,7 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
         'anonymous' => $anonymous ? 1 : 0,
     ];
     $map += insert_lang_comcode('reason', $reason, 4);
-    $GLOBALS['SITE_DB']->query_insert('gifts', $map);
+    $id = $GLOBALS['SITE_DB']->query_insert('gifts', $map, true);
 
     $sender_point_info = point_info($sender_id);
     $sender_gift_points_used_old = array_key_exists('gift_points_used', $sender_point_info) ? $sender_point_info['gift_points_used'] : 0;
@@ -139,7 +145,7 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
 
     global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
     if (array_key_exists($recipient_id, $TOTAL_POINTS_CACHE)) {
-        $TOTAL_POINTS_CACHE[$recipient_id] = $recipient_points_given_new;
+        $TOTAL_POINTS_CACHE[$recipient_id] += $amount;
     }
     if ((array_key_exists($recipient_id, $POINT_INFO_CACHE)) && (array_key_exists('points_gained_given', $POINT_INFO_CACHE[$recipient_id]))) {
         $POINT_INFO_CACHE[$recipient_id]['points_gained_given'] = $recipient_points_given_new;
@@ -161,6 +167,8 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
             syndicate_described_activity((($recipient_id === null) || (is_guest($recipient_id))) ? 'points:_ACTIVITY_GIVE_POINTS' : 'points:ACTIVITY_GIVE_POINTS', $reason, integer_format($amount), '', '_SEARCH:points:member:' . strval($recipient_id), '', '', 'points', 1, null, false, $recipient_id);
         }
     }
+
+    return $id;
 }
 
 /**
@@ -169,6 +177,7 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
  * @param  MEMBER $member_id The member that is being charged
  * @param  integer $amount The amount being charged
  * @param  SHORT_TEXT $reason The reason for the charging
+ * @return AUTO_LINK The ID of the chargelog record
  */
 function charge_member($member_id, $amount, $reason)
 {
@@ -179,15 +188,18 @@ function charge_member($member_id, $amount, $reason)
     $before = array_key_exists('points_used', $_before) ? intval($_before['points_used']) : 0;
     $new = max(-2147483648, min(2147483647, $before + $amount)); // TODO: #3046 in tracker
     $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_used', strval($new));
-    add_to_charge_log($member_id, $amount, $reason);
+    $id = add_to_charge_log($member_id, $amount, $reason);
 
-    global $TOTAL_POINTS_CACHE, $POINT_INFO_CACHE;
-    if (array_key_exists($member_id, $TOTAL_POINTS_CACHE)) {
-        $TOTAL_POINTS_CACHE[$member_id] -= $amount;
-    }
+    global $POINT_INFO_CACHE, $POINTS_USED_CACHE;
+    // TOTAL_POINTS_CACHE is not reduced as the total points does NOT go down when charged, points-used goes up!
     if ((array_key_exists($member_id, $POINT_INFO_CACHE)) && (array_key_exists('points_used', $POINT_INFO_CACHE[$member_id]))) {
         $POINT_INFO_CACHE[$member_id]['points_used'] += $amount;
     }
+    if (array_key_exists($member_id, $POINTS_USED_CACHE)) {
+        $POINTS_USED_CACHE[$member_id] += $amount;
+    }
+
+    return $id;
 }
 
 /**
@@ -197,6 +209,7 @@ function charge_member($member_id, $amount, $reason)
  * @param  integer $amount The amount being charged
  * @param  SHORT_TEXT $reason The reason for the charging
  * @param  ?TIME $time The time this is recorded to have happened (null: use current time)
+ * @return AUTO_LINK The ID of the chargelog record
  */
 function add_to_charge_log($member_id, $amount, $reason, $time = null)
 {
@@ -209,7 +222,7 @@ function add_to_charge_log($member_id, $amount, $reason, $time = null)
         'date_and_time' => $time,
     ];
     $map += insert_lang_comcode('reason', $reason, 4);
-    $GLOBALS['SITE_DB']->query_insert('chargelog', $map);
+    return $GLOBALS['SITE_DB']->query_insert('chargelog', $map, true);
 }
 
 /**
@@ -228,12 +241,45 @@ function reverse_point_gift_transaction($id)
     $sender_id = $myrow['gift_from'];
     $recipient_id = $myrow['gift_to'];
 
+    global $POINT_INFO_CACHE, $TOTAL_POINTS_CACHE;
+
     $GLOBALS['SITE_DB']->query_delete('gifts', ['id' => $id], '', 1);
     if (!is_guest($sender_id)) {
         $_sender_gift_points_used = point_info($sender_id);
         $sender_gift_points_used = array_key_exists('gift_points_used', $_sender_gift_points_used) ? $_sender_gift_points_used['gift_points_used'] : 0;
         $GLOBALS['FORUM_DRIVER']->set_custom_field($sender_id, 'gift_points_used', strval($sender_gift_points_used - $amount));
+        unset($POINT_INFO_CACHE[$sender_id]);
     }
     $recipient_point_info = point_info($recipient_id);
     $GLOBALS['FORUM_DRIVER']->set_custom_field($recipient_id, 'points_gained_given', strval((array_key_exists('points_gained_given', $recipient_point_info) ? $recipient_point_info['points_gained_given'] : 0) - $amount));
+    unset($POINT_INFO_CACHE[$recipient_id]);
+    unset($TOTAL_POINTS_CACHE[$recipient_id]);
+}
+
+/**
+ * Reverse a particular charge log.
+ *
+ * @param  AUTO_LINK $id The transaction ID
+ */
+function reverse_charge_transaction($id)
+{
+    $rows = $GLOBALS['SITE_DB']->query_select('chargelog', ['*'], ['id' => $id], '', 1);
+    if (!array_key_exists(0, $rows)) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+    }
+    $myrow = $rows[0];
+    $amount = $myrow['amount'];
+    $member_id = $myrow['member_id'];
+
+    global $POINT_INFO_CACHE, $POINTS_USED_CACHE, $TOTAL_POINTS_CACHE;
+
+    $GLOBALS['SITE_DB']->query_delete('chargelog', ['id' => $id], '', 1);
+    if (!is_guest($member_id)) {
+        $_points_charged = point_info($member_id);
+        $points_charged = array_key_exists('points_used', $_points_charged) ? $_points_charged['points_used'] : 0;
+        $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_used', strval($points_charged - $amount));
+        unset($POINT_INFO_CACHE[$member_id]);
+        unset($POINTS_USED_CACHE[$member_id]);
+        unset($TOTAL_POINTS_CACHE[$member_id]);
+    }
 }

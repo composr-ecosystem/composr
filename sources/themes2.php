@@ -603,12 +603,7 @@ function check_form_field_image($name, $val, $delete_on_error = null)
     require_code('input_filter');
     require_code('images');
 
-    global $FIELD_RESTRICTIONS;
-    if ($FIELD_RESTRICTIONS === null) {
-        $restrictions = load_field_restrictions();
-    } else {
-        $restrictions = $FIELD_RESTRICTIONS;
-    }
+    $restrictions = load_field_restrictions();
 
     static $image_size_cache = [];
 

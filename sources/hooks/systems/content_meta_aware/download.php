@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_download
+class Hook_content_meta_aware_download extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -61,7 +61,8 @@ class Hook_content_meta_aware_download
             'title_field_dereference' => true,
             'description_field' => 'the_description',
             'description_field_dereference' => true,
-            'thumb_field' => 'rep_image',
+            'description_field_supports_comcode' => true,
+            'thumb_field' => ['rep_image', 'CALL: generate_download_entry_thumb_url'],
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
@@ -91,7 +92,6 @@ class Hook_content_meta_aware_download
             'search_hook' => 'downloads',
             'rss_hook' => 'downloads',
             'attachment_hook' => null,
-            'unvalidated_hook' => 'downloads',
             'notification_hook' => 'download',
             'sitemap_hook' => 'download',
 
@@ -112,11 +112,49 @@ class Hook_content_meta_aware_download
             'support_spam_heuristics' => 'the_description',
 
             'actionlog_regexp' => '\w+_DOWNLOAD',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_HIGH,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        require_lang('downloads');
+
+        $headings = [];
+
+        $headings['entry_count'] = do_lang_tempcode('COUNT_DOWNLOADS');
+        $headings['file_size'] = do_lang_tempcode('FILE_SIZE');
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+
+        $keymap['entry_count'] = escape_html(integer_format($row['num_downloads']));
+
+        $file_size = $row['file_size'];
+        $keymap['file_size'] = escape_html(($file_size > 0) ? clean_file_size($file_size) : do_lang('UNKNOWN'));
+
+        return $keymap;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -127,10 +165,58 @@ class Hook_content_meta_aware_download
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('downloads');
 
         return render_download_box($row, true, $include_breadcrumbs, $zone, null, $give_context, ($root === null) ? null : intval($root), $guid);
     }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return 'choose_download';
+    }
+}
+
+/**
+ * Find an entry thumbnail.
+ *
+ * @param  array $row Database row of entry
+ * @param  boolean $prefer_large_image Whether we prefer a larger image
+ * @return URLPATH The thumbnail URL (blank: none)
+ */
+function generate_download_entry_thumb_url($row, $prefer_large_image = false)
+{
+    if ($row['rep_image'] != '') {
+        $thumb_url = $row['rep_image'];
+        if (url_is_local($thumb_url)) {
+            $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+        }
+        return $thumb_url;
+    }
+
+    if (addon_installed('galleries')) {
+        $thumb_url = $GLOBALS['SITE_DB']->query_select_value_if_there('images', $prefer_large_image ? 'url' : 'thumb_url', ['cat' => 'download_' . strval($row['id'])]);
+        if (!cms_empty_safe($thumb_url)) {
+            if (url_is_local($thumb_url)) {
+                $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+            }
+            return $thumb_url;
+        }
+
+        $thumb_url = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => 'download_' . strval($row['id'])]);
+        if (!cms_empty_safe($thumb_url)) {
+            if (url_is_local($thumb_url)) {
+                $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+            }
+            return $thumb_url;
+        }
+    }
+
+    return '';
 }

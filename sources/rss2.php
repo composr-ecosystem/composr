@@ -48,33 +48,8 @@ function backend_cloud_script()
     }
     $port = post_param_integer('port', 80);
     // $watching_channel = $_POST['channels'];
-    $status = _cloud_register_them($path, $procedure, $protocol, $port, get_param_string('type', ''));
-    if (!$status) {
-        exit('false');
-    }
+    $GLOBALS['SITE_DB']->query_insert_or_replace('news_rss_cloud', ['register_time' => time()], ['watching_channel' => get_param_string('type', ''), 'rem_procedure' => $procedure, 'rem_port' => $port, 'rem_path' => $path, 'rem_protocol' => $protocol, 'rem_ip' => get_ip_address()]);
     exit('true');
-}
-
-/**
- * Set up an RSS cloud registration.
- *
- * @param  SHORT_TEXT $path The news category title
- * @param  ID_TEXT $procedure The procedure they are interested in
- * @param  ID_TEXT $protocol The protocol they are using
- * @param  integer $port The port to connect to them on
- * @param  string $watching_channel The channel they are interested in
- * @return boolean Success status
- *
- * @ignore
- */
-function _cloud_register_them($path, $procedure, $protocol, $port, $watching_channel)
-{
-    $before = $GLOBALS['SITE_DB']->query_select_value_if_there('news_rss_cloud', 'register_time', ['watching_channel' => $watching_channel, 'rem_path' => $path, 'rem_ip' => get_ip_address()]);
-    if ($before !== null) {
-        return false;
-    }
-    $GLOBALS['SITE_DB']->query_insert('news_rss_cloud', ['watching_channel' => $watching_channel, 'rem_procedure' => $procedure, 'rem_port' => $port, 'rem_path' => $path, 'rem_protocol' => $protocol, 'rem_ip' => get_ip_address(), 'register_time' => time()]);
-    return true;
 }
 
 /**

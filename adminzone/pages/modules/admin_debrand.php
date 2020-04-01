@@ -157,10 +157,10 @@ class Module_admin_debrand
         $fields->attach(form_input_tick(do_lang_tempcode('DELETE_UN_PC'), do_lang_tempcode('DESCRIPTION_DELETE_UN_PC'), 'churchy', false));
         $fields->attach(form_input_tick(do_lang_tempcode('SHOW_DOCS'), do_lang_tempcode('DESCRIPTION_SHOW_DOCS'), 'show_docs', get_option('show_docs') == '1'));
         require_code('images');
-        $fields->attach(form_input_upload(do_lang_tempcode('FAVICON'), do_lang_tempcode('DESCRIPTION_FAVICON'), 'favicon', false, find_theme_image('favicon'), null, true, get_allowed_image_file_types()));
-        $fields->attach(form_input_upload(do_lang_tempcode('WEBCLIPICON'), do_lang_tempcode('DESCRIPTION_WEBCLIPICON'), 'webclipicon', false, find_theme_image('webclipicon'), null, true, get_allowed_image_file_types()));
+        $fields->attach(form_input_upload(do_lang_tempcode('FAVICON'), do_lang_tempcode('DESCRIPTION_FAVICON'), 'favicon', false, find_theme_image('favicon'), null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
+        $fields->attach(form_input_upload(do_lang_tempcode('WEBCLIPICON'), do_lang_tempcode('DESCRIPTION_WEBCLIPICON'), 'webclipicon', false, find_theme_image('webclipicon'), null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
         if (addon_installed('cns_avatars')) {
-            $fields->attach(form_input_upload(do_lang_tempcode('SYSTEM_AVATAR'), do_lang_tempcode('DESCRIPTION_SYSTEM_AVATAR'), 'system_avatar', false, find_theme_image('cns_default_avatars/system'), null, true, get_allowed_image_file_types()));
+            $fields->attach(form_input_upload(do_lang_tempcode('SYSTEM_AVATAR'), do_lang_tempcode('DESCRIPTION_SYSTEM_AVATAR'), 'system_avatar', false, find_theme_image('cns_default_avatars/system'), null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
         }
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF');
@@ -247,25 +247,6 @@ class Module_admin_debrand
             foreach ($disallowed_pages as $page) {
                 $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => $page, 'zone_name' => 'adminzone', 'group_id' => $id], '', 1); // in case already exists
                 $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => $page, 'zone_name' => 'adminzone', 'group_id' => $id]);
-            }
-        }
-
-        // Clean up the theme images
-        //  background-image
-        $theme = $GLOBALS['FORUM_DRIVER']->get_theme('');
-        find_theme_image('background_image');
-        //  logo/*
-        if (addon_installed('zone_logos')) {
-            $main_logo_url = find_theme_image('logo/-logo', false, true);
-
-            $test = find_theme_image('logo/adminzone-logo', true);
-            if ($test != '') {
-                $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $main_logo_url], ['id' => 'logo/adminzone-logo', 'theme' => $theme], '', 1);
-            }
-
-            $test = find_theme_image('logo/cms-logo', true);
-            if ($test != '') {
-                $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $main_logo_url], ['id' => 'logo/cms-logo', 'theme' => $theme], '', 1);
             }
         }
 

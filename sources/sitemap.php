@@ -705,6 +705,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     protected $content_type = null;
     protected $entry_content_type = null;
     protected $entry_sitetree_hook = null;
+    protected $cma_ob = null;
     protected $cma_info = null;
     protected $screen_type = 'browse';
 
@@ -752,6 +753,20 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     }
 
     /**
+     * Get the CMA object for our content hook.
+     *
+     * @return ?object The CMA object (null: disabled)
+     */
+    protected function _get_cma_ob()
+    {
+        if ($this->cma_ob === null) {
+            require_code('content');
+            $this->cma_ob = get_content_object($this->content_type);
+        }
+        return $this->cma_ob;
+    }
+
+    /**
      * Get the CMA info for our content hook.
      *
      * @return ?array The CMA info (null: disabled)
@@ -759,8 +774,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     protected function _get_cma_info()
     {
         if ($this->cma_info === null) {
-            require_code('content');
-            $cma_ob = get_content_object($this->content_type);
+            $cma_ob = $this->_get_cma_ob();
             $this->cma_info = $cma_ob->info();
         }
         return $this->cma_info;
@@ -799,6 +813,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             return null;
         }
 
+        $cma_ob = $this->_get_cma_ob();
         $cma_info = $this->_get_cma_info();
         if ($cma_info === null) {
             return null;
@@ -815,21 +830,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             }
         }
 
-        if (strpos($cma_info['title_field'], 'CALL:') !== false) {
-            $title_value = call_user_func(trim(substr($cma_info['title_field'], 5)), ['id' => $content_id], false);
-            $title = make_string_tempcode(escape_html($title_value));
-        } else {
-            $title_value = $row[$cma_info['title_field']];
-            if (isset($cma_info['title_field_supports_comcode']) && $cma_info['title_field_supports_comcode']) {
-                if ($cma_info['title_field_dereference']) {
-                    $title = get_translated_tempcode($cma_info['table'], $row, $cma_info['title_field'], $cma_info['db']);
-                } else {
-                    $title = comcode_to_tempcode($title_value, $GLOBALS['FORUM_DRIVER']->get_guest_id());
-                }
-            } else {
-                $title = make_string_tempcode(escape_html(($cma_info['title_field_dereference'] && is_integer($title_value)) ? get_translated_text($title_value, $cma_info['db']) : $title_value));
-            }
-        }
+        $title = $cma_ob->get_title($row, FIELD_RENDER_HTML);
 
         $matches = [];
         preg_match('#^([^:]*):([^:]*):([^:]*):([^:]*)#', $page_link, $matches);
@@ -895,7 +896,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             $struct['permissions'][] = [
                 'type' => 'category',
                 'permission_module' => $cma_info['permissions_type_code'],
-                'category_name' => @strval($cma_info['is_category'] ? $content_id : $row[$cma_info['category_field']]),
+                'category_name' => @strval($cma_info['is_entry'] ? $row[$cma_info['category_field']] : $content_id),
                 'page_name' => $page,
                 'is_owned_at_this_level' => true,
             ];
@@ -903,12 +904,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
         /* Description field generally not appropriate for Sitemap
         if ((($meta_gather & SITEMAP_GATHER_DESCRIPTION) != 0) && ($cma_info['description_field'] !== null)) {
-            $description = $row[$cma_info['description_field']];
-            if (is_integer($description)) {
-                $struct['extra_meta']['description'] = get_translated_tempcode($description, $cma_info['db']);
-            } else {
-                $struct['extra_meta']['description'] = make_string_tempcode(escape_html($description));
-            }
+            $struct['extra_meta']['description'] = $cma_ob->get_description($row, FIELD_RENDER_HTML);
         }
         */
 
@@ -916,21 +912,9 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             if (method_exists($this, '_find_theme_image')) {
                 $this->_find_theme_image($row, $struct);
             } else {
-                if (strpos($cma_info['thumb_field'], 'CALL:') !== false) {
-                    $struct['extra_meta']['image'] = call_user_func(trim(substr($cma_info['thumb_field'], 5)), ['id' => $content_id], $row);
-                } else {
-                    $struct['extra_meta']['image'] = $row[$cma_info['thumb_field']];
-                }
+                $struct['extra_meta']['image'] = $cma_ob->get_image_thumb_url($row);
                 if ($struct['extra_meta']['image'] == '') {
                     $struct['extra_meta']['image'] = null;
-                } else {
-                    if ($cma_info['thumb_field_is_theme_image']) {
-                        $struct['extra_meta']['image'] = find_theme_image($struct['extra_meta']['image'], true);
-                    } else {
-                        if (url_is_local($struct['extra_meta']['image'])) {
-                            $struct['extra_meta']['image'] = get_custom_base_url() . '/' . $struct['extra_meta']['image'];
-                        }
-                    }
                 }
             }
         }
@@ -989,47 +973,31 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
      * Also find out what language fields we should load up for the table (returned by reference).
      *
      * @param  ?array $cma_info CMA info (null: standard for this hook)
-     * @param  string $table_prefix Table prefix
+     * @param  ?string $table_alias Table alias (null: none)
      * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
      * @return array Map between field name and field type
      */
-    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
+    protected function select_fields($cma_info = null, $table_alias = null, &$lang_fields_filtered = null)
     {
         if ($cma_info === null) {
             $cma_info = $this->_get_cma_info();
         }
 
         $cma_fields = [
-            'id_field',
-            'title_field',
-            'category_field',
-            'thumb_field',
-            'add_time_field',
-            'edit_time_field',
-            'submitter_field',
-            'author_field',
-            'views_field',
-            'validated_field',
+            'id',
+            'title',
+            'category',
+            'thumb',
+            'add_time',
+            'edit_time',
+            'submitter',
+            'author',
+            'views',
+            'validated',
         ];
+
         $select = [];
-        foreach ($cma_fields as $cma_field) {
-            if ($cma_info[$cma_field] !== null) {
-                if (is_array($cma_info[$cma_field])) {
-                    foreach ($cma_info[$cma_field] as $f) {
-                        if ($table_prefix != '') {
-                            $f = $table_prefix . '.' . $f;
-                        }
-                        $select[] = $f;
-                    }
-                } elseif (strpos($cma_info[$cma_field], 'CALL:') === false) {
-                    $f = $cma_info[$cma_field];
-                    if ($table_prefix != '') {
-                        $f = $table_prefix . '.' . $f;
-                    }
-                    $select[] = $f;
-                }
-            }
-        }
+        append_content_select_for_fields($select, $cma_info, $cma_fields, $table_alias);
 
         $table = $cma_info['table'];
 
@@ -1038,11 +1006,11 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
         $lang_fields_filtered = [];
         foreach ($lang_fields as $field => $type) {
             $f = $field;
-            if ($table_prefix != '') {
-                $f = $table_prefix . '.' . $f;
+            if ($table_alias !== null) {
+                $f = $table_alias . '.' . $f;
             }
             if (in_array($f, $select)) {
-                $lang_fields_filtered[$table_prefix . '.' . $field] = $type;
+                $lang_fields_filtered[$f] = $type;
             }
         }
 

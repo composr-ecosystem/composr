@@ -46,7 +46,7 @@ class Hook_addon_registry_composr_tutorials
      */
     public function get_category()
     {
-        return 'Admin Utilities';
+        return 'Architecture';
     }
 
     /**
@@ -163,6 +163,8 @@ The documentation is primarily maintained on our website, and this archive is on
             'cms/pages/modules_custom/cms_tutorials.php',
             'sources_custom/hooks/modules/search/tutorials_external.php',
             'sources_custom/hooks/systems/actionlog/composr_tutorials.php',
+            'sources_custom/hooks/systems/resource_meta_aware/tutorials_external.php',
+            'sources_custom/hooks/systems/resource_meta_aware/tutorials_internal.php',
 
             'docs/pages/modules_custom/tutorials.php',
             'docs/index.php',
@@ -762,9 +764,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_featured/featured_checklist.png',
             'data_custom/images/docs/tut_featured/featured_dotw.png',
             'data_custom/images/docs/tut_featured/featured_forum_topics_block.png',
-            'data_custom/images/docs/tut_featured/featured_iotd_add.png',
-            'data_custom/images/docs/tut_featured/featured_iotd_choose.png',
-            'data_custom/images/docs/tut_featured/featured_iotd_view.png',
             'data_custom/images/docs/tut_featured/featured_main_include_module.png',
             'data_custom/images/docs/tut_featured/featured_main_include_module_2.png',
             'data_custom/images/docs/tut_feedback/catalogue_add.png',

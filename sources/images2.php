@@ -57,7 +57,7 @@ function _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thum
         if (is_video($full_url, false, true)) {
             if (addon_installed('galleries')) {
                 require_code('galleries2');
-                create_video_thumb($full_url, $thumb_path);
+                video_get_default_thumb_url($full_url, $thumb_path);
             }
         } else {
             $thumb_url = convert_image($full_url, $thumb_path, null, null, intval($thumb_width), false);

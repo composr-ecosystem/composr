@@ -30,8 +30,6 @@ class Hook_symbol_USER_FB_CONNECT
             return '';
         }
 
-        require_code('facebook_connect');
-
         if ((!isset($param[0])) || (!is_numeric($param[0]))) {
             return '';
         }
@@ -46,24 +44,14 @@ class Hook_symbol_USER_FB_CONNECT
         } else {
             // Okay, look to see if they have set up syndication permissions instead, which is the other way around: stores authorisation, but not Facebook ID...
 
-            $token = get_value('facebook_oauth_token__' . strval($member_id), null, true);
-            if (empty($token)) {
+            $access_token = get_value('facebook_oauth_token__' . strval($member_id), null, true);
+            if (empty($access_token)) {
                 return '';
             }
 
-            $appid = get_option('facebook_appid');
-            $appsecret = get_option('facebook_secret_code');
-            try {
-                $facebook_connect = new Facebook(['appId' => $appid, 'secret' => $appsecret]);
-                $facebook_connect->setAccessToken($token);
-                $temp_cookie = $_COOKIE;
-                $fb_user = $facebook_connect->getUser();
-                $_COOKIE = $temp_cookie;
-                $value = ($fb_user === null) ? '' : strval($fb_user);
-                if ($value == '0') {
-                    $value = '';
-                }
-            } catch (Exception $e) {
+            require_code('facebook_connect');
+            $value = facebook_get_current_user_id($access_token);
+            if ($value === null) {
                 $value = '';
             }
         }

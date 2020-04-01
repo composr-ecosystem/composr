@@ -46,7 +46,7 @@ class Hook_addon_registry_git_status
      */
     public function get_category()
     {
-        return 'Admin Utilities';
+        return 'Development';
     }
 
     /**
@@ -122,7 +122,7 @@ This is useful when using Git for deployment on staging and live servers, where 
      */
     public function get_default_icon()
     {
-        return 'themes/default/images_custom/icons/48x48/status/notice.png';
+        return 'themes/default/images/icons/status/notice.svg';
     }
 
     /**

@@ -1464,7 +1464,7 @@ class Hook_import_cms_merge
             $regions = collapse_1d_complexity('region', $db->query_select('content_regions', ['region'], ['content_type' => 'video', 'content_id' => strval($row['id'])]));
 
             $title = $this->get_lang_string($db, $row['title']);
-            $id_new = add_video($title, $row['cat'], $this->get_lang_string($db, $row['the_description']), $row['url'], $row['thumb_url'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $row['video_length'], $row['video_width'], $row['video_height'], $submitter, $row['add_date'], $row['edit_date'], $row['video_views'], $id, '', '', $regions);
+            $id_new = add_video($title, $row['cat'], $this->get_lang_string($db, $row['the_description']), $row['url'], $row['thumb_url'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $row['video_length'], $row['video_width'], $row['video_height'], $row['closed_captions_url'], $submitter, $row['add_date'], $row['edit_date'], $row['video_views'], $id, '', '', $regions);
 
             $this->_import_content_privacy($db, 'video', strval($row['id']), strval($id_new));
 
@@ -2585,12 +2585,6 @@ class Hook_import_cms_merge
             $GLOBALS['SITE_DB']->query_insert('group_zone_access', $row);
         }
 
-        $rows = $db->query_select('https_pages', ['*']);
-        foreach ($rows as $row) {
-            $GLOBALS['SITE_DB']->query_delete('https_pages', $row);
-            $GLOBALS['SITE_DB']->query_insert('https_pages', $row);
-        }
-
         $rows = $db->query_select('group_category_access', ['*']);
         foreach ($rows as $row) {
             $row['group_id'] = $on_same_msn ? $row['group_id'] : import_id_remap_get('group', strval($row['group_id']), true);
@@ -3648,12 +3642,12 @@ class Hook_import_cms_merge
                 $silence_from_forum = null;
             }
 
-            $changed_usergroup_from = import_id_remap_get('group', strval($row['w_changed_usergroup_from']), true);
-            if ($changed_usergroup_from === null) {
-                $changed_usergroup_from = null;
+            $changed_usergroup_to = import_id_remap_get('group', strval($row['w_changed_usergroup_to']), true);
+            if ($changed_usergroup_to === null) {
+                $changed_usergroup_to = null;
             }
 
-            cns_make_warning($member_id, $row['w_explanation'], $by, $row['w_time'], $row['w_is_warning'], $silence_from_topic, $silence_from_forum, $row['w_probation'], $row['w_banned_ip'], $row['w_charged_points'], $row['w_banned_member'], $changed_usergroup_from);
+            cns_make_warning($member_id, $row['w_explanation'], $by, $row['w_time'], $row['w_is_warning'], $silence_from_topic, $silence_from_forum, $row['w_probation'], $row['w_banned_ip'], $row['w_charged_points'], $row['w_banned_member'], $changed_usergroup_to);
         }
     }
 

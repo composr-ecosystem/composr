@@ -743,7 +743,7 @@
     /**
      * Escapes the `RegExp` special characters "^", "$", "\", ".", "*", "+",
      * "?", "(", ")", "[", "]", "{", "}", and "|" in `string`.
-     * 
+     *
      * Credit: https://lodash.com/docs#escapeRegExp
      * @memberOf $util
      * @param {string} [string=''] The string to escape.

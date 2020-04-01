@@ -154,10 +154,11 @@ class Module_search
 
                 if (($info !== null) && ($info !== false)) {
                     $this->title = get_screen_title('_SEARCH_TITLE', true, [$info['lang']]);
+
+                    breadcrumb_set_self($info['lang']);
                 }
 
                 breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('SEARCH')]]);
-                breadcrumb_set_self($info['lang']);
 
                 $this->ob = $ob;
                 $this->info = $info;

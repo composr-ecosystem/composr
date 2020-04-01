@@ -126,7 +126,7 @@ You may wish to deny access to the usergroup and member directories when using t
      */
     public function get_default_icon()
     {
-        return 'themes/default/images_custom/icons/menu/book.svg';
+        return 'themes/default/images/icons/booking/book.svg';
     }
 
     /**

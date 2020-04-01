@@ -164,7 +164,6 @@ function get_table_purpose_flags()
         'group_privileges' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'group_zone_access' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under zones*/,
         'hackattack' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
-        'https_pages' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'images' => TABLE_PURPOSE__NORMAL,
         'import_id_remap' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under import_session*/,
         'import_parts_done' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under import_session*/,
@@ -324,7 +323,6 @@ function get_table_descriptions()
         'group_page_access' => 'defines what groups may access what pages',
         'group_privileges' => 'defines what groups have what privileges',
         'group_zone_access' => 'defines what groups may access what zones',
-        'https_pages' => 'lists pages that the webmaster has decided need to run over SSL',
         'incoming_uploads' => 'temporary storage of uploaded files, before main form submission',
         'logged_mail_messages' => 'logged emails (so you can check incorrect emails aren\'t going out) / email queuing',
         'member_category_access' => 'defines what members may access what categories (rarely used, no admin UI)',
@@ -400,6 +398,7 @@ function get_relation_map_for_table($table)
 function get_relation_map()
 {
     return [
+        'actionlogs.warning_id' => 'f_warnings.id',
         'attachment_refs.a_id' => 'attachments.id',
         'attachment_refs.r_referer_id' => null,
         'award_archive.a_type_id' => 'award_types.id',
@@ -451,6 +450,7 @@ function get_relation_map()
         'f_forum_intro_member.i_forum_id' => 'f_forums.id',
         'f_group_join_log.usergroup_id' => 'f_groups.id',
         'f_member_cpf_perms.field_id' => 'f_custom_fields.id',
+        'f_moderator_logs.l_warning_id' => 'f_warnings.id',
         'f_multi_moderations.mm_move_to' => 'f_forums.id',
         'f_poll_answers.pa_poll_id' => 'f_polls.id',
         'f_poll_votes.pv_answer_id' => 'f_poll_answers.id',
@@ -467,6 +467,7 @@ function get_relation_map()
         'f_usergroup_sub_mails.m_usergroup_sub_id' => 'f_usergroup_subs.id',
         'f_warnings.p_silence_from_forum' => 'f_forums.id',
         'f_warnings.p_silence_from_topic' => 'f_topics.id',
+        'f_warnings.w_topic_id' => 'f_topics.id',
         'f_welcome_emails.w_newsletter' => 'newsletters.id',
         'f_welcome_emails.w_usergroup' => 'f_groups.id',
         'galleries.g_owner' => 'f_members.id',

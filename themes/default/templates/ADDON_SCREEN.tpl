@@ -52,7 +52,20 @@
 				</thead>
 
 				<tbody>
-					{ADDONS}
+					{+START,LOOP,ADDON_STRUCTURE}
+						<tr>
+							<th colspan="7" class="table-heading-cell vertical-alignment">
+								{$,Category}
+								<h2>{_loop_key*}</h2>
+							</th>
+						</tr>
+
+						{+START,LOOP,COLOURS}
+							{+START,LOOP,ADDONS}
+								{_loop_var}
+							{+END}
+						{+END}
+					{+END}
 				</tbody>
 			</table></div>
 		</div>

@@ -55,10 +55,8 @@ class Block_main_facebook_comments
             return do_template('RED_ALERT', ['_GUID' => 'b5fbhxvxzef9uon2oc9q6ihh6xq0ccig', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
         }
         if (!function_exists('session_status')) {
-            return do_template('RED_ALERT', ['_GUID' => '65sskjtfq1qowxewn7s087hg7zrd8aoa', 'TEXT' => 'PHP session extension missing']);
+            return do_template('RED_ALERT', ['_GUID' => '2kii599c4uz2g43k69ogp53wob87650o', 'TEXT' => 'PHP session extension missing']);
         }
-
-        require_code('facebook_connect');
 
         $block_id = get_block_id($map);
 

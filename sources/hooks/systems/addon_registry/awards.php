@@ -45,6 +45,16 @@ class Hook_addon_registry_awards
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Information Display';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -156,6 +166,7 @@ class Hook_addon_registry_awards
                 'RAW_AWARD_DATE' => placeholder_date_raw(),
                 'AWARD_DATE' => placeholder_date(),
                 'CONTENT' => lorem_phrase_html(),
+                'ADD_NAME' => lorem_phrase(),
                 'SUBMIT_URL' => placeholder_url(),
                 'ARCHIVE_URL' => placeholder_url(),
             ]), null, '', true)
@@ -181,5 +192,74 @@ class Hook_addon_registry_awards
                 'CONTENT' => lorem_phrase(),
             ]), null, '', true)
         ];
+    }
+
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content()
+    {
+        require_lang('awards');
+
+        $map = [
+            'a_points' => 0,
+            'a_content_type' => 'download',
+            'a_show_awardee' => 0,
+            'a_update_time_hours' => 168,
+        ];
+        $installed = ($GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'id', $map) !== null);
+
+        return [
+            'keep_dotw' => [
+                'title' => do_lang_tempcode('DOTW'),
+                'description' => do_lang_tempcode('DESCRIPTION_DOTW'),
+                'installed' => $installed,
+            ],
+        ];
+    }
+
+    /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('keep_dotw', $content))) && (!has_predefined_content('awards', 'keep_dotw'))) {
+            require_lang('awards');
+            require_code('lang3');
+            $map = [
+                'a_points' => 0,
+                'a_content_type' => 'download',
+                'a_show_awardee' => 0,
+                'a_update_time_hours' => 168,
+            ];
+            $map += lang_code_to_default_content('a_title', 'DOTW');
+            $map += lang_code_to_default_content('a_description', 'DESCRIPTION_DOTW', true);
+            $GLOBALS['SITE_DB']->query_insert('award_types', $map);
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('keep_dotw', $content))) && (has_predefined_content('awards', 'keep_dotw'))) {
+            $map = [
+                'a_points' => 0,
+                'a_content_type' => 'download',
+                'a_show_awardee' => 0,
+                'a_update_time_hours' => 168,
+            ];
+            require_lang('awards');
+            require_code('awards2');
+            $id = $GLOBALS['SITE_DB']->query_select_value('award_types', 'id', $map);
+            delete_award_type($id);
+        }
     }
 }

@@ -37,6 +37,8 @@ class Hook_commandr_command_send_chatmessage
             return ['', '', '', do_lang('INTERNAL_ERROR')];
         }
 
+        require_lang('chat');
+
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
             return ['', do_command_help('send_chatmessage', ['h'], [true, true]), '', ''];
         } else {

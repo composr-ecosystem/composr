@@ -403,7 +403,6 @@ class Module_admin_version
                 'the_groups' => 'LONG_TEXT', // May be blank
                 'is_bot' => '?BINARY', // May be null
                 'timezone' => 'MINIID_TEXT', // May be blank
-                'is_ssl' => '?BINARY', // May be null
                 'lang' => 'LANGUAGE_NAME', // *Always* set
                 'the_theme' => 'MINIID_TEXT', // *Always* set
                 'the_value' => 'LONG_TEXT',
@@ -458,7 +457,6 @@ class Module_admin_version
                 'c_groups' => 'SHORT_TEXT',
                 'c_is_bot' => '?BINARY',
                 'c_timezone' => 'MINIID_TEXT',
-                'c_is_ssl' => '?BINARY',
                 'c_lang' => 'LANGUAGE_NAME',
                 'c_theme' => 'ID_TEXT',
             ]);
@@ -594,10 +592,6 @@ class Module_admin_version
                 'images' => [
                     'comments',
                     'description',
-                ],
-                'iotd' => [
-                    'i_title',
-                    'caption',
                 ],
                 'news' => [
                     'title',
@@ -890,6 +884,7 @@ class Module_admin_version
                 't_secure_ref' => 'ID_TEXT', // Used like a temporary password to initiate the task
                 't_send_notification' => 'BINARY',
                 't_locked' => 'BINARY',
+                't_add_time' => 'TIME',
             ]);
 
             require_code('users_active_actions');
@@ -952,6 +947,8 @@ class Module_admin_version
                 'id' => '*AUTO',
                 'url' => 'LONG_TEXT', // Support arbitrary length
                 'url_exists' => 'BINARY',
+                'url_message' => 'SHORT_TEXT',
+                'url_destination_url' => 'URLPATH',
                 'url_check_time' => 'TIME',
             ]);
             $GLOBALS['SITE_DB']->create_index('urls_checked', 'url', ['url(200)']);
@@ -1020,9 +1017,6 @@ class Module_admin_version
 
         if (($upgrade_from !== null) && ($upgrade_from < 18)) { // LEGACY
             $GLOBALS['SITE_DB']->drop_table_if_exists('bookmarks');
-
-            $GLOBALS['SITE_DB']->add_table_field('cron_caching_requests', 'c_is_ssl', '?BINARY');
-            $GLOBALS['SITE_DB']->add_table_field('cache', 'is_ssl', '?BINARY');
 
             rename_config_option('allowed_partner_sites', 'trusted_sites_2');
 
@@ -1118,6 +1112,13 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->drop_table_if_exists('link_tracker');
 
             $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_include_on_sitemap', 'BINARY', 1);
+
+            $GLOBALS['SITE_DB']->add_table_field('task_queue', 't_add_time', 'TIME', time());
+
+            $GLOBALS['SITE_DB']->add_table_field('urls_checked', 'url_message', 'SHORT_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('urls_checked', 'url_destination_url', 'URLPATH');
+
+            $GLOBALS['SITE_DB']->drop_table_if_exists('https_pages');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 18)) {

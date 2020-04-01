@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_member
+class Hook_content_meta_aware_member extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -43,6 +43,7 @@ class Hook_content_meta_aware_member
             'content_type_universal_label' => 'Profile',
 
             'db' => get_db_for('f_members'),
+            'extra_where_sql' => 'r.id<>' . strval(db_get_first_id()),
             'table' => 'f_members',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -62,7 +63,8 @@ class Hook_content_meta_aware_member
             'title_field_dereference' => false,
             'description_field' => 'm_title',
             'description_field_dereference' => false,
-            'thumb_field' => addon_installed('cns_member_avatars') ? 'm_avatar_url' : null,
+            'description_field_supports_comcode' => false,
+            'thumb_field' => ['m_avatar_url', 'm_photo_url', 'm_photo_thumb_url', 'CALL: generate_member_entry_thumb_url'],
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
@@ -94,7 +96,6 @@ class Hook_content_meta_aware_member
             'search_hook' => 'cns_members',
             'rss_hook' => 'cns_members',
             'attachment_hook' => null,
-            'unvalidated_hook' => 'cns_members',
             'notification_hook' => 'cns_new_member',
             'sitemap_hook' => 'member',
 
@@ -117,12 +118,25 @@ class Hook_content_meta_aware_member
             'actionlog_regexp' => '\w+_MEMBER',
 
             'filtercode' => 'cns_members2::_members_filtercode',
-            'filtercode_protected_fields' => ['m_pass_hash_salted', 'm_pass_salt', 'm_password_change_code'], // These are ones even some staff should never know
+            'filtercode_protected_fields' => ['m_pass_hash_salted', 'm_pass_salt', 'm_password_change_code', 'm_password_change_code_time'], // These are ones even some staff should never know
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get the label for the most relevant timestamp for content. What this actually is depends on the content.
+     *
+     * @return ?Tempcode Label (null: unknown)
+     */
+    public function get_most_relevant_time_label()
+    {
+        return do_lang_tempcode('JOINED');
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -133,7 +147,7 @@ class Hook_content_meta_aware_member
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('cns_members');
         require_code('cns_members2');
@@ -142,4 +156,30 @@ class Hook_content_meta_aware_member
 
         return render_member_box($row['id'], false, true, [], $give_context, $guid);
     }
+}
+
+/**
+ * Find an entry thumbnail.
+ *
+ * @param  array $row Database row of entry
+ * @param  boolean $prefer_large_image Whether we prefer a larger image
+ * @return URLPATH The thumbnail URL (blank: none)
+ */
+function generate_member_entry_thumb_url($row, $prefer_large_image = false)
+{
+    if (!has_privilege(get_member(), 'view_member_photos')) {
+        if (addon_installed('cns_member_avatars')) {
+            $field = 'm_avatar_url';
+        } else {
+            return '';
+        }
+    } else {
+        if ($prefer_large_image) {
+            $field = 'm_photo_url';
+        } else {
+            $field = 'm_photo_thumb_url';
+        }
+    }
+
+    return $row[$field];
 }

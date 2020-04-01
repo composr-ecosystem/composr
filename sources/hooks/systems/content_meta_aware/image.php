@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_image
+class Hook_content_meta_aware_image extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -62,9 +62,11 @@ class Hook_content_meta_aware_image
             'title_field_dereference' => true,
             'description_field' => 'the_description',
             'description_field_dereference' => true,
+            'description_field_supports_comcode' => true,
             'thumb_field' => 'thumb_url',
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
+            'full_image_field' => 'url',
 
             'view_page_link_pattern' => '_SEARCH:galleries:image:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_galleries:_edit:_WILD',
@@ -92,7 +94,6 @@ class Hook_content_meta_aware_image
             'search_hook' => 'images',
             'rss_hook' => 'galleries',
             'attachment_hook' => null,
-            'unvalidated_hook' => 'images',
             'notification_hook' => 'gallery_entry',
             'sitemap_hook' => 'image',
 
@@ -113,11 +114,37 @@ class Hook_content_meta_aware_image
             'support_spam_heuristics' => 'the_description',
 
             'actionlog_regexp' => '\w+_IMAGE',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_NONE,
+            'default_prominence_flags' => 0,
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get content title of a content row.
+     *
+     * @param  array $row The database row for the content
+     * @param  integer $render_type A FIELD_RENDER_* constant
+     * @param  boolean $falled_back_to_id Whether this has had to fall back to an ID due to missing title (returned by reference)
+     * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
+     * @return mixed Content title (string or Tempcode, depending on $render_type)
+     */
+    public function get_title($row, $render_type = 1, &$falled_back_to_id = false, $resource_fs_style = false)
+    {
+        $falled_back_to_id = null;
+        $ret = parent::get_title($row, $render_type, $falled_back_to_id, $resource_fs_style);
+        if ($falled_back_to_id) {
+            require_lang('galleries');
+            $fullname = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', ['name' => $row['cat']]);
+            if ($fullname !== null) {
+                $ret = do_lang('VIEW_IMAGE_IN', get_translated_text($fullname));
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -128,10 +155,20 @@ class Hook_content_meta_aware_image
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('galleries');
 
         return render_image_box($row, $zone, $give_context, $include_breadcrumbs, ($root === null) ? null : $root, $guid);
+    }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return 'choose_image';
     }
 }

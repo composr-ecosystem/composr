@@ -291,10 +291,6 @@ function attach_message($message, $type = 'inform', $put_in_helper_panel = false
  */
 function get_logo_url($zone_name = null)
 {
-    if (!addon_installed('zone_logos')) {
-        return find_theme_image('logo/-logo');
-    }
-
     global $ZONE;
     if ($zone_name === null) {
         $zone_name = $ZONE['zone_name'];
@@ -556,15 +552,6 @@ function do_site_prep()
 
     if ((running_script('index')) && (!is_cli())) {
         $request_hostname = get_request_hostname();
-
-        // Detect bad access protocol (also see handle_bad_access_context function)
-        if (addon_installed('ssl')) {
-            if ((!whole_site_https()) && (is_page_https(get_zone_name(), get_page_name()) != tacit_https())) {
-                set_http_status_code(301);
-                header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
-                exit();
-            }
-        }
 
         if (get_value('disable_cookie_checks') !== '1') {
             // Detect bad cookie domain (reasonable approximation)
@@ -1113,8 +1100,11 @@ function do_site()
             $timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', '3');
             require_code('version2');
+            $num_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
+            $num_hits_per_day = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
+            $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/user.php?url=' . urlencode(get_base_url()) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()) . '&num_members=' . urlencode(strval($num_members)) . '&num_hits_per_day=' . urlencode(strval($num_hits_per_day));
             require_code('http');
-            cache_and_carry('cms_http_request', ['https://compo.sr/uploads/website_specific/compo.sr/scripts/user.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()), ['trigger_error' => false]], 60 * 24/*once a day*/);
+            cache_and_carry('cms_http_request', [$url, ['trigger_error' => false]], 60 * 24/*once a day*/);
             cms_ini_set('default_socket_timeout', $timeout_before);
         }
     }
@@ -1298,8 +1288,7 @@ function save_static_caching($out, $mime_type = 'text/html')
 
         if (!empty($SITE_INFO['failover_apache_rewritemap_file'])) {
             $url_stem = $url;
-            $url_stem = str_replace(get_base_url(true) . '/', '', $url_stem);
-            $url_stem = str_replace(get_base_url(false) . '/', '', $url_stem);
+            $url_stem = str_replace(get_base_url() . '/', '', $url_stem);
             if (preg_match('#^' . $SITE_INFO['failover_apache_rewritemap_file'] . '$#', $url_stem) != 0) {
                 if (is_mobile()) {
                     $rewritemap_file = get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt';
@@ -1918,7 +1907,7 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
     ];
 
     global $KEEP_MARKERS, $SHOW_EDIT_LINKS, $INJECT_HIDDEN_TEMPLATE_NAMES;
-    if ((has_caching_for('comcode_page')) && (get_param_integer('keep_print', 0) == 0) && !$KEEP_MARKERS && !$SHOW_EDIT_LINKS && !$INJECT_HIDDEN_TEMPLATE_NAMES) {
+    if ((has_caching_for('comcode_page', $codename)) && (get_param_integer('keep_print', 0) == 0) && !$KEEP_MARKERS && !$SHOW_EDIT_LINKS && !$INJECT_HIDDEN_TEMPLATE_NAMES) {
         $support_smart_decaching = support_smart_decaching();
 
         if (is_browser_decaching()) {
@@ -2068,7 +2057,7 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
         breadcrumb_set_parents($comcode_breadcrumbs);
 
         set_extra_request_metadata([
-            'title' => ($title_to_use == '') ? null : ('[semihtml]' . $title_to_use . '[/semihtml]'),
+            'title' => ($title_to_use == '') ? null : ('[semihtml]' . $title_to_use . '[/semihtml]'), // We need to pass as we cannot assume we have a cache row in the database
             'identifier' => $zone . ':' . $codename,
         ], $comcode_page_row, 'comcode_page', $zone . ':' . $codename);
     }

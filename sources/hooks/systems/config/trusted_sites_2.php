@@ -54,6 +54,6 @@ class Hook_config_trusted_sites_2
      */
     public function get_default()
     {
-        return "translate.googleusercontent.com\npaypal.com\nsandbox.paypal.com\nselect.worldpay.com\nselect-test.worldpay.com";
+        return "translate.googleusercontent.com\npaypal.com\nsandbox.paypal.com\nselect.worldpay.com\nselect-test.worldpay.com\nfacebook.com";
     }
 }

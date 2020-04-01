@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_topic
+class Hook_content_meta_aware_topic extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -50,6 +50,7 @@ class Hook_content_meta_aware_topic
             'content_type_universal_label' => 'Forum topic',
 
             'db' => get_db_for('f_topics'),
+            'extra_where_sql' => 't_forum_id IS NOT NULL',
             'table' => 'f_topics',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -73,6 +74,7 @@ class Hook_content_meta_aware_topic
             'title_field_dereference__resource_fs' => false,*/
             'description_field' => 't_description',
             'description_field_dereference' => false,
+            'description_field_supports_comcode' => null,
             'thumb_field' => 't_emoticon',
             'thumb_field_is_theme_image' => true,
             'alternate_icon_theme_image' => 'icons/menu/social/forum/forums',
@@ -94,6 +96,7 @@ class Hook_content_meta_aware_topic
             'edit_time_field' => 't_cache_last_time',
             'date_field' => 't_cache_first_time',
             'validated_field' => 't_validated',
+            'validation_is_minor' => true,
 
             'seo_type_code' => 'topic',
 
@@ -104,7 +107,6 @@ class Hook_content_meta_aware_topic
             'search_hook' => 'cns_posts',
             'rss_hook' => 'cns_forumview',
             'attachment_hook' => null,
-            'unvalidated_hook' => 'cns_topics',
             'notification_hook' => 'cns_topic',
             'sitemap_hook' => 'topic',
 
@@ -125,11 +127,45 @@ class Hook_content_meta_aware_topic
             'support_spam_heuristics' => false,
 
             'actionlog_regexp' => '\w+_TOPIC',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_LOW,
+            'default_prominence_flags' => 0,
+            'prominence_custom_sort' => 't_cache_last_time',
+            'prominence_custom_sort_dir' => 'DESC',
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Get headings of special relevant data this content type supports.
+     *
+     * @return array A map of heading codenames to Tempcode labels
+     */
+    public function get_special_keymap_headings()
+    {
+        $headings = [];
+
+        $headings['entry_count'] = do_lang_tempcode('COUNT_POSTS');
+
+        return $headings;
+    }
+
+    /**
+     * Get special relevant data this content type supports.
+     *
+     * @param  array $row Database row
+     * @return array A map of heading codenames to Tempcode values
+     */
+    public function get_special_keymap($row)
+    {
+        $keymap = [];
+
+        $keymap['entry_count'] = escape_html(integer_format($row['t_cache_num_posts']));
+
+        return $keymap;
+    }
+
+    /**
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -140,10 +176,20 @@ class Hook_content_meta_aware_topic
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('cns_topics');
 
         return render_topic_box($row, $zone, $give_context, $include_breadcrumbs, ($root === null) ? null : intval($root), $guid);
+    }
+
+    /**
+     * Get the hook name of an AJAX tree selection list.
+     *
+     * @return ?string Hook name (null: none)
+     */
+    public function create_selection_tree_list()
+    {
+        return 'choose_topic';
     }
 }

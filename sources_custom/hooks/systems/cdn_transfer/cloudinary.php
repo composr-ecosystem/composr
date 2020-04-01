@@ -62,14 +62,11 @@ class Hook_cdn_transfer_cloudinary
      * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (0=do not, 1=do, 2=make extension .bin as well)
      * @set 0 1 2
      * @param  boolean $accept_errors Whether to accept upload errors
+     * @param  string $id ID (returned by reference)
      * @return ?URLPATH URL on syndicated server (null: did not syndicate)
      */
-    public function transfer_upload($path, $upload_folder, $filename, $obfuscate = 0, $accept_errors = false)
+    public function transfer_upload($path, $upload_folder, $filename, $obfuscate = 0, $accept_errors = false, &$id = null)
     {
-        $cloud_name = get_option('cloudinary_cloud_name');
-        $api_key = get_option('cloudinary_api_key');
-        $api_secret = get_option('cloudinary_api_secret');
-
         $dirs = explode("\n", get_option('cloudinary_transfer_directories'));
         if (!in_array($upload_folder, $dirs)) {
             return null;
@@ -77,12 +74,92 @@ class Hook_cdn_transfer_cloudinary
 
         // Proceed...
 
+        $before = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
 
-        require_code('Cloudinary/Cloudinary');
+        $cloud_name = get_option('cloudinary_cloud_name');
+        $api_key = get_option('cloudinary_api_key');
+        $api_secret = get_option('cloudinary_api_secret');
 
-        return cloudinary_transfer_upload($path, $upload_folder, $filename, $obfuscate, $accept_errors);
+        require_code('Cloudinary/autoload');
+
+        \Cloudinary::config(array(
+            'cloud_name' => $cloud_name,
+            'api_key' => $api_key,
+            'api_secret' => $api_secret,
+        ));
+
+        $tags = array(
+            $GLOBALS['FORUM_DRIVER']->get_username(get_member()),
+            get_site_name(),
+            get_zone_name(),
+            get_page_name(),
+        );
+
+        $options = array(
+            'resource_type' => 'auto',
+            'tags' => $tags,
+            'angle' => 'exif',
+        );
+
+        if ($obfuscate != 0) {
+            $options['public_id'] = $upload_folder . '/' . preg_replace('#\.[^\.]*$#', '', $filename);
+        } else {
+            $options['use_filename'] = true;
+            $options['unique_filename'] = true;
+        }
+
+        try {
+            $result = \Cloudinary\Uploader::upload(
+                $path,
+                $options
+            );
+        } catch (Exception $e) {
+            if ($accept_errors) {
+                attach_message($e->getMessage(), 'warn');
+                return false;
+            }
+            warn_exit($e->getMessage());
+        }
+
+        if (strpos(get_base_url(), 'https://') === false) {
+            $url = $result['url'];
+        } else {
+            $url = $result['secure_url'];
+        }
+
+        if (is_image($filename, IMAGE_CRITERIA_WEBSAFE)) {
+            // 1024 version
+            $url = preg_replace('#^(.*/image/upload/)(.*)$#', '$1c_limit,w_1024/$2', $url);
+        }
+
+        $id = $result['public_id'];
+
+        cms_ini_set('ocproducts.type_strictness', $before);
+
+        return $url;
     }
 
-    // IDEA: #3829 Support deletion. This is hard though, as we would need to track upload ownership somewhere or uniqueness (else temporary URL "uploads" could be used as a vector to hijack other people's original uploads).
+    /**
+     * Delete an upload. Currently just used by the unit test to clean up.
+     *
+     * @param  string $id ID number
+     */
+    public function delete_image_upload($id)
+    {
+        try {
+            $result = \Cloudinary\Uploader::destroy(
+                $id,
+                ['resource_type' => 'image']
+            );
+        } catch (Exception $e) {
+            if ($accept_errors) {
+                attach_message($e->getMessage(), 'warn');
+                return false;
+            }
+            warn_exit($e->getMessage());
+        }
+    }
+
+    // IDEA: #3829 Support deletion properly. This is hard though, as we would need to track upload ownership somewhere or uniqueness (else temporary URL "uploads" could be used as a vector to hijack other people's original uploads).
 }

@@ -48,8 +48,9 @@ class Hook_admin_setupwizard_installprofiles_shopping
     public function get_addon_list()
     {
         return [
-            ['ecommerce', 'shopping', 'ssl', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'],
-            []];
+            ['ecommerce', 'shopping', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'],
+            [],
+        ];
     }
 
     /**
@@ -86,14 +87,13 @@ class Hook_admin_setupwizard_installprofiles_shopping
     public function default_blocks()
     {
         return [
-            'YES' => [
+            BLOCK_POSITION_MAIN => [
                 'main_greeting',
                 'main_news',
                 'main_quotes',
             ],
-            'YES_CELL' => [],
-            'PANEL_LEFT' => [],
-            'PANEL_RIGHT' => [
+            BLOCK_POSITION_CELL => [],
+            BLOCK_POSITION_PANEL => [
                 'main_newsletter_signup',
             ],
         ];

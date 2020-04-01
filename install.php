@@ -7,7 +7,7 @@
 
 */
 
-/*EXTRA FUNCTIONS: ftp_.**/
+/*EXTRA FUNCTIONS: ftp_.*|fileowner*/
 
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
@@ -23,7 +23,7 @@ foreach ($functions as $function) {
     }
 }
 
-if ((!array_key_exists('type', $_GET)) && (file_exists('install_locked'))) {
+if ((!array_key_exists('type', $_GET)) && ($_GET['type'] != 'finish') && (file_exists('install_locked'))) {
     header('Content-Type: text/plain; charset=utf-8');
     exit('Installer is locked for security reasons (delete the \'install_locked\' file to return to the installer)');
 }
@@ -98,7 +98,7 @@ if (($shl === false) || ($shl == '') || ($shl == '0')) {
 require_code('critical_errors');
 require_code('permissions');
 require_code('minikernel');
-require_code('inst_special');
+require_code('file_permissions_check');
 require_code('forum_stub');
 require_code('global3');
 require_code('zones');
@@ -206,6 +206,10 @@ if (intval($_GET['step']) == 9) {
 
 if (intval($_GET['step']) == 10) {
     $content = step_10();
+}
+
+if (intval($_GET['step']) == 11) {
+    $content = step_11();
 }
 
 $css_url = 'install.php?type=css';
@@ -416,13 +420,13 @@ function step_1()
     // Some checks relating to installation permissions
     global $FILE_ARRAY;
     if (!@is_array($FILE_ARRAY)) { // Talk about manual permission setting a bit
-        if ((php_function_allowed('posix_getuid')) && (!isset($_SERVER['HTTP_X_MOSSO_DT'])) && (@posix_getuid() == @fileowner(get_file_base() . '/install.php'))) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
+        if ((is_suexec_like()) && (strpos(PHP_OS, 'WIN') === false)) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
             $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('SUEXEC_SERVER')]));
         } elseif (cms_is_writable(get_file_base() . '/install.php')) {
             $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));
         }
     }
-    if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (!php_function_allowed('posix_getuid')) && ((strtoupper(substr(PHP_OS, 0, 3)) == 'WIN'))) {
+    if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')) {
         $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions')))]));
     }
 
@@ -953,14 +957,13 @@ function step_4()
     $options = new Tempcode();
     $hidden = new Tempcode();
     if (!GOOGLE_APPENGINE) {
-        $options->attach(make_option(do_lang_tempcode('DOMAIN'), example('DOMAIN_EXAMPLE'), 'domain', $domain, false, true));
         $options->attach(make_option(do_lang_tempcode('BASE_URL'), example('BASE_URL_TEXT'), 'base_url', $base_url, false, true));
     } else {
         $options->attach(make_option(do_lang_tempcode('GAE_APPLICATION'), do_lang_tempcode('DESCRIPTION_GAE_APPLICATION'), 'gae_application', preg_replace('#^.*~#', '', $_SERVER['APPLICATION_ID']), false, true));
-        $hidden->attach(form_input_hidden('domain', $domain));
         $hidden->attach(form_input_hidden('base_url', $base_url));
         $options->attach(make_option(do_lang_tempcode('GAE_BUCKET_NAME'), do_lang_tempcode('DESCRIPTION_GAE_BUCKET_NAME'), 'gae_bucket_name', '<application>', false, true));
     }
+    $options->attach(make_option(do_lang_tempcode('EMAIL_ADDRESS'), example('', 'INSTALLER_EMAIL_ADDRESS'), 'email', post_param_string('email', ''), false, false));
     $master_password = '';
     $options->attach(make_option(do_lang_tempcode('MASTER_PASSWORD'), example('', 'CHOOSE_MASTER_PASSWORD'), 'master_password', $master_password, true));
     require_lang('config');
@@ -1617,15 +1620,14 @@ function step_5_ftp()
         // If the file user is different to the FTP user, we need to make it world writeable
         if (!is_suexec_like()) {
             // Chmod
-            $no_chmod = false;
-            global $INSTALL_LANG;
-            $chmod_array = get_chmod_array($INSTALL_LANG);
+            $chmodding_errors = false;
+            $chmod_array = get_chmod_array();
             foreach ($chmod_array as $chmod) {
                 if ((file_exists($chmod)) && (!@ftp_site($conn, 'CHMOD 0777 ' . $chmod))) {
-                    $no_chmod = true;
+                    $chmodding_errors = true;
                 }
             }
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2e4ccdd5a0b034125ee62403d5a48319', 'SOMETHING' => do_lang_tempcode((!$no_chmod) ? 'CHMOD_PASS' : 'CHMOD_FAIL')]));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2e4ccdd5a0b034125ee62403d5a48319', 'SOMETHING' => do_lang_tempcode($chmodding_errors ? 'CHMOD_FAIL' : 'CHMOD_PASS')]));
         }
     }
 
@@ -1654,12 +1656,6 @@ function step_5_checks_a()
         exit(do_lang('INST_POST_ERROR'));
     }
 
-    // Check domain
-    $domain = trim(post_param_string('domain', ''));
-    if ((strstr($domain, '/') !== false) || (strstr($domain, ':') !== false)) {
-        warn_exit(do_lang_tempcode('INVALID_DOMAIN'));
-    }
-
     // Check path
     if (!file_exists(get_file_base() . '/sources/global.php')) {
         warn_exit(do_lang_tempcode('BAD_PATH'));
@@ -1667,15 +1663,10 @@ function step_5_checks_a()
 
     $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '48b15e3e8486e5654563a7c3b5e6af58', 'SOMETHING' => do_lang_tempcode('GOOD_PATH')]));
 
-    // Check permissions
-    if (!file_exists(get_file_base() . '/_config.php')) {
-        $myfile = @fopen(get_file_base() . '/_config.php', 'wb');
-        @fclose($myfile);
-    }
-    global $INSTALL_LANG;
-    $chmod_array = get_chmod_array($INSTALL_LANG);
-    foreach ($chmod_array as $chmod) {
-        test_writable($chmod);
+    // Check permissions (after extraction known to have happened)
+    list(, , $paths) = scan_permissions(false, false, null, null, CMSPermissionsScanner::RESULT_TYPE_ERROR_MISSING);
+    foreach ($paths as $path) {
+        intelligent_write_error($path);
     }
 
     $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'e2daeaa9060623786decb008289068da', 'SOMETHING' => do_lang_tempcode('FILE_PERM_GOOD')]));
@@ -1807,7 +1798,7 @@ if (!function_exists(\'git_repos\')) {
             continue;
         }
 
-        if ((GOOGLE_APPENGINE) && (($key == 'domain') || ($key == 'base_url') || (substr($key, 0, 9) == 'db_forums'))) {
+        if ((GOOGLE_APPENGINE) && (($key == 'base_url') || (substr($key, 0, 9) == 'db_forums'))) {
             continue;
         }
 
@@ -2040,6 +2031,23 @@ function step_5_core()
         'c_value_trans' => '?LONG_TRANS', // If it's a translatable/Comcode one, we store the language ID in here (or just a string if we don't have multi-lang-content enabled)
         'c_needs_dereference' => 'BINARY',
     ]);
+    $email = post_param_string('email', '');
+    if ($email != '') {
+        $GLOBALS['SITE_DB']->query_insert('config', [
+            'c_name' => 'staff_address',
+            'c_set' => '1',
+            'c_value' => $email,
+            'c_value_trans' => multi_lang_content() ? null : '',
+            'c_needs_dereference' => '0',
+        ]);
+        $GLOBALS['SITE_DB']->query_insert('config', [
+            'c_name' => 'website_email',
+            'c_set' => '1',
+            'c_value' => $email,
+            'c_value_trans' => multi_lang_content() ? null : '',
+            'c_needs_dereference' => '0',
+        ]);
+    }
 
     // Privileges
     $GLOBALS['SITE_DB']->drop_table_if_exists('group_privileges');
@@ -2172,11 +2180,6 @@ function step_5_core_2()
     $GLOBALS['SITE_DB']->create_index('sessions', 'delete_old', ['last_activity']);
     $GLOBALS['SITE_DB']->create_index('sessions', 'member_id', ['member_id']);
     $GLOBALS['SITE_DB']->create_index('sessions', 'userat', ['the_zone', 'the_page', 'the_id']);
-
-    $GLOBALS['SITE_DB']->drop_table_if_exists('https_pages');
-    $GLOBALS['SITE_DB']->create_table('https_pages', [
-        'https_page_name' => '*ID_TEXT',
-    ]);
 
     // What usergroups may view this category
     $GLOBALS['SITE_DB']->drop_table_if_exists('group_category_access');
@@ -2451,7 +2454,7 @@ function step_10()
 
     $final = do_lang_tempcode('FINAL_INSTRUCTIONS_A');
     global $FILE_ARRAY;
-    if (!@is_array($FILE_ARRAY)) {
+    if ((!@is_array($FILE_ARRAY)) && (!is_suexec_like())) {
         $final->attach(' ');
         $final->attach(do_lang_tempcode('FINAL_INSTRUCTIONS_A_SUP'));
     }
@@ -2471,7 +2474,16 @@ function step_10()
     require_code('caches3');
     erase_cached_templates();
 
-    return do_template('INSTALLER_STEP_10', ['_GUID' => '0e50bc1b9934c32fb62fb865a3971a9b', 'PREVIOUS_STEP' => '9', 'CURRENT_STEP' => '10', 'FINAL' => $final, 'LOG' => $log]);
+    $url = prepare_installer_url('install.php?step=11&type=finish');
+
+    return do_template('INSTALLER_STEP_10', [
+        '_GUID' => '0e50bc1b9934c32fb62fb865a3971a9b',
+        'PREVIOUS_STEP' => '9',
+        'CURRENT_STEP' => '10',
+        'FINAL' => $final,
+        'LOG' => $log,
+        'URL' => $url,
+    ]);
 }
 
 /**
@@ -2531,6 +2543,51 @@ function step_10_forum_stuff()
     $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '53facf1a7e666433d663fee2974cd02b', 'SOMETHING' => do_lang_tempcode('INSTALL_COMPLETE')]));
 
     return $log;
+}
+
+/**
+ * Eleventh installation step: directs to proper place inside Composr, with a pre-set admin login.
+ *
+ * @return Tempcode Redirect screen
+ */
+function step_11()
+{
+    big_installation_common();
+    reload_lang_fields();
+
+    // Create admin login
+    require_code('users_active_actions');
+    require_code('users_inactive_occasionals');
+    create_session(get_first_admin_user(), 1);
+
+    $next = post_param_string('next');
+    switch ($next) {
+        case 'setupwizard':
+            $redirect_url = get_base_url() . '/adminzone/index.php?page=admin_setupwizard&type=browse&came_from_installer=1';
+            if (get_param_integer('keep_safe_mode', 0) == 1) {
+                $redirect_url .= '&keep_safe_mode=1';
+            }
+            break;
+
+        case 'testcontent':
+            $redirect_url = get_base_url() . '/adminzone/index.php?page=admin_setupwizard&type=install_test_content&came_from_installer=1';
+            if (get_param_integer('keep_safe_mode', 0) == 1) {
+                $redirect_url .= '&keep_safe_mode=1';
+            }
+            break;
+
+        case 'blank':
+        default:
+            $redirect_url = get_base_url() . '/index.php?came_from_installer=1';
+            if (get_param_integer('keep_safe_mode', 0) == 1) {
+                $redirect_url .= '&keep_safe_mode=1';
+            }
+            break;
+    }
+
+    // Redirect
+    require_code('templates_redirect_screen');
+    return redirect_screen(get_screen_title('Composr', false), $redirect_url);
 }
 
 /**
@@ -2643,6 +2700,9 @@ function handle_self_referencing_embedment()
         $type = $_GET['type'];
 
         switch ($type) {
+            case 'finish':
+                return;
+
             case 'test_blank_result':
                 exit();
                 break;
@@ -2884,18 +2944,6 @@ function example($example, $description = '')
     $it->attach('<br />');
     $it->attach(do_lang_tempcode('FOR_EXAMPLE', do_lang_tempcode($example)));
     return $it;
-}
-
-/**
- * Test whether a file exists and is writable.
- *
- * @param  PATH $file The file path
- */
-function test_writable($file)
-{
-    if ((!cms_is_writable($file)) && (file_exists($file))) {
-        intelligent_write_error($file);
-    }
 }
 
 /**
@@ -3233,7 +3281,7 @@ END;
     $clauses[] = <<<END
 <RequireAll>
 require all granted
-# IP bans go here (leave this comment here! If this file is writeable, Composr will write in IP bans below, in sync with its own DB-based banning - this makes DOS/hack attack prevention stronger)
+# IP bans go here (leave this comment here! If this file is writeable, Composr will write in IP bans below, in sync with its own DB-based banning - this makes DOS/hack-attack prevention stronger)
 # Require not ip xxx.xx.x.x (leave this comment here!)
 </RequireAll>
 END;

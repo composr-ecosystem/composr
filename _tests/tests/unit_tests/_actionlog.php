@@ -157,6 +157,12 @@ class _actionlog_test_set extends cms_test_case
         // Check no missing log_it calls...
 
         foreach (array_keys($handlers) as $handler) {
+            if (in_array($handler, [
+                'BAN_MEMBER_AUTOMATIC',
+            ])) {
+                continue;
+            }
+
             $look_for = 'log_it(\'' . $handler . '\'';
             $this->assertTrue(strpos($all_code, $look_for), 'Could not find log_it call for ' . $handler);
         }

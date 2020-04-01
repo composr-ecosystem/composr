@@ -61,7 +61,7 @@ namespace webdav_commandr_fs {
          */
         public function getName()
         {
-            list(, $name) = \Sabre\DAV\URLUtil::splitPath($this->path);
+            list(, $name) = \Sabre\Uri\split($this->path);
             return $name;
         }
 
@@ -73,8 +73,8 @@ namespace webdav_commandr_fs {
          */
         public function setName($name)
         {
-            list($parentPath,) = \Sabre\DAV\URLUtil::splitPath($this->path);
-            list(, $newName) = \Sabre\DAV\URLUtil::splitPath($name);
+            list($parentPath,) = \Sabre\Uri\split($this->path);
+            list(, $newName) = \Sabre\Uri\split($name);
 
             $parsedOldPath = $this->commandr_fs->_pwd_to_array($this->path);
 
@@ -111,7 +111,7 @@ namespace webdav_commandr_fs {
                 return null;
             }
 
-            list($currentPath, $currentName) = \Sabre\DAV\URLUtil::splitPath($this->path);
+            list($currentPath, $currentName) = \Sabre\Uri\split($this->path);
             $parsedCurrentPath = $this->commandr_fs->_pwd_to_array($currentPath);
 
             $listing = $this->_listingWrap($parsedCurrentPath);
@@ -171,6 +171,7 @@ namespace webdav_commandr_fs {
                 fpassthru($data);
                 $data = ob_get_clean();
             }
+
             $test = $this->commandr_fs->write_file($parsedNewPath, ($data === null) ? '' : $data);
 
             if ($test === false) {
@@ -373,7 +374,7 @@ namespace webdav_commandr_fs {
          */
         public function getSize()
         {
-            list($currentPath, $currentName) = \Sabre\DAV\URLUtil::splitPath($this->path);
+            list($currentPath, $currentName) = \Sabre\Uri\split($this->path);
             $parsedCurrentPath = $this->commandr_fs->_pwd_to_array($currentPath);
 
             $listing = $this->_listingWrap($parsedCurrentPath);

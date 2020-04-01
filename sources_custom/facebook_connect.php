@@ -18,29 +18,134 @@ function init__facebook_connect()
     if (!class_exists('Tempcode')) {
         return;
     }
+    if (!function_exists('require_lang')) {
+        return;
+    }
 
-    if (!function_exists('curl_version')) {
+    if (!function_exists('curl_init')) {
+        return;
+    }
+    if (!function_exists('session_status')) {
         return;
     }
 
     // Initialise Facebook Connect
-    require_code('facebook/facebook');
-
+    require_code('facebook/vendor/autoload');
     global $FACEBOOK_CONNECT;
     $FACEBOOK_CONNECT = null;
     $appid = get_option('facebook_appid');
-    $appsecret = get_option('facebook_secret_code');
-    $FACEBOOK_CONNECT = new Facebook(['appId' => $appid, 'secret' => $appsecret]);
+    $app_secret = get_option('facebook_secret_code');
+    if (($appid == '') || ($app_secret == '')) {
+        return;
+    }
+    $before = ini_get('ocproducts.type_strictness');
+    cms_ini_set('ocproducts.type_strictness', '0');
+    try {
+        $fb = new \Facebook\Facebook([
+            'app_id' => $appid,
+            'app_secret' => $app_secret,
+            'persistent_data_handler' => new \Facebook\PersistentData\FacebookSessionPersistentDataHandler(false),
+        ]);
+    } catch (Exception $e) {
+        if (php_function_allowed('error_log')) {
+            @error_log('Facebook returned an error: ' . $e->__toString());
+        }
+        $fb = null;
+    }
+    cms_ini_set('ocproducts.type_strictness', $before);
+    $FACEBOOK_CONNECT = $fb;
+
+    if ((function_exists('session_status') && session_status() !== PHP_SESSION_ACTIVE) || session_id() == '') {
+        @session_start();
+
+        // Performance optimisation
+        @session_write_close();
+    }
+}
+
+function facebook_get_access_token_from_js_sdk()
+{
+    global $FACEBOOK_CONNECT;
+    if ($FACEBOOK_CONNECT === null) {
+        return null;
+    }
+
+    $before = ini_get('ocproducts.type_strictness');
+    cms_ini_set('ocproducts.type_strictness', '0');
+    $helper = $FACEBOOK_CONNECT->getJavaScriptHelper();
+
+    try {
+        $access_token = $helper->getAccessToken();
+    } catch (Exception $e) {
+        if (php_function_allowed('error_log')) {
+            @error_log('Facebook returned an error: ' . $e->__toString());
+        }
+        $access_token = null;
+    }
+
+    cms_ini_set('ocproducts.type_strictness', $before);
+
+    return ($access_token === null) ? null : $access_token->__toString();
+}
+
+function facebook_get_current_user_id($access_token = null, &$errormsg = null)
+{
+    $me = facebook_get_current_user($access_token, $errormsg);
+    return ($me === null) ? null : $me['id'];
+}
+
+function facebook_get_current_user($access_token = null, &$errormsg = null)
+{
+    static $me = null;
+    if ($me === null) {
+        $me = facebook_get_api_request('/me?fields=id,name,email,about,website,currency,first_name,last_name,gender,location,hometown,picture,timezone,locale,birthday', $access_token, $errormsg);
+    }
+    return $me;
+}
+
+function facebook_get_api_request($graph_path, $access_token = null, &$errormsg = null)
+{
+    global $FACEBOOK_CONNECT;
+    if ($FACEBOOK_CONNECT === null) {
+        return null;
+    }
+
+    if ($access_token === null) {
+        $access_token = facebook_get_access_token_from_js_sdk();
+        if ($access_token === null) {
+            return null;
+        }
+    }
+
+    $before = ini_get('ocproducts.type_strictness');
+    cms_ini_set('ocproducts.type_strictness', '0');
+
+    try {
+        $response = $FACEBOOK_CONNECT->get($graph_path, $access_token);
+    } catch (Exception $e) {
+        $errormsg = $e->getMessage();
+
+        if (php_function_allowed('error_log')) {
+            @error_log('Facebook returned an error: ' . $e->__toString());
+        }
+        $response = null;
+    }
+
+    cms_ini_set('ocproducts.type_strictness', $before);
+
+    if ($response === null) {
+        return null;
+    }
+
+    return $response->getGraphNode();
 }
 
 // This is only called if we know we have a user logged into Facebook, who has authorised to our app
 function handle_facebook_connection_login($current_logged_in_member, $quick_only = false)
 {
-    if (!class_exists('Tempcode')) {
-        return null;
-    }
-    if (!function_exists('require_lang')) {
-        return null;
+    global $FACEBOOK_CONNECT;
+    if ($FACEBOOK_CONNECT === null) {
+        return $current_logged_in_member;
     }
 
     if (is_guest($current_logged_in_member)) {
@@ -58,35 +163,32 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
 
     // Who is this user, from Facebook's point of view?
     global $FACEBOOK_CONNECT;
-    $facebook_uid = $FACEBOOK_CONNECT->getUser();
+    $facebook_uid = facebook_get_current_user_id();
     if ($facebook_uid === null) {
         return $current_logged_in_member;
     }
-    try {
-        $details = $FACEBOOK_CONNECT->api('/me', ['fields' => 'id,name,email,about,website,currency,first_name,last_name,gender,location,hometown,picture,timezone,locale,birthday']);
-    } catch (Exception $e) {
-        header('Facebook-Error: ' . escape_header($e->getMessage()));
-
+    $details = facebook_get_current_user();
+    if ($details === null) {
         return $current_logged_in_member;
     }
     if (!is_array($details)) {
         return $current_logged_in_member;
     }
-    $details2 = $FACEBOOK_CONNECT->api('/me', ['fields' => 'picture', 'type' => 'normal']);
+    if (!isset($details['name'])) {
+        return $current_logged_in_member;
+    }
+    $details2 = facebook_get_api_request('/me?fields=picture&type=normal');
     if (!is_array($details2)) { // NB: This can happen even if there is a Facebook session, if the session ID in the cookie has expired. In this case Guest will be the user until the frontend does a refresh
         return $current_logged_in_member;
     }
     $details = array_merge($details, $details2);
-    if (!isset($details['name'])) {
-        return $current_logged_in_member;
-    }
     $username = $details['name'];
     $photo_url = array_key_exists('picture', $details) ? $details['picture'] : '';
     if (is_array($photo_url)) {
         $photo_url = $photo_url['data']['url'];
     }
     if ($photo_url != '') {
-        $photo_url = 'https://graph.facebook.com/' . strval($facebook_uid) . '/picture?type=large'; // In case URL changes
+        $photo_url = 'https://graph.facebook.com/' . $facebook_uid . '/picture?type=large'; // In case URL changes
     }
     $avatar_url = ($photo_url == '') ? null : $photo_url;
     $photo_thumb_url = '';
@@ -186,7 +288,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
         }
 
         // Run update
-        $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['m_password_compat_scheme' => 'facebook', 'm_pass_hash_salted' => strval($facebook_uid)], '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['m_password_compat_scheme' => 'facebook', 'm_pass_hash_salted' => $facebook_uid], '', 1);
 
         // Caching
         if ((array_key_exists('m_username', $update_map)) && ($username != $member_row[0]['m_username'])) {
@@ -229,6 +331,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
         // -------------------------------------------------------
 
         if (get_option('facebook_allow_signups') == '0') {
+            require_code('site');
             require_lang('facebook');
             attach_message(do_lang_tempcode('FACEBOOK_SIGNUPS_DISABLED'), 'warn');
             return null;
@@ -236,14 +339,13 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
 
         $completion_form_submitted = (post_param_integer('finishing_profile', 0) == 1);
 
-        require_code('cns_members_action2');
-
         // Ask Composr to finish off the profile from the information presented in the POST environment (a standard mechanism in Composr, for third party logins of various kinds)
         require_lang('cns');
         require_code('cns_members');
         require_code('cns_groups');
         require_code('cns_members2');
         require_code('cns_members_action');
+        require_code('cns_members_action2');
         $_custom_fields = cns_get_all_custom_fields_match(
             cns_get_all_default_groups(true), // groups
             null, // public view
@@ -307,10 +409,10 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
                     }
                 }
             }
-            $facebook_field = 'location'; // Could also be 'hometown', but tends to get left outdated
-            if (!@cms_empty_safe($details[$facebook_field])) {
+            $facebook_location_field = 'location'; // Could also be 'hometown', but tends to get left outdated
+            if (!@cms_empty_safe($details[$facebook_location_field])) {
                 try {
-                    $details3 = $FACEBOOK_CONNECT->api('/' . $details[$facebook_field], ['fields' => 'location']);
+                    $details3 = facebook_get_api_request('/' . $details[$facebook_location_field] . '?fields=location');
 
                     $mappings = [
                         'latitude' => 'cms_latitude',
@@ -346,7 +448,8 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
     // Store oAuth for syndication
     if (get_option('facebook_auto_syndicate') == '1') {
         if ($member_id !== null) {
-            set_value('facebook_oauth_token__' . strval($member_id), $FACEBOOK_CONNECT->getAccessToken(), true);
+            $access_token = facebook_get_access_token_from_js_sdk();
+            set_value('facebook_oauth_token__' . strval($member_id), $access_token, true);
 
             if (get_option('facebook_member_syndicate_to_page') == '1') {
                 set_value('facebook_syndicate_to_page__' . strval($member_id), '1', true);

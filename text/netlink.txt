@@ -1,4 +1,0 @@
-Example site 1=http://something.example.com/
-Example site 2=http://something-else.example.com/
-Example site 3=http://example-corporate.com/
-Example site 4=http://example.com/health/

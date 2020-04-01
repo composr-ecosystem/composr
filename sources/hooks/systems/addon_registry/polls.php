@@ -45,6 +45,16 @@ class Hook_addon_registry_polls
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Information Display';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -138,6 +148,7 @@ class Hook_addon_registry_polls
             'sources/hooks/systems/actionlog/polls.php',
             'sources/hooks/modules/admin_stats/polls.php',
             'sources/hooks/systems/points/voting.php',
+            'themes/default/templates/POLL_ARCHIVE_SCREEN.tpl',
         ];
     }
 
@@ -156,6 +167,7 @@ class Hook_addon_registry_polls
             'templates/POLL_BOX.tpl' => 'poll_answer',
             'templates/POLL_LIST_LINE.tpl' => 'poll_list_line',
             'templates/POLL_SCREEN.tpl' => 'poll_screen',
+            'templates/POLL_ARCHIVE_SCREEN.tpl' => 'poll_archive_screen',
         ];
     }
 
@@ -411,6 +423,22 @@ class Hook_addon_registry_polls
                 'POLL_DETAILS' => $poll_details,
                 'SUBMITTER' => placeholder_id(),
                 'ID' => placeholder_id(),
+            ]), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__poll_archive_screen()
+    {
+        return [
+            lorem_globalise(do_lorem_template('POLL_ARCHIVE_SCREEN', [
+                'TITLE' => lorem_title(),
             ]), null, '', true)
         ];
     }

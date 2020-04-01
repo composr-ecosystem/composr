@@ -26,6 +26,7 @@
 function init__cns_forum_email_integration()
 {
     require_lang('cns');
+    require_lang('cns_mailinglists');
     require_code('cns_forums2');
 }
 

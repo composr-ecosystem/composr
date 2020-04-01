@@ -7,7 +7,7 @@
 		<div class="dlBody">
 			<p>This package ("quick installer") will self-extract on your server and automatically set all permissions.</p>
 
-			<p>Works on most servers (needs PHP FTP support or suEXEC on your server).</p>
+			<p>Works on most servers (needs PHP FTP support or something similar to suEXEC on your server).</p>
 
 			<div class="sept"></div>
 

@@ -27,22 +27,20 @@ suEXEC will save you a lot of headaches doing things like addon management, beca
 
 If you have access to a shell (ask your webhost if you don't know) then you can avoid manually setting permissions, making use of our helper scripts.
 
-[title="3"]On Linux[/title]
+The [tt]helper_scripts[/tt] addon will be required, which is kept by default.
 
-The [tt]linux_helper_scripts[/tt] addon will be required, which is kept by default.
+[title="3"]On Linux[/title]
 
 On Linux a typical shell is brought up using SSH. Set up of SSH is beyond the scope of this tutorial. That said, on a Windows desktop you can use [url="PuTTY"]http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html[/url] to access SSH, and on Linux and Mac an [tt]ssh[/tt] command is built-in.
 
 From the shell, [tt]cd[/tt] to the Composr base directory and run this command:
 [code="Bash"]
-sh fixperms.sh
+php fixperms.php
 [/code]
 
 [title="3"]On Windows[/title]
 
-The [tt]windows_helper_scripts[/tt] addon will be required, which is kept by default.
-
-Run [tt]fixperms.bat[/tt] from the Composr base directory.
+Run [tt]php fixperms.php[/tt] from the Composr base directory.
 
 [title="2"]Permissions required without suEXEC[/title]
 
@@ -109,57 +107,10 @@ Set the following to [b]777[/b] (full directory permissions):
  - [tt]uploads/website_specific[/tt]
 
 Set the following to [b]666[/b] (full read/write permissions):
- - [tt]adminzone/pages/comcode_custom/<for-each-language>/*.txt[/tt]
- - [tt]adminzone/pages/html_custom/<for-each-language>/*.htm[/tt]
- - [tt]cms/pages/comcode_custom/<for-each-language>/*.txt[/tt]
- - [tt]cms/pages/html_custom/<for-each-language>/*.htm[/tt]
+ - [tt]_config.php[/tt]
  - [tt]data_custom/errorlog.php[/tt]
  - [tt]data_custom/firewall_rules.txt[/tt]
- - [tt]data_custom/modules/admin_backup/*[/tt]
- - [tt]data_custom/modules/admin_stats/*[/tt]
- - [tt]data_custom/modules/chat/*[/tt]
- - [tt]data_custom/modules/web_notifications/*[/tt]
- - [tt]data_custom/sitemaps/*[/tt]
- - [tt]data_custom/spelling/personal_dicts/*[/tt]
- - [tt]data_custom/xml_config/*.xml[/tt]
- - [tt]exports/*/*[/tt]
- - [tt]forum/pages/comcode_custom/<for-each-language>/*.txt[/tt]
- - [tt]forum/pages/html_custom/<for-each-language>/*.htm[/tt]
- - [tt]imports/*/*[/tt]
- - [tt]lang_custom/<for-each-language>/*.ini[/tt]
- - [tt]pages/comcode_custom/<for-each-language>/*.txt[/tt]
- - [tt]pages/html_custom/<for-each-language>/*.htm[/tt]
- - [tt]site/pages/comcode_custom/<for-each-language>/*.txt[/tt]
- - [tt]site/pages/html_custom/<for-each-language>/*.htm[/tt]
- - [tt]text_custom/*.txt[/tt]
- - [tt]text_custom/<for-each-language>/*.txt[/tt]
- - [tt]themes/<for-each-theme>/css_custom/*[/tt]
- - [tt]themes/<for-each-theme>/images_custom/*[/tt]
- - [tt]themes/<for-each-theme>/javascript_custom/*[/tt]
- - [tt]themes/<for-each-theme>/templates_custom/*[/tt]
- - [tt]themes/<for-each-theme>/text_custom/*[/tt]
- - [tt]themes/<for-each-theme>/theme.ini[/tt]
- - [tt]themes/<for-each-theme>/xml_custom/*[/tt]
  - [tt]themes/map.ini[/tt]
- - [tt]uploads/attachments/*[/tt]
- - [tt]uploads/attachments_thumbs/*[/tt]
- - [tt]uploads/auto_thumbs/*[/tt]
- - [tt]uploads/banners/*[/tt]
- - [tt]uploads/captcha/*[/tt]
- - [tt]uploads/catalogues/*[/tt]
- - [tt]uploads/cns_avatars/*[/tt]
- - [tt]uploads/cns_cpf_upload/*[/tt]
- - [tt]uploads/cns_photos/*[/tt]
- - [tt]uploads/cns_photos_thumbs/*[/tt]
- - [tt]uploads/downloads/*[/tt]
- - [tt]uploads/filedump/*[/tt]
- - [tt]uploads/galleries/*[/tt]
- - [tt]uploads/galleries_thumbs/*[/tt]
- - [tt]uploads/personal_sound_effects/*[/tt]
- - [tt]uploads/repimages/*[/tt]
- - [tt]uploads/watermarks/*[/tt]
- - [tt]uploads/website_specific/*[/tt]
- - [tt]_config.php[/tt]
 
 [title="2"]Permissions with suEXEC[/title]
 
@@ -184,4 +135,4 @@ The quick installer handles this automatically.
  - [page="_SEARCH:tut_security"]Security[/page]
  - [page="_SEARCH:sup_chmod"]Linux file permissions[/page]
 
-{$SET,tutorial_tags,windows_helper_scripts,linux_helper_scripts,installer,Installation,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial covers the file permissions Composr needs.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,helper_scripts,installer,Installation,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This tutorial covers the file permissions Composr needs.}[block]main_tutorial_rating[/block]

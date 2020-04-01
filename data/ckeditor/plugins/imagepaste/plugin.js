@@ -1,4 +1,4 @@
-CKEDITOR.plugins.add('imagepaste', {
+﻿CKEDITOR.plugins.add('imagepaste', {
     hidpi: true,
 
     init: function (editor) {

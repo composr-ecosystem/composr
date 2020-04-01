@@ -27,8 +27,18 @@ class modularisation_test_set extends cms_test_case
         cms_ini_set('memory_limit', '500M');
     }
 
+    public function testDefaultIconsExist()
+    {
+        $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
+        foreach ($hooks as $hook => $ob) {
+            $icon_file = $ob->get_default_icon();
+            $this->assertTrue(is_file(get_file_base() . '/' . $icon_file), $icon_file . ' is missing');
+        }
+    }
+
     public function testModularisation()
     {
+return;//TODO
         // Read in all addons, while checking for any double referencing within a single hook...
 
         $addon_data = [];

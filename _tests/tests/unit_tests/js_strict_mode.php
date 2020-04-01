@@ -28,6 +28,7 @@ class js_strict_mode_test_set extends cms_test_case
                 if (in_array($file, [
                     'ATTACHMENT_UI_DEFAULTS.js',
                     'button_realtime_rain.js',
+                    'skitter.js',
                     'jquery.js',
                     'jquery_autocomplete.js',
                     'jquery_ui.js',

@@ -74,6 +74,7 @@ function clean_comcode_for_spellcheck($comcode)
     }
 
     $text = strip_comcode($comcode);
+
     return $text;
 }
 
@@ -159,11 +160,13 @@ function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = t
     }
     if ($skip_known_words_in_db) {
         $okay_words = [
-            // Some common Composr terms that should not be corrected
+            // Some common Composr etc terms that should not be corrected
             'comcode',
             'tempcode',
             'selectcode',
             'filtercode',
+            'composr',
+            'jquery',
         ];
 
         $or_list = '';
@@ -182,25 +185,14 @@ function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = t
             }
         }
 
-        if (multi_lang_content()) {
-            $or_list = '';
-            foreach ($words as $word) {
-                if ($or_list != '') {
-                    $or_list .= ' OR ';
-                }
-                $or_list .= db_string_equal_to('text_original', $word);
+        $or_list = '';
+        foreach ($words as $word) {
+            if ($or_list != '') {
+                $or_list .= ' OR ';
             }
-            $_non_words = $GLOBALS['SITE_DB']->query('SELECT DISTINCT text_original AS meta_keyword FROM ' . get_table_prefix() . 'seo_meta_keywords k JOIN ' . get_table_prefix() . 'translate t ON k.meta_keyword=t.id WHERE ' . $or_list);
-        } else {
-            $or_list = '';
-            foreach ($words as $word) {
-                if ($or_list != '') {
-                    $or_list .= ' OR ';
-                }
-                $or_list .= db_string_equal_to('meta_keyword', $word);
-            }
-            $_non_words = $GLOBALS['SITE_DB']->query('SELECT DISTINCT meta_keyword FROM ' . get_table_prefix() . 'seo_meta_keywords WHERE ' . $or_list);
+            $or_list .= db_string_equal_to('meta_keyword', $word);
         }
+        $_non_words = $GLOBALS['SITE_DB']->query('SELECT DISTINCT ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . ' FROM ' . get_table_prefix() . 'seo_meta_keywords WHERE ' . $or_list, null, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
         foreach ($_non_words as $_non_word) {
             if ($_non_word['meta_keyword'] != '') {
                 $okay_words[] = $_non_word['meta_keyword'];

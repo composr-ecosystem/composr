@@ -79,7 +79,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
      */
     protected function hasSSLEnabled()
     {
-        if (((!addon_installed('ssl')) || ($GLOBALS['SITE_DB']->query_select_value('https_pages', 'COUNT(*)') == 0)) && (substr(get_base_url(), 0, 7) != 'https://')) {
+        if (substr(get_base_url(), 0, 7) != 'https://') {
             return false;
         }
         return true;
@@ -281,7 +281,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             $domains = get_server_names(false);
             foreach ($domains as $domain) {
                 if (get_value('disable_ssl_for__' . $domain) !== '1') {
-                    $test_url = get_base_url(true) . '/data/empty.php';
+                    $test_url = get_base_url() . '/data/empty.php';
 
                     delete_value('disable_ssl_for__' . $domain);
                     $data = http_get_contents($test_url, ['trigger_error' => false]);

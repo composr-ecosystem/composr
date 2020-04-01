@@ -86,16 +86,12 @@ class Hook_admin_setupwizard_installprofiles_portfolio
     public function default_blocks()
     {
         return [
-            'YES' => [
+            BLOCK_POSITION_MAIN => [
                 'main_quotes',
+                'main_multi_content',
             ],
-            'YES_CELL' => [],
-            'PANEL_LEFT' => [],
-            'PANEL_RIGHT' => [
-                'side_galleries',
-                'main_image_fader',
-                'side_news',
-            ],
+            BLOCK_POSITION_CELL => [],
+            BLOCK_POSITION_PANEL => [],
         ];
     }
 

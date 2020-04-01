@@ -336,6 +336,11 @@ class CMS_RSS
                                     $current_item['rep_image'] = $attributes['URL'];
                                 }
                                 break;
+                            case 'HTTP://SEARCH.YAHOO.COM/MRSS/:CONTENT': // http://www.rssboard.org/media-rss#media-content
+                                if ((array_key_exists('URL', $attributes)) && (array_key_exists('MEDIUM', $attributes)) && ($attributes['MEDIUM'] == 'image')) {
+                                    $current_item['rep_image'] = $attributes['URL'];
+                                }
+                                break;
                         }
                         break;
 
@@ -462,13 +467,14 @@ class CMS_RSS
                                 break;
 
                             // yahoo namespace
-                            case 'HTTP://SEARCH.YAHOO.COM/MRSS/:GROUP':
-                                switch ($last_tag) {
-                                    case 'HTTP://SEARCH.YAHOO.COM/MRSS/:THUMBNAIL':
-                                        if (array_key_exists('URL', $attributes)) {
-                                            $current_item['rep_image'] = $attributes['URL'];
-                                        }
-                                        break;
+                            case 'HTTP://SEARCH.YAHOO.COM/MRSS/:THUMBNAIL':
+                                if (array_key_exists('URL', $attributes)) {
+                                    $current_item['rep_image'] = $attributes['URL'];
+                                }
+                                break;
+                            case 'HTTP://SEARCH.YAHOO.COM/MRSS/:CONTENT': // http://www.rssboard.org/media-rss#media-content
+                                if ((array_key_exists('URL', $attributes)) && (array_key_exists('MEDIUM', $attributes)) && ($attributes['MEDIUM'] == 'image')) {
+                                    $current_item['rep_image'] = $attributes['URL'];
                                 }
                                 break;
 
@@ -589,6 +595,11 @@ class CMS_RSS
                                     $current_item['rep_image'] = $attributes['URL'];
                                 }
                                 break;
+                            case 'HTTP://SEARCH.YAHOO.COM/MRSS/:CONTENT': // http://www.rssboard.org/media-rss#media-content
+                                if ((array_key_exists('URL', $attributes)) && (array_key_exists('MEDIUM', $attributes)) && ($attributes['MEDIUM'] == 'image')) {
+                                    $current_item['rep_image'] = $attributes['URL'];
+                                }
+                                break;
                         }
                         break;
 
@@ -680,6 +691,11 @@ class CMS_RSS
                             // yahoo namespace
                             case 'HTTP://SEARCH.YAHOO.COM/MRSS/:THUMBNAIL':
                                 if (array_key_exists('URL', $attributes)) {
+                                    $current_item['rep_image'] = $attributes['URL'];
+                                }
+                                break;
+                            case 'HTTP://SEARCH.YAHOO.COM/MRSS/:CONTENT': // http://www.rssboard.org/media-rss#media-content
+                                if ((array_key_exists('URL', $attributes)) && (array_key_exists('MEDIUM', $attributes)) && ($attributes['MEDIUM'] == 'image')) {
                                     $current_item['rep_image'] = $attributes['URL'];
                                 }
                                 break;

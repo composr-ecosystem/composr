@@ -882,11 +882,10 @@ function get_site_name()
 /**
  * Get the base URL (the minimum fully qualified URL to our installation).
  *
- * @param  ?boolean $https Whether to get the HTTPS base URL (null: do so only if the current page uses the HTTPS base URL)
  * @param  string $zone_for What zone this is running in
  * @return URLPATH The base URL
  */
-function get_base_url($https = null, $zone_for = '')
+function get_base_url($zone_for = '')
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['base_url'])) {
@@ -910,19 +909,18 @@ function get_base_url($https = null, $zone_for = '')
 /**
  * Get the base URL (the minimum fully qualified URL to our personal data installation). For a shared install only, this is different to the base URL.
  *
- * @param  ?boolean $https Whether to get the HTTPS base URL (null: do so only if the current page uses the HTTPS base URL)
  * @return URLPATH The base URL
  */
-function get_custom_base_url($https = null)
+function get_custom_base_url()
 {
-    return get_base_url($https);
+    return get_base_url();
 }
 
 /**
  * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
  *
- * @param  ID_TEXT $reason The reason for the hack attack. This has to be a language string codename
- * @param  SHORT_TEXT $reason_param_a A parameter for the hack attack language string (this should be based on a unique ID, preferably)
+ * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
+ * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
  * @exits
  */
@@ -1176,9 +1174,10 @@ function simulated_wildcard_match($context, $word, $full_cover = false, $case_se
  *
  * @param  string $type Cache type
  * @set block lang comcode_page template
+ * @param  ?string $name The name (filename? codename?) of what we are using the cache for, so we can support low-level cache avoidance via URL parameter (null: none)
  * @return boolean Whether it has the caching
  */
-function has_caching_for($type)
+function has_caching_for($type, $name = null)
 {
     return true;
 }
@@ -1241,4 +1240,42 @@ function cms_ob_end_clean()
 function cms_empty_safe($var)
 {
     return (empty($var)) && ($var !== '0');
+}
+
+/**
+ * Get the Composr cookie path.
+ *
+ * @return ?string The Composr cookie path (null: no special path, global)
+ */
+function get_cookie_path()
+{
+    global $SITE_INFO;
+    $ret = array_key_exists('cookie_path', $SITE_INFO) ? $SITE_INFO['cookie_path'] : '/';
+    return ($ret == '') ? null : $ret;
+}
+
+/**
+ * Get the Composr cookie domain.
+ *
+ * @return string The Composr cookie domain (blank: current domain)
+ */
+function get_cookie_domain()
+{
+    global $SITE_INFO;
+    $ret = array_key_exists('cookie_domain', $SITE_INFO) ? $SITE_INFO['cookie_domain'] : '';
+    return ($ret == '') ? '' : $ret;
+}
+
+/**
+ * Get the session cookie's name.
+ *
+ * @return string The session ID cookie's name
+ */
+function get_session_cookie()
+{
+    global $SITE_INFO;
+    if (empty($SITE_INFO['session_cookie'])) {
+        $SITE_INFO['session_cookie'] = 'cms_session';
+    }
+    return $SITE_INFO['session_cookie'];
 }

@@ -28,6 +28,7 @@ Possibly other changes.
  * - it supports UTF-8
  * - it will let you choose the headers you want to base the signature on
  * - it will let you choose between simple and relaxed body canonicalization
+ * - it will let you choose between RSA/SHA-1 and RSA/SHA-256 hashing.
  *
  * If the class fails to sign the e-mail, the returned DKIM header will be empty and the mail
  * will still be sent, just unsigned. A php warning is thrown for logging.
@@ -39,10 +40,11 @@ Possibly other changes.
  *
  * @link http://www.ietf.org/rfc/rfc4871.txt
  * @link http://www.zytrax.com/books/dns/ch9/dkim.html
+ * @link https://www.ietf.org/rfc/rfc8301.txt
  *
  * @link https://github.com/louisameline/php-mail-signature
  * @author Louis Ameline
- * @version 1.0.3
+ * @version 1.2
  */
 
 /*
@@ -68,50 +70,6 @@ Possibly other changes.
  * | FITNESS FOR A PARTICULAR PURPOSE.                                         |
  * '---------------------------------------------------------------------------'
  */
-
-/**
- * Standard code module initialisation function.
- *
- * @ignore
- */
-function init__mail_dkim()
-{
-    // You can delete this function if you have PHP >= 5.3.0
-    if (!function_exists('array_replace_recursive')) {
-        function recurse($array, $array1)
-        {
-            foreach ($array1 as $key => $value) {
-                // create new key in $array, if it is empty or not an array
-                if (!isset($array[$key]) || (isset($array[$key]) && !is_array($array[$key]))) {
-                    $array[$key] = array();
-                }
-
-                // overwrite the value in the base array
-                if (is_array($value)) {
-                    $value = recurse($array[$key], $value);
-                }
-                $array[$key] = $value;
-            }
-            return $array;
-        }
-
-        function array_replace_recursive($array, $array1)
-        {
-            // handle the arguments, merge one by one
-            $args = func_get_args();
-            $array = $args[0];
-            if (!is_array($array)) {
-                return $array;
-            }
-            for ($i = 1; $i < count($args); $i++) {
-                if (is_array($args[$i])) {
-                    $array = recurse($array, $args[$i]);
-                }
-            }
-            return $array;
-        }
-    }
-}
 
 class DKIMSignature
 {
@@ -149,6 +107,21 @@ class DKIMSignature
             'dkim_body_canonicalization' => 'relaxed',
             // "nofws" is recommended over "simple" for better chances of success
             'dk_canonicalization' => 'nofws',
+
+			/*
+			 * Specify whether DKIM signatures should be signed with SHA-256 (recommended)
+			 * or the older, weaker SHA-1 (historic).  This variable takes either the value
+			 * "sha1" or "sha256", as those are the only two hashes supported by the current
+			 * version of DKIM.
+			 * 
+			 * RFC 8301 says that "rsa-sha1 MUST NOT be used for signing or verifying."
+			 * It is very highly recommended that you keep this set to "sha256".
+			 * 
+			 * This only affects DKIM signing.  DomainKeys, historic in its own right,
+			 * only supported SHA-1.
+			 */
+			'dkim_hash' => 'sha256',
+
             /*
              * The default list of headers types you want to base the signature on. The
              * types here (in the default options) are to be put in lower case, but the
@@ -373,8 +346,8 @@ class DKIMSignature
                 $this->_dkim_canonicalize_body_simple($body) :
                 $this->_dkim_canonicalize_body_relaxed($body);
 
-        // Base64 of packed binary SHA-1 hash of body
-        $bh = rtrim(chunk_split(base64_encode(pack("H*", sha1($body))), 64, "\r\n\t"));
+        // Base64 of packed binary hash of body
+        $bh = rtrim(chunk_split(base64_encode(pack("H*", hash($this->options['dkim_hash'],$body))), 64, "\r\n\t"));
         $i_part =
             empty($this->options['identity']) ?
                 '' :
@@ -383,7 +356,7 @@ class DKIMSignature
         $dkim_header =
             'DKIM-Signature: ' .
             'v=1;' . "\r\n\t" .
-            'a=rsa-sha1;' . "\r\n\t" .
+            'a=rsa-' . $this -> options['dkim_hash'] . ';'."\r\n\t".
             'q=dns/txt;' . "\r\n\t" .
             's=' . $this->selector . ';' . "\r\n\t" .
             't=' . strval(time()) . ';' . "\r\n\t" .
@@ -403,7 +376,16 @@ class DKIMSignature
 
         // $signature is sent by reference in this function
         $signature = '';
-        if (openssl_sign($to_be_signed, $signature, $this->private_key)) {
+		$signing_algorithm = null;
+
+		if ($this->options['dkim_hash'] === 'sha256') {
+			$signing_algorithm = OPENSSL_ALGO_SHA256;
+		} else if ($this->options['dkim_hash'] === 'sha1') {
+			$signing_algorithm = OPENSSL_ALGO_SHA1;
+		} else {
+			die('Unsupported dkim_hash value "' . $this->options['dkim_hash'] . '" -- DKIM only supports sha256 and sha1.');
+		}
+		if(openssl_sign($to_be_signed, $signature, $this -> private_key, $signing_algorithm)){
             $dkim_header .= rtrim(chunk_split(base64_encode($signature), 64, "\r\n\t")) . "\r\n";
         } else {
             trigger_error(sprintf('Could not sign e-mail with DKIM : %s', $to_be_signed), E_USER_WARNING);

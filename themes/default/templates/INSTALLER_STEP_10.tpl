@@ -20,16 +20,34 @@
 		{!FINAL_INSTRUCTIONS_B}
 	</p>
 
-	<p>
-		{!FINAL_INSTRUCTIONS_C}
-	</p>
+	<form id="form-installer-step-10" title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post">
+		<nav class="installer-completed-calltoaction">
+			<div>
+				<label for="next_setupwizard" class="vertical-alignment">
+					<input type="radio" id="next_setupwizard" name="next" value="setupwizard" checked="checked" />
+					<span>{!CONFIGURE} ({!RECOMMENDED})</span>
+				</label>
+			</div>
 
-	<nav class="installer-completed-calltoaction">
-		<ul class="actions-list">
-			<li class="actions-list-strong">{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a href="{$BASE_URL*}/adminzone/index.php?page=admin_setupwizard&amp;type=browse{+START,IF,{$_GET,keep_safe_mode}}&amp;keep_safe_mode=1{+END}&amp;came_from_installer=1">{!CONFIGURE}</a> ({!RECOMMENDED})</li>
-			<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a href="{$BASE_URL*}/index.php?came_from_installer=1{+START,IF,{$_GET,keep_safe_mode}}&amp;keep_safe_mode=1{+END}">{!GO}</a></li>
-		</ul>
-	</nav>
+			<div>
+				<label for="next_testcontent" class="vertical-alignment">
+					<input type="radio" id="next_testcontent" name="next" value="testcontent" />
+					<span>{!LAUNCH_WITH_TEST_CONTENT}</span>
+				</label>
+			</div>
+
+			<div>
+				<label for="next_blank" class="vertical-alignment">
+					<input type="radio" id="next_blank" name="next" value="blank" />
+					<span>{!LAUNCH_IN_BLANK_STATE}</span>
+				</label>
+			</div>
+		</nav>
+
+		<p class="proceed-button">
+			<button class="btn btn-primary btn-scr buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} {!GO}</button>
+		</p>
+	</form>
 
 	<p class="installer-done-thanks">
 		<em>{!THANKS}</em>

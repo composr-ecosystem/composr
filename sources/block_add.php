@@ -164,11 +164,29 @@ function block_helper_script()
                 $descriptiont,
                 $url,
                 $link_caption,
+                $block,
             ];
         }
         ksort($block_meta);
         foreach ($block_meta as $bits) {
-            list($this_block_type, $usage, $descriptiont, $url, $link_caption) = $bits;
+            list($this_block_type, $usage, $descriptiont, $url, $link_caption, $block) = $bits;
+
+            $seed_links = null;
+            if ($block == 'main_content') {
+                $seed_links = [];
+                $hooks = find_all_hooks('systems', 'content_meta_aware');
+                foreach (array_keys($hooks) as $hook) {
+                    require_code('content');
+                    $hook_object = get_content_object($hook);
+                    if ($hook_object === null) {
+                        continue;
+                    }
+                    $hook_info = $hook_object->info();
+                    if ($hook_info !== null) {
+                        $seed_links[$url . '&default_title=&default_param=' . urlencode($hook)] = do_lang_tempcode($hook_info['content_type_label']);
+                    }
+                }
+            }
 
             $block_types[$this_block_type]->attach(do_template('BLOCK_HELPER_BLOCK_CHOICE', [
                 '_GUID' => '079e9b37fc142d292d4a64940243178a',
@@ -176,6 +194,7 @@ function block_helper_script()
                 'DESCRIPTION' => $descriptiont,
                 'URL' => $url,
                 'LINK_CAPTION' => $link_caption,
+                'SEED_LINKS' => $seed_links,
             ]));
         }
         ksort($block_types);
@@ -207,6 +226,12 @@ function block_helper_script()
     if ($type == 'step2') { // Ask for block fields
         require_code('comcode_compiler');
         $defaults = parse_single_comcode_tag(get_param_string('parse_defaults', '', INPUT_FILTER_GET_COMPLEX), 'block');
+        foreach ($_GET as $key => $val) {
+            $matches = [];
+            if (preg_match('#^default_(.*)$#', $key, $matches) != 0) {
+                $defaults[$matches[1]] = $val;
+            }
+        }
 
         $keep = symbol_tempcode('KEEP');
         $back_url = find_script('block_helper') . '?type=step1&field_name=' . urlencode(get_param_string('field_name')) . $keep->evaluate();
@@ -219,7 +244,9 @@ function block_helper_script()
 
         $block = trim(get_param_string('block'));
         $title = get_screen_title('_BLOCK_HELPER', true, [escape_html($block), escape_html($back_url)]);
+
         $fields = new Tempcode();
+        $hidden = new Tempcode();
 
         // Load up renderer hooks
         $block_ui_renderers = find_all_hook_obs('systems', 'block_ui_renderers', 'Hook_block_ui_renderers_');
@@ -304,62 +331,23 @@ function block_helper_script()
 
                 // Show field
                 foreach ($block_ui_renderers as $block_ui_renderer) {
-                    $test = $block_ui_renderer->render_block_ui($block, $parameter, $has_default, $default, $description);
+                    $test = $block_ui_renderer->render_block_ui_parameter_hidden($block, $parameter, $has_default, $default);
+                    if ($test !== null) {
+                        $hidden->attach($test);
+                        continue 2;
+                    }
+
+                    $test = $block_ui_renderer->render_block_ui_parameter($block, $parameter, $has_default, $default, $description);
                     if ($test !== null) {
                         $fields->attach($test);
                         continue 2;
                     }
                 }
-                if ($block . ':' . $parameter == 'menu:type') { // special case for menus
-                    $matches = [];
-                    $dh = opendir(get_file_base() . '/themes/default/templates/');
-                    $options = [];
-                    while (($file = readdir($dh)) !== false) {
-                        if (preg_match('^MENU_([a-z]+)\.tpl$^', $file, $matches) != 0) {
-                            $options[] = $matches[1];
-                        }
-                    }
-                    closedir($dh);
-                    $dh = opendir(get_custom_file_base() . '/themes/default/templates_custom/');
-                    while (($file = readdir($dh)) !== false) {
-                        if ((preg_match('^MENU_([a-z]+)\.tpl$^', $file, $matches) != 0) && (!file_exists(get_file_base() . '/themes/default/templates/' . $file))) {
-                            $options[] = $matches[1];
-                        }
-                    }
-                    closedir($dh);
-                    sort($options);
-                    $list = new Tempcode();
-                    foreach ($options as $option) {
-                        $list->attach(form_input_list_entry($option, $has_default && $option == $default));
-                    }
-                    $fields->attach(form_input_list($parameter_title, escape_html($description), $parameter, $list, null, false, false));
-                } elseif ($block . ':' . $parameter == 'menu:param') { // special case for menus
-                    $list = new Tempcode();
-                    $rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['DISTINCT i_menu'], [], 'ORDER BY i_menu');
-                    foreach ($rows as $row) {
-                        $list->attach(form_input_list_entry($row['i_menu'], $has_default && $row['i_menu'] == $default));
-                    }
-                    $fields->attach(form_input_combo($parameter_title, escape_html($description), $parameter, $default, $list, null, false));
-                } elseif ($parameter == 'zone') { // zone list
+
+                if ($parameter == 'zone') { // zone list
                     $list = new Tempcode();
                     $list->attach(form_input_list_entry('_SEARCH', ($default == '')));
                     $list->attach(create_selection_list_zones(($default == '') ? null : $default));
-                    $fields->attach(form_input_list($parameter_title, escape_html($description), $parameter, $list, null, false, false));
-                } elseif ((($default == '') || (is_numeric(str_replace(',', '', $default)))) && ((($parameter == 'forum') || (($parameter == 'param') && (in_array($block, ['main_forum_topics'])))) && (get_forum_type() == 'cns'))) { // Conversr forum list
-                    require_code('cns_forums');
-                    require_code('cns_forums2');
-                    if (!addon_installed('cns_forum')) {
-                        warn_exit(do_lang_tempcode('NO_FORUM_INSTALLED'));
-                    }
-                    $list = create_selection_list_forum_tree(null, null, array_map('intval', explode(',', $default)));
-                    $fields->attach(form_input_multi_list($parameter_title, escape_html($description), $parameter, $list));
-                } elseif ($parameter == 'font') { // font choice
-                    $list = new Tempcode();
-                    require_code('fonts');
-                    $fonts = find_all_fonts();
-                    foreach ($fonts as $font => $font_label) {
-                        $list->attach(form_input_list_entry($font, $font == $default, $font_label));
-                    }
                     $fields->attach(form_input_list($parameter_title, escape_html($description), $parameter, $list, null, false, false));
                 } elseif (preg_match('#' . do_lang('BLOCK_IND_EITHER') . ' (.+)#i', $description, $matches) != 0) { // list
                     $description = preg_replace('# \(' . do_lang('BLOCK_IND_EITHER') . '.*\)#U', '', $description); // predefined selections
@@ -385,7 +373,7 @@ function block_helper_script()
                     $list = new Tempcode();
                     $hooks = find_all_hooks($matches[1], $matches[2]);
                     ksort($hooks);
-                    $is_multi_list = (($block == 'main_search') && ($parameter == 'limit_to')) || ($block == 'side_tag_cloud');
+                    $is_multi_list = (($block == 'main_search') && ($parameter == 'limit_to')) || ($block == 'side_tag_cloud') || ($block == 'main_multi_content'); // FUDGE
                     if (($default == '') && ($has_default) && (!$is_multi_list)) {
                         $list->attach(form_input_list_entry('', true));
                     }
@@ -434,7 +422,7 @@ function block_helper_script()
         } else {
             $text = do_lang_tempcode('BLOCK_HELPER_2', escape_html(cleanup_block_name($block)), escape_html($block_description), escape_html($block_use));
         }
-        $hidden = form_input_hidden('block', $block);
+        $hidden->attach(form_input_hidden('block', $block));
         $content = do_template('FORM_SCREEN', [
             '_GUID' => '62f8688bf0ae4223a2ba1f76fef3b0b4',
             'TITLE' => $title,

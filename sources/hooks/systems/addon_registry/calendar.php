@@ -45,6 +45,16 @@ class Hook_addon_registry_calendar
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Information Display';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -147,6 +157,7 @@ class Hook_addon_registry_calendar
             'themes/default/templates/BLOCK_SIDE_CALENDAR.tpl',
             'themes/default/templates/BLOCK_SIDE_CALENDAR_LISTING.tpl',
             'themes/default/templates/CALENDAR_EVENT_BOX.tpl',
+            'sources/hooks/systems/commandr_commands/run_scheduled_action.php',
             'sources/hooks/systems/trackback/events.php',
             'cms/pages/modules/cms_calendar.php',
             'lang/EN/calendar.ini',
@@ -159,11 +170,11 @@ class Hook_addon_registry_calendar
             'sources/calendar_ical.php',
             'sources/hooks/modules/admin_import/icalendar.php',
             'sources/hooks/modules/admin_newsletter/calendar.php',
-            'sources/hooks/modules/admin_unvalidated/calendar.php',
             'sources/hooks/modules/members/calendar.php',
             'sources/hooks/modules/search/calendar.php',
             'sources/hooks/systems/attachments/calendar.php',
-            'sources/hooks/systems/cron/calendar.php',
+            'sources/hooks/systems/cron/calendar_reminders.php',
+            'sources/hooks/systems/cron/calendar_next_tracking.php',
             'sources/hooks/systems/page_groupings/calendar.php',
             'sources/hooks/systems/preview/calendar.php',
             'sources/hooks/systems/rss/calendar.php',
@@ -206,6 +217,8 @@ class Hook_addon_registry_calendar
             'sources/hooks/systems/config/search_calendar.php',
             'themes/default/javascript/calendar.js',
             'sources/hooks/systems/actionlog/calendar.php',
+            'sources/hooks/systems/commandr_scheduled/.htaccess',
+            'sources/hooks/systems/commandr_scheduled/index.html',
         ];
     }
 
@@ -871,5 +884,80 @@ class Hook_addon_registry_calendar
         }
 
         add_calendar_event($event_type_id, '', null, 0, lorem_phrase(), lorem_chunk(), 1, intval(date('Y')), intval(date('m')), intval(date('d')), 'day_of_month', 0, 0);
+    }
+
+    /**
+     * Find predefined event category icons.
+     *
+     * @return array Predefined event category icons
+     */
+    protected function predefined_event_types()
+    {
+        return ['birthday', 'public_holiday', 'vacation', 'appointment', 'commitment', 'anniversary'];
+    }
+
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content()
+    {
+        require_lang('calendar');
+
+        $ret = [];
+
+        $_event_types = [];
+        $event_types = $this->predefined_event_types();
+        foreach ($event_types as $type) {
+            $installed = ($GLOBALS['SITE_DB']->query_select_value_if_there('calendar_types', 'id', ['t_logo' => 'icons/calendar/' . $type]) !== null);
+
+            $ret[$type] = [
+                'title' => do_lang_tempcode('DEFAULT_CALENDAR_TYPE__' . $type),
+                'description' => new Tempcode(),
+                'installed' => $installed,
+            ];
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content($content = null)
+    {
+        $event_types = $this->predefined_event_types();
+        foreach ($event_types as $type) {
+            if ((($content === null) || (in_array($type, $content))) && (!has_predefined_content('calendar', $type))) {
+                require_code('lang3');
+                require_lang('calendar');
+                $map = [
+                    't_external_feed' => '',
+                    't_logo' => 'icons/calendar/' . $type,
+                ];
+                $map += lang_code_to_default_content('t_title', 'DEFAULT_CALENDAR_TYPE__' . $type, true);
+                $GLOBALS['SITE_DB']->query_insert('calendar_types', $map);
+            }
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content($content = null)
+    {
+        $event_types = $this->predefined_event_types();
+        foreach ($event_types as $type) {
+            if ((($content === null) || (in_array($type, $content))) && (has_predefined_content('calendar', $type))) {
+                $id = $GLOBALS['SITE_DB']->query_select_value('calendar_types', 'id', ['t_logo' => 'icons/calendar/' . $type]);
+                require_code('calendar2');
+                delete_event_type($id);
+            }
+        }
     }
 }

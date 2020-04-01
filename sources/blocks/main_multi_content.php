@@ -46,6 +46,7 @@ class Block_main_multi_content
             'zone',
             'sort',
             'days',
+            'render_mode',
             'lifetime',
             'pinned',
             'no_links',
@@ -94,12 +95,13 @@ class Block_main_multi_content
             ((array_key_exists('lifetime', $map)) && ($map['lifetime'] != '')) ? intval($map['lifetime']) : null,
             ((array_key_exists('pinned', $map)) && ($map['pinned'] != '')) ? explode(',', $map['pinned']) : [],
             array_key_exists('title', $map) ? $map['title'] : '',
-            array_key_exists('param', $map) ? $map['param'] : 'download',
+            array_key_exists('param', $map) ? $map['param'] : '*',
             array_key_exists('select', $map) ? $map['select'] : '',
             array_key_exists('select_b', $map) ? $map['select_b'] : '',
             array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
             array_key_exists('sort', $map) ? $map['sort'] : 'recent',
             array_key_exists('check', $map) ? ($map['check'] == '1') : true,
+            empty($map['render_mode']) ? 'boxes' : $map['render_mode'],
         ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
@@ -145,16 +147,54 @@ PHP;
     {
         $block_id = get_block_id($map);
 
+        // Read selection parameters
+        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
+        $sort = empty($map['sort']) ? 'prominence' : $map['sort']; // recent|top|views|random|title or some manually typed sort order
+        $select = isset($map['select']) ? $map['select'] : '';
+        $select_b = isset($map['select_b']) ? $map['select_b'] : '';
+        if ($select_b == '*') {
+            return do_template('RED_ALERT', ['_GUID' => 'nktad4b52ustiuhzvqzin9htz4g26vow', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]); // Indicates some kind of referencing error, probably caused by Tempcode pre-processing - skip execution
+        }
+        $filter = isset($map['filter']) ? $map['filter'] : '';
+        $days = empty($map['days']) ? null : intval($map['days']);
+        $_pinned = array_key_exists('pinned', $map) ? trim($map['pinned']) : '*';
+        if ($_pinned == '') {
+            $pinned = [];
+        } elseif ($_pinned == '*') {
+            $pinned = null;
+        } else {
+            $pinned = array_unique(array_map('intval', array_map('trim', explode(',', $_pinned))));
+        }
+        $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
+
+        // Read display parameters
+        $guid = isset($map['guid']) ? $map['guid'] : '';
+        $zone = isset($map['zone']) ? $map['zone'] : '_SEARCH';
+        $title = isset($map['title']) ? $map['title'] : '';
+        $lifetime = empty($map['lifetime']) ? null : intval($map['lifetime']);
+        $give_context = (isset($map['give_context']) ? $map['give_context'] : '0') == '1';
+        $include_breadcrumbs = (isset($map['include_breadcrumbs']) ? $map['include_breadcrumbs'] : '0') == '1';
+        $render_mode = empty($map['render_mode']) ? 'tiles' : $map['render_mode'];
+        if (!in_array($render_mode, ['boxes', 'carousel', 'grid', 'list', 'mosaic', 'slider', 'table', 'tiles'])) {
+            $render_mode = 'boxes';
+        }
+
+        $render_mode_requires_image = in_array($render_mode, ['carousel', 'grid', 'mosaic', 'slider']);
+
         // Determine content type
         require_code('content');
-        if (isset($map['param'])) {
+        if ((!@cms_empty_safe($map['param'])) && ($map['param'] != '*')) {
             $content_type = $map['param'];
+            $content_types = explode(',', $map['param']);
         } else {
-            if (addon_installed('downloads')) {
-                $content_type = 'download';
-            } else {
-                $hooks = find_all_hooks('systems', 'content_meta_aware');
-                $content_type = key($hooks);
+            $content_type = '*';
+            $_content_types = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
+            $content_types = [];
+            foreach ($_content_types as $_content_type => $object) {
+                $info = $object->info();
+                if (($info !== null) && (!$render_mode_requires_image) || ($info['thumb_field'] !== null)) {
+                    $content_types[] = $_content_type;
+                }
             }
         }
 
@@ -165,71 +205,67 @@ PHP;
         $attach_to_url_filter = ((isset($map['attach_to_url_filter']) ? $map['attach_to_url_filter'] : '0') == '1');
         $root = @cms_empty_safe($map['root']) ? get_param_integer('keep_' . $content_type . '_root', null) : intval($map['root']);
 
-        // Read selection parameters
-        $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
-        $sort = empty($map['sort']) ? 'recent' : $map['sort']; // recent|top|views|random|title or some manually typed sort order
-        $select = isset($map['select']) ? $map['select'] : '';
-        $select_b = isset($map['select_b']) ? $map['select_b'] : '';
-        if ($select_b == '*') {
-            return do_template('RED_ALERT', ['_GUID' => 'nktad4b52ustiuhzvqzin9htz4g26vow', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]); // Indicates some kind of referencing error, probably caused by Tempcode pre-processing - skip execution
-        }
-        $filter = isset($map['filter']) ? $map['filter'] : '';
-        $days = empty($map['days']) ? null : intval($map['days']);
-        $pinned = empty($map['pinned']) ? [] : array_unique(array_map('intval', array_map('trim', explode(',', trim($map['pinned'])))));
-        $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
-
-        // Read display parameters
-        $guid = isset($map['guid']) ? $map['guid'] : '';
-        $zone = isset($map['zone']) ? $map['zone'] : '_SEARCH';
-        $title = isset($map['title']) ? $map['title'] : '';
-        $lifetime = empty($map['lifetime']) ? null : intval($map['lifetime']);
-        $give_context = (isset($map['give_context']) ? $map['give_context'] : '0') == '1';
-        $include_breadcrumbs = (isset($map['include_breadcrumbs']) ? $map['include_breadcrumbs'] : '0') == '1';
-
-        // Read content object
-        $object = get_content_object($content_type);
-        $info = $object->info($zone, true, ($select_b == '') ? null : $select_b);
-        if ($info === null) {
-            return do_template('RED_ALERT', ['_GUID' => 'tbt2956j6oneq4j22bap5rbftytfigyg', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
-        }
-        $first_id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
-
-        $extra_join = '';
-        $extra_where = '';
-
-        // Cycling of what has been seen before
-        if (is_array($info['id_field'])) {
-            $lifetime = null; // Cannot join on this
-        }
         if ($lifetime !== null) {
             $block_cache_id = md5(serialize($map));
-            $extra_join .= ' LEFT JOIN ' . $info['db']->get_table_prefix() . 'feature_lifetime_monitor m ON m.content_id=' . db_cast($first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('m.block_cache_id', $block_cache_id);
-            $extra_where .= ' AND (m.run_period IS NULL OR m.run_period<' . strval($lifetime * 60 * 60 * 24) . ')';
+        }
+
+        // Read content object
+        $objects = [];
+        $infos = [];
+        $extra_join = [];
+        $extra_where = [];
+        foreach ($content_types as $i => $content_type) {
+            $object = get_content_object($content_type);
+            $info = $object->info($zone, true, ($select_b == '') ? null : $select_b);
+            if ($info === null) {
+                return do_template('RED_ALERT', ['_GUID' => 'tbt2956j6oneq4j22bap5rbftytfigyg', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
+            }
+
+            if (($sort == 'prominence') && ($info['default_prominence_weight'] == PROMINENCE_WEIGHT_NONE)) {
+                unset($content_types[$i]);
+                continue;
+            }
+
+            $objects[$content_type] = $object;
+            $infos[$content_type] = $info;
+
+            $extra_join[$content_type] = '';
+            $extra_where[$content_type] = '';
+
+            // Cycling of what has been seen before
+            if (is_array($info['id_field'])) {
+                $lifetime = null; // Cannot join on this
+            }
+            if ($lifetime !== null) {
+                $first_id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];
+                $extra_join[$content_type] .= ' LEFT JOIN ' . $info['db']->get_table_prefix() . 'feature_lifetime_monitor m ON m.content_id=' . db_cast($first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('m.block_cache_id', $block_cache_id);
+                $extra_where[$content_type] .= ' AND (m.run_period IS NULL OR m.run_period<' . strval($lifetime * 60 * 60 * 24) . ')';
+            }
+
+            $thumb_field = $info['thumb_field'];
+            if (is_array($thumb_field)) {
+                $thumb_field = array_pop($thumb_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
+            }
+            if (($render_mode_requires_image) && (strpos($thumb_field, 'CALL:') === false)) {
+                $extra_where[$content_type] .= ' AND ' . db_string_not_equal_to($info['thumb_field'], '');
+            }
         }
 
         // Read rows
         $viewing_member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : get_member();
-        list($rows, $max_rows) = content_rows_for_multi_type([$content_type], $days, $extra_where, $extra_join, $sort, $start, $max, $select, $select_b, $filter, $check_perms, $pinned, null, $viewing_member_id);
+        list($rows, $max_rows) = content_rows_for_multi_type($content_types, $days, $extra_where, $extra_join, $sort, $start, $max, $select, $select_b, $filter, $check_perms, $pinned, null, $viewing_member_id, $infos);
 
         // Links...
 
-        $submit_url = $info['add_url'];
-        if ($submit_url !== null) {
-            $submit_url = page_link_to_url($submit_url);
-        } else {
-            $submit_url = '';
-        }
-        if (!has_actual_page_access(null, $info['cms_page'], null, null)) {
-            $submit_url = '';
+        $submit_url = new Tempcode();
+        if ((count($infos) == 1) && ($info['add_url'] !== null) && (has_actual_page_access(null, $info['cms_page'], null, null))) {
+            $submit_url = page_link_to_tempcode_url($info['add_url']);
         }
 
-        if ($info['archive_url'] !== null) {
+        $archive_url = new Tempcode();
+        if ((count($infos) == 1) && ($info['archive_url'] !== null)) {
             $archive_url = page_link_to_tempcode_url($info['archive_url']);
-        } else {
-            $archive_url = new Tempcode();
         }
-
-        $view_url = array_key_exists('view_url', $info) ? $info['view_url'] : new Tempcode();
 
         if ((isset($map['no_links'])) && ($map['no_links'] == '1')) {
             $submit_url = new Tempcode();
@@ -243,9 +279,37 @@ PHP;
 
         // Move towards render...
 
-        $rendered_content = [];
+        // Work out what headings are shared
+        $shared_keymap_headings = [];
+        if (count($objects) == 1) {
+            $shared_keymap_headings = $object->get_standard_keymap_headings() + $object->get_special_keymap_headings();
+        } else {
+            $keymap_headings_tallies = [];
+            foreach ($objects as $object) {
+                $keymap_headings = $object->get_standard_keymap_headings();
+                $shared_keymap_headings += $keymap_headings;
+                foreach (array_keys($keymap_headings) as $keymap_heading) {
+                    if (!array_key_exists($keymap_heading, $keymap_headings_tallies)) {
+                        $keymap_headings_tallies[$keymap_heading] = 0;
+                    }
+                    $keymap_headings_tallies[$keymap_heading]++;
+                }
+            }
+            foreach ($keymap_headings_tallies as $keymap_heading => $tally) {
+                if ($tally < count($objects)) {
+                    unset($shared_keymap_headings[$keymap_heading]);
+                }
+            }
+        }
+
+        // Render rows
+        $content = [];
         $content_data = [];
         foreach ($rows as $row) {
+            $content_type = $row['content_type'];
+            $object = $objects[$content_type];
+            $info = $infos[$content_type];
+
             // Get content ID
             $content_id = extract_content_str_id_from_data($row, $info);
 
@@ -274,10 +338,87 @@ PHP;
                 }
             }
 
-            // Render
-            $rendered_content[] = $object->run($row, $zone, $give_context, $include_breadcrumbs, $root, $attach_to_url_filter, $guid);
+            // Fetch keymap
+            if (count($objects) == 1) {
+                $keymap = $object->get_standard_keymap($row) + $object->get_special_keymap($row);
+            } else {
+                $keymap = $object->get_standard_keymap($row);
+                foreach (array_keys($keymap) as $key) {
+                    if (!isset($shared_keymap_headings[$key])) {
+                        unset($keymap[$key]);
+                    }
+                }
+            }
 
-            $content_data[] = ['URL' => str_replace('%21', $content_id, $view_url->evaluate())];
+            // Render
+            if ($render_mode_requires_image) {
+                $thumb_url = $object->get_image_thumb_url($row);
+                if ($thumb_url == '') {
+                    continue;
+                }
+            }
+            switch ($render_mode) {
+                case 'boxes':
+                    $thumb_url = $object->get_image_thumb_url($row);
+                    $content[] = $object->render_box($row, $zone, $give_context, $include_breadcrumbs, $root, $attach_to_url_filter, $guid);
+                    break;
+
+                case 'carousel':
+                    $content[] = $object->render_hyperlink_thumbnail($row);
+                    break;
+
+                case 'grid':
+                    $content[] = ''; // Uniform. Render using $content_data
+                    break;
+
+                case 'list':
+                    $thumb_url = $object->get_image_thumb_url($row);
+                    $content[] = $object->render_hyperlink($row);
+                    break;
+
+                case 'mosaic':
+                    $content[] = ''; // Uniform. Render using $content_data
+                    break;
+
+                case 'slider':
+                    $content[] = ''; // Uniform. Render using $content_data
+                    break;
+
+                case 'table':
+                    $thumb_url = $object->get_image_thumb_url($row);
+                    $content[] = ['KEYMAP' => array_change_key_case($keymap, CASE_UPPER)];
+                    break;
+
+                case 'tiles':
+                    $thumb_url = $object->get_image_thumb_url($row, THUMB_URL_FALLBACK_HARD);
+                    $content[] = ''; // Uniform. Render using $content_data
+                    break;
+            }
+
+            $timestamp = $object->get_most_relevant_time($row);
+
+            $_content_data = [
+                'CONTENT_TYPE' => $content_type,
+                'CONTENT_TYPE_LABEL' => $object->get_content_type_label($row),
+                'CONTENT_TYPE_ICON' => ($info['alternate_icon_theme_image'] === null) ? null : find_theme_image($info['alternate_icon_theme_image']),
+                'CONTENT_ID' => $content_id,
+                'CONTENT_URL' => $object->get_view_url($row),
+                'CONTENT_TITLE_PLAIN' => $object->get_title($row, FIELD_RENDER_PLAIN),
+                'CONTENT_TITLE_HTML' => protect_from_escaping($object->get_title($row, FIELD_RENDER_HTML)),
+                'CONTENT_DESCRIPTION' => protect_from_escaping($object->get_description($row, FIELD_RENDER_HTML)),
+                'CONTENT_THUMB_URL' => $thumb_url,
+                'CONTENT_THUMB' => $object->render_thumbnail($row, true),
+                'CONTENT_THUMB_LINKED' => $object->render_hyperlink_thumbnail($row, true),
+                'CONTENT_USERNAME' => $object->get_username($row),
+                'CONTENT_AUTHOR' => $object->get_author($row),
+                'CONTENT_TIME_LABEL' => $object->get_most_relevant_time_label(),
+                'CONTENT_TIME' => ($timestamp === null) ? null : get_timezoned_date_time_tempcode($timestamp),
+                '_CONTENT_TIME' => ($timestamp === null) ? null : strval($timestamp),
+            ];
+            if ($render_mode != 'table') {
+                $_content_data['CONTENT_KEYMAP'] = @array_combine($shared_keymap_headings, $keymap);
+            }
+            $content_data[] = $_content_data;
         }
 
         // Sort out run periods of stuff gone
@@ -296,33 +437,42 @@ PHP;
         }
 
         // Empty? Bomb out somehow
-        if (empty($rendered_content)) {
+        if (empty($rows)) {
             if ((isset($map['render_if_empty'])) && ($map['render_if_empty'] == '0')) {
                 return new Tempcode();
             }
+        }
+
+        if (count($infos) == 1) {
+            $content_type_label = $object->get_content_type_label();
+            $add_string = $object->content_language_string('ADD');
+        } else {
+            $content_type_label = do_lang_tempcode('RESULTS');
+            $add_string = do_lang_tempcode('ADD');
         }
 
         // Pagination
         $pagination = null;
         if ($do_pagination) {
             require_code('templates_pagination');
-            $pagination = pagination(do_lang_tempcode($info['content_type_label']), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows);
+            $pagination = pagination($content_type_label, $start, $block_id . '_start', $max, $block_id . '_max', $max_rows);
         }
 
         // Render
-        return do_template('BLOCK_MAIN_MULTI_CONTENT', [
+        return do_template('BLOCK_MAIN_MULTI_CONTENT_' . strtoupper($render_mode), [
             '_GUID' => ($guid != '') ? $guid : '9035934bc9b25f57eb8d23bf100b5796',
             'BLOCK_ID' => $block_id,
             'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
-            'TYPE' => do_lang_tempcode($info['content_type_label']),
+            'TYPE' => $content_type_label,
             'TITLE' => $title,
-            'CONTENT' => $rendered_content,
-            'CONTENT_TYPE' => $content_type,
+            'CONTENT' => $content,
+            'CONTENT_TYPE' => (count($objects) == 1) ? $content_type : '',
             'CONTENT_DATA' => $content_data,
             'SUBMIT_URL' => $submit_url,
             'ARCHIVE_URL' => $archive_url,
             'PAGINATION' => $pagination,
-            'ADD_STRING' => content_language_string($content_type, 'ADD'),
+            'ADD_STRING' => $add_string,
+            'SHARED_KEYMAP_HEADINGS' => $shared_keymap_headings,
 
             'START' => strval($start),
             'MAX' => strval($max),

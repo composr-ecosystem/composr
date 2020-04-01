@@ -39,7 +39,9 @@ class Hook_addon_registry_twitter_feed_integration_block
      */
     public function get_category()
     {
-        return 'Third Party Integration'; // $MAINTAINED_STATUS: Change to 'Development' if the integration breaks and is not fixed
+        // Best to just categorise properly as it's not bundled 
+        //return is_maintained('twitter') ? 'Third Party Integration' : 'Development';
+        return 'Third Party Integration';
     }
 
     /**

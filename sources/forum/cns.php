@@ -292,7 +292,7 @@ class Forum_driver_cns extends Forum_driver_base
      * Get an array of maps for the topic in the given forum.
      *
      * @param  integer $topic_id The topic ID
-     * @param  integer $count The comment count will be returned here by reference
+     * @param  ?integer $count The comment count will be returned here by reference (null: do not gather it)
      * @param  integer $max Maximum comments to returned
      * @param  integer $start Comment to start at
      * @param  boolean $mark_read Whether to mark the topic read
@@ -304,7 +304,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @set date rating
      * @return mixed The array of maps (Each map is: title, message, member, date) (-1 for no such forum, -2 for no such topic)
      */
-    public function get_forum_topic_posts($topic_id, &$count, $max = 100, $start = 0, $mark_read = true, $reverse = false, $light_if_threaded = false, $posts = null, $load_spacer_posts_too = false, $sort = 'date')
+    public function get_forum_topic_posts($topic_id, &$count = null, $max = 100, $start = 0, $mark_read = true, $reverse = false, $light_if_threaded = false, $posts = null, $load_spacer_posts_too = false, $sort = 'date')
     {
         require_code('cns_forum_driver_helper');
         return _helper_get_forum_topic_posts($this, $topic_id, $count, $max, $start, $mark_read, $reverse, $light_if_threaded, $posts, $load_spacer_posts_too, $sort);
@@ -592,13 +592,13 @@ class Forum_driver_cns extends Forum_driver_base
             if ($username === null) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($id, false, USERNAME_DEFAULT_ID_TIDY);
             }
-            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : (($username === null) ? strval($id) : $username)];
+            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : (($username === null) ? strval($id) : $username)];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
             $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay);
         } else {
-            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id];
+            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : $id];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
@@ -848,12 +848,11 @@ class Forum_driver_cns extends Forum_driver_base
 
         unset($forum);
 
-        $_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $id], get_module_zone('topicview'), [], false, false, !$tempcode_okay);
+        $_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $id], get_module_zone('topicview'), [], false, false, !$tempcode_okay, 'post_' . strval($id));
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
         $url = $_url->evaluate();
-        $url .= '#post_' . strval($id);
         if (get_option('forum_in_portal') == '0') {
             $url = str_replace(get_base_url(), get_forum_base_url(), $url);
         }
@@ -1214,10 +1213,15 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_topic_count($member)
     {
+        static $cache = [];
+        if (isset($cache[$member])) {
+            return $cache[$member];
+        }
         $ret = $this->db->query_select_value_if_there('f_topics', 'COUNT(*)', ['t_cache_first_member_id' => $member]);
         if ($ret === null) {
             $ret = 0;
         }
+        $cache[$member] = $ret;
         return $ret;
     }
 
@@ -1225,11 +1229,18 @@ class Forum_driver_cns extends Forum_driver_base
      * Find out if the given member ID is banned.
      *
      * @param  MEMBER $member The member ID
+     * @param  ?ID_TEXT $reasoned_ban Ban reasoning returned by reference (null: none)
      * @return boolean Whether the member is banned
      */
-    public function is_banned($member)
+    public function is_banned($member, &$reasoned_ban = null)
     {
-        return $this->get_member_row_field($member, 'm_is_perm_banned') == 1;
+        $is_perm_banned = $this->get_member_row_field($member, 'm_is_perm_banned');
+        if (($is_perm_banned == '0') || ($is_perm_banned == '1')) {
+            $reasoned_ban = null;
+        } else {
+            $reasoned_ban = $is_perm_banned;
+        }
+        return ($is_perm_banned != '0');
     }
 
     /**
@@ -1398,7 +1409,7 @@ class Forum_driver_cns extends Forum_driver_base
                 return $id;
             }
         }
-        $row = $this->db->query_select('f_members', ['*'], ['m_email_address' => $email_address], 'ORDER BY m_is_perm_banned,m_join_time DESC', 1);
+        $row = $this->db->query_select('f_members', ['*'], ['m_email_address' => $email_address], 'ORDER BY m_join_time DESC', 1);
         if (!array_key_exists(0, $row)) {
             return null;
         }
@@ -1754,6 +1765,7 @@ class Forum_driver_cns extends Forum_driver_base
                     $change_map['m_last_submit_time'] = time();
                 }
                 $change_map['m_password_change_code'] = ''; // Security, to stop resetting password when account actively in use (stops people planting reset bombs then grabbing the details much later)
+                $change_map['m_password_change_code_time'] = null;
 
                 if (get_page_name() != 'lost_password') {
                     if (get_db_type() != 'xml') {
@@ -1785,7 +1797,7 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_member_row($member)
     {
-        if (isset($this->MEMBER_ROWS_CACHED[$member])) {
+        if (array_key_exists($member, $this->MEMBER_ROWS_CACHED)) {
             return $this->MEMBER_ROWS_CACHED[$member];
         }
 

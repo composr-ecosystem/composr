@@ -484,21 +484,19 @@ function get_directory_size($path, $recurse = true)
 function get_maximum_upload_message($max)
 {
     $config_url = get_upload_limit_config_url();
-    return paragraph(do_lang_tempcode(($config_url === null) ? 'MAXIMUM_UPLOAD' : 'MAXIMUM_UPLOAD_STAFF', escape_html(($max > 10.0) ? integer_format(intval($max)) : float_format($max)), escape_html(($config_url === null) ? '' : $config_url)), '0oa9paovv3xj12dqlny21zwajoh1f90q');
+    return paragraph(do_lang_tempcode(($config_url === null) ? 'MAXIMUM_UPLOAD' : 'MAXIMUM_UPLOAD_STAFF', escape_html(($max > 10.0) ? integer_format(intval($max)) : float_format($max)), ($config_url === null) ? '' : escape_html_tempcode($config_url)), '0oa9paovv3xj12dqlny21zwajoh1f90q');
 }
 
 /**
  * Get the URL to the config option group for editing limits.
  *
- * @return ?URLPATH The URL to the config option group for editing limits (null: no access)
+ * @return ?Tempcode The URL to the config option group for editing limits (null: no access)
  */
 function get_upload_limit_config_url()
 {
     $config_url = null;
     if (has_actual_page_access(get_member(), 'admin_config')) {
-        $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'));
-        $config_url = $_config_url->evaluate();
-        $config_url .= '#group_UPLOAD';
+        $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'FEATURE'], get_module_zone('admin_config'), [], false, false, false, 'group-UPLOAD');
     }
     return $config_url;
 }
@@ -663,10 +661,8 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
         }
         $message = do_lang_tempcode('INVALID_FILE_TYPE', escape_html($ext), escape_html(str_replace(',', ', ', $_types)));
         if (has_actual_page_access(get_member(), 'admin_config')) {
-            $_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SECURITY'], get_module_zone('admin_config'));
-            $url = $_url->evaluate();
-            $url .= '#group_UPLOAD';
-            $message = do_lang_tempcode('INVALID_FILE_TYPE_ADMIN', escape_html($ext), escape_html(str_replace(',', ', ', $_types)), escape_html($url));
+            $link = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SECURITY'], get_module_zone('admin_config'), [], false, false, false, 'group-UPLOAD');
+            $message = do_lang_tempcode('INVALID_FILE_TYPE_ADMIN', escape_html($ext), escape_html(str_replace(',', ', ', $_types)), escape_html_tempcode($link));
         }
         if ($accept_errors) {
             require_code('site');

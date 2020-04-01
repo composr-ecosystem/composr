@@ -68,22 +68,13 @@ class Hook_cron_newsletter_drip_send
             $needs_substitutions = null;
             $needs_tempcode = null;
 
-            // Quick cleanup for maximum performance
-            $id_list = '';
-            foreach ($to_send as $mail) {
-                if ($id_list != '') {
-                    $id_list .= ' OR ';
-                }
-                $id_list .= 'id=' . strval($mail['id']);
-            }
-            $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'newsletter_drip_send WHERE ' . $id_list, null, 0, false, true);
-
             // We'll cache messages here
             $cached_messages = [];
 
             // Send
             require_code('newsletter');
             require_code('mail');
+            $sent = [];
             foreach ($to_send as $mail) {
                 $message_id = $mail['d_message_id'];
 
@@ -141,7 +132,7 @@ class Hook_cron_newsletter_drip_send
                     }
                 }
 
-                dispatch_mail(
+                $mail_ob = dispatch_mail(
                     $subject,
                     $newsletter_message_substituted,
                     [$mail['d_to_email']],
@@ -167,7 +158,21 @@ class Hook_cron_newsletter_drip_send
                         'is_bulk' => true,
                     ]
                 );
+
+                if ($mail_ob->worked) {
+                    $sent[] = $mail['id'];
+                }
             }
+
+            // Mass cleanup for maximum performance
+            $id_list = '';
+            foreach ($sent as $sent_id) {
+                if ($id_list != '') {
+                    $id_list .= ' OR ';
+                }
+                $id_list .= 'id=' . strval($sent_id);
+            }
+            $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'newsletter_drip_send WHERE ' . $id_list, null, 0, false, true);
         }
     }
 }

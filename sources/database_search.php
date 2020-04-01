@@ -1025,7 +1025,7 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
                 continue;
             }
 
-            $join = ' JOIN ' . $db->get_table_prefix() . 'translate t' . strval($i) . ' ON t' . strval($i) . '.id=' . $field . ' AND ' . db_string_equal_to('t' . strval($i) . '.language', user_lang());
+            $join = $db->translate_field_join($field, 't' . strval($i), user_lang(), 'JOIN');
 
             $translate_table_joins_stock[$field] = $join;
 
@@ -1063,7 +1063,7 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
 
         $meta_table_clause = $table_clause . ' JOIN ' . $db->get_table_prefix() . 'seo_meta_keywords m ON ' . $meta_join_clause;
         if (multi_lang_content()) {
-            $meta_table_clause .= ' JOIN ' . $db->get_table_prefix() . 'translate tm ON tm.id=m.meta_keyword AND ' . db_string_equal_to('tm.language', user_lang());
+            $meta_table_clause .= $db->translate_field_join('m.meta_keyword', 'tm', user_lang(), 'JOIN');
         }
 
         if (multi_lang_content()) {

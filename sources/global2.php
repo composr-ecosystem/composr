@@ -67,7 +67,7 @@ function init__global2()
         }
     }
 
-    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $FIELD_RESTRICTIONS, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE;
+    global $BOOTSTRAPPING, $SUPPRESS_ERROR_DEATH, $CHECKING_SAFEMODE, $RELATIVE_PATH, $RUNNING_SCRIPT_CACHE, $SERVER_TIMEZONE_CACHE, $HAS_SET_ERROR_HANDLER, $DYING_BADLY, $XSS_DETECT, $SITE_INFO, $IN_MINIKERNEL_VERSION, $EXITING, $FILE_BASE, $CACHE_TEMPLATES, $WORDS_TO_FILTER_CACHE, $VALID_ENCODING, $CONVERTED_ENCODING, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $QUERY_LOG, $CURRENT_SHARE_USER, $WHAT_IS_RUNNING_CACHE, $DEV_MODE, $SEMI_DEV_MODE, $IS_VIRTUALISED_REQUEST, $FILE_ARRAY, $DIR_ARRAY, $JAVASCRIPTS_DEFAULT, $JAVASCRIPTS, $KNOWN_AJAX, $KNOWN_UTF8, $CSRF_TOKENS, $STATIC_CACHE_ENABLED, $IN_SELF_ROUTING_SCRIPT, $INVALIDATED_FAST_SPIDER_CACHE;
 
     $INVALIDATED_FAST_SPIDER_CACHE = false;
 
@@ -105,7 +105,6 @@ function init__global2()
     $RUNNING_SCRIPT_CACHE = [];
     $WHAT_IS_RUNNING_CACHE = current_script();
     $WORDS_TO_FILTER_CACHE = null;
-    $FIELD_RESTRICTIONS = null;
     $VALID_ENCODING = false;
     $CONVERTED_ENCODING = false;
     $KNOWN_AJAX = false;
@@ -462,7 +461,7 @@ function init__global2()
 
     if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
         // Clear caching if needed
-        $changed_base_url = (get_value('last_base_url', null) !== get_base_url(false)) && (get_value('disable_base_check') !== '1');
+        $changed_base_url = (get_value('last_base_url', null) !== get_base_url()) && (get_value('disable_base_check') !== '1');
         if ((running_script('index')) && ((is_browser_decaching()) || ($changed_base_url))) {
             require_code('caches3');
             auto_decache($changed_base_url);
@@ -548,6 +547,15 @@ function init__global2()
         if ($CSRF_TOKENS) {
             require_code('csrf_filter');
             check_csrf_token(post_param_string('csrf_token', null));
+        }
+    }
+
+    $member_id = get_member();
+    if ((!is_guest($member_id)) && (!$GLOBALS['IS_VIA_BACKDOOR'])) { // All hands to the guns
+        $reasoned_ban = null;
+        if ($GLOBALS['FORUM_DRIVER']->is_banned($member_id, $reasoned_ban)) {
+            require_code('failure');
+            banned_exit($reasoned_ban);
         }
     }
 
@@ -808,6 +816,10 @@ function handle_bad_access_context()
         return;
     }
 
+    if (strpos(get_self_url_easy(), '/webdav/') !== false) {
+        return;
+    }
+
     $request_hostname = get_request_hostname();
 
     // Detect bad access domain
@@ -818,6 +830,7 @@ function handle_bad_access_context()
         if ($base_url_hostname != $request_hostname) {
             if (empty($SITE_INFO['ZONE_MAPPING_' . get_zone_name()])) {
                 if (($GLOBALS['FORUM_DRIVER'] !== null) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+                    require_code('site');
                     attach_message(do_lang_tempcode('BAD_ACCESS_DOMAIN', escape_html($base_url_hostname), escape_html($request_hostname)), 'warn');
                 }
 
@@ -1308,7 +1321,7 @@ function is_browser_decaching()
         return false; // Decaching by mistake is real-bad when Google Cloud Storage is involved
     }
 
-    if ((defined('DO_PLANNED_DECACHE')) && (is_writable(get_file_base() . '/_config.php'))) { // Used by decache.sh
+    if ((defined('DO_PLANNED_DECACHE')) && (is_writable(get_file_base() . '/_config.php'))) { // Used by decache.php
         $config_file_orig = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
         $config_file = $config_file_orig;
         $config_file = rtrim(str_replace(['if (!defined(\'DO_PLANNED_DECACHE\')) ', 'define(\'DO_PLANNED_DECACHE\', true);'], ['', ''], $config_file)) . "\n\n";
@@ -1399,13 +1412,15 @@ function inform_exit($text, $support_match_key_messages = null)
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @param  boolean $log_error Whether to log the error
  * @param  ?integer $http_status HTTP status to set (null: none)
+ * @param  ?Tempcode $title Title to use show (null: default)
+ * @param  ?URLPATH $image_url Image to show (null: default)
  * @exits
  */
-function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = 500)
+function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = 500, $title = null, $image_url = null)
 {
     require_code('failure');
     suggest_fatalistic();
-    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, $http_status);
+    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, $http_status, $title, $image_url);
     if (running_script('cron_bridge')) {
         relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), false, 'error_occurred_cron');
     }
@@ -1429,18 +1444,15 @@ function fatal_exit($text, $log_error = true, $http_status = 500)
 /**
  * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
  *
- * @param  ID_TEXT $reason The reason for the hack attack. This has to be a language string codename
- * @param  SHORT_TEXT $reason_param_a A parameter for the hack attack language string (this should be based on a unique ID, preferably)
+ * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
+ * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
- * @param  boolean $silent Whether to silently log the hack rather than also exiting
- * @param  boolean $instant_ban Whether a ban should be immediate
- * @param  integer $percentage_score The risk factor
  * @exits
  */
-function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '', $silent = false, $instant_ban = false, $percentage_score = 100)
+function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '')
 {
     require_code('failure');
-    _log_hack_attack_and_exit($reason, $reason_param_a, $reason_param_b, $silent, $instant_ban, $percentage_score);
+    _log_hack_attack_and_exit($reason, $reason_param_a, $reason_param_b);
 }
 
 /**
@@ -1620,11 +1632,9 @@ function in_safe_mode()
  *
  * @param  string $name The codename of the needed script
  * @param  boolean $append_keep Whether to append keep variables
- * @param  integer $base_url_code Code representing what base URL type to use (0=guess, 1=http, 2=https)
- * @set 0 1 2
  * @return URLPATH The URL to the script
  */
-function find_script($name, $append_keep = false, $base_url_code = 0)
+function find_script($name, $append_keep = false)
 {
     $append = '';
     if ($append_keep) {
@@ -1641,8 +1651,8 @@ function find_script($name, $append_keep = false, $base_url_code = 0)
             $find_script_cache = [];
         }
     }
-    if (isset($find_script_cache[$name][$append_keep][$base_url_code])) {
-        return $find_script_cache[$name][$append_keep][$base_url_code] . $append;
+    if (isset($find_script_cache[$name][$append_keep])) {
+        return $find_script_cache[$name][$append_keep] . $append;
     }
 
     $zones = [];
@@ -1659,15 +1669,15 @@ function find_script($name, $append_keep = false, $base_url_code = 0)
     foreach ($zones as $zone) {
         if (is_file(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . $name . '.php')) {
             $ret = get_base_url() . '/' . $zone . (($zone == '') ? '' : '/') . $name . '.php';
-            $find_script_cache[$name][$append_keep][$base_url_code] = $ret;
+            $find_script_cache[$name][$append_keep] = $ret;
             if (function_exists('persistent_cache_set')) {
                 persistent_cache_set('SCRIPT_PLACES', $find_script_cache);
             }
             return $ret . $append;
         }
     }
-    $ret = get_base_url(($base_url_code == 0) ? null : ($base_url_code == 2)) . '/site/' . $name . '.php';
-    $find_script_cache[$name][$append_keep][$base_url_code] = $ret;
+    $ret = get_base_url() . '/site/' . $name . '.php';
+    $find_script_cache[$name][$append_keep] = $ret;
     if (function_exists('persistent_cache_set')) {
         persistent_cache_set('SCRIPT_PLACES', $find_script_cache);
     }
@@ -1677,44 +1687,21 @@ function find_script($name, $append_keep = false, $base_url_code = 0)
 /**
  * Get the base URL (the minimum fully qualified URL to our installation).
  *
- * @param  ?boolean $https Whether to get the HTTPS base URL (null: do so only if the current page uses the HTTPS base URL)
  * @param  ?ID_TEXT $zone_for The zone the link is for (null: root zone)
  * @return URLPATH The base URL
  */
-function get_base_url($https = null, $zone_for = null)
+function get_base_url($zone_for = null)
 {
-    if ($https === null) { // If we don't know, we go by what the current page is
-        static $currently_https_cache = null;
-        $https = $currently_https_cache;
-        if ($https === null) {
-            require_code('urls');
-            if (running_script('index')) {
-                if (addon_installed('ssl')) {
-                    $https = ((tacit_https()) || (function_exists('is_page_https')) && (function_exists('get_zone_name')) && (is_page_https(get_zone_name(), get_page_name())));
-                } else {
-                    $https = tacit_https();
-                }
-            } else {
-                $https = function_exists('tacit_https') && tacit_https();
-            }
-            $currently_https_cache = $https;
-        }
-    }
-
     global $VIRTUALISED_ZONES_CACHE;
-    static $base_url_http_cache = null;
-    static $base_url_https_cache = null;
+    static $base_url_cache = null;
 
     if ($VIRTUALISED_ZONES_CACHE === null) {
         require_code('zones');
         get_zone_name();
     }
 
-    if (($base_url_http_cache !== null) && (!$https) && ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null))) {
-        return $base_url_http_cache . (empty($zone_for) ? '' : ('/' . $zone_for));
-    }
-    if (($base_url_https_cache !== null) && ($https) && ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null))) {
-        return $base_url_https_cache . (empty($zone_for) ? '' : ('/' . $zone_for));
+    if (($base_url_cache !== null) && ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null))) {
+        return $base_url_cache . (empty($zone_for) ? '' : ('/' . $zone_for));
     }
 
     global $SITE_INFO;
@@ -1723,7 +1710,7 @@ function get_base_url($https = null, $zone_for = null)
         $script_name_path = dirname(isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '');
         $script_name_path = str_replace(DIRECTORY_SEPARATOR, '/', $script_name_path);
         if (($GLOBALS['RELATIVE_PATH'] === '') || (strpos($script_name_path, $GLOBALS['RELATIVE_PATH']) !== false)) {
-            $script_name_path = preg_replace('#/' . preg_quote($GLOBALS['RELATIVE_PATH'], '#') . '$#', '', $script_name_path);
+            $script_name_path = preg_replace('#(^|/)' . preg_quote($GLOBALS['RELATIVE_PATH'], '#') . '$#', '', $script_name_path);
         } else {
             $cnt = substr_count($GLOBALS['RELATIVE_PATH'], '/');
             for ($i = 0; $i <= $cnt; $i++) {
@@ -1757,13 +1744,8 @@ function get_base_url($https = null, $zone_for = null)
     }
 
     // Work out correct variant
-    if ($https) {
-        $base_url = 'https://' . preg_replace('#^\w*://#', '', $base_url);
-        if ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null)) {
-            $base_url_https_cache = $base_url;
-        }
-    } elseif ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null)) {
-        $base_url_http_cache = $base_url;
+    if ((!$VIRTUALISED_ZONES_CACHE) || ($zone_for === null)) {
+        $base_url_cache = $base_url;
     }
 
     if (!$found_mapping) { // Scope inside the correct zone
@@ -1777,23 +1759,22 @@ function get_base_url($https = null, $zone_for = null)
 /**
  * Get the base URL (the minimum fully qualified URL to our personal data installation). For a shared install, or a GAE-install, this is different to the base URL.
  *
- * @param  ?boolean $https Whether to get the HTTPS base URL (null: do so only if the current page uses the HTTPS base URL)
  * @return URLPATH The base URL
  */
-function get_custom_base_url($https = null)
+function get_custom_base_url()
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['custom_base_url'])) {
         return $SITE_INFO['custom_base_url'];
     }
     if (empty($SITE_INFO['custom_base_url_stub'])) {
-        return get_base_url($https);
+        return get_base_url();
     }
 
     // Note that HTTPS is not supported for shared installs
     $u = current_share_user();
     if ($u === null) {
-        return get_base_url($https);
+        return get_base_url();
     }
     return $SITE_INFO['custom_base_url_stub'] . '/' . $u;
 }

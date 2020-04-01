@@ -259,7 +259,7 @@ abstract class Standard_crud_module
                         }
                         $catalogue_title = get_translated_text($_catalogue_title);
                         breadcrumb_set_parents(array_merge($BREADCRUMB_SET_PARENTS, [['_SELF:_SELF:browse:catalogue_name=' . either_param_string('catalogue_name', ''), $catalogue_title]]));
-                    } else {
+                    } elseif ((count($BREADCRUMB_SET_PARENTS) == 0) || ($BREADCRUMB_SET_PARENTS[0][0] != '_SELF:_SELF:browse')) {
                         breadcrumb_set_parents(array_merge($BREADCRUMB_SET_PARENTS, [['_SELF:_SELF:browse', do_lang_tempcode(($this->menu_label === null) ? 'MENU' : $this->menu_label)]]));
                     }
                 }

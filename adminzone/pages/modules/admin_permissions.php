@@ -201,6 +201,8 @@ class Module_admin_permissions
             if (addon_installed('match_key_permissions')) {
                 $ret['match_keys'] = ['MATCH_KEYS', 'menu/adminzone/security/permissions/match_keys'];
             }
+
+            $ret['content_access'] = ['CONTENT_ACCESS', 'spare/content'];
         }
 
         return $ret;
@@ -227,6 +229,11 @@ class Module_admin_permissions
 
         if ($type == 'match_keys' || $type == '_match_keys') {
             set_helper_panel_tutorial('tut_adv_permissions');
+        }
+
+        if ($type == 'content_access' || $type == '_content_access') {
+            set_helper_panel_tutorial('tut_permissions');
+            set_helper_panel_text(comcode_lang_string('DOC_CONTENT_PERMISSIONS'));
         }
 
         if ($type == 'page' || $type == '_page') {
@@ -271,6 +278,21 @@ class Module_admin_permissions
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
+        if ($type == '_content_access') {
+            $group_id = get_param_integer('group_id');
+            $filters = get_param_string('filters', null);
+            $max = get_param_integer('max', null);
+            $page_link = '_SELF:_SELF:content_access:group_id=' . strval($group_id);
+            if ($filters !== null) {
+                $page_link .= ':filters=' . urlencode($filters);
+            }
+            if ($max !== null) {
+                $page_link .= ':max=' . strval($max);
+            }
+            breadcrumb_set_parents([[$page_link, do_lang_tempcode('CONTENT_ACCESS')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
         if ($type == 'absorb' || $type == '_absorb') {
             $this->title = get_screen_title('ABSORB_PERMISSIONS');
         }
@@ -281,6 +303,16 @@ class Module_admin_permissions
 
         if ($type == 'match_keys' || $type == '_match_keys') {
             $this->title = get_screen_title('PAGE_MATCH_KEY_ACCESS');
+        }
+
+        if ($type == 'content_access' || $type == '_content_access') {
+            $group_id = get_param_integer('group_id', null);
+            if ($group_id === null) {
+                $this->title = get_screen_title('CONTENT_ACCESS');
+            } else {
+                $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true, true);
+                $this->title = get_screen_title('_CONTENT_ACCESS', true, [escape_html($usergroups[$group_id])]);
+            }
         }
 
         return null;
@@ -314,6 +346,12 @@ class Module_admin_permissions
             if ($type == '_match_keys') {
                 return $this->set_match_keys_access();
             }
+        }
+        if ($type == 'content_access') {
+            return $this->interface_content_access();
+        }
+        if ($type == '_content_access') {
+            return $this->set_content_access();
         }
         if ($type == 'privileges') {
             return $this->interface_privileges();
@@ -427,7 +465,7 @@ class Module_admin_permissions
         }
 
         require_code('themes2');
-        $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+        $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
         // Standard editing matrix
         // NB: For permissions tree editor, default access is shown as -1 in editor for clarity (because the parent permissions are easily findable which implies the default access would mean something else which would confuse [+ this would be hard to do due to the dynamicness of the interface])
@@ -456,7 +494,7 @@ class Module_admin_permissions
     {
         $css_path = get_custom_file_base() . '/themes/' . $GLOBALS['FORUM_DRIVER']->get_theme() . '/templates_cached/' . user_lang() . '/global.css';
         require_code('themes2');
-        $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+        $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
         require_code('character_sets');
 
@@ -683,6 +721,383 @@ class Module_admin_permissions
         $_sections = array_merge($_sections_prior, $_sections);
 
         return $_sections;
+    }
+
+
+    /**
+     * The UI to choose a group to edit content permissions for.
+     *
+     * @return Tempcode The UI
+     */
+    public function interface_content_access_choose_group()
+    {
+        $options = new Tempcode();
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ['g_is_private_club' => 0, 'g_is_super_admin' => 0], 'ORDER BY ' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+        require_code('cns_groups2');
+        foreach ($rows as $row) {
+            $options->attach(form_input_list_entry(strval($row['id']), false, get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])));
+        }
+
+        require_code('form_templates');
+
+        $fields = new Tempcode();
+        $fields->attach(form_input_huge_list(do_lang_tempcode('USERGROUP'), '', 'group_id', $options, null, true));
+
+        $post_url = build_url(['page' => '_SELF', 'type' => 'content_access'], '_SELF');
+
+        return do_template('FORM_SCREEN', [
+            'TITLE' => $this->title,
+            'GET' => true,
+            'SKIP_WEBSTANDARDS' => true,
+            'HIDDEN' => '',
+            'SUBMIT_ICON' => 'buttons__proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('CHOOSE'),
+            'FIELDS' => $fields,
+            'URL' => $post_url,
+            'TEXT' => '',
+        ]);
+    }
+
+    /**
+     * The UI to edit content access for a particular usergroup.
+     *
+     * @return Tempcode The UI
+     */
+    public function interface_content_access()
+    {
+        $group_id = get_param_integer('group_id', null);
+        if ($group_id === null) {
+            return $this->interface_content_access_choose_group();
+        }
+
+        $_filters = get_param_string('filters', null);
+        $filters = ($_filters === null) ? null : explode(',', $_filters);
+        $max = get_param_integer('max', 50);
+
+        $zones = [];
+        $_zones = find_all_zones(false, true, false, 0, $max);
+        if (count($_zones) < $max) {
+            ksort($_zones);
+            $group_zone_access = collapse_2d_complexity('zone_name', 'group_id', $GLOBALS['SITE_DB']->query_select('group_zone_access', ['zone_name', 'group_id'], ['group_id' => $group_id]));
+
+            foreach ($_zones as $zone_details) {
+                list($zone_name, $zone_title) = $zone_details;
+
+                $group_page_access = collapse_2d_complexity('page_name', 'group_id', $GLOBALS['SITE_DB']->query_select('group_page_access', ['page_name', 'group_id'], ['zone_name' => $zone_name, 'group_id' => $group_id]));
+
+                $pages = [];
+                $_pages = find_all_pages_wrap($zone_name);
+                if (count($_pages) > $max) {
+                    $_pages = [];
+                }
+                ksort($_pages);
+                foreach (array_keys($_pages) as $page_name) {
+                    if (is_integer($page_name)) {
+                        $page_name = strval($page_name);
+                    }
+
+                    $save_id = $zone_name . ':' . $page_name;
+                    if (($filters === null) || (in_array($save_id, $filters))) {
+                        $pages[] = [
+                            'PAGE_NAME' => $page_name,
+                            'HAS_ACCESS' => !array_key_exists($page_name, $group_page_access),
+                            'SAVE_ID' => $save_id,
+                        ];
+                    }
+                }
+
+                $save_id = $zone_name;
+                if (($filters === null) || (in_array($save_id, $filters))) {
+                    $zones[] = [
+                        'ZONE_NAME' => $zone_name,
+                        'ZONE_TITLE' => $zone_title,
+                        'PAGES' => $pages,
+                        'HAS_ACCESS' => array_key_exists($zone_name, $group_zone_access),
+                        'SAVE_ID' => $save_id,
+                    ];
+                }
+            }
+        }
+
+        $modules = [];
+        require_code('content');
+        $hook_obs = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
+        foreach ($hook_obs as $hook_ob) {
+            $info = $hook_ob->info();
+            if (($info !== null) && ($info['category_type'] !== null) && ($info['cms_page'] !== null) && ($info['is_category']) && (!$info['is_entry'])) {
+                require_code('zones2');
+                $page = $info['cms_page'];
+                $zone = get_module_zone($page, 'modules', null, 'php', true, false);
+                $_overridables = extract_module_functions_page($zone, $page, ['get_privilege_overrides']);
+                if ($_overridables[0] === null) {
+                    $overridables = [];
+                } else {
+                    $overridables = is_array($_overridables[0]) ? call_user_func_array($_overridables[0][0], $_overridables[0][1]) : cms_eval($_overridables[0], $zone . ':' . $page);
+                }
+
+                $items = $this->build_content_item_tree($filters, $group_id, $overridables, $hook_ob, $info, $max);
+
+                $group_privileges = collapse_2d_complexity('privilege', 'the_value', $GLOBALS['SITE_DB']->query_select('group_privileges', ['privilege', 'the_value'], [
+                    'group_id' => $group_id,
+                    'the_page' => $page,
+                    'category_name' => '',
+                    'module_the_name' => '',
+                ]));
+                $privileges = [];
+                foreach ($overridables as $privilege => $privilege_bits) {
+                    if (is_array($privilege_bits)) {
+                        $lang_string = $privilege_bits[1];
+                    } else {
+                        $lang_string = 'PRIVILEGE_' . $privilege;
+                    }
+
+                    $privileges[] = [
+                        'PRIVILEGE_CODENAME' => $privilege,
+                        'PRIVILEGE_LABEL' => do_lang_tempcode($lang_string),
+                        'HAS_ACCESS' => array_key_exists($privilege, $group_privileges) ? ($group_privileges[$privilege] == 1) : null,
+                    ];
+                }
+
+                $save_id = $zone . ':' . $page;
+                if (($filters === null) || (in_array($save_id, $filters))) {
+                    $modules[] = [
+                        'CONTENT_TYPE_LABEL' => $hook_ob->get_content_type_label(),
+                        'PRIVILEGES' => $privileges,
+                        'ITEMS' => $items,
+                        'SAVE_ID' => $save_id,
+                    ];
+                }
+            }
+        }
+
+        sort_maps_by($modules, 'CONTENT_TYPE_LABEL');
+
+        $url = build_url(['page' => '_SELF', 'type' => '_content_access', 'group_id' => $group_id, 'filters' => $_filters], '_SELF');
+
+        require_code('themes2');
+        $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
+
+        return do_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
+            'TITLE' => $this->title,
+            'ZONES' => $zones,
+            'MODULES' => $modules,
+            'URL' => $url,
+            'COLOR' => $color,
+        ]);
+    }
+
+    /**
+     * Build a flattened tree showing content items of a particular type.
+     *
+     * @param  ?array $filters Filter to only these save IDs (for testing) (null: no filter)
+     * @param  AUTO_LINK $group_id The usergroup ID
+     * @param  array $overridables Output of content type module's get_privilege_overrides function
+     * @param  object $hook_ob The content type object
+     * @param  array $info The content type info map
+     * @param  integer $max Maximum number of items to show from any one content type
+     * @return array List of item maps, ready for template
+     */
+    protected function build_content_item_tree($filters, $group_id, $overridables, $hook_ob, $info, $max)
+    {
+        $save_id_stub = get_module_zone($info['cms_page']) . ':' . $info['permissions_type_code'] . ':';
+
+        $total = $info['db']->query_select_value($info['table'], 'COUNT(*)');
+        if ($total > $max) {
+            return [];
+        }
+
+        $group_category_access = collapse_2d_complexity('category_name', 'group_id', $GLOBALS['SITE_DB']->query_select('group_category_access', ['category_name', 'group_id'], [
+            'group_id' => $group_id,
+            'module_the_name' => $info['permissions_type_code'],
+        ]));
+        $_group_privileges = $GLOBALS['SITE_DB']->query_select('group_privileges', ['privilege', 'category_name', 'the_value'], [
+            'group_id' => $group_id,
+            'the_page' => '',
+            'module_the_name' => $info['permissions_type_code'],
+        ]);
+
+        $select = [];
+        append_content_select_for_fields($select, $info, ['id', 'title', 'parent_category']);
+        $rows = $info['db']->query_select($info['table'], $select);
+        $root_parent = $info['id_field_numeric'] ? null : '';
+
+        if ($info['parent_spec__table_name'] !== $info['table']) {
+            $info['parent_spec__parent_name'] = null;
+        }
+
+        $items = [];
+        if ($info['parent_spec__parent_name'] === null) {
+            foreach ($rows as $i => $row) {
+                $row['_title'] = $hook_ob->get_title($row);
+                $items = array_merge($items, $this->_build_content_item_tree($filters, $overridables, $group_category_access, $_group_privileges, $save_id_stub, $hook_ob, $info, $row, $rows));
+            }
+        } else {
+            foreach ($rows as $i => $row) {
+                if ($row[$info['parent_spec__parent_name']] === $root_parent) {
+                    unset($rows[$i]);
+                    $row['_title'] = $hook_ob->get_title($row);
+                    $items = array_merge($items, $this->_build_content_item_tree($filters, $overridables, $group_category_access, $_group_privileges, $save_id_stub, $hook_ob, $info, $row, $rows));
+                }
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Build a flattened tree showing content items of a particular type - recursion function.
+     *
+     * @param  ?array $filters Filter to only these save IDs (for testing) (null: no filter)
+     * @param  array $overridables Output of content type module's get_privilege_overrides function
+     * @param  array $group_category_access List of category access rows
+     * @param  array $_group_privileges Database data of privileges for the content type
+     * @param  string $save_id_stub Stub of save ID we'll be using
+     * @param  object $hook_ob The content type object
+     * @param  array $info The content type info map
+     * @param  array $row Row for point in recursion
+     * @param  array $rows All rows
+     * @param  integer $depth Current recursion depth
+     * @return array List of item maps, ready for template
+     */
+    protected function _build_content_item_tree($filters, $overridables, $group_category_access, $_group_privileges, $save_id_stub, $hook_ob, $info, $row, &$rows, $depth = 1)
+    {
+        $item_label = $row['_title'];
+        $id = $row[$info['id_field']];
+        $id_str = is_integer($id) ? strval($id) : $id;
+
+        $items = [];
+
+        $group_privileges = [];
+        foreach ($_group_privileges as $privilege_row) {
+            if ($privilege_row['category_name'] == $id_str) {
+                $group_privileges[$privilege_row['privilege']] = $privilege_row['the_value'];
+            }
+        }
+
+        $privileges = [];
+        foreach ($overridables as $privilege => $privilege_bits) {
+            if (is_array($privilege_bits)) {
+                $supports_override = $privilege_bits[0];
+                $lang_string = $privilege_bits[1];
+            } else {
+                $supports_override = $privilege_bits;
+                $lang_string = 'PRIVILEGE_' . $privilege;
+            }
+
+            if ($supports_override == 1) {
+                $privileges[] = [
+                    'ENABLED' => true,
+                    'PRIVILEGE_CODENAME' => $privilege,
+                    'PRIVILEGE_LABEL' => do_lang_tempcode($lang_string),
+                    'HAS_ACCESS' => array_key_exists($privilege, $group_privileges) ? ($group_privileges[$privilege] == 1) : null,
+                ];
+            } else {
+                $privileges[] = [
+                    'ENABLED' => false,
+                    'PRIVILEGE_CODENAME' => $privilege,
+                    'PRIVILEGE_LABEL' => do_lang_tempcode($lang_string),
+                    'HAS_ACCESS' => null,
+                ];
+            }
+        }
+
+        $save_id = $save_id_stub . $id_str;
+        if (($filters === null) || (in_array($save_id, $filters))) {
+            $items[] = [
+                'ITEM_LABEL' => $item_label,
+                'DEPTH' => strval($depth),
+                'ITEM_PRIVILEGES' => $privileges,
+                'SAVE_ID' => $save_id,
+                'HAS_ACCESS' => array_key_exists($id_str, $group_category_access),
+            ];
+        }
+
+        if ($info['parent_spec__parent_name'] !== null) {
+            $child_rows = [];
+
+            foreach ($rows as $i => $_row) {
+                if ($_row[$info['parent_spec__parent_name']] === $id) {
+                    unset($rows[$i]);
+                    $_row['_title'] = $hook_ob->get_title($_row);
+                    $child_rows[] = $_row;
+                }
+            }
+
+            sort_maps_by($child_rows, '_title');
+
+            foreach ($child_rows as $child_row) {
+                $items = array_merge($items, $this->_build_content_item_tree($filters, $overridables, $group_category_access, $_group_privileges, $save_id_stub, $hook_ob, $info, $child_row, $rows, $depth + 1));
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * The actualiser to edit content access for a particular usergroup.
+     *
+     * @return Tempcode The UI
+     */
+    public function set_content_access()
+    {
+        require_code('input_filter_2');
+        rescue_shortened_post_request();
+
+        $group_id = get_param_integer('group_id');
+
+        foreach ($_POST as $key => $val) {
+            $matches = [];
+
+            if (preg_match('#^perm__([^:]*)$#', $key, $matches) != 0) {
+                // Zone view access
+                $zone_name = $matches[1];
+                if ($val == '0') {
+                    $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['zone_name' => $zone_name, 'group_id' => $group_id]);
+                } else {
+                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_zone_access', [], ['zone_name' => $zone_name, 'group_id' => $group_id]);
+                }
+            } elseif (preg_match('#^perm__([^:]*):([^:]*)__(\w+)$#', $key, $matches) != 0) {
+                // Module privilege override
+                $page_name = $matches[2];
+                $privilege = $matches[3];
+                if ($val == '-1') {
+                    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => '', 'category_name' => '', 'the_page' => $page_name, 'privilege' => $privilege, 'group_id' => $group_id]);
+                } else {
+                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_privileges', ['the_value' => intval($val)], ['module_the_name' => '', 'category_name' => '', 'the_page' => $page_name, 'privilege' => $privilege, 'group_id' => $group_id]);
+                }
+            } elseif (preg_match('#^perm__([^:]*):([^:]*)$#', $key, $matches) != 0) {
+                // Page view access
+                $zone_name = $matches[1];
+                $page_name = $matches[2];
+                if ($val == '0') {
+                    // A record means *no* permission
+                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_page_access', [], ['zone_name' => $zone_name, 'page_name' => $page_name, 'group_id' => $group_id]);
+                } else {
+                    $GLOBALS['SITE_DB']->query_delete('group_page_access', ['zone_name' => $zone_name, 'page_name' => $page_name, 'group_id' => $group_id]);
+                }
+            } elseif (preg_match('#^perm__([^:]*):([^:]*):([^:]*)__(\w+)$#', $key, $matches) != 0) {
+                // Category privilege override
+                $module = $matches[2];
+                $category_name = $matches[3];
+                $privilege = $matches[4];
+                if ($val == '-1') {
+                    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => $module, 'category_name' => $category_name, 'the_page' => '', 'privilege' => $privilege, 'group_id' => $group_id]);
+                } else {
+                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_privileges', ['the_value' => intval($val)], ['module_the_name' => $module, 'category_name' => $category_name, 'the_page' => '', 'privilege' => $privilege, 'group_id' => $group_id]);
+                }
+            } elseif (preg_match('#^perm__([^:]*):([^:]*):([^:]*)$#', $key, $matches) != 0) {
+                // Category view access
+                $module = $matches[2];
+                $category_name = $matches[3];
+                if ($val == '0') {
+                    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category_name, 'group_id' => $group_id]);
+                } else {
+                    $GLOBALS['SITE_DB']->query_insert_or_replace('group_category_access', [], ['module_the_name' => $module, 'category_name' => $category_name, 'group_id' => $group_id]);
+                }
+            }
+        }
+
+        return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }
 
     /**

@@ -45,6 +45,16 @@ class Hook_addon_registry_cns_cartoon_avatars
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Graphical';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon

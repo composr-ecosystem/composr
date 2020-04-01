@@ -265,8 +265,9 @@ class Module_admin_disastr extends Standard_crud_module
 
         $fields->attach(form_input_line(do_lang_tempcode('DISEASE'), do_lang_tempcode('DESCRIPTION_DISEASE'), 'disease_name', $name, true));
 
+        require_code('images');
         require_code('themes2');
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $image));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $image, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         $fields->attach(form_input_line(do_lang_tempcode('CURE'), do_lang_tempcode('DESCRIPTION_CURE'), 'cure', $cure, true));
         $fields->attach(form_input_line(do_lang_tempcode('CURE_PRICE'), '', 'cure_price', strval($cure_price), true));

@@ -228,7 +228,7 @@ class Module_admin_referrals
         log_it('_MANUALLY_ADJUST_SCHEME_SETTINGS', $scheme, strval($referrals_count - $old_referrals_count));
 
         // Show it worked / Refresh
-        $url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'));
-        return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+        $member_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id);
+        return redirect_screen($this->title, $member_url, do_lang_tempcode('SUCCESS'));
     }
 }

@@ -99,6 +99,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'site/pages/comcode/EN/userguide_comcode.txt',
                 '_tests/tests/unit_tests/tempcode.php',
                 '_tests/tests/unit_tests/xss.php',
+                'text/unbannable_ips.txt',
             ]);
             if (in_array($path, $exceptions)) {
                 continue;

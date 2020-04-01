@@ -45,6 +45,10 @@ class Hook_ajax_tree_choose_catalogue_category
             $stripped_id = ($compound_list ? preg_replace('#,.*$#', '', $id) : $id);
         }
 
+        if (($catalogue_name === null) && ($id !== null)) {
+            $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $id]);
+        }
+
         if ($catalogue_name === null) {
             $tree = [];
             $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues', ['c_name']);
@@ -53,7 +57,11 @@ class Hook_ajax_tree_choose_catalogue_category
                     continue;
                 }
 
-                $tree = array_merge($tree, get_catalogue_category_tree($catalogue['c_name'], ($id === null) ? null : intval($id), '', null, 1, $addable_filter, $compound_list));
+                $_tree = get_catalogue_category_tree($catalogue['c_name'], null, '', null, 1, $addable_filter, $compound_list);
+                foreach ($_tree as &$_t) {
+                    $_t['title'] .= ' [' . $catalogue['c_name'] . ']';
+                }
+                $tree = array_merge($tree, $_tree);
             }
         } else {
             $tree = get_catalogue_category_tree($catalogue_name, ($id === null) ? null : intval($id), '', null, 1, $addable_filter, $compound_list);

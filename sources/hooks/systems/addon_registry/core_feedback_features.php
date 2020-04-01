@@ -45,6 +45,16 @@ class Hook_addon_registry_core_feedback_features
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Information Display';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -679,6 +689,7 @@ class Hook_addon_registry_core_feedback_features
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
             'OVERALL_NUM_RATINGS' => placeholder_number(),
+            '_OVERALL_NUM_RATINGS' => placeholder_number(),
         ]);
         return [
             lorem_globalise(do_lorem_template('RATING_DISPLAY_SHARED', [

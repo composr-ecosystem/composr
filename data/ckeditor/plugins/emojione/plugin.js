@@ -1,4 +1,4 @@
-CKEDITOR.plugins.add( 'emojione', {
+﻿CKEDITOR.plugins.add( 'emojione', {
 	icons: 'emojione',
 	requires: 'dialog',
 	init: function(editor) {

@@ -45,6 +45,16 @@ class Hook_addon_registry_wiki
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Information Display';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -139,7 +149,6 @@ class Hook_addon_registry_wiki
             'sources/wiki_stats.php',
             'sources/hooks/blocks/side_stats/wiki.php',
             'sources/hooks/modules/admin_newsletter/wiki.php',
-            'sources/hooks/modules/admin_unvalidated/wiki.php',
             'sources/hooks/modules/search/wiki_pages.php',
             'sources/hooks/modules/search/wiki_posts.php',
             'sources/hooks/systems/attachments/wiki_page.php',

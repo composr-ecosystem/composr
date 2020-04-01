@@ -90,6 +90,10 @@
 							{+START,IF_NON_PASSED,STATUS}
 								<em>{!NA}</em>
 							{+END}
+
+							{+START,IF_PASSED,MESSAGE}
+								({MESSAGE*})
+							{+END}
 						</td>
 					{+END}
 				</tr>

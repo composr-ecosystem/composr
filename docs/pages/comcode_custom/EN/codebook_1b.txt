@@ -86,7 +86,7 @@ Do:
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/dont.png[/media]
 Don't:
  - forget to to cache against theme where appropriate (i.e. do not assume all users will use the same theme by caching theme-tainted data without using the theme name as part of the cache identifier)
- - cache non-featured stuff that could stay in the cache forever but relatively rarely get used (even if a gallery is viewed on every page view, this is not justification to cache 100s of them: but we could cache the current IOTD block): memory is finite, do not waste it
+ - cache non-featured stuff that could stay in the cache forever but relatively rarely get used (even if a gallery is viewed on every page view, this is not justification to cache 100s of them: but we could cache the current poll block): memory is finite, do not waste it
  - assume the persistent cache exists (due to its non-reliability for long term storage): if something is really important to be cached, Composr should have a dependable cache to do it
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/remember.png[/media]
@@ -1022,7 +1022,7 @@ CRUD module's define entry-points in a [tt]get_entry_point[/tt] method like othe
 [code="PHP"]
 function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true)
 {
-	return array_merge(array('browse' => 'IOTDS'), parent::get_entry_points());
+	return array_merge(array('browse' => 'POLLS'), parent::get_entry_points());
 }
 [/code]
 (in this example the CRUD module adds one extra entry-point, [tt]browse[/tt]).

@@ -990,8 +990,6 @@ function delete_cms_page($zone, $page, $type = 'comcode_custom', $use_afm = fals
     }
 
     if ($only_lang === null) {
-        $GLOBALS['SITE_DB']->query_delete('https_pages', ['https_page_name' => $zone . ':' . $page], '', 1);
-
         if (addon_installed('catalogues')) {
             update_catalogue_content_ref('comcode_page', $page, '');
         }

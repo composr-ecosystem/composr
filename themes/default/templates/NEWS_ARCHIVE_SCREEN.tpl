@@ -2,7 +2,7 @@
 	{TITLE}
 
 	<div class="news-archive-screen-content clearfix" itemprop="significantLinks">
-		{CONTENT}
+		{$BLOCK,block=main_news,param={MAX},block_id=module,title=,select={SELECT},select_and={SELECT_AND},blogs={BLOGS},member_based={BLOG},zone={$ZONE},display_slides=9,display_summaries={$SUBTRACT,{MAX},9},display_briefs=0,no_links=1,pagination=1,attach_to_url_filter=1,filter={FILTER},render_mode=grid}
 	</div>
 
 	{+START,IF_PASSED,CAT}

@@ -59,6 +59,7 @@ class Hook_page_groupings_core
             addon_installed('page_management') ? ['structure', 'menu/adminzone/structure/sitemap/sitemap_editor', ['admin_sitemap', ['type' => 'browse'], get_module_zone('admin_sitemap')], do_lang_tempcode('zones:SITEMAP_EDITOR'), 'zones:DOC_SITEMAP_EDITOR'] : null,
             addon_installed('redirects_editor') ? ['structure', 'menu/adminzone/structure/redirects', ['admin_redirects', ['type' => 'browse'], get_module_zone('admin_redirects')], do_lang_tempcode('redirects:REDIRECTS'), 'redirects:DOC_REDIRECTS'] : null,
             addon_installed('breadcrumbs') ? ['structure', 'menu/adminzone/structure/breadcrumbs', ['admin_config', ['type' => 'xml_breadcrumbs'], get_module_zone('admin_config')], do_lang_tempcode('config:BREADCRUMB_OVERRIDES'), 'config:DOC_BREADCRUMB_OVERRIDES'] : null,
+            addon_installed('securitylogging') ? ['structure', 'menu/adminzone/audit/security_log', ['admin_config', ['type' => 'advanced_banning'], get_module_zone('admin_config')], do_lang_tempcode('config:ADVANCED_BANNING'), 'config:DOC_ADVANCED_BANNING'] : null,
             addon_installed('robots_txt') ? ['structure', 'spare/seo', ['admin_robots_txt', [], get_module_zone('admin_robots_txt')], do_lang_tempcode('robots_txt:ROBOTS_TXT'), 'robots_txt:DOC_ROBOTS_TXT'] : null,
             ['structure', 'menu/adminzone/structure/addons', ['admin_addons', ['type' => 'browse'], get_module_zone('admin_addons')], do_lang_tempcode('addons:ADDONS'), 'addons:DOC_ADDONS'],
 
@@ -91,6 +92,7 @@ class Hook_page_groupings_core
 
             ['security', 'menu/adminzone/security/permissions/permission_tree_editor', ['admin_permissions', ['type' => 'browse'], get_module_zone('admin_permissions')], do_lang_tempcode('permissions:PERMISSIONS_TREE'), 'permissions:DOC_PERMISSIONS_TREE'],
             addon_installed('match_key_permissions') ? ['security', 'menu/adminzone/security/permissions/match_keys', ['admin_permissions', ['type' => 'match_keys'], get_module_zone('admin_permissions')], do_lang_tempcode('permissions:PAGE_MATCH_KEY_ACCESS'), 'permissions:DOC_PAGE_MATCH_KEY_ACCESS'] : null,
+            ['security', 'spare/content', ['admin_permissions', ['type' => 'content_access'], get_module_zone('admin_permissions')], do_lang_tempcode('permissions:CONTENT_ACCESS'), 'permissions:DOC_CONTENT_ACCESS'],
             addon_installed('securitylogging') ? ['security', 'menu/adminzone/security/ip_ban', ['admin_ip_ban', ['type' => 'browse'], get_module_zone('admin_ip_ban')], do_lang_tempcode('submitban:BANNED_ADDRESSES'), 'submitban:DOC_IP_BAN'] : null,
             ['security', 'menu/adminzone/security/permissions/privileges', ['admin_permissions', ['type' => 'privileges'], get_module_zone('admin_permissions')], do_lang_tempcode('permissions:GLOBAL_PRIVILEGES'), 'permissions:DOC_PRIVILEGES'],
             (get_forum_type() != 'cns') ? null : ['security', 'menu/social/members', ['admin_cns_members', [], get_module_zone('admin_cns_members')], do_lang_tempcode('MEMBERS'), 'cns:DOC_MEMBERS'],
@@ -116,7 +118,7 @@ class Hook_page_groupings_core
             (get_forum_type() != 'none' || is_guest($member_id)) ? null : ['site_meta', 'tool_buttons/notifications', ['notifications', [], get_module_zone('notifications')], do_lang_tempcode('notifications:NOTIFICATIONS')],
             //(get_forum_type() == 'none' || is_guest($member_id)) ? null : ['site_meta', 'menu/site_meta/user_actions/logout', ['login', [], ''), do_lang_tempcode('LOGOUT')], Don't show an immediate action, don't want accidental preloading
             (get_forum_type() != 'cns') ? null : ['site_meta', 'menu/site_meta/user_actions/join', ['join', [], get_module_zone('join')], do_lang_tempcode('_JOIN')],
-            (get_forum_type() != 'cns') ? null : ['site_meta', 'menu/site_meta/user_actions/lost_password', ['lost_password', [], get_module_zone('lost_password')], do_lang_tempcode('cns:LOST_PASSWORD')],
+            (get_forum_type() != 'cns') ? null : ['site_meta', 'menu/site_meta/user_actions/lost_password', ['lost_password', [], get_module_zone('lost_password')], do_lang_tempcode('cns_lost_password:LOST_PASSWORD')],
 
             (get_forum_type() != 'cns') ? null : ['social', 'menu/social/groups', ['groups', [], get_module_zone('groups')], do_lang_tempcode('USERGROUPS')],
             (get_forum_type() != 'cns') ? null : ['social', 'menu/social/members', ['members', [], get_module_zone('members')], do_lang_tempcode('cns:MEMBER_DIRECTORY')],

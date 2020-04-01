@@ -132,7 +132,7 @@ class BrokenURLScanner
 
             $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], $select);
             foreach ($ofs as $of) {
-                if (strpos($of[$field['m_name']], '/') === false) {
+                if ((!multi_lang_content()) && (strpos($of[$field['m_name']], '/') === false)) {
                     continue; // Doesn't appear to contain any URLs
                 }
 
@@ -206,8 +206,7 @@ class BrokenURLScanner
                     $cma_info = $cma_ob->info();
                     if (!empty($cma_info['edit_page_link_pattern'])) {
                         $edit_page_link = str_replace('_WILD', $id, $cma_info['edit_page_link_pattern']);
-                        list($zone, $attributes,) = page_link_decode($edit_page_link);
-                        $edit_url = build_url($attributes, $zone);
+                        $edit_url = page_link_to_tempcode_url($edit_page_link);
                     }
                 }
             }
@@ -521,9 +520,10 @@ class BrokenURLScanner
      * Check to see if a URL is there.
      *
      * @param  URLPATH $url URL to check
+     * @param  string $message HTTP response code, returned by reference
      * @return boolean Whether the URL is there (i.e. false = broken)
      */
-    public function check_url($url)
+    public function check_url($url, &$message)
     {
         // Check if it's a local file URL
         if (((substr($url, 0, 8) == 'uploads/') || (substr($url, 0, 7) == 'themes/')) && (strpos($url, '?') === false)) {
@@ -532,14 +532,11 @@ class BrokenURLScanner
 
         // Normal URL...
 
-        $url = qualify_url($url, get_base_url());
+        require_code('urls2');
+        $destination_url = '';
+        $exists = check_url_exists($url, 0, true, 1, $message, $destination_url);
 
-        $test = cms_http_request($url, ['byte_limit' => 0, 'trigger_error' => false]);
-        if (($test === null) && ($test->message == '403')) {
-            $test = cms_http_request($url, ['byte_limit' => 1, 'trigger_error' => false]); // Try without HEAD, sometimes it's not liked
-        }
-
-        if (($test === null) || (in_array($test->message, ['404', 'could not connect to host']))) {
+        if (!$exists) {
             return false;
         }
 
@@ -555,7 +552,7 @@ class BrokenURLScanner
             ];
         }
 
-        if ((in_array($test->download_url, $undesirable_redirects)) && (!in_array($url, $undesirable_redirects))) {
+        if ((in_array($destination_url, $undesirable_redirects)) && (!in_array($url, $undesirable_redirects))) {
             return false;
         }
 

@@ -36,6 +36,7 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
 
         require_lang('submitban');
         require_lang('lookup');
+        require_lang('config');
 
         return [
             'IP_BANNED' => [
@@ -121,6 +122,15 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
                 'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{0}',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:results:param={0}',
+                ],
+            ],
+            'ADVANCED_BANNING' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => null,
+                'identifier_index' => null,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'BREADCRUMB_OVERRIDES' => '_SEARCH:admin_config:advanced_banning',
                 ],
             ],
         ];

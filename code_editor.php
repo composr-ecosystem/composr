@@ -13,7 +13,7 @@
  * @package    code_editor
  */
 
-/*EXTRA FUNCTIONS: tempnam|ftp_.*|posix_getuid*/
+/*EXTRA FUNCTIONS: tempnam|ftp_.*|posix_getuid|fileowner*/
 
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
@@ -280,6 +280,24 @@ END;
 }
 
 /**
+ * Find whether we can get away with natural file access, not messing with AFMs, world-writability, etc.
+ * Always will return false on Windows due to missing Posix - but there's no such thing as chmodding files for non-owners on Windows either.
+ *
+ * @return boolean Whether we have this
+ */
+function ce_is_suexec_like()
+{
+    static $answer = null;
+    if ($answer === null) {
+        $answer = (function_exists('posix_getuid')) &&
+            (!isset($_SERVER['HTTP_X_MOSSO_DT'])) &&
+            (is_integer(@posix_getuid())) &&
+            (posix_getuid() == @fileowner(get_file_base() . '/sources/global.php'));
+    }
+    return $answer;
+}
+
+/**
  * Ensure that the specified file/folder is writeable for the FTP user (so that it can be deleted by the system), and should be called whenever a file is uploaded/created, or a folder is made. We call this function assuming we are giving world permissions.
  *
  * @param  PATH $path The full pathname to the file/directory
@@ -287,14 +305,18 @@ END;
  */
 function ce_fix_permissions($path, $perms = 0666) // We call this function assuming we are giving world permissions
 {
-    // If the file user is different to the FTP user, we need to make it world writeable
-    if ((!function_exists('posix_getuid')) || (strpos(ini_get('disable_functions'), 'posix_getuid') !== false) || (@posix_getuid() != @fileowner($GLOBALS['FILE_BASE'] . '/sources/global.php'))) {
-        @chmod($path, $perms);
+    // If the file user is different to the web user, we need to make it world writeable
+    if (!ce_is_suexec_like()) {
+        if ($perms == 0600) {
+            @chmod($path, 0666);
+        } else {
+            @chmod($path, $perms);
+        }
     } else { // Otherwise we do not
         if ($perms == 0666) {
             @chmod($path, 0644);
         } elseif ($perms == 0777) {
-            @chmod($path, 0744);
+            @chmod($path, 0755);
         } else {
             @chmod($path, $perms);
         }

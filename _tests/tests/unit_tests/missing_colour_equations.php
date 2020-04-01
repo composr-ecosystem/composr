@@ -32,6 +32,7 @@ class missing_colour_equations_test_set extends cms_test_case
             'phpinfo.css',
             'jquery_ui.css',
             'mediaelementplayer.css',
+            'skitter.css',
         ];
 
         $files = get_directory_contents(get_file_base() . '/themes/default/css', get_file_base() . '/themes/default/css', null, false, true, ['css']);

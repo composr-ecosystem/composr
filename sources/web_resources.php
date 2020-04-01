@@ -100,7 +100,12 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
     if (GOOGLE_APPENGINE) {
         gae_optimistic_cache(true);
     }
-    $is_cached = (is_file($js_cache_path)) && ($CACHE_TEMPLATES || !running_script('index')/*must cache for non-index to stop getting blanked out in depended sub-script output generation and hence causing concurrency issues*/) && (!is_browser_decaching()) && ((!in_safe_mode()) || (isset($GLOBALS['SITE_INFO']['safe_mode'])));
+    $is_cached =
+        (is_file($js_cache_path)) &&
+        ($CACHE_TEMPLATES || !running_script('index')/*must cache for non-index to stop getting blanked out in depended sub-script output generation and hence causing concurrency issues*/) &&
+        (has_caching_for('template', $j)) &&
+        (!is_browser_decaching()) &&
+        ((!in_safe_mode()) || (isset($GLOBALS['SITE_INFO']['safe_mode'])));
     if (GOOGLE_APPENGINE) {
         gae_optimistic_cache(false);
     }
@@ -114,23 +119,6 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
         $full_path = get_custom_file_base() . '/themes/' . $theme . $found[1] . $j . $found[2];
         if (!is_file($full_path)) {
             $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $j . $found[2];
-        }
-
-        // Caching support for global.js (this is a FUDGE to hard-code this) #1829
-        if ($j == 'global') {
-            $js_source_stem = get_file_base() . '/themes/default/javascript/';
-            $js_source_stub = '.js';
-            $deps = [
-                $js_source_stem . 'UTIL' . $js_source_stub,
-                $js_source_stem . 'DOM' . $js_source_stub,
-                $js_source_stem . 'CMS' . $js_source_stub,
-                $js_source_stem . 'CMS_FORM' . $js_source_stub,
-                $js_source_stem . 'CMS_UI' . $js_source_stub,
-                $js_source_stem . 'CMS_TEMPLATES' . $js_source_stub,
-                $js_source_stem . 'CMS_VIEWS' . $js_source_stub,
-                $js_source_stem . 'CMS_BEHAVIORS' . $js_source_stub,
-            ];
-            $SITE_INFO['dependency__' . $full_path] = implode(',', $deps);
         }
     }
 
@@ -341,7 +329,12 @@ function css_enforce($c, $theme = null, $allow_defer = false)
     if (GOOGLE_APPENGINE) {
         gae_optimistic_cache(true);
     }
-    $is_cached = (is_file($css_cache_path)) && ($CACHE_TEMPLATES || !running_script('index')/*must cache for non-index to stop getting blanked out in depended sub-script output generation and hence causing concurrency issues*/) && (!is_browser_decaching()) && ((!in_safe_mode()) || (isset($GLOBALS['SITE_INFO']['safe_mode'])));
+    $is_cached =
+        (is_file($css_cache_path)) &&
+        ($CACHE_TEMPLATES || !running_script('index')/*must cache for non-index to stop getting blanked out in depended sub-script output generation and hence causing concurrency issues*/) &&
+        (has_caching_for('template', $c)) &&
+        (!is_browser_decaching()) &&
+        ((!in_safe_mode()) || (isset($GLOBALS['SITE_INFO']['safe_mode'])));
     if (GOOGLE_APPENGINE) {
         gae_optimistic_cache(false);
     }
@@ -565,7 +558,7 @@ function _get_web_resources_env($_seed = null, $_minify = null, $_https = null, 
     if ($_https !== null) {
         $https = $_https;
     } elseif ($https_cached === null) {
-        $https = ((addon_installed('ssl')) && function_exists('is_page_https') && function_exists('get_zone_name') && ((tacit_https()) || is_page_https(get_zone_name(), get_page_name())));
+        $https = tacit_https();
         $https_cached = $https;
     } else {
         $https = $https_cached;

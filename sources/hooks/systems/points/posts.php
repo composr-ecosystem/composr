@@ -48,7 +48,7 @@ class Hook_points_posts
             $points_gained_posting -= min($points_gained_posting, @intval($GLOBALS['FORUM_DB']->query_value_if_there('SELECT SUM(f_post_count_increment) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums f ON f.id=p.p_cache_forum_id WHERE p_time>' . strval($timestamp) . ' AND p_poster=' . strval($member_id))));
         }
 
-        return $points_gained_posting;
+        return $points_posting * $points_gained_posting;
     }
 
     /**

@@ -143,7 +143,7 @@ To prevent purchases being made by real people that you don't receive real money
 1) Enable this permission for all usergroups and test the eCommerce when the website is closed (using the SU feature, see the [page="_SEARCH:tut_permissions"]Testing access and privileges[/page] tutorial, Access control and privileges section)
 2) Test the eCommerce from your own admin account
 
-For PayPal test mode goes through the [url="PayPal sandbox"]https://developer.paypal.com/[/url]. Sign up on the sandbox (this is your test account for making the sale), log in, and create a test user (this is your test account for purchasing).
+For PayPal test mode goes through the [url="PayPal sandbox"]https://developer.paypal.com/classic-home/[/url]. Sign up on the sandbox (this is your test account for making the sale), log in, and create a test user (this is your test account for purchasing).
 Be advised that we have found the PayPal sandbox to be buggy. If your tests fail with errors like "The link you have used to enter the PayPal system is invalid. Please review the link and try again." then you may be experiencing bugs in the PayPal sandbox. By all means, please complain to PayPal about it -- we have run tests and found the sandbox fails midway through purchases on configurations that work correctly for live payments.
 
 [title="2"]Monetary system[/title]

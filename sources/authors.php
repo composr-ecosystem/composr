@@ -119,10 +119,15 @@ function authors_script()
  */
 function get_author_id_from_name($author)
 {
+    static $cache = [];
+    if (array_key_exists($author, $cache)) {
+        return $cache[$author];
+    }
     $handle = $GLOBALS['SITE_DB']->query_select_value_if_there('authors', 'member_id', ['author' => $author]);
     if ($handle === null) {
         $handle = $GLOBALS['FORUM_DRIVER']->get_member_from_username($author);
     }
+    $cache[$author] = $handle;
     return $handle;
 }
 
@@ -180,7 +185,7 @@ function add_author($author, $url, $member_id, $description, $skills, $meta_keyw
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('authors', $author, [$author, $description, $skills], $description);
+        seo_meta_set_for_implicit('authors', $author, [[$author, false, true], $description, $skills], $description);
     } else {
         seo_meta_set_for_explicit('authors', $author, $meta_keywords, $meta_description);
     }

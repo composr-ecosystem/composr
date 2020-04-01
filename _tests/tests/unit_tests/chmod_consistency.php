@@ -27,30 +27,10 @@ class chmod_consistency_test_set extends cms_test_case
     {
         $places = [
             [
-                'fixperms.bat',
-                true, // Windows-slashes
-                true, // Wildcard-support
-                true, // Existing run-time files also
-
-                'icacls ',
-                ' /grant %user%:(M)',
-            ],
-
-            [
-                'fixperms.sh',
-                false, // Windows-slashes
-                true, // Wildcard-support
-                true, // Existing run-time files also
-
-                ' ',
-                ' ',
-            ],
-
-            [
                 'docs/pages/comcode_custom/EN/tut_install_permissions.txt',
                 false, // Windows-slashes
                 true, // Wildcard-support
-                true, // Existing run-time files also
+                false, // Existing run-time files also
 
                 '[tt]',
                 '[/tt]',
@@ -102,17 +82,28 @@ class chmod_consistency_test_set extends cms_test_case
             ],
         ];
 
-        $place_files = [];
-        $place_files_stripped = [];
+        // Check everything contains what is defined in canonical source
+        require_code('file_permissions_check');
         foreach ($places as $place_parts) {
-            list($place) = $place_parts;
+            if (count($place_parts) == 6) {
+                list($place, $windows_slashes, $wildcard_support, $runtime_too, $pre, $post) = $place_parts;
+            } else {
+                list($place, $windows_slashes, $wildcard_support, $runtime_too, $pre_dir, $post_dir, $pre_file, $post_file) = $place_parts;
+            }
+
             $place_path = get_file_base() . '/' . $place;
             $place_path_exists = file_exists($place_path);
             $this->assertTrue($place_path_exists, $place . ' is missing, cannot check it');
 
             if ($place_path_exists) {
-                $place_files[$place_path] = cms_file_get_contents_safe($place_path, FILE_READ_LOCK | FILE_READ_BOM);
-                $place_files_stripped[$place_path] = $place_files[$place_path];
+                $c = cms_file_get_contents_safe($place_path, FILE_READ_LOCK | FILE_READ_BOM);
+
+                // Special cleanup
+                if ($place == 'docs/pages/comcode_custom/EN/tut_install_permissions.txt') {
+                    $c = preg_replace('#<for-each-\w+>#', '*', $c);
+                }
+
+                $c_stripped = $c;
 
                 // Special checks
                 switch ($place) {
@@ -127,126 +118,68 @@ class chmod_consistency_test_set extends cms_test_case
                         }
                         break;
                 }
-            }
-        }
 
-        require_code('inst_special');
-        $chmod_array = get_chmod_array(fallback_lang(), true);
-        foreach ($chmod_array as $item) {
-            $path = get_file_base() . '/' . $item;
+                $slash = $windows_slashes ? '\\' : '/';
+                $chmod_array = get_chmod_array($runtime_too, false);
+                foreach ($chmod_array as $item) {
+                    $path = get_file_base() . '/' . $item;
 
-            $is_runtime = (strpos($path, '*') !== false);
+                    $exists = (strpos($path, '*') !== false) || (file_exists($path));
+                    $this->assertTrue($exists, 'Chmod item does not exist: ' . $item);
 
-            $exists = $is_runtime || file_exists($path);
-            $this->assertTrue($exists, 'Chmod item does not exist: ' . $item);
-
-            if ($exists) {
-                if ($is_runtime) {
-                    $dir = false;
-                    $file = true;
-                } else {
-                    $dir = is_dir($path);
-                    $file = is_file($path);
-                }
-
-                $this->assertTrue($dir || $file, 'Chmod item is neither a file nor a directory: ' . $item);
-
-                foreach ($places as $place_parts) {
-                    if (count($place_parts) == 6) {
-                        list($place, $windows_slashes, $wildcard_support, $runtime_too, $pre, $post) = $place_parts;
-                    } else {
-                        if ($dir) {
-                            list($place, $windows_slashes, $wildcard_support, $runtime_too, $pre, $post, , ) = $place_parts;
+                    if ($exists) {
+                        if (count($place_parts) == 6) {
+                            $yoyo = [[$pre, $post]];
                         } else {
-                            list($place, $windows_slashes, $wildcard_support, $runtime_too, , , $pre, $post) = $place_parts;
-                        }
-                    }
-
-                    if ($place == 'fixperms.sh' && preg_match('#^uploads/\w+/\*$#', $item) != 0) {
-                        // Special case, handled with a "find" command due to wildcard expansion limit
-                        continue;
-                    }
-
-                    if (!$runtime_too && $is_runtime) {
-                        continue;
-                    }
-
-                    $place_path = get_file_base() . '/' . $place;
-
-                    if (file_exists($place_path)) {
-                        $c = $place_files[$place_path];
-                        $c_stripped = &$place_files_stripped[$place_path];
-                        if ($wildcard_support) {
-                            $c = preg_replace('#<for-each-\w+>#', '*', $c);
-                            $c_stripped = preg_replace('#<for-each-\w+>#', '*', $c_stripped);
+                            if (is_file($path)) {
+                                $pre = $pre_file;
+                                $post = $post_file;
+                            } else {
+                                $pre = $pre_dir;
+                                $post = $post_dir;
+                            }
+                            $yoyo = [[$pre_dir, $post_dir], [$pre_file, $post_file]];
                         }
 
-                        if (($is_runtime) && ($place != 'fixperms.bat')) {
-                            $wildcard_support = false; // Literal comparison of wildcards
+                        if (strpos($path, '*') === false) {
+                            $dir = is_dir($path);
+                            $file = is_file($path);
+
+                            $this->assertTrue($dir || $file, 'Chmod item is neither a file nor a directory: ' . $item);
                         }
 
-                        $slash = $windows_slashes ? '\\' : '/';
                         $_item = str_replace('/', $slash, $item);
-                        $search = $pre . $_item . $post;
 
-                        $there = strpos($c, $search) !== false;
-                        if ($there) {
-                            $c_stripped = str_replace(trim($search), '', $c_stripped); // So we can check for no alien stuff; trim is because pre and post may overlap with shared spaces (fixperms.sh)
-                        } else {
-                            if ($wildcard_support) {
-                                $search_regexp = preg_quote($pre, '#');
-                                $path_components = explode($slash, $_item);
-                                foreach ($path_components as $i => $__item) {
-                                    if ($i != 0) {
-                                        $search_regexp .= preg_quote($slash, '#');
-                                    }
-                                    $possibilities_for_term = [
-                                        '\*',
-                                        preg_quote($__item, '#'),
-                                    ];
-                                    if (($place == 'fixperms.bat') && ($__item == '*')) {
-                                        if ($i != count($path_components) - 1) {
-                                            $possibilities_for_term[] = '.*'; // For fixperms.bat we cannot have wildcards as path components
-                                        } else {
-                                            $possibilities_for_term[] = '\*\.\w+'; // For fixperms.bat we are sometimes more specific about file extensions
-                                        }
-                                    }
-                                    if (substr($__item, -strlen('_custom')) == '_custom') {
-                                        $possibilities_for_term[] = '\*_custom';
-                                    }
-                                    $search_regexp .= '(' . implode('|', $possibilities_for_term) . ')';
-                                }
-                                $search_regexp .= preg_quote($post, '#');
-                                $there = (preg_match('#' . $search_regexp . '#', $c) != 0);
+                        if ($wildcard_support) {
+                            // Wildcard support meaning wildcards may come up literally, or with * instead of **
+                            $search = $pre . $_item . $post;
+                            $there = (strpos($c, $search) !== false);
+                            if ($there) {
+                                $c_stripped = str_replace($search, '', $c_stripped); // So we can check for no alien stuff; trim is because pre and post may overlap with shared spaces
+                            } else {
+                                $there = (strpos($c, str_replace('**', '*', $search)) !== false);
                                 if ($there) {
-                                    $c_stripped = preg_replace('#' . trim($search_regexp) . '#', '', $c_stripped); // So we can check for no alien stuff; trim is because pre and post may overlap with shared spaces (fixperms.sh)
+                                    $c_stripped = str_replace(str_replace('**', '*', $search), '', $c_stripped); // So we can check for no alien stuff; trim is because pre and post may overlap with shared spaces
                                 }
+                            }
+                        } else {
+                            // No wildcard support meaning what wildcards are used now may come up as tedious non-wildcarded expansions
+                            $search_regexp = preg_quote($pre, '#') . str_replace(['\*\*', '\*'], ['.*', '.*'], preg_quote($_item, '#')) . preg_quote($post, '#');
+                            $there = (preg_match('#' . $search_regexp . '#', $c) != 0);
+                            if ($there) {
+                                $c_stripped = preg_replace('#' . $search_regexp . '#', '', $c_stripped); // So we can check for no alien stuff; trim is because pre and post may overlap with shared spaces
                             }
                         }
                         $this->assertTrue($there, 'Chmod item is missing from ' . $place . ': ' . $item);
                     }
                 }
-            }
-        }
 
-        // Make sure no alien (old chmod entries that no longer should be there - or ones missing from inst_special.php, potentially)
-        foreach ($places as $place_parts) {
-            if (count($place_parts) == 6) {
-                list($place, $windows_slashes, $wildcard_support, $runtime_too, $pre, $post) = $place_parts;
-                $yoyo = [[$pre, $post]];
-            } else {
-                list($place, $windows_slashes, $wildcard_support, $runtime_too, $pre_dir, $post_dir, $pre_file, $post_file) = $place_parts;
-                $yoyo = [[$pre_dir, $post_dir], [$pre_file, $post_file]];
-            }
+                // Make sure no alien (old chmod entries that no longer should be there - or ones missing from file_permissions_check.php, potentially)
+                foreach ($yoyo as $bits) {
+                    list($_pre, $_post) = $bits;
 
-            foreach ($yoyo as $bits) {
-                list($_pre, $_post) = $bits;
-
-                $place_path = get_file_base() . '/' . $place;
-                if (file_exists($place_path)) {
-                    $c = $place_files_stripped[$place_path];
                     $matches = [];
-                    $num_matches = preg_match_all('#' . preg_quote($_pre, '#') . '(\w+[/\\\\][\w/\\\\]+)' . preg_quote($_post, '#') . '#', $c, $matches);
+                    $num_matches = preg_match_all('#' . preg_quote($_pre, '#') . '(\w+[/\\\\][\w/\\\\]+)' . preg_quote($_post, '#') . '#', $c_stripped, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $this->assertTrue(false, 'Unexpected remaining path in ' . $place . ': ' . $matches[1][$i]);
                     }

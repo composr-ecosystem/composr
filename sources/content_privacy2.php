@@ -229,9 +229,9 @@ function save_privacy_form_fields($content_type, $content_id, $privacy_level, $a
             require_lang('content_privacy');
             require_code('notifications');
             require_code('content');
-            list($content_title, $content_submitter, $cma_info, , , $content_url) = content_get_details($content_type, $content_id);
+            list($content_title, $content_submitter, $cma_info, $row, , $content_url, $cma_ob) = content_get_details($content_type, $content_id);
             $content_submitter_username = $GLOBALS['FORUM_DRIVER']->get_username($content_submitter);
-            $content_type_label = do_lang($cma_info['content_type_label']);
+            $content_type_label = $cma_ob->get_content_type_label($row);
 
             $subject = do_lang('NOTIFICATION_SUBJECT_invited_content', comcode_escape($content_submitter_username));
             $mail = do_notification_lang('NOTIFICATION_BODY_invited_content', comcode_escape($content_submitter_username), strtolower(comcode_escape($content_type_label)), [comcode_escape($content_title), $content_url->evaluate(), comcode_escape($content_type_label)]);

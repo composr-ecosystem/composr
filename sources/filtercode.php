@@ -564,7 +564,7 @@ function _fields_api_filtercode($db, $info, $catalogue_name, &$extra_join, $filt
     }
 
     if ((strpos($table, '_trans') !== false) && (multi_lang_content())) {
-        $join_sql .= ' LEFT JOIN ' . $db->get_table_prefix() . 'translate t' . strval($field_id) . '_' . $catalogue_key . ' ON f' . strval($field_id) . '_' . $catalogue_key . '.cv_value=t' . strval($field_id) . '_' . $catalogue_key . '.id AND t' . strval($field_id) . '_' . $catalogue_key . '.' . db_string_equal_to('language', user_lang());
+        $join_sql .= $db->translate_field_join('f' . strval($field_id) . '_' . $catalogue_key . '.cv_value', 't' . strval($field_id) . '_' . $catalogue_key);
 
         if (!in_array($join_sql, $extra_join)) {
             $extra_join[$filter_key] = $join_sql;
@@ -645,7 +645,7 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, $filter_k
         $seo_type_code = isset($info['seo_type_code']) ? $info['seo_type_code'] : '!!!ERROR!!!';
         $join = ' LEFT JOIN ' . $db->get_table_prefix() . 'seo_meta sm ON sm.meta_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('sm.meta_for_type', $seo_type_code);
         if (multi_lang_content()) {
-            $join .= ' LEFT JOIN ' . $db->get_table_prefix() . 'translate dt ON dt.id=sm.meta_description AND dt.' . db_string_equal_to('language', user_lang());
+            $join .= $db->translate_field_join('sm.meta_description', 'dt');
             $filter_key = 'dt.text_original';
         }
         if (!in_array($join, $extra_join)) {
@@ -656,7 +656,8 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, $filter_k
     if ($filter_key == 'meta_keywords') {
         $seo_type_code = isset($info['seo_type_code']) ? $info['seo_type_code'] : '!!!ERROR!!!';
         if (multi_lang_content()) {
-            $clause = '(' . db_function('GROUP_CONCAT', ['text_original', $db->get_table_prefix() . 'seo_meta_keywords kw JOIN ' . $db->get_table_prefix() . 'translate kwt ON kwt.id=kw.meta_keyword AND ' . db_string_equal_to('kwt.language', user_lang()) . ' WHERE kw.meta_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('kw.meta_for_type', $seo_type_code)]) . ')';
+            $join = $db->translate_field_join('kw.meta_keyword', 'kwt', null, 'JOIN');
+            $clause = '(' . db_function('GROUP_CONCAT', ['text_original', $db->get_table_prefix() . 'seo_meta_keywords kw' . $join . ' WHERE kw.meta_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('kw.meta_for_type', $seo_type_code)]) . ')';
         } else {
             $clause = '(' . db_function('GROUP_CONCAT', ['meta_keyword', $db->get_table_prefix() . 'seo_meta_keywords kw WHERE kw.meta_for_id=' . db_cast($table_join_code . '.' . $first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('kw.meta_for_type', $seo_type_code)]) . ')';
         }
@@ -730,7 +731,7 @@ function _default_conv_func($db, $info, $catalogue_name, &$extra_join, $filter_k
                 $field_type = 'line';
                 if (multi_lang_content()) {
                     static $filter_i = 1;
-                    $extra_join[$inner_filter_key] = ' LEFT JOIN ' . $db->get_table_prefix() . 'translate ft' . strval($filter_i) . ' ON ft' . strval($filter_i) . '.id=' . strval($inner_filter_key) . ' AND ft' . strval($filter_i) . '.' . db_string_equal_to('language', user_lang());
+                    $extra_join[$inner_filter_key] = $db->translate_field_join($inner_filter_key, 'ft' . strval($filter_i));
                     $filter_key = 'ft' . strval($filter_i) . '.text_original';
                     $filter_i++;
                 }

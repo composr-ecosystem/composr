@@ -45,6 +45,16 @@ class Hook_addon_registry_news_shared
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Information Display';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -135,6 +145,7 @@ class Hook_addon_registry_news_shared
                 'TAGS' => '',
                 'CATEGORY' => lorem_phrase(),
                 '_CATEGORY' => placeholder_id(),
+                'CATEGORY_URL' => placeholder_url(),
                 'IMG' => placeholder_image_url(),
                 '_IMG' => placeholder_image_url(),
                 'AUTHOR' => lorem_phrase(),
@@ -162,7 +173,7 @@ class Hook_addon_registry_news_shared
                 'DATE_RAW' => placeholder_date_raw(),
                 'GIVE_CONTEXT' => true,
                 'FORUM_ID' => placeholder_id(),
-                'BRIEF' => lorem_sentence_html(),
+                'BRIEF_CONTENT' => lorem_sentence_html(),
             ]), null, '', true)
         ];
     }

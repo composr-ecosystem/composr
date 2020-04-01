@@ -869,7 +869,7 @@ hr.cns-sig-barrier {
 /*{+START,CSS_MODE,desktop}*/
 	.cns-whisper-choose-box {
 		margin-bottom: 3em;
-		padding: 4em 2em 4em 4em;
+		padding: 3em 1.5em 3em 3em;
 		width: 50%;
 	}
 /*{+END}*/
@@ -878,7 +878,7 @@ hr.cns-sig-barrier {
 }
 /*{+START,CSS_MODE,desktop}*/
 	.cns-whisper-choose-box.right {
-		padding: 4em 4em 4em 2em;
+		padding: 3em 3em 3em 1.5em;
 	}
 /*{+END}*/
 

@@ -180,6 +180,25 @@ function cns_delete_emoticon($code)
 }
 
 /**
+ * Count the number of emoticons available on disk.
+ *
+ * @return integer Number of emoticons
+ */
+function cns_get_num_emoticons_on_disk()
+{
+    require_code('themes2');
+
+    $cnt = 0;
+    $images = get_all_image_ids_type('cns_emoticons');
+    foreach ($images as $image) {
+        if ((substr($image, -4) != '.gif') && ($image != 'cns_emoticons/none')) {
+            $cnt++;
+        }
+    }
+    return $cnt;
+}
+
+/**
  * Edit a Welcome E-mail.
  *
  * @param  AUTO_LINK $id The ID
@@ -277,6 +296,10 @@ function cns_get_forum_multi_code_field($forum_multi_code)
  */
 function cns_mod_log_it($the_type, $param_a = '', $param_b = '', $reason = '', $by = null, $timestamp = null)
 {
+    require_code('global4');
+
+    global $RELATED_WARNING_ID;
+
     if ($timestamp === null) {
         $timestamp = time();
     }
@@ -295,5 +318,6 @@ function cns_mod_log_it($the_type, $param_a = '', $param_b = '', $reason = '', $
         'l_date_and_time' => $timestamp,
         'l_reason' => $reason,
         'l_by' => $by,
+        'l_warning_id' => $RELATED_WARNING_ID,
     ], true);
 }

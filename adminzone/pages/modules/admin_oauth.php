@@ -140,7 +140,7 @@ class Module_admin_oauth
             $info = $ob->get_details();
 
             $configured = (get_option($service_info['options']['client_id']) != '') && (get_option($service_info['options']['client_secret']) != '');
-            $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $info['category'], 'redirect' => get_self_url(true)], get_module_zone('admin_config'), [], false, false, false, 'group_' . $info['group']);
+            $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $info['category'], 'redirect' => get_self_url(true)], get_module_zone('admin_config'), [], false, false, false, 'group-' . $info['group']);
 
             if (($service_info['available']) && ($configured)) {
                 if (isset($service_info['connect_url'])) {

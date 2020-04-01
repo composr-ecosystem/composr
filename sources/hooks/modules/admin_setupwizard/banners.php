@@ -31,10 +31,8 @@ class Hook_sw_banners
     public function get_current_settings()
     {
         $settings = [];
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'donate']);
-        $settings['have_default_banners_donation'] = ($test === null) ? '0' : '1';
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'advertise_here']);
-        $settings['have_default_banners_advertising'] = ($test === null) ? '0' : '1';
+        $settings['have_default_banners_donation'] = has_predefined_content('banners', 'have_default_banners_donation') ? '1' : '0';
+        $settings['have_default_banners_advertising'] = has_predefined_content('banners', 'have_default_banners_advertising') ? '1' : '0';
         return $settings;
     }
 
@@ -55,12 +53,8 @@ class Hook_sw_banners
 
         require_lang('banners');
         $fields = new Tempcode();
-        if ($current_settings['have_default_banners_donation'] == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_BANNERS_DONATION'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_BANNERS_DONATION'), 'have_default_banners_donation', $field_defaults['have_default_banners_donation'] == '1'));
-        }
-        if ($current_settings['have_default_banners_advertising'] == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_BANNERS_ADVERTISING'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_BANNERS_ADVERTISING'), 'have_default_banners_advertising', $field_defaults['have_default_banners_advertising'] == '1'));
-        }
+        $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_BANNERS_DONATION'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_BANNERS_DONATION'), 'have_default_banners_donation', $field_defaults['have_default_banners_donation'] == '1'));
+        $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_BANNERS_ADVERTISING'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_BANNERS_ADVERTISING'), 'have_default_banners_advertising', $field_defaults['have_default_banners_advertising'] == '1'));
         return [$fields, new Tempcode()];
     }
 
@@ -73,25 +67,9 @@ class Hook_sw_banners
             return;
         }
 
-        if (post_param_integer('have_default_banners_donation', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'donate']);
-            if ($test !== null) {
-                require_code('banners2');
-                delete_banner('donate');
-
-                //require_code('zones3');
-                //delete_cms_page('site', 'donate', null, true);    Page no longer bundled, can be made via page templates
-            }
-        }
-        if (post_param_integer('have_default_banners_advertising', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'advertise_here']);
-            if ($test !== null) {
-                require_code('banners2');
-                delete_banner('advertise_here');
-
-                //require_code('zones3');
-                //delete_cms_page('site', 'advertise', null, true);    Page no longer bundled, can be made via page templates
-            }
-        }
+        install_predefined_content('banners', [
+            'have_default_banners_donation' => (post_param_integer('have_default_banners_donation', 0) == 1),
+            'have_default_banners_advertising' => (post_param_integer('have_default_banners_advertising', 0) == 1),
+        ]);
     }
 }

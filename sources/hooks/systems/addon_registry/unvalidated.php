@@ -45,6 +45,16 @@ class Hook_addon_registry_unvalidated
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Community';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -110,10 +120,6 @@ class Hook_addon_registry_unvalidated
             'adminzone/pages/modules/admin_unvalidated.php',
             'lang/EN/unvalidated.ini',
             'sources/hooks/blocks/main_staff_checklist/unvalidated.php',
-            'sources/hooks/modules/admin_unvalidated/.htaccess',
-            'sources_custom/hooks/modules/admin_unvalidated/.htaccess',
-            'sources/hooks/modules/admin_unvalidated/index.html',
-            'sources_custom/hooks/modules/admin_unvalidated/index.html',
             'sources/hooks/systems/page_groupings/unvalidated.php',
         ];
     }
@@ -144,6 +150,8 @@ class Hook_addon_registry_unvalidated
         return [
             lorem_globalise(do_lorem_template('VALIDATION_REQUEST_MAIL', [
                 'USERNAME' => lorem_word(),
+                'CONTENT_TYPE_LABEL' => lorem_phrase(),
+                'TITLE' => lorem_phrase(),
                 'TYPE' => lorem_phrase(),
                 'ID' => placeholder_id(),
                 'URL' => placeholder_url(),

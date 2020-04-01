@@ -3,6 +3,7 @@
 /safe_mode_temp
 
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
+/lorem
 /psalm.xml
 /composer.phar
 /phpcs.phar
@@ -57,7 +58,6 @@ test_a
 /data_custom/sitemaps/*.gz
 /data_custom/sitemaps/*.br
 /data_custom/modules/chat/*.bin
-/data_custom/modules/admin_stats/*.xml
 /data_custom/modules/web_notifications/latest.bin
 /cms_sitemap.xml
 *.clpprj

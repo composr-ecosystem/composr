@@ -21,14 +21,14 @@
 /**
  * Hook class.
  */
-class Hook_content_meta_aware_event
+class Hook_content_meta_aware_event extends Hook_CMA
 {
     /**
-     * Get content type details. Provides information to allow task reporting, randomisation, and add-screen linking, to function.
+     * Get content type details.
      *
      * @param  ?ID_TEXT $zone The zone to link through to (null: autodetect)
      * @param  boolean $get_extended_data Populate additional data that is somewhat costly to compute (add_url, archive_url)
-     * @return ?array Map of award content-type info (null: disabled)
+     * @return ?array Map of content-type info (null: disabled)
      */
     public function info($zone = null, $get_extended_data = false)
     {
@@ -43,6 +43,7 @@ class Hook_content_meta_aware_event
             'content_type_universal_label' => 'Calendar event',
 
             'db' => $GLOBALS['SITE_DB'],
+            'extra_where_sql' => 'e_member_calendar IS NULL',
             'table' => 'calendar_events',
             'id_field' => 'id',
             'id_field_numeric' => true,
@@ -61,6 +62,7 @@ class Hook_content_meta_aware_event
             'title_field_dereference' => true,
             'description_field' => 'e_content',
             'description_field_dereference' => true,
+            'description_field_supports_comcode' => true,
             'thumb_field' => null,
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/rich_content/calendar',
@@ -79,7 +81,7 @@ class Hook_content_meta_aware_event
             'author_field' => null,
             'add_time_field' => 'e_add_date',
             'edit_time_field' => 'e_edit_date',
-            'date_field' => 'e_add_date',
+            'date_field' => 'e_next_recurrence_time',
             'validated_field' => 'validated',
 
             'seo_type_code' => 'event',
@@ -91,7 +93,6 @@ class Hook_content_meta_aware_event
             'search_hook' => 'calendar',
             'rss_hook' => 'calendar',
             'attachment_hook' => 'calendar',
-            'unvalidated_hook' => 'calendar',
             'notification_hook' => 'calendar_event',
             'sitemap_hook' => 'event',
 
@@ -112,11 +113,19 @@ class Hook_content_meta_aware_event
             'support_spam_heuristics' => 'post',
 
             'actionlog_regexp' => '\w+_EVENT',
+
+            'default_prominence_weight' => PROMINENCE_WEIGHT_HIGHEST | PROMINENCE_FLAG_ACTIVE_ONLY,
+            'default_prominence_flags' => 0,
+
+            // No support for recurrences due to complexity of that
+            'active_only_extra_where_sql' => '(e_next_recurrence_time IS NOT NULL OR e_previous_recurrence_time IS NOT NULL AND e_previous_recurrence_time>' . strval(time() - 60 * 60 * 24 * 2) . ')', // Only show those in future or recent past
+            'prominence_custom_sort' => '(' . strval(time()) . '-' . db_function('LEAST', [db_function('ABS', [strval(time()) . '-' . db_function('COALESCE', ['e_previous_recurrence_time', strval(PHP_INT_MAX)])]), db_function('ABS', [strval(time()) . '-' . db_function('COALESCE', ['e_next_recurrence_time', strval(PHP_INT_MAX)])])]) . ')',
+            'prominence_custom_sort_dir' => 'ASC',
         ];
     }
 
     /**
-     * Run function for content hooks. Renders a content box for an award/randomisation.
+     * Render a content box for a content row.
      *
      * @param  array $row The database row for the content
      * @param  ID_TEXT $zone The zone to display in
@@ -127,10 +136,23 @@ class Hook_content_meta_aware_event
      * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
      * @return Tempcode Results
      */
-    public function run($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
+    public function render_box($row, $zone, $give_context = true, $include_breadcrumbs = true, $root = null, $attach_to_url_filter = false, $guid = '')
     {
         require_code('calendar');
 
         return render_event_box($row, $zone, $give_context, $guid);
+    }
+
+    /**
+     * Create a selection list.
+     *
+     * @param  ?string $id The pre-selected ID (null: none selected)
+     * @return Tempcode List
+     */
+    public function create_selection_list($id = null)
+    {
+        require_code('calendar');
+
+        return create_selection_list_events(null, ($id === null) ? null : intval($id));
     }
 }

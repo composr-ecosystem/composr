@@ -45,6 +45,16 @@ class Hook_addon_registry_banners
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'eCommerce';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -137,7 +147,6 @@ class Hook_addon_registry_banners
             'sources/blocks/main_top_sites.php',
             'sources/blocks/main_banner_wave.php',
             'sources/hooks/modules/admin_setupwizard/banners.php',
-            'sources/hooks/modules/admin_unvalidated/banners.php',
             'sources/hooks/systems/ecommerce/banners.php',
             'sources/hooks/systems/page_groupings/banners.php',
             'sources/hooks/systems/content_meta_aware/banner.php',
@@ -408,5 +417,127 @@ class Hook_addon_registry_banners
                 'RESET_URL' => placeholder_url(),
             ]), null, '', true)
         ];
+    }
+
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content()
+    {
+        require_lang('banners');
+
+        $test_have_default_banners_donation = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'donate']);
+        $test_have_default_banners_advertising = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'advertise_here']);
+
+        return [
+            'have_default_banners_donation' => [
+                'title' => do_lang_tempcode('HAVE_DEFAULT_BANNERS_DONATION'),
+                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_BANNERS_DONATION'),
+                'installed' => ($test_have_default_banners_donation !== null),
+            ],
+            'have_default_banners_advertising' => [
+                'title' => do_lang_tempcode('HAVE_DEFAULT_BANNERS_ADVERTISING'),
+                'description' => do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_BANNERS_ADVERTISING'),
+                'installed' => ($test_have_default_banners_advertising !== null),
+            ],
+        ];
+    }
+
+    /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('have_default_banners_donation', $content))) && (!has_predefined_content('banners', 'have_default_banners_donation'))) {
+            require_lang('banners');
+            require_code('lang3');
+
+            $map = [
+                'name' => 'donate',
+                'title_text' => '',
+                'direct_code' => '',
+                'deployment_agreement' => BANNER_PERMANENT,
+                'img_url' => 'data/images/donate.png',
+                'campaign_remaining' => 0,
+                'site_url' => get_base_url() . '/index.php?page=donate',
+                'hits_from' => 0,
+                'views_from' => 0,
+                'hits_to' => 0,
+                'views_to' => 0,
+                'display_likelihood' => 30,
+                'notes' => do_lang('STOCK_DEFAULT_BANNER'),
+                'validated' => 1,
+                'add_date' => time(),
+                'submitter' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                'b_type' => '',
+                'expiry_date' => null,
+                'edit_date' => null,
+            ];
+            $map += lang_code_to_default_content('caption', 'DONATION', true, 1);
+            $GLOBALS['SITE_DB']->query_insert('banners', $map);
+
+            require_code('permissions2');
+            set_global_category_access('banners', 'donate');
+        }
+
+        if ((($content === null) || (in_array('have_default_banners_advertising', $content))) && (!has_predefined_content('banners', 'have_default_banners_advertising'))) {
+            require_lang('banners');
+            require_code('lang3');
+
+            $map = [
+                'name' => 'advertise_here',
+                'title_text' => '',
+                'direct_code' => '',
+                'deployment_agreement' => BANNER_FALLBACK,
+                'img_url' => 'data/images/advertise_here.png',
+                'campaign_remaining' => 0,
+                'site_url' => get_base_url() . '/index.php?page=advertise',
+                'hits_from' => 0,
+                'views_from' => 0,
+                'hits_to' => 0,
+                'views_to' => 0,
+                'display_likelihood' => 10,
+                'notes' => do_lang('STOCK_DEFAULT_BANNER_FALLBACK'),
+                'validated' => 1,
+                'add_date' => time(),
+                'submitter' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                'b_type' => '',
+                'expiry_date' => null,
+                'edit_date' => null,
+            ];
+            $map += lang_code_to_default_content('caption', 'ADVERTISE_HERE', true, 1);
+            $GLOBALS['SITE_DB']->query_insert('banners', $map);
+
+            require_code('permissions2');
+            set_global_category_access('banners', 'advertise_here');
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content($content = null)
+    {
+        if ((($content === null) || (in_array('have_default_banners_donation', $content))) && (has_predefined_content('banners', 'have_default_banners_donation'))) {
+            require_code('banners2');
+            delete_banner('donate');
+
+            //require_code('zones3');
+            //delete_cms_page('site', 'donate', null, true);    Page no longer bundled, can be made via page templates
+        }
+
+        if ((($content === null) || (in_array('have_default_banners_advertising', $content))) && (has_predefined_content('banners', 'have_default_banners_advertising'))) {
+            require_code('banners2');
+            delete_banner('advertise_here');
+
+            //require_code('zones3');
+            //delete_cms_page('site', 'advertise', null, true);    Page no longer bundled, can be made via page templates
+        }
     }
 }

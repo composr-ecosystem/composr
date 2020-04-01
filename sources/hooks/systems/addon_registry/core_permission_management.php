@@ -45,6 +45,16 @@ class Hook_addon_registry_core_permission_management
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Architecture';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -117,6 +127,9 @@ class Hook_addon_registry_core_permission_management
             'themes/default/templates/PERMISSION_ROW.tpl',
             'themes/default/templates/PERMISSIONS_TREE_EDITOR_SCREEN.tpl',
             'themes/default/templates/PERMISSION_KEYS_MESSAGE_ROW.tpl',
+            'themes/default/templates/PERMISSIONS_CONTENT_ACCESS_SCREEN.tpl',
+            'themes/default/templates/PERMISSIONS_CONTENT_ACCESS_LIST.tpl',
+            'themes/default/templates/PERMISSIONS_CONTENT_ACCESS_TICK.tpl',
             'adminzone/pages/modules/admin_permissions.php',
             'themes/default/images/perm_levels/0.svg',
             'themes/default/images/perm_levels/1.svg',
@@ -146,6 +159,9 @@ class Hook_addon_registry_core_permission_management
             'templates/PERMISSION_COLUMN_SIZER.tpl' => 'administrative__permission_s_permissions_screen',
             'templates/PERMISSION_ROW.tpl' => 'administrative__permission_s_permissions_screen',
             'templates/PERMISSION_PRIVILEGES_SCREEN.tpl' => 'administrative__permission_s_permissions_screen',
+            'templates/PERMISSIONS_CONTENT_ACCESS_SCREEN.tpl' => 'administrative__content_access_screen',
+            'templates/PERMISSIONS_CONTENT_ACCESS_LIST.tpl' => 'administrative__content_access_screen',
+            'templates/PERMISSIONS_CONTENT_ACCESS_TICK.tpl' => 'administrative__content_access_screen',
         ];
     }
 
@@ -326,6 +342,78 @@ class Hook_addon_registry_core_permission_management
 
         return [
             lorem_globalise($out, null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__administrative__content_access_screen()
+    {
+        require_lang('permissions');
+
+        $zones = [];
+        $pages = [];
+        $pages[] = [
+            'PAGE_NAME' => lorem_word(),
+            'HAS_ACCESS' => true,
+            'SAVE_ID' => lorem_word() . ':' . lorem_word(),
+        ];
+        $zones[] = [
+            'ZONE_NAME' => lorem_word(),
+            'ZONE_TITLE' => lorem_phrase(),
+            'PAGES' => $pages,
+            'HAS_ACCESS' => true,
+            'SAVE_ID' => lorem_word(),
+        ];
+
+        $modules = [];
+        $privileges = [];
+        $privileges[] = [
+            'PRIVILEGE_CODENAME' => lorem_word(),
+            'PRIVILEGE_LABEL' => lorem_phrase(),
+            'HAS_ACCESS' => true,
+        ];
+        $item_privileges = [];
+        $item_privileges[] = [
+            'ENABLED' => true,
+            'PRIVILEGE_CODENAME' => lorem_word(),
+            'PRIVILEGE_LABEL' => lorem_phrase(),
+            'HAS_ACCESS' => true,
+        ];
+        $items = [];
+        $items[] = [
+            'ITEM_LABEL' => lorem_phrase(),
+            'DEPTH' => '0',
+            'ITEM_PRIVILEGES' => $item_privileges,
+            'SAVE_ID' => lorem_word() . ':' . lorem_word() . ':' . lorem_word(),
+            'HAS_ACCESS' => true,
+        ];
+        $items[] = [
+            'ITEM_LABEL' => lorem_phrase(),
+            'DEPTH' => '1',
+            'ITEM_PRIVILEGES' => $item_privileges,
+            'SAVE_ID' => lorem_word() . ':' . lorem_word() . ':' . lorem_word() . '2',
+        ];
+        $modules[] = [
+            'CONTENT_TYPE_LABEL' => lorem_phrase(),
+            'PRIVILEGES' => $privileges,
+            'ITEMS' => $items,
+            'SAVE_ID' => lorem_word() . ':' . lorem_word(),
+        ];
+
+        return [
+            lorem_globalise(do_lorem_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
+                'TITLE' => lorem_title(),
+                'ZONES' => $zones,
+                'MODULES' => $modules,
+                'URL' => placeholder_url(),
+                'COLOR' => 'FFFFFF',
+            ]), null, '', true)
         ];
     }
 }

@@ -634,45 +634,6 @@ class Module_admin_zones
             $fields .= static_evaluate_tempcode(form_input_line(do_lang_tempcode('ZONE_BASE_URL'), do_lang_tempcode('DESCRIPTION_ZONE_BASE_URL'), 'base_url', $base_url, false));
         }
 
-        if ((!$in_zone_editor) && ($zone !== null) && (addon_installed('zone_logos'))) {
-            // Logos
-            handle_max_file_size($hidden, 'image');
-            require_code('themes2');
-            $themes = find_all_themes();
-            foreach ($themes as $theme => $theme_name) {
-                $fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '8c4c1267060970f8b89d1068d03280a7', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('THEME_LOGO', escape_html($theme_name))]));
-
-                require_code('themes2');
-                $ids = get_all_image_ids_type('logo', false, null, $theme);
-
-                $set_name = 'logo_choose_' . $theme;
-                $required = true;
-                $set_title = do_lang_tempcode('LOGO');
-                $field_set = (empty($ids)) ? new Tempcode() : alternate_fields_set__start($set_name);
-
-                require_code('images');
-                $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'logo_upload_' . $theme, $required, null, null, true, get_allowed_image_file_types()));
-
-                $current_logo = 'logo/' . $zone . '-logo';
-                if (!in_array($current_logo, $ids)) {
-                    $current_logo = 'logo/-logo';
-                }
-
-                foreach ($ids as $id) {
-                    $test = find_theme_image($id, true, false, $theme);
-                    if ($test == '') {
-                        $test = find_theme_image($id, false, false, 'default');
-                    }
-                    if (($test == '') && ($id == $current_logo)) {
-                        $current_logo = $ids[0];
-                    }
-                }
-                $field_set->attach(form_input_theme_image(do_lang_tempcode('STOCK'), '', 'logo_select_' . $theme, $ids, null, $current_logo, null, false, null, $theme));
-
-                $fields .= static_evaluate_tempcode(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));
-            }
-        }
-
         if ($zone !== '') {
             $fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '579ab823f5f8ec7b48e3b59af8a64ba2', 'TITLE' => do_lang_tempcode('PERMISSIONS')]));
 
@@ -974,31 +935,6 @@ class Module_admin_zones
             }
 
             $this->title = get_screen_title('EDIT_ZONE'); // Re-get title late, as we might be changing the theme this title is got from
-
-            // Handle logos
-            if (addon_installed('zone_logos')) {
-                require_code('themes2');
-                require_code('uploads');
-                $themes = find_all_themes();
-                foreach (array_keys($themes) as $theme) {
-                    $iurl = '';
-                    if ((is_plupload()) || (((array_key_exists('logo_upload_' . $theme, $_FILES)) && (is_uploaded_file($_FILES['logo_upload_' . $theme]['tmp_name']))))) {
-                        $urls = get_url('', 'logo_upload_' . $theme, 'themes/' . $theme . '/images_custom', 0, CMS_UPLOAD_IMAGE);
-                        $iurl = $urls[0];
-                    }
-                    if ($iurl == '') {
-                        $theme_img_code = post_param_string('logo_select_' . $theme, '');
-                        if ($theme_img_code == '') {
-                            continue; // Probably a theme was added half-way
-                            //warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
-                        }
-                        $iurl = find_theme_image($theme_img_code, false, true, $theme);
-                    }
-                    $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => 'logo/' . $new_zone . '-logo', 'theme' => $theme, 'lang' => get_site_default_lang()], '', 1);
-                    $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => 'logo/' . $new_zone . '-logo', 'theme' => $theme, 'url' => $iurl, 'lang' => get_site_default_lang()]);
-                    Self_learning_cache::erase_smart_cache();
-                }
-            }
 
             sync_htaccess_with_zones();
 

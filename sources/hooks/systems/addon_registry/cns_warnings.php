@@ -45,6 +45,16 @@ class Hook_addon_registry_cns_warnings
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Community';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -117,6 +127,8 @@ class Hook_addon_registry_cns_warnings
             'sources/hooks/systems/commandr_fs_extended_member/warnings.php',
             'themes/default/javascript/cns_warnings.js',
             'sources/hooks/systems/actionlog/cns_warnings.php',
+            'sources/cns_warnings.php',
+            'sources/hooks/systems/preview/warnings.php',
 
             'sources/hooks/modules/admin_stats/warnings.php',
         ];
@@ -193,7 +205,6 @@ class Hook_addon_registry_cns_warnings
             lorem_globalise(do_lorem_template('CNS_WARNING_HISTORY_SCREEN', [
                 'TITLE' => lorem_title(),
                 'MEMBER_ID' => placeholder_id(),
-                'EDIT_PROFILE_URL' => placeholder_url(),
                 'VIEW_PROFILE_URL' => placeholder_url(),
                 'ADD_WARNING_URL' => placeholder_url(),
                 'RESULTS_TABLE' => placeholder_table(),

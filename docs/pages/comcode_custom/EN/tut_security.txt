@@ -38,7 +38,7 @@ Auditing systems:
  - Logging of all user actions and IP address history
  - Sophisticated tools to analyse the above
  - Logging of failed logins
- - Hack attack detection / logging / banning (described in further detail in this tutorial)
+ - Hack-attack detection / logging / banning (described in further detail in this tutorial)
 
 Framework security:
  - CSRF-attack prevention (Cross-Site-Request-Forgery) via referrer checking and form security tokens
@@ -201,7 +201,7 @@ The point I am trying to convey is that you should decide on an appropriate leve
 
 [title="2"]Security logs[/title]
 
-Composr defines a large number of 'hack attack' situations, and in case of any of these situations occurring it will: stop the execution; send out an e-mail detailing the attack; and log the attack in the security log. These situations are varied, but the most common is when input is found that does not match input constraints (for example, a script parameter which should be a number is not).
+Composr defines a large number of 'hack-attack' situations, and in case of any of these situations occurring it will: stop the execution; send out an e-mail detailing the attack; and log the attack in the security log. These situations are varied, but the most common is when input is found that does not match input constraints (for example, a script parameter which should be a number is not).
 
 Security logs can be reached from:
 Admin Zone > Audit > Security logging
@@ -213,7 +213,7 @@ Most security logs are accidental (caused by mistyped URLs, or buggy software) o
 
 [title="3"]Alert types[/title]
 
-The following types of alert are defined:
+The following types of alert (hack-attack codenames) are defined:
  - [tt]DODGY_GET_HACK[/tt], A suspicious URL was given that includes characters looking like they may be there to do dodgy things. As URLs are generally clean of symbols, it is safe for Composr to detect dangerous looking ones, such as file system paths, new line characters, and HTML symbols
  - [tt]EVIL_POSTED_FORM_HACK[/tt], This may be due to a social engineering attack, where a logged in administrator has been tricked into filling in a form targeted to delete something from the website (CSRF)
  - [tt]VOTE_CHEAT[/tt], The user tried to vote outside the allowed range of options (e.g. 11 or -2). I can think of no way this could be done accidentally
@@ -230,7 +230,13 @@ The following types of alert are defined:
  - [tt]EVAL_HACK[/tt], The EVAL command would have executed arbitrary code if it was not blocked. This is extremely likely to be a hack attempt and should be taken seriously
  - [tt]PATH_HACK[/tt], Tried to use a file path redirection to get outside intended directory
  - [tt]PHP_DOWNLOAD_INNOCENT[/tt], Somehow a PHP file got referenced in the download system. This should have been filtered by 'TRY_TO_DOWNLOAD_SCRIPT', but was not. This is a serious security breach if it happens
- - [tt]BRUTEFORCE_LOGIN_HACK[/tt], Someone gave incorrect login details 30 times over a 15 minute period (brute-force attack)
+ - [tt]BRUTEFORCE_LOGIN_HACK[/tt], Someone gave incorrect login details 30 times over a 15 minute period [or as configured] (brute-force attack)
+ - [tt]ANTISPAM[/tt], The user came up against anti-spam heuristics or an integrated anti-spam service
+ - [tt]CAPTCHAFAIL[/tt], The user failed filling in the CAPTCHA
+ - [tt]CAPTCHAFAIL_HACK[/tt], The user failed filling in the CAPTCHA while simultaneously posting code that looks like it is from other software (the very clearest spam signal)
+ - [tt]HACK_ATTACK_PASSWORD_CHANGE[/tt], The user gave an invalid confirmation code while finalising a password reset
+ - [tt]SQL_INJECTION_HACK[/tt], The user seemed to be trying to extract database data using an SQL [tt]UNION[/tt] operator (a very clear hacker signal when Composr is not expecting it to be used)
+ - [tt]HACK_ATTACK[/tt], A generic hack-attack has been raised with no further explanation given
 
 After a number ("Hack-attack ban threshold" configuration option) of hack-attack attempts an IP address will be banned, if the "Enable auto-banning" configuration option (Admin Zone > Setup > Configuration > Security options > General) is enabled.
 Similarly and more specifically there are a number of options specifically attached to the brute force login detection for automatic bans.
@@ -247,6 +253,25 @@ The error is saying that the server tried to check the URL was valid but that it
 This error could also be caused by some server configuration issue too. For example:
 1) If the server cannot download files from itself properly to check, and whatever it does manage to access is returning HTTP '200' (file found) messages. This seems unlikely but it can be surprising what weird situations happen "in the wild".
 2) If something on the server is interfering with downloads. Something like the new Apache [tt]mod_spdy[/tt] module could cause something like this. That might alter images during transfer and Composr would not receive the file it expected to be checking.
+
+[title="3"]Tuning alert behaviour (advanced)[/title]
+
+You can configure exactly how particular alert types are handled in XML from Admin Zone > Setup > Configuration > Configure advanced banning -- or by hand-editing [tt]data_custom/xml_config/advanced_banning.xml[/tt] based on the default [tt]data/xml_config/advanced_banning.xml[/tt].
+Some sensible default [tt]<hackattack>[/tt] rules are provided that take into account varying commonalities and severities.
+
+Composr starts with the defaults for each setting, then tries matching each rule by the hack-attack codename and the 2 parameters associated with it, in order. Whatever settings are there when all rules are processed are those that will be used. Later rules have precedence. Rules that don't define attributes don't affect the settings behind those attributes.
+
+Each rule can take the following attributes:
+ - Matching attributes:
+  - [tt]codename[/tt] -- the alert type (required)
+  - [tt]param_a_pattern[/tt] -- a wildcard pattern to match against the first parameter (optional, default matches all)
+  - [tt]param_b_pattern[/tt] -- a wildcard pattern to match against the second parameter (optional, default matches all)
+ - Setting attributes:
+  - [tt]silent_to_user[/tt] -- set to [tt]true[/tt] if the user should not be told a hack-attack was raised (optional, default false)
+  - [tt]silent_to_staff_notifications[/tt] -- set to [tt]true[/tt] if the staff should not be sent a notification (optional, default false)
+  - [tt]silent_to_staff_log[/tt] -- set to [tt]true[/tt] if the hack-attack should not show in the UI browser of the logs (optional, default false)
+  - [tt]percentage_score[/tt] -- set to a number if the hack-attack should be scaled when counting the total that have happened before an automatic ban will happening, e.g. 50 for 50% relative importance (optional, default 100)
+  - [tt]syndicate_as_spammer[/tt] -- set to [tt]true[/tt] if the hack-attack is related to spam and thus any ban should be syndicated out to any anti-spam partners (optional, default false)
 
 [title="3"]Failed logins[/title]
 
@@ -483,23 +508,15 @@ To force members to be vetted, you need to enable the 'Require member validation
 
 [title="3"]SSL[/title]
 
-{!ssl:DOC_SSL}
+When you access a website via an HTTPS URL, rather than an HTTP URL, you are using <abbr title="Transport Layer Security">TLS</abbr> (or the older protocol, <abbr title="Secure Sockets Layer">SSL</abbr>).
 
-SSL certificates vary in price immensely, but the price generally depends on the strength of encryption, the prominence of the root certificate authority (a more respected authority may charge more because it carries out more checks, and thus experienced users feel more confident with it), the distance from the root certificate authority the certificate is, and the validity length.
+An HTTPS page view encrypts bi-directional traffic securely (to avoid unauthorised tampering and interception by third-parties) but also imposes a small performance cost on the server. Nowadays websites will warn users if they visit a non-HTTPS site.
 
-You may decide to do this if the pages transmit confidential information; obvious targets are the login and join pages.
+To use HTTPS you must have an SSL/TLS certificate installed on your server. SSL certificates vary in price immensely, but you can get a free one from the [url="Let's Encrypt"]https://letsencrypt.org/[/url] project (this requires provisioning via their software installed on your server).
 
-Assuming you have already installed the SSL certificate on the server, you can set up SSL in Composr as follows:
-Go to the Admin Zone > Security > SSL/TLS (HTTPS) configuration, and tick (check) the boxes for the following pages... [tt]:join[/tt], [tt]:login[/tt], [tt]site:purchase[/tt], [tt]site:shopping[/tt], [tt]site:members[/tt]. (These are the pages that purchases or passwords happen on -- but you can enable for other pages too if you like)
-(this assumes that you have the [tt]ssl[/tt] addon installed)
+You set HTTPS in Composr by choosing a base URL that starts [tt]https://[/tt].
 
-If you are not able to use SSL, don't think that your site is very insecure: it probably is possible for a hacker to gather the password during transit, but it would not be easy. Sometimes when we consider computer security we lose sight of the insecurities we face every day: it is possible a death cult could take over your office for a week while fighting off the military with heavy rocket propelled grenades: likelihoods need to be kept within proportion. This said, if you have very sensitive information, or run an eCommerce site, SSL is essential, as the stakes are high enough for criminal interest to be stimulated. There may also be concerns with government surveillance.
-
-Note that a page viewed under HTTPS must use HTTPS for all images and other embedded files. The banner will be disabled on any page set to use HTTPS via the [tt]ssl[/tt] addon to make sure this requirement is enforced (if your whole base URL is https then banners will display and it is up to the webmaster to make sure they are HTTPS-compliant). The reason for this is that users should not get mixed environment messages that warn them about potential security problems, or in some browsers lock out the whole page. Template makers and coders should be careful to use the proper Composr mechanisms for referencing resources.
-
-Under HTTPS user provided media that is not linked under HTTPS will either be automatically upgraded or proxied.
-
-You can set HTTPS for a whole site via changing the base URL. In this situation the banners restriction will not be applied, as the webmasters are assumed to have set up HTTPS-compatible banners for everything.
+Note that a page viewed under HTTPS must use HTTPS for all images and other embedded files. The reason for this is that users should not get mixed environment messages that warn them about potential security problems, or in some browsers lock out the whole page. Template makers and coders should be careful to use the proper Composr mechanisms for referencing resources. Under HTTPS user provided media that is not linked under HTTPS will either be automatically upgraded or proxied.
 
 [title="4"]Migrating HTTP websites[/title]
 
@@ -667,6 +684,19 @@ This is a long way of saying that the URL moniker exposes content titles to user
 
 If you have sensitive material that might be in a URL moniker, you should either customise that moniker(s), or turn the feature off in the configuration.
 
+[title="2"]Server hardening[/title]
+
+If you are managing your own server, you may want to consider:
+ - Disabling any Internet services you do not actually need, such as FTP
+ - Changing the default SSH port (change the [tt]Port[/tt] setting in [tt]/etc/ssh/sshd_config[/tt] to a [url="random port number"]https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new[/url])
+ - Disabling remote access to the e-mail server (for Postfix set [tt]inet_interfaces localhost[/tt] in [tt]main.cf[/tt])
+ - Disabling remote access to the database server (for MySQL set [tt]bind-address=127.0.0.1[/tt] in [tt]my.cnf[/tt])
+ - Disabling the TRACE feature in the web server (for Apache set [tt]TraceEnable Off[/tt] in [tt]httpd.conf[/tt])
+ - Disabling web server version/architecture disclosure (for Apache set [tt]ServerSignature Off[/tt] and [tt]ServerTokens Prod[/tt] in [tt]httpd.conf[/tt] and typically comment out the contents of [tt]welcome.conf[/tt])
+ - Enabling automatic updates (for RedHat-based releases install the [tt]dnf-automatic[/tt] package and set [tt]apply_updates = yes[/tt] in [tt]/etc/dnf/automatic.conf[/tt] and run [tt]systemctl enable --now dnf-automatic.timer[/tt])
+ - Installing MySQL/MariaDB from an official repository rather than the distribution repository, for faster deployment of security fixes
+ - Running a scanner tool such as [url="OWASP ZAP"]https://owasp.org/www-project-zap/[/url]
+
 [concepts
  1_key="SSL"          1_value="Secure Socket Layer -- encryption over Internet connections so as to avoid interception of information"
  2_key="White-list"   2_value="White lists show what things are allowed, as opposed to what are not (black lists); they are theoretically better (but not always practical), as they guard against changes that could add insecurity (e.g. if a file type suddenly starts supporting dangerous macros and wasn't black-listed, it would spell trouble) or oversights"
@@ -689,4 +719,4 @@ If you have sensitive material that might be in a URL moniker, you should either
  - [page="_SEARCH:codebook_standards"]Code Book, part 4 (Coding Standards)[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
 
-{$SET,tutorial_tags,ssl,securitylogging,robots_txt,rootkit_detector,Security,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Details and guidance on the advanced security protections available in Composr.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,securitylogging,robots_txt,rootkit_detector,Security,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Details and guidance on the advanced security protections available in Composr.}[block]main_tutorial_rating[/block]

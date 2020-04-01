@@ -6,8 +6,6 @@
 	[block failsafe="1"]main_greeting[/block]
 	[surround="hero-button"][page="site:home"]{$SITE_NAME*}[/page][/surround]
 [/surround]
-
-[block failsafe="1"]main_image_fader_news[/block]
 {+END}
 
 {+START,IF,{$CONFIG_OPTION,single_public_zone}}
@@ -15,19 +13,9 @@
 
 [block="3" failsafe="1"]main_greeting[/block]
 
-[block failsafe="1"]main_news[/block]
+[block]main_multi_content[/block]
 
 [block failsafe="1"]main_leader_board[/block]
-
-[surround="fp-col-blocks-wrap pale-box"]
-	[surround="fp-col-block left"]
-		[block failsafe="1"]main_content[/block]
-	[/surround]
-
-	[surround="fp-col-block right"]
-		[block failsafe="1"]main_poll[/block]
-	[/surround]
-[/surround]
 
 [block failsafe="1"]main_quotes[/block]
 

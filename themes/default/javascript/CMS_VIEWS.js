@@ -1037,23 +1037,24 @@
             this.initializeGoogleAnalytics();
         }
 
-        // Cookie Consent plugin by Osano - https://cookieconsent.osano.com/
+        // Cookie Consent plugin by Osano - https://www.osano.com/cookieconsent
         if ($cms.configOption('cookie_notice') && ($cms.runningScript() === 'index')) {
-            var cookieConsentCss = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.1/cookieconsent.min.css',
-                cookieConsentJs = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.1/cookieconsent.min.js';
-
-            Promise.all([$cms.requireCss(cookieConsentCss), $cms.requireJavascript(cookieConsentJs)]).then(function () {
+            $cms.requireJavascript('cookie_consent').then(function () {
                 var cookieConsentOptions = {
+                    cookie: {
+                        path: $cms.getCookiePath(),
+                        domain: $cms.getCookieDomain(),
+                    },
                     palette: {
-                        popup: {'background': '#000'},
-                        button: {'background': '#FFF'},
+                        popup: {'background': '#000', 'text': '#FFF', 'link': '#FFF'},
+                        button: {'background': '#FFF', 'text': '#000'},
                     },
                     theme: 'block',
                     content: {
                         message: $util.format('{!COOKIE_NOTICE;}', [$cms.getSiteName()]),
                         dismiss: '{!INPUTSYSTEM_OK;}',
                         link: '{!READ_MORE;}',
-                        href: pageLinkPrivacy
+                        href: pageLinkPrivacy,
                     },
                 };
 
@@ -1064,7 +1065,7 @@
                     };
                 }
 
-                window.cookieconsent.initialise(cookieConsentOptions)
+                new window.CookieConsent(cookieConsentOptions);
             });
         }
 

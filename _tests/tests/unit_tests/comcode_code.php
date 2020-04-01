@@ -91,7 +91,7 @@ class comcode_code_test_set extends cms_test_case
 
         // White-space preservation for WYSIWYG
         $from = "[semihtml][code]&nbsp;x &nbsp;y<br />z[/code][/semihtml]";
-        $to = '<div class="comcode-code-wrap"><div class="comcode-code"><h4>Code</h4><div class="webstandards-checker-off"><code class="comcode-code-inner">&nbsp;x &nbsp;y<br />z</code></div></div></div>';
+        $to = '<div class="comcode-code-wrap"><div class="comcode-code"><h4>Code</h4><div class="webstandards-checker-off"><code class="comcode-code-inner">' . hex2bin('C2A0') . 'x ' . hex2bin('C2A0') . 'y<br />z</code></div></div></div>';
         $forced_html_to_comcode = false;
         $do_for_admin_too = true;
         $cases[9] = [$from, $to, $forced_html_to_comcode, $do_for_admin_too];
@@ -105,7 +105,7 @@ class comcode_code_test_set extends cms_test_case
 
         // HTML Code tags for WYSIWYG, with forcing to Comcode
         $from = "[semihtml]<code>&nbsp;x &nbsp;y<br />z</code>[/semihtml]";
-        $to = '<div class="comcode-code-wrap"><div class="comcode-code"><h4>Code</h4><div class="webstandards-checker-off"><code class="comcode-code-inner">&nbsp;x &nbsp;y<br />z</code></div></div></div>';
+        $to = '<div class="comcode-code-wrap"><div class="comcode-code"><h4>Code</h4><div class="webstandards-checker-off"><code class="comcode-code-inner">' . hex2bin('C2A0') . 'x ' . hex2bin('C2A0') . 'y<br />z</code></div></div></div>';
         $forced_html_to_comcode = true;
         $do_for_admin_too = true;
         $cases[11] = [$from, $to, $forced_html_to_comcode, $do_for_admin_too];

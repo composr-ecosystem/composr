@@ -37,6 +37,18 @@ class Hook_actionlog_galleries extends Hook_actionlog
         require_lang('galleries');
 
         return [
+            'GALLERY_IMPORT' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'gallery',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW' => '_SEARCH:galleries:browse:{ID}',
+                    'EDIT_THIS_GALLERY' => '_SEARCH:cms_galleries:_edit_category:{ID}',
+                    'ADD_IMAGE' => '_SEARCH:cms_galleries:add:cat={ID}',
+                    'ADD_VIDEO' => '_SEARCH:cms_galleries:add_other:cat={ID}',
+                ],
+            ],
             'ADD_GALLERY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'gallery',

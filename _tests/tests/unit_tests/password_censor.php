@@ -25,6 +25,8 @@ class password_censor_test_set extends cms_test_case
             return;
         }
 
+        $this->establish_admin_session();
+
         require_code('cns_topics');
         require_code('cns_posts');
         require_code('cns_forums');

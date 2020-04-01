@@ -48,7 +48,7 @@ class Hook_addon_registry_google_search
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'Third Party Integration';
     }
 
     /**

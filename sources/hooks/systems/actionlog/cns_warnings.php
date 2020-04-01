@@ -48,6 +48,7 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                 'written_context_index' => null,
                 'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{1}',
+                    'VIEW_WARNING' => '_SEARCH:warnings:view:{ID}'
                 ],
             ],
             'EDIT_WARNING' => [
@@ -57,6 +58,7 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                 'written_context_index' => null,
                 'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{1}',
+                    'VIEW_WARNING' => '_SEARCH:warnings:view:{ID}'
                 ],
             ],
             'DELETE_WARNING' => [
@@ -66,6 +68,7 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                 'written_context_index' => null,
                 'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{1}',
+                    'VIEW_WARNING' => '_SEARCH:warnings:view:{ID}'
                 ],
             ],
             'MARK_AS_SPAMMER' => [
@@ -153,7 +156,26 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{1}',
                 ],
             ],
-            'PUNITIVE_HISTORY' => [
+            'GROUP_CHANGE' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
+                    'USERGROUP' => '_SEARCH:groups:view:{1}',
+                ],
+            ],
+            'UNDO_GROUP_CHANGE' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => 'member',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
+                ],
+            ],
+            'REVIEW_WARNING_HISTORY' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
@@ -180,14 +202,20 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
             case 'ADD_WARNING':
             case 'EDIT_WARNING':
             case 'DELETE_WARNING':
+                require_lang('cns_warnings');
+
                 $written_context = $GLOBALS['FORUM_DRIVER']->get_username(intval($actionlog_row['param_b']));
                 if ($written_context === null) {
-                    return '#' . $actionlog_row['param_b'];
+                    return do_lang('WARNING_NUMBER', $actionlog_row['param_a']);
+                } else {
+                    $written_context .= ' ' . do_lang('WARNING_NUMBER', $actionlog_row['param_a']);
                 }
                 return $written_context;
 
             case 'SILENCE_FROM_FORUM':
             case 'UNSILENCE_FORUM':
+                require_lang('cns_warnings');
+
                 $username = $GLOBALS['FORUM_DRIVER']->get_username(intval($actionlog_row['param_a']));
                 if ($username === null) {
                     $username = '#' . $actionlog_row['param_b'];
@@ -198,11 +226,27 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                     $forum_name = '#' . $actionlog_row['param_b'];
                 }
 
-                $written_context = do_lang('SOMETHING_TO', $username, $forum_name);
+                $silence_until = $GLOBALS['FORUM_DB']->query_select_value_if_there('member_privileges', 'active_until', [
+                    'member_id' => intval($actionlog_row['param_a']),
+                    'privilege' => 'submit_midrange_content',
+                    'the_page' => '',
+                    'module_the_name' => 'forums',
+                    'category_name' => strval($actionlog_row['param_b']),
+                    'the_value' => '0'
+                ], 'ORDER BY active_until DESC');
+                if ($silence_until !== null) {
+                    $silence_until = do_lang('PUNITIVE_SILENCED_UNTIL', get_timezoned_date_time($silence_until, false, false, get_member()));
+                } else {
+                    $silence_until = do_lang('PUNITIVE_SILENCE_EXPIRED');
+                }
+
+                $written_context = do_lang('SOMETHING_TO', $username, $forum_name) . ' ' . $silence_until;
                 return $written_context;
 
             case 'SILENCE_FROM_TOPIC':
             case 'UNSILENCE_TOPIC':
+                require_lang('cns_warnings');
+
                 $username = $GLOBALS['FORUM_DRIVER']->get_username(intval($actionlog_row['param_a']));
                 if ($username === null) {
                     $username = '#' . $actionlog_row['param_b'];
@@ -213,7 +257,20 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                     $topic_title = '#' . $actionlog_row['param_b'];
                 }
 
-                $written_context = do_lang('SOMETHING_TO', $username, $topic_title);
+                $silence_until = $GLOBALS['FORUM_DB']->query_select_value_if_there('member_privileges', 'active_until', [
+                    'member_id' => intval($actionlog_row['param_a']),
+                    'privilege' => 'submit_lowrange_content',
+                    'the_page' => '',
+                    'module_the_name' => 'topics',
+                    'category_name' => strval($actionlog_row['param_b']),
+                ], 'ORDER BY active_until DESC');
+                if ($silence_until !== null) {
+                    $silence_until = do_lang('PUNITIVE_SILENCED_UNTIL', get_timezoned_date_time($silence_until, false, false, get_member()));
+                } else {
+                    $silence_until = do_lang('PUNITIVE_SILENCE_EXPIRED');
+                }
+
+                $written_context = do_lang('SOMETHING_TO', $username, $topic_title) . ' ' . $silence_until;
                 return $written_context;
         }
 

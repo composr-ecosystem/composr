@@ -3018,7 +3018,7 @@ function ecv_BANNER($lang, $escaped, $param)
                 $is_on_banners = false;
             }
         }
-        if (($is_on_banners) && (!is_page_https(get_zone_name(), get_page_name()))) { // We can't show when HTTPS, due to HTTPS security warnings (can't show HTTP requests on HTTPS page, and banner has them by nature).
+        if ($is_on_banners) {
             require_code('banners');
 
             $b_type = isset($param[0]) ? $param[0] : '';
@@ -3942,7 +3942,7 @@ function ecv_FIND_SCRIPT($lang, $escaped, $param)
     }
 
     if ((!empty($param[0])) && (function_exists('find_script'))) {
-        $value = find_script($param[0], false, (!empty($param[1])) ? intval($param[1]) : 0);
+        $value = find_script($param[0]);
     } else { // Running from installer's compilation of JS, so let's assume it's a simple case
         $value = get_base_url() . '/data/' . $param[0] . '.php';
     }
@@ -5914,7 +5914,7 @@ function ecv_COPYRIGHT($lang, $escaped, $param)
  */
 function ecv_CUSTOM_BASE_URL($lang, $escaped, $param)
 {
-    $value = get_custom_base_url(@cms_empty_safe($param[0]) ? null : !empty($param[0]));
+    $value = get_custom_base_url();
 
     if (!empty($param[1])) {
         $value = cdn_filter($value);
@@ -5992,7 +5992,7 @@ function ecv_CUSTOM_BASE_URL_NOHTTP($lang, $escaped, $param)
  */
 function ecv_BASE_URL($lang, $escaped, $param)
 {
-    $value = get_base_url(isset($param[0]) ? !empty($param[0]) : null);
+    $value = get_base_url();
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);
@@ -6777,18 +6777,14 @@ function ecv_STAFF_TOOLTIPS_URL_PATTERNS_JSON($lang, $escaped, $param)
 
             $info = $content_type_ob->info();
             if (isset($info['view_page_link_pattern'])) {
-                list($zone, $attributes,) = page_link_decode($info['view_page_link_pattern']);
-                $url = build_url($attributes, $zone, [], false, false, true);
+                $url = page_link_to_tempcode_url($info['view_page_link_pattern'], true);
                 $pattern = _escape_url_pattern_for_js_regex($url->evaluate());
                 $hook = $content_type;
                 $url_patterns[$pattern] = $hook;
             }
             if (isset($info['edit_page_link_pattern'])) {
-                list($zone, $attributes,) = page_link_decode($info['edit_page_link_pattern']);
-                $url = build_url($attributes, $zone, [], false, false, true);
-
+                $url = page_link_to_tempcode_url($info['edit_page_link_pattern'], true);
                 $pattern = _escape_url_pattern_for_js_regex($url->evaluate());
-
                 $hook = $content_type;
                 $url_patterns[$pattern] = $hook;
             }
@@ -7095,7 +7091,7 @@ function ecv_COLOR_LIGHTEN($lang, $escaped, $param)
         $green = hexdec(substr($hex_color, 3, 2));
         $blue  = hexdec(substr($hex_color, 5, 2));
 
-        $lighten_by = floatval(substr($param[1], 0, -1)) / 100; // Remove trailing '%' sign
+        $lighten_by = floatval(substr($param[1], 0, -1)) / 100.0; // Remove trailing '%' sign
 
         list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
 
@@ -7138,7 +7134,7 @@ function ecv_COLOR_DARKEN($lang, $escaped, $param)
         $green = hexdec(substr($hex_color, 3, 2));
         $blue  = hexdec(substr($hex_color, 5, 2));
 
-        $darken_by = floatval(substr($param[1], 0, -1)) / 100; // Remove trailing '%' sign
+        $darken_by = floatval(substr($param[1], 0, -1)) / 100.0; // Remove trailing '%' sign
 
         list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
 

@@ -619,7 +619,7 @@ function get_page_permission_where_clause($zone_field, $page_field, $member_id, 
     $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_page_access a WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND ' . $row_alias . '.' . $page_field . '=a.page_name AND (' . $groups . '))';
     if ($member_id !== null) {
         $query .= ' OR ';
-        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_page_access ma WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND ' . $row_alias . '.' . $page_field . '=ma.page_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
+        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_page_access ma WHERE ' . $row_alias . '.' . $zone_field . '=ma.zone_name AND ' . $row_alias . '.' . $page_field . '=ma.page_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
     }
     $query .= ')';
     return $query;
@@ -640,7 +640,7 @@ function get_zone_permission_where_clause($zone_field, $member_id, $groups, $row
     $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_zone_access a WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND (' . $groups . '))';
     if ($member_id !== null) {
         $query .= ' OR ';
-        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_zone_access ma WHERE ' . $row_alias . '.' . $zone_field . '=a.zone_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
+        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_zone_access ma WHERE ' . $row_alias . '.' . $zone_field . '=ma.zone_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
     }
     $query .= ')';
     return $query;

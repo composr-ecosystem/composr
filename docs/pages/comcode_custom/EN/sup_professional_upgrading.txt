@@ -272,7 +272,7 @@ mysqldump client_<codename> > _temp/stage2.sql
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Run some cleanup tools
-| Go to Admin Zone > Tools > Website cleanup tools, run "Sync for lost disk content"; if you're really enthusiastic also "Find orphaned uploads" and "Broken URLs"
+| Go to Admin Zone > Tools > Cleanup tools, run "Sync for lost disk content"; if you're really enthusiastic also "Find orphaned uploads" and "Broken URLs"
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Delete some empty directories that may have been left over (Composr only tracks alien files, not directories)

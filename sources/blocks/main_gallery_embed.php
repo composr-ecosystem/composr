@@ -100,6 +100,7 @@ PHP;
         require_code('galleries');
         require_code('images');
         require_code('content');
+        require_code('feedback');
         require_javascript('galleries');
 
         $block_id = get_block_id($map);
@@ -215,6 +216,8 @@ PHP;
                         'VIEWS' => strval($row['image_views']),
                         'ADD_DATE_RAW' => strval($row['add_date']),
                         'EDIT_DATE_RAW' => ($row['edit_date'] === null) ? '' : strval($row['edit_date']),
+                        'ADD_DATE' => get_timezoned_date($row['add_date']),
+                        'EDIT_DATE' => ($row['edit_date'] === null) ? '' : get_timezoned_date($row['edit_date']),
                         'START' => strval($start),
                         '_EDIT_URL' => $_edit_url,
                         'COMMENT_COUNT' => ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($row['allow_comments'] >= 1)),
@@ -272,6 +275,8 @@ PHP;
                         'VIEWS' => strval($row['video_views']),
                         'ADD_DATE_RAW' => strval($row['add_date']),
                         'EDIT_DATE_RAW' => ($row['edit_date'] === null) ? '' : strval($row['edit_date']),
+                        'ADD_DATE' => get_timezoned_date($row['add_date']),
+                        'EDIT_DATE' => ($row['edit_date'] === null) ? '' : get_timezoned_date($row['edit_date']),
                         'START' => strval($start),
                         '_EDIT_URL' => $_edit_url,
                         'COMMENT_COUNT' => ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($row['allow_comments'] >= 1)),

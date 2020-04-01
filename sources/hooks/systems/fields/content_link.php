@@ -170,23 +170,13 @@ class Hook_fields_content_link
         }
         $db = get_db_for($info['table']);
         $select = [];
-        append_content_select_for_id($select, $info);
-        if ($info['title_field'] !== null) {
-            $select[] = $info['title_field'];
-        }
-        if ($info['add_time_field'] !== null) {
-            $select[] = $info['add_time_field'];
-        }
+        append_content_select_for_fields($select, $info, ['id', 'title', 'add_field']);
         $rows = $db->query_select($info['table'], $select, [], ($info['add_time_field'] === null) ? '' : ('ORDER BY ' . $info['add_time_field'] . ' DESC'), 2000/*reasonable limit*/);
 
         $_list = [];
         foreach ($rows as $row) {
-            $id = extract_content_str_id_from_data($row, $info);
-            if ($info['title_field'] === null) {
-                $text = $id;
-            } else {
-                $text = $info['title_field_dereference'] ? get_translated_text($row[$info['title_field']], $info['db']) : $row[$info['title_field']];
-            }
+            $id = $ob->get_id($row);
+            $text = $ob->get_title($row);
             $_list[$id] = $text;
         }
         if (count($_list) < 2000) {

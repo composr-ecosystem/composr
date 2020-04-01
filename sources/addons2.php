@@ -758,6 +758,9 @@ function has_feature($dependency)
             return true;
         }
     }
+    if ((strtolower($dependency) == 'ssl') && (substr(get_base_url(), 0, 8) == 'https://')) {
+        return true;
+    }
 
     // ---
 
@@ -1496,4 +1499,6 @@ function uninstall_addon_soft($addon_name)
             $ob->uninstall();
         }
     }
+
+    set_value('kill_cron_looping', '1', true);
 }

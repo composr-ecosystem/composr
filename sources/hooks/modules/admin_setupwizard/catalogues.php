@@ -31,14 +31,10 @@ class Hook_sw_catalogues
     public function get_current_settings()
     {
         $settings = [];
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'projects']);
-        $settings['have_default_catalogues_projects'] = ($test === null) ? '0' : '1';
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'faqs']);
-        $settings['have_default_catalogues_faqs'] = ($test === null) ? '0' : '1';
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'links']);
-        $settings['have_default_catalogues_links'] = ($test === null) ? '0' : '1';
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'contacts']);
-        $settings['have_default_catalogues_contacts'] = ($test === null) ? '0' : '1';
+        $settings['have_default_catalogues_projects'] = has_predefined_content('catalogues', 'have_default_catalogues_projects') ? '1' : '0';
+        $settings['have_default_catalogues_faqs'] = has_predefined_content('catalogues', 'have_default_catalogues_faqs') ? '1' : '0';
+        $settings['have_default_catalogues_links'] = has_predefined_content('catalogues', 'have_default_catalogues_links') ? '1' : '0';
+        $settings['have_default_catalogues_contacts'] = has_predefined_content('catalogues', 'have_default_catalogues_contacts') ? '1' : '0';
         return $settings;
     }
 
@@ -58,19 +54,13 @@ class Hook_sw_catalogues
         $field_defaults += $current_settings; // $field_defaults will take precedence, due to how "+" operator works in PHP
 
         require_lang('catalogues');
+
         $fields = new Tempcode();
-        if ($current_settings['have_default_catalogues_projects'] == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_PROJECTS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_PROJECTS'), 'have_default_catalogues_projects', $field_defaults['have_default_catalogues_projects'] == '1'));
-        }
-        if ($current_settings['have_default_catalogues_faqs'] == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_FAQS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_FAQS'), 'have_default_catalogues_faqs', $field_defaults['have_default_catalogues_faqs'] == '1'));
-        }
-        if ($current_settings['have_default_catalogues_links'] == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_LINKS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_LINKS'), 'have_default_catalogues_links', $field_defaults['have_default_catalogues_links'] == '1'));
-        }
-        if ($current_settings['have_default_catalogues_contacts'] == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_CONTACTS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_CONTACTS'), 'have_default_catalogues_contacts', $field_defaults['have_default_catalogues_contacts'] == '1'));
-        }
+        $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_PROJECTS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_PROJECTS'), 'have_default_catalogues_projects', $field_defaults['have_default_catalogues_projects'] == '1'));
+        $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_FAQS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_FAQS'), 'have_default_catalogues_faqs', $field_defaults['have_default_catalogues_faqs'] == '1'));
+        $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_LINKS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_LINKS'), 'have_default_catalogues_links', $field_defaults['have_default_catalogues_links'] == '1'));
+        $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_CONTACTS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_CONTACTS'), 'have_default_catalogues_contacts', $field_defaults['have_default_catalogues_contacts'] == '1'));
+
         return [$fields, new Tempcode()];
     }
 
@@ -83,58 +73,11 @@ class Hook_sw_catalogues
             return;
         }
 
-        if (post_param_integer('have_default_catalogues_projects', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'projects']);
-            if ($test !== null) {
-                require_code('catalogues2');
-                actual_delete_catalogue('projects');
-                require_lang('catalogues');
-                require_code('menus2');
-                delete_menu_item_simple(do_lang('DEFAULT_CATALOGUE_PROJECTS_TITLE'));
-                delete_menu_item_simple('_SEARCH:cms_catalogues:add_entry:catalogue_name=projects');
-                delete_menu_item_simple('_SEARCH:catalogues:index:projects');
-            }
-        }
-        if (post_param_integer('have_default_catalogues_faqs', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'faqs']);
-            if ($test !== null) {
-                require_code('catalogues2');
-                actual_delete_catalogue('faqs');
-                require_code('menus2');
-                delete_menu_item_simple('_SEARCH:catalogues:index:faqs');
-            }
-        }
-        if (post_param_integer('have_default_catalogues_links', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'links']);
-            if ($test !== null) {
-                require_code('catalogues2');
-                actual_delete_catalogue('links');
-                require_code('menus2');
-                delete_menu_item_simple('_SEARCH:catalogues:index:links');
-            }
-        }
-        if (post_param_integer('have_default_catalogues_contacts', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'contacts']);
-            if ($test !== null) {
-                require_code('catalogues2');
-                actual_delete_catalogue('contacts');
-                require_code('menus2');
-                delete_menu_item_simple('_SEARCH:catalogues:index:contacts');
-            }
-        }
-    }
-
-    /**
-     * Run function for blocks in the setup wizard.
-     *
-     * @return array A pair: Main blocks and Side blocks (each is a map of block names to display types)
-     */
-    public function get_blocks()
-    {
-        if (!addon_installed('catalogues')) {
-            return [];
-        }
-
-        return [[], []];
+        install_predefined_content('catalogues', [
+           'have_default_catalogues_projects' => (post_param_integer('have_default_catalogues_projects', 0) == 1),
+           'have_default_catalogues_faqs' => (post_param_integer('have_default_catalogues_faqs', 0) == 1),
+           'have_default_catalogues_links' => (post_param_integer('have_default_catalogues_links', 0) == 1),
+           'have_default_catalogues_contacts' => (post_param_integer('have_default_catalogues_contacts', 0) == 1),
+        ]);
     }
 }

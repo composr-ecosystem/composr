@@ -1,4 +1,6 @@
 {+START,IF,{$NEQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}
+	{SLIDER}
+
 	{$SET,ajax_block_main_news_grid_wrapper,ajax-block-main-news-grid-wrapper-{$RAND%}}
 	{$SET,block_call_url,{$FACILITATE_AJAX_BLOCK_CALL,{BLOCK_PARAMS}}{+START,IF_PASSED,EXTRA_GET_PARAMS}{EXTRA_GET_PARAMS}{+END}&page={$PAGE&}}
 	<div id="{$GET*,ajax_block_main_news_grid_wrapper}" class="block-main-news-grid" data-ajaxify="{ callUrl: '{$GET;*,block_call_url}', callParamsFromTarget: ['^[^_]*_start$', '^[^_]*_max$'], targetsSelector: '.ajax-block-wrapper-links a, .ajax-block-wrapper-links form' }">
@@ -8,19 +10,19 @@
 				<h2>{TITLE}</h2>
 			{+END}{+END}
 
-			{+START,IF_EMPTY,{BRIEF}{CONTENT}}
+			{+START,IF_EMPTY,{SLIDER}{SUMMARY_CONTENT}{BRIEF_CONTENT}}
 				<p class="nothing-here">{!NO_ENTRIES,news}</p>
 			{+END}
 
 			<div class="raw-ajax-grow-spot main-news-grid">
-				{CONTENT}
+				{SUMMARY_CONTENT}
 
-				{+START,IF_NON_EMPTY,{BRIEF}}
-					{+START,IF_NON_EMPTY,{CONTENT}}
+				{+START,IF_NON_EMPTY,{BRIEF_CONTENT}}
+					{+START,IF_NON_EMPTY,{SUMMARY_CONTENT}}
 						<h3>{$?,{BLOG},{!BLOG_OLDER_NEWS},{!OLDER_NEWS}}</h3>
 					{+END}
 
-					{BRIEF}
+					{BRIEF_CONTENT}
 				{+END}
 			</div>
 
@@ -63,8 +65,8 @@
 {+END}
 
 {+START,IF,{$EQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}
-	{CONTENT}
-	{BRIEF}
+	{SUMMARY_CONTENT}
+	{BRIEF_CONTENT}
 
 	{PAGINATION}
 {+END}

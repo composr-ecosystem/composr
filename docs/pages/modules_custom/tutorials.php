@@ -609,7 +609,26 @@ class Module_tutorials
         }
 
         require_code('tutorials');
+        require_css('tutorials');
 
+        $type = get_param_string('type', 'browse');
+        if ($type == 'browse') {
+            return $this->browse();
+        }
+        if ($type == 'view') {
+            return $this->view();
+        }
+
+        return new Tempcode();
+    }
+
+    /**
+     * Browse tutorials.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function browse()
+    {
         $title = get_screen_title(protect_from_escaping('Tutorials &ndash; Learning Composr'), false);
 
         $tag = get_param_string('type', 'Installation', INPUT_FILTER_GET_COMPLEX); // $type, essentially
@@ -619,7 +638,6 @@ class Module_tutorials
         $tutorials = list_tutorials_by('likes', ($tag == '') ? null : $tag);
         $_tutorials = templatify_tutorial_list($tutorials);
 
-        require_css('tutorials');
         return do_template('TUTORIAL_INDEX_SCREEN', [
             '_GUID' => '4569ab28e8959d9556dbb6d73c0e834a',
             'TITLE' => $title,
@@ -627,5 +645,28 @@ class Module_tutorials
             'SELECTED_TAG' => $tag,
             'TUTORIALS' => $_tutorials,
         ]);
+    }
+
+    /**
+     * Redirect to external tutorial.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function view()
+    {
+        $id = get_param_integer('id');
+
+        $tutorial_rows = $GLOBALS['SITE_DB']->query_select('tutorials_external', ['*'], ['id' => $id], '', 1);
+        if (!array_key_exists(0, $tutorial_rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'tutorial'));
+        }
+
+        $tutorial_row = $tutorial_rows[0];
+
+        $title = get_screen_title(protect_from_escaping($tutorial_row['t_title']), false);
+
+        require_code('templates');
+        $url = $tutorial_row['t_url'];
+        return redirect_screen($title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

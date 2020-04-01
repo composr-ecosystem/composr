@@ -328,5 +328,8 @@ function number_raw_string($value)
     if (is_float($value)) {
         return float_to_raw_string($value, 2, true);
     }
+    if ((is_string($value)) && (is_numeric($value))) {
+        return $value;
+    }
     return '0';
 }

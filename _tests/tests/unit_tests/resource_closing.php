@@ -37,7 +37,7 @@ class resource_closing_test_set extends cms_test_case
             'sources_custom/phpstub.php',
         ];
         $exception_stubs = [
-            'sources_custom/aws/',
+            'sources_custom/aws_ses/',
             'sources_custom/sabredav/',
             'sources_custom/spout/',
             'tracker/',

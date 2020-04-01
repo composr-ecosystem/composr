@@ -38,7 +38,28 @@ class Hook_ajax_tree_choose_catalogue_entry
         $only_owned = array_key_exists('only_owned', $options) ? (($options['only_owned'] === null) ? null : intval($options['only_owned'])) : null;
         $catalogue_name = array_key_exists('catalogue_name', $options) ? $options['catalogue_name'] : null;
         $editable_filter = array_key_exists('editable_filter', $options) ? ($options['editable_filter']) : false;
-        $tree = get_catalogue_entries_tree($catalogue_name, $only_owned, ($id === null) ? null : intval($id), null, null, ($id === null) ? 0 : 1, $editable_filter);
+
+        if (($catalogue_name === null) && ($id !== null)) {
+            $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $id]);
+        }
+
+        if ($catalogue_name === null) {
+            $tree = [];
+            $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues', ['c_name']);
+            foreach ($catalogues as $catalogue) {
+                if (substr($catalogue['c_name'], 0, 1) == '_') {
+                    continue;
+                }
+
+                $_tree = get_catalogue_entries_tree($catalogue['c_name'], $only_owned, null, null, null, 0, $editable_filter);
+                foreach ($_tree as &$_t) {
+                    $_t['title'] .= ' [' . $catalogue['c_name'] . ']';
+                }
+                $tree = array_merge($tree, $_tree);
+            }
+        } else {
+            $tree = get_catalogue_entries_tree($catalogue_name, $only_owned, ($id === null) ? null : intval($id), null, null, ($id === null) ? 0 : 1, $editable_filter);
+        }
 
         $levels_to_expand = array_key_exists('levels_to_expand', $options) ? ($options['levels_to_expand']) : intval(get_value('levels_to_expand__' . substr(get_class($this), 5), null, true));
         $options['levels_to_expand'] = max(0, $levels_to_expand - 1);

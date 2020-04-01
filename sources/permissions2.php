@@ -129,8 +129,8 @@ function _handle_permission_check_logging($member_id, $op, $params, $result)
         sync_file(get_custom_file_base() . '/data_custom/permission_checks.log');
     }
 
-    if ((function_exists('fb')) && (get_param_integer('keep_firephp', 0) == 1) && (!headers_sent())) {
-        fb('Permission check ' . ($result ? 'PASSED' : 'FAILED') . ': ' . $str);
+    if ((function_exists('fb_wrap')) && (get_param_integer('keep_firephp', 0) == 1) && (!headers_sent())) {
+        fb_wrap('Permission check ' . ($result ? 'PASSED' : 'FAILED') . ': ' . $str);
     }
 }
 
@@ -413,7 +413,7 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
     }
 
     require_code('themes2');
-    $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
+    $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
     // For heading up the table matrix
     $overrides_array = [];

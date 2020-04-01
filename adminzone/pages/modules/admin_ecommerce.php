@@ -500,11 +500,8 @@ class Module_admin_ecommerce extends Standard_crud_module
     public function add_actualisation()
     {
         if (has_actual_page_access(get_member(), 'admin_config')) {
-            $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'ECOMMERCE'], get_module_zone('admin_config'));
-            $config_url = $_config_url->evaluate();
-            $config_url .= '#group_ECOMMERCE';
-
-            $text = paragraph(do_lang_tempcode('ECOM_ADDED_SUBSCRIP', escape_html($config_url)));
+            $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'ECOMMERCE'], get_module_zone('admin_config'), [], false, false, false, 'group-ECOMMERCE');
+            $text = paragraph(do_lang_tempcode('ECOM_ADDED_SUBSCRIP', escape_html_tempcode($config_url)));
         } else {
             $text = null;
         }

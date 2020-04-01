@@ -474,7 +474,7 @@ function config_update_value_ref($old_setting, $setting, $type)
  * Get a URL to where to edit a config option.
  *
  * @param  ID_TEXT $name The config option name
- * @return ?URLPATH URL to set the config option (null: no such option exists)
+ * @return ?Tempcode URL to set the config option (null: no such option exists)
  */
 function config_option_url($name)
 {
@@ -487,11 +487,8 @@ function config_option_url($name)
     $ob = object_factory('Hook_config_' . filter_naughty_harsh($name));
     $details = $ob->get_details();
 
-    $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $details['category']], get_module_zone('admin_config'));
-    $config_url = $_config_url->evaluate();
-    $config_url .= '#group_' . $details['group'];
-
-    return $config_url;
+    $url_map = ['page' => 'admin_config', 'type' => 'category', 'id' => $details['category']];
+    return build_url($url_map, get_module_zone('admin_config'), [], false, false, false, 'group-' . $details['group']);
 }
 
 /**

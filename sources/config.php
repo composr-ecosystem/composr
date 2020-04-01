@@ -29,7 +29,7 @@ function init__config()
     $CONFIG_OPTIONS_FULLY_LOADED = false;
     $VALUES_FULLY_LOADED = false;
 
-    global $VALUE_OPTIONS_CACHE, $IN_MINIKERNEL_VERSION;
+    global $VALUE_OPTIONS_CACHE, $VALUE_OPTIONS_ELECTIVE_CACHE, $IN_MINIKERNEL_VERSION;
     if (!$IN_MINIKERNEL_VERSION) {
         if (multi_lang_content()) {
             load_config_options(); // Translation will be needed, so we won't put in the smart cache because we don't know the current language yet (chicken and egg)
@@ -70,6 +70,7 @@ function init__config()
         $CONFIG_OPTIONS_CACHE = [];
         $VALUE_OPTIONS_CACHE = [];
     }
+    $VALUE_OPTIONS_ELECTIVE_CACHE = [];
 
     global $GET_OPTION_LOOP;
     $GET_OPTION_LOOP = false;
@@ -473,14 +474,14 @@ function get_option($name, $missing_ok = false)
 function get_value($name, $default = null, $elective_or_lengthy = false, $env_also = false)
 {
     if ($elective_or_lengthy) {
-        static $cache = [];
-        if (!array_key_exists($name, $cache)) {
+        global $VALUE_OPTIONS_ELECTIVE_CACHE;
+        if (!array_key_exists($name, $VALUE_OPTIONS_ELECTIVE_CACHE)) {
             if (!isset($GLOBALS['SITE_DB'])) {
                 return null;
             }
-            $cache[$name] = $GLOBALS['SITE_DB']->query_select_value_if_there('values_elective', 'the_value', ['the_name' => $name], '', running_script('install') || running_script('upgrader'));
+            $VALUE_OPTIONS_ELECTIVE_CACHE[$name] = $GLOBALS['SITE_DB']->query_select_value_if_there('values_elective', 'the_value', ['the_name' => $name], '', running_script('install') || running_script('upgrader'));
         }
-        return $cache[$name];
+        return $VALUE_OPTIONS_ELECTIVE_CACHE[$name];
     }
 
     global $IN_MINIKERNEL_VERSION, $VALUE_OPTIONS_CACHE, $SMART_CACHE;
@@ -568,9 +569,12 @@ function get_value_newer_than($name, $cutoff, $elective_or_lengthy = false)
 function set_value($name, $value, $elective_or_lengthy = false, $fail_ok = false)
 {
     if ($elective_or_lengthy) {
+        global $VALUE_OPTIONS_ELECTIVE_CACHE;
         if ($value === null) {
+            unset($VALUE_OPTIONS_ELECTIVE_CACHE[$name]);
             $GLOBALS['SITE_DB']->query_delete('values_elective', ['the_name' => $name], '', 1);
         } else {
+            $VALUE_OPTIONS_ELECTIVE_CACHE[$name] = $value;
             $GLOBALS['SITE_DB']->query_insert_or_replace('values_elective', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name]);
         }
         return $value;
@@ -595,6 +599,8 @@ function set_value($name, $value, $elective_or_lengthy = false, $fail_ok = false
 function delete_value($name, $elective_or_lengthy = false)
 {
     if ($elective_or_lengthy) {
+        global $VALUE_OPTIONS_ELECTIVE_CACHE;
+        unset($VALUE_OPTIONS_ELECTIVE_CACHE[$name]);
         $GLOBALS['SITE_DB']->query_delete('values_elective', ['the_name' => $name], '', 1);
         return;
     }

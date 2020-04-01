@@ -1070,7 +1070,7 @@ abstract class DatabaseDriver
      * Note that AVG may return an integer or float, depending on whether the DB engine auto-converts round numbers to integers. MySQL seems to.
      *
      * @param  string $function Function name
-     * @set CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD MD5 GROUP_CONCAT X_ORDER_BY_BOOLEAN
+     * @set CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD ABS MD5 GROUP_CONCAT X_ORDER_BY_BOOLEAN
      * @param  array $args List of string arguments, assumed already quoted/escaped correctly for the particular database
      * @return string SQL fragment
      */
@@ -1195,6 +1195,9 @@ abstract class DatabaseDriver
                         return $args[0] . ' % ' . $args[1];
                 }
                 break;
+
+            case 'ABS':
+                return 'ABS(' . $args[0] . ')';
 
             case 'MD5':
                 if (count($args) != 1) {
@@ -1732,7 +1735,7 @@ class DatabaseConnector
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $skip_safety_check Whether to skip the query safety check
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
      * @param  string $field_prefix All the core fields have a prefix of this on them, so when we fiddle with language lookup we need to use this (only consider this if you're setting $lang_fields)
      * @return ?mixed The results (null: no result set) (empty array: empty result set)
      */
@@ -1780,6 +1783,32 @@ class DatabaseConnector
     }
 
     /**
+     * Create a join into the translate table, with a preference to language-matched translations but fall-back.
+     *
+     * @param  ID_TEXT $field Field name of what we are joining against
+     * @param  string $join_alias Join alias
+     * @param  ?LANGUAGE_NAME $lang Language (null: current language)
+     * @param  string $join_type Join type
+     * @return string Join SQL
+     */
+    public function translate_field_join($field, $join_alias = 't', $lang = null, $join_type = 'LEFT JOIN')
+    {
+        if ($lang === null) {
+            $lang = user_lang();
+        }
+
+        $join = ' ' . $join_type . ' ' . $this->get_table_prefix() . 'translate ' . $join_alias . ' ON ' . $join_alias . '.id=' . $field;
+        $translate_order_by = db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', $lang)]);
+        if ($lang != get_site_default_lang()) {
+            $translate_order_by = ',' . db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', get_site_default_lang())]);
+        }
+        $subquery = 'SELECT language FROM ' . $this->get_table_prefix() . 'translate WHERE id=' . $field . ' ORDER BY ' . $translate_order_by;
+        $this->static_ob->apply_sql_limit_clause($subquery, 1);
+        $join .= ' AND ' . $join_alias . '.language=(' . $subquery . ')';
+        return $join;
+    }
+
+    /**
      * This function is a very basic query executor. It shouldn't usually be used by you, as there are specialised abstracted versions available.
      *
      * @param  string $query The complete SQL query
@@ -1787,7 +1816,7 @@ class DatabaseConnector
      * @param  integer $start The start row to affect
      * @param  boolean $fail_ok Whether to output an error on failure
      * @param  boolean $get_insert_id Whether to get an insert ID
-     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
+     * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
      * @param  string $field_prefix All the core fields have a prefix of this on them, so when we fiddle with language lookup we need to use this (only consider this if you're setting $lang_fields)
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
      * @return ?mixed The results (null: no result set) (empty array: empty result set)
@@ -1824,8 +1853,8 @@ class DatabaseConnector
             @header('Query: ' . $query . "\n");
             */
         }
-        if ((!headers_sent()) && (function_exists('fb')) && (get_param_integer('keep_firephp_queries', 0) === 1)) {
-            fb('Query: ' . $query);
+        if ((!headers_sent()) && (function_exists('fb_wrap')) && (get_param_integer('keep_firephp_queries', 0) === 1)) {
+            fb_wrap('Query: ' . $query);
         }
 
         if (($QUERY_COUNT === DEV_MODE_QUERY_LIMIT) && (get_param_integer('keep_query_limit', null) !== 0) && ($GLOBALS['RELATIVE_PATH'] !== '_tests') && (count($_POST) === 0) && (!$IN_MINIKERNEL_VERSION) && (get_param_string('special_page_type', '') !== 'query')) {
@@ -1852,41 +1881,16 @@ class DatabaseConnector
                 if ((strpos($query, 'text_original') !== false) || (function_exists('user_lang')) && ($start < 200)) {
                     $lang = function_exists('user_lang') ? user_lang() : get_site_default_lang(); // We can we assume this, as we will cache against it -- if subsequently code wants something else it'd be a cache miss which is fine
 
+                    list($from_pos, $query_tail_pos) = $this->find_query_hotspots($query);
+
                     foreach ($lang_fields as $field => $field_type) {
                         $field_stripped = preg_replace('#.*\.#', '', $field);
 
-                        $join = ' LEFT JOIN ' . $this->table_prefix . 'translate t_' . $field_stripped . ' ON t_' . $field_stripped . '.id=' . $field_prefix . $field;
-                        $join .= ' AND ' . db_string_equal_to('t_' . $field_stripped . '.language', $lang);
+                        $join = $this->translate_field_join($field_prefix . $field, 't_' . $field_stripped, $lang);
 
-                        $_query = strtoupper($query);
-                        $from_pos = strpos($_query, ' FROM ');
-                        $where_pos = strpos($_query, ' WHERE ');
-                        $from_in_subquery = ($from_pos !== false) && (strpos(substr($_query, 0, $from_pos), '(SELECT') !== false); // FROM clause seems to be in a subquery, so it's more robust for us to work backwards
-                        $where_in_subquery = ($where_pos !== false) && (strpos(substr($_query, 0, $where_pos), '(SELECT') !== false); // WHERE clause seems to be in a subquery, so it's more robust for us to work backwards
-                        if ($from_in_subquery || $where_in_subquery) {
-                            $from_pos = strrpos($_query, ' FROM ');
-                            $where_pos = strrpos($_query, ' WHERE ');
-                        }
-                        if ($where_pos === false) {
-                            $_where_pos = 0;
-                            do {
-                                $_where_pos = strpos($_query, ' GROUP BY ', $_where_pos + 1);
-                                if ($_where_pos !== false) {
-                                    $where_pos = $_where_pos;
-                                }
-                            } while ($_where_pos !== false);
-                        }
-                        if ($where_pos === false) {
-                            $_where_pos = 0;
-                            do {
-                                $_where_pos = strpos($_query, ' ORDER BY ', $_where_pos + 1);
-                                if ($_where_pos !== false) {
-                                    $where_pos = $_where_pos;
-                                }
-                            } while ($_where_pos !== false);
-                        }
-                        if ($where_pos !== false) {
-                            $query = substr($query, 0, $where_pos) . $join . substr($query, $where_pos);
+                        if ($query_tail_pos !== false) {
+                            $query = substr($query, 0, $query_tail_pos) . $join . substr($query, $query_tail_pos);
+                            $query_tail_pos += strlen($join);
                         } else {
                             $query .= $join;
                         }
@@ -1896,7 +1900,11 @@ class DatabaseConnector
                             $original = 't_' . $field_stripped . '.text_original AS t_' . $field_stripped . '__text_original';
                             $parsed = 't_' . $field_stripped . '.text_parsed AS t_' . $field_stripped . '__text_parsed';
 
-                            $query = $before_from . ',' . $original . ',' . $parsed . substr($query, $from_pos);
+                            $extra_select_fields = ',' . $original . ',' . $parsed;
+                            $query = $before_from . $extra_select_fields . substr($query, $from_pos);
+                            if ($query_tail_pos !== false) {
+                                $query_tail_pos += strlen($extra_select_fields);
+                            }
 
                             $lang_strings_expecting[] = [$field, 't_' . $field_stripped . '__text_original', 't_' . $field_stripped . '__text_parsed'];
                         }
@@ -1905,11 +1913,7 @@ class DatabaseConnector
             } else {
                 foreach ($lang_fields as $field => $field_type) {
                     if (strpos($field_type, '__COMCODE') !== false) {
-                        $_query = strtoupper($query);
-                        $from_pos = strpos($_query, ' FROM ');
-                        if (($from_pos !== false) && (strpos(substr($_query, 0, $from_pos), '(SELECT') !== false)) {
-                            $from_pos = strrpos($_query, ' FROM ');
-                        }
+                        list($from_pos, $query_tail_pos) = $this->find_query_hotspots($query);
                         $before_from = substr($query, 0, $from_pos);
 
                         if (preg_match('#(COUNT|SUM|AVG|MIN|MAX)\(#', $before_from) === 0) { // If we're returning full result sets (as opposed probably to just joining so we can use translate_field_ref)
@@ -2037,6 +2041,43 @@ class DatabaseConnector
         }
 
         return $ret;
+    }
+
+    /**
+     * Find key parts of SQL query so we can inject into it.
+     *
+     * @param  string $query The query
+     * @return array A pair: position just before " FROM ", position just before the end of the FROM clause
+     */
+    protected function find_query_hotspots($query)
+    {
+        $len = strlen($query);
+        $brackets_open = 0;
+        $from_pos = null;
+        $query_tail_pos = null;
+        for ($i = 0; $i < $len; $i++) {
+            $c = $query[$i];
+            if ($c == '(') {
+                $brackets_open++;
+            } elseif ($c == ')') {
+                $brackets_open--;
+            } elseif (($brackets_open == 0) && (trim($c) == '')/*i.e. we're at some whitespace*/) {
+                $matches = [];
+                if (preg_match('#\s(FROM|WHERE|GROUP\sBY|ORDER\sBY)#iA', $query, $matches, 0, $i) != 0) {
+                    if (($from_pos === null) && ($matches[1] == 'FROM')) {
+                        $from_pos = $i;
+                    } elseif (($query_tail_pos === null) && ($matches[1] != 'FROM')) {
+                        $query_tail_pos = $i;
+                        break;
+                    }
+                }
+            }
+        }
+        if ($query_tail_pos === null) {
+            $query_tail_pos = $len;
+            @exit($query);
+        }
+        return [$from_pos, $query_tail_pos];
     }
 
     /**
@@ -2586,7 +2627,7 @@ class DatabaseConnector
 
         $ret = '';
         if (strpos(get_db_type(), 'mysql') !== false) {
-            if ((!$do_check_first) || ($GLOBALS['SITE_DB']->query_select_value_if_there('db_meta_indices', 'i_fields', ['i_table' => $table, 'i_name' => $index]) !== null)) {
+            if ((!$do_check_first) || (get_value('assume_indices_exist') === '1') || ($GLOBALS['SITE_DB']->query_select_value_if_there('db_meta_indices', 'i_fields', ['i_table' => $table, 'i_name' => $index]) !== null)) {
                 $ret = ' FORCE INDEX (' . filter_naughty_harsh($index) . ')';
             }
         }

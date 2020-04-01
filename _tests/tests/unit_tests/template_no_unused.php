@@ -35,6 +35,9 @@ class template_no_unused_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'BLOCK_MAIN_NEWS_GRID',
+            'BLOCK_MAIN_NEWS_GRID_ITEM',
+            'BLOCK_MAIN_NEWS',
             'MAIL_RAW',
             'BLOCK_MAIN_MEMBERS',
             'BLOCK_MAIN_MEMBERS_COMPLEX',
@@ -95,6 +98,8 @@ class template_no_unused_test_set extends cms_test_case
             'FORM_STANDARD_END',
             'GALLERY_POPULAR',
             'GLOBAL_HELPER_PANEL',
+            'PERMISSIONS_CONTENT_ACCESS_LIST',
+            'PERMISSIONS_CONTENT_ACCESS_TICK',
             'HANDLE_CONFLICT_RESOLUTION',
             'HTML_HEAD',
             'HTML_HEAD_POLYFILLS',
@@ -197,6 +202,16 @@ class template_no_unused_test_set extends cms_test_case
             'HEADER_SIDE',
             'HEADER_MODERN',
             'STATS_GRAPH',
+            'BLOCK_MAIN_MULTI_CONTENT_TABLE',
+            'BLOCK_MAIN_MULTI_CONTENT__FOOTER',
+            'BLOCK_MAIN_MULTI_CONTENT_LIST',
+            'BLOCK_MAIN_MULTI_CONTENT_MOSAIC',
+            'BLOCK_MAIN_MULTI_CONTENT_SLIDER',
+            'BLOCK_MAIN_MULTI_CONTENT_GRID',
+            'BLOCK_MAIN_MULTI_CONTENT_TILES',
+            'BLOCK_MAIN_MULTI_CONTENT__HEADER',
+            'BLOCK_MAIN_MULTI_CONTENT_CAROUSEL',
+            'BLOCK_MAIN_MULTI_CONTENT_BOXES',
         ];
 
         $themes = find_all_themes();

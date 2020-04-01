@@ -90,7 +90,7 @@ class Module_admin_setupwizard
             $step = 1;
         }
 
-        if ($type != 'browse') {
+        if (!in_array($type, ['browse', 'install_test_content', 'uninstall_test_content'])) {
             //breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('START')]]);
 
             $step = min(10, intval(substr($type, 4)));
@@ -117,6 +117,9 @@ class Module_admin_setupwizard
         appengine_live_guard();
 
         require_css('setupwizard');
+        require_code('setupwizard');
+        require_javascript('setupwizard');
+        require_code('content2');
 
         $type = get_param_string('type', 'browse');
 
@@ -200,7 +203,16 @@ class Module_admin_setupwizard
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true]);
         $text = new Tempcode();
         $addons_url = build_url(['page' => 'admin_addons'], get_module_zone('admin_addons'));
-        $text->attach(paragraph(do_lang_tempcode($done_once ? 'SETUPWIZARD_1_DESCRIBE_ALT' : 'SETUPWIZARD_1_DESCRIBE', escape_html($addons_url->evaluate()))));
+        if ($done_once) {
+            $text_1 = do_lang_tempcode('SETUPWIZARD_1_DESCRIBE_ALT', escape_html($addons_url->evaluate()));
+        } else {
+            $text_1 = do_lang_tempcode('SETUPWIZARD_1_DESCRIBE', escape_html($addons_url->evaluate()));
+            if (get_param_integer('came_from_installer', 0) == 0) {
+                $text_1->attach(do_lang_tempcode('SETUPWIZARD_1_DESCRIBE_SUP', escape_html($addons_url->evaluate())));
+                $text_1 = protect_from_escaping($text_1);
+            }
+        }
+        $text->attach(paragraph($text_1));
         $rescue_url = build_url(['page' => '', 'keep_safe_mode' => '1'], '');
         $text->attach(paragraph(do_lang_tempcode('SETUPWIZARD_SAFE_MODE', escape_html($rescue_url->evaluate()), do_template('ICON', ['_GUID' => '049d21a64c40a98fc06229bb3985c85a', 'NAME' => 'tool_buttons/software_chat']))));
         $submit_name = do_lang_tempcode('START');
@@ -339,10 +351,7 @@ class Module_admin_setupwizard
         $site_name = get_option('site_name');
         $description = get_option('description');
         $site_scope = get_option('site_scope');
-        $_header_text = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', ['zone_name' => '']);
-        $header_text = get_translated_text($_header_text);
         $copyright = get_option('copyright');
-        $staff_address = get_option('staff_address');
         $keywords = get_option('keywords');
         $google_analytics = get_option('google_analytics');
         $timezone = get_site_timezone();
@@ -356,10 +365,7 @@ class Module_admin_setupwizard
         if ($site_scope == '???') {
             $site_scope = do_lang('EXAMPLE_SITE_SCOPE');
         }
-        if ($header_text == 'A site about ???') {
-            $header_text = do_lang('EXAMPLE_HEADER_TEXT');
-        }
-        if ($copyright == 'Copyright &copy;, ???, 2006') {
+        if (strpos($copyright, '???') !== false) {
             $copyright = do_lang('EXAMPLE_COPYRIGHT');
         }
         if ($keywords == '') {
@@ -372,12 +378,6 @@ class Module_admin_setupwizard
 
         $fields->attach(form_input_line(do_lang_tempcode('SITE_SCOPE'), do_lang_tempcode('CONFIG_OPTION_site_scope'), 'site_scope', $site_scope, true));
 
-        $fields->attach(form_input_line(do_lang_tempcode('HEADER_TEXT'), do_lang_tempcode('DESCRIPTION_HEADER_TEXT'), 'header_text', $header_text, false));
-
-        $fields->attach(form_input_line(do_lang_tempcode('COPYRIGHT'), do_lang_tempcode('CONFIG_OPTION_copyright'), 'copyright', $copyright, false));
-
-        $fields->attach(form_input_line(do_lang_tempcode('STAFF_EMAIL'), do_lang_tempcode('CONFIG_OPTION_staff_address'), 'staff_address', $staff_address, true));
-
         $fields->attach(form_input_line(do_lang_tempcode('KEYWORDS'), do_lang_tempcode('CONFIG_OPTION_keywords'), 'keywords', $keywords, false));
 
         $timezone_list = '';
@@ -388,15 +388,8 @@ class Module_admin_setupwizard
 
         $fields->attach(form_input_line(do_lang_tempcode('GOOGLE_ANALYTICS'), do_lang_tempcode('CONFIG_OPTION_google_analytics'), 'google_analytics', $google_analytics, false));
 
-        $fixed_width = get_theme_option('fixed_width', null, post_param_string('source_theme', 'default'));
-        if (get_theme_option('setupwizard__lock_fixed_width_choice', null, post_param_string('source_theme', 'default')) == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('FIXED_WIDTH'), do_lang_tempcode('CONFIG_OPTION_fixed_width'), 'fixed_width', $fixed_width == '1'));
-        } else {
-            $hidden .= static_evaluate_tempcode(form_input_hidden('fixed_width', $fixed_width));
-        }
-
         if (get_theme_option('setupwizard__provide_cms_advert_choice', null, post_param_string('source_theme', 'default')) == '1') {
-            $panel_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt';
+            $panel_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_right.txt';
             if (file_exists($panel_path)) {
                 $include_cms_advert = strpos(cms_file_get_contents_safe($panel_path, FILE_READ_LOCK), 'logos/') !== false;
             } else {
@@ -408,13 +401,13 @@ class Module_admin_setupwizard
         }
 
         switch (get_option('minimum_password_length')) {
-            case '8':
+            case '10':
                 $security_level = 'high';
                 break;
             case '5':
                 $security_level = 'low';
                 break;
-            case '6':
+            case '8':
             default:
                 $security_level = 'medium';
                 break;
@@ -464,7 +457,7 @@ class Module_admin_setupwizard
         $_addons_not_installed = find_available_addons(false, false);
         $addons_not_installed = list_to_map('name', $_addons_not_installed);
 
-        $fields = '';
+        $fields = [];
         $fields_advanced = '';
 
         $installprofile = post_param_string('installprofile', '');
@@ -512,10 +505,8 @@ class Module_admin_setupwizard
             'realtime_rain',
             'recommend',
             'shopping',
-            'ssl',
             'welcome_emails',
             'wiki',
-            'zone_logos',
         ];*/
 
         // These are on by default regardless of install profile. It's useful, because we don't want install profiles to have to be too prescriptive, and we want old ones to keep working well even if new addons have been introduced.
@@ -562,8 +553,7 @@ class Module_admin_setupwizard
             'phpinfo',
             'apache_config_files',
             'code_editor',
-            'linux_helper_scripts',
-            'windows_helper_scripts',
+            'helper_scripts',
             'weather',
             'xml_fields',
             'users_online_block',
@@ -654,22 +644,32 @@ class Module_admin_setupwizard
                 if ($advanced) {
                     $fields_advanced .= $field->evaluate();
                 } else {
-                    $fields .= $field->evaluate();
+                    if (!array_key_exists($row['category'], $fields)) {
+                        $fields[$row['category']] = '';
+                    }
+                    $fields[$row['category']] .= $field->evaluate();
                 }
             } elseif (!$is_core) {
                 $hidden .= static_evaluate_tempcode(form_input_hidden('addon_' . $addon_name, '1'));
             }
         }
 
-        $fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '00948cc876d0ecb8b511800eabd8cae2', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
-        $fields .= $fields_advanced;
+        ksort($fields, SORT_NATURAL | SORT_FLAG_CASE); // Sort by category name
+
+        $_fields = '';
+        foreach ($fields as $category => $category_fields) {
+            $_fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '10948cc876d0ecb8b511800eabd8cae2', 'SECTION_HIDDEN' => false, 'TITLE' => $category]));
+            $_fields .= $category_fields;
+        }
+        $_fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '00948cc876d0ecb8b511800eabd8cae2', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $_fields .= $fields_advanced;
 
         $inner = do_template('FORM', [
             '_GUID' => '0f361a3ac0e020ba71f3a7a900eca0e4',
             'NO_SIZING' => true,
             'SKIP_WEBSTANDARDS' => true,
             'SKIPPABLE' => 'skip_4',
-            'FIELDS' => $fields,
+            'FIELDS' => $_fields,
             'URL' => $post_url,
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',
@@ -746,8 +746,6 @@ class Module_admin_setupwizard
 
         $fields .= static_evaluate_tempcode(form_input_tick(do_lang_tempcode('INSTALL_TEST_CONTENT'), do_lang_tempcode('DESCRIPTION_INSTALL_TEST_CONTENT'), 'install_test_content', true));
 
-        require_code('setupwizard');
-        require_javascript('setupwizard');
         $inner = do_template('FORM', [
             '_GUID' => 'f1e9a4d271c7d68ff9da6dc0438f6e3f',
             'SKIP_WEBSTANDARDS' => true,
@@ -788,24 +786,33 @@ class Module_admin_setupwizard
         }
 
         $main_blocks = [];
+        $either_blocks = [];
         $side_blocks = [];
         $hooks = find_all_hook_obs('modules', 'admin_setupwizard', 'Hook_sw_');
         foreach ($hooks as $hook => $ob) {
-            if (post_param_integer('addon_' . $hook, 0) == 1) {
+            if ((post_param_integer('addon_' . $hook, 0) == 1) || (substr($hook, 0, 5) == 'core_') || ($hook == 'core')) {
                 if (method_exists($ob, 'get_blocks')) {
                     $ret = $ob->get_blocks();
-                    if (!empty($ret)) {
-                        list($a, $b) = $ret;
-                        $main_blocks = array_merge($main_blocks, $a);
-                        $side_blocks = array_merge($side_blocks, $b);
+                    foreach ($ret as $block_name => $block_details) {
+                        $can_be_main = (($block_details[0] & BLOCK_POSITION_MAIN) != 0) || (($block_details[0] & BLOCK_POSITION_CELL) != 0);
+                        $can_be_side = (($block_details[0] & BLOCK_POSITION_PANEL) != 0);
+
+                        if (($can_be_main) && ($can_be_side)) {
+                            $either_blocks[$block_name] = $block_details;
+                        } elseif ($can_be_main) {
+                            $main_blocks[$block_name] = $block_details;
+                        } elseif ($can_be_side) {
+                            $side_blocks[$block_name] = $block_details;
+                        }
                     }
                 }
             }
         }
         ksort($main_blocks);
+        ksort($either_blocks);
         ksort($side_blocks);
 
-        if (empty($main_blocks) && empty($side_blocks)) {
+        if (empty($main_blocks) && empty($either_blocks) && empty($side_blocks)) {
             return $this->step7();
         }
 
@@ -820,11 +827,14 @@ class Module_admin_setupwizard
         require_lang('zones');
         require_code('zones2');
 
-        if (!empty($main_blocks)) {
-            $tmp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'dfc20251e4f6b37ec1e046d0903250aa', 'TITLE' => do_lang_tempcode('HOME')]);
+        foreach (['HOME' => $main_blocks, 'GENERAL' => $either_blocks, 'PANELS' => $side_blocks] as $block_section_header => $block_set) {
+            $tmp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'dfc20251e4f6b37ec1e046d0903250aa', 'TITLE' => do_lang_tempcode($block_section_header)]);
             $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
-            foreach ($main_blocks as $block => $position_bits) {
-                if (!file_exists(get_file_base() . '/sources/blocks/' . $block . '.php')) {
+
+            ksort($block_set);
+
+            foreach ($block_set as $block => $block_details) {
+                if ((!file_exists(get_file_base() . '/sources_custom/blocks/' . $block . '.php')) && (!file_exists(get_file_base() . '/sources/blocks/' . $block . '.php'))) {
                     continue;
                 }
 
@@ -832,52 +842,29 @@ class Module_admin_setupwizard
                 $description->attach(paragraph(do_lang_tempcode('BLOCK_' . $block . '_USE')));
                 $block_nice = cleanup_block_name($block);
                 if ($default_blocks === null) {
-                    $position = $position_bits[1];
+                    $position = $block_details[1];
                 } else {
-                    $position = 'NO';
-                    foreach (['YES', 'YES_CELL', 'PANEL_LEFT', 'PANEL_RIGHT'] as $p) {
+                    $position = null;
+                    foreach ([BLOCK_POSITION_MAIN, BLOCK_POSITION_CELL, BLOCK_POSITION_PANEL] as $p) {
                         if (in_array($block, $default_blocks[$p])) {
                             $position = $p;
                         }
                     }
                 }
+
                 $main_list = new Tempcode();
-                $main_list->attach(form_input_list_entry('NO', $position == 'NO', do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_NO')));
-                $main_list->attach(form_input_list_entry('YES', $position == 'YES', do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_YES')));
-                $main_list->attach(form_input_list_entry('YES_CELL', $position == 'YES_CELL', do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_YES_CELL')));
-                $main_list->attach(form_input_list_entry('PANEL_LEFT', $position == 'PANEL_LEFT', do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_LEFT')));
-                $main_list->attach(form_input_list_entry('PANEL_RIGHT', $position == 'PANEL_RIGHT', do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_RIGHT')));
+                $main_list->attach(form_input_list_entry('NO', $position === null, do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_NO')));
+                if (($block_details[0] & BLOCK_POSITION_MAIN) != 0) {
+                    $main_list->attach(form_input_list_entry('YES', $position === BLOCK_POSITION_MAIN, do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_YES')));
+                }
+                if (($block_details[0] & BLOCK_POSITION_CELL) != 0) {
+                    $main_list->attach(form_input_list_entry('YES_CELL', $position === BLOCK_POSITION_CELL, do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_YES_CELL')));
+                }
+                if (($block_details[0] & BLOCK_POSITION_PANEL) != 0) {
+                    $main_list->attach(form_input_list_entry('PANEL_LEFT', false, do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_LEFT')));
+                    $main_list->attach(form_input_list_entry('PANEL_RIGHT', $position === BLOCK_POSITION_PANEL, do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_RIGHT')));
+                }
                 $tmp = form_input_list($block_nice, $description, 'block_SITE_' . $block, $main_list);
-                $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
-            }
-        }
-
-        if (!empty($side_blocks)) {
-            $tmp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '13e0d3002669654d9b45b4739ecbf28c', 'TITLE' => do_lang_tempcode('PANELS')]);
-            $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
-            foreach ($side_blocks as $block => $position_bits) {
-                if (!file_exists(get_file_base() . '/sources/blocks/' . $block . '.php')) {
-                    continue;
-                }
-
-                $description = paragraph(do_lang_tempcode('BLOCK_' . $block . '_DESCRIPTION'));
-                $description->attach(paragraph(do_lang_tempcode('BLOCK_' . $block . '_USE')));
-                $block_nice = cleanup_block_name($block);
-                if ($default_blocks === null) {
-                    $position = $position_bits[1];
-                } else {
-                    $position = 'NO';
-                    foreach (['YES', 'YES_CELL', 'PANEL_LEFT', 'PANEL_RIGHT'] as $p) {
-                        if (in_array($block, $default_blocks[$p])) {
-                            $position = $p;
-                        }
-                    }
-                }
-                $side_list = new Tempcode();
-                $side_list->attach(form_input_list_entry('PANEL_NONE', $position == 'PANEL_NONE', do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_NONE')));
-                $side_list->attach(form_input_list_entry('PANEL_LEFT', $position == 'PANEL_LEFT', do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_LEFT')));
-                $side_list->attach(form_input_list_entry('PANEL_RIGHT', $position == 'PANEL_RIGHT', do_lang_tempcode('BLOCK_CONFIGURATION__PANEL_RIGHT')));
-                $tmp = form_input_list($block_nice, $description, 'block_SITE_' . $block, $side_list);
                 $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
             }
         }
@@ -942,8 +929,6 @@ class Module_admin_setupwizard
         $list->attach(form_input_list_entry('corporate', array_key_exists('rules', $field_defaults) ? ($field_defaults['rules'] == 'corporate') : false, do_lang_tempcode('SETUPWIZARD_RULES_corporate')));
         $fields = form_input_list(do_lang_tempcode('RULES'), do_lang_tempcode('DESCRIPTION_RULES'), 'rules', $list, null, true);
 
-        require_code('setupwizard');
-        require_javascript('setupwizard');
         $js_function_calls = ['adminSetupWizardStep7'];
         $form = do_template('FORM', [
             '_GUID' => 'bf01a2b90967e86213ae0672c36a4b4e',
@@ -1028,8 +1013,6 @@ class Module_admin_setupwizard
         $fields->attach(form_input_tick(do_lang_tempcode('CLOSED_SITE'), do_lang_tempcode('CONFIG_OPTION_site_closed'), 'site_closed', true));
         $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), do_lang_tempcode('CONFIG_OPTION_closed'), 'closed', get_option('closed'), false));
 
-        require_code('setupwizard');
-        require_javascript('setupwizard');
         $js_function_calls = ['adminSetupWizardStep9'];
         $inner = do_template('FORM', [
             '_GUID' => 'c405a64a08328f78ac0e3f22a8365411',
@@ -1100,7 +1083,6 @@ class Module_admin_setupwizard
         require_code('files');
         require_code('images');
 
-        $header_text = post_param_string('header_text');
         require_code('fonts');
         $font = post_param_string('font', find_default_font());
         $installprofile = post_param_string('installprofile', '');
@@ -1198,23 +1180,12 @@ class Module_admin_setupwizard
         // Set options
         if (post_param_integer('skip_3', 0) == 0) {
             set_option('site_name', $name);
-            set_option('copyright', 'Copyright &copy; ' . $name . ' ' . date('Y'));
             set_option('description', post_param_string('description'));
             set_option('site_scope', post_param_string('site_scope'));
-            set_option('copyright', post_param_string('copyright'));
-            set_option('staff_address', post_param_string('staff_address'));
+            set_option('copyright', do_lang('COPYRIGHTED') . ' &copy; $CURRENT_YEAR=' . date('Y') . ' ' . $name . ', ' . do_lang('POWERED_BY', 'Composr CMS'));
             set_option('keywords', post_param_string('keywords'));
             set_option('timezone', post_param_string('timezone'));
             set_option('google_analytics', post_param_string('google_analytics'));
-            set_option('fixed_width', post_param_string('fixed_width', '0'));
-
-            $a = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', ['zone_name' => '']);
-            $GLOBALS['SITE_DB']->query_update('zones', lang_remap('zone_header_text', $a, $header_text), ['zone_name' => ''], '', 1);
-
-            $b = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => 'site']);
-            if ($b !== null) {
-                $GLOBALS['SITE_DB']->query_update('zones', lang_remap('zone_header_text', $b, $header_text), ['zone_name' => 'site'], '', 1);
-            }
 
             // Security level...
 
@@ -1243,8 +1214,8 @@ class Module_admin_setupwizard
                 ],
                 'minimum_password_length' => [
                     'low' => '5',
-                    'medium' => '6',
-                    'high' => '8',
+                    'medium' => '8',
+                    'high' => '10',
                 ],
                 'minimum_password_strength' => [
                     'low' => '2',
@@ -1383,7 +1354,6 @@ class Module_admin_setupwizard
 
         // Install test content
         if (post_param_integer('install_test_content', 0) == 1) {
-            require_code('setupwizard');
             install_test_content();
         }
 
@@ -1406,7 +1376,6 @@ class Module_admin_setupwizard
 
         // Blocks
         if ((post_param_integer('skip_6', 0) == 0) && ($this->has_block_step())) {
-            require_code('setupwizard');
             $page_structure = _get_zone_pages($installprofileblocks, $block_options, $collapse_zones, $installprofile);
 
             foreach ($page_structure as $zone => $zone_pages) {
@@ -1575,7 +1544,7 @@ class Module_admin_setupwizard
      */
     public function install_test_content()
     {
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+        if (($_SERVER['REQUEST_METHOD'] != 'POST') && (strpos($_SERVER['HTTP_REFERER'], get_base_url() . '/install.php?') !== 0)) {
             $post_url = build_url(['page' => '_SELF', 'type' => 'install_test_content'], '_SELF');
 
             return do_template('CONFIRM_SCREEN', [
@@ -1589,8 +1558,12 @@ class Module_admin_setupwizard
             ]);
         }
 
-        require_code('setupwizard');
         install_test_content();
+
+        if (get_param_integer('came_from_installer', 0) == 1) {
+            require_code('templates_redirect_screen');
+            return redirect_screen($this->title, build_url(['page' => ''], ''), do_lang_tempcode('INSTALLED_TEST_CONTENT'));
+        }
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }
@@ -1616,7 +1589,6 @@ class Module_admin_setupwizard
             ]);
         }
 
-        require_code('setupwizard');
         uninstall_test_content();
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));

@@ -41,7 +41,7 @@ Installing Composr on WampServer:
 Here are a few more:
  - [url="EasyPHP"]http://www.easyphp.org/[/url]
  - [url="XAMPP"]https://www.apachefriends.org/index.html[/url]
- - [url="MAMP"]https://www.mamp.info/en/[/url]
+ - [url="MAMP"]https://www.mamp.info/en/windows/[/url]
 
 We aren't in a position to tell you which is best at this time, we're just listing some options for you.
 
@@ -153,4 +153,4 @@ Just run through the installer normally, and by the end you should have a workin
  - [page="_SEARCH:tut_sqlserver]Using SQL Server with Composr[/page]
  - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
 
-{$SET,tutorial_tags,windows_helper_scripts,installer,Installation,Webhosting,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,How to get a Composr installation running on your own Windows computer, if you choose to use that as your server.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,helper_scripts,installer,Installation,Webhosting,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,How to get a Composr installation running on your own Windows computer, if you choose to use that as your server.}[block]main_tutorial_rating[/block]

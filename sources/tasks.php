@@ -43,10 +43,12 @@ function tasks_script()
 
     $where = [
         'id' => $id,
-        't_locked' => 0,
     ];
     if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
         $where['t_secure_ref'] = $secure_ref;
+    }
+    if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || (get_param_integer('respect_locking', 1) == 1)) {
+        $where['t_locked'] = 0;
     }
     $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], $where, '', 1);
     if (!array_key_exists(0, $task_rows)) {
@@ -104,13 +106,9 @@ function execute_task_background($task_row)
     task_log(null, 'Starting task ' . $hook);
     $mim_before = get_mass_import_mode();
     $result = call_user_func_array([$ob, 'run'], $args);
-    if (!$mim_before) {
-        set_mass_import_mode(false);
-    }
+    set_mass_import_mode($mim_before);
     task_log(null, 'Finished task ' . $hook);
     task_log_close();
-
-    set_mass_import_mode(false);
 
     if ($task_row['t_send_notification'] == 1) {
         $attachments = [];
@@ -242,10 +240,7 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
         task_log(null, 'Starting task ' . $hook);
         $mim_before = get_mass_import_mode();
         $result = call_user_func_array([$ob, 'run'], $args);
-        if (!$mim_before) {
-            set_mass_import_mode(false);
-        }
-        set_mass_import_mode(false);
+        set_mass_import_mode($mim_before);
         if ($result === false) {
             $result = [null, do_lang_tempcode('INTERNAL_ERROR')];
         }
@@ -336,6 +331,7 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
         't_secure_ref' => $secure_ref, // Used like a temporary password to initiate the task
         't_send_notification' => $send_notification ? 1 : 0,
         't_locked' => 0,
+        't_add_time' => time(),
     ], true);
 
     if (GOOGLE_APPENGINE) {
@@ -345,10 +341,15 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
         $task_name = $task->add();
     }
 
-    if ($title === null) {
-        return do_lang_tempcode('NEW_TASK_RUNNING');
+    $message = do_lang_tempcode('NEW_TASK_RUNNING');
+    if (has_actual_page_access(get_member(), 'admin_errorlog')) {
+        $message = do_lang_tempcode('NEW_TASK_RUNNING_LOGGING', $message, build_url(['page' => 'admin_errorlog'], get_module_zone('admin_errorlog'), [], false, false, false, 'cron_tasks'));
     }
-    return inform_screen($title, do_lang_tempcode('NEW_TASK_RUNNING'));
+
+    if ($title === null) {
+        return $message;
+    }
+    return inform_screen($title, $message);
 }
 
 /**

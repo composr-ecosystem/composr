@@ -32,12 +32,9 @@ class Hook_symbol_FB_CONNECT_ACCESS_TOKEN
         if (get_forum_type() == 'cns') {
             if (!is_guest()) { // A little crazy, but we need to do this as FB does not expire the cookie consistently, although oauth would have failed when creating a session against it
                 require_code('facebook_connect');
-                global $FACEBOOK_CONNECT;
-                if ($FACEBOOK_CONNECT !== null) {
-                    $value = strval($FACEBOOK_CONNECT->getAccessToken());
-                    if ($value == '0') {
-                        $value = '';
-                    }
+                $value = facebook_get_access_token_from_js_sdk();
+                if ($value === null) {
+                    $value = '';
                 }
             }
         }

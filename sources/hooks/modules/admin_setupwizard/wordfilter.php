@@ -31,7 +31,7 @@ class Hook_sw_wordfilter
     public function get_current_settings()
     {
         $settings = [];
-        $settings['have_default_wordfilter'] = ($GLOBALS['SITE_DB']->query_select_value('wordfilter', 'COUNT(*)') == 0) ? '0' : '1';
+        $settings['have_default_wordfilter'] = has_predefined_content('wordfilter', 'have_default_wordfilter') ? '1' : '0';
         return $settings;
     }
 
@@ -52,9 +52,7 @@ class Hook_sw_wordfilter
 
         require_lang('wordfilter');
         $fields = new Tempcode();
-        if ($current_settings['have_default_wordfilter'] == '1') {
-            $fields->attach(form_input_tick(do_lang_tempcode('KEEP_WORDFILTER'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_WORDFILTER'), 'have_default_wordfilter', $field_defaults['have_default_wordfilter'] == '1'));
-        }
+        $fields->attach(form_input_tick(do_lang_tempcode('KEEP_WORDFILTER'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_WORDFILTER'), 'have_default_wordfilter', $field_defaults['have_default_wordfilter'] == '1'));
         return [$fields, new Tempcode()];
     }
 
@@ -67,8 +65,8 @@ class Hook_sw_wordfilter
             return;
         }
 
-        if (post_param_integer('have_default_wordfilter', 0) == 0) {
-            $GLOBALS['SITE_DB']->query_delete('wordfilter');
-        }
+        install_predefined_content('wordfilter', [
+           'have_default_wordfilter' => (post_param_integer('have_default_wordfilter', 0) == 1),
+        ]);
     }
 }

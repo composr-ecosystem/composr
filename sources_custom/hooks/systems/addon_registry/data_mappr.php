@@ -46,7 +46,9 @@ class Hook_addon_registry_data_mappr
      */
     public function get_category()
     {
-        return is_maintained('google_maps') ? 'Information Display' : 'Development';
+        // Best to just categorise properly as it's not bundled 
+        //return is_maintained('google_maps') ? 'Information Display' : 'Development';
+        return 'Information Display';
     }
 
     /**

@@ -45,6 +45,16 @@ class Hook_addon_registry_core
     }
 
     /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category()
+    {
+        return 'Architecture';
+    }
+
+    /**
      * Get the description of the addon.
      *
      * @return string Description of the addon
@@ -522,7 +532,27 @@ class Hook_addon_registry_core
             'themes/default/css/carousels.css',
             'themes/default/css/adminzone.css',
             'themes/default/templates/BLOCK_MAIN_CONTENT.tpl',
-            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_BOXES.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_CAROUSEL.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_GRID.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_LIST.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_MOSAIC.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_SLIDER.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_TABLE.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT_TILES.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl',
+            'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl',
+            'themes/default/css/skitter.css',
+            'themes/default/images/skitter/ajax-loader.gif',
+            'themes/default/images/skitter/index.html',
+            'themes/default/images/skitter/sprite-clean.png',
+            'themes/default/images/skitter/sprite-default.png',
+            'themes/default/images/skitter/sprite-minimalist.png',
+            'themes/default/images/skitter/sprite-round.png',
+            'themes/default/images/skitter/sprite-square.png',
+            'themes/default/javascript/skitter.js',
+            'themes/default/javascript/image_slider.js',
+            'themes/default/javascript/cookie_consent.js',
             'sources/blocks/main_content.php',
             'sources/blocks/main_multi_content.php',
             'sources/hooks/systems/symbols/BETA_CSS_PROPERTY.php',
@@ -562,6 +592,7 @@ class Hook_addon_registry_core
             'themes/default/css/install.css',
             'lang/EN/installer.ini',
             'lang/EN/encryption.ini',
+            'sources/hooks/systems/block_ui_renderers/core.php',
             'sources/locations.php',
             'sources/locations_geocoding.php',
             'sources/locations_cpfs.php',
@@ -601,7 +632,6 @@ class Hook_addon_registry_core
             'adminzone/pages/modules/admin_group_member_timeouts.php',
             'lang/EN/group_member_timeouts.ini',
             'themes/default/templates/GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN.tpl',
-            'sources/inst_special.php',
             'sources/actionlog.php',
             'themes/admin/javascript/.htaccess',
             'themes/admin/javascript/index.html',
@@ -617,10 +647,10 @@ class Hook_addon_registry_core
             'themes/default/xml/index.html',
             'text/unbannable_ips.txt',
             'text/unbannable_dns.txt',
-            'data/ace/ace.js',
             'data/ace/ace_composr.js',
+            'data/ace/ace.js',
             'data/ace/ext-beautify.js',
-            'data/ace/ext-chromevox.js',
+            'data/ace/ext-code_lens.js',
             'data/ace/ext-elastic_tabstops_lite.js',
             'data/ace/ext-emmet.js',
             'data/ace/ext-error_marker.js',
@@ -628,7 +658,9 @@ class Hook_addon_registry_core
             'data/ace/ext-language_tools.js',
             'data/ace/ext-linking.js',
             'data/ace/ext-modelist.js',
-            'data/ace/ext-old_ie.js',
+            'data/ace/ext-options.js',
+            'data/ace/ext-prompt.js',
+            'data/ace/ext-rtl.js',
             'data/ace/ext-searchbox.js',
             'data/ace/ext-settings_menu.js',
             'data/ace/ext-spellcheck.js',
@@ -638,58 +670,394 @@ class Hook_addon_registry_core
             'data/ace/ext-textarea.js',
             'data/ace/ext-themelist.js',
             'data/ace/ext-whitespace.js',
-            'data/ace/keybinding-emacs.js',
-            'data/ace/keybinding-vim.js',
-            'data/ace/mode-coffee.js',
-            'data/ace/mode-css.js',
-            'data/ace/mode-html.js',
-            'data/ace/mode-ini.js',
-            'data/ace/mode-javascript.js',
-            'data/ace/mode-json.js',
-            'data/ace/mode-less.js',
-            'data/ace/mode-markdown.js',
-            'data/ace/mode-mysql.js',
-            'data/ace/mode-php.js',
-            'data/ace/mode-plain_text.js',
-            'data/ace/mode-sass.js',
-            'data/ace/mode-scss.js',
-            'data/ace/mode-space.js',
-            'data/ace/mode-sql.js',
-            'data/ace/mode-svg.js',
-            'data/ace/mode-text.js',
-            'data/ace/mode-typescript.js',
-            'data/ace/mode-xml.js',
-            'data/ace/snippets/coffee.js',
-            'data/ace/snippets/css.js',
-            'data/ace/snippets/diff.js',
-            'data/ace/snippets/html.js',
-            'data/ace/snippets/ini.js',
-            'data/ace/snippets/javascript.js',
-            'data/ace/snippets/json.js',
-            'data/ace/snippets/less.js',
-            'data/ace/snippets/markdown.js',
-            'data/ace/snippets/mysql.js',
-            'data/ace/snippets/php.js',
-            'data/ace/snippets/plain_text.js',
-            'data/ace/snippets/sass.js',
-            'data/ace/snippets/scss.js',
-            'data/ace/snippets/space.js',
-            'data/ace/snippets/sql.js',
-            'data/ace/snippets/svg.js',
-            'data/ace/snippets/text.js',
-            'data/ace/snippets/typescript.js',
-            'data/ace/snippets/xml.js',
-            'data/ace/snippets/index.html',
             'data/ace/index.html',
+            'data/ace/keybinding-emacs.js',
+            'data/ace/keybinding-sublime.js',
+            'data/ace/keybinding-vim.js',
+            'data/ace/keybinding-vscode.js',
+            'data/ace/mode-abap.js',
+            'data/ace/mode-abc.js',
+            'data/ace/mode-actionscript.js',
+            'data/ace/mode-ada.js',
+            'data/ace/mode-apache_conf.js',
+            'data/ace/mode-apex.js',
+            'data/ace/mode-applescript.js',
+            'data/ace/mode-aql.js',
+            'data/ace/mode-asciidoc.js',
+            'data/ace/mode-asl.js',
+            'data/ace/mode-assembly_x86.js',
+            'data/ace/mode-autohotkey.js',
+            'data/ace/mode-batchfile.js',
+            'data/ace/mode-bro.js',
+            'data/ace/mode-c9search.js',
+            'data/ace/mode-c_cpp.js',
+            'data/ace/mode-cirru.js',
+            'data/ace/mode-clojure.js',
+            'data/ace/mode-cobol.js',
+            'data/ace/mode-coffee.js',
+            'data/ace/mode-coldfusion.js',
+            'data/ace/mode-crystal.js',
+            'data/ace/mode-csharp.js',
+            'data/ace/mode-csound_document.js',
+            'data/ace/mode-csound_orchestra.js',
+            'data/ace/mode-csound_score.js',
+            'data/ace/mode-csp.js',
+            'data/ace/mode-css.js',
+            'data/ace/mode-curly.js',
+            'data/ace/mode-dart.js',
+            'data/ace/mode-diff.js',
+            'data/ace/mode-django.js',
+            'data/ace/mode-d.js',
+            'data/ace/mode-dockerfile.js',
+            'data/ace/mode-dot.js',
+            'data/ace/mode-drools.js',
+            'data/ace/mode-edifact.js',
+            'data/ace/mode-eiffel.js',
+            'data/ace/mode-ejs.js',
+            'data/ace/mode-elixir.js',
+            'data/ace/mode-elm.js',
+            'data/ace/mode-erlang.js',
+            'data/ace/mode-forth.js',
+            'data/ace/mode-fortran.js',
+            'data/ace/mode-fsharp.js',
+            'data/ace/mode-fsl.js',
+            'data/ace/mode-ftl.js',
+            'data/ace/mode-gcode.js',
+            'data/ace/mode-gherkin.js',
+            'data/ace/mode-gitignore.js',
+            'data/ace/mode-glsl.js',
+            'data/ace/mode-gobstones.js',
+            'data/ace/mode-golang.js',
+            'data/ace/mode-graphqlschema.js',
+            'data/ace/mode-groovy.js',
+            'data/ace/mode-haml.js',
+            'data/ace/mode-handlebars.js',
+            'data/ace/mode-haskell_cabal.js',
+            'data/ace/mode-haskell.js',
+            'data/ace/mode-haxe.js',
+            'data/ace/mode-hjson.js',
+            'data/ace/mode-html_elixir.js',
+            'data/ace/mode-html.js',
+            'data/ace/mode-html_ruby.js',
+            'data/ace/mode-ini.js',
+            'data/ace/mode-io.js',
+            'data/ace/mode-jack.js',
+            'data/ace/mode-jade.js',
+            'data/ace/mode-java.js',
+            'data/ace/mode-javascript.js',
+            'data/ace/mode-json5.js',
+            'data/ace/mode-jsoniq.js',
+            'data/ace/mode-json.js',
+            'data/ace/mode-jsp.js',
+            'data/ace/mode-jssm.js',
+            'data/ace/mode-jsx.js',
+            'data/ace/mode-julia.js',
+            'data/ace/mode-kotlin.js',
+            'data/ace/mode-latex.js',
+            'data/ace/mode-less.js',
+            'data/ace/mode-liquid.js',
+            'data/ace/mode-lisp.js',
+            'data/ace/mode-livescript.js',
+            'data/ace/mode-logiql.js',
+            'data/ace/mode-logtalk.js',
+            'data/ace/mode-lsl.js',
+            'data/ace/mode-lua.js',
+            'data/ace/mode-luapage.js',
+            'data/ace/mode-lucene.js',
+            'data/ace/mode-makefile.js',
+            'data/ace/mode-markdown.js',
+            'data/ace/mode-mask.js',
+            'data/ace/mode-matlab.js',
+            'data/ace/mode-maze.js',
+            'data/ace/mode-mel.js',
+            'data/ace/mode-mixal.js',
+            'data/ace/mode-mushcode.js',
+            'data/ace/mode-mysql.js',
+            'data/ace/mode-nginx.js',
+            'data/ace/mode-nim.js',
+            'data/ace/mode-nix.js',
+            'data/ace/mode-nsis.js',
+            'data/ace/mode-nunjucks.js',
+            'data/ace/mode-objectivec.js',
+            'data/ace/mode-ocaml.js',
+            'data/ace/mode-pascal.js',
+            'data/ace/mode-perl6.js',
+            'data/ace/mode-perl.js',
+            'data/ace/mode-pgsql.js',
+            'data/ace/mode-php.js',
+            'data/ace/mode-php_laravel_blade.js',
+            'data/ace/mode-pig.js',
+            'data/ace/mode-plain_text.js',
+            'data/ace/mode-powershell.js',
+            'data/ace/mode-praat.js',
+            'data/ace/mode-prolog.js',
+            'data/ace/mode-properties.js',
+            'data/ace/mode-protobuf.js',
+            'data/ace/mode-puppet.js',
+            'data/ace/mode-python.js',
+            'data/ace/mode-razor.js',
+            'data/ace/mode-rdoc.js',
+            'data/ace/mode-red.js',
+            'data/ace/mode-redshift.js',
+            'data/ace/mode-rhtml.js',
+            'data/ace/mode-r.js',
+            'data/ace/mode-rst.js',
+            'data/ace/mode-ruby.js',
+            'data/ace/mode-rust.js',
+            'data/ace/mode-sass.js',
+            'data/ace/mode-scad.js',
+            'data/ace/mode-scala.js',
+            'data/ace/mode-scheme.js',
+            'data/ace/mode-scss.js',
+            'data/ace/mode-sh.js',
+            'data/ace/mode-sjs.js',
+            'data/ace/mode-slim.js',
+            'data/ace/mode-smarty.js',
+            'data/ace/mode-snippets.js',
+            'data/ace/mode-soy_template.js',
+            'data/ace/mode-space.js',
+            'data/ace/mode-sparql.js',
+            'data/ace/mode-sql.js',
+            'data/ace/mode-sqlserver.js',
+            'data/ace/mode-stylus.js',
+            'data/ace/mode-svg.js',
+            'data/ace/mode-swift.js',
+            'data/ace/mode-tcl.js',
+            'data/ace/mode-terraform.js',
+            'data/ace/mode-tex.js',
+            'data/ace/mode-textile.js',
+            'data/ace/mode-text.js',
+            'data/ace/mode-toml.js',
+            'data/ace/mode-tsx.js',
+            'data/ace/mode-turtle.js',
+            'data/ace/mode-twig.js',
+            'data/ace/mode-typescript.js',
+            'data/ace/mode-vala.js',
+            'data/ace/mode-vbscript.js',
+            'data/ace/mode-velocity.js',
+            'data/ace/mode-verilog.js',
+            'data/ace/mode-vhdl.js',
+            'data/ace/mode-visualforce.js',
+            'data/ace/mode-wollok.js',
+            'data/ace/mode-xml.js',
+            'data/ace/mode-xquery.js',
+            'data/ace/mode-yaml.js',
+            'data/ace/mode-zeek.js',
+            'data/ace/snippets/abap.js',
+            'data/ace/snippets/abc.js',
+            'data/ace/snippets/actionscript.js',
+            'data/ace/snippets/ada.js',
+            'data/ace/snippets/apache_conf.js',
+            'data/ace/snippets/apex.js',
+            'data/ace/snippets/applescript.js',
+            'data/ace/snippets/aql.js',
+            'data/ace/snippets/asciidoc.js',
+            'data/ace/snippets/asl.js',
+            'data/ace/snippets/assembly_x86.js',
+            'data/ace/snippets/autohotkey.js',
+            'data/ace/snippets/batchfile.js',
+            'data/ace/snippets/bro.js',
+            'data/ace/snippets/c9search.js',
+            'data/ace/snippets/c_cpp.js',
+            'data/ace/snippets/cirru.js',
+            'data/ace/snippets/clojure.js',
+            'data/ace/snippets/cobol.js',
+            'data/ace/snippets/coffee.js',
+            'data/ace/snippets/coldfusion.js',
+            'data/ace/snippets/crystal.js',
+            'data/ace/snippets/csharp.js',
+            'data/ace/snippets/csound_document.js',
+            'data/ace/snippets/csound_orchestra.js',
+            'data/ace/snippets/csound_score.js',
+            'data/ace/snippets/csp.js',
+            'data/ace/snippets/css.js',
+            'data/ace/snippets/curly.js',
+            'data/ace/snippets/dart.js',
+            'data/ace/snippets/diff.js',
+            'data/ace/snippets/django.js',
+            'data/ace/snippets/d.js',
+            'data/ace/snippets/dockerfile.js',
+            'data/ace/snippets/dot.js',
+            'data/ace/snippets/drools.js',
+            'data/ace/snippets/edifact.js',
+            'data/ace/snippets/eiffel.js',
+            'data/ace/snippets/ejs.js',
+            'data/ace/snippets/elixir.js',
+            'data/ace/snippets/elm.js',
+            'data/ace/snippets/erlang.js',
+            'data/ace/snippets/forth.js',
+            'data/ace/snippets/fortran.js',
+            'data/ace/snippets/fsharp.js',
+            'data/ace/snippets/fsl.js',
+            'data/ace/snippets/ftl.js',
+            'data/ace/snippets/gcode.js',
+            'data/ace/snippets/gherkin.js',
+            'data/ace/snippets/gitignore.js',
+            'data/ace/snippets/glsl.js',
+            'data/ace/snippets/gobstones.js',
+            'data/ace/snippets/golang.js',
+            'data/ace/snippets/graphqlschema.js',
+            'data/ace/snippets/groovy.js',
+            'data/ace/snippets/haml.js',
+            'data/ace/snippets/handlebars.js',
+            'data/ace/snippets/haskell_cabal.js',
+            'data/ace/snippets/haskell.js',
+            'data/ace/snippets/haxe.js',
+            'data/ace/snippets/hjson.js',
+            'data/ace/snippets/html_elixir.js',
+            'data/ace/snippets/html.js',
+            'data/ace/snippets/html_ruby.js',
+            'data/ace/snippets/index.html',
+            'data/ace/snippets/ini.js',
+            'data/ace/snippets/io.js',
+            'data/ace/snippets/jack.js',
+            'data/ace/snippets/jade.js',
+            'data/ace/snippets/java.js',
+            'data/ace/snippets/javascript.js',
+            'data/ace/snippets/json5.js',
+            'data/ace/snippets/jsoniq.js',
+            'data/ace/snippets/json.js',
+            'data/ace/snippets/jsp.js',
+            'data/ace/snippets/jssm.js',
+            'data/ace/snippets/jsx.js',
+            'data/ace/snippets/julia.js',
+            'data/ace/snippets/kotlin.js',
+            'data/ace/snippets/latex.js',
+            'data/ace/snippets/less.js',
+            'data/ace/snippets/liquid.js',
+            'data/ace/snippets/lisp.js',
+            'data/ace/snippets/livescript.js',
+            'data/ace/snippets/logiql.js',
+            'data/ace/snippets/logtalk.js',
+            'data/ace/snippets/lsl.js',
+            'data/ace/snippets/lua.js',
+            'data/ace/snippets/luapage.js',
+            'data/ace/snippets/lucene.js',
+            'data/ace/snippets/makefile.js',
+            'data/ace/snippets/markdown.js',
+            'data/ace/snippets/mask.js',
+            'data/ace/snippets/matlab.js',
+            'data/ace/snippets/maze.js',
+            'data/ace/snippets/mel.js',
+            'data/ace/snippets/mixal.js',
+            'data/ace/snippets/mushcode.js',
+            'data/ace/snippets/mysql.js',
+            'data/ace/snippets/nginx.js',
+            'data/ace/snippets/nim.js',
+            'data/ace/snippets/nix.js',
+            'data/ace/snippets/nsis.js',
+            'data/ace/snippets/nunjucks.js',
+            'data/ace/snippets/objectivec.js',
+            'data/ace/snippets/ocaml.js',
+            'data/ace/snippets/pascal.js',
+            'data/ace/snippets/perl6.js',
+            'data/ace/snippets/perl.js',
+            'data/ace/snippets/pgsql.js',
+            'data/ace/snippets/php.js',
+            'data/ace/snippets/php_laravel_blade.js',
+            'data/ace/snippets/pig.js',
+            'data/ace/snippets/plain_text.js',
+            'data/ace/snippets/powershell.js',
+            'data/ace/snippets/praat.js',
+            'data/ace/snippets/prolog.js',
+            'data/ace/snippets/properties.js',
+            'data/ace/snippets/protobuf.js',
+            'data/ace/snippets/puppet.js',
+            'data/ace/snippets/python.js',
+            'data/ace/snippets/razor.js',
+            'data/ace/snippets/rdoc.js',
+            'data/ace/snippets/red.js',
+            'data/ace/snippets/redshift.js',
+            'data/ace/snippets/rhtml.js',
+            'data/ace/snippets/r.js',
+            'data/ace/snippets/rst.js',
+            'data/ace/snippets/ruby.js',
+            'data/ace/snippets/rust.js',
+            'data/ace/snippets/sass.js',
+            'data/ace/snippets/scad.js',
+            'data/ace/snippets/scala.js',
+            'data/ace/snippets/scheme.js',
+            'data/ace/snippets/scss.js',
+            'data/ace/snippets/sh.js',
+            'data/ace/snippets/sjs.js',
+            'data/ace/snippets/slim.js',
+            'data/ace/snippets/smarty.js',
+            'data/ace/snippets/snippets.js',
+            'data/ace/snippets/soy_template.js',
+            'data/ace/snippets/space.js',
+            'data/ace/snippets/sparql.js',
+            'data/ace/snippets/sql.js',
+            'data/ace/snippets/sqlserver.js',
+            'data/ace/snippets/stylus.js',
+            'data/ace/snippets/svg.js',
+            'data/ace/snippets/swift.js',
+            'data/ace/snippets/tcl.js',
+            'data/ace/snippets/terraform.js',
+            'data/ace/snippets/tex.js',
+            'data/ace/snippets/textile.js',
+            'data/ace/snippets/text.js',
+            'data/ace/snippets/toml.js',
+            'data/ace/snippets/tsx.js',
+            'data/ace/snippets/turtle.js',
+            'data/ace/snippets/twig.js',
+            'data/ace/snippets/typescript.js',
+            'data/ace/snippets/vala.js',
+            'data/ace/snippets/vbscript.js',
+            'data/ace/snippets/velocity.js',
+            'data/ace/snippets/verilog.js',
+            'data/ace/snippets/vhdl.js',
+            'data/ace/snippets/visualforce.js',
+            'data/ace/snippets/wollok.js',
+            'data/ace/snippets/xml.js',
+            'data/ace/snippets/xquery.js',
+            'data/ace/snippets/yaml.js',
+            'data/ace/snippets/zeek.js',
+            'data/ace/theme-ambiance.js',
+            'data/ace/theme-chaos.js',
+            'data/ace/theme-chrome.js',
+            'data/ace/theme-clouds.js',
+            'data/ace/theme-clouds_midnight.js',
+            'data/ace/theme-cobalt.js',
+            'data/ace/theme-crimson_editor.js',
+            'data/ace/theme-dawn.js',
+            'data/ace/theme-dracula.js',
+            'data/ace/theme-dreamweaver.js',
+            'data/ace/theme-eclipse.js',
+            'data/ace/theme-github.js',
+            'data/ace/theme-gob.js',
+            'data/ace/theme-gruvbox.js',
+            'data/ace/theme-idle_fingers.js',
+            'data/ace/theme-iplastic.js',
+            'data/ace/theme-katzenmilch.js',
+            'data/ace/theme-kr_theme.js',
+            'data/ace/theme-kuroir.js',
+            'data/ace/theme-merbivore.js',
+            'data/ace/theme-merbivore_soft.js',
+            'data/ace/theme-mono_industrial.js',
+            'data/ace/theme-monokai.js',
+            'data/ace/theme-pastel_on_dark.js',
+            'data/ace/theme-solarized_dark.js',
+            'data/ace/theme-solarized_light.js',
+            'data/ace/theme-sqlserver.js',
+            'data/ace/theme-terminal.js',
             'data/ace/theme-textmate.js',
+            'data/ace/theme-tomorrow.js',
+            'data/ace/theme-tomorrow_night_blue.js',
             'data/ace/theme-tomorrow_night_bright.js',
+            'data/ace/theme-tomorrow_night_eighties.js',
+            'data/ace/theme-tomorrow_night.js',
+            'data/ace/theme-twilight.js',
+            'data/ace/theme-vibrant_ink.js',
+            'data/ace/theme-xcode.js',
             'data/ace/worker-coffee.js',
             'data/ace/worker-css.js',
             'data/ace/worker-html.js',
             'data/ace/worker-javascript.js',
             'data/ace/worker-json.js',
+            'data/ace/worker-lua.js',
             'data/ace/worker-php.js',
             'data/ace/worker-xml.js',
+            'data/ace/worker-xquery.js',
             'uploads/website_specific/index.html',
             'sources/hooks/systems/upon_page_load/index.html',
             'sources_custom/hooks/systems/upon_page_load/index.html',
@@ -839,20 +1207,13 @@ class Hook_addon_registry_core
             'themes/default/javascript/modernizr.js',
             'themes/default/javascript/jquery.js',
             'themes/default/javascript/jquery_ui.js',
+            'themes/default/images/jquery_ui/ui-icons_777620_256x240.png',
+            'themes/default/images/jquery_ui/ui-icons_cc0000_256x240.png',
+            'themes/default/images/jquery_ui/ui-icons_444444_256x240.png',
+            'themes/default/images/jquery_ui/ui-icons_555555_256x240.png',
+            'themes/default/images/jquery_ui/ui-icons_777777_256x240.png',
+            'themes/default/images/jquery_ui/ui-icons_ffffff_256x240.png',
             'themes/default/images/jquery_ui/index.html',
-            'themes/default/images/jquery_ui/ui-bg_flat_0_aaaaaa_40x100.png',
-            'themes/default/images/jquery_ui/ui-bg_flat_75_ffffff_40x100.png',
-            'themes/default/images/jquery_ui/ui-bg_glass_55_fbf9ee_1x400.png',
-            'themes/default/images/jquery_ui/ui-bg_glass_75_dadada_1x400.png',
-            'themes/default/images/jquery_ui/ui-bg_glass_75_e6e6e6_1x400.png',
-            'themes/default/images/jquery_ui/ui-bg_glass_95_fef1ec_1x400.png',
-            'themes/default/images/jquery_ui/ui-bg_glass_65_ffffff_1x400.png',
-            'themes/default/images/jquery_ui/ui-icons_222222_256x240.png',
-            'themes/default/images/jquery_ui/ui-bg_highlight-soft_75_cccccc_1x100.png',
-            'themes/default/images/jquery_ui/ui-icons_2e83ff_256x240.png',
-            'themes/default/images/jquery_ui/ui-icons_454545_256x240.png',
-            'themes/default/images/jquery_ui/ui-icons_888888_256x240.png',
-            'themes/default/images/jquery_ui/ui-icons_cd0a0a_256x240.png',
             'themes/default/css/jquery_ui.css',
             'themes/default/javascript/global.js',
             'themes/default/javascript/installer.js',
@@ -1212,7 +1573,6 @@ class Hook_addon_registry_core
             'sources/blocks/index.html',
             'sources/blocks/main_db_notes.php',
             'sources/blocks/main_notes.php',
-            'sources/blocks/main_only_if_match.php',
             'sources/blocks/side_personal_stats.php',
             'sources/blocks/top_login.php',
             'sources/blocks/top_personal_stats.php',
@@ -1238,6 +1598,26 @@ class Hook_addon_registry_core
             'sources/permissions3.php',
             'sources/database_search.php',
             'sources/diff.php',
+            'sources/diff/Diff3.php',
+            'sources/diff/Diff/Engine/.htaccess',
+            'sources/diff/Diff/Engine/index.html',
+            'sources/diff/Diff/Engine/native.php',
+            'sources/diff/Diff/Engine/shell.php',
+            'sources/diff/Diff/Engine/string.php',
+            'sources/diff/Diff/Engine/xdiff.php',
+            'sources/diff/Diff/.htaccess',
+            'sources/diff/Diff/index.html',
+            'sources/diff/Diff/Mapped.php',
+            'sources/diff/Diff.php',
+            'sources/diff/Diff/Renderer/context.php',
+            'sources/diff/Diff/Renderer/.htaccess',
+            'sources/diff/Diff/Renderer/index.html',
+            'sources/diff/Diff/Renderer/inline.php',
+            'sources/diff/Diff/Renderer.php',
+            'sources/diff/Diff/Renderer/unified.php',
+            'sources/diff/Diff/ThreeWay.php',
+            'sources/diff/.htaccess',
+            'sources/diff/index.html',
             'sources/encryption.php',
             'sources/files.php',
             'sources/files2.php',
@@ -1525,8 +1905,6 @@ class Hook_addon_registry_core
             'themes/admin/templates_cached/.htaccess',
             'themes/admin/templates_cached/EN/index.html',
             'themes/admin/templates_cached/index.html',
-            'sources/blocks/bottom_about_us.php',
-            'themes/default/templates/BLOCK_BOTTOM_ABOUT_US.tpl',
 
             // These are not used by default, as have text links - but may be useful for some
             'themes/default/images/icons/tool_buttons/version_desktop.svg',
@@ -1579,7 +1957,16 @@ class Hook_addon_registry_core
             'templates/EMAIL_LOG_SCREEN.tpl' => 'email_log_screen',
             'templates/BLOCK_MAIN_CONTENT_FILTERING.tpl' => 'block_main_content_filtering',
             'templates/BLOCK_MAIN_CONTENT.tpl' => 'block_main_content',
-            'templates/BLOCK_MAIN_MULTI_CONTENT.tpl' => 'block_main_multi_content',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_BOXES.tpl' => 'block_main_multi_content_boxes',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_CAROUSEL.tpl' => 'block_main_multi_content_carousel',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_GRID.tpl' => 'block_main_multi_content_grid',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_LIST.tpl' => 'block_main_multi_content_list',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_MOSAIC.tpl' => 'block_main_multi_content_mosaic',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_SLIDER.tpl' => 'block_main_multi_content_slider',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_TABLE.tpl' => 'block_main_multi_content_table',
+            'templates/BLOCK_MAIN_MULTI_CONTENT_TILES.tpl' => 'block_main_multi_content_tiles',
+            'templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl' => 'block_main_multi_content_boxes',
+            'templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl' => 'block_main_multi_content_boxes',
             'templates/MASS_SELECT_FORM_BUTTONS.tpl' => 'mass_select_form_buttons',
             'templates/MASS_SELECT_MARKER.tpl' => 'mass_select_marker',
             'templates/MASS_SELECT_DELETE_FORM.tpl' => 'mass_select_delete_form',
@@ -1587,7 +1974,6 @@ class Hook_addon_registry_core
             'templates/GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN.tpl' => 'group_member_timeout_manage_screen',
             'templates/SPONSORS_SCREEN.tpl' => 'sponsors_screen',
             'templates/TRANSLATION_LINKS.tpl' => 'translation_links',
-            'templates/BLOCK_BOTTOM_ABOUT_US.tpl' => 'block_bottom_about_us',
         ];
     }
 
@@ -1608,6 +1994,7 @@ class Hook_addon_registry_core
                 'RAW_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'CONTENT' => lorem_phrase_html(),
+                'ADD_NAME' => lorem_phrase(),
                 'SUBMIT_URL' => placeholder_url(),
                 'ARCHIVE_URL' => placeholder_url(),
             ]), null, '', true)
@@ -1621,29 +2008,226 @@ class Hook_addon_registry_core
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__block_main_multi_content()
+    public function tpl_preview__block_main_multi_content_boxes()
     {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT', [
-                'BLOCK_ID' => lorem_word(),
-                'TYPE' => lorem_phrase(),
-                'CONTENT_TYPE' => lorem_phrase(),
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => [
-                    lorem_phrase_html(),
-                ],
-                'SUBMIT_URL' => placeholder_url(),
-                'ARCHIVE_URL' => placeholder_url(),
-                'BLOCK_PARAMS' => '',
-                'ADD_STRING' => lorem_phrase(),
-                'CONTENT_DATA' => [],
+        $map = $this->preview_main_multi_content('boxes');
 
-                'START' => '0',
-                'MAX' => '10',
-                'START_PARAM' => 'x_start',
-                'MAX_PARAM' => 'x_max',
-            ]), null, '', true)
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_BOXES', $map), null, '', true)
         ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_carousel()
+    {
+        $map = $this->preview_main_multi_content('carousel');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_CAROUSEL', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_grid()
+    {
+        $map = $this->preview_main_multi_content('grid');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_GRID', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_list()
+    {
+        $map = $this->preview_main_multi_content('list');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_LIST', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_mosaic()
+    {
+        $map = $this->preview_main_multi_content('mosaic');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_MOSAIC', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_slider()
+    {
+        $map = $this->preview_main_multi_content('slider');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_SLIDER', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_table()
+    {
+        $map = $this->preview_main_multi_content('table');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_TABLE', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__block_main_multi_content_tiles()
+    {
+        $map = $this->preview_main_multi_content('tiles');
+
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_MULTI_CONTENT_TILES', $map), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview of main_multi_content render mode.
+     *
+     * @param  string $render_mode The render mode
+     * @set boxes carousel grid list mosaic slider table tiles
+     * @return array Template map array
+     */
+    public function preview_main_multi_content($render_mode)
+    {
+        $keymap = [
+            'test' => lorem_phrase(),
+        ];
+
+        $content = [];
+        switch ($render_mode) {
+            case 'boxes':
+                $content[] = lorem_phrase_html();
+                break;
+
+            case 'carousel':
+                $content[] = placeholder_image();
+                break;
+
+            case 'grid':
+                $content[] = '';
+                break;
+
+            case 'list':
+                $content[] = placeholder_link();
+                break;
+
+            case 'mosaic':
+                $content[] = '';
+                break;
+
+            case 'slider':
+                $content[] = '';
+                break;
+
+            case 'table':
+                $content = $keymap;
+                break;
+
+            case 'tiles':
+                $content[] = '';
+                break;
+        }
+
+        $content_data = [
+            [
+                'CONTENT_TYPE' => lorem_word(),
+                'CONTENT_TYPE_LABEL' => lorem_phrase(),
+                'CONTENT_TYPE_ICON' => placeholder_image_url(),
+                'CONTENT_ID' => placeholder_id(),
+                'CONTENT_URL' => placeholder_url(),
+                'CONTENT_TITLE_PLAIN' => lorem_phrase(),
+                'CONTENT_TITLE_HTML' => lorem_phrase_html(),
+                'CONTENT_DESCRIPTION' => lorem_paragraph_html(),
+                'CONTENT_THUMB_URL' => placeholder_image_url(),
+                'CONTENT_THUMB' => placeholder_image(),
+                'CONTENT_THUMB_LINKED' => placeholder_image(),
+                'CONTENT_USERNAME' => lorem_word(),
+                'CONTENT_AUTHOR' => lorem_word(),
+                'CONTENT_TIME_LABEL' => lorem_word(),
+                'CONTENT_TIME' => placeholder_date(),
+                '_CONTENT_TIME' => placeholder_date_raw(),
+            ],
+        ];
+
+        if ($render_mode != 'table') {
+            $content_data[0]['CONTENT_KEYMAP'] = $keymap;
+        }
+
+        $shared_keymap_headings = [
+            'test' => lorem_phrase(),
+        ];
+
+        $map = [
+            'BLOCK_ID' => lorem_word(),
+            'BLOCK_PARAMS' => '',
+            'TYPE' => lorem_phrase(),
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => $content,
+            'CONTENT_TYPE' => lorem_phrase(),
+            'CONTENT_DATA' => $content_data,
+            'SUBMIT_URL' => placeholder_url(),
+            'ARCHIVE_URL' => placeholder_url(),
+            'PAGINATION' => placeholder_pagination(),
+            'ADD_STRING' => lorem_phrase(),
+            'SHARED_KEYMAP_HEADINGS' => $shared_keymap_headings,
+
+            'START' => '0',
+            'MAX' => '10',
+            'START_PARAM' => 'x_start',
+            'MAX_PARAM' => 'x_max',
+            'EXTRA_GET_PARAMS' => '',
+        ];
+
+        return $map;
     }
 
     /**
@@ -2411,26 +2995,6 @@ class Hook_addon_registry_core
             do_lorem_template('TRANSLATION_LINKS', [
                 'ALT_LANGS' => ['FR', 'DE'],
             ])
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declaritive.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__block_bottom_about_us()
-    {
-        return [
-            lorem_globalise(do_lorem_template('BLOCK_BOTTOM_ABOUT_US', [
-                'SITE_DESCRIPTION' => lorem_paragraph(),
-                'FAEBOOK_URL'      => placeholder_url(),
-                'TWITTER_URL'      => placeholder_url(),
-                'INSTAGRAM_URL'    => placeholder_url(),
-                'YOUTUBE_URL'      => placeholder_url(),
-            ]), null, '', true)
         ];
     }
 }

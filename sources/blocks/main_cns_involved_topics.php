@@ -140,7 +140,9 @@ class Block_main_cns_involved_topics
             }
             $topic_rows_map = [];
             foreach ($topic_rows as $topic_row) {
-                $topic_rows_map[$topic_row['id']] = $topic_row;
+                if (cns_may_access_topic($topic_row['id'], get_member(), $topic_row)) {
+                    $topic_rows_map[$topic_row['id']] = $topic_row;
+                }
             }
             $hot_topic_definition = intval(get_option('hot_topic_definition'));
             foreach ($rows as $row) {

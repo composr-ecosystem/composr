@@ -1035,6 +1035,27 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 	margin: 0 auto;
 }
 
+#slider-homepage-hero .contrast-box.h1 {
+	margin-bottom: 0.5em;
+}
+
+#slider-homepage-hero h3.contrast-box {
+	margin-bottom: 0.5em;
+}
+
+#slider-homepage-hero .contrast-box.h5 {
+	max-width: 660px;
+	line-height: 1.8;
+}
+
+#slider-homepage-hero .contrast-box.h5 > div {
+	margin-bottom: 10px;
+}
+
+#slider-homepage-hero .contrast-box.h5 > div > a {
+	margin: 10px;
+}
+
 html.has-header-modern #slider-homepage-hero.cms-slider-fullscreen,
 html.has-header-side #slider-homepage-hero.cms-slider-fullscreen {
 	min-height: 100vmin;

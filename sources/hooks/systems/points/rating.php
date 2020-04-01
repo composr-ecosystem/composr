@@ -40,7 +40,7 @@ class Hook_points_rating
             $points_gained_rating -= min($points_gained_rating, $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'rating WHERE rating_time>' . strval($timestamp) . ' AND rating_member=' . strval($member_id)));
         }
 
-        return $points_gained_rating;
+        return $points_gained_rating * $points_rating;
     }
 
     /**

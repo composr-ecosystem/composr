@@ -46,7 +46,7 @@ class Hook_addon_registry_referrals
      */
     public function get_category()
     {
-        return 'New Features';
+        return 'eCommerce';
     }
 
     /**
@@ -66,9 +66,7 @@ class Hook_addon_registry_referrals
      */
     public function get_copyright_attribution()
     {
-        return [
-            'Icon by Titan Creations',
-        ];
+        return [];
     }
 
     /**
