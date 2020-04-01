@@ -38,7 +38,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 @chdir($FILE_BASE);
 
-// Workaround for MacOS slow-downs
+// Workaround for Mac OS slow-downs
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method == 'PROPFIND') {
     $filename = basename($_SERVER['REQUEST_URI']);

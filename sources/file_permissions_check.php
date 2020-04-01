@@ -489,7 +489,7 @@ abstract class CMSPermissionsScanner
 }
 
 /**
- * Check/fix permissions on Linux/MacOS.
+ * Check/fix permissions on Linux/Mac OS.
  *
  * @package cms_permissions_scanner
  */

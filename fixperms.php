@@ -38,7 +38,7 @@ Usage: php fixperms.php [options]
     --full                                    set full permissions, which requires bootstrapping Composr
                                               (not guaranteed to work if some basic permissions are missing)
 
-    --web_username=<username|user_id>         On Linux/MacOS:
+    --web_username=<username|user_id>         On Linux/Mac OS:
                                                specify the username that the website runs under
                                                (if not passed assumes the current user)
                                               On Windows:
