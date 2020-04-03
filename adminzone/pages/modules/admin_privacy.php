@@ -115,7 +115,7 @@ class Module_admin_privacy
         $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), '', 'username', '', false));
         $fields->attach(form_input_line_multi(do_lang_tempcode('IP_ADDRESS'), '', 'ip_addresses[]', [], 0));
         $fields->attach(form_input_integer(do_lang_tempcode('MEMBER_ID'), '', 'member_id', get_param_integer('member_id', null), false));
-        $fields->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), '', 'email_address', '', false));
+        $fields->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), '', 'email', '', false));
         $fields->attach(form_input_line_multi(do_lang_tempcode('OTHER'), do_lang_tempcode('DESCRIPTION_PRIVACY_OTHER'), 'others[]', [], 0));
 
         // Choose whether to download or purge (delete/anonymise)
@@ -151,7 +151,7 @@ class Module_admin_privacy
         $username = post_param_string('username', '');
         $ip_addresses = isset($_POST['ip_addresses']) ? $_POST['ip_addresses'] : [];
         $member_id = either_param_integer('member_id', null);
-        $email_address = post_param_string('email_address', '');
+        $email_address = post_param_string('email', '');
         $others = isset($_POST['others']) ? $_POST['others'] : [];
 
         // Error if no search parameters given
@@ -275,7 +275,7 @@ class Module_admin_privacy
         $username = post_param_string('username', '');
         $ip_addresses = isset($_POST['ip_addresses']) ? $_POST['ip_addresses'] : [];
         $member_id = post_param_integer('member_id', null);
-        $email_address = post_param_string('email_address', '');
+        $email_address = post_param_string('email', '');
         $others = isset($_POST['others']) ? $_POST['others'] : [];
         $member_id_username = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
 
