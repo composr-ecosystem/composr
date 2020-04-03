@@ -55,7 +55,7 @@ class Module_admin_lookup
             return null;
         }
 
-        if ($be_deferential && get_forum_type() == 'cns') {
+        if ($be_deferential && get_forum_type() == 'cns' || $support_crosslinks) {
             return null;
         }
 
