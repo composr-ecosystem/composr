@@ -38,7 +38,7 @@ report-uri                  (report CSP violations)                     [goes to
 
 CONSIDERING TO HAVE NO RESTRICTION:
 font-src                    (fonts)                                     [overcomplex and no clear security risk, impractical for themers to stick to]
-img-src                     (images)                                    [impractical for real users to stick to]; explicitly include data:
+img-src                     (images)                                    [impractical for real users to stick to]; explicitly include data: and blob:
 media-src                   (audio and video)                           [impractical for real users to stick to]
 object-src                  (embedding plugin targets)                  [impractical for real users to stick to]
 style-src                   (CSS files)                                 base on list of trusted sites, and 'self' (if not strict nonces), and 'unsafe-inline' [which means the trusted sites etc are essentially ignored]
@@ -259,6 +259,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     $_sources_list = [];
     $_sources_list[] = '*';
     $_sources_list[] = 'data:';
+    $_sources_list[] = 'blob:';
     $clauses[] = 'img-src ' . implode(' ', $_sources_list);
 
     // media-src (unlimited)
