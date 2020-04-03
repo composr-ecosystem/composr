@@ -261,7 +261,7 @@ abstract class Hook_sitemap_base
      */
     protected function _is_page_omitted_from_sitemap($zone, $page, $options, $is_comcode_page)
     {
-        if (($is_comcode_page) && (($options & SITEMAP_GEN_MACHINE_SITEMAP) != 0)) {
+        if (($is_comcode_page) && (($options & SITEMAP_GEN_MACHINE_SITEMAP) == 0)) {
             require_code('global4');
             if (!comcode_page_include_on_sitemap($zone, $page)) {
                 return true;
