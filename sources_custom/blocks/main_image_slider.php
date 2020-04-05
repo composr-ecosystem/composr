@@ -84,6 +84,7 @@ PHP;
         require_css('skitter');
         require_javascript('jquery');
         require_javascript('skitter');
+        require_javascript('image_slider');
 
         require_code('galleries');
         require_lang('galleries');

@@ -543,7 +543,6 @@ class Hook_addon_registry_core
             'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT__HEADER.tpl',
             'themes/default/templates/BLOCK_MAIN_MULTI_CONTENT__FOOTER.tpl',
             'themes/default/css/skitter.css',
-            'themes/default/images/skitter/ajax-loader.gif',
             'themes/default/images/skitter/index.html',
             'themes/default/images/skitter/sprite-clean.png',
             'themes/default/images/skitter/sprite-default.png',

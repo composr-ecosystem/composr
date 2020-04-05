@@ -6,7 +6,7 @@
 {$SET,rand,{$RAND}}
 
 {+START,IF_NON_EMPTY,{CONTENT}}
-	<div class="box_skitter" id="skitter-{$GET*,rand}" data-tpl="blockMainMultiContentSlider" data-tpl-params="{+START,PARAMS_JSON,rand,MILL}{_*}{+END}">
+	<div class="box_skitter skitter" id="skitter-{$GET*,rand}" data-tpl="blockMainMultiContentSlider" data-tpl-params="{+START,PARAMS_JSON,rand,MILL}{_*}{+END}">
 		<ul>
 			{+START,LOOP,CONTENT_DATA}
 				<li>

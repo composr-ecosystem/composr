@@ -133,6 +133,8 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $incl
 
             $text = preg_replace("#\[img( param)?=\"([^\"]*)\"[^\[\]]*\](.*)\[/img\]#Usi", '[url="\3"]\2[/url] ', $text);
             $text = preg_replace("#\[img[^\[\]]*\](.*)\[/img\]#Usi", '[url="\1"]' . do_lang('VIEW') . '[/url] ', $text);
+
+            $text = preg_replace("#\[url=\"([^\"]*)\"\]\s*\[url=\"([^\"]*)\"\][^\[\]]*\[/url\]\s*\[/url\]#Usi", '[url="\1"]' . do_lang('VIEW') . '[/url] ', $text); // Nested URLs
         }
     }
     if (stripos($text, '[email') !== false) {
