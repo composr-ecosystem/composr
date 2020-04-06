@@ -1,4 +1,4 @@
-// NB: This is based on andrewsnowden's fork, plus other people's fixes, our own fixes, and changes brought in direct from Bevis Zhao
+// NB: This is based on andrewsnowden's Sew fork, plus other people's fixes, our own fixes, and changes brought in direct from Bevis Zhao
 
 /**
  * jQuery plugin for getting position of cursor in textarea
@@ -40,21 +40,23 @@ jQuery(function ($) {
             var cal = calculator, self = this, element = self[0], elementOffset = self.offset();
 
             // IE has easy way to get caret offset position
-            if ($.browser.msie) {
-                // must get focus first
+            if (document.selection) {
                 try {
+                    // must get focus first
                     element.focus();
                 }
                 catch (ex) {
                 }
                 var range = document.selection.createRange();
-                $(element).val(element.scrollTop);
-                return {
-                    left: range.boundingLeft - elementOffset.left,
-                    top: parseInt(range.boundingTop) - elementOffset.top + element.scrollTop
-                    + document.documentElement.scrollTop + parseInt(self.getComputedStyle('fontSize'))
-                };
+                if (typeof range.boundingLeft != 'undefined') { // Only IE has this
+                    $(element).val(element.scrollTop);
+                    return {
+                        left: range.boundingLeft - elementOffset.left,
+                        top: parseInt(range.boundingTop) - elementOffset.top + element.scrollTop + document.documentElement.scrollTop
+                    };
+                }
             }
+
             cal.simulator.empty();
             // clone primary styles to imitate textarea
             $.each(cal.primaryStyles, function (index, styleName) {
@@ -79,9 +81,7 @@ jQuery(function ($) {
             var focusOffset = focus.offset(), simulatorOffset = cal.simulator.offset();
             // alert(focusOffset.left  + ',' +  simulatorOffset.left + ',' + element.scrollLeft);
             return {
-                top: focusOffset.top - simulatorOffset.top - element.scrollTop
-                    // calculate and add the font height except Firefox
-                + ($.browser.mozilla ? 0 : parseInt(self.getComputedStyle('fontSize'))),
+                top: focusOffset.top - simulatorOffset.top - element.scrollTop + parseInt(self.getComputedStyle('fontSize')),
                 left: focus[0].offsetLeft - cal.simulator[0].offsetLeft - element.scrollLeft
             };
         }
@@ -128,9 +128,7 @@ jQuery(function ($) {
             if (this.length == 0) return;
             var thiz = this[0];
             var result = this.css(styleName);
-            result = result || ($.browser.msie ?
-                    thiz.currentStyle[styleName] :
-                    document.defaultView.getComputedStyle(thiz, null)[styleName]);
+            result = result || document.defaultView.getComputedStyle(thiz, null)[styleName];
             return result;
         },
         // easy clone method
@@ -155,28 +153,14 @@ jQuery(function ($) {
                 result = thiz.selectionStart;
             } else if ('selection' in document) {
                 var range = document.selection.createRange();
-                if (parseInt($.browser.version) > 6) {
-                    try {
-                        thiz.focus();
-                    }
-                    catch (ex) {
-                    }
-                    var length = document.selection.createRange().text.length;
-                    range.moveStart('character', -thiz.value.length);
-                    result = range.text.length - length;
-                } else {
-                    var bodyRange = document.body.createTextRange();
-                    bodyRange.moveToElementText(thiz);
-                    for (; bodyRange.compareEndPoints('StartToStart', range) < 0; result++)
-                        bodyRange.moveStart('character', 1);
-                    for (var i = 0; i <= result; i++) {
-                        if (thiz.value.charAt(i) == '\n')
-                            result++;
-                    }
-                    var enterCount = thiz.value.split('\n').length - 1;
-                    result -= enterCount;
-                    return result;
+                try {
+                    thiz.focus();
                 }
+                catch (ex) {
+                }
+                var length = document.selection.createRange().text.length;
+                range.moveStart('character', -thiz.value.length);
+                result = range.text.length - length;
             }
             return result;
         },
@@ -683,8 +667,9 @@ jQuery(function ($) {
                 token: '@',
                 elementFactory: autoCompleteElementFactory,
                 onFilterChanged: function (sew, token, expression) {
-                    $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,namelike}?id=' + encodeURIComponent(token) + $cms.keep()).then(function (responseXml) {
-                        var listContents = responseXml && responseXml.querySelector('result');
+                    $cms.doAjaxRequest('{$FIND_SCRIPT_NOHTTP;,namelike}?id=' + encodeURIComponent(token) + $cms.keep()).then(function (response) {
+                        var responseXML = response.responseXML;
+                        var listContents = responseXML && responseXML.querySelector('result');
 
                         var newValues = [];
                         for (var i = 0; i < listContents.childNodes.length; i++) {
