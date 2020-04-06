@@ -47,6 +47,8 @@ class cms_test_case extends WebTestCase
         if (($this->only === null) && (array_key_exists(0, $args))) {
             $this->only = $args[0];
         }
+
+        cms_ini_set('ocproducts.type_strictness', '1');
     }
 
     public function reopen_site()
@@ -58,6 +60,7 @@ class cms_test_case extends WebTestCase
 
     public function tearDown()
     {
+        cms_ini_set('ocproducts.type_strictness', '0');
     }
 
     public function should_filter_cqc_line($line)

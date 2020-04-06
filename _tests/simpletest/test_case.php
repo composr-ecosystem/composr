@@ -265,10 +265,14 @@ class SimpleTestCase
      */
     public function error($severity, $message, $file, $line)
     {
+        cms_ini_set('ocproducts.type_strictness', '0');
+
         if (! isset($this->reporter)) {
             trigger_error('Can only make assertions within test methods');
         }
         $this->reporter->paintError("Unexpected PHP Error [$message] severity [$severity] in [$file line $line]");
+
+        cms_ini_set('ocproducts.type_strictness', '1');
     }
 
     /**
@@ -306,6 +310,8 @@ class SimpleTestCase
      */
     public function assert($expectation, $compare, $message = '%s')
     {
+        cms_ini_set('ocproducts.type_strictness', '0');
+
         $message = $this->escapePercentageSignsExceptFirst($message);
 
         if ($expectation->test($compare)) {
@@ -317,6 +323,8 @@ class SimpleTestCase
                 sprintf($message, $expectation->overlayMessage($compare, $this->reporter->getDumper()))
             );
         }
+
+        cms_ini_set('ocproducts.type_strictness', '1');
     }
 
     /**

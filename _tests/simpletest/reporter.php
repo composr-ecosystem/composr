@@ -10,16 +10,21 @@ require_once __DIR__ . '/scorer.php';
 class HtmlReporter extends SimpleReporter
 {
     private $charset;
+    private $include_html_wrapper;
 
     /**
      * Does nothing yet.
      * The first output will be sent on the first test start.
      * For use by a web browser.
+     *
+     * @param string $charset                   Character set to use.
+     * @param boolean $include_html_wrapper     Whether to include our own HTML wrapper (set to false if a wrapper to SimpleTest is setting one).
      */
-    public function __construct($charset = 'utf-8')
+    public function __construct($charset = 'utf-8', $include_html_wrapper = true)
     {
         parent::__construct();
         $this->charset = $charset;
+        $this->include_html_wrapper = $include_html_wrapper;
     }
 
     /**
@@ -30,15 +35,17 @@ class HtmlReporter extends SimpleReporter
     public function paintHeader($test_name)
     {
         $this->sendNoCacheHeaders();
-        print '<!DOCTYPE html>';
-        print "<html>\n<head>\n<title>$test_name</title>\n";
-        print '<meta http-equiv="Content-Type" content="text/html; charset=' . $this->charset . "\">\n";
-        print "<style type=\"text/css\">\n";
-        print $this->getCss() . "\n";
-        print "</style>\n";
-        print "</head>\n<body>\n";
-        print "<h1>$test_name</h1>\n";
-        flush();
+        if ($this->include_html_wrapper) {
+            print '<!DOCTYPE html>';
+            print "<html>\n<head>\n<title>$test_name</title>\n";
+            print '<meta http-equiv="Content-Type" content="text/html; charset=' . $this->charset . "\">\n";
+            print "<style type=\"text/css\">\n";
+            print $this->getCss() . "\n";
+            print "</style>\n";
+            print "</head>\n<body>\n";
+            print "<h1>$test_name</h1>\n";
+            cms_flush_safe();
+        }
     }
 
     /**
@@ -85,7 +92,9 @@ class HtmlReporter extends SimpleReporter
         print '<strong>' . $this->getFailCount() . '</strong> fails and ';
         print '<strong>' . $this->getExceptionCount() . '</strong> exceptions.';
         print "</div>\n";
-        print "</body>\n</html>\n";
+        if ($this->include_html_wrapper) {
+            print "</body>\n</html>\n";
+        }
     }
 
     /**
@@ -197,7 +206,7 @@ class TextReporter extends SimpleReporter
     /**
      * Paints the title only.
      *
-     * @param string $test_name        Name class of test.
+     * @param string $test_name      Name class of test.
      */
     public function paintHeader($test_name)
     {
@@ -205,7 +214,7 @@ class TextReporter extends SimpleReporter
             header('Content-type: text/plain');
         }
         print "$test_name\n";
-        flush();
+        cms_flush_safe();
     }
 
     /**
@@ -299,7 +308,7 @@ class TextReporter extends SimpleReporter
     public function paintFormattedMessage($message)
     {
         print "$message\n";
-        flush();
+        cms_flush_safe();
     }
 }
 

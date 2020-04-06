@@ -363,7 +363,7 @@ class SimpleReporter extends SimpleScorer
     /**
      * Paints the test document header.
      *
-     * @param string $test_name     First test top level to start.
+     * @param string $test_name      First test top level to start.
      *
      * @abstract
      */

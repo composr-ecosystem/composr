@@ -20,7 +20,6 @@ function unit_testing_run()
 
     @header('Content-Type: text/html');
 
-    cms_ini_set('ocproducts.type_strictness', '0');
     cms_ini_set('ocproducts.xss_detect', '0');
 
     require_code('_tests/simpletest/unit_tester.php');
@@ -44,9 +43,21 @@ function unit_testing_run()
         if (!$cli) {
             testset_do_header('Running test set: ' . escape_html($id));
         }
-        run_testset($id);
+
+        $result = run_testset($id);
+
         if (!$cli) {
             testset_do_footer();
+        }
+
+        if ($result && !empty($_GET['close_if_passed'])) {
+            print "
+                <script " . csp_nonce_html() . ">
+                    if (typeof window.history!='undefined' && typeof window.history.length!='undefined' && window.history.length==1) {
+                        window.close();
+                    }
+                </script>
+            ";
         }
 
         return;
@@ -145,7 +156,12 @@ function run_testset($testset)
         $testset,
         [basename($testset) . '_test_set']
     );
-    /*$result=*/$suite->run(new DefaultReporter());
+    if (is_cli()) {
+        $reporter = new DefaultReporter();
+    } else {
+        $reporter = new HtmlReporter(get_charset(), false);
+    }
+    return $suite->run($reporter);
 }
 
 function testset_do_header($title)
