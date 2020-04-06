@@ -42,7 +42,7 @@ class _oembed_test_set extends cms_test_case
 
         foreach ($map as $url => $oembed_endpoint) {
             $_url = str_replace('{format}', 'json', $oembed_endpoint) . ((strpos($oembed_endpoint, '?') === false) ? '?' : '&') . 'url=' . urlencode($url);
-            $c = http_get_contents($_url, ['timeout' => 20.0]);
+            $c = http_get_contents($_url, ['timeout' => 20.0, 'trigger_errors' => false]);
             $this->assertTrue(is_array(json_decode($c, true)), 'Failed on ' . str_replace('%', '%%', $_url));
             if (php_function_allowed('usleep')) {
                 usleep(2000000);

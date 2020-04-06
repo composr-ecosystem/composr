@@ -27,20 +27,20 @@ class zip_test_set extends cms_test_case
 
     public function testMZip()
     {
-        // Test m-zip is working
+        // Test m-ZIP is working
         $this->doPrefixedFunctionTest('m_');
     }
 
     public function testZip()
     {
-        // Test PHP's internal zip extension, or m-zip again if that's not available (but via standard PHP function names)
+        // Test PHP's internal ZIP extension, or m-ZIP again if that's not available (but via standard PHP function names)
         $this->doPrefixedFunctionTest('');
     }
 
     protected function doPrefixedFunctionTest($prefix)
     {
         if (!addon_installed('composr_homesite')) {
-            $this->assertTrue(false, 'The composr_homesite addon must be installed for this test to run'); // That's where our test zip file is from
+            $this->assertTrue(false, 'The composr_homesite addon must be installed for this test to run'); // That's where our test ZIP file is from
             return;
         }
 

@@ -177,7 +177,7 @@ class _tasks_test_set extends cms_test_case
         if ($result === null) {
             //Validator often down also so show no error $this->assertTrue(false, 'ical validator is down?');
         } else {
-            $this->assertTrue((strpos($result, '1 results in 1 components') !== false) && (strpos($result, 'CRLF should be used for newlines')/*bug in validator*/ !== false));
+            $this->assertTrue((strpos($result, '1 results in 1 components') !== false) && (strpos($result, 'CRLF should be used for newlines')/*bug in validator*/ !== false), $result);
         }
 
         delete_calendar_event($complex_event_id);

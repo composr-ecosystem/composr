@@ -388,11 +388,13 @@ abstract class HttpDownloader
 
         // Prevent DOS loop attack...
 
-        if ($_SERVER['HTTP_USER_AGENT'] == $this->ua) {
-            $ua = 'Composr-recurse';
-        }
-        if ($_SERVER['HTTP_USER_AGENT'] == 'Composr-recurse') {
-            return null;
+        if ((!empty($_SERVER['HTTP_USER_AGENT'])) && (is_string($this->ua))) {
+            if ($_SERVER['HTTP_USER_AGENT'] == $this->ua) {
+                $ua = 'Composr-recurse';
+            }
+            if ($_SERVER['HTTP_USER_AGENT'] == 'Composr-recurse') {
+                return null;
+            }
         }
         if ($DOWNLOAD_LEVEL == 8) {
             $this->data = null;
@@ -514,7 +516,7 @@ abstract class HttpDownloader
                     $this->raw_payload .= "\r\n\r\n";
                 }
             } else { // If files, use more complex multipart/form-data
-                if (strtolower($this->http_verb) == 'put') {
+                if (($this->http_verb !== null) && (strtolower($this->http_verb) == 'put')) {
                     $this->put_no_delete = (empty($this->post_params)) && (count($this->files) == 1); // Can we just use the one referenced file as a direct PUT
                     if ($this->put_no_delete) { // Yes
                         reset($this->files);

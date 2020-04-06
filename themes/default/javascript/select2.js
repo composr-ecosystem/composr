@@ -4713,46 +4713,30 @@ S2.define('select2/i18n/en',[],function () {
   // English
   return {
     errorLoading: function () {
-      return 'The results could not be loaded.';
+      return '{!javascript:SELECT2_LOADING_FAILED;}';
     },
     inputTooLong: function (args) {
       var overChars = args.input.length - args.maximum;
-
-      var message = 'Please delete ' + overChars + ' character';
-
-      if (overChars != 1) {
-        message += 's';
-      }
-
-      return message;
+      return '{!javascript:SELECT2_DELETE;,xxx}'.replace(/xxx/, overChars);
     },
     inputTooShort: function (args) {
       var remainingChars = args.minimum - args.input.length;
-
-      var message = 'Please enter ' + remainingChars + ' or more characters';
-
-      return message;
+      return '{!javascript:SELECT2_ENTER;,xxx}'.replace(/xxx/, overChars);
     },
     loadingMore: function () {
-      return 'Loading more results…';
+      return '{!javascript:SELECT2_LOADING_MORE;}'.replace(/\.\.\./, '…');
     },
     maximumSelected: function (args) {
-      var message = 'You can only select ' + args.maximum + ' item';
-
-      if (args.maximum != 1) {
-        message += 's';
-      }
-
-      return message;
+      return '{!javascript:SELECT2_SELECTION_LIMIT;,xxx}'.replace(/xxx/, args.maximum);
     },
     noResults: function () {
-      return 'No results found';
+      return '{!javascript:SELECT2_NO_RESULTS;}';
     },
     searching: function () {
-      return 'Searching…';
+      return '{!javascript:SELECT2_SEARCHING;}'.replace(/\.\.\./, '…');
     },
     removeAllItems: function () {
-      return 'Remove all items';
+      return '{!javascript:SELECT2_REMOVE_ALL_ITEMS}';
     }
   };
 });

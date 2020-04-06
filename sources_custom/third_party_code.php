@@ -142,6 +142,7 @@ function list_untouchable_third_party_files()
         'themes/default/javascript/widget_color.js',
         'themes/default/javascript/widget_date.js',
         'themes/default/javascript/xsl_mopup.js',
+        'themes/default/javascript/cookie_consent.js',
         'themes/default/javascript/POLYFILL_FETCH.js',
         'themes/default/javascript/POLYFILL_GENERAL.js',
         'themes/default/javascript/POLYFILL_KEYBOARDEVENT_KEY.js',

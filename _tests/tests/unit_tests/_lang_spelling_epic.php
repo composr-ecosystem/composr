@@ -25,6 +25,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         require_code('files2');
         require_code('spelling');
+        require_code('third_party_code');
 
         require_once(get_file_base() . '/_tests/tests/unit_tests/lang_spelling.php');
         $manual_check_ob = new lang_spelling_test_set();
@@ -3378,6 +3379,18 @@ class _lang_spelling_epic_test_set extends cms_test_case
             $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, IGNORE_SHIPPED_VOLATILE | IGNORE_CUSTOM_DIRS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, $recurse, true, [$_ext]);
 
             foreach ($files as $path) {
+                // Exceptions
+                $exceptions = array_merge(list_untouchable_third_party_directories(), [
+                ]);
+                if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
+                    continue;
+                }
+                $exceptions = array_merge(list_untouchable_third_party_files(), [
+                ]);
+                if (in_array($path, $exceptions)) {
+                    continue;
+                }
+
                 $ext = get_file_extension($path);
                 if ($ext != $_ext) {
                     continue;

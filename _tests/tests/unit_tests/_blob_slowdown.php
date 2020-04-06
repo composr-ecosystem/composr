@@ -96,6 +96,7 @@ class _blob_slowdown_test_set extends cms_test_case
 
         $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
         foreach ($files as $path) {
+            // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
                 // For forum drivers we don't know safeness so would be too many false-positives
                 'sources/forum',
@@ -105,7 +106,6 @@ class _blob_slowdown_test_set extends cms_test_case
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-
             $exceptions = array_merge(list_untouchable_third_party_files(), [
             ]);
             if (in_array($path, $exceptions)) {

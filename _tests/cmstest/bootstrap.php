@@ -107,7 +107,7 @@ function unit_testing_run()
             echo '<option>' . escape_html($set) . '</option>' . "\n";
         }
     }
-    $proceed_icon = do_template('ICON', ['_GUID' => 'a68405d9206defe034d950fbaab1c336', 'NAME' => 'buttons/proceed']);
+    $proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => 'a68405d9206defe034d950fbaab1c336', 'NAME' => 'buttons/proceed']));
     echo "
         </select>
         <p><button class=\"btn btn-primary btn-scr buttons--proceed\" type=\"button\"id=\"select-button\" />{$proceed_icon} Call selection</button></p>
@@ -216,11 +216,11 @@ class CMSHtmlReporter extends SimpleReporter
         print '<div style="';
         print "padding: 8px; margin-top: 1em; background-color: $colour; color: white;";
         print '">';
-        print $this->getTestCaseProgress() . '/' . $this->getTestCaseCount();
+        print strval($this->getTestCaseProgress()) . '/' . strval($this->getTestCaseCount());
         print " test cases complete:\n";
-        print '<strong>' . $this->getPassCount() . '</strong> passes, ';
-        print '<strong>' . $this->getFailCount() . '</strong> fails and ';
-        print '<strong>' . $this->getExceptionCount() . '</strong> exceptions.';
+        print '<strong>' . strval($this->getPassCount()) . '</strong> passes, ';
+        print '<strong>' . strval($this->getFailCount()) . '</strong> fails and ';
+        print '<strong>' . strval($this->getExceptionCount()) . '</strong> exceptions.';
         print "</div>\n";
     }
 
@@ -237,7 +237,7 @@ class CMSHtmlReporter extends SimpleReporter
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
         print implode(' -&gt; ', $breadcrumb);
-        print ' -&gt; ' . $this->htmlEntities($message) . "<br />\n";
+        print ' -&gt; ' . escape_html($message) . "<br />\n";
     }
 
     /**
@@ -252,7 +252,7 @@ class CMSHtmlReporter extends SimpleReporter
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
         print implode(' -&gt; ', $breadcrumb);
-        print ' -&gt; <strong>' . $this->htmlEntities($message) . "</strong><br />\n";
+        print ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
     }
 
     /**
@@ -271,7 +271,7 @@ class CMSHtmlReporter extends SimpleReporter
                 '] with message [' . $exception->getMessage() .
                 '] in [' . $exception->getFile() .
                 ' line ' . $exception->getLine() . ']';
-        print ' -&gt; <strong>' . $this->htmlEntities($message) . "</strong><br />\n";
+        print ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
     }
 
     /**
@@ -286,7 +286,7 @@ class CMSHtmlReporter extends SimpleReporter
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
         print implode(' -&gt; ', $breadcrumb);
-        print ' -&gt; ' . $this->htmlEntities($message) . "<br />\n";
+        print ' -&gt; ' . escape_html($message) . "<br />\n";
     }
 
     /**
@@ -296,18 +296,6 @@ class CMSHtmlReporter extends SimpleReporter
      */
     public function paintFormattedMessage($message)
     {
-        print '<pre>' . $this->htmlEntities($message) . '</pre>';
-    }
-
-    /**
-     * Character set adjusted entity conversion.
-     *
-     * @param string $message    Plain text or Unicode message.
-     *
-     * @return string            Browser readable message.
-     */
-    protected function htmlEntities($message)
-    {
-        return htmlentities($message, ENT_COMPAT, $this->charset);
+        print '<pre>' . escape_html($message) . '</pre>';
     }
 }

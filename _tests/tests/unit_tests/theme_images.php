@@ -61,7 +61,7 @@ class theme_images_test_set extends cms_test_case
                 if (substr($path, -4) == '.svg') {
                     $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
                     $matches = [];
-                    $ok = (preg_match('#width="(\d+)px" height="(\d+)px"#', $c, $matches) != 0);
+                    $ok = (preg_match('#width="(\d+)px"\s+height="(\d+)px"#', $c, $matches) != 0);
                     $this->assertTrue($ok, 'Cannot find SVG width/height in ' . $path);
                     if (!$ok) {
                         continue;

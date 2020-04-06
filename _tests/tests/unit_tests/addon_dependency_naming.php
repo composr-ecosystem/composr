@@ -25,6 +25,7 @@ class addon_dependency_naming_test_set extends cms_test_case
             'System scheduler',
             //'CNS', We want people to write conversr
             'Conversr',
+            'SSL',
             'PHP gd extension',
             'PHP curl extension',
             'PHP sessions extension',

@@ -4919,7 +4919,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DODGY_GET_HACK
         DOES_RECUR
         DOMAIN
-        DOMAIN_EXAMPLE
         DOMAIN_STATISTICS
         DONT_CLICK_TRACKBACK
         DONT_MAKE_PERIODIC_NEWSLETTER
@@ -5761,7 +5760,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INTRO_GENERATE_PAGE_SITEMAP
         INVALID_ATTACHMENT
         INVALID_COLOUR
-        INVALID_DOMAIN
         INVALID_FILE_TYPE_ADMIN
         INVALID_FORUM_DATABASE
         INVALID_LANG_CODE
@@ -7537,7 +7535,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         THEME_IMAGE_EDITING
         THEME_IMAGE_NEW
         THEME_IMAGE_RENAMED
-        THEME_LOGO
         THEME_MADE_LIVE
         THEME_MAPPING
         THEME_TO_SAVE_INTO
@@ -10398,11 +10395,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SELECT2_ENTER
         SELECT2_LOADING_FAILED
         SELECT2_LOADING_MORE
-        SELECT2_MULTIPLE_RESULTS
+        SELECT2_REMOVE_ALL_ITEMS
         SELECT2_NO_RESULTS
         SELECT2_SEARCHING
         SELECT2_SELECTION_LIMIT
-        SELECT2_SINGLE_RESULT
         SELECT_CHATROOM
         SELECT_IMAGE
         SELECT_TARGET_POST_DESTINATION

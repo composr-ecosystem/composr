@@ -79,7 +79,7 @@ class tutorial_title_structure_test_set extends cms_test_case
 
                 $matches = [];
                 $test = (preg_match('#\[title="(\d+)"\](.*)(?![/title])\[/title\]\s*\[title="\\1"\](.*)(?![/title])\[/title\]#', $c, $matches) == 0);
-                $this->assertTrue($test, 'There seems to be an empty title section; likely it\'s misnumering, ' . $file . ', ' . @$matches[2]);
+                $this->assertTrue($test, 'There seems to be an empty title section; likely it\'s misnumering, ' . $file . ', ' . @strval($matches[2]));
             }
         }
         closedir($dh);

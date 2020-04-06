@@ -41,7 +41,8 @@ class _cqc_nonbundled_test_set extends cms_test_case
                 foreach ($files as $file) {
                     if (substr($file, -4) == '.php') {
                         // Exceptions
-                        $exceptions = list_untouchable_third_party_directories();
+                        $exceptions = array_merge(list_untouchable_third_party_directories(), [
+                        ]);
                         if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $file) != 0) {
                             continue;
                         }

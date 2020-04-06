@@ -98,7 +98,7 @@ function member_get_spreadsheet_headings()
         'Last visit' => '&m_last_visit_time',
         'Number of posts' => 'm_cache_num_posts',
         'Usergroup' => '@m_primary_group',
-        'Banned' => '!m_is_perm_banned',
+        'Banned' => 'm_is_perm_banned',
         'Date of birth' => 'm_dob_year/m_dob_month/m_dob_day',
         'Reveal age' => '!m_reveal_age',
         'Language' => 'm_language',

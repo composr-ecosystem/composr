@@ -31,12 +31,12 @@ class _lang_no_unused_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
+            // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-
             $exceptions = array_merge(list_untouchable_third_party_files(), [
             ]);
             if (in_array($path, $exceptions)) {

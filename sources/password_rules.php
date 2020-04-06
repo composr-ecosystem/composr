@@ -45,6 +45,10 @@ function test_password($password, $username = '', $email_address = '', $dob = nu
     }
     $tainted_substrings_pool = [];
     foreach ($tainted_strings_source as $tainted_string => $minimum_substring_length_to_consider) {
+        if (!is_string($tainted_string)) {
+            $tainted_string = strval($tainted_string);
+        }
+
         $len = cms_mb_strlen($tainted_string);
         for ($start = 0; $start <= $len; $start++) {
             for ($end = $start + $minimum_substring_length_to_consider; $end <= $len; $end++) {

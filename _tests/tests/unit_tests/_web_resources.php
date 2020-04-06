@@ -104,15 +104,15 @@ class _web_resources_test_set extends cms_test_case
                 continue;
             }
 
+            $path = javascript_enforce(basename($path, '.js'), $theme);
+            if ($path == '') {
+                continue; // Empty file, so skipped
+            }
+
             if ($this->only !== null) {
                 if (basename($path) != $this->only) {
                     continue;
                 }
-            }
-
-            $path = javascript_enforce(basename($path, '.js'), $theme);
-            if ($path == '') {
-                continue; // Empty file, so skipped
             }
 
             $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
