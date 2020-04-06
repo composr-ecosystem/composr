@@ -1,137 +1,145 @@
 <?php
-/**
- *  Base include file for SimpleTest.
- *  @package    SimpleTest
- *  @subpackage WebTester
- *  @version    $Id: selector.php 1723 2008-04-08 00:34:10Z lastcraft $
- */
 
-/**#@+
- * include SimpleTest files
- */
-require_once(dirname(__FILE__) . '/tag.php');
-require_once(dirname(__FILE__) . '/encoding.php');
-/**#@-*/
+require_once __DIR__ . '/tag.php';
+require_once __DIR__ . '/encoding.php';
+
+interface SelectorInterface
+{
+
+}
 
 /**
- *    Used to extract form elements for testing against.
- *    Searches by name attribute.
- *    @package SimpleTest
- *    @subpackage WebTester
+ * Used to extract form elements for testing against.
+ * Searches by name attribute.
  */
-class SimpleByName {
-    var $_name;
+class SelectByName implements SelectorInterface
+{
+    private $name;
 
     /**
-     *    Stashes the name for later comparison.
-     *    @param string $name     Name attribute to match.
+     * Stashes the name for later comparison.
+     *
+     * @param string $name     Name attribute to match.
      */
-    function __construct($name) {
-        $this->_name = $name;
-    }
-
-    function getName() {
-        return $this->_name;
+    public function __construct($name)
+    {
+        $this->name = $name;
     }
 
     /**
-     *    Compares with name attribute of widget.
-     *    @param SimpleWidget $widget    Control to compare.
-     *    @access public
+     * Accessor for name.
+     *
+     * @returns string $name       Name to match.
      */
-    function isMatch($widget) {
-        return ($widget->getName() == $this->_name);
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Compares with name attribute of widget.
+     *
+     * @param SimpleWidget $widget    Control to compare.
+     */
+    public function isMatch($widget)
+    {
+        return ($widget->getName() === $this->name);
     }
 }
 
 /**
- *    Used to extract form elements for testing against.
- *    Searches by visible label or alt text.
- *    @package SimpleTest
- *    @subpackage WebTester
+ * Used to extract form elements for testing against.
+ * Searches by visible label or alt text.
  */
-class SimpleByLabel {
-    var $_label;
+class SelectByLabel implements SelectorInterface
+{
+    private $label;
 
     /**
-     *    Stashes the name for later comparison.
-     *    @param string $label     Visible text to match.
+     * Stashes the name for later comparison.
+     *
+     * @param string $label     Visible text to match.
      */
-    function __construct($label) {
-        $this->_label = $label;
+    public function __construct($label)
+    {
+        $this->label = $label;
     }
 
     /**
-     *    Comparison. Compares visible text of widget or
-     *    related label.
-     *    @param SimpleWidget $widget    Control to compare.
-     *    @access public
+     * Comparison. Compares visible text of widget or related label.
+     *
+     * @param SimpleWidget $widget    Control to compare.
      */
-    function isMatch($widget) {
+    public function isMatch($widget)
+    {
         if (! method_exists($widget, 'isLabel')) {
             return false;
         }
-        return $widget->isLabel($this->_label);
+
+        return $widget->isLabel($this->label);
     }
 }
 
 /**
- *    Used to extract form elements for testing against.
- *    Searches dy id attribute.
- *    @package SimpleTest
- *    @subpackage WebTester
+ * Used to extract form elements for testing against.
+ * Searches dy id attribute.
  */
-class SimpleById {
-    var $_id;
+class SelectById implements SelectorInterface
+{
+    private $id;
 
     /**
-     *    Stashes the name for later comparison.
-     *    @param string $id     ID atribute to match.
+     * Stashes the name for later comparison.
+     *
+     * @param string $id     ID atribute to match.
      */
-    function __construct($id) {
-        $this->_id = $id;
+    public function __construct($id)
+    {
+        $this->id = $id;
     }
 
     /**
-     *    Comparison. Compares id attribute of widget.
-     *    @param SimpleWidget $widget    Control to compare.
-     *    @access public
+     * Comparison. Compares id attribute of widget.
+     *
+     * @param SimpleWidget $widget    Control to compare.
      */
-    function isMatch($widget) {
-        return $widget->isId($this->_id);
+    public function isMatch($widget)
+    {
+        return $widget->isId($this->id);
     }
 }
 
 /**
- *    Used to extract form elements for testing against.
- *    Searches by visible label, name or alt text.
- *    @package SimpleTest
- *    @subpackage WebTester
+ * Used to extract form elements for testing against.
+ * Searches by visible label, name or alt text.
  */
-class SimpleByLabelOrName {
-    var $_label;
+class SelectByLabelOrName implements SelectorInterface
+{
+    private $label;
 
     /**
-     *    Stashes the name/label for later comparison.
-     *    @param string $label     Visible text to match.
+     * Stashes the name/label for later comparison.
+     *
+     * @param string $label     Visible text to match.
      */
-    function __construct($label) {
-        $this->_label = $label;
+    public function __construct($label)
+    {
+        $this->label = $label;
     }
 
     /**
-     *    Comparison. Compares visible text of widget or
-     *    related label or name.
-     *    @param SimpleWidget $widget    Control to compare.
-     *    @access public
+     * Comparison. Compares visible text of widget or related label or name.
+     *
+     * @param SimpleWidget $widget    Control to compare.
      */
-    function isMatch($widget) {
+    public function isMatch($widget)
+    {
         if (method_exists($widget, 'isLabel')) {
-            if ($widget->isLabel($this->_label)) {
+            if ($widget->isLabel($this->label)) {
                 return true;
             }
         }
-        return ($widget->getName() == $this->_label);
+
+        return ($widget->getName() == $this->label);
     }
 }
-?>

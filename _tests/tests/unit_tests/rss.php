@@ -27,8 +27,8 @@ class rss_test_set extends cms_test_case
 
     public function testRSS()
     {
-        $rssfeed = get_file_base() . '/_tests/tests/testrss.cms';
-        $atomfeed = get_file_base() . '/_tests/tests/testatom.cms';
+        $rssfeed = get_file_base() . '/_tests/assets/xml/rss.cms';
+        $atomfeed = get_file_base() . '/_tests/assets/xml/atom.cms';
         $rss = new CMS_RSS($rssfeed, true);
         $atom = new CMS_RSS($atomfeed, true);
         $rsstitle = $rss->gleamed_items[0]['title'];

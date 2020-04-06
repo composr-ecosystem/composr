@@ -1,288 +1,248 @@
 <?php
-/**
- *  base include file for SimpleTest
- *  @package    SimpleTest
- *  @subpackage UnitTester
- *  @version    $Id: errors.php 1672 2008-03-02 04:47:34Z edwardzyang $
- */
+
+require_once __DIR__ . '/invoker.php';
+require_once __DIR__ . '/test_case.php';
+require_once __DIR__ . '/expectation.php';
 
 /**
- * @ignore - PHP5 compatibility fix.
+ * Extension that traps errors into an error queue.
  */
-if (! defined('E_STRICT')) {
-    define('E_STRICT', 2048);
-}
-
-/**#@+
- * Includes SimpleTest files.
- */
-require_once dirname(__FILE__) . '/invoker.php';
-require_once dirname(__FILE__) . '/test_case.php';
-require_once dirname(__FILE__) . '/expectation.php';
-/**#@-*/
-
-/**
- *    Extension that traps errors into an error queue.
- *    @package SimpleTest
- *    @subpackage UnitTester
- */
-class SimpleErrorTrappingInvoker extends SimpleInvokerDecorator {
-
+class SimpleErrorTrappingInvoker extends SimpleInvokerDecorator
+{
     /**
-     *    Stores the invoker to wrap.
-     *    @param SimpleInvoker $invoker  Test method runner.
+     * Stores the invoker to wrap.
+     *
+     * @param SimpleInvoker $invoker  Test method runner.
      */
-    function __construct($invoker) {
+    public function __construct($invoker)
+    {
         parent::__construct($invoker);
     }
 
     /**
-     *    Invokes a test method and dispatches any
-     *    untrapped errors. Called back from
-     *    the visiting runner.
-     *    @param string $method    Test method to call.
-     *    @access public
+     * Invokes a test method and dispatches any untrapped errors.
+     * Called back from the visiting runner.
+     *
+     * @param string $method    Test method to call.
      */
-    function invoke($method) {
-        $queue = &$this->_createErrorQueue();
+    public function invoke($method)
+    {
+        $queue = $this->createErrorQueue();
         set_error_handler('SimpleTestErrorHandler');
         parent::invoke($method);
         restore_error_handler();
         $queue->tally();
     }
-    
+
     /**
-     *    Wires up the error queue for a single test.
-     *    @return SimpleErrorQueue    Queue connected to the test.
-     *    @access private
+     * Wires up the error queue for a single test.
+     *
+     * @return SimpleErrorQueue    Queue connected to the test.
      */
-    function &_createErrorQueue() {
-        $context = &SimpleTest::getContext();
-        $test = &$this->getTestCase();
-        $queue = &$context->get('SimpleErrorQueue');
+    protected function createErrorQueue()
+    {
+        $context = SimpleTest::getContext();
+        $test    = $this->getTestCase();
+        $queue   = $context->get('SimpleErrorQueue');
         $queue->setTestCase($test);
+
         return $queue;
     }
 }
 
 /**
- *    Error queue used to record trapped
- *    errors.
- *    @package  SimpleTest
- *    @subpackage   UnitTester
+ * Error queue used to record trapped errors.
  */
-class SimpleErrorQueue {
-    var $_queue;
-    var $_expectation_queue;
-    var $_test;
-    var $_using_expect_style = false;
+class SimpleErrorQueue
+{
+    private $queue;
+    private $expectation_queue;
+    private $test;
 
     /**
-     *    Starts with an empty queue.
+     * Starts with an empty queue.
      */
-    function __construct() {
+    public function __construct()
+    {
         $this->clear();
     }
 
     /**
-     *    Discards the contents of the error queue.
-     *    @access public
+     * Discards the contents of the error queue.
      */
-    function clear() {
-        $this->_queue = array();
-        $this->_expectation_queue = array();
+    public function clear()
+    {
+        $this->queue             = array();
+        $this->expectation_queue = array();
     }
 
     /**
-     *    Sets the currently running test case.
-     *    @param SimpleTestCase $test    Test case to send messages to.
-     *    @access public
+     * Sets the currently running test case.
+     *
+     * @param SimpleTestCase $test    Test case to send messages to.
      */
-    function setTestCase(&$test) {
-        $this->_test = &$test;
+    public function setTestCase($test)
+    {
+        $this->test = $test;
     }
 
     /**
-     *    Sets up an expectation of an error. If this is
-     *    not fulfilled at the end of the test, a failure
-     *    will occour. If the error does happen, then this
-     *    will cancel it out and send a pass message.
-     *    @param SimpleExpectation $expected    Expected error match.
-     *    @param string $message                Message to display.
-     *    @access public
+     * Sets up an expectation of an error.
+     * If this is not fulfilled at the end of the test, a failure will occour.
+     * If the error does happen, then this will cancel it out and send a pass message.
+     *
+     * @param SimpleExpectation $expected    Expected error match.
+     * @param string $message                Message to display.
      */
-    function expectError($expected, $message) {
-        $this->_using_expect_style = true;
-        array_push($this->_expectation_queue, array($expected, $message));
+    public function expectError($expected, $message)
+    {
+        array_push($this->expectation_queue, array($expected, $message));
     }
 
     /**
-     *    Adds an error to the front of the queue.
-     *    @param integer $severity       PHP error code.
-     *    @param string $content         Text of error.
-     *    @param string $filename        File error occoured in.
-     *    @param integer $line           Line number of error.
-     *    @access public
+     * Adds an error to the front of the queue.
+     *
+     * @param int $severity       PHP error code.
+     * @param string $content         Text of error.
+     * @param string $filename        File error occoured in.
+     * @param int $line           Line number of error.
      */
-    function add($severity, $content, $filename, $line) {
+    public function add($severity, $content, $filename, $line)
+    {
         $content = str_replace('%', '%%', $content);
-        if ($this->_using_expect_style) {
-            $this->_testLatestError($severity, $content, $filename, $line);
-        } else {
-            array_push(
-                    $this->_queue,
-                    array($severity, $content, $filename, $line));
-        }
+        $this->testLatestError($severity, $content, $filename, $line);
     }
-    
+
     /**
-     *    Any errors still in the queue are sent to the test
-     *    case. Any unfulfilled expectations trigger failures.
-     *    @access public
+     * Any errors still in the queue are sent to the test case.
+     * Any unfulfilled expectations trigger failures.
      */
-    function tally() {
+    public function tally()
+    {
         while (list($severity, $message, $file, $line) = $this->extract()) {
-            $severity = self::getSeverityAsString($severity);
-            $this->_test->error($severity, $message, $file, $line);
+            $severity = $this->getSeverityAsString($severity);
+            $this->test->error($severity, $message, $file, $line);
         }
-        while (list($expected, $message) = $this->_extractExpectation()) {
-            $this->_test->assert($expected, false, "%s -> Expected error not caught");
+        while (list($expected, $message) = $this->extractExpectation()) {
+            $this->test->assert($expected, false, '%s -> Expected error not caught');
         }
     }
 
     /**
-     *    Tests the error against the most recent expected
-     *    error.
-     *    @param integer $severity       PHP error code.
-     *    @param string $content         Text of error.
-     *    @param string $filename        File error occoured in.
-     *    @param integer $line           Line number of error.
-     *    @access private
+     * Tests the error against the most recent expected error.
+     *
+     * @param int $severity       PHP error code.
+     * @param string $content         Text of error.
+     * @param string $filename        File error occoured in.
+     * @param int $line           Line number of error.
      */
-    function _testLatestError($severity, $content, $filename, $line) {
-        if ($expectation = $this->_extractExpectation()) {
-            list($expected, $message) = $expectation;
-            $this->_test->assert($expected, $content, sprintf(
-                    $message,
-                    "%s -> PHP error [$content] severity [" .
-                            self::getSeverityAsString($severity) .
-                            "] in [$filename] line [$line]"));
+    protected function testLatestError($severity, $content, $filename, $line)
+    {
+        $expectation = $this->extractExpectation();
+
+        if ($expectation === false) {
+            $this->test->error($severity, $content, $filename, $line);
         } else {
-            $this->_test->error($severity, $content, $filename, $line);
+            list($expected, $message) = $expectation;
+
+            $errorMessage = sprintf(
+                'PHP error [%s] severity [%s] in [%s] line [%s]',
+                $content, $this->getSeverityAsString($severity), $filename, $line
+            );
+
+            $this->test->assert($expected, $content, sprintf($message, '%s' . $errorMessage));
         }
     }
 
     /**
-     *    Pulls the earliest error from the queue.
-     *    @return  mixed    False if none, or a list of error
-     *                      information. Elements are: severity
-     *                      as the PHP error code, the error message,
-     *                      the file with the error, the line number
-     *                      and a list of PHP super global arrays.
-     *    @access public
+     * Pulls the earliest error from the queue.
+     *
+     * The list of error informations contains:
+     *  - severity as the PHP error code,
+     *  - the error message,
+     *  - the file with the error,
+     *  - the line number and
+     *  - a list of PHP super global arrays.
+     *
+     * @return  mixed    False if none, or a list of error information.
      */
-    function extract() {
-        if (count($this->_queue)) {
-            return array_shift($this->_queue);
+    public function extract()
+    {
+        if (count($this->queue)) {
+            return array_shift($this->queue);
         }
+
         return false;
     }
 
     /**
-     *    Pulls the earliest expectation from the queue.
-     *    @return     SimpleExpectation    False if none.
-     *    @access private
+     * Pulls the earliest expectation from the queue.
+     *
+     * @return     SimpleExpectation    False if none.
      */
-    function _extractExpectation() {
-        if (count($this->_expectation_queue)) {
-            return array_shift($this->_expectation_queue);
+    protected function extractExpectation()
+    {
+        if (count($this->expectation_queue)) {
+            return array_shift($this->expectation_queue);
         }
+
         return false;
     }
 
     /**
-     *    @deprecated
+     * Converts an error code into it's string representation.
+     *
+     * @param $severity  PHP integer error code.
+     *
+     * @return String version of error code.
      */
-    function assertNoErrors($message) {
-        return $this->_test->assert(
-                new TrueExpectation(),
-                count($this->_queue) == 0,
-                sprintf($message, 'Should be no errors'));
-    }
-
-    /**
-     *    @deprecated
-     */
-    function assertError($expected, $message) {
-        if (count($this->_queue) == 0) {
-            $this->_test->fail(sprintf($message, 'Expected error not found'));
-            return false;
-        }
-        list($severity, $content, $file, $line) = $this->extract();
-        $severity = self::getSeverityAsString($severity);
-        return $this->_test->assert(
-                $expected,
-                $content,
-                sprintf($message, "Expected PHP error [$content] severity [$severity] in [$file] line [$line]"));
-    }
-
-    /**
-     *    Converts an error code into it's string
-     *    representation.
-     *    @param $severity  PHP integer error code.
-     *    @return           String version of error code.
-     *    @access public
-     *    @static
-     */
-    static function getSeverityAsString($severity) {
+    public static function getSeverityAsString($severity)
+    {
         static $map = array(
-                E_STRICT => 'E_STRICT',
-                E_ERROR => 'E_ERROR',
-                E_WARNING => 'E_WARNING',
-                E_PARSE => 'E_PARSE',
-                E_NOTICE => 'E_NOTICE',
-                E_CORE_ERROR => 'E_CORE_ERROR',
-                E_CORE_WARNING => 'E_CORE_WARNING',
-                E_COMPILE_ERROR => 'E_COMPILE_ERROR',
-                E_COMPILE_WARNING => 'E_COMPILE_WARNING',
-                E_USER_ERROR => 'E_USER_ERROR',
-                E_USER_WARNING => 'E_USER_WARNING',
-                E_USER_NOTICE => 'E_USER_NOTICE');
-        if (defined('E_RECOVERABLE_ERROR')) {
-            $map[E_RECOVERABLE_ERROR] = 'E_RECOVERABLE_ERROR';
-        }
-        if (defined('E_DEPRECATED')) {
-            $map[E_DEPRECATED] = 'E_DEPRECATED';
-        }
+            E_ERROR             => 'E_ERROR',
+            E_WARNING           => 'E_WARNING',
+            E_PARSE             => 'E_PARSE',
+            E_NOTICE            => 'E_NOTICE',
+            E_CORE_ERROR        => 'E_CORE_ERROR',
+            E_CORE_WARNING      => 'E_CORE_WARNING',
+            E_COMPILE_ERROR     => 'E_COMPILE_ERROR',
+            E_COMPILE_WARNING   => 'E_COMPILE_WARNING',
+            E_USER_ERROR        => 'E_USER_ERROR',
+            E_USER_WARNING      => 'E_USER_WARNING',
+            E_USER_NOTICE       => 'E_USER_NOTICE',
+            E_STRICT            => 'E_STRICT',
+            E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',   # PHP 5.2
+            E_DEPRECATED        => 'E_DEPRECATED',          # PHP 5.3
+            E_USER_DEPRECATED   => 'E_USER_DEPRECATED',     # PHP 5.3
+            E_ALL               => 'E_ALL'
+        );
+
         return $map[$severity];
     }
 }
 
 /**
- *    Error handler that simply stashes any errors into the global
- *    error queue. Simulates the existing behaviour with respect to
- *    logging errors, but this feature may be removed in future.
- *    @param $severity        PHP error code.
- *    @param $message         Text of error.
- *    @param $filename        File error occoured in.
- *    @param $line            Line number of error.
- *    @param $super_globals   Hash of PHP super global arrays.
- *    @static
- *    @access public
+ * Error handler that simply stashes any errors into the global error queue.
+ * Simulates the existing behaviour with respect to logging errors,
+ * but this feature may be removed in future.
+ *
+ * @param $severity    PHP error code.
+ * @param $message     Text of error.
+ * @param $file        File error occoured in.
+ * @param $line        Line number of error.
+ * @param $context     Error Context.
  */
-function SimpleTestErrorHandler($severity, $message, $filename = null, $line = null, $super_globals = null, $mask = null) {
+function SimpleTestErrorHandler($severity, $message, $file = null, $line = null, $context = null )
+{
     $severity = $severity & error_reporting();
     if ($severity) {
         restore_error_handler();
-        if (ini_get('log_errors')) {
-            $label = SimpleErrorQueue::getSeverityAsString($severity);
-            error_log("$label: $message in $filename on line " . strval($line));
-        }
-        $context = &SimpleTest::getContext();
-        $queue = &$context->get('SimpleErrorQueue');
-        $queue->add($severity, $message, $filename, $line);
+
+        $queue = SimpleTest::getContext()->get('SimpleErrorQueue');
+        $queue->add($severity, $message, $file, $line);
+
         set_error_handler('SimpleTestErrorHandler');
     }
+
     return true;
 }
-?>
