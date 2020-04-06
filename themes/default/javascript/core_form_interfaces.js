@@ -694,8 +694,7 @@
 
         select2Options = {
             dropdownAutoWidth: true,
-            formatResult: (params.images === undefined) ? formatSelectSimple : formatSelectImage,
-            containerCssClass: 'form-control-wide'
+            formatResult: (params.images === undefined) ? formatSelectSimple : formatSelectImage
         };
 
         if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.options.length > 20)/*only for long lists*/ && (!$dom.html(selectEl.options[1]).match(/^\d+$/)/*not for lists of numbers*/)) {
