@@ -13,6 +13,12 @@
  * @package    testing_platform
  */
 
+require_once(get_file_base() . '/_tests/simpletest/unit_tester.php');
+require_once(get_file_base() . '/_tests/simpletest/web_tester.php');
+require_once(get_file_base() . '/_tests/simpletest/mock_objects.php');
+require_once(get_file_base() . '/_tests/simpletest/collector.php');
+require_once(get_file_base() . '/_tests/cmstest/cms_test_case.php');
+
 function unit_testing_run()
 {
     global $SCREEN_TEMPLATE_CALLED;
@@ -21,12 +27,6 @@ function unit_testing_run()
     @header('Content-Type: text/html');
 
     cms_ini_set('ocproducts.xss_detect', '0');
-
-    require_code('_tests/simpletest/unit_tester.php');
-    require_code('_tests/simpletest/web_tester.php');
-    require_code('_tests/simpletest/mock_objects.php');
-    require_code('_tests/simpletest/collector.php');
-    require_code('_tests/cmstest/cms_test_case.php');
 
     $id = get_param_string('id', null);
     if (($id === null) && (isset($_SERVER['argv'][1]))) {
@@ -159,7 +159,7 @@ function run_testset($testset)
     if (is_cli()) {
         $reporter = new DefaultReporter();
     } else {
-        $reporter = new HtmlReporter(get_charset(), false);
+        $reporter = new CMSHtmlReporter(get_charset(), false);
     }
     return $suite->run($reporter);
 }
@@ -179,6 +179,9 @@ END;
     echo <<<END
             .screen-title { text-decoration: underline; display: block; background: url('../themes/default/images/icons/admin/tool.svg') top left no-repeat; background-size: 48px 48px; min-height: 42px; padding: 10px 0 0 60px; }
             a[target="_blank"], a[onclick$="window.open"] { padding-right: 0; }
+            .fail { background-color: inherit; color: red; }
+            .pass { background-color: inherit; color: green; }
+             pre { background-color: lightgray; color: inherit; }
         </style>
     </head>
     <body class="website-body"><div class="global-middle container-fluid">
@@ -195,4 +198,116 @@ function testset_do_footer()
     </div></body>
 </html>
 END;
+}
+
+/**
+ * Based on HtmlReporter, but simplified to work with our custom frontend.
+ */
+class CMSHtmlReporter extends SimpleReporter
+{
+    /**
+     * Paints the end of the test with a summary of the passes and failures.
+     *
+     * @param string $test_name        Name class of test.
+     */
+    public function paintFooter($test_name)
+    {
+        $colour = ($this->getFailCount() + $this->getExceptionCount() > 0 ? 'red' : 'green');
+        print '<div style="';
+        print "padding: 8px; margin-top: 1em; background-color: $colour; color: white;";
+        print '">';
+        print $this->getTestCaseProgress() . '/' . $this->getTestCaseCount();
+        print " test cases complete:\n";
+        print '<strong>' . $this->getPassCount() . '</strong> passes, ';
+        print '<strong>' . $this->getFailCount() . '</strong> fails and ';
+        print '<strong>' . $this->getExceptionCount() . '</strong> exceptions.';
+        print "</div>\n";
+    }
+
+    /**
+     * Paints the test failure with a breadcrumbs trail
+     * of the nesting test suites below the top level test.
+     *
+     * @param string $message    Failure message displayed in the context of the other tests.
+     */
+    public function paintFail($message)
+    {
+        parent::paintFail($message);
+        print '<span class="fail">Fail</span>: ';
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        print implode(' -&gt; ', $breadcrumb);
+        print ' -&gt; ' . $this->htmlEntities($message) . "<br />\n";
+    }
+
+    /**
+     * Paints a PHP error.
+     *
+     * @param string $message        Message is ignored.
+     */
+    public function paintError($message)
+    {
+        parent::paintError($message);
+        print '<span class="fail">Exception</span>: ';
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        print implode(' -&gt; ', $breadcrumb);
+        print ' -&gt; <strong>' . $this->htmlEntities($message) . "</strong><br />\n";
+    }
+
+    /**
+     * Paints a PHP exception.
+     *
+     * @param Exception $exception        Exception to display.
+     */
+    public function paintException($exception)
+    {
+        parent::paintException($exception);
+        print '<span class="fail">Exception</span>: ';
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        print implode(' -&gt; ', $breadcrumb);
+        $message = 'Unexpected exception of type [' . get_class($exception) .
+                '] with message [' . $exception->getMessage() .
+                '] in [' . $exception->getFile() .
+                ' line ' . $exception->getLine() . ']';
+        print ' -&gt; <strong>' . $this->htmlEntities($message) . "</strong><br />\n";
+    }
+
+    /**
+     * Prints the message for skipping tests.
+     *
+     * @param string $message    Text of skip condition.
+     */
+    public function paintSkip($message)
+    {
+        parent::paintSkip($message);
+        print '<span class="pass">Skipped</span>: ';
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        print implode(' -&gt; ', $breadcrumb);
+        print ' -&gt; ' . $this->htmlEntities($message) . "<br />\n";
+    }
+
+    /**
+     * Paints formatted text such as dumped privateiables.
+     *
+     * @param string $message        Text to show.
+     */
+    public function paintFormattedMessage($message)
+    {
+        print '<pre>' . $this->htmlEntities($message) . '</pre>';
+    }
+
+    /**
+     * Character set adjusted entity conversion.
+     *
+     * @param string $message    Plain text or Unicode message.
+     *
+     * @return string            Browser readable message.
+     */
+    protected function htmlEntities($message)
+    {
+        return htmlentities($message, ENT_COMPAT, $this->charset);
+    }
 }

@@ -97,7 +97,7 @@ define('SIMPLETEST_WEBUNIT_CSS', '/* this space reseved for future use */');
             echo sprintf(
                 SIMPLETEST_WEBUNIT_HEAD, $test_name, $this->path . 'js/', $this->path . 'js/', $this->path . 'css/', $this->_getCss(), $test_name, $this->path . 'img/'
                 );
-            cms_flush_safe();
+            flush();
         }
 
         /**
