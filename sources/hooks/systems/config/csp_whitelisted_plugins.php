@@ -54,6 +54,8 @@ class Hook_config_csp_whitelisted_plugins
      */
     public function get_default()
     {
+        // LEGACY
+
         return 'application/pdf
 application/x-shockwave-flash
 image/svg+xml

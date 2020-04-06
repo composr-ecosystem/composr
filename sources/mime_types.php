@@ -18,6 +18,8 @@
  * @package    core
  */
 
+// Some things in here are LEGACY
+
 /**
  * Find available mime types.
  *
