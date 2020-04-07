@@ -22,7 +22,7 @@
  * Add a calendar event.
  *
  * @param  AUTO_LINK $type The event type
- * @param  SHORT_TEXT $recurrence The recurrence code (set to 'none' for no recurrences: blank means infinite and will basically time-out Composr)
+ * @param  SHORT_TEXT $recurrence The recurrence code (set to 'none' for no recurrences)
  * @param  ?integer $recurrences The number of recurrences (null: none/infinite)
  * @param  BINARY $seg_recurrences Whether to segregate the comment-topics/rating/trackbacks per-recurrence
  * @param  SHORT_TEXT $title The title of the event
@@ -658,7 +658,7 @@ function schedule_code($hook, $id, $parameters, $title, $start_year, $start_mont
 
     $schedule_code = _get_schedule_code_prefix($hook, $id) . ' "' . $_parameters . '"';
 
-    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, $title, $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
+    $event_id = add_calendar_event(db_get_first_id(), 'none', null, 0, $title, $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
     regenerate_event_reminder_jobs($event_id);
 
     return $event_id;

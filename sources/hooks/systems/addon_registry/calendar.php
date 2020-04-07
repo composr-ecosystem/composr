@@ -883,7 +883,7 @@ class Hook_addon_registry_calendar
             set_global_category_access('calendar', $event_type_id);
         }
 
-        add_calendar_event($event_type_id, '', null, 0, lorem_phrase(), lorem_chunk(), 1, intval(date('Y')), intval(date('m')), intval(date('d')), 'day_of_month', 0, 0);
+        add_calendar_event($event_type_id, 'none', null, 0, lorem_phrase(), lorem_chunk(), 1, intval(date('Y')), intval(date('m')), intval(date('d')), 'day_of_month', 0, 0);
     }
 
     /**

@@ -1894,10 +1894,12 @@ class Hook_addon_registry_core_cns
             }
         }
 
+        require_code('cns_members_action2');
+
         $cpfs = $this->predefined_custom_field_details();
         foreach (array_keys($cpfs) as $codename) {
             if ((($content === null) || (in_array($codename, $content))) && (!has_predefined_content('core_cns', $codename))) {
-                $this->make_predefined_content_field($codename);
+                cns_make_predefined_content_field($codename);
             }
         }
     }
@@ -1927,56 +1929,6 @@ class Hook_addon_registry_core_cns
                 $this->delete_predefined_content_field($codename);
             }
         }
-    }
-
-    /**
-     * Make a Custom Profile Field from one of the predefined templates (this is often used by importers).
-     * Also see the cpf_install source file.
-     *
-     * @param  ID_TEXT $type The identifier of the predefined Custom Profile Field
-     * @return AUTO_LINK The ID of the new Custom Profile Field
-     */
-    protected function make_predefined_content_field($type)
-    {
-        require_lang('cns');
-        require_lang('cns_special_cpf');
-        require_lang('fields');
-
-        $details = $this->predefined_custom_field_details();
-        $_type = $details[$type]['type'];
-        $icon = $details[$type]['icon'];
-        $section = $details[$type]['section'];
-        $tempcode = $details[$type]['tempcode'];
-
-        $public_view = 1;
-        $owner_view = 1;
-        $owner_set = 1;
-        $required = 0;
-        $show_in_posts = 0;
-        $show_in_post_previews = 0;
-        $include_in_main_search = 0;
-        $allow_template_search = 0;
-
-        if ($type == 'staff_notes') {
-            $public_view = 0;
-            $owner_view = 0;
-            $owner_set = 0;
-        }
-
-        if ($type == 'interests' || $type == 'location') {
-            $show_in_posts = 1;
-            $show_in_post_previews = 1;
-        }
-
-        if (substr($type, 0, 4) == 'cms_') {
-            $title = do_lang('SPECIAL_CPF__' . $type);
-            $description = '';
-        } else {
-            $title = do_lang('DEFAULT_CPF_' . $type . '_NAME');
-            $description = do_lang('DEFAULT_CPF_' . $type . '_DESCRIPTION');
-        }
-
-        return cns_make_custom_field($title, 0, $description, '', $public_view, $owner_view, $owner_set, 0, $_type, $required, $show_in_posts, $show_in_post_previews, null, '', 0, '', $include_in_main_search, $allow_template_search, $icon, $section, $tempcode, true);
     }
 
     /**

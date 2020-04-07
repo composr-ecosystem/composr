@@ -208,7 +208,7 @@ class Hook_addon_registry_core_addon_management
                 'NAME' => lorem_word(),
             ]);
 
-            $addon['Test']['COLOURS']['green']['ADDONS'][$value] = do_lorem_template('ADDON_SCREEN_ADDON', [
+            $addons['Test']['COLOURS']['green']['ADDONS'][$value] = do_lorem_template('ADDON_SCREEN_ADDON', [
                 'DESCRIPTION' => lorem_paragraph(),
                 'DESCRIPTION_PARSED' => lorem_paragraph_html(),
                 'FILE_LIST' => [lorem_phrase()],

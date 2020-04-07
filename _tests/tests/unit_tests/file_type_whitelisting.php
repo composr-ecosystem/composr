@@ -181,7 +181,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         sort($file_types);
 
         $file_types_expected = $this->file_types;
-        $file_types_expected = array_diff($file_types_expected, ['bin', 'exe', 'dmg', 'htm', 'html', 'svg', 'css', 'js', 'json', 'woff', 'woff2', 'xml', 'xsd', 'xsl', 'rss', 'atom']); // No executable or web formats should be uploaded by non-admins
+        $file_types_expected = array_diff($file_types_expected, ['bin', 'exe', 'dmg', 'htm', 'html', 'svg', 'css', 'js', 'json', 'woff', 'woff2', 'xml', 'xsd', 'xsl', 'rss', 'atom', 'yaml', 'yml']); // No executable or web formats should be uploaded by non-admins
         sort($file_types_expected);
 
         $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));

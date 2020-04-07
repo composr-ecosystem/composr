@@ -237,7 +237,7 @@ function do_work()
     // calendar events
     require_code('calendar2');
     for ($i = $GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)'); $i < $num_wanted; $i++) {
-        add_calendar_event(db_get_first_id(), '', null, 0, random_line(), random_text(), 1, intval(date('Y')), intval(date('m')), intval(date('d')), 'day_of_month', 0, 0);
+        add_calendar_event(db_get_first_id(), 'none', null, 0, random_line(), random_text(), 1, intval(date('Y')), intval(date('m')), intval(date('d')), 'day_of_month', 0, 0);
     }
     echo 'done event stuff' . "\n";
 
