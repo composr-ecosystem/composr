@@ -18,7 +18,7 @@
  */
 class git_conflicts_test_set extends cms_test_case
 {
-    public function testValidCode()
+    public function testNoConflicts()
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
@@ -27,7 +27,12 @@ class git_conflicts_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php', 'tpl', 'css', 'js', 'xml', 'txt', 'sh']);
         $files[] = 'install.php';
         foreach ($files as $path) {
-            if ((basename($path) == 'MessageFormatter.php') || (basename($path) == 'phpstub.php')) {
+            // Exceptions
+            if (in_array($path, [
+                'sources/diff/Diff3.php',
+                'sources/diff/Diff/ThreeWay.php',
+                'tracker/vendor/guzzlehttp/guzzle/src/MessageFormatter.php',
+            ])) {
                 continue;
             }
 

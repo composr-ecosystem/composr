@@ -166,13 +166,13 @@ function get_innodb_tables_by_addon()
         $object = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
         $files = $object->get_file_list();
         $addon_name = $hook;
-        foreach ($files as $file) {
-            if ((strpos($file, 'blocks/') !== false) || (strpos($file, 'pages/modules') !== false) || (strpos($file, 'hooks/systems/addon_registry') !== false)) {
-                if (!is_file(get_file_base() . '/' . $file)) {
+        foreach ($files as $path) {
+            if ((strpos($path, 'blocks/') !== false) || (strpos($path, 'pages/modules') !== false) || (strpos($path, 'hooks/systems/addon_registry') !== false)) {
+                if (!is_file(get_file_base() . '/' . $path)) {
                     continue;
                 }
 
-                $file_contents = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK);
+                $file_contents = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
 
                 $matches = [];
                 $num_matches = preg_match_all("#create_table\('([^']+)'#", $file_contents, $matches);

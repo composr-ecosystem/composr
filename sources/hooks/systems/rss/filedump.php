@@ -104,7 +104,7 @@ class Hook_rss_filedump
             $category = array_key_exists(1, $bits) ? $bits[1] : '';
             $category_raw = $category;
 
-            $view_url = get_custom_base_url() . '/uploads/filedump/' . $file;
+            $view_url = get_custom_base_url() . '/uploads/filedump/' . str_replace('%2F', '/', rawurlencode($file));
 
             $if_comments = new Tempcode();
 

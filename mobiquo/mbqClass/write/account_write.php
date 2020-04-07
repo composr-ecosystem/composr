@@ -326,6 +326,8 @@ class CMSAccountWrite
             ];
         }
 
+        $password_reset_privacy = get_option('password_reset_privacy');
+
         // Check we are allowed to do a reset
         $error_msg = has_lost_password_error($member_id);
         if ($error_msg !== null) {
@@ -356,7 +358,7 @@ class CMSAccountWrite
         log_it('LOST_PASSWORD', strval($member_id), $username);
 
         // Send confirm mail
-        list(, $member_id) = send_lost_password_reset_code($password_reset_process, $member_id, $code);
+        send_lost_password_reset_code($password_reset_process, $member_id, $code);
 
         // Generate message
         $mailed_message = lost_password_mailed_message($password_reset_process, $email);

@@ -38,7 +38,6 @@ class modularisation_test_set extends cms_test_case
 
     public function testModularisation()
     {
-return;//TODO
         // Read in all addons, while checking for any double referencing within a single hook...
 
         $addon_data = [];

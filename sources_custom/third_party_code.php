@@ -46,7 +46,6 @@ function list_untouchable_third_party_directories()
         'sources_custom/facebook',
         'sources_custom/geshi',
         'sources_custom/getid3',
-        'sources_custom/ILess',
         'sources_custom/photobucket',
         'sources_custom/programe',
         'sources_custom/sabredav',
@@ -119,6 +118,7 @@ function list_untouchable_third_party_files()
         'themes/default/css/widget_color.css',
         'themes/default/css/widget_plupload.css',
         'themes/default/css/widget_select2.css',
+        'themes/default/css/widget_date.css',
         'themes/default/javascript/charts.js',
         'themes/default/javascript_custom/base64.js',
         'themes/default/javascript_custom/columns.js',
@@ -148,6 +148,7 @@ function list_untouchable_third_party_files()
         'themes/default/javascript/POLYFILL_KEYBOARDEVENT_KEY.js',
         'themes/default/javascript/POLYFILL_URL.js',
         'themes/default/javascript/POLYFILL_WEB_ANIMATIONS.js',
+        'themes/default/javascript/jquery_autocomplete.js',
         'user.sql',
     ];
 }

@@ -156,7 +156,7 @@ You need to:
     public function get_file_list()
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/aws.php',
+            'sources_custom/hooks/systems/addon_registry/aws_ses.php',
             'data_custom/amazon_sns_topic_handler.php',
             'sources_custom/aws_ses.php',
 

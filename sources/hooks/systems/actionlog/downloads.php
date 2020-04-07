@@ -164,11 +164,13 @@ class Hook_actionlog_downloads extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_DOWNLOAD':
             case 'EDIT_DOWNLOAD':
-                $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', ['id' => intval($identifier)]);
-                if ($category_id !== null) {
-                    $bindings += [
-                        'CAT' => strval($category_id),
-                    ];
+                if ($identifier !== null) {
+                    $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', ['id' => intval($identifier)]);
+                    if ($category_id !== null) {
+                        $bindings += [
+                            'CAT' => strval($category_id),
+                        ];
+                    }
                 }
                 break;
         }

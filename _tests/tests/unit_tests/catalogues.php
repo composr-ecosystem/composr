@@ -32,6 +32,9 @@ class catalogues_test_set extends cms_test_case
         require_code('permissions2');
         require_code('form_templates');
 
+        global $PAGE_NAME_CACHE;
+        $PAGE_NAME_CACHE = 'cms_catalogues';
+
         // Creating cms catalogues object
         require_code('cms/pages/modules/cms_catalogues.php');
         $this->cms_catalogues = new Module_cms_catalogues();
@@ -413,6 +416,7 @@ class catalogues_test_set extends cms_test_case
             'description__is_wysiwyg' => '1',
             'categories_sort_order' => 'recent ASC',
         ];
+        $_POST = @array_map('strval', $_POST);
 
         require_code('autosave');
         $_GET['type'] = '_add';

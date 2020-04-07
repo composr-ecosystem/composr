@@ -1371,6 +1371,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'ebay',
             'ebooks',
             'ecards',
+            'miswriting',
             'echeck',
             'echosign',
             'ecmascript',
@@ -1732,7 +1733,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'iframely',
             'iframes',
             'iis',
-            'iless',
             'im',
             'imac',
             'imagecopyresized',
@@ -3440,49 +3440,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
                     case 'js':
                     case 'css':
                     case 'php':
-                        if (preg_match('#^sources_custom/(getid3|geshi|photobucket|spout|sabredav|composr_mobile_sdk/ios|swift_mailer|ILess|locations|facebook|programe|aws)/#', $path) != 0) {
-                            continue 2;
-                        }
-
-                        if (in_array($path, [
-                            'themes/default/javascript/jquery.js',
-                            'themes/default/javascript/jquery_ui.js',
-                            'themes/default/javascript/jquery_autocomplete.js',
-                            'themes/default/javascript/plupload.js',
-                            'themes/default/javascript/widget_color.js',
-                            'themes/default/javascript/widget_date.js',
-                            'themes/default/javascript/xsl_mopup.js',
-                            'themes/default/javascript/select2.js',
-                            'themes/default/javascript/masonry.js',
-                            'themes/default/javascript/glide.js',
-                            'themes/default/javascript/sound.js',
-                            'themes/default/javascript/modernizr.js',
-                            'themes/default/css/jquery_ui.css',
-                            'themes/default/css/widget_date.css',
-                            'themes/default/css/widget_color.css',
-                            'themes/default/css/widget_select2.css',
-                            'themes/default/css/widget_plupload.css',
-                            'themes/default/css/skitter.css',
-                            'themes/default/css/mediaelementplayer.css',
-                            'themes/default/javascript_custom/unslider.js',
-                            'themes/default/javascript_custom/columns.js',
-                            'themes/default/javascript/mediaelement-and-player.js',
-                            'themes/default/javascript/skitter.js',
-                            'themes/default/javascript_custom/jquery_flip.js',
-                            'themes/default/javascript_custom/sortable_tables.js',
-                            'themes/default/javascript/charts.js',
-                            'themes/default/javascript_custom/confluence.js',
-                            'themes/default/javascript_custom/confluence2.js',
-                            'themes/default/css_custom/confluence.css',
-                            'sources_custom/geshi.php',
-                            'sources_custom/twitter.php',
-                            'sources_custom/hooks/modules/chat_bots/trickstr.php',
-                            '_tests/tests/unit_tests/lang_spelling.php',
-                            'sources/mail_dkim.php',
-                        ])) {
-                            continue 2;
-                        }
-
                         // We just want the code comments...
 
                         $c = preg_replace('#https?://[^\s\'"]*#', '', $c);

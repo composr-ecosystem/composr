@@ -78,6 +78,7 @@ class Hook_syndication_facebook
         $code = get_param_string('code', '', INPUT_FILTER_GET_COMPLEX);
 
         if ($code == '') {
+            $scope = [];
             if ($member_id === null) {
                 $scope[] = 'manage_pages';
                 $scope[] = 'publish_pages';

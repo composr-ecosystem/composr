@@ -113,11 +113,13 @@ class Hook_actionlog_banners extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_BANNER':
             case 'EDIT_BANNER':
-                $b_type = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'b_type', ['name' => $identifier]);
-                if ($b_type !== null) {
-                    $bindings += [
-                        'CAT' => $b_type,
-                    ];
+                if ($identifier !== null) {
+                    $b_type = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'b_type', ['name' => $identifier]);
+                    if ($b_type !== null) {
+                        $bindings += [
+                            'CAT' => $b_type,
+                        ];
+                    }
                 }
                 break;
         }

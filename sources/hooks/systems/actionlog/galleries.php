@@ -162,21 +162,25 @@ class Hook_actionlog_galleries extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_IMAGE':
             case 'EDIT_IMAGE':
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', ['id' => intval($identifier)]);
-                if ($cat !== null) {
-                    $bindings += [
-                        'CAT' => $cat,
-                    ];
+                if ($identifier !== null) {
+                    $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', ['id' => intval($identifier)]);
+                    if ($cat !== null) {
+                        $bindings += [
+                            'CAT' => $cat,
+                        ];
+                    }
                 }
                 break;
 
             case 'ADD_VIDEO':
             case 'EDIT_VIDEO':
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', ['id' => intval($identifier)]);
-                if ($cat !== null) {
-                    $bindings += [
-                        'CAT' => $cat,
-                    ];
+                if ($identifier !== null) {
+                    $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', ['id' => intval($identifier)]);
+                    if ($cat !== null) {
+                        $bindings += [
+                            'CAT' => $cat,
+                        ];
+                    }
                 }
                 break;
         }

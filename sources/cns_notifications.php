@@ -63,7 +63,7 @@ function cns_get_pp_rows($limit = 5, $unread = true, $include_inline = true, $ti
 
     // PT from and PT from
     foreach (['t_pt_from', 't_pt_to'] as $pt_target) {
-        $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,p.id AS p_id,l_time';
+        $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_first_time,t_cache_first_member_id,t_cache_first_username,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,p.id AS p_id,l_time';
         $query .= ' FROM
         ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t
         LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l_topic_id AND l_member_id=' . strval($member_id) . '
@@ -79,7 +79,7 @@ function cns_get_pp_rows($limit = 5, $unread = true, $include_inline = true, $ti
     }
 
     // PT invited to
-    $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,p.id AS p_id,l_time';
+    $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_first_time,t_cache_first_member_id,t_cache_first_username,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,p.id AS p_id,l_time';
     $query .= ' FROM
     ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t
     LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_special_pt_access i ON i.s_topic_id=t.id
@@ -93,7 +93,7 @@ function cns_get_pp_rows($limit = 5, $unread = true, $include_inline = true, $ti
         $query .= ' UNION ';
 
         // Inline personal post to
-        $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,MAX(p.id) AS p_id,l_time';
+        $query .= 'SELECT t.id AS t_id,t_forum_id,t_cache_first_member_id,t_cache_first_title,t_cache_first_post_id,t_cache_first_time,t_cache_first_member_id,t_cache_first_username,t_cache_last_time,t_cache_last_member_id,t_cache_last_username,t_description,t_cache_num_posts,t_pt_from,t_pt_to,MAX(p.id) AS p_id,l_time';
         $query .= ' FROM
         ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p
         JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON p_topic_id=t.id AND p.p_intended_solely_for=' . strval($member_id) . '

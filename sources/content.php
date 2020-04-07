@@ -436,6 +436,8 @@ function content_rows_for_multi_type($content_types, $days = null, $extra_where 
 
     $current_time = time();
 
+    $sort_order_field_missing = false;
+
     foreach ($content_types as $content_type) {
         if (array_key_exists($content_type, $infos)) {
             $info = $infos[$content_type];
@@ -443,8 +445,6 @@ function content_rows_for_multi_type($content_types, $days = null, $extra_where 
             $object = get_content_object($content_type);
             $info = $object->info();
         }
-
-        $sort_order_field_missing = false;
 
         $_start = 0;
         $_max = ($max === null) ? null : ($max + $start); // This is so we can sort the first $max results against those of other content types to get a consistent combined sort order

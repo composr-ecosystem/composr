@@ -423,10 +423,10 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $files = $this->getBaseDirectoriesFiles(null, false);
 
-        foreach ($files as $file) {
-            if (stripos($file, 'phpMyAdmin') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
-                $this->assertTrue($http_result->message != '200', 'Likely exposed phpMyAdmin script: [tt]' . $file . '[/tt]');
+        foreach ($files as $path) {
+            if (stripos($path, 'phpMyAdmin') !== false) {
+                $http_result = cms_http_request(get_base_url() . '/' . $path, ['trigger_error' => false]);
+                $this->assertTrue($http_result->message != '200', 'Likely exposed phpMyAdmin script: [tt]' . $path . '[/tt]');
             }
         }
     }
@@ -454,10 +454,10 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $files = $this->getBaseDirectoriesFiles();
 
-        foreach ($files as $file) {
-            if (stripos($file, 'bigdump') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
-                $this->assertTrue($http_result->message != '200', 'Likely exposed BigDump script: [tt]' . $file . '[/tt]');
+        foreach ($files as $path) {
+            if (stripos($path, 'bigdump') !== false) {
+                $http_result = cms_http_request(get_base_url() . '/' . $path, ['trigger_error' => false]);
+                $this->assertTrue($http_result->message != '200', 'Likely exposed BigDump script: [tt]' . $path . '[/tt]');
             }
         }
     }
@@ -485,10 +485,10 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $files = $this->getBaseDirectoriesFiles();
 
-        foreach ($files as $file) {
-            if (stripos($file, 'phpinfo.php') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
-                $this->assertTrue($http_result->message != '200', 'Likely exposed PHP-Info script: [tt]' . $file . '[/tt]');
+        foreach ($files as $path) {
+            if (stripos($path, 'phpinfo.php') !== false) {
+                $http_result = cms_http_request(get_base_url() . '/' . $path, ['trigger_error' => false]);
+                $this->assertTrue($http_result->message != '200', 'Likely exposed PHP-Info script: [tt]' . $path . '[/tt]');
             }
         }
     }

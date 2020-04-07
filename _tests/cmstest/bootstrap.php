@@ -51,7 +51,7 @@ function unit_testing_run()
         }
 
         if ($result && !empty($_GET['close_if_passed'])) {
-            print "
+            echo "
                 <script " . csp_nonce_html() . ">
                     if (typeof window.history!='undefined' && typeof window.history.length!='undefined' && window.history.length==1) {
                         window.close();
@@ -212,16 +212,16 @@ class CMSHtmlReporter extends SimpleReporter
      */
     public function paintFooter($test_name)
     {
-        $colour = ($this->getFailCount() + $this->getExceptionCount() > 0 ? 'red' : 'green');
-        print '<div style="';
-        print "padding: 8px; margin-top: 1em; background-color: $colour; color: white;";
-        print '">';
-        print strval($this->getTestCaseProgress()) . '/' . strval($this->getTestCaseCount());
-        print " test cases complete:\n";
-        print '<strong>' . strval($this->getPassCount()) . '</strong> passes, ';
-        print '<strong>' . strval($this->getFailCount()) . '</strong> fails and ';
-        print '<strong>' . strval($this->getExceptionCount()) . '</strong> exceptions.';
-        print "</div>\n";
+        $colour = (($this->getFailCount() + $this->getExceptionCount() > 0) ? 'red' : 'green');
+        echo '<div style="';
+        echo "padding: 8px; margin-top: 1em; background-color: $colour; color: white;";
+        echo '">';
+        echo strval($this->getTestCaseProgress()) . '/' . strval($this->getTestCaseCount());
+        echo " test cases complete:\n";
+        echo '<strong>' . strval($this->getPassCount()) . '</strong> passes, ';
+        echo '<strong>' . strval($this->getFailCount()) . '</strong> fails and ';
+        echo '<strong>' . strval($this->getExceptionCount()) . '</strong> exceptions.';
+        echo "</div>\n";
     }
 
     /**
@@ -233,11 +233,11 @@ class CMSHtmlReporter extends SimpleReporter
     public function paintFail($message)
     {
         parent::paintFail($message);
-        print '<span class="fail">Fail</span>: ';
+        echo '<span class="fail">Fail</span>: ';
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
-        print implode(' -&gt; ', $breadcrumb);
-        print ' -&gt; ' . escape_html($message) . "<br />\n";
+        echo implode(' -&gt; ', $breadcrumb);
+        echo ' -&gt; ' . escape_html($message) . "<br />\n";
     }
 
     /**
@@ -248,11 +248,11 @@ class CMSHtmlReporter extends SimpleReporter
     public function paintError($message)
     {
         parent::paintError($message);
-        print '<span class="fail">Exception</span>: ';
+        echo '<span class="fail">Exception</span>: ';
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
-        print implode(' -&gt; ', $breadcrumb);
-        print ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
+        echo implode(' -&gt; ', $breadcrumb);
+        echo ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
     }
 
     /**
@@ -263,15 +263,15 @@ class CMSHtmlReporter extends SimpleReporter
     public function paintException($exception)
     {
         parent::paintException($exception);
-        print '<span class="fail">Exception</span>: ';
+        echo '<span class="fail">Exception</span>: ';
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
-        print implode(' -&gt; ', $breadcrumb);
+        echo implode(' -&gt; ', $breadcrumb);
         $message = 'Unexpected exception of type [' . get_class($exception) .
                 '] with message [' . $exception->getMessage() .
                 '] in [' . $exception->getFile() .
                 ' line ' . $exception->getLine() . ']';
-        print ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
+        echo ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
     }
 
     /**
@@ -282,11 +282,11 @@ class CMSHtmlReporter extends SimpleReporter
     public function paintSkip($message)
     {
         parent::paintSkip($message);
-        print '<span class="pass">Skipped</span>: ';
+        echo '<span class="pass">Skipped</span>: ';
         $breadcrumb = $this->getTestList();
         array_shift($breadcrumb);
-        print implode(' -&gt; ', $breadcrumb);
-        print ' -&gt; ' . escape_html($message) . "<br />\n";
+        echo implode(' -&gt; ', $breadcrumb);
+        echo ' -&gt; ' . escape_html($message) . "<br />\n";
     }
 
     /**
@@ -296,6 +296,6 @@ class CMSHtmlReporter extends SimpleReporter
      */
     public function paintFormattedMessage($message)
     {
-        print '<pre>' . escape_html($message) . '</pre>';
+        echo '<pre>' . escape_html($message) . '</pre>';
     }
 }

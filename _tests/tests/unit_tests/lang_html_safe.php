@@ -161,18 +161,20 @@ class lang_html_safe_test_set extends cms_test_case
     protected function do_file($exp)
     {
         global $FILE2;
-        preg_replace_callback($exp, [$this, 'find_php_use_match'], cms_file_get_contents_safe($FILE2));
+        $c = cms_file_get_contents_safe($FILE2);
+        preg_replace_callback($exp, [$this, 'find_php_use_match'], $c);
     }
 
     protected function find_php_use_match($matches)
     {
         global $LANGUAGE_CURRENT, $FILE2, $LANGUAGE_STRINGS, $FIND_NO_GO_HTML_SPOTS;
         if ((!$FIND_NO_GO_HTML_SPOTS) && (!isset($LANGUAGE_STRINGS[$matches[1]]))) {
-            return;
+            return '';
         }
         if (!isset($LANGUAGE_CURRENT[$matches[1]])) {
             $LANGUAGE_CURRENT[$matches[1]] = [];
         }
         $LANGUAGE_CURRENT[$matches[1]][] = $FILE2;
+        return '';
     }
 }

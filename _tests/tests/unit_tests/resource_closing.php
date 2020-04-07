@@ -29,32 +29,25 @@ class resource_closing_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         require_code('files2');
+        require_code('third_party_code');
 
         $this->files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $this->files[] = 'install.php';
 
-        $exceptions = [
-            'sources_custom/phpstub.php',
-        ];
-        $exception_stubs = [
-            'sources_custom/aws_ses/',
-            'sources_custom/sabredav/',
-            'sources_custom/spout/',
-            'tracker/',
-            'vendor/',
-            'sources_custom/getid3/',
-        ];
-
         foreach ($this->files as $i => $path) {
-            foreach ($exception_stubs as $stub) {
-                if (in_array($path, $exceptions)) {
-                    unset($this->files[$i]);
-                    continue;
-                }
-                if (substr($path, 0, strlen($stub)) == $stub) {
-                    unset($this->files[$i]);
-                    continue;
-                }
+            // Exceptions
+            $exceptions = array_merge(list_untouchable_third_party_directories(), [
+            ]);
+            if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
+                unset($this->files[$i]);
+                continue;
+            }
+            $exceptions = array_merge(list_untouchable_third_party_files(), [
+                'sources_custom/phpstub.php',
+            ]);
+            if (in_array($path, $exceptions)) {
+                unset($this->files[$i]);
+                continue;
             }
         }
     }

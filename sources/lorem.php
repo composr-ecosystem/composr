@@ -841,17 +841,17 @@ function render_screen_preview($template, $hook, $function)
 
     // Load all ini/js/css
     $files = $ob->get_file_list();
-    foreach ($files as $file) {
-        if ((substr($file, -4) == '.ini') && ((substr($file, 0, 8) == 'lang/EN/') || (substr($file, 0, 15) == 'lang_custom/EN/'))) {
-            require_lang(basename($file, '.ini'));
+    foreach ($files as $path) {
+        if ((substr($path, -4) == '.ini') && ((substr($path, 0, 8) == 'lang/EN/') || (substr($path, 0, 15) == 'lang_custom/EN/'))) {
+            require_lang(basename($path, '.ini'));
         }
 
-        if ((substr($file, -4) == '.css') && (substr($file, 0, 7) == 'themes/')) {
-            require_css(basename($file, '.css'));
+        if ((substr($path, -4) == '.css') && (substr($path, 0, 7) == 'themes/')) {
+            require_css(basename($path, '.css'));
         }
 
-        if ((substr($file, -3) == '.js') && (substr($file, 0, 7) == 'themes/')) {
-            require_javascript(strtolower(basename($file, '.js')));
+        if ((substr($path, -3) == '.js') && (substr($path, 0, 7) == 'themes/')) {
+            require_javascript(strtolower(basename($path, '.js')));
         }
     }
 

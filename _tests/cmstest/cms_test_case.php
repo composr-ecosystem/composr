@@ -109,7 +109,7 @@ class cms_test_case extends WebTestCase
         if (!file_exists($path)) {
             mkdir($path, 0777);
         }
-        $content = $this->_browser->getContent();
+        $content = $this->browser->getContent();
         cms_file_put_contents_safe($path . '/' . url_to_filename($url) . '.htm.tmp', $content, FILE_WRITE_FIX_PERMISSIONS);
 
         // Save the text so we can run through Word's grammar checker

@@ -87,6 +87,8 @@ function get_mime_types($as_admin)
         'xml' => $as_admin ? 'text/xml' : 'application/octet-stream',
         'rss' => $as_admin ? 'application/rss+xml' : 'application/octet-stream',
         'atom' => $as_admin ? 'application/atom+xml' : 'application/octet-stream',
+        'yaml' => $as_admin ? 'application/json' : 'application/x-yaml',
+        'yml' => $as_admin ? 'application/json' : 'application/x-yaml',
 
         // Images
         'png' => 'image/png',

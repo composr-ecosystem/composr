@@ -1180,15 +1180,15 @@ class Module_admin_addons
                 }
             }
             sort($files);
-            foreach ($files as $file) {
-                if (preg_match('#^sources(_custom)?/hooks/systems/addon_registry/[^/]+\.php$#', $file) != 0) {
+            foreach ($files as $path) {
+                if (preg_match('#^sources(_custom)?/hooks/systems/addon_registry/[^/]+\.php$#', $path) != 0) {
                     if ($addon_name != '') {
                         attach_message('Multiple addon_registry hooks were selected - that is a bad idea.', 'warn');
                     } else {
                         attach_message('Defaults have been selected from the chosen addon_registry hook. If you change them the hook itself will not be changed, so it will become inconsistent - edit the hook instead and refresh.', 'warn');
                     }
 
-                    $existing_addon_info = read_addon_info(basename($file, '.php'), false, null, null, $file);
+                    $existing_addon_info = read_addon_info(basename($path, '.php'), false, null, null, $path);
 
                     sort($existing_addon_info['files']);
 
@@ -1198,7 +1198,7 @@ class Module_admin_addons
                                 attach_message('You only selected the addon_registry hook - automatically selecting the ' . integer_format(count($existing_addon_info['files'])) . ' files referenced by that hook.', 'inform');
 
                                 foreach ($existing_addon_info['files'] as $i => $_file) {
-                                    if ($_file != $file) {
+                                    if ($_file != $path) {
                                         if (!is_file($_file)) {
                                             warn_exit('Missing file referenced by addon registry hook: ' . $_file);
                                         }

@@ -77,7 +77,9 @@ class microformats_test_set extends cms_test_case
 
     protected function do_validation($data)
     {
+        cms_ini_set('ocproducts.type_strictness', '0');
         $output = Mf2\parse($data, 'https://waterpigs.co.uk/');
+        cms_ini_set('ocproducts.type_strictness', '1');
         return $output;
     }
 }

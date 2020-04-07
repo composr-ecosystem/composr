@@ -80,38 +80,38 @@ if ($mode == 'unbundle') {
     require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name));
     $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
     $files = $ob->get_file_list();
-    foreach ($files as $file) {
+    foreach ($files as $path) {
         $new_file = null;
         $matches = [];
 
-        if (preg_match('#^themes/default/images/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^themes/default/images/(.*)$#', $path, $matches) != 0) {
             $new_file = 'themes/default/images_custom/' . $matches[1];
         }
-        if (preg_match('#^themes/default/css/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^themes/default/css/(.*)$#', $path, $matches) != 0) {
             $new_file = 'themes/default/css_custom/' . $matches[1];
         }
-        if (preg_match('#^themes/default/templates/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^themes/default/templates/(.*)$#', $path, $matches) != 0) {
             $new_file = 'themes/default/templates_custom/' . $matches[1];
         }
-        if (preg_match('#^themes/default/javascript/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^themes/default/javascript/(.*)$#', $path, $matches) != 0) {
             $new_file = 'themes/default/javascript_custom/' . $matches[1];
         }
-        if (preg_match('#^themes/default/xml/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^themes/default/xml/(.*)$#', $path, $matches) != 0) {
             $new_file = 'themes/default/xml_custom/' . $matches[1];
         }
-        if (preg_match('#^themes/default/text/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^themes/default/text/(.*)$#', $path, $matches) != 0) {
             $new_file = 'themes/default/text_custom/' . $matches[1];
         }
-        if (preg_match('#^sources/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^sources/(.*)$#', $path, $matches) != 0) {
             $new_file = 'sources_custom/' . $matches[1];
         }
-        if (preg_match('#^pages/modules/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^pages/modules/(.*)$#', $path, $matches) != 0) {
             $new_file = 'pages/modules_custom/' . $matches[1];
         }
-        if (preg_match('#^(.*)/pages/modules/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^(.*)/pages/modules/(.*)$#', $path, $matches) != 0) {
             $new_file = $matches[1] . '/pages/modules_custom/' . $matches[2];
         }
-        if (preg_match('#^lang/(.*)$#', $file, $matches) != 0) {
+        if (preg_match('#^lang/(.*)$#', $path, $matches) != 0) {
             $new_file = 'lang_custom/' . $matches[1];
         }
 
@@ -119,11 +119,11 @@ if ($mode == 'unbundle') {
             //var_dump($new_file);continue;
             if (!file_exists(get_file_base() . '/' . $new_file)) {
                 @mkdir(dirname($new_file), 0777, true);
-                rename(get_file_base() . '/' . $file, get_file_base() . '/' . $new_file);
-                sync_file_move(get_file_base() . '/' . $file, get_file_base() . '/' . $new_file);
+                rename(get_file_base() . '/' . $path, get_file_base() . '/' . $new_file);
+                sync_file_move(get_file_base() . '/' . $path, get_file_base() . '/' . $new_file);
 
                 require_code('files');
-                $data = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK);
+                $data = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
                 $data = str_replace('
 
 NOTE TO PROGRAMMERS:
@@ -134,7 +134,7 @@ NOTE TO PROGRAMMERS:
             }
             // else already moved
         } else {
-            //var_dump($file);
+            //var_dump($path);
         }
     }
 }

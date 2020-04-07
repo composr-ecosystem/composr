@@ -15,6 +15,7 @@
 	<exclude-pattern>mobiquo/lib</exclude-pattern>
 	<exclude-pattern>mobiquo/smartbanner</exclude-pattern>
 	<exclude-pattern>sources/diff.php</exclude-pattern>
+	<exclude-pattern>sources/diff</exclude-pattern>
 	<exclude-pattern>sources/firephp.php</exclude-pattern>
 	<exclude-pattern>sources/jsmin.php</exclude-pattern>
 	<exclude-pattern>sources/lang_stemmer_EN.php</exclude-pattern>
@@ -30,7 +31,6 @@
 	<exclude-pattern>sources_custom/geshi.php</exclude-pattern>
 	<exclude-pattern>sources_custom/getid3</exclude-pattern>
 	<exclude-pattern>sources_custom/hooks/modules/chat_bots/trickstr.php</exclude-pattern>
-	<exclude-pattern>sources_custom/ILess</exclude-pattern>
 	<exclude-pattern>sources_custom/photobucket</exclude-pattern>
 	<exclude-pattern>sources_custom/programe</exclude-pattern>
 	<exclude-pattern>sources_custom/sabredav</exclude-pattern>

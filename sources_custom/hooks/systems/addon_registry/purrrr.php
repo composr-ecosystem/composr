@@ -177,7 +177,7 @@ class Hook_addon_registry_purrrr
             'data_custom/images/lolcats/funny-pictures-kitten-tries-to-stay-neutral.jpg',
             'data_custom/images/lolcats/funny-pictures-kittens-dispose-of-boyfriend.jpg',
             'data_custom/images/lolcats/funny-pictures-kittens-yell-at-eachother.jpg',
-            'data_custom/images/lolcats/ridiculous_poses_moddles.jpg',
+            'data_custom/images/lolcats/funny-pictures-ridiculous-poses-moddles.jpg',
             'data_custom/images/lolcats/thumbs/funny-pictures-basement-cat-has-pink-sheets.jpg',
             'data_custom/images/lolcats/thumbs/funny-pictures-cat-ai-calld-jenny-craig.jpg',
             'data_custom/images/lolcats/thumbs/funny-pictures-cat-asks-you-for-a-favor.jpg',
@@ -217,7 +217,7 @@ class Hook_addon_registry_purrrr
             'data_custom/images/lolcats/thumbs/funny-pictures-kitten-tries-to-stay-neutral.jpg',
             'data_custom/images/lolcats/thumbs/funny-pictures-kittens-dispose-of-boyfriend.jpg',
             'data_custom/images/lolcats/thumbs/funny-pictures-kittens-yell-at-eachother.jpg',
-            'data_custom/images/lolcats/thumbs/ridiculous_poses_moddles.jpg',
+            'data_custom/images/lolcats/thumbs/funny-pictures-ridiculous-poses-moddles.jpg',
         ];
     }
 
@@ -274,7 +274,7 @@ class Hook_addon_registry_purrrr
             $this->add_image('data_custom/images/lolcats/funny-pictures-cat-has-a-beatle.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-a-beatle.jpg', 'GEORGE', 'GEORGE', '');
             $this->add_image('data_custom/images/lolcats/funny-pictures-cat-sits-on-your-laptop.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-sits-on-your-laptop.jpg', 'Rebutting ...', 'Rebutting ...', '');
             $this->add_image('data_custom/images/lolcats/funny-pictures-cat-has-a-close-encounter.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-has-a-close-encounter.jpg', 'CLOSE  ENCOUNTRES ...', 'CLOSE  ENCOUNTRES ...', '');
-            $this->add_image('data_custom/images/lolcats/ridiculous_poses_moddles.jpg', 'data_custom/images/lolcats/thumbs/ridiculous_poses_moddles.jpg', 'Ridiculous poses', 'Ridiculous poses', '');
+            $this->add_image('data_custom/images/lolcats/funny-pictures-ridiculous-poses-moddles.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-ridiculous-poses-moddles.jpg', 'Ridiculous poses', 'Ridiculous poses', '');
             $this->add_image('data_custom/images/lolcats/funny-pictures-cat-is-a-doctor.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-is-a-doctor.jpg', 'Dr. House cat...', 'Dr. House cat...', '');
             $this->add_image('data_custom/images/lolcats/funny-pictures-cat-pounces-on-deer.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-cat-pounces-on-deer.jpg', 'National Geographic', 'National Geographic', '');
             $this->add_image('data_custom/images/lolcats/funny-pictures-fish-and-cat-judge-your-outfit.jpg', 'data_custom/images/lolcats/thumbs/funny-pictures-fish-and-cat-judge-your-outfit.jpg', 'Bad outfit', 'Bad outfit', '');

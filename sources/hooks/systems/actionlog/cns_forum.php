@@ -315,11 +315,13 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
     {
         switch ($actionlog_row['the_type']) {
             case 'DELETE_TOPIC_POLL':
-                $parts = explode(':', $identifier, 2);
-                if (array_key_exists(1, $parts)) {
-                    $bindings += [
-                        'TOPIC' => $parts[0],
-                    ];
+                if ($identifier !== null) {
+                    $parts = explode(':', $identifier, 2);
+                    if (array_key_exists(1, $parts)) {
+                        $bindings += [
+                            'TOPIC' => $parts[0],
+                        ];
+                    }
                 }
                 break;
 
@@ -327,11 +329,13 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
             case 'VALIDATE_POST':
             case 'UNVALIDATE_POST':
             case 'MAKE_ANONYMOUS_POST':
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => intval($identifier)]);
-                if ($topic_id !== null) {
-                    $bindings += [
-                        'TOPIC' => strval($topic_id),
-                    ];
+                if ($identifier !== null) {
+                    $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => intval($identifier)]);
+                    if ($topic_id !== null) {
+                        $bindings += [
+                            'TOPIC' => strval($topic_id),
+                        ];
+                    }
                 }
                 break;
         }

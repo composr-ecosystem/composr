@@ -60,11 +60,11 @@ class Hook_commandr_command_fs_search
 
             require_code('files2');
             $files = get_directory_contents(get_custom_file_base(), '', null, true, true, $extensions);
-            foreach ($files as $file) {
-                $c = cms_file_get_contents_safe(get_custom_file_base() . '/' . $file, FILE_READ_LOCK);
+            foreach ($files as $path) {
+                $c = cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK);
                 if (stripos($c, $search) !== false) {
-                    $out .= '<p><kbd>' . $file . '</kbd></p>';
-                    $matched_files[] = $file;
+                    $out .= '<p><kbd>' . $path . '</kbd></p>';
+                    $matched_files[] = $path;
                 }
             }
 
@@ -88,9 +88,9 @@ class Hook_commandr_command_fs_search
                 // Generate TAR
                 require_code('tar');
                 $out_file = tar_open($out_file_path, 'wb');
-                foreach ($matched_files as $file) {
-                    $full_path = get_custom_file_base() . '/' . $file;
-                    tar_add_file($out_file, $file, $full_path, fileperms($full_path), filemtime($full_path), true, false, true);
+                foreach ($matched_files as $path) {
+                    $full_path = get_custom_file_base() . '/' . $path;
+                    tar_add_file($out_file, $path, $full_path, fileperms($full_path), filemtime($full_path), true, false, true);
                 }
                 tar_close($out_file);
                 sync_file($out_file_path);

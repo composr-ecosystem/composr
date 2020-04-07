@@ -1598,6 +1598,9 @@ function _parse_variable($suppress_error, $can_be_dangling_method_call_instead =
 
     $variable = pparse__parser_next(true);
     $next = pparse__parser_peek(true);
+    if ($next === null) {
+        parser_error('Expected variable ($) but reached end of file');
+    }
     $suppress_error = $suppress_error || ($next[0] == 'SUPPRESS_ERROR');
     if ($next[0] == 'SUPPRESS_ERROR') {
         pparse__parser_next();
