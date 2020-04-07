@@ -129,7 +129,7 @@ function semi_dev_mode_startup()
             }
         }
 
-        register_shutdown_function(function() {
+        register_shutdown_function(function () {
             // Nested so it will run last
             register_shutdown_function('dev_mode_aftertests');
         });

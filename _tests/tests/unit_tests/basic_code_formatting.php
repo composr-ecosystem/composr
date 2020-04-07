@@ -149,7 +149,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension($path);
 
             if ((isset($this->text_formats[$ext])) && ($ext != 'svg') && ($ext != 'ini')) {
-                $c = cms_file_get_contents_safe($path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 $ok = (preg_match('#[ \t]$#m', $c) == 0);
                 $this->assertTrue($ok, 'Has trailing whitespace in ' . $path . '; grep for [ \t]+$');
@@ -185,7 +185,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension($path);
 
             if (isset($this->text_formats[$ext])) {
-                $c = cms_file_get_contents_safe($path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 if ($ext == 'php' || $ext == 'css' || $ext == 'js') {
                     // Strip comments, which often contain people's non-English names

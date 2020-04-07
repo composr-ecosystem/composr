@@ -26,13 +26,15 @@ class transliteration_test_set extends cms_test_case
         }
 
         $expect = [
-            'foo' => 'foo',
-            'glückliche' => 'gluckliche',
-            'café' => 'cafe',
-            '咖啡店' => 'ka fei dian',
+            ['foo', 'foo'],
+            [hex2bin('676cc3bc636b6c69636865'), 'gluckliche'],
+            [hex2bin('636166c3a9'), 'cafe'],
+            [hex2bin('e59296e595a1e5ba97'), 'ka fei dian'],
         ];
 
-        foreach ($expect as $from => $to) {
+        foreach ($expect as $_) {
+            list($from, $to) = $_;
+
             $got = transliterate_string($from);
             $this->assertTrue($got == $to, 'Failed to get ' . $to);
         }

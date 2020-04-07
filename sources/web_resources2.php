@@ -365,8 +365,10 @@ function js_minify($js)
         return str_replace('/*no minify*/', '', $js);
     }
 
-    $ret = ini_get('ocproducts.type_strictness');
+    $before_ts = ini_get('ocproducts.type_strictness');
     cms_ini_set('ocproducts.type_strictness', '0');
+    $before_xd = ini_get('ocproducts.xss_detect');
+    cms_ini_set('ocproducts.xss_detect', '0');
 
     require_code('jsmin');
 
@@ -374,7 +376,8 @@ function js_minify($js)
         $js = \JShrink\Minifier::minify($js);
     }
 
-    cms_ini_set('ocproducts.type_strictness', $ret);
+    cms_ini_set('ocproducts.type_strictness', $before_ts);
+    cms_ini_set('ocproducts.xss_detect', $before_xd);
 
     return $js;
 }

@@ -941,9 +941,9 @@ class SimplePhpPageBuilder
     {
         if ($tag->getTagName() === 'a') {
             $this->page->addLink($tag);
-        } elseif ($tag->getTagName() === 'base') {
+        } elseif (($tag->getTagName() === 'base') && ($this->page->getBase() === false)) {
             $this->page->setBase($tag->getAttribute('href'));
-        } elseif ($tag->getTagName() === 'title') {
+        } elseif (($tag->getTagName() === 'title') && ($this->page->getTitle() === false)) {
             $this->page->setTitle($tag);
         } elseif ($this->isFormElement($tag->getTagName())) {
             for ($i = 0; $i < count($this->open_forms); $i++) {
