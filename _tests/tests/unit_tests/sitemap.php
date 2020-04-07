@@ -215,6 +215,19 @@ class sitemap_test_set extends cms_test_case
                     ':sitemap',
                     ':privacy',
                     ':feedback',
+                    ':404',
+                    ':popup_blockers',
+                    ':panel_top',
+                    ':panel_bottom',
+                    ':panel_left',
+                    ':panel_right',
+                    'adminzone:_modsecurity',
+
+                    // Handled specially
+                    ':home',
+                    'site:userguide_chatcode',
+                    'site:userguide_comcode',
+                    'site:popup_blockers',
                 ])) {
                     continue;
                 }

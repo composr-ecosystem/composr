@@ -27,7 +27,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
 
     if ($success && $do_index_test) {
         $url = get_base_url() . '/index.php?keep_no_query_limit=1';
-        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 200.0/*May be very slow with XML DB*/]);
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 200.0/*May be very slow with XML DB*/]);
         $data = $http_result->data;
         $success = ($http_result->message == '200') && (strpos($data, '<!--ERROR-->') === false);
 
@@ -67,7 +67,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
     $settings = $extra_settings + [
         'max' => '1000',
         'default_lang' => fallback_lang(),
-        'email' => 'E-mail address',
+        'email' => 'foo@example.com',
         'advertise_on' => '0',
         'use_multi_db' => '0',
         'use_msn' => '0',
@@ -180,7 +180,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         if (!empty($get)) {
             $url .= '&' . http_build_query($get);
         }
-        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'timeout' => 240.0/*If XML DB may be VERY slow*/]);
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 240.0/*If XML DB may be VERY slow*/]);
         $data = $http_result->data;
         $success = ($http_result->message == '200') && (strpos($data, '<!--ERROR-->') === false);
 

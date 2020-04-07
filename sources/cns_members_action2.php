@@ -2131,6 +2131,365 @@ function update_member_username_caching($member_id, $username)
 }
 
 /**
+ * Get details of predefined templated fields.
+ *
+ * @return array List of predefined templated fields, each being a map
+ */
+function cns_predefined_custom_field_details()
+{
+    return [
+        'sn_twitter' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/twitter',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://twitter.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'im_skype' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/skype',
+            'section' => 'contact',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="skype:{RAW*}?call">{NAME*}</a>',
+        ],
+        'im_jabber' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/jabber',
+            'section' => 'contact',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="xmpp:{RAW*}">{NAME*}</a>',
+        ],
+        'im_discord' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/discord',
+            'section' => 'contact',
+            'tempcode' => '{NAME*}: {RAW*}',
+        ],
+        'github' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/github',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://github.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'gitlab' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/gitlab',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://gitlab.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_instagram' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/instagram',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://www.instagram.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_tiktok' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/tiktok',
+            'section' => '',
+            'tempcode' => '{NAME*}: {RAW*}',
+        ],
+        'sn_minds' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/minds',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://www.minds.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_pinterest' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/pinterest',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://www.pinterest.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_snapchat' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/snapchat',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://snapchat.com/add/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'soundcloud' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/soundcloud',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://soundcloud.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'im_telegram' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/telegram',
+            'section' => 'contact',
+            'tempcode' => '{NAME*}: {RAW*}',
+        ],
+        'sn_tumblr' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/tumblr',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://{RAW*}.tumblr.com" rel="me">{NAME*}</a>',
+        ],
+        'sn_twitch' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/twitch',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://www.twitch.tv/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'im_whatsapp' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/whatsapp',
+            'section' => 'contact',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="whatsapp://send?phone={RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_sina_weibo' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/sina_weibo',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://weibo.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_tencent_weibo' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/tencent_weibo',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://t.qq.com/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'im_wechat' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/wechat',
+            'section' => 'contact',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://weixin.qq.com/r/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'playstation_network' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/playstation_network',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://secure.eu.playstation.com/psn/{RAW*}/" rel="me">{NAME*}</a>',
+        ],
+        'xbox_live' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/xbox_live',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://live.xbox.com/en-US/Profile?gamertag={RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'steam' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/steam',
+            'section' => '',
+            'tempcode' => '{NAME*}: {RAW*}',
+        ],
+        'sn_steemit' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/steemit',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://steemit.com/@{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'utopian' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/utopian',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://steemit.com/@{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'dtube' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/dtube',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://d.tube/c/{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'im_line' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/line',
+            'section' => 'contact',
+            'tempcode' => '{NAME*}: {RAW*}',
+        ],
+        'im_viber' => [
+            'type' => 'codename',
+            'icon' => 'icons/links/viber',
+            'section' => 'contact',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="viber://add?number={RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_facebook' => [
+            'type' => 'url',
+            'icon' => 'icons/links/facebook',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'amazon' => [
+            'type' => 'url',
+            'icon' => 'icons/links/amazon',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'bandcamp' => [
+            'type' => 'url',
+            'icon' => 'icons/links/bandcamp',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'dailymotion' => [
+            'type' => 'url',
+            'icon' => 'icons/links/dailymotion',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'dropbox' => [
+            'type' => 'url',
+            'icon' => 'icons/links/dropbox',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'flattr' => [
+            'type' => 'url',
+            'icon' => 'icons/links/flattr',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'hacker_news' => [
+            'type' => 'url',
+            'icon' => 'icons/links/hacker_news',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_linkedin' => [
+            'type' => 'url',
+            'icon' => 'icons/links/linkedin',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'patreon' => [
+            'type' => 'url',
+            'icon' => 'icons/links/patreon',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'quora' => [
+            'type' => 'url',
+            'icon' => 'icons/links/quora',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_reddit' => [
+            'type' => 'url',
+            'icon' => 'icons/links/reddit',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'slashdot' => [
+            'type' => 'url',
+            'icon' => 'icons/links/slashdot',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'spotify' => [
+            'type' => 'url',
+            'icon' => 'icons/links/spotify',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'stack_exchange' => [
+            'type' => 'url',
+            'icon' => 'icons/links/stack_exchange',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'stack_overflow' => [
+            'type' => 'url',
+            'icon' => 'icons/links/stack_overflow',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'vimeo' => [
+            'type' => 'url',
+            'icon' => 'icons/links/vimeo',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'youtube' => [
+            'type' => 'url',
+            'icon' => 'icons/links/youtube',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_vk' => [
+            'type' => 'url',
+            'icon' => 'icons/links/vk',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_baidu_tieba' => [
+            'type' => 'url',
+            'icon' => 'icons/links/baidu_tieba',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_qzone' => [
+            'type' => 'url',
+            'icon' => 'icons/links/qzone',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'bitcoin' => [
+            'type' => 'url',
+            'icon' => 'icons/links/bitcoin',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'website' => [
+            'type' => 'url',
+            'icon' => 'icons/menu/home',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'gender' => [
+            'type' => 'short_text',
+            'icon' => '',
+            'section' => '',
+            'tempcode' => '',
+        ],
+        'location' => [
+            'type' => 'short_text',
+            'icon' => '',
+            'section' => '',
+            'tempcode' => '',
+        ],
+        'occupation' => [
+            'type' => 'short_text',
+            'icon' => '',
+            'section' => '',
+            'tempcode' => '',
+        ],
+        'paypal' => [
+            'type' => 'email',
+            'icon' => 'icons/links/paypal',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
+        ],
+        'sn_mastodon' => [
+            'type' => 'email',
+            'icon' => 'icons/links/mastodon',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{$PREG_REPLACE*,(.*)@(.*),https://$2/@$1,{RAW}}" rel="me">{NAME*}</a>',
+        ],
+        'sn_diaspora' => [
+            'type' => 'email',
+            'icon' => 'icons/links/diaspora',
+            'section' => '',
+            'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{$PREG_REPLACE*,(.*)@(.*),https://$2/@$1,{RAW}}" rel="me">{NAME*}</a>',
+        ],
+        'about' => [
+            'type' => 'long_trans',
+            'icon' => '',
+            'section' => '',
+            'tempcode' => '',
+        ],
+        'staff_notes' => [
+            'type' => 'long_trans',
+            'icon' => '',
+            'section' => '',
+            'tempcode' => '',
+        ],
+        'interests' => [
+            'type' => 'long_trans',
+            'icon' => '',
+            'section' => '',
+            'tempcode' => '',
+        ],
+    ];
+}
+
+/**
  * Make a Custom Profile Field from one of the predefined templates (this is often used by importers).
  * Also see the cpf_install source file.
  *
@@ -2143,7 +2502,7 @@ function cns_make_predefined_content_field($type)
     require_lang('cns_special_cpf');
     require_lang('fields');
 
-    $details = $this->predefined_custom_field_details();
+    $details = cns_predefined_custom_field_details();
     $_type = $details[$type]['type'];
     $icon = $details[$type]['icon'];
     $section = $details[$type]['section'];

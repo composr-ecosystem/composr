@@ -186,6 +186,10 @@ function cns_delete_emoticon($code)
  */
 function cns_get_num_emoticons_on_disk()
 {
+    if (!$GLOBALS['SITE_DB']->table_exists('theme_images')) {
+        return 0; // Likely installing
+    }
+
     require_code('themes2');
 
     $cnt = 0;

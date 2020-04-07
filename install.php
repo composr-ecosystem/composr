@@ -2035,17 +2035,17 @@ function step_5_core()
     if ($email != '') {
         $GLOBALS['SITE_DB']->query_insert('config', [
             'c_name' => 'staff_address',
-            'c_set' => '1',
+            'c_set' => 1,
             'c_value' => $email,
             'c_value_trans' => multi_lang_content() ? null : '',
-            'c_needs_dereference' => '0',
+            'c_needs_dereference' => 0,
         ]);
         $GLOBALS['SITE_DB']->query_insert('config', [
             'c_name' => 'website_email',
-            'c_set' => '1',
+            'c_set' => 1,
             'c_value' => $email,
             'c_value_trans' => multi_lang_content() ? null : '',
-            'c_needs_dereference' => '0',
+            'c_needs_dereference' => 0,
         ]);
     }
 

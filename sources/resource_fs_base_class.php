@@ -2588,7 +2588,7 @@ abstract class Resource_fs_base
 
             $select = [];
             append_content_select_for_fields($select, $file_info, ['id', 'add_time', 'edit_time'], 'main');
-            $files = $file_info['db']->query_select($file_info['table'], $select, $where, '', 10000/*Reasonable limit*/);
+            $files = $file_info['db']->query_select($file_info['table'] . ' main', $select, $where, '', 10000/*Reasonable limit*/);
             foreach ($files as $file) {
                 $str_id = extract_content_str_id_from_data($file, $file_info);
                 $filename = $this->file_convert_id_to_filename($resource_type, $str_id);
