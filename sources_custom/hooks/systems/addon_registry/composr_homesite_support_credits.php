@@ -184,6 +184,7 @@ class Hook_addon_registry_composr_homesite_support_credits
             'sources_custom/hooks/systems/actionlog/composr_homesite_support_credits.php',
             'sources_custom/hooks/systems/points/support_credits.php',
 
+            'config/config_inc.php',
             'tracker/account_delete.php',
             'tracker/account_manage_columns_page.php',
             'tracker/account_page.php',
