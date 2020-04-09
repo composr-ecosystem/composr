@@ -553,7 +553,8 @@ function mc_project_version_update( $p_username, $p_password, $p_version_id, std
 	$t_version_data->date_order = $t_date_order;
 	$t_version_data->obsolete = $t_obsolete;
 
-	return version_update( $t_version_data );
+	version_update( $t_version_data );
+	return true;
 }
 
 /**
@@ -592,7 +593,8 @@ function mc_project_version_delete( $p_username, $p_password, $p_version_id ) {
 		return mci_fault_access_denied( $t_user_id );
 	}
 
-	return version_remove( $p_version_id );
+	version_remove( $p_version_id );
+	return true;
 }
 
 /**
@@ -623,9 +625,11 @@ function mc_project_get_custom_fields( $p_username, $p_password, $p_project_id )
  * @param integer $p_project_id The project id.
  * @param array   $p_custom_fields The custom fields, may be not set.
  * @return bool|SoapFault|RestFault true or error.
+ *
+ * @throws ClientException
  */
 function mci_project_custom_fields_validate( $p_project_id, &$p_custom_fields ) {
-	# Load custom field definitions
+	# Load custom field definitions for the specified project
 	$t_related_custom_field_ids = custom_field_get_linked_ids( $p_project_id );
 	$t_custom_field_defs = array();
 	foreach( $t_related_custom_field_ids as $t_custom_field_id ) {
@@ -633,18 +637,14 @@ function mci_project_custom_fields_validate( $p_project_id, &$p_custom_fields ) 
 		$t_custom_field_defs[$t_custom_field_id] = $t_def;
 	}
 
-	$fn_normalize_name = function( $p_name, $p_custom_field_defs ) {
-		foreach( $p_custom_field_defs as $t_custom_field_def ) {
-			if( strcasecmp( $t_custom_field_def['name'], $p_name ) == 0 ) {
-				return $t_custom_field_def['name'];
-			}
-		}
-
-		return $p_name;
-	};
-
 	$t_custom_field_values = array();
 	if( isset( $p_custom_fields ) ) {
+		if( !is_array( $p_custom_fields ) ) {
+			throw new ClientException(
+				"Invalid Custom Field '$p_custom_fields'",
+				ERROR_CUSTOM_FIELD_NOT_FOUND
+			);
+		}
 		foreach( $p_custom_fields as $t_custom_field ) {
 			$t_custom_field = ApiObjectFactory::objectToArray( $t_custom_field );
 
@@ -652,7 +652,7 @@ function mci_project_custom_fields_validate( $p_project_id, &$p_custom_fields ) 
 				throw new ClientException(
 					'Custom field has no value specified.',
 					ERROR_EMPTY_FIELD,
-					"custom_field['value']"
+					array( "custom_field['value']" )
 				);
 			}
 
@@ -660,29 +660,29 @@ function mci_project_custom_fields_validate( $p_project_id, &$p_custom_fields ) 
 				throw new ClientException(
 					'Custom field with no specified id or name.',
 					ERROR_EMPTY_FIELD,
-					"custom_field['field']"
+					array( "custom_field['field']" )
 				);
 			}
 
-			$t_custom_field['field'] = ApiObjectFactory::objectToArray( $t_custom_field['field'] );
-
-			if( isset( $t_custom_field['field']['id'] ) ) {
-				$t_def = $t_custom_field_defs[(int)$t_custom_field['field']['id']];
+			$t_custom_field_id = mci_get_custom_field_id_from_objectref( (object)$t_custom_field['field'] );
+			if( $t_custom_field_id == 0 ) {
+				throw new ClientException(
+					'Invalid Custom Field '
+					# Output JSON stripped of quotes to help caller identify offending field
+					. str_replace( '"', '', json_encode( $t_custom_field['field'] ) ),
+					ERROR_CUSTOM_FIELD_NOT_FOUND
+				);
+			} else {
+				# Make sure the custom field is linked to the current project
+				if( !isset( $t_custom_field_defs[$t_custom_field_id] ) ) {
+					throw new ClientException(
+						"Custom Field Id '$t_custom_field_id' not found in Project '$p_project_id'.",
+						ERROR_CUSTOM_FIELD_NOT_FOUND
+					);
+				}
+				$t_def = $t_custom_field_defs[$t_custom_field_id];
 				$t_custom_field_values[$t_def['name']] = $t_custom_field['value'];
-				continue;
 			}
-
-			if( isset( $t_custom_field['field']['name'] ) ) {
-				$t_name = $fn_normalize_name( $t_custom_field['field']['name'], $t_custom_field_defs );
-				$t_custom_field_values[$t_name] = $t_custom_field['value'];
-				continue;
-			}
-
-			throw new ClientException(
-				'Custom field with no specified id or name.',
-				ERROR_EMPTY_FIELD,
-				"custom_field['field']['id']"
-			);
 		}
 	}
 
@@ -834,7 +834,9 @@ function mci_custom_field_type_name( $p_type_id ) {
  * @return array The project versions.
  */
 function mci_project_versions( $p_project_id ) {
-	$t_versions = version_get_all_rows( $p_project_id, /* inherit */ null );
+	# use VERSION_ALL, true as the fastest way (no additional where clause in query)
+	# to get all released / non-released and obsolete / non-obsolete versions
+	$t_versions = version_get_all_rows( $p_project_id, VERSION_ALL, true );
 	$t_results = array();
 
 	foreach( $t_versions as $t_version ) {

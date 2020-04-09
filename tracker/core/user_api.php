@@ -83,23 +83,21 @@ function user_cache_row( $p_user_id, $p_trigger_errors = true ) {
 
 	if( !isset( $g_cache_user[$c_user_id] ) ) {
 		user_cache_array_rows( array( $c_user_id ) );
-	}
 
-	$t_user_row = $g_cache_user[$c_user_id];
+		if( !isset( $g_cache_user[$c_user_id] ) ) {
+			if( $p_trigger_errors ) {
+				throw new ClientException(
+					sprintf( "User id '%d' not found.", (integer)$p_user_id ),
+					ERROR_USER_BY_ID_NOT_FOUND,
+					array( (integer)$p_user_id )
+				);
+			}
 
-	if( !$t_user_row ) {
-		if( $p_trigger_errors ) {
-			throw new ClientException(
-				sprintf( "User id '%d' not found.", (integer)$p_user_id ),
-				ERROR_USER_BY_ID_NOT_FOUND,
-				array( (integer)$p_user_id )
-			);
+			return false;
 		}
-
-		return false;
 	}
 
-	return $t_user_row;
+	return $g_cache_user[$c_user_id];
 }
 
 /**
@@ -111,70 +109,6 @@ function user_cache_row( $p_user_id, $p_trigger_errors = true ) {
 function user_cache_array_rows( array $p_user_id_array ) {
 	global $g_cache_user;
 	$c_user_id_array = array();
-
-	// Composr - sync user accounts from CMS
-	global $cms_updater_groups, $cms_developer_groups, $cms_manager_groups, $cms_admin_groups, $cms_sc_db_prefix;
-	foreach( $p_user_id_array as $t_user_id ) {
-		$result = db_query("SELECT * FROM " . $cms_sc_db_prefix . "f_members WHERE id=" . db_param(), Array( $t_user_id ) );
-	 	if( 0 == db_num_rows( $result ) ) {
-			$g_cache_user[$t_user_id] = false;
-			continue;
-		}
-
-		$cms_row = db_fetch_array( $result );
-
-		$cms_updater_groups = array();
-		$cms_developer_groups = array(22,30);
-		$cms_manager_groups = array();
-		$cms_admin_groups = array(2,3);
-
-		// Find access level
-		$access_level = ($cms_row['m_primary_group'] == 1) ? VIEWER : REPORTER;
-		if (in_array($cms_row['m_primary_group'], $cms_updater_groups)) $access_level = UPDATER;
-		if (in_array($cms_row['m_primary_group'], $cms_developer_groups)) $access_level = DEVELOPER;
-		if (in_array($cms_row['m_primary_group'], $cms_manager_groups)) $access_level = MANAGER;
-		if (in_array($cms_row['m_primary_group'], $cms_admin_groups)) $access_level = ADMINISTRATOR;
-
-		// Process additional groups
-		$result = db_query("SELECT gm_group_id FROM ".$cms_sc_db_prefix."f_group_members WHERE gm_validated=1 AND gm_member_id=" . db_param(), Array( $t_user_id ) );
-		$num_groups = db_num_rows( $result );
-		for ($i = 0; $i < $num_groups; $i++) {
-			$group_row = db_fetch_array( $result );
-			$secondary_group_id = $group_row['gm_group_id'];
-			$access_level_2 = ($secondary_group_id == 1) ? VIEWER : REPORTER;
-			if (in_array($secondary_group_id, $cms_updater_groups)) $access_level_2 = UPDATER;
-			if (in_array($secondary_group_id, $cms_developer_groups)) $access_level_2 = DEVELOPER;
-			if (in_array($secondary_group_id, $cms_manager_groups)) $access_level_2 = MANAGER;
-			if (in_array($secondary_group_id, $cms_admin_groups)) $access_level_2 = ADMINISTRATOR;
-			if ($access_level_2 > $access_level) $access_level = $access_level_2;
-		}
-
-		$row = array (
-			'id' => $t_user_id,
-			'username' => $cms_row['m_username'],
-			'realname' => '',
-			'email' => ($cms_row['m_email_address'] == '') ? '' : $cms_row['m_email_address'],
-			'password' => $cms_row['m_pass_hash_salted'] . ':' . $cms_row['m_pass_salt'] . ':' . $cms_row['m_password_compat_scheme'],
-			'enabled' => (int)$cms_row['m_validated'],
-			'protected' => 0,
-			'access_level' => $access_level,
-			'login_count' => 0,
-			'lost_password_request_count' => 0,
-			'failed_login_count' => 0,
-			'cookie_string' => empty($cms_row['m_pass_hash_salted']) ? ('erjg9843h9grefjlg' . $cms_row['m_username']) : $cms_row['m_pass_hash_salted'],
-			'last_visit' => (int)$cms_row['m_last_visit_time'],
-			'date_created' => (int)$cms_row['m_join_time'],
-		);
-
-		$t_user_table = db_get_table( 'user' );
-		$query = "REPLACE INTO $t_user_table
-					( id, username, email, password, date_created, last_visit, enabled, access_level, login_count, cookie_string, realname, protected, lost_password_request_count, failed_login_count )
-					VALUES
-					( " . db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param()  . "," . db_param() . ',' . db_param() . ',' . db_param() . ',' . db_param() . ',' . db_param() . ',' . db_param() . ',' . db_param() . ', ' . db_param() . ')';
-		db_query( $query, Array( $row['id'], $row['username'], $row['email'], $row['password'], $row['date_created'], $row['last_visit'], $row['enabled'], $row['access_level'], $row['login_count'], $row['cookie_string'], $row['realname'], $row['protected'], $row['lost_password_request_count'], $row['failed_login_count'] ) );
-		$g_cache_user[$t_user_id] = $row;
-	}
-	return;
 
 	foreach( $p_user_id_array as $t_user_id ) {
 		if( !isset( $g_cache_user[(int)$t_user_id] ) ) {
@@ -192,18 +126,19 @@ function user_cache_array_rows( array $p_user_id_array ) {
 		$t_params[] = $t_id;
 		$t_sql_in_params[] = db_param();
 	}
-
 	$t_query = 'SELECT * FROM {user} WHERE id IN (' . implode( ',', $t_sql_in_params ) . ')';
 	$t_result = db_query( $t_query, $t_params );
 
-	while( $t_row = db_fetch_array( $t_result ) ) {
-		$c_user_id = (int)$t_row['id'];
-		$g_cache_user[$c_user_id] = $t_row;
-		unset( $c_user_id_array[$c_user_id] );
-	}
-	# set the remaining ids to false as not-found
-	foreach( $c_user_id_array as $t_id ) {
-		$g_cache_user[$t_id] = false;
+	if( $t_result !== false ) {
+		while( $t_row = db_fetch_array( $t_result ) ) {
+			$c_user_id = (int)$t_row['id'];
+			$g_cache_user[$c_user_id] = $t_row;
+			unset( $c_user_id_array[$c_user_id] );
+		}
+		# set the remaining ids to false as not-found
+		foreach( $c_user_id_array as $t_id ) {
+			$g_cache_user[$t_id] = false;
+		}
 	}
 }
 
@@ -567,7 +502,7 @@ function user_get_logged_in_user_ids( $p_session_duration_in_minutes ) {
 	# Get the list of connected users
 	$t_users_connected = array();
 	while( $t_row = db_fetch_array( $t_result ) ) {
-		$t_users_connected[] = $t_row['id'];
+		$t_users_connected[] = (int)$t_row['id'];
 	}
 
 	return $t_users_connected;
@@ -737,7 +672,7 @@ function user_delete( $p_user_id ) {
 	user_delete_profiles( $p_user_id );
 
 	# Remove associated preferences
-	user_pref_delete_all( $p_user_id );
+	user_pref_db_delete_user( $p_user_id );
 
 	# Remove project specific access levels
 	user_delete_project_specific_access_levels( $p_user_id );
@@ -761,20 +696,9 @@ function user_delete( $p_user_id ) {
  */
 function user_get_id_by_name( $p_username, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'username', $p_username ) ) {
-		return $t_user['id'];
+		return (int)$t_user['id'];
 	}
 
-	// Composr - sync user accounts from CMS
-	global $cms_sc_db_prefix;
-	db_param_push();
-	$t_query = 'SELECT * FROM ' . $cms_sc_db_prefix . 'f_members WHERE m_username=' . db_param();
-	$t_result = db_query( $t_query, array( $p_username ) );
-	$t_row = db_fetch_array( $t_result );
-	if( $t_row ) {
-		return (int)$t_row['id'];
-	}
-
-	/*
 	db_param_push();
 	$t_query = 'SELECT * FROM {user} WHERE username=' . db_param();
 	$t_result = db_query( $t_query, array( $p_username ) );
@@ -782,9 +706,8 @@ function user_get_id_by_name( $p_username, $p_throw = false ) {
 	$t_row = db_fetch_array( $t_result );
 	if( $t_row ) {
 		user_cache_database_result( $t_row );
-		return $t_row['id'];
+		return (int)$t_row['id'];
 	}
-	*/
 
 	if( $p_throw ) {
 		throw new ClientException(
@@ -801,11 +724,11 @@ function user_get_id_by_name( $p_username, $p_throw = false ) {
  *
  * @param string $p_email The email address to retrieve data for.
  * @param boolean $p_throw true to throw exception when not found, false otherwise.
- * @return array
+ * @return integer|boolean
  */
 function user_get_id_by_email( $p_email, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'email', $p_email ) ) {
-		return $t_user['id'];
+		return (int)$t_user['id'];
 	}
 
 	db_param_push();
@@ -815,7 +738,7 @@ function user_get_id_by_email( $p_email, $p_throw = false ) {
 	$t_row = db_fetch_array( $t_result );
 	if( $t_row ) {
 		user_cache_database_result( $t_row );
-		return $t_row['id'];
+		return (int)$t_row['id'];
 	}
 
 	if( $p_throw ) {
@@ -859,11 +782,11 @@ function user_get_enabled_ids_by_email( $p_email ) {
  *
  * @param string $p_realname The realname to retrieve data for.
  * @param boolean $p_throw true to throw if not found, false otherwise.
- * @return array
+ * @return integer|boolean
  */
 function user_get_id_by_realname( $p_realname, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'realname', $p_realname ) ) {
-		return $t_user['id'];
+		return (int)$t_user['id'];
 	}
 
 	db_param_push();
@@ -881,7 +804,7 @@ function user_get_id_by_realname( $p_realname, $p_throw = false ) {
 	}
 
 	user_cache_database_result( $t_row );
-	return $t_row['id'];
+	return (int)$t_row['id'];
 }
 
 /**
@@ -894,7 +817,7 @@ function user_get_id_by_realname( $p_realname, $p_throw = false ) {
  */
 function user_get_id_by_user_info( array $p_user, $p_throw_if_id_not_found = false ) {
 	if( isset( $p_user['id'] ) && (int)$p_user['id'] != 0 ) {
-		$t_user_id = $p_user['id'];
+		$t_user_id = (int)$p_user['id'];
 		if( $p_throw_if_id_not_found && !user_exists( $t_user_id ) ) {
 			throw new ClientException(
 				sprintf( "User with id '%d' doesn't exist", $t_user_id ),
@@ -1410,7 +1333,7 @@ function user_get_unassigned_by_project_id( $p_project_id = null ) {
 	$t_users = array();
 
 	while( $t_row = db_fetch_array( $t_result ) ) {
-		$t_users[] = $t_row['id'];
+		$t_users[] = (int)$t_row['id'];
 		$t_display[] = user_get_expanded_name_from_row( $t_row );
 		$t_sort[] = user_get_name_for_sorting_from_row( $t_row );
 	}
@@ -1843,5 +1766,28 @@ function user_reset_password( $p_user_id, $p_send_email = true ) {
 		user_reset_failed_login_count_to_zero( $p_user_id );
 	}
 
+	return true;
+}
+
+/**
+ * Helper function to check if the user has access to more than one project
+ * (any kind of project or subproject). This can be used to simplify logic when
+ * the user only has one project to choose from.
+ *
+ * @param integer $p_user_id	A valid user identifier.
+ * @return boolean	True if the user has access to more than one project.
+ */
+function user_has_more_than_one_project( $p_user_id ) {
+	$t_project_ids = user_get_accessible_projects( $p_user_id );
+	$t_count = count( $t_project_ids );
+	if( 0 == $t_count ) {
+		return false;
+	}
+	if( 1 == $t_count ) {
+		$t_project_id = (int) $t_project_ids[0];
+		if( count( user_get_accessible_subprojects( $p_user_id, $t_project_id ) ) == 0 ) {
+			return false;
+		}
+	}
 	return true;
 }

@@ -49,8 +49,6 @@
  * @uses version_api.php
  */
 
-$g_allow_browser_cache = 1;
-
 require_once( 'core.php' );
 require_api( 'access_api.php' );
 require_api( 'authentication_api.php' );
@@ -158,10 +156,7 @@ if( $f_master_bug_id > 0 ) {
 	if( !access_has_project_level( config_get( 'report_bug_threshold' ) ) ) {
 		# If can't report on current project, show project selector if there is any other allowed project
 		access_ensure_any_project_level( 'report_bug_threshold' );
-
-		//print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
-		// Composr - actually it means they need to log in
-		print_header_redirect( 'login_page.php?ref=bug_report_page.php' );
+		print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
 	}
 	access_ensure_project_level( config_get( 'report_bug_threshold' ) );
 
@@ -200,19 +195,20 @@ $f_copy_attachments_from_parent   = gpc_get_bool( 'copy_attachments_from_parent'
 $t_fields = config_get( 'bug_report_page_fields' );
 $t_fields = columns_filter_disabled( $t_fields );
 
-$simple = gpc_get_int( 'simple', 0 ); // Composr - allow simplified project reporting
-
 $t_show_category = in_array( 'category_id', $t_fields );
-$t_show_reproducibility = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'reproducibility', $t_fields );
-$t_show_eta = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'eta', $t_fields );
-$t_show_severity = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'severity', $t_fields );
-$t_show_priority = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'priority', $t_fields );
-$t_show_steps_to_reproduce = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'steps_to_reproduce', $t_fields );
-$t_show_handler = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'handler', $t_fields ) && access_has_project_level( config_get( 'update_bug_assign_threshold' ) );
+$t_show_reproducibility = in_array( 'reproducibility', $t_fields );
+$t_show_eta = in_array( 'eta', $t_fields );
+$t_show_severity = in_array( 'severity', $t_fields );
+$t_show_priority = in_array( 'priority', $t_fields );
+$t_show_steps_to_reproduce = in_array( 'steps_to_reproduce', $t_fields );
+$t_show_handler = in_array( 'handler', $t_fields )
+	&& access_has_project_level( config_get( 'update_bug_assign_threshold' ) );
+$t_show_monitors = in_array( 'monitors', $t_fields )
+	&& access_has_project_level( config_get( 'monitor_add_others_bug_threshold' ) );
 $t_show_profiles = config_get( 'enable_profiles' );
-$t_show_platform = ($simple == 0)/*Composr - allow simplified project reporting*/ && $t_show_profiles && in_array( 'platform', $t_fields );
-$t_show_os = ($simple == 0)/*Composr - allow simplified project reporting*/ && $t_show_profiles && in_array( 'os', $t_fields );
-$t_show_os_version = ($simple == 0)/*Composr - allow simplified project reporting*/ && $t_show_profiles && in_array( 'os_version', $t_fields );
+$t_show_platform = $t_show_profiles && in_array( 'platform', $t_fields );
+$t_show_os = $t_show_profiles && in_array( 'os', $t_fields );
+$t_show_os_version = $t_show_profiles && in_array( 'os_version', $t_fields );
 $t_show_resolution = in_array( 'resolution', $t_fields );
 $t_show_status = in_array( 'status', $t_fields );
 $t_show_tags =
@@ -221,14 +217,14 @@ $t_show_tags =
 		config_get( 'tag_attach_threshold', /* default */ null, /* user */ null, $t_project_id ),
 		$t_project_id );
 
-$t_show_versions = ($simple == 0)/*Composr - allow simplified project reporting*/ && version_should_show_product_version( $t_project_id );
+$t_show_versions = version_should_show_product_version( $t_project_id );
 $t_show_product_version = $t_show_versions && in_array( 'product_version', $t_fields );
 $t_show_product_build = $t_show_versions && in_array( 'product_build', $t_fields ) && config_get( 'enable_product_build' ) == ON;
 $t_show_target_version = $t_show_versions && in_array( 'target_version', $t_fields ) && access_has_project_level( config_get( 'roadmap_update_threshold' ) );
 $t_show_additional_info = in_array( 'additional_info', $t_fields );
-$t_show_due_date = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'due_date', $t_fields ) && access_has_project_level( config_get( 'due_date_update_threshold' ), helper_get_current_project(), auth_get_current_user_id() );
+$t_show_due_date = in_array( 'due_date', $t_fields ) && access_has_project_level( config_get( 'due_date_update_threshold' ), helper_get_current_project(), auth_get_current_user_id() );
 $t_show_attachments = in_array( 'attachments', $t_fields ) && file_allow_bug_upload();
-$t_show_view_state = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'view_state', $t_fields ) && access_has_project_level( config_get( 'set_view_status_threshold' ) );
+$t_show_view_state = in_array( 'view_state', $t_fields ) && access_has_project_level( config_get( 'set_view_status_threshold' ) );
 
 # don't index bug report page
 html_robots_noindex();
@@ -236,20 +232,6 @@ html_robots_noindex();
 layout_page_header( lang_get( 'report_bug_link' ) );
 
 layout_page_begin( __FILE__ );
-
-// Composr - bug reporting guidance
-?>
-<p>
-	<?php echo sprintf(lang_get('cms_bug_report_guidance'), $cms_sc_report_guidance_url);?>
-</p>
-
-<?php if ( current_user_is_anonymous() ) { ?>
-	<p>
-		<?php echo lang_get( 'cms_not_logged_in_bad' ); ?>
-	</p>
-<?php
-}
-// (ends)
 
 $t_form_encoding = '';
 if( $t_show_attachments ) {
@@ -278,11 +260,12 @@ if( $t_show_attachments ) {
 	event_signal( 'EVENT_REPORT_BUG_FORM_TOP', array( $t_project_id ) );
 
 	if( $t_show_category ) {
+		$t_allow_no_category = config_get( 'allow_no_category' );
 ?>
 	<tr>
 		<th class="category" width="30%">
 			<?php
-			echo config_get( 'allow_no_category' ) ? '' : '<span class="required">*</span> ';
+			echo $t_allow_no_category ? '' : '<span class="required">*</span> ';
 			echo '<label for="category_id">';
 			print_documentation_link( 'category' );
 			echo '</label>';
@@ -292,14 +275,18 @@ if( $t_show_attachments ) {
 			<?php if( $t_changed_project ) {
 				echo '[' . project_get_field( $t_bug->project_id, 'name' ) . '] ';
 			} ?>
-			<select <?php echo helper_get_tab_index() ?> id="category_id" name="category_id" class="autofocus input-sm">
+			<select id="category_id" name="category_id" class="autofocus input-sm" <?php
+				echo helper_get_tab_index();
+				echo $t_allow_no_category ? '' : ' required';
+			?>>
 				<?php
 					print_category_option_list( $f_category_id );
 				?>
 			</select>
 		</td>
 	</tr>
-<?php }
+<?php
+	}
 
 	if( $t_show_reproducibility ) {
 ?>
@@ -394,8 +381,8 @@ if( $t_show_attachments ) {
 					<?php print_profile_option_list( auth_get_current_user_id(), $f_profile_id ) ?>
 				</select>
 			<?php } ?>
-			<?php collapse_open( 'profile' ); collapse_icon( 'profile' ); ?>
-			<?php echo lang_get( 'or_fill_in' ); ?>
+			<?php collapse_open( 'profile' ); ?>
+			<?php echo lang_get( 'or_fill_in' ); collapse_icon( 'profile' ); ?>
 			<table class="table-bordered table-condensed">
 				<tr>
 					<th class="category" width="30%">
@@ -451,8 +438,8 @@ if( $t_show_attachments ) {
 					</td>
 				</tr>
 			</table>
-			<?php collapse_closed( 'profile' ); collapse_icon( 'profile' ); ?>
-			<?php echo lang_get( 'or_fill_in' ); ?>
+			<?php collapse_closed( 'profile' ); ?>
+			<?php echo lang_get( 'or_fill_in' ); collapse_icon( 'profile' ); ?>
 			<?php collapse_end( 'profile' ); ?>
 		</td>
 	</tr>
@@ -498,6 +485,19 @@ if( $t_show_attachments ) {
 			<select <?php echo helper_get_tab_index() ?> id="handler_id" name="handler_id" class="input-sm">
 				<option value="0" selected="selected"></option>
 				<?php print_assign_to_option_list( $f_handler_id ) ?>
+			</select>
+		</td>
+	</tr>
+<?php } ?>
+
+<?php if( $t_show_monitors ) { ?>
+	<tr>
+		<th class="category">
+			<label for="monitors"><?php echo lang_get( 'monitored_by' ) ?></label>
+		</th>
+		<td>
+			<select <?php echo helper_get_tab_index() ?> id="monitors" name="monitors[]" class="input-sm" multiple>
+				<?php print_user_option_list( NO_USER, $t_project_id, config_get( 'monitor_bug_threshold' ) ) ?>
 			</select>
 		</td>
 	</tr>
@@ -570,7 +570,10 @@ if( $t_show_attachments ) {
 			<span class="required">*</span><label for="description"><?php print_documentation_link( 'description' ) ?></label>
 		</th>
 		<td>
-			<textarea class="form-control" <?php echo helper_get_tab_index() ?> id="description" name="description" cols="80" rows="10" required><?php echo string_textarea( $f_description ) ?></textarea>
+			<?php # Newline after opening textarea tag is intentional, see #25839 ?>
+			<textarea class="form-control" <?php echo helper_get_tab_index() ?> id="description" name="description" cols="80" rows="10" required>
+<?php echo string_textarea( $f_description ) ?>
+</textarea>
 		</td>
 	</tr>
 
@@ -580,7 +583,10 @@ if( $t_show_attachments ) {
 				<label for="steps_to_reproduce"><?php print_documentation_link( 'steps_to_reproduce' ) ?></label>
 			</th>
 			<td>
-				<textarea class="form-control" <?php echo helper_get_tab_index() ?> id="steps_to_reproduce" name="steps_to_reproduce" cols="80" rows="10"><?php echo string_textarea( $f_steps_to_reproduce ) ?></textarea>
+				<?php # Newline after opening textarea tag is intentional, see #25839 ?>
+				<textarea class="form-control" <?php echo helper_get_tab_index() ?> id="steps_to_reproduce" name="steps_to_reproduce" cols="80" rows="10">
+<?php echo string_textarea( $f_steps_to_reproduce ) ?>
+</textarea>
 			</td>
 		</tr>
 <?php } ?>
@@ -591,7 +597,10 @@ if( $t_show_attachments ) {
 			<label for="additional_info"><?php print_documentation_link( 'additional_information' ) ?></label>
 		</th>
 		<td>
-			<textarea class="form-control" <?php echo helper_get_tab_index() ?> id="additional_info" name="additional_info" cols="80" rows="10"><?php echo string_textarea( $f_additional_info ) ?></textarea>
+			<?php # Newline after opening textarea tag is intentional, see #25839 ?>
+			<textarea class="form-control" <?php echo helper_get_tab_index() ?> id="additional_info" name="additional_info" cols="80" rows="10">
+<?php echo string_textarea( $f_additional_info ) ?>
+</textarea>
 		</td>
 	</tr>
 <?php } ?>
@@ -601,7 +610,22 @@ if( $t_show_attachments ) {
 			<label for="attach_tag"><?php echo lang_get( 'tag_attach_long' ) ?></label>
 		</th>
 		<td>
-			<?php print_tag_input( '' ); ?>
+			<?php
+				if( $f_master_bug_id > 0 ) {
+					# pre-fill tag string when cloning from master bug
+					$t_tags = [];
+					foreach( tag_bug_get_attached( $f_master_bug_id ) as $t_tag ) {
+						array_push( $t_tags, $t_tag["name"] );
+					}
+					$t_tag_string = implode(
+						config_get( 'tag_separator' ), $t_tags
+					);
+					print_tag_input( 0, $t_tag_string );
+				} else {
+					# otherwise show just the default empty string
+					print_tag_input();
+				}
+			?>
 		</td>
 	</tr>
 <?php
@@ -612,7 +636,7 @@ if( $t_show_attachments ) {
 
 	foreach( $t_related_custom_field_ids as $t_id ) {
 		$t_def = custom_field_get_definition( $t_id );
-		if( ( $t_def['display_report'] || $t_def['require_report']) && ($simple == 0)/*Composr - allow simplified project reporting*/ && custom_field_has_write_access_to_project( $t_id, $t_project_id ) ) {
+		if( ( $t_def['display_report'] || $t_def['require_report']) && custom_field_has_write_access_to_project( $t_id, $t_project_id ) ) {
 			$t_custom_fields_found = true;
 
 			if( $t_def['type'] != CUSTOM_FIELD_TYPE_RADIO && $t_def['type'] != CUSTOM_FIELD_TYPE_CHECKBOX ) {
@@ -641,7 +665,7 @@ if( $t_show_attachments ) {
 <?php
 	# File Upload (if enabled)
 	if( $t_show_attachments ) {
-		$t_max_file_size = (int)min( ini_get_number( 'upload_max_filesize' ), ini_get_number( 'post_max_size' ), config_get( 'max_file_size' ) );
+		$t_max_file_size = file_get_max_file_size();
 		$t_file_upload_max_num = max( 1, config_get( 'file_upload_max_num' ) );
 ?>
 	<tr>
@@ -651,6 +675,7 @@ if( $t_show_attachments ) {
 			<?php print_max_filesize( $t_max_file_size ); ?>
 		</th>
 		<td>
+			<?php print_dropzone_template() ?>
 			<input type="hidden" name="max_file_size" value="<?php echo $t_max_file_size ?>" />
 			<div class="dropzone center" <?php print_dropzone_form_data() ?>>
 				<i class="upload-icon ace-icon fa fa-cloud-upload blue fa-3x"></i><br>
@@ -659,7 +684,7 @@ if( $t_show_attachments ) {
 			</div>
 			<div class="fallback">
 				<div class="dz-message" data-dz-message></div>
-			<input <?php echo helper_get_tab_index() ?> id="ufile[]" name="ufile[]" type="file" size="60" />
+				<input <?php echo helper_get_tab_index() ?> id="ufile[]" name="ufile[]" type="file" size="60" />
 			</div>
 		</td>
 	</tr>
@@ -681,7 +706,7 @@ if( $t_show_attachments ) {
 			&#160;&#160;&#160;&#160;
 			<label>
 				<input <?php echo helper_get_tab_index() ?> type="radio" class="ace" name="view_state" value="<?php echo VS_PRIVATE ?>" <?php check_checked( $f_view_state, VS_PRIVATE ) ?> />
-				<span class="lbl padding-6"><?php echo lang_get( 'private' ) ?> (contains confidential information<?php if (current_user_is_anonymous()) echo '; <strong>you will not be able to see your issue as you are not logged in</strong>'; ?>)<!-- Composr - made label clearer in context --></span>
+				<span class="lbl padding-6"><?php echo lang_get( 'private' ) ?></span>
 			</label>
 		</td>
 	</tr>
@@ -696,7 +721,7 @@ if( $t_show_attachments ) {
 			<?php echo lang_get( 'relationship_with_parent' ) ?>
 		</th>
 		<td>
-			<?php relationship_list_box( config_get( 'default_bug_relationship_clone' ), "rel_type", false, true ) ?>
+			<?php print_relationship_list_box( config_get( 'default_bug_relationship_clone' ), "rel_type", false, true ) ?>
 			<?php echo '<strong>' . lang_get( 'bug' ) . ' ' . bug_format_id( $f_master_bug_id ) . '</strong>' ?>
 		</td>
 	</tr>

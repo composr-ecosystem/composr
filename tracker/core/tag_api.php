@@ -75,20 +75,20 @@ $g_cache_bug_tags = array();
 function tag_cache_rows( array $p_tag_ids ) {
 	global $g_cache_tags;
 
-	$t_ids_to_seach = array();
+	$t_ids_to_search = array();
 	foreach( $p_tag_ids as $t_id ) {
 		if( !isset( $g_cache_tags[(int)$t_id]) ) {
-			$t_ids_to_seach[(int)$t_id] = (int)$t_id;
+			$t_ids_to_search[(int)$t_id] = (int)$t_id;
 		}
 	}
-	if( empty( $t_ids_to_seach ) ) {
+	if( empty( $t_ids_to_search ) ) {
 		return;
 	}
 
 	db_param_push();
 	$t_sql_in_params = array();
 	$t_params = array();
-	foreach( $t_ids_to_seach as $t_id ) {
+	foreach( $t_ids_to_search as $t_id ) {
 		$t_sql_in_params[] = db_param();
 		$t_params[] = $t_id;
 	}
@@ -98,10 +98,10 @@ function tag_cache_rows( array $p_tag_ids ) {
 	while( $t_row = db_fetch_array( $t_result ) ) {
 		$c_id = (int)$t_row['id'];
 		$g_cache_tags[$c_id] = $t_row;
-		unset( $t_ids_to_seach[$c_id] );
+		unset( $t_ids_to_search[$c_id] );
 	}
 	# mark the non existent ids
-	foreach( $t_ids_to_seach as $t_id ) {
+	foreach( $t_ids_to_search as $t_id ) {
 		$g_cache_tags[$t_id] = false;
 	}
 }
@@ -116,20 +116,21 @@ function tag_cache_rows( array $p_tag_ids ) {
 function tag_cache_bug_tag_rows( array $p_bug_ids ) {
 	global $g_cache_bug_tags;
 
-	$t_ids_to_seach = array();
+	$t_ids_to_search = array();
 	foreach( $p_bug_ids as $t_id ) {
 		if( !isset( $g_cache_bug_tags[(int)$t_id]) ) {
-			$t_ids_to_seach[] = (int)$t_id;
+			$t_ids_to_search[] = (int)$t_id;
 		}
 	}
-	if( empty( $t_ids_to_seach ) ) {
+
+	if( empty( $t_ids_to_search ) ) {
 		return;
 	}
 
 	db_param_push();
 	$t_sql_in_params = array();
 	$t_params = array();
-	foreach( $t_ids_to_seach as $t_id ) {
+	foreach( $t_ids_to_search as $t_id ) {
 		$t_sql_in_params[] = db_param();
 		$t_params[] = $t_id;
 	}
@@ -223,6 +224,7 @@ function tag_is_unique( $p_name ) {
  */
 function tag_ensure_unique( $p_name ) {
 	if( !tag_is_unique( $p_name ) ) {
+		error_parameters( $p_name );
 		trigger_error( ERROR_TAG_DUPLICATE, ERROR );
 	}
 }
@@ -255,6 +257,7 @@ function tag_name_is_valid( $p_name, array &$p_matches, $p_prefix = '' ) {
 function tag_ensure_name_is_valid( $p_name ) {
 	$t_matches = array();
 	if( !tag_name_is_valid( $p_name, $t_matches ) ) {
+		error_parameters( $p_name );
 		trigger_error( ERROR_TAG_NAME_INVALID, ERROR );
 	}
 }
@@ -481,6 +484,7 @@ function tag_get( $p_tag_id ) {
 
 /**
  * Get tag name by id.
+ * @param integer $p_tag_id The tag ID to retrieve from the database.
  * @return string tag name or empty string if not found.
  */
 function tag_get_name( $p_tag_id ) {
@@ -495,7 +499,7 @@ function tag_get_name( $p_tag_id ) {
 /**
  * Return a tag row for the given name.
  * @param string $p_name The tag name to retrieve from the database.
- * @return array|boolean Tag row
+ * @return array|false Tag row
  */
 function tag_get_by_name( $p_name ) {
 	db_param_push();
@@ -663,48 +667,41 @@ function tag_delete( $p_tag_id ) {
 }
 
 /**
- * Gets the candidates for the specified bug.  These are existing tags
- * that are not associated with the bug already.
+ * Gets the tags that are not associated with the specified bug.
  *
- * @param integer $p_bug_id The bug id, if 0 returns all tags.
- * @return array The array of tag rows, each with id, name, and description.
+ * @param integer $p_bug_id The bug id, if 0 returns all available tags.
+ *
+ * @return array List of tag rows, each with id, name, and description.
  */
 function tag_get_candidates_for_bug( $p_bug_id ) {
 	db_param_push();
+	$t_query = 'SELECT id, name, description FROM {tag}';
 	$t_params = array();
+
 	if( 0 != $p_bug_id ) {
+		$t_assoc_tags_query = 'SELECT tag_id FROM {bug_tag} WHERE bug_id = ' . db_param();
 		$t_params[] = $p_bug_id;
 
+		# Define specific where clause to exclude tags already attached to the bug
+		# Special handling for odbc_mssql which does not support bound subqueries (#14774)
 		if( config_get_global( 'db_type' ) == 'odbc_mssql' ) {
 			db_param_push();
-			$t_query = 'SELECT t.id FROM {tag} t
-					LEFT JOIN {bug_tag} b ON t.id=b.tag_id
-					WHERE b.bug_id IS NULL OR b.bug_id != ' . db_param();
-			$t_result = db_query( $t_query, $t_params );
-
-			$t_params = null;
+			$t_result = db_query( $t_assoc_tags_query, $t_params );
 
 			$t_subquery_results = array();
-
 			while( $t_row = db_fetch_array( $t_result ) ) {
-				$t_subquery_results[] = (int)$t_row['id'];
+				$t_subquery_results[] = (int)$t_row['tag_id'];
 			}
-
-			if( count( $t_subquery_results ) == 0 ) {
-				db_param_pop();
-				return array();
+			if( $t_subquery_results ) {
+				$t_where = ' WHERE id NOT IN (' . implode( ', ', $t_subquery_results ) . ')';
+			} else {
+				$t_where = '';
 			}
-
-			$t_query = 'SELECT id, name, description FROM {tag} WHERE id IN ( ' . implode( ', ', $t_subquery_results ) . ')';
+			$t_params = null;
 		} else {
-			$t_query = 'SELECT id, name, description FROM {tag} WHERE id IN (
-					SELECT t.id FROM {tag} t
-					LEFT JOIN {bug_tag} b ON t.id=b.tag_id
-					WHERE b.bug_id IS NULL OR b.bug_id != ' . db_param() .
-				')';
+			$t_where = " WHERE id NOT IN ($t_assoc_tags_query)";
 		}
-	} else {
-		$t_query = 'SELECT id, name, description FROM {tag}';
+		$t_query .= $t_where;
 	}
 
 	$t_query .= ' ORDER BY name ASC ';
@@ -1019,7 +1016,6 @@ function tag_stats_attached( $p_tag_id ) {
  * @return array Array of tag rows, with share count added
  */
 function tag_stats_related( $p_tag_id, $p_limit = 5 ) {
-	$c_user_id = auth_get_current_user_id();
 
 	# Use a filter to get all visible issues for this tag id
 	$t_filter = array(

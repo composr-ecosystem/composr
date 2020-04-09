@@ -107,21 +107,21 @@ function helper_array_transpose( array $p_array ) {
 
 /**
  * get the color string for the given status, user and project
- * @param integer      $p_status  Status value.
- * @param integer|null $p_user    User id, defaults to null (all users).
- * @param integer|null $p_project Project id, defaults to null (all projects).
+ * @param integer      $p_status        Status value.
+ * @param integer|null $p_user          User id, defaults to null (all users).
+ * @param integer|null $p_project       Project id, defaults to null (all projects).
+ * @param string       $p_default_color Fallback color in case status is not found (defaults to white).
  * @return string
  */
-function get_status_color( $p_status, $p_user = null, $p_project = null ) {
-	$t_status_label = MantisEnum::getLabel( config_get( 'status_enum_string', null, $p_user, $p_project ), $p_status );
+function get_status_color( $p_status, $p_user = null, $p_project = null, $p_default_color = '#ffffff' ) {
+	$t_status_enum = config_get( 'status_enum_string', null, $p_user, $p_project );
 	$t_status_colors = config_get( 'status_colors', null, $p_user, $p_project );
-	$t_color = '#ffffff';
+	$t_status_label = MantisEnum::getLabel( $t_status_enum, $p_status );
 
 	if( isset( $t_status_colors[$t_status_label] ) ) {
-		$t_color = $t_status_colors[$t_status_label];
+		return $t_status_colors[$t_status_label];
 	}
-
-	return $t_color;
+	return $p_default_color;
 }
 
 /**
@@ -489,7 +489,7 @@ function helper_project_specific_where( $p_project_id, $p_user_id = null ) {
 	} else if( 1 == count( $t_project_ids ) ) {
 		$t_project_filter = ' project_id=' . reset( $t_project_ids );
 	} else {
-		$t_project_filter = ' project_id IN (' . join( ',', $t_project_ids ) . ')';
+		$t_project_filter = ' project_id IN (' . implode( ',', $t_project_ids ) . ')';
 	}
 
 	return $t_project_filter;
@@ -599,14 +599,6 @@ function helper_log_to_page() {
 	# Check is authenticated before checking access level, otherwise user gets
 	# redirected to login_page.php.  See #8461.
 	return config_get_global( 'log_destination' ) === 'page' && auth_is_user_authenticated() && access_has_global_level( config_get( 'show_log_threshold' ) );
-}
-
-/**
- * returns a boolean indicating whether SQL queries executed should be shown or not.
- * @return boolean
- */
-function helper_show_query_count() {
-	return ON == config_get_global( 'show_queries_count' );
 }
 
 /**
@@ -822,15 +814,16 @@ function helper_parse_view_state( array $p_view_state ) {
  * @throws ClientException Id is not specified or invalid.
  */
 function helper_parse_id( $p_id, $p_field_name ) {
-	if( !is_numeric( $p_id ) ) {
-		if( empty( $p_id ) ) {
+	$t_id = trim( $p_id );
+	if( !is_numeric( $t_id ) ) {
+		if( empty( $t_id ) ) {
 			throw new ClientException( "'$p_field_name' missing", ERROR_GPC_VAR_NOT_FOUND, array( $p_field_name ) );
 		}
 
 		throw new ClientException( "'$p_field_name' must be numeric", ERROR_INVALID_FIELD_VALUE, array( $p_field_name ) );
 	}
 
-	$t_id = (int)$p_id;
+	$t_id = (int)$t_id;
 	if( $t_id < 1 ) {
 		throw new ClientException( "'$p_field_name' must be >= 1", ERROR_INVALID_FIELD_VALUE, array( $p_field_name ) );
 	}

@@ -72,7 +72,7 @@ $g_cache_anonymous_user_cookie_string = null;
 $g_cache_cookie_valid = null;
 
 # @global int $g_cache_current_user_id
-$g_cache_current_user_id = null;
+$g_cache_current_user_id = NO_USER;
 
 /**
  * Gets set of flags for authentication for the specified user.
@@ -82,7 +82,7 @@ $g_cache_current_user_id = null;
  * @return AuthFlags The auth flags object to use.
  */
 function auth_flags( $p_user_id = null, $p_username = '' ) {
-	if( is_null( $p_user_id ) ) {
+	if( !$p_user_id ) {
 		# If user id is not provided and user is not authenticated return default flags.
 		# Otherwise, we can get into a loop as in #22740
 		if( !auth_is_user_authenticated() ) {
@@ -176,7 +176,7 @@ function auth_signup_access_level() {
  * @return bool true: enabled; false: otherwise.
  */
 function auth_anonymous_enabled() {
-	return config_get_global( 'allow_anonymous_login' );
+	return config_get_global( 'allow_anonymous_login' ) && auth_anonymous_account();
 }
 
 /**
@@ -189,11 +189,12 @@ function auth_anonymous_account() {
 
 /**
  * Get the auth cookie expiry time.
+ * @param integer $p_user_id The user id to get session expiry for.
  * @param boolean $p_perm_login Use permanent login.
  * @return integer cookie lifetime or 0 for browser session.
  */
-function auth_session_expiry( $p_perm_login ) {
-	$t_auth_flags = auth_flags();
+function auth_session_expiry( $p_user_id, $p_perm_login ) {
+	$t_auth_flags = auth_flags( $p_user_id );
 	$t_perm_login = $p_perm_login;
 	if( !$t_auth_flags->getPermSessionEnabled() ) {
 		$t_perm_login = false;
@@ -730,12 +731,6 @@ function auth_does_password_match( $p_user_id, $p_test_password ) {
 		BASIC_AUTH,
 	);
 
-	// Composr - only allow Composr login method
-	$t_login_methods = array(
-		'COMPOSR',
-	);
-	$t_configured_login_method = 'COMPOSR';
-
 	foreach( $t_login_methods as $t_login_method ) {
 		# pass the stored password in as the salt
 		if( auth_process_plain_password( $p_test_password, $t_password, $t_login_method ) == $t_password ) {
@@ -782,30 +777,8 @@ function auth_process_plain_password( $p_password, $p_salt = null, $p_method = n
 	}
 
 	switch( $t_login_method ) {
-		// Composr - Composr login method
-		case 'COMPOSR':
-			$bits=explode(':' , $p_salt); // hash, salt, scheme
-			$password_compatibility_scheme = $bits[2];
-			switch ($password_compatibility_scheme)
-			{
-				case '': // Composr style salted MD5 algorithm
-					if (preg_match('#^\w+$#', $bits[0]) == 0) {
-						$ret = password_verify($bits[1] . md5($p_password), $bits[0]);
-						return $ret;
-					}
-					$ret = (md5($bits[1] . md5($p_password)) == $bits[0]);
-					return $ret;
-				case 'plain':
-					$ret = ($p_password == $bits[0]);
-					return $ret;
-				case 'md5': // Old style plain md5
-					$ret = (md5($p_password) == $bits[0]);
-					return $ret;
-				default:
-					return false;
-			}
-
 		case CRYPT:
+
 			# a null salt is the same as no salt, which causes a salt to be generated
 			# otherwise, use the salt given
 			$t_processed_password = crypt( $p_password, $p_salt );
@@ -856,7 +829,7 @@ function auth_generate_confirm_hash( $p_user_id ) {
 /**
  * Set login cookies for the user
  * If $p_perm_login is true, a long-term cookie is created
- * @param integer $p_user_id    An user identifier.
+ * @param integer $p_user_id    A user identifier.
  * @param boolean $p_perm_login Indicates whether to generate a long-term cookie.
  * @access public
  * @return void
@@ -864,7 +837,7 @@ function auth_generate_confirm_hash( $p_user_id ) {
 function auth_set_cookies( $p_user_id, $p_perm_login = false ) {
 	$t_cookie_string = user_get_field( $p_user_id, 'cookie_string' );
 	$t_cookie_name = config_get_global( 'string_cookie' );
-	gpc_set_cookie( $t_cookie_name, $t_cookie_string, auth_session_expiry( $p_perm_login ) );
+	gpc_set_cookie( $t_cookie_name, $t_cookie_string, auth_session_expiry( $p_user_id, $p_perm_login ) );
 }
 
 /**
@@ -950,32 +923,6 @@ function auth_get_current_user_cookie( $p_login_anonymous = true ) {
 	# fetch user cookie
 	$t_cookie_name = config_get_global( 'string_cookie' );
 	$t_cookie = gpc_get_cookie( $t_cookie_name, '' );
-
-	// Composr - try session authentication
-	global $cms_sc_db_prefix, $cms_sc_session_cookie_name, $g_db;
-	if ((isset($_COOKIE[$cms_sc_session_cookie_name])) && (isset($g_db)))
-	{
-		$query = 'SELECT member_id FROM ' . $cms_sc_db_prefix . 'sessions WHERE the_session=\'' . db_prepare_string($_COOKIE[$cms_sc_session_cookie_name]) . '\'';
-		$result = db_query($query);
- 
-		if (1 == db_num_rows($result)) {
-			$user = db_result($result);
-			user_cache_row($user);
-
-			$t_query = 'SELECT u.id,u.cookie_string
-							FROM '.$cms_sc_db_prefix.'f_members m LEFT JOIN ' . db_get_table('user') . ' u ON u.username=m.m_username
-							WHERE m.id<>1 AND m.id=' . strval($user);
-			$t_result = db_query($t_query);
-			if ($t_row = db_fetch_array($t_result)) {
-				$t_cookie = $t_row['cookie_string'];
-
-				$g_cache_anonymous_user_cookie_string = $t_cookie;
-				current_user_set((int)$t_row['id']);
-
-				return $t_cookie;
-			}
-		}
-	}
 
 	# if cookie not found, and anonymous login enabled, use cookie of anonymous account.
 	if( is_blank( $t_cookie ) ) {
@@ -1100,8 +1047,8 @@ function auth_is_cookie_valid( $p_cookie_string ) {
 		return false;
 	}
 
-	# succeeed if user has already been authenticated
-	if( null !== $g_cache_current_user_id ) {
+	# succeed if user has already been authenticated
+	if( NO_USER != $g_cache_current_user_id ) {
 		return true;
 	}
 
@@ -1131,8 +1078,8 @@ function auth_is_cookie_valid( $p_cookie_string ) {
 function auth_get_current_user_id() {
 	global $g_cache_current_user_id;
 
-	if( null !== $g_cache_current_user_id ) {
-		return $g_cache_current_user_id;
+	if( NO_USER != $g_cache_current_user_id ) {
+		return (int)$g_cache_current_user_id;
 	}
 
 	$t_cookie_string = auth_get_current_user_cookie();

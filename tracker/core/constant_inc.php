@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.18.0' );
+define( 'MANTIS_VERSION', '2.24.0' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -259,6 +259,7 @@ define( 'ERROR_TYPE_MISMATCH', 26 );
 define( 'ERROR_SPAM_SUSPECTED', 27 );
 define( 'ERROR_FIELD_TOO_LONG', 28 );
 define( 'ERROR_INVALID_FIELD_VALUE', 29 );
+define( 'ERROR_LOGFILE_NOT_WRITABLE', 30 );
 
 # ERROR_CONFIG_*
 define( 'ERROR_CONFIG_OPT_NOT_FOUND', 100 );
@@ -299,6 +300,9 @@ define( 'ERROR_PROJECT_NOT_FOUND', 700 );
 define( 'ERROR_PROJECT_NAME_NOT_UNIQUE', 701 );
 define( 'ERROR_PROJECT_NAME_INVALID', 702 );
 define( 'ERROR_PROJECT_RECURSIVE_HIERARCHY', 703 );
+define( 'ERROR_PROJECT_SUBPROJECT_DUPLICATE', 704 );
+define( 'ERROR_PROJECT_SUBPROJECT_NOT_FOUND', 705 );
+define( 'ERROR_PROJECT_HIERARCHY_DISABLED', 706 );
 
 # ERROR_USER_*
 define( 'ERROR_USER_NAME_NOT_UNIQUE', 800 );
@@ -466,7 +470,6 @@ define( 'CUSTOM_FIELD_TYPE_TEXTAREA', 10 );
 define( 'META_FILTER_MYSELF', -1 );
 define( 'META_FILTER_NONE', - 2 );
 define( 'META_FILTER_CURRENT', - 3 );
-define( 'META_FILTER_NOT_MYSELF', -4 ); // Composr - Ability to find stuff you're not monitoring yourself
 define( 'META_FILTER_ANY', 0 );
 
 # Filter view types
@@ -485,10 +488,18 @@ define( 'FILTER_MATCH_ALL', 0 );
 define( 'FILTER_MATCH_ANY', 1 );
 
 # Standard Filters
+define( 'FILTER_STANDARD_ANY', 'any' );
 define( 'FILTER_STANDARD_ASSIGNED', 'assigned' );
 define( 'FILTER_STANDARD_UNASSIGNED', 'unassigned' );
 define( 'FILTER_STANDARD_REPORTED', 'reported' );
 define( 'FILTER_STANDARD_MONITORED', 'monitored' );
+
+# Filter actions, refactored from view_all_set.php
+define( 'FILTER_ACTION_RESET', 0 );
+define( 'FILTER_ACTION_PARSE_NEW', 1 );
+define( 'FILTER_ACTION_PARSE_ADD', 2 );
+define( 'FILTER_ACTION_LOAD', 3 );
+define( 'FILTER_ACTION_GENERALIZE', 4 );
 
 # Versions
 define( 'VERSION_ALL', null );
@@ -635,32 +646,30 @@ define( 'JQUERY_VERSION', '2.2.4' );
 define( 'JQUERY_HASH', 'sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=' );
 
 # Bootstrap & FontAwesome
-define( 'BOOTSTRAP_VERSION', '3.3.6' );
-define( 'BOOTSTRAP_HASH', 'sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=' );
+define( 'BOOTSTRAP_VERSION', '3.4.1' );
+define( 'BOOTSTRAP_HASH_JS', 'sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd' );
+define( 'BOOTSTRAP_HASH_CSS', 'sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu' );
 define( 'FONT_AWESOME_VERSION', '4.6.3' );
+define( 'FONT_AWESOME_HASH', 'sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' );
 
 # Moment & DateTimePicker
-define( 'MOMENT_VERSION', '2.15.2' );
-define( 'MOMENT_HASH', 'sha256-K+AZsAFjiBd4piqBmFzaxDsiQiHfREubm1ExNGW1JIA=' );
+define( 'MOMENT_VERSION', '2.24.0' );
+define( 'MOMENT_HASH', 'sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=' );
 define( 'DATETIME_PICKER_VERSION', '4.17.47' );
-define( 'DATETIME_PICKER_HASH', 'sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=' );
-
-# Chart JS
-define( 'CHARTJS_VERSION', '2.1.6' );
-define( 'CHARTJS_HASH', 'sha256-Emd9qupGNNjtRpaQjhpA4hn+PWAETkO2GB3gzBL3thM=' );
-define( 'CHARTJSBUNDLE_HASH', 'sha256-OBi9RJU9sFk/2JEV23eSQSqe/eUK4km5NxGgo/XMiqY=' );
+define( 'DATETIME_PICKER_HASH_JS', 'sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=' );
+define( 'DATETIME_PICKER_HASH_CSS', 'sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=' );
 
 # Tyeahead JS
-define( 'TYPEAHEAD_VERSION', '1.1.1' );
-define( 'TYPEAHEAD_HASH', 'sha256-qZIhMVBV4/crmcmYXNq5ZE5gPRiiPPMKVYbapf5HDBs=' );
+define( 'TYPEAHEAD_VERSION', '1.3.0' );
+define( 'TYPEAHEAD_HASH', 'sha256-VWMJXexFUMAwIXw/PoOzOleP6q97pIbKWuY4v9gMXoY=' );
 
 # List JS
-define( 'LISTJS_VERSION', '1.4.1' );
-define( 'LISTJS_HASH', 'sha256-lFOz0Sg8djWQPKOfRce9A9EcYSWhFMsYo+ulRYVnjrw=' );
+define( 'LISTJS_VERSION', '1.5.0' );
+define( 'LISTJS_HASH', 'sha384-JDmRxRiXkNkskRM5AD4qHRGk9ItwZ9flbqOpsRYs8SOrIRwcMtTGKP2Scnjptzgm' );
 
 # Dropzone JS
-define( 'DROPZONE_VERSION', '4.3.0' );
-define( 'DROPZONE_HASH', 'sha256-p2l8VeL3iL1J0NxcXbEVtoyYSC+VbEbre5KHbzq1fq8=' );
+define( 'DROPZONE_VERSION', '5.5.0' );
+define( 'DROPZONE_HASH', 'sha384-TBYvJK9bRa7Ii3OZh+eaXb5r98Ad36+kotsxTD3tIEa9vgJOQ0lRMfZtWAJxPq4P' );
 
 # Byte Order Markers
 define( 'UTF8_BOM', "\xEF\xBB\xBF" );
@@ -718,6 +727,7 @@ define( 'PAGE_CONFIG_DEFAULT', 'adm_permissions_report.php' );
 define( 'MANAGE_CONFIG_ACTION_CREATE', 'create' );
 define( 'MANAGE_CONFIG_ACTION_CLONE', 'clone' );
 define( 'MANAGE_CONFIG_ACTION_EDIT', 'edit' );
+define( 'MANAGE_CONFIG_ACTION_VIEW', 'view' );
 
 # Database functional type identifiers.
 define( 'DB_TYPE_UNDEFINED', 0 );
@@ -725,3 +735,6 @@ define( 'DB_TYPE_MYSQL', 1 );
 define( 'DB_TYPE_PGSQL', 2 );
 define( 'DB_TYPE_MSSQL', 3 );
 define( 'DB_TYPE_ORACLE', 4 );
+
+# Database special capabilities identifiers
+define( 'DB_CAPABILITY_WINDOW_FUNCTIONS', 1 );

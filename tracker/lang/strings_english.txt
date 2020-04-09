@@ -584,6 +584,7 @@ $s_fixed_in_version = 'Fixed in Version';
 $s_target_version = 'Target Version';
 $s_votes = 'Votes';
 $s_summary = 'Summary';
+$s_synthesis = 'Synthesis';
 $s_description = 'Description';
 $s_steps_to_reproduce = 'Steps To Reproduce';
 $s_update_information_button = 'Update Information';
@@ -822,6 +823,7 @@ $s_resolved_status = 'Status where an issue is considered resolved';
 $s_readonly_status = 'Status where an issue becomes read only';
 $s_reopen_status = 'Status to which a reopened issue is set';
 $s_reopen_resolution = 'Resolution to which a reopened issue is set';
+$s_limit_view_unless_threshold_option = 'View other users\' issues (if not set, access will be limited to issues reported, handled, or monitored by the user)';
 
 # manage_config_revert_page
 $s_config_delete_sure = 'Are you sure you want to delete the settings for:';
@@ -841,6 +843,8 @@ $s_configuration_corrupted = 'The configuration in the database is corrupted.';
 $s_set_configuration_option_action_create = 'Create Configuration Option';
 $s_set_configuration_option_action_edit = 'Edit Configuration Option';
 $s_set_configuration_option_action_clone = 'Clone Configuration Option';
+$s_set_configuration_option_action_view = 'View Configuration Option';
+$s_show_all_complex = 'Show Value for all "%1$s" Options';
 
 # manage_plugin_page.php
 $s_plugin = 'Plugin';
@@ -927,6 +931,9 @@ $s_create_new_subproject_link = 'Create New Subproject';
 $s_unlink_link = 'Unlink';
 $s_show_global_users = 'Show Users with Global Access';
 $s_hide_global_users = 'Hide Users with Global Access';
+$s_review_changes = 'Review Changes';
+$s_review_changes_confirmation = 'Are you sure you want to apply the following changes?';
+$s_review_changes_empty = 'There are no changes selected';
 
 # manage_proj_menu_page.php
 $s_add_project_title = 'Add Project';
@@ -1103,6 +1110,8 @@ $s_add_user_button = 'Add User';
 $s_project_selection_title = 'Project Selection';
 $s_remove_link = 'Remove';
 $s_remove_all_link = 'Remove all';
+$s_remove_project_user_title = 'Remove user access from project';
+$s_modify_project_user_title = 'Modify user access in project';
 
 # proj_user_update.php
 $s_updated_user_msg = 'Successfully updated user.';
@@ -1195,6 +1204,7 @@ $s_developer_stats = 'Developer Stats';
 $s_reporter_stats = 'Reporter Stats';
 $s_orct = '(open/resolved/closed/total)';
 $s_summary_header = 'open/resolved/closed/total/resolved ratio/ratio';
+$s_summary_notice_filter_is_applied = 'A filter has been applied';
 
 # view_all_bug_page.php
 $s_any = 'any';
@@ -1259,6 +1269,8 @@ $s_manage_filter_page_title = 'Manage Filters';
 $s_manage_filter_edit_page_title = 'Edit filter';
 $s_delete_filter_button = 'Delete';
 $s_apply_filter_button = 'Apply';
+$s_temporary_filter = 'Temporary filter';
+$s_set_as_persistent_filter = 'Set as persistent filter';
 
 # bug_view_advanced_page.php
 $s_view_simple_link = 'View Simple';
@@ -1273,6 +1285,8 @@ $s_move_bug_button = 'Move';
 $s_attached_files = 'Attached Files';
 $s_publish = 'Publish';
 $s_add_user_to_monitor = 'Add';
+$s_browser_does_not_support_audio = 'Your browser does not support audio tag.';
+$s_browser_does_not_support_video = 'Your browser does not support video tag.';
 
 # view_bug_page.php
 $s_bug_view_title = 'View Issue Details';
@@ -1400,13 +1414,13 @@ $s_copy_attachments_from_parent = 'Copy attachments';
 $s_with = 'with';
 
 # Relationship Graphs
-$s_viewing_bug_relationship_graph_title = 'Relationship Graph';
-$s_viewing_bug_dependency_graph_title = 'Dependency Graph';
-$s_relation_graph = 'Relation Graph';
+$s_relation_graph = 'Relationship Graph';
 $s_dependency_graph = 'Dependency Graph';
 $s_vertical = 'Vertical';
 $s_horizontal = 'Horizontal';
 $s_view_issue = 'View Issue';
+$s_show_summary = 'Show Summary';
+$s_hide_summary = 'Hide Summary';
 
 # Permissions report
 $s_perm_rpt_capability = 'Capability';
@@ -1425,6 +1439,8 @@ $s_update_issue_status = 'Update issue status';
 $s_set_view_status = 'Set view state when reporting a new issue or note';
 $s_update_view_status = 'Change view state of existing issue or note';
 $s_show_list_of_users_monitoring_issue = 'Show list of users monitoring issue';
+$s_add_users_monitoring_issue = 'Add monitors to an issue';
+$s_remove_users_monitoring_issue = 'Remove monitors from an issue';
 $s_notes = 'Notes';
 $s_add_notes = 'Add notes';
 $s_view_private_notes = 'View others\' private notes';
@@ -1468,6 +1484,14 @@ $s_email_on_deleted = 'E-mail on Deleted';
 $s_email_on_sponsorship_changed = 'E-mail on Sponsorship changed';
 $s_email_on_relationship_changed = 'E-mail on Relationship changed';
 $s_email_on_updated = 'E-mail on Updated';
+$s_email_on_monitor = 'E-mail when user starts monitoring';
+$s_view_tags = 'View tags attached to a bug';
+$s_attach_tags = 'Attach tags to a bug';
+$s_detach_tags = 'Detach tags from a bug';
+$s_detach_own_tags = 'Detach tags attached by the same user';
+$s_create_new_tags = 'Create new tags';
+$s_edit_tags = 'Edit tag names and descriptions';
+$s_edit_own_tags = 'Edit tags created by the same user';
 
 # Dynamic filters (load filter controls via AJAX upon request)
 $s_loading = 'Loading...';
@@ -1563,6 +1587,8 @@ $s_copy_columns_to = 'Copy Columns To';
 $s_due_date = 'Due Date';
 $s_overdue = 'Overdue';
 $s_overdue_since = 'Overdue since %1$s';
+$s_overdue_one_day = 'Overdue in less than a day';
+$s_overdue_days = 'Overdue in %1$d days';
 
 #account_view_page.php
 $s_view_account_title = 'User Information';
@@ -1643,11 +1669,15 @@ $MANTIS_ERROR[ERROR_CONFIG_OPT_CANT_BE_SET_IN_DB] = 'Configuration option "%1$s"
 $MANTIS_ERROR[ERROR_CONFIG_OPT_BAD_SYNTAX] = 'Cannot set configuration option "%1$s": %2$s';
 $MANTIS_ERROR[ERROR_LANG_STRING_NOT_FOUND] = 'String "%1$s" not found.';
 $MANTIS_ERROR[ERROR_BUGNOTE_NOT_FOUND] = 'Note not found.';
-$MANTIS_ERROR[ERROR_PROJECT_NOT_FOUND] = 'Project "%1$s" not found.';
 $MANTIS_ERROR[ERROR_DB_FIELD_NOT_FOUND] = 'Database field "%1$s" not found.';
 $MANTIS_ERROR[ERROR_HANDLER_ACCESS_TOO_LOW] = 'Issue handler does not have sufficient access rights to handle issue at this status.';
+$MANTIS_ERROR[ERROR_PROJECT_HIERARCHY_DISABLED] = 'Project hierarchy (subprojects) is disabled.';
+$MANTIS_ERROR[ERROR_PROJECT_NOT_FOUND] = 'Project "%1$s" not found.';
 $MANTIS_ERROR[ERROR_PROJECT_NAME_NOT_UNIQUE] = 'A project with that name already exists. Please go back and enter a different name.';
 $MANTIS_ERROR[ERROR_PROJECT_NAME_INVALID] = 'Invalid project name specified. Project names cannot be blank.';
+$MANTIS_ERROR[ERROR_PROJECT_RECURSIVE_HIERARCHY] = 'That operation would create a loop in the subproject hierarchy.';
+$MANTIS_ERROR[ERROR_PROJECT_SUBPROJECT_DUPLICATE] = 'Project "%1$s" is already a subproject of "%2$s".';
+$MANTIS_ERROR[ERROR_PROJECT_SUBPROJECT_NOT_FOUND] = 'Project "%1$s" is not a subproject of "%2$s".';
 $MANTIS_ERROR[ERROR_USER_BY_NAME_NOT_FOUND] = 'User with name "%1$s" not found.';
 $MANTIS_ERROR[ERROR_USER_BY_ID_NOT_FOUND] = 'User with id "%1$d" not found.';
 $MANTIS_ERROR[ERROR_USER_BY_EMAIL_NOT_FOUND] = 'User with email "%1$s" not found.';
@@ -1718,12 +1748,11 @@ $MANTIS_ERROR[ERROR_LOST_PASSWORD_NO_EMAIL_SPECIFIED] = 'You must provide an e-m
 $MANTIS_ERROR[ERROR_LOST_PASSWORD_NOT_MATCHING_DATA] = 'The provided information does not match any registered account!';
 $MANTIS_ERROR[ERROR_LOST_PASSWORD_CONFIRM_HASH_INVALID] = 'The confirmation URL is invalid or has already been used. Please signup again.';
 $MANTIS_ERROR[ERROR_LOST_PASSWORD_MAX_IN_PROGRESS_ATTEMPTS_REACHED] = 'Maximum number of in-progress requests reached. Please contact the system administrator.';
-$MANTIS_ERROR[ERROR_PROJECT_RECURSIVE_HIERARCHY] = 'That operation would create a loop in the subproject hierarchy.';
 $MANTIS_ERROR[ERROR_USER_CHANGE_LAST_ADMIN] = 'You cannot remove or demote the last administrator account. To perform the action you requested, you first need to create another administrator account.';
 $MANTIS_ERROR[ERROR_PAGE_REDIRECTION] = 'Page redirection error, ensure that there are no spaces outside the PHP block (&lt;?php ?&gt;) in config_inc.php or custom_*.php files.';
-$MANTIS_ERROR[ERROR_TAG_NOT_FOUND] = 'Could not find a tag with that name.';
-$MANTIS_ERROR[ERROR_TAG_DUPLICATE] = 'A tag already exists with that name.';
-$MANTIS_ERROR[ERROR_TAG_NAME_INVALID] = 'That tag name is invalid.';
+$MANTIS_ERROR[ERROR_TAG_NOT_FOUND] = 'Could not find tag "%1$s".';
+$MANTIS_ERROR[ERROR_TAG_DUPLICATE] = 'A tag named "%1$s" already exists.';
+$MANTIS_ERROR[ERROR_TAG_NAME_INVALID] = 'Tag name "%1$s" is invalid.';
 $MANTIS_ERROR[ERROR_TAG_NOT_ATTACHED] = 'That tag is not attached to that issue.';
 $MANTIS_ERROR[ERROR_TAG_ALREADY_ATTACHED] = 'That tag already attached to that issue.';
 $MANTIS_ERROR[ERROR_TOKEN_NOT_FOUND] = 'Token could not be found.';
@@ -1735,7 +1764,7 @@ $MANTIS_ERROR[ERROR_PLUGIN_CLASS_NOT_FOUND] = 'The "%2$s" Class is not defined i
 $MANTIS_ERROR[ERROR_PLUGIN_PAGE_NOT_FOUND] = 'Page "%2$s" does not exist in Plugin "%1$s".';
 $MANTIS_ERROR[ERROR_PLUGIN_FILE_NOT_FOUND] = 'File "%2$s" does not exist in Plugin "%1$s".';
 $MANTIS_ERROR[ERROR_PLUGIN_INSTALL_FAILED] = 'Plugin installation failed: %1$s.';
-$MANTIS_ERROR[ERROR_PLUGIN_UPGRADE_FAILED] = 'Upgrading the plugin schema failed in block #%1$s.';
+$MANTIS_ERROR[ERROR_PLUGIN_UPGRADE_FAILED] = 'Upgrading the plugin schema failed at step #%1$s. Error "%2$s" occurred while executing the following statement(s):<br>%3$s';
 $MANTIS_ERROR[ERROR_PLUGIN_UPGRADE_NEEDED] = 'The "%1$s" plugin needs to be upgraded before you can access this page.';
 $MANTIS_ERROR[ERROR_PLUGIN_INVALID_PAGE] = 'The format of the specified plugin page "%1$s" is invalid. It must match "Plugin[/path/to]/page".';
 $MANTIS_ERROR[ERROR_PLUGIN_INVALID_FILE] = 'The format of the specified plugin file "%1$s" is invalid. It must match "Plugin[/path/to]/file[.ext]".';
@@ -1759,9 +1788,10 @@ $MANTIS_ERROR[ERROR_BUG_CONFLICTING_EDIT] = 'This issue has been updated by anot
 $MANTIS_ERROR[ERROR_SPAM_SUSPECTED] = 'You have reached the allowed activity limit of %d events within the last %d seconds; your action has been blocked to avoid spam, please try again later.';
 $MANTIS_ERROR[ERROR_FIELD_TOO_LONG] = 'Field "%1$s" must be shorter or equal to %2$d characters long.';
 $MANTIS_ERROR[ERROR_API_TOKEN_NAME_NOT_UNIQUE] = 'API token name "%s" is already being used. Please go back and select another one.';
+$MANTIS_ERROR[ERROR_LOGFILE_NOT_WRITABLE] = 'The file specified in $g_log_destination "%s" is not writable.';
 
 # dropzone.js - placeholders format is defined by the library
-$s_dropzone_default_message = 'Drop files here to upload (or click)';
+$s_dropzone_default_message = 'Attach files by dragging & dropping, selecting or pasting them.';
 $s_dropzone_fallback_message = 'Your browser does not support drag\'n\'drop file uploads.';
 $s_dropzone_fallback_text = '';
 $s_dropzone_file_too_big = 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.';
@@ -1773,50 +1803,12 @@ $s_dropzone_remove_file = 'Remove file';
 $s_dropzone_remove_file_confirmation = '';
 $s_dropzone_max_files_exceeded = 'You cannot upload any more files.';
 $s_dropzone_not_supported = 'Dropzone.js does not support older browsers!';
+$s_dropzone_multiple_files_too_big = 'The following files:{{files}}Exceed the maximum allowed file size ({{maxFilesize}} MiB)';
 
-// Composr - new strings
-$s_cms_my_view_welcome_message = 'Welcome to the feature tracker, the tool used to plan new versions of %1$s (amongst other things). All %2$s planned features are organised on this feature tracker. Please be aware that %3$s maintains no formal roadmap for %1$s (for good reasons that we explain in our FAQ &ndash; in summary, it wouldn\'t work) so no conclusions about &ldquo;what is around the corner&rdquo; should be drawn from the issues here (unless you can sponsor/contribute things). It does however provide a real foundation for transparency and engagement. For more information, see the appropriate part of the <a href="%4$s">providing feedback tutorial</a>.';
-$s_cms_not_logged_in_bad = '<strong>You are not logged in</strong>. This means you will not get any e-mail notifications, and if you reply we will not know for sure you are the original poster of the issue.';
-$s_cms_bug_report_guidance = 'Bug reporting guidance is in the <a href="%1$s">providing feedback tutorial</a>.';
-$s_cms_sourcecode_link = 'GitLab';
-$s_cms_home_link = 'compo.sr';
-$s_cms_login_instruct = 'Login using your regular %1$s username and password.';
-$s_cms_hint_message = '<strong>Hint</strong>: To find bugs with no risks attach, do a search with the following tag filter&hellip; <samp>-Existing tags,-Breaks themes,-Breaks translations significantly,-Changes core website behaviour,-Core rearchitecting,-Creates Comcode incompatibility,-Database change,-Deprecates functionality,-General incompatibility,-Large database change,-Major rearchitecting,-Risk of breaking upgrade bootstraper,-Type: Cross-cutting feature</samp>';
-$s_cms_return_instruct = '<a class="back-to-login-link pull-left" href="%1$s">Return to the main %2$s website</a>.';
-$s_cms_not_myself = 'Not myself';
-$s_cms_do_not_reply = 'THIS IS AN AUTOMATED E-MAIL. PLEASE DO NOT REPLY DIRECTLY. Reply from within the tracker itself.';
-
-// Composr - overridden strings
-$s_status_enum_string = '10:non-assigned,20:feedback,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';
-$s_report_bug_link = 'Report Issue (or suggest feature)';
-
-// Composr - strings for 'non-assigned' issues
-$s_non_assigned_bug_title = 'New Issue';
-$s_non_assigned_bug_button = 'New Issue';
-
-// Composr - new strings for bug voting
-$s_cms_title_vote_added = 'Monitor / Vote issue';
-$s_cms_title_vote_removed = 'Unmonitor / Unvote issue';
-$s_cms_vote_added = 'You are now monitoring this issue, and your vote is added to the tally.';
-$s_cms_vote_removed = 'You are no longer monitoring this issue, and your vote has been removed from the tally.';
-$s_cms_sc_view_details = 'View full details of bug';
-
-// Composr - new strings for sponsorship
-$s_cms_divide_cost = '/ Cost';
-$s_cms_sponsor_first_message = 'At %1$d hour(s), this would cost %2$d support credit(s) at back-burner priority %3$s [ convert to  %4$s ] ). If this is reached and sponsors have this much in their accounts, %5$s will prioritise the feature and release the code early in this tracker. If a feature is not sponsored then it may also be done anyway, but there is no guarantee that any features posted in the tracker are planned as %6$s is non-commercial and no roadmap is maintained.';
-$s_cms_sponsor_second_message = 'Full details about the <a href="%1$s">sponsorship process and terms</a>.';
-$s_cms_sponsorship_is_disabled = 'Sponsorship is temporarily disabled while we process a work back-log.';
-$s_cms_amount_in_support_credits = 'Amount in support credits ';
-$s_cms_current_credits_balance = '(you currently have %1$d balance, although you can enter any number here), or&hellip; ';
-$s_cms_amount_in_main_currency = 'Amount in %1$s ';
-$s_cms_filling_in_form_message = 'Filling in this form replaces your previous sponsorship, it does not add to it. To remove re-sponsor with zero.';
-$s_cms_support_credits = 'support credits';
-$s_cms_backed_by_existing_support_credits = ' - backed by existing support credits';
-$s_cms_not_backed_by_existing_support_credits = ' - not backed by existing support credits';
-$s_cms_buy_some = ' - <a href="%1$s" target="_blank">buy some</a>';
-$s_cms_progress_theory = 'Progress (theory)';
-$s_cms_progress_paid_up = 'Progress (paid up)';
-$s_cms_credits_remaining = 'credits remaining';
-
-// Composr - overridden strings for sponsorship
-$s_users_sponsoring_bug = 'If users wish to sponsor this issue (optional, some issues are implemented without sponsorship)...';
+# Generic actions, short names
+$s_save = 'Save';
+$s_reset = 'Reset';
+$s_persist = 'Persist';
+$s_load = 'Load';
+$s_apply_changes = 'Apply changes';
+$s_undo = 'Undo';

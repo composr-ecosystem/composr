@@ -97,8 +97,8 @@ function bug_group_action_print_bug_list( array $p_bug_ids_array ) {
 
 	foreach( $p_bug_ids_array as $t_bug_id ) {
 		# choose color based on status
-		$t_status_label = html_get_status_css_class( bug_get_field( $t_bug_id, 'status' ), auth_get_current_user_id(), bug_get_field( $t_bug_id, 'project_id' ) );
-		$t_lead = '<i class="fa fa-square fa-status-box ' . $t_status_label . '"></i> ';
+		$t_status_css = html_get_status_css_fg( bug_get_field( $t_bug_id, 'status' ), auth_get_current_user_id(), bug_get_field( $t_bug_id, 'project_id' ) );
+		$t_lead = '<i class="fa fa-square fa-status-box ' . $t_status_css . '"></i> ';
 		$t_lead .= ' ' . string_get_bug_view_link( $t_bug_id );
 		echo sprintf( "<tr> <td>%s</td> <td>%s</td> </tr>\n", $t_lead, string_attribute( bug_get_field( $t_bug_id, 'summary' ) ) );
 	}
@@ -215,6 +215,7 @@ function bug_group_action_get_commands( array $p_project_ids = null ) {
 	$t_user_id = auth_get_current_user_id();
 
 	$t_commands = array();
+	version_cache_array_rows( $p_project_ids );
 	foreach( $p_project_ids as $t_project_id ) {
 
 		$t_update_bug_allowed = access_has_project_level( config_get( 'update_bug_threshold', null, $t_user_id, $t_project_id ), $t_project_id );

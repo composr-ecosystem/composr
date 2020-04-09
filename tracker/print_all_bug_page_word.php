@@ -73,13 +73,6 @@ require_api( 'string_api.php' );
 
 auth_ensure_user_authenticated();
 
-// Composr - stop server slow down
-$t_filter = filter_get_bug_rows_filter();
-$t_filter_query = new BugFilterQuery($t_filter, array('query_type' => BugFilterQuery::QUERY_TYPE_LIST));
-if( $t_filter_query->get_bug_count() > 100 ) {
-	trigger_error( 'Too many bugs to process for this operation - select fewer than 100', ERROR );
-}
-
 $f_type_page	= gpc_get_string( 'type_page', 'word' );
 $f_search		= gpc_get_string( 'search', false ); # @todo need a better default
 $f_offset		= gpc_get_int( 'offset', 0 );
@@ -248,7 +241,7 @@ for( $j=0; $j < $t_row_count; $j++ ) {
 		<?php echo sprintf( lang_get( 'label' ), $t_lang_reporter ) ?>
 	</td>
 	<td>
-		<?php print_user_with_subject( $t_bug->reporter_id, $t_id ) ?>
+		<?php print_user( $t_bug->reporter_id, false ) ?>
 	</td>
 	<td class="bold">
 		<?php echo sprintf( lang_get( 'label' ), $t_lang_platform ) ?>
@@ -284,7 +277,7 @@ for( $j=0; $j < $t_row_count; $j++ ) {
 	<td>
 		<?php
 			if( access_has_bug_level( config_get( 'view_handler_threshold' ), $t_id ) ) {
-				print_user_with_subject( $t_bug->handler_id, $t_id );
+				print_user( $t_bug->handler_id, false );
 			}
 		?>
 	</td>
@@ -543,7 +536,7 @@ $t_bugnotes = bugnote_get_all_visible_bugnotes( $t_id, $t_user_bugnote_order, $t
 	<td width="12%">
 				(<?php echo bugnote_format_id( $t_bugnote->id ) ?>)
 			<br />
-				<?php print_user( $t_bugnote->reporter_id ) ?>&#160;&#160;&#160;
+				<?php print_user( $t_bugnote->reporter_id, false ) ?>&#160;&#160;&#160;
 			<br />
 				<?php echo $t_date_submitted ?>&#160;&#160;&#160;
 				<?php if( $t_bugnote->date_submitted != $t_bugnote->last_modified ) {

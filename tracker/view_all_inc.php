@@ -61,10 +61,10 @@ list( $t_dir, ) = explode( ',', $g_filter['dir'] );
 
 $g_checkboxes_exist = false;
 
-
+$t_current_project = helper_get_current_project();
 # Improve performance by caching category data in one pass
-if( helper_get_current_project() > 0 ) {
-	category_get_all_rows( helper_get_current_project() );
+if( $t_current_project > 0 ) {
+	category_get_all_rows( $t_current_project );
 }
 
 $g_columns = helper_get_columns_to_view( COLUMNS_TARGET_VIEW_PAGE );
@@ -75,7 +75,7 @@ $t_filter_position = config_get( 'filter_position' );
 
 # -- ====================== FILTER FORM ========================= --
 if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
-	filter_draw_selection_area( $f_page_number );
+	filter_draw_selection_area();
 }
 # -- ====================== end of FILTER FORM ================== --
 
@@ -85,10 +85,6 @@ if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
 ?>
 <div class="col-md-12 col-xs-12">
 <div class="space-10"></div>
-
-<!-- Composr - hint about how to search -->
-<p><?php echo lang_get('cms_hint_message');?></p>
-
 <form id="bug_action" method="post" action="bug_actiongroup_page.php">
 <?php # CSRF protection not required here - form does not result in modifications ?>
 <div class="widget-box widget-color-blue2">
@@ -116,11 +112,19 @@ if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
 			<div class="btn-group pull-left">
 		<?php
 			$t_filter_param = filter_get_temporary_key_param( $t_filter );
-			$t_filter_param = ( empty( $t_filter_param ) ? '' : '?' ) . $t_filter_param;
+			if( empty( $t_filter_param ) ) {
+				$t_summary_link = 'view_all_set.php?summary=1&temporary=y';
+			} else {
+				$t_filter_param = '?' . $t_filter_param;
+				$t_summary_link = 'summary_page.php' . $t_filter_param;
+			}
 			# -- Print and Export links --
 			print_small_button( 'print_all_bug_page.php' . $t_filter_param, lang_get( 'print_all_bug_page_link' ) );
 			print_small_button( 'csv_export.php' . $t_filter_param, lang_get( 'csv_export' ) );
 			print_small_button( 'excel_xml_export.php' . $t_filter_param, lang_get( 'excel_export' ) );
+			if( access_has_project_level( config_get( 'view_summary_threshold' ), $t_current_project ) ) {
+				print_small_button( $t_summary_link, lang_get( 'summary_link' ) );
+			}
 
 			$t_event_menu_options = $t_links = event_signal('EVENT_MENU_FILTER');
 
@@ -149,7 +153,7 @@ if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
 </div>
 
 <div class="widget-main no-padding">
-	<div class="table-responsive">
+	<div class="table-responsive checkbox-range-selection">
 	<table id="buglist" class="table table-bordered table-condensed table-hover table-striped">
 	<thead>
 <?php # -- Bug list column header row -- ?>
@@ -257,6 +261,6 @@ write_bug_rows( $t_rows );
 
 # -- ====================== FILTER FORM ========================= --
 if( ( $t_filter_position & FILTER_POSITION_BOTTOM ) == FILTER_POSITION_BOTTOM ) {
-	filter_draw_selection_area( $f_page_number );
+	filter_draw_selection_area();
 }
 # -- ====================== end of FILTER FORM ================== --

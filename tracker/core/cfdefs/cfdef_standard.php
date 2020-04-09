@@ -267,7 +267,7 @@ function cfdef_prepare_list_value_for_email( $p_value ) {
  */
 function cfdef_print_email_value( $p_value ) {
 	if( !is_blank( $p_value ) ) {
-		echo '<a href="mailto:' . string_attribute( $p_value ) . '">' . string_display_line( $p_value ) . '</a>';
+		print_email_link( $p_value, $p_value );
 	}
 }
 
@@ -448,11 +448,26 @@ function cfdef_input_radio( array $p_field_def, $p_custom_field_value, $p_requir
  * @return void
  */
 function cfdef_input_textbox( array $p_field_def, $p_custom_field_value, $p_required = '' ) {
-	echo '<input ' . helper_get_tab_index() . ' type="text" id="custom_field_' . $p_field_def['id'] . '" name="custom_field_' . $p_field_def['id'] . '" size="80"' . $p_required;
-	if( 0 < $p_field_def['length_max'] ) {
-		echo ' maxlength="' . $p_field_def['length_max'] . '"';
+	echo '<input ', helper_get_tab_index(), ' type="text" id="custom_field_', $p_field_def['id']
+			, '" name="custom_field_', $p_field_def['id'], '" ', $p_required;
+	if( $p_field_def['length_max'] > 0 ) {
+		echo ' maxlength="' . $p_field_def['length_max'] . '"'
+				, ' size="' .  min( 80, $p_field_def['length_max'] ) . '"';
 	} else {
-		echo ' maxlength="255"';
+		echo ' maxlength="255" size="80"';
+	}
+	if( !empty( $p_field_def['valid_regexp'] ) ) {
+		# the custom field regex is evaluated with preg_match and looks for a partial match in the string
+		# however, the html property is matched for the whole string.
+		# unless we have explicit start and end tokens, adapt the html regex to allow a substring match.
+		$t_cf_regex = $p_field_def['valid_regexp'];
+		if( substr( $t_cf_regex, 0, 1 ) != '^' ) {
+			$t_cf_regex = '.*' . $t_cf_regex;
+		}
+		if( substr( $t_cf_regex, -1 ) != '$' ) {
+			$t_cf_regex .= '.*';
+		}
+		echo ' pattern="' . $t_cf_regex . '"';
 	}
 	echo ' value="' . string_attribute( $p_custom_field_value ) .'" />';
 }
@@ -465,8 +480,12 @@ function cfdef_input_textbox( array $p_field_def, $p_custom_field_value, $p_requ
  * @return void
  */
 function cfdef_input_textarea( array $p_field_def, $p_custom_field_value, $p_required = '' ) {
-	echo '<textarea class="form-control" ' . helper_get_tab_index() . ' id="custom_field_' . $p_field_def['id'] . '" name="custom_field_' . $p_field_def['id'] . '"' . $p_required;
-	echo ' cols="70" rows="8">' . $p_custom_field_value .'</textarea>';
+	echo '<textarea class="form-control" ', helper_get_tab_index(), ' id="custom_field_' . $p_field_def['id']
+			, '" name="custom_field_', $p_field_def['id'], '"', $p_required;
+	if( $p_field_def['length_max'] > 0 ) {
+		echo ' maxlength="', $p_field_def['length_max'], '"';
+	}
+	echo ' cols="70" rows="8">', $p_custom_field_value, '</textarea>';
 }
 
 /**

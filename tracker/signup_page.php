@@ -44,10 +44,6 @@ require_api( 'lang_api.php' );
 require_api( 'print_api.php' );
 require_api( 'utility_api.php' );
 
-// Composr - redirect to correct join page
-header('Location:' . $cms_sc_join_url);
-exit();
-
 require_css( 'login.css' );
 
 require_js( 'login.js' );
@@ -145,7 +141,7 @@ $t_public_key = crypto_generate_uri_safe_nonce( 64 );
 			if( !$t_allow_passwd_change ) {
 				echo '<div class="space-10"></div>';
 				echo '<div class="alert alert-danger">';
-				echo lang_get( 'no_password_change' );;
+				echo lang_get( 'no_password_change' );
 				echo '</div>';
 			}
 ?>

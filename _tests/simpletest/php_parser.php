@@ -941,7 +941,7 @@ class SimplePhpPageBuilder
     {
         if ($tag->getTagName() === 'a') {
             $this->page->addLink($tag);
-        } elseif (($tag->getTagName() === 'base') && ($this->page->getBase() === false)) {
+        } elseif (($tag->getTagName() === 'base') && ($this->page->getBaseUrl() === false)) {
             $this->page->setBase($tag->getAttribute('href'));
         } elseif (($tag->getTagName() === 'title') && ($this->page->getTitle() === false)) {
             $this->page->setTitle($tag);

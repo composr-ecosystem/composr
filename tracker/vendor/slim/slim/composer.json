@@ -29,10 +29,12 @@
     ],
     "require": {
         "php": ">=5.5.0",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "ext-simplexml": "*",
         "pimple/pimple": "^3.0",
         "psr/http-message": "^1.0",
         "nikic/fast-route": "^1.0",
-        "container-interop/container-interop": "^1.2",
         "psr/container": "^1.0"
     },
     "require-dev": {
@@ -47,12 +49,15 @@
             "Slim\\": "Slim"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Slim\\Tests\\": "tests"
+        }
+    },
     "scripts": {
         "test": [
-            "@phpunit",
-            "@phpcs"
-        ],
-        "phpunit": "php vendor/bin/phpunit",
-        "phpcs": "php vendor/bin/phpcs"
+            "phpunit",
+            "phpcs"
+        ]
     }
 }

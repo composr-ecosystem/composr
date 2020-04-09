@@ -74,9 +74,6 @@ require_api( 'string_api.php' );
 require_api( 'user_api.php' );
 require_api( 'utility_api.php' );
 
-header('Location: ' . $cms_sc_profile_url);
-exit();
-
 #============ Permissions ============
 auth_ensure_user_authenticated();
 

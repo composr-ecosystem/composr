@@ -38,17 +38,17 @@
  * @ingroup Language
  * @file
  *
+ * @author Abijeet Patro
  * @author DRIHEM
  * @author Meno25
  * @author OsamaK
  * @author ديفيد
  */
 
-$s_plugin_graph_title = 'رسومات مانتيس';
-$s_plugin_graph_description = 'الملحق الرسومي الرسمي.';
 $s_plugin_MantisGraph_title = 'رسومات مانتيس';
+$s_plugin_MantisGraph_description = 'الملحق الرسومي الرسمي.';
 $s_plugin_MantisGraph_config = 'ضبط';
-$s_plugin_MantisGraph_synthesis_link = 'صناعي';
+$s_plugin_MantisGraph_tab_label = 'الرسوم البيانية';
 $s_plugin_MantisGraph_status_link = 'حسب الحالة';
 $s_plugin_MantisGraph_priority_link = 'حسب الأهمية';
 $s_plugin_MantisGraph_severity_link = 'حسب الخطورة';
@@ -89,3 +89,4 @@ $s_plugin_MantisGraph_graph_page = 'تاريخ رسومات المشكلة';
 $s_plugin_MantisGraph_graph_topdev = 'كبار المطورين حسب القضايا المحلولة';
 $s_plugin_MantisGraph_graph_opendev = 'المطورون حسب القضايا المفتوحة';
 $s_plugin_MantisGraph_graph_topreporter_fixed = 'كبار المبلغين حسب القضايا المحلولة';
+$s_plugin_MantisGraph_other_categories = 'تصنيفات أخرى (%d)';

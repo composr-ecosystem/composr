@@ -48,7 +48,7 @@ require_api( 'logging_api.php' );
  *   supported formats:
  *     - ":{string}" For labeled parameters. Binded values are stored in $query_bind_array
  *     - "${int}" For anonymous parameters. Binded values are stored in $query_autobind_array
- *     - "${string}{int}" For special constructs, eg: $in0 for late binding IN caluses
+ *     - "${string}{int}" For special constructs, eg: $in0 for late binding IN clauses
  * 2) $expanded_query_string: stores the query string after expansion of special constructs
  *   into standard "${int}" parameters
  * 3) $db_query_string: stores the query string after all parameters have been renamed,
@@ -293,6 +293,7 @@ class DbQuery {
 			trigger_error( ERROR_DB_QUERY_FAILED, ERROR );
 			$this->db_result = false;
 		}
+		$this->current_row = null;
 		return $this->db_result;
 	}
 
@@ -878,11 +879,12 @@ class DbQuery {
 	 * Creates a string construction for a case-insensitive LIKE expression
 	 * This is an alias for sql_like() with the force_ci parameter set to true.
 	 * @param string $p_alias		A valid sql column identifier
+	 * @param string $p_pattern		Pattern string
 	 * @param string $p_escape		Escape character
 	 * @return string	Constructed string to be added to query
 	 */
-	public function sql_ilike( $p_alias, $p_value, $p_escape = null ) {
-		return $this->sql_like( $p_alias, $p_value, $p_escape, true );
+	public function sql_ilike( $p_alias, $p_pattern, $p_escape = null ) {
+		return $this->sql_like( $p_alias, $p_pattern, $p_escape, true );
 	}
 
 	/**

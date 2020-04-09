@@ -244,7 +244,7 @@ function sponsorship_get_all_ids( $p_bug_id ) {
  * Get the amount of sponsorships for the specified id(s)
  * handles the case where $p_sponsorship_id is an array or an id.
  * @param array|integer $p_sponsorship_id The sponsorship identifier(s) to check.
- * @return double - Composr - support non-integer sponsorship
+ * @return integer
  */
 function sponsorship_get_amount( $p_sponsorship_id ) {
 	if( is_array( $p_sponsorship_id ) ) {
@@ -271,14 +271,13 @@ function sponsorship_get_currency() {
 
 /**
  * This function should return the string in a globalized format.
- * @param double $p_amount A numeric value represent the amount to format. - Composr - support non-integer sponsorship
+ * @param integer $p_amount A numeric value represent the amount to format.
  * @return string
  * @todo add some currency formatting in the future
  */
 function sponsorship_format_amount( $p_amount ) {
 	$t_currency = sponsorship_get_currency();
-	//return $t_currency . ' ' . $p_amount;
-	return $t_currency . ' ' . number_format($p_amount, 2); // Composr - support non-integer sponsorship
+	return $t_currency . ' ' . $p_amount;
 }
 
 /**
@@ -318,8 +317,7 @@ function sponsorship_set( SponsorshipData $p_sponsorship ) {
 	$c_id = (int)$p_sponsorship->id;
 	$c_bug_id = (int)$p_sponsorship->bug_id;
 	$c_user_id = (int)$p_sponsorship->user_id;
-	//$c_amount = (int)$p_sponsorship->amount;
-	$c_amount = (double)$p_sponsorship->amount; // Composr - support non-integer sponsorship
+	$c_amount = (int)$p_sponsorship->amount;
 	$c_logo = $p_sponsorship->logo;
 	$c_url = $p_sponsorship->url;
 	$c_now = db_now();
@@ -421,7 +419,7 @@ function sponsorship_delete( $p_sponsorship_id ) {
 /**
  * updates the paid field
  * @param integer $p_sponsorship_id The sponsorship identifier to update.
- * @param double $p_paid           The value to set to paid database field to. - Composr - support non-integer sponsorship
+ * @param integer $p_paid           The value to set to paid database field to.
  * @return boolean
  */
 function sponsorship_update_paid( $p_sponsorship_id, $p_paid ) {

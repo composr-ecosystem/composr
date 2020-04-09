@@ -106,28 +106,32 @@ function log_event( $p_level, $p_msg ) {
 		case 'none':
 			break;
 		case 'file':
-			error_log( $t_php_event . PHP_EOL, 3, $t_modifiers );
+			if( isset( $t_modifiers ) ) {
+				static $s_log_writable = null;
+
+				if( $s_log_writable ) {
+					error_log( $t_php_event . PHP_EOL, 3, $t_modifiers );
+				} elseif( $s_log_writable === null ) {
+					# Try to log the event, suppress errors in case the file is not writable
+					$s_log_writable = @error_log( $t_php_event . PHP_EOL, 3, $t_modifiers );
+
+					if( !$s_log_writable ) {
+						# Display a one-time warning message and write it to PHP system log as well.
+						# Note: to ensure the error is shown regardless of $g_display_error settings,
+						# we manually set the message and log it with error_log_delayed(), which will
+						# cause it to be displayed at page bottom.
+						error_parameters( $t_modifiers );
+						$t_message = error_string( ERROR_LOGFILE_NOT_WRITABLE );
+						error_log_delayed( $t_message );
+						error_log( 'MantisBT - ' . htmlspecialchars_decode( $t_message ) );
+					}
+				}
+			}
 			break;
 		case 'page':
 			global $g_log_events;
 			$g_log_events[] = array( time(), $p_level, $t_event, $t_caller);
 			break;
-		case 'firebug':
-			if( !class_exists( 'FirePHP' ) ) {
-				if( file_exists( config_get_global( 'library_path' ) . 'FirePHPCore/FirePHP.class.php' ) ) {
-					require_lib( 'FirePHPCore/FirePHP.class.php' );
-				}
-			}
-			if( class_exists( 'FirePHP' ) ) {
-				static $s_firephp;
-				if( $s_firephp === null ) {
-					$s_firephp = FirePHP::getInstance( true );
-				}
-				# Don't use $t_msg, let FirePHP format the message
-				$s_firephp->log( $p_msg, $t_now . ' ' . $t_level );
-				return;
-			}
-			# if firebug is not available, fall through
 		default:
 			# use default PHP error log settings
 			error_log( $t_php_event . PHP_EOL );

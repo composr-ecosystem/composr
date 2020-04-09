@@ -68,13 +68,12 @@ require_api( 'user_api.php' );
 #precache access levels
 access_cache_matrix_project( helper_get_current_project() );
 
-$t_show_time_tracking = access_has_bug_level( config_get( 'time_tracking_view_threshold' ), $f_bug_id );
+$t_show_time_tracking = config_get( 'time_tracking_enabled' )
+	&& access_has_bug_level( config_get( 'time_tracking_view_threshold' ), $f_bug_id );
 
 # get attachments data
-if( !isset( $t_fields ) ) {
-	$t_fields = config_get( $t_fields_config_option );
-	$t_fields = columns_filter_disabled( $t_fields );
-}
+$t_fields = config_get( 'bug_view_page_fields' );
+$t_fields = columns_filter_disabled( $t_fields );
 
 $t_show_attachments = in_array( 'attachments', $t_fields );
 
@@ -269,6 +268,8 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 	<td class="<?php echo $t_activity['style'] ?>">
 	<?php
 		if( $t_activity['type'] == ENTRY_TYPE_NOTE ) {
+			$t_add_space = false;
+
 			switch ( $t_activity['note']->note_type ) {
 				case REMINDER:
 					echo '<strong>';
@@ -294,20 +295,21 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 					}
 
 					echo '</strong><br /><br />';
+					$t_add_space = true;
 					break;
 
 				case TIME_TRACKING:
 					if( $t_show_time_tracking ) {
 						echo '<div class="time-tracked label label-grey label-sm">', lang_get( 'time_tracking_time_spent' ) . ' ' . $t_time_tracking_hhmm, '</div>';
 						echo '<div class="clearfix"></div>';
+						$t_add_space = true;
 					}
 					break;
 			}
 
-			echo string_display_links( $t_activity['note']->note );
-
-			if( isset( $t_activity['attachments'] ) && count( $t_activity['attachments'] ) > 0 ) {
-				echo '<br /><br />';
+			if( !is_blank( $t_activity['note']->note ) ) {
+				echo string_display_links( $t_activity['note']->note );
+				$t_add_space = true;
 			}
 		} else {
 			if ( !$t_security_token_attachments_delete ) {

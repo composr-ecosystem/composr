@@ -451,32 +451,41 @@ function db_result( $p_result, $p_row_index = 0, $p_col_index = 0 ) {
 }
 
 /**
- * return the last inserted id for a specific database table
+ * Return the last inserted ID after a insert statement.
+ * Warning: this function must be used immediately after the insert statement
+ *
+ * This relies on ADOdb to get the entity id when this functionality is available
+ * for the specific driver, and it makes sense in our model.
+ * Natively supported:
+ * - mysqli, using: mysqli_insert_id(connection).
+ * - mssqlnative, using SCOPE_IDENTITY().
+ * Not natively supported:
+ * - pgsql, oracle, using the underlying sequence for the table.
+ *
+ * Since the table is needed for those drivers where a sequence is used, the
+ * $p_table parameter is mandatory to ensure portability.
+ * Warning: $p_table is not expected to be a different table than the one used
+ * for the previous insert. Note that it's not even used by some drivers.
+ *
  * @param string $p_table A valid database table name.
  * @param string $p_field A valid field name (default 'id').
  * @return integer last successful insert id
  */
-function db_insert_id( $p_table = null, $p_field = 'id' ) {
+function db_insert_id( $p_table, $p_field = 'id' ) {
 	global $g_db, $g_db_functional_type;
 
-	if( isset( $p_table ) ) {
-		switch( $g_db_functional_type ) {
+	switch( $g_db_functional_type ) {
 			case DB_TYPE_ORACLE:
 				$t_query = 'SELECT seq_' . $p_table . '.CURRVAL FROM DUAL';
 				break;
 			case DB_TYPE_PGSQL:
 				$t_query = 'SELECT currval(\'' . $p_table . '_' . $p_field . '_seq\')';
 				break;
-			case DB_TYPE_MSSQL:
-				$t_query = 'SELECT IDENT_CURRENT(\'' . $p_table . '\')';
-				break;
-		}
-		if( isset( $t_query ) ) {
-			$t_result = db_query( $t_query );
-			return (int)db_result( $t_result );
-		}
+			default:
+				return $g_db->Insert_ID();
 	}
-	return $g_db->Insert_ID();
+	$t_result = db_query( $t_query );
+	return (int)db_result( $t_result );
 }
 
 /**
@@ -1253,4 +1262,56 @@ function db_format_query_log_msg( $p_query, array $p_arr_parms ) {
 		}
 	}
 	return $p_query;
+}
+
+/**
+ * Returns true if a specific capability is suported in the current database server,
+ * false otherwise.
+ *
+ * @param integer $p_capability   See DB_CAPABILITY_* constants
+ * @return boolean    True if the capability is supported, false otherwise.
+ */
+function db_has_capability( $p_capability ) {
+	static $s_cache = array();
+	if( !isset( $s_cache[$p_capability] ) ) {
+		$s_cache[$p_capability] = db_test_capability( $p_capability );
+	}
+	return $s_cache[$p_capability];
+}
+
+/**
+ * Tests if a specific capability is suported in the current database server.
+ *
+ * @param integer $p_capability   See DB_CAPABILITY_* constants
+ * @return boolean    True if the capability is supported, false otherwise.
+ */
+function db_test_capability( $p_capability ) {
+	global $g_db, $g_db_functional_type;
+	$t_server_info = $g_db->ServerInfo();
+
+	switch( $p_capability ) {
+		case DB_CAPABILITY_WINDOW_FUNCTIONS:
+			switch( $g_db_functional_type ) {
+				case DB_TYPE_ORACLE: # since 8i
+				case DB_TYPE_PGSQL: # since 8.4
+				case DB_TYPE_MSSQL: # since 2008
+					return true;
+				case DB_TYPE_MYSQL:
+					# mysql, since 8.0.2
+					if( version_compare( $t_server_info['version'], '8.0.2', '>=' )
+							&& false !== stripos( $t_server_info['description'], 'mysql' ) ) {
+						return true;
+					}
+					# mariaDB, since 10.2
+					if( version_compare( $t_server_info['version'], '10.2', '>=' )
+							&& false !== stripos( $t_server_info['description'], 'mariadb' ) ) {
+						return true;
+					}
+					# if server info cant provide enough information to identify the type,
+					# default to "not supported"
+			}
+	}
+
+	# if nothing was found, return false
+	return false;
 }

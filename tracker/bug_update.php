@@ -224,15 +224,16 @@ if( $t_existing_bug->status != $t_updated_bug->status ) {
 }
 
 # Validate any change to the handler of an issue.
+# The new handler is checked at project level.
 if( $t_existing_bug->handler_id != $t_updated_bug->handler_id ) {
 	$t_issue_is_sponsored = config_get( 'enable_sponsorship' )
 		&& sponsorship_get_amount( sponsorship_get_all_ids( $f_bug_id ) ) > 0;
 	access_ensure_bug_level( config_get( 'update_bug_assign_threshold' ), $f_bug_id );
-	if( $t_issue_is_sponsored && !access_has_bug_level( config_get( 'handle_sponsored_bugs_threshold' ), $f_bug_id ) ) {
+	if( $t_issue_is_sponsored && !access_has_project_level( config_get( 'handle_sponsored_bugs_threshold' ),  $t_updated_bug->project_id, $t_updated_bug->handler_id ) ) {
 		trigger_error( ERROR_SPONSORSHIP_HANDLER_ACCESS_LEVEL_TOO_LOW, ERROR );
 	}
 	if( $t_updated_bug->handler_id != NO_USER ) {
-		if( !access_has_bug_level( config_get( 'handle_bug_threshold' ), $f_bug_id, $t_updated_bug->handler_id ) ) {
+		if( !access_has_project_level( config_get( 'handle_bug_threshold' ),  $t_updated_bug->project_id, $t_updated_bug->handler_id ) ) {
 			trigger_error( ERROR_HANDLER_ACCESS_TOO_LOW, ERROR );
 		}
 		if( $t_issue_is_sponsored && !access_has_bug_level( config_get( 'assign_sponsored_bugs_threshold' ), $f_bug_id ) ) {
@@ -452,9 +453,7 @@ if( $t_resolve_issue ) {
 	email_owner_changed( $f_bug_id, $t_existing_bug->handler_id, $t_updated_bug->handler_id );
 } else if( $t_existing_bug->status != $t_updated_bug->status ) {
 	$t_new_status_label = MantisEnum::getLabel( config_get( 'status_enum_string' ), $t_updated_bug->status );
-	//$t_new_status_label = str_replace( ' ', '_', $t_new_status_label );
-	// Composr - allow statuses with hyphens
-	$t_status_label = str_replace( array(' ', '-'), array('_', '_'), $t_new_status_label );
+	$t_new_status_label = str_replace( ' ', '_', $t_new_status_label );
 	email_bug_status_changed( $f_bug_id, $t_new_status_label );
 } else {
 	email_bug_updated( $f_bug_id );

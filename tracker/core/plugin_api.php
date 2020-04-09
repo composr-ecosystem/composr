@@ -357,6 +357,34 @@ function plugin_lang_get( $p_name, $p_basename = null ) {
 }
 
 /**
+ * Get a defaulted language string for the plugin.
+ * - If found, return the appropriate string.
+ * - If not found, no default supplied, return the supplied string as is.
+ * - If not found, default supplied, return default.
+ * Automatically prepends plugin_<basename> to the string requested.
+ * @see lang_get_defaulted()
+ *
+ * @param string $p_name     Language string name.
+ * @param string $p_default  The default value to return.
+ * @param string $p_basename Plugin basename.
+ *
+ * @return string Language string
+ */
+function plugin_lang_get_defaulted( $p_name, $p_default = null, $p_basename = null ) {
+	if( !is_null( $p_basename ) ) {
+		plugin_push_current( $p_basename );
+	}
+	$t_basename = plugin_get_current();
+	$t_name = 'plugin_' . $t_basename . '_' . $p_name;
+	$t_string = lang_get_defaulted( $t_name, $p_default );
+
+	if( !is_null( $p_basename ) ) {
+		plugin_pop_current();
+	}
+	return $t_string;
+}
+
+/**
  * log history event from plugin
  * @param integer $p_bug_id     A bug identifier.
  * @param string  $p_field_name A field name.
@@ -674,8 +702,6 @@ function plugin_upgrade( MantisPlugin $p_plugin ) {
 			return false;
 		}
 
-		$t_target = $t_schema[$i][1][0];
-
 		switch( $t_schema[$i][0] ) {
 			case 'InsertData':
 				$t_sqlarray = array(
@@ -687,7 +713,6 @@ function plugin_upgrade( MantisPlugin $p_plugin ) {
 				$t_sqlarray = array(
 					'UPDATE ' . $t_schema[$i][1][0] . $t_schema[$i][1][1],
 				);
-				$t_target = $t_schema[$i][1];
 				break;
 
 			case 'UpdateFunction':
@@ -720,7 +745,11 @@ function plugin_upgrade( MantisPlugin $p_plugin ) {
 		if( 2 == $t_status ) {
 			plugin_config_set( 'schema', $i );
 		} else {
-			error_parameters( $i );
+			error_parameters( 
+				$i, 
+				$g_db->ErrorMsg(), 
+				implode( '<br>', $t_sqlarray ) 
+			);
 			trigger_error( ERROR_PLUGIN_UPGRADE_FAILED, ERROR );
 			return null;
 		}
@@ -1017,6 +1046,13 @@ function plugin_init( $p_basename ) {
 	}
 }
 
+/**
+ * Log a plugin-specific event.
+ *
+ * @param string|array $p_msg       Either a string, or an array structured as
+ *                                  (string,execution time).
+ * @param string        $p_basename Plugin's basename (defaults to current plugin)
+ */
 function plugin_log_event( $p_msg, $p_basename = null ) {
 	$t_current_plugin = plugin_get_current();
 	if( is_null( $p_basename ) ) {
@@ -1032,4 +1068,35 @@ function plugin_log_event( $p_msg, $p_basename = null ) {
 	} else {
 		log_event( LOG_PLUGIN, $p_msg);
 	}
+}
+
+/**
+ * Retrieve plugin-defined menu items for a given event.
+ *
+ * These are HTML hyperlinks (<a> tags).
+ *
+ * @param string $p_event Plugin event to signal
+ * @return array
+ */
+function plugin_menu_items( $p_event ) {
+	$t_items = array();
+
+	if( $p_event ) {
+		$t_event_items = event_signal( $p_event );
+
+		foreach( $t_event_items as $t_plugin => $t_plugin_items ) {
+			foreach( $t_plugin_items as $t_callback => $t_callback_items ) {
+				if( is_array( $t_callback_items ) ) {
+					$t_items = array_merge( $t_items, $t_callback_items );
+				}
+				else {
+					if( $t_callback_items !== null ) {
+						$t_items[] = $t_callback_items;
+					}
+				}
+			}
+		}
+	}
+
+	return $t_items;
 }
