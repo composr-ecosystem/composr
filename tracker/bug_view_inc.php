@@ -168,6 +168,9 @@ if( $t_flags['history_show'] ) {
 	print_small_button( $t_history_link, $t_history_label );
 }
 
+// Composr
+print_small_button( 'https://gitlab.com/ocproducts/skills-for-murs/commits/master?search=MANTIS-' . strval($t_bug_id), 'Search commits' );
+
 echo '</div>';
 
 # prev/next links
@@ -592,6 +595,10 @@ if( $t_flags['tags_can_attach'] ) {
 echo '<tr class="spacer"><td colspan="6"></td></tr>';
 echo '<tr class="hidden"></tr>';
 
+// Composr - sponsorship improvements
+$hours = 0;
+$sponsorship_open = false;
+
 # Custom Fields
 if( isset( $t_issue['custom_fields'] ) ) {
 	foreach( $t_issue['custom_fields'] as $t_custom_field ) {
@@ -601,6 +608,15 @@ if( isset( $t_issue['custom_fields'] ) ) {
 		echo '<th class="bug-custom-field category">', string_display_line( lang_get_defaulted( $t_def['name'] ) ), '</th>';
 		echo '<td class="bug-custom-field" colspan="5">';
 		print_custom_field_value( $t_def, $t_custom_field['field']['id'], $f_issue_id );
+
+        // Composr - sponsorship improvements
+        if ($t_def['name']=='Time estimation (hours)') {
+            $hours = string_custom_field_value( $t_def, $t_id, $f_bug_id );
+        }
+        if ($t_def['name']=='Sponsorship open') {
+            $sponsorship_open = (string_custom_field_value( $t_def, $t_id, $f_bug_id ) == 'Open');
+        }
+
 		echo '</td></tr>';
 	}
 

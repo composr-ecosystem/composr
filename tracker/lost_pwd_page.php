@@ -43,6 +43,10 @@ require_api( 'lang_api.php' );
 require_api( 'print_api.php' );
 require_css( 'login.css' );
 
+// Composr - redirect to correct join page
+header('Location:' . $cms_sc_lostpassword_url);
+exit();
+
 # lost password feature disabled or reset password via email disabled -> stop here!
 if( LDAP == config_get_global( 'login_method' ) ||
 	OFF == config_get( 'lost_password_feature' ) ||

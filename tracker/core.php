@@ -282,6 +282,11 @@ if( !defined( 'MANTIS_MAINTENANCE_MODE' ) ) {
 	}
 }
 
+# Composr - Performance optimization for sending emails
+if ((isset($argv[0])) && (basename($argv[0]) == 'send_emails.php')) {
+	if (db_result( db_query( 'SELECT COUNT(*) FROM mantis_email_table' ) ) == 0) exit(); // Nothing to do
+}
+
 # Register global shutdown function
 shutdown_functions_register();
 

@@ -44,6 +44,10 @@ require_api( 'lang_api.php' );
 require_api( 'print_api.php' );
 require_api( 'utility_api.php' );
 
+// Composr - redirect to correct join page
+header('Location:' . $cms_sc_join_url);
+exit();
+
 require_css( 'login.css' );
 
 require_js( 'login.js' );

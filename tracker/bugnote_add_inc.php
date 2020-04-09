@@ -116,7 +116,8 @@ require_api( 'lang_api.php' );
 					<?php echo lang_get( 'bugnote' ) ?>
 				</th>
 				<td width="85%">
-					<textarea name="bugnote_text" id="bugnote_text" class="<?php echo $t_bugnote_class ?>" rows="7"></textarea>
+					<!-- Composr - simple anti-spam measure -->
+					<textarea<?php if (current_user_is_anonymous()) { ?> placeholder="Warning: You are not logged in, so your comment will be posted as an anonymous visitor" name="spammer_bugnote_text"<?php } else { ?> name="bugnote_text"<?php } ?> id="bugnote_text" class="<?php echo $t_bugnote_class ?>" rows="7"></textarea>
 				</td>
 			</tr>
 

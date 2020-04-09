@@ -85,6 +85,10 @@ if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
 ?>
 <div class="col-md-12 col-xs-12">
 <div class="space-10"></div>
+
+<!-- Composr - hint about how to search -->
+<p><?php echo lang_get('cms_hint_message');?></p>
+
 <form id="bug_action" method="post" action="bug_actiongroup_page.php">
 <?php # CSRF protection not required here - form does not result in modifications ?>
 <div class="widget-box widget-color-blue2">

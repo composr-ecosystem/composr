@@ -52,6 +52,12 @@ require_api( 'string_api.php' );
 require_api( 'user_api.php' );
 require_api( 'utility_api.php' );
 
+// Composr - redirect to CMS profile page
+if (gpc_get_int('id', auth_get_current_user_id()) != $cms_guest_id) {
+	header('Location: '.sprintf($cms_sc_member_view_url, strval($_GET['id'])));
+	exit();
+}
+
 auth_ensure_user_authenticated();
 
 # extracts the user information for the currently logged in user

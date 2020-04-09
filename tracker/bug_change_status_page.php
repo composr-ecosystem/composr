@@ -116,7 +116,9 @@ if( config_get( 'bug_assigned_status' ) == $f_new_status ) {
 	}
 }
 
-$t_status_label = str_replace( ' ', '_', MantisEnum::getLabel( config_get( 'status_enum_string' ), $f_new_status ) );
+//$t_status_label = str_replace( ' ', '_', MantisEnum::getLabel( config_get( 'status_enum_string' ), $f_new_status ) );
+// Composr - allow statuses with hyphens
+$t_status_label = str_replace( array(' ', '-'), array('_', '_'), MantisEnum::getLabel( config_get( 'status_enum_string' ), $f_new_status ) );
 
 layout_page_header( bug_format_summary( $f_bug_id, SUMMARY_CAPTION ) );
 

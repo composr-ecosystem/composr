@@ -156,7 +156,10 @@ if( $f_master_bug_id > 0 ) {
 	if( !access_has_project_level( config_get( 'report_bug_threshold' ) ) ) {
 		# If can't report on current project, show project selector if there is any other allowed project
 		access_ensure_any_project_level( 'report_bug_threshold' );
-		print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
+
+		//print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
+		// Composr - actually it means they need to log in
+		print_header_redirect( 'login_page.php?ref=bug_report_page.php' );
 	}
 	access_ensure_project_level( config_get( 'report_bug_threshold' ) );
 
@@ -195,20 +198,21 @@ $f_copy_attachments_from_parent   = gpc_get_bool( 'copy_attachments_from_parent'
 $t_fields = config_get( 'bug_report_page_fields' );
 $t_fields = columns_filter_disabled( $t_fields );
 
+$simple = gpc_get_int( 'simple', 0 ); // Composr - allow simplified project reporting
+
 $t_show_category = in_array( 'category_id', $t_fields );
-$t_show_reproducibility = in_array( 'reproducibility', $t_fields );
-$t_show_eta = in_array( 'eta', $t_fields );
-$t_show_severity = in_array( 'severity', $t_fields );
-$t_show_priority = in_array( 'priority', $t_fields );
-$t_show_steps_to_reproduce = in_array( 'steps_to_reproduce', $t_fields );
-$t_show_handler = in_array( 'handler', $t_fields )
-	&& access_has_project_level( config_get( 'update_bug_assign_threshold' ) );
+$t_show_reproducibility = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'reproducibility', $t_fields );
+$t_show_eta = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'eta', $t_fields );
+$t_show_severity = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'severity', $t_fields );
+$t_show_priority = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'priority', $t_fields );
+$t_show_steps_to_reproduce = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'steps_to_reproduce', $t_fields );
+$t_show_handler = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'handler', $t_fields ) && access_has_project_level( config_get( 'update_bug_assign_threshold' ) );
 $t_show_monitors = in_array( 'monitors', $t_fields )
 	&& access_has_project_level( config_get( 'monitor_add_others_bug_threshold' ) );
 $t_show_profiles = config_get( 'enable_profiles' );
-$t_show_platform = $t_show_profiles && in_array( 'platform', $t_fields );
-$t_show_os = $t_show_profiles && in_array( 'os', $t_fields );
-$t_show_os_version = $t_show_profiles && in_array( 'os_version', $t_fields );
+$t_show_platform = ($simple == 0)/*Composr - allow simplified project reporting*/ && $t_show_profiles && in_array( 'platform', $t_fields );
+$t_show_os = ($simple == 0)/*Composr - allow simplified project reporting*/ && $t_show_profiles && in_array( 'os', $t_fields );
+$t_show_os_version = ($simple == 0)/*Composr - allow simplified project reporting*/ && $t_show_profiles && in_array( 'os_version', $t_fields );
 $t_show_resolution = in_array( 'resolution', $t_fields );
 $t_show_status = in_array( 'status', $t_fields );
 $t_show_tags =
@@ -217,14 +221,14 @@ $t_show_tags =
 		config_get( 'tag_attach_threshold', /* default */ null, /* user */ null, $t_project_id ),
 		$t_project_id );
 
-$t_show_versions = version_should_show_product_version( $t_project_id );
+$t_show_versions = ($simple == 0)/*Composr - allow simplified project reporting*/ && version_should_show_product_version( $t_project_id );
 $t_show_product_version = $t_show_versions && in_array( 'product_version', $t_fields );
 $t_show_product_build = $t_show_versions && in_array( 'product_build', $t_fields ) && config_get( 'enable_product_build' ) == ON;
 $t_show_target_version = $t_show_versions && in_array( 'target_version', $t_fields ) && access_has_project_level( config_get( 'roadmap_update_threshold' ) );
 $t_show_additional_info = in_array( 'additional_info', $t_fields );
-$t_show_due_date = in_array( 'due_date', $t_fields ) && access_has_project_level( config_get( 'due_date_update_threshold' ), helper_get_current_project(), auth_get_current_user_id() );
+$t_show_due_date = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'due_date', $t_fields ) && access_has_project_level( config_get( 'due_date_update_threshold' ), helper_get_current_project(), auth_get_current_user_id() );
 $t_show_attachments = in_array( 'attachments', $t_fields ) && file_allow_bug_upload();
-$t_show_view_state = in_array( 'view_state', $t_fields ) && access_has_project_level( config_get( 'set_view_status_threshold' ) );
+$t_show_view_state = ($simple == 0)/*Composr - allow simplified project reporting*/ && in_array( 'view_state', $t_fields ) && access_has_project_level( config_get( 'set_view_status_threshold' ) );
 
 # don't index bug report page
 html_robots_noindex();
@@ -232,6 +236,20 @@ html_robots_noindex();
 layout_page_header( lang_get( 'report_bug_link' ) );
 
 layout_page_begin( __FILE__ );
+
+// Composr - bug reporting guidance
+?>
+<p>
+	<?php echo sprintf(lang_get('cms_bug_report_guidance'), $cms_sc_report_guidance_url);?>
+</p>
+
+<?php if ( current_user_is_anonymous() ) { ?>
+	<p>
+		<?php echo lang_get( 'cms_not_logged_in_bad' ); ?>
+	</p>
+<?php
+}
+// (ends)
 
 $t_form_encoding = '';
 if( $t_show_attachments ) {
@@ -636,7 +654,7 @@ if( $t_show_attachments ) {
 
 	foreach( $t_related_custom_field_ids as $t_id ) {
 		$t_def = custom_field_get_definition( $t_id );
-		if( ( $t_def['display_report'] || $t_def['require_report']) && custom_field_has_write_access_to_project( $t_id, $t_project_id ) ) {
+		if( ( $t_def['display_report'] || $t_def['require_report']) && ($simple == 0)/*Composr - allow simplified project reporting*/ && custom_field_has_write_access_to_project( $t_id, $t_project_id ) ) {
 			$t_custom_fields_found = true;
 
 			if( $t_def['type'] != CUSTOM_FIELD_TYPE_RADIO && $t_def['type'] != CUSTOM_FIELD_TYPE_CHECKBOX ) {
@@ -706,7 +724,7 @@ if( $t_show_attachments ) {
 			&#160;&#160;&#160;&#160;
 			<label>
 				<input <?php echo helper_get_tab_index() ?> type="radio" class="ace" name="view_state" value="<?php echo VS_PRIVATE ?>" <?php check_checked( $f_view_state, VS_PRIVATE ) ?> />
-				<span class="lbl padding-6"><?php echo lang_get( 'private' ) ?></span>
+				<span class="lbl padding-6"><?php echo lang_get( 'private' ) ?> (contains confidential information<?php if (current_user_is_anonymous()) echo '; <strong>you will not be able to see your issue as you are not logged in</strong>'; ?>)<!-- Composr - made label clearer in context --></span>
 			</label>
 		</td>
 	</tr>

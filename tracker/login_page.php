@@ -130,6 +130,9 @@ if( $f_error || $f_cookie_error ) {
 		echo '<p>' . lang_get( 'login_cookies_disabled' ) . '</p>';
 	}
 
+	// Composr - Extra login instructions
+	echo '<p>' . sprintf(lang_get('cms_login_instruct'), $cms_sc_site_name) . '</p>';
+
 	echo '</div>';
 }
 
@@ -261,13 +264,16 @@ if( $t_show_anonymous_login || $t_show_signup ) {
 		echo '<a class="back-to-login-link pull-right" href="login_anon.php?return=' . string_url( $f_return ) . '">' . lang_get( 'login_anonymously' ) . '</a>';
 	}
 
-	if( $t_show_signup ) {
-		echo '<a class="back-to-login-link pull-left" href="signup_page.php">', lang_get( 'signup_link' ), '</a>';
-	}
+	//if( $t_show_signup ) {
+	//	echo '<a class="back-to-login-link pull-left" href="signup_page.php">', lang_get( 'signup_link' ), '</a>';
+	//}
+	// Composr - show return to main site link
+	echo sprintf(lang_get('cms_return_instruct'), $cms_sc_site_url, $cms_sc_site_name);
 
 	echo '<div class="clearfix"></div>';
 	echo '</div>';
 }
+
 ?>
 
 		</div>

@@ -64,7 +64,10 @@ $t_field_name_count = count( $t_field_name_arr );
 
 # check the checkboxes
 for( $i=0; $i <$t_field_name_count; $i++ ) {
-	$t_name = 'print_' . mb_strtolower( str_replace( ' ', '_', $t_field_name_arr[$i] ) );
+	//$t_name = 'print_' . mb_strtolower( str_replace( ' ', '_', $t_field_name_arr[$i] ) );
+	// Composr - allow statuses with hyphens
+	$t_name = 'print_' . mb_strtolower( str_replace( array(' ', '-'), array('_', '_'), $t_field_name_arr[$i] ) );
+
 	$t_flag = gpc_get( $t_name, null );
 
 	if( $t_flag === null ) {
