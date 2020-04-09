@@ -178,7 +178,7 @@ class Hook_fields_content_link_multi
         }
         $db = get_db_for($info['table']);
         $select = [];
-        append_content_select_for_fields($select, $info, ['id', 'title', 'add_field']);
+        append_content_select_for_fields($select, $info, ['id', 'title', 'add_time']);
         $rows = $db->query_select($info['table'], $select, [], ($info['add_time_field'] === null) ? '' : ('ORDER BY ' . $info['add_time_field'] . ' DESC'), 2000/*reasonable limit*/);
 
         $list = new Tempcode();

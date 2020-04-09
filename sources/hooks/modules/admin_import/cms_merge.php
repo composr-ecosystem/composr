@@ -80,7 +80,6 @@ class Hook_import_cms_merge
             'polls', // including rating, trackbacks, seo
             'redirects',
             'staff_links',
-            'staff_website_monitoring',
             'wiki', // including rating, trackbacks, seo
             'stats',
             'themes',
@@ -3800,27 +3799,6 @@ class Hook_import_cms_merge
         foreach ($child_rows as $row) {
             $row['i_parent'] = import_id_remap_get('menu_item', strval(-$row['i_parent']), true);
             $GLOBALS['SITE_DB']->query_update('menu_items', $row, ['id' => $row['id']], '', 1);
-        }
-    }
-
-    /**
-     * Imports site-watch-list.
-     *
-     * @param  object $db The database connector to import from
-     * @param  string $table_prefix The table prefix the target prefix is using
-     * @param  PATH $file_base The base directory we are importing from
-     */
-    public function import_staff_website_monitoring($db, $table_prefix, $file_base)
-    {
-        $rows = $db->query_select('staff_website_monitoring', ['*'], [], '', null, 0, true);
-        if ($rows === null) {
-            return;
-        }
-        $this->_fix_comcode_ownership($rows);
-        foreach ($rows as $row) {
-            unset($row['id']);
-
-            $GLOBALS['SITE_DB']->query_insert('staff_website_monitoring', $row);
         }
     }
 

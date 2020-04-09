@@ -742,9 +742,11 @@ function step_4()
 
     $table_prefix = get_default_table_prefix();
 
+    $db_type = post_param_string('db_type');
+
     require_code('database');
-    require_code('database/' . post_param_string('db_type'));
-    $GLOBALS['DB_STATIC_OBJECT'] = object_factory('Database_Static_' . post_param_string('db_type'), false, [$table_prefix]);
+    require_code('database/' . $db_type);
+    $GLOBALS['DB_STATIC_OBJECT'] = object_factory('Database_Static_' . $db_type, false, [$table_prefix]);
 
     // Probing
 
@@ -815,7 +817,7 @@ function step_4()
     $forum_base_url = $PROBED_FORUM_CONFIG['forum_base_url'];
     $member_cookie = $PROBED_FORUM_CONFIG['cookie_member_id'];
     $pass_cookie = $PROBED_FORUM_CONFIG['cookie_member_hash'];
-    $multi_lang_content = file_exists(get_file_base() . '/.git')/*randomise in dev mode*/ ? mt_rand(0, 1) : 0;
+    $multi_lang_content = ((file_exists(get_file_base() . '/.git')/*randomise in dev mode*/) && ($db_type != 'xml')) ? mt_rand(0, 1) : 0;
     $domain = preg_replace('#:.*#', '', get_request_hostname());
 
     $forum_driver_specifics = $GLOBALS['FORUM_DRIVER']->install_specifics();
@@ -1035,7 +1037,7 @@ function step_4()
         $hidden->attach(form_input_hidden('db_site_user', ''));
         $hidden->attach(form_input_hidden('db_site_password', ''));
     }
-    if (post_param_string('db_type') != 'xml') {
+    if ($db_type != 'xml') {
         $options->attach(make_option(do_lang_tempcode('TABLE_PREFIX'), example('TABLE_PREFIX_TEXT'), 'table_prefix', $table_prefix));
     } else {
         $hidden->attach(form_input_hidden('table_prefix', $table_prefix));
@@ -1116,7 +1118,7 @@ function step_4()
         'HIDDEN' => $hidden,
         'MESSAGE' => $message,
         'LANG' => $INSTALL_LANG,
-        'DB_TYPE' => post_param_string('db_type'),
+        'DB_TYPE' => $db_type,
         'FORUM_TYPE' => $forum_type,
         'BOARD_PATH' => $board_path,
         'SECTIONS' => $sections,

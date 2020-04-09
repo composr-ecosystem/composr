@@ -122,6 +122,10 @@ class Module_admin_awards extends Standard_crud_module
 
         $ret += parent::get_entry_points();
 
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
         if (has_privilege($member_id, 'mass_import')) {
             $ret += [
                 'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],

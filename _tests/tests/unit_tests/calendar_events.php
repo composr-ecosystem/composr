@@ -302,12 +302,13 @@ class calendar_events_test_set extends cms_test_case
         $end_monthly_spec_type = 'day_of_month';
         $end_hour = 0;
         $end_minute = 0;
-        $recurrence = '';
+        $recurrence = 'none';
         $recurrences = null;
         $period_start = mktime(0, 0, 0, 2, 10, 2010);
         $period_end = mktime(23, 59, 0, 2, 10, 2010);
         $_recurrences = find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences, $period_start, $period_end);
-        $this->assertTrue(count($_recurrences) == 1);
+        $cnt = count($_recurrences);
+        $this->assertTrue($cnt == 1, 'Got ' . integer_format($cnt) . ' recurrences');
         foreach ($_recurrences as $_recurrence) {
             list($window_start, $window_end, $start, $end, $start_untimezoned, $end_untimezoned) = $_recurrence;
             $this->assertTrue($window_start == $period_start);

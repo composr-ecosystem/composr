@@ -30,13 +30,13 @@ class _rate_limiting_test_set extends cms_test_case
 
         $url = build_url(['page' => ''], '');
         for ($i = 0; $i < 4; $i++) {
-            $result = cms_http_request($url->evaluate(), ['trigger_error' => false]);
+            $result = cms_http_request($url->evaluate(), ['trigger_error' => false, 'timeout' => 10.0]);
             if ($i < 3) {
                 $this->assertTrue($result->data !== null);
-                $this->assertTrue($result->message === '200');
+                $this->assertTrue($result->message === '200', 'Got ' . $result->message);
             } else {
                 $this->assertTrue($result->data === null);
-                $this->assertTrue($result->message === '429');
+                $this->assertTrue($result->message === '429', 'Got ' . $result->message);
             }
         }
 

@@ -111,6 +111,7 @@ function init__database__xml()
     require_code('xml');
 
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH); // XML DB is *slow*
+    disable_php_memory_limit();
 }
 
 /**
@@ -3384,6 +3385,7 @@ class Database_Static_xml extends DatabaseDriver
                 foreach ($records as $set_item) {
                     $distinct_compound_val = [];
                     foreach ($select as $i => $want) {
+                        $_as = null;
                         switch ($want[0]) { // NB: COUNT, SUM, etc, already have their values rolled out into $record and we do not need to consider it here
                             case '*':
                                 $distinct_compound_val += $this->_handle_multi_select($want, $set_item);
@@ -3392,17 +3394,17 @@ class Database_Static_xml extends DatabaseDriver
                             case 'AS':
                                 switch ($want[1][0]) {
                                     default:
-                                        $as = $want[2];
+                                        $_as = $want[2];
                                         $want = $want[1];
                                         break;
                                 }
                                 // no break
 
                             default:
-                                if ($as === null) {
-                                    $as = $this->_param_name_for(((isset($want[1])) && ($want[0] == 'FIELD')) ? $want[1] : ('arb' . strval($i)), $i);
+                                if ($_as === null) {
+                                    $_as = $this->_param_name_for(((isset($want[1])) && ($want[0] == 'FIELD')) ? $want[1] : ('arb' . strval($i)), $i);
                                 }
-                                $distinct_compound_val[preg_replace('#^.*\.#', '', $as)] = $this->_execute_expression($want, $set_item, $query, $db, $fail_ok, $records);
+                                $distinct_compound_val[preg_replace('#^.*\.#', '', $_as)] = $this->_execute_expression($want, $set_item, $query, $db, $fail_ok, $records);
                                 break;
                         }
                     }
@@ -3512,11 +3514,6 @@ class Database_Static_xml extends DatabaseDriver
                             case 'AVG':
                                 // Was already specially processed (at *MARKER*), compound function - just copy through
                                 $as = $want[2];
-if (!isset($record[$as])) { // TODO
-    @var_dump($record);
-    @var_dump($as);
-    exit();
-}
                                 $_record[preg_replace('#^.*\.#', '', $as)] = $record[$as];
                                 $want = $want[1];
                                 $cuts_to_single_row = true;

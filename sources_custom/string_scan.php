@@ -7161,7 +7161,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SITE_SCOPE
         SITE_SPECIAL_ACCESS
         SITE_SPECIAL_ACCESS_SU
-        SITE_WATCHLIST
         SIZE_CHANGE
         SKU
         SLOW_DOWN

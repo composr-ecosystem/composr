@@ -72,6 +72,10 @@ class Module_cms_calendar extends Standard_crud_module
             $ret += manage_custom_fields_entry_points('event');
         }
 
+        if ($member_id === null) {
+            $member_id = get_member();
+        }
+
         if (has_privilege($member_id, 'mass_import')) {
             $ret += [
                 'predefined_content' => ['PREDEFINED_CONTENT', 'admin/import'],

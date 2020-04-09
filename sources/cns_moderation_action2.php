@@ -274,6 +274,7 @@ function cns_make_warning($member_id, $explanation, $by = null, $time = null, $i
         'w_explanation' => $explanation,
         'w_by' => $by,
         'w_is_warning' => $is_warning,
+        'w_topic_id' => null,
         'p_silence_from_topic' => $silence_from_topic,
         'p_silence_from_forum' => $silence_from_forum,
         'p_probation' => $probation,

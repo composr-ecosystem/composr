@@ -52,6 +52,10 @@ class _actionlog_test_set extends cms_test_case
         foreach ($hook_obs as $hook => $ob) {
             $handlers = $ob->get_handlers();
             foreach ($handlers as $handler => $mappings) {
+                if (($handler == 'CHARGE_CUSTOMER') && (strpos(get_db_type(), 'mysql') === false)) {
+                    continue;
+                }
+
                 // Basic checks
                 foreach ($mappings['followup_page_links'] as $page_link) {
                     if ((is_string($page_link)) && (strpos($page_link, '{') === false)) {

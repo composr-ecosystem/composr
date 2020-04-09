@@ -228,6 +228,9 @@ class sitemap_test_set extends cms_test_case
                     'site:userguide_chatcode',
                     'site:userguide_comcode',
                     'site:popup_blockers',
+                    ':userguide_chatcode',
+                    ':userguide_comcode',
+                    ':popup_blockers',
                 ])) {
                     continue;
                 }

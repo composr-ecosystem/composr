@@ -53,12 +53,12 @@ class usergroup_subscriptions_test_set extends cms_test_case
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username('test');
 
         // Test usergroup subscription selection is there
-        $url = build_url(['page' => 'purchase', 'type' => 'browse', 'keep_su' => 'test']);
+        $url = build_url(['page' => 'purchase', 'type' => 'browse', 'keep_su' => 'test', 'keep_ecommerce_local_test' => 1]);
         $purchase_screen = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => [get_session_cookie() => $session_id]]);
         $this->assertTrue(strpos($purchase_screen, 'Usergroup subscription') !== false);
 
         // Test our usergroup subscription is there
-        $url = build_url(['page' => 'purchase', 'type' => 'browse', 'category' => 'usergroup', 'keep_su' => 'test']);
+        $url = build_url(['page' => 'purchase', 'type' => 'browse', 'category' => 'usergroup', 'keep_su' => 'test', 'keep_ecommerce_local_test' => 1]);
         $purchase_screen = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => [get_session_cookie() => $session_id]]);
         $this->assertTrue(strpos($purchase_screen, 'Subscription: test') !== false);
 

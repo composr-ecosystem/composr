@@ -394,7 +394,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $label, // username
             $password_hashed, // password
             $email_address, // email_address
-            $category, // primary_group
+            intval($category), // primary_group
             $groups, // secondary_groups
             $dob_day, // dob_day
             $dob_month, // dob_month
@@ -558,7 +558,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $label, // username
             $password_hashed, // password
             $email_address, // email_address
-            $category, // primary_group
+            intval($category), // primary_group
             $dob_day, // dob_day
             $dob_month, // dob_month
             $dob_year, // dob_year

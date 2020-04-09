@@ -34,6 +34,10 @@ class _commandr_fs_test_set extends cms_test_case
 
     public function testVar()
     {
+        if (($this->only !== null) && ($this->only != 'testVar')) {
+            return;
+        }
+
         $ob = new Commandr_fs();
 
         // Check top-level 'var' works
@@ -79,6 +83,10 @@ class _commandr_fs_test_set extends cms_test_case
 
     public function testVarPorting()
     {
+        if (($this->only !== null) && ($this->only != 'testVarPorting')) {
+            return;
+        }
+
         // Test exporting something
         $resource_id_in = strval(db_get_first_id());
         $port_out = remap_resource_id_as_portable('ticket_type', $resource_id_in);
@@ -110,6 +118,10 @@ class _commandr_fs_test_set extends cms_test_case
 
     public function testFullVarCoverage()
     {
+        if (($this->only !== null) && ($this->only != 'testFullVarCoverage')) {
+            return;
+        }
+
         $cma_hooks = find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware');
         $commandr_fs_hooks = find_all_hooks('systems', 'commandr_fs');
 
@@ -145,6 +157,10 @@ class _commandr_fs_test_set extends cms_test_case
     // This test will test the commandr_fs_extended_config hooks are working properly, as well as the config option read/write in general.
     public function testEtcDir()
     {
+        if (($this->only !== null) && ($this->only != 'testEtcDir')) {
+            return;
+        }
+
         $ob = new Commandr_fs();
         $files = $ob->listing(['etc']);
         foreach ($files[1] as $file) {

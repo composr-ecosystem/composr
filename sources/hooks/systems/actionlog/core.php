@@ -179,15 +179,6 @@ class Hook_actionlog_core extends Hook_actionlog
                     'DASHBOARD' => 'adminzone:',
                 ],
             ],
-            'SITE_WATCHLIST' => [
-                'flags' => ACTIONLOG_FLAGS_NONE,
-                'cma_hook' => null,
-                'identifier_index' => null,
-                'written_context_index' => null,
-                'followup_page_links' => [
-                    'DASHBOARD' => 'adminzone:',
-                ],
-            ],
             'NOTES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,

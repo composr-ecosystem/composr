@@ -396,7 +396,11 @@ function static_cache($mode)
                     if (($key == 'page') || ($key == 'type') || ($key == 'id') || (is_array($val)) || (substr($key, 0, 5) == 'keep_')) {
                         continue;
                     }
-                    $page_link .= ':' . $key . '=' . $val;
+                    $pl_append = ':' . $key . '=' . $val;
+                    if (strlen($page_link) + strlen($pl_append) > 255) {
+                        break; // Too long
+                    }
+                    $page_link .= $pl_append;
                 }
 
                 $GLOBALS['SITE_DB']->query_insert('stats', [

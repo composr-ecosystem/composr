@@ -138,21 +138,21 @@ class shopping_order_management_test_set extends cms_test_case
     public function testDeleteOrder()
     {
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
-        $_GET['id'] = $order_id;
+        $_GET['id'] = strval($order_id);
         $this->admin_shopping->delete_order();
     }
 
     public function testReturnOrder()
     {
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
-        $_GET['id'] = $order_id;
+        $_GET['id'] = strval($order_id);
         $this->admin_shopping->return_order();
     }
 
     public function testHoldOrder()
     {
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
-        $_GET['id'] = $order_id;
+        $_GET['id'] = strval($order_id);
         $this->admin_shopping->hold_order();
     }
 

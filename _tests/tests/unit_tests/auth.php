@@ -69,7 +69,8 @@ class auth_test_set extends cms_test_case
 
     public function testCategoryAccessDoesFail()
     {
-        $this->assertTrue(has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'calendar', '2'));
+        $second_calendar_category = $GLOBALS['SITE_DB']->query_select_value('calendar_types', 'id', [], ' AND id<>' . strval(db_get_first_id()));
+        $this->assertTrue(has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'calendar', strval($second_calendar_category)), 'Does not have access to category #' . strval($second_calendar_category));
         $this->assertTrue(!has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'calendar', '1')); // System-command category
     }
 

@@ -153,7 +153,6 @@ class Hook_addon_registry_core_adminzone_dashboard
             'themes/default/templates/BLOCK_MAIN_STAFF_ACTIONS.tpl',
             'sources/hooks/systems/commandr_fs_extended_config/checklist_tasks.php',
             'sources/hooks/systems/commandr_fs_extended_config/staff_links.php',
-            'sources/hooks/systems/commandr_fs_extended_config/staff_monitoring_sites.php',
             'themes/default/javascript/core_adminzone_dashboard.js',
             'sources/hooks/systems/config/dashboard_checklist.php',
             'sources/hooks/systems/config/dashboard_actions.php',
