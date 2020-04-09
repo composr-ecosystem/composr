@@ -58,6 +58,8 @@ class file_naming_test_set extends cms_test_case
                 'sources_custom/user_sync__customise.php.example',
                 'data_custom/images/causes/w3c-xhtml.gif',
                 'data_custom/images/causes/w3c-css.gif',
+                'data/plupload/Moxie.swf',
+                'data/plupload/Moxie.xap',
             ]);
             if (in_array($path, $exceptions)) {
                 continue;
