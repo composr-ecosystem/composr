@@ -491,6 +491,10 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             return;
         }
 
+        if (($comcode_segments !== null) && (get_option('enable_spell_check') !== '1')) {
+            return;
+        }
+
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
         $html_segments = [];

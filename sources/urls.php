@@ -1565,8 +1565,10 @@ function get_current_page_link($include_keep_components = true, $maxlength = nul
             continue;
         }
         $pl_append = ':' . $key . '=' . $val;
-        if (strlen($page_link) + strlen($pl_append) > 255) {
-            break; // Too long
+        if ($maxlength !== null) {
+            if (strlen($page_link) + strlen($pl_append) > $maxlength) {
+                break; // Too long
+            }
         }
         $page_link .= $pl_append;
     }

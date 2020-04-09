@@ -594,6 +594,7 @@ function has_caching_for($type, $name = null)
     $specific_avoid = ($cache_avoid_for !== null) && ($name !== null) && (preg_match('#' . str_replace('#', '\#', $cache_avoid_for) . '#', $name) != 0);
 
     $ret = ($setting || $positive) && $not_negative && !$specific_avoid;
+
     if ($cache_avoid_for === null || $name === null) {
         $cache[$type] = $ret;
     }
