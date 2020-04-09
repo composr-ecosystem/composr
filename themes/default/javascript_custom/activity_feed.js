@@ -345,7 +345,7 @@
 
         if (stat === 'success') {
             if (jQuery('success', data).text() === '1') {
-                statusId = '#activity_' + jQuery('status_id', data).text();
+                statusId = '#activity-' + jQuery('status_id', data).text();
                 jQuery('.activities-content', statusId, '#activities-feed').text(jQuery('feedback', data).text()).addClass('activities-content--remove-success').hide().fadeIn(animationSpeed, function () {
                     jQuery(statusId, '#activities-feed').fadeOut(animationSpeed, function () {
                         jQuery(statusId, '#activities-feed').remove();
@@ -354,7 +354,7 @@
             } else {
                 switch (jQuery('err', data).text()) {
                     case 'perms':
-                        statusId = '#activity_' + jQuery('status_id', data).text();
+                        statusId = '#activity-' + jQuery('status_id', data).text();
                         var backupUpText = jQuery('.activities-content', statusId, '#activities-feed').text();
                         jQuery('.activities-content', statusId, '#activities-feed').text(jQuery('feedback', data).text()).addClass('activities-content--remove-failure').hide().fadeIn(animationSpeed, function () {
                             jQuery('.activities-content', statusId, '#activities-feed').fadeOut(animationSpeed, function () {
