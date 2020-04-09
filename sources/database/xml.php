@@ -111,7 +111,9 @@ function init__database__xml()
     require_code('xml');
 
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH); // XML DB is *slow*
-    disable_php_memory_limit();
+    if (function_exists('disable_php_memory_limit')) {
+        disable_php_memory_limit();
+    }
 }
 
 /**
