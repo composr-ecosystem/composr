@@ -130,6 +130,7 @@ You need to:
         return [
             'requires' => [
                 'PHP curl extension',
+                'PHP openssl extension',
             ],
             'recommends' => [
                 'better_mail',

@@ -20,7 +20,7 @@ Once Netscape was truly 'buried', Internet Explorer essentially stagnated for ma
 As Microsoft woke up to their popular competition from Firefox, they sped up their development again: releasing Internet Explorer versions 7 through 11, then the new 'Edge' browser.
 
 [b]Google dominates:[/b]
-Parallel to Microsoft speeding up, Google Chrome (based on Safari's Webkit code) came along and ate up significant market share from both Firefox and Microsoft. Google Chrome now has a big lead because it is a high quality cross-platform browser, heavily promoted by Google. Google forked Webkit to create the Blink engine. Opera threw out their own engine and started using the Blink engine.
+Parallel to Microsoft speeding up, Google Chrome (based on Safari's Webkit code) came along and ate up significant market share from both Firefox and Microsoft. Google Chrome now has a big lead because it is a high quality cross-platform browser, heavily promoted by Google. Google forked Webkit to create the Blink engine. Opera threw out their own engine and started using the Blink engine. Microsoft eventually followed suit.
 
 [title="2"]Supported browsers[/title]
 
@@ -38,7 +38,7 @@ Composr is designed to work on all serious modern browsers:
 
 &dagger;&dagger; We officially support the last two releases of these browsers. In practice we are likely to accept bug reports for older browsers if they are still widely used by relevant demographics.
 
-&dagger;&dagger;&dagger; As Microsoft Browsers are particularly widely-used and inflexible we are more explicit about what we will support. Officially it is still the last two releases, but we will accept bug reports for IE10/IE11. The exact supported versions will change over time, as install bases change, and also according to Microsoft EOL policy, and this tutorial can be updated accordingly.
+&dagger;&dagger;&dagger; As Microsoft Browsers are particularly widely-used and inflexible we are more explicit about what we will support. Officially it is still the last two releases, but we will accept bug reports for IE11. The exact supported versions will change over time, as install bases change, and also according to Microsoft EOL policy, and this tutorial can be updated accordingly.
 
 We do not explicitly support the following browsers, but will generally accept bug reports for them:
  - Chromium (the Open Source version of Google Chrome)
@@ -62,7 +62,6 @@ There are a number of approaches that can help you with the above problems:
 [list]
 [*] Google Chrome has excellent device emulation, for quick/earlier testing for different mobile devices (not a substitute for proper testing).
 [*] Microsoft Edge lets you run in compatibility modes to test on earlier versions of their engines (imperfect, but useful).
-[*] [url="IETester"]http://www.my-debugbar.com/wiki/IETester/HomePage[/url] lets you test much older Internet Explorer versions (imperfect/unstable, but useful).
 [*] Virtual Machines let you test different Internet Explorer browsers without needing separate physical machines. [url="Microsoft supply free images to help"]https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/[/url]. They come at a hefty download size though, uses lots of disk space, and using VMs means lots of RAM usage.
 [*] You can use a commercial online testing system like [url="BrowserStack"]https://www.browserstack.com/[/url]. BrowserStack host virtual machines for you in the cloud so that you don't need to maintain your own VMs. You can also automatically take mass-screenshots across many devices, and also run automated JavaScript testing (for developers).
 [/list]

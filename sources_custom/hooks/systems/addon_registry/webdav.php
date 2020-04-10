@@ -111,6 +111,7 @@ class Hook_addon_registry_webdav
         return [
             'requires' => [
                 'commandr',
+                'PHP 7.1',
             ],
             'recommends' => [],
             'conflicts_with' => [],

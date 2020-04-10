@@ -743,6 +743,9 @@ function has_feature($dependency)
     if ((strtolower($dependency) == 'php curl extension') && (function_exists('curl_init'))) {
         return true;
     }
+    if ((strtolower($dependency) == 'php openssl extension') && (function_exists('openssl_encrypt'))) {
+        return true;
+    }
     if ((strtolower($dependency) == 'php sessions extension') && (function_exists('session_start'))) {
         return true;
     }
@@ -757,6 +760,10 @@ function has_feature($dependency)
         if (version_compare(substr($phpv, 0, strlen(substr($dependency, 3))), substr($dependency, 3), '>=')) {
             return true;
         }
+    }
+    if (preg_match('#^(ie|safari)[\d\.]+$#i', $dep) != 0) { // LEGACY
+        // Client side requirements
+        return true;
     }
     if ((strtolower($dependency) == 'ssl') && (substr(get_base_url(), 0, 8) == 'https://')) {
         return true;
