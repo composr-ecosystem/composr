@@ -120,7 +120,6 @@ function list_untouchable_third_party_files()
         'themes/default/css/widget_select2.css',
         'themes/default/css/widget_date.css',
         'themes/default/javascript/charts.js',
-        'themes/default/javascript_custom/base64.js',
         'themes/default/javascript_custom/columns.js',
         'themes/default/javascript_custom/confluence2.js',
         'themes/default/javascript_custom/confluence.js',

@@ -66,9 +66,7 @@ class Hook_addon_registry_activity_feed
      */
     public function get_copyright_attribution()
     {
-        return [
-            'base64.js is from http://www.webtoolkit.info'
-        ];
+        return [];
     }
 
     /**
@@ -163,7 +161,6 @@ The blocks provided are [tt]main_activities[/tt] and the status entry box is cal
             'sources_custom/blocks/main_activities.php',
             'sources_custom/activities_submission.php',
             'sources_custom/hooks/systems/activities/activities.php',
-            'themes/default/javascript_custom/base64.js',
             'themes/default/templates_custom/BLOCK_MAIN_ACTIVITIES_STATE.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_ACTIVITIES.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_ACTIVITIES_XML.tpl',

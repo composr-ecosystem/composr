@@ -278,7 +278,7 @@
                         thisLi.className = 'activities-box box';
                         thisLi.setAttribute('toFade', 'yes');
                         topOfList.parentNode.insertBefore(thisLi, topOfList);
-                        $dom.html(thisLi, window.Base64.decode(jQuery(this).text()));
+                        $dom.html(thisLi, window.atob(jQuery(this).text()));
                     });
 
                     var noMessages = document.getElementById('activity_-1');

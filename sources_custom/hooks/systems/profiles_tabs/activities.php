@@ -49,7 +49,6 @@ class Hook_profiles_tabs_activities
         require_css('activities');
         require_javascript('activity_feed');
         require_javascript('jquery');
-        require_javascript('base64');
 
         require_code('site');
         set_feed_url('?mode=activities&select=' . strval($member_id_of));

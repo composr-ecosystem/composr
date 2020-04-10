@@ -68,7 +68,6 @@ class _web_resources_test_set extends cms_test_case
             'jquery_ui.js',
             'modernizr.js',
             'plupload.js',
-            'base64.js',
             'confluence.js',
             'confluence2.js',
             'masonry.js',
@@ -88,7 +87,6 @@ class _web_resources_test_set extends cms_test_case
             'tag_cloud.js',
             'mediaelement-and-player.js',
             'sound.js',
-            'base64.js',
             'global.js', // Due to including polyfills (included files will be checked separately though)
             'JSON5.js',
             'POLYFILL_FETCH.js',
