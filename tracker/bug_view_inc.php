@@ -169,7 +169,7 @@ if( $t_flags['history_show'] ) {
 }
 
 // Composr
-print_small_button( 'https://gitlab.com/ocproducts/skills-for-murs/commits/master?search=MANTIS-' . strval($t_bug_id), 'Search commits' );
+print_small_button( 'https://gitlab.com/ocproducts/skills-for-murs/commits/master?search=MANTIS-' . strval($f_bug_id), 'Search commits' );
 
 echo '</div>';
 
@@ -607,15 +607,17 @@ if( isset( $t_issue['custom_fields'] ) ) {
 		echo '<tr>';
 		echo '<th class="bug-custom-field category">', string_display_line( lang_get_defaulted( $t_def['name'] ) ), '</th>';
 		echo '<td class="bug-custom-field" colspan="5">';
-		print_custom_field_value( $t_def, $t_custom_field['field']['id'], $f_issue_id );
 
-        // Composr - sponsorship improvements
-        if ($t_def['name']=='Time estimation (hours)') {
-            $hours = string_custom_field_value( $t_def, $t_id, $f_bug_id );
-        }
-        if ($t_def['name']=='Sponsorship open') {
-            $sponsorship_open = (string_custom_field_value( $t_def, $t_id, $f_bug_id ) == 'Open');
-        }
+		// Composr - sponsorship improvements
+		if ($t_def['name']=='Time estimation (hours)') {
+			$hours = string_custom_field_value( $t_def, $t_custom_field['field']['id'], $f_bug_id );
+			print_custom_field_value( $t_def, $t_custom_field['field']['id'], $f_issue_id );
+		} elseif ($t_def['name']=='Sponsorship open') {
+			$sponsorship_open = (string_custom_field_value( $t_def, $t_custom_field['field']['id'], $f_bug_id ) == 'Open');
+			echo $sponsorship_open ? 'Open' : 'Closed / not opened';
+		} else {
+			print_custom_field_value( $t_def, $t_custom_field['field']['id'], $f_issue_id );
+		}
 
 		echo '</td></tr>';
 	}
@@ -1071,7 +1073,13 @@ function bug_view_button_bug_change_status( BugData $p_bug ) {
 		$t_default = key( $t_enum_list );
 		ksort( $t_enum_list );
 
-		echo '<form method="post" action="bug_change_status_page.php" class="form-inline">';
+		//echo '<form method="post" action="bug_change_status_page.php" class="form-inline">';
+		// Composr - Show if non-main project is selected in red, to stop submitting to secondary projects
+		$current_projects = join( ';', helper_get_current_project_trace() );
+		$t_project_ids = current_user_get_accessible_projects();
+		$in_main_project = ($t_project_ids[0] == $current_projects);
+		echo '<form method="post" name="form_set_project" action="' . helper_mantis_url( 'bug_change_status_page.php' ) . '"' . ($in_main_project ? '' : ' style="font-weight: bold; color: red"' ) . ' class="form-inline">';
+
 		# CSRF protection not required here - form does not result in modifications
 
 		$t_button_text = lang_get( 'bug_status_to_button' );

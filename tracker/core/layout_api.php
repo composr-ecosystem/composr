@@ -222,7 +222,7 @@ function layout_admin_page_end() {
 	layout_body_javascript();
 
 	html_body_end();
-    html_end();
+	html_end();
 }
 
 
@@ -436,8 +436,15 @@ function layout_navbar() {
 		layout_navbar_button_bar();
 		# projects dropdown menu
 		layout_navbar_projects_menu();
-		# user buttons such as messages, notifications and user menu
-		layout_navbar_user_menu();
+
+		//# user buttons such as messages, notifications and user menu
+		//layout_navbar_user_menu();
+		// Composr - nothing to show if Guest
+		global $cms_guest_id;
+		if (current_user_get_field('id') != $cms_guest_id) {
+			# user buttons such as messages, notifications and user menu
+			layout_navbar_user_menu();
+		}
 	}
 	echo '</ul>';
 	echo '</div>';
@@ -490,7 +497,7 @@ function layout_navbar_user_menu( $p_show_avatar = true ) {
 
 	# My Account
 	if( !current_user_is_protected() ) {
-		layout_navbar_menu_item( helper_mantis_url( 'account_page.php' ), lang_get( 'account_link' ), 'fa-user' );
+		layout_navbar_menu_item( helper_mantis_url( /*'account_page.php'*/'account_prefs_page.php'/*Composr - no account page in tracker*/ ), lang_get( 'account_link' ), 'fa-user' );
 	}
 
 	# RSS Feed
@@ -500,8 +507,11 @@ function layout_navbar_user_menu( $p_show_avatar = true ) {
 
 	echo '<li class="divider"></li>';
 
+	/* Composr - disabled as this is done in CMS
 	# Logout
 	layout_navbar_menu_item( helper_mantis_url( auth_logout_page() ), lang_get( 'logout_link' ), 'fa-sign-out' );
+	*/
+
 	echo '</ul>';
 	echo '</li>';
 }
@@ -562,11 +572,13 @@ function layout_navbar_button_bar() {
 		echo '</a>';
 	}
 
+	/* Composr - disabled as this is done in CMS
 	if( $t_show_invite_user_button ) {
 		echo '<a class="btn btn-primary btn-sm" href="manage_user_create_page.php">';
 		echo '<i class="fa fa-user-plus"></i> ' . lang_get( 'invite_users' );
 		echo '</a>';
 	}
+	\*/
 
 	echo '</div>';
 	echo '</li>';
@@ -706,7 +718,8 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => 'main_page.php',
 				'title' => 'main_link',
-				'icon' => 'fa-bullhorn'
+				'icon' => 'fa-bullhorn',
+				'category' => 'analysis', /*Composr - provide some link structure*/
 			);
 		}
 
@@ -714,14 +727,16 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 		$t_sidebar_items[] = array(
 			'url' => 'my_view_page.php',
 			'title' => 'my_view_link',
-			'icon' => 'fa-dashboard'
+			'icon' => 'fa-dashboard',
+			'category' => 'issues', /*Composr - provide some link structure*/
 		);
 
 		# View Bugs
 		$t_sidebar_items[] = array(
 			'url' => 'view_all_bug_page.php',
 			'title' => 'view_bugs_link',
-			'icon' => 'fa-list-alt'
+			'icon' => 'fa-list-alt',
+			'category' => 'issues', /*Composr - provide some link structure*/
 		);
 
 		# Report Bugs
@@ -729,32 +744,38 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => string_get_bug_report_url(),
 				'title' => 'report_bug_link',
-				'icon' => 'fa-edit'
+				'icon' => 'fa-edit',
+				'category' => 'issues', /*Composr - provide some link structure*/
 			);
 		}
 
 		# Changelog Page
+		/* Composr - disabled for simplicity
 		$t_sidebar_items[] = array(
 			'url' => 'changelog_page.php',
 			'title' => 'changelog_link',
 			'icon' => 'fa-retweet',
 			'access_level' => config_get( 'view_changelog_threshold' )
 		);
+		*/
 
 		# Roadmap Page
+		/* Composr - disabled for simplicity
 		$t_sidebar_items[] = array(
 			'url' => 'roadmap_page.php',
 			'title' => 'roadmap_link',
 			'icon' => 'fa-road',
 			'access_level' => config_get( 'roadmap_view_threshold' )
 		);
+		*/
 
 		# Summary Page
 		$t_sidebar_items[] = array(
 			'url' => 'summary_page.php',
 			'title' => 'summary_link',
 			'icon' => 'fa-bar-chart-o',
-			'access_level' => config_get( 'view_summary_threshold' )
+			'access_level' => config_get( 'view_summary_threshold' ),
+			'category' => 'analysis', /*Composr - provide some link structure*/
 		);
 
 		# Project Documentation Page
@@ -762,7 +783,8 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => 'proj_doc_page.php',
 				'title' => 'docs_link',
-				'icon' => 'fa-book'
+				'icon' => 'fa-book',
+				'category' => 'misc', /*Composr - provide some link structure*/
 			);
 		}
 
@@ -771,7 +793,8 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => 'wiki.php?type=project&amp;id=' . $t_current_project,
 				'title' => 'wiki',
-				'icon' => 'fa-book'
+				'icon' => 'fa-book',
+				'category' => 'misc', /*Composr - provide some link structure*/
 			);
 		}
 
@@ -782,6 +805,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 				'url' => $t_link,
 				'title' => 'manage_link',
 				'icon' => 'fa-gears',
+				'category' => 'administration', /*Composr - provide some link structure*/
 			);
 		}
 
@@ -791,8 +815,27 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 				'url' => 'billing_page.php',
 				'title' => 'time_tracking_billing_link',
 				'icon' => 'fa-clock-o',
+				'category' => 'administration', /*Composr - provide some link structure*/
 			);
 		}
+
+		// Composr - GitHub link
+		global $cms_sc_sourcecode_url;
+		$t_sidebar_items[] = array(
+			'url' => $cms_sc_sourcecode_url,
+			'title' => 'cms_sourcecode_link',
+			'icon' => 'fa-git',
+			'category' => 'scm', /*Composr - provide some link structure*/
+		);
+
+		// Composr - Main website link
+		global $cms_sc_home_url;
+		$t_sidebar_items[] = array(
+			'url' => $cms_sc_home_url,
+			'title' => 'cms_home_link',
+			'icon' => 'fa-home',
+			'category' => 'misc', /*Composr - provide some link structure*/
+		);
 
 		# Plugin / Event added options
 		$t_event_menu_main = event_signal( 'EVENT_MENU_MAIN' );
@@ -821,6 +864,12 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 
 			# Output the sidebar items
 			layout_options_for_sidebar( $t_sidebar_items, $p_active_sidebar_page );
+
+			// Composr - provide some link structure
+			global $LINK_SECTIONS;
+			foreach ($LINK_SECTIONS as $link_section => $link_section_contents) {
+				echo  $link_section_contents;
+			}
 
 			# Ending sidebar markup
 			layout_sidebar_end();
@@ -895,7 +944,7 @@ function layout_options_for_sidebar( $p_menu_options, $p_active_sidebar_page ) {
 			}
 		}
 
-		layout_sidebar_menu( $t_menu_option['url'], $t_menu_option['title'], $t_icon, $p_active_sidebar_page );
+		layout_sidebar_menu( $t_menu_option['url'], $t_menu_option['title'], $t_icon, $p_active_sidebar_page, /*Composr - provide some link structure*/array_key_exists('category', $t_menu_option) ? $t_menu_option['category'] : 'misc' );
 	}
 }
 
@@ -919,9 +968,14 @@ function layout_sidebar_begin() {
  * @param string $p_title menu title in english
  * @param string $p_icon icon to use for this menu
  * @param string $p_active_sidebar_page page name to set as active
+ * @param string $p_section section to show under - Composr
  * @return void
  */
-function layout_sidebar_menu( $p_page, $p_title, $p_icon, $p_active_sidebar_page = null ) {
+function layout_sidebar_menu( $p_page, $p_title, $p_icon, $p_active_sidebar_page = null, $p_section = null/*Composr*/ ) {
+	// Composr - provide some link structure
+	global $LINK_SECTIONS;
+	ob_start();
+
 	if( $p_page == $p_active_sidebar_page ||
 		$p_page == basename( $_SERVER['SCRIPT_NAME'] ) ) {
 		echo '<li class="active">' . "\n";
@@ -942,6 +996,13 @@ function layout_sidebar_menu( $p_page, $p_title, $p_icon, $p_active_sidebar_page
 	echo '</a>' . "\n";
 	echo '<b class="arrow"></b>' . "\n";
 	echo '</li>' . "\n";
+
+	// Composr - provide some link structure
+	if (!isset($LINK_SECTIONS[$p_section])) {
+		$LINK_SECTIONS[$p_section] = '';
+	}
+	$LINK_SECTIONS[$p_section] .= ob_get_contents();
+	ob_end_clean();
 }
 
 

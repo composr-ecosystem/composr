@@ -184,7 +184,10 @@ class Hook_addon_registry_composr_homesite_support_credits
             'sources_custom/hooks/systems/actionlog/composr_homesite_support_credits.php',
             'sources_custom/hooks/systems/points/support_credits.php',
 
-            'config/config_inc.php',
+            'tracker/.editorconfig',
+            'tracker/config/config_inc.php',
+            'tracker/uploads/index.html',
+
             'tracker/account_delete.php',
             'tracker/account_manage_columns_page.php',
             'tracker/account_page.php',
@@ -1018,7 +1021,6 @@ class Hook_addon_registry_composr_homesite_support_credits
             'tracker/tag_update_page.php',
             'tracker/tag_update.php',
             'tracker/tag_view_page.php',
-            'tracker/uploads/index.html',
             'tracker/vendor/adodb/adodb-php/adodb-active-record.inc.php',
             'tracker/vendor/adodb/adodb-php/adodb-active-recordx.inc.php',
             'tracker/vendor/adodb/adodb-php/adodb-csvlib.inc.php',

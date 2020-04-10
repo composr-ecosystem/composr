@@ -470,6 +470,7 @@ define( 'CUSTOM_FIELD_TYPE_TEXTAREA', 10 );
 define( 'META_FILTER_MYSELF', -1 );
 define( 'META_FILTER_NONE', - 2 );
 define( 'META_FILTER_CURRENT', - 3 );
+define( 'META_FILTER_NOT_MYSELF', -4 ); // Composr - Ability to find stuff you're not monitoring yourself
 define( 'META_FILTER_ANY', 0 );
 
 # Filter view types

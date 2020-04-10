@@ -145,12 +145,14 @@ class BugData {
 	/**
 	 * Severity
 	 */
-	protected $severity = MINOR;
+	//protected $severity = MINOR;
+	protected $severity = FEATURE; // Composr - changed default, as primarily we're tracking features
 
 	/**
 	 * Reproducibility
 	 */
-	protected $reproducibility = 10;
+	//protected $reproducibility = 10;
+	protected $reproducibility = 100; // Composr - changed default, as primarily we're tracking features
 
 	/**
 	 * Status
@@ -602,7 +604,7 @@ class BugData {
 
 		$t_mentioned_user_ids = mention_get_users( $this->summary );
 		$t_all_mentioned_user_ids = array_merge( $t_all_mentioned_user_ids, $t_mentioned_user_ids );
-		
+
 		$t_mentioned_user_ids = mention_get_users( $this->description );
 		$t_all_mentioned_user_ids = array_merge( $t_all_mentioned_user_ids, $t_mentioned_user_ids );
 
@@ -808,7 +810,9 @@ class BugData {
 			# status changed
 			if( $t_old_data->status != $this->status ) {
 				$t_status = MantisEnum::getLabel( config_get( 'status_enum_string' ), $this->status );
-				$t_status = str_replace( ' ', '_', $t_status );
+				//$t_status = str_replace( ' ', '_', $t_status );
+				// Composr - allow statuses with hyphens
+				$t_status = str_replace( array(' ', '-'), array('_', '_'), $t_new_status );
 				email_bug_status_changed( $c_bug_id, $t_status );
 				return true;
 			}
@@ -1060,6 +1064,12 @@ function bug_ensure_exists( $p_bug_id ) {
  * @access public
  */
 function bug_is_user_reporter( $p_bug_id, $p_user_id ) {
+	// Composr - Guest user can't control stuff from other Guest user
+	global $cms_guest_id;
+	if ( $p_user_id == $cms_guest_id ) {
+		return false;
+	}
+
 	if( bug_get_field( $p_bug_id, 'reporter_id' ) == $p_user_id ) {
 		return true;
 	} else {
@@ -1075,6 +1085,12 @@ function bug_is_user_reporter( $p_bug_id, $p_user_id ) {
  * @access public
  */
 function bug_is_user_handler( $p_bug_id, $p_user_id ) {
+	// Composr - Guest user can't control stuff from other Guest user
+	global $cms_guest_id;
+	if ( $p_user_id == $cms_guest_id ) {
+		return false;
+	}
+
 	if( bug_get_field( $p_bug_id, 'handler_id' ) == $p_user_id ) {
 		return true;
 	} else {
