@@ -147,8 +147,11 @@ class Hook_addon_registry_meta_toolkit
             'adminzone/pages/minimodules_custom/admin_generate_adhoc_upgrade.php',
             'delete_alien_files.php',
             'line_count.php',
-            'sources_custom/third_party_code.php',
             'sources_custom/install_headless.php',
+
+            'sources_custom/third_party_code.php',
+            'data_custom/third_party_code.csv',
+            'data_custom/third_party_apis.csv', // Does not include anything integration via a library/SDK
         ];
     }
 }

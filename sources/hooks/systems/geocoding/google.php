@@ -32,9 +32,8 @@ class Hook_geocoding_google
     public function is_available($reverse = false)
     {
         // No key actually needed for Google, but we'll put a preference on other services
-        $key1 = get_option('bing_geocoding_api_key');
-        $key2 = get_option('mapquest_geocoding_api_key');
-        return ($key1 == '') && ($key2 == '');
+        $key = get_option('google_apis_api_key');
+        return ($key != '');
     }
 
     /**

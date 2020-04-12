@@ -743,6 +743,9 @@ function has_feature($dependency)
     if ((strtolower($dependency) == 'php curl extension') && (function_exists('curl_init'))) {
         return true;
     }
+    if ((strtolower($dependency) == 'php simplexml extension') && (function_exists('simplexml_load_string'))) {
+        return true;
+    }
     if ((strtolower($dependency) == 'php openssl extension') && (function_exists('openssl_encrypt'))) {
         return true;
     }

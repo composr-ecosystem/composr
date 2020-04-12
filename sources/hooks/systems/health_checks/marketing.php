@@ -97,6 +97,7 @@ class Hook_health_check_marketing extends Hook_Health_Check
         } elseif (addon_installed('stats')) {
             $this->stateCheckManual('Check stats to see how your site is performing');
         }
+        $this->stateCheckManual('See how your traffic compares to other websites using [url="Alexa"]https://www.alexa.com/[/url]');
     }
 
     /**

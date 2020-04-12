@@ -28,6 +28,7 @@ class addon_dependency_naming_test_set extends cms_test_case
             'SSL',
             'PHP gd extension',
             'PHP curl extension',
+            'PHP simplexml extension',
             'PHP openssl extension',
             'PHP sessions extension',
             'PHP xml extension',

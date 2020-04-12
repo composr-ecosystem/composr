@@ -197,7 +197,6 @@ function phase_1_pre()
         <li>Run the <a href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'plug_guid'], 'adminzone'))) . '" target="_blank">plug_guid</a> tool to build needed GUIDs into the PHP.</li>
     ';
     echo '
-        <li><a href="https://docs.google.com/spreadsheets/d/1Im6ICITZmzoBVMizD0CkM7N0kXH5Rb-NQJzD1hk49cU/edit#gid=0" title="Re-sync third-party code (this link will open in a new window)" target="_blank">Re-sync third-party code</a> as appropriate</li>
         <li>Upgrading prep:<ul>
             <li>Copy <kbd>data/files.dat</kbd> from the most recent past release to <kbd>data/files_previous.dat</kbd> in the new release (the hosted upgrade generator does this for upgrade TARs dynamically, but we want our main release to have the correct metadata also)</li>
             <li>Make sure any ocProducts themes are up-to-date (CSS changes, template changes, theme image changes).</li>

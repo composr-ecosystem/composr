@@ -95,6 +95,8 @@ class maintenance_codes_test_set extends cms_test_case
             }
         }
         closedir($dh);
+
+        // third_party_code test also tests some references
     }
 
     public function testTestReferences()
@@ -122,5 +124,7 @@ class maintenance_codes_test_set extends cms_test_case
             $test = $matches[1][$i];
             $this->assertTrue(is_file(get_file_base() . '/_tests/tests/unit_tests/' . $test . '.php'), 'Could not find referenced test, ' . $test);
         }
+
+        // third_party_code test also tests some references
     }
 }

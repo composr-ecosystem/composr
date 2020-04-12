@@ -139,21 +139,22 @@ class Hook_syndication_twitter
         require_code('twitter');
 
         list($message) = render_activity($row, false);
-        $link = page_link_to_url($row['a_page_link_1'], true);
+        $url = page_link_to_url($row['a_page_link_1'], true);
 
         // Shorten message for Twitter purposes
         $chopped_message = strip_html($message->evaluate());
         $max_length = 255;
-        $shortened_link = null;
-        if ($link != '') {
-            $shortened_link = http_get_contents('http://is.gd/api.php?longurl=' . urlencode($link), ['convert_to_internal_encoding' => true]);
-            $max_length -= strlen($shortened_link) + 1;
+        $shortened_url = null;
+        if ($url != '') {
+            require_code('urls2');
+            $shortened_url = shorten_url($url);
+            $max_length -= strlen($shortened_url) + 1;
         }
         if (cms_mb_strlen($chopped_message) > $max_length) {
             $chopped_message = substr($chopped_message, 0, $max_length - 3) . '...';
         }
-        if ($link != '') {
-            $chopped_message .= ' ' . $shortened_link;
+        if ($url != '') {
+            $chopped_message .= ' ' . $shortened_url;
         }
         require_code('character_sets');
         $chopped_message = convert_to_internal_encoding($chopped_message, get_charset(), 'utf-8');

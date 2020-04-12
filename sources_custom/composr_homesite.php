@@ -777,7 +777,7 @@ function find_server_load($server)
     return 1; // Not currently supported, needs customising per-server
 
     /*
-    //$stats = http_get_contents('http://' . $server . '/data_custom/stats.php?html=1', ['convert_to_internal_encoding' => true]);
+    //$stats = http_get_contents('https://' . $server . '/data_custom/stats.php?html=1', ['convert_to_internal_encoding' => true]);
     $stats = shell_exec('php /home/demonstratr/public_html/data_custom/stats.php 1');
     $matches = [];
     preg_match('#Memory%: (.*)<br />Swap%: (.*)<br />15-min-load: load average: (.*)<br />5-min-load: (.*)<br />1-min-load: (.*)<br />CPU-user%: (.*)<br />CPU-idle%: (.*)<br />Free-space: (.*)#', $stats, $matches);

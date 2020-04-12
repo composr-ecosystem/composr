@@ -108,13 +108,13 @@ geocoding_google,Google Geocoding (forward and reverse),ocProducts,ocProducts,Co
 geocoding_bing,Bing Geocoding (forward and reverse),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,geocoding automated test.
 geocoding_mapquest,MapQuest Geocoding (forward and reverse),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,geocoding automated test.
 ip_geocoding,IP address geocoding (internal list),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,Part of release process / geocoding automated test.
-ssl_trust_internal,SSL certificate trust chains (internal list),ocProducts,,Could potentially break due to third-party changes.,No,Part of release process.
+ssl_trust_internal,SSL certificate trust chains (internal list),ocProducts,,Could potentially break due to third-party changes.,No,Part of release process / _special_links automated test.
 taxcloud,TaxCloud integration for US sales tax,ocProducts,,Could potentially break due to third-party changes.,No,ecommerce_tax automated test.
 shippo,Shippo integration for shipping calculations,ocProducts,,Could potentially break due to third-party changes.,No,ecommerce_shipping automated test.
 eu_digital_tax,Download of EU digital tax rates,ocProducts,,Could potentially break due to third-party changes.,No,ecommerce_tax automated test.
 cloudflare_changes,Cloudflare optimisations (potentially-disruptive optimisations Cloudflare may try and make when proxying the site),,,Not regularly Tested.,No,
-cloudflare_ip_lists,Cloudflare true IP detection (a list of Cloudflare IPs to trust),ocProducts,,Not regularly Tested.,No,
-non_block_ip_list,Lists of IPs to not block,ocProducts,,Not regularly Tested.,No,Part of release process.
+cloudflare_ip_lists,Cloudflare true IP detection (a list of Cloudflare IPs to trust),ocProducts,,Not regularly Tested.,No,Part of release process / _special_links automated test.
+non_block_ip_list,Lists of IPs to not block,ocProducts,,Not regularly Tested.,No,Part of release process / _special_links automated test.
 php_unsupported,Detect if a PHP version is used that is no longer maintained by PHP developers.,ocProducts,,Not regularly Tested.,No,php_versioning automated test.
 external_health_check,Various tools that the Health Check will link out to when manual checks are enabled.,ocProducts,,Not regularly Tested.,No,Partly tested by _special_links automated test.
 google_safe_browsing_api,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,_health_check automated test to run Health Checks.
@@ -123,7 +123,6 @@ google_search_console,The Google Search Console API.,ocProducts,,Not regularly T
 moz,Moz API.,ocProducts,,Not regularly Tested.,No,
 google_analytics,Google Analytics integration.,ocProducts,,Not regularly Tested.,No,
 cors,Running across multiple domains and Cross-Origin Resource Sharing (CORS),ocProducts,,Not regularly Tested.,No,
-mixed_https,Having a combination of HTTPS and HTTP pages,ocProducts,,Not regularly Tested.,No,
 inline_editing,Inline Editing,ocProducts,,"Not regularly Tested, and themes are not typically expected to support it out-of-the-box.",No,
 download_pdf_indexing,Download PDF search indexing,ocProducts,,Not regularly Tested.,No,
 oembed,Default oEmbed configuration,ocProducts,,Not regularly Tested.,No,_oembed automated test.
@@ -139,3 +138,11 @@ os_macos,Mac OS servers,ocProducts,ocProducts,,No,
 os_solaris,Solaris servers,,,Will largely work due to Linux and Mac OS X support,No,
 os_bsd,BSD servers,,,Will largely work due to Linux and Mac OS X support,No,
 pop3,POP3 e-mail accounts,,,We allow configuration of using POP3 instead of IMAP for various inbox checking features but do not actively test it works (it relies on PHP's IMAP addon supporting POP3 well),No,
+openweathermap,OpenWeatherMap,ocProducts,,,Yes,weather automated test.
+composr_mobile_sdk_notifications,,,,Yes,
+alexa,Alexa Traffic Stats,ocProducts,ocProducts,,No,seo_tracking automated test
+url_shortener,is.gd URL shortener,ocProducts,ocProducts,,No,url_shortener automated test
+sugarcrm,Sugar CRM integration,ocProducts,,,Yes,
+cloudinary,Cloudinary integration,,,,Yes,
+aws_ses,AWS SES notifications,,,,Yes,
+confluence,Confluence integration,,,,Yes,

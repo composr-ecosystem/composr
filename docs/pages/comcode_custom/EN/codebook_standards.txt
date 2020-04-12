@@ -2236,11 +2236,13 @@ Provide addon screenshots
 | Product development only
 | Manually
 | If you include some third party code you must update:
- - [tt]licence.txt[/tt] (this file is shown when users install)
+ - [tt]text/EN/licence.txt[/tt] (this file is shown when users install)
  - [tt]sources_custom/third_party_code.php[/tt] (general list of files)
  - [tt]phpdoc.dist.xml[/tt] (if appropriate, PHPDoc generation)
- - [tt]maintenance_sheet.csv[/tt] (if appropriate, non-maintained systems)
- - https://docs.google.com/spreadsheets/d/1Im6ICITZmzoBVMizD0CkM7N0kXH5Rb-NQJzD1hk49cU/edit#gid=0 (notes about merging in external bug fixing)
+ - [tt]data/maintenance_sheet.csv[/tt] (if appropriate, non-maintained systems)
+ - [tt]data_custom/third_party_code.csv[/tt] (spreadsheet of code)
+ - [tt].eslintignore[/tt] (files for ESLint to ignore)
+ - [tt].phpcs[/tt] (files for PHP_CodeSniffer to ignore)
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Update maintenance sheet[/color]

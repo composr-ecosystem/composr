@@ -76,7 +76,7 @@ function syndicate_spammer_report($ip_addr, $username, $email, $reason, $trigger
     if ($can_do_stopforumspam) {
         require_code('files');
         require_code('character_sets');
-        $url = 'http://www.stopforumspam.com/add.php?api_key=' . urlencode($stopforumspam_key) . '&ip_addr=' . urlencode($ip_addr);
+        $url = 'https://www.stopforumspam.com/add.php?api_key=' . urlencode($stopforumspam_key) . '&ip_addr=' . urlencode($ip_addr);
         if ($username != '') {
             $url .= '&username=' . urlencode(convert_to_internal_encoding($username, get_charset(), 'utf-8'));
         }

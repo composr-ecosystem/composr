@@ -31,7 +31,6 @@
 	<exclude-pattern>sources_custom/geshi.php</exclude-pattern>
 	<exclude-pattern>sources_custom/getid3</exclude-pattern>
 	<exclude-pattern>sources_custom/hooks/modules/chat_bots/trickstr.php</exclude-pattern>
-	<exclude-pattern>sources_custom/photobucket</exclude-pattern>
 	<exclude-pattern>sources_custom/programe</exclude-pattern>
 	<exclude-pattern>sources_custom/sabredav</exclude-pattern>
 	<exclude-pattern>sources_custom/spout</exclude-pattern>

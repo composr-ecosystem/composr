@@ -1,0 +1,34 @@
+API,Maintenance codename,URL,Intention,Bundled?,Last sync/review date,Version,Unit test?,Health check?,Notes
+Alexa Traffic Rank,alexa,https://www.alexa.com/,Maintain,Yes,Apr 10th 2020,N/A,seo_tracking,N/A,"We use screen-scraping, not API, as we do not want to make users set up API keys for our minimum usage"
+Authorize.net,gateway_authorize,https://developer.authorize.net/,No action,Yes,N/A,Unknown,N/A,TODO?,Deprecated API. No sponsor so no action.
+Bing Geocoding,geocoding_bing,https://docs.microsoft.com/en-us/bingmaps/rest-services/locations/,Maintain,Yes,Apr 10th 2020,1,geocoding,TODO?,
+Bing Translator,bing_translator,https://azure.microsoft.com/en-us/services/cognitive-services/translator-text-api/,Maintain,Yes,Apr 10th 2020,3,translation,TODO?,
+CCBill,gateway_ccbill,https://ccbill.com/cs/MG.php,Maintain,Yes,Apr 10th 2020,N/A,N/A,TODO?,
+Clickatell,sms,https://www.clickatell.com/products/sms-api/,No action,Yes,N/A,N/A,N/A,TODO?,"The XML API is deprecated, we should switch to the REST API. No sponsor so no action."
+Confluence,confluence,https://developer.atlassian.com/server/confluence/confluence-server-rest-api/,Maintain,No,Apr 11th 2020,N/A,N/A,TODO?,
+currencyconverterapi.com,currency,https://free.currencyconverterapi.com/,Maintain,Yes,Apr 10th 2020,7,currency,TODO?,
+GCM,composr_mobile_sdk_notifications,https://firebase.google.com/docs/cloud-messaging/,No action,No,N/A,N/A,N/A,TODO?,"Broken, needs migrating to Firebase Cloud Messaging. No sponsor so no action."
+Google Analytics Embed,google_analytics,https://developers.google.com/analytics/,Maintain,Yes,Apr 10th 2020,1,N/A,N/A,
+Google Geocoding,geocoding_google,https://developers.google.com/maps/documentation/geocoding/intro,Maintain,Yes,Apr 10th 2020,N/A,geocoding,TODO?,
+Google Maps Embed,google_maps,https://developers.google.com/maps/documentation/embed/guide,Maintain,No,N/A,1,N/A,N/A,
+Google ReCAPTCHA,google_recaptcha,https://developers.google.com/recaptcha/intro,Maintain,Yes,Apr 10th 2020,2,N/A,N/A,"The v3 API has issues, and is a paradigm-shift (https://stackoverflow.com/questions/51171349/how-does-googles-recaptcha-v3-work); we will stay off it for now at least"
+Google Safe Browsing,google_safe_browsing_api,https://developers.google.com/safe-browsing/,Maintain,Yes,Apr 10th 2020,4,TODO?,Malware,
+Google Search Console,google_search_console,https://developers.google.com/webmaster-tools/search-console-api-original,Maintain,Yes,Apr 10th 2020,3,TODO?,TODO?,
+Google Translate,google_translate,https://cloud.google.com/translate/docs/,Maintain,No,Apr 10th 2020,2,translation,TODO?,
+IP Stack,ipstack,https://ipstack.com/documentation,Maintain,Yes,Apr 10th 2020,N/A,ipstack,TODO?,
+is.gd,url_shortener,https://is.gd/,Maintain,Yes,Apr 10th 2020,N/A,url_shortener,N/A,
+MapQuest,geocoding_mapquest,https://developer.mapquest.com/documentation/geocoding-api/,Maintain,Yes,Apr 10th 2020,1,geocoding,TODO?,
+Moz Links,moz,https://moz.com/help/links-api,Maintain,Yes,TODO,TODO,TODO?,TODO?,
+OpenWeatherMap,openweathermap,https://openweathermap.org/api/hourly-forecast,Maintain,No,Apr 10th 2020,2.5,weather,TODO?,
+PayPal,gateway_paypal,https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/,Maintain,Yes,Apr 10th 2020,N/A,N/A,N/A,
+Postmark spamcheck,newsletter_spam_check,https://spamcheck.postmarkapp.com/doc/,Maintain,Yes,Apr 10th 2020,N/A,newsletters,N/A,
+SecPay Gateway Freedom,gateway_secpay,https://www.pay360.com/sites/default/files/2018-05/gateway_freedom_v_3-0.pdf,No action,Yes,N/A,N/A,N/A,TODO?,Deprecated API. No sponsor so no action.
+Shippo,shippo,https://goshippo.com/api-overview/,Maintain,Yes,TODO,TODO,ecommerce_shipping,TODO?,
+StopForumSpam,stop_forum_spam,https://www.stopforumspam.com/usage,Maintain,Yes,Apr 10th 2020,1.6,antispam,TODO?,
+TaxCloud,taxcloud,https://dev.taxcloud.com/,Maintain,Yes,Apr 10th 2020,1,ecommerce_tax,TODO?,
+Tornevall,tornevall,https://www.tornevall.net/,Maintain,Yes,Apr 10th 2020,3,antispam,TODO?,
+Transifex,transifex,https://docs.transifex.com/api/introduction,Maintain,No,Apr 10th 2020,2,TODO?,TODO?,
+Vimeo thumbnail detection,vimeo,,Maintain,Yes,Apr 11th 2020,N/A,media,N/A,
+WorldPay,gateway_worldpay,https://developer.worldpay.com/docs,No action,Yes,N/A,N/A,N/A,TODO?,Deprecated API. No sponsor so no action.
+YouTube Data,youtube,https://developers.google.com/youtube/,Maintain,No,Apr 10th 2020,3,TODO?,TODO?,
+YouTube thumbnail detection,youtube,,Maintain,Yes,Apr 11th 2020,N/A,media,N/A,

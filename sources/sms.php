@@ -125,7 +125,7 @@ END;
         require_code('character_sets');
         $xml = convert_to_internal_encoding($xml, get_charset(), 'utf-8');
 
-        $result = http_get_contents('http://api.clickatell.com/xml/xml', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => ['data' => $xml]]);
+        $result = http_get_contents('https://api.clickatell.com/xml/xml', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => ['data' => $xml]]);
         if (strpos($result, 'fault') !== false) {
             attach_message($result, 'warn', false, true);
             continue;

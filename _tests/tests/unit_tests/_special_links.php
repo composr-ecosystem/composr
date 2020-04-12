@@ -48,7 +48,7 @@ class _special_links_test_set extends cms_test_case
             return;
         }
 
-        $this->assertTrue(strpos(http_get_contents('http://whatismyipaddress.com/ip/12.34.56.78', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]), 'AT&T Services') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+        $this->assertTrue(strpos(http_get_contents('https://whatismyipaddress.com/ip/12.34.56.78', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]), 'AT&T Services') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
         $this->assertTrue(strpos(http_get_contents('https://ping.eu/ping/?host=12.34.56.78', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]), 'Ping') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
         $this->assertTrue(strpos(http_get_contents('https://ping.eu/traceroute/?host=12.34.56.78', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]), 'Traceroute') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
     }
@@ -59,7 +59,7 @@ class _special_links_test_set extends cms_test_case
             return;
         }
 
-        $this->assertTrue(stripos(http_get_contents('http://whois.domaintools.com/compo.sr', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]), 'whois') !== false, 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
+        $this->assertTrue(stripos(http_get_contents('https://whois.domaintools.com/compo.sr', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]), 'whois') !== false, 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
     }
 
     public function testHealthCheckLinks()
@@ -111,6 +111,14 @@ class _special_links_test_set extends cms_test_case
         $urls = [
             'http://www.google.com/search?as_lq=' . urlencode('http://example.com/'),
             'https://duckduckgo.com/?q=tile+background&iax=images&ia=images',
+            'https://curl.haxx.se/ca/cacert.pem',
+            'http://www.iplists.com/google.txt',
+            'http://www.iplists.com/misc.txt',
+            'http://www.iplists.com/non_engines.txt',
+            'https://www.cloudflare.com/ips-v4',
+            'https://www.cloudflare.com/ips-v6',
+            'https://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz',
+            'https://euvat.ga/rates.json',
         ];
         foreach ($urls as $url) {
             require_code('urls2');
