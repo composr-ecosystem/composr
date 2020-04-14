@@ -29,7 +29,7 @@ class maintenance_codes_test_set extends cms_test_case
 
             if ($line != 1) {
                 $this->assertTrue(preg_match('#^\w+$#', $row[0]) != 0, 'Invalid codename ' . $row[0]);
-                $this->assertTrue(preg_match('#^(Yes|No)$#', $row[5]) != 0, 'Invalid "Non-bundled addon" column, ' . $row[5]);
+                $this->assertTrue(preg_match('#^(Yes|No)$#', $row[5]) != 0, 'Invalid "Non-bundled addon" column, ' . $row[5] . ' for ' . $row[0]);
             }
 
             $line++;
@@ -97,6 +97,30 @@ class maintenance_codes_test_set extends cms_test_case
         closedir($dh);
 
         // third_party_code test also tests some references
+    }
+
+    public function testHealthCheckReferences()
+    {
+        if (addon_installed('health_check')) {
+            require_code('health_check');
+            $sections = [];
+            foreach (find_health_check_categories_and_sections(true) as $_sections) {
+                $sections = array_merge($sections, $_sections);
+            }
+
+            require_code('files_spreadsheets_read');
+            $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
+            while (($row = $sheet_reader->read_row()) !== false) {
+                $matches = [];
+                if (preg_match('#(\w+) Health Check([^s]|$)#', $row['Testing automation'], $matches) != 0) {
+                    $health_check = $matches[1];
+                    if (($health_check != 'N/A') && (strpos($health_check, 'TODO') === false)) {
+                        $this->assertTrue(array_key_exists($health_check, $sections), 'Missing Health Check: ' . $health_check . ' for ' . $row['Codename']);
+                    }
+                }
+            }
+            $sheet_reader->close();
+        }
     }
 
     public function testTestReferences()

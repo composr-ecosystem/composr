@@ -23,14 +23,16 @@ class _api_ecommerce_tax_test_set extends cms_test_case
         parent::setUp();
 
         require_code('ecommerce');
-        require_code('config2');
 
         set_option('ecommerce_test_mode', '1');
-        $this->load_key_options('taxcloud');
     }
 
     public function testEUTax()
     {
+        if (($this->only !== null) && ($this->only != 'testEUTax')) {
+            return;
+        }
+
         set_option('currency', 'GBP');
 
         set_option('business_street_address', '1234 Scope');
@@ -58,14 +60,22 @@ class _api_ecommerce_tax_test_set extends cms_test_case
 
     public function testUSTaxTICList()
     {
+        if (($this->only !== null) && ($this->only != 'testUSTaxTICList')) {
+            return;
+        }
+
         $_data = http_get_contents('https://prev.taxcloud.net/tic/?format=json', ['convert_to_internal_encoding' => true, 'timeout' => 20.0]);
         $data = json_decode($_data, true);
         $this->assertTrue(isset($data['tic_list'][0]));
     }
 
-    /* Test key for TaxCloud expired
+    /* Disabled as you need to register on TaxCloud with a real business ID
     public function testUSTax()
     {
+        if (($this->only !== null) && ($this->only != 'testUSTax')) {
+            return;
+        }
+
         set_option('currency', 'USD');
 
         set_option('business_street_address', '1444 S. Alameda Street');
@@ -75,7 +85,9 @@ class _api_ecommerce_tax_test_set extends cms_test_case
         set_option('business_post_code', '90021');
         set_option('business_country', 'US');
 
-        // This test will break if tax rates change, so correct it if that happens...
+        $this->load_key_options('taxcloud');
+
+        $post = $_POST;
 
         $_POST['shipping_address1'] = '1444 S. Alameda Street';
         $_POST['shipping_city'] = 'Los Angeles';
@@ -84,7 +96,7 @@ class _api_ecommerce_tax_test_set extends cms_test_case
         $_POST['shipping_postalcode'] = '90021';
         $_POST['shipping_country'] = 'US';
         list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due(null, 'TIC:00000', 100.00);
-        $this->assertTrue($tax == 9.50, 'Expected 9.50 but got ' . float_format($tax));
+        $this->assertTrue($tax > 0.0, 'Expected non-zero but got ' . float_format($tax));
 
         $_POST['shipping_address1'] = '1234 Scope';
         $_POST['shipping_city'] = 'Hope';
@@ -93,12 +105,29 @@ class _api_ecommerce_tax_test_set extends cms_test_case
         $_POST['shipping_postalcode'] = 'HO1 234';
         $_POST['shipping_country'] = 'GB';
         list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due(null, 'TIC:00000', 100.00);
-        $this->assertTrue($tax == 0.0);
+        $this->assertTrue($tax == 0.0, 'Expected 0.00 but got ' . float_format($tax));
+
+        $_POST = $post;
     }
     */
 
+    public function testTaxCloudPing()
+    {
+        if (($this->only !== null) && ($this->only != 'testTaxCloudPing')) {
+            return;
+        }
+
+        $this->load_key_options('taxcloud');
+
+        $this->run_health_check('API connections', 'TaxCloud');
+    }
+
     public function testFlatTax()
     {
+        if (($this->only !== null) && ($this->only != 'testFlatTax')) {
+            return;
+        }
+
         set_option('tax_country_regexp', '');
         $_POST['shipping_country'] = 'US';
         list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due(null, float_to_raw_string(18.0), 100.00);

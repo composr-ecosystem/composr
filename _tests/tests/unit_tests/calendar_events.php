@@ -169,7 +169,6 @@ class calendar_events_test_set extends cms_test_case
         }
 
         foreach (['0', '1'] as $ssw) {
-            require_code('config2');
             set_option('ssw', $ssw);
 
             $year = 2000;

@@ -48,7 +48,7 @@ standard_nojs,Support users without JavaScript,,,"Web browsers are starting to m
 standard_nocookies,Support users without cookies,ocProducts,,"If a user has disabled even session cookies, they may not be able to log in. This is extremely rare. If a user has disabled other cookies some individual settings may not be remembered.",No,
 eu_cookies,Provide EU cookie warning,ocProducts,,"Not regularly tested, depends on Silktide.",No,
 ip_tools,Links to external IP address tools,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,Partly tested by _special_links automated test.
-ipstack,Looking up metadata for IP addresses,ocProducts,,Could potentially break due to third-party changes.,No,Tested by ipstack automated test.
+ipstack,Looking up metadata for IP addresses,ocProducts,,Could potentially break due to third-party changes.,No,Tested by _api_ipstack automated test.
 project_honeypot,Project Honeypot integration,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
 rbl,Remote Block List integration,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
 gateway_paypal,PayPal eCommerce driver,ocProducts,,Could potentially break due to third-party changes.,No,Partly tested by usergroup_subscriptions automated test.
@@ -107,7 +107,7 @@ newsletter_spam_check,Postmark spam-check integration,ocProducts,,Could potentia
 geocoding_google,Google Geocoding (forward and reverse),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,_api_geocoding automated test.
 geocoding_bing,Bing Geocoding (forward and reverse),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,_api_geocoding automated test.
 geocoding_mapquest,MapQuest Geocoding (forward and reverse),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,_api_geocoding automated test.
-ip_geocoding,IP address geocoding (internal list),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,Part of release process / geocoding automated test.
+ip_geocoding,IP address geocoding (internal list),ocProducts,ocProducts,Could potentially break due to third-party changes.,No,Part of release process / _api_geocoding automated test.
 ssl_trust_internal,SSL certificate trust chains (internal list),ocProducts,,Could potentially break due to third-party changes.,No,Part of release process / _special_links automated test.
 taxcloud,TaxCloud integration for US sales tax,ocProducts,,Could potentially break due to third-party changes.,No,_api_ecommerce_tax automated test.
 shippo,Shippo integration for shipping calculations,ocProducts,,Could potentially break due to third-party changes.,No,ecommerce_shipping automated test.
@@ -139,10 +139,10 @@ os_solaris,Solaris servers,,,Will largely work due to Linux and Mac OS X support
 os_bsd,BSD servers,,,Will largely work due to Linux and Mac OS X support,No,
 pop3,POP3 e-mail accounts,,,We allow configuration of using POP3 instead of IMAP for various inbox checking features but do not actively test it works (it relies on PHP's IMAP addon supporting POP3 well),No,
 openweathermap,OpenWeatherMap,ocProducts,,,Yes,_api_weather automated test.
-composr_mobile_sdk_notifications,,,,Yes,
+composr_mobile_sdk_notifications,Composr Mobile SDK Android and iOS notifications handling,,,,Yes,
 alexa,Alexa Traffic Stats,ocProducts,ocProducts,,No,seo_tracking automated test
 url_shortener,is.gd URL shortener,ocProducts,ocProducts,,No,url_shortener automated test
-sugarcrm,Sugar CRM integration,ocProducts,,,Yes,
-cloudinary,Cloudinary integration,,,,Yes,_api_ automated test
+sugarcrm,Sugar CRM integration,,,,Yes,SugarCRM Health Check
+cloudinary,Cloudinary integration,,,,Yes,_api_cloudinary automated test
 aws_ses,AWS SES notifications,,,,Yes,
 confluence,Confluence integration,,,,Yes,

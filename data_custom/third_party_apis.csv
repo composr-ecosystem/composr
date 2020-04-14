@@ -5,7 +5,7 @@ Bing Geocoding,geocoding_bing,https://docs.microsoft.com/en-us/bingmaps/rest-ser
 Bing Translator,bing_translator,https://azure.microsoft.com/en-us/services/cognitive-services/translator-text-api/,Maintain,Yes,Apr 10th 2020,3,_api_translation,Translation,
 CCBill,gateway_ccbill,https://ccbill.com/cs/MG.php,Maintain,Yes,Apr 10th 2020,N/A,N/A,N/A,
 Clickatell,sms,https://www.clickatell.com/products/sms-api/,No action,Yes,N/A,N/A,N/A,N/A,"The XML API is deprecated, we should switch to the REST API. No sponsor so no action."
-Confluence,confluence,https://developer.atlassian.com/server/confluence/confluence-server-rest-api/,Maintain,No,Apr 11th 2020,N/A,TODO?,TODO?,
+Confluence,confluence,https://developer.atlassian.com/server/confluence/confluence-server-rest-api/,Maintain,No,Apr 11th 2020,N/A,_api_confluence,Confluence,
 currencyconverterapi.com,currency,https://free.currencyconverterapi.com/,Maintain,Yes,Apr 10th 2020,7,_api_currency,Currency conversions,
 GCM,composr_mobile_sdk_notifications,https://firebase.google.com/docs/cloud-messaging/,No action,No,N/A,N/A,N/A,N/A,"Broken, needs migrating to Firebase Cloud Messaging. No sponsor so no action."
 Google Analytics Embed,google_analytics,https://developers.google.com/analytics/,Maintain,Yes,Apr 10th 2020,1,N/A,N/A,
@@ -23,9 +23,9 @@ OpenWeatherMap,openweathermap,https://openweathermap.org/api/hourly-forecast,Mai
 PayPal,gateway_paypal,https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/,Maintain,Yes,Apr 10th 2020,N/A,N/A,N/A,
 Postmark spamcheck,newsletter_spam_check,https://spamcheck.postmarkapp.com/doc/,Maintain,Yes,Apr 10th 2020,N/A,newsletters,N/A,
 SecPay Gateway Freedom,gateway_secpay,https://www.pay360.com/sites/default/files/2018-05/gateway_freedom_v_3-0.pdf,No action,Yes,N/A,N/A,N/A,N/A,Deprecated API. No sponsor so no action.
-Shippo,shippo,https://goshippo.com/api-overview/,Maintain,Yes,TODO,TODO,ecommerce_shipping,TODO?,
+Shippo,shippo,https://goshippo.com/api-overview/,Maintain,Yes,TODO,TODO,ecommerce_shipping,Shippo
 StopForumSpam,stop_forum_spam,https://www.stopforumspam.com/usage,Maintain,Yes,Apr 10th 2020,1.6,antispam,N/A,
-TaxCloud,taxcloud,https://dev.taxcloud.com/,Maintain,Yes,Apr 10th 2020,1,_api_ecommerce_tax,TODO?,
+TaxCloud,taxcloud,https://dev.taxcloud.com/,Maintain,Yes,Apr 10th 2020,1,_api_ecommerce_tax,TaxCloud,Unit test is limited as you need to have a registered business ID to even test against TaxCloud.
 Tornevall,tornevall,https://www.tornevall.net/,Maintain,Yes,Apr 10th 2020,3,antispam,N/A,
 Transifex,transifex,https://docs.transifex.com/api/introduction,Maintain,No,Apr 10th 2020,2,_api_transifex,N/A,
 Vimeo thumbnail detection,vimeo,,Maintain,Yes,Apr 11th 2020,N/A,media,N/A,

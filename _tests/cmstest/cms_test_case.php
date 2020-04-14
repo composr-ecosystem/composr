@@ -24,11 +24,12 @@ class cms_test_case extends WebTestCase
 
     public function setUp()
     {
+        require_code('config2');
+
         static $done_once = false;
         if (!$done_once) {
             // Make sure the site is open
             $this->site_closed = get_option('site_closed');
-            require_code('config2');
             set_option('site_closed', '0', 0);
             $done_once = true;
             register_shutdown_function([$this, 'reopen_site']);
