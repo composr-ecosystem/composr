@@ -121,8 +121,9 @@ class third_party_code_test_set extends cms_test_case
                 $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365, 'Need to reconsider integration of ' . $row['Project'] . 'SDK');
             }
 
-            $ok = (strpos($row['Last sync/review date'], 'TODO') === false) && (strpos($row['Unit test?'], 'TODO') === false) && (strpos($row['Health check?'], 'TODO') === false);
-            $this->assertTrue($ok, 'TODO for ' . $row['Project']);
+            $this->assertTrue(strpos($row['Last sync/review date'], 'TODO') === false, 'Review-TODO for ' . $row['Project']);
+            $this->assertTrue(strpos($row['Unit test?'], 'TODO') === false, 'Unit-test-TODO for ' . $row['Project']);
+            $this->assertTrue(strpos($row['Health check?'], 'TODO') === false, 'Health-check-TODO for ' . $row['Project']);
         }
 
         foreach ($this->third_party_apis as $row) {
@@ -131,8 +132,9 @@ class third_party_code_test_set extends cms_test_case
                 $this->assertTrue($last_date > time() - 60 * 60 * 24 * 365, 'Need to reconsider integration of ' . $row['API'] . ' API');
             }
 
-            $ok = (strpos($row['Last sync/review date'], 'TODO') === false) && (strpos($row['Unit test?'], 'TODO') === false) && (strpos($row['Health check?'], 'TODO') === false);
-            $this->assertTrue($ok, 'TODO for ' . $row['API']);
+            $this->assertTrue(strpos($row['Last sync/review date'], 'TODO') === false, 'Review-TODO for ' . $row['API']);
+            $this->assertTrue(strpos($row['Unit test?'], 'TODO') === false, 'Unit-test-TODO for ' . $row['API']);
+            $this->assertTrue(strpos($row['Health check?'], 'TODO') === false, 'Health-check-TODO for ' . $row['API']);
         }
     }
 

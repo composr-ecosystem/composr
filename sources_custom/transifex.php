@@ -173,7 +173,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
     push_query_limiting(false);
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
-    $project_slug = 'composr-cms-' . str_replace('.', '-', strval(cms_version()));
+    $project_slug = get_composr_transifex_project();
 
     // Create project if it does not already exist
     $args = [
@@ -532,9 +532,17 @@ function transifex_pull_script()
     }
 }
 
+function get_composr_transifex_project($version = null)
+{
+    if ($version === null) {
+        $version = strval(cms_version());
+    }
+    return 'composr-cms-' . str_replace('.', '-', $version);
+}
+
 function pull_from_transifex($version, $tar_file, $lang, $core_only)
 {
-    $project_slug = 'composr-cms-' . str_replace('.', '-', $version);
+    $project_slug = get_composr_transifex_project($version);
 
     push_query_limiting(false);
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
@@ -908,11 +916,15 @@ function _transifex($call, $http_verb, $params = [], $trigger_error = true, $tex
         $raw_content_type = 'multipart/form-data';
         $raw_post = false;
     } else {
-        $params = convert_to_internal_encoding($params, get_charset(), 'utf-8');
+        if ($params === null) {
+            $raw_post = false;
+        } else {
+            $params = convert_to_internal_encoding($params, get_charset(), 'utf-8');
+            $params = [$params];
+            $raw_post = true;
+        }
 
         $raw_content_type = 'application/json';
-        $raw_post = true;
-        $params = [$params];
     }
 
     $url = 'https://www.transifex.com/api/2' . $call;

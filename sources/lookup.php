@@ -317,6 +317,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     $location_data = [];
     $got_geo_lookup = false;
     if (get_option('ipstack_api_key') != '') {
+        // NB: https requires a paid plan
         $ip_stack_url = 'http://api.ipstack.com/' . rawurlencode($ip) . '?access_key=' . urlencode(get_option('ipstack_api_key'));
         $_json = http_get_contents($ip_stack_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
         $json = @json_decode($_json, true);

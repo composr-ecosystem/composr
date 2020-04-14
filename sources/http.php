@@ -1173,7 +1173,7 @@ class HttpDownloaderCurl extends HttpDownloader
         if ($this->message == '206') {
             $this->message = '200'; // We don't care about partial-content return code, as Composr implementation gets ranges differently and we check '200' as a return result
         }
-        if (($this->download_mime_type !== null) && (strpos($this->download_mime_type, ';') !== false)) {
+        if (($this->download_mime_type !== null) && (strpos($this->download_mime_type, ';') !== false) && (strpos($this->download_mime_type, 'charset=') !== false)) {
             $this->charset = substr($this->download_mime_type, 8 + strpos($this->download_mime_type, 'charset='));
             $this->download_mime_type = substr($this->download_mime_type, 0, strpos($this->download_mime_type, ';'));
         }
