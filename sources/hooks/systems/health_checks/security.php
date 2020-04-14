@@ -41,7 +41,9 @@ class Hook_health_check_security extends Hook_Health_Check
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
         $this->process_checks_section('testExternalSecurityScan', 'External security scan', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testMalware', 'Malware', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        if (($show_unusable_categories) || ((get_option('hc_google_safe_browsing_api_enabled') == '1') && (get_option('google_apis_api_key') != ''))) {
+            $this->process_checks_section('testMalware', 'Malware', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        }
         $this->process_checks_section('testDirectorySecuring', 'Directory securing', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSiteOrphaned', 'Site orphaning', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testAdminScriptAccess', 'Admin Script Access', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -104,19 +106,7 @@ class Hook_health_check_security extends Hook_Health_Check
             return;
         }
 
-        if ($use_test_data_for_pass === null) {
-            $key = get_option('google_apis_api_key');
-            if (get_option('hc_google_safe_browsing_api_enabled') == '0') {
-                $this->stateCheckSkipped(do_lang('API_NOT_CONFIGURED', 'Google Safe Browsing'));
-                return;
-            }
-        } else {
-            $key = 'AIzaSyBJyvgYzg-moqMRBZwhiivNxhYvafqMWas';
-        }
-        if ($key == '') {
-            $this->stateCheckSkipped(do_lang('API_NOT_CONFIGURED', 'Google Safe Browsing'));
-            return;
-        }
+        $key = get_option('google_apis_api_key');
 
         if ($use_test_data_for_pass === null) {
             if (is_local_machine(get_base_url_hostname())) {

@@ -5575,7 +5575,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GO
         GOOD_PATH
         GOOGLE_ANALYTICS
-        GEOCODE_API_NOT_CONFIGURED
         GEOCODE_COULD_NOT_CONNECT
         GEOCODE_COULD_NOT_PARSE
         GEOCODE_INCOMPLETE

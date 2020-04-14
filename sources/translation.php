@@ -57,6 +57,14 @@ function has_translation($from = null, $to = null, &$translation_object = null, 
         }
     }
 
+    if ($errormsg == '') {
+        if (($from === null) && ($to === null)) {
+            $error_msg = do_lang('API_NOT_CONFIGURED');
+        } else {
+            has_translation(null, null, $translation_object, $errormsg); // $error_msg will be returned by reference
+        }
+    }
+
     return false;
 }
 

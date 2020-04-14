@@ -29,7 +29,7 @@ function sugarcrm_initialise_connection()
     global $SUGARCRM;
 
     if (!sugarcrm_configured()) {
-        return;
+        return false;
     }
 
     require_code('sugar_crm_lib');
@@ -48,10 +48,14 @@ function sugarcrm_initialise_connection()
     try {
         if (!$SUGARCRM->connect()) {
             sugarcrm_failed('Could not connect to SugarCRM');
+            return false;
         }
     } catch (Exception $e) {
         sugarcrm_failed($e->getMessage());
+        return false;
     }
+
+    return true;
 }
 
 function sugarcrm_configured()

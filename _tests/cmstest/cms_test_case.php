@@ -208,7 +208,7 @@ class cms_test_case extends WebTestCase
         return $ret;
     }
 
-    protected function run_health_check($category_label, $section_label)
+    protected function run_health_check($category_label, $section_label, $check_context = 1/*CHECK_CONTEXT__TEST_SITE*/, $use_test_data_for_pass = null)
     {
         if ($this->debug) {
             $GLOBALS['UNIT_TEST_WITH_DEBUG'] = true;
@@ -220,7 +220,7 @@ class cms_test_case extends WebTestCase
         require_code('health_check');
         $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
         foreach ($hook_obs as $ob) {
-            list($category_label, $sections) = $ob->run($sections_to_run, CHECK_CONTEXT__TEST_SITE);
+            list($category_label, $sections) = $ob->run($sections_to_run, $check_context, false, false, $use_test_data_for_pass);
 
             $_sections = [];
             foreach ($sections as $section_label => $results) {

@@ -177,10 +177,6 @@ class Hook_geocoding_google
         }
 
         $key = get_option('google_apis_api_key');
-        if ($key == '') {
-            $error_msg = do_lang_tempcode('GEOCODE_API_NOT_CONFIGURED');
-            return null;
-        }
 
         $url = 'https://maps.googleapis.com/maps/api/geocode/json';
         $url .= '?language=' . urlencode(strtolower(get_site_default_lang()));
