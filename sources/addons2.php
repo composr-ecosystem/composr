@@ -764,7 +764,7 @@ function has_feature($dependency)
             return true;
         }
     }
-    if (preg_match('#^(ie|safari)[\d\.]+$#i', $dep) != 0) { // LEGACY
+    if (preg_match('#^(ie|safari)[\d\.]+$#i', $dependency) != 0) { // LEGACY
         // Client side requirements
         return true;
     }
