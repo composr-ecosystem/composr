@@ -16,17 +16,17 @@
 /**
  * Composr test case class (unit testing).
  */
-class ecommerce_tax_test_set extends cms_test_case
+class _api_ecommerce_tax_test_set extends cms_test_case
 {
     public function setUp()
     {
+        parent::setUp();
+
         require_code('ecommerce');
         require_code('config2');
 
         set_option('ecommerce_test_mode', '1');
-
-        set_option('taxcloud_api_key', '78C9B361-6015-480D-9956-D75F9A8C06EA');
-        set_option('taxcloud_api_id', '447BBD0');
+        $this->load_key_options('taxcloud');
     }
 
     public function testEUTax()

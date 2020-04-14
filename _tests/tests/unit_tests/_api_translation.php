@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class translation_test_set extends cms_test_case
+class _api_translation_test_set extends cms_test_case
 {
     public function setUp()
     {
@@ -24,12 +24,10 @@ class translation_test_set extends cms_test_case
 
         require_code('translation');
 
-        // Please don't use these on a live site, we just need these to test against
-        set_option('azure_api_key', '70f9d62f90c6435189ca20ca17d06c54');
-        set_option('google_apis_api_key', 'AIzaSyD-jqeO_HlD1bLmA68JhAJOBajZw96-UHE');
-
         set_option('bing_translator_enabled', '1');
         set_option('google_translate_enabled', '1');
+        $this->load_key_options('azure');
+        $this->load_key_options('google');
     }
 
     public function testTranslation()

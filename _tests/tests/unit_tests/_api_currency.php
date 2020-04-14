@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class currency_test_set extends cms_test_case
+class _api_currency_test_set extends cms_test_case
 {
     public function setUp()
     {
@@ -24,7 +24,7 @@ class currency_test_set extends cms_test_case
 
         require_code('currency');
 
-        set_option('currency_api_key', '2785638fbe9e508caa02');
+        $this->load_key_options('currency');
     }
 
     public function testCountryToCurrency()

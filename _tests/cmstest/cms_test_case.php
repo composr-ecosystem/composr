@@ -63,7 +63,7 @@ class cms_test_case extends WebTestCase
         cms_ini_set('ocproducts.type_strictness', '0');
     }
 
-    public function should_filter_cqc_line($line)
+    protected function should_filter_cqc_line($line)
     {
         return (
             (trim($line) == '') ||
@@ -78,7 +78,7 @@ class cms_test_case extends WebTestCase
         );
     }
 
-    public function extend_cqc_call($url)
+    protected function extend_cqc_call($url)
     {
         $url .= '&api=1&todo=1';
         if (strpos(shell_exec('npx eslint -v'), 'v') !== false) {
@@ -130,7 +130,7 @@ class cms_test_case extends WebTestCase
     }
 
     // Establishes an admin session for the current web user, NOT for the server to call itself as an admin
-    public function establish_admin_session()
+    protected function establish_admin_session()
     {
         static $done_once = false;
         if ($done_once) {
@@ -148,7 +148,7 @@ class cms_test_case extends WebTestCase
     }
 
     // Establishes an admin session on the server's likely callback IP
-    public function establish_admin_callback_session()
+    protected function establish_admin_callback_session()
     {
         require_code('users_active_actions');
         require_code('users_inactive_occasionals');
@@ -156,5 +156,31 @@ class cms_test_case extends WebTestCase
         $ip_address = get_server_external_looparound_ip();
 
         return create_session(get_first_admin_user(), 1, false, false, $ip_address);
+    }
+
+    protected function load_key_options($substring)
+    {
+        $path = get_file_base() . '/_tests/assets/keys.csv';
+        if (!is_file($path)) {
+            $this->assertTrue(false, 'Cannot proceed, we need _tests/assets/keys.csv, which is not supplied in git for security reasons');
+            exit();
+        }
+
+        require_code('files_spreadsheets_read');
+
+        $sheet_reader = spreadsheet_open_read($path);
+        while (($row = $sheet_reader->read_row()) !== false) {
+            if (!isset($row['Option'])) {
+                exit('Option column missing');
+            }
+            if (!isset($row['Value'])) {
+                exit('Value column missing');
+            }
+
+            if (strpos($row['Option'], $substring) !== false) {
+                set_option($row['Option'], $row['Value']);
+            }
+        }
+        $sheet_reader->close();
     }
 }

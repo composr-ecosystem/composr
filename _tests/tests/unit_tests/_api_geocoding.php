@@ -16,17 +16,16 @@
 /**
  * Composr test case class (unit testing).
  */
-class geocoding_test_set extends cms_test_case
+class _api_geocoding_test_set extends cms_test_case
 {
     public function setUp()
     {
         parent::setUp();
 
-        // Please don't use these on a live site, we just need these to test against
-        set_option('mapquest_geocoding_api_key', 'O6xkX0ZeucJRLDDCzyqahkCzAJpVmmfB');
-        set_option('bing_geocoding_api_key', 'AvmgsVWtIoJeCnZXdDnu3dQ7izV9oOowHCNDwbN4R1RPA9OXjfsQX1Cr9HSrsY4j');
         set_option('google_geocoding_api_enabled', '1');
-        set_option('google_apis_api_key', 'AIzaSyD-jqeO_HlD1bLmA68JhAJOBajZw96-UHE');
+        $this->load_key_options('mapquest');
+        $this->load_key_options('bing');
+        $this->load_key_options('google');
     }
 
     public function testIPGeocode()

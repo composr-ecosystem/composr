@@ -16,16 +16,13 @@
 /**
  * Composr test case class (unit testing).
  */
-class cloudinary_test_set extends cms_test_case
+class _api_cloudinary_test_set extends cms_test_case
 {
     public function setUp()
     {
         parent::setUp();
 
-        // Do not use these details yourself
-        set_option('cloudinary_cloud_name', 'ocportal');
-        set_option('cloudinary_api_key', '838118582411864');
-        set_option('cloudinary_api_secret', '3r6jPysJqtpAajSQqcgrk0DDiOo');
+        $this->load_key_options('cloudinary');
         set_option('cloudinary_test_mode', '0');
         set_option('cloudinary_transfer_directories', '_tests/assets/images');
     }

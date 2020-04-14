@@ -16,13 +16,13 @@
 /**
  * Composr test case class (unit testing).
  */
-class weather_test_set extends cms_test_case
+class _api_weather_test_set extends cms_test_case
 {
     public function testWeatherAPI()
     {
-        set_option('openweathermap_api_key', 'def011d7920f3a719b6e6154ec42271d'); // Do not use this on a live site!
-
         require_code('weather');
+
+        $this->load_key_options('openweathermap');
 
         $errormsg = '';
         $result = weather_lookup(null, 24.466667, 39.6, 'metric', null, $errormsg, 'openweathermap');
