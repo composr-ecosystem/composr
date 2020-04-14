@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    confluence
+ * @package    weather
  */
 
 /**
  * Hook class.
  */
-class Hook_health_check_confluence extends Hook_Health_Check
+class Hook_health_check_weather extends Hook_Health_Check
 {
     protected $category_label = 'API connections';
 
@@ -34,14 +34,13 @@ class Hook_health_check_confluence extends Hook_Health_Check
      */
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
-        if (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('confluence'))) {
-            $confluence_subdomain = get_option('confluence_subdomain');
-            $confluence_space = get_option('confluence_space');
-            if (($confluence_subdomain == '') || ($confluence_space == '')) {
+        if (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('weather'))) {
+            $openweathermap_api_key = get_option('openweathermap_api_key');
+            if ($openweathermap_api_key == '') {
                 return [$this->category_label, $this->results];
             }
 
-            $this->process_checks_section('testConfluenceConnection', 'Confluence', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            $this->process_checks_section('testWeatherConnection', 'Weather', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         }
 
         return [$this->category_label, $this->results];
@@ -57,7 +56,7 @@ class Hook_health_check_confluence extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testConfluenceConnection($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testWeatherConnection($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -66,10 +65,16 @@ class Hook_health_check_confluence extends Hook_Health_Check
             return;
         }
 
-        require_code('confluence');
+        require_code('weather');
 
-        global $CONFLUENCE_SPACE;
-        $space = confluence_query('space?spaceKey=' . $CONFLUENCE_SPACE, false);
-        $this->assertTrue($space !== null, 'Configured Confluence connection is working');
+        $errormsg = '';
+        $result = weather_lookup(null, 24.466667, 39.6, 'metric', null, $errormsg, 'openweathermap');
+        $this->assertTrue(($result !== null) && ($result[0]['city_name'] == 'Medina'), 'Failed to lookup weather current conditions by GPS; ' . $errormsg);
+        $this->assertTrue(($result !== null) && (array_key_exists(0, $result[1])) && ($result[1][0]['city_name'] == 'Medina'), 'Failed to lookup weather forecast by GPS; ' . $errormsg);
+
+        $errormsg = '';
+        $result = weather_lookup('Medina', null, null, 'metric', null, $errormsg, 'openweathermap');
+        $this->assertTrue(($result !== null) && (preg_match('#Medina|Munawwarah#', $result[0]['city_name']) != 0), 'Failed to lookup weather current conditions by location string; ' . $errormsg);
+        $this->assertTrue(($result !== null) && (array_key_exists(0, $result[1])) && (preg_match('#Medina|Munawwarah#', $result[1][0]['city_name']) != 0), 'Failed to lookup weather forecast by location string; ' . $errormsg);
     }
 }

@@ -35,7 +35,7 @@ function init__locations_geocoding()
  * @set google bing mapquest
  * @return ?object Service to use (null: no service, which should be impossible as there's always something)
  */
-function choose_geocoding_service(&$service)
+function choose_geocoding_service(&$service = null)
 {
     $hook_obs = find_all_hook_obs('systems', 'geocoding', 'Hook_geocoding_');
     foreach ($hook_obs as $hook => $hook_ob) {

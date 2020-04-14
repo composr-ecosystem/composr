@@ -29,6 +29,11 @@ class _api_transifex_test_set extends cms_test_case
 
     public function testPull()
     {
+        if (!addon_installed('transifex')) {
+            $this->assertTrue(false, 'The transifex addon must be installed for this test to run');
+            return;
+        }
+
         require_code('tar');
         $temp_nam = cms_tempnam();
         $tar_file = tar_open($temp_nam, 'wb');

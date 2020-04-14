@@ -143,6 +143,7 @@ class Hook_addon_registry_cloudinary
             'sources_custom/hooks/systems/config/cloudinary_test_mode.php',
             'lang_custom/EN/cloundinary.ini',
             'sources_custom/hooks/systems/cdn_transfer/cloudinary.php',
+            'sources_custom/hooks/systems/health_checks/cloudinary.php',
 
             'sources_custom/Cloudinary/src/.htaccess',
             'sources_custom/Cloudinary/src/index.html',

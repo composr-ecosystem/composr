@@ -209,11 +209,16 @@ class cms_test_case extends WebTestCase
 
     protected function run_health_check($category_label, $section_label)
     {
+        if ($this->debug) {
+            $GLOBALS['UNIT_TEST_WITH_DEBUG'] = true;
+        }
+
+        $sections_to_run = [];
+        $sections_to_run[] = $category_label . ' \\ ' . $section_label;
+
         require_code('health_check');
         $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
         foreach ($hook_obs as $ob) {
-            $sections_to_run = [];
-            $sections_to_run[] = $category_label . ' \\ ' . $section_label;
             list($category_label, $sections) = $ob->run($sections_to_run, CHECK_CONTEXT__TEST_SITE);
 
             $_sections = [];

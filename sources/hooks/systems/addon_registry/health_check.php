@@ -169,6 +169,7 @@ class Hook_addon_registry_health_check
             'sources/hooks/systems/health_checks/stability.php',
             'sources/hooks/systems/health_checks/upkeep.php',
             'sources/hooks/systems/health_checks/upkeep_backups.php',
+            'sources/hooks/systems/health_checks/apis.php',
             'themes/default/images/icons/menu/adminzone/tools/health_check.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/tools/health_check.svg',
             'sources/health_check.php',

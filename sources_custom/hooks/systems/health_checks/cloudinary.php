@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    confluence
+ * @package    cloudinary
  */
 
 /**
  * Hook class.
  */
-class Hook_health_check_confluence extends Hook_Health_Check
+class Hook_health_check_cloudinary extends Hook_Health_Check
 {
     protected $category_label = 'API connections';
 
@@ -34,14 +34,13 @@ class Hook_health_check_confluence extends Hook_Health_Check
      */
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
-        if (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('confluence'))) {
-            $confluence_subdomain = get_option('confluence_subdomain');
-            $confluence_space = get_option('confluence_space');
-            if (($confluence_subdomain == '') || ($confluence_space == '')) {
+        if (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('weather'))) {
+            $openweathermap_api_key = get_option('openweathermap_api_key');
+            if ($openweathermap_api_key == '') {
                 return [$this->category_label, $this->results];
             }
 
-            $this->process_checks_section('testConfluenceConnection', 'Confluence', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            $this->process_checks_section('testCloudinaryConnection', 'Cloudinary', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         }
 
         return [$this->category_label, $this->results];
@@ -57,7 +56,7 @@ class Hook_health_check_confluence extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testConfluenceConnection($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testCloudinaryConnection($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -66,10 +65,32 @@ class Hook_health_check_confluence extends Hook_Health_Check
             return;
         }
 
-        require_code('confluence');
+        $before = ini_get('ocproducts.type_strictness');
+        cms_ini_set('ocproducts.type_strictness', '0');
 
-        global $CONFLUENCE_SPACE;
-        $space = confluence_query('space?spaceKey=' . $CONFLUENCE_SPACE, false);
-        $this->assertTrue($space !== null, 'Configured Confluence connection is working');
+        $cloud_name = get_option('cloudinary_cloud_name');
+        $api_key = get_option('cloudinary_api_key');
+        $api_secret = get_option('cloudinary_api_secret');
+
+        require_code('Cloudinary/autoload');
+
+        \Cloudinary::config([
+            'cloud_name' => $cloud_name,
+            'api_key' => $api_key,
+            'api_secret' => $api_secret,
+        ]);
+
+        $ob = new \Cloudinary\Search();
+        try {
+            $result = $ob->expression('format:jpg')->execute();
+            $error = '';
+        } catch (Exception $e) {
+            $result = null;
+            $error = $e->getMessage();
+        }
+
+        $this->assertTrue(($result !== null) && (is_integer($result['total_count'])), 'Could not get Cloudinary result: ' . $error);
+
+        cms_ini_set('ocproducts.type_strictness', $before);
     }
 }

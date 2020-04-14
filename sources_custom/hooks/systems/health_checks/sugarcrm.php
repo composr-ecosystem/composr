@@ -18,7 +18,7 @@
  */
 class Hook_health_check_sugarcrm extends Hook_Health_Check
 {
-    protected $category_label = 'SugarCRM';
+    protected $category_label = 'API connections';
 
     /**
      * Standard hook run function to run this category of health checks.
@@ -39,10 +39,10 @@ class Hook_health_check_sugarcrm extends Hook_Health_Check
             $username = get_option('sugarcrm_username');
 
             if (($base_url == '') || ($username == '')) {
-                return [$this->category_label, []];
+                return [$this->category_label, $this->results];
             }
 
-            $this->process_checks_section('testSugarCRMConnection', 'API connection', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            $this->process_checks_section('testSugarCRMConnection', 'SugarCRM', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         }
 
         return [$this->category_label, $this->results];
