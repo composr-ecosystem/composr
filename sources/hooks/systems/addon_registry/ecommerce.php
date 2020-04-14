@@ -199,6 +199,7 @@ class Hook_addon_registry_ecommerce
             'adminzone/pages/modules/admin_ecommerce_logs.php',
             'adminzone/pages/modules/admin_invoices.php',
             'themes/default/css/ecommerce.css',
+            'sources/hooks/systems/health_checks/currency.php',
             'data/ecommerce.php',
             'lang/EN/ecommerce.ini',
             'sources/hooks/systems/notifications/payment_received.php',

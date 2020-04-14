@@ -35,17 +35,23 @@ class Hook_health_check_apis extends Hook_Health_Check
      * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     * @param  boolean $show_unusable_categories Whether to include categories that might not be accessible for some reason
      * @return array A pair: category label, list of results
      */
-    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
-        if (get_option('ipstack_api_key') != '') {
+        if ((($show_unusable_categories) || get_option('ipstack_api_key') != '')) {
             $this->process_checks_section('testIpStackConnection', 'ipstack', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         }
 
         require_code('locations_geocoding');
-        if (choose_geocoding_service() !== null) {
+        if (($show_unusable_categories) || (choose_geocoding_service() !== null)) {
             $this->process_checks_section('testGeocodeConnection', 'Geocoding', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        }
+
+        require_code('translation');
+        if (($show_unusable_categories) || (has_translation('EN', 'FR'))) {
+            $this->process_checks_section('testTranslationConnection', 'Translation', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         }
 
         return [$this->category_label, $this->results];
@@ -137,6 +143,47 @@ class Hook_health_check_apis extends Hook_Health_Check
                 if ($address !== null) {
                     $this->assertTrue(substr($address[2], 0, 3) == 'Rey', 'Wrong city on ' . $service . ', got ' . $address[2] . ', expected ~Raycevick'); // Only check first chars due to charset issues
                 }
+            }
+        }
+    }
+
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testTranslationConnection($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            return;
+        }
+
+        $hooks = [
+            'bing_translator',
+            'google_translate',
+        ];
+
+        $from = 'EN';
+        $to = 'FR';
+
+        foreach ($hooks as $hook) {
+            $translation_object = get_translation_object_for_hook($hook);
+            $errormsg = null;
+            if (has_translation($from, $to, $translation_object, $errormsg)) {
+                $GLOBALS['SITE_DB']->query_delete('translation_cache');
+
+                $from_text = 'Hello';
+                $to_text = translate_text($from_text, TRANS_TEXT_CONTEXT__AUTODETECT, $from, $to, $hook, $errormsg);
+                $this->assertTrue($to_text == 'Bonjour' || $to_text == 'Salut', 'Translation failed from ' . $from . ' to ' . $to . ', got ' . $to_text . ' for ' . $from_text . ' (error message is ' . $errormsg . ')');
             }
         }
     }

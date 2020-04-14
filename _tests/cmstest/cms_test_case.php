@@ -224,7 +224,7 @@ class cms_test_case extends WebTestCase
             $_sections = [];
             foreach ($sections as $section_label => $results) {
                 foreach ($results as $_result) {
-                    $this->assertTrue($_result[0], $_result[1]);
+                    $this->assertTrue($_result[0] == 'PASS', $_result[1]);
                 }
             }
         }

@@ -15,15 +15,15 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    health_check
+ * @package    ecommerce
  */
 
 /**
  * Hook class.
  */
-class Hook_health_check_upkeep_backups extends Hook_Health_Check
+class Hook_health_check_currency extends Hook_Health_Check
 {
-    protected $category_label = 'Backups';
+    protected $category_label = 'API connections';
 
     /**
      * Standard hook run function to run this category of health checks.
@@ -40,7 +40,11 @@ class Hook_health_check_upkeep_backups extends Hook_Health_Check
      */
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
-        $this->process_checks_section('testBackups', 'Backups', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        if (addon_installed('ecommerce')) {
+            if (($show_unusable_categories) || (get_option('currency_api_key') != '')) {
+                $this->process_checks_section('testCurrencyConnection', 'Currency conversions', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            }
+        }
 
         return [$this->category_label, $this->results];
     }
@@ -55,7 +59,7 @@ class Hook_health_check_upkeep_backups extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testBackups($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testCurrencyConnection($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -64,27 +68,9 @@ class Hook_health_check_upkeep_backups extends Hook_Health_Check
             return;
         }
 
-        if (!addon_installed('backup')) {
-            return;
-        }
-
-        $backup_schedule_time = intval(get_value('backup_schedule_time'));
-        $last_backup = get_value('last_backup');
-        if (($backup_schedule_time > 0) && ($last_backup !== null)) {
-            $path = get_custom_file_base() . '/exports/backups';
-            $found = false;
-            $dh = opendir($path);
-            while (($f = readdir($dh)) !== false) {
-                if ((substr($f, -4) == '.tar') || (substr($f, -3) == '.gz')) {
-                    $size = filesize($path . '/' . $f);
-                    $found = $found || ($size > 5000000);
-                }
-            }
-            closedir($dh);
-
-            $this->assertTrue($found, 'Could not find a scheduled backup file that looks complete');
-        } else {
-            $this->stateCheckSkipped('Automatic backups have never run');
-        }
+        require_code('currency');
+        $test = currency_convert(100.00, 'MMK', 'GBP', 0, 'conv_api');
+        $this->assertTrue($test > 0.00, 'Expected GBP value to be more than 0.00, got ' . float_format($test, 2));
+        $this->assertTrue($test < 110.00, 'Expected GBP value to be less than 110.00, got ' . float_format($test, 2)); // GBP is worth *much* more
     }
 }

@@ -175,7 +175,7 @@ class third_party_code_test_set extends cms_test_case
         if (addon_installed('health_check')) {
             require_code('health_check');
             $sections = [];
-            foreach (find_health_check_categories_and_sections() as $_sections) {
+            foreach (find_health_check_categories_and_sections(true) as $_sections) {
                 $sections = array_merge($sections, $_sections);
             }
 

@@ -30,17 +30,15 @@ class Hook_health_check_cloudinary extends Hook_Health_Check
      * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     * @param  boolean $show_unusable_categories Whether to include categories that might not be accessible for some reason
      * @return array A pair: category label, list of results
      */
-    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
-        if (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('weather'))) {
-            $openweathermap_api_key = get_option('openweathermap_api_key');
-            if ($openweathermap_api_key == '') {
-                return [$this->category_label, $this->results];
+        if (($show_unusable_categories) || (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('cloudinary')))) {
+            if (($show_unusable_categories) || (get_option('openweathermap_api_key') != '')) {
+                $this->process_checks_section('testCloudinaryConnection', 'Cloudinary', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
-
-            $this->process_checks_section('testCloudinaryConnection', 'Cloudinary', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         }
 
         return [$this->category_label, $this->results];

@@ -680,6 +680,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/addon_screenshots.php',
             '_tests/tests/unit_tests/addon_setupwizard.php',
             '_tests/tests/unit_tests/adminzone_search.php',
+            '_tests/tests/unit_tests/_api_confluence.php',
             '_tests/tests/unit_tests/allow_php_in_templates.php',
             '_tests/tests/unit_tests/antispam.php',
             '_tests/tests/unit_tests/api_classes_documented.php',

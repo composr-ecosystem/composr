@@ -39,24 +39,19 @@ class _api_translation_test_set extends cms_test_case
             'google_translate',
         ];
 
-        foreach ($hooks as $hook) {
-            $GLOBALS['SITE_DB']->query_delete('translation_cache');
+        $from = 'EN';
+        $to = 'FR';
 
+        foreach ($hooks as $hook) {
             $translation_object = get_translation_object_for_hook($hook);
             $errormsg = null;
-
-            $from = 'EN';
-            $to = 'FR';
-
             $this->assertTrue(has_translation($from, $to, $translation_object, $errormsg));
 
-            $from_text = 'Hello';
-            $to_text = translate_text($from_text, TRANS_TEXT_CONTEXT__AUTODETECT, $from, $to, $hook, $errormsg);
-            $this->assertTrue($to_text == 'Bonjour' || $to_text == 'Salut', 'Got ' . $to_text . ' (error message is ' . $errormsg . ')');
-
             if ($hook == 'google_translate') {
-                $this->assertTrue(get_translation_credit($from, $to, $hook) != '');
+                $this->assertTrue(get_translation_credit($from, $to, $hook) != '', 'Got empty translation credit for google_translate');
             }
         }
+
+        $this->run_health_check('API connections', 'Translation');
     }
 }
