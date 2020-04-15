@@ -157,7 +157,6 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
     list($business_street_address_1, $business_street_address_2) = split_street_address(get_option('business_street_address'), 2);
 
     $request = [
-        'object_purpose' => 'QUOTE',
         'address_to' => [
             'name' => trim($shipping_firstname . ' ' . $shipping_lastname),
             'company' => $company,
@@ -183,13 +182,15 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
             'email' => get_option('pd_email'),
             'object_purpose' => 'QUOTE',
         ],
-        'parcel' => [
-            'length' => float_to_raw_string($product_length),
-            'width' => float_to_raw_string($product_width),
-            'height' => float_to_raw_string($product_height),
-            'distance_unit' => strtolower(get_option('shipping_distance_units')),
-            'weight' => float_to_raw_string($product_weight),
-            'mass_unit' => strtolower(get_option('shipping_weight_units')),
+        'parcels' => [
+            [
+                'length' => float_to_raw_string($product_length),
+                'width' => float_to_raw_string($product_width),
+                'height' => float_to_raw_string($product_height),
+                'distance_unit' => strtolower(get_option('shipping_distance_units')),
+                'weight' => float_to_raw_string($product_weight),
+                'mass_unit' => strtolower(get_option('shipping_weight_units')),
+            ],
         ],
         'async' => false,
     ];
@@ -197,7 +198,16 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
     require_code('character_sets');
     $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
     $url = 'https://api.goshippo.com/shipments/';
-    $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => [$_request], 'timeout' => 20.0, 'raw_post' => true, 'extra_headers' => ['Authorization' => 'ShippoToken ' . $shippo_token], 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+    $options = [
+        'convert_to_internal_encoding' => true,
+        'post_params' => [$_request],
+        'raw_post' => true,
+        'timeout' => 20.0,
+        'extra_headers' => ['Authorization' => 'ShippoToken ' . $shippo_token],
+        'raw_content_type' => 'application/json',
+        'ignore_http_status' => true,
+    ];
+    $_response = http_get_contents($url, $options);
     $response = json_decode($_response, true);
 
     // Error handling
@@ -210,10 +220,10 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
             $error_message .= $error_struct['text'];
         }
     }
-    if ($response['object_status'] == 'ERROR') {
+    if ($response['status'] == 'ERROR') {
         fatal_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
     }
-    if (!isset($response['rates_list'][0])) {
+    if (!isset($response['rates'][0])) {
         if ($error_message != '') {
             fatal_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
         }
@@ -222,8 +232,8 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
     }
 
     require_code('currency');
-    $price = floatval($response['rates_list'][0]['amount']);
-    $price = currency_convert($price, $response['rates_list'][0]['currency'], null, CURRENCY_DISPLAY_RAW);
+    $price = floatval($response['rates'][0]['amount']);
+    $price = currency_convert($price, $response['rates'][0]['currency'], null, CURRENCY_DISPLAY_RAW);
 
     $shipping_cost = round($base + $price, 2);
     return $shipping_cost;

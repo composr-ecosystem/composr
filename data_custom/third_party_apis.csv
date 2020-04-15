@@ -23,7 +23,7 @@ OpenWeatherMap,openweathermap,https://openweathermap.org/api/hourly-forecast,Mai
 PayPal,gateway_paypal,https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/,Maintain,Yes,Apr 10th 2020,N/A,N/A,N/A,
 Postmark spamcheck,newsletter_spam_check,https://spamcheck.postmarkapp.com/doc/,Maintain,Yes,Apr 10th 2020,N/A,newsletters,N/A,
 SecPay Gateway Freedom,gateway_secpay,https://www.pay360.com/sites/default/files/2018-05/gateway_freedom_v_3-0.pdf,No action,Yes,N/A,N/A,N/A,N/A,Deprecated API. No sponsor so no action.
-Shippo,shippo,https://goshippo.com/api-overview/,Maintain,Yes,TODO,TODO,ecommerce_shipping,Shippo
+Shippo,shippo,https://goshippo.com/api-overview/,Maintain,Yes,Apr 14th 2020,2018-02-08,ecommerce_shipping,Shippo
 StopForumSpam,stop_forum_spam,https://www.stopforumspam.com/usage,Maintain,Yes,Apr 10th 2020,1.6,antispam,N/A,
 TaxCloud,taxcloud,https://dev.taxcloud.com/,Maintain,Yes,Apr 10th 2020,1,_api_ecommerce_tax,TaxCloud,Unit test is limited as you need to have a registered business ID to even test against TaxCloud.
 Tornevall,tornevall,https://www.tornevall.net/,Maintain,Yes,Apr 10th 2020,3,antispam,N/A,
