@@ -324,67 +324,82 @@ class BrokenURLScanner
      * Enumerate the backlinks Moz has found.
      *
      * @param  array $live_base_urls The live base URL(s)
-     * @param  integer $maximum_api_results Maximum results to query from APIs
+     * @param  integer $maximum_api_results Maximum results to query from APIs (more than 50 is very slow unless you have a paid API key)
+     * @param  boolean $error Whether there was an error (returned by reference)
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_moz_backlinks($live_base_urls, $maximum_api_results)
+    public function enumerate_moz_backlinks($live_base_urls, $maximum_api_results = 50, &$error = false)
     {
+        $error = false;
+
         $domains = [];
         foreach ($live_base_urls as $live_base_url) {
             $domain = @parse_url($live_base_url, PHP_URL_HOST);
             if (!empty($domain)) {
-                $domains[] = $domain;
+                $domains[$domain] = $live_base_url;
             }
         }
-        $domains = array_unique($domains);
 
         $urls = [];
 
-        foreach ($domains as $domain) {
-            $expires = time() + 300;
-            $string_to_sign = get_option('moz_access_id') . "\n" . strval($expires);
-            $binary_signature = $this->hmac_sha1(get_option('moz_secret_key'), $string_to_sign);
-            $url_safe_signature = base64_encode($binary_signature);
+        foreach ($domains as $domain => $live_base_url) {
+            $next_token = null;
 
             do {
                 $continuing = false;
-                $offset = 0;
 
-                $api_url = 'http://lsapi.seomoz.com/linkscape/links/' . $domain;
-                $api_url .= '?Scope=page_to_domain';
-                $api_url .= '&Sort=page_authority';
-                $api_url .= '&Filter=external';
-                $api_url .= '&Offset=' . strval($offset);
-                $api_url .= '&Limit=50';
-                $api_url .= '&SourceCols=536870916';
-                $api_url .= '&TargetCols=4';
-                $api_url .= '&AccessID=' . get_option('moz_access_id');
-                $api_url .= '&Expires=' . strval($expires);
-                $api_url .= '&Signature=' . urlencode($url_safe_signature);
+                $api_url = 'https://lsapi.seomoz.com/v2/links';
 
-                $_result = http_get_contents($api_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+                $params = [
+                    'target' => preg_replace('#.*//#U', '', $live_base_url),
+                    'target_scope' => 'subdomain',
+                    'sort' => 'source_page_authority',
+                    'filter' => 'external',
+                    'limit' => 50,
+                ];
+                if ($next_token !== null) {
+                    $params['next_token'] = $next_token;
+                }
+                $json = json_encode($params);
+
+                $auth = [get_option('moz_access_id'), get_option('moz_secret_key')];
+
+                $options = [
+                    'convert_to_internal_encoding' => true,
+                    'trigger_error' => false,
+                    'auth' => $auth,
+                    'timeout' => 5.0,
+                    'post_params' => [$json],
+                    'raw_post' => true,
+                ];
+
+                $_result = http_get_contents($api_url, $options);
+
                 if ($_result !== null) {
                     $result = json_decode($_result, true);
-                    foreach ($result as $_url) {
+
+                    foreach ($result['results'] as $_url) {
                         $urls[] = [
-                            'url' => 'http://' . $_url['luuu'],
+                            'url' => 'https://' . $_url['target']['page'],
                             'table_name' => null,
                             'field_name' => null,
-                            'identifier' => parse_url('http://' . $_url['uu'], PHP_URL_HOST),
-                            'edit_url' => 'http://' . $_url['uu'],
+                            'identifier' => parse_url('https://' . $_url['source']['page'], PHP_URL_HOST),
+                            'edit_url' => 'https://' . $_url['source']['page'],
                         ];
                     }
 
                     if ((count($result) == 50) && ($maximum_api_results > count($urls))) {
                         $continuing = true;
-                        $offset += 50;
+                        $next_token = $result['next_token'];
                     }
+                } else {
+                    $error = true;
                 }
 
                 if ($continuing) {
                     if (get_option('moz_paid') == '0') {
                         if (php_function_allowed('usleep')) {
-                            usleep(10000000);
+                            usleep(10000000); // 10 seconds between requests
                         }
                     }
                 }
@@ -392,35 +407,6 @@ class BrokenURLScanner
         }
 
         return $urls;
-    }
-
-    /**
-     * Do a HMAC-SHA1 hash.
-     *
-     * @param  string $key Key
-     * @param  string $data Data to hash
-     * @return string Hash
-     */
-    protected function hmac_sha1($key, $data)
-    {
-        $pack = 'H' . strval(strlen(sha1('test')));
-        $size = 64;
-        $opad = str_repeat(chr(0x5C), $size);
-        $ipad = str_repeat(chr(0x36), $size);
-
-        if (strlen($key) > $size) {
-            $key = str_pad(pack($pack, sha1($key)), $size, chr(0x00));
-        } else {
-            $key = str_pad($key, $size, chr(0x00));
-        }
-
-        for ($i = 0; $i < strlen($key) - 1; $i++) {
-            $opad[$i] = $opad[$i] ^ $key[$i];
-            $ipad[$i] = $ipad[$i] ^ $key[$i];
-        }
-
-        $output = sha1($opad . pack($pack, sha1($ipad . $data)));
-        return pack($pack, $output);
     }
 
     /**

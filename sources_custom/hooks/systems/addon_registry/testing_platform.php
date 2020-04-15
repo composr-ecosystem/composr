@@ -723,6 +723,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/_commandr_fs.php',
             '_tests/tests/unit_tests/comment_encapsulation.php',
             '_tests/tests/unit_tests/comments.php',
+            '_tests/tests/unit_tests/_api_moz.php',
             '_tests/tests/unit_tests/community_billboard.php',
             '_tests/tests/unit_tests/config_lang_strings.php',
             '_tests/tests/unit_tests/config_options_in_templates.php',

@@ -120,7 +120,7 @@ external_health_check,Various tools that the Health Check will link out to when 
 google_safe_browsing_api,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,_health_check automated test to run Health Checks.
 google_recaptcha,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,_health_check automated test to run Health Checks.
 google_search_console,The Google Search Console API.,ocProducts,,Not regularly Tested.,No,
-moz,Moz API.,ocProducts,,Not regularly Tested.,No,
+moz,Moz API.,ocProducts,,Not regularly Tested.,No,_api_moz automated test.
 google_analytics,Google Analytics integration.,ocProducts,,Not regularly Tested.,No,
 cors,Running across multiple domains and Cross-Origin Resource Sharing (CORS),ocProducts,,Not regularly Tested.,No,
 inline_editing,Inline Editing,ocProducts,,"Not regularly Tested, and themes are not typically expected to support it out-of-the-box.",No,
