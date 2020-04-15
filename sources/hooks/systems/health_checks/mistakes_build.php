@@ -181,6 +181,11 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $_urls = [];
         foreach ($urls as $url) {
+            // Exceptions
+            if (preg_match('#^https://vk\.com/share\.php#', $url) != 0) {
+                continue;
+            }
+
             if (substr($url, 0, 2) == '//') {
                 $url = 'http:' . $url;
             }

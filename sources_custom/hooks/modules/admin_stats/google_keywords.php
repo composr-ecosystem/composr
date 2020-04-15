@@ -30,6 +30,10 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
             return null;
         }
 
+        if ((get_option('google_search_console_api_enabled') == '0') || (get_option('google_apis_api_key') == '')) {
+            return null;
+        }
+
         require_code('oauth');
         $refresh_token = get_oauth_refresh_token('google_search_console');
         if ($refresh_token === null) {
@@ -91,74 +95,6 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
     }
 
     /**
-     * Get Google Search Console data that is behind all our hook graphs.
-     *
-     * @param  integer $start_month Start month
-     * @param  integer $end_month End month
-     * @param  string $keyword Keyword
-     * @return boolean Data
-     */
-    protected function get_data($_start_month, $_end_month, $keyword)
-    {
-        $sz = serialize([$_start_month, $_end_month, $keyword]);
-
-        static $result = [];
-        if (isset($result[$sz])) {
-            return $result[$sz];
-        }
-
-        require_code('oauth');
-        $access_token = refresh_oauth2_token('google_search_console', false);
-
-        $base_url = get_base_url();
-        $url = 'https://www.googleapis.com/webmasters/v3/sites/' . rawurlencode($base_url) . '/searchAnalytics/query?access_token=' . urlencode($access_token);
-
-        $start_year = 1970 + intval(round(floatval($_start_month) / 12.0));
-        $start_month = ($_start_month % 12) + 1;
-        $start_day = 1;
-
-        $end_year = 1970 + intval(round(floatval($_end_month) / 12.0));
-        $end_month = ($_end_month % 12) + 1;
-        $days_in_month = intval(date('t', mktime(0, 0, 0, $end_month, 1, $end_year)));
-        $end_day = $days_in_month;
-
-        $_json = [
-            'startDate' => strval($start_year) . '-' . str_pad(strval($start_month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($start_day), 2, '0', STR_PAD_LEFT),
-            'endDate' => strval($end_year) . '-' . str_pad(strval($end_month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($end_day), 2, '0', STR_PAD_LEFT),
-            'dimensions' => ['query'],
-            'rowLimit' => 1000,
-        ];
-
-        if ($keyword !== null) {
-            $_json['dimensionFilterGroups'] = [
-                [
-                    'groupType' => 'and',
-                    'filters' => [
-                        [
-                            'dimension' => 'query',
-                            'operator' => 'contains',
-                            'expression' => $keyword,
-                        ],
-                    ],
-                ],
-            ];
-        }
-
-        $json = json_encode($_json);
-
-        require_code('character_sets');
-        $json = convert_to_internal_encoding($json, get_charset(), 'utf-8');
-
-        $_result = http_get_contents($url, ['trigger_error' => false, 'convert_to_internal_encoding' => true, 'post_params' => [$json], 'raw_post' => true, 'raw_content_type' => 'application/json']);
-        if ($_result === null) {
-            attach_message('Failed to query the Google Search Console API', 'warn');
-            return null;
-        }
-        $result[$sz] = json_decode($_result, true);
-        return $result[$sz];
-    }
-
-    /**
      * Generate final data from preprocessed data.
      *
      * @param  string $bucket Data bucket we want data for
@@ -178,8 +114,9 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
             $keyword = null;
         }
 
-        $result = $this->get_data($_start_month, $_end_month, $keyword);
+        $result = get_google_search_console_data($_start_month, $_end_month, $keyword);
         if ($result === null) {
+            attach_message('Failed to query the Google Search Console API', 'warn');
             return null;
         }
 

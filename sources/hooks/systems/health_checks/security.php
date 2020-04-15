@@ -41,8 +41,10 @@ class Hook_health_check_security extends Hook_Health_Check
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
         $this->process_checks_section('testExternalSecurityScan', 'External security scan', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        if (($show_unusable_categories) || ((get_option('hc_google_safe_browsing_api_enabled') == '1') && (get_option('google_apis_api_key') != ''))) {
-            $this->process_checks_section('testMalware', 'Malware', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        if (($show_unusable_categories) || ($check_context != CHECK_CONTEXT__INSTALL)) {
+            if (($show_unusable_categories) || ((get_option('hc_google_safe_browsing_api_enabled') == '1') && (get_option('google_apis_api_key') != ''))) {
+                $this->process_checks_section('testMalware', 'Malware', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            }
         }
         $this->process_checks_section('testDirectorySecuring', 'Directory securing', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSiteOrphaned', 'Site orphaning', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -508,7 +510,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $files = $this->getBaseDirectoriesFiles(['tar', 'gz', 'zip', 'sql']);
 
         foreach ($files as $file) {
-            if (preg_match('#back.*\.(tar|gz|zip)$|\.(sql)$#i', basename($file)) != 0) {
+            if ((preg_match('#back.*\.(tar|gz|zip)$|\.(sql)$#i', basename($file)) != 0) && (!in_array($file, ['install4.sql', 'user.sql', 'postinstall.sql', 'install1.sql', 'install.sql', 'install3.sql', 'install2.sql']))) {
                 $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
                 $this->assertTrue($http_result->message != '200', 'Likely exposed backup: [tt]' . $file . '[/tt]');
             }

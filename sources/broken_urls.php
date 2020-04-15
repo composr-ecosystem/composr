@@ -351,10 +351,10 @@ class BrokenURLScanner
                 $api_url = 'https://lsapi.seomoz.com/v2/links';
 
                 $params = [
-                    'target' => preg_replace('#.*//#U', '', $live_base_url),
+                    'target' => $live_base_url,
                     'target_scope' => 'subdomain',
                     'sort' => 'source_page_authority',
-                    'filter' => 'external',
+                    'filter' => 'not_deleted+external',
                     'limit' => 50,
                 ];
                 if ($next_token !== null) {
@@ -374,7 +374,6 @@ class BrokenURLScanner
                 ];
 
                 $_result = http_get_contents($api_url, $options);
-
                 if ($_result !== null) {
                     $result = json_decode($_result, true);
 
@@ -404,99 +403,6 @@ class BrokenURLScanner
                     }
                 }
             } while ($continuing);
-        }
-
-        return $urls;
-    }
-
-    /**
-     * Enumerate the backlinks Google has found and considered broken at last check: missing permissions.
-     *
-     * @param  array $live_base_urls The live base URL(s)
-     * @param  integer $maximum_api_results Maximum results to query from APIs
-     * @return array List of URLs (each list entry is a map of URL details)
-     */
-    public function enumerate_google_broken_backlinks__auth_permissions($live_base_urls, $maximum_api_results)
-    {
-        return $this->_enumerate_google_broken_backlinks($live_base_urls, 'authPermissions');
-    }
-
-    /**
-     * Enumerate the backlinks Google has found and considered broken at last check: not found.
-     *
-     * @param  array $live_base_urls The live base URL(s)
-     * @param  integer $maximum_api_results Maximum results to query from APIs
-     * @return array List of URLs (each list entry is a map of URL details)
-     */
-    public function enumerate_google_broken_backlinks__not_found($live_base_urls, $maximum_api_results)
-    {
-        return $this->_enumerate_google_broken_backlinks($live_base_urls, 'notFound');
-    }
-
-    /**
-     * Enumerate the backlinks Google has found and considered broken at last check: server error.
-     *
-     * @param  array $live_base_urls The live base URL(s)
-     * @param  integer $maximum_api_results Maximum results to query from APIs
-     * @return array List of URLs (each list entry is a map of URL details)
-     */
-    public function enumerate_google_broken_backlinks__server_error($live_base_urls, $maximum_api_results)
-    {
-        return $this->_enumerate_google_broken_backlinks($live_base_urls, 'serverError');
-    }
-
-    /**
-     * Enumerate the backlinks Google has found and considered broken at last check: not found with explicit 404.
-     *
-     * @param  array $live_base_urls The live base URL(s)
-     * @param  integer $maximum_api_results Maximum results to query from APIs
-     * @return array List of URLs (each list entry is a map of URL details)
-     */
-    public function enumerate_google_broken_backlinks__soft404($live_base_urls, $maximum_api_results)
-    {
-        return $this->_enumerate_google_broken_backlinks($live_base_urls, 'soft404');
-    }
-
-    /**
-     * Enumerate the backlinks Google has found and considered broken at last check.
-     *
-     * @param  array $live_base_urls The live base URL(s)
-     * @param  string $category The Google Search Console category
-     * @return array List of URLs (each list entry is a map of URL details)
-     */
-    protected function _enumerate_google_broken_backlinks($live_base_urls, $category)
-    {
-        $urls = [];
-
-        foreach ($live_base_urls as $live_base_url) {
-            $api_url = 'https://www.googleapis.com/webmasters/v3/sites/' . urlencode($live_base_url) . '/urlCrawlErrorsSamples?category=' . urlencode($category) . '&platform=web';
-            $api_url .= '&access_token=' . urlencode(refresh_oauth2_token('google_search_console'));
-
-            $_result = http_get_contents($api_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
-            if ($_result !== null) {
-                $result = json_decode($_result, true);
-                if (!isset($result['urlCrawlErrorSample'])) {
-                    continue; // Nothing for this live base URL?
-                }
-                foreach ($result['urlCrawlErrorSample'] as $_url) {
-                    if (preg_match('#^(data/|calendar/browse/)#', $_url['pageUrl']) != 0) {
-                        // Common thing Google should not be looking at
-                        continue;
-                    }
-                    if (!isset($_url['urlDetails']['linkedFromUrls'][0])) {
-                        // No longer even linked, historic
-                        continue;
-                    }
-
-                    $urls[] = [
-                        'url' => $live_base_url . ((substr($live_base_url, -1) == '/') ? '' : '/') . $_url['pageUrl'],
-                        'table_name' => null,
-                        'field_name' => null,
-                        'identifier' => parse_url($_url['urlDetails']['linkedFromUrls'][0], PHP_URL_HOST),
-                        'edit_url' => $_url['urlDetails']['linkedFromUrls'][0],
-                    ];
-                }
-            }
         }
 
         return $urls;

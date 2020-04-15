@@ -40,7 +40,7 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
      */
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
-        if (addon_installed('ecommerce')) {
+        if (($show_unusable_categories) || (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('ecommerce')))) {
             if (($show_unusable_categories) || (get_option('currency_api_key') != '')) {
                 $this->process_checks_section('testCurrencyConnection', 'Currency conversions', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }

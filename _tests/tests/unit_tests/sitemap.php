@@ -38,6 +38,8 @@ class sitemap_test_set extends cms_test_case
 
         require_code('sitemap');
 
+        set_option('confluence_subdomain', ''); // Gathering sitemap for Confluence too slow
+
         $page_link = '';
         $callback = null;
         $valid_node_types = null;

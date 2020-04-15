@@ -40,22 +40,24 @@ class Hook_health_check_apis extends Hook_Health_Check
      */
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
-        if ((($show_unusable_categories) || (get_option('ipstack_api_key') != ''))) {
-            $this->process_checks_section('testIpStackConnection', 'ipstack', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        }
+        if (($show_unusable_categories) || ($check_context != CHECK_CONTEXT__INSTALL)) {
+            if ((($show_unusable_categories) || (get_option('ipstack_api_key') != ''))) {
+                $this->process_checks_section('testIpStackConnection', 'ipstack', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            }
 
-        require_code('locations_geocoding');
-        if (($show_unusable_categories) || (choose_geocoding_service() !== null)) {
-            $this->process_checks_section('testGeocodeConnection', 'Geocoding', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        }
+            require_code('locations_geocoding');
+            if (($show_unusable_categories) || (choose_geocoding_service() !== null)) {
+                $this->process_checks_section('testGeocodeConnection', 'Geocoding', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            }
 
-        require_code('translation');
-        if (($show_unusable_categories) || (has_translation('EN', 'FR'))) {
-            $this->process_checks_section('testTranslationConnection', 'Translation', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        }
+            require_code('translation');
+            if (($show_unusable_categories) || (has_translation('EN', 'FR'))) {
+                $this->process_checks_section('testTranslationConnection', 'Translation', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            }
 
-        if ((($show_unusable_categories) || ((get_option('moz_access_id') != '') && (get_option('moz_secret_key') != '')))) {
-            $this->process_checks_section('testMozConnection', 'Moz Links', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            if ((($show_unusable_categories) || ((get_option('moz_access_id') != '') && (get_option('moz_secret_key') != '')))) {
+                $this->process_checks_section('testMozConnection', 'Moz Links', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            }
         }
 
         return [$this->category_label, $this->results];
@@ -187,7 +189,7 @@ class Hook_health_check_apis extends Hook_Health_Check
 
                 $from_text = 'Hello';
                 $to_text = translate_text($from_text, TRANS_TEXT_CONTEXT__AUTODETECT, $from, $to, $hook, $errormsg);
-                $this->assertTrue($to_text == 'Bonjour' || $to_text == 'Salut', 'Translation failed from ' . $from . ' to ' . $to . ', got ' . $to_text . ' for ' . $from_text . ' (error message is ' . $errormsg . ')');
+                $this->assertTrue(($to_text !== null) && (($to_text == 'Bonjour') || ($to_text == 'Salut')), 'Translation failed from ' . $from . ' to ' . $to . ', got ' . @strval($to_text) . ' for ' . $from_text . ' (error message is ' . @strval($errormsg) . ')');
             }
         }
     }

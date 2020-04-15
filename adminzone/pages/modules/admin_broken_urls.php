@@ -117,15 +117,6 @@ class Module_admin_broken_urls
             ]);
         }
 
-        if ((get_oauth_refresh_token('google_search_console') !== null) && (get_option('google_apis_api_key') != '')) {
-            $this->link_types = array_merge($this->link_types, [
-                'google_broken_backlinks__auth_permissions' => do_lang('GOOGLE_BROKEN_BACKLINKS__auth_permissions'),
-                'google_broken_backlinks__not_found' => do_lang('GOOGLE_BROKEN_BACKLINKS__not_found'),
-                'google_broken_backlinks__server_error' => do_lang('GOOGLE_BROKEN_BACKLINKS__server_error'),
-                'google_broken_backlinks__soft404' => do_lang('GOOGLE_BROKEN_BACKLINKS__soft404'),
-            ]);
-        }
-
         // Decide what we're doing
         $type = get_param_string('type', 'browse');
 

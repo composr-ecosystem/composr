@@ -50,7 +50,7 @@ class Hook_weather_openweathermap
         require_code('http');
         require_code('locations');
 
-        $wind_directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+        $wind_directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N']; // Have to repeat 'N' as we've seen degrees set as 360 (lol)
 
         // Current conditions...
 
@@ -75,7 +75,7 @@ class Hook_weather_openweathermap
             'visibility' => null,
             'cloudiness' => $_current_conditions['clouds']['all'],
             'wind_speed' => $_current_conditions['wind']['speed'],
-            'wind_direction' => $wind_directions[intval(round(8.0 * $_current_conditions['wind']['deg'] / 360.0))],
+            'wind_direction' => $wind_directions[intval(round(8.0 * floatval($_current_conditions['wind']['deg']) / 360.0))],
             'wind_chill' => null,
             'conditions' => $conditions,
             'sunrise' => $_current_conditions['sys']['sunrise'],

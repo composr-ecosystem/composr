@@ -71,10 +71,12 @@ function unit_testing_run()
     <div>
         <p class=\"lonely-label\">Notes:</p>
         <ul>
-            <li>The ones starting <kbd>_</kbd> should be run individually, and also only occasionally except for <kbd>_cqc__function_sigs</kbd> and <kbd>_installer</kbd> which are crucial and to be run first; this may be due to slowness, unreliability, lack of concurrency support, or some expectation of false-positives</li>
+            <li>The one(s) starting <kbd>___</kbd> are either very slow or unreliable or expected to have some failures: generally do not run them unless you are doing targeted testing
+            <li>The ones starting <kbd>__</kbd> should be run individually because they conflict with other tests
+            <li>The ones starting <kbd>_</kbd> should be run occasionally with discretion, due to slowness, the expectation of false-positives, or the need for an API key file</li>
             <li>Some need running on the command line, in which case a note will be included in the test's code</li>
             <li>Some support a 'debug' GET/CLI parameter, to dump out debug information</li>
-            <li>Many support GET parameters for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
+            <li>Many support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
         </ul>
     </div>";
     echo '<div style="float: left; width: 40%">

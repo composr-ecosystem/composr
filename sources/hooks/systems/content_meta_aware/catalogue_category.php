@@ -199,6 +199,7 @@ function generate_catalogue_category_content_type_label($row)
     if (!array_key_exists('c_name', $row)) {
         return do_lang_tempcode('catalogues:CATALOGUE_CATEGORY');
     }
+    require_code('catalogues');
     $catalogue = load_catalogue_row($row['c_name']);
     return do_lang_tempcode('catalogues:CATALOGUE_GENERIC_CATEGORY', get_translated_text($catalogue['c_title']));
 }
@@ -214,6 +215,7 @@ function generate_catalogue_category_content_type_universal_label($row)
     if (!array_key_exists('c_name', $row)) {
         return 'Catalogue category';
     }
+    require_code('catalogues');
     $catalogue = load_catalogue_row($row['c_name']);
     return get_translated_text($catalogue['c_title']) . ' category';
 }

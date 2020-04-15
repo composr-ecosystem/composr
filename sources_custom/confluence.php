@@ -387,5 +387,6 @@ function confluence_call_url($url, $trigger_error = true, $text = false)
         $options['convert_to_internal_encoding'] = true;
     }
 
+    require_code('files');
     return cache_and_carry('http_get_contents', [$url, $options], $CONFLUENCE_CACHE_TIME);
 }

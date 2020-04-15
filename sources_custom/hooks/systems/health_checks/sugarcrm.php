@@ -36,7 +36,7 @@ class Hook_health_check_sugarcrm extends Hook_Health_Check
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
         if (($show_unusable_categories) || (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('sugarcrm')))) {
-            if (($show_unusable_categories) || ((get_option('sugarcrm_base_url') != '') && ($username != ''))) {
+            if (($show_unusable_categories) || ((get_option('sugarcrm_base_url') != '') && (get_option('sugarcrm_username') != ''))) {
                 $this->process_checks_section('testSugarCRMConnection', 'SugarCRM', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
         }

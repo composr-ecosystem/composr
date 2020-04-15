@@ -442,6 +442,7 @@ class css_file_test_set extends cms_test_case
             'helper-panel-hidden',
             'hero-button',
             'hero-section',
+            'table-nofilter',
             'highlighted-post',
             'nlevel-link',
             'hover',

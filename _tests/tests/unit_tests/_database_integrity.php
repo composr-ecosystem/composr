@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class _database_integrity_test_set extends cms_test_case
+class ___database_integrity_test_set extends cms_test_case
 {
     // This test may fail if unexpected tables are present (e.g. from a prior install of another version)
 

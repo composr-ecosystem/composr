@@ -758,13 +758,13 @@ function has_feature($dependency)
     if ((strtolower($dependency) == 'php zip extension') && (function_exists('zip_open'))) {
         return true;
     }
-    if (substr($dependency, 0, 3) == 'php') {
+    if (substr($dependency, 0, 4) == 'php ') {
         $phpv = PHP_VERSION;
-        if (version_compare(substr($phpv, 0, strlen(substr($dependency, 3))), substr($dependency, 3), '>=')) {
+        if (version_compare(substr($phpv, 0, strlen(substr($dependency, 4))), substr($dependency, 4), '>=')) {
             return true;
         }
     }
-    if (preg_match('#^(ie|safari)[\d\.]+$#i', $dependency) != 0) { // LEGACY
+    if (preg_match('#^(ie|safari) [\d\.]+\+$#i', $dependency) != 0) { // LEGACY
         // Client side requirements
         return true;
     }

@@ -40,7 +40,7 @@ class addon_dependency_naming_test_set extends cms_test_case
             $dependencies = $ob->get_dependencies();
             $deps = array_merge($dependencies['requires'], $dependencies['recommends'], $dependencies['conflicts_with']);
             foreach ($deps as $dep) {
-                $ok = (in_array($dep, $special_dep_codes)) || (addon_installed($dep)) || (preg_match('#^(php|ie|safari)[\d\.]+$#i', $dep) != 0);
+                $ok = (in_array($dep, $special_dep_codes)) || (addon_installed($dep)) || (preg_match('#^(php) [\d\.]+$#i', $dep) != 0) || (preg_match('#^(ie|safari) [\d\.]+\+$#i', $dep) != 0);
                 $this->assertTrue($ok, 'Unknown addon dependency, ' . $dep . ', in ' . $addon_name);
             }
         }

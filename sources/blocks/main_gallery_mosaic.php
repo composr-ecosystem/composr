@@ -310,7 +310,7 @@ PHP;
 
         $slideshow_url = null;
         if (($first_type !== null) && ($first_id !== null)) {
-            $slideshow_url = build_url(['page' => '_SELF', 'type' => $first_type, 'id' => $first_id, 'wide_high' => 1, 'slideshow' => 1, 'days' => $days, 'sort' => ($sort == get_option('gallery_media_default_sort_order')) ? null : $sort, 'select' => ($map['select'] == '*') ? null : $map['select'], 'video_select' => ($map['video_select'] == '*') ? null : $map['video_select']] + propagate_filtercode(), '_SELF', [], true);
+            $slideshow_url = build_url(['page' => '_SELF', 'type' => $first_type, 'id' => $first_id, 'wide_high' => 1, 'slideshow' => 1, 'days' => $days, 'sort' => ($sort == get_option('gallery_media_default_sort_order')) ? null : $sort, 'select' => ($image_select == '') ? null : $map['select'], 'video_select' => ($video_select == '') ? null : $map['video_select']] + propagate_filtercode(), '_SELF', [], true);
         }
 
         // Sorting
