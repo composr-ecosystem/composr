@@ -203,7 +203,10 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
         'post_params' => [$_request],
         'raw_post' => true,
         'timeout' => 20.0,
-        'extra_headers' => ['Authorization' => 'ShippoToken ' . $shippo_token],
+        'extra_headers' => [
+            'Authorization' => 'ShippoToken ' . $shippo_token,
+            'Shippo-API-Version' => '2018-02-08',
+        ],
         'raw_content_type' => 'application/json',
         'ignore_http_status' => true,
     ];
