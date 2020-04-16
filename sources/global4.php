@@ -395,6 +395,11 @@ function prevent_double_submit($type, $a = null, $b = null)
         return;
     }
 
+    $cli = ((php_function_allowed('php_sapi_name')) && (php_sapi_name() == 'cli') && (cms_srv('REMOTE_ADDR') == '')); // TODO: Fix in v11
+    if ($cli) {
+        return;
+    }
+
     if (post_param_integer('confirm_double_post', 0) == 1) {
         return;
     }
