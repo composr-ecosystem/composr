@@ -1980,6 +1980,10 @@ abstract class Resource_fs_base
      */
     protected function _resource_save_extend($resource_type, $resource_id, $filename, $label, $properties)
     {
+        if (cms_mb_strlen($filename) > 80) { // Filename has may just have been the label from an add operation, in which case we must chop it down
+            $filename = cms_mb_substr($filename, 0, 80);
+        }
+
         $cma_info = $this->_get_cma_info($resource_type);
         $connection = $cma_info['connection'];
 

@@ -301,7 +301,7 @@ function get_topic_participants_func($raw_params)
     $topic_id = intval($params[0]);
     $max = isset($params[1]) ? $params[1] : 20;
 
-    if (!has_topic_access($topic_id)) {
+    if (!cns_may_access_topic($topic_id)) {
         access_denied('I_ERROR');
     }
 

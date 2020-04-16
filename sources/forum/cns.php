@@ -582,13 +582,13 @@ class Forum_driver_cns extends Forum_driver_base
             if ($username === null) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($id);
             }
-            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : (($username === null) ? strval($id) : $username));
+            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : (($username === null) ? strval($id) : $username));
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
             $_url = build_url($map, get_module_zone('members'), null, false, false, !$tempcode_okay);
         } else {
-            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id);
+            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : $id);
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }

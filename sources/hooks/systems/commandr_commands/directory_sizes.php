@@ -34,7 +34,7 @@ class Hook_commandr_command_directory_sizes
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('directory_sizes', array('h'), array(true, true)), '', '');
+            return array('', do_command_help('directory_sizes', array('h'), array()), '', '');
         } else {
             $sizes = array();
             require_code('files2');

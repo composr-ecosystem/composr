@@ -755,7 +755,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
 
     // Audio ones should have automatic thumbnails
     require_code('images');
-    if (is_audio($src_url, true)) {
+    if (is_audio($src_url, true, true)) {
         $ret = find_theme_image('audio_thumb', true);
         if ($ret != '') {
             if (!is_null($expected_output_path)) {

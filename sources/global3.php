@@ -1407,15 +1407,16 @@ function _strlen_sort($a, $b)
  * @param  array $rows List of maps to sort
  * @param  mixed $sort_keys Either an integer sort key (to sort by integer key ID of contained arrays) or a Comma-separated list of sort keys (to sort by string key ID of contained arrays; prefix '!' a key to reverse the sort order for it).
  * @param  boolean $preserve_order_if_possible Don't shuffle order unnecessarily (i.e. do a merge sort)
+ * @param  boolean $support_comma_delimiters Whether commas in $sort_keys delimit multiple sort keys
  */
-function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false)
+function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false, $support_comma_delimiters = true)
 {
     if ($rows == array()) {
         return;
     }
 
     global $M_SORT_KEY;
-    $M_SORT_KEY = $sort_keys;
+    $M_SORT_KEY = ($support_comma_delimiters && is_string($sort_keys)) ? explode(',', $sort_keys) : array(@strval($sort_keys));
     if ($preserve_order_if_possible) {
         merge_sort($rows, '_multi_sort');
     } else {
@@ -1532,10 +1533,18 @@ function merge_sort(&$array, $cmp_function = 'strcmp')
 function _multi_sort($a, $b)
 {
     global $M_SORT_KEY;
-    $keys = explode(',', is_string($M_SORT_KEY) ? $M_SORT_KEY : strval($M_SORT_KEY));
+    $keys = $M_SORT_KEY;
     $first_key = $keys[0];
     if ($first_key[0] === '!') {
         $first_key = substr($first_key, 1);
+    }
+
+    if (($a === null) && ($b === null)) {
+        return 0;
+    } elseif ($a === null) {
+        return ($key[0] === '!') ? 1 : -1;
+    } elseif ($b === null) {
+        return ($key[0] === '!') ? -1 : 1;
     }
 
     if ((is_string($a[$first_key])) || (is_object($a[$first_key]))) {
