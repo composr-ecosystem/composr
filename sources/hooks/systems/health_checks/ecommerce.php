@@ -45,7 +45,7 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
                 $this->process_checks_section('testCurrencyConnection', 'Currency conversions', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
 
-            if (($show_unusable_categories) || (get_option('shipping_shippo_api_test') != '')) {
+            if (($show_unusable_categories) || (get_option(ecommerce_test_mode() ? 'shipping_shippo_api_test' : 'shipping_shippo_api_live') != '')) {
                 $this->process_checks_section('testShippoConnection', 'Shippo', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
 
@@ -101,12 +101,25 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
             return;
         }
 
-        $product_weight = 10.0;
-        $product_length = 36.84;
-        $product_width = 36.84;
-        $product_height = 36.84;
-        $cost = calculate_shipping_cost(null, null, $product_weight, $product_length, $product_width, $product_height);
-        $this->assertTrue(($cost > 10.00) && ($cost < 50.00), 'Shipping cost for a test product seems wrong');
+        $shippo_token = get_option('shipping_shippo_api_test');
+        if ((($use_test_data_for_pass === null) && (!ecommerce_test_mode())) || ($shippo_token == '')) {
+            $shippo_token = get_option('shipping_shippo_api_live');
+        }
+
+        require_code('ecommerce');
+
+        $url = 'https://api.goshippo.com/addresses/';
+        $options = [
+            'convert_to_internal_encoding' => true,
+            'extra_headers' => [
+                'Authorization' => 'ShippoToken ' . $shippo_token,
+                'Shippo-API-Version' => SHIPPO_API_VERSION,
+            ],
+            'ignore_http_status' => true,
+        ];
+        $_response = http_get_contents($url, $options);
+        $response = json_decode($_response, true);
+        $this->assertTrue(array_key_exists('results', $response) && is_array($response['results']), 'Did not get expected Shippo result list');
     }
 
     /**

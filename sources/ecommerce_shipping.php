@@ -21,6 +21,16 @@
 // DON'T include this file directly. Include 'ecommerce' instead.
 
 /**
+ * Standard code module initialisation function.
+ *
+ * @ignore
+ */
+function init__ecommerce_shipping()
+{
+    define('SHIPPO_API_VERSION', '2018-02-08');
+}
+
+/**
  * Recalculate shipping cost based on customer context.
  * Does not handle multiple quantities or items, this is complex in itself (due to dimension merging) and handled in derive_cart_amounts.
  *
@@ -205,7 +215,7 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
         'timeout' => 20.0,
         'extra_headers' => [
             'Authorization' => 'ShippoToken ' . $shippo_token,
-            'Shippo-API-Version' => '2018-02-08',
+            'Shippo-API-Version' => SHIPPO_API_VERSION,
         ],
         'raw_content_type' => 'application/json',
         'ignore_http_status' => true,
