@@ -43,8 +43,7 @@ function member_get_csv_headings_extended()
     $headings = member_get_csv_headings();
     foreach ($cpfs as $i => $c) { // CPFs take precedence over normal fields of the same name
         $cpfs[$i]['_cf_name'] = get_translated_text($c['cf_name'], $GLOBALS['FORUM_DB']);
-        $cpfs[$i]['_cf_name'] = str_replace(',', (get_charset() == 'utf-8') ? (chr(hexdec('ef')) . chr(hexdec('b9')) . chr(hexdec('90'))) : '', $cpfs[$i]['_cf_name']); // Normal commas break sort_maps_by
-        $headings[$cpfs[$i]['_cf_name']] = $i;
+        $headings[$cpfs[$i]['_cf_name']] = strval($i); // We specially recognise numeric names as a map back to a CPF ID
     }
 
     // Subscription types
@@ -55,12 +54,17 @@ function member_get_csv_headings_extended()
         $usergroup_subscription_rows = $GLOBALS['FORUM_DB']->query_select('f_usergroup_subs', array('id', 's_title'));
         foreach ($usergroup_subscription_rows as $usergroup_subscription_row) {
             $item_name = get_translated_text($usergroup_subscription_row['s_title'], $GLOBALS['FORUM_DB']);
-            $headings[$item_name . ' (' . do_lang('SUBSCRIPTION_START_TIME') . ')'] = null;
-            $headings[$item_name . ' (' . do_lang('SUBSCRIPTION_TERM_START_TIME') . ')'] = null;
-            $headings[$item_name . ' (' . do_lang('SUBSCRIPTION_TERM_END_TIME') . ')'] = null;
-            $headings[$item_name . ' (' . do_lang('SUBSCRIPTION_EXPIRY_TIME') . ')'] = null;
-            $headings[$item_name . ' (' . do_lang('PAYMENT_GATEWAY') . ')'] = null;
-            $headings[$item_name . ' (' . do_lang('STATUS') . ')'] = null;
+            $heading_lang_strings = array(
+                'SUBSCRIPTION_START_TIME',
+                'SUBSCRIPTION_TERM_START_TIME',
+                'SUBSCRIPTION_TERM_END_TIME',
+                'SUBSCRIPTION_EXPIRY_TIME',
+                'PAYMENT_GATEWAY',
+                'STATUS',
+            );
+            foreach ($heading_lang_strings as $heading_lang_string) {
+                $headings[$item_name . ' (' . do_lang($heading_lang_string) . ')'] = ':' . str_replace('/', '\\', $item_name . ' (' . do_lang($heading_lang_string) . ')'); // Forward slashes are assumed as delimiters
+            }
             $subscription_types['USERGROUP' . strval($usergroup_subscription_row['id'])] = $item_name;
         }
     }
