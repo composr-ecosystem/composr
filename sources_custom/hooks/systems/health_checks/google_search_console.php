@@ -37,7 +37,7 @@ class Hook_health_check_google_search_console extends Hook_Health_Check
     {
         if (($show_unusable_categories) || (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('google_search_console')))) {
             require_code('oauth');
-            if ((($show_unusable_categories) || ((get_option('google_search_console_api_enabled') == '1') && (get_option('google_apis_api_key') != '') && (get_oauth_refresh_token('google_search_console') !== null)))) {
+            if ((($show_unusable_categories) || ((get_option('google_apis_api_key') != '') && (get_oauth_refresh_token('google_search_console') !== null)))) {
                 $this->process_checks_section('testGoogleSearchConsoleConnection', 'Google Search Console', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
         }

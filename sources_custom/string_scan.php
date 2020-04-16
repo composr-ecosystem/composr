@@ -3459,8 +3459,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_gift_reward_chance
         CONFIG_OPTION_global_donext_icons
         CONFIG_OPTION_google_analytics
-        GOOGLE_SEARCH_CONSOLE_API_ENABLED
-        CONFIG_OPTION_google_search_console_api_enabled
         CONFIG_OPTION_google_geocoding_api_enabled
         CONFIG_OPTION_google_translate_enabled
         CONFIG_OPTION_group_private_chatrooms

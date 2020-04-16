@@ -22,7 +22,6 @@ class _api_google_search_console_test_set extends cms_test_case
     {
         parent::setUp();
 
-        set_option('google_search_console_api_enabled', '1');
         $this->load_key_options('google');
     }
 

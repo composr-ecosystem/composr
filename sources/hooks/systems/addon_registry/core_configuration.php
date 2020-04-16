@@ -223,7 +223,6 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/tasks_background.php',
             'sources/hooks/systems/config/moniker_transliteration.php',
             'sources/hooks/systems/config/vote_member_ip_restrict.php',
-            'sources/hooks/systems/config/google_search_console_api_enabled.php',
             'sources/hooks/systems/config/spam_approval_threshold.php',
             'sources/hooks/systems/config/spam_ban_threshold.php',
             'sources/hooks/systems/config/spam_blackhole_detection.php',

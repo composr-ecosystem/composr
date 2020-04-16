@@ -30,7 +30,7 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
             return null;
         }
 
-        if ((get_option('google_search_console_api_enabled') == '0') || (get_option('google_apis_api_key') == '')) {
+        if (get_option('google_apis_api_key') == '') {
             return null;
         }
 
