@@ -42,16 +42,6 @@ class Hook_login_provider_facebook
                 try {
                     if ($FACEBOOK_CONNECT->getUser() != 0) {
                         $member = handle_facebook_connection_login($member, $quick_only);
-
-                        if (!is_guest($member)) {
-                            if (is_file(get_file_base() . '/sources_custom/hooks/systems/syndication/facebook.php')) {
-                                if (post_param_integer('auto_syndicate', 0) == 1) {
-                                    set_value('facebook_oauth_token' . '__' . strval($member), $FACEBOOK_CONNECT->getAccessToken(), true);
-                                } else {
-                                    set_value('facebook_oauth_token' . '__' . strval($member), '', true);
-                                }
-                            }
-                        }
                     }
                 } catch (Exception $e) {
                     header('Facebook-Error: ' . escape_header($e->getMessage()));
