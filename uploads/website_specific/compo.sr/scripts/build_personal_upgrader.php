@@ -102,6 +102,8 @@ if ($tar_path === null) {
     warn_exit(protect_from_escaping($err));
 }
 
+// Note by default wget ignores these Content-Disposition filenames. You can set a custom one with '-O', or use '--content-disposition' to make it respect the one here
+
 header('Content-Type: application/octet-stream');
 header('Content-Disposition: inline; filename="' . escape_header(basename($tar_path), true) . '"');
 
