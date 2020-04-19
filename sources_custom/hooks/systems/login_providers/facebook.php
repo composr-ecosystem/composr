@@ -41,16 +41,6 @@ class Hook_login_provider_facebook
             $facebook_uid = facebook_get_current_user_id();
             if ($facebook_uid !== null) {
                 $member_id = handle_facebook_connection_login($member_id, $quick_only);
-
-                if (!is_guest($member_id)) {
-                    if (is_file(get_file_base() . '/sources_custom/hooks/systems/syndication/facebook.php')) {
-                        if (post_param_integer('auto_syndicate', 0) == 1) {
-                            set_value('facebook_oauth_token' . '__' . strval($member_id), facebook_get_access_token_from_js_sdk(), true);
-                        } else {
-                            set_value('facebook_oauth_token' . '__' . strval($member_id), '', true);
-                        }
-                    }
-                }
             }
         }
         return $member_id;

@@ -110,6 +110,7 @@ function execute_task_background($task_row)
     task_log(null, 'Finished task ' . $hook);
     task_log_close();
 
+    // Send notification
     if ($task_row['t_send_notification'] == 1) {
         $attachments = [];
 
@@ -281,21 +282,15 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
         }
 
         // HTML result
-        if ($mime_type == 'text/html') {
-            if (is_array($content_result)) {
-                $path = $content_result[1];
-                $content_result = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
-                @unlink($path);
-                sync_file($path);
-            }
-
+        if (($mime_type == 'text/html') && (!is_array($content_result)/*Not a standalone file because that would have its own conflicting HTML wrapper*/)) {
+            $_content_result = is_object($content_result) ? protect_from_escaping($content_result) : protect_from_escaping(make_string_tempcode($content_result));
             if ($title === null) {
-                return is_object($content_result) ? protect_from_escaping($content_result) : make_string_tempcode($content_result);
+                return $_content_result;
             }
             return do_template('FULL_MESSAGE_SCREEN', [
                 '_GUID' => '20e67ceb86e3bbd1e889c6ca116d7a77',
                 'TITLE' => $title,
-                'TEXT' => is_object($content_result) ? protect_from_escaping($content_result) : make_string_tempcode($content_result),
+                'TEXT' => $_content_result,
             ]);
         }
 

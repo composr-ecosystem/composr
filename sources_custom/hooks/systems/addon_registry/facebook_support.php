@@ -95,10 +95,11 @@ class Hook_addon_registry_facebook_support
 Features:
  - User\'s can log in to your site using their Facebook profile (for Conversr-sites only)
  - News and calendar actions can be syndicated to a Facebook group/page
- - User\'s can syndicate all their site activity to their own Facebook accounts
  - New Facebook Page block (allows users to like your site, shows those that have, and view page posts)
- - New Facebook \'Like button\' block (linked into the main_screen_actions block by default)
- - New Facebook Comments block
+ - New Facebook \'Like button\' block (liking a page)
+ - New Facebook Comments block (comments with a nice Facebook UI)
+ - New Facebook Page block (embedding a page)
+ - Facebook Like button on the default [tt]main_screen_actions[/tt] block
 
 For this addon to work you need to configure Composr\'s Facebook configuration settings, which includes getting a Facebook app ID.
 
@@ -170,14 +171,11 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
             'sources_custom/hooks/systems/addon_registry/facebook_support.php',
             'sources_custom/hooks/systems/config/facebook_allow_signups.php',
             'sources_custom/hooks/systems/config/facebook_appid.php',
-            'sources_custom/hooks/systems/config/facebook_auto_syndicate.php',
-            'sources_custom/hooks/systems/config/facebook_member_syndicate_to_page.php',
             'sources_custom/hooks/systems/config/facebook_secret_code.php',
             'sources_custom/hooks/systems/config/facebook_sync_avatar.php',
             'sources_custom/hooks/systems/config/facebook_sync_dob.php',
             'sources_custom/hooks/systems/config/facebook_sync_email.php',
             'sources_custom/hooks/systems/config/facebook_sync_username.php',
-            'sources_custom/hooks/systems/config/facebook_syndicate.php',
             'sources_custom/hooks/systems/config/facebook_uid.php',
             'sources_custom/hooks/systems/login_providers/facebook.php',
             'sources_custom/hooks/systems/page_groupings/facebook.php',

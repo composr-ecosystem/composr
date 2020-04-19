@@ -13,7 +13,7 @@
  * @package    testing_platform
  */
 
-// php _tests/index.php _installer_forum_drivers
+// php _tests/index.php __installer_forum_drivers
 
 /**
  * Composr test case class (unit testing).

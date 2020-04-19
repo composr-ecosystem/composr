@@ -23,7 +23,7 @@ class Hook_syndication_twitter
         return 'Twitter';
     }
 
-    public function is_available()
+    public function is_available($member_id = null)
     {
         if (!addon_installed('twitter_support')) {
             return false;
@@ -106,7 +106,7 @@ class Hook_syndication_twitter
 
     public function syndicate_user_activity($member_id, $row)
     {
-        if (($this->is_available()) && ($this->auth_is_set($member_id))) {
+        if (($this->is_available($member_id)) && ($this->auth_is_set($member_id))) {
             return $this->_send(
                 get_value('twitter_oauth_token__' . strval($member_id), null, true),
                 get_value('twitter_oauth_token_secret__' . strval($member_id), null, true),

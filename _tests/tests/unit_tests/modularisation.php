@@ -112,9 +112,6 @@ class modularisation_test_set extends cms_test_case
         //$ignore = IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE; Uncomment for more careful testing
         $files = get_directory_contents(get_file_base(), '', $ignore);
         foreach ($files as $path) {
-            if ($path == 'sources_custom/hooks/systems/content_meta_aware/temp_test.php') {
-                continue;
-            }
             $found = false;
             foreach ($addon_data as $addon_name => $addon_files) {
                 foreach ($addon_files as $fileindex => $_path) {

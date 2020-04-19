@@ -126,7 +126,7 @@ class Hook_fields_tax_code
 
         if (preg_match('#^TIC:#', $tax_code) != 0) {
             $current_tic = intval(substr($tax_code, 4));
-            require_code('files2');
+            require_code('http');
             list($__tics) = cache_and_carry('cms_http_request', ['https://taxcloud.net/tic/?format=text', ['convert_to_internal_encoding' => true]]);
             $_tics = explode("\n", $__tics);
             foreach ($_tics as $tic_line) {

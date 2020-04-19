@@ -27,7 +27,9 @@
  */
 function init__ecommerce_shipping()
 {
-    define('SHIPPO_API_VERSION', '2018-02-08');
+    if (!defined('SHIPPO_API_VERSION')) {
+        define('SHIPPO_API_VERSION', '2018-02-08');
+    }
 }
 
 /**

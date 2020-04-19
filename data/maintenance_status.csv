@@ -16,7 +16,7 @@ database_ibm,IBM DB2 database driver,,,Not regularly tested due to needing a tes
 database_oracle,Oracle database driver,,,Not regularly tested due to needing a testing platform. Could potentially break due to third-party changes.,No,Partly tested by database_misc automated test. Partly tested by running of full test set.
 database_postgresql,PostgreSQL database driver,ocProducts,,Not automatically regularly tested due to needing a testing platform. Could potentially break due to third-party changes.,No,Partly tested by database_misc automated test. Partly tested by running of full test set.
 database_sqlserver,Microsoft SQL server database driver,,,Not regularly tested due to needing a testing platform. Could potentially break due to third-party changes.,No,Partly tested by database_misc automated test. Partly tested by running of full test set.
-database_xml,XML database driver,,,For developers only.,No,Partly tested by _installer_xml_db automated test. Partly tested by running of full test set.
+database_xml,XML database driver,,,For developers only.,No,Partly tested by __installer_xml_db automated test. Partly tested by running of full test set.
 platform_gae,Google App Engine platform support,,,Not regularly tested due to needing a testing platform. Could potentially break due to third-party changes.,No,
 platform_phalanger,Phalanger platform support,,,Not regularly tested due to needing a testing platform. Could potentially break due to third-party changes.,No,
 platform_chmod,Non-suEXEC platform support,ocProducts,,"Not regularly tested. Likely to be very un-friendly to the admin, so should be discouraged.",No,
@@ -91,7 +91,7 @@ browser_android_chrome,Mobile Chrome (Android & iOS) support,ocProducts,ocProduc
 browser_microsoft,IE/Microsoft Edge support,ocProducts,ocProducts,Could potentially break due to third-party changes.,No,
 browser_blink,Chrome/Opera/Blink support,ocProducts,ocProducts,Could potentially break due to third-party changes.,No,
 social_links,Basic social media / instant messenger linkage,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
-extra_logging,Permission/eCommerce/profile logging features,ocProducts,,Not fully manually tested.,No,Partly tested by _extra_logging automated test.
+extra_logging,Permission/eCommerce/profile logging features,ocProducts,,Not fully manually tested.,No,Partly tested by __extra_logging automated test.
 context,Magic click / context menu features,ocProducts,,Not regularly tested.,No,
 php,Maintain with new versions of PHP,ocProducts,ocProducts,Could potentially break due to third-party changes.,No,
 mysql,Maintain with new versions of MySQL,ocProducts,,Could potentially break due to third-party changes.,No,
@@ -117,8 +117,8 @@ cloudflare_ip_lists,Cloudflare true IP detection (a list of Cloudflare IPs to tr
 non_block_ip_list,Lists of IPs to not block,ocProducts,,Not regularly Tested.,No,Part of release process / _special_links automated test.
 php_unsupported,Detect if a PHP version is used that is no longer maintained by PHP developers.,ocProducts,,Not regularly Tested.,No,php_versioning automated test.
 external_health_check,Various tools that the Health Check will link out to when manual checks are enabled.,ocProducts,,Not regularly Tested.,No,Partly tested by _special_links automated test.
-google_safe_browsing_api,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,_health_check automated test to run Health Checks.
-google_recaptcha,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,_health_check automated test to run Health Checks.
+google_safe_browsing_api,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,___health_check automated test to run Health Checks.
+google_recaptcha,The Google Safe Browsing API.,ocProducts,,Not regularly Tested.,No,___health_check automated test to run Health Checks.
 google_search_console,The Google Search Console API.,ocProducts,,Not regularly Tested.,No,
 moz,Moz API.,ocProducts,,Not regularly Tested.,No,_api_moz automated test.
 google_analytics,Google Analytics integration.,ocProducts,,Not regularly Tested.,No,

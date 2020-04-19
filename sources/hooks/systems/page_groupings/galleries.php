@@ -41,7 +41,7 @@ class Hook_page_groupings_galleries
         $cnt += intval($GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)'));
 
         return [
-            ['cms', 'menu/rich_content/galleries', ['cms_galleries', ['type' => 'browse'], get_module_zone('cms_galleries')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('galleries:GALLERIES'), make_string_tempcode(escape_html(integer_format($cnt)))), 'galleries:DOC_GALLERIES'],
+            has_privilege(get_member(), 'submit_midrange_content', 'cms_galleries') ? ['cms', 'menu/rich_content/galleries', ['cms_galleries', ['type' => 'browse'], get_module_zone('cms_galleries')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('galleries:GALLERIES'), make_string_tempcode(escape_html(integer_format($cnt)))), 'galleries:DOC_GALLERIES'] : null,
             ['rich_content', 'menu/rich_content/galleries', ['galleries', [], get_module_zone('galleries')], do_lang_tempcode('galleries:GALLERIES')],
         ];
     }

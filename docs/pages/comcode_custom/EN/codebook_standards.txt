@@ -885,7 +885,7 @@ Be type-strict
 Avoid complex SQL
 | Portability
 | Product development only
-| Automated test ([tt]_installer_xml_db.php[/tt])
+| Automated test ([tt]__installer_xml_db.php[/tt])
 | You cannot use SQL syntax that is not widely supported such as the MySQL substring functions, unless the [tt]db_function[/tt] function supports it.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -899,7 +899,7 @@ Don't use [tt]LIMIT[/tt] manually, use the API
 ]Don't use ` symbols in your SQL and don't use keywords for table/field names
 | Portability: they are MySQL-specific
 | Product development only
-| Automated test ([tt]_installer_xml_db.php[/tt]), table creation code checks
+| Automated test ([tt]__installer_xml_db.php[/tt]), table creation code checks
 | You will have been forced to choose field names that don't require escaping anyway.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]

@@ -634,6 +634,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
 
     $buttons = new Tempcode();
 
+    // Validate
     if ((array_key_exists('may_validate_posts', $topic_info)) && (addon_installed('unvalidated')) && ((($topic_info['validated'] == 0) && ($_postdetails['id'] == $topic_info['first_post_id'])) || ($_postdetails['validated'] == 0))) {
         $map = ['page' => 'topics', 'type' => 'validate_post', 'id' => $_postdetails['id']];
         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
@@ -652,6 +653,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '712fdaee35f378e37b007f3a73246690', 'REL' => 'validate nofollow', 'IMMEDIATE' => true, 'IMG' => 'menu/adminzone/audit/unvalidated', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
+    // Quote/reply
     if (($may_reply) && (get_bot_type() === null)) {
         $map = ['page' => 'topics', 'type' => 'new_post', 'id' => $_postdetails['topic_id'], 'parent_id' => $_postdetails['id']];
         if ($topic_info['is_threaded'] == 0) {
@@ -697,6 +699,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         }
     }
 
+    // Quote to new ticket
     if ($rendering_context == 'tickets') {
         if ((array_key_exists('message_comcode', $_postdetails)) && ($_postdetails['message_comcode'] !== null)) {
             $ticket_id = get_param_string('id', null);
@@ -723,6 +726,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         }
     }
 
+    // Whisper
     $may_pt_members = array_key_exists('may_pt_members', $topic_info);
     $may_inline_pp = $may_reply_private_post;
     if (get_option('inline_pp_advertise') == '0') {
@@ -751,6 +755,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'fb1c74bae9c553dc160ade85adf289b5', 'REL' => 'add reply contact nofollow', 'IMMEDIATE' => false, 'IMG' => (get_option('inline_pp_advertise') == '0') ? 'buttons/send' : 'buttons/whisper', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
+    // Edit
     if (array_key_exists('may_edit', $_postdetails)) {
         $map = ['page' => 'topics', 'type' => 'edit_post', 'id' => $_postdetails['id']];
         if ($rendering_context == 'tickets') {
@@ -774,12 +779,13 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'f341cfc94b3d705437d43e89f572bff6', 'REL' => 'edit nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/edit', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $edit_url]));
     }
 
+    // Delete
     if (array_key_exists('may_delete', $_postdetails)) {
         $map = ['page' => 'topics', 'type' => 'delete_post', 'id' => $_postdetails['id']];
         if ($rendering_context == 'tickets') {
             $map['redirect'] = protect_url_parameter(build_url(['page' => 'tickets', 'type' => 'ticket', 'id' => get_param_string('id')], get_module_zone('tickets'), [], false, false, false, '_top'));
         } else {
-            $map['redirect'] = protect_url_parameter(SELF_REDIRECT);
+            $map['redirect'] = $GLOBALS['FORUM_DRIVER']->topic_url($_postdetails['topic_id'], '', true);
         }
         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
         if (($test !== null) && ($test !== '0')) {
@@ -797,6 +803,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '8bf6d098ddc217eef75718464dc03d41', 'REL' => 'delete nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/delete3', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $delete_url]));
     }
 
+    // Report
     if ($rendering_context != 'tickets') {
         if ((array_key_exists('may_report_content', $topic_info)) && (addon_installed('tickets')) && (get_bot_type() === null)) {
             require_lang('report_content');
@@ -820,6 +827,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         }
     }
 
+    // Revisions
     if ($_postdetails['has_revisions']) {
         $action_url = build_url(['page' => 'admin_revisions', 'type' => 'browse', 'resource_types' => 'post', 'resource_id' => $_postdetails['id']], get_module_zone('admin_revisions'));
         $_title = do_lang_tempcode('actionlog:REVISIONS');
@@ -829,6 +837,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '6086b2ae226bf2a69d1e34641d22ae21', 'REL' => 'history nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/revisions', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
+    // Give points
     if ($rendering_context != 'tickets') {
         if ((addon_installed('points')) && (!is_guest()) && (!is_guest($_postdetails['poster'])) && (has_privilege($_postdetails['poster'], 'use_points'))) {
             require_css('points');
