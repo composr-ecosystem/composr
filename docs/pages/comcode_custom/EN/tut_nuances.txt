@@ -133,8 +133,8 @@ Make sure:
 
 [title="3"]SMF[/title]
 
-Super administrator membership is determined by membership of the 'Administrator' usergroup (#1).
-Super moderator membership is determined by membership of the 'Global Moderator' usergroup (#2).
+Super-administrator membership is determined by membership of the 'Administrator' usergroup (#1).
+Super-moderator membership is determined by membership of the 'Global Moderator' usergroup (#2).
 
 In order for frame-embed of SMF to work ("Show forum within website"), you need to remove this line from SMF's [tt]index.php[/tt] file:
 [code="PHP"]

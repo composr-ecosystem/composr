@@ -23,8 +23,8 @@
  *
  * @param  SHORT_TEXT $name The name of the usergroup
  * @param  BINARY $is_default Whether members are automatically put into the when they join
- * @param  BINARY $is_super_admin Whether members of this usergroup are all super administrators
- * @param  BINARY $is_super_moderator Whether members of this usergroup are all super moderators
+ * @param  BINARY $is_super_admin Whether members of this usergroup are all super-administrators
+ * @param  BINARY $is_super_moderator Whether members of this usergroup are all super-moderators
  * @param  SHORT_TEXT $title The title for primary members of this usergroup that don't have their own title
  * @param  URLPATH $rank_image The rank image for this
  * @param  ?GROUP $promotion_target The that members of this usergroup get promoted to at point threshold (null: no promotion prospects)
@@ -291,8 +291,8 @@ function cns_make_rank_set($rank_set)
  * @param  ?AUTO_LINK $group_id The ID of the usergroup to edit (null: adding)
  * @param  SHORT_TEXT $name The name of the usergroup
  * @param  BINARY $is_default Whether members are automatically put into the when they join
- * @param  BINARY $is_super_admin Whether members of this usergroup are all super administrators
- * @param  BINARY $is_super_moderator Whether members of this usergroup are all super moderators
+ * @param  BINARY $is_super_admin Whether members of this usergroup are all super-administrators
+ * @param  BINARY $is_super_moderator Whether members of this usergroup are all super-moderators
  * @param  SHORT_TEXT $title The title for primary members of this usergroup that don't have their own title
  * @param  URLPATH $rank_image The rank image for this
  * @param  ?GROUP $promotion_target The that members of this usergroup get promoted to at point threshold (null: no promotion prospects)

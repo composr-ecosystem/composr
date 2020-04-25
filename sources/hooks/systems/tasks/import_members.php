@@ -30,9 +30,10 @@ class Hook_task_import_members
      * @param  boolean $use_temporary_passwords Whether to assign temporary passwords
      * @param  PATH $path The path of the file to import
      * @param  ?string $filename The filename of the file to import (null: detect from $path)
+     * @param  MEMBER $initiator_id The ID of the member initiating the import
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($default_password, $use_temporary_passwords, $path, $filename = null)
+    public function run($default_password, $use_temporary_passwords, $path, $filename, $initiator_id)
     {
         set_mass_import_mode();
 
@@ -267,7 +268,7 @@ class Hook_task_import_members
             $allow_emails_from_staff = array_key_exists('Opt-in', $line) ? ((strtoupper($line['Opt-in']) == 'YES' || $line['Opt-in'] == '1' || strtoupper($line['Opt-in']) == 'Y' || strtoupper($line['Opt-in']) == 'ON') ? 1 : 0) : 0;
             $primary_group = null;
             $groups = null;
-            if (array_key_exists('Usergroup', $line)) {
+            if ((array_key_exists('Usergroup', $line)) && (has_privilege($initiator_id, 'assume_any_member'))) {
                 $parts = explode('/', $line['Usergroup']);
                 foreach ($parts as $p) {
                     $p = trim($p);

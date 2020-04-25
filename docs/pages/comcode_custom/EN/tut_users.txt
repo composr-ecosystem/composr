@@ -59,21 +59,21 @@ This short tutorial aims simply to clarify what all these terms to relate to, an
 		</tr>
 		<tr class="zebra-1">
 			<td>Staff<br />(aka Webmaster)</td>
-			<td>Someone who is a super moderator or super administrator. If the staff filtered is enabled, they must also be chosen as staff.
+			<td>Someone who is a super-moderator or super-administrator. If the staff filtered is enabled, they must also be chosen as staff.
 			<br />Often the term is used loosely with the literal meaning of staff not really being intended &ndash; in such situations it is used to mean any user in usergroups with permissions that, by default, only staff have.
 			<br />From a users point of view, staff is synonymous with 'authority figure', and sometimes this meaning is used.</td>
 			<td>This term is used to distinguish someone with authority from regular users.</td>
 		</tr>
 		<tr class="zebra-0">
-			<td>Super moderator (often, simply 'mod')</td>
-			<td>A special usergroup of second level staff, as dictated by the forum driver. By default, super moderators can do almost anything, and possibly elevate themselves to administrator via indirect methods.
-			<br />With [/html][concept]Conversr[/concept][html], being a super moderator is simply a matter of being in the aptly named user usergroup, which is automatically assigned staff access and privileges.</td>
+			<td>Super-moderator (often, simply 'mod')</td>
+			<td>A special usergroup of second level staff, as dictated by the forum driver. By default, super-moderators can do almost anything, and possibly elevate themselves to administrator via indirect methods.
+			<br />With [/html][concept]Conversr[/concept][html], being a super-moderator is simply a matter of being in the aptly named user usergroup, which is automatically assigned staff access and privileges.</td>
 			<td>This term is a specific term to identify second level staff.</td>
 		</tr>
 		<tr class="zebra-1">
-			<td>Super administrator (often, simply 'admin')</td>
+			<td>Super-administrator (often, simply 'admin')</td>
 			<td>A special usergroup of first level staff. Administrators have full, literally undeniable, access.
-			<br />Membership is defined by the forum driver (i.e. similar to above). For Conversr, a member is a super administrator if they are in a usergroup that is marked as one.</td>
+			<br />Membership is defined by the forum driver (i.e. similar to above). For Conversr, a member is a super-administrator if they are in a usergroup that is marked as one.</td>
 			<td>This term is a specific term to identify first level staff.</td>
 		</tr>
 	</tbody>
@@ -110,8 +110,8 @@ That should do it!
  5_key="Author"               5_value="Someone who authored something (not necessary a user)"
  6_key="Submitter"            6_value="Someone who has submitted something"
  7_key="Staff"                7_value="Someone who is on the staff list, or generally has staff access (term is often used vaguely as a convenience, as permissions in reality are very configurable)"
- 8_key="Super moderator"      8_value="Someone who has special staff-like access, but not full site control"
- 9_key="Super administrator"  9_value="Someone who has full site control, and can't have it taken away as long as they are a super administrator"
+ 8_key="Super-moderator"      8_value="Someone who has special staff-like access, but not full site control"
+ 9_key="Super-administrator"  9_value="Someone who has full site control, and can't have it taken away as long as they are a super-administrator"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

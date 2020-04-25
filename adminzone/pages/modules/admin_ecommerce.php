@@ -86,6 +86,28 @@ class Module_admin_ecommerce extends Standard_crud_module
         return $ret;
     }
 
+    /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'admin_ecommerce']);
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install($upgrade_from = null, $upgrade_from_hack = null)
+    {
+        $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
+        foreach (array_keys($usergroups) as $id) {
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_ecommerce', 'zone_name' => 'adminzone', 'group_id' => $id]); // Could set up administrative subscriptions then join them
+        }
+    }
+
     public $title;
 
     /**

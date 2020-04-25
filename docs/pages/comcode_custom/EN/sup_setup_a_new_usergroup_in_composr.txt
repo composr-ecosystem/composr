@@ -43,7 +43,7 @@ This section has three quite important options in some circumstances. These opti
 The next section has two options; the first allows you to set a rank image for members of this usergroup. This section also allows you to set whether or not the rank image only appears for primary members of this group.
 [title="2"]Benefits[/title]
 
-The Benefits section of the usergroup form allows you to set whether the usergroup is classed as a super administrator which has access to everything. This section also has an option to set usergroup members as super moderators which means you will give the usergroup some moderator abilities and they will appear on the staff section of the website.
+The Benefits section of the usergroup form allows you to set whether the usergroup is classed as a super-administrator which has access to everything. This section also has an option to set usergroup members as super-moderators which means you will give the usergroup some moderator abilities and they will appear on the staff section of the website.
 [/surround]
 
 [title="2"]Security[/title]

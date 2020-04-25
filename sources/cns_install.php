@@ -619,7 +619,7 @@ function install_cns($upgrade_from = null)
         $guest_group = cns_make_group(do_lang('GUESTS'), 0, 0, 0, do_lang('DESCRIPTION_GUESTS'));
         // Make administrators
         $administrator_group = cns_make_group(do_lang('ADMINISTRATORS'), 0, 1, 0, do_lang('DESCRIPTION_ADMINISTRATORS'), 'cns_rank_images/admin', null, null, null, 0);
-        // Make super moderators
+        // Make super-moderators
         $super_moderator_group = cns_make_group(do_lang('SUPER_MODERATORS'), 0, 0, 1, do_lang('DESCRIPTION_SUPER_MODERATORS'), 'cns_rank_images/mod', null, null, null, 0);
         // Make member
         list($member_group_0, $member_group_1, $member_group_2, $member_group_3, $member_group_4) = cns_make_rank_set('fun');

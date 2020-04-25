@@ -101,10 +101,10 @@ class Module_admin_aggregate_types extends Standard_crud_module
             'browse' => ['AGGREGATE_TYPES', 'menu/adminzone/structure/aggregate_types'],
         ];
         $ret += parent::get_entry_points();
-        $ret += [
-            'xml' => ['EDIT_AGGREGATE_TYPES', 'admin/xml'],
-            'sync' => ['SYNCHRONISE_AGGREGATE_TYPES', 'admin/sync'],
-        ];
+        if (has_privilege(get_member(), 'assume_any_member')) {
+            $ret['xml'] = ['EDIT_AGGREGATE_TYPES', 'admin/xml'];
+        }
+        $ret['sync'] = ['SYNCHRONISE_AGGREGATE_TYPES', 'admin/sync'];
         return $ret;
     }
 
@@ -415,6 +415,8 @@ class Module_admin_aggregate_types extends Standard_crud_module
      */
     public function xml()
     {
+        check_privilege('assume_any_member'); // Could be used to set up dangerous new stuff
+
         parse_aggregate_xml(true);
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_xml'], '_SELF');
@@ -434,6 +436,8 @@ class Module_admin_aggregate_types extends Standard_crud_module
      */
     public function _xml()
     {
+        check_privilege('assume_any_member'); // Could be used to set up dangerous new stuff
+
         require_code('files');
         $path = get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml';
         $xml = post_param_string('xml');

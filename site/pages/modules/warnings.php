@@ -393,7 +393,7 @@ class Module_warnings extends Standard_crud_module
                 }
             }
 
-            if (has_privilege(get_member(), 'member_maintenance')) {
+            if ((has_privilege(get_member(), 'member_maintenance')) && (has_privilege(get_member(), 'assume_any_member'))) {
                 $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ['g_is_private_club' => 0]);
                 $groups = new Tempcode();
                 $groups->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
@@ -870,7 +870,7 @@ class Module_warnings extends Standard_crud_module
         }
 
         // Change group
-        if (has_privilege(get_member(), 'member_maintenance')) {
+        if ((has_privilege(get_member(), 'member_maintenance')) && (has_privilege(get_member(), 'assume_any_member'))) {
             if ($changed_usergroup_to !== null) {
                 $GLOBALS['FORUM_DB']->query_update('f_members', ['m_primary_group' => $changed_usergroup_to], ['id' => $member_id], '', 1);
                 cns_mod_log_it('GROUP_CHANGE', strval($member_id), strval($changed_usergroup_to));
