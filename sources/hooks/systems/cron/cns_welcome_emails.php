@@ -87,10 +87,12 @@ class Hook_cron_cns_welcome_emails
                 if (get_option('allow_email_from_staff_disable') == '1') {
                     $where .= ' AND m_allow_emails_from_staff=1';
                 }
-                $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
                 $where .= ' AND ' . db_string_not_equal_to('m_email_address', '');
-                if (addon_installed('unvalidated')) {
-                    $where .= ' AND m_validated=1';
+                if ($send_seconds_after_joining != 0) {
+                    $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+                    if (addon_installed('unvalidated')) {
+                        $where .= ' AND m_validated=1';
+                    }
                 }
                 $query = 'SELECT m_email_address,m_username,id,m_join_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members' . $where;
                 $members = array_merge($members, $GLOBALS['FORUM_DB']->query($query));

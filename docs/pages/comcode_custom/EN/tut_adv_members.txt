@@ -220,6 +220,10 @@ You can delete a Welcome E-mail from the bottom of its edit form.
 The purpose of this feature is to gradually advertise the features of your website to your members in a way that reinforces awareness. As most members will not usually return to a website, welcome e-mails provide a strong tool to keep them aware and entice them to fully embrace whatever service you are providing.
 
 For welcome e-mails to work the CRON bridge scheduler must be configured as discussed in the [page="_SEARCH:tut_configuration"]Configuration tutorial[/page]
+
+Welcome e-mails will only be sent to validated members who have confirmed their e-mail address. E-mails are sent out based on join time, so if a member is not fully validated in time a welcome e-mail may simply never happen.
+The one exception is welcome e-mails set to send immediately. In such a case Composr will assume that validation may not have had time to happen yet, so it will ignore it.
+If you know validation may take a while, make sure any non-immediate welcome e-mail is going to happen after you can assume validation will have been handled.
 [/surround]
 
 [title="3"]Referencing member-specific data[/title]
