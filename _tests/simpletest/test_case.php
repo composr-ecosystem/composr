@@ -312,7 +312,7 @@ class SimpleTestCase
     {
         cms_ini_set('ocproducts.type_strictness', '0');
 
-        $message = $this->escapePercentageSignsExceptFirst($message);
+        $message = $this->escapeIncidentalPrintfSyntax($message);
 
         if ($expectation->test($compare)) {
             return $this->pass(
@@ -328,7 +328,8 @@ class SimpleTestCase
     }
 
     /**
-     * Escapes all percentage signs, except the first.
+     * Escapes all percentage signs so *printf functions don't do any special processing...
+     * ... except for the first one if it forms %s, which is used to reference the auto-generated assert message
      *
      * Get the position of the first percentage sign.
      * Skip over escaping, if none is found.
@@ -338,13 +339,13 @@ class SimpleTestCase
      * @param string $string
      * @return string
      */
-    protected function escapePercentageSignsExceptFirst($string)
+    protected function escapeIncidentalPrintfSyntax($string)
     {
-        $pos = strpos($string, '%');
+        $pos = strpos($string, '%s');
         if($pos !== false) {
-            return substr($string, 0, $pos + 1) . str_replace('%', '%%', substr($string, $pos + 1));
+            return substr($string, 0, $pos + 2) . str_replace('%', '%%', substr($string, $pos + 2));
         }
-        return $string;
+        return str_replace('%', '%%', $string);
     }
 
     /**

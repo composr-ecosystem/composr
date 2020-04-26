@@ -116,7 +116,7 @@ sql_dump postgresql
 psql cms -f <file.sql> -Ucms -W
 [/code]
 [*] Generate SQL for updating sequence counters:
-[code="SQL"]
+[code="PostgreSQL"]
 SELECT 'SELECT setval(pg_get_serial_sequence(''' || tablename || ''', ''id''), coalesce(max(id),0) + 1, false) FROM ' || tablename || ';'
 FROM pg_tables WHERE NOT schemaname IN ('pg_catalog', 'information_schema')
 ORDER BY schemaname, tablename;
@@ -128,7 +128,7 @@ ORDER BY schemaname, tablename;
 [title="3"]Whoops?[/title]
 
 You may need to reassign ownership of the tables you imported if you accidentally did it with he wrong user. This will generate some SQL you can run to do that:
-[code="SQL"]
+[code="PostgreSQL"]
 SELECT 'ALTER TABLE ' || tablename || ' OWNER TO cms;'
 FROM pg_tables WHERE NOT schemaname IN ('pg_catalog', 'information_schema')
 ORDER BY schemaname, tablename;

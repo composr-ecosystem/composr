@@ -97,7 +97,7 @@ class _special_links_test_set extends cms_test_case
                 require_code('urls2');
                 $message = '';
                 $exists = check_url_exists($url, null, false, 3, $message);
-                $this->assertTrue($exists, 'External link (' . str_replace('%', '%%', $url) . ') not working (' . $message . '), fix test and use within Composr (separate)');
+                $this->assertTrue($exists, 'External link (' . $url . ') not working (' . $message . '), fix test and use within Composr (separate)');
             }
         }
     }
@@ -124,7 +124,7 @@ class _special_links_test_set extends cms_test_case
             require_code('urls2');
             $message = '';
             $exists = check_url_exists($url, null, false, 3, $message);
-            $this->assertTrue($exists, 'External link (' . str_replace('%', '%%', $url) . ') not working (' . $message . '), fix test and use within Composr (separate)');
+            $this->assertTrue($exists, 'External link (' . $url . ') not working (' . $message . '), fix test and use within Composr (separate)');
         }
     }
 }

@@ -37,7 +37,7 @@ class urls_simplifier_test_set extends cms_test_case
         $from = 'x%20%D0%B8%D1%81%D0%BF%D1%8B%D1%82%D0%B0%D0%BD%D0%B8%D0%B5';
         $got = cms_rawurlrecode($from, true);
         $expected = 'x%20' . hex2bin('D0B8D181D0BFD18BD182D0B0D0BDD0B8D0B5');
-        $this->assertTrue($got == $expected, str_replace('%', '%%', 'Got ' . $got . '; expected ' . $expected));
+        $this->assertTrue($got == $expected, 'Got ' . $got . '; expected ' . $expected);
     }
 
     public function testProceedAsExpected()
@@ -54,23 +54,23 @@ class urls_simplifier_test_set extends cms_test_case
 
         foreach ($tests as $from => $expected) {
             $got = $this->ob->decode($from);
-            $this->assertTrue($got == $expected, str_replace('%', '%%', 'Incorrectly decoded ' . $from . '; got ' . $got . '; expected ' . $expected));
+            $this->assertTrue($got == $expected, 'Incorrectly decoded ' . $from . '; got ' . $got . '; expected ' . $expected);
 
             if ($got == $expected) {
                 // Try double decoding
                 $got = $this->ob->decode($expected);
-                $this->assertTrue($got == $expected, str_replace('%', '%%', 'Double decoding failed ' . $from));
+                $this->assertTrue($got == $expected, 'Double decoding failed ' . $from);
             }
         }
 
         foreach ($tests as $expected => $from) {
             $got = $this->ob->encode($from);
-            $this->assertTrue($got == $expected, str_replace('%', '%%', 'Incorrectly encoded ' . $from . '; got ' . $got . '; expected ' . $expected));
+            $this->assertTrue($got == $expected, 'Incorrectly encoded ' . $from . '; got ' . $got . '; expected ' . $expected);
 
             if ($got == $expected) {
                 // Try double encoding
                 $got = $this->ob->encode($expected);
-                $this->assertTrue($got == $expected, str_replace('%', '%%', 'Double encoding failed ' . $from));
+                $this->assertTrue($got == $expected, 'Double encoding failed ' . $from);
             }
         }
     }

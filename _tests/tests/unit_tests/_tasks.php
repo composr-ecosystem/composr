@@ -239,7 +239,7 @@ class _tasks_test_set extends cms_test_case
 
         require_code('hooks/systems/tasks/import_members');
         $ob_import = new Hook_task_import_members();
-        $ob_import->run('', false, $tmp_path, 'test.csv');
+        $ob_import->run('', false, $tmp_path, 'test.csv', $GLOBALS['FORUM_DRIVER']->get_guest_id());
 
         @unlink($tmp_path);
 
@@ -248,6 +248,6 @@ class _tasks_test_set extends cms_test_case
         $results = $ob_export->run(false, ['ID', 'Username'], [], 'ID', 'csv');
         $this->assertTrue(strpos(cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK | FILE_READ_BOM), 'TestingABC') !== false);
 
-        $ob_import->run('', false, $results[1][1], 'test.csv');
+        $ob_import->run('', false, $results[1][1], 'test.csv', $GLOBALS['FORUM_DRIVER']->get_guest_id());
     }
 }

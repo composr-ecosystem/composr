@@ -350,7 +350,7 @@ class lang_spelling_test_set extends cms_test_case
         }
 
         // Super-[moderator|admin]
-        if (stripos($string, 'super moderator') !== false) {
+        if ((stripos($string, 'super moderator') !== false) && (!in_array($file, ['vb3.php']))) {
             $ob->assertTrue(false, 'The phrase \'super moderator\' was used in ' . $path . '. This should be changed to \'super-moderator\'.');
         }
         if (stripos($string, 'super admin') !== false) {

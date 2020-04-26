@@ -226,6 +226,6 @@ class _broken_links_test_set extends cms_test_case
         require_code('urls2');
         $message = '';
         $exists = check_url_exists($url, null, false, 3, $message);
-        $this->assertTrue($exists, 'Broken URL: ' . str_replace('%', '%%', $url) . ' (' . $message . ') in ' . $context);
+        $this->assertTrue($exists, 'Broken URL: ' . $url . ' (' . $message . ') in ' . $context);
     }
 }

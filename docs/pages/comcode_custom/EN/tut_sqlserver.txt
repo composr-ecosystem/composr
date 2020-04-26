@@ -118,7 +118,7 @@ sql_dump sqlserver
 [/code]
 (yes, you can be running MySQL and export a SQL Server SQL dump!)
 [*] Edit the [tt].sql[/tt] file so the [tt]cached_comcode_pages[/tt] table is a little different, like (with the corrected table prefix):
-[code="SQL"]
+[code="tsql"]
 CREATE TABLE cms_cached_comcode_pages (
 	id int IDENTITY(1,1) NOT NULL,
 	the_zone nvarchar(80) NOT NULL,
@@ -132,7 +132,7 @@ CREATE TABLE cms_cached_comcode_pages (
 );
 [/code]
 [*] Edit the [tt].sql[/tt] file so the [tt]translate[/tt] table is a little different, like (with the corrected table prefix):
-[code="SQL"]
+[code="tsql"]
 CREATE TABLE cms_translate (
 	id int NOT NULL,
 	language nvarchar(5) NOT NULL,
@@ -146,19 +146,19 @@ CREATE TABLE cms_translate (
 );
 [/code]
 [*] Edit the [tt].sql[/tt] file to make this substitution:
-[code="SQL"]
+[code="tsql"]
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='unique__cms_cached_comcode_pages' AND object_id=OBJECT_ID('cms_cached_comcode_pages')) CREATE UNIQUE INDEX unique__cms_cached_comcode_pages ON cms_cached_comcode_pages(the_page,the_theme,the_zone);
 [/code]
 -->
-[code="SQL"]
+[code="tsql"]
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='unique__cms_cached_comcode_pages' AND object_id=OBJECT_ID('cms_cached_comcode_pages')) CREATE UNIQUE INDEX unique__cms_cached_comcode_pages ON cms_cached_comcode_pages(id);
 [/code]
 [*] Edit the [tt].sql[/tt] file to make this substitution:
-[code="SQL"]
+[code="tsql"]
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='unique__cms_translate' AND object_id=OBJECT_ID('cms_translate')) CREATE UNIQUE INDEX unique__cms_translate ON cms_translate(id,language);
 [/code]
 -->
-[code="SQL"]
+[code="tsql"]
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='unique__cms_translate' AND object_id=OBJECT_ID('cms_translate')) CREATE UNIQUE INDEX unique__cms_translate ON cms_translate(_id);
 [/code]
 [*] Copy the [tt].sql[/tt] file generated to a machine you can run SQL Management Studio from, if this is different from your website machine

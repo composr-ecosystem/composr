@@ -1100,18 +1100,18 @@ Data is stored in the [tt]performance_schema[/tt] database, which can be queried
 It's a little tricky to get performance schema running:[list="1"]
 [*] It needs to be enabled in the main MySQL configuration (i.e. cannot be done at run-time).
 [*] Actual instruments and consumers need enabling. To enable all of them:
-[code="SQL"]
+[code="MySQL"]
 UPDATE performance_schema.setup_instruments SET enabled='YES';
 UPDATE performance_schema.setup_consumers SET enabled='YES';
 [/code]
 [*] You can then query the data. For example, to find out what queries are creating on-disk temporary tables:
-[code="SQL"]
+[code="MySQL"]
 SELECT DISTINCT SQL_TEXT FROM performance_schema.events_statements_history_long WHERE CURRENT_SCHEMA LIKE '<database name>' AND CREATED_TMP_DISK_TABLES>0;
 [/code]
 [/list]
 
 MySQL also maintains some simple global counts of problematic queries as statuses. For example, to find use of temporary structures:
-[code="SQL"]
+[code="MySQL"]
 SHOW GLOBAL STATUS LIKE 'Created_tmp%';
 [/code]
 

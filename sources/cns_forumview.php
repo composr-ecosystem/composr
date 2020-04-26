@@ -1000,7 +1000,7 @@ function cns_get_forum_view($forum_id, $forum_info, $start = 0, $true_start = 0,
         $out['may_change_max'] = true;
         $out['may_move_topics'] = true;
         if (has_privilege(get_member(), 'multi_delete_topics')) {
-            $out['may_delete_topics'] = true; // Only super admins can casually delete topics - other staff are expected to trash them. At least trashed topics can be restored!
+            $out['may_delete_topics'] = true; // Only super-admins can casually delete topics - other staff are expected to trash them. At least trashed topics can be restored!
         }
     }
     return $out;
