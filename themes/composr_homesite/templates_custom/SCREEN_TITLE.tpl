@@ -3,14 +3,18 @@
 {+END}
 
 <h1 class="screen_title"{+START,IF,{$NOT,{$GET,name_set_elsewhere}}} itemprop="name"{+END}>
-	{+START,IF,{$NOT,{$MATCH_KEY_MATCH,forum:topicview}}}
+	{+START,IF_NON_PASSED,AWARDS}
 		{TITLE}
-	{+END}
-	{+START,IF,{$MATCH_KEY_MATCH,forum:topicview}}
-		{$PROVIDE_WITH_TRANSLATION,{TITLE},{$TRANS_TEXT_CONTEXT_html_inline}}
 	{+END}
 
 	{+START,IF_PASSED,AWARDS}
+		{+START,IF,{$NOT,{$MATCH_KEY_MATCH,forum:topicview}}}
+			{TITLE}
+		{+END}
+		{+START,IF,{$MATCH_KEY_MATCH,forum:topicview}}
+			{$PROVIDE_WITH_TRANSLATION,{TITLE},{$TRANS_TEXT_CONTEXT_html_inline}}
+		{+END}
+
 		{+START,IF_NON_EMPTY,{AWARDS}}
 			{+START,SET,AWARDS_TEXT}
 				<h2>{!AWARD_WINNER}</h2>
