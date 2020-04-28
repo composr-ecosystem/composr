@@ -156,10 +156,6 @@ function get_screen_title($title, $dereference_lang = true, $params = null, $use
         $DISPLAYED_TITLE = $_title;
     }
 
-    if ($awards === null) {
-        $awards = array();
-    }
-
     return do_template('SCREEN_TITLE', array('_GUID' => '847ffbe4823eca6d2d5eac42828ee552', 'AWARDS' => $awards, 'TITLE' => $_title));
 }
 
