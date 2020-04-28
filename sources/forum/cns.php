@@ -906,7 +906,7 @@ class Forum_driver_cns extends Forum_driver_base
                 $group_ids = $ob->get_bound_group_ids();
                 foreach ($group_ids as $group_id) {
                     if (in_array($group_id, $groups)) {
-                        $c = $ob->get_member_list($group_id);
+                        $c = $ob->get_member_list($group_id, $max, $start);
                         if (!is_null($c)) {
                             foreach ($c as $member_id => $x) {
                                 $out[$member_id] = $x;
