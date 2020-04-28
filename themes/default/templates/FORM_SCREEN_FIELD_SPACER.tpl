@@ -8,7 +8,8 @@
 				{+START,IF_PASSED_AND_TRUE,SECTION_HIDDEN}
 					<script>// <![CDATA[
 						add_event_listener_abstract(window,'load',function (event) {
-							document.getElementById('fes{TITLE|}').onclick(event);
+							var ob=document.getElementById('fes{TITLE|}');
+							ob.onclick.call(ob,event);
 						});
 					//]]></script>
 				{+END}
