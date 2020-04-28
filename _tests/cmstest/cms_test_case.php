@@ -186,6 +186,7 @@ class cms_test_case extends WebTestCase
             if (strpos($row['Option'], $substring) !== false) {
                 switch ($row['Type']) {
                     case 'option':
+                        require_code('config2');
                         set_option($row['Option'], $row['Value']);
                         break;
 
