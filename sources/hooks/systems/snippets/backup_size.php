@@ -44,14 +44,14 @@ class Hook_snippet_backup_size
         $size = 0;
         $max_size = get_param_integer('max_size') * 1024 * 1024;
         $files = get_directory_contents(get_custom_file_base(), '', IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP);
-        foreach ($files as $file) {
-            $first_dir = preg_replace('#/.*#', '', $file);
+        foreach ($files as $path) {
+            $first_dir = preg_replace('#/.*#', '', $path);
 
             if (!isset($directories_to_backup[$first_dir])) {
                 continue;
             }
 
-            $file_size = filesize(get_custom_file_base() . '/' . $file);
+            $file_size = filesize(get_custom_file_base() . '/' . $path);
             if ($file_size < $max_size) {
                 $size += $file_size;
             }

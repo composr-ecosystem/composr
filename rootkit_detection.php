@@ -203,17 +203,17 @@ END;
     } else {
         $files = [];
     }
-    foreach ($files as $file) {
-        if (preg_match('#^data_custom/errorlog\.php$#', $file) != 0) {
+    foreach ($files as $path) {
+        if (preg_match('#^data_custom/errorlog\.php$#', $path) != 0) {
             continue;
         }
-        if (preg_match('#^servers/composr.info/_config\.php$#', $file) != 0) {
+        if (preg_match('#^servers/composr.info/_config\.php$#', $path) != 0) {
             continue;
         }
 
-        if (filesize($FILE_BASE . '/' . $file) != 0) {
-            $results .= 'File: ' . $file . '=';
-            $results .= md5_file($FILE_BASE . '/' . $file);
+        if (filesize($FILE_BASE . '/' . $path) != 0) {
+            $results .= 'File: ' . $path . '=';
+            $results .= md5_file($FILE_BASE . '/' . $path);
             $results .= "\n";
         }
     }

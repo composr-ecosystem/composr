@@ -1307,8 +1307,8 @@ class _images_test_set extends cms_test_case
 
     protected function convertImage($in_path, &$out_path, $convert_width, $convert_height, $box_size, $only_make_smaller, &$additional_information)
     {
-        foreach ([$in_path, preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', get_base_url() . '/', $in_path)] as $_source) {
-            $converted_url = convert_image($_source, $out_path, $convert_width, $convert_height, $box_size, true, null, true, $only_make_smaller);
+        foreach ([$in_path => true, preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', get_base_url() . '/', $in_path) => false] as $_source => $using_path) {
+            $converted_url = convert_image($_source, $out_path, $convert_width, $convert_height, $box_size, true, null, $using_path, $only_make_smaller);
             if ($converted_url === null) {
                 $additional_information = 'convert_image failed on ' . $_source . '.';
                 return false;

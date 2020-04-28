@@ -420,7 +420,8 @@ class _filter_xml_test_set extends cms_test_case
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         $row = $rows[0];
-        $this->assertTrue(get_translated_text($row['title']) == 'blah');
+        $_title = get_translated_text($row['title']);
+        $this->assertTrue($_title == 'blah', 'Got ' . $_title);
     }
 
     public function testDefaultFields()
@@ -587,9 +588,9 @@ class _filter_xml_test_set extends cms_test_case
 
             $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
-                $this->assertTrue($result !== null);
+                $this->assertTrue($result !== null, 'Got ' . gettype($result) . ' for ' . $title);
             } else {
-                $this->assertTrue($result === null);
+                $this->assertTrue($result === null, 'Got ' . gettype($result) . ' for ' . $title);
             }
         }
     }

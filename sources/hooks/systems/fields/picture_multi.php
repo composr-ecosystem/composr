@@ -294,9 +294,9 @@ class Hook_fields_picture_multi
     {
         if ($value['cv_value'] != '') {
             $files = explode("\n", $value['cv_value']);
-            foreach ($files as $file) {
-                @unlink(get_custom_file_base() . '/' . rawurldecode($file));
-                sync_file(rawurldecode($file));
+            foreach ($files as $path) {
+                @unlink(get_custom_file_base() . '/' . rawurldecode($path));
+                sync_file(rawurldecode($path));
             }
         }
     }

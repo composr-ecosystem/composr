@@ -60,9 +60,10 @@ $g_cache_file_count = array();
  *
  * @param int $p_bug_id    The bug id.
  * @param array $p_files   The array of files, if null, then do nothing.
+ * @param int $p_bugnote_id The bugnote id, or 0 if issue attachments.
  * @return array Array of file info arrays.
  */
-function file_attach_files( $p_bug_id, $p_files ) {
+function file_attach_files( $p_bug_id, $p_files, $p_bugnote_id = 0 ) {
 	if( $p_files === null || count( $p_files ) == 0 ) {
 		return array();
 	}
@@ -70,7 +71,17 @@ function file_attach_files( $p_bug_id, $p_files ) {
 	$t_file_infos = array();
 	foreach( $p_files as $t_file ) {
 		if( !empty( $t_file['name'] ) ) {
-			$t_file_infos[] = file_add( $p_bug_id, $t_file, 'bug' );
+			# $p_bug_id, array $p_file, $p_table = 'bug', $p_title = '', $p_desc = '', $p_user_id = null, $p_date_added = 0, $p_skip_bug_update = false, $p_bugnote_id = 0
+			$t_file_infos[] = file_add(
+				$p_bug_id,
+				$t_file,
+				'bug',
+				'', /* title */
+				'', /* desc */
+				null, /* user_id */
+				0, /* date_added */
+				0, /* skip_bug_update */
+				$p_bugnote_id );
 		}
 	}
 
@@ -198,7 +209,7 @@ function file_bug_has_attachments( $p_bug_id ) {
 /**
  * Check if the current user can view attachments for the specified bug.
  * @param integer $p_bug_id           A bug identifier.
- * @param integer $p_uploader_user_id An user identifier.
+ * @param integer $p_uploader_user_id A user identifier.
  * @return boolean
  */
 function file_can_view_bug_attachments( $p_bug_id, $p_uploader_user_id = null ) {
@@ -211,7 +222,7 @@ function file_can_view_bug_attachments( $p_bug_id, $p_uploader_user_id = null ) 
 /**
  * Check if the current user can download attachments for the specified bug.
  * @param integer $p_bug_id           A bug identifier.
- * @param integer $p_uploader_user_id An user identifier.
+ * @param integer $p_uploader_user_id A user identifier.
  * @return boolean
  */
 function file_can_download_bug_attachments( $p_bug_id, $p_uploader_user_id = null ) {
@@ -224,7 +235,7 @@ function file_can_download_bug_attachments( $p_bug_id, $p_uploader_user_id = nul
 /**
  * Check if the current user can delete attachments from the specified bug.
  * @param integer $p_bug_id           A bug identifier.
- * @param integer $p_uploader_user_id An user identifier.
+ * @param integer $p_uploader_user_id A user identifier.
  * @return boolean
  */
 function file_can_delete_bug_attachments( $p_bug_id, $p_uploader_user_id = null ) {
@@ -371,7 +382,7 @@ function file_get_visible_attachments( $p_bug_id ) {
 			continue;
 		}
 
-		$t_id = $t_row['id'];
+		$t_id = (int)$t_row['id'];
 		$t_filename = $t_row['filename'];
 		$t_filesize = $t_row['filesize'];
 		$t_diskfile = file_normalize_attachment_path( $t_row['diskfile'], bug_get_field( $p_bug_id, 'project_id' ) );
@@ -381,10 +392,11 @@ function file_get_visible_attachments( $p_bug_id ) {
 		$t_attachment['id'] = $t_id;
 		$t_attachment['user_id'] = $t_user_id;
 		$t_attachment['display_name'] = file_get_display_name( $t_filename );
-		$t_attachment['size'] = $t_filesize;
+		$t_attachment['size'] = (int)$t_filesize;
 		$t_attachment['date_added'] = $t_date_added;
 		$t_attachment['diskfile'] = $t_diskfile;
 		$t_attachment['file_type'] = $t_row['file_type'];
+		$t_attachment['bugnote_id'] = (int)$t_row['bugnote_id'];
 
 		$t_attachment['can_download'] = file_can_download_bug_attachments( $p_bug_id, (int)$t_row['user_id'] );
 		$t_attachment['can_delete'] = file_can_delete_bug_attachments( $p_bug_id, (int)$t_row['user_id'] );
@@ -406,13 +418,21 @@ function file_get_visible_attachments( $p_bug_id ) {
 		$t_ext = strtolower( pathinfo( $t_attachment['display_name'], PATHINFO_EXTENSION ) );
 		$t_attachment['alt'] = $t_ext;
 
-		if( $t_attachment['exists'] && $t_attachment['can_download'] && $t_filesize != 0 && $t_filesize <= config_get( 'preview_attachments_inline_max_size' ) ) {
-			if( in_array( $t_ext, $t_preview_text_ext, true ) ) {
-				$t_attachment['preview'] = true;
+		if( $t_attachment['exists'] && $t_attachment['can_download'] && $t_filesize != 0 ) {
+			$t_preview = $t_filesize <= config_get( 'preview_attachments_inline_max_size' );
+
+			if( stripos( $t_attachment['file_type'], 'text/' ) === 0 || in_array( $t_ext, $t_preview_text_ext, true ) ) {
+				$t_attachment['preview'] = $t_preview;
 				$t_attachment['type'] = 'text';
-			} else if( in_array( $t_ext, $t_preview_image_ext, true ) ) {
-				$t_attachment['preview'] = true;
+			} else if( stripos( $t_attachment['file_type'], 'image/' ) === 0 || in_array( $t_ext, $t_preview_image_ext, true ) ) {
+				$t_attachment['preview'] = $t_preview;
 				$t_attachment['type'] = 'image';
+			} else if( stripos( $t_attachment['file_type'], 'audio/' ) === 0 ) {
+				$t_attachment['preview'] = $t_preview;
+				$t_attachment['type'] = 'audio';
+			} else if( stripos( $t_attachment['file_type'], 'video/' ) === 0 ) {
+				$t_attachment['preview'] = $t_preview;
+				$t_attachment['type'] = 'video';
 			}
 		}
 
@@ -456,6 +476,39 @@ function file_delete_attachments( $p_bug_id ) {
 
 	# db_query() errors on failure so:
 	return true;
+}
+
+/**
+ * Delete all files that are associated with the given bug note.
+ * @param integer $p_bug_id A bug identifier.
+ * @param integer $p_bugnote_id A bugnote identifier.
+ * @return boolean
+ */
+function file_delete_bugnote_attachments( $p_bug_id, $p_bugnote_id ) {
+	db_param_push();
+	$t_query = 'SELECT id, diskfile, filename FROM {bug_file} WHERE bug_id=' . db_param() . ' AND bugnote_id=' . db_param();
+	$t_result = db_query( $t_query, array( $p_bug_id, $p_bugnote_id ) );
+
+	while( $t_row = db_fetch_array( $t_result ) ) {
+		file_delete( (int)$t_row['id'], 'bug', $p_bugnote_id );
+	}
+
+	# db_query() errors on failure so:
+	return true;
+}
+
+/**
+ * Link the specified file to the specified bugnote.
+ * 
+ * @param integer $p_file_id The file id.
+ * @param integer $p_bugnote_id A bugnote identifier.
+ * @return void
+ */
+function file_link_to_bugnote( $p_file_id, $p_bugnote_id ) {
+	db_param_push();
+
+	$t_query = 'UPDATE {bug_file} SET bugnote_id=' . db_param() . ' WHERE id=' . db_param();
+	db_query( $t_query, array( $p_bugnote_id, $p_file_id ) );
 }
 
 /**
@@ -525,9 +578,10 @@ function file_get_field( $p_file_id, $p_field_name, $p_table = 'bug' ) {
  * Delete File
  * @param integer $p_file_id File identifier.
  * @param string  $p_table   Table identifier.
+ * @param integer $p_bugnote_id The bugnote id the file is attached to or 0 if attached to issue.
  * @return boolean
  */
-function file_delete( $p_file_id, $p_table = 'bug' ) {
+function file_delete( $p_file_id, $p_table = 'bug', $p_bugnote_id = 0 ) {
 	$t_upload_method = config_get( 'file_upload_method' );
 
 	$c_file_id = (int)$p_file_id;
@@ -550,7 +604,7 @@ function file_delete( $p_file_id, $p_table = 'bug' ) {
 
 	if( 'bug' == $p_table ) {
 		# log file deletion
-		history_log_event_special( $t_bug_id, FILE_DELETED, file_get_display_name( $t_filename ) );
+		history_log_event_special( $t_bug_id, FILE_DELETED, file_get_display_name( $t_filename ), $p_bugnote_id );
 	}
 
 	$t_file_table = db_get_table( $p_table . '_file' );
@@ -687,9 +741,10 @@ function file_is_name_unique( $p_name, $p_bug_id, $p_table = 'bug' ) {
  * @param integer $p_user_id         User id (defaults to current user).
  * @param integer $p_date_added      Date added.
  * @param boolean $p_skip_bug_update Skip bug last modification update (useful when importing bug attachments).
+ * @param int     $p_bugnote_id      The bugnote id or 0 if associated with the issue.
  * @return array The file info array (keys: name, size)
  */
-function file_add( $p_bug_id, array $p_file, $p_table = 'bug', $p_title = '', $p_desc = '', $p_user_id = null, $p_date_added = 0, $p_skip_bug_update = false ) {
+function file_add( $p_bug_id, array $p_file, $p_table = 'bug', $p_title = '', $p_desc = '', $p_user_id = null, $p_date_added = 0, $p_skip_bug_update = false, $p_bugnote_id = 0 ) {
 	$t_file_info = array();
 
 	if( !isset( $p_file['error'] ) ) {
@@ -839,21 +894,26 @@ function file_add( $p_bug_id, array $p_file, $p_table = 'bug', $p_title = '', $p
 		'file_type'   => $p_file['type'],
 		'date_added'  => $p_date_added,
 		'user_id'     => (int)$p_user_id,
+		'bugnote_id'  => is_null( $p_bugnote_id ) ? null : (int)$p_bugnote_id
 	);
+
 	# Oracle has to update BLOBs separately
 	if( !db_is_oracle() ) {
 		$t_param['content'] = $c_content;
 	}
+
 	$t_query_param = db_param();
 	for( $i = 1; $i < count( $t_param ); $i++ ) {
 		$t_query_param .= ', ' . db_param();
 	}
 
 	$t_query = 'INSERT INTO ' . $t_file_table . '
-		( ' . implode(', ', array_keys( $t_param ) ) . ' )
+		( ' . implode( ', ', array_keys( $t_param ) ) . ' )
 	VALUES
 		( ' . $t_query_param . ' )';
 	db_query( $t_query, array_values( $t_param ) );
+
+	$t_file_info['id'] = db_insert_id( $t_file_table );
 
 	if( db_is_oracle() ) {
 		db_update_blob( $t_file_table, 'content', $c_content, "diskfile='$t_unique_name'" );
@@ -866,7 +926,7 @@ function file_add( $p_bug_id, array $p_file, $p_table = 'bug', $p_title = '', $p
 		}
 
 		# log file added to bug history
-		history_log_event_special( $p_bug_id, FILE_ADDED, $t_file_name );
+		history_log_event_special( $p_bug_id, FILE_ADDED, $t_file_name, $p_bugnote_id );
 	}
 
 	return $t_file_info;
@@ -1027,7 +1087,7 @@ function file_get_mime_type( $p_file_path ) {
 /**
  * Get mime type for the specified content.
  *
- * @param string $p_file_path The file path.
+ * @param string $p_content The content.
  * @return boolean|string The mime type or false on failure.
  */
 function file_get_mime_type_for_content( $p_content ) {
@@ -1246,4 +1306,13 @@ function file_get_content_type_override( $p_filename ) {
 	}
 
 	return null;
+}
+
+/**
+ * Return the maximum file size that can be uploaded, based on mantis and php
+ * configured setting.
+ * @return integer	File size in bytes
+ */
+function file_get_max_file_size() {
+	return (int)min( ini_get_number( 'upload_max_filesize' ), ini_get_number( 'post_max_size' ), config_get( 'max_file_size' ) );
 }

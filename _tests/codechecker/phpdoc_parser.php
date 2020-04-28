@@ -60,7 +60,7 @@ $global = [];
 global $TO_USE;
 //$files = ['sources/global2.php']; For debugging
 foreach ($files as $filename) {
-    if (strpos($filename, 'sabredav/') !== false || strpos($filename, 'Swift/') !== false || strpos($filename, 'tracker/') !== false || strpos($filename, 'vendor/') !== false) { // Lots of complex code we want to ignore, even if doing custom files
+    if (strpos($filename, '/diff/') !== false) { // Lots of complex code we want to ignore, even if doing custom files
         continue;
     }
 

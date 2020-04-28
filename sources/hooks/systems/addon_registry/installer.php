@@ -539,6 +539,7 @@ class Hook_addon_registry_installer
                 'PREVIOUS_STEP' => placeholder_number(),
                 'CURRENT_STEP' => placeholder_number(),
                 'FINAL' => lorem_phrase(),
+                'URL' => placeholder_url(),
                 'LOG' => $message,
             ]), null, '', true)
         ];

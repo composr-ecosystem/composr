@@ -40,7 +40,7 @@ class _feeds_and_podcasts_test_set extends cms_test_case
 
     public function testXML()
     {
-        if ($this->only !== null) {
+        if (($this->only !== null) && ($this->only != 'backend')) {
             return;
         }
 

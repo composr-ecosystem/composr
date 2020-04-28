@@ -21,4 +21,4 @@ header('Cache-Control: public, max-age=' . strval($cache_expire));
 header_remove('Pragma');
 header_remove('Expires');
 
-echo '<script src="//connect.facebook.net/en_US/all.js"></script>';
+echo '<script src="https://connect.facebook.net/en_US/all.js"></script>';

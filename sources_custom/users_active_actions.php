@@ -32,9 +32,16 @@ function handle_active_logout()
 
     if ($compat == 'facebook') {
         $GLOBALS['FACEBOOK_LOGOUT'] = true;
-        cms_ob_end_clean();
-        echo ' ';
-        cms_flush_safe(); // FUDGE: Force headers to be sent so it's not an HTTP header request so Facebook can do it's JS magic
+        $GLOBALS['BOOTSTRAPPING'] = false; // We know we've set up enough to be able to do a clean inform_exit screen
+
+        require_lang('facebook');
+        require_javascript('facebook_support');
+        require_code('site');
+
+        $tpl = do_template('FACEBOOK_FOOTER', [], null, true, null, '.tpl', 'templates', 'default');
+        attach_to_screen_footer($tpl);
+
+        inform_exit(do_lang_tempcode('LOGGED_OUT_OF_FACEBOOK_ACCOUNT'));
     }
     $GLOBALS['MEMBER_CACHED'] = $GLOBALS['FORUM_DRIVER']->get_guest_id();
 }

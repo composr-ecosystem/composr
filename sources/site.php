@@ -2198,7 +2198,7 @@ function log_stats($page_link, $pg_time)
     $time = time();
 
     if ($page_link === null) {
-        $page_link = get_current_page_link();
+        $page_link = get_current_page_link(true, 255);
     }
 
     if ((get_option('super_logging') == '1') && ($_SERVER['REQUEST_METHOD'] == 'POST')) {

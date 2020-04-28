@@ -1626,7 +1626,7 @@ class Module_calendar
 
         // Recurrences
         $recurrence = do_lang_tempcode('NA_EM');
-        if (($event['e_recurrence'] != 'none') && ($event['e_recurrence'] != '')) {
+        if ($event['e_recurrence'] != 'none') {
             $l_code = explode(' ', strtoupper($event['e_recurrence']));
             $recurrence = do_lang_tempcode($l_code[0]);
 

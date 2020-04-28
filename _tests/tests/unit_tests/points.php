@@ -91,7 +91,7 @@ class points_test_set extends cms_test_case
 
     public function testForumPoints()
     {
-        if (get_forum_type() != 'cns' || !addon_installed('points')) {
+        if (get_forum_type() != 'cns' || !addon_installed('points') || get_db_type() == 'xml') {
             return;
         }
 

@@ -27,11 +27,11 @@ Integration is done via configuring an app on Facebook; no actual app code needs
 [*] Change the "Contact e-mail" field if no e-mail address is currently there, or if it is wrong
 [*] Click "Add Platform"
 [*] Choose "Website"
-[*] Enter your base URL into the "Site URL" field. It's crucial that you give Facebook the correct base URL to your site. It absolutely will not allow things to integrate if it does not match exactly. Make sure you have the same case (i.e. all lower case) and the same use or non-use of 'www.' in the domain name and same use of 'https' or 'http'.
+[*] Enter your base URL into the "Site URL" field
 [*] Click "Save Changes"
 [*] Click "Add Product" in the left pane
 [*] Select "Facebook Login" (click "Get Started" next to it)
-[*] Enter your base URL into the "Valid OAuth redirect URIs" field. As with "Site URL" it is crucial that you get this right.
+[*] Enter [tt]<base url>/adminzone/index.php?page=facebook-oauth&oauth_in_progress=1[/tt] into the "Valid OAuth redirect URIs" field. As with "Site URL" it is crucial that you get this right.
 [*] Click "Save Changes"
 [*] Go to the Dashboard section
 [*] Note down your "App ID" and your "App Secret"
@@ -43,11 +43,10 @@ If you want to allow admin publishing to a Facebook page, go to App Review and e
 Facebook will likely make you record a screencast of how exactly the system works, which is likely to take you around half a day of work once everything's said and done. Unfortunately it's not easy anymore.
 
 And if you want to request additional member details for logging in users:
- - [tt]user_about_me[/tt]
+ - [tt]user_gender[/tt]
  - [tt]user_birthday[/tt]
- - [tt]user_website[/tt]
- - [tt]user_hometown[/tt]
  - [tt]user_location[/tt]
+Which will also require App Review.
 
 [title="4"]Special case: Delegating access[/title]
 
@@ -110,6 +109,7 @@ Make sure your site is not closed (you can change the settings in Admin Zone > S
 
 1) Go to Admin Zone > Setup > Facebook syndication / login
 2) Follow the instructions given
+3) When on Facebook make sure to tick (check) the page you want to syndicate to, the one you configured as "Facebook page ID"" (if any)
 
 [title="2"]Integration blocks[/title]
 
@@ -318,10 +318,8 @@ Enabling the option turns on some template changes that incorporate the Facebook
 The following details are taken from Facebook profiles:
  - Date-of-birth
  - E-mail address
- - Timezone (rough conversion from a time offset)
  - Username
  - Photo
- - Language (if a direct match is found)
 
 There are a number of configuration options you can set regarding active synchronisation of some of the above details. If synchronisation is enabled then if they are changed on Facebook the new settings copy through next time the user accesses your site. Regardless of configuration, synchronisation happens the first time a Facebook login occurs.
 
@@ -347,7 +345,7 @@ When testing log in, make sure you're not starting a login from a URL with any o
 
 [title="3"]Problems on Facebook's end[/title]
 
-Be aware that logging in with Facebook is putting a dependency on Facebook's systems always working. Every once in a while, perhaps an hour per month, Facebook does have some problems on their end that block things working correctly.
+Be aware that logging in with Facebook is putting a dependency on Facebook's systems always working. Every once in a while Facebook may have some problems on their end that block things working correctly.
 
 [title="3"]Debugging[/title]
 
@@ -381,9 +379,9 @@ The login button is placed there within an overridden version of the [tt]BLOCK_S
 If you do not want this, edit the template, remove this code:
 [code="HTML"]
 {+START,IF,{$CNS}}{+START,IF,{$NEQ,{$CPF_VALUE,m_password_compat_scheme},facebook}}
-	{+START,IF_NON_EMPTY,{$CONFIG_OPTION,facebook_appid}}
-		<div class="fb-login-button" data-scope="email,user_birthday{+START,IF,{$CONFIG_OPTION,facebook_auto_syndicate}},publish_stream,offline_access{+END}"></div>
-	{+END}
+	{+START,IF_NON_EMPTY,{$CONFIG_OPTION,facebook_appid}}{+START,IF,{$CONFIG_OPTION,facebook_allow_signups}}
+		<div class="fb-login-button" data-scope="email{$,Asking for this stuff is now a big hassle as it needs a screencast(s) making: user_birthday,user_about_me,user_hometown,user_location,user_website}"></div>
+	{+END}{+END}
 {+END}{+END}
 [/code]
 This will not affect the version of the block for logging in that is shown to guests (that is a different template, [tt]BLOCK_SIDE_PERSONAL_STATS_NO.tpl[/tt]).
@@ -408,9 +406,9 @@ The Facebook login process does [b]not[/b] populate this field. You may delete t
 
 You can (in theory) have content automatically syndicate to Facebook in 2 ways:
 1) Site level: All News & Calendar events, to the configured Facebook page/group/user
-2) Personal: Activity, to the wall of individual members
+2) Personal: Activity, to the wall of individual members -- [i]no longer applies for Facebook, as Facebook dropped support[/i]
 
-This only applies if the 'Facebook activity syndication' option is enabled (it's not by default). Note that nowadays setting this up is onerous to say the least, as Facebook require you to apply along with screencasts of how your syndication will work -- which you need to produce yourself.
+This only applies if the 'Facebook activity syndication' option is enabled (it's not by default). Note that nowadays setting this up is onerous to say the least, as Facebook require you to apply along with screencasts of how your syndication will work (App Review) -- which you need to produce yourself.
 
 [title="3"]Site level[/title]
 
@@ -432,17 +430,12 @@ Also, don't discount the idea of simply manually sharing things. It really doesn
 
 [title="3"]Personal[/title]
 
+[i]No longer applies for Facebook, as Facebook dropped support -- does apply to Twitter[/i]
+
 Personal syndication requires the non-bundled Activity Feed addon to be installed.
 
 If "Activity Feed" is installed then members have a choice whether to automatically syndicate all their activities.
 The member's set this choice (i.e. enable/disable syndication) via their activity feed settings (on the activity tab of their account).
-Whether member's logged in with Facebook automatically syndicate or not is determined via the "Automatically enable syndication for members" configuration option.
-Personal syndication works for member's not logged in with Facebook as well, but it needs a separate authorisation on their activity feed settings -- and will then turn the account into a Facebook account also.
-
-Typically the syndication goes to the user's Facebook account, but it can go the site's Facebook page if the following conditions are all met:
-1) the "Option to syndicate to a Facebook page" configuration option (Admin Zone > Setup > Configuration > Composr API options > Facebook syndication / login) is set
-2) the Facebook page's access is opened up to public write access
-3) The member chose to do this in their activity feed settings (on their activity tab)
 
 [title="2"]Ongoing work[/title]
 

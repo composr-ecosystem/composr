@@ -38,6 +38,7 @@
  * @ingroup Language
  * @file
  *
+ * @author Abijeet Patro
  * @author Asmen
  * @author Erdemaslancan
  * @author Gambollar
@@ -46,11 +47,10 @@
  * @author Mirzali
  */
 
-$s_plugin_graph_title = 'Grafikê Mantisi';
-$s_plugin_graph_description = 'Olena grafik de resimi';
 $s_plugin_MantisGraph_title = 'Grafikê Mantisi';
+$s_plugin_MantisGraph_description = 'Olena grafik de resimi';
 $s_plugin_MantisGraph_config = 'Vıraştış';
-$s_plugin_MantisGraph_synthesis_link = 'Sentez';
+$s_plugin_MantisGraph_tab_label = 'Grafiki';
 $s_plugin_MantisGraph_status_link = 'Weziyeti heta';
 $s_plugin_MantisGraph_priority_link = 'Veroren heta';
 $s_plugin_MantisGraph_severity_link = 'Ciddiyeti heta';
@@ -87,4 +87,8 @@ $s_plugin_MantisGraph_period_last_quarter = 'Çeyrego verên';
 $s_plugin_MantisGraph_period_year_to_date = 'Serra Tarix';
 $s_plugin_MantisGraph_period_select = 'Xoseri Demey';
 $s_plugin_MantisGraph_period_last_year = 'Par';
-$s_plugin_MantisGraph_graph_page = 'Grafiga Meselan de Ravêrdan';
+$s_plugin_MantisGraph_graph_page = 'Grafikê Mewzuyanê Ravêrdan';
+$s_plugin_MantisGraph_graph_topdev = 'Goreyê mewzuyanê sabitan raverberdoği';
+$s_plugin_MantisGraph_graph_opendev = 'Goreyê mewzuyanê akerdeyan raverberdoği';
+$s_plugin_MantisGraph_graph_topreporter_fixed = 'Goreyê mewzuyanê sabitan raportori';
+$s_plugin_MantisGraph_other_categories = 'kategoriyê bini (%d)';

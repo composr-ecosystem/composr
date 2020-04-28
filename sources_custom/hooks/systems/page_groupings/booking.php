@@ -32,7 +32,7 @@ class Hook_page_groupings_booking
         }
 
         return [
-            ['cms', 'booking/booking', ['cms_booking', [], get_page_zone('cms_booking', false)], do_lang_tempcode('booking:BOOKINGS'), 'booking:DOC_BOOKING'],
+            has_privilege(get_member(), 'submit_highrange_content', 'cms_booking') ? ['cms', 'booking/booking', ['cms_booking', [], get_page_zone('cms_booking', false)], do_lang_tempcode('booking:BOOKINGS'), 'booking:DOC_BOOKING'] : null,
             ['pages', 'booking/book', ['booking', ['type' => 'browse'], get_page_zone('booking', false)], do_lang_tempcode('booking:BOOKINGS')],
         ];
     }

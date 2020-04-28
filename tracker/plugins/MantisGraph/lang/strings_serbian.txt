@@ -38,16 +38,16 @@
  * @ingroup Language
  * @file
  *
+ * @author Abijeet Patro
  * @author Acamicamacaraca
  * @author BadDog
  * @author Rancher
  */
 
-$s_plugin_graph_title = 'Графикони за MantisBT';
-$s_plugin_graph_description = 'Званични додатак за исцртавање графикона.';
 $s_plugin_MantisGraph_title = 'Графикони за MantisBT';
+$s_plugin_MantisGraph_description = 'Званични додатак за исцртавање графикона.';
 $s_plugin_MantisGraph_config = 'Подешавање';
-$s_plugin_MantisGraph_synthesis_link = 'Синтеза';
+$s_plugin_MantisGraph_tab_label = 'Графикони за MantisBT';
 $s_plugin_MantisGraph_status_link = 'По статусу';
 $s_plugin_MantisGraph_priority_link = 'По важности';
 $s_plugin_MantisGraph_severity_link = 'По озбиљности';
@@ -81,3 +81,4 @@ $s_plugin_MantisGraph_period_year_to_date = 'За тачно једну годи
 $s_plugin_MantisGraph_period_select = 'Произвољни датуми';
 $s_plugin_MantisGraph_period_last_year = 'Претходна година';
 $s_plugin_MantisGraph_graph_page = 'Историја проблема с графиконом';
+$s_plugin_MantisGraph_other_categories = 'друге категорије (%d)';

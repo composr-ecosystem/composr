@@ -32,44 +32,45 @@ function init__continuous_integration()
         $status = cms_version_branch_status();
         define('CI_BLACKLISTED_TESTS', [
             // Will be added back to run first
-            'unit_tests/_cqc__function_sigs',
+            'unit_tests/cqc__function_sigs',
 
             // Very slow
             'unit_tests/_actionlog',
-            'unit_tests/_bash_parser',
+            'unit_tests/___bash_parser',
             'unit_tests/_backups',
             'unit_tests/_broken_links',
             'unit_tests/_images',
-            'unit_tests/_installer_xml_db',
+            'unit_tests/__installer_xml_db', // (Messes with _config.php too)
             'unit_tests/_tutorial_quality',
             'unit_tests/_special_links',
             'unit_tests/_newsletters',
             'unit_tests/_http_timeouts',
             'unit_tests/_web_resources',
             'unit_tests/_oembed',
-            'unit_tests/_extra_logging',
             'unit_tests/_feeds_and_podcasts',
             'unit_tests/_filter_xml',
             'unit_tests/_lang_no_unused',
-            // 'unit_tests/_installer', Important enough to spend the time on it
+            // 'unit_tests/__installer', Important enough to spend the time on it (Messes with _config.php but we do not run in parallel)
 
             // Excessively complex and make not always succeed depending on test site context
-            'unit_tests/_performance',
-            'unit_tests/_resource_fs',
+            'unit_tests/___performance',
+            'unit_tests/___resource_fs',
+            'unit_tests/___blob_slowdown',
             'unit_tests/_commandr_fs',
-            'unit_tests/_database_integrity',
-            'unit_tests/_installer_forum_drivers',
+            'unit_tests/___database_integrity',
+            'unit_tests/__installer_forum_drivers', // (Messes with _config.php too)
             'unit_tests/_tasks',
             'unit_tests/_template_previews',
             'unit_tests/_lang_spelling_epic',
 
             // Is not expected to pass
-            'unit_tests/_health_check',
+            'unit_tests/___health_check',
 
-            // Messes with _config.php
-            'unit_tests/_rate_limiting',
-            'unit_tests/_critical_error_display',
-            'unit_tests/_static_caching',
+            // Messes with _config.php but we do not run in parallel
+            /*'unit_tests/__rate_limiting',
+            'unit_tests/__critical_error_display',
+            'unit_tests/__static_caching',
+            'unit_tests/__extra_logging',*/
 
             // Can not run over HTTPS
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_copyright' : null,
@@ -362,7 +363,7 @@ function find_all_applicable_tests($limit_to = null)
         }
     }
     sort($_tests);
-    $_tests = array_merge(['unit_tests/_cqc__function_sigs']/*Must run first*/, $_tests);
+    $_tests = array_merge(['unit_tests/cqc__function_sigs']/*Must run first*/, $_tests);
     return $_tests;
 }
 

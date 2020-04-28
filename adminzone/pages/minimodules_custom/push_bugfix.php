@@ -350,9 +350,9 @@ if (!empty($files)) {
             <label for="fixed_files">{$choose_files_label}</label>
             <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files" onchange="update_automatic_category();">
 END;
-    foreach ($files as $file) {
-        $git_dirty = isset($git_found[$file]);
-        echo '<option' . ($git_dirty ? ' selected="selected"' : '') . '>' . escape_html($file) . '</option>';
+    foreach ($files as $path) {
+        $git_dirty = isset($git_found[$path]);
+        echo '<option' . ($git_dirty ? ' selected="selected"' : '') . '>' . escape_html($path) . '</option>';
     }
     $_git_found = json_encode($git_found);
     echo <<<END
@@ -588,15 +588,15 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
 
     // Add
     $cmd = $GIT_PATH . ' add';
-    foreach ($files as $file) {
-        $cmd .= ' ' . escapeshellarg($file);
+    foreach ($files as $path) {
+        $cmd .= ' ' . escapeshellarg($path);
     }
     $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
 
     // Commit
     $cmd = $GIT_PATH . ' commit';
-    foreach ($files as $file) {
-        $cmd .= ' ' . cms_escapeshellarg($file);
+    foreach ($files as $path) {
+        $cmd .= ' ' . cms_escapeshellarg($path);
     }
     $cmd .= ' -m ' . cms_escapeshellarg($git_commit_message);
     $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
@@ -703,9 +703,9 @@ function create_hotfix_tar($tracker_id, $files)
 
     $tar_path = $hotfix_path . '/hotfix-' . strval($tracker_id) . ', ' . date('Y-m-d ga') . '.tar';
     $tar_file = tar_open($tar_path, 'wb');
-    foreach ($files as $file) {
-        $file_fullpath = get_file_base() . '/' . $file;
-        tar_add_file($tar_file, $file, $file_fullpath, 0644, filemtime($file_fullpath), true);
+    foreach ($files as $path) {
+        $file_fullpath = get_file_base() . '/' . $path;
+        tar_add_file($tar_file, $path, $file_fullpath, 0644, filemtime($file_fullpath), true);
     }
     tar_close($tar_file);
 

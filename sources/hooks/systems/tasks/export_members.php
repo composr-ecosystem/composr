@@ -236,26 +236,31 @@ class Hook_task_export_members
                 foreach ($parts as $i => $part) {
                     switch (substr($part, 0, 1)) {
                         case '*': // language string
-                            $at = get_translated_text($m[substr($part, 1)], $GLOBALS['FORUM_DB']);
+                            $part = substr($part, 1);
+                            $at = get_translated_text($m[$part], $GLOBALS['FORUM_DB']);
                             break;
 
                         case '!': // binary
-                            $at = ($m[substr($part, 1)] == 1) ? 'Yes' : 'No'; // Hard-coded in English, because we need a multi-language standard
+                            $part = substr($part, 1);
+                            $at = ($m[$part] == 1) ? 'Yes' : 'No'; // Hard-coded in English, because we need a multi-language standard
                             break;
 
                         case '&': // timestamp
-                            $at = date('Y-m-d', intval($m[substr($part, 1)]));
+                            $part = substr($part, 1);
+                            $at = date('Y-m-d', intval($m[$part]));
                             break;
 
                         case '#': // URL
-                            $at = $m[substr($part, 1)];
+                            $part = substr($part, 1);
+                            $at = $m[$part];
                             if ((url_is_local($at)) && ($at != '')) {
                                 $at = get_complex_base_url($at) . '/' . $at;
                             }
                             break;
 
                         case '@': // append other groups
-                            $at = isset($groups[$m[substr($part, 1)]]) ? $groups[$m[substr($part, 1)]] : '';
+                            $part = substr($part, 1);
+                            $at = isset($groups[$m[$part]]) ? $groups[$m[$part]] : '';
 
                             foreach ($member_groups as $g) {
                                 if ($g['gm_member_id'] == $m['id']) {
@@ -265,6 +270,10 @@ class Hook_task_export_members
                                 }
                             }
                             break;
+
+                        case ':':
+                            $part = substr($part, 1);
+                            // no break
 
                         default: // string
                             // Pseudo fields

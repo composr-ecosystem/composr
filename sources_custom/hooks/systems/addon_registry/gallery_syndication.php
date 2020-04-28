@@ -117,6 +117,7 @@ For YouTube syndication you must first:
         return [
             'requires' => [
                 'PHP curl extension',
+                'PHP simplexml extension',
                 'galleries',
             ],
             'recommends' => [],

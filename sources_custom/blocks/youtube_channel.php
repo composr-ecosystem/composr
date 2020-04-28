@@ -105,7 +105,7 @@ class Block_youtube_channel
 
         // Generate error if no YouTube API key is configured or specified
         if (empty($youtube_api_key)) {
-            $channel_error .= 'Error: No YouTube API Key has been specified.<br />';
+            $channel_error .= 'Error: ' . do_lang('API_NOT_CONFIGURED') . '.<br />';
         }
 
         // Sanity checks on some critical input - if out of range or unknown values are detected, set them to a default value

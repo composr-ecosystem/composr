@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: Text_Diff.**/
+
 /**
  * Standard code module initialisation function.
  *
@@ -49,7 +51,7 @@ function diff_simple_text($old_contents, $new_contents)
     $before = ini_get('ocproducts.type_strictness');
     cms_ini_set('ocproducts.type_strictness', '0');
 
-    $ret = _diff_simple(($old_contents == '') ? array() : explode("\n", $old_contents), ($new_contents == '') ? array() : explode("\n", $new_contents));
+    $ret = _diff_simple(($old_contents == '') ? [] : explode("\n", $old_contents), ($new_contents == '') ? [] : explode("\n", $new_contents));
 
     cms_ini_set('ocproducts.type_strictness', $before);
 
@@ -59,8 +61,8 @@ function diff_simple_text($old_contents, $new_contents)
 /**
  * Create a diff between two arrays of string-lines.
  *
- * @param  array $old_contents First array
- * @param  array $new_contents Second array
+ * @param  array $old First array
+ * @param  array $new Second array
  * @return string Diff
  * @ignore
  */
@@ -71,7 +73,7 @@ function _diff_simple($old, $new)
     $diff = new Text_Diff($old, $new);
     if ($unified) {
         $renderer = new Text_Diff_Renderer_unified();
-        $diff_text = $rendered_diff = $renderer->render($diff);
+        $diff_text = $renderer->render($diff);
         $diff_html = '';
         foreach (explode("\n", $diff_text) as $diff_line) {
             switch (substr($diff_line, 0, 1)) {
@@ -89,7 +91,7 @@ function _diff_simple($old, $new)
         }
     } else {
         $renderer = new Text_Diff_Renderer_inline();
-        $diff_html = $rendered_diff = $renderer->render($diff);
+        $diff_html = $renderer->render($diff);
     }
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($diff_html);

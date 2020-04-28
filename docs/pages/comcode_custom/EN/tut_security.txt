@@ -305,7 +305,6 @@ We also have of internal checks that always run, many related to "Alert types" (
 [*] [s]Input field length, so that strangely long parameter inputs are not accepted in most cases[/s] ([i]this was removed, it didn't raise security, and created bugs[/i])
 [*] External redirections, so that hackers can't create URLs linking to your site that immediately redirect you to an unsafe third-party site (this kind of thing can trick users into thinking they have clicked onto your site, when they're not there anymore). This isn't logged as a hack-attack, as it can happen too innocently, but it is filtered out.
 [*] Obvious spamming (some common spam patterns are so obvious, we can just route them direct to [tt]LAME_SPAM_HACK[/tt])
-[*] Click-jacking frame protection, using standard [tt]X-Frame-Options[/tt] functionality
 [*] Generally making sure things are filled in when required, and expected numbers really are numbers
 [/list]
 

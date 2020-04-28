@@ -18,7 +18,7 @@
  */
 class Hook_health_check_sugarcrm extends Hook_Health_Check
 {
-    protected $category_label = 'SugarCRM';
+    protected $category_label = 'API connections';
 
     /**
      * Standard hook run function to run this category of health checks.
@@ -30,19 +30,15 @@ class Hook_health_check_sugarcrm extends Hook_Health_Check
      * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     * @param  boolean $show_unusable_categories Whether to include categories that might not be accessible for some reason
      * @return array A pair: category label, list of results
      */
-    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
-        if (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('sugarcrm'))) {
-            $base_url = get_option('sugarcrm_base_url');
-            $username = get_option('sugarcrm_username');
-
-            if (($base_url == '') || ($username == '')) {
-                return [$this->category_label, []];
+        if (($show_unusable_categories) || (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('sugarcrm')))) {
+            if (($show_unusable_categories) || ((get_option('sugarcrm_base_url') != '') && (get_option('sugarcrm_username') != ''))) {
+                $this->process_checks_section('testSugarCRMConnection', 'SugarCRM', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
-
-            $this->process_checks_section('testSugarCRMConnection', 'API connection', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         }
 
         return [$this->category_label, $this->results];

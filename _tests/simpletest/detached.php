@@ -1,96 +1,95 @@
 <?php
-/**
- *  base include file for SimpleTest
- *  @package    SimpleTest
- *  @subpackage UnitTester
- *  @version    $Id: detached.php 1723 2008-04-08 00:34:10Z lastcraft $
- */
 
-/**#@+
- *  include other SimpleTest class files
- */
-require_once(dirname(__FILE__) . '/xml.php');
-require_once(dirname(__FILE__) . '/shell_tester.php');
-/**#@-*/
+require_once __DIR__ . '/xml.php';
+require_once __DIR__ . '/shell_tester.php';
 
 /**
- *    Runs an XML formated test in a separate process.
- *    @package SimpleTest
- *    @subpackage UnitTester
+ * Runs an XML formated test in a separate process.
  */
-class DetachedTestCase {
-    var $_command;
-    var $_dry_command;
-    var $_size;
+class DetachedTestCase
+{
+    private $command;
+    private $dry_command;
+    private $size;
 
     /**
-     *    Sets the location of the remote test.
-     *    @param string $command       Test script.
-     *    @param string $dry_command   Script for dry run.
-     *    @access public
+     * Sets the location of the remote test.
+     *
+     * @param string $command       Test script.
+     * @param string $dry_command   Script for dry run.
      */
-    function __construct($command, $dry_command = false) {
-        $this->_command = $command;
-        $this->_dry_command = $dry_command ? $dry_command : $command;
-        $this->_size = false;
+    public function __construct($command, $dry_command = false)
+    {
+        $this->command     = $command;
+        $this->dry_command = $dry_command ? $dry_command : $command;
+        $this->size        = false;
     }
 
     /**
-     *    Accessor for the test name for subclasses.
-     *    @return string       Name of the test.
-     *    @access public
+     * Accessor for the test name for subclasses.
+     *
+     * @return string       Name of the test.
      */
-    function getLabel() {
-        return $this->_command;
+    public function getLabel()
+    {
+        return $this->command;
     }
 
     /**
-     *    Runs the top level test for this class. Currently
-     *    reads the data as a single chunk. I'll fix this
-     *    once I have added iteration to the browser.
-     *    @param SimpleReporter $reporter    Target of test results.
-     *    @returns boolean                   True if no failures.
-     *    @access public
+     * Runs the top level test for this class.
+     * Currently reads the data as a single chunk.
+     * I'll fix this once I have added iteration to the browser.
+     *
+     * @param SimpleReporter $reporter    Target of test results.
+     *
+     * @returns boolean                   True if no failures.
      */
-    function run($reporter) {
+    public function run(&$reporter)
+    {
         $shell = new SimpleShell();
-        $shell->execute($this->_command);
-        $parser = &$this->_createParser($reporter);
+        $shell->execute($this->command);
+        $parser = $this->createParser($reporter);
         if (! $parser->parse($shell->getOutput())) {
-            trigger_error('Cannot parse incoming XML from [' . $this->_command . ']');
+            trigger_error('Cannot parse incoming XML from [' . $this->command . ']');
+
             return false;
         }
+
         return true;
     }
 
     /**
-     *    Accessor for the number of subtests.
-     *    @return integer       Number of test cases.
-     *    @access public
+     * Accessor for the number of subtests.
+     *
+     * @return int       Number of test cases.
      */
-    function getSize() {
-        if ($this->_size === false) {
+    public function getSize()
+    {
+        if ($this->size === false) {
             $shell = new SimpleShell();
-            $shell->execute($this->_dry_command);
+            $shell->execute($this->dry_command);
             $reporter = new SimpleReporter();
-            $parser = &$this->_createParser($reporter);
+            $parser   = $this->createParser($reporter);
             if (! $parser->parse($shell->getOutput())) {
-                trigger_error('Cannot parse incoming XML from [' . $this->_dry_command . ']');
+                trigger_error('Cannot parse incoming XML from [' . $this->dry_command . ']');
+
                 return false;
             }
-            $this->_size = $reporter->getTestCaseCount();
+            $this->size = $reporter->getTestCaseCount();
         }
-        return $this->_size;
+
+        return $this->size;
     }
 
     /**
-     *    Creates the XML parser.
-     *    @param SimpleReporter $reporter    Target of test results.
-     *    @return SimpleTestXmlListener      XML reader.
-     *    @access protected
+     * Creates the XML parser.
+     *
+     * @param SimpleReporter $reporter    Target of test results.
+     *
+     * @return SimpleTestXmlListener      XML reader.
      */
-    function &_createParser(&$reporter) {
+    protected function createParser(&$reporter)
+    {
         return new SimpleTestXmlParser($reporter);
     }
 }
-?>

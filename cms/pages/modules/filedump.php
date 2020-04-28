@@ -471,7 +471,7 @@ class Module_filedump
                 } else { // File
                     $url = get_custom_base_url() . '/uploads/filedump' . str_replace('%2F', '/', rawurlencode($_subpath . $filename));
 
-                    if (is_image($url, IMAGE_CRITERIA_WEBSAFE, true)) {
+                    if ((is_image($url, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_GD_READ, true)) || (is_image($url, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_VECTOR, true))) {
                         $is_image = true;
                         $image_url = $url;
                     } else {

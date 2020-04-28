@@ -38,6 +38,7 @@
  * @ingroup Language
  * @file
  *
+ * @author Abijeet Patro
  * @author Changwoo
  * @author Hong3e
  * @author Jerrykim306
@@ -47,11 +48,10 @@
  * @author 아라
  */
 
-$s_plugin_graph_title = '맨티스 그래프';
-$s_plugin_graph_description = '공식 그래프 플러그인.';
 $s_plugin_MantisGraph_title = '맨티스 그래프';
+$s_plugin_MantisGraph_description = '공식 그래프 플러그인.';
 $s_plugin_MantisGraph_config = '설정';
-$s_plugin_MantisGraph_synthesis_link = '종합';
+$s_plugin_MantisGraph_tab_label = '그래프';
 $s_plugin_MantisGraph_status_link = '상태별';
 $s_plugin_MantisGraph_priority_link = '우선 순위별';
 $s_plugin_MantisGraph_severity_link = '심각도별';
@@ -92,3 +92,4 @@ $s_plugin_MantisGraph_graph_page = '이슈 기록을 그래프로 그리기';
 $s_plugin_MantisGraph_graph_topdev = '이슈를 제일 많이 수정한 사람';
 $s_plugin_MantisGraph_graph_opendev = '이슈를 가장 많이 올린 사람';
 $s_plugin_MantisGraph_graph_topreporter_fixed = '수정된 이슈가 많은 사람';
+$s_plugin_MantisGraph_other_categories = '다른 분류 (%d)';

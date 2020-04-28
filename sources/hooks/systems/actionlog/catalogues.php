@@ -170,21 +170,25 @@ class Hook_actionlog_catalogues extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_CATALOGUE_CATEGORY':
             case 'EDIT_CATALOGUE_CATEGORY':
-                $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => intval($identifier)]);
-                if ($catalogue_name !== null) {
-                    $bindings += [
-                        'CATALOGUE_NAME' => $catalogue_name,
-                    ];
+                if ($identifier !== null) {
+                    $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => intval($identifier)]);
+                    if ($catalogue_name !== null) {
+                        $bindings += [
+                            'CATALOGUE_NAME' => $catalogue_name,
+                        ];
+                    }
                 }
                 break;
 
             case 'ADD_CATALOGUE_ENTRY':
             case 'EDIT_CATALOGUE_ENTRY':
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', ['id' => intval($identifier)]);
-                if ($cat !== null) {
-                    $bindings += [
-                        'CAT' => strval($cat),
-                    ];
+                if ($identifier !== null) {
+                    $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', ['id' => intval($identifier)]);
+                    if ($cat !== null) {
+                        $bindings += [
+                            'CAT' => strval($cat),
+                        ];
+                    }
                 }
                 break;
         }

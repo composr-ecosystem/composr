@@ -92,7 +92,7 @@ PHP;
         $classes = $this->set_property_list_alignment($classes, $columns_display);
 
         if (empty($map['transform'])) {
-            $transform = [];
+            $transform = '';
         } else {
             $transform = $this->parse_comma_separated($map['transform']);
             $transform = $this->set_property_list_alignment($transform, $columns_display);
@@ -337,7 +337,7 @@ PHP;
             foreach ($row as $j => &$value) {
                 $value = $this->apply_formatting($value, $headers[$j]['SORTABLE_TYPE']);
 
-                switch (is_array($transform) ? $transform[$j] : $transform) {
+                switch (is_array($transform) ? (isset($transform[$j]) ? $transform[$j] : '') : $transform) {
                     case 'ucwords':
                         $value = cms_mb_ucwords($value);
                         break;

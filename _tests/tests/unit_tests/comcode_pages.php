@@ -37,21 +37,21 @@ class comcode_pages_test_set extends cms_test_case
             $files = ['docs/pages/comcode_custom/EN/' . $this->only . '.txt'];
         }
 
-        foreach ($files as $file) {
-            if ($file != 'themes/default/text/tempcode_test.txt') {
+        foreach ($files as $path) {
+            if ($path != 'themes/default/text/tempcode_test.txt') {
                 continue;
             }
 
-            if (preg_match('#^(adminzone/pages|buildr/pages|docs/pages|site/pages|pages|themes/default/text|themes/default/text_custom|data/modules/cms_comcode_pages)/#', $file) == 0) {
+            if (preg_match('#^(adminzone/pages|buildr/pages|docs/pages|site/pages|pages|themes/default/text|themes/default/text_custom|data/modules/cms_comcode_pages)/#', $path) == 0) {
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_BOM);
 
             try {
                 check_comcode($c);
             } catch (Exception $e) {
-                $this->assertTrue(false, 'Failed to parse ' . $file . ', ' . $e->getMessage());
+                $this->assertTrue(false, 'Failed to parse ' . $path . ', ' . $e->getMessage());
             }
         }
 

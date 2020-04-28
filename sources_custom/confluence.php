@@ -356,7 +356,7 @@ function confluence_clean_page($html)
 function confluence_query($query, $trigger_error = true)
 {
     $url = get_confluence_base_url() . '/rest/api/' . $query;
-    list($json) = confluence_call_url($url, $trigger_error, true);
+    $json = confluence_call_url($url, $trigger_error, true);
 
     if (empty($json)) {
         if (!$trigger_error) {
@@ -379,9 +379,14 @@ function confluence_call_url($url, $trigger_error = true, $text = false)
     }
 
     global $CONFLUENCE_CACHE_TIME;
-    $options = ['auth' => $auth, 'trigger_error' => $trigger_error];
+    $options = ['trigger_error' => $trigger_error];
+    if ($auth !== null) {
+        $options['auth'] = $auth;
+    }
     if ($text) {
         $options['convert_to_internal_encoding'] = true;
     }
+
+    require_code('http');
     return cache_and_carry('http_get_contents', [$url, $options], $CONFLUENCE_CACHE_TIME);
 }

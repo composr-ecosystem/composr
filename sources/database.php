@@ -1072,7 +1072,7 @@ abstract class DatabaseDriver
      * @param  string $function Function name
      * @set CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD ABS MD5 GROUP_CONCAT X_ORDER_BY_BOOLEAN
      * @param  array $args List of string arguments, assumed already quoted/escaped correctly for the particular database
-     * @return string SQL fragment
+     * @return ?string SQL fragment (null: not supported)
      */
     public function db_function($function, $args = [])
     {
@@ -1246,7 +1246,8 @@ abstract class DatabaseDriver
                     case 'sqlserver':
                     case 'sqlserver_odbc':
                         return '(CASE WHEN ' . $args[0] . ' THEN 0 ELSE 1 END)';
-
+                    case 'xml':
+                        return null;
                     default:
                         return $args[0];
                 }
@@ -1799,10 +1800,15 @@ class DatabaseConnector
 
         $join = ' ' . $join_type . ' ' . $this->get_table_prefix() . 'translate ' . $join_alias . ' ON ' . $join_alias . '.id=' . $field;
         $translate_order_by = db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', $lang)]);
-        if ($lang != get_site_default_lang()) {
-            $translate_order_by = ',' . db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', get_site_default_lang())]);
+        if ($translate_order_by !== null) {
+            if ($lang != get_site_default_lang()) {
+                $translate_order_by = ',' . db_function('X_ORDER_BY_BOOLEAN', [db_string_equal_to('language', get_site_default_lang())]);
+            }
         }
-        $subquery = 'SELECT language FROM ' . $this->get_table_prefix() . 'translate WHERE id=' . $field . ' ORDER BY ' . $translate_order_by;
+        $subquery = 'SELECT language FROM ' . $this->get_table_prefix() . 'translate WHERE id=' . $field;
+        if ($translate_order_by !== null) {
+            $subquery .= ' ORDER BY ' . $translate_order_by;
+        }
         $this->static_ob->apply_sql_limit_clause($subquery, 1);
         $join .= ' AND ' . $join_alias . '.language=(' . $subquery . ')';
         return $join;

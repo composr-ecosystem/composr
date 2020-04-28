@@ -75,9 +75,10 @@ function create_selection_list_health_check_sections($default)
 /**
  * Find all the Health Check categories and sections.
  *
+ * @param  boolean $show_unusable_categories Whether to include categories that might not be accessible for some reason
  * @return array List of result categories
  */
-function find_health_check_categories_and_sections()
+function find_health_check_categories_and_sections($show_unusable_categories = false)
 {
     $check_context = CHECK_CONTEXT__PROBING_FOR_SECTIONS;
 
@@ -85,11 +86,14 @@ function find_health_check_categories_and_sections()
 
     $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
     foreach ($hook_obs as $ob) {
-        list($category_label, $sections) = $ob->run(null, $check_context, true);
+        list($category_label, $sections) = $ob->run(null, $check_context, true, false, null, null, null, $show_unusable_categories);
 
         cms_mb_ksort($sections, SORT_NATURAL | SORT_FLAG_CASE);
 
-        $categories[$category_label] = $sections;
+        if (!array_key_exists($category_label, $categories)) {
+            $categories[$category_label] = [];
+        }
+        $categories[$category_label] += $sections;
     }
     cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
 

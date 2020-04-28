@@ -117,11 +117,13 @@ class Hook_actionlog_calendar extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_CALENDAR_EVENT':
             case 'EDIT_CALENDAR_EVENT':
-                $type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'e_type', ['id' => intval($identifier)]);
-                if ($type_id !== null) {
-                    $bindings += [
-                        'TYPE' => strval($type_id),
-                    ];
+                if ($identifier !== null) {
+                    $type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'e_type', ['id' => intval($identifier)]);
+                    if ($type_id !== null) {
+                        $bindings += [
+                            'TYPE' => strval($type_id),
+                        ];
+                    }
                 }
                 break;
         }

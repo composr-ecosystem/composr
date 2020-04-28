@@ -34,7 +34,7 @@ class webdav_test_set extends cms_test_case
         $webdav_filedump_base_url = get_base_url() . '/webdav/filedump';
 
         // Test access control
-        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?>
+        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
         <D:propfind xmlns:D="DAV:">
             <D:prop>
             </D:prop>
@@ -61,7 +61,7 @@ class webdav_test_set extends cms_test_case
         $this->assertTrue(is_string($result));
 
         // Test folder listing
-        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?>
+        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
         <D:propfind xmlns:D="DAV:">
             <D:prop>
                 <D:resourcetype />
@@ -78,7 +78,7 @@ class webdav_test_set extends cms_test_case
         $this->assertTrue(strpos($result, 'early_cinema.mp4') !== false);
 
         // Test file properties
-        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?>
+        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
         <D:propfind xmlns:D="DAV:">
             <D:prop>
             </D:prop>
@@ -114,7 +114,7 @@ class webdav_test_set extends cms_test_case
         $this->assertTrue(is_string($result));
 
         // Test file properties
-        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?>
+        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
         <D:propfind xmlns:D="DAV:">
             <D:prop>
             </D:prop>
@@ -138,7 +138,7 @@ class webdav_test_set extends cms_test_case
         $this->assertTrue(is_string($result));
 
         // Test folder listing
-        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?>
+        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
         <D:propfind xmlns:D="DAV:">
             <D:prop>
             </D:prop>
@@ -162,7 +162,7 @@ class webdav_test_set extends cms_test_case
         $this->assertTrue(is_string($result));
 
         // Test folder listing
-        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?>
+        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
         <D:propfind xmlns:D="DAV:">
             <D:prop>
             </D:prop>
@@ -186,7 +186,7 @@ class webdav_test_set extends cms_test_case
         $this->assertTrue(is_string($result));
 
         // Test folder listing
-        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?>
+        $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
         <D:propfind xmlns:D="DAV:">
             <D:prop>
             </D:prop>

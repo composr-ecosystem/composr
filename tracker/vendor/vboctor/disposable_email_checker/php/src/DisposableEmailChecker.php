@@ -14,6 +14,9 @@ namespace VBoctor\Email;
  */
 class DisposableEmailChecker
 {
+	/**
+	 * An associative array with domains as the keys.
+	 */
 	private static $domains_array = null;
 
 	/**
@@ -25,11 +28,9 @@ class DisposableEmailChecker
 	public static function is_disposable_email( $p_email ) {
 		$t_domain = DisposableEmailChecker::_get_domain_from_address( $p_email );
 
-		if ( DisposableEmailChecker::$domains_array === null ) {
-			DisposableEmailChecker::$domains_array = DisposableEmailChecker::_load_file( 'domains' );
-		}
+		DisposableEmailChecker::_load_domains();
 
-		return in_array( $t_domain, DisposableEmailChecker::$domains_array );
+		return isset( DisposableEmailChecker::$domains_array[$t_domain] );
 	}
 
 	/**
@@ -49,18 +50,54 @@ class DisposableEmailChecker
 		return preg_match('/^[^@]+\+/', $address) == 1;
 	}
 
+	/**
+	 * Add a list of domains to the black list.
+	 *
+	 * @param array $p_domains The list of domains to add.
+	 */
+	public static function add_domains( array $p_domains ) {
+		DisposableEmailChecker::_load_domains();
+
+		foreach( $p_domains as $t_domain ) {
+			$t_domain = strtolower( $t_domain );
+			DisposableEmailChecker::$domains_array[$t_domain] = true;
+		}
+	}
+
+	/**
+	 * Remove a list of domains from the black list.
+	 *
+	 * @param array $p_domains The list of domains to remove.
+	 */
+	public static function remove_domains( array $p_domains ) {
+		DisposableEmailChecker::_load_domains();
+
+		foreach( $p_domains as $t_domain ) {
+			$t_domain = strtolower( $t_domain );
+			unset( DisposableEmailChecker::$domains_array[$t_domain] );
+		}
+	}
+
 	//
 	// Private functions, shouldn't be called from outside the class
 	//
 
 	/**
-	 * Load the specified file given its name.
+	 * Loads the list of domains if not already loaded.
+	 */
+	private static function _load_domains() {
+		if ( DisposableEmailChecker::$domains_array === null ) {
+			DisposableEmailChecker::$domains_array = DisposableEmailChecker::_load_file( 'domains' );
+		}
+	}
+
+	/**
+	 * Loads the domains list from disk.
 	 *
-	 * @param string $p_type The name of the file not including the path or extension (e.g. open_domains).
 	 * @return array An array of domains matching the specified file name.
 	 */
-	private static function _load_file( $p_type ) {
-		$t_array = file( __DIR__ . '/../../data/' . $p_type . '.txt' );
+	private static function _load_file() {
+		$t_array = file( __DIR__ . '/../../data/domains.txt' );
 		$t_result_array = array();
 
 		foreach ( $t_array as $t_line ) {
@@ -74,7 +111,8 @@ class DisposableEmailChecker
 				continue;
 			}
 
-			$t_result_array[] = strtolower( $t_entry );
+			$t_domain = strtolower( $t_entry );
+			$t_result_array[$t_domain] = true;
 		}
 
 		return $t_result_array;

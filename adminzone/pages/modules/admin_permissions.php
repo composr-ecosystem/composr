@@ -121,6 +121,9 @@ class Module_admin_permissions
                 $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_redirects', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people to redirect themselves passed the page/zone security unless they are admins already
                 $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_addons', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people installing new code
                 $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_email_log', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people snooping on admin e-mails (e.g. password reset)
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_permissions', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people just assigning themselves additional permissions
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_group_member_timeouts', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people temporarily putting themselves in an admin group
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_cns_groups', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people sneaking themselves into an administrator status
             }
 
             // False privileges

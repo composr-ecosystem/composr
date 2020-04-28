@@ -90,7 +90,7 @@ If you turn on the "Permissions" configuration option (Admin Zone > Setup > Conf
 
 [title="3"]Who may avoid banners[/title]
 
-Any usergroup with the "Avoid banners" permission will not see banners. Super administrators will have this permission (as they always have all permissions), and hence super administrators will never see banners. To test banners from a super administrator account (such as the default 'admin' account), use the 'SU' feature (see the [page="_SEARCH:tut_permissions"]Testing access and privileges[/page] tutorial, Access control and privileges section) to switch to the test account: add [tt]&keep_su=test[/tt] onto the end of a URL.
+Any usergroup with the "Avoid banners" permission will not see banners. Super-administrators will have this permission (as they always have all permissions), and hence super-administrators will never see banners. To test banners from a super-administrator account (such as the default 'admin' account), use the 'SU' feature (see the [page="_SEARCH:tut_permissions"]Testing access and privileges[/page] tutorial, Access control and privileges section) to switch to the test account: add [tt]&keep_su=test[/tt] onto the end of a URL.
 
 [title="2"]Geocoding[/title]
 

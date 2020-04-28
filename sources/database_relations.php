@@ -222,7 +222,6 @@ function get_table_purpose_flags()
         'ecom_trans_addresses' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__MISC_NO_MERGE/*too-site-tied*/ | TABLE_PURPOSE__SUBDATA/*under shopping_orders*/,
         'shopping_order_details' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__MISC_NO_MERGE/*too-site-tied*/ | TABLE_PURPOSE__SUBDATA/*under shopping_orders*/,
         'sitemap_cache' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE,
-        'staff_website_monitoring' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'sms_log' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'staff_tips_dismissed' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'staff_links' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,

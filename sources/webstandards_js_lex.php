@@ -551,6 +551,11 @@ function lex__get_next_chars($i, $num)
 function js_pos_to_line_details($i, $absolute = false)
 {
     global $JS_TEXT, $JS_LEX_TOKENS;
+
+    if ($JS_TEXT == '') {
+        return [0, 0, '', 0];
+    }
+
     if ((!$absolute) && (!isset($JS_LEX_TOKENS[$i]))) {
         $i = -1;
     }

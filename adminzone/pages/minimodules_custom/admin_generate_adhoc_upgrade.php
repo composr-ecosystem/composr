@@ -231,21 +231,21 @@ if ($type == 'go') {
 
     foreach ($addons['non_bundled'] + $addons['bundled'] as $addon_name => $files) {
         if (post_param_integer('addon_' . $addon_name, 0) == 1) {
-            foreach ($files as $file) {
-                if (preg_match('#^_config.php$#', $file) == 0) {
-                    if (filemtime(get_file_base() . '/' . $file) > $cutoff_point) {
-                        $old = @cms_file_get_contents_safe($probe_dir . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
+            foreach ($files as $path) {
+                if (preg_match('#^_config.php$#', $path) == 0) {
+                    if (filemtime(get_file_base() . '/' . $path) > $cutoff_point) {
+                        $old = @cms_file_get_contents_safe($probe_dir . '/' . $path, FILE_READ_LOCK | FILE_READ_BOM);
                         if ($old === false) {
                             $old = '';
                         }
-                        $new = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
+                        $new = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_BOM);
                         if (($probe_dir == '') || ($old !== $new)) {
-                            $new_filename = $file;
-                            if (((preg_match('#^(lang)_custom/#', $file) != 0) || (strpos($old, 'CUSTOMISED FOR PROJECT') !== false)) && (($probe_dir == '') || ($old != ''))) {
+                            $new_filename = $path;
+                            if (((preg_match('#^(lang)_custom/#', $path) != 0) || (strpos($old, 'CUSTOMISED FOR PROJECT') !== false)) && (($probe_dir == '') || ($old != ''))) {
                                 $new_filename .= '.quarantine';
                             }
                             if (!isset($done[$new_filename])) {
-                                tar_add_file($tar, $new_filename, get_file_base() . '/' . $file, fileperms(get_file_base() . '/' . $file), filemtime(get_file_base() . '/' . $file), true);
+                                tar_add_file($tar, $new_filename, get_file_base() . '/' . $path, fileperms(get_file_base() . '/' . $path), filemtime(get_file_base() . '/' . $path), true);
                                 $done[$new_filename] = true;
                             }
                         }

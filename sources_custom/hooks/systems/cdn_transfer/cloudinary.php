@@ -83,24 +83,24 @@ class Hook_cdn_transfer_cloudinary
 
         require_code('Cloudinary/autoload');
 
-        \Cloudinary::config(array(
+        \Cloudinary::config([
             'cloud_name' => $cloud_name,
             'api_key' => $api_key,
             'api_secret' => $api_secret,
-        ));
+        ]);
 
-        $tags = array(
+        $tags = [
             $GLOBALS['FORUM_DRIVER']->get_username(get_member()),
             get_site_name(),
             get_zone_name(),
             get_page_name(),
-        );
+        ];
 
-        $options = array(
+        $options = [
             'resource_type' => 'auto',
             'tags' => $tags,
             'angle' => 'exif',
-        );
+        ];
 
         if ($obfuscate != 0) {
             $options['public_id'] = $upload_folder . '/' . preg_replace('#\.[^\.]*$#', '', $filename);
@@ -153,10 +153,6 @@ class Hook_cdn_transfer_cloudinary
                 ['resource_type' => 'image']
             );
         } catch (Exception $e) {
-            if ($accept_errors) {
-                attach_message($e->getMessage(), 'warn');
-                return false;
-            }
             warn_exit($e->getMessage());
         }
     }

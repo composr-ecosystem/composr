@@ -36,6 +36,7 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
     {
         require_code('spout/Autoloader/autoload');
 
+        $before = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
 
         $ext = get_file_extension($filename);
@@ -63,7 +64,7 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
         $this->row_iterator = $sheet_iterator->current()->getRowIterator();
         $this->row_iterator->rewind();
 
-        cms_ini_set('ocproducts.type_strictness', '1');
+        cms_ini_set('ocproducts.type_strictness', $before);
 
         parent::__construct($path, $filename, $algorithm, $trim, $default_charset);
     }
@@ -73,9 +74,10 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
      */
     public function rewind()
     {
+        $before = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
         $this->row_iterator->rewind();
-        cms_ini_set('ocproducts.type_strictness', '1');
+        cms_ini_set('ocproducts.type_strictness', $before);
     }
 
     /**
@@ -89,10 +91,11 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
+        $before = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
 
         if (!$this->row_iterator->valid()) {
-            cms_ini_set('ocproducts.type_strictness', '1');
+            cms_ini_set('ocproducts.type_strictness', $before);
             return false;
         }
 
@@ -100,7 +103,7 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
         $this->row_iterator->next();
         $cells = @array_map('strval', $row->getCells());
 
-        cms_ini_set('ocproducts.type_strictness', '1');
+        cms_ini_set('ocproducts.type_strictness', $before);
 
         return $cells;
     }
@@ -119,9 +122,10 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
     public function close()
     {
         if ($this->reader !== null) {
+            $before = ini_get('ocproducts.type_strictness');
             cms_ini_set('ocproducts.type_strictness', '0');
             $this->reader->close();
-            cms_ini_set('ocproducts.type_strictness', '1');
+            cms_ini_set('ocproducts.type_strictness', $before);
             $this->reader = null;
         }
     }

@@ -25,7 +25,6 @@ class shopping_test_set extends cms_test_case
         parent::setUp();
 
         require_code('ecommerce');
-        require_code('config2');
 
         set_option('ecommerce_test_mode', '1');
 

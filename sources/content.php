@@ -436,6 +436,8 @@ function content_rows_for_multi_type($content_types, $days = null, $extra_where 
 
     $current_time = time();
 
+    $sort_order_field_missing = false;
+
     foreach ($content_types as $content_type) {
         if (array_key_exists($content_type, $infos)) {
             $info = $infos[$content_type];
@@ -443,8 +445,6 @@ function content_rows_for_multi_type($content_types, $days = null, $extra_where 
             $object = get_content_object($content_type);
             $info = $object->info();
         }
-
-        $sort_order_field_missing = false;
 
         $_start = 0;
         $_max = ($max === null) ? null : ($max + $start); // This is so we can sort the first $max results against those of other content types to get a consistent combined sort order
@@ -457,7 +457,7 @@ function content_rows_for_multi_type($content_types, $days = null, $extra_where 
         foreach ($rows as $row) {
             $row['content_type'] = $content_type;
 
-            if (array_key_exists('sort_order', $row)) { // If test here for easier debugging queries, allow removing sorting
+            if (array_key_exists('sort_order', $row)) { // Random sort order won't carry through due to limitation of DISTINCT queries
                 $sort_order = $row['sort_order'];
                 if ($sort == 'prominence') {
                     if ($sort_order === null) { // Likely sorting by maximum date of entries but there are no entries
@@ -716,7 +716,11 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
     if ($max == 0) {
         $rows = []; // Optimisation
     } else {
-        $full_query = 'SELECT DISTINCT r.*,' . $sql_sort . ' AS sort_order' . $query . ' ORDER BY ' . $sql_sort;
+        $full_query = 'SELECT DISTINCT r.*';
+        if ($sort != 'random') {
+            $full_query .= ',' . $sql_sort . ' AS sort_order';
+        }
+        $full_query .= $query . ' ORDER BY ' . $sql_sort;
         $rows = $info['db']->query($full_query, $max, $start, false, true, $lang_fields);
     }
     return [$rows, $max_rows + count($pinned_rows), $pinned_rows];

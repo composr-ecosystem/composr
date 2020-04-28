@@ -303,7 +303,7 @@ if( $t_multiple_projects ) {
 				'" value="' . $t_date_to_display . '" />';
 			echo '<i class="fa fa-calendar fa-xlg datetimepicker"></i>';
 		} else {
-			echo '<select name="' . $t_form . '" class="input-sm">';
+			echo '<select name="' . $t_form . '" class="input-sm" required>';
 
 			switch( $f_action ) {
 				case 'COPY':
@@ -330,11 +330,11 @@ if( $t_multiple_projects ) {
 					print_enum_string_option_list( 'view_state', config_get( 'default_bug_view_status' ) );
 					break;
 				case 'UP_TARGET_VERSION':
-					print_version_option_list( '', $t_project_id, VERSION_FUTURE, true, true );
+					print_version_option_list( '', $t_projects, VERSION_FUTURE, true );
 					break;
 				case 'UP_PRODUCT_VERSION':
 				case 'UP_FIXED_IN_VERSION':
-					print_version_option_list( '', $t_project_id, VERSION_ALL, true, true );
+					print_version_option_list( '', $t_projects, VERSION_ALL, true );
 					break;
 			}
 

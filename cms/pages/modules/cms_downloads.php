@@ -132,6 +132,7 @@ class Module_cms_downloads extends Standard_crud_module
         $type = get_param_string('type', 'browse');
 
         require_lang('downloads');
+        require_javascript('downloads');
 
         inform_non_canonical_parameter('parent_id');
         inform_non_canonical_parameter('validated');

@@ -13,6 +13,12 @@
  * @package    testing_platform
  */
 
+require_once(get_file_base() . '/_tests/simpletest/unit_tester.php');
+require_once(get_file_base() . '/_tests/simpletest/web_tester.php');
+require_once(get_file_base() . '/_tests/simpletest/mock_objects.php');
+require_once(get_file_base() . '/_tests/simpletest/collector.php');
+require_once(get_file_base() . '/_tests/cmstest/cms_test_case.php');
+
 function unit_testing_run()
 {
     global $SCREEN_TEMPLATE_CALLED;
@@ -20,14 +26,7 @@ function unit_testing_run()
 
     @header('Content-Type: text/html');
 
-    cms_ini_set('ocproducts.type_strictness', '0');
     cms_ini_set('ocproducts.xss_detect', '0');
-
-    require_code('_tests/simpletest/unit_tester.php');
-    require_code('_tests/simpletest/web_tester.php');
-    require_code('_tests/simpletest/mock_objects.php');
-    require_code('_tests/simpletest/collector.php');
-    require_code('_tests/cmstest/cms_test_case.php');
 
     $id = get_param_string('id', null);
     if (($id === null) && (isset($_SERVER['argv'][1]))) {
@@ -44,9 +43,21 @@ function unit_testing_run()
         if (!$cli) {
             testset_do_header('Running test set: ' . escape_html($id));
         }
-        run_testset($id);
+
+        $result = run_testset($id);
+
         if (!$cli) {
             testset_do_footer();
+        }
+
+        if ($result && !empty($_GET['close_if_passed'])) {
+            echo "
+                <script " . csp_nonce_html() . ">
+                    if (typeof window.history!='undefined' && typeof window.history.length!='undefined' && window.history.length==1) {
+                        window.close();
+                    }
+                </script>
+            ";
         }
 
         return;
@@ -60,10 +71,12 @@ function unit_testing_run()
     <div>
         <p class=\"lonely-label\">Notes:</p>
         <ul>
-            <li>The ones starting <kbd>_</kbd> should be run individually, and also only occasionally except for <kbd>_cqc__function_sigs</kbd> and <kbd>_installer</kbd> which are crucial and to be run first; this may be due to slowness, unreliability, lack of concurrency support, or some expectation of false-positives</li>
+            <li>The one(s) starting <kbd>___</kbd> are either very slow or unreliable or expected to have some failures: generally do not run them unless you are doing targeted testing
+            <li>The ones starting <kbd>__</kbd> should be run individually because they conflict with other tests
+            <li>The ones starting <kbd>_</kbd> should be run occasionally with discretion, due to slowness, the expectation of false-positives, or the need for an API key file</li>
             <li>Some need running on the command line, in which case a note will be included in the test's code</li>
             <li>Some support a 'debug' GET/CLI parameter, to dump out debug information</li>
-            <li>Many support GET parameters for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
+            <li>Many support an 'only' GET parameter (or initial CLI argument) for limiting the scope of the test (look in the test's code); this is useful for tests that are really complex to get to pass, or really slow</li>
         </ul>
     </div>";
     echo '<div style="float: left; width: 40%">
@@ -96,7 +109,7 @@ function unit_testing_run()
             echo '<option>' . escape_html($set) . '</option>' . "\n";
         }
     }
-    $proceed_icon = do_template('ICON', ['_GUID' => 'a68405d9206defe034d950fbaab1c336', 'NAME' => 'buttons/proceed']);
+    $proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => 'a68405d9206defe034d950fbaab1c336', 'NAME' => 'buttons/proceed']));
     echo "
         </select>
         <p><button class=\"btn btn-primary btn-scr buttons--proceed\" type=\"button\"id=\"select-button\" />{$proceed_icon} Call selection</button></p>
@@ -145,7 +158,12 @@ function run_testset($testset)
         $testset,
         [basename($testset) . '_test_set']
     );
-    /*$result=*/$suite->run(new DefaultReporter());
+    if (is_cli()) {
+        $reporter = new DefaultReporter();
+    } else {
+        $reporter = new CMSHtmlReporter(get_charset(), false);
+    }
+    return $suite->run($reporter);
 }
 
 function testset_do_header($title)
@@ -163,6 +181,9 @@ END;
     echo <<<END
             .screen-title { text-decoration: underline; display: block; background: url('../themes/default/images/icons/admin/tool.svg') top left no-repeat; background-size: 48px 48px; min-height: 42px; padding: 10px 0 0 60px; }
             a[target="_blank"], a[onclick$="window.open"] { padding-right: 0; }
+            .fail { background-color: inherit; color: red; }
+            .pass { background-color: inherit; color: green; }
+             pre { background-color: lightgray; color: inherit; }
         </style>
     </head>
     <body class="website-body"><div class="global-middle container-fluid">
@@ -179,4 +200,104 @@ function testset_do_footer()
     </div></body>
 </html>
 END;
+}
+
+/**
+ * Based on HtmlReporter, but simplified to work with our custom frontend.
+ */
+class CMSHtmlReporter extends SimpleReporter
+{
+    /**
+     * Paints the end of the test with a summary of the passes and failures.
+     *
+     * @param string $test_name        Name class of test.
+     */
+    public function paintFooter($test_name)
+    {
+        $colour = (($this->getFailCount() + $this->getExceptionCount() > 0) ? 'red' : 'green');
+        echo '<div style="';
+        echo "padding: 8px; margin-top: 1em; background-color: $colour; color: white;";
+        echo '">';
+        echo strval($this->getTestCaseProgress()) . '/' . strval($this->getTestCaseCount());
+        echo " test cases complete:\n";
+        echo '<strong>' . strval($this->getPassCount()) . '</strong> passes, ';
+        echo '<strong>' . strval($this->getFailCount()) . '</strong> fails and ';
+        echo '<strong>' . strval($this->getExceptionCount()) . '</strong> exceptions.';
+        echo "</div>\n";
+    }
+
+    /**
+     * Paints the test failure with a breadcrumbs trail
+     * of the nesting test suites below the top level test.
+     *
+     * @param string $message    Failure message displayed in the context of the other tests.
+     */
+    public function paintFail($message)
+    {
+        parent::paintFail($message);
+        echo '<span class="fail">Fail</span>: ';
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        echo implode(' -&gt; ', $breadcrumb);
+        echo ' -&gt; ' . escape_html($message) . "<br />\n";
+    }
+
+    /**
+     * Paints a PHP error.
+     *
+     * @param string $message        Message is ignored.
+     */
+    public function paintError($message)
+    {
+        parent::paintError($message);
+        echo '<span class="fail">Exception</span>: ';
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        echo implode(' -&gt; ', $breadcrumb);
+        echo ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
+    }
+
+    /**
+     * Paints a PHP exception.
+     *
+     * @param Exception $exception        Exception to display.
+     */
+    public function paintException($exception)
+    {
+        parent::paintException($exception);
+        echo '<span class="fail">Exception</span>: ';
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        echo implode(' -&gt; ', $breadcrumb);
+        $message = 'Unexpected exception of type [' . get_class($exception) .
+                '] with message [' . $exception->getMessage() .
+                '] in [' . $exception->getFile() .
+                ' line ' . $exception->getLine() . ']';
+        echo ' -&gt; <strong>' . escape_html($message) . "</strong><br />\n";
+    }
+
+    /**
+     * Prints the message for skipping tests.
+     *
+     * @param string $message    Text of skip condition.
+     */
+    public function paintSkip($message)
+    {
+        parent::paintSkip($message);
+        echo '<span class="pass">Skipped</span>: ';
+        $breadcrumb = $this->getTestList();
+        array_shift($breadcrumb);
+        echo implode(' -&gt; ', $breadcrumb);
+        echo ' -&gt; ' . escape_html($message) . "<br />\n";
+    }
+
+    /**
+     * Paints formatted text such as dumped privateiables.
+     *
+     * @param string $message        Text to show.
+     */
+    public function paintFormattedMessage($message)
+    {
+        echo '<pre>' . escape_html($message) . '</pre>';
+    }
 }

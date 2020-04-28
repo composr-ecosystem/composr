@@ -36,9 +36,8 @@
         Views are not supported
         Integrity checking (field constraints, CHECK) is not supported
         Transactions are not supported
-        COUNT only works on fields or the '*' wildcard, not any expressions or 'alias.*'
+        COUNT only works on fields or the '*' wildcard, not any expressions or 'alias.*', unless DISTINCT is used
         DISTINCT is not supported in aggregate functions other than COUNT
-        DISTINCT on the main query only works on fields, not any expressions
         Full-text-search is not supported
         ANY, ALL subquery syntax
         ROW constructors
@@ -112,6 +111,9 @@ function init__database__xml()
     require_code('xml');
 
     cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH); // XML DB is *slow*
+    if (function_exists('disable_php_memory_limit')) {
+        disable_php_memory_limit();
+    }
 }
 
 /**
@@ -1935,40 +1937,20 @@ class Database_Static_xml extends DatabaseDriver
         switch ($token) {
             // Aggregate expressions...
 
-            case 'DISTINCT':
-                $expr = ['DISTINCT', []];
-                do {
-                    $d = $this->_parsing_read($at, $tokens, $query);
-                    $_token = $this->_parsing_read($at, $tokens, $query);
-                    if ($_token == '*') {
-                        $d .= '*';
-                        $_token = $this->_parsing_read($at, $tokens, $query);
-                    }
-                    if ($_token == 'AS') {
-                        $alias = $this->_parsing_read($at, $tokens, $query);
-                        $expr[1][] = [$d, $alias];
-                        $_token = $this->_parsing_read($at, $tokens, $query);
-                    } else {
-                        $expr[1][] = $d;
-                    }
-                } while ($_token == ',');
-                $at--;
-                break;
-
             case 'COUNT':
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
                 }
-                $expr = [$token, $this->_parsing_read($at, $tokens, $query)];
-                if ($expr[1] == 'DISTINCT') {
-                    $expr[1] = ['DISTINCT'];
-                    do {
-                        $d = $this->_parsing_read($at, $tokens, $query);
-                        $expr[1][] = $d;
-                        $_token = $this->_parsing_read($at, $tokens, $query);
-                    } while ($_token == ',');
-                    $at--;
+                $_token = $this->_parsing_read($at, $tokens, $query);
+                $being_counted = mixed();
+                if ($_token == 'DISTINCT') {
+                    $is_distinct = true;
+                    $being_counted = $this->_parse_select_items($at, $tokens, $query, $db, $fail_ok);
+                } else {
+                    $is_distinct = false;
+                    $being_counted = $token;
                 }
+                $expr = [$token, $being_counted, $is_distinct];
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
@@ -2474,8 +2456,8 @@ class Database_Static_xml extends DatabaseDriver
                 return simulated_wildcard_match($value, $expr_eval, true, true);
 
             case 'EXISTS':
-                list($exists_select, $exists_as, $exists_joins, $exists_where_expr, $exists_group_by, $exists_having, $exists_orders, $exists_unions, $exists_start, $exists_max) = $expr[1];
-                $exists_results = $this->_execute_query_select($exists_select, $exists_as, $exists_joins, $exists_where_expr, $exists_group_by, $exists_having, $exists_orders, $exists_unions, $query, $db, $exists_max, $exists_start, $bindings, $fail_ok);
+                list($exists_select, $exists_as, $exists_joins, $exists_where_expr, $exists_group_by, $exists_having, $exists_orders, $exists_unions, $exists_start, $exists_max, $exists_is_distinct) = $expr[1];
+                $exists_results = $this->_execute_query_select($exists_select, $exists_as, $exists_joins, $exists_where_expr, $exists_group_by, $exists_having, $exists_orders, $exists_unions, $query, $db, $exists_max, $exists_start, $exists_is_distinct, $bindings, $fail_ok);
                 if ($exists_results === null) {
                     return null;
                 }
@@ -2553,8 +2535,8 @@ class Database_Static_xml extends DatabaseDriver
                 return cms_mb_strlen($value);
 
             case 'SUBQUERY_VALUE':
-                list($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $subquery_start, $subquery_max) = $expr[1];
-                $subquery = $this->_execute_query_select($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $query, $db, $subquery_max, $subquery_start, $bindings, $fail_ok);
+                list($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $subquery_start, $subquery_max, $subquery_is_distinct) = $expr[1];
+                $subquery = $this->_execute_query_select($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $query, $db, $subquery_max, $subquery_start, $subquery_is_distinct, $bindings, $fail_ok);
                 if ($subquery === null) {
                     return null;
                 }
@@ -2621,8 +2603,8 @@ class Database_Static_xml extends DatabaseDriver
             case 'IN_SUBQUERY':
                 $val = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
 
-                list($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $subquery_start, $subquery_max) = $expr[2];
-                $results = $this->_execute_query_select($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $query, $db, $subquery_max, $subquery_start, $bindings, $fail_ok);
+                list($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $subquery_start, $subquery_max, $subquery_is_distinct) = $expr[2];
+                $results = $this->_execute_query_select($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $query, $db, $subquery_max, $subquery_start, $subquery_is_distinct, $bindings, $fail_ok);
 
                 $or_list = [];
                 foreach ($results as $result) {
@@ -2866,8 +2848,8 @@ class Database_Static_xml extends DatabaseDriver
         if ($test === null) {
             return null;
         }
-        list($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max) = $test;
-        return $this->_execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, [], $fail_ok);
+        list($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max, $is_distinct) = $test;
+        return $this->_execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, $is_distinct, [], $fail_ok);
     }
 
     /**
@@ -2904,46 +2886,16 @@ class Database_Static_xml extends DatabaseDriver
         if (!$this->_parsing_expects($at, $tokens, 'SELECT', $query)) {
             return null;
         }
-        $select = [];
-        do {
-            $token = $this->_parsing_read($at, $tokens, $query);
-            if (substr($token, -1) == '.') {
-                $token .= $this->_parsing_read($at, $tokens, $query);
-            }
 
-            if ($token == '*') {
-                $select[] = ['*'];
-            } elseif (substr($token, -2) == '.*') {
-                $select[] = ['*', substr($token, 0, strlen($token) - 2)];
-            } else {
-                $at--;
-                $expression = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-
-                $as_token = $this->_parsing_read($at, $tokens, $query, true);
-                if ($as_token === ')') {
-                    $at--;
-                    $as_token = null;
-                }
-                if ($as_token === null) { // reached end of query
-                    $select[] = $expression;
-                } else {
-                    if ($as_token == 'AS') {
-                        $as = $this->_parsing_read($at, $tokens, $query);
-                        $select[] = ['AS', $expression, $as];
-                    } elseif (($as_token == '*') && (substr($token, -1) == '.')) {
-                        $select[] = ['*', substr($token, 0, strlen($token) - 1)];
-                    } else {
-                        $at--;
-                        $select[] = $expression;
-                    }
-                }
-            }
-
-            $token = $this->_parsing_read($at, $tokens, $query, true);
-        } while ($token === ',');
-        if ($token !== null) {
+        $is_distinct = false;
+        $token = $this->_parsing_read($at, $tokens, $query);
+        if ($token == 'DISTINCT') {
+            $is_distinct = true;
+        } else {
             $at--;
         }
+
+        $select = $this->_parse_select_items($at, $tokens, $query, $db, $fail_ok);
 
         // FROM
 
@@ -3160,7 +3112,63 @@ class Database_Static_xml extends DatabaseDriver
 
         // ---
 
-        return [$select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max];
+        return [$select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max, $is_distinct];
+    }
+
+    /**
+     * Parse the selected items from a SELECT query's selection clause.
+     *
+     * @param  integer $at Our offset counter
+     * @param  array $tokens Tokens
+     * @param  string $query Query that was executed
+     * @param  array $db Database connection
+     * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
+     * @return array List of selected items
+     */
+    protected function _parse_select_items(&$at, $tokens, $query, $db, $fail_ok)
+    {
+        $select = [];
+        do {
+            $token = $this->_parsing_read($at, $tokens, $query);
+            if (substr($token, -1) == '.') {
+                $token .= $this->_parsing_read($at, $tokens, $query);
+            }
+
+            if ($token == '*') {
+                $select[] = ['*'];
+            } elseif (substr($token, -2) == '.*') {
+                $select[] = ['*', substr($token, 0, strlen($token) - 2)];
+            } else {
+                $at--;
+                $expression = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
+
+                $as_token = $this->_parsing_read($at, $tokens, $query, true);
+                if ($as_token === ')') {
+                    $at--;
+                    $as_token = null;
+                }
+                if ($as_token === null) { // reached end of query
+                    $select[] = $expression;
+                } else {
+                    if ($as_token == 'AS') {
+                        $as = $this->_parsing_read($at, $tokens, $query);
+                        $select[] = ['AS', $expression, $as];
+                    } elseif (($as_token == '*') && (substr($token, -1) == '.')) {
+                        $select[] = ['*', substr($token, 0, strlen($token) - 1)];
+                    } else {
+                        $at--;
+                        $select[] = $expression;
+                    }
+                }
+            }
+
+            $token = $this->_parsing_read($at, $tokens, $query, true);
+        } while ($token === ',');
+        if ($token !== null) {
+            $at--;
+        }
+
+        return $select;
     }
 
     /**
@@ -3178,12 +3186,13 @@ class Database_Static_xml extends DatabaseDriver
      * @param  array $db Database connection
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
      * @param  integer $start The start row to affect
+     * @param  boolean $is_distinct Whether this is a distinct query, and thus de-duplication will be required
      * @param  array $bindings Bindings available in the execution scope
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @param  ?array $schema Schema filled in function (null: none passed)
      * @return ?mixed The results (null: no results)
      */
-    protected function _execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, $bindings, $fail_ok, &$schema = null)
+    protected function _execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, $is_distinct, $bindings, $fail_ok, &$schema = null)
     {
         // Execute to get records
         $done = 0;
@@ -3218,8 +3227,8 @@ class Database_Static_xml extends DatabaseDriver
                     if (is_array($join[1])) {
                         $schema = [];
 
-                        list($join_select, $join_as, $join_joins, $join_where_expr, $join_group_by, $join_having, $join_orders, $join_unions, $join_start, $join_max) = $join[1];
-                        $records = $this->_execute_query_select($join_select, $join_as, $join_joins, $join_where_expr, $join_group_by, $join_having, $join_orders, $join_unions, $query, $db, $join_max, $join_start, $bindings, $fail_ok);
+                        list($join_select, $join_as, $join_joins, $join_where_expr, $join_group_by, $join_having, $join_orders, $join_unions, $join_start, $join_max, $join_is_distinct) = $join[1];
+                        $records = $this->_execute_query_select($join_select, $join_as, $join_joins, $join_where_expr, $join_group_by, $join_having, $join_orders, $join_unions, $query, $db, $join_max, $join_start, $join_is_distinct, $bindings, $fail_ok);
                     } else {
                         $schema = $this->_read_schema($db, $join[1], $fail_ok);
 
@@ -3289,28 +3298,6 @@ class Database_Static_xml extends DatabaseDriver
                                 if (strpos($key, '.') === false) {
                                     $selected_fields[] = preg_replace('#^.*\.#', '', $key);
                                 }
-                            }
-                        }
-                    }
-                    break;
-
-                case 'DISTINCT':
-                    $val = [];
-                    foreach ($want[1] as $param) {
-                        if (is_array($param)) {
-                            $selected_fields[] = preg_replace('#^.*\.#', '', $param[0]);
-                        } else {
-                            if (strpos($param, '*') !== false) {
-                                $has_wildcard_selected_fields = true;
-                                if (array_key_exists(0, $records)) {
-                                    foreach ($records[0] as $key => $val) {
-                                        if ((strpos($key, '.') === false) || (strpos($param, '.') !== false)) {
-                                            $selected_fields[] = preg_replace('#^.*\.#', '', $key);
-                                        }
-                                    }
-                                }
-                            } else {
-                                $selected_fields[] = $param;
                             }
                         }
                     }
@@ -3395,38 +3382,37 @@ class Database_Static_xml extends DatabaseDriver
                 }
             }
         } else {
-            // Special handling for DISTINCT
-            foreach ($select as $s_term) {
-                switch ($s_term[0]) {
-                    case 'DISTINCT':
-                        $index = [];
-                        foreach ($records as $set_item) {
-                            $distinct_compound_val = [];
-                            foreach ($s_term[1] as $di) {
-                                if (is_array($di)) {
-                                    $di = $di[0];
-                                }
-                                if (strpos($di, '*') !== false) {
-                                    $_val = [];
-                                    foreach ($set_item as $key => $val) {
-                                        if ((strpos($di, '.') === false) || ((strpos($key, '.') !== false) && (substr($key, 0, strpos($key, '.')) == substr($di, 0, strpos($di, '.'))))) {
-                                            $_val[] = $val;
-                                        }
-                                    }
-                                    $distinct_compound_val[] = $_val;
-                                } else {
-                                    if (!array_key_exists($di, $set_item) !== false) {
-                                        return $this->_bad_query($query, $fail_ok, 'Cannot make distinct a non-existent field, ' . $di);
-                                    }
+            if ($is_distinct) {
+                $index = [];
+                foreach ($records as $set_item) {
+                    $distinct_compound_val = [];
+                    foreach ($select as $i => $want) {
+                        $_as = null;
+                        switch ($want[0]) { // NB: COUNT, SUM, etc, already have their values rolled out into $record and we do not need to consider it here
+                            case '*':
+                                $distinct_compound_val += $this->_handle_multi_select($want, $set_item);
+                                break;
 
-                                    $distinct_compound_val[] = $set_item[$di];
+                            case 'AS':
+                                switch ($want[1][0]) {
+                                    default:
+                                        $_as = $want[2];
+                                        $want = $want[1];
+                                        break;
                                 }
-                            }
-                            $index[serialize($distinct_compound_val)] = $set_item;
+                                // no break
+
+                            default:
+                                if ($_as === null) {
+                                    $_as = $this->_param_name_for(((isset($want[1])) && ($want[0] == 'FIELD')) ? $want[1] : ('arb' . strval($i)), $i);
+                                }
+                                $distinct_compound_val[preg_replace('#^.*\.#', '', $_as)] = $this->_execute_expression($want, $set_item, $query, $db, $fail_ok, $records);
+                                break;
                         }
-                        $records = array_values($index);
-                        break;
+                    }
+                    $index[serialize($distinct_compound_val)] = $set_item;
                 }
+                $records = array_values($index);
             }
 
             // Now handle functions (as applied to all records, as no GROUP BY)
@@ -3517,52 +3503,7 @@ class Database_Static_xml extends DatabaseDriver
                         break;
 
                     case '*':
-                        if (array_key_exists(1, $want)) {
-                            $filtered_record = [];
-                            foreach ($record as $key => $val) {
-                                if (substr($key, 0, strlen($want[1] . '.')) == $want[1] . '.') {
-                                    $filtered_record[substr($key, strlen($want[1] . '.'))] = $val;
-                                }
-                            }
-                            $_record += $filtered_record;
-                        } else {
-                            $filtered_record = [];
-                            foreach ($record as $key => $val) {
-                                if (strpos($key, '.') === false) {
-                                    $filtered_record[$key] = $val;
-                                }
-                            }
-                            $_record += $filtered_record;
-                        }
-                        break;
-
-                    case 'DISTINCT':
-                        $val = [];
-                        foreach ($want[1] as $_param) {
-                            if (is_array($_param)) {
-                                $param = $_param[0];
-                                $alias = $_param[1];
-                                if (!array_key_exists($param, $record) !== false) {
-                                    return $this->_bad_query($query, $fail_ok, 'Cannot alias a non-existent field, ' . $param);
-                                }
-                                $_record[$alias] = $record[$param];
-                            } else {
-                                $param = $_param;
-                                $alias = preg_replace('#^.*\.#', '', $param);
-                                if (strpos($param, '*') !== false) {
-                                    foreach ($record as $key => $val) {
-                                        if ((strpos($param, '.') === false) || ((strpos($key, '.') !== false) && (substr($key, 0, strpos($key, '.')) == substr($param, 0, strpos($param, '.'))))) {
-                                            $_record[preg_replace('#^.*\.#', '', $key)] = $val;
-                                        }
-                                    }
-                                } else {
-                                    if (!array_key_exists($param, $record) !== false) {
-                                        return $this->_bad_query($query, $fail_ok, 'Cannot make distinct a non-existent field, ' . $param);
-                                    }
-                                    $_record[$alias] = $record[$param];
-                                }
-                            }
-                        }
+                        $_record += $this->_handle_multi_select($want, $record);
                         break;
 
                     case 'AS':
@@ -3594,6 +3535,7 @@ class Database_Static_xml extends DatabaseDriver
                         break;
                 }
             }
+
             $results[] = $_record;
             if ($cuts_to_single_row) {
                 break;
@@ -3651,9 +3593,9 @@ class Database_Static_xml extends DatabaseDriver
         // UNION clauses
         foreach ($unions as $union) {
             list($test, $de_dupe) = $union;
-            list($union_select, $union_as, $union_joins, $union_where_expr, $union_group_by, $union_having, $union_orders, $union_unions, $union_start, $union_max) = $test;
+            list($union_select, $union_as, $union_joins, $union_where_expr, $union_group_by, $union_having, $union_orders, $union_unions, $union_start, $union_max, $union_is_distinct) = $test;
 
-            $results_b = $this->_execute_query_select($union_select, $union_as, $union_joins, $union_where_expr, $union_group_by, $union_group_by, $union_orders, $union_unions, $query, $db, $union_max, $union_start, $bindings, $fail_ok);
+            $results_b = $this->_execute_query_select($union_select, $union_as, $union_joins, $union_where_expr, $union_group_by, $union_group_by, $union_orders, $union_unions, $query, $db, $union_max, $union_start, $union_is_distinct, $bindings, $fail_ok);
             if ($results_b === null) {
                 return null;
             }
@@ -3672,6 +3614,32 @@ class Database_Static_xml extends DatabaseDriver
         // ---
 
         return $results;
+    }
+
+    /**
+     * Handle row field select for some kind of '*' SELECT clause.
+     *
+     * @param  array $want Our selector
+     * @param  array $record Particular row currently being handled
+     * @return array Filtered fields from row
+     */
+    protected function _handle_multi_select($want, $record)
+    {
+        $filtered_record = [];
+        if (array_key_exists(1, $want)) {
+            foreach ($record as $key => $val) {
+                if (substr($key, 0, strlen($want[1] . '.')) == $want[1] . '.') {
+                    $filtered_record[substr($key, strlen($want[1] . '.'))] = $val;
+                }
+            }
+        } else {
+            foreach ($record as $key => $val) {
+                if (strpos($key, '.') === false) {
+                    $filtered_record[$key] = $val;
+                }
+            }
+        }
+        return $filtered_record;
     }
 
     /**
@@ -3745,19 +3713,28 @@ class Database_Static_xml extends DatabaseDriver
                     break;
 
                 case 'COUNT':
-                    if ($s_term[1][0] == 'DISTINCT') {
+                    if ($s_term[2]) {
+                        // DISTINCT
                         $index = [];
                         foreach ($set as $set_item) {
                             $val = [];
-                            for ($di = 1; $di < count($s_term[1]); $di++) {
-                                if ($s_term[1][$di] == '*') {
-                                    $val[] = $set_item;
-                                } else {
-                                    if (!array_key_exists($s_term[1][$di], $set_item) !== false) {
-                                        return $this->_bad_query($query, $fail_ok, 'Cannot make distinct a non-existent field, ' . $s_term[1][$di]);
-                                    }
+                            foreach ($s_term[1] as $j => $want) {
+                                switch ($want[0]) { // NB: COUNT, SUM, etc, already have their values rolled out into $record and we do not need to consider it here
+                                    case '*':
+                                        $val += $this->_handle_multi_select($want, $set_item);
+                                        break;
 
-                                    $val[] = $set_item[$s_term[1][$di]];
+                                    case 'AS':
+                                        switch ($want[1][0]) {
+                                            default:
+                                                $want = $want[1];
+                                                break;
+                                        }
+                                        // no break
+
+                                    default:
+                                        $val[] = $this->_execute_expression($want, $set_item, $query, $db, $fail_ok, $set);
+                                        break;
                                 }
                             }
                             $index[serialize($val)] = true;
@@ -3977,9 +3954,9 @@ class Database_Static_xml extends DatabaseDriver
 
         if (is_array($join[1])) {
             // Actually a SELECT (subquery)
-            list($select, $table, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max) = $join[1];
+            list($select, $table, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max, $is_distinct) = $join[1];
             $schema_b = [];
-            $records_b = $this->_execute_query_select($select, $joined_as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, [], $fail_ok, $schema_b);
+            $records_b = $this->_execute_query_select($select, $joined_as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, $is_distinct, [], $fail_ok, $schema_b);
             $schema_b_plus = $schema_b;
             foreach ($schema_b as $k => $v) {
                 $schema_b_plus[$joined_as . '.' . $k] = $v; // Needed so all scoped variables can be put in place as NULL's in a right variable

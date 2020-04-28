@@ -125,7 +125,7 @@ function init__webstandards()
 
     $enforce_id = '[a-zA-Z][\w\-\:\.]*';
     $enforce_name = '[\w\-\:\.]+(\[\])?';
-    $enforce_class = '[ \w\-]*';
+    $enforce_class = '[ \w\-:]*';
     $enforce_character = '.';
     $enforce_functional_url = '(url\(\'.+\'\)|url\(".+"\)|url\([^\(\);]+\))';
     $enforce_functional_url_or_none = '(' . $enforce_functional_url . '|[\w\-]+-gradient\(.*\)|none)'; // Allow better gradient validation #3928

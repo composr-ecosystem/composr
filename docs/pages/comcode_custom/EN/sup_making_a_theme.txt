@@ -14,7 +14,7 @@ We will make a new theme, Paradise.
 [img]data_custom/images/docs/sup_making_a_theme/making_a_theme.jpg[/img]
 
 Files needed for this tutorial:
-[media]data_custom/modules/docs/documents-Paradise.zip[/media]
+[media]data_custom/modules/docs/documents_paradise.zip[/media]
 
 The [tt]replacement-code-css.png[/tt] was extracted using a diff tool to assist your manual edit of the CSS files.
 
@@ -25,7 +25,7 @@ Continuing on with the Paradise theme, we can make a new theme Jungle, by just c
 [img]data_custom/images/docs/sup_making_a_theme/copying_a_theme.jpg[/img]
 
 Here are the images used:
-[media]data_custom/modules/docs/documents-Jungle.zip[/media]
+[media]data_custom/modules/docs/documents_jungle.zip[/media]
 
 [title="2"]See also[/title]
 

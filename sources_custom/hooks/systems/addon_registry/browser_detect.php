@@ -113,7 +113,9 @@ If you would like to show the message as a Composr warning (at the top of the sc
     public function get_dependencies()
     {
         return [
-            'requires' => [],
+            'requires' => [
+                'PHP 7.2',
+            ],
             'recommends' => [],
             'conflicts_with' => [],
         ];

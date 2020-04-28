@@ -179,15 +179,6 @@ class Hook_actionlog_core extends Hook_actionlog
                     'DASHBOARD' => 'adminzone:',
                 ],
             ],
-            'SITE_WATCHLIST' => [
-                'flags' => ACTIONLOG_FLAGS_NONE,
-                'cma_hook' => null,
-                'identifier_index' => null,
-                'written_context_index' => null,
-                'followup_page_links' => [
-                    'DASHBOARD' => 'adminzone:',
-                ],
-            ],
             'NOTES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
@@ -595,19 +586,24 @@ class Hook_actionlog_core extends Hook_actionlog
     {
         switch ($actionlog_row['the_type']) {
             case 'CONFIGURATION':
-                require_code('config2');
-                $bindings += [
-                    'CONFIG_URL' => static_evaluate_tempcode(config_option_url($identifier)),
-                ];
+                if ($identifier !== null) {
+                    require_code('config2');
+                    $url = config_option_url($identifier);
+                    $bindings += [
+                        'CONFIG_URL' => ($url === null) ? get_base_url() : static_evaluate_tempcode($url),
+                    ];
+                }
                 break;
 
             case 'ADD_MENU_ITEM':
             case 'EDIT_MENU_ITEM':
-                $menu = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_menu', ['id' => intval($identifier)]);
-                if ($menu !== null) {
-                    $bindings += [
-                        'MENU' => $menu,
-                    ];
+                if ($identifier !== null) {
+                    $menu = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_menu', ['id' => intval($identifier)]);
+                    if ($menu !== null) {
+                        $bindings += [
+                            'MENU' => $menu,
+                        ];
+                    }
                 }
                 break;
         }

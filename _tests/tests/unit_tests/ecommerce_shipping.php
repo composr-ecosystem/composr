@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+// Also see _api_ecommerce_shipping
+
 /**
  * Composr test case class (unit testing).
  */
@@ -20,8 +22,9 @@ class ecommerce_shipping_test_set extends cms_test_case
 {
     public function setUp()
     {
+        parent::setUp();
+
         require_code('ecommerce');
-        require_code('config2');
 
         set_option('ecommerce_test_mode', '1');
 
@@ -100,18 +103,5 @@ class ecommerce_shipping_test_set extends cms_test_case
         $product_height = 36.84;
         $cost = calculate_shipping_cost(null, null, $product_weight, $product_length, $product_width, $product_height);
         $this->assertTrue($cost == 10.00 + (10.0 * 1.20));
-    }
-
-    public function testShippingCalculationsShippo()
-    {
-        set_option('shipping_shippo_api_test', 'shippo_test_c438b6a10c4b0abaa3c5610193fc93dc8b4404f9');
-
-        // Test actual shipping cost
-        $product_weight = 10.0;
-        $product_length = 36.84;
-        $product_width = 36.84;
-        $product_height = 36.84;
-        $cost = calculate_shipping_cost(null, null, $product_weight, $product_length, $product_width, $product_height);
-        $this->assertTrue(($cost > 10.00) && ($cost < 50.00));
     }
 }

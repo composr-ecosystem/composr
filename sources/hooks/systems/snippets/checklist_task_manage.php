@@ -59,8 +59,6 @@ class Hook_snippet_checklist_task_manage
                 $mail = do_notification_lang('CT_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($task_title));
                 dispatch_notification('checklist_task', null, $subject, $mail);
 
-                log_it('SITE_WATCHLIST');
-
                 log_it('CHECK_LIST_ADD', strval($id), $task_title);
 
                 return do_template('BLOCK_MAIN_STAFF_CHECKLIST_CUSTOM_TASK', [

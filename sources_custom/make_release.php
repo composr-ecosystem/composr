@@ -766,12 +766,12 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
     require_code('files2');
     $files = get_directory_contents(get_file_base(), '', null);
     $files[] = 'install.php';
-    foreach ($files as $file) {
-        if (substr($file, -4) != '.php' && substr($file, -strlen('_custom')) != '_custom') {
+    foreach ($files as $path) {
+        if (substr($path, -4) != '.php' && substr($path, -strlen('_custom')) != '_custom') {
             continue;
         }
 
-        $contents = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $contents = cms_file_get_contents_safe(get_file_base() . '/' . $path);
         $matches = [];
         if (preg_match('#@package\s+(\w+)\r?\n#', $contents, $matches) != 0) {
             $addon_name = $matches[1];
@@ -797,9 +797,9 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
                 $index_addons[$universal_index_key] = $addon_name;
             }
 
-            if ($file == 'sources/cns_install.php') {
+            if ($path == 'sources/cns_install.php') {
                 $privilege_regexp = '#\'(\w+)\'#';
-            } elseif ($file == 'sources/permissions3.php') {
+            } elseif ($path == 'sources/permissions3.php') {
                 $privilege_regexp = '#\[\'\w+\',\s*\'(\w+)\'\\#';
             } else {
                 $privilege_regexp = '#add_privilege\(\'\w+\',\s*\'(\w+)\'#';
@@ -1075,7 +1075,7 @@ function _download_latest_data_ip_country()
 
     $tmp_name_gzip = cms_tempnam();
     $myfile = fopen($tmp_name_gzip, 'wb');
-    cms_http_request('http://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz', ['convert_to_internal_encoding' => true, 'write_to_file' => $myfile, 'timeout' => 30.0]);
+    cms_http_request('https://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz', ['convert_to_internal_encoding' => true, 'write_to_file' => $myfile, 'timeout' => 30.0]);
     fclose($myfile);
 
     $tmp_name_csv = cms_tempnam();

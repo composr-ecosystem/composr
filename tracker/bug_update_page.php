@@ -46,8 +46,6 @@
  * @uses version_api.php
  */
 
-$g_allow_browser_cache = 1;
-
 require_once( 'core.php' );
 require_api( 'access_api.php' );
 require_api( 'authentication_api.php' );
@@ -208,7 +206,13 @@ if( $t_show_id || $t_show_project || $t_show_category || $t_show_view_state || $
 	echo '<tr>';
 	echo '<td width="15%" class="category">', $t_show_id ? lang_get( 'id' ) : '', '</td>';
 	echo '<td width="20%" class="category">', $t_show_project ? lang_get( 'email_project' ) : '', '</td>';
-	echo '<td width="15%" class="category">', $t_show_category ? '<label for="category_id">' . lang_get( 'category' ) . '</label>' : '', '</td>';
+	echo '<td width="15%" class="category">';
+	if( $t_show_category ) {
+		$t_allow_no_category = config_get( 'allow_no_category' );
+		echo $t_allow_no_category ? '' : '<span class="required">*</span> ';
+		echo '<label for="category_id">' . lang_get( 'category' ) . '</label>';
+	}
+	echo '</td>';
 	echo '<td width="20%" class="category">', $t_show_view_state ? '<label for="view_state">' . lang_get( 'view_status' ) . '</label>' : '', '</td>';
 	echo '<td width="15%" class="category">', $t_show_date_submitted ? lang_get( 'date_submitted' ) : '', '</td>';
 	echo '<td width="15%" class="category">', $t_show_last_updated ? lang_get( 'last_update' ) : '', '</td>';
@@ -230,7 +234,9 @@ if( $t_show_id || $t_show_project || $t_show_category || $t_show_view_state || $
 	echo '<td>';
 
 	if( $t_show_category ) {
-		echo '<select ' . helper_get_tab_index() . ' id="category_id" name="category_id" class="input-sm">';
+		echo '<select ' . helper_get_tab_index()
+			. ( $t_allow_no_category ? '' : ' required' )
+			. ' id="category_id" name="category_id" class="input-sm">';
 		print_category_option_list( $t_bug->category_id, $t_bug->project_id );
 		echo '</select>';
 	}
@@ -279,9 +285,7 @@ if( $t_show_reporter || $t_show_handler || $t_show_due_date ) {
 
 		# Do not allow the bug's reporter to edit the Reporter field
 		# when limit_reporters is ON
-		if( ON == config_get( 'limit_reporters' )
-			&&  !access_has_project_level( access_threshold_min_level( config_get( 'report_bug_threshold', null, null, $t_bug->project_id ) ) + 1, $t_bug->project_id )
-		) {
+		if( access_has_limited_view( $t_bug->project_id ) ) {
 			echo string_attribute( user_get_name( $t_bug->reporter_id ) );
 		} else {
 			if ( $f_reporter_edit ) {
@@ -321,10 +325,11 @@ if( $t_show_reporter || $t_show_handler || $t_show_due_date ) {
 		# Due Date
 		echo '<th class="category"><label for="due_date">' . lang_get( 'due_date' ) . '</label></th>';
 
-		if( bug_is_overdue( $t_bug_id ) ) {
-			echo '<td class="overdue">';
-		} else {	
+		$t_level = bug_overdue_level( $t_bug_id );
+		if( $t_level === false ) {
 			echo '<td>';
+		} else {
+			echo '<td class="due-', $t_level, '">';
 		}
 
 		if( access_has_bug_level( config_get( 'due_date_update_threshold' ), $t_bug_id ) ) {
@@ -416,9 +421,10 @@ if( $t_show_status || $t_show_resolution ) {
 		echo '<th class="category"><label for="status">' . lang_get( 'status' ) . '</label></th>';
 
 		# choose color based on status
-		$t_status_label = html_get_status_css_class( $t_bug->status );
+		$t_status_css = html_get_status_css_fg( $t_bug->status );
 
-		echo '<td class="' . $t_status_label .  '">';
+		echo '<td class="bug-status">';
+		echo '<i class="fa fa-square fa-status-box ' . $t_status_css . '"></i> ';
 		print_status_option_list( 'status', $t_bug->status,
 			access_can_close_bug( $t_bug ),
 			$t_bug->project_id );
@@ -631,17 +637,28 @@ echo '<tr class="hidden"></tr>';
 # Summary
 if( $t_show_summary ) {
 	echo '<tr>';
-	echo '<th class="category"><label for="summary">' . lang_get( 'summary' ) . '</label></th>';
-	echo '<td colspan="5">', '<input ', helper_get_tab_index(), ' type="text" id="summary" name="summary" size="105" maxlength="128" value="', $t_summary_attribute, '" />';
+	echo '<th class="category">';
+	echo '<span class="required">*</span> ';
+	echo '<label for="summary">' . lang_get( 'summary' ) . '</label>';
+	echo '</th>';
+	echo '<td colspan="5">';
+	echo '<input ', helper_get_tab_index(),
+		' type="text" required id="summary" name="summary" size="105" maxlength="128" value="',
+		$t_summary_attribute, '" />';
 	echo '</td></tr>';
 }
 
 # Description
 if( $t_show_description ) {
 	echo '<tr>';
-	echo '<th class="category"><label for="description">' . lang_get( 'description' ) . '</label></th>';
+	echo '<th class="category">';
+	echo '<span class="required">*</span> ';
+	echo '<label for="description">' . lang_get( 'description' ) . '</label>';
+	echo '</th>';
 	echo '<td colspan="5">';
-	echo '<textarea class="form-control" ', helper_get_tab_index(), ' cols="80" rows="10" id="description" name="description">', $t_description_textarea, '</textarea>';
+	echo '<textarea class="form-control" required ', helper_get_tab_index(),
+		' cols="80" rows="10" id="description" name="description">', "\n",
+		$t_description_textarea, '</textarea>';
 	echo '</td></tr>';
 }
 
@@ -650,7 +667,9 @@ if( $t_show_steps_to_reproduce ) {
 	echo '<tr>';
 	echo '<th class="category"><label for="steps_to_reproduce">' . lang_get( 'steps_to_reproduce' ) . '</label></th>';
 	echo '<td colspan="5">';
-	echo '<textarea class="form-control" ', helper_get_tab_index(), ' cols="80" rows="10" id="steps_to_reproduce" name="steps_to_reproduce">', $t_steps_to_reproduce_textarea, '</textarea>';
+	echo '<textarea class="form-control" ', helper_get_tab_index(),
+		' cols="80" rows="10" id="steps_to_reproduce" name="steps_to_reproduce">', "\n",
+		$t_steps_to_reproduce_textarea, '</textarea>';
 	echo '</td></tr>';
 }
 
@@ -659,7 +678,9 @@ if( $t_show_additional_information ) {
 	echo '<tr>';
 	echo '<th class="category"><label for="additional_information">' . lang_get( 'additional_information' ) . '</label></th>';
 	echo '<td colspan="5">';
-	echo '<textarea class="form-control" ', helper_get_tab_index(), ' cols="80" rows="10" id="additional_information" name="additional_information">', $t_additional_information_textarea, '</textarea>';
+	echo '<textarea class="form-control" ', helper_get_tab_index(),
+		' cols="80" rows="10" id="additional_information" name="additional_information">', "\n",
+		$t_additional_information_textarea, '</textarea>';
 	echo '</td></tr>';
 }
 

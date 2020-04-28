@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: ILess_Autoloader|ILess_Parser|ILess_Cache_FileSystem|less_proxy_compile|proc_.*|stream_get_contents*/
+/*EXTRA FUNCTIONS: proc_.*|stream_get_contents*/
 
 /**
  * Standard code module initialisation function.

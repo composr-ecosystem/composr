@@ -12,7 +12,7 @@
 		{+START,LOOP,SPAM_URLS}
 			<tr>
 				<td>
-					<a href="http://whois.domaintools.com/{DOMAIN*}" target="_blank" title="WHOIS {DOMAIN*} {!LINK_NEW_WINDOW}">{DOMAIN*}</a>
+					<a href="https://whois.domaintools.com/{DOMAIN*}" target="_blank" title="WHOIS {DOMAIN*} {!LINK_NEW_WINDOW}">{DOMAIN*}</a>
 				</td>
 				<td>
 					{+START,LOOP,URLS}

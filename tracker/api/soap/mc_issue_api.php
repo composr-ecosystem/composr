@@ -109,6 +109,8 @@ function mci_issue_get_history( $p_issue_id, $p_user_id, $p_lang ) {
 
 	$t_history = array();
 
+	$t_files = file_get_visible_attachments( $p_issue_id );
+
 	foreach( $t_history_rows as $t_history_row ) {
 		$t_type = (int)$t_history_row['type'];
 
@@ -203,8 +205,6 @@ function mci_issue_get_history( $p_issue_id, $p_user_id, $p_lang ) {
 				$t_new_value_name = 'issue';
 				break;
 		}
-
-		$t_files = file_get_visible_attachments( $p_issue_id );
 
 		$fn_process_value = function( $p_issue_id, $p_type, $p_field, $p_value, $p_lang, $p_new_value ) use ( $t_files ) {
 			if( is_blank( $p_value ) ) {
@@ -462,30 +462,36 @@ function mci_issue_get_custom_fields( $p_issue_id ) {
 
 	$t_custom_fields = array();
 	$t_related_custom_field_ids = custom_field_get_linked_ids( $t_project_id );
+	custom_field_cache_array_rows( $t_related_custom_field_ids );
+
+	# filter out fields not accesible by the user
+	foreach( $t_related_custom_field_ids as $t_index => $t_id ) {
+		if( !custom_field_has_read_access( $t_id, $p_issue_id ) ) {
+			unset( $t_related_custom_field_ids[$t_index] );
+		}
+	}
+	custom_field_cache_values( array( $p_issue_id ), $t_related_custom_field_ids );
 
 	foreach( $t_related_custom_field_ids as $t_id ) {
 		$t_def = custom_field_get_definition( $t_id );
 
-		if( custom_field_has_read_access( $t_id, $p_issue_id ) ) {
-			# user has not access to read this custom field.
-			$t_value = custom_field_get_value( $t_id, $p_issue_id );
-			if( $t_value === false ) {
-				continue;
-			}
-
-			# return a blank string if the custom field value is undefined
-			if( $t_value === null ) {
-				$t_value = '';
-			}
-
-			$t_custom_field_value = array();
-			$t_custom_field_value['field'] = array();
-			$t_custom_field_value['field']['id'] = (int)$t_id;
-			$t_custom_field_value['field']['name'] = $t_def['name'];
-			$t_custom_field_value['value'] = $t_value;
-
-			$t_custom_fields[] = $t_custom_field_value;
+		$t_value = custom_field_get_value( $t_id, $p_issue_id );
+		if( $t_value === false ) {
+			continue;
 		}
+
+		# return a blank string if the custom field value is undefined
+		if( $t_value === null ) {
+			$t_value = '';
+		}
+
+		$t_custom_field_value = array();
+		$t_custom_field_value['field'] = array();
+		$t_custom_field_value['field']['id'] = (int)$t_id;
+		$t_custom_field_value['field']['name'] = $t_def['name'];
+		$t_custom_field_value['value'] = $t_value;
+
+		$t_custom_fields[] = $t_custom_field_value;
 	}
 
 	return count( $t_custom_fields ) == 0 ? null : $t_custom_fields;
@@ -834,7 +840,7 @@ function mc_issue_get_biggest_id( $p_username, $p_password, $p_project_id ) {
 /**
  * Get the id of an issue via the issue's summary.
  *
- * @param string $p_username The name of the user trying to delete the issue.
+ * @param string $p_username The name of the user trying to retrieve the information.
  * @param string $p_password The password of the user.
  * @param string $p_summary  The summary of the issue to retrieve.
  * @return integer The id of the issue with the given summary, 0 if there is no such issue.
@@ -939,7 +945,7 @@ function mc_issue_add( $p_username, $p_password, $p_issue ) {
  * Update Issue in database
  *
  * Created By KGB
- * @param string   $p_username The name of the user trying to add the issue.
+ * @param string   $p_username The name of the user trying to update the issue.
  * @param string   $p_password The password of the user.
  * @param integer  $p_issue_id The issue id of the existing issue being updated.
  * @param stdClass $p_issue    A IssueData structure containing information about the new issue.
@@ -1277,7 +1283,6 @@ function mc_issue_note_add( $p_username, $p_password, $p_issue_id, stdClass $p_n
 		}
 
 		if( isset( $p_note['reporter'] ) ) {
-			$t_reporter_id = mci_get_user_id( $p_note['reporter'] );
 			$t_payload['reporter'] = array( 'id' => mci_get_user_id( $p_note['reporter'] ) );
 		}
 
@@ -1363,7 +1368,7 @@ function mc_issue_note_add( $p_username, $p_password, $p_issue_id, stdClass $p_n
 /**
  * Delete a note given its id.
  *
- * @param string  $p_username      The name of the user trying to add a note to an issue.
+ * @param string  $p_username      The name of the user trying to delete a note from an issue.
  * @param string  $p_password      The password of the user.
  * @param integer $p_issue_note_id The id of the note to be deleted.
  * @return boolean true: success, false: failure
@@ -1396,7 +1401,7 @@ function mc_issue_note_delete( $p_username, $p_password, $p_issue_note_id ) {
 /**
  * Update a note
  *
- * @param string   $p_username The name of the user trying to add a note to an issue.
+ * @param string   $p_username The name of the user trying to update a note of an issue.
  * @param string   $p_password The password of the user.
  * @param stdClass $p_note     The note to update.
  * @return true on success, false on failure
@@ -1434,8 +1439,6 @@ function mc_issue_note_update( $p_username, $p_password, stdClass $p_note ) {
 		return mci_fault_access_denied( $t_user_id );
 	}
 
-	$t_issue_author_id = bugnote_get_field( $t_issue_note_id, 'reporter_id' );
-
 	# Check if the user owns the bugnote and is allowed to update their own bugnotes
 	# regardless of the update_bugnote_threshold level.
 	$t_user_owns_the_bugnote = bugnote_is_user_reporter( $t_issue_note_id, $t_user_id );
@@ -1471,7 +1474,7 @@ function mc_issue_note_update( $p_username, $p_password, stdClass $p_note ) {
 /**
  * Submit a new relationship.
  *
- * @param string   $p_username     The name of the user trying to add a note to an issue.
+ * @param string   $p_username     The name of the user trying to add a relationship to an issue.
  * @param string   $p_password     The password of the user.
  * @param integer  $p_issue_id     The id of the issue of the source issue.
  * @param stdClass $p_relationship The relationship to add (RelationshipData SOAP object).
@@ -1531,7 +1534,7 @@ function mc_issue_relationship_add( $p_username, $p_password, $p_issue_id, stdCl
 /**
  * Delete the relationship with the specified target id.
  *
- * @param string  $p_username        The name of the user trying to add a note to an issue.
+ * @param string  $p_username        The name of the user trying to delete a relationship from an issue.
  * @param string  $p_password        The password of the user.
  * @param integer $p_issue_id        The id of the source issue for the relationship.
  * @param integer $p_relationship_id The id of relationship to delete.
@@ -1804,7 +1807,7 @@ function mci_check_access_to_bug( $p_user_id, $p_bug_id ) {
 /**
  * Get all issues matching the ids.
  *
- * @param string                $p_username         The name of the user trying to access the filters.
+ * @param string                $p_username         The name of the user trying to access the issues.
  * @param string                $p_password         The password of the user.
  * @param IntegerArray          $p_issue_ids        Number of issues to display per page.
  * @return array that represents an IssueDataArray structure
@@ -1835,7 +1838,7 @@ function mc_issues_get( $p_username, $p_password, $p_issue_ids ) {
 /**
  * Get all issues header matching the ids.
  *
- * @param string                $p_username         The name of the user trying to access the filters.
+ * @param string                $p_username         The name of the user trying to access the issues.
  * @param string                $p_password         The password of the user.
  * @param IntegerArray          $p_issue_ids        Number of issues to display per page.
  * @return array that represents an IssueHeaderDataArray structure

@@ -134,7 +134,6 @@ PHP;
         require_css('activities');
         require_javascript('activity_feed');
         require_javascript('jquery');
-        require_javascript('base64');
 
         $refresh_time = array_key_exists('refresh_time', $map) ? intval($map['refresh_time']) : 30;
         $grow = array_key_exists('grow', $map) ? ($map['grow'] == '1') : true;

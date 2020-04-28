@@ -160,6 +160,43 @@ Please note that when using 'SU':
  - (by design) you will still be able to access a closed site, and view permission diagnostics using FirePHP (FirePHP is explained below)
 [/surround]
 
+[title="2"]Subtleties of sensitive privileges[/title]
+
+By default Composr comes with a simple 2-level staff division:
+ - Super-administrator (people with supreme access)
+ - Super-moderator (people with high-level access but stopping short of being able to assume super-administrator access, run/install direct PHP code, and snoop on everything)
+
+Most of Composr's privileges are configurable, so you can make super-moderators very close to super-administrators.
+
+The main privileges kept from super-moderators are:
+ - [tt]assume_any_member[/tt] ("Assume the identity/access of any other member")
+  - Without this privilege members cannot use the "Switch user" (SU) feature, change member's primary usergroups, or change member's secondary usergroups to anything other than "open" usergroups. In other words, lack of this privilege works as protection against forms of privilege escalation.
+ - [tt]use_php_banner[/tt] ("Place a PHP banner (extremely dangerous!)")
+ - [tt]view_private_content[/tt] ("View private content not invited to")
+ - [tt]view_other_pt[/tt] ("View other people's Private Topics and posts")
+
+The main page access permissions kept from super-moderators are:
+ - [tt]admin_commandr[/tt]
+  - Commandr can be used for executing arbitrary PHP and SQL code.
+ - [tt]admin_addons[/tt]
+  - By installing addons, super-moderators could plant arbitrary new PHP code.
+ - [tt]admin_email_log[/tt]
+  - The e-mail log would allow viewing sensitive e-mail content, such as private topic notifications or password-reset e-mails.
+ - [tt]admin_redirects[/tt]
+  - Redirects could be used to bypass page access permission restrictions.
+ - [tt]admin_group_member_timeouts[/tt]
+  - This could be used to put yourself into a more privileged usergroup.
+ - [tt]admin_permissions[/tt]
+  - This could be used to extend the privileges of a super-moderator usergroup.
+ - [tt]admin_cns_ldap[/tt]
+  - This could be used for arbitrary changes to memberships.
+ - [tt]admin_ecommerce[/tt]
+  - This could be used to provide subscriptions to more privileged usergroups, which the member could then join.
+ - [tt]admin_cns_groups[/tt]
+  - This could be used to promote themselves into an administrative usergroup, or promote their usergroup to administrative.
+
+Note that there is no guarantee there are not ways that cunning super-moderators may find a way to do escalate their access in the Admin Zone (e.g. by planting XSS vulnerabilities). And, definitely a super-moderator is able to completely destroy a website. Don't make someone a super-moderator if you cannot generally trust them, and trust them to keep their password safe.
+
 [title="2"]Debugging permission problems[/title]
 
 [title="3"]FirePHP[/title]

@@ -37,6 +37,9 @@ class galleries_test_set extends cms_test_case
         require_code('permissions2');
         require_code('form_templates');
 
+        global $PAGE_NAME_CACHE;
+        $PAGE_NAME_CACHE = 'cms_galleries';
+
         $this->access_mapping = [db_get_first_id() => 4];
         // Creating cms catalogues object
         if (file_exists(get_file_base() . '/cms/pages/modules_custom/cms_galleries.php')) {
@@ -136,6 +139,7 @@ class galleries_test_set extends cms_test_case
             'require__award_3' => 0,
             'description__is_wysiwyg' => 1,
         ];
+        $_POST = @array_map('strval', $_POST);
 
         $_GET['type'] = '_add';
         $this->cms_gal_category->pre_run();
@@ -215,6 +219,7 @@ class galleries_test_set extends cms_test_case
             'require__award_3' => 0,
             'description__is_wysiwyg' => 1,
         ];
+        $_POST = @array_map('strval', $_POST);
         //$this->cms_gal_category->_edit();
     }
 
@@ -266,6 +271,7 @@ class galleries_test_set extends cms_test_case
             'require__meta_description' => 0,
             'description__is_wysiwyg' => 1,
         ];
+        $_POST = @array_map('strval', $_POST);
 
         $_GET['type'] = '_add';
         $this->cms_gal->pre_run();
@@ -318,6 +324,7 @@ class galleries_test_set extends cms_test_case
             'require__meta_description' => 0,
             'description__is_wysiwyg' => 1,
         ];
+        $_POST = @array_map('strval', $_POST);
         //$this->cms_gal_alt->_add();
     }
 

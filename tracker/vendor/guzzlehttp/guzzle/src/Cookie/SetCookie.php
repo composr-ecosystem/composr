@@ -227,7 +227,7 @@ class SetCookie
     /**
      * Get whether or not this is a secure cookie
      *
-     * @return null|bool
+     * @return bool|null
      */
     public function getSecure()
     {
@@ -247,7 +247,7 @@ class SetCookie
     /**
      * Get whether or not this is a session cookie
      *
-     * @return null|bool
+     * @return bool|null
      */
     public function getDiscard()
     {
@@ -377,8 +377,8 @@ class SetCookie
         // Check if any of the invalid characters are present in the cookie name
         if (preg_match(
             '/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5c\x7b\x7d\x7f]/',
-            $name)
-        ) {
+            $name
+        )) {
             return 'Cookie name must not contain invalid characters: ASCII '
                 . 'Control characters (0-31;127), space, tab and the '
                 . 'following characters: ()<>@,;:\"/?={}';

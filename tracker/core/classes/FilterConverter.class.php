@@ -226,12 +226,6 @@ class FilterConverter {
 					case META_FILTER_MYSELF:
 						$t_result[] = array( 'id' => '[myself]' );
 						break;
-
-					// Composr - Ability to find stuff you're not monitoring yourself
-					case META_FILTER_NOT_MYSELF:
-						$t_result[] = array( 'id' => '[not_myself]' );
-						break;
-
 					default:
 						$t_result[] = mci_account_get_array_by_id( $t_user );
 						break;

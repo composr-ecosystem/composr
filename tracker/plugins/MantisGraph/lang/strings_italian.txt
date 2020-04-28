@@ -38,6 +38,7 @@
  * @ingroup Language
  * @file
  *
+ * @author Abijeet Patro
  * @author Beta16
  * @author Massimo itaca
  * @author Nemo bis
@@ -45,11 +46,10 @@
  * @author Selven
  */
 
-$s_plugin_graph_title = 'Grafici Mantis';
-$s_plugin_graph_description = 'Plugin ufficiale Grafico';
 $s_plugin_MantisGraph_title = 'Grafici Mantis';
+$s_plugin_MantisGraph_description = 'Plugin ufficiale Grafico';
 $s_plugin_MantisGraph_config = 'Configurazione';
-$s_plugin_MantisGraph_synthesis_link = 'Sintesi';
+$s_plugin_MantisGraph_tab_label = 'Grafici';
 $s_plugin_MantisGraph_status_link = 'Per stato';
 $s_plugin_MantisGraph_priority_link = 'Per priorità';
 $s_plugin_MantisGraph_severity_link = 'Per gravità';
@@ -90,3 +90,4 @@ $s_plugin_MantisGraph_graph_page = 'Grafico della storia delle anomalie';
 $s_plugin_MantisGraph_graph_topdev = 'Migliori sviluppatori per problemi risolti';
 $s_plugin_MantisGraph_graph_opendev = 'Sviluppatori per problemi aperti';
 $s_plugin_MantisGraph_graph_topreporter_fixed = 'Migliori segnalatori per problemi risolti';
+$s_plugin_MantisGraph_other_categories = 'altre categorie (%d)';

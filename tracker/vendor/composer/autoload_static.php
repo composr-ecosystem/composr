@@ -4,9 +4,11 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a
+class ComposerStaticInitffc35496d2069d0f1fdacfb2b20e9413
 {
     public static $files = array (
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
@@ -29,6 +31,7 @@ class ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
             'Slim\\' => 5,
         ),
@@ -36,10 +39,7 @@ class ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
-        ),
-        'I' => 
-        array (
-            'Interop\\Container\\' => 18,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'G' => 
         array (
@@ -72,6 +72,10 @@ class ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a
         array (
             0 => __DIR__ . '/..' . '/vboctor/disposable_email_checker/php/src',
         ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
@@ -88,9 +92,9 @@ class ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'Interop\\Container\\' => 
+        'PHPMailer\\PHPMailer\\' => 
         array (
-            0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -133,13 +137,9 @@ class ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a
     );
 
     public static $classMap = array (
-        'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
-        'PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
-        'PHPMailerOAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauth.php',
-        'PHPMailerOAuthGoogle' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauthgoogle.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/Assert.php',
         'PHPUnit\\Framework\\AssertionFailedError' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/AssertionFailedError.php',
         'PHPUnit\\Framework\\BaseTestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/BaseTestListener.php',
@@ -545,8 +545,6 @@ class ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a
         'PHP_Token_XOR_EQUAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD_FROM' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
-        'POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.pop3.php',
-        'SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.smtp.php',
         'SebastianBergmann\\Comparator\\ArrayComparator' => __DIR__ . '/..' . '/sebastian/comparator/src/ArrayComparator.php',
         'SebastianBergmann\\Comparator\\Comparator' => __DIR__ . '/..' . '/sebastian/comparator/src/Comparator.php',
         'SebastianBergmann\\Comparator\\ComparisonFailure' => __DIR__ . '/..' . '/sebastian/comparator/src/ComparisonFailure.php',
@@ -586,17 +584,15 @@ class ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a
         'Securimage' => __DIR__ . '/..' . '/dapphp/securimage/securimage.php',
         'Securimage_Color' => __DIR__ . '/..' . '/dapphp/securimage/securimage.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
-        'ntlm_sasl_client_class' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
-        'phpmailerException' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit719f0bbfd084335f6e63f31ff0aeb97a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitffc35496d2069d0f1fdacfb2b20e9413::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitffc35496d2069d0f1fdacfb2b20e9413::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitffc35496d2069d0f1fdacfb2b20e9413::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitffc35496d2069d0f1fdacfb2b20e9413::$classMap;
 
         }, null, ClassLoader::class);
     }

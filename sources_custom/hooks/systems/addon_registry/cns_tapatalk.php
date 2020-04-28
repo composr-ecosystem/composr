@@ -46,7 +46,7 @@ class Hook_addon_registry_cns_tapatalk
      */
     public function get_category()
     {
-        // Best to just categorise properly as it's not bundled 
+        // Best to just categorise properly as it's not bundled
         //return is_maintained('tapatalk') ? 'Community' : 'Development';
         return 'Community';
     }

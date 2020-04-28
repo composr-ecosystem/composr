@@ -41,19 +41,6 @@ class Hook_symbol_USER_FB_CONNECT
             // Find Facebook ID via their member profile (we stashed it in here; authorisation stuff is never stored in DB, only on Facebook and user's JS)...
 
             $value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');
-        } else {
-            // Okay, look to see if they have set up syndication permissions instead, which is the other way around: stores authorisation, but not Facebook ID...
-
-            $access_token = get_value('facebook_oauth_token__' . strval($member_id), null, true);
-            if (empty($access_token)) {
-                return '';
-            }
-
-            require_code('facebook_connect');
-            $value = facebook_get_current_user_id($access_token);
-            if ($value === null) {
-                $value = '';
-            }
         }
         return $value;
     }

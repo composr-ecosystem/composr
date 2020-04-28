@@ -106,7 +106,7 @@
                     // continue
                 }
 
-                setTimeout(function () { // Needed for IE10
+                setTimeout(function () { // LEGACY: Needed for IE10
                     try {
                         $dom.triggerResize();
                     } catch (e) {

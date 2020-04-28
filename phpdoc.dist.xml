@@ -44,10 +44,15 @@
 		<ignore>sources/forum/wbb*.php</ignore>
 		<ignore>sources/database/ibm.php</ignore>
 		<ignore>sources/database/oracle.php</ignore>
+		<ignore>sources/database/mysql_pdo.php</ignore>
+		<ignore>sources/database/mysql.php</ignore>
 		<ignore>sources/database/postgresql.php</ignore>
 		<ignore>sources/database/sqlserver.php</ignore>
-		<ignore>sources/diff.php</ignore>
+		<ignore>sources/database/sqlserver_odbc.php</ignore>
+		<ignore>sources/diff/</ignore>
 		<ignore>sources/jsmin.php</ignore>
+		<ignore>sources/lang_stemmer_EN.php</ignore>
+		<ignore>sources/mail_dkim.php</ignore>
 		<ignore>sources/firephp.php</ignore>
 		<ignore>sources/minikernel.php</ignore>
 	</files>

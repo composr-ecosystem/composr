@@ -104,21 +104,21 @@ class phpdoc_test_set extends cms_test_case
         require_code('files2');
         $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
 
-        foreach ($files as $file) {
+        foreach ($files as $path) {
+            // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
-                '_tests';
+                '_tests',
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-
             $exceptions = array_merge(list_untouchable_third_party_files(), [
             ]);
             if (in_array($path, $exceptions)) {
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
             $c = preg_replace('#\n\/\*\*.*\n \*\/\n\n#Us', '', $c);
 

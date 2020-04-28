@@ -49,7 +49,6 @@ class Hook_profiles_tabs_activities
         require_css('activities');
         require_javascript('activity_feed');
         require_javascript('jquery');
-        require_javascript('base64');
 
         require_code('site');
         set_feed_url('?mode=activities&select=' . strval($member_id_of));
@@ -65,7 +64,7 @@ class Hook_profiles_tabs_activities
         if ($member_id_of == $member_id_viewing) {
             $dests = find_all_hook_obs('systems', 'syndication', 'Hook_syndication_');
             foreach ($dests as $hook => $ob) {
-                if ($ob->is_available()) {
+                if ($ob->is_available($member_id_of)) {
                     if (either_param_string('syndicate_stop__' . $hook, null) !== null) {
                         $ob->auth_unset($member_id_of);
                     } elseif (either_param_string('syndicate_start__' . $hook, null) !== null) {

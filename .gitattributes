@@ -2,19 +2,26 @@
 * text=auto eol=lf
 
 # Text formats we allow web access to
+*.1 text
 *.1st text
+*.2 text
 *.atom text
 *.css text
 *.csv text
 *.diff text
 *.html text
 *.ics text
+*.inc text
 *.ini text
 *.js text
 *.json text
 *.log text
+*.neon text
 *.patch text
 *.php text
+*.phpb text
+*.phpt text
+*.rng text
 *.rss text
 *.sql text
 *.svg text

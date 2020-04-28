@@ -376,12 +376,28 @@ class Hook_video_syndication_youtube
     protected function _generate_video_xml($video, $is_initial)
     {
         // Match to a category using remote list
-        $remote_list_xml = http_get_contents('http://gdata.youtube.com/schemas/2007/categories.cat', ['convert_to_internal_encoding' => true]);
-        $remote_list_parsed = simplexml_load_string($remote_list_xml);
         $category = 'People';
-        foreach ($remote_list_parsed->category as $c) { // Try to bind to one of our tags. Already-bound-remote-category intentionally will be on start of tags list, so automatically maintained through precedence.
+        $possible_categories = [
+            'Animals',
+            'Autos',
+            'Comedy',
+            'Education',
+            'Entertainment',
+            'Film',
+            'Games',
+            'Howto',
+            'Music',
+            'News',
+            'Nonprofit',
+            'Shortmov',
+            'Sports',
+            'Tech',
+            'Travel',
+            'Videoblog',
+        ];
+        foreach ($possible_categories as $possible) { // Try to bind to one of our tags. Already-bound-remote-category intentionally will be on start of tags list, so automatically maintained through precedence.
             foreach ($video['tags'] as $i => $tag) {
-                if (($c['term'] == $tag) && (isset($c['assignable'][0]))) {
+                if ($possible == $tag) {
                     $category = $tag;
                     unset($video['tags'][$i]);
                     break 2;

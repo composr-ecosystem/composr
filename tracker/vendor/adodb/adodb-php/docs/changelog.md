@@ -5,6 +5,39 @@ Older changelogs:
 [v3.x](changelog_v3.x.md),
 [v2.x](changelog_v2.x.md).
 
+## 5.20.16 - 12-Jan-2020
+
+- mssql: queries are not correctly closed. #590
+
+## 5.20.15 - 24-Nov-2019
+
+- core: remove unnecessary srand() calls. #532
+- core: Fix getMenu with ADODB_FETCH_BOTH. #482
+- core: code cleanup for getMenu and related functions. #563
+- pgsql: stop using obsolete pg_attrdef.adsrc column. #562
+- pdo/mysql: remove extraneous comma in $fmtTimeStamp. #531
+- active record: Use ADODB_ASSOC_CASE constant. #536
+- session: Remove session_module_name('user') calls (PHP 7.2 compatibility). #449
+- PHP 7.4 compatibility: fix deprecated usage of join() #547
+
+## 5.20.14 - 06-Jan-2019
+
+- security: Denial of service in adodb_date(). #467
+- core: Fix support for getMenu with ADODB_FETCH_ASSOC. #460
+- perf/mysql: fix tables() function incompatible with parent. #435
+- perf/mysql: fix error when logging slow queries. #463
+
+## 5.20.13 - 06-Aug-2018
+
+- core: Fix query execution failures with mismatched quotes. #420
+- ldap: Fix connections using URIs. #340
+- mssql: Fix Time field format, allowing autoExecute() to inserting time. #432
+- mssql: Fix Insert_ID returning null with table name in brackets. #313
+- mssql: Fix count wrapper. #423
+- oci8: Fix prepared statements failure. #318
+- oci8po: Fix incorrect query parameter replacements. #370
+- pdo: fix PHP notice due to uninitialized variable. #437
+
 ## 5.20.12 - 30-Mar-2018
 
 - adodb: PHP 7.2 compatibility
@@ -361,7 +394,7 @@ other database types as well; all drivers derived from the above are also impact
 - BeginTrans/CommitTrans/RollbackTrans return true/false correctly on success/failure now for mssql, odbc, oci8, mysqlt, mysqli, postgres, pdo.
 - Replace() now quotes all non-null values including numeric ones.
 - Postgresql qstr() now returns booleans as *true* and *false* without quotes.
-- MetaForeignKeys in mysql and mysqli drivers had this problem: A table can have two foreign keys pointing to the same column in the same table. The original code will incorrectly report only the last column. Fixed. https://sourceforge.net/tracker/index.php?func=detail&aid=2287278&group_id=42718&atid=433976
+- MetaForeignKeys in mysql and mysqli drivers had this problem: A table can have two foreign keys pointing to the same column in the same table. The original code will incorrectly report only the last column. Fixed. https://sourceforge.net/p/adodb/bugs/100/
 - Passing in full ado connection string in $argHostname with ado drivers was failing in adodb5 due to bug. Fixed.
 - Fixed memcachelib flushcache and flushall bugs. Also fixed possible timeCreated = 0 problem in readcache. (Also in adodb 4.992). Thanks AlexB_UK (alexbarnes#hotmail.com).
 - Fixed a notice in adodb-sessions2.inc.php, in _conn(). Thx bober m.derlukiewicz#rocktech.remove_me.pl;
@@ -378,7 +411,7 @@ other database types as well; all drivers derived from the above are also impact
 ## 5.06 - 16 Oct 2008
 
 - Added driver adodb-pdo_sqlite.inc.php. Thanks Diogo Toscano (diogo#scriptcase.net) for the code.
-- Added support for [one-to-many relationships](docs-active-record.htm#onetomany) with BelongsTo() and HasMany() in adodb_active_record.
+- Added support for [one-to-many relationships](https://adodb.org/dokuwiki/doku.php?id=v5:userguide:active_record#one_to_many_relations) with BelongsTo() and HasMany() in adodb_active_record.
 - Added BINARY type to mysql.inc.php (also in 4.991).
 - Added support for SelectLimit($sql,-1,100) in oci8. (also in 4.991).
 - New $conn->GetMedian($table, $field, $where='') to get median account no. (also in 4.991)

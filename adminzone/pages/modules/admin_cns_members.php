@@ -852,6 +852,6 @@ class Module_admin_cns_members
         log_it('IMPORT_MEMBERS');
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('IMPORT_MEMBERS'), $this->title, 'import_members', [$default_password, $use_temporary_passwords, $target_path]);
+        return call_user_func_array__long_task(do_lang('IMPORT_MEMBERS'), $this->title, 'import_members', [$default_password, $use_temporary_passwords, $target_path, basename($target_path), get_member()]);
     }
 }

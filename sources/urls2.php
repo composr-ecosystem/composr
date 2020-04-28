@@ -1103,3 +1103,14 @@ function mark_if_url_exists($url, $exists = true, $message = '', $destination_ur
         ]
     );
 }
+
+/**
+ * Shorten a URL.
+ *
+ * @param  URLPATH $url The full URL
+ * @return URLPATH Shortened URL
+ */
+function shorten_url($url)
+{
+    return http_get_contents('https://is.gd/api.php?longurl=' . urlencode($url), ['convert_to_internal_encoding' => true]);
+}

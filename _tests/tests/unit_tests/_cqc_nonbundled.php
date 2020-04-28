@@ -38,21 +38,22 @@ class _cqc_nonbundled_test_set extends cms_test_case
             if ($ob !== null) {
                 $files = $ob->get_file_list();
 
-                foreach ($files as $file) {
-                    if (substr($file, -4) == '.php') {
+                foreach ($files as $path) {
+                    if (substr($path, -4) == '.php') {
                         // Exceptions
-                        $exceptions = list_untouchable_third_party_directories();
-                        if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $file) != 0) {
+                        $exceptions = array_merge(list_untouchable_third_party_directories(), [
+                        ]);
+                        if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                             continue;
                         }
                         $exceptions = array_merge(list_untouchable_third_party_files(), [
                             'sources_custom/hooks/systems/startup/tapatalk.php',
                         ]);
-                        if (in_array($file, $exceptions)) {
+                        if (in_array($path, $exceptions)) {
                             continue;
                         }
 
-                        $to_scan[] = $file;
+                        $to_scan[] = $path;
                     }
                 }
             }

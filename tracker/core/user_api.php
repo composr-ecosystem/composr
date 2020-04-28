@@ -83,23 +83,21 @@ function user_cache_row( $p_user_id, $p_trigger_errors = true ) {
 
 	if( !isset( $g_cache_user[$c_user_id] ) ) {
 		user_cache_array_rows( array( $c_user_id ) );
-	}
 
-	$t_user_row = $g_cache_user[$c_user_id];
+		if( !isset( $g_cache_user[$c_user_id] ) ) {
+			if( $p_trigger_errors ) {
+				throw new ClientException(
+					sprintf( "User id '%d' not found.", (integer)$p_user_id ),
+					ERROR_USER_BY_ID_NOT_FOUND,
+					array( (integer)$p_user_id )
+				);
+			}
 
-	if( !$t_user_row ) {
-		if( $p_trigger_errors ) {
-			throw new ClientException(
-				sprintf( "User id '%d' not found.", (integer)$p_user_id ),
-				ERROR_USER_BY_ID_NOT_FOUND,
-				array( (integer)$p_user_id )
-			);
+			return false;
 		}
-
-		return false;
 	}
 
-	return $t_user_row;
+	return $g_cache_user[$c_user_id];
 }
 
 /**
@@ -196,14 +194,16 @@ function user_cache_array_rows( array $p_user_id_array ) {
 	$t_query = 'SELECT * FROM {user} WHERE id IN (' . implode( ',', $t_sql_in_params ) . ')';
 	$t_result = db_query( $t_query, $t_params );
 
-	while( $t_row = db_fetch_array( $t_result ) ) {
-		$c_user_id = (int)$t_row['id'];
-		$g_cache_user[$c_user_id] = $t_row;
-		unset( $c_user_id_array[$c_user_id] );
-	}
-	# set the remaining ids to false as not-found
-	foreach( $c_user_id_array as $t_id ) {
-		$g_cache_user[$t_id] = false;
+	if( $t_result !== false ) {
+		while( $t_row = db_fetch_array( $t_result ) ) {
+			$c_user_id = (int)$t_row['id'];
+			$g_cache_user[$c_user_id] = $t_row;
+			unset( $c_user_id_array[$c_user_id] );
+		}
+		# set the remaining ids to false as not-found
+		foreach( $c_user_id_array as $t_id ) {
+			$g_cache_user[$t_id] = false;
+		}
 	}
 }
 
@@ -567,7 +567,7 @@ function user_get_logged_in_user_ids( $p_session_duration_in_minutes ) {
 	# Get the list of connected users
 	$t_users_connected = array();
 	while( $t_row = db_fetch_array( $t_result ) ) {
-		$t_users_connected[] = $t_row['id'];
+		$t_users_connected[] = (int)$t_row['id'];
 	}
 
 	return $t_users_connected;
@@ -737,7 +737,7 @@ function user_delete( $p_user_id ) {
 	user_delete_profiles( $p_user_id );
 
 	# Remove associated preferences
-	user_pref_delete_all( $p_user_id );
+	user_pref_db_delete_user( $p_user_id );
 
 	# Remove project specific access levels
 	user_delete_project_specific_access_levels( $p_user_id );
@@ -761,7 +761,7 @@ function user_delete( $p_user_id ) {
  */
 function user_get_id_by_name( $p_username, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'username', $p_username ) ) {
-		return $t_user['id'];
+		return (int)$t_user['id'];
 	}
 
 	// Composr - sync user accounts from CMS
@@ -782,7 +782,7 @@ function user_get_id_by_name( $p_username, $p_throw = false ) {
 	$t_row = db_fetch_array( $t_result );
 	if( $t_row ) {
 		user_cache_database_result( $t_row );
-		return $t_row['id'];
+		return (int)$t_row['id'];
 	}
 	*/
 
@@ -801,11 +801,11 @@ function user_get_id_by_name( $p_username, $p_throw = false ) {
  *
  * @param string $p_email The email address to retrieve data for.
  * @param boolean $p_throw true to throw exception when not found, false otherwise.
- * @return array
+ * @return integer|boolean
  */
 function user_get_id_by_email( $p_email, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'email', $p_email ) ) {
-		return $t_user['id'];
+		return (int)$t_user['id'];
 	}
 
 	db_param_push();
@@ -815,7 +815,7 @@ function user_get_id_by_email( $p_email, $p_throw = false ) {
 	$t_row = db_fetch_array( $t_result );
 	if( $t_row ) {
 		user_cache_database_result( $t_row );
-		return $t_row['id'];
+		return (int)$t_row['id'];
 	}
 
 	if( $p_throw ) {
@@ -859,11 +859,11 @@ function user_get_enabled_ids_by_email( $p_email ) {
  *
  * @param string $p_realname The realname to retrieve data for.
  * @param boolean $p_throw true to throw if not found, false otherwise.
- * @return array
+ * @return integer|boolean
  */
 function user_get_id_by_realname( $p_realname, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'realname', $p_realname ) ) {
-		return $t_user['id'];
+		return (int)$t_user['id'];
 	}
 
 	db_param_push();
@@ -881,7 +881,7 @@ function user_get_id_by_realname( $p_realname, $p_throw = false ) {
 	}
 
 	user_cache_database_result( $t_row );
-	return $t_row['id'];
+	return (int)$t_row['id'];
 }
 
 /**
@@ -894,7 +894,7 @@ function user_get_id_by_realname( $p_realname, $p_throw = false ) {
  */
 function user_get_id_by_user_info( array $p_user, $p_throw_if_id_not_found = false ) {
 	if( isset( $p_user['id'] ) && (int)$p_user['id'] != 0 ) {
-		$t_user_id = $p_user['id'];
+		$t_user_id = (int)$p_user['id'];
 		if( $p_throw_if_id_not_found && !user_exists( $t_user_id ) ) {
 			throw new ClientException(
 				sprintf( "User with id '%d' doesn't exist", $t_user_id ),
@@ -1410,7 +1410,7 @@ function user_get_unassigned_by_project_id( $p_project_id = null ) {
 	$t_users = array();
 
 	while( $t_row = db_fetch_array( $t_result ) ) {
-		$t_users[] = $t_row['id'];
+		$t_users[] = (int)$t_row['id'];
 		$t_display[] = user_get_expanded_name_from_row( $t_row );
 		$t_sort[] = user_get_name_for_sorting_from_row( $t_row );
 	}
@@ -1843,5 +1843,28 @@ function user_reset_password( $p_user_id, $p_send_email = true ) {
 		user_reset_failed_login_count_to_zero( $p_user_id );
 	}
 
+	return true;
+}
+
+/**
+ * Helper function to check if the user has access to more than one project
+ * (any kind of project or subproject). This can be used to simplify logic when
+ * the user only has one project to choose from.
+ *
+ * @param integer $p_user_id	A valid user identifier.
+ * @return boolean	True if the user has access to more than one project.
+ */
+function user_has_more_than_one_project( $p_user_id ) {
+	$t_project_ids = user_get_accessible_projects( $p_user_id );
+	$t_count = count( $t_project_ids );
+	if( 0 == $t_count ) {
+		return false;
+	}
+	if( 1 == $t_count ) {
+		$t_project_id = (int) $t_project_ids[0];
+		if( count( user_get_accessible_subprojects( $p_user_id, $t_project_id ) ) == 0 ) {
+			return false;
+		}
+	}
 	return true;
 }

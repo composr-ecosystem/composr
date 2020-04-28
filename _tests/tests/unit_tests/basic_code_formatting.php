@@ -84,6 +84,7 @@ class basic_code_formatting_test_set extends cms_test_case
         ];
 
         foreach ($this->files as $path) {
+            // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
                 'aps',
                 'data_custom/sitemap',
@@ -91,7 +92,6 @@ class basic_code_formatting_test_set extends cms_test_case
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-
             $exceptions = array_merge(list_untouchable_third_party_files(), [
                 'data_custom/sitemaps/news_sitemap.xml',
                 'manifest.xml',
@@ -105,10 +105,10 @@ class basic_code_formatting_test_set extends cms_test_case
                 continue;
             }
 
-            $ext = get_file_extension(get_file_base() . '/' . $path);
+            $ext = get_file_extension($path);
 
             if ((in_array($ext, $file_types_spaces)) || (in_array($ext, $file_types_tabs))) {
-                $c = cms_file_get_contents_safe($path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 $contains_tabs = strpos($c, "\t");
                 $contains_spaced_tabs = strpos($c, '    ');
@@ -131,12 +131,12 @@ class basic_code_formatting_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         foreach ($this->files as $path) {
+            // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-
             $exceptions = array_merge(list_untouchable_third_party_files(), [
                 'data_custom/rate_limiter.php',
                 'text/unbannable_ips.txt',
@@ -146,10 +146,10 @@ class basic_code_formatting_test_set extends cms_test_case
                 continue;
             }
 
-            $ext = get_file_extension(get_file_base() . '/' . $path);
+            $ext = get_file_extension($path);
 
             if ((isset($this->text_formats[$ext])) && ($ext != 'svg') && ($ext != 'ini')) {
-                $c = cms_file_get_contents_safe($path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 $ok = (preg_match('#[ \t]$#m', $c) == 0);
                 $this->assertTrue($ok, 'Has trailing whitespace in ' . $path . '; grep for [ \t]+$');
@@ -166,6 +166,7 @@ class basic_code_formatting_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         foreach ($this->files as $path) {
+            // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
                 'comcode_custom/(?!EN)\w+',
                 'lang_custom/(?!EN)\w+',
@@ -174,7 +175,6 @@ class basic_code_formatting_test_set extends cms_test_case
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-
             $exceptions = array_merge(list_untouchable_third_party_files(), [
                 'lang/langs.ini',
             ]);
@@ -182,10 +182,10 @@ class basic_code_formatting_test_set extends cms_test_case
                 continue;
             }
 
-            $ext = get_file_extension(get_file_base() . '/' . $path);
+            $ext = get_file_extension($path);
 
             if (isset($this->text_formats[$ext])) {
-                $c = cms_file_get_contents_safe($path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 if ($ext == 'php' || $ext == 'css' || $ext == 'js') {
                     // Strip comments, which often contain people's non-English names
@@ -222,6 +222,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 continue;
             }
 
+            // Exceptions
             $exceptions = array_merge(list_untouchable_third_party_directories(), [
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
@@ -234,7 +235,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 continue;
             }
 
-            $ext = get_file_extension(get_file_base() . '/' . $path);
+            $ext = get_file_extension($path);
 
             if (isset($this->text_formats[$ext])) {
                 $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);

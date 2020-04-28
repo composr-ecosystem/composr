@@ -122,21 +122,21 @@ if (empty($intersection)) {
 } else {
     foreach ($hooks as $hook => $ob) {
         $files = $ob->get_file_list();
-        foreach ($files as $file) {
-            if (((!in_array($hook, $installed_addons)) || (in_array($hook, $addons_definitely_not_wanted))) && (!force_keep($file, $files_to_always_keep))) {
-                if (file_exists(get_file_base() . '/' . $file)) {
-                    echo 'rm -f ' . cms_escapeshellarg($file) . "\n";
+        foreach ($files as $path) {
+            if (((!in_array($hook, $installed_addons)) || (in_array($hook, $addons_definitely_not_wanted))) && (!force_keep($path, $files_to_always_keep))) {
+                if (file_exists(get_file_base() . '/' . $path)) {
+                    echo 'rm -f ' . cms_escapeshellarg($path) . "\n";
                 }
             }
-            unset($GFILE_ARRAY[$file]);
+            unset($GFILE_ARRAY[$path]);
         }
     }
 }
 
 // Alien files (non-ignored files not within one of the known addons)
-foreach (array_keys($GFILE_ARRAY) as $file) {
-    if (!force_keep($file, $files_to_always_keep)) {
-        echo 'rm -f ' . cms_escapeshellarg($file) . "\n";
+foreach (array_keys($GFILE_ARRAY) as $path) {
+    if (!force_keep($path, $files_to_always_keep)) {
+        echo 'rm -f ' . cms_escapeshellarg($path) . "\n";
     }
 }
 

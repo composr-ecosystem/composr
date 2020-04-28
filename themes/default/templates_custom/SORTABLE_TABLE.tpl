@@ -27,13 +27,6 @@
 
 		<tbody>
 			{ROWS}
-
-			{$,Fudge so that last-child bottom curved border continues to work}
-			<tr class="table-nofilter table-nosort trailing-row">
-				{+START,LOOP,HEADERS}
-					<td></td>
-				{+END}
-			</tr>
 		</tbody>
 	</table>
 

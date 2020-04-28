@@ -68,7 +68,6 @@ class _web_resources_test_set extends cms_test_case
             'jquery_ui.js',
             'modernizr.js',
             'plupload.js',
-            'base64.js',
             'confluence.js',
             'confluence2.js',
             'masonry.js',
@@ -77,6 +76,10 @@ class _web_resources_test_set extends cms_test_case
             // Third-party code not confirming to Composr standards
             'widget_color.js',
             'widget_date.js',
+            'select2.js',
+            'skitter.js',
+            'cookie_consent.js',
+            'columns.js',
             'jquery.js',
             'sortable_tables.js',
             'unslider.js',
@@ -84,7 +87,6 @@ class _web_resources_test_set extends cms_test_case
             'tag_cloud.js',
             'mediaelement-and-player.js',
             'sound.js',
-            'base64.js',
             'global.js', // Due to including polyfills (included files will be checked separately though)
             'JSON5.js',
             'POLYFILL_FETCH.js',
@@ -110,12 +112,12 @@ class _web_resources_test_set extends cms_test_case
                 }
             }
 
-            $path = javascript_enforce(basename($path, '.js'), $theme);
-            if ($path == '') {
+            $path_compiled = javascript_enforce(basename($path, '.js'), $theme);
+            if ($path_compiled == '') {
                 continue; // Empty file, so skipped
             }
 
-            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $c = cms_file_get_contents_safe($path_compiled, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
             $errors = check_js($c);
             if ($errors !== null) {
                 foreach ($errors['errors'] as $i => $e) {
@@ -126,7 +128,7 @@ class _web_resources_test_set extends cms_test_case
             if (($errors !== null) && (empty($errors['errors']))) {
                 $errors = null; // Normalise
             }
-            $this->assertTrue(($errors === null), 'Bad JS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path) . '&debug=1 to see errors)') : ''));
+            $this->assertTrue(($errors === null), 'Bad JS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path_compiled) . '&debug=1&keep_minify=0 to see errors)') : ''));
             if ($errors !== null) {
                 if ($this->debug) {
                     unset($errors['tag_ranges']);

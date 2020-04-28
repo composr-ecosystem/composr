@@ -1,216 +1,329 @@
 <?php
-/**
- *  base include file for SimpleTest
- *  @package    SimpleTest
- *  @subpackage MockObjects
- *  @version    $Id: socket.php 1723 2008-04-08 00:34:10Z lastcraft $
- */
 
-/**#@+
- * include SimpleTest files
- */
-require_once(dirname(__FILE__) . '/compatibility.php');
-/**#@-*/
+require_once __DIR__ . '/compatibility.php';
 
 /**
- *    Stashes an error for later. Useful for constructors
- *    until PHP gets exceptions.
- *    @package SimpleTest
- *    @subpackage WebTester
+ * Stashes an error for later.
+ *
+ * @todo  Useful for constructors until PHP gets exceptions.
  */
-class SimpleStickyError {
-    var $_error = 'Constructor not chained';
+class SimpleStickyError
+{
+    private $error = 'Constructor not chained';
 
     /**
-     *    Sets the error to empty.
-     *    @access public
+     * Sets the error to empty.
      */
-    function __construct() {
-        $this->_clearError();
+    public function __construct()
+    {
+        $this->clearError();
     }
 
     /**
-     *    Test for an outstanding error.
-     *    @return boolean           True if there is an error.
-     *    @access public
+     * Test for an outstanding error.
+     *
+     * @return bool           True if there is an error.
      */
-    function isError() {
-        return ($this->_error != '');
+    public function isError()
+    {
+        return ($this->error != '');
     }
 
     /**
-     *    Accessor for an outstanding error.
-     *    @return string     Empty string if no error otherwise
-     *                       the error message.
-     *    @access public
+     * Accessor for an outstanding error.
+     *
+     * @return string     Empty string if no error otherwise the error message.
      */
-    function getError() {
-        return $this->_error;
+    public function getError()
+    {
+        return $this->error;
     }
 
     /**
-     *    Sets the internal error.
-     *    @param string       Error message to stash.
-     *    @access protected
+     * Sets the internal error.
+     *
+     * @param string       Error message to stash.
      */
-    function _setError($error) {
-        $this->_error = $error;
+    public function setError($error)
+    {
+        $this->error = $error;
     }
 
     /**
-     *    Resets the error state to no error.
-     *    @access protected
+     * Resets the error state to no error.
      */
-    function _clearError() {
-        $this->_setError('');
+    public function clearError()
+    {
+        $this->setError('');
     }
 }
 
 /**
- *    Wrapper for TCP/IP socket.
- *    @package SimpleTest
- *    @subpackage WebTester
+ * Wrapper for a file socket.
  */
-class SimpleSocket extends SimpleStickyError {
-    var $_handle;
-    var $_is_open = false;
-    var $_sent = '';
-    var $lock_size;
+class SimpleFileSocket extends SimpleStickyError
+{
+    private $handle;
+    private $is_open = false;
+    private $sent    = '';
+    private $block_size;
 
     /**
-     *    Opens a socket for reading and writing.
-     *    @param string $host          Hostname to send request to.
-     *    @param integer $port         Port on remote machine to open.
-     *    @param integer $timeout      Connection timeout in seconds.
-     *    @param integer $block_size   Size of chunk to read.
-     *    @access public
+     * Opens a socket for reading and writing.
+     *
+     * @param SimpleUrl $file       Target URI to fetch.
+     * @param int $block_size   Size of chunk to read.
      */
-    function __construct($host, $port, $timeout, $block_size = 255) {
+    public function __construct($file, $block_size = 1024)
+    {
         parent::__construct();
-        if (! ($this->_handle = $this->_openSocket($host, $port, $error_number, $error, $timeout))) {
-            $this->_setError("Cannot open [$host:$port] with [$error] within [$timeout] seconds");
+        if (! ($this->handle = $this->openFile($file, $error))) {
+            $file_string = $file->asString();
+            $this->setError("Cannot open [$file_string] with [$error]");
+
             return;
         }
-        $this->_is_open = true;
-        $this->_block_size = $block_size;
-        SimpleTestCompatibility::setTimeout($this->_handle, $timeout);
+        $this->is_open    = true;
+        $this->block_size = $block_size;
     }
 
     /**
-     *    Writes some data to the socket and saves alocal copy.
-     *    @param string $message       String to send to socket.
-     *    @return boolean              True if successful.
-     *    @access public
+     * Writes some data to the socket and saves alocal copy.
+     *
+     * @param string $message       String to send to socket.
+     *
+     * @return bool              True if successful.
      */
-    function write($message) {
-        if ($this->isError() || ! $this->isOpen()) {
-            return false;
-        }
-        $count = fwrite($this->_handle, $message);
-        if (! $count) {
-            if ($count === false) {
-                $this->_setError('Cannot write to socket');
-                $this->close();
-            }
-            return false;
-        }
-        fflush($this->_handle);
-        $this->_sent .= $message;
+    public function write($message)
+    {
         return true;
     }
 
     /**
-     *    Reads data from the socket. The error suppresion
-     *    is a workaround for PHP4 always throwing a warning
-     *    with a secure socket.
-     *    @return integer/boolean           Incoming bytes. False
-     *                                     on error.
-     *    @access public
+     * Reads data from the socket.
+     *
+     * @todo The error suppression is a workaround for PHP4
+     * always throwing a warning with a secure socket.
+     *
+     * @return integer/boolean           Incoming bytes. False on error.
      */
-    function read() {
+    public function read()
+    {
+        $raw = @fread($this->handle, $this->block_size);
+        if ($raw === false) {
+            $this->setError('Cannot read from socket');
+            $this->close();
+        }
+
+        return $raw;
+    }
+
+    /**
+     * Accessor for socket open state.
+     *
+     * @return bool           True if open.
+     */
+    public function isOpen()
+    {
+        return $this->is_open;
+    }
+
+    /**
+     * Closes the socket preventing further reads. Cannot be reopened once closed.
+     *
+     * @return bool           True if successful.
+     */
+    public function close()
+    {
+        if (!$this->is_open) {
+            return false;
+        }
+        $this->is_open = false;
+
+        return fclose($this->handle);
+    }
+
+    /**
+     * Accessor for content so far.
+     *
+     * @return string        Bytes sent only.
+     */
+    public function getSent()
+    {
+        return $this->sent;
+    }
+
+    /**
+     * Actually opens the low level socket.
+     *
+     * @param SimpleUrl $file       SimpleUrl file target.
+     * @param string $error         Recipient of error message.
+     * @param int $timeout      Maximum time to wait for connection.
+     */
+    protected function openFile($file, &$error)
+    {
+        return @fopen($file->asString(), 'r');
+    }
+}
+
+/**
+ * Wrapper for TCP/IP socket.
+ */
+class SimpleSocket extends SimpleStickyError
+{
+    private $handle;
+    private $is_open = false;
+    private $sent    = '';
+    private $block_size;
+
+    /**
+     * Opens a socket for reading and writing.
+     *
+     * @param string $host      Hostname to send request to.
+     * @param int $port         Port on remote machine to open.
+     * @param int $timeout      Connection timeout in seconds.
+     * @param int $block_size   Size of chunk to read.
+     */
+    public function __construct($host, $port, $timeout, $block_size = 255)
+    {
+        parent::__construct();
+        if (! ($this->handle = $this->openSocket($host, $port, $error_number, $error, $timeout))) {
+            $this->setError("Cannot open [$host:$port] with [$error] within [$timeout] seconds");
+
+            return;
+        }
+        $this->is_open    = true;
+        $this->block_size = $block_size;
+        stream_set_timeout($this->handle, $timeout, 0);
+    }
+
+    /**
+     * Writes some data to the socket and saves alocal copy.
+     *
+     * @param string $message       String to send to socket.
+     *
+     * @return bool              True if successful.
+     */
+    public function write($message)
+    {
         if ($this->isError() || ! $this->isOpen()) {
             return false;
         }
-        $raw = @fread($this->_handle, $this->_block_size);
+        $count = fwrite($this->handle, $message);
+        if (! $count) {
+            if ($count === false) {
+                $this->setError('Cannot write to socket');
+                $this->close();
+            }
+
+            return false;
+        }
+        fflush($this->handle);
+        $this->sent .= $message;
+
+        return true;
+    }
+
+    /**
+     * Reads data from the socket.
+     *
+     * @todo  The error suppresion is a workaround for PHP4 always throwing a
+     * warning with a secure socket.
+     *
+     * @return integer/boolean           Incoming bytes. False on error.
+     */
+    public function read()
+    {
+        if ($this->isError() || ! $this->isOpen()) {
+            return false;
+        }
+        $raw = @fread($this->handle, $this->block_size);
         if ($raw === false) {
-            $this->_setError('Cannot read from socket');
+            $this->setError('Cannot read from socket');
             $this->close();
         }
+
         return $raw;
     }
 
     /**
      *    Accessor for socket open state.
-     *    @return boolean           True if open.
-     *    @access public
+     *
+     *    @return bool           True if open.
      */
-    function isOpen() {
-        return $this->_is_open;
+    public function isOpen()
+    {
+        return $this->is_open;
     }
 
     /**
-     *    Closes the socket preventing further reads.
-     *    Cannot be reopened once closed.
-     *    @return boolean           True if successful.
-     *    @access public
+     * Closes the socket preventing further reads. Cannot be reopened once closed.
+     *
+     * @return bool           True if successful.
      */
-    function close() {
-        $this->_is_open = false;
-        return fclose($this->_handle);
+    public function close()
+    {
+        if (!$this->is_open) {
+            return false;
+        }        
+        $this->is_open = false;
+
+        return fclose($this->handle);
     }
 
     /**
-     *    Accessor for content so far.
-     *    @return string        Bytes sent only.
-     *    @access public
+     * Accessor for content so far.
+     *
+     * @return string        Bytes sent only.
      */
-    function getSent() {
-        return $this->_sent;
+    public function getSent()
+    {
+        return $this->sent;
     }
 
     /**
-     *    Actually opens the low level socket.
-     *    @param string $host          Host to connect to.
-     *    @param integer $port         Port on host.
-     *    @param integer $error_number Recipient of error code.
-     *    @param string $error         Recipoent of error message.
-     *    @param integer $timeout      Maximum time to wait for connection.
-     *    @access protected
+     * Actually opens the low level socket.
+     *
+     * @param string $host          Host to connect to.
+     * @param int $port         Port on host.
+     * @param int $error_number Recipient of error code.
+     * @param string $error         Recipoent of error message.
+     * @param int $timeout      Maximum time to wait for connection.
      */
-    function _openSocket($host, $port, &$error_number, &$error, $timeout) {
+    protected function openSocket($host, $port, &$error_number, &$error, $timeout)
+    {
         return @fsockopen($host, $port, $error_number, $error, $timeout);
     }
 }
 
 /**
- *    Wrapper for TCP/IP socket over TLS.
- *    @package SimpleTest
- *    @subpackage WebTester
+ * Wrapper for TCP/IP socket over TLS.
  */
-class SimpleSecureSocket extends SimpleSocket {
-
+class SimpleSecureSocket extends SimpleSocket
+{
     /**
-     *    Opens a secure socket for reading and writing.
-     *    @param string $host      Hostname to send request to.
-     *    @param integer $port     Port on remote machine to open.
-     *    @param integer $timeout  Connection timeout in seconds.
-     *    @access public
+     * Opens a secure socket for reading and writing.
+     *
+     * @param string $host      Hostname to send request to.
+     * @param int $port     Port on remote machine to open.
+     * @param int $timeout  Connection timeout in seconds.
      */
-    function __construct($host, $port, $timeout) {
+    public function __construct($host, $port, $timeout)
+    {
         parent::__construct($host, $port, $timeout);
     }
 
     /**
-     *    Actually opens the low level socket.
-     *    @param string $host          Host to connect to.
-     *    @param integer $port         Port on host.
-     *    @param integer $error_number Recipient of error code.
-     *    @param string $error         Recipient of error message.
-     *    @param integer $timeout      Maximum time to wait for connection.
-     *    @access protected
+     * Actually opens the low level socket.
+     *
+     * @param string $host          Host to connect to.
+     * @param int $port         Port on host.
+     * @param int $error_number Recipient of error code.
+     * @param string $error         Recipient of error message.
+     * @param int $timeout      Maximum time to wait for connection.
      */
-    function _openSocket($host, $port, &$error_number, &$error, $timeout) {
-        return parent::_openSocket("tls://$host", $port, $error_number, $error, $timeout);
+    public function openSocket($host, $port, &$error_number, &$error, $timeout)
+    {
+        return parent::openSocket("tls://$host", $port, $error_number, $error, $timeout);
     }
 }
-?>

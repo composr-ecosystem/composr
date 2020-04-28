@@ -341,7 +341,10 @@ function add_menu_item($menu_id, $order, $parent, $caption, $url, $check_permiss
  */
 function edit_menu_item($id, $menu_id, $order, $parent, $caption, $url, $check_permissions, $page_only, $expanded, $new_window, $caption_long, $theme_image_code, $include_sitemap)
 {
-    $_caption = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'i_caption', ['id' => $id]);
+    $_caption = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_caption', ['id' => $id]);
+    if ($_caption === null) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'menu_item'));
+    }
     $_caption_long = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'i_caption_long', ['id' => $id]);
 
     $map = [

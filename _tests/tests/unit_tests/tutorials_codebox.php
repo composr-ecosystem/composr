@@ -45,6 +45,8 @@ class tutorials_codebox_test_set extends cms_test_case
             'CSS',
             'SQL',
             'MySQL',
+            'PostgreSQL',
+            'tsql',
             'Commandr',
             'Bash',
             'INI',

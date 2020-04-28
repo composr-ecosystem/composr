@@ -126,11 +126,13 @@ class Hook_actionlog_news extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_NEWS':
             case 'EDIT_NEWS':
-                $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', ['id' => intval($identifier)]);
-                if ($category_id !== null) {
-                    $bindings += [
-                        'CAT' => strval($category_id),
-                    ];
+                if ($identifier !== null) {
+                    $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', ['id' => intval($identifier)]);
+                    if ($category_id !== null) {
+                        $bindings += [
+                            'CAT' => strval($category_id),
+                        ];
+                    }
                 }
                 break;
         }

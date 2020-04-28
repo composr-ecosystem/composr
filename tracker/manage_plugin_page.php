@@ -137,11 +137,12 @@ foreach ( $t_plugins_installed as $t_basename => $t_plugin ) {
 
 	if( !empty( $t_author ) ) {
 		if( is_array( $t_author ) ) {
-			$t_author = implode( $t_author, ', ' );
+			$t_author = implode( ', ', $t_author );
 		}
 		if( !is_blank( $t_contact ) ) {
 			$t_author = '<br />' . sprintf( lang_get( 'plugin_author' ),
-				'<a href="mailto:' . string_attribute( $t_contact ) . '">' . string_display_line( $t_author ) . '</a>' );
+					prepare_email_link( $t_contact, $t_author )
+				);
 		} else {
 			$t_author = '<br />' . string_display_line( sprintf( lang_get( 'plugin_author' ), $t_author ) );
 		}
@@ -171,7 +172,7 @@ foreach ( $t_plugins_installed as $t_basename => $t_plugin ) {
 	}
 
 	if( 0 < count( $t_depends ) ) {
-		$t_depends = implode( $t_depends, '<br />' );
+		$t_depends = implode( '<br>', $t_depends );
 	} else {
 		$t_depends = '<span class="small dependency_met">' . lang_get( 'plugin_no_depends' ) . '</span>';
 	}
@@ -269,11 +270,12 @@ if( 0 < count( $t_plugins_available ) ) {
 
 		if( !empty( $t_author ) ) {
 			if( is_array( $t_author ) ) {
-				$t_author = implode( $t_author, ', ' );
+				$t_author = implode( ', ', $t_author );
 			}
 			if( !is_blank( $t_contact ) ) {
 				$t_author = '<br />' . sprintf( lang_get( 'plugin_author' ),
-					'<a href="mailto:' . string_display_line( $t_contact ) . '">' . string_display_line( $t_author ) . '</a>' );
+						prepare_email_link( $t_contact, $t_author )
+					);
 			} else {
 				$t_author = '<br />' . string_display_line( sprintf( lang_get( 'plugin_author' ), $t_author ) );
 			}
@@ -300,7 +302,7 @@ if( 0 < count( $t_plugins_available ) ) {
 		}
 
 		if( 0 < count( $t_depends ) ) {
-			$t_depends = implode( $t_depends, '<br />' );
+			$t_depends = implode( '<br>', $t_depends );
 		} else {
 			$t_depends = '<span class="small dependency_met">' . lang_get( 'plugin_no_depends' ) . '</span>';
 		}

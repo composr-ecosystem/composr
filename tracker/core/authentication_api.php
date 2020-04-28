@@ -72,7 +72,7 @@ $g_cache_anonymous_user_cookie_string = null;
 $g_cache_cookie_valid = null;
 
 # @global int $g_cache_current_user_id
-$g_cache_current_user_id = null;
+$g_cache_current_user_id = NO_USER;
 
 /**
  * Gets set of flags for authentication for the specified user.
@@ -82,7 +82,7 @@ $g_cache_current_user_id = null;
  * @return AuthFlags The auth flags object to use.
  */
 function auth_flags( $p_user_id = null, $p_username = '' ) {
-	if( is_null( $p_user_id ) ) {
+	if( !$p_user_id ) {
 		# If user id is not provided and user is not authenticated return default flags.
 		# Otherwise, we can get into a loop as in #22740
 		if( !auth_is_user_authenticated() ) {
@@ -176,7 +176,7 @@ function auth_signup_access_level() {
  * @return bool true: enabled; false: otherwise.
  */
 function auth_anonymous_enabled() {
-	return config_get_global( 'allow_anonymous_login' );
+	return config_get_global( 'allow_anonymous_login' ) && auth_anonymous_account();
 }
 
 /**
@@ -189,11 +189,12 @@ function auth_anonymous_account() {
 
 /**
  * Get the auth cookie expiry time.
+ * @param integer $p_user_id The user id to get session expiry for.
  * @param boolean $p_perm_login Use permanent login.
  * @return integer cookie lifetime or 0 for browser session.
  */
-function auth_session_expiry( $p_perm_login ) {
-	$t_auth_flags = auth_flags();
+function auth_session_expiry( $p_user_id, $p_perm_login ) {
+	$t_auth_flags = auth_flags( $p_user_id );
 	$t_perm_login = $p_perm_login;
 	if( !$t_auth_flags->getPermSessionEnabled() ) {
 		$t_perm_login = false;
@@ -856,7 +857,7 @@ function auth_generate_confirm_hash( $p_user_id ) {
 /**
  * Set login cookies for the user
  * If $p_perm_login is true, a long-term cookie is created
- * @param integer $p_user_id    An user identifier.
+ * @param integer $p_user_id    A user identifier.
  * @param boolean $p_perm_login Indicates whether to generate a long-term cookie.
  * @access public
  * @return void
@@ -864,7 +865,7 @@ function auth_generate_confirm_hash( $p_user_id ) {
 function auth_set_cookies( $p_user_id, $p_perm_login = false ) {
 	$t_cookie_string = user_get_field( $p_user_id, 'cookie_string' );
 	$t_cookie_name = config_get_global( 'string_cookie' );
-	gpc_set_cookie( $t_cookie_name, $t_cookie_string, auth_session_expiry( $p_perm_login ) );
+	gpc_set_cookie( $t_cookie_name, $t_cookie_string, auth_session_expiry( $p_user_id, $p_perm_login ) );
 }
 
 /**
@@ -1100,8 +1101,8 @@ function auth_is_cookie_valid( $p_cookie_string ) {
 		return false;
 	}
 
-	# succeeed if user has already been authenticated
-	if( null !== $g_cache_current_user_id ) {
+	# succeed if user has already been authenticated
+	if( NO_USER != $g_cache_current_user_id ) {
 		return true;
 	}
 
@@ -1131,8 +1132,8 @@ function auth_is_cookie_valid( $p_cookie_string ) {
 function auth_get_current_user_id() {
 	global $g_cache_current_user_id;
 
-	if( null !== $g_cache_current_user_id ) {
-		return $g_cache_current_user_id;
+	if( NO_USER != $g_cache_current_user_id ) {
+		return (int)$g_cache_current_user_id;
 	}
 
 	$t_cookie_string = auth_get_current_user_cookie();

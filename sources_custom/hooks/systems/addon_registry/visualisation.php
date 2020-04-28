@@ -125,6 +125,7 @@ Sample spreadsheet files for all the other blocks are provided under [tt]uploads
         return [
             'requires' => [
                 'all_icons',
+                'IE 11+',
             ],
             'recommends' => [],
             'conflicts_with' => [],

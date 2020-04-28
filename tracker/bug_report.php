@@ -106,7 +106,7 @@ $t_tags = tag_parse_string( $t_tag_string );
 if( !empty( $t_tags ) ) {
 	$t_issue['tags'] = array();
 	foreach( $t_tags as $t_tag ) {
-		$t_issue['tags'][] = array( 'id' => $t_tag['id'], 'name' => $t_tag['name'] );
+		$t_issue['tags'][] = array( 'name' => $t_tag['name'] );
 	}
 }
 
@@ -153,6 +153,16 @@ if( $t_profile_id != 0 ) {
 $t_handler_id = gpc_get_int( 'handler_id', NO_USER );
 if( $t_handler_id != NO_USER ) {
 	$t_issue['handler'] = array( 'id' => $t_handler_id );
+}
+
+$t_monitors = gpc_get_int_array( 'monitors', array() );
+if( $t_monitors ) {
+	# The API expects a list of arrays with 'id' as key
+	$t_list = array();
+	foreach( $t_monitors as $t_monitor_id ) {
+		$t_list[] = array( 'id' => $t_monitor_id );
+	}
+	$t_issue['monitors'] = $t_list;
 }
 
 $t_view_state = gpc_get_int( 'view_state', 0 );
@@ -270,7 +280,7 @@ if( $f_report_stay ) {
 
 	html_meta_redirect( $t_report_more_bugs_url );
 } else {
-	html_meta_redirect( 'view_all_bug_page.php' );
+	html_meta_redirect( string_get_bug_view_url( $t_issue_id ) );
 }
 
 layout_page_header_end();

@@ -885,7 +885,7 @@ Be type-strict
 Avoid complex SQL
 | Portability
 | Product development only
-| Automated test ([tt]_installer_xml_db.php[/tt])
+| Automated test ([tt]__installer_xml_db.php[/tt])
 | You cannot use SQL syntax that is not widely supported such as the MySQL substring functions, unless the [tt]db_function[/tt] function supports it.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -899,7 +899,7 @@ Don't use [tt]LIMIT[/tt] manually, use the API
 ]Don't use ` symbols in your SQL and don't use keywords for table/field names
 | Portability: they are MySQL-specific
 | Product development only
-| Automated test ([tt]_installer_xml_db.php[/tt]), table creation code checks
+| Automated test ([tt]__installer_xml_db.php[/tt]), table creation code checks
 | You will have been forced to choose field names that don't require escaping anyway.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -2236,11 +2236,21 @@ Provide addon screenshots
 | Product development only
 | Manually
 | If you include some third party code you must update:
- - [tt]licence.txt[/tt] (this file is shown when users install)
+ - [tt]text/EN/licence.txt[/tt] (this file is shown when users install)
  - [tt]sources_custom/third_party_code.php[/tt] (general list of files)
  - [tt]phpdoc.dist.xml[/tt] (if appropriate, PHPDoc generation)
- - [tt]maintenance_sheet.csv[/tt] (if appropriate, non-maintained systems)
- - https://docs.google.com/spreadsheets/d/1Im6ICITZmzoBVMizD0CkM7N0kXH5Rb-NQJzD1hk49cU/edit#gid=0 (notes about merging in external bug fixing)
+ - [tt]data/maintenance_sheet.csv[/tt] (if appropriate, non-maintained systems)
+ - [tt]data_custom/third_party_code.csv[/tt] (spreadsheet of SDKs/libraries used, except very tiny pieces of third-party code we've fully integrated)
+ - [tt]data_custom/third_party_apis.csv[/tt] (spreadsheet of APIs used, except those covered by [tt]third_party_code.csv[/tt])
+ - [tt].eslintignore[/tt] (files for ESLint to ignore)
+ - [tt].phpcs[/tt] (files for PHP_CodeSniffer to ignore)
+
+Some general advice regarding (re)integrating libraries:
+ - When getting from GitHub, we generally use the latest 'Release' rather than latest clone, but it varies -- and the version number is whatever is given, even if fixes were made since it was changed
+ - When running Composer to download dependencies: For the "No composer.json in current directory, do you want to use the one at" questions, answer 'N'
+ - We don't try and force third party libraries to work with ocProducts PHP type strictness, instead we disable/reenable it around library calls
+ - Often you'll need to open up [tt]_tests/index.php?id=unit_tests%2Fstandard_dir_files&debug=1[/tt] to generate [tt]index.html[/tt] and [tt].htaccess[/tt] files, as many projects do not ship these files
+ - Run [tt]find some_dir -type f | sort[/tt] find the new file list for the [tt]addon_registry[/tt] hook
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Update maintenance sheet[/color]

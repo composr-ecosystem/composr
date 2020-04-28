@@ -2,7 +2,7 @@
 
 <div data-tpl="activity" data-tpl-params="{+START,PARAMS_JSON,LIID}{_*}{+END}">
 	{+START,IF,{ALLOW_REMOVE}}
-		<form id="feed-remove-{LIID*}" class="activities-remove js-submit-confirm-update-remove" action="{$PAGE_LINK*,:}" method="post">
+		<form title="{!REMOVE} #{LIID*}" id="feed-remove-{LIID*}" class="activities-remove js-submit-confirm-update-remove" action="#" method="post">
 			{$INSERT_SPAMMER_BLACKHOLE}
 
 			<button class="btn btn-link remove-button" type="submit" title="{!REMOVE}">
@@ -16,18 +16,18 @@
 
 	<div class="activities-avatar-box">
 		{+START,IF_NON_EMPTY,{ADDON_ICON}}
-			<img width="36" height="36" src="{$THUMBNAIL*,{ADDON_ICON},36x36,,,,pad,both,#FFFFFF00}" />
+			<img alt="" width="36" height="36" src="{$THUMBNAIL*,{ADDON_ICON},36x36,,,,pad,both,#FFFFFF00}" />
 		{+END}
 		{+START,IF_EMPTY,{ADDON_ICON}}
-			<img width="36" height="36" src="{$THUMBNAIL*,{$IMG,icons/admin/edit_this},36x36,,,,pad,both,#FFFFFF00}" />
+			<img alt="" width="36" height="36" src="{$THUMBNAIL*,{$IMG,icons/admin/edit_this},36x36,,,,pad,both,#FFFFFF00}" />
 		{+END}
 
 		{+START,SET,commented_out}
 			{+START,IF_EMPTY,{AVATAR}}{+START,IF_NON_EMPTY,{$IMG,cns_default_avatars/default,0,,1}}
-				<img width="36" height="36" src="{$THUMBNAIL*,{$IMG,cns_default_avatars/default,0,,1},36x36,,,,pad,both,#FFFFFF00}" />
+				<img alt="" width="36" height="36" src="{$THUMBNAIL*,{$IMG,cns_default_avatars/default,0,,1},36x36,,,,pad,both,#FFFFFF00}" />
 			{+END}{+END}
 			{+START,IF_NON_EMPTY,{AVATAR}}
-				<img width="36" height="36" src="{$THUMBNAIL*,{AVATAR},36x36,,,,pad,both,#FFFFFF00}" />
+				<img alt="" width="36" height="36" src="{$THUMBNAIL*,{AVATAR},36x36,,,,pad,both,#FFFFFF00}" />
 			{+END}
 		{+END}
 	</div>

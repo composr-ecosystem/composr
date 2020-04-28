@@ -70,6 +70,8 @@ class standard_dir_files_test_set extends cms_test_case
             'de9b5b7778090cf4376839b6aebb9f45' => true,
             'e829b8bdcef68c92b0926288106048b6' => true,
             '19a8c8adbb99cac491544ba444ab9541' => true,
+            '61e312cb9d1db877826e8aa77c282b2a' => true, // _tests/simpletest/test/site/.htaccess
+            'f30780cfeab05516183f1b42e174b700' => true, // _tests/simpletest/test/site/protected/.htaccess
         ];
         foreach ($types as $hash => $file_paths) {
             $this->assertTrue(array_key_exists($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths) . ' with hash of ' . $hash);
@@ -118,7 +120,8 @@ class standard_dir_files_test_set extends cms_test_case
             if (
                 (preg_match('#^uploads/website_specific/test(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 test XML DB
                 (preg_match('#^caches/guest_pages(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 static cache dir
-                (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) // Not in codechecker (we need to call CQC)
+                (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) && // Not in codechecker (we need to call CQC)
+                (preg_match('#^uploads/filedump/xxx(/|$)#', $dir_stub) == 0) // Created for a test
             ) {
                 if (
                     (!file_exists($dir . '/index.php')) // Not in a zone (needs to run as default)

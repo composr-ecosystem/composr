@@ -388,11 +388,13 @@ abstract class HttpDownloader
 
         // Prevent DOS loop attack...
 
-        if ($_SERVER['HTTP_USER_AGENT'] == $this->ua) {
-            $ua = 'Composr-recurse';
-        }
-        if ($_SERVER['HTTP_USER_AGENT'] == 'Composr-recurse') {
-            return null;
+        if ((!empty($_SERVER['HTTP_USER_AGENT'])) && (is_string($this->ua))) {
+            if ($_SERVER['HTTP_USER_AGENT'] == $this->ua) {
+                $ua = 'Composr-recurse';
+            }
+            if ($_SERVER['HTTP_USER_AGENT'] == 'Composr-recurse') {
+                return null;
+            }
         }
         if ($DOWNLOAD_LEVEL == 8) {
             $this->data = null;
@@ -514,7 +516,7 @@ abstract class HttpDownloader
                     $this->raw_payload .= "\r\n\r\n";
                 }
             } else { // If files, use more complex multipart/form-data
-                if (strtolower($this->http_verb) == 'put') {
+                if (($this->http_verb !== null) && (strtolower($this->http_verb) == 'put')) {
                     $this->put_no_delete = (empty($this->post_params)) && (count($this->files) == 1); // Can we just use the one referenced file as a direct PUT
                     if ($this->put_no_delete) { // Yes
                         reset($this->files);
@@ -1171,7 +1173,7 @@ class HttpDownloaderCurl extends HttpDownloader
         if ($this->message == '206') {
             $this->message = '200'; // We don't care about partial-content return code, as Composr implementation gets ranges differently and we check '200' as a return result
         }
-        if (($this->download_mime_type !== null) && (strpos($this->download_mime_type, ';') !== false)) {
+        if (($this->download_mime_type !== null) && (strpos($this->download_mime_type, ';') !== false) && (strpos($this->download_mime_type, 'charset=') !== false)) {
             $this->charset = substr($this->download_mime_type, 8 + strpos($this->download_mime_type, 'charset='));
             $this->download_mime_type = substr($this->download_mime_type, 0, strpos($this->download_mime_type, ';'));
         }

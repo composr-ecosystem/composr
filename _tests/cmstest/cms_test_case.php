@@ -24,11 +24,12 @@ class cms_test_case extends WebTestCase
 
     public function setUp()
     {
+        require_code('config2');
+
         static $done_once = false;
         if (!$done_once) {
             // Make sure the site is open
             $this->site_closed = get_option('site_closed');
-            require_code('config2');
             set_option('site_closed', '0', 0);
             $done_once = true;
             register_shutdown_function([$this, 'reopen_site']);
@@ -47,6 +48,8 @@ class cms_test_case extends WebTestCase
         if (($this->only === null) && (array_key_exists(0, $args))) {
             $this->only = $args[0];
         }
+
+        cms_ini_set('ocproducts.type_strictness', '1');
     }
 
     public function reopen_site()
@@ -58,9 +61,10 @@ class cms_test_case extends WebTestCase
 
     public function tearDown()
     {
+        cms_ini_set('ocproducts.type_strictness', '0');
     }
 
-    public function should_filter_cqc_line($line)
+    protected function should_filter_cqc_line($line)
     {
         return (
             (trim($line) == '') ||
@@ -75,7 +79,7 @@ class cms_test_case extends WebTestCase
         );
     }
 
-    public function extend_cqc_call($url)
+    protected function extend_cqc_call($url)
     {
         $url .= '&api=1&todo=1';
         if (strpos(shell_exec('npx eslint -v'), 'v') !== false) {
@@ -106,7 +110,7 @@ class cms_test_case extends WebTestCase
         if (!file_exists($path)) {
             mkdir($path, 0777);
         }
-        $content = $this->_browser->getContent();
+        $content = $this->browser->getContent();
         cms_file_put_contents_safe($path . '/' . url_to_filename($url) . '.htm.tmp', $content, FILE_WRITE_FIX_PERMISSIONS);
 
         // Save the text so we can run through Word's grammar checker
@@ -127,7 +131,7 @@ class cms_test_case extends WebTestCase
     }
 
     // Establishes an admin session for the current web user, NOT for the server to call itself as an admin
-    public function establish_admin_session()
+    protected function establish_admin_session()
     {
         static $done_once = false;
         if ($done_once) {
@@ -139,13 +143,13 @@ class cms_test_case extends WebTestCase
         require_code('users_active_actions');
         $MEMBER_CACHED = restricted_manually_enabled_backdoor();
 
-        $this->dump($this->_browser->getContent());
+        $this->dump($this->browser->getContent());
 
         return get_session_id();
     }
 
     // Establishes an admin session on the server's likely callback IP
-    public function establish_admin_callback_session()
+    protected function establish_admin_callback_session()
     {
         require_code('users_active_actions');
         require_code('users_inactive_occasionals');
@@ -153,5 +157,78 @@ class cms_test_case extends WebTestCase
         $ip_address = get_server_external_looparound_ip();
 
         return create_session(get_first_admin_user(), 1, false, false, $ip_address);
+    }
+
+    protected function load_key_options($substring)
+    {
+        $ret = [];
+
+        $path = get_file_base() . '/_tests/assets/keys.csv';
+        if (!is_file($path)) {
+            $this->assertTrue(false, 'Cannot proceed, we need _tests/assets/keys.csv, which is not supplied in git for security reasons');
+            exit();
+        }
+
+        require_code('files_spreadsheets_read');
+
+        $sheet_reader = spreadsheet_open_read($path);
+        while (($row = $sheet_reader->read_row()) !== false) {
+            if (!isset($row['Option'])) {
+                exit('Option column missing');
+            }
+            if (!isset($row['Value'])) {
+                exit('Value column missing');
+            }
+            if (!isset($row['Type'])) {
+                exit('Type column missing');
+            }
+
+            if (strpos($row['Option'], $substring) !== false) {
+                switch ($row['Type']) {
+                    case 'option':
+                        require_code('config2');
+                        set_option($row['Option'], $row['Value']);
+                        break;
+
+                    case 'hidden':
+                        set_value($row['Option'], $row['Value']);
+                        break;
+
+                    case 'hidden_elective':
+                        set_value($row['Option'], $row['Value'], true);
+                        break;
+
+                    case 'return':
+                        $ret[$row['Option']] = $row['Value'];
+                        break;
+                }
+            }
+        }
+        $sheet_reader->close();
+
+        return $ret;
+    }
+
+    protected function run_health_check($category_label, $section_label, $check_context = 1/*CHECK_CONTEXT__TEST_SITE*/, $use_test_data_for_pass = null)
+    {
+        if ($this->debug) {
+            $GLOBALS['UNIT_TEST_WITH_DEBUG'] = true;
+        }
+
+        $sections_to_run = [];
+        $sections_to_run[] = $category_label . ' \\ ' . $section_label;
+
+        require_code('health_check');
+        $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
+        foreach ($hook_obs as $ob) {
+            list($category_label, $sections) = $ob->run($sections_to_run, $check_context, false, false, $use_test_data_for_pass);
+
+            $_sections = [];
+            foreach ($sections as $section_label => $results) {
+                foreach ($results as $_result) {
+                    $this->assertTrue($_result[0] == 'PASS', $_result[1]);
+                }
+            }
+        }
     }
 }

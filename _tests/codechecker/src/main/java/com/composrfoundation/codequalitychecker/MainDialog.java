@@ -205,7 +205,9 @@ public class MainDialog extends JFrame {
 
         ((DefaultListModel) this.files.getModel()).removeAllElements();
 
-        ArrayList<SearchFile> finalFiles = initiateFileSearch(type, path, "", skip_custom);
+        java.util.List<String> directoriesToSkip = executePHPcode("include('" + path + "sources_custom/third_party_code.php'); echo implode(chr(10), list_untouchable_third_party_directories());");
+
+        ArrayList<SearchFile> finalFiles = initiateFileSearch(type, path, "", skip_custom, directoriesToSkip);
         if (sort_new) {
             Collections.sort(finalFiles);
         }
@@ -215,7 +217,7 @@ public class MainDialog extends JFrame {
         });
     }
 
-    private ArrayList<SearchFile> initiateFileSearch(String type, String path, String rec_subpath, boolean skip_custom) {
+    private ArrayList<SearchFile> initiateFileSearch(String type, String path, String rec_subpath, boolean skip_custom, java.util.List<String> directoriesToSkip) {
         Date d = new Date();
         long currentTime = d.getTime() / 1000;
         ArrayList<SearchFile> finalFiles = new ArrayList();
@@ -229,54 +231,47 @@ public class MainDialog extends JFrame {
         Arrays.sort(theFiles);
         int i;
         long last_m;
+        String relPath;
         File tmpFile;
         for (i = 0; i < theFiles.length; i++) {
             if (theFiles[i].equals(".") || theFiles[i].equals("..")) {
                 continue;
             }
 
+            relPath = ((rec_subpath.equals("")) ? "" : (rec_subpath.replace(File.separator, "/") + "/")) + theFiles[i];
+            
             tmpFile = new File(path + File.separator + theFiles[i]);
 
             last_m = tmpFile.lastModified() / 1000 + 60 * 60 * 24;
 
             if (tmpFile.isDirectory()) {
-                // Similar to IGNORE_FLOATING
+                // Ignore floating cache/temporary stuff
                 if ((theFiles[i].equals("_meta_tree"))
-                        || (theFiles[i].equals("templates_cached"))
-                        || (theFiles[i].equals("tracker"))
-                        || (theFiles[i].equals("vendor"))
-                        || (theFiles[i].equals("exports"))
-                        || (theFiles[i].equals("ckeditor"))
-                        || (theFiles[i].equals("ace"))
-                        || (theFiles[i].equals("aws"))
-                        || (theFiles[i].equals("geshi"))
-                        || (theFiles[i].equals("getid3"))
-                        || (theFiles[i].equals("sabredav"))
-                        || (theFiles[i].equals("spout"))
-                        || (theFiles[i].equals("swift_mailer"))
-                        || (theFiles[i].equals("ILess"))
-                        || (theFiles[i].equals("Transliterator"))
-                        || (theFiles[i].equals("composr-api-template"))
-                        || (theFiles[i].equals("simpletest"))) {
+                        || (theFiles[i].equals("templates_cached"))) {
                     continue;
                 }
 
-                // Similar to IGNORE_NONBUNDLED
+                // third_party_code skipping
+                if (directoriesToSkip.contains(relPath)) {
+                    continue;
+                }
+
+                // Similar to IGNORE_NONBUNDLED (skips official non-bundled addons, rather than just third party code)
                 if ((skip_custom) && (
-                        (theFiles[i].equals("uploads"))
-                        || (theFiles[i].equals("_tests"))
-                        || (theFiles[i].equals("mobiquo"))
-                        || (theFiles[i].equals("buildr"))
+                        (relPath.equals("uploads"))
+                        || (relPath.equals("_tests"))
+                        || (relPath.equals("mobiquo"))
+                        || (relPath.equals("buildr"))
                         || (theFiles[i].contains("_custom")))) {
                     continue;
                 }
 
                 // Recurse
-                ArrayList<SearchFile> next = initiateFileSearch(type, tmpFile.getAbsolutePath(), rec_subpath + ((rec_subpath.equals("")) ? "" : File.separator) + tmpFile.getName(), skip_custom);
+                ArrayList<SearchFile> next = initiateFileSearch(type, tmpFile.getAbsolutePath(), rec_subpath + ((rec_subpath.equals("")) ? "" : File.separator) + theFiles[i], skip_custom, directoriesToSkip);
                 finalFiles.addAll(next);
             } else if (tmpFile.isFile()) {
                 // Similar to IGNORE_SHIPPED_VOLATILE
-                if (theFiles[i].equals("_config.php") || theFiles[i].equals("errorlog.php")) {
+                if (relPath.equals("_config.php") || relPath.equals("data_custom/errorlog.php") || relPath.equals("data_custom/execute_temp.php")) {
                     continue;
                 }
 
@@ -300,7 +295,7 @@ public class MainDialog extends JFrame {
                 }
 
                 // Add to file list
-                SearchFile mySearchFile = new SearchFile(rec_subpath + ((rec_subpath.equals("")) ? "" : File.separator) + tmpFile.getName(), tmpFile.lastModified());
+                SearchFile mySearchFile = new SearchFile(rec_subpath + ((rec_subpath.equals("")) ? "" : File.separator) + theFiles[i], tmpFile.lastModified());
                 finalFiles.add(mySearchFile);
             }
         }
@@ -457,6 +452,42 @@ public class MainDialog extends JFrame {
 
     public void do_execution(Object[] sv) {
         do_execution(sv, false);
+    }
+
+    public java.util.List<String> executePHPcode(String code) {
+        String[] results = new String[0];
+        ArrayList<String> cmdArray = new ArrayList<>();
+        cmdArray.add(Main.phpPath);
+        cmdArray.add("-r " + code);
+        try {
+            Process execution = Runtime.getRuntime().exec(cmdArray.toArray(new String[cmdArray.size()]));
+            InputStream stream = execution.getInputStream();
+            byte[] bytes = new byte[1024];
+            String result = "";
+
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException ex) {
+            }
+
+            int test = 0;
+            while (test != -1) {
+                test = stream.read(bytes);
+                if (test != -1) {
+                    result = result + new String(bytes, 0, test);
+                }
+            }
+            results = result.split("\n");
+        } catch (java.io.IOException e2) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Failure executing PHP backend. (" + e2.toString() + ")",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+        return Arrays.asList(results);
     }
 
     public void executePHPfile(String line) {

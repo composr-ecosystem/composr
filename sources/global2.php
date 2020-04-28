@@ -443,6 +443,20 @@ function init__global2()
         handle_logins();
 
         require_code('site'); // This powers the site (top level page generation)
+    }
+
+    // Make sure POST fields readable
+    global $MODSECURITY_WORKAROUND_ENABLED;
+    $MODSECURITY_WORKAROUND_ENABLED = false;
+    if (get_param_integer('_corrected_comcode', 0) == 1) {
+        require_code('input_filter_2');
+        modsecurity_workaround_enable();
+    }
+
+    // Okay, we've loaded everything critical. Don't need to tell Composr to be paranoid now.
+    $BOOTSTRAPPING = false;
+
+    if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
         do_site_prep();
         check_has_page_access(); // Make sure we're authorised
     }
@@ -486,17 +500,6 @@ function init__global2()
 
     // Pre-load used blocks in bulk
     preload_block_internal_caching();
-
-    // Make sure POST fields readable
-    global $MODSECURITY_WORKAROUND_ENABLED;
-    $MODSECURITY_WORKAROUND_ENABLED = false;
-    if (get_param_integer('_corrected_comcode', 0) == 1) {
-        require_code('input_filter_2');
-        modsecurity_workaround_enable();
-    }
-
-    // Okay, we've loaded everything critical. Don't need to tell Composr to be paranoid now.
-    $BOOTSTRAPPING = false;
 
     if (($SEMI_DEV_MODE) && (!$MICRO_AJAX_BOOTUP)) { // Lots of code that only runs if you're a programmer. It tries to make sure coding standards are met.
         semi_dev_mode_startup();
@@ -676,7 +679,7 @@ function fixup_bad_php_env_vars()
             }
         }
 
-        if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+        if ((!empty($_SERVER['HTTP_AUTHORIZATION'])) && (preg_match('#^Basic #', $_SERVER['HTTP_AUTHORIZATION'])) != 0) {
             $bits = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)), 2);
             if (count($bits) == 2) {
                 list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = $bits;

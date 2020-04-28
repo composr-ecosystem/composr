@@ -112,6 +112,7 @@ Note the old-style Excel format ([tt].xls[/tt]) is intentionally not supported b
     {
         return [
             'requires' => [
+                'PHP 7.1',
                 'PHP zip extension',
                 'PHP xml extension',
             ],

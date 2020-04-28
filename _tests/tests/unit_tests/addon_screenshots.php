@@ -53,6 +53,7 @@ class addon_screenshots_test_set extends cms_test_case
                     // These are defined as exceptions where we won't enforce our screenshot rule
                     if (in_array($hook, [
                         'enhanced_spreadsheets',
+                        'pagination_protection',
                     ])) {
                         continue;
                     }

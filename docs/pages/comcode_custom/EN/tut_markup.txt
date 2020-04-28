@@ -40,7 +40,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		<tr>
 			<td>[abbr="Domain Name System"][url="https://tools.ietf.org/html/rfc1101"]DNS[/url][/abbr]</td>
 			<td>This is the protocol for looking up the IP address for a domain name.</td>
-			<td>When you buy and configure a domain name, you are using DNS.</td>
+			<td>When you buy and configure a domain name, you are using DNS. Also RBLs (block lists) use DNS.</td>
 		</tr>
 		<tr>
 			<td>[abbr="Domain Name System"][url="https://tools.ietf.org/html/rfc3492"]Punycode[/url][/abbr]</td>
@@ -66,6 +66,16 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>[abbr="Sender Policy Framework"][url="http://www.open-spf.org/"]SPF[/url][/abbr]</td>
 			<td>This is the protocol for limiting what servers can send e-mail for a particular domain.</td>
 			<td>It is advised to set this up to reduce spam and fraud.</td>
+		</tr>
+		<tr>
+			<td>oAuth</td>
+			<td>A protocol allowing your website to authenticate itself to act as a user on a target website.</td>
+			<td>oAuth is used for creating some API connections.</td>
+		</tr>
+		<tr>
+			<td>Trackbacks</td>
+			<td>A simple protocol for websites to tell other websites when they have referenced a blog post.</td>
+			<td>Trackbacks are no longer widely used, but may receive upgrades in the future to break reliance on centralised social networks.</td>
 		</tr>
 
 		<tr>

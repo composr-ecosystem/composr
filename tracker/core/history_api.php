@@ -81,7 +81,12 @@ function history_log_event_direct( $p_bug_id, $p_field_name, $p_old_value, $p_ne
 		}
 
 		$c_field_name = $p_field_name;
-		$c_old_value = ( is_null( $p_old_value ) ? '' : (string)$p_old_value );
+
+		if( is_null( $p_old_value ) ) {
+			$c_old_value = '';
+		} else {
+			$c_old_value = mb_strimwidth( $p_old_value, 0, DB_FIELD_SIZE_HISTORY_VALUE, '...' );
+		}
 		if( is_null( $p_new_value ) ) {
 			$c_new_value = '';
 		} else {
@@ -123,12 +128,15 @@ function history_log_event_special( $p_bug_id, $p_type, $p_old_value = '', $p_ne
 	$t_user_id = auth_get_current_user_id();
 
 	if( is_null( $p_old_value ) ) {
-		$p_old_value = '';
-	}
-	if( is_null( $p_new_value ) ) {
-		$p_new_value = '';
+		$c_old_value = '';
 	} else {
-		$p_new_value = mb_strimwidth( $p_new_value, 0, DB_FIELD_SIZE_HISTORY_VALUE, '...' );
+		$c_old_value = mb_strimwidth( $p_old_value, 0, DB_FIELD_SIZE_HISTORY_VALUE, '...' );
+	}
+
+	if( is_null( $p_new_value ) ) {
+		$c_new_value = '';
+	} else {
+		$c_new_value = mb_strimwidth( $p_new_value, 0, DB_FIELD_SIZE_HISTORY_VALUE, '...' );
 	}
 
 	db_param_push();
@@ -136,7 +144,7 @@ function history_log_event_special( $p_bug_id, $p_type, $p_old_value = '', $p_ne
 					( user_id, bug_id, date_modified, type, old_value, new_value, field_name )
 				VALUES
 					( ' . db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param() . ', ' . db_param() . ',' . db_param() . ', ' . db_param() . ')';
-	db_query( $t_query, array( $t_user_id, $p_bug_id, db_now(), $p_type, $p_old_value, $p_new_value, '' ) );
+	db_query( $t_query, array( $t_user_id, $p_bug_id, db_now(), $p_type, $c_old_value, $c_new_value, '' ) );
 }
 
 /**
@@ -199,7 +207,7 @@ function history_count_user_recent_events( $p_duration_in_seconds, $p_user_id = 
  * Any option can be omitted.
  *
  * @param array $p_query_options	Array of query options
- * @return database result to pass into history_get_event_from_row().
+ * @return IteratorAggregate|boolean database result to pass into history_get_event_from_row().
  */
 function history_query_result( array $p_query_options ) {
 	# check query order by
@@ -271,7 +279,7 @@ function history_query_result( array $p_query_options ) {
  * @param  integer $p_start_time     The start time to filter by, or null for all.
  * @param  integer $p_end_time       The end time to filter by, or null for all.
  * @param  string  $p_history_order  The sort order.
- * @return database result to pass into history_get_event_from_row().
+ * @return IteratorAggregate|boolean database result to pass into history_get_event_from_row().
  * @deprecated		Use history_query_result() instead
  */
 function history_get_range_result_filter( $p_filter, $p_start_time = null, $p_end_time = null, $p_history_order = null ) {
@@ -415,6 +423,18 @@ function history_get_event_from_row( $p_result, $p_user_id = null, $p_check_acce
 		if( $v_type == FILE_ADDED || $v_type == FILE_DELETED ) {
 			if( !access_has_bug_level( config_get( 'view_attachments_threshold', null, $t_user_id, $t_project_id ), $v_bug_id, $t_user_id ) ) {
 				continue;
+			}
+
+			# Files were originally just associated with the issue, then association with specific bugnotes
+			# was added, so handled legacy and new way of handling attachments.
+			if( !empty( $v_new_value ) && (int)$v_new_value != 0 ) {
+				if( !bugnote_exists( $v_new_value ) ) {
+					continue;
+				}
+	
+				if( !access_has_bug_level( config_get( 'private_bugnote_threshold', null, $t_user_id, $t_project_id ), $v_bug_id, $t_user_id ) && ( bugnote_get_field( $v_new_value, 'view_state' ) == VS_PRIVATE ) ) {
+					continue;
+				}
 			}
 		}
 
@@ -961,3 +981,22 @@ function history_delete( $p_bug_id ) {
 	$t_query = 'DELETE FROM {bug_history} WHERE bug_id=' . db_param();
 	db_query( $t_query, array( $p_bug_id ) );
 }
+
+/**
+ * Link the file added/deleted history events that match the specified bug_id and filename
+ * with the specified bugnote id.
+ *
+ * @param integer $p_bug_id The bug id.
+ * @param string $p_filename The filename dot extension (display name).
+ * @param integer $p_bugnote_id The bugnote id.
+ * @return void
+ */
+function history_link_file_to_bugnote( $p_bug_id, $p_filename, $p_bugnote_id ) {
+	db_param_push();
+	$t_query = 'UPDATE {bug_history} SET new_value = ' . db_param() .
+		' WHERE bug_id=' . db_param() . ' AND old_value=' . db_param() .
+		' AND (type=' . db_param() . ' OR type=' . db_param() . ')';
+
+	db_query( $t_query, array( (int)$p_bugnote_id, (int)$p_bug_id, $p_filename, FILE_ADDED, FILE_DELETED ) );
+}
+

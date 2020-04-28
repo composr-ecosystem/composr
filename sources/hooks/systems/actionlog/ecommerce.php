@@ -174,11 +174,13 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
     {
         switch ($actionlog_row['the_type']) {
             case 'CREATE_INVOICE':
-                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', ['id' => intval($identifier)]);
-                if ($member_id !== null) {
-                    $bindings += [
-                        'MEMBER_ID' => strval($member_id),
-                    ];
+                if ($identifier !== null) {
+                    $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', ['id' => intval($identifier)]);
+                    if ($member_id !== null) {
+                        $bindings += [
+                            'MEMBER_ID' => strval($member_id),
+                        ];
+                    }
                 }
                 break;
         }

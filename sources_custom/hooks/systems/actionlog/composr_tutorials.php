@@ -79,11 +79,13 @@ class Hook_actionlog_composr_tutorials extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_TUTORIAL':
             case 'EDIT_TUTORIAL':
-                $url = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorials_external', 't_url', ['id' => intval($identifier)]);
-                if ($url !== null) {
-                    $bindings += [
-                        'URL' => $url,
-                    ];
+                if ($identifier !== null) {
+                    $url = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorials_external', 't_url', ['id' => intval($identifier)]);
+                    if ($url !== null) {
+                        $bindings += [
+                            'URL' => $url,
+                        ];
+                    }
                 }
                 break;
         }

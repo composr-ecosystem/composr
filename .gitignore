@@ -3,6 +3,7 @@
 /safe_mode_temp
 
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
+/_tests/assets/keys.csv
 /lorem
 /psalm.xml
 /composer.phar
@@ -106,6 +107,7 @@ _meta_tree
 ; The matched files should be blocked for the main Composr dev repository but not for Composr projects
 /uploads/website_specific/compo.sr/demonstratr/servers/
 /themes/_unnamed_/
+/themes/_testing_/
 /.gitconfig
 /.htaccess
 .idea

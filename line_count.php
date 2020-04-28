@@ -116,8 +116,8 @@ $lines = [];
 
 $found = [];
 
-$_files = get_directory_contents(get_file_base(), '', IGNORE_ACCESS_CONTROLLERS | IGNORE_EDITFROM_FILES | IGNORE_REVISION_FILES | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, $file_extensions);
-foreach ($_files as $file) {
+$files = get_directory_contents(get_file_base(), '', IGNORE_ACCESS_CONTROLLERS | IGNORE_EDITFROM_FILES | IGNORE_REVISION_FILES | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, $file_extensions);
+foreach ($files as $file) {
     if (!$include_third_party_etc) {
         if (preg_match('#^(' . implode('|', $exceptions_directories) . ')/#', $file) != 0) {
             continue;

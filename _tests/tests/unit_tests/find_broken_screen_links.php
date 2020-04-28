@@ -57,7 +57,7 @@ class find_broken_screen_links_test_set extends cms_test_case
                     //$this->assertTrue(false, 'Missing module ' . $zone . ':' . $page);    Maybe a forum module but CNS is not running, or a module in a non-installed zone
                     continue;
                 }
-                $c2 = cms_file_get_contents_safe($module_path);
+                $c2 = cms_file_get_contents_safe(get_file_base() . '/' . $module_path);
                 if (strpos($c2, "'{$type}'") === false) {
                     if ((strpos($c2, 'extends Standard_crud_module') !== false) && (in_array($type, ['add', '_add', 'edit', '_edit', '__edit', 'add_category', '_add_category', 'edit_category', '_edit_category', '__edit_category', 'add_other', '_add_other', 'edit_other', '_edit_other', '__edit_other']))) {
                         continue;

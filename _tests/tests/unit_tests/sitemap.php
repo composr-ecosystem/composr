@@ -38,6 +38,8 @@ class sitemap_test_set extends cms_test_case
 
         require_code('sitemap');
 
+        set_option('confluence_subdomain', ''); // Gathering sitemap for Confluence too slow
+
         $page_link = '';
         $callback = null;
         $valid_node_types = null;
@@ -215,6 +217,22 @@ class sitemap_test_set extends cms_test_case
                     ':sitemap',
                     ':privacy',
                     ':feedback',
+                    ':404',
+                    ':popup_blockers',
+                    ':panel_top',
+                    ':panel_bottom',
+                    ':panel_left',
+                    ':panel_right',
+                    'adminzone:_modsecurity',
+
+                    // Handled specially
+                    ':home',
+                    'site:userguide_chatcode',
+                    'site:userguide_comcode',
+                    'site:popup_blockers',
+                    ':userguide_chatcode',
+                    ':userguide_comcode',
+                    ':popup_blockers',
                 ])) {
                     continue;
                 }

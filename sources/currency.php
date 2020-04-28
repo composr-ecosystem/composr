@@ -178,7 +178,7 @@ function currency_convert($amount, $from_currency = null, $to_currency = null, $
     }
 
     // Case: Fallback
-    if ($new_amount === null) {
+    if (($new_amount === null) && ($force_via === null)) {
         require_lang('ecommerce');
         attach_message(do_lang_tempcode('CURRENCY_CONVERSION_FAILED', escape_html(float_format($amount)), escape_html($from_currency), escape_html($to_currency)), 'warn', false, true);
 
@@ -251,8 +251,9 @@ function _currency_convert__currency_conv_api($amount, $from_currency, $to_curre
         return round(floatval($test) * $amount, 2);
     }
 
-    $conv_api_url = 'https://free.currencyconverterapi.com/api/v5/convert?q=' . $rate_key . '&compact=y&apiKey=' . urlencode($api_key);
+    $conv_api_url = 'https://free.currconv.com/api/v7/convert?q=' . $rate_key . '&compact=y&apiKey=' . urlencode($api_key);
     $result = http_get_contents($conv_api_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+
     if (is_string($result)) {
         $data = json_decode($result, true);
         if (isset($data[$rate_key]['val'])) {

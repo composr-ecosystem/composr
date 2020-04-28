@@ -74,9 +74,11 @@ require_api( 'user_api.php' );
 require_api( 'user_pref_api.php' );
 require_api( 'utility_api.php' );
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as phpmailerException;
 use Mantis\Exceptions\ClientException;
 
-# reusable object of class SMTP
+/** @global PHPMailer $g_phpMailer reusable PHPMailer object */
 $g_phpMailer = null;
 
 /**
@@ -137,7 +139,7 @@ function email_is_valid( $p_email ) {
 
 	# check email address is a valid format
 	log_event( LOG_EMAIL_VERBOSE, "Validating address '$p_email' with method '$t_method'" );
-	if( PHPMailer::ValidateAddress( $p_email, $t_method ) ) {
+	if( PHPMailer::validateAddress( $p_email, $t_method ) ) {
 		$t_domain = substr( $p_email, strpos( $p_email, '@' ) + 1 );
 
 		# see if we're limited to a set of known domains
@@ -153,7 +155,7 @@ function email_is_valid( $p_email ) {
 		}
 
 		if( ON == config_get( 'check_mx_record' ) ) {
-			$t_mx = '';
+			$t_mx = array();
 
 			# Check for valid mx records
 			if( getmxrr( $t_domain, $t_mx ) ) {
@@ -182,6 +184,7 @@ function email_is_valid( $p_email ) {
 /**
  * Check if the email address is valid trigger an ERROR if it isn't
  * @param string $p_email An email address.
+ * @throws ClientException
  * @return void
  */
 function email_ensure_valid( $p_email ) {
@@ -205,6 +208,7 @@ function email_is_disposable( $p_email ) {
  * Check if the email address is disposable
  * trigger an ERROR if it isn't
  * @param string $p_email An email address.
+ * @throws ClientException
  * @return void
  */
 function email_ensure_not_disposable( $p_email ) {
@@ -327,13 +331,6 @@ function email_collect_recipients( $p_bug_id, $p_notify_type, array $p_extra_use
 	}
 
 	# add users who contributed bugnotes
-	$t_bugnote_id = ( $p_bugnote_id === null ) ? bugnote_get_latest_id( $p_bug_id ) : $p_bugnote_id;
-	if( $t_bugnote_id !== 0 ) {
-		$t_bugnote_date = bugnote_get_field( $t_bugnote_id, 'last_modified' );
-	}
-	$t_bug = bug_get( $p_bug_id );
-	$t_bug_date = $t_bug->last_updated;
-
 	$t_notes_enabled = ( ON == email_notify_flag( $p_notify_type, 'bugnotes' ) );
 	db_param_push();
 	$t_query = 'SELECT DISTINCT reporter_id FROM {bugnote} WHERE bug_id = ' . db_param();
@@ -389,6 +386,9 @@ function email_collect_recipients( $p_bug_id, $p_notify_type, array $p_extra_use
 		case 'closed':
 		case 'bugnote':
 			$t_pref_field = 'email_on_' . $p_notify_type;
+			if( !$p_bugnote_id ) {
+				$p_bugnote_id = bugnote_get_latest_id( $p_bug_id );
+			}
 			break;
 		case 'owner':
 			# The email_on_assigned notification type is now effectively
@@ -415,6 +415,7 @@ function email_collect_recipients( $p_bug_id, $p_notify_type, array $p_extra_use
 	#  of user ids so we could pull them all in.  We'll see if it's necessary
 	$t_final_recipients = array();
 
+	$t_bug = bug_get( $p_bug_id );
 	$t_user_ids = array_keys( $t_recipients );
 	user_cache_array_rows( $t_user_ids );
 	user_pref_cache_array_rows( $t_user_ids );
@@ -457,9 +458,11 @@ function email_collect_recipients( $p_bug_id, $p_notify_type, array $p_extra_use
 
 		# exclude users who don't have at least viewer access to the bug,
 		# or who can't see bugnotes if the last update included a bugnote
-		if( !access_has_bug_level( config_get( 'view_bug_threshold', null, $t_id, $t_bug->project_id ), $p_bug_id, $t_id )
-		 || ( $t_bugnote_id !== 0 &&
-				$t_bug_date == $t_bugnote_date && !access_has_bugnote_level( config_get( 'view_bug_threshold', null, $t_id, $t_bug->project_id ), $t_bugnote_id, $t_id ) )
+		$t_view_bug_threshold = config_get( 'view_bug_threshold', null, $t_id, $t_bug->project_id );
+		if(   !access_has_bug_level( $t_view_bug_threshold, $p_bug_id, $t_id )
+		   || (   $p_bugnote_id
+			   && !access_has_bugnote_level( $t_view_bug_threshold, $p_bugnote_id, $t_id )
+			  )
 		) {
 			log_event( LOG_EMAIL_RECIPIENT, 'Issue = #%d, drop @U%d (access level)', $p_bug_id, $t_id );
 			continue;
@@ -909,7 +912,7 @@ function email_relationship_child_resolved_closed( $p_bug_id, $p_message_id ) {
 /**
  * send notices when a bug is sponsored
  * @param int $p_bug_id
- * @return null
+ * @return void
  */
 function email_sponsorship_added( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d sponsorship added', $p_bug_id ) );
@@ -919,7 +922,7 @@ function email_sponsorship_added( $p_bug_id ) {
 /**
  * send notices when a sponsorship is modified
  * @param int $p_bug_id
- * @return null
+ * @return void
  */
 function email_sponsorship_updated( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d sponsorship updated', $p_bug_id ) );
@@ -929,7 +932,7 @@ function email_sponsorship_updated( $p_bug_id ) {
 /**
  * send notices when a sponsorship is deleted
  * @param int $p_bug_id
- * @return null
+ * @return void
  */
 function email_sponsorship_deleted( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d sponsorship removed', $p_bug_id ) );
@@ -939,7 +942,7 @@ function email_sponsorship_deleted( $p_bug_id ) {
 /**
  * send notices when a new bug is added
  * @param int $p_bug_id
- * @return null
+ * @return void
  */
 function email_bug_added( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d reported', $p_bug_id ) );
@@ -949,6 +952,7 @@ function email_bug_added( $p_bug_id ) {
 /**
  * Send notifications for bug update.
  * @param int $p_bug_id  The bug id.
+ * @return void
  */
 function email_bug_updated( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d updated', $p_bug_id ) );
@@ -1046,7 +1050,7 @@ function email_bugnote_add( $p_bugnote_id, $p_files = array(), $p_exclude_user_i
 /**
  * send notices when a bug is RESOLVED
  * @param int $p_bug_id
- * @return null
+ * @return void
  */
 function email_resolved( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d resolved', $p_bug_id ) );
@@ -1056,7 +1060,7 @@ function email_resolved( $p_bug_id ) {
 /**
  * send notices when a bug is CLOSED
  * @param int $p_bug_id
- * @return null
+ * @return void
  */
 function email_close( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d closed', $p_bug_id ) );
@@ -1066,7 +1070,7 @@ function email_close( $p_bug_id ) {
 /**
  * send notices when a bug is REOPENED
  * @param int $p_bug_id
- * @return null
+ * @return void
  */
 function email_bug_reopened( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d reopened', $p_bug_id ) );
@@ -1078,7 +1082,7 @@ function email_bug_reopened( $p_bug_id ) {
  * @param int $p_bug_id
  * @param int $p_prev_handler_id
  * @param int $p_new_handler_id
- * @return null
+ * @return void
  */
 function email_owner_changed($p_bug_id, $p_prev_handler_id, $p_new_handler_id ) {
 	if ( $p_prev_handler_id == 0 && $p_new_handler_id != 0 ) {
@@ -1114,6 +1118,7 @@ function email_owner_changed($p_bug_id, $p_prev_handler_id, $p_new_handler_id ) 
  * Send notifications when bug status is changed.
  * @param int $p_bug_id The bug id
  * @param string $p_new_status_label The new status label.
+ * @return void
  */
 function email_bug_status_changed( $p_bug_id, $p_new_status_label ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d status changed', $p_bug_id ) );
@@ -1123,7 +1128,7 @@ function email_bug_status_changed( $p_bug_id, $p_new_status_label ) {
 /**
  * send notices when a bug is DELETED
  * @param int $p_bug_id
- * @return null
+ * @return void
  */
 function email_bug_deleted( $p_bug_id ) {
 	log_event( LOG_EMAIL, sprintf( 'Issue #%d deleted', $p_bug_id ) );
@@ -1262,6 +1267,11 @@ function email_send( EmailData $p_email_data ) {
 			register_shutdown_function( 'email_smtp_close' );
 		}
 		$t_mail = new PHPMailer( true );
+
+		// Set e-mail addresses validation pattern. The 'html5' setting is
+		// consistent with the regex defined in email_regex_simple().
+		PHPMailer::$validator  = 'html5';
+
 	} else {
 		$t_mail = $g_phpMailer;
 	}
@@ -1275,20 +1285,20 @@ function email_send( EmailData $p_email_data ) {
 	if( 'auto' == $t_lang ) {
 		$t_lang = config_get_global( 'fallback_language' );
 	}
-	$t_mail->SetLanguage( lang_get( 'phpmailer_language', $t_lang ) );
+	$t_mail->setLanguage( lang_get( 'phpmailer_language', $t_lang ) );
 
 	# Select the method to send mail
 	switch( config_get( 'phpMailer_method' ) ) {
 		case PHPMAILER_METHOD_MAIL:
-			$t_mail->IsMail();
+			$t_mail->isMail();
 			break;
 
 		case PHPMAILER_METHOD_SENDMAIL:
-			$t_mail->IsSendmail();
+			$t_mail->isSendmail();
 			break;
 
 		case PHPMAILER_METHOD_SMTP:
-			$t_mail->IsSMTP();
+			$t_mail->isSMTP();
 
 			# SMTP collection is always kept alive
 			$t_mail->SMTPKeepAlive = true;
@@ -1322,7 +1332,7 @@ function email_send( EmailData $p_email_data ) {
 		$t_mail->DKIM_identity = config_get( 'email_dkim_identity' );
 	}
 
-	$t_mail->IsHTML( false );              # set email format to plain text
+	$t_mail->isHTML( false );              # set email format to plain text
 	$t_mail->WordWrap = 80;              # set word wrap to 80 characters
 	$t_mail->CharSet = $t_email_data->metadata['charset'];
 	$t_mail->Host = config_get( 'smtp_host' );
@@ -1332,8 +1342,6 @@ function email_send( EmailData $p_email_data ) {
 	$t_mail->AddCustomHeader( 'Auto-Submitted:auto-generated' );
 	$t_mail->AddCustomHeader( 'X-Auto-Response-Suppress: All' );
 
-	# Setup new line and encoding to avoid extra new lines with some smtp gateways like sendgrid.net
-	$t_mail->LE         = "\r\n";
 	$t_mail->Encoding   = 'quoted-printable';
 
 	if( isset( $t_email_data->metadata['priority'] ) ) {
@@ -1347,15 +1355,15 @@ function email_send( EmailData $p_email_data ) {
 	}
 
 	try {
-		$t_mail->AddAddress( $t_recipient, '' );
+		$t_mail->addAddress( $t_recipient, '' );
 	}
 	catch ( phpmailerException $e ) {
 		log_event( LOG_EMAIL, $t_log_msg . $t_mail->ErrorInfo );
 		$t_success = false;
-		$t_mail->ClearAllRecipients();
-		$t_mail->ClearAttachments();
-		$t_mail->ClearReplyTos();
-		$t_mail->ClearCustomHeaders();
+		$t_mail->clearAllRecipients();
+		$t_mail->clearAttachments();
+		$t_mail->clearReplyTos();
+		$t_mail->clearCustomHeaders();
 		return $t_success;
 	}
 
@@ -1374,17 +1382,17 @@ function email_send( EmailData $p_email_data ) {
 					$t_mail->set( 'MessageID', '<' . $t_value . '>' );
 					break;
 				case 'In-Reply-To':
-					$t_mail->AddCustomHeader( $t_key . ': <' . $t_value . '@' . $t_mail->Hostname . '>' );
+					$t_mail->addCustomHeader( $t_key . ': <' . $t_value . '@' . $t_mail->Hostname . '>' );
 					break;
 				default:
-					$t_mail->AddCustomHeader( $t_key . ': ' . $t_value );
+					$t_mail->addCustomHeader( $t_key . ': ' . $t_value );
 					break;
 			}
 		}
 	}
 
 	try {
-		$t_success = $t_mail->Send();
+		$t_success = $t_mail->send();
 		if( $t_success ) {
 			$t_success = true;
 
@@ -1402,10 +1410,10 @@ function email_send( EmailData $p_email_data ) {
 		$t_success = false;
 	}
 
-	$t_mail->ClearAllRecipients();
-	$t_mail->ClearAttachments();
-	$t_mail->ClearReplyTos();
-	$t_mail->ClearCustomHeaders();
+	$t_mail->clearAllRecipients();
+	$t_mail->clearAttachments();
+	$t_mail->clearReplyTos();
+	$t_mail->clearCustomHeaders();
 
 	return $t_success;
 }
@@ -1419,9 +1427,10 @@ function email_smtp_close() {
 	global $g_phpMailer;
 
 	if( !is_null( $g_phpMailer ) ) {
-		if( $g_phpMailer->smtp->Connected() ) {
-			$g_phpMailer->smtp->Quit();
-			$g_phpMailer->smtp->Close();
+		$t_smtp = $g_phpMailer->getSMTPInstance();
+		if( $t_smtp->connected() ) {
+			$t_smtp->quit();
+			$t_smtp->close();
 		}
 		$g_phpMailer = null;
 	}
@@ -1979,11 +1988,82 @@ function email_build_visible_bug_data( $p_user_id, $p_bug_id, $p_message_id ) {
 		}
 	}
 
-	$t_bug_data['relations'] = relationship_get_summary_text( $p_bug_id );
+	$t_bug_data['relations'] = email_relationship_get_summary_text( $p_bug_id );
 
 	current_user_set( $t_current_user_id );
 
 	return $t_bug_data;
+}
+
+/**
+ * return formatted string with all the details on the requested relationship
+ * @param integer             $p_bug_id       A bug identifier.
+ * @param BugRelationshipData $p_relationship A bug relationship object.
+ * @return string
+ */
+function email_relationship_get_details( $p_bug_id, BugRelationshipData $p_relationship ) {
+	$t_summary_wrap_at = mb_strlen( config_get( 'email_separator2' ) ) - 28;
+
+	if( $p_bug_id == $p_relationship->src_bug_id ) {
+		# root bug is in the source side, related bug in the destination side
+		$t_related_project_id = $p_relationship->dest_bug_id;
+		$t_related_bug_id = $p_relationship->dest_bug_id;
+		$t_relationship_descr = relationship_get_description_src_side( $p_relationship->type );
+	} else {
+		# root bug is in the dest side, related bug in the source side
+		$t_related_project_id = $p_relationship->src_bug_id;
+		$t_related_bug_id = $p_relationship->src_bug_id;
+		$t_relationship_descr = relationship_get_description_dest_side( $p_relationship->type );
+	}
+
+	# related bug not existing...
+	if( !bug_exists( $t_related_bug_id ) ) {
+		return '';
+	}
+
+	# user can access to the related bug at least as a viewer
+	if( !access_has_bug_level( config_get( 'view_bug_threshold', null, null, $t_related_project_id ), $t_related_bug_id ) ) {
+		return '';
+	}
+
+	# get the information from the related bug and prepare the link
+	$t_bug = bug_get( $t_related_bug_id, false );
+
+	$t_relationship_info_text = utf8_str_pad( $t_relationship_descr, 20 );
+	$t_relationship_info_text .= utf8_str_pad( bug_format_id( $t_related_bug_id ), 8 );
+
+	# add summary
+	if( mb_strlen( $t_bug->summary ) <= $t_summary_wrap_at ) {
+		$t_relationship_info_text .= string_email_links( $t_bug->summary );
+	} else {
+		$t_relationship_info_text .= mb_substr( string_email_links( $t_bug->summary ), 0, $t_summary_wrap_at - 3 ) . '...';
+	}
+
+	$t_relationship_info_text .= "\n";
+
+	return $t_relationship_info_text;
+}
+
+/**
+ * Get ALL the RELATIONSHIPS OF A SPECIFIC BUG in text format (used by email_api.php
+ * @param integer $p_bug_id A bug identifier.
+ * @return string
+ */
+function email_relationship_get_summary_text( $p_bug_id ) {
+	# A variable that will be set by the following call to indicate if relationships belong
+	# to multiple projects.
+	$t_show_project = false;
+
+	$t_relationship_all = relationship_get_all( $p_bug_id, $t_show_project );
+	$t_relationship_all_count = count( $t_relationship_all );
+
+	# prepare the relationships table
+	$t_summary = '';
+	for( $i = 0; $i < $t_relationship_all_count; $i++ ) {
+		$t_summary .= email_relationship_get_details( $p_bug_id, $t_relationship_all[$i] );
+	}
+
+	return $t_summary;
 }
 
 /**
@@ -2025,7 +2105,7 @@ function email_shutdown_function() {
  * @return array List of actions
  */
 function email_get_actions() {
-	$t_actions = array( 'updated', 'owner', 'reopened', 'deleted', 'bugnote', 'relation' );
+	$t_actions = array( 'updated', 'owner', 'reopened', 'deleted', 'bugnote', 'relation', 'monitor' );
 
 	if( config_get( 'enable_sponsorship' ) == ON ) {
 		$t_actions[] = 'sponsor';
@@ -2041,4 +2121,3 @@ function email_get_actions() {
 
 	return $t_actions;
 }
-

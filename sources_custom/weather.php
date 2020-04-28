@@ -59,5 +59,9 @@ function weather_lookup($location_search = null, $latitude = null, $longitude = 
         }
     }
 
+    if ($errormsg == '') {
+        $error_msg = do_lang('API_NOT_CONFIGURED');
+    }
+
     return null;
 }

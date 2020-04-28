@@ -10,28 +10,23 @@
 	<exclude-pattern>_tests/simpletest</exclude-pattern>
 	<exclude-pattern>data/ace</exclude-pattern>
 	<exclude-pattern>data_custom/upload-crop</exclude-pattern>
-	<exclude-pattern>data_custom/webdav.php</exclude-pattern>
 	<exclude-pattern>exports</exclude-pattern>
 	<exclude-pattern>mobiquo/lib</exclude-pattern>
 	<exclude-pattern>mobiquo/smartbanner</exclude-pattern>
-	<exclude-pattern>sources/diff.php</exclude-pattern>
+	<exclude-pattern>sources/diff</exclude-pattern>
 	<exclude-pattern>sources/firephp.php</exclude-pattern>
 	<exclude-pattern>sources/jsmin.php</exclude-pattern>
 	<exclude-pattern>sources/lang_stemmer_EN.php</exclude-pattern>
-	<exclude-pattern>sources/m_zip.php</exclude-pattern>
 	<exclude-pattern>sources/mail_dkim.php</exclude-pattern>
 	<exclude-pattern>sources_custom/aws_ses</exclude-pattern>
 	<exclude-pattern>sources_custom/browser_detect.php</exclude-pattern>
 	<exclude-pattern>sources_custom/Cloudinary</exclude-pattern>
-	<exclude-pattern>sources_custom/composr_mobile_sdk/ios</exclude-pattern>
 	<exclude-pattern>sources_custom/curl.php</exclude-pattern>
 	<exclude-pattern>sources_custom/facebook</exclude-pattern>
 	<exclude-pattern>sources_custom/geshi</exclude-pattern>
 	<exclude-pattern>sources_custom/geshi.php</exclude-pattern>
 	<exclude-pattern>sources_custom/getid3</exclude-pattern>
 	<exclude-pattern>sources_custom/hooks/modules/chat_bots/trickstr.php</exclude-pattern>
-	<exclude-pattern>sources_custom/ILess</exclude-pattern>
-	<exclude-pattern>sources_custom/photobucket</exclude-pattern>
 	<exclude-pattern>sources_custom/programe</exclude-pattern>
 	<exclude-pattern>sources_custom/sabredav</exclude-pattern>
 	<exclude-pattern>sources_custom/spout</exclude-pattern>
@@ -39,8 +34,12 @@
 	<exclude-pattern>sources_custom/swift_mailer</exclude-pattern>
 	<exclude-pattern>sources_custom/Transliterator</exclude-pattern>
 	<exclude-pattern>sources_custom/twitter.php</exclude-pattern>
-	<exclude-pattern>sources_custom/webdav_commandr_fs.php</exclude-pattern>
-	<exclude-pattern>themes/*/templates_cached</exclude-pattern>
+	<exclude-pattern>data_custom/errorlog.php</exclude-pattern>
+	<exclude-pattern>data_custom/execute_temp.php</exclude-pattern>
+	<exclude-pattern>mobiquo/lib/xmlrpc.php</exclude-pattern>
+	<exclude-pattern>mobiquo/lib/xmlrpcs.php</exclude-pattern>
+	<exclude-pattern>_tests/codechecker</exclude-pattern>
+	<exclude-pattern>sources_custom/composr_mobile_sdk</exclude-pattern>
 	<exclude-pattern>tracker</exclude-pattern>
 	<exclude-pattern>vendor</exclude-pattern>
 	<exclude-pattern>*.js</exclude-pattern>

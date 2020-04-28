@@ -1536,9 +1536,10 @@ function normalise_idn_url($url)
  * Find the page-link of the current screen.
  *
  * @param  boolean $include_keep_components Whether to include keep_* components in the URL
+ * @param  ?integer $maxlength Maximum length (null: no limit)
  * @return string Page-link
  */
-function get_current_page_link($include_keep_components = true)
+function get_current_page_link($include_keep_components = true, $maxlength = null)
 {
     $page_link = get_zone_name() . ':' . get_page_name();
     $type = get_param_string('type', null);
@@ -1563,7 +1564,13 @@ function get_current_page_link($include_keep_components = true)
         if ((substr($key, 0, 5) == 'keep_') && ((!$include_keep_components) || (!skippable_keep($key, $val)))) {
             continue;
         }
-        $page_link .= ':' . $key . '=' . $val;
+        $pl_append = ':' . $key . '=' . $val;
+        if ($maxlength !== null) {
+            if (strlen($page_link) + strlen($pl_append) > $maxlength) {
+                break; // Too long
+            }
+        }
+        $page_link .= $pl_append;
     }
     return $page_link;
 }

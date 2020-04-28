@@ -349,6 +349,14 @@ class lang_spelling_test_set extends cms_test_case
             $ob->assertTrue(false, 'The phrase \'Open source\' was used in ' . $path . '. This should be changed to \'Open Source\'.');
         }
 
+        // Super-[moderator|admin]
+        if ((stripos($string, 'super moderator') !== false) && (!in_array($file, ['vb3.php']))) {
+            $ob->assertTrue(false, 'The phrase \'super moderator\' was used in ' . $path . '. This should be changed to \'super-moderator\'.');
+        }
+        if (stripos($string, 'super admin') !== false) {
+            $ob->assertTrue(false, 'The phrase \'super admin\' was used in ' . $path . '. This should be changed to \'super-admin\'.');
+        }
+
         // Bad use of acronyms
         if (stripos($string, 'CMS system') !== false) {
             $ob->assertTrue(false, 'The phrase \'CMS system\' was used in ' . $path . '. That would expand to Content Management System System. The plural of CMS is CMSs.');
@@ -434,7 +442,7 @@ class lang_spelling_test_set extends cms_test_case
         }
         if (
             (preg_match('#([^\$:_A-Za-z\[\]></\']+)url([^\}\(A-Za-z=\']+)#', $string, $matches) != 0) &&
-            (!in_array($file, ['attachments3.php', 'cns_install.php', 'tut_fields.txt']))
+            (!in_array($file, ['attachments3.php', 'cns_install.php', 'tut_fields.txt', 'maintenance_status.csv']))
         ) {
             $prefix = $matches[1];
             if ($prefix != '="') {

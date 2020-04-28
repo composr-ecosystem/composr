@@ -360,7 +360,7 @@ class Module_admin_svg_sprites
         $sprite_path = get_file_base() . '/themes/default/images/icons' . (($monochrome === 1) ? '_monochrome' : '') . '_sprite.svg';
         $icons_added = array_keys($icon_paths);
 
-        cms_file_put_contents_safe($sprite_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+        cms_file_put_contents_safe($sprite_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
         return do_template('GENERATE_SVG_SPRITE_SCREEN', [
             '_GUID' => '1318e8d111ee4715aae471976f495ccd',

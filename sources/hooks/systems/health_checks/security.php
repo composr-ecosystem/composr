@@ -35,12 +35,17 @@ class Hook_health_check_security extends Hook_Health_Check
      * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     * @param  boolean $show_unusable_categories Whether to include categories that might not be accessible for some reason
      * @return array A pair: category label, list of results
      */
-    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
         $this->process_checks_section('testExternalSecurityScan', 'External security scan', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testMalware', 'Malware', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        if (($show_unusable_categories) || ($check_context != CHECK_CONTEXT__INSTALL)) {
+            if (($show_unusable_categories) || ((get_option('hc_google_safe_browsing_api_enabled') == '1') && (get_option('google_apis_api_key') != ''))) {
+                $this->process_checks_section('testMalware', 'Malware', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            }
+        }
         $this->process_checks_section('testDirectorySecuring', 'Directory securing', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSiteOrphaned', 'Site orphaning', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testAdminScriptAccess', 'Admin Script Access', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -103,19 +108,7 @@ class Hook_health_check_security extends Hook_Health_Check
             return;
         }
 
-        if ($use_test_data_for_pass === null) {
-            $key = get_option('google_apis_api_key');
-            if (get_option('hc_google_safe_browsing_api_enabled') == '0') {
-                $this->stateCheckSkipped(do_lang('API_NOT_CONFIGURED', 'Google Safe Browsing'));
-                return;
-            }
-        } else {
-            $key = 'AIzaSyBJyvgYzg-moqMRBZwhiivNxhYvafqMWas';
-        }
-        if ($key == '') {
-            $this->stateCheckSkipped(do_lang('API_NOT_CONFIGURED', 'Google Safe Browsing'));
-            return;
-        }
+        $key = get_option('google_apis_api_key');
 
         if ($use_test_data_for_pass === null) {
             if (is_local_machine(get_base_url_hostname())) {
@@ -423,10 +416,10 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $files = $this->getBaseDirectoriesFiles(null, false);
 
-        foreach ($files as $file) {
-            if (stripos($file, 'phpMyAdmin') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
-                $this->assertTrue($http_result->message != '200', 'Likely exposed phpMyAdmin script: [tt]' . $file . '[/tt]');
+        foreach ($files as $path) {
+            if (stripos($path, 'phpMyAdmin') !== false) {
+                $http_result = cms_http_request(get_base_url() . '/' . $path, ['trigger_error' => false]);
+                $this->assertTrue($http_result->message != '200', 'Likely exposed phpMyAdmin script: [tt]' . $path . '[/tt]');
             }
         }
     }
@@ -454,10 +447,10 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $files = $this->getBaseDirectoriesFiles();
 
-        foreach ($files as $file) {
-            if (stripos($file, 'bigdump') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
-                $this->assertTrue($http_result->message != '200', 'Likely exposed BigDump script: [tt]' . $file . '[/tt]');
+        foreach ($files as $path) {
+            if (stripos($path, 'bigdump') !== false) {
+                $http_result = cms_http_request(get_base_url() . '/' . $path, ['trigger_error' => false]);
+                $this->assertTrue($http_result->message != '200', 'Likely exposed BigDump script: [tt]' . $path . '[/tt]');
             }
         }
     }
@@ -485,10 +478,10 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $files = $this->getBaseDirectoriesFiles();
 
-        foreach ($files as $file) {
-            if (stripos($file, 'phpinfo.php') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
-                $this->assertTrue($http_result->message != '200', 'Likely exposed PHP-Info script: [tt]' . $file . '[/tt]');
+        foreach ($files as $path) {
+            if (stripos($path, 'phpinfo.php') !== false) {
+                $http_result = cms_http_request(get_base_url() . '/' . $path, ['trigger_error' => false]);
+                $this->assertTrue($http_result->message != '200', 'Likely exposed PHP-Info script: [tt]' . $path . '[/tt]');
             }
         }
     }
@@ -517,7 +510,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $files = $this->getBaseDirectoriesFiles(['tar', 'gz', 'zip', 'sql']);
 
         foreach ($files as $file) {
-            if (preg_match('#back.*\.(tar|gz|zip)$|\.(sql)$#i', basename($file)) != 0) {
+            if ((preg_match('#back.*\.(tar|gz|zip)$|\.(sql)$#i', basename($file)) != 0) && (!in_array($file, ['install4.sql', 'user.sql', 'postinstall.sql', 'install1.sql', 'install.sql', 'install3.sql', 'install2.sql']))) {
                 $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
                 $this->assertTrue($http_result->message != '200', 'Likely exposed backup: [tt]' . $file . '[/tt]');
             }

@@ -2333,6 +2333,14 @@ function _multi_sort($a, $b)
         $first_key = substr($first_key, 1);
     }
 
+    if (($a === null) && ($b === null)) {
+        return 0;
+    } elseif ($a === null) {
+        return ($first_key[0] === '!') ? 1 : -1;
+    } elseif ($b === null) {
+        return ($first_key[0] === '!') ? -1 : 1;
+    }
+
     $key_cnt = count($keys);
 
     // String version

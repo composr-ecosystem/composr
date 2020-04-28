@@ -88,7 +88,7 @@ $latest_version_pretty = get_latest_version_pretty();
 if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
     $latest_version_pretty = '1337';
 }
-$releases_tpl_map = array();
+$releases_tpl_map = [];
 if ($latest_version_pretty !== null) {
     $latest = $latest_version_pretty;
 

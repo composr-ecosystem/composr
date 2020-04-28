@@ -153,7 +153,7 @@ class Hook_search_filedump extends FieldsSearchHook
                     $pre .= $dir . '/';
                 }
 
-                $url = get_custom_base_url() . '/uploads/filedump/' . $_path;
+                $url = get_custom_base_url() . '/uploads/filedump/' . str_replace('%2F', '/', rawurlencode($_path));
 
                 require_code('images');
                 if (!is_image($url, IMAGE_CRITERIA_WEBSAFE, true)) {

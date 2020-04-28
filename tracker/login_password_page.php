@@ -58,7 +58,7 @@ require_css( 'login.css' );
 $f_error                 = gpc_get_bool( 'error' );
 $f_cookie_error          = gpc_get_bool( 'cookie_error' );
 $f_return                = string_sanitize_url( gpc_get_string( 'return', '' ) );
-$f_username              = gpc_get_string( 'username', '' );
+$f_username              = trim( gpc_get_string( 'username', '' ) );
 $f_reauthenticate        = gpc_get_bool( 'reauthenticate', false );
 $f_perm_login            = gpc_get_bool( 'perm_login', false );
 $f_secure_session        = gpc_get_bool( 'secure_session', false );
@@ -213,13 +213,12 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 				echo '<input type="hidden" name="install" value="true" />';
 			}
 
-			echo '<input type="hidden" name="username" value="', string_html_specialchars( $t_username ), '" />';
 
 			echo sprintf( lang_get( 'enter_password' ), string_html_specialchars( $t_username ) );
 
 			# CSRF protection not required here - form does not result in modifications
 			?>
-
+			<input hidden readonly type="text" name="username" class="hidden" tabindex="-1" value="<?php echo string_html_specialchars( $t_username ) ?>" id="hidden_username" />
 			<label for="password" class="block clearfix">
 				<span class="block input-icon input-icon-right">
 					<input id="password" name="password" type="password" placeholder="<?php echo lang_get( 'password' ) ?>"

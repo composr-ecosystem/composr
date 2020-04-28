@@ -46,7 +46,7 @@ class Hook_addon_registry_google_search_console
      */
     public function get_category()
     {
-        // Best to just categorise properly as it's not bundled 
+        // Best to just categorise properly as it's not bundled
         //return is_maintained('google_search_console') ? 'Third Party Integration' : 'Development';
         return 'Third Party Integration';
     }
@@ -142,6 +142,8 @@ Set up oAuth for Google Search Console at Admin Zone > Setup > Setup API Access.
             'sources_custom/hooks/modules/admin_stats/.htaccess',
             'sources_custom/hooks/modules/admin_stats/index.html',
             'sources_custom/hooks/modules/admin_stats/google_keywords.php',
+            'sources_custom/stats.php',
+            'sources_custom/hooks/systems/health_checks/google_search_console.php',
         ];
     }
 }

@@ -32,7 +32,7 @@ class commandr_command_lang_strings_test_set extends cms_test_case
             }
 
             $ret = $ob->run(['h' => 1], [], $fs);
-            $this->assertTrue(strlen($ret[1]) > 0, 'Missing Commandr help for ' . $hook);
+            $this->assertTrue(strlen($ret[1]->evaluate()) > 0, 'Missing Commandr help for ' . $hook);
             $this->assertTrue(count($ret) == 4, 'Unexpected returned values for ' . $hook);
         }
     }

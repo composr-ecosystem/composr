@@ -37,6 +37,7 @@ class Hook_page_groupings_meta_toolkit
             ['tools', 'admin/tool', ['sql_show_tables_by_addon', [], get_page_zone('sql_show_tables_by_addon', false, 'adminzone', 'minimodules')], make_string_tempcode('Doc build: Show database tables, by addon')],
             ['tools', 'admin/tool', ['sql_dump', [], get_page_zone('sql_dump', false, 'adminzone', 'minimodules')], make_string_tempcode('Backup tools: Create SQL dump (MySQL syntax)')],
             ['tools', 'admin/tool', ['tar_dump', [], get_page_zone('tar_dump', false, 'adminzone', 'minimodules')], make_string_tempcode('Backup tools: Create files dump (TAR file)')],
+            ['tools', 'admin/tool', ['string_scan', [], get_page_zone('string_scan', false, 'adminzone', 'minimodules')], make_string_tempcode('Analyse admin/user language strings')],
         ];
     }
 }

@@ -41,42 +41,6 @@
         }
     };
 
-    $cms.functions.hookSyndicationFacebook_syndicationJavascript = function () { // eslint-disable-line camelcase
-        var fbButton = document.getElementById('syndicate_start__facebook');
-        if (fbButton) {
-            var fbInput;
-            if (fbButton.form.elements['facebook_syndicate_to_page'] == null) {
-                fbInput = document.createElement('input');
-                fbInput.type = 'hidden';
-                fbInput.name = 'facebook_syndicate_to_page';
-                fbInput.value = '0';
-                fbButton.form.appendChild(fbInput);
-            } else {
-                fbInput = fbButton.form.elements['facebook_syndicate_to_page'];
-            }
-            fbButton.addEventListener('click', function listener() {
-                $cms.ui.generateQuestionUi(
-                    '{!facebook:HOW_TO_SYNDICATE_DESCRIPTION;^}',
-                    {
-                        'no_icon_1': '{!INPUTSYSTEM_CANCEL;^}',
-                        'no_icon_2': '{!facebook:FACEBOOK_PAGE;^}',
-                        'no_icon_3': '{!facebook:FACEBOOK_WALL;^}'
-                    },
-                    '{!facebook:HOW_TO_SYNDICATE;^}',
-                    $util.format('{!facebook:SYNDICATE_TO_OWN_WALL;^}', [$cms.getSiteName()])
-                ).then(function (val) {
-                    if (val !== '{!INPUTSYSTEM_CANCEL;^}') {
-                        fbInput.value = (val === '{!facebook:FACEBOOK_PAGE;^}') ? '1' : '0';
-                        fbButton.removeEventListener('click', listener);
-                        fbButton.click();
-                    }
-                });
-
-                return false;
-            });
-        }
-    };
-
     function facebookInit(appId, channelUrl, justLoggedOut, serversideFbuid, homePageUrl, logoutPageUrl) {
         if (serversideFbuid == '-1') {
             return; // Some kind of error, so don't continue
@@ -152,7 +116,7 @@
             }
             js = d.createElement(s);
             js.id = id;
-            js.src = '//connect.facebook.net/en_US/all.js#xfbml=1&appId=' + $cms.configOption('facebook_appid');
+            js.src = 'https://connect.facebook.net/en_US/all.js#xfbml=1&appId=' + $cms.configOption('facebook_appid');
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
     }

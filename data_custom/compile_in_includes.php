@@ -58,23 +58,23 @@ require_code('files');
 require_code('files2');
 $files = get_directory_contents($file_base, '');
 
-foreach ($files as $file) {
-    if ((substr($file, -4) == '.php') && (strpos($file, '_custom') !== false)) {
-        $file_orig = str_replace('_custom', '', $file);
+foreach ($files as $path) {
+    if ((substr($path, -4) == '.php') && (strpos($path, '_custom') !== false)) {
+        $file_orig = str_replace('_custom', '', $path);
         $marked_old = file_exists($file_orig . '.orig-precompile');
         if (($marked_old) && (file_exists($file_orig))) {
-            echo 'Skipped due to inconsistency (like outdated orig-precompile file needs deleting): ' . $file . "\n";
+            echo 'Skipped due to inconsistency (like outdated orig-precompile file needs deleting): ' . $path . "\n";
             continue;
         }
 
         // Find override data
         $matches = [];
-        $file_data = cms_file_get_contents_safe($file, FILE_READ_LOCK);
+        $file_data = cms_file_get_contents_safe($path, FILE_READ_LOCK);
         $true_file_data = $file_data;
         if (preg_match('#\#PRIOR TO COMPILED>>>(.*)\#<<<PRIOR TO COMPILED#s', $file_data, $matches) != 0) { // Must work back to what it was before compilation
             $file_data = $matches[1];
         } else {
-            $file_data = clean_php_file_for_eval($file_data, $file); // Verbatim
+            $file_data = clean_php_file_for_eval($file_data, $path); // Verbatim
         }
         $file_data = preg_replace('#^\##m', '', trim($file_data));
 
@@ -89,7 +89,7 @@ foreach ($files as $file) {
                 }
 
                 // Restore override
-                cms_file_put_contents_safe($file, '<' . '?php' . "\n\n" . $file_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($path, '<' . '?php' . "\n\n" . $file_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
             }
         }
 
@@ -103,7 +103,7 @@ foreach ($files as $file) {
                 $true_orig = cms_file_get_contents_safe($file_orig, FILE_READ_LOCK);
                 $orig = str_replace(['?' . '>', '<' . '?php'], ['', ''], $true_orig);
 
-                $codename = $file;
+                $codename = $path;
                 if (substr($codename, 0, 8) == 'sources/') {
                     $codename = substr($codename, 8);
                     $codename = substr($codename, 0, strlen($codename) - 4);
@@ -172,14 +172,14 @@ foreach ($files as $file) {
                 // Save
                 if (trim($new) != trim($true_file_data)) {
                     if ($marked_old) {
-                        echo 'Skipped due to inconsistency (PRIOR TO COMPILED segment mismatching new override code): ' . $file . "\n";
+                        echo 'Skipped due to inconsistency (PRIOR TO COMPILED segment mismatching new override code): ' . $path . "\n";
                     } else {
-                        cms_file_put_contents_safe($file, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                        cms_file_put_contents_safe($path, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
-                        echo 'Done: ' . $file . "\n";
+                        echo 'Done: ' . $path . "\n";
                     }
                 } else {
-                    echo 'No changes for: ' . $file . "\n";
+                    echo 'No changes for: ' . $path . "\n";
                 }
 
                 // Remove original file, to stop Composr trying to load it
