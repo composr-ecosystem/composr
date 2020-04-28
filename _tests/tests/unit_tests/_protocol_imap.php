@@ -27,6 +27,7 @@ a) disable any non-imap service
 a) uncomment "admins:" line
 b) uncomment "sasl_minimum_layer" line
 c) uncomment "sasl_pwcheck_method" line except set it to "alwaystrue"
+d) uncomment "allowplaintext" line
 
 4) Run "sudo systemctl enable cyrus-imapd"
 
@@ -54,20 +55,15 @@ class _protocol_imap_test_set extends cms_test_case
         }
 
         // Set to local IMAP server on test account
-        $this->key_options = $this->load_key_options('imap_');
+        $this->key_options = $this->load_key_options('mail_');
 
         // Create connection
+        require_code('mail');
         require_code('mail2');
-        list($mbox, $server_spec, $host, $username, $password, $port) = $this->get_imap_connection();
+        list($mbox, $server_spec, $host, $username, $password, $port, $type) = $this->get_imap_connection();
         if ($mbox === false) {
-            $this->assertTrue(false, 'IMAP connection failed');
+            $this->assertTrue(false, 'IMAP connection failed: ' . @strval(imap_errors()));
             return;
-        }
-
-        // Delete any folders on test account to get to a clean state
-        $folders = imap_list($mbox, $server_spec, '*');
-        foreach ($folders  as $folder) {
-            imap_deletemailbox($mbox, $folder);
         }
 
         imap_close($mbox);
@@ -78,39 +74,23 @@ class _protocol_imap_test_set extends cms_test_case
     protected function get_imap_login_details()
     {
         return [
-            get_option('imap_host'),
-            get_option('imap_username'),
-            get_option('imap_password'),
-            get_option('imap_port'),
+            get_option('mail_server_host'),
+            get_option('mail_username'),
+            get_option('mail_password'),
+            intval(get_option('mail_server_port')),
+            get_option('mail_server_type'),
         ];
     }
 
     protected function get_imap_connection()
     {
-        list($host, $username, $password, $port) = $this->get_imap_login_details();
+        list($host, $username, $password, $port, $type) = $this->get_imap_login_details();
 
         $server_spec = _imap_server_spec($host, $port);
 
         $mbox = imap_open($server_spec, $username, $password);
 
-        return [$mbox, $server_spec, $host, $username, $password, $port];
-    }
-
-    public function testImapEmpty()
-    {
-        if (!function_exists('imap_open')) {
-            return;
-        }
-
-        list($mbox, $server_spec, $host, $username, $password, $port) = $this->get_imap_connection();
-        if ($mbox === false) {
-            return;
-        }
-
-        $folders = imap_list($mbox, $server_spec, '*');
-        $this->assertTrue(empty($folders));
-
-        imap_close($mbox);
+        return [$mbox, $server_spec, $host, $username, $password, $port, $type];
     }
 
     public function testBounceFinder()
@@ -119,58 +99,64 @@ class _protocol_imap_test_set extends cms_test_case
             return;
         }
 
-        list($mbox, $server_spec, $host, $username, $password, $port) = $this->get_imap_connection();
+        list($mbox, $server_spec, $host, $username, $password, $port, $type) = $this->get_imap_connection();
         if ($mbox === false) {
             return;
         }
 
-        $folder = 'test';
-
         // Create test folder
-        imap_createmailbox($mbox, $folder);
+        $test_folder = 'test';
+        $folders = find_mail_folders($host, $port, $type, $username, $password);
+        if (!in_array($test_folder, $folders)) {
+            $success = imap_createmailbox($mbox, $test_folder);
+            $this->assertTrue($success, 'Failed to create test folder: ' . @strval(imap_errors()));
+        }
 
         // Test find_mail_folders
-        $folders = find_mail_folders($host, $port, $username, $password);
-        $this->assertTrue(array_values($folders) == [$folder]);
+        $folders = find_mail_folders($host, $port, $type, $username, $password);
+        $this->assertTrue(in_array($test_folder, $folders));
 
         // Create test messages
-        $this->inject_email('ok@localhost', 'This is a test ok', 'Test message');
-        $this->inject_email('bounce@localhost', 'This is a test bounce', 'Delivery to the following recipient failed permanently');
+        $this->inject_email($username . '@localhost', 'tester@localhost', 'This is a test ok', 'Test message');
+        $this->inject_email($username . '@localhost', 'tester@localhost', 'This is a test bounce', 'Delivery to the following recipient failed permanently: bounce@localhost');
 
         // Test bounce correctly detected, and no false positives
-        $bounces = _find_mail_bounces($host, $port, $type, $folder, $username, $password);
-        $this->assertTrue(array_keys($bounces) == ['bounce@localhost']);
+        $bounces = _find_mail_bounces($host, $port, $type, 'INBOX', $username, $password);
+        $_bounces = array_keys($bounces);
+        $this->assertTrue(in_array('bounce@localhost', $_bounces) && !in_array('ok@localhost', $_bounces) && !in_array('tester@localhost', $_bounces));
 
         imap_close($mbox);
     }
 
-    protected function inject_email($from, $subject, $body)
+    protected function inject_email($to, $from, $subject, $body)
     {
-        $envelope = [
+        $c_envelope = [
             'from' => $from,
+            'to' => $to,
             'subject' => $subject,
+            'date' => date('r'),
         ];
-        $body = [
+        $c_body = [
             'contents.data' => $body,
         ];
-        $mime = imap_mail_compose($envelope, $body);
+        $mime = imap_mail_compose($c_envelope, [$c_body]);
 
-        $socket = fsockopen($this->key_options['imap_lmtp_socket']);
-        $this->inject_email_line($socket, "LHLO localhost\r\n");
-        $this->inject_email_line($socket, "MAIL FROM:<" . $from . ">\r\n");
-        $this->inject_email_line($socket, "RCPT TO:<" . get_option('imap_username') . "@localhost>\r\n");
-        $this->inject_email_line($socket, "DATA\r\n");
-        $this->inject_email_line($socket, $body . "\r\n.\r\n");
-        $this->inject_email_line($socket, "QUIT");
+        $socket = fsockopen($this->key_options['mail_server_lmtp_socket']);
+        $this->inject_email_line($socket, 'LHLO localhost');
+        $this->inject_email_line($socket, 'MAIL FROM:<' . $from . '>');
+        $this->inject_email_line($socket, 'RCPT TO:<' . $to . '>');
+        $this->inject_email_line($socket, 'DATA');
+        $this->inject_email_line($socket, $mime . "\r\n.");
+        $this->inject_email_line($socket, 'QUIT');
         fclose($socket);
     }
 
-    protected function inject_email_line($socket, $line)
+    protected function inject_email_line($socket, $line_in)
     {
-        fwrite($socket, $line;
-        $line = fread($socket);
+        fwrite($socket, $line_in . "\r\n");
+        $line_out = fread($socket, 1024);
         if ($this->debug) {
-            var_dump($line);
+            var_dump($line_out);
         }
     }
 }
