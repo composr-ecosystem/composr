@@ -111,7 +111,7 @@ class Module_admin_newsletter extends Standard_crud_module
             $this->title = get_screen_title('VIEW_NEWSLETTER_SUBSCRIBERS');
         }
 
-        if ($type == 'bounce_filter_a' || $type == 'bounce_filter_v' || $type == 'bounce_filter_c' || $type == 'bounce_filter_d') {
+        if ($type == 'bounce_filter_a' || $type == 'bounce_filter_b' || $type == 'bounce_filter_c' || $type == 'bounce_filter_d') {
             $this->title = get_screen_title('BOUNCE_FILTER');
         }
 
@@ -528,7 +528,7 @@ class Module_admin_newsletter extends Standard_crud_module
         foreach (['imap', 'imaps', 'imaps_nocert', 'imapt', 'imapt_nocert', 'pop3', 'pop3s', 'pop3s_nocert', 'pop3t', 'pop3t_nocert'] as $_server_type) {
             $mail_server_types->attach(form_input_list_entry($_server_type, $_server_type == get_option('mail_server_type')));
         }
-        $fields->attach(form_input_list(do_lang_tempcode('SERVER_TYPE'), do_lang_tempcode('CONFIG_OPTION_mail_server_type'), 'mail_server_type', $mail_server_types));
+        $fields->attach(form_input_list(do_lang_tempcode('SERVER_TYPE'), do_lang_tempcode('CONFIG_OPTION_mail_server_type'), 'type', $mail_server_types));
         $fields->attach(form_input_line(do_lang_tempcode('HOST'), do_lang_tempcode('CONFIG_OPTION_mail_server_host'), 'host', get_option('mail_server_host'), true));
         $fields->attach(form_input_integer(do_lang_tempcode('PORT'), do_lang_tempcode('CONFIG_OPTION_mail_server_port'), 'port', intval(get_option('mail_server_port')), true));
         $fields->attach(form_input_line(do_lang_tempcode('USERNAME'), do_lang_tempcode('CONFIG_OPTION_mail_username'), 'username', get_option('mail_username'), true));
@@ -578,7 +578,7 @@ class Module_admin_newsletter extends Standard_crud_module
         }
 
         $fields = new Tempcode();
-        $fields->attach(form_input_list(do_lang_tempcode('DIRECTORY'), new Tempcode(), 'folder', $folders, null, true));
+        $fields->attach(form_input_list(do_lang_tempcode('FOLDER'), new Tempcode(), 'folder', $folders, null, true));
 
         $submit_name = do_lang_tempcode('PROCEED');
         $post_url = get_self_url();

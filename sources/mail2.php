@@ -143,6 +143,9 @@ function find_mail_folders($host, $port, $type, $username, $password)
         $label = preg_replace('#@.*$#', '', $folder);
         $folders[$folder] = $label;
     }
+    if (!array_key_exists('INBOX', $folders)) { // Should exist. Maybe we are using an admin account. On Cyrus it can be specified if it won't list.
+        $folders['INBOX'] = 'INBOX';
+    }
 
     return $folders;
 }
