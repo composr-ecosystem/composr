@@ -1222,7 +1222,7 @@
      */
     $cms.doAjaxRequest = function doAjaxRequest(url, callback, post, timeout, synchronous) {
         url = strVal(url);
-        timeout = intVal(timeout, 10000);
+        timeout = intVal(timeout, 30000);
 
         return new Promise(function (resolvePromise) {
             var xhr = new XMLHttpRequest();
