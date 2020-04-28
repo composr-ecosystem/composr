@@ -222,13 +222,24 @@ The purpose of this feature is to gradually advertise the features of your websi
 For welcome e-mails to work the CRON bridge scheduler must be configured as discussed in the [page="_SEARCH:tut_configuration"]Configuration tutorial[/page]
 
 Welcome e-mails will only be sent to validated members who have confirmed their e-mail address. E-mails are sent out based on join time, so if a member is not fully validated in time a welcome e-mail may simply never happen.
-The one exception is welcome e-mails set to send immediately. In such a case Composr will assume that validation may not have had time to happen yet, so it will ignore it.
+The one exception is welcome e-mails set to send immediately (i.e. as zero hours). In such a case Composr will assume that validation may not have had time to happen yet, so it will ignore it.
 If you know validation may take a while, make sure any non-immediate welcome e-mail is going to happen after you can assume validation will have been handled.
 [/surround]
+
+[title="3"]E-mails sent when members are added manually[/title]
+
+A very similar feature to welcome e-mails is the ability to send an e-mail when you manually add a new member. There are fields on the "Add member account" form to accomodate this.
+The only differences between this and having a welcome e-mail set to send at zero hours, are:
+1) It is only sent to manually added members
+2) It does not require the system scheduler to be configured
+3) It sends immediately (not after a few minutes when the scheduler kicks in and anything ahead in the e-mail queue catches clears)
+4) You can reference the user's new password (explained in the section below)
 
 [title="3"]Referencing member-specific data[/title]
 
 As long as you have the newsletters addon installed, welcome e-mails will piggy-back off the newsletters templating code (regardless of whether the welcome e-mail is being sent to members or to a newsletter). This functionality is as described in the [page="_SEARCH:tut_newsletter"]Newsletters tutorial[/page] ("Templated newsletters"); essentially it means you can use things like [tt]{name}[/tt] in there.
+
+For the e-mail sent from the "Add member account" form, an additional [tt]{password}[/tt] reference is supported. This references the password entered on the form. It is not available in welcome e-mails because it is saved into the database in a hash-format which cannot be converted back to the original password: an important and standard security practice.
 
 [title="2"]Importing/exporting members[/title]
 

@@ -285,8 +285,25 @@ class Module_admin_cns_members
         list($fields, $hidden) = cns_get_member_fields(false);
         url_default_parameters__disable();
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '101063c817a45c10bca5c384e1f32bf1', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('OPTIONS'))));
-        $fields->attach(form_input_tick(do_lang_tempcode('FORCE_TEMPORARY_PASSWORD'), do_lang_tempcode('DESCRIPTION_FORCE_TEMPORARY_PASSWORD'), 'temporary_password', false));
+        $default_temporary_password = (get_option('new_member_default_temporary_password') == '1');
+        $default_email_subject = get_option('new_member_default_email_subject');
+        $default_email_message = get_option('new_member_default_email_message');
+
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+            '_GUID' => '101063c817a45c10bca5c384e1f32bf1',
+            'SECTION_HIDDEN' => ($default_email_subject == '') && ($default_email_message == ''),
+            'TITLE' => do_lang_tempcode('config:_EMAIL'),
+            'HELP' => do_lang_tempcode('ADD_MEMBER_EMAIL_HELP'),
+        )));
+        $fields->attach(form_input_line(do_lang_tempcode('SUBJECT'), '', 'email_subject', $default_email_subject, false));
+        $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), '', 'email_message', $default_email_message, false));
+
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+            '_GUID' => '101063c817a45c10bca5c384e1f32bf1',
+            'SECTION_HIDDEN' => $default_temporary_password,
+            'TITLE' => do_lang_tempcode('OPTIONS'),
+        )));
+        $fields->attach(form_input_tick(do_lang_tempcode('FORCE_TEMPORARY_PASSWORD'), do_lang_tempcode('DESCRIPTION_FORCE_TEMPORARY_PASSWORD'), 'temporary_password', $default_temporary_password));
 
         $text = do_lang_tempcode('_ENTER_PROFILE_DETAILS');
 
@@ -374,6 +391,26 @@ class Module_admin_cns_members
         if (addon_installed('content_reviews')) {
             require_code('content_reviews2');
             content_review_set('member', strval($id));
+        }
+
+        // Send e-mail, if requested
+        $email_subject = trim(post_param_string('email_subject', ''));
+        $email_message = trim(post_param_string('email_message', ''));
+        if ($email_message != '') {
+            $to_name = $GLOBALS['FORUM_DRIVER']->get_displayname($username);
+
+            if (addon_installed('newsletter')) {
+                require_code('newsletter');
+                $extra_mappings = $GLOBALS['FORUM_DRIVER']->get_member_row($id);
+                require_code('cns_members');
+                $extra_mappings += cns_get_custom_field_mappings($id);
+                $extra_mappings['username'] = $username;
+                $extra_mappings['password'] = $password;
+                $email_message = newsletter_variable_substitution($email_message, $email_subject, '', '', $to_name, $email_address, 'w' . strval($id), '', @array_map('strval', $extra_mappings));
+            }
+
+            require_code('mail');
+            mail_wrap($email_subject, $email_message, ($email_address == '') ? null : array($email_address), $to_name, '', '', 3, null, false, null, false, false, false, 'MAIL', true);
         }
 
         $special_links = array();

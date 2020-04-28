@@ -359,7 +359,7 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw
  * @param  ?array $extra_mappings Extra substitution mappings (null: none)
  * @return string The new newsletter message
  */
-function newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $email_address, $sendid, $hash, $extra_mappings = null)
+function newsletter_variable_substitution($message, &$subject, $forename, $surname, $name, $email_address, $sendid, $hash, $extra_mappings = null)
 {
     if ($extra_mappings === null) { // TODO: Change in v11
         $extra_mappings = array();
@@ -396,6 +396,13 @@ function newsletter_variable_substitution($message, $subject, $forename, $surnam
     foreach ($vars as $var => $sub) {
         $message = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $message);
         $message = str_replace('{' . $var . '*}', escape_html(is_object($sub) ? $sub->evaluate() : $sub), $message);
+    }
+
+    foreach ($vars as $var => $sub) {
+        if ($var != 'subject') {
+            $subject = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $subject);
+            $subject = str_replace('{' . $var . '*}', escape_html(is_object($sub) ? $sub->evaluate() : $sub), $subject);
+        }
     }
 
     return $message;
