@@ -3588,8 +3588,10 @@ function has_cookies() // Will fail on users first visit, but then will catch on
         $has_cookies_cache = true;
         return true;
     }
-    require_code('users_active_actions');
-    cms_setcookie('has_cookies', '1');
+    if (running_script('index')) {
+        require_code('users_active_actions');
+        cms_setcookie('has_cookies', '1');
+    }
     $has_cookies_cache = false;
     return false;
 }
