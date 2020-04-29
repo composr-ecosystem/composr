@@ -738,7 +738,7 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
             }
         }
 
-        if (($this->minimum_level == self::RESULT_TYPE_ERROR_MISSING) && (!$on_chmod_list)) {
+        if (($this->minimum_level >= self::RESULT_TYPE_ERROR_EXCESSIVE) && (!$on_chmod_list)) {
             return [$messages, $commands]; // Optimisation
         }
 
@@ -1311,7 +1311,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
             }
         }
 
-        if (($this->minimum_level == self::RESULT_TYPE_ERROR_MISSING) && (!$on_chmod_list)) {
+        if (($this->minimum_level >= self::RESULT_TYPE_ERROR_EXCESSIVE) && (!$on_chmod_list)) {
             return [$messages, $commands]; // Optimisation
         }
 

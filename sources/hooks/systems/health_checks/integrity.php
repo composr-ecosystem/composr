@@ -231,7 +231,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
         }
 
         require_code('file_permissions_check');
-        list($messages) = scan_permissions(false, false, null, null, ($check_context == CHECK_CONTEXT__INSTALL) ? CMSPermissionsScanner::RESULT_TYPE_ERROR_EXCESSIVE : CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
+        list($messages) = scan_permissions(false, false, null, null, ($check_context == CHECK_CONTEXT__INSTALL) ? CMSPermissionsScanner::RESULT_TYPE_ERROR_MISSING : CMSPermissionsScanner::RESULT_TYPE_SUGGESTION_EXCESSIVE);
 
         $this->assertTrue(empty($messages), implode("\n", $messages));
     }

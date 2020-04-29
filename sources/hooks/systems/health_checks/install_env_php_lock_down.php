@@ -361,7 +361,7 @@ END;
         if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {
             $files = get_directory_contents('/home', '', null, false);
         } else {
-            $files = get_directory_contents('C:\\', '', null, false);
+            $files = get_directory_contents('C:\\Users', '', null, false);
         }
         $this->assertTrue(empty($files), do_lang('WARNING_OPEN_BASEDIR'));
     }
