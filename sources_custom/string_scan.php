@@ -6432,6 +6432,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_CTYPE_ON_SERVER
         NO_INTL_ON_SERVER
         NO_ZLIB_ON_SERVER
+        NO_JSON_ON_SERVER
         NO_HELP
         NO_INTEGERS_TEMPLATE
         NO_LAST_BACKUP
