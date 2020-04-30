@@ -455,7 +455,7 @@ class Module_groups
             $others->attach(results_entry($entry, false));
         }
         if (!$others->is_empty()) {
-            $others = results_table(do_lang_tempcode('OTHER_USERGROUPS'), $start, 'others_start', $max, 'others_max', $max_rows, $fields_title, $others, $sortables, $sortable, $sort_order, 'others_sort', null, $col_widths);
+            $others = results_table(do_lang_tempcode(empty($ranks) ? 'OTHER' : 'OTHER_USERGROUPS'), $start, 'others_start', $max, 'others_max', $max_rows, $fields_title, $others, $sortables, $sortable, $sort_order, 'others_sort', null, $col_widths);
         }
 
         $tpl = do_template('CNS_GROUP_DIRECTORY_SCREEN', array('_GUID' => '39aebd8fcb618c2ae45e867d0c96a4cf', 'TITLE' => $this->title, 'STAFF' => $staff, 'OTHERS' => $others, 'RANKS' => $ranks));
