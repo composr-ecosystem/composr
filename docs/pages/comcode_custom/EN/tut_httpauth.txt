@@ -59,8 +59,7 @@ require valid-user
 
 ... (original file follows) ...
 [/code]
-
-We have to give an absolute path for the Apache [tt]AuthUserFile[/tt] setting. This is a little annoying but it's an Apache requirement.
+We have to give an absolute path for the Apache [tt]AuthUserFile[/tt] setting. This is a little annoying but it's an Apache requirement. These files can be generated using online tools or Linux commands (see links under "See also").
 
 [title="3"]If you want a public welcome zone[/title]
 
@@ -74,6 +73,7 @@ AuthUserFile /var/www/.htpasswd
 
 ... (original file follows) ...
 [/code]
+We have to give an absolute path for the Apache [tt]AuthUserFile[/tt] setting. This is a little annoying but it's an Apache requirement. These files can be generated using online tools or Linux commands (see links under "See also").
 
 Then place only (*) the actual restrictions on the files placed within individual zones, and the [tt]data[/tt] directory also (&dagger;).
 
