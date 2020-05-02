@@ -9,7 +9,7 @@
 
 			<p>{!facebook:LOGIN_USING_FACEBOOK}</p>
 
-			<div class="fb-login-button" data-width="200" data-max-rows="1" data-scope="email{$,Asking for this stuff is now a big hassle as it needs a screencast(s) making: user_birthday,user_about_me,user_hometown,user_location,user_website}{+START,IF,{$CONFIG_OPTION,facebook_auto_syndicate}},publish_actions,publish_pages{+END}"></div>
+			<div class="fb-login-button" data-width="200" data-max-rows="1" data-scope="email{$,Asking for this stuff is now a big hassle as it needs a screencast(s) making: user_gender,user_birthday,user_location}"></div>
 
 			<p>{!facebook:IF_NO_BUTTON_LOGIN_FIRST}</p>
 		{+END}

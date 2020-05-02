@@ -23,10 +23,15 @@ class Hook_syndication_facebook
         return 'Facebook';
     }
 
-    public function is_available()
+    public function is_available($member_id = null)
     {
-        if (get_option('facebook_syndicate') == '0') {
+        if ($member_id !== null) {
+            // Facebook removed this https://developers.facebook.com/docs/graph-api/changelog/breaking-changes#login-4-24
             return false;
+        }
+
+        if (get_option('facebook_uid') == '0') {
+            return false; // No page/group configured
         }
 
         $appapikey = get_option('facebook_appid');
@@ -38,60 +43,12 @@ class Hook_syndication_facebook
         return true;
     }
 
-    public function syndication_javascript()
-    {
-        if (get_option('facebook_member_syndicate_to_page') == '0') {
-            return '';
-        }
-
-        require_lang('facebook');
-
-        return "
-            var fb_button=document.getElementById('syndicate_start__facebook');
-            if (fb_button)
-            {
-                var fb_input;
-                if (typeof fb_button.form.elements['facebook_syndicate_to_page']=='undefined')
-                {
-                    fb_input=document.createElement('input');
-                    fb_input.type='hidden';
-                    fb_input.name='facebook_syndicate_to_page';
-                    fb_input.value='0';
-                    fb_button.form.appendChild(fb_input);
-                } else
-                {
-                    fb_input=fb_button.form.elements['facebook_syndicate_to_page'];
-                }
-                fb_button.onclick=function() {
-                    generate_question_ui(
-                        '" . addslashes(do_lang('HOW_TO_SYNDICATE_DESCRIPTION')) . "',
-
-                        ['" . addslashes(do_lang('INPUTSYSTEM_CANCEL')) . "','" . addslashes(do_lang('FACEBOOK_PAGE')) . "','" . addslashes(do_lang('FACEBOOK_WALL')) . "'],
-
-                        '" . addslashes(do_lang('HOW_TO_SYNDICATE')) . "',
-
-                        '" . addslashes(do_lang('SYNDICATE_TO_OWN_WALL', get_site_name())) . "',
-
-                        function(val) {
-                            if (val!='" . addslashes(do_lang('INPUTSYSTEM_CANCEL')) . "') {
-                                fb_input.value=(val=='" . addslashes(do_lang('FACEBOOK_PAGE')) . "')?'1':'0';
-                                fb_button.onclick=null;
-                                click_link(fb_button);
-                            }
-                        }
-                    );
-
-                    return false;
-                };
-            }
-        ";
-    }
-
     public function auth_is_set($member_id)
     {
         $save_to = 'facebook_oauth_token';
-        if (!is_null($member_id)) {
-            $save_to .= '__' . strval($member_id);
+        if ($member_id !== null) {
+            // Facebook removed this https://developers.facebook.com/docs/graph-api/changelog/breaking-changes#login-4-24
+            return false;
         }
         $val = get_value($save_to, null, true);
         return !empty($val);
@@ -99,6 +56,11 @@ class Hook_syndication_facebook
 
     public function auth_set($member_id, $oauth_url)
     {
+        if ($member_id !== null) {
+            // Facebook removed this https://developers.facebook.com/docs/graph-api/changelog/breaking-changes#login-4-24
+            return false;
+        }
+
         require_lang('facebook');
         require_code('facebook_connect');
         global $FACEBOOK_CONNECT;
@@ -106,12 +68,10 @@ class Hook_syndication_facebook
         $code = get_param_string('code', '', true);
 
         if ($code == '') {
-            $scope = array('publish_actions');
-            if (is_null($member_id)) {
-                $scope[] = 'manage_pages';
-                $scope[] = 'publish_pages';
-            }
+            $scope[] = 'manage_pages';
+            $scope[] = 'publish_pages';
             $oauth_redir_url = $FACEBOOK_CONNECT->getLoginUrl(array('redirect_uri' => $oauth_url->evaluate(), 'scope' => $scope));
+
             require_code('site2');
             smart_redirect($oauth_redir_url);
         }
@@ -128,44 +88,20 @@ class Hook_syndication_facebook
             return false;
         }
 
-        if (is_null($member_id)) {
-            /*$FACEBOOK_CONNECT->setExtendedAccessToken();
-            $FACEBOOK_CONNECT->api('/oauth/access_token', 'POST',
-                array(
-                    'grant_type' => 'fb_exchange_token',
-                    'client_id' => get_option('facebook_appid'),
-                    'client_secret' => get_option('facebook_secret_code'),
-                    'fb_exchange_token' => $access_token
-                )
-            );*/
+        // Get long lived token
+        $FACEBOOK_CONNECT->setExtendedAccessToken();
+        $result = $FACEBOOK_CONNECT->api('/oauth/access_token', 'POST',
+            array(
+                'grant_type' => 'fb_exchange_token',
+                'client_id' => get_option('facebook_appid'),
+                'client_secret' => get_option('facebook_secret_code'),
+                'fb_exchange_token' => $access_token
+            )
+        );
+        $access_token = $result['access_token'];
 
-            if (get_option('facebook_uid') == '') {
-                require_code('config2');
-                $facebook_uid = $FACEBOOK_CONNECT->getUser();
-                set_option('facebook_uid', strval($facebook_uid));
-            }
-        }
-
-        if ((strpos($access_token, '|') === false) || (is_null($member_id))) { // If for users, not if application access token, which will happen on a refresh (as user token will not confirm twice)
-            $save_to = 'facebook_oauth_token';
-            if (!is_null($member_id)) {
-                $save_to .= '__' . strval($member_id);
-            }
-            set_value($save_to, $access_token, true);
-
-            $facebook_syndicate_to_page = get_param_string('facebook_syndicate_to_page', null);
-            if ($facebook_syndicate_to_page !== null) {
-                set_value('facebook_syndicate_to_page__' . strval($member_id), $facebook_syndicate_to_page, true);
-            }
-        }
-
-        if (get_page_name() != 'facebook_oauth') { // Take member back to page that implicitly shows their results
-            require_code('site2');
-            $target_url = $oauth_url->evaluate();
-            $target_url = preg_replace('#oauth_in_progress=\d+#', '', $target_url);
-            $target_url = preg_replace('#syndicate_start__facebook=\d+#', '', $target_url);
-            smart_redirect($target_url);
-        }
+        $save_to = 'facebook_oauth_token';
+        set_value($save_to, $access_token, true);
 
         return true;
     }
@@ -173,24 +109,12 @@ class Hook_syndication_facebook
     public function auth_unset($member_id)
     {
         $save_to = 'facebook_oauth_token';
-        if (!is_null($member_id)) {
-            $save_to .= '__' . strval($member_id);
-        }
         set_value($save_to, null, true);
     }
 
     public function syndicate_user_activity($member_id, $row)
     {
-        if (($this->is_available()) && ($this->auth_is_set($member_id))) {
-            $page_syndicate = (get_option('facebook_member_syndicate_to_page') == '1' && get_option('facebook_uid') != '' && get_value('facebook_syndicate_to_page__' . strval($member_id), null, true) === '1');
-            return $this->_send(
-                get_value('facebook_oauth_token__' . strval($member_id), null, true),
-                $row,
-                $page_syndicate ? get_option('facebook_uid') : 'me',
-                $member_id,
-                $page_syndicate
-            );
-        }
+        // Facebook removed this https://developers.facebook.com/docs/graph-api/changelog/breaking-changes#login-4-24
         return false;
     }
 
@@ -207,10 +131,6 @@ class Hook_syndication_facebook
 
         if (get_option('facebook_uid') == '') {
             return false; // No configured target
-        }
-
-        if (($this->auth_is_set(get_member())) && (get_option('facebook_uid') == strval($FACEBOOK_CONNECT->getUser()))) {
-            return false; // Avoid double syndication, will already go to the user
         }
 
         return true;
@@ -248,15 +168,12 @@ class Hook_syndication_facebook
         $fb = new Facebook(array('appId' => $appid, 'secret' => $appsecret));
         $fb->setAccessToken($token);
 
-        $attachment = array('description' => $message);
+        $attachment = array('message' => $message);
         if (($name != '') && ($name != $message)) {
             $attachment['name'] = $name;
         }
         if ($link != '') {
             $attachment['link'] = $link;
-        }
-        if (count($attachment) == 1) {
-            $attachment = array('message' => $message);
         }
 
         if ($post_to_uid == 'me') {
@@ -266,10 +183,6 @@ class Hook_syndication_facebook
         try {
             $ret = $fb->api('/' . $post_to_uid . '/feed', 'POST', $attachment);
         } catch (Exception $e) {
-            if ((!is_null($member_id)) && (!has_interesting_post_fields()) && (running_script('index')) && (!headers_sent())) {
-                $this->auth_set($member_id, get_self_url());
-            }
-
             header('Facebook-Error: ' . escape_header($e->getMessage()));
 
             if (!$silent_warn) {

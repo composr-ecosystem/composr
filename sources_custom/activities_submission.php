@@ -82,8 +82,10 @@ function activities_addon_syndicate_described_activity($a_language_string_code =
             foreach (array_keys($dests) as $hook) {
                 require_code('hooks/systems/syndication/' . $hook);
                 $ob = object_factory('Hook_syndication_' . $hook);
-                if ($ob->is_available()) {
+                if ($ob->is_available($a_member_id)) {
                     $ob->syndicate_user_activity($a_member_id, $row);
+                }
+                if ($ob->is_available()) {
                     if (($sitewide_too) && (has_privilege(get_member(), 'syndicate_site_activity')) && (post_param_integer('syndicate_this', 0) == 1)) {
                         $ob->syndicate_site_activity($row);
                     }

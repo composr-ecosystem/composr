@@ -455,7 +455,7 @@ class Module_groups
             $others->attach(results_entry($entry, false));
         }
         if (!$others->is_empty()) {
-            $others = results_table(do_lang_tempcode('OTHER_USERGROUPS'), $start, 'others_start', $max, 'others_max', $max_rows, $fields_title, $others, $sortables, $sortable, $sort_order, 'others_sort', null, $col_widths);
+            $others = results_table(do_lang_tempcode(empty($ranks) ? 'OTHER' : 'OTHER_USERGROUPS'), $start, 'others_start', $max, 'others_max', $max_rows, $fields_title, $others, $sortables, $sortable, $sort_order, 'others_sort', null, $col_widths);
         }
 
         $tpl = do_template('CNS_GROUP_DIRECTORY_SCREEN', array('_GUID' => '39aebd8fcb618c2ae45e867d0c96a4cf', 'TITLE' => $this->title, 'STAFF' => $staff, 'OTHERS' => $others, 'RANKS' => $ranks));
@@ -547,8 +547,10 @@ class Module_groups
             $promotion_info = new Tempcode();
         }
 
+        $may_control_group = cns_may_control_group($id, get_member());
+
         // To add
-        if (cns_may_control_group($id, get_member())) {
+        if ($may_control_group) {
             $add_url = build_url(array('page' => '_SELF', 'type' => 'add_to', 'id' => $id), '_SELF');
         } else {
             $add_url = new Tempcode();
@@ -606,13 +608,13 @@ class Module_groups
         // Secondary members
         $s_start = get_param_integer('s_start', 0);
         $s_max = get_param_integer('s_max', intval(get_option('secondary_members_per_page')));
-        $_secondary_members = cns_get_group_members_raw($id, false, cns_may_control_group($id, get_member()), true, false, $s_max, $s_start);
+        $_secondary_members = cns_get_group_members_raw($id, false, false, true, false, $s_max, $s_start);
         $secondary_members = new Tempcode();
         $prospective_members = new Tempcode();
-        $s_max_rows = cns_get_group_members_raw_count($id, false, false, false);
-        $d_max_rows = cns_may_control_group($id, get_member()) ? cns_get_group_members_raw_count($id, false, true, false) : 0;
+        $s_max_rows = cns_get_group_members_raw_count($id, false, false, true, false);
+        $d_max_rows = $may_control_group ? cns_get_group_members_raw_count($id, false, true, true) : 0;
         foreach ($_secondary_members as $secondary_member) {
-            if (!cns_may_control_group($id, get_member())) {
+            if (!$may_control_group) {
                 // Update to consistent map format, as we use it here
                 $secondary_member = array('gm_member_id' => $secondary_member, 'gm_validated' => 1, 'implicit' => false);
             }
@@ -628,7 +630,7 @@ class Module_groups
             if ($secondary_member['gm_validated'] == 1) {
                 $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($secondary_member['gm_member_id'], false, true);
                 $remove_url = build_url(array('page' => '_SELF', 'type' => 'remove_from', 'id' => $id, 'member_id' => $secondary_member['gm_member_id']), '_SELF');
-                $may_control = (cns_may_control_group($id, get_member()) && (!$secondary_member['implicit']));
+                $may_control = ($may_control_group && (!$secondary_member['implicit']));
                 $temp = do_template('CNS_VIEW_GROUP_MEMBER' . ($may_control ? '_SECONDARY' : ''), array(
                     'ID' => strval($secondary_member['gm_member_id']),
                     'REMOVE_URL' => $remove_url,

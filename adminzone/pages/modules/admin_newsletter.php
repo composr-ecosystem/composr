@@ -101,7 +101,7 @@ class Module_admin_newsletter extends Standard_crud_module
             }
         }
 
-        if ($type == 'bounce_filter_a' || $type == 'bounce_filter_v' || $type == 'bounce_filter_c' || $type == 'bounce_filter_d') {
+        if ($type == 'bounce_filter_a' || $type == 'bounce_filter_b' || $type == 'bounce_filter_c' || $type == 'bounce_filter_d') {
             $this->title = get_screen_title('BOUNCE_FILTER');
         }
 
