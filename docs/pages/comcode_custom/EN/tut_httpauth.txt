@@ -5,7 +5,7 @@
 [media width="150" description="Authentication via HTTP" float="right"]data_custom/images/docs/tut_httpauth/httpauth_ask.png[/media]
 On a normal Composr installation (a Composr powered website), whatever forum system is being used contains member details in its database; Composr authenticates to this, using custom forum drivers to tackle the differing systems. For users to login to these, they need to enter their details, in either the forum, or Composr, and then Composr can maintain the login using login [concept]cookies[/concept] and/or sessions (propagated by URL or [concept]session cookie[/concept]s).
 
-Sometimes, however, for additional security and/or integration reasons, it is desirable to be able to login via the HTTP authentication screen present in web browsers. {$IS_MAINTAINED,httpauth,Composr allows this form of login} (if using the [concept]Conversr[/concept] system), in a platform independent way: therefore it may be accomplished by any web server scheme, such as Apache [tt].htaccess[/tt], or IIS account-integrated security.
+Sometimes, however, for additional security and/or integration reasons, it is desirable to be able to login via the HTTP authentication screen present in web browsers. Composr allows this form of login (if using the [concept]Conversr[/concept] system), in a platform independent way: therefore it may be accomplished by any web server scheme, such as Apache [tt].htaccess[/tt], or IIS account-integrated security.
 [/surround]
 
 [contents]decimal,lower-alpha[/contents]
