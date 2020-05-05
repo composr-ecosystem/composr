@@ -3171,11 +3171,6 @@ function get_num_users_site()
             set_value('users_online', $NUM_USERS_SITE_CACHE);
         }
     }
-    if ((intval($NUM_USERS_SITE_CACHE) > intval(get_option('maximum_users'))) && (intval(get_option('maximum_users')) > 1) && (get_page_name() != 'login') && (!has_privilege(get_member(), 'access_overrun_site')) && (!running_script('cron_bridge'))) {
-        set_http_status_code(503);
-
-        critical_error('BUSY', do_lang('TOO_MANY_USERS'));
-    }
     if (addon_installed('stats')) {
         // Store a peak record if there is one
         $PEAK_USERS_EVER_CACHE = get_value('user_peak');
