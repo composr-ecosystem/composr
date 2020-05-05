@@ -54,11 +54,13 @@
         this.cancelUrl = strVal(params.cancelUrl);
         this.analyticEventCategory = params.analyticEventCategory;
         this.form = $dom.closest(this.el, 'form');
-        this.btnSubmit = this.$('#submit-button');
+        this.btnSubmit = this.$('.btn-main-submit-form');
 
         window.formPreviewUrl = strVal(params.previewUrl);
         window.separatePreview = Boolean(params.separatePreview);
         window.analyticEventCategory = params.analyticEventCategory;
+
+        var self = this;
 
         if (params.forcePreviews) {
             $dom.hide(this.btnSubmit);
@@ -69,7 +71,9 @@
         }
 
         if (!params.secondaryForm) {
-            this.fixFormEnterKey();
+            $dom.on(this.form, 'keyup', 'input', function (e) {
+                self.fixFormEnterKey(e);
+            });
         }
 
         if (params.supportAutosave && params.formName) {
@@ -87,8 +91,8 @@
             return {
                 'click .js-click-do-form-cancel': 'doFormCancel',
                 'click .js-click-do-form-preview': 'doStandardFormPreview',
-                'click .js-click-do-form-submit': 'doStandardFormSubmit',
-                'click .js-click-btn-go-back': 'goBack'
+                'click .btn-main-submit-form': 'doStandardFormSubmit',
+                'click .js-click-btn-go-back': 'goBack',
             };
         },
 
@@ -123,21 +127,15 @@
             }
         },
 
-        fixFormEnterKey: function () {
-            var form = this.form,
-                submitBtn = document.getElementById('submit-button'),
-                inputs = form.getElementsByTagName('input'),
-                type, types = ['text', 'password', 'color', 'email', 'number', 'range', 'search', 'tel', 'url'];
+        fixFormEnterKey: function (e) {
+            var types = ['text', 'password', 'color', 'email', 'number', 'range', 'search', 'tel', 'url'];
 
-            for (var i = 0; i < inputs.length; i++) {
-                type = inputs[i].type;
-                if (types.includes(type)) {
-                    $dom.on(inputs[i], 'keypress', function (event) {
-                        if ($dom.keyPressed(event, 'Enter')) {
-                            $dom.trigger(submitBtn, 'click');
-                        }
-                    });
-                }
+            if (!types.includes(e.target.type)) {
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                $dom.trigger(this.btnSubmit, 'click');
             }
         }
     });
