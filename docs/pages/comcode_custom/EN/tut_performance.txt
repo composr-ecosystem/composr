@@ -104,8 +104,6 @@ Stay on the well-trodden path:
  - Even though Composr supports various database vendors it is optimised for MySQL. You should also run the latest stable version so that you benefit from all their performance optimisations.
  - Even though Composr supports various third party forums it is optimised for Conversr.
 
-If you are optimising your backend infrastructure to be able to handle large numbers of users don't forget to change the value of the "Maximum users" configuration option (Admin Zone > Setup > Configuration > Site options > Closed site) to something much higher!
-
 [title="3"]Aggressive caching for bots[/title]
 
 If you want to [b]serve cached pages to bots[/b], put a line like this into your [tt]_config.php[/tt] file:

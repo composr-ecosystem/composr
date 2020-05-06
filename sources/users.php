@@ -152,12 +152,6 @@ function get_member($quick_only = false)
         load_user_stuff();
     }
 
-    // If lots of aging sessions, clean out
-    reset($SESSION_CACHE);
-    if ((count($SESSION_CACHE) > 50) && ($SESSION_CACHE[key($SESSION_CACHE)]['last_activity'] < time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))) {
-        delete_expired_sessions_or_recover();
-    }
-
     // Try via restricted_manually_enabled_backdoor that someone with full server access can place
     $backdoor_ip_address = null; // Enable to a real IP address to force login from FTP access (if lost admin password)
     if (!empty($SITE_INFO['backdoor_ip'])) {
@@ -467,16 +461,17 @@ function enforce_sessioned_url($url)
  * Find what sessions are expired and delete them, and recover an existing one for $member_id if there is one.
  *
  * @param  ?MEMBER $member_id User to get a current session for (null: do not try, which guarantees a return result of null also)
- * @return ?ID_TEXT The session ID we rebound to (null: did not rebind)
+ * @param  boolean $force_cleanup Force cleanup of expired sessions (otherwise happens randomly, to reduce load)
+ * @return array A tuple: The session ID we rebound to (null means did not rebind), The number of member sessions, The number of Guest sessions
  */
-function delete_expired_sessions_or_recover($member_id = null)
+function delete_expired_sessions_or_recover($member_id = null, $force_cleanup = false)
 {
     $new_session = null;
 
     $ip = get_ip_address(3);
 
     // Delete expired sessions; it's important we do this reasonably routinely, as the session table is loaded up and can get large -- unless we aren't tracking online users, in which case the table is never loaded up
-    if (mt_rand(0, 100) == 1) {
+    if (($force_cleanup) || (mt_rand(0, 100) == 1) || (intval(get_option('maximum_users')) > 0)) {
         cms_register_shutdown_function_safe(function () {
             if (!$GLOBALS['SITE_DB']->table_is_locked('sessions')) {
                 $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE last_activity<' . strval(time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))), 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
@@ -488,6 +483,8 @@ function delete_expired_sessions_or_recover($member_id = null)
     $dirty_session_cache = false;
     global $SESSION_CACHE;
     $_session = null;
+    $num_guests = 0;
+    $num_members = 0;
     foreach ($SESSION_CACHE as $_session => $row) {
         if (is_integer($_session)) {
             $_session = strval($_session);
@@ -500,9 +497,16 @@ function delete_expired_sessions_or_recover($member_id = null)
             continue;
         }
 
+        $is_guest = ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id());
+        if ($is_guest) {
+            $num_guests++;
+        } else {
+            $num_members++;
+        }
+
         // Get back to prior session if there was one (NB: we don't turn guest sessions into member sessions, as that would increase risk of there being a session fixation vulnerability)
         if ($member_id !== null) {
-            if (($row['member_id'] == $member_id) && (((get_option('ip_strict_for_sessions') == '0') && ($member_id != $GLOBALS['FORUM_DRIVER']->get_guest_id())) || ($row['ip'] == $ip)) && ($row['last_activity'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))) {
+            if (($row['member_id'] == $member_id) && (((get_option('ip_strict_for_sessions') == '0') && (!$is_guest)) || ($row['ip'] == $ip)) && ($row['last_activity'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))) {
                 $new_session = $_session;
             }
         }
@@ -513,7 +517,7 @@ function delete_expired_sessions_or_recover($member_id = null)
         }
     }
 
-    return $new_session;
+    return [$new_session, $num_members, $num_guests];
 }
 
 /**

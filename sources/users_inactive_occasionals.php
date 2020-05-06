@@ -103,10 +103,31 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
         $invisible = false;
     }
 
+    // If lots of aging sessions, we will clean out
+    reset($SESSION_CACHE);
+    $force_cleanup = ((count($SESSION_CACHE) > 50) && ($SESSION_CACHE[key($SESSION_CACHE)]['last_activity'] < time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))));
+
     $new_session = null;
     $prior_session_row = null;
-    $restored_session = running_script('install') ? null : delete_expired_sessions_or_recover($member_id);
-    if ($restored_session === null) { // We're force to make a new one
+    if (running_script('install')) {
+        $restored_session = null;
+    } else {
+        list($restored_session, $num_members_online) = delete_expired_sessions_or_recover($member_id, $force_cleanup);
+    }
+    if ($restored_session === null) { // We're forced to make a new one
+        if (
+            (running_script('index')) &&
+            ($member_id != $GLOBALS['FORUM_DRIVER']->get_guest_id()) &&
+            (($_SERVER['REQUEST_METHOD'] == 'POST') || (get_page_name() != 'login')) &&
+            (!has_privilege(get_member(), 'access_overrun_site')) &&
+            (intval(get_option('maximum_users')) > 0) &&
+            ($num_members_online > intval(get_option('maximum_users')))
+        ) {
+            set_http_status_code(503);
+
+            critical_error('BUSY', do_lang('TOO_MANY_USERS'));
+        }
+
         // Generate random session
         require_code('crypt');
         $new_session = get_secure_random_string();
