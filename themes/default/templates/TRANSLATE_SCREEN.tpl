@@ -15,7 +15,7 @@
 		</p>
 	{+END}
 
-	<form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post" data-submit-pd="1" class="js-form-submit-modsecurity-workaround">
+	<form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post" class="js-form-submit-modsecurity-workaround">
 		{$INSERT_SPAMMER_BLACKHOLE}
 
 		<div class="wide-table-wrap really-long-table-wrap"><table class="autosized-table columned-table results-table wide-table responsive-table">
