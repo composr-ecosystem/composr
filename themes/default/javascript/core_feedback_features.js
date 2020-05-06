@@ -49,7 +49,7 @@
 
                 'click .js-click-play-self-audio-link': 'playSelfAudioLink',
 
-                'focus .js-focus-textarea-post': 'focusTexareaPost',
+                'focus .js-focus-textarea-post': 'focusTextareaPost',
 
                 'click .js-click-open-site-emoticon-chooser-window': 'openEmoticonChooserWindow',
 
@@ -101,9 +101,18 @@
             $cms.playSelfAudioLink(link, soundObject);
         },
 
-        focusTexareaPost: function (e, textarea) {
+        focusTextareaPost: function (e, textarea) {
             var valueWithoutSpaces = textarea.value.replace(/\s/g, '');
-            if (((valueWithoutSpaces === '{!POST_WARNING;^}'.replace(/\s/g, '')) && ('{!POST_WARNING;^}' !== '')) || (valueWithoutSpaces === '{!THREADED_REPLY_NOTICE;^,{!POST_WARNING}}'.replace(/\s/g, '')) || ((textarea.stripOnFocus != null) && (textarea.value === textarea.stripOnFocus))) {
+            var placeholderTextOne = '{!POST_WARNING;^}'.replace(/\s/g, '');
+            var placeholderTextTwo = '{!THREADED_REPLY_NOTICE;^,{!POST_WARNING}}'.replace(/\s/g, '');
+            var placeholderTextThree = '{!THREADED_REPLY_NOTICE;^, }'.replace(/\s/g, '');
+
+            if (
+                (placeholderTextOne && (valueWithoutSpaces === placeholderTextOne))
+                || (valueWithoutSpaces === placeholderTextTwo)
+                || (valueWithoutSpaces === placeholderTextThree)
+                || ((textarea.stripOnFocus != null) && (textarea.value === textarea.stripOnFocus))
+            ) {
                 textarea.value = '';
             }
 
