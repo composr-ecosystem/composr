@@ -20,7 +20,7 @@
         },
 
         submit: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled()) {
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                 e.preventDefault();
                 $cms.form.modSecurityWorkaround(form);
             }
@@ -163,7 +163,7 @@
         },
 
         submitComcode: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled()) {
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                 e.preventDefault();
                 $cms.form.modSecurityWorkaround(form);
             }
@@ -206,28 +206,28 @@
 
     $cms.functions.moduleAdminZonesAddZone = function moduleAdminZonesAddZone() {
         var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button'),
+            submitBtn = form.querySelector('#submit-button'),
             validValue;
 
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['zone'].value;
 
-            if (value === validValue) {
+            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                 return;
             }
 
-            submitBtn.disabled = true;
             var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_zone&name=' + encodeURIComponent(value) + $cms.keep();
-            e.preventDefault();
+            submitEvent.preventDefault();
 
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 

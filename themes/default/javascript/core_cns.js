@@ -84,11 +84,17 @@
     });
 
     $cms.templates.blockMainJoinDone = function blockMainJoinDone(params, container) {
-        $dom.on(container, 'submit', '.js-submit-stats-event-track-dl-whitepaper', function (e, form) {
-            e.preventDefault();
-            $cms.statsEventTrack(null, '{!cns_components:DOWNLOAD_WHITEPAPER;}').then(function () {
-                $dom.submit(form);
+        $dom.on(container, 'submit', '.js-submit-stats-event-track-dl-whitepaper', function (submitEvent) {
+            if ($dom.isCancelledSubmit(submitEvent)) {
+                return;
+            }
+
+            submitEvent.preventDefault();
+            var promise = $cms.statsEventTrack(null, '{!cns_components:DOWNLOAD_WHITEPAPER;}').then(function () {
+                return true;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
         });
     };
 
@@ -157,53 +163,53 @@
 
     $cms.functions.moduleAdminCnsGroupsRunStart = function moduleAdminCnsGroupsRunStart() {
         var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button'),
             validValue;
 
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['usergroup_name'].value;
 
-            if (value === validValue) {
+            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                 return;
             }
 
-            submitBtn.disabled = true;
+            var submitBtn = form.querySelector('#submit-button');
             var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_usergroup&name=' + encodeURIComponent(value) + $cms.keep();
-            e.preventDefault();
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            submitEvent.preventDefault();
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 
     $cms.functions.moduleAdminCnsEmoticons = function moduleAdminCnsEmoticons() {
         var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button'),
             validValue;
 
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['code'].value;
 
-            if (value === validValue) {
+            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                 return;
             }
 
-            submitBtn.disabled = true;
+            var submitBtn = form.querySelector('#submit-button');
             var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_emoticon&name=' + encodeURIComponent(value) + $cms.keep();
-            e.preventDefault();
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            submitEvent.preventDefault();
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 
@@ -248,32 +254,34 @@
 
     $cms.functions.hookProfilesTabsEditSettingsRenderTab = function hookProfilesTabsEditSettingsRenderTab() {
         var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('account-submit-button'),
+            submitBtn = form.querySelector('#account-submit-button'),
             validValue;
 
-        form.addEventListener('submit', function submitCheck(e) {
-            if (form.elements['edit_password'] == null) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
+            if ((form.elements['edit_password'] == null) || $dom.isCancelledSubmit(submitEvent)) {
                 return;
             }
 
             if ((form.elements['password_confirm']) && (form.elements['password_confirm'].value !== form.elements['edit_password'].value)) {
                 submitBtn.disabled = false;
                 $cms.ui.alert('{!PASSWORD_MISMATCH;^}');
-                return false;
+                $dom.cancelSubmit(submitEvent);
+                return;
             }
 
             var value = form.elements['edit_password'].value;
             if ((value !== '') && (value !== validValue)) {
-                e.preventDefault();
+                submitEvent.preventDefault();
                 var url = '{$FIND_SCRIPT_NOHTTP;^,username_check}' + $cms.keep(true);
-                $cms.form.doAjaxFieldTest(url, 'password=' + encodeURIComponent(value)).then(function (valid) {
+                var promise = $cms.form.doAjaxFieldTest(url, 'password=' + encodeURIComponent(value)).then(function (valid) {
                     if (valid) {
                         validValue = value;
-                        $dom.submit(form);
-                    } else {
-                        submitBtn.disabled = false;
                     }
+
+                    return valid;
                 });
+
+                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
             }
         });
     };
@@ -335,7 +343,7 @@
         });
 
         $dom.on(container, 'submit', '.js-submit-modesecurity-workaround', function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled()) {
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                 e.preventDefault();
                 $cms.form.modSecurityWorkaround(form);
             }
@@ -435,7 +443,7 @@
 
     function joinForm(params) {
         var form = document.getElementById('username').form,
-            submitBtn = document.getElementById('submit-button');
+            submitBtn = form.querySelector('#submit-button');
 
         form.elements['username'].onchange = function () {
             if (form.elements['intro_title']) {
@@ -445,20 +453,27 @@
 
         var validValues;
 
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
+            if ($dom.isCancelledSubmit(submitEvent)) {
+                return;
+            }
+
             if ((form.elements['confirm'] !== undefined) && (form.elements['confirm'].type === 'checkbox') && (!form.elements['confirm'].checked)) {
                 $cms.ui.alert('{!cns:DESCRIPTION_I_AGREE_RULES;^}');
-                return false;
+                $dom.cancelSubmit(submitEvent);
+                return;
             }
 
             if ((form.elements['email_address_confirm'] !== undefined) && (form.elements['email_address_confirm'].value !== form.elements['email'].value)) {
                 $cms.ui.alert('{!EMAIL_ADDRESS_MISMATCH;^}');
-                return false;
+                $dom.cancelSubmit(submitEvent);
+                return;
             }
 
             if ((form.elements['password_confirm'] !== undefined) && (form.elements['password_confirm'].value !== form.elements['password'].value)) {
                 $cms.ui.alert('{!PASSWORD_MISMATCH;^}');
-                return false;
+                $dom.cancelSubmit(submitEvent);
+                return;
             }
 
             var checkPromises = [], values = [];
@@ -507,18 +522,19 @@
                 checkPromises.push($cms.form.doAjaxFieldTest(url));
             }
 
-            e.preventDefault();
-            submitBtn.disabled = true;
+            submitEvent.preventDefault();
 
-            Promise.all(checkPromises).then(function (validities) {
-                if (!validities.includes(false)) {
-                    // All valid!
+            var promise = Promise.all(checkPromises).then(function (validities) {
+                var allValid = !validities.includes(false);
+
+                if (allValid) {
                     validValues = values;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return allValid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     }
 }(window.$cms, window.$util, window.$dom));

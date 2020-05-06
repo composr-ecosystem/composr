@@ -31,54 +31,52 @@
     };
 
     $cms.functions.moduleCmsBannersRunStartAdd = function moduleCmsBannersRunStartAdd() {
-        var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button');
+        var form = document.getElementById('main-form');
 
         var validValue;
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['banner_codename'].value;
 
-            if (value === validValue) {
+            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                 return;
             }
-
-            submitBtn.disabled = true;
+            var submitBtn = form.querySelector('#submit-button');
             var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_banner&name=' + encodeURIComponent(value) + $cms.keep();
-            e.preventDefault();
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            submitEvent.preventDefault();
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 
     $cms.functions.moduleCmsBannersRunStartAddCategory = function moduleCmsBannersRunStartAddCategory() {
         var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button'),
             validValue;
 
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['new_id'].value;
 
-            if (value === validValue) {
+            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                 return;
             }
 
-            submitBtn.disabled = true;
+            var submitBtn = form.querySelector('#submit-button');
             var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_banner_type&name=' + encodeURIComponent(form.elements['new_id'].value) + $cms.keep();
-            e.preventDefault();
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            submitEvent.preventDefault();
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 }(window.$cms, window.$util, window.$dom));

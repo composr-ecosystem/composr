@@ -63,10 +63,14 @@
             $cms.manageScrollHeight(this.$('#post'));
         },
 
-        checkChatOptions: function (e, form) {
+        checkChatOptions: function (submitEvent, form) {
+            if ($dom.isCancelledSubmit(submitEvent)) {
+                return;
+            }
+
             if (!form.elements['text_colour'].value.match(/^#[0-9A-F][0-9A-F][0-9A-F]([0-9A-F][0-9A-F][0-9A-F])?$/i)) {
                 $cms.ui.alert('{!chat:BAD_HTML_COLOUR;^}');
-                e.preventDefault();
+                $dom.cancelSubmit(submitEvent);
                 return;
             }
 
@@ -74,15 +78,18 @@
                 return;
             }
 
-            e.preventDefault();
+            submitEvent.preventDefault();
 
             var that = this;
-            $cms.form.checkForm(form, false).then(function (valid) {
+            var promise = $cms.form.checkForm(form, false).then(function (valid) {
                 if (valid) {
                     that.chatOptionsFormLastValid = $cms.form.lastChangeTime(form);
-                    $dom.submit(form);
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
         },
 
         postChatMessage: function (e) {

@@ -154,7 +154,7 @@
             $cms.form.doFormPreview(form, url);
         },
 
-        submitFormComments: function (e) {
+        submitFormComments: function (submitEvent) {
             var form = this.form,
                 params = this.params;
 
@@ -162,31 +162,37 @@
                 return;
             }
 
+            if ($dom.isCancelledSubmit(submitEvent)) {
+                return;
+            }
+
             if (!$cms.form.checkFieldForBlankness(form.elements.post)) {
-                e.preventDefault();
+                $dom.cancelSubmit(submitEvent);
                 return;
             }
 
             if (params.getName && !$cms.form.checkFieldForBlankness(form.elements['name'])) {
-                e.preventDefault();
+                $dom.cancelSubmit(submitEvent);
                 return;
             }
 
             if (params.getTitle && !params.titleOptional && !$cms.form.checkFieldForBlankness(form.elements.title)) {
-                e.preventDefault();
+                $dom.cancelSubmit(submitEvent);
                 return;
             }
 
             if (params.getEmail && !params.emailOptional && !$cms.form.checkFieldForBlankness(form.elements.email)) {
-                e.preventDefault();
+                $dom.cancelSubmit(submitEvent);
                 return;
             }
 
             if (params.analyticEventCategory) {
-                e.preventDefault();
-                $cms.statsEventTrack(null, params.analyticEventCategory).then(function () {
-                    $dom.submit(form);
+                submitEvent.preventDefault();
+                var promise = $cms.statsEventTrack(null, params.analyticEventCategory).then(function () {
+                    return true;
                 });
+
+                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
             }
         },
 
@@ -236,32 +242,33 @@
         /* Set up a form to have its CAPTCHA checked upon submission using AJAX */
         addCaptchaChecking: function () {
             var form = this.form,
-                submitBtn = form.elements['submit_button'],
+                submitBtn = form.querySelector('#submit-button'),
                 validValue;
 
-            form.addEventListener('submit', function submitCheck(e) {
+            form.addEventListener('submit', function submitCheck(submitEvent) {
                 var value = form.elements['captcha'].value;
 
-                if (value === validValue) {
+                if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                     return;
                 }
 
-                submitBtn.disabled = true;
                 var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(value) + $cms.keep();
-                e.preventDefault();
-                $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                submitEvent.preventDefault();
+                var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                     if (valid) {
                         validValue = value;
-                        $dom.submit(form);
                     } else {
                         var image = document.getElementById('captcha-image');
                         if (!image) {
                             image = document.getElementById('captcha-frame');
                         }
                         image.src += '&'; // Force it to reload latest captcha
-                        submitBtn.disabled = false;
                     }
+
+                    return valid;
                 });
+
+                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
             });
 
             window.addEventListener('pageshow', function () {

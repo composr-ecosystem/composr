@@ -15,7 +15,7 @@
 				<textarea aria-hidden="true" cols="30" rows="3" style="display: none" name="template" id="template">{CHILD_BRANCH_TEMPLATE*}</textarea>
 			</form>
 
-			<form title="{!PRIMARY_PAGE_FORM}" id="edit-form" action="{URL*}" method="post" class="js-submit-modsecurity-workaround" data-submit-pd="1">
+			<form title="{!PRIMARY_PAGE_FORM}" id="edit-form" action="{URL*}" method="post" class="js-submit-modsecurity-workaround">
 				{$INSERT_SPAMMER_BLACKHOLE}
 
 				<div class="clearfix menu-edit-main">

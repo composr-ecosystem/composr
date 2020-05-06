@@ -1392,6 +1392,77 @@
         $dom.on(el, 'submit', callback);
     };
 
+    var cancelledSubmitEvents = new WeakSet();
+
+    $dom.cancelSubmit = function cancelSubmit(submitEvent, buttonToEnable) {
+        if (!submitEvent.defaultPrevented) {
+            submitEvent.preventDefault();
+        }
+
+        cancelledSubmitEvents.add(cancelledSubmitEvents);
+
+        if (buttonToEnable != null) {
+            buttonToEnable.disabled = false;
+        }
+    };
+
+    $dom.isCancelledSubmit = function isCancelledSubmit(submitEvent) {
+        return cancelledSubmitEvents.has(submitEvent);
+    };
+
+    var validationPromisesByEvent = new WeakMap();
+    var resolvedValueByPromise = new WeakMap();
+
+    $dom.awaitValidationPromiseAndResubmit = function awaitValidationPromiseAndResubmit(submitEvent, promiseToAdd, buttonToDisable) {
+        var promises = validationPromisesByEvent.get(submitEvent);
+
+        if (promises == null) {
+            promises = [];
+            validationPromisesByEvent.set(submitEvent, promises);
+        }
+
+        promises.push(promiseToAdd);
+
+        if (buttonToDisable != null) {
+            buttonToDisable.disabled = true;
+        }
+
+        promiseToAdd.then(function (resolvedValue) {
+            resolvedValueByPromise.set(promiseToAdd, resolvedValue);
+            resubmitIfValidationComplete(submitEvent, buttonToDisable);
+        }, function () {
+            $dom.cancelSubmit(submitEvent, buttonToDisable);
+        });
+    };
+
+    function resubmitIfValidationComplete(submitEvent, buttonToEnable) {
+        if ($dom.isCancelledSubmit(submitEvent)) {
+            return;
+        }
+
+        var promises = validationPromisesByEvent.get(submitEvent);
+
+        for (var i = 0, len = promises.length; i < len; i++) {
+            if (!resolvedValueByPromise.has(promises[i])) {
+                // Promise not resolved yet
+                return;
+            }
+
+            var resolvedValue = resolvedValueByPromise.get(promises[i]);
+
+            if (!resolvedValue) {
+                // Promise resolved with falsy value
+                $dom.cancelSubmit(submitEvent, buttonToEnable);
+                return;
+            }
+        }
+
+        // All promises resolved
+        var form = submitEvent.target;
+
+        $dom.submit(form);
+    }
+
     /**
      * @param str
      * @returns {string}

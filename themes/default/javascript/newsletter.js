@@ -43,35 +43,35 @@
     };
 
     $cms.templates.blockMainNewsletterSignup = function (params, container) {
-        var nid = strVal(params.nid),
-            validValue;
+        var nid = strVal(params.nid);
 
-        $dom.on(container, 'submit', '.js-form-newsletter-email-subscribe', function (e, form) {
-            var emailInput = form.elements['address' + nid];
-
-            if (validValue === emailInput.value) {
+        $dom.on(container, 'submit', '.js-form-newsletter-email-subscribe', function (submitEvent, form) {
+            if ($dom.isCancelledSubmit(submitEvent)) {
                 return;
             }
 
-            e.preventDefault();
+            var emailInput = form.elements['address' + nid];
 
             if (!$cms.form.checkFieldForBlankness(emailInput)) {
+                $dom.cancelSubmit(submitEvent);
                 return;
             }
 
             if (!emailInput.value.match(/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9._-]+$/)) {
                 $cms.ui.alert('{!javascript:NOT_A_EMAIL;}');
+                $dom.cancelSubmit(submitEvent);
                 return;
             }
 
-            validValue = emailInput.value;
-
+            submitEvent.preventDefault();
             $cms.ui.disableFormButtons(form);
 
             // Tracking
-            $cms.statsEventTrack(null, '{!newsletter:__NEWSLETTER_JOIN;}').then(function () {
-                $dom.submit(form);
+            var promise = $cms.statsEventTrack(null, '{!newsletter:__NEWSLETTER_JOIN;}').then(function () {
+                return true;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
         });
     };
 

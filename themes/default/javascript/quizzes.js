@@ -28,19 +28,22 @@
             timeout = Number(params.timeout) || 0,
             quizFormLastValid;
 
-        $dom.on(container, 'submit', '.js-submit-check-form', function (e, form) {
-            if (quizFormLastValid && (quizFormLastValid.getTime() === $cms.form.lastChangeTime(form).getTime())) {
+        $dom.on(container, 'submit', '.js-submit-check-form', function (submitEvent, form) {
+            if ($dom.isCancelledSubmit(submitEvent) || (quizFormLastValid && (quizFormLastValid.getTime() === $cms.form.lastChangeTime(form).getTime()))) {
                 return;
             }
 
-            e.preventDefault();
+            submitEvent.preventDefault();
 
-            $cms.form.checkForm(form, false).then(function (valid) {
+            var promise = $cms.form.checkForm(form, false).then(function (valid) {
                 if (valid) {
                     quizFormLastValid = $cms.form.lastChangeTime(form);
-                    $dom.submit(form);
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
         });
 
         if (timeout > 0) {

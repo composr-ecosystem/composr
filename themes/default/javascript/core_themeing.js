@@ -518,27 +518,27 @@
             }
         });
         var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button'),
+            submitBtn = form.querySelector('#submit-button'),
             validValue;
 
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['theme'].value,
                 url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_theme&name=' + encodeURIComponent(value) + $cms.keep();
 
-            if (value === validValue) {
+            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                 return;
             }
 
-            submitBtn.disabled = true;
-            e.preventDefault();
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            submitEvent.preventDefault();
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 

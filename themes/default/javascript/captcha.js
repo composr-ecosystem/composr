@@ -60,8 +60,7 @@
     };
 
     $cms.functions.captchaCaptchaAjaxCheck = function captchaCaptchaAjaxCheck() {
-        var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button');
+        var form = document.getElementById('main-form');
 
         if (!form) {
             form = document.getElementById('posting-form');
@@ -72,28 +71,30 @@
         }
 
         // Need to set a timeout because CAPTCHA might appear via JS
-        setTimeout(function() {
+        setTimeout(function () {
             var captchaEl = form.elements['captcha'],
                 validValue;
-            form.addEventListener('submit', function submitCheck(e) {
+            form.addEventListener('submit', function submitCheck(submitEvent) {
                 var value = captchaEl.value;
 
-                if (value === validValue) {
+                if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                     return;
                 }
 
                 var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=captcha_wrong&name=' + encodeURIComponent(value) + $cms.keep();
-                e.preventDefault();
-                submitBtn.disabled = true;
-                $cms.form.doAjaxFieldTest(url).then(function (valid) {
+                submitEvent.preventDefault();
+                var submitBtn = form.querySelector('#submit-button');
+                var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                     if (valid) {
                         validValue = value;
-                        $dom.submit(form);
                     } else {
                         document.getElementById('captcha').src += '&'; // Force it to reload latest captcha
-                        submitBtn.disabled = false;
                     }
+
+                    return valid;
                 });
+
+                $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
             });
         });
     };

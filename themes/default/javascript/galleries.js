@@ -981,25 +981,25 @@
 
     $cms.functions.moduleCmsGalleriesRunStartAddCategory = function moduleCmsGalleriesRunStartAddCategory() {
         var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button'),
+            submitBtn = form.querySelector('#submit-button'),
             validValue;
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['gallery_name'].value;
-            if (value === validValue) {
+            if ((value === validValue) || $dom.isCancelledSubmit(submitEvent)) {
                 return;
             }
 
-            e.preventDefault();
-            submitBtn.disabled = true;
+            submitEvent.preventDefault();
             var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_gallery&name=' + encodeURIComponent(value) + $cms.keep();
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 

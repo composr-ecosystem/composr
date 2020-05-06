@@ -40,11 +40,9 @@
         });
 
         $dom.on(container, 'submit', '.js-submit-modsecurity-workaround', function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled()) {
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                 e.preventDefault();
                 $cms.form.modSecurityWorkaround(form);
-            } else {
-                form.submit();
             }
         });
 

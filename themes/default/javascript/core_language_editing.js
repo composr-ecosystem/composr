@@ -34,7 +34,7 @@
 
     $cms.templates.translateScreen = function (params, container) {
         $dom.on(container, 'submit', '.js-form-submit-modsecurity-workaround', function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled()) {
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                 e.preventDefault();
                 $cms.form.modSecurityWorkaround(form);
             }

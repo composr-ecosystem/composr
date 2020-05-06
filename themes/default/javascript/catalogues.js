@@ -25,7 +25,7 @@
         },
 
         submit: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled()) {
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                 e.preventDefault();
                 $cms.form.modSecurityWorkaround(form);
             }
@@ -52,7 +52,7 @@
         },
 
         submit: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled()) {
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                 e.preventDefault();
                 $cms.form.modSecurityWorkaround(form);
             }
@@ -84,27 +84,27 @@
 
     $cms.functions.moduleCmsCataloguesRunStartAddCatalogue = function moduleCmsCataloguesRunStartAddCatalogue() {
         var form = document.getElementById('new_field_0_name').form,
-            submitBtn = document.getElementById('submit-button'),
             validValue;
 
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['catalogue_name'].value;
 
-            if (value === validValue) {
+            if ($dom.isCancelledSubmit(submitEvent) || (value === validValue)) {
                 return;
             }
 
-            submitBtn.disabled = true;
+            var submitBtn = form.querySelector('#submit-button');
             var url = '{$FIND_SCRIPT_NOHTTP;^,snippet}?snippet=exists_catalogue&name=' + encodeURIComponent(value) + $cms.keep();
-            e.preventDefault();
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            submitEvent.preventDefault();
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 

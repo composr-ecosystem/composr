@@ -3,19 +3,22 @@
 
     var givePointsFormLastValid;
     $cms.templates.pointsGive = function pointsGive(params, container) {
-        $dom.on(container, 'submit', '.js-submit-check-form', function (e, form) {
-            if (givePointsFormLastValid && (givePointsFormLastValid.getTime() === $cms.form.lastChangeTime(form).getTime())) {
+        $dom.on(container, 'submit', '.js-submit-check-form', function (submitEvent, form) {
+            if ($dom.isCancelledSubmit(submitEvent) || (givePointsFormLastValid && (givePointsFormLastValid.getTime() === $cms.form.lastChangeTime(form).getTime()))) {
                 return;
             }
 
-            e.preventDefault();
+            submitEvent.preventDefault();
 
-            $cms.form.checkForm(form, false).then(function (valid) {
+            var promise = $cms.form.checkForm(form, false).then(function (valid) {
                 if (valid) {
                     givePointsFormLastValid = $cms.form.lastChangeTime(form);
-                    $dom.submit(form);
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
         });
     };
 }(window.$cms, window.$util, window.$dom));

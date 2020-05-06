@@ -313,8 +313,8 @@
             inputs.forEach(function (input) {
                 $dom.on(input, (input.nodeName.toLowerCase() === 'select') ? 'keyup' : 'keypress', function submitOnEnter(e) {
                     if ($dom.keyPressed(e, 'Enter')) {
-                        $dom.submit(input.form);
                         e.preventDefault();
+                        $dom.submit(input.form);
                     }
                 });
             });
@@ -392,7 +392,7 @@
 
             forms.forEach(function (form) {
                 $dom.on(form, 'submit', function (e) {
-                    if ($cms.form.isModSecurityWorkaroundEnabled()) {
+                    if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                         e.preventDefault();
                         $cms.form.modSecurityWorkaround(form);
                     }

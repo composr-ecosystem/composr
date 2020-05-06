@@ -2,8 +2,7 @@
     'use strict';
 
     $cms.functions.adminThemeWizardStep1 = function () {
-        var form = document.getElementById('main-form'),
-            submitBtn = document.getElementById('submit-button');
+        var form = document.getElementById('main-form');
         form.elements['source_theme'].addEventListener('change', function () {
             var defaultTheme = (form.elements['source_theme'].value === 'default');
             form.elements['algorithm'][0].checked = defaultTheme;
@@ -11,24 +10,26 @@
         });
 
         var validValue;
-        form.addEventListener('submit', function submitCheck(e) {
+        form.addEventListener('submit', function submitCheck(submitEvent) {
             var value = form.elements['themename'].value;
 
             if (value === validValue) {
                 return;
             }
 
-            submitBtn.disabled = true;
+            var submitBtn = form.querySelector('#submit-button');
             var url = '{$FIND_SCRIPT_NOHTTP;,snippet}?snippet=exists_theme&name=' + encodeURIComponent(value) + $cms.keep();
-            e.preventDefault();
-            $cms.form.doAjaxFieldTest(url).then(function (valid) {
+            submitEvent.preventDefault();
+
+            var promise = $cms.form.doAjaxFieldTest(url).then(function (valid) {
                 if (valid) {
                     validValue = value;
-                    $dom.submit(form);
-                } else {
-                    submitBtn.disabled = false;
                 }
+
+                return valid;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise, submitBtn);
         });
     };
 }(window.$cms, window.$util, window.$dom));

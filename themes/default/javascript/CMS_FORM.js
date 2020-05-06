@@ -12,7 +12,7 @@
      * @memberof $cms.form
      * @param url
      * @param post
-     * @returns { Promise }
+     * @returns { Promise<Boolean> }
      */
     $cms.form.doAjaxFieldTest = function doAjaxFieldTest(url, post) {
         url = strVal(url);

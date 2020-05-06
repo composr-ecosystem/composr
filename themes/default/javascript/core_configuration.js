@@ -21,7 +21,7 @@
         },
 
         submit: function (e, form) {
-            if ($cms.form.isModSecurityWorkaroundEnabled()) {
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
                 e.preventDefault();
                 $cms.form.modSecurityWorkaround(form);
             }
@@ -30,7 +30,10 @@
 
     $cms.templates.configCategoryScreen = function configCategoryScreen(params, container) {
         $dom.on(container, 'submit', '.js-form-primary-page', function (e, form) {
-            $cms.form.modSecurityWorkaround(form);
+            if ($cms.form.isModSecurityWorkaroundEnabled() && !e.defaultPrevented) {
+                e.preventDefault();
+                $cms.form.modSecurityWorkaround(form);
+            }
         });
     };
 }(window.$cms, window.$util, window.$dom));

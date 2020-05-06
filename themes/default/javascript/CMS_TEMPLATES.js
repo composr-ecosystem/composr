@@ -173,19 +173,26 @@
     $cms.templates.massSelectDeleteForm = function (e, form) {
         var confirmedFor;
 
-        $dom.on(form, 'submit', function (e) {
+        $dom.on(form, 'submit', function (submitEvent) {
+            if ($dom.isCancelledSubmit(submitEvent)) {
+                return;
+            }
+
             if (confirmedFor && (confirmedFor.getTime() === $cms.form.lastChangeTime(form).getTime())) {
                 return;
             }
 
-            e.preventDefault();
+            submitEvent.preventDefault();
 
-            $cms.ui.confirm('{!_ARE_YOU_SURE_DELETE;^}').then(function (result) {
+            var promise = $cms.ui.confirm('{!_ARE_YOU_SURE_DELETE;^}').then(function (result) {
                 if (result) {
                     confirmedFor = $cms.form.lastChangeTime(form);
-                    $dom.submit(form);
                 }
+
+                return result;
             });
+
+            $dom.awaitValidationPromiseAndResubmit(submitEvent, promise);
         });
     };
 
