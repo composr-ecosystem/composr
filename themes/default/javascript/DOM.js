@@ -1393,7 +1393,10 @@
     };
 
     var cancelledSubmitEvents = new WeakSet();
-
+    /**
+     * @param { Event } submitEvent
+     * @param { HTMLButtonElement } buttonToEnable
+     */
     $dom.cancelSubmit = function cancelSubmit(submitEvent, buttonToEnable) {
         if (!submitEvent.defaultPrevented) {
             submitEvent.preventDefault();
@@ -1405,7 +1408,10 @@
             buttonToEnable.disabled = false;
         }
     };
-
+    /**
+     * @param { Event } submitEvent
+     * @returns {boolean}
+     */
     $dom.isCancelledSubmit = function isCancelledSubmit(submitEvent) {
         return cancelledSubmitEvents.has(submitEvent);
     };
@@ -1413,7 +1419,12 @@
     var validationPromisesByEvent = new WeakMap();
     var resolvedValueByPromise = new WeakMap();
 
-    $dom.awaitValidationPromiseAndResubmit = function awaitValidationPromiseAndResubmit(submitEvent, promiseToAdd, buttonToDisable) {
+    /**
+     * @param { Event } submitEvent
+     * @param { Promise<Boolean>} validationPromise
+     * @param { HTMLButtonElement } buttonToDisable
+     */
+    $dom.awaitValidationPromiseAndResubmit = function awaitValidationPromiseAndResubmit(submitEvent, validationPromise, buttonToDisable) {
         var promises = validationPromisesByEvent.get(submitEvent);
 
         if (promises == null) {
@@ -1421,21 +1432,21 @@
             validationPromisesByEvent.set(submitEvent, promises);
         }
 
-        promises.push(promiseToAdd);
+        promises.push(validationPromise);
 
         if (buttonToDisable != null) {
             buttonToDisable.disabled = true;
         }
 
-        promiseToAdd.then(function (resolvedValue) {
-            resolvedValueByPromise.set(promiseToAdd, resolvedValue);
-            resubmitIfValidationComplete(submitEvent, buttonToDisable);
+        validationPromise.then(function (resolvedValue) {
+            resolvedValueByPromise.set(validationPromise, resolvedValue);
+            resubmitIfValidationSuccess(submitEvent, buttonToDisable);
         }, function () {
             $dom.cancelSubmit(submitEvent, buttonToDisable);
         });
     };
 
-    function resubmitIfValidationComplete(submitEvent, buttonToEnable) {
+    function resubmitIfValidationSuccess(submitEvent, buttonToEnable) {
         if ($dom.isCancelledSubmit(submitEvent)) {
             return;
         }
