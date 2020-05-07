@@ -35,7 +35,7 @@
 	</div>
 
 	<div class="news-entry-image">
-		<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG_LARGE}}" alt="" />
+		<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG}}" alt="" />
 	</div>
 
 	<div itemprop="articleBody" class="clearfix">
