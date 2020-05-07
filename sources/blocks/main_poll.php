@@ -62,13 +62,6 @@ class Block_main_poll
 
         $block_id = get_block_id($map);
 
-        // Action links
-        if ((has_actual_page_access(null, 'cms_polls', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_polls'))) {
-            $submit_url = build_url(['page' => 'cms_polls', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_polls'));
-        } else {
-            $submit_url = new Tempcode();
-        }
-
         // Lookup poll row
         $poll_id = null;
         if (array_key_exists('param', $map)) {
@@ -84,6 +77,13 @@ class Block_main_poll
             $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $poll_id], '', 1);
         }
         if (!array_key_exists(0, $rows)) {
+            // Action links
+            if ((has_actual_page_access(null, 'cms_polls', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_polls'))) {
+                $submit_url = build_url(['page' => 'cms_polls', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_polls'));
+            } else {
+                $submit_url = new Tempcode();
+            }
+
             return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => 'fdc85bb2e14bdf00830347e52f25cdac',
                 'BLOCK_ID' => $block_id,

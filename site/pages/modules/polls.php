@@ -276,7 +276,18 @@ class Module_polls
      */
     public function view_polls()
     {
-        return do_template('POLL_ARCHIVE_SCREEN', ['_GUID' => 'bed3e31c98b35fea52a991e381e6cfaa', 'TITLE' => $this->title]);
+        // Action links
+        if ((has_actual_page_access(null, 'cms_polls', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_polls'))) {
+            $submit_url = build_url(['page' => 'cms_polls', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_polls'));
+        } else {
+            $submit_url = new Tempcode();
+        }
+
+        return do_template('POLL_ARCHIVE_SCREEN', [
+            '_GUID' => 'bed3e31c98b35fea52a991e381e6cfaa',
+            'TITLE' => $this->title,
+            'ADD_URL' => $submit_url,
+        ]);
     }
 
     /**
@@ -328,8 +339,18 @@ class Module_polls
             $edit_url = new Tempcode();
         }
 
-        // Load poll
-        $poll_details = do_block('main_poll', ['param' => strval($id)]);
+        // Show the poll
+        $show_poll_results = get_param_integer('show_poll_results_' . strval($id), 0);
+        if ($show_poll_results == 0) {
+            $poll_details = render_poll_box(false, $myrow, '_SELF', false, false);
+        } else {
+            // Vote
+            $cast = post_param_integer('cast_' . strval($id), null);
+            $myrow = vote_in_poll($id, $cast, $myrow); // Either an active vote, or a forfeited vote (viewing results)
+
+            // Show poll, with results
+            $poll_details = render_poll_box(true, $myrow, '_SELF', false, false);
+        }
 
         // Render
         return do_template('POLL_SCREEN', [
