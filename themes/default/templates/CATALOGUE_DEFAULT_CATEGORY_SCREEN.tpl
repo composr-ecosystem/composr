@@ -15,7 +15,7 @@
 	<hr class="spaced-rule" />
 {+END}
 
-{$SET,subcategories,{$BLOCK,block=main_multi_content,param=catalogue_category,pinned=,select={ID}>,zone={$ZONE},sort={CC_SORT},max={$CONFIG_OPTION,catalogue_subcats_per_page},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,attach_to_url_filter=1,render_if_empty=0,guid=module}}
+{$SET,subcategories,{$BLOCK,block=main_multi_content,render_mode=boxes,param=catalogue_category,pinned=,select={ID}>,zone={$ZONE},sort={CC_SORT},max={$CONFIG_OPTION,catalogue_subcats_per_page},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,attach_to_url_filter=1,render_if_empty=0,guid=module}}
 {+START,IF_NON_EMPTY,{$GET,subcategories}}
 	<div class="box box---catalogue-category-screen"><div class="box-inner compacted-subbox-stream">
 		<h2>{!SUBCATEGORIES_HERE}</h2>
@@ -66,10 +66,10 @@
 	<hr class="spaced-rule" />
 
 	<div class="boxless-space">
-		{+START,BOX}{$BLOCK-,block=main_multi_content,param=catalogue_entry,filter={$?,{$IS_NON_EMPTY,{ID}},{ID}*},no_links=1,efficient=0,give_context=0,include_breadcrumbs=1,render_if_empty=1,max=10,mode=recent,title={!RECENT,10,{!ENTRIES}}}{+END}
+		{+START,BOX}{$BLOCK-,block=main_multi_content,render_mode=boxes,param=catalogue_entry,filter={$?,{$IS_NON_EMPTY,{ID}},{ID}*},no_links=1,efficient=0,give_context=0,include_breadcrumbs=1,render_if_empty=1,max=10,mode=recent,title={!RECENT,10,{!ENTRIES}}}{+END}
 
 		{+START,IF,{$CONFIG_OPTION,is_on_rating}}
-			{+START,BOX}{$BLOCK-,block=main_multi_content,param=catalogue_entry,filter={$?,{$IS_NON_EMPTY,{ID}},{ID}*},no_links=1,efficient=0,give_context=0,include_breadcrumbs=1,render_if_empty=1,max=10,mode=top,title={!TOP,10,{!ENTRIES}}}{+END}
+			{+START,BOX}{$BLOCK-,block=main_multi_content,render_mode=boxes,param=catalogue_entry,filter={$?,{$IS_NON_EMPTY,{ID}},{ID}*},no_links=1,efficient=0,give_context=0,include_breadcrumbs=1,render_if_empty=1,max=10,mode=top,title={!TOP,10,{!ENTRIES}}}{+END}
 		{+END}
 	</div>
 {+END}{+END}

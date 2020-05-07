@@ -13,7 +13,7 @@
 {$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,catalogue_category,{ID}}}
 {+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}
 
-{$SET,subcategories,{$BLOCK,block=main_multi_content,param=catalogue_category,pinned=,select={ID}>,zone={$ZONE},sort={CC_SORT},max={$CONFIG_OPTION,catalogue_subcats_per_page},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,attach_to_url_filter=1,render_if_empty=0,guid=module}}
+{$SET,subcategories,{$BLOCK,block=main_multi_content,param=catalogue_category,pinned=,render_mode=boxes,select={ID}>,zone={$ZONE},sort={CC_SORT},max={$CONFIG_OPTION,catalogue_subcats_per_page},no_links=1,pagination=1,give_context=0,include_breadcrumbs=0,attach_to_url_filter=1,render_if_empty=0,guid=module}}
 {+START,IF_NON_EMPTY,{$GET,subcategories}}
 	<div class="box box---catalogue-category-screen"><div class="box-inner compacted-subbox-stream">
 		<h2>{!SUBCATEGORIES_HERE}</h2>
