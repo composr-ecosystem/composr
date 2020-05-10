@@ -280,6 +280,9 @@ function get_value($name, $default = null, $elective_or_lengthy = false, $env_al
                 return null;
             }
             $cache[$name] = $GLOBALS['SITE_DB']->query_select_value_if_there('values_elective', 'the_value', array('the_name' => $name), '', running_script('install') || running_script('upgrader'));
+            if ($cache[$name] === null) {
+                $cache[$name] = $default;
+            }
         }
         return $cache[$name];
     }
