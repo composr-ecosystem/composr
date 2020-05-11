@@ -508,6 +508,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/lang_administrative_split.php',
             '_tests/tests/unit_tests/lang_no_unused.php',
             '_tests/tests/unit_tests/lang_misc.php',
+            '_tests/tests/unit_tests/lang_tokeniser.php',
             '_tests/tests/unit_tests/get_translated_tempcode.php',
             '_tests/tests/unit_tests/cqc_explicit_fail.php',
             '_tests/tests/unit_tests/menu.php',

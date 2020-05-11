@@ -955,7 +955,7 @@ function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_a
  * @param  ?ID_TEXT $meta_type The META type used by our content (null: Cannot support META search)
  * @param  ?ID_TEXT $meta_id_field The name of the field that retrieved META IDs will relate to (null: Cannot support META search)
  * @param  string $content Search string
- * @param  boolean $boolean_search Whether to do a boolean search.
+ * @param  boolean $boolean_search Whether to do a boolean search
  * @param  ID_TEXT $boolean_operator Boolean operator
  * @set OR AND
  * @param  boolean $only_search_meta Whether to only do a META (tags) search
@@ -1157,7 +1157,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                     if ((!$only_titles) || ($i == 0)) {
                         $where_clause_2 = preg_replace('#\?#', 't' . strval($i) . '.text_original', $content_where);
                         $where_clause_3 = $where_clause;
-                        if (($table == 'f_members') && (substr($field, 0, 6) == 'field_') && (db_has_subqueries($db->connection_read))) {
+                        if (($table == 'f_members') && (substr($field, 0, 6) == 'field_') && (db_has_subqueries($db->connection_read))) { // HACKHACK
                             $where_clause_3 .= (($where_clause == '') ? '' : ' AND ') . 'NOT EXISTS (SELECT * FROM ' . $db->get_table_prefix() . 'f_cpf_perms cpfp WHERE cpfp.member_id=r.id AND cpfp.field_id=' . substr($field, 6) . ' AND cpfp.guest_view=0)';
                         }
 
@@ -1499,9 +1499,12 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             }
         } else {
             foreach ($t_rows as $t_row) {
-                unset($t_row['contextual_relevance']);
+                $t_row_copy = $t_row;
+                unset($t_row_copy['contextual_relevance']);
                 foreach ($t_rows_new as $_t_row) {
-                    if (($_t_row == $t_row) || ((array_key_exists('id', $t_row)) && (array_key_exists('id', $_t_row)) && (!array_key_exists('_primary_id', $t_row)) && (!array_key_exists('_primary_id', $_t_row)) && ($t_row['id'] == $_t_row['id'])) || ((array_key_exists('_primary_id', $t_row)) && (array_key_exists('_primary_id', $_t_row)) && ($t_row['_primary_id'] == $_t_row['_primary_id']))) {
+                    $_t_row_copy = $_t_row;
+                    unset($_t_row_copy['contextual_relevance']);
+                    if ($_t_row_copy == $t_row_copy) {
                         continue 2;
                     }
                 }
