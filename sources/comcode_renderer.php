@@ -793,7 +793,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             } else {
                 $temp_tpl->attach('<ul>');
                 foreach ($parts as $i => $part) {
-                    if (($i == 0) && (cms($part, true) == '')) {
+                    if (($i == 0) && (cms_trim($part, true) == '')) {
                         continue;
                     }
                     $temp_tpl->attach('<li>' . cms_trim($part, true) . '</li>');
