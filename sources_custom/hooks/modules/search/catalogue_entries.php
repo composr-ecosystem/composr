@@ -148,23 +148,28 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $sql = 'SELECT c_name,id,ce_add_date,cc_id,ce_submitter FROM ' . $db->get_table_prefix() . 'catalogue_entries r WHERE 1=1';
         $sql .= $helper->generate_since_where_clause($db, $index_table, array('ce_add_date' => false, 'ce_edit_date' => true), $since, $statistics_map);
         $sql .= ' AND r.c_name NOT LIKE \'' . db_encode_like('\_%') . '\''; // Don't want results drawn from the hidden custom-field catalogues
-        $rows = $db->query($sql);
-        foreach ($rows as $row) {
-            $langs = find_all_langs();
-            foreach (array_keys($langs) as $lang) {
-                $content_fields = $row;
+        $max = 100;
+        $start = 0;
+        do {
+            $rows = $db->query($sql, $max, $start);
+            foreach ($rows as $row) {
+                $langs = find_all_langs();
+                foreach (array_keys($langs) as $lang) {
+                    $content_fields = $row;
 
-                $helper->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, $row['c_name'], $row['id'], $lang);
+                    $helper->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, $row['c_name'], $row['id'], $lang);
 
-                list($keywords, $description) = seo_meta_get_for('catalogue_entry', strval($row['id']));
-                $content_fields += array(
-                    'meta_keywords' => $keywords,
-                    'meta_description' => $description,
-                );
+                    list($keywords, $description) = seo_meta_get_for('catalogue_entry', strval($row['id']));
+                    $content_fields += array(
+                        'meta_keywords' => $keywords,
+                        'meta_description' => $description,
+                    );
 
-                $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang);
+                    $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang);
+                }
             }
-        }
+            $start += $max;
+        } while (!empty($rows));
     }
 
     /**

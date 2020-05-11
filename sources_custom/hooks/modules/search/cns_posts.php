@@ -152,14 +152,21 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $sql = 'SELECT p.*,t_is_open,t_pinned,t_cache_first_post_id FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
         $sql .= ' WHERE p_cache_forum_id IS NOT NULL';
         $sql .= $helper->generate_since_where_clause($db, $index_table, array('p_time' => false, 'p_last_edit_time' => true), $since, $statistics_map);
-        $rows = $db->query($sql);
-        foreach ($rows as $row) {
-            $content_fields = $row + array('i_starter' => ($row['t_cache_first_post_id'] == $row['id']) ? 1 : 0);
+        $max = 100;
+        $start_id = -1;
+        do {
+            $rows = $db->query($sql . ' AND p.id>' . strval($start_id) . ' ORDER BY p.id', $max);
+            foreach ($rows as $row) {
+                $content_fields = $row + array('i_starter' => ($row['t_cache_first_post_id'] == $row['id']) ? 1 : 0);
 
-            $helper->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_post', $row['id']);
+                $helper->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_post', $row['id']);
 
-            $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map);
-        }
+                $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map);
+
+                $start_id = $row['id'];
+            }
+            $start += $max;
+        } while (!empty($rows));
     }
 
     /**
