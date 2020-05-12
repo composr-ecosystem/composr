@@ -1163,7 +1163,7 @@ class DatabaseConnector
                     if (is_integer($v)) {
                         $values .= strval($v);
                     } elseif (is_float($v)) {
-                        $values .= float_to_raw_string($v, 10);
+                        $values .= number_format($v, 10, '.', '');
                     } elseif (($key === 'begin_num') || ($key === 'end_num')) {
                         $values .= $v; // FUDGE: for all our known large unsigned integers
                     } else {
@@ -1243,7 +1243,7 @@ class DatabaseConnector
                 }
 
                 if (is_float($value)) {
-                    $where .= $key . '=' . float_to_raw_string($value, 10);
+                    $where .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $where .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -1537,7 +1537,7 @@ class DatabaseConnector
                                 $val = db_escape_string($val);
                             }
                         } elseif (is_float($val)) {
-                            $val = float_to_raw_string($val);
+                            $val = number_format($val, 10, '.', '');
 
                             if ($in_quotes_start || $in_quotes_end) {
                                 $val = db_escape_string($val);
@@ -1935,7 +1935,7 @@ class DatabaseConnector
                 }
 
                 if (is_float($value)) {
-                    $where .= $key . '=' . float_to_raw_string($value, 10);
+                    $where .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $where .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -1965,7 +1965,7 @@ class DatabaseConnector
                 $update .= $key . '=NULL';
             } else {
                 if (is_float($value)) {
-                    $update .= $key . '=' . float_to_raw_string($value, 10);
+                    $update .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $update .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -2015,7 +2015,7 @@ class DatabaseConnector
             }
 
             if (is_float($value)) {
-                $where .= $key . '=' . float_to_raw_string($value, 10);
+                $where .= $key . '=' . number_format($value, 10, '.', '');
             } elseif (is_integer($value)) {
                 $where .= $key . '=' . strval($value);
             } elseif (($key === 'begin_num') || ($key === 'end_num')) {

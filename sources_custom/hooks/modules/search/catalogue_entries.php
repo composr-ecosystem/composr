@@ -130,6 +130,8 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $helper = new Composr_fulltext_helper();
 
         $index_table = 'ce_fulltext_index';
+        $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
+
         $fields_to_index = array(
             'meta_keywords' => APPEARANCE_CONTEXT_meta,
             'meta_description' => APPEARANCE_CONTEXT_body,
@@ -146,7 +148,8 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
         $db = $GLOBALS['SITE_DB'];
         $sql = 'SELECT c_name,id,ce_add_date,cc_id,ce_submitter FROM ' . $db->get_table_prefix() . 'catalogue_entries r WHERE 1=1';
-        $sql .= $helper->generate_since_where_clause($db, $index_table, array('ce_add_date' => false, 'ce_edit_date' => true), $since, $statistics_map);
+        $since_clause = $helper->generate_since_where_clause($db, $index_table, array('ce_add_date' => false, 'ce_edit_date' => true), $since, $statistics_map);
+        $sql .= $since_clause;
         $sql .= ' AND r.c_name NOT LIKE \'' . db_encode_like('\_%') . '\''; // Don't want results drawn from the hidden custom-field catalogues
         $max = 100;
         $start = 0;
@@ -165,7 +168,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                         'meta_description' => $description,
                     );
 
-                    $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang);
+                    $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang, $clean_scan);
                 }
             }
             $start += $max;
@@ -276,7 +279,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if ((cron_installed()) && (get_value('composr_fulltext_indexing__catalogue_entries', '1', true) == '1') && ((intval(get_value('fulltext_max_ngram_size', '2', true)) <= 1) || (strpos($content, '"') === false))) {
+        if ((cron_installed()) && (get_value('composr_fulltext_indexing__catalogue_entries', '1', true) == '1') && ((intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1) || (strpos($content, '"') === false))) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'catalogue_entries r';

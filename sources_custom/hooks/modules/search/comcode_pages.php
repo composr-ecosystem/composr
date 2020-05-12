@@ -86,6 +86,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         $helper = new Composr_fulltext_helper();
 
         $index_table = 'cpages_fulltext_index';
+        $clean_scan = ($GLOBALS['SITE_DB']->query_value_null_ok($index_table, 'i_ngram') === null);
+
         $fields_to_index = array(
             'page_name' => APPEARANCE_CONTEXT_title,
             'page_content' => APPEARANCE_CONTEXT_body,
@@ -121,7 +123,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
                         $helper->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_comcode_page', $zone . ':' . $page, $lang);
 
-                        $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang);
+                        $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang, $clean_scan);
                     }
                 }
             }
@@ -190,7 +192,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         require_lang('zones');
 
         // Calculate and perform query
-        if ((cron_installed()) && (get_value('composr_fulltext_indexing__comcode_pages', '1', true) == '1') && ((intval(get_value('fulltext_max_ngram_size', '2', true)) <= 1) || (strpos($content, '"') === false))) {
+        if ((cron_installed()) && (get_value('composr_fulltext_indexing__comcode_pages', '1', true) == '1') && ((intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1) || (strpos($content, '"') === false))) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             // Calculate our where clause (search)

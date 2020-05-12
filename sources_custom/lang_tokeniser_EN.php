@@ -57,13 +57,22 @@ class LangTokeniser_EN
         $and = array();
         $not = array();
 
+        $is_singular_ngram = true;
         $in_quotes = false;
         $operator = null;
         $current_search_token = '';
 
+        $has_ctype = function_exists('ctype_alnum');
+        $utf = (get_charset() == 'utf-8');
+        $word_char_regexp = '#\w#' . ($utf ? 'u' : '');
+
         $len = cms_mb_strlen($query);
         for ($i = 0; $i < $len; $i++) {
-            $c = cms_mb_substr($query, $i, 1);
+            if ($utf) {
+                $c = cms_mb_substr($query, $i, 1);
+            } else {
+                $c = $query[$i];
+            }
 
             if (($operator === null) && (!$in_quotes) && ($current_search_token == '')) {
                 switch ($c) {
@@ -80,7 +89,7 @@ class LangTokeniser_EN
                         // no break
 
                     default:
-                        if (preg_match('#\w#' . ((get_charset() == 'utf-8') ? 'u' : ''), $c) != 0) {
+                        if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
                             $current_search_token = $c;
                         }
                         break;
@@ -89,26 +98,29 @@ class LangTokeniser_EN
                 switch ($c) {
                     case '"':
                         if ($in_quotes) {
-                            $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token);
+                            $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
                             break;
                         }
                         $in_quotes = true;
                         break;
 
                     default:
-                        if (preg_match('#\w#' . ((get_charset() == 'utf-8') ? 'u' : ''), $c) != 0) {
+                        if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
                             $current_search_token .= $c;
                         } elseif (!$in_quotes) {
-                            $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token);
+                            $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
                         } else {
-                            $current_search_token .= ' ';
+                            $is_singular_ngram = false;
+                            if (substr($current_search_token, -1) != ' ') {
+                                $current_search_token .= ' ';
+                            }
                         }
                         break;
                 }
             }
         }
 
-        $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token);
+        $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
 
         return array($fuzzy_and, $and, $not);
     }
@@ -122,8 +134,9 @@ class LangTokeniser_EN
      * @param  boolean $in_quotes Whether we are currently parsing a quoted portion of the query
      * @param  ?string $operator The special boolean operator for this token (null: none)
      * @param  string $current_search_token The current token
+     * @param  boolean $is_singular_ngram If it is a singular ngram
      */
-    protected function finish_search_token(&$fuzzy_and, &$and, &$not, &$in_quotes, &$operator, &$current_search_token)
+    protected function finish_search_token(&$fuzzy_and, &$and, &$not, &$in_quotes, &$operator, &$current_search_token, &$is_singular_ngram)
     {
         if ($current_search_token != '') {
             $current_search_token = cms_mb_strtolower($current_search_token);
@@ -132,7 +145,9 @@ class LangTokeniser_EN
             //  In practice this means stemming and considering if it is a stop word
             //  For reference implementation this checks for spaces, which is consistent with how we delineate words in ngrams in this implementation
             //  Spaces will only be possible to be there if the term was surrounded in quotes
-            $is_singular_ngram = (strpos($current_search_token, ' ') === false);
+            if ((!$is_singular_ngram) && (substr($current_search_token, -1) == ' ')) {
+                $current_search_token = substr($current_search_token, 0, strlen($current_search_token) - 1);
+            }
             if ($operator === null) {
                 $fuzzy_and[$current_search_token] = $is_singular_ngram;
             } elseif ($operator == '+') {
@@ -144,6 +159,7 @@ class LangTokeniser_EN
             }
         }
 
+        $is_singular_ngram = true;
         $in_quotes = false;
         $operator = null;
         $current_search_token = '';
@@ -180,20 +196,35 @@ class LangTokeniser_EN
      */
     protected function text_to_phrases($text)
     {
+        static $utf = null;
+        if ($utf === null) {
+            $utf = (get_charset() == 'utf-8');
+        }
+
+        static $phrase_separation_characters = null;
+        if ($phrase_separation_characters === null) {
+            $phrase_separation_characters = array('.', ';', ':', '"', '!', '?', '(', ')', '[', ']', '{', '}', '<', '>');
+            if ($utf) {
+                // Smart quote characters
+                $phrase_separation_characters[] = hex2bin('e2809c');
+                $phrase_separation_characters[] = hex2bin('e2809d');
+                $phrase_separation_characters[] = hex2bin('e28098');
+                $phrase_separation_characters[] = hex2bin('e28099');
+            }
+            $phrase_separation_characters = array_flip($phrase_separation_characters);
+        }
+
+        $text = cms_mb_strtolower($text);
+
         $phrases = array();
         $len = cms_mb_strlen($text);
         $current_phrase = '';
-        $phrase_separation_characters = array('.', ';', ':', '"', '!', '?', '(', ')', '[', ']', '{', '}', '<', '>');
-        if (get_charset() == 'utf-8') {
-            // Smart quote characters
-            $phrase_separation_characters[] = hex2bin('e2809c');
-            $phrase_separation_characters[] = hex2bin('e2809d');
-            $phrase_separation_characters[] = hex2bin('e28098');
-            $phrase_separation_characters[] = hex2bin('e28099');
-        }
-        $phrase_separation_characters = array_flip($phrase_separation_characters);
         for ($i = 0; $i < $len; $i++) {
-            $c = cms_mb_substr($text, $i, 1);
+            if ($utf) {
+                $c = cms_mb_substr($text, $i, 1);
+            } else {
+                $c = $query[$i];
+            }
             if (isset($phrase_separation_characters[$c])) {
                 $phrases[] = $current_phrase;
                 $current_phrase = '';
@@ -211,19 +242,25 @@ class LangTokeniser_EN
      * Convert a phrase to a list of words.
      *
      * @param  string $phrase A phrase
-     * @param  TODO $total_word_tokens Maintain a count of singular ngrams (word tokens in our case) in here
+     * @param  integer $total_word_tokens Maintain a count of singular ngrams (word tokens in our case) in here
      * @return array List of words
      */
     protected function phrase_to_word_list($phrase, &$total_word_tokens)
     {
+        static $utf = null, $word_regexp = null;
+        if ($utf === null) {
+            $utf = (get_charset() == 'utf-8');
+            $word_regexp = '#\w+#' . ($utf ? 'u' : '');
+        }
+
         $matches = array();
-        $_total_word_tokens = preg_match_all('#\w+#' . ((get_charset() == 'utf-8') ? 'u' : ''), $phrase, $matches);
+        $_total_word_tokens = preg_match_all($word_regexp, $phrase, $matches);
         if ($total_word_tokens !== null) {
             $total_word_tokens += $_total_word_tokens;
         }
         $words = array();
         for ($i = 0; $i < $_total_word_tokens; $i++) {
-            $words[] = cms_mb_strtolower($matches[0][$i]);
+            $words[] = $matches[0][$i];
         }
         return $words;
     }
@@ -243,7 +280,7 @@ class LangTokeniser_EN
             $current_ngram = '';
 
             for ($j = 0; $j < $max_ngram_size; $j++) {
-                if (!array_key_exists($i + $j, $word_list)) {
+                if (!isset($word_list[$i + $j])) {
                     break;
                 }
 

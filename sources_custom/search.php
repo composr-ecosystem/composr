@@ -89,7 +89,7 @@ class Composr_fulltext_helper
 
         // Work out our search terms
         list($fuzzy_and, $and, $not) = $tokeniser->query_to_search_tokens($content, $boolean_search);
-        if (true ||/*TODO*/($order != 'contextual_relevance') || ($direction == 'ASC') || (get_value('fulltext_allow_fuzzy_search', '1', true) === '0')) {
+        if (($order != 'contextual_relevance') || ($direction == 'ASC') || (get_value('fulltext_allow_fuzzy_search', '1', true) === '0')) {
             // We only allow fuzzy search when returning results in relevance order, with most relevant first
             //  - this is because it makes no sense for any other orders
             // We also allow it to be disabled as it could have major performance slow-down for large datasets, it's a lot to pull out from the index, join, and sort.
@@ -360,8 +360,9 @@ class Composr_fulltext_helper
      * @param  ?integer $total_singular_ngram_tokens Maintain a count of singular ngrams (typically words) in here (null: do not maintain)
      * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
      * @param  ?LANGUAGE_NAME $lang Passed content is for this specific language only (null: lookup for all installed languages)
+     * @param  boolean $clean_scan If we are doing a clean scan and hence do not need to clean up old records
      */
-    public function index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, &$total_singular_ngram_tokens = null, &$statistics_map = null, $lang = null)
+    public function index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, &$total_singular_ngram_tokens = null, &$statistics_map = null, $lang = null, $clean_scan = false)
     {
         if (!$GLOBALS['SITE_DB']->table_exists('ft_index_commonality')) {
             $GLOBALS['SITE_DB']->create_table('ft_index_commonality', array(
@@ -376,10 +377,12 @@ class Composr_fulltext_helper
         foreach ($key_transfer_map as $content_table_field => $index_table_field) {
             $key_map[$index_table_field] = $content_fields[$content_table_field];
         }
-        if ($lang === null) {
-            $db->query_delete($index_table, $key_map);
-        } else {
-            $db->query_delete($index_table, $key_map + array('i_lang' => $lang)); // We're calling this method language-by-language
+        if (!$clean_scan) {
+            if ($lang === null) {
+                $db->query_delete($index_table, $key_map);
+            } else {
+                $db->query_delete($index_table, $key_map + array('i_lang' => $lang)); // We're calling this method language-by-language
+            }
         }
 
         if ($lang === null) {
@@ -447,6 +450,7 @@ class Composr_fulltext_helper
         foreach ($filter_field_transfer_map as $content_table_field => $index_table_field) {
             $fields[$index_table_field] = $content_fields[$content_table_field];
         }
+        $insert_arr = array();
         foreach ($ngrams as $ngram => $count) {
             $fields_for_ngram = array(
                 'i_lang' => $lang,
@@ -454,8 +458,18 @@ class Composr_fulltext_helper
                 'i_ac' => $appearance_context,
                 'i_occurrence_rate' => floatval($count) / floatval($total_singular_ngram_tokens),
             ) + $fields;
+            if (empty($insert_arr)) {
+                foreach ($fields_for_ngram as $key => $val) {
+                    $insert_arr[$key] = array();
+                }
+            }
+            foreach ($fields_for_ngram as $key => $val) {
+                $insert_arr[$key][] = $val;
+            }
+        }
 
-            $db->query_insert($index_table, $fields_for_ngram);
+        if (!empty($insert_arr)) {
+            $db->query_insert($index_table, $insert_arr);
         }
 
         return $ngrams;
@@ -485,9 +499,14 @@ class Composr_fulltext_helper
      */
     protected function tokenise_text($text, $lang, $ngrams_exclude = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $text = html_entity_decode($text, ENT_QUOTES, get_charset());
+        if (strpos($text, '&') !== false) {
+            $text = html_entity_decode($text, ENT_QUOTES, get_charset());
+        }
 
-        $max_ngram_size = intval(get_value('fulltext_max_ngram_size', '2', true));
+        static $max_ngram_size = null;
+        if ($max_ngram_size === null) {
+            $max_ngram_size = intval(get_value('fulltext_max_ngram_size', '1', true));
+        }
 
         $tokeniser = $this->get_tokeniser($lang);
         $stemmer = $this->get_stemmer($lang);
@@ -498,7 +517,7 @@ class Composr_fulltext_helper
         foreach ($_ngrams as $ngram => $is_singular_ngram) {
             if ($is_singular_ngram) {
                 if ($statistics_map !== null) {
-                    if (!array_key_exists($ngram, $statistics_map[$lang])) {
+                    if (!isset($statistics_map[$lang][$ngram])) {
                         $statistics_map[$lang][$ngram] = 0;
                     }
                     $statistics_map[$lang][$ngram]++;
@@ -523,7 +542,7 @@ class Composr_fulltext_helper
                 }
             }
 
-            if (!array_key_exists($ngram, $ngrams)) {
+            if (!isset($ngrams[$ngram])) {
                 $ngrams[$ngram] = 0;
             }
             $ngrams[$ngram]++;
