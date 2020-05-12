@@ -32,6 +32,10 @@ class Hook_cron_composr_fulltext_indexer
         $_last_cron_time = get_value('last_composr_fulltext_indexer_time', null, true);
         $last_cron_time = ($_last_cron_time === null) ? null : intval($_last_cron_time);
 
+        if ($last_cron_time === null) {
+            disable_php_memory_limit();
+        }
+
         $GLOBALS['NO_DB_SCOPE_CHECK'] = true; // For small performance gain
 
         $total_singular_ngram_tokens = 0;
@@ -56,10 +60,14 @@ class Hook_cron_composr_fulltext_indexer
         if (!empty($statistics_map)) { // If was a full reindex
             $GLOBALS['SITE_DB']->query_delete('ft_index_commonality');
             foreach ($statistics_map as $lang => $_statistics_map) {
-                krsort($_statistics_map);
+                arsort($_statistics_map);
 
                 foreach ($_statistics_map as $ngram => $total) {
                     if (strlen($ngram) > 255) {
+                        continue;
+                    }
+
+                    if (trim($ngram, '0123456789') == '') {
                         continue;
                     }
 
