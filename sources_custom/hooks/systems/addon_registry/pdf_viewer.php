@@ -86,7 +86,7 @@ class Hook_addon_registry_pdf_viewer
      */
     public function get_description()
     {
-        return 'PDF media (including attachments and in galleries) will be displayed inline using a PDF viewer than prevents easy download or printing.';
+        return 'PDF media (including the Comcode media tag, Comcode attachments, and in galleries) will be displayed inline using a PDF viewer than prevents easy download or printing.';
     }
 
     /**
