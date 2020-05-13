@@ -517,13 +517,25 @@ class Composr_fulltext_engine
             $fields[$index_table_field] = $content_fields[$content_table_field];
         }
         $insert_arr = array();
+        $ngrams_crc = array();
         foreach ($ngrams as $ngram => $count) {
+            $crc = $this->crc($ngram);
+            if (isset($ngrams_crc[$crc])) {
+                // CRC hash collision. Happens about 1 in 200,000 -- so we can ignore it from a UX perspective but we have to stop key collisions!s
+                $ngrams_crc[$crc] += $count;
+            } else {
+                $ngrams_crc[$crc] = $count;
+            }
+        }
+        foreach ($ngrams_crc as $crc => $count) {
             $fields_for_ngram = array(
                 'i_lang' => $lang,
-                'i_ngram' => $this->crc($ngram),
+                'i_ngram' => $crc,
                 'i_ac' => $appearance_context,
                 'i_occurrence_rate' => floatval($count) / floatval($total_singular_ngram_tokens),
             ) + $fields;
+
+            // We are bulk-inserting, for speed
             if (empty($insert_arr)) {
                 foreach ($fields_for_ngram as $key => $val) {
                     $insert_arr[$key] = array();
