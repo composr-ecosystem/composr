@@ -14,7 +14,7 @@
  */
 
 // TODO: Not needed in v11
-/*EXTRA FUNCTIONS: Composr_fulltext_helper*/
+/*EXTRA FUNCTIONS: Composr_fulltext_engine*/
 
 /**
  * Hook class.
@@ -60,6 +60,9 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 'i_starter' => 'BINARY',
             ));
 
+            //$GLOBALS['SITE_DB']->delete_index_if_exists('f_posts_fulltext_index', 'content_id');
+            //$GLOBALS['SITE_DB']->delete_index_if_exists('f_posts_fulltext_index', 'main');
+
             $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'content_id', array( // Used for cleanouts and potentially optimising some JOINs if query planner decides to start at the content table
                 'i_post_id',
             ));
@@ -74,6 +77,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 'i_open',
                 'i_pinned',
                 'i_starter',
+                'i_occurrence_rate', // For sorting
             ));
         }
 
@@ -97,9 +101,14 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $info['lang'] = do_lang_tempcode('FORUM_POSTS');
         $info['default'] = false;
         $info['special_on'] = array();
-        $info['special_off'] = array('open' => do_lang_tempcode('POST_SEARCH_OPEN'), 'closed' => do_lang_tempcode('POST_SEARCH_CLOSED'), 'pinned' => do_lang_tempcode('POST_SEARCH_PINNED'), 'starter' => do_lang_tempcode('POST_SEARCH_STARTER'));
+        $info['special_off'] = array('open' => do_lang_tempcode('POST_SEARCH_OPEN'), 'closed' => do_lang_tempcode('POST_SEARCH_CLOSED'), 'pinned' => do_lang_tempcode('POST_SEARCH_PINNED'));
         if ((has_privilege($member_id, 'see_unvalidated')) && (addon_installed('unvalidated'))) {
             $info['special_off']['unvalidated'] = do_lang_tempcode('POST_SEARCH_UNVALIDATED');
+        }
+        if (can_use_composr_fulltext_engine('cns_posts')) {
+            $info['special_on']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
+        } else {
+            $info['special_off']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
         }
         $info['category'] = 'p_cache_forum_id';
         $info['integer_category'] = true;
@@ -129,7 +138,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      */
     public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $helper = new Composr_fulltext_helper();
+        $engine = new Composr_fulltext_engine();
 
         $index_table = 'f_posts_fulltext_index';
         $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -153,7 +162,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $db = $GLOBALS['FORUM_DB'];
         $sql = 'SELECT p.id,p.p_time,p.p_last_edit_time,p.p_poster,p.p_title,p.p_post,p.p_cache_forum_id,t_is_open,t_pinned,t_cache_first_post_id FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
         $sql .= ' WHERE p_cache_forum_id IS NOT NULL';
-        $since_clause = $helper->generate_since_where_clause($db, $index_table, array('p_time' => false, 'p_last_edit_time' => true), $since, $statistics_map);
+        $since_clause = $engine->generate_since_where_clause($db, $index_table, array('p_time' => false, 'p_last_edit_time' => true), $since, $statistics_map);
         $sql .= $since_clause;
         $max = 100;
         $start_id = -1;
@@ -162,9 +171,9 @@ class Hook_search_cns_posts extends FieldsSearchHook
             foreach ($rows as $row) {
                 $content_fields = $row + array('i_starter' => ($row['t_cache_first_post_id'] == $row['id']) ? 1 : 0);
 
-                $helper->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_post', $row['id']);
+                $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_post', $row['id']);
 
-                $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, null, $clean_scan);
+                $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, null, $clean_scan);
 
                 $start_id = $row['id'];
             }
@@ -248,7 +257,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if ((cron_installed()) && (get_value('composr_fulltext_indexing__cns_posts', '1', true) == '1') && ((intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1) || (strpos($content, '"') === false))) {
+        if (can_use_composr_fulltext_engine('cns_posts', $content)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';
@@ -295,9 +304,9 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $where_clause .= 'p_validated=1';
             }
 
-            $helper = new Composr_fulltext_helper();
+            $engine = new Composr_fulltext_engine();
 
-            if ($helper->active_search_has_special_filtering()) {
+            if ($engine->active_search_has_special_filtering()) {
                 $trans_fields = array();
                 $nontrans_fields = array();
                 $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);
@@ -308,7 +317,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
             $index_table = 'f_posts_fulltext_index';
             $key_transfer_map = array('id' => 'i_post_id');
             $index_permissions_field = 'i_forum_id';
-            $rows = $helper->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
         } else {
             $table = 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id';
 

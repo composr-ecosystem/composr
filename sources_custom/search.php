@@ -25,17 +25,49 @@ function init__search()
     define('APPEARANCE_CONTEXT_body', 3); // Nothing will be indexed in here that is indexed in one of the above, to avoid duplicated content records when doing non-appearance-filtered searches
 }
 
+/**
+ * Find if we can use the Composr fast custom index.
+ *
+ * @param string $hook The hook it is for (assumption that this hook is at least capable in some situations)
+ * @param ?string $query Query to run for (null: no query to check at this point)
+ * @return boolean Whether we can
+ */
+function can_use_composr_fulltext_engine($hook, $query = null)
+{
+    if ((!cron_installed()) && (get_param_integer('keep_composr_fulltext_engine', null) === null)) {
+        return false;
+    }
+
+    if (get_value('composr_fulltext_engine__comcode_pages', '1', true) == '0') {
+        return false;
+    }
+
+    if (($query !== null) && (strpos($query, '"') !== false) && (intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1)) {
+        return false;
+    }
+
+    if (get_param_integer('keep_composr_fulltext_engine', 1) == 0) {
+        return false;
+    }
+
+    return true;
+}
+
 // This implements an alternative to MySQL full-text search, the Composr fast custom index.
 //  It is much faster as all content indexing happens through a single table, and we control how deep we search.
 //   Except quoted strings are an issue due to necessary index size, so we may revert to MySQL search for these cases, depending on configuration.
 //    Other algorithms store word sequencing information which goes completely against our strategy.
+//  Other limitations:
+//   Except searches with no keywords will not work
+//   Except to get maximum speed you'll need to limit ranking to the least common keyword
+//   Except to get maximum speed you'll need to turn off fuzzy and
 //  We also have full control over stemming, maximum ngram sizes, and stop word lists.
 //  We also can index in multiple-languages.
 //  We also don't have problems de-duplicating searches run across different fields.
 //  We do not need word size limits.
 // This does not 100% replace MySQL full-text search. The capability remains in the system for those who prefer it, or for non-search-engine uses of it.
 
-class Composr_fulltext_helper
+class Composr_fulltext_engine
 {
     // Querying...
 
@@ -103,86 +135,36 @@ class Composr_fulltext_helper
         );
 
         // Load commonalities so we can scale by them
-        if ((!empty($fuzzy_and)) && (!empty($and)) && (!empty($not)) && (get_value('fulltext_scale_by_commonality', '1', true) == '1')) {
+        if ((!empty($fuzzy_and)) && (!empty($and)) && (get_value('fulltext_scale_by_commonality', '1', true) == '1')) {
             $commonality_query = 'SELECT * FROM ' . get_table_prefix() . 'ft_index_commonality WHERE ';
-            foreach (array_keys($fuzzy_and + $and + $not) as $i => $ngram) {
+            foreach (array_keys($fuzzy_and + $and) as $i => $ngram) {
                 if ($i != 0) {
                     $commonality_query .= ' OR ';
                 }
                 $commonality_query .= db_string_equal_to('c_ngram', $ngram);
             }
-            $commonalities = collapse_2d_complexity('c_ngram', 'c_commonality', $db->query($commonality_query));
+            $commonalities = collapse_2d_complexity('c_ngram', 'c_commonality', $db->query($commonality_query . ' ORDER BY c_commonality'));
+
+            // Order search terms by commonality
+            $_fuzzy_and = array();
+            foreach ($commonalities as $ngram => $commonality) {
+                if (isset($fuzzy_and[$ngram])) {
+                    $_fuzzy_and[$ngram] = $fuzzy_and[$ngram];
+                }
+            }
+            $fuzzy_and = $_fuzzy_and;
+            $_and = array();
+            foreach ($commonalities as $ngram => $commonality) {
+                if (isset($and[$ngram])) {
+                    $_and[$ngram] = $and[$ngram];
+                }
+            }
+            $and = $_and;
         } else {
             $commonalities = null;
         }
 
-        // Code for querying against each ngram
-        $order_by_total_ngrams_matched = '';
-        $order_by_occurrence_rates = '';
-        $i = 0;
-        foreach ($search_token_sets as $set_type => $search_tokens) {
-            foreach ($search_tokens as $ngram => $is_singular_ngram) {
-                if ($is_singular_ngram) {
-                    if ($this->singular_ngram_is_stop_word($ngram, $lang)) {
-                        continue;
-                    }
-
-                    $ngram = $stemmer->stem($ngram);
-                }
-
-                if ($set_type == 'and') {
-                    $join_type = 'JOIN'; // Will enforce the AND implicitly
-                } else {
-                    $join_type = 'LEFT JOIN';
-                }
-
-                $join .= ' ' . $join_type . ' ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' ON ';
-                $key_i = 0;
-                foreach ($key_transfer_map as $content_table_field => $index_table_field) {
-                    if ($key_i != 0) {
-                        $join .= ' AND ';
-                    }
-                    if ($i == 0) {
-                        $join .= 'i' . strval($i) . '.' . $index_table_field . '=r.' . $content_table_field;
-                    } else {
-                        $join .= 'i' . strval($i) . '.' . $index_table_field . '=i' . strval($i - 1) . '.' . $index_table_field;
-                    }
-                    $key_i++;
-                }
-                $join .= ' AND i' . strval($i) . '.i_ngram=' . strval($this->crc($ngram));
-                $join .= str_replace('ixxx.', 'i' . strval($i) . '.', $extra_join_clause);
-                $join .= ' AND ' . db_string_equal_to('i' . strval($i) . '.i_lang', $lang);
-                if ($appearance_context !== null) {
-                    $join .= ' AND i_ac=' . strval($appearance_context);
-                }
-
-                if ($set_type == 'not') {
-                    $where_clause .= ' AND i' . strval($i) . '.i_ngram IS NULL';
-                }
-
-                if (($set_type != 'not') && ($order_by_total_ngrams_matched != '')) {
-                    $order_by_total_ngrams_matched .= '+';
-
-                    $order_by_occurrence_rates .= '+';
-                }
-
-                if ($set_type != 'not') {
-                    $order_by_total_ngrams_matched .= db_function('IFF', array('i' . strval($i) . '.i_ngram IS NULL', '0', '1'));
-
-                    $scaler = (isset($commonalities[$ngram]) ? float_to_raw_string($commonalities[$ngram], 10) : '1');
-                    $order_by_occurrence_rates .= db_function('COALESCE', array('i' . strval($i) . '.i_occurrence_rate', '0')) . '*' . $scaler;
-                }
-
-                $i++;
-            }
-        }
-
-        if ($i == 0) {
-            // This is important - if there are no words to index against, then security will not have run either
-            return array();
-        }
-
-        $where_clause .= ' AND ' . $order_by_total_ngrams_matched . '>0';
+        $use_imprecise_ordering = (get_value('fulltext_use_imprecise_ordering', '1', true) == '1');
 
         // Code for considering permissions
         if (($permissions_module !== null) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
@@ -203,25 +185,117 @@ class Composr_fulltext_helper
                 return array();
             }
 
-            $where_clause .= ' AND ' . $index_permissions_field . ' IN (';
+            $extra_join_clause .= ' AND ixxx.' . $index_permissions_field . ' IN (';
             foreach ($cat_access as $i => $cat) {
                 if ($i != 0) {
-                    $where_clause .= ',';
+                    $extra_join_clause .= ',';
                 }
                 if ($permissions_field_is_string) {
-                    $where_clause .= '\'' . db_escape_string($cat) . '\'';
+                    $extra_join_clause .= '\'' . db_escape_string($cat) . '\'';
                 } else {
                     if (is_numeric($cat)) {
-                        $where_clause .= $cat;
+                        $extra_join_clause .= $cat;
                     } // else should not be possible
                 }
             }
-            $where_clause .= ')';
+            $extra_join_clause .= ')';
+        }
+
+        // Code for querying against each ngram
+        $order_by_total_ngrams_matched = '';
+        $order_by_occurrence_rates = '';
+        $is_all_hard_joins = true;
+        $i = 0;
+        foreach ($search_token_sets as $set_type => $search_tokens) {
+            foreach ($search_tokens as $ngram => $is_singular_ngram) {
+                if ($is_singular_ngram) {
+                    if ($this->singular_ngram_is_stop_word($ngram, $lang)) {
+                        continue;
+                    }
+
+                    if (is_object($stemmer)) {
+                        $ngram = $stemmer->stem($ngram);
+                    }
+                }
+
+                $join_condition = '';
+                $key_i = 0;
+                foreach ($key_transfer_map as $content_table_field => $index_table_field) {
+                    if ($key_i != 0) {
+                        $join_condition .= ' AND ';
+                    }
+                    if ($i == 0) {
+                        $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=r.' . $content_table_field;
+                    } else {
+                        $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=i' . strval($i - 1) . '.' . $index_table_field;
+                    }
+                    $key_i++;
+                }
+                $join_condition .= ' AND i' . strval($i) . '.i_ngram=' . strval($this->crc($ngram));
+                if (strpos(get_db_type(), 'mysql') !== false) {
+                    $join_condition .= '/*' . str_replace('/', '\\', $ngram) . '*/';
+                }
+                $join_condition .= str_replace('ixxx.', 'i' . strval($i) . '.', $extra_join_clause);
+                $join_condition .= ' AND ' . db_string_equal_to('i' . strval($i) . '.i_lang', $lang);
+                if ($appearance_context !== null) {
+                    $join_condition .= ' AND i_ac=' . strval($appearance_context);
+                }
+
+                if (($i == 0) || (!$use_imprecise_ordering) || ($set_type == 'fuzzy_and')) {
+                    if ($set_type == 'and') {
+                        $join_type = 'JOIN'; // Will enforce the AND implicitly
+                    } else {
+                        $join_type = 'LEFT JOIN';
+                        $is_all_hard_joins = false;
+                    }
+                    $join .= ' ' . $join_type . ' ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' ON ' . $join_condition;
+
+                    if ($set_type == 'not') {
+                        $where_clause .= ' AND i' . strval($i) . '.i_ngram IS NULL';
+                    }
+                } else {
+                    $where_clause .= ' AND ' . (($set_type == 'and') ? 'EXISTS' : 'NOT EXISTS') . ' (SELECT * FROM ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' WHERE ' . $join_condition .')';
+                }
+
+                if (($set_type != 'not') && ($order_by_total_ngrams_matched != '')) {
+                    $order_by_total_ngrams_matched .= '+';
+
+                    if (!$use_imprecise_ordering) {
+                        $order_by_occurrence_rates .= '+';
+                    }
+                }
+
+                if ($set_type != 'not') {
+                    $order_by_total_ngrams_matched .= db_function('IFF', array('i' . strval($i) . '.i_ngram IS NULL', '0', '1'));
+
+                    if (!$use_imprecise_ordering) {
+                        $scaler = (isset($commonalities[$ngram]) ? float_to_raw_string($commonalities[$ngram], 10) : '1');
+                        $order_by_occurrence_rates .= db_function('COALESCE', array('i' . strval($i) . '.i_occurrence_rate', '0')) . '*' . $scaler;
+                    } elseif ($order_by_occurrence_rates == '') {
+                        $order_by_occurrence_rates = 'i' . strval($i) . '.i_occurrence_rate';
+                    }
+                }
+
+                $i++;
+            }
+        }
+
+        if ($i == 0) {
+            // This is important - if there are no words to index against, then security will not have run either
+            return array();
+        }
+
+        if (!$is_all_hard_joins) {
+            $where_clause .= ' AND ' . $order_by_total_ngrams_matched . '>0';
         }
 
         // Do querying...
 
-        $contextual_relevance_sql = $order_by_total_ngrams_matched . ((($order_by_total_ngrams_matched == '') || ($order_by_occurrence_rates == '')) ? '' : '+') . $order_by_occurrence_rates; // $order_by_total_ngrams_matched will be the dominent factor (intended!) as it is an integer while $order_by_occurrence_rates cannot add to more than 1
+        if ($use_imprecise_ordering) {
+            $contextual_relevance_sql = $order_by_occurrence_rates; // Will just be the occurrence rate of the least common term
+        } else {
+            $contextual_relevance_sql = $order_by_total_ngrams_matched . ((($order_by_total_ngrams_matched == '') || ($order_by_occurrence_rates == '')) ? '' : '+') . $order_by_occurrence_rates; // $order_by_total_ngrams_matched will be the dominent factor (intended!) as it is an integer while $order_by_occurrence_rates cannot add to more than 1
+        }
         if ($contextual_relevance_sql == '') {
             $contextual_relevance_sql = '1';
         }
@@ -364,14 +438,6 @@ class Composr_fulltext_helper
      */
     public function index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, &$total_singular_ngram_tokens = null, &$statistics_map = null, $lang = null, $clean_scan = false)
     {
-        if (!$GLOBALS['SITE_DB']->table_exists('ft_index_commonality')) {
-            $GLOBALS['SITE_DB']->create_table('ft_index_commonality', array(
-                'id' => '*AUTO',
-                'c_ngram' => 'SHORT_TEXT',
-                'c_commonality' => 'REAL',
-            ));
-        }
-
         // Clear out any previous indexing for this content resource
         $key_map = array();
         foreach ($key_transfer_map as $content_table_field => $index_table_field) {
@@ -601,7 +667,7 @@ class Composr_fulltext_helper
         static $stemmer = array();
         if (!array_key_exists($lang, $stemmer)) {
             $stemmer[$lang] = null;
-            if (((is_file(get_file_base() . '/sources/lang_stemmer_' . $lang . '.php')) || (is_file(get_file_base() . '/sources_custom/stemmer_' . $lang . '.php'))) && (!in_safe_mode())) {
+            if (((is_file(get_file_base() . '/sources/lang_stemmer_' . $lang . '.php')) || (is_file(get_file_base() . '/sources_custom/lang_stemmer_' . $lang . '.php'))) && (!in_safe_mode())) {
                 if (get_value('fulltext_do_stemming', '1', true) === '1') {
                     require_code('lang_stemmer_' . $lang);
                     $stemmer[$lang] = object_factory('Stemmer_' . $lang);
@@ -613,13 +679,92 @@ class Composr_fulltext_helper
 
     /**
      * Calculate a CRC, effectively converting a string ngram to an integer hash of it.
+     * CRC-24 algorithm, to avoid compatibility issues with PHP's crc32.
      *
      * @param  string $str String
      * @return integer CRC
      */
     protected function crc($str)
     {
-        return crc32($str) >> 1; // Makes compatible between 32-bit and 64-bit
+        static $ob = null;
+        if ($ob === null) {
+            $ob = new CRC24();
+        }
+        return $ob->calculate($str);
+    }
+}
+
+// TODO: Put this in another file and credit it properly
+/**
+ * @author Philip Burggraf <philip@pburggraf.de>
+ */
+class CRC24
+{
+    protected $poly = 0x864cfb;
+    protected $lookupTable;
+    protected $bitLength = 24;
+
+    public function __construct()
+    {
+        $this->lookupTable = $this->generateTable($this->poly);
+    }
+
+    public function calculate(string $buffer): int
+    {
+        $bufferLength = strlen($buffer);
+
+        $mask = (((1 << ($this->bitLength - 1)) - 1) << 1) | 1;
+        $highBit = 1 << ($this->bitLength - 1);
+
+        $crc = 0xb704ce;
+
+        for ($iterator = 0; $iterator < $bufferLength; ++$iterator) {
+            $character = ord($buffer[$iterator]);
+
+            for ($j = 0x80; $j; $j >>= 1) {
+                $bit = $crc & $highBit;
+                $crc <<= 1;
+
+                if ($character & $j) {
+                    $bit ^= $highBit;
+                }
+
+                if ($bit) {
+                    $crc ^= $this->poly;
+                }
+            }
+        }
+
+        return $crc & $mask;
+    }
+
+    protected function generateTable(int $polynomial): array
+    {
+        $tableSize = 256;
+
+        $mask = (((1 << ($this->bitLength - 1)) - 1) << 1) | 1;
+        $highBit = 1 << ($this->bitLength - 1);
+
+        $crctab = [];
+
+        for ($i = 0; $i < $tableSize; ++$i) {
+            $crc = $i;
+ 
+            $crc <<= $this->bitLength - 8;
+
+            for ($j = 0; $j < 8; ++$j) {
+                $bit = $crc & $highBit;
+                $crc <<= 1;
+                if ($bit) {
+                    $crc ^= $polynomial;
+                }
+            }
+
+            $crc &= $mask;
+            $crctab[] = $crc;
+        }
+
+        return $crctab;
     }
 }
 
@@ -645,11 +790,17 @@ And change to use query_to_search_tokens
 
 8) Make boolean search support implicit with no boolean tickbox and no conjunctive operator option, with simple support for only [+-"], and generally tidy up the API to just pass through queries to hooks unaltered
 
-9) Alter get_search_rows parameter naming and order to be sane and consistent with Composr_fulltext_helper->get_search_rows
+9) Alter get_search_rows parameter naming and order to be sane and consistent with Composr_fulltext_engine->get_search_rows
 
-10) Documentation for Composr fast custom index:
+10) Change db_meta_indices primary key:
+$GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', array('i_table', 'i_name'));
+$GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
+And change create_table code
+
+11) Documentation for Composr fast custom index:
  Generally review existing documentation
  Overview of all the config options
+ Move the comments at the top of this file to the documentation
  Clearly explain the boolean search syntax supported, including:
   + and -
   ", including how quote grabs phrases which may include stop words, how maximum ngram length affects quoting, and how stemming happens but only for ngrams that are singular (so quoted phrased will not be stemmed but +/- operators do operate on stemmed ngrams)
@@ -660,7 +811,7 @@ And change to use query_to_search_tokens
  Explain ft_index_commonality
  Document tokeniser customisation in tut_intl
 
-11) Add future ideas to tracker
+12) Add future ideas to tracker
  Synomym support
 
 */

@@ -14,7 +14,7 @@
  */
 
 // TODO: Not needed in v11
-/*EXTRA FUNCTIONS: Composr_fulltext_helper*/
+/*EXTRA FUNCTIONS: Composr_fulltext_engine*/
 
 /**
  * Hook class.
@@ -58,6 +58,9 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 'i_starter' => 'BINARY',
             ));
 
+            //$GLOBALS['SITE_DB']->delete_index_if_exists('f_pposts_fulltext_index', 'content_id');
+            //$GLOBALS['SITE_DB']->delete_index_if_exists('f_pposts_fulltext_index', 'main');
+
             $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'content_id', array( // Used for cleanouts and potentially optimising some JOINs if query planner decides to start at the content table
                 'i_post_id',
             ));
@@ -70,6 +73,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 'i_poster_id',
                 'i_starter',
                 'i_for',
+                'i_occurrence_rate', // For sorting
             ));
         }
 
@@ -126,7 +130,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
      */
     public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $helper = new Composr_fulltext_helper();
+        $engine = new Composr_fulltext_engine();
 
         $index_table = 'f_pposts_fulltext_index';
         $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -148,7 +152,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         $db = $GLOBALS['FORUM_DB'];
         $sql = 'SELECT p.id,p.p_time,p.p_last_edit_time,p.p_poster,p.p_title,p.p_post,t_cache_first_post_id,t_pt_from,t_pt_to FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
         $sql .= ' WHERE p_cache_forum_id IS NULL';
-        $since_clause = $helper->generate_since_where_clause($db, $index_table, array('p_time' => false, 'p_last_edit_time' => true), $since, $statistics_map);
+        $since_clause = $engine->generate_since_where_clause($db, $index_table, array('p_time' => false, 'p_last_edit_time' => true), $since, $statistics_map);
         $sql .= $since_clause;
         $max = 100;
         $start_id = -1;
@@ -160,7 +164,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 foreach (($row['t_pt_from'] == $row['t_pt_to']) ? array('t_pt_from') : array('t_pt_from', 't_pt_to') as $for_field) {
                     $key_transfer_map['i_for'] = 'i_for';
                     $content_fields['i_for'] = $row[$for_field];
-                    $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, null, $clean_scan);
+                    $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, null, $clean_scan);
                 }
 
                 $start_id = $row['id'];
@@ -218,7 +222,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         require_lang('cns');
 
         // Calculate and perform query
-        if ((cron_installed()) && (get_value('composr_fulltext_indexing__cns_own_pt', '1', true) == '1') && ((intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1) || (strpos($content, '"') === false))) {
+        if (can_use_composr_fulltext_engine('cns_own_pt', $content)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';
@@ -254,12 +258,12 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= 'p_validated=1';
             }
 
-            $helper = new Composr_fulltext_helper();
+            $engine = new Composr_fulltext_engine();
 
             $db = $GLOBALS['FORUM_DB'];
             $index_table = 'f_pposts_fulltext_index';
             $key_transfer_map = array('id' => 'i_post_id');
-            $rows = $helper->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
         } else {
             // Calculate our where clause (search)
             $where_clause .= ' AND ';

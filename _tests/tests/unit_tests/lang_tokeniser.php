@@ -39,6 +39,9 @@ class lang_tokeniser_test_set extends cms_test_case
 
         // Querying...
 
+        $got = $tokeniser->query_to_search_tokens("it's 'its'");
+        $this->assertTrue(array_keys($got[0]) == array("it's", 'its'));
+
         $search = 'This, is; an    example- SEARCH +YES -No - + Blah-blah "Go Go Go" +"And this"';
         $expected = array(
             array('this' => true, 'is' => true, 'an' => true, 'example' => true, 'search' => true, 'blah' => true, 'go go go' => false),
@@ -49,6 +52,9 @@ class lang_tokeniser_test_set extends cms_test_case
         $this->assertTrue($got == $expected);
 
         // Indexing...
+
+        $got = $tokeniser->text_to_ngrams("it's 'its'");
+        $this->assertTrue(array_keys($got) == array("it's", 'its'));
 
         $total_singular_ngram_tokens = 0;
         $expected = array(

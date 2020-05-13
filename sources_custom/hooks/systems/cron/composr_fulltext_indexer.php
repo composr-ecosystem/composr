@@ -32,6 +32,17 @@ class Hook_cron_composr_fulltext_indexer
         $_last_cron_time = get_value('last_composr_fulltext_indexer_time', null, true);
         $last_cron_time = ($_last_cron_time === null) ? null : intval($_last_cron_time);
 
+        if (!$GLOBALS['SITE_DB']->table_exists('ft_index_commonality')) {
+            $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', array('i_table', 'i_name'));
+            $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
+
+            $GLOBALS['SITE_DB']->create_table('ft_index_commonality', array(
+                'id' => '*AUTO',
+                'c_ngram' => 'SHORT_TEXT',
+                'c_commonality' => 'REAL',
+            ));
+        }
+
         if ($last_cron_time === null) {
             disable_php_memory_limit();
         }
@@ -45,6 +56,11 @@ class Hook_cron_composr_fulltext_indexer
 
         $hooks = find_all_hooks('modules', 'search'); // TODO: Change in v11
         foreach (array_keys($hooks) as $hook) {
+            $subhook = get_param_string('limit_subhook', null);
+            if (($subhook !== null) && ($subhook !== $hook)) {
+                continue;
+            }
+
             require_code('hooks/modules/search/' . $hook);
             $ob = object_factory('Hook_search_' . $hook);
 
@@ -56,8 +72,8 @@ class Hook_cron_composr_fulltext_indexer
             }
         }
 
-        // Log all ngram commonality to the database
-        if (!empty($statistics_map)) { // If was a full reindex
+        // Log all ngram commonality to the database, used as part of the search ranking algorithm, and useful for manually gauging which stop words to add
+        if (!empty($statistics_map)) { // If was a full reindex of all hooks handled in this run (usually all, but may be limited by limit_subhook URL parameter)
             $GLOBALS['SITE_DB']->query_delete('ft_index_commonality');
             foreach ($statistics_map as $lang => $_statistics_map) {
                 arsort($_statistics_map);

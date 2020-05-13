@@ -14,7 +14,7 @@
  */
 
 // TODO: Not needed in v11
-/*EXTRA FUNCTIONS: Composr_fulltext_helper*/
+/*EXTRA FUNCTIONS: Composr_fulltext_engine*/
 
 /**
  * Hook class.
@@ -58,6 +58,9 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 'i_submitter' => 'MEMBER',
             ));
 
+            //$GLOBALS['SITE_DB']->delete_index_if_exists('ce_fulltext_index', 'content_id');
+            //$GLOBALS['SITE_DB']->delete_index_if_exists('ce_fulltext_index', 'main');
+
             $GLOBALS['SITE_DB']->create_index('ce_fulltext_index', 'content_id', array( // Used for cleanouts and potentially optimising some JOINs if query planner decides to start at the content table
                 'i_catalogue_entry_id',
             ));
@@ -70,6 +73,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 'i_c_name',
                 'i_category_id',
                 'i_submitter',
+                'i_occurrence_rate', // For sorting
             ));
         }
 
@@ -127,7 +131,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
      */
     public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $helper = new Composr_fulltext_helper();
+        $engine = new Composr_fulltext_engine();
 
         $index_table = 'ce_fulltext_index';
         $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -148,7 +152,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
         $db = $GLOBALS['SITE_DB'];
         $sql = 'SELECT c_name,id,ce_add_date,cc_id,ce_submitter FROM ' . $db->get_table_prefix() . 'catalogue_entries r WHERE 1=1';
-        $since_clause = $helper->generate_since_where_clause($db, $index_table, array('ce_add_date' => false, 'ce_edit_date' => true), $since, $statistics_map);
+        $since_clause = $engine->generate_since_where_clause($db, $index_table, array('ce_add_date' => false, 'ce_edit_date' => true), $since, $statistics_map);
         $sql .= $since_clause;
         $sql .= ' AND r.c_name NOT LIKE \'' . db_encode_like('\_%') . '\''; // Don't want results drawn from the hidden custom-field catalogues
         $max = 100;
@@ -160,7 +164,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 foreach (array_keys($langs) as $lang) {
                     $content_fields = $row;
 
-                    $helper->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, $row['c_name'], $row['id'], $lang);
+                    $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, $row['c_name'], $row['id'], $lang);
 
                     list($keywords, $description) = seo_meta_get_for('catalogue_entry', strval($row['id']));
                     $content_fields += array(
@@ -168,7 +172,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                         'meta_description' => $description,
                     );
 
-                    $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang, $clean_scan);
+                    $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang, $clean_scan);
                 }
             }
             $start += $max;
@@ -279,7 +283,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if ((cron_installed()) && (get_value('composr_fulltext_indexing__catalogue_entries', '1', true) == '1') && ((intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1) || (strpos($content, '"') === false))) {
+        if (can_use_composr_fulltext_engine('catalogue_entries', $content)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'catalogue_entries r';
@@ -313,9 +317,9 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 $where_clause .= $privacy_where;
             }
 
-            $helper = new Composr_fulltext_helper();
+            $engine = new Composr_fulltext_engine();
 
-            if ($helper->active_search_has_special_filtering()) {
+            if ($engine->active_search_has_special_filtering()) {
                 $catalogue_name = get_param_string('catalogue_name', '');
                 if ($catalogue_name != '') {
                     $trans_fields = array();
@@ -331,7 +335,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             $index_table = 'ce_fulltext_index';
             $key_transfer_map = array('id' => 'i_catalogue_entry_id');
             $index_permissions_field = 'i_category_id';
-            $rows = $helper->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
         } else {
             // Calculate our where clause (search)
             $sq = build_search_submitter_clauses('ce_submitter', $author_id, $author);

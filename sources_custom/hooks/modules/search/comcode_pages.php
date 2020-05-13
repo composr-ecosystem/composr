@@ -14,7 +14,7 @@
  */
 
 // TODO: Not needed in v11
-/*EXTRA FUNCTIONS: Composr_fulltext_helper*/
+/*EXTRA FUNCTIONS: Composr_fulltext_engine*/
 
 /**
  * Hook class.
@@ -48,6 +48,9 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 'i_occurrence_rate' => 'REAL',
             ));
 
+            //$GLOBALS['SITE_DB']->delete_index_if_exists('cpages_fulltext_index', 'content_id');
+            //$GLOBALS['SITE_DB']->delete_index_if_exists('cpages_fulltext_index', 'main');
+
             $GLOBALS['SITE_DB']->create_index('cpages_fulltext_index', 'content_id', array( // Used for cleanouts and potentially optimising some JOINs if query planner decides to start at the content table
                 'i_zone_name',
                 'i_page_name',
@@ -57,6 +60,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 'i_lang',
                 'i_ngram',
                 'i_ac',
+                'i_occurrence_rate', // For sorting
             ));
         }
 
@@ -83,7 +87,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      */
     public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $helper = new Composr_fulltext_helper();
+        $engine = new Composr_fulltext_engine();
 
         $index_table = 'cpages_fulltext_index';
         $clean_scan = ($GLOBALS['SITE_DB']->query_value_null_ok($index_table, 'i_ngram') === null);
@@ -121,9 +125,9 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                             'meta_description' => $description,
                         );
 
-                        $helper->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_comcode_page', $zone . ':' . $page, $lang);
+                        $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_comcode_page', $zone . ':' . $page, $lang);
 
-                        $helper->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang, $clean_scan);
+                        $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang, $clean_scan);
                     }
                 }
             }
@@ -192,7 +196,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         require_lang('zones');
 
         // Calculate and perform query
-        if ((cron_installed()) && (get_value('composr_fulltext_indexing__comcode_pages', '1', true) == '1') && ((intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1) || (strpos($content, '"') === false))) {
+        if (can_use_composr_fulltext_engine('comcode_pages', $content)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             // Calculate our where clause (search)
@@ -222,9 +226,9 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 $where_clause .= ' EXISTS(' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z ON (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
 
-            $helper = new Composr_fulltext_helper();
+            $engine = new Composr_fulltext_engine();
 
-            if ($helper->active_search_has_special_filtering()) {
+            if ($engine->active_search_has_special_filtering()) {
                 $trans_fields = array();
                 $nontrans_fields = array();
                 $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', array('r.the_zone', 'r.the_page')));
@@ -234,7 +238,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $db = $GLOBALS['SITE_DB'];
             $index_table = 'cpages_fulltext_index';
             $key_transfer_map = array('the_zone' => 'i_zone_name', 'the_page' => 'i_page_name');
-            $rows = $helper->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
         } else {
             $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
             if (is_null($sq)) {

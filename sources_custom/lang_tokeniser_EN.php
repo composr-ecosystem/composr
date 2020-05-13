@@ -105,6 +105,18 @@ class LangTokeniser_EN
                         break;
 
                     default:
+                        if (($c == "'") && ($current_search_token != '') && ($i != $len - 1)) { // E.g. "Don't"
+                            if ($utf) {
+                                $next_c = cms_mb_substr($query, $i + 1, 1);
+                            } else {
+                                $next_c = $query[$i + 1];
+                            }
+                            if ((($has_ctype) && (ctype_alnum($next_c))) || (preg_match($word_char_regexp, $next_c) != 0)) {
+                                $current_search_token .= $c;
+                                break;
+                            }
+                        }
+
                         if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
                             $current_search_token .= $c;
                         } elseif (!$in_quotes) {
@@ -175,7 +187,7 @@ class LangTokeniser_EN
      * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
      * @return array A list of ngrams (along with a boolean to indicate whether they are a boolean ngram)
      */
-    public function text_to_ngrams($text, $max_ngram_size, &$total_singular_ngram_tokens = null)
+    public function text_to_ngrams($text, $max_ngram_size = 1, &$total_singular_ngram_tokens = null)
     {
         $word_ngrams = array();
 
@@ -223,7 +235,7 @@ class LangTokeniser_EN
             if ($utf) {
                 $c = cms_mb_substr($text, $i, 1);
             } else {
-                $c = $query[$i];
+                $c = $text[$i];
             }
             if (isset($phrase_separation_characters[$c])) {
                 $phrases[] = $current_phrase;
@@ -250,7 +262,7 @@ class LangTokeniser_EN
         static $utf = null, $word_regexp = null;
         if ($utf === null) {
             $utf = (get_charset() == 'utf-8');
-            $word_regexp = '#\w+#' . ($utf ? 'u' : '');
+            $word_regexp = "#(\w'\w|\w)+#" . ($utf ? 'u' : '');
         }
 
         $matches = array();
