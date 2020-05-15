@@ -935,7 +935,7 @@ class Hook_phpbb3
     {
         $orig_post = $post;
 
-        $post = preg_replace('#<!-- [mwl] --><a class="[\w-]+" href="([^"]*)"( onclick="window.open\(this.href\);\s*return false;")?' . '>(.*)</a><!-- [mwl] -->#U', '[url="${3}"]${1}[/url]', $post);
+        $post = preg_replace('#<!-- [mwl] --><a class="[\w\-]+" href="([^"]*)"( onclick="window.open\(this.href\);\s*return false;")?' . '>(.*)</a><!-- [mwl] -->#U', '[url="${3}"]${1}[/url]', $post);
         $post = preg_replace('#<!-- e --><a href="mailto:(.*)">(.*)</a><!-- e -->#U', '[email="${2}"]${1}[/email]', $post);
 
         global $OLD_BASE_URL;
