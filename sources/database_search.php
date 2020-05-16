@@ -1041,7 +1041,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
     }
 
     // Defined-keywords/tags search
-    if ((get_param_integer('keep_just_show_query', 0) == 0) && (!is_null($meta_type)) && ($content != '')) {
+    if ((get_param_integer('keep_just_show_query', 0) == 0) && (!is_null($meta_type)) && ($content != '') && (!$only_titles)) {
         if (strpos($content, '"') !== false || strpos($content, '+') !== false || strpos($content, '-') !== false || strpos($content, ' ') !== false) {
             list($meta_content_where) = build_content_where($content, $boolean_search, $boolean_operator, true);
             $meta_content_where = '(' . $meta_content_where . ' OR ' . db_string_equal_to('?', $content) . ')';
