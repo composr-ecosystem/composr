@@ -56,19 +56,14 @@ And change create_table code
 11) Documentation for Composr fast custom index:
  Generally review existing documentation
  Overview of all the config options
- Move the comments at the top of this file to the documentation
  Clearly explain the boolean search syntax supported, including:
   + and -
   ", including how quote grabs phrases which may include stop words, how maximum ngram length affects quoting, and how stemming happens but only for ngrams that are singular (so quoted phrased will not be stemmed but +/- operators do operate on stemmed ngrams)
-  How anything else is 'fuzzy' for a relevance search with highest relevance first, unless fuziness is disabled - and otherwise just works like '+'
- Explain how to dump the contents of *_fulltext_index tables to force regeneration, including index regeneration
- Explain how translations made through translation queue will not rebuild index, must be through content editing
- Explain advantages over regular full-text: multi-language, much more configurable
- Explain ft_index_commonality
- Document tokeniser customisation in tut_intl
+  How anything else is 'fuzzy' for a relevance search with highest relevance first, unless fuzziness is disabled - and otherwise just works like '+'
 
 12) Add future ideas to tracker
  Synomym support
+ Automatic reindexing of content edited via translation queue
 
 13) Code change: disclude -> exclude
 */
