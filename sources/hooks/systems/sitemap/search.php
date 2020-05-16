@@ -39,6 +39,9 @@ class Hook_sitemap_search extends Hook_sitemap_base
             require_code('site');
             $test = _request_page($page, $zone);
             if (($test !== false) && (($test[0] == 'MODULES_CUSTOM') || ($test[0] == 'MODULES'))) { // Ensure the relevant module really does exist in the given zone
+                if ($matches[0] != $page_link) {
+                    return SITEMAP_NODE_HANDLED;
+                }
                 return SITEMAP_NODE_HANDLED_VIRTUALLY;
             }
         }
@@ -196,6 +199,8 @@ class Hook_sitemap_search extends Hook_sitemap_base
             return ($callback === null || $return_anyway) ? $struct : null;
         }
 
+        require_code('database_search');
+        require_code('search');
         require_code('hooks/modules/search/' . filter_naughty_harsh($hook));
         $ob = object_factory('Hook_search_' . filter_naughty_harsh($hook), true);
         if (is_null($ob)) {
@@ -252,6 +257,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
             $children = array();
             if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
                 $skip_children = false;
+                $count = null;
                 if ($child_cutoff !== null) {
                     $count = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'COUNT(*)');
                     if ($count > $child_cutoff) {
@@ -259,10 +265,12 @@ class Hook_sitemap_search extends Hook_sitemap_base
                     }
                 }
 
-                if (!$skip_children) {
+                if ((!$skip_children) && ($count !== 0)) {
+                    $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
                     $start = 0;
                     do {
-                        $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), null, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+                        $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), null, '', $max_rows_per_loop, $start);
                         foreach ($rows as $row) {
                             if (substr($row['c_name'], 0, 1) == '_') {
                                 continue;
@@ -274,8 +282,8 @@ class Hook_sitemap_search extends Hook_sitemap_base
                                 $children[] = $child_node;
                             }
                         }
-                        $start += SITEMAP_MAX_ROWS_PER_LOOP;
-                    } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+                        $start += $max_rows_per_loop;
+                    } while (count($rows) == $max_rows_per_loop);
                 }
             }
             $struct['children'] = $children;

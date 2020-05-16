@@ -55,8 +55,23 @@ function cns_make_topic($forum_id, $description = '', $emoticon = '', $validated
 
     if ($check_perms) {
         require_code('cns_topics');
-        if (!cns_may_post_topic($forum_id, get_member())) {
-            access_denied('I_ERROR');
+        if ($forum_id === null) {
+            if (!cns_may_make_private_topic(get_member())) {
+                access_denied('I_ERROR');
+            }
+
+            if ($pt_to === null) {
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            }
+
+            require_code('cns_members2');
+            if (!cns_may_whisper($pt_to)) {
+                warn_exit(do_lang_tempcode('NO_PT_FROM_ALLOW'));
+            }
+        } else {
+            if (!cns_may_post_topic($forum_id, get_member())) {
+                access_denied('I_ERROR');
+            }
         }
 
         if (!is_null($pt_to)) {

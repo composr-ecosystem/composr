@@ -784,19 +784,19 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $tag = in_array($type, array('circle', 'disc', 'square')) ? 'ul' : 'ol';
                 $temp_tpl->attach('<' . $tag . ' style="list-style-type: ' . $type . '">');
                 foreach ($parts as $i => $part) {
-                    if (($i == 0) && (str_replace(array('&nbsp;', '<br />', ' '), array('', '', ''), trim($part)) == '')) {
+                    if (($i == 0) && (cms_trim($part, true) == '')) {
                         continue;
                     }
-                    $temp_tpl->attach('<li>' . cms_preg_replace_safe('#\<br /\>(\&nbsp;|\s)*$#D', '', cms_preg_replace_safe('#^\<br /\>(\&nbsp;|\s)*#D', '', $part)) . '</li>');
+                    $temp_tpl->attach('<li>' . cms_trim($part, true) . '</li>');
                 }
                 $temp_tpl->attach('</' . $tag . '>');
             } else {
                 $temp_tpl->attach('<ul>');
                 foreach ($parts as $i => $part) {
-                    if (($i == 0) && (str_replace(array('&nbsp;', '<br />', ' '), array('', '', ''), trim($part)) == '')) {
+                    if (($i == 0) && (cms_trim($part, true) == '')) {
                         continue;
                     }
-                    $temp_tpl->attach('<li>' . cms_preg_replace_safe('#\<br /\>(\&nbsp;|\s)*$#D', '', cms_preg_replace_safe('#^\<br /\>(\&nbsp;|\s)*#D', '', $part)) . '</li>');
+                    $temp_tpl->attach('<li>' . cms_trim($part, true) . '</li>');
                 }
                 $temp_tpl->attach('</ul>');
             }
@@ -2245,7 +2245,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         if ((!array_key_exists('width', $attributes)) || ($attributes['width'] == '')) {
                             $attachment_row['width'] = strval($_width);
                         }
-                        if ((!array_key_exists('width', $attributes)) || ($attributes['height'] == '')) {
+                        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] == '')) {
                             $attachment_row['height'] = strval($_height);
                         }
                     }
@@ -2359,7 +2359,7 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
     $_embed = mixed();
     $title = do_lang_tempcode('CODE');
     if ((file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) && (!in_safe_mode())) {
-            $evaluated = $embed->evaluate();
+        $evaluated = $embed->evaluate();
 
         if (($in_semihtml) || ($is_all_semihtml)) {
             require_code('comcode_from_html');

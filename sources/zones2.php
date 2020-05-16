@@ -40,12 +40,12 @@ function init__zones2()
  */
 function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_tempcode = false)
 {
-    $page_contents = trim(file_get_contents($path));
-
-    $fallback_title = titleify(basename($path, '.txt'));
+    $page_contents = trim(file_get_contents($path, false, null, 0, 300));
 
     $matches = array();
     if (preg_match('#\[title([^\]]*)?[^\]]*\]#', $page_contents, $matches) == 0) {
+        $fallback_title = titleify(basename($path, '.txt'));
+
         // No title
         if ($in_tempcode) {
             return make_string_tempcode(escape_html($fallback_title));
@@ -57,6 +57,8 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
     $tag_attribute_stuff = empty($matches[1]) ? '' : $matches[1];
 
     if (preg_match('#^(.*\sparam)?=?"[2-9]"?#', $tag_attribute_stuff) != 0) {
+        $fallback_title = titleify(basename($path, '.txt'));
+
         // Wrong title level
         if ($in_tempcode) {
             return make_string_tempcode(escape_html($fallback_title));
@@ -70,6 +72,8 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
     $raw_title = trim(substr($page_contents, $start, $end - $start));
 
     if (($raw_title == '') || ($raw_title == 'TODO')) {
+        $fallback_title = titleify(basename($path, '.txt'));
+
         // Blank title
         if ($in_tempcode) {
             return make_string_tempcode(escape_html($fallback_title));
@@ -102,6 +106,10 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
         } else {
             require_code('comcode');
             $tempcode_title = comcode_to_tempcode($raw_title, null, true, null, null, null, false, false, $html_context);
+
+            if ((preg_match('#[\[\{]#'/*Somehow dynamic so could still be empty*/, $raw_title) != 0) && ($tempcode_title->is_empty())) {
+                $tempcode_title = make_string_tempcode(escape_html($fallback_title));
+            }
         }
         return $tempcode_title;
     }
@@ -814,7 +822,12 @@ function _find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects =
         if ($consider_redirects) {
             static $redirects = array();
             if (!isset($redirects[$zone])) {
-                $redirects[$zone] = $GLOBALS['SITE_DB']->query_select('redirects', array('*'), array('r_from_zone' => $zone));
+                global $REDIRECT_CACHE;
+                if ($REDIRECT_CACHE !== null) {
+                    $redirects[$zone] = array_key_exists($zone, $REDIRECT_CACHE) ? $REDIRECT_CACHE[$zone] : array();
+                } else {
+                    $redirects[$zone] = $GLOBALS['SITE_DB']->query_select('redirects', array('*'), array('r_from_zone' => $zone));
+                }
             }
             foreach ($redirects[$zone] as $r) {
                 if ($r['r_is_transparent'] == 0) {
@@ -846,6 +859,12 @@ function _find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects =
  */
 function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cutoff_time = null, $show_method = 0, $custom = null)
 {
+    static $cache = array();
+    $do_cache = (!$keep_ext_on) && ($cutoff_time === null) && ($show_method == 0) && ($custom === null);
+    if (($do_cache) && (isset($cache[$zone][$type][$ext]))) {
+        return $cache[$zone][$type][$ext];
+    }
+
     $out = array();
 
     $module_path = ($zone == '') ? ('pages/' . filter_naughty($type)) : (filter_naughty($zone) . '/pages/' . filter_naughty($type));
@@ -934,6 +953,11 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
     }
 
     ksort($out);
+
+    if ($do_cache) {
+        $cache[$zone][$type][$ext] = $out;
+    }
+
     return $out;
 }
 

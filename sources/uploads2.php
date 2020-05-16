@@ -125,7 +125,7 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
         }
         $start += $max;
     }
-    while (count($rows) > 0);
+    while (count($rows) == $max);
 
     // Cleanup
     if (count($where) == 0) {

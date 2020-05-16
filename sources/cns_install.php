@@ -661,10 +661,6 @@ function install_cns($upgrade_from = null)
         cns_make_forum(do_lang('REPORTED_POSTS_FORUM'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
         $trash_forum_id = cns_make_forum(do_lang('TRASH'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
         cns_make_forum(do_lang('COMMENT_FORUM_NAME'), '', $forum_grouping_id, $typical_access, $root_forum, 1, 1, 0, '', '', '', 'last_post', 1);
-        if (addon_installed('tickets')) {
-            require_lang('tickets');
-            cns_make_forum(do_lang('TICKET_FORUM_NAME'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
-        }
         $staff_forum_id = cns_make_forum(do_lang('STAFF'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
 
         $GLOBALS['FORUM_DB']->create_table('f_topics', array(

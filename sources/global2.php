@@ -415,10 +415,16 @@ function init__global2()
     safe_ini_set('zlib.output_compression_level', '2'); // Compression doesn't get much better after this, but performance drop
 
     if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
-        // Before anything gets outputted
         handle_logins();
 
         require_code('site'); // This powers the site (top level page generation)
+    }
+
+    // Okay, we've loaded everything critical. Don't need to tell Composr to be paranoid now.
+    $BOOTSTRAPPING = false;
+
+    // Before anything gets outputted
+    if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
         check_has_page_access(); // Make sure we're authorised
     }
 
@@ -464,9 +470,6 @@ function init__global2()
         require_code('input_filter_2');
         modsecurity_workaround_enable();
     }
-
-    // Okay, we've loaded everything critical. Don't need to tell Composr to be paranoid now.
-    $BOOTSTRAPPING = false;
 
     if (($SEMI_DEV_MODE) && (!$MICRO_AJAX_BOOTUP)) { // Lots of code that only runs if you're a programmer. It tries to make sure coding standards are met.
         semi_dev_mode_startup();
@@ -805,7 +808,9 @@ function load_user_stuff()
          */
         $FORUM_DB = mixed();
         $GLOBALS['FORUM_DB'] = &$FORUM_DRIVER->connection; // Done like this to workaround that PHP can't put a reference in a global'd variable
-        reload_lang_fields(false, 'f_member_custom_fields');
+        if (is_on_multi_site_network()) {
+            reload_lang_fields(false, 'f_member_custom_fields');
+        }
     }
 }
 
@@ -1846,6 +1851,10 @@ function unixify_line_format($in, $desired_charset = null, $html = false, $from_
     }
     if (substr($in, 0, 3) == $bom) {
         $in = substr($in, 3);
+    }
+
+    if (strpos($in, "\r") === false) {
+        return $in;
     }
 
     static $from = null;

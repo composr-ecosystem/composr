@@ -189,16 +189,24 @@ function find_sitemap_object($page_link)
             if ($ob->is_active()) {
                 $is_handled = $ob->handles_page_link($page_link);
                 if ($is_handled != SITEMAP_NODE_NOT_HANDLED) {
-                    $matches['_' . strval($is_handled)] = $_hook;
+                    $sup = $_hook;
+                    if ($_hook == 'entry_point') {
+                        $sup = 'aaa'/*high priority (we don't want content category hooks to capture it)*/;
+                    }
+                    if ($_hook == 'page') {
+                        $sup = 'zzz'/*low priority*/;
+                    }
+                    $order_key = '_' . strval($is_handled) . '_' . $sup;
+                    $matches[$order_key] = $_hook;
                 }
             }
         }
         if (count($matches) != 0) {
             ksort($matches);
-            $hook = current($matches);
+            $hook = reset($matches);
             $ob = object_factory('Hook_sitemap_' . $hook);
 
-            $is_handled = intval(substr(key($matches), 1));
+            $is_handled = intval(substr(key($matches), 1, 1));
             $is_virtual = ($is_handled == SITEMAP_NODE_HANDLED_VIRTUALLY);
         }
         if (is_null($hook)) {
@@ -222,19 +230,20 @@ abstract class Hook_sitemap_base
      *
      * @param  ID_TEXT $page The codename of the page to load
      * @param  ID_TEXT $zone The zone the page is being loaded in
+     * @param  ?ID_TEXT $page_type The type of page - for if you know it (null: don't know it)
      * @return ~array A list of details (false: page not found)
      */
-    protected function _request_page_details($page, $zone)
+    protected function _request_page_details($page, $zone, $page_type = null)
     {
         require_code('site');
-        $details = _request_page($page, $zone);
+        $details = _request_page($page, $zone, $page_type);
         if ($details !== false) {
             if ($details[0] == 'REDIRECT') {
                 if ($details[1]['r_is_transparent'] == 0) {
                     return false;
                 }
 
-                $details = _request_page($details[1]['r_to_page'], $details[1]['r_to_zone'], null, null, true);
+                $details = _request_page($details[1]['r_to_page'], $details[1]['r_to_zone'], $page_type, null, true);
             }
         }
         return $details;
@@ -274,8 +283,9 @@ abstract class Hook_sitemap_base
             return true;
         }
 
-        // Disabled, maybe via a looped redirect?
-        if ($this->_request_page_details($page, $zone) === false) {
+        // Disabled via a looped redirect?
+        $test = _request_page__redirects($page, $zone);
+        if ($test !== false) {
             return true;
         }
 
@@ -534,13 +544,14 @@ abstract class Hook_sitemap_base
      * Find details for this node.
      *
      * @param  ?array $row Faked database row (null: derive).
+     * @param  integer $meta_gather A bitmask of SITEMAP_GATHER_* constants, of extra data to include.
      * @param  ID_TEXT $zone The zone.
      * @param  ID_TEXT $page The page.
      * @param  ID_TEXT $type The type.
      * @param  ?ID_TEXT $id The ID (null: unknown).
      * @return ?array Faked database row (null: derive).
      */
-    protected function _load_row_from_page_groupings($row, $zone, $page, $type = 'browse', $id = null)
+    protected function _load_row_from_page_groupings($row, $meta_gather, $zone, $page, $type = 'browse', $id = null)
     {
         if (!isset($row[0])) { // If the first tuple element is not defined (a property map may be, for Comcode pages)
             // Find from page grouping
@@ -580,7 +591,7 @@ abstract class Hook_sitemap_base
                     $icon = $link[1];
 
                     $description = null;
-                    if (isset($link[4])) {
+                    if ((isset($link[4])) && (($meta_gather & SITEMAP_GATHER_DESCRIPTION) != 0)) {
                         $description = (is_object($link[4])) ? $link[4] : comcode_lang_string($link[4]);
                     }
 
@@ -634,12 +645,12 @@ abstract class Hook_sitemap_base
             }
 
             if ($description !== null) {
-                if (is_string($description)) {
-                    $description = (preg_match('#^[A-Z\_]+$#', $description) == 0) ? make_string_tempcode($description) : comcode_lang_string($description);
-                }
-
                 if (($meta_gather & SITEMAP_GATHER_DESCRIPTION) != 0) {
                     if (!isset($struct['extra_meta']['description'])) {
+                        if (is_string($description)) {
+                            $description = (preg_match('#^[A-Z\_]+$#', $description) == 0) ? make_string_tempcode($description) : comcode_lang_string($description);
+                        }
+
                         $struct['extra_meta']['description'] = ($description === null) ? null : $description;
                     }
                 }
@@ -683,15 +694,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             $zone = $matches[1];
             $page = $matches[2];
 
-            static $cache = array();
-            if (isset($cache[$this->content_type])) {
-                $cma_info = $cache[$this->content_type];
-            } else {
-                require_code('content');
-                $cma_ob = get_content_object($this->content_type);
-                $cma_info = $cma_ob->info();
-                $cache[$this->content_type] = $cma_info;
-            }
+            $cma_info = $this->_get_cma_info();
             require_code('site');
             if (($cma_info !== null) && ($cma_info['module'] == $page) && (($zone == '_SEARCH') || (_request_page($page, $zone) !== false))) { // Ensure the given page matches the content type, and it really does exist in the given zone
                 if ($matches[0] == $page_link) {
@@ -865,7 +868,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             $struct['permissions'][] = array(
                 'type' => 'category',
                 'permission_module' => $cma_info['permissions_type_code'],
-                'category_name' => @strval($cma_info['is_category'] ? $content_id : $row[$cma_info['category_field']]),
+                'category_name' => @strval($cma_info['is_entry'] ? $row[$cma_info['category_field']] : $content_id),
                 'page_name' => $page,
                 'is_owned_at_this_level' => true,
             );
@@ -955,6 +958,71 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
     }
 
     /**
+     * Find what fields we should select for the Sitemap to be buildable. We don't want to select too much for perf reasons.
+     * Also find out what language fields we should load up for the table (returned by reference).
+     *
+     * @param  ?array $cma_info CMA info (null: standard for this hook)
+     * @param  string $table_prefix Table prefix
+     * @param  ?array $lang_fields_filtered List of language fields to load (null: not passed)
+     * @return array Map between field name and field type
+     */
+    protected function select_fields($cma_info = null, $table_prefix = '', &$lang_fields_filtered = null)
+    {
+        if ($cma_info === null) {
+            $cma_info = $this->_get_cma_info();
+        }
+
+        $cma_fields = array(
+            'id_field',
+            'title_field',
+            'category_field',
+            'thumb_field',
+            'add_time_field',
+            'edit_time_field',
+            'submitter_field',
+            'author_field',
+            'views_field',
+            'validated_field',
+        );
+        $select = array();
+        foreach ($cma_fields as $cma_field) {
+            if ($cma_info[$cma_field] !== null) {
+                if (is_array($cma_info[$cma_field])) {
+                    foreach ($cma_info[$cma_field] as $f) {
+                        if ($table_prefix != '') {
+                            $f = $table_prefix . '.' . $f;
+                        }
+                        $select[] = $f;
+                    }
+                } elseif (strpos($cma_info[$cma_field], 'CALL:') === false) {
+                    $f = $cma_info[$cma_field];
+                    if ($table_prefix != '') {
+                        $f = $table_prefix . '.' . $f;
+                    }
+                    $select[] = $f;
+                }
+            }
+        }
+
+        $table = $cma_info['table'];
+
+        global $TABLE_LANG_FIELDS_CACHE;
+        $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : array();
+        $lang_fields_filtered = array();
+        foreach ($lang_fields as $field => $type) {
+            $f = $field;
+            if ($table_prefix != '') {
+                $f = $table_prefix . '.' . $f;
+            }
+            if (in_array($f, $select)) {
+                $lang_fields_filtered[$table_prefix . '.' . $field] = $type;
+            }
+        }
+
+        return $select;
+    }
+
+    /**
      * Get a list of child nodes, from what we know from the CMA hook.
      *
      * @param  ID_TEXT $content_id The content ID.
@@ -1034,35 +1102,35 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                     $table = $cma_entry_info['table'] . ' r';
                     $table .= $privacy_join;
 
+                    $lang_fields = array();
+                    $select = $this->select_fields($cma_entry_info, 'r', $lang_fields);
+
                     if (substr($cma_entry_info['table'], 0, 2) == 'f_') {
                         $db = $GLOBALS['FORUM_DB'];
                     } else {
                         $db = $GLOBALS['SITE_DB'];
                     }
 
-                    $skip_children = false;
-                    if ($child_cutoff !== null) {
-                        $count = $db->query_select_value($table, 'COUNT(*)', $where, $extra_where_entries . $privacy_where);
-                        if ($count > $child_cutoff) {
-                            $skip_children = true;
-                        }
-                    }
+                    $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
 
-                    if (!$skip_children) {
-                        $start = 0;
-                        do {
-                            $rows = $cma_entry_info['connection']->query_select($table, array('r.*'), $where, $extra_where_entries . $privacy_where . (is_null($explicit_order_by_entries) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), SITEMAP_MAX_ROWS_PER_LOOP, $start);
-                            $child_page = ($cma_entry_info['module'] == $cma_info['module']) ? $page : $cma_entry_info['module']; // assumed in same zone
-                            foreach ($rows as $child_row) {
-                                $child_page_link = $zone . ':' . $child_page . ':' . $child_hook_ob->screen_type . ':' . ($cma_entry_info['id_field_numeric'] ? strval($child_row[$cma_entry_info['id_field']]) : $child_row[$cma_entry_info['id_field']]);
-                                $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
-                                if ($child_node !== null) {
-                                    $children_entries[] = $child_node;
-                                }
+                    $start = 0;
+                    do {
+                        $rows = $cma_entry_info['connection']->query_select($table, $select, $where, $extra_where_entries . $privacy_where . (is_null($explicit_order_by_entries) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), $max_rows_per_loop, $start, false, $lang_fields);
+
+                        if (($start == 0) && ($child_cutoff !== null) && (count($rows) > $child_cutoff)) {
+                            $rows = array(); // Too many to process. We don't do with a COUNT(*) query because on balance of probability there won't be too many child rows and we can save a count query at the cost of the small risk of loading excess data
+                        }
+
+                        $child_page = ($cma_entry_info['module'] == $cma_info['module']) ? $page : $cma_entry_info['module']; // assumed in same zone
+                        foreach ($rows as $child_row) {
+                            $child_page_link = $zone . ':' . $child_page . ':' . $child_hook_ob->screen_type . ':' . ($cma_entry_info['id_field_numeric'] ? strval($child_row[$cma_entry_info['id_field']]) : $child_row[$cma_entry_info['id_field']]);
+                            $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
+                            if ($child_node !== null) {
+                                $children_entries[] = $child_node;
                             }
-                            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-                        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
-                    }
+                        }
+                        $start += $max_rows_per_loop;
+                    } while (count($rows) == $max_rows_per_loop);
 
                     if (is_null($explicit_order_by_entries)) {
                         sort_maps_by($children_entries, 'title');
@@ -1081,11 +1149,16 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             if (($consider_validation) && (!is_null($cma_info['validated_field']))) {
                 $where[$cma_info['validated_field']] = 1;
             }
-            $select = array('r.*');
+
             $table = $cma_info['parent_spec__table_name'] . ' r';
+
+            $lang_fields = [];
             if ($cma_info['parent_spec__table_name'] != $cma_info['table']) {
-                $select[] = 'r2.*';
+                $select = $this->select_fields($cma_info, 'r2', $lang_fields);
+                $select[] = 'r.' . $cma_info['parent_spec__field_name'];
                 $table .= ' JOIN ' . $cma_info['connection']->get_table_prefix() . $cma_info['table'] . ' r2 ON r2.' . $cma_info['id_field'] . '=r.' . $cma_info['parent_spec__field_name'];
+            } else {
+                $select = $this->select_fields($cma_info, 'r', $lang_fields);
             }
 
             if (substr($cma_info['table'], 0, 2) == 'f_') {
@@ -1094,42 +1167,37 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $db = $GLOBALS['SITE_DB'];
             }
 
-            $skip_children = false;
-            if ($child_cutoff !== null) {
-                $count = $db->query_select_value($table, 'COUNT(*)', $where);
-                if ($count > $child_cutoff) {
-                    $skip_children = true;
+            $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
+            $start = 0;
+            do {
+                $rows = $cma_info['connection']->query_select($table, $select, $where, (is_null($explicit_order_by_subcategories) ? '' : ('ORDER BY ' . $explicit_order_by_subcategories)), $max_rows_per_loop, $start, false, $lang_fields);
+
+                if (($start == 0) && ($child_cutoff !== null) && (count($rows) > $child_cutoff)) {
+                    $rows = array(); // Too many to process. We don't do with a COUNT(*) query because on balance of probability there won't be too many child rows and we can save a count query at the cost of the small risk of loading excess data
                 }
-            }
 
-            if (!$skip_children) {
-                $lang_fields = isset($GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']]) ? $GLOBALS['TABLE_LANG_FIELDS_CACHE'][$cma_info['parent_spec__table_name']] : array();
-
-                $start = 0;
-                do {
-                    $rows = $cma_info['connection']->query_select($table, $select, $where, (is_null($explicit_order_by_subcategories) ? '' : ('ORDER BY ' . $explicit_order_by_subcategories)), SITEMAP_MAX_ROWS_PER_LOOP, $start, false, $lang_fields);
-                    foreach ($rows as $child_row) {
-                        // FUDGE
-                        if (($table == 'galleries r') && (addon_installed('galleries')) && (get_option('show_empty_galleries') == '0')) {
-                            require_code('galleries');
-                            if (!gallery_has_content($child_row['name'])) {
-                                continue;
-                            }
-                        }
-
-                        if ($this->content_type == 'comcode_page') {
-                            $child_page_link = $zone . ':' . $child_row['the_page'];
-                        } else {
-                            $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . ($cma_info['category_is_string'] ? $child_row[$cma_info['parent_spec__field_name']] : strval($child_row[$cma_info['parent_spec__field_name']]));
-                        }
-                        $child_node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
-                        if ($child_node !== null) {
-                            $children_categories[] = $child_node;
+                foreach ($rows as $child_row) {
+                    // FUDGE
+                    if (($table == 'galleries r') && (addon_installed('galleries')) && (get_option('show_empty_galleries') == '0')) {
+                        require_code('galleries');
+                        if (!gallery_has_content($child_row['name'])) {
+                            continue;
                         }
                     }
-                    $start += SITEMAP_MAX_ROWS_PER_LOOP;
-                } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
-            }
+
+                    if ($this->content_type == 'comcode_page') {
+                        $child_page_link = $zone . ':' . $child_row['the_page'];
+                    } else {
+                        $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . ($cma_info['category_is_string'] ? $child_row[$cma_info['parent_spec__field_name']] : strval($child_row[$cma_info['parent_spec__field_name']]));
+                    }
+                    $child_node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);
+                    if ($child_node !== null) {
+                        $children_categories[] = $child_node;
+                    }
+                }
+                $start += $max_rows_per_loop;
+            } while (count($rows) == $max_rows_per_loop);
 
             if (is_null($explicit_order_by_subcategories)) {
                 sort_maps_by($children_categories, 'title');
@@ -1152,9 +1220,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
         preg_match('#^([^:]*):([^:]*):browse:(.*)$#', $page_link, $matches);
         $id = $matches[3];
 
-        require_code('content');
-        $cma_ob = get_content_object($this->content_type);
-        $cma_info = $cma_ob->info();
+        $cma_info = $this->_get_cma_info();
 
         return array($id, $cma_info['permissions_type_code']);
     }

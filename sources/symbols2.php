@@ -1932,9 +1932,18 @@ function ecv2_LAST_VISIT_TIME($lang, $escaped, $param)
  */
 function ecv2_MEMBER_OVERRIDE($lang, $escaped, $param)
 {
-    $value = get_param_string('id', '');
-    if ((!is_numeric($value)) || ($value == '')) {
-        $value = strval(get_member());
+    $value = strval(get_member());
+
+    if ((get_page_name() == 'members') && (get_param_string('type', 'browse') == 'view')) {
+        $user = get_param_string('id', '');
+        if (is_string($user)) {
+            $member_id_of = $GLOBALS['FORUM_DRIVER']->get_member_from_username($user);
+            if ($member_id_of !== null) {
+                $value = strval($member_id_of);
+            }
+        } else {
+            $value = $user;
+        }
     }
 
     if ($GLOBALS['XSS_DETECT']) {

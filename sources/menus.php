@@ -39,7 +39,7 @@ function init__menus()
  * @param  SHORT_TEXT $menu The menu identifier to use (may be the name of a editable menu, or syntax to load from the Sitemap)
  * @param  boolean $silent_failure Whether to silently return blank if the menu does not exist
  * @param  boolean $apply_highlighting Whether to apply current-screen highlighting
- * @return array A pair: The generated Tempcode of the menu, the menu nodes
+ * @return array A tuple: The generated Tempcode of the menu, the menu nodes, whether we flattened
  */
 function build_menu($type, $menu, $silent_failure = false, $apply_highlighting = true)
 {
@@ -74,8 +74,23 @@ function build_menu($type, $menu, $silent_failure = false, $apply_highlighting =
 
     $content->handle_symbol_preprocessing(); // Optimisation: we are likely to have lots of page-links in here, so we want to spawn them to be detected for mass moniker loading
 
-    if (strpos(serialize($root), 'keep_') === false) {/*Will only work if there are no keep_ parameters within the menu itself, as the quick caching will get confused by that*/
-        $content = apply_quick_caching($content);
+    $flattened = false;
+    if (has_caching_for('block')) {
+        if ($is_sitemap_menu) {
+            $flattened = true; // We can assume that a Sitemap menu will not include keep_* parameters
+        } else {
+            if (function_exists('json_encode')) {
+                $sz = json_encode($root); // Faster
+            } else {
+                $sz = serialize($root);
+            }
+            if (strpos($sz, 'keep_') === false) {/*Will only work if there are no keep_ parameters within the menu itself, as the quick caching will get confused by that*/
+                $flattened = true;
+            }
+        }
+        if ($flattened) {
+            $content = apply_quick_caching($content);
+        }
     }
 
     // Edit link
@@ -106,7 +121,7 @@ function build_menu($type, $menu, $silent_failure = false, $apply_highlighting =
         $content = $_content;
     }
 
-    return array($content, $root);
+    return array($content, $root, $flattened);
 }
 
 /**
@@ -229,6 +244,12 @@ function _build_sitemap_menu($menu)
             }
         }
 
+        $meta_gather = SITEMAP_GATHER_IMAGE;
+        if (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0) {
+            // For performance we only gather this for the proper page-grouping menus, not general sitemaps
+            $meta_gather = $meta_gather | SITEMAP_GATHER_DESCRIPTION;
+        }
+
         $node = retrieve_sitemap_node(
             $page_link,
             /*$callback=*/
@@ -240,7 +261,7 @@ function _build_sitemap_menu($menu)
             $options,
             /*$zone=*/
             '_SEARCH',
-            SITEMAP_GATHER_DESCRIPTION | SITEMAP_GATHER_IMAGE
+            $meta_gather
         );
 
         if ($node === null) {
@@ -691,7 +712,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             ), null, false, 'MENU_BRANCH_tree'));
         }
     }
-    if (($children->is_empty()) && ($url->is_empty())) {
+    if (($page_link == '') && ($children->is_empty())) {
         return array(null, false); // Nothing here!
     }
 
@@ -700,7 +721,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
     $tooltip = isset($branch['extra_meta']['description']) ? $branch['extra_meta']['description'] : new Tempcode();
 
     // How to display
-    if ((!isset($branch['modifiers']['expanded'])) && (!$expand_this) && (!$current_page) && ($url->is_empty())) {
+    if ((!isset($branch['modifiers']['expanded'])) && (!$expand_this) && (!$current_page) && ($page_link == '')) {
         $display = has_js() ? 'none' : 'block'; // We remap to 'none' using JS. If no JS, it remains visible. Once we have learn't we have JS, we don't need to do it again
     } else {
         $display = 'block';

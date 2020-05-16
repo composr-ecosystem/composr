@@ -80,6 +80,10 @@ class Hook_sitemap_banner extends Hook_sitemap_content
             }
         }
 
+        $select = $this->select_fields();
+
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
             $where_map = array();
@@ -89,7 +93,7 @@ class Hook_sitemap_banner extends Hook_sitemap_content
             if (!has_privilege(get_member(), 'view_anyones_banner_stats')) {
                 $where_map['submitter'] = get_member();
             }
-            $rows = $GLOBALS['SITE_DB']->query_select('banners', array('*'), $where_map, 'ORDER BY name', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('banners', $select, $where_map, 'ORDER BY name', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':source=' . $row['name'];
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
@@ -98,8 +102,8 @@ class Hook_sitemap_banner extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         return $nodes;
     }
@@ -123,8 +127,9 @@ class Hook_sitemap_banner extends Hook_sitemap_content
     public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false)
     {
         $page_link_fudged = preg_replace('#:source=#', ':', $page_link);
-        $_ = $this->_create_partial_node_structure($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
+        $_ = $this->_create_partial_node_structure($page_link_fudged, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
         if ($_ === null) {
+
             return null;
         }
         list($content_id, $row, $partial_struct) = $_;

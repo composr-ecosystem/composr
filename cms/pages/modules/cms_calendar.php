@@ -580,6 +580,9 @@ class Module_cms_calendar extends Standard_crud_module
 
         // Type
         $type_list = create_selection_list_event_types($type);
+        if ($type_list->is_empty()) {
+            warn_exit(do_lang_tempcode('NO_CATEGORIES', 'calendar_type'));
+        }
         $fields->attach(form_input_list(do_lang_tempcode('TYPE'), do_lang_tempcode('DESCRIPTION_EVENT_TYPE'), 'type', $type_list));
 
         // Priority

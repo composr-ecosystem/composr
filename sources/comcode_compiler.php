@@ -452,7 +452,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
         '</composr-test>',
     );
 
-    $link_terminator_strs = array(' ', "\n", ']', '[', ')', '"', '>', '<', '}', '{', ".\n", ', ', '. ', "'", '&nbsp;', '&quot;', '&rdquo;', '&ldquo;');
+    $link_terminator_strs = array(' ', "\n", ']', '[', ')', '"', '>', '<', '}', '{', ".\n", ', ', '. ', "'", '&nbsp;', '&quot;', '&rdquo;', '&ldquo;', "\0");
     if (get_charset() == 'utf-8') {
         $nbsp = chr(hexdec('C2')) . chr(hexdec('A0'));
         $link_terminator_strs[] = $nbsp;

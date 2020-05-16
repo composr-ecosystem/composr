@@ -116,7 +116,7 @@ class Hook_profiles_tabs_about
             }
         }
         require_code('cns_members2');
-        if ((!is_guest()) && (cns_may_whisper($member_id_of)) && (has_actual_page_access($member_id_viewing, 'topics')) && (cns_may_make_private_topic()) && ($member_id_viewing != $member_id_of)) {
+        if ((cns_may_make_private_topic()) && (cns_may_whisper($member_id_of)) && ($member_id_viewing != $member_id_of)) {
             $modules[] = (!addon_installed('cns_forum')) ? null : array('contact', do_lang_tempcode('ADD_PRIVATE_TOPIC'), build_url(array('page' => 'topics', 'type' => 'new_pt', 'id' => $member_id_of), get_module_zone('topics')), 'buttons/send', 'reply');
         }
         $extra_sections = array();

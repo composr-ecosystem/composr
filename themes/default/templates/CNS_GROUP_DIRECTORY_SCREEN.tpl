@@ -15,7 +15,7 @@
 {+END}
 
 {+START,IF_NON_EMPTY,{OTHERS}}
-	 <h2>{!OTHER_USERGROUPS}</h2>
+	 <h2>{$?,{$IS_EMPTY,{RANKS}},{!OTHER},{!OTHER_USERGROUPS}}</h2>
 
 	 {OTHERS}
 {+END}

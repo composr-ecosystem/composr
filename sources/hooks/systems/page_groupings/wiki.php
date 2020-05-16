@@ -41,7 +41,7 @@ class Hook_page_groupings_wiki
         }
 
         return array(
-            array('cms', 'menu/rich_content/wiki', array('cms_wiki', array('type' => 'browse'), get_module_zone('cms_wiki')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('wiki:WIKI'), make_string_tempcode(escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'COUNT(*)', null, '', true))))), 'wiki:DOC_WIKI'),
+            has_privilege(get_member(), 'submit_lowrange_content', 'cms_wiki') ? array('cms', 'menu/rich_content/wiki', array('cms_wiki', array('type' => 'browse'), get_module_zone('cms_wiki')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('wiki:WIKI'), make_string_tempcode(escape_html(integer_format($GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'COUNT(*)', null, '', true))))), 'wiki:DOC_WIKI') : null,
             array((addon_installed('collaboration_zone') && has_zone_access($member_id, 'collaboration')) ? 'collaboration' : 'rich_content', 'menu/rich_content/wiki', array('wiki', array('type' => 'browse'), get_module_zone('wiki')), do_lang_tempcode('wiki:WIKI')),
         );
     }

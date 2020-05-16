@@ -427,8 +427,8 @@ function _generic_exit($text, $template, $support_match_key_messages = false)
         $GLOBALS['MSN_DB'] = null;
     }
 
-    global $EXITING, $MICRO_BOOTUP;
-    if ((running_script('upgrader')) || ($MICRO_BOOTUP)) {
+    global $EXITING, $MICRO_BOOTUP, $BOOTSTRAPPING;
+    if ((running_script('upgrader')) || ($MICRO_BOOTUP) || ($BOOTSTRAPPING)) {
         critical_error('PASSON', is_object($text) ? $text->evaluate() : escape_html($text));
     }
 
@@ -667,8 +667,8 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
                 if ($row['reason'] == 'LAME_SPAM_HACK') {
                     $is_spammer = true;
                 }
-                $full_reason = do_lang($row['reason'], $row['reason_param_a'], $row['reason_param_b'], null, get_site_default_lang());
-                $summary .= "\n" . '[*]' . $full_reason . "\n" . $row['url'] . "\n" . get_timezoned_date($row['date_and_time']);
+                $full_reason = do_lang($row['reason'], '[tt]' . comcode_escape($row['reason_param_a']) . '[/tt]', '[tt]' . comcode_escape($row['reason_param_b']) . '[/tt]', null, get_site_default_lang());
+                $summary .= "\n" . '[*]' . $full_reason . "\n[tt]" . comcode_escape($row['url']) . "[/tt]\n" . get_timezoned_date($row['date_and_time']);
             }
             $summary .= "\n" . '[/list]';
             if ($is_spammer) {
@@ -754,7 +754,8 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     if (!addon_installed('securitylogging')) {
         return false;
     }
-    if ($ip == '') {
+    require_code('type_sanitisation');
+    if (!is_ip_address($ip)) {
         return false;
     }
 

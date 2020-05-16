@@ -398,12 +398,16 @@ class Hook_html_site
             // Find page-link for page
             $slash_count = substr_count($content_file, '/');
             if ($slash_count == 0) {
-                $content_file = '/' . $content_file;
+                $zone = '';
+                $page = $content_file;
             } elseif ($slash_count > 1) {
-                $last_slash_pos = strrpos($content_file, '/');
-                $content_file = str_replace('/', '_', substr($content_file, 0, $last_slash_pos)) . substr($content_file, 0, $last_slash_pos);
+                $zone = str_replace('/', '_', dirname($content_file));
+                $file = basename($content_file);
             }
-            list($zone, $page) = explode('/', preg_replace('#\..*$#', '', $content_file), 2);
+            $page = preg_replace('#\..*$#', '', $page); // Strip file extension(s)
+            if (trim($page) == '') {
+                continue;
+            }
             if ($page == 'index') {
                 $page = 'start';
             }

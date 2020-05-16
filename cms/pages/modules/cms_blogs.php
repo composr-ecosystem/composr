@@ -285,6 +285,9 @@ class Module_cms_blogs extends Standard_crud_module
         }
 
         $cats1 = create_selection_list_news_categories($main_news_category, false, true, false, true);
+        if ($cats1->is_empty()) {
+            warn_exit(do_lang_tempcode('NO_CATEGORIES', 'news_category'));
+        }
         $cats2 = create_selection_list_news_categories((is_null($news_category) || (count($news_category) == 0)) ? array(get_param_integer('cat', null)) : $news_category, false, true, true, false);
 
         $fields = new Tempcode();

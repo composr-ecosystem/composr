@@ -578,7 +578,7 @@ function wiki_delete_page($page_id)
     } while (array_key_exists(0, $posts));
 
     // Log revision
-    $log_id = log_it('WIKI_DELETE_PAGE', strval($page_id), $_title);
+    $log_id = log_it('WIKI_DELETE_PAGE', strval($page_id), get_translated_text($_title));
     if (addon_installed('actionlog')) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase();

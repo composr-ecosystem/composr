@@ -1,8 +1,10 @@
 {$,This is not a usual template to use, as it's for read-only ratings only. Usually we use RATING_INLINE_DYNAMIC}
 
+{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{HAS_RATINGS}}}
+
 {$,Show the current result (nothing shows if nobody voted yet)}
 {+START,IF,{HAS_RATINGS}}
-	<div class="RATING_INLINE RATING_INLINE_STATIC" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+	<div class="RATING_INLINE RATING_INLINE_STATIC"{+START,IF,{$GET,has_schema_reviews}} itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating"{+END}>
 		{$SET,i,0}
 		{+START,LOOP,ALL_RATING_CRITERIA}
 			<div{+START,IF,{$NEQ,{$GET,i},0}} class="horiz_field_sep"{+END}>

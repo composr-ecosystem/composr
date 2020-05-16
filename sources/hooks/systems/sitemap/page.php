@@ -83,10 +83,10 @@ class Hook_sitemap_page extends Hook_sitemap_base
         }
 
         $path = end($details);
-        $row = $this->_load_row_from_page_groupings($row, $zone, $page);
+        $row = $this->_load_row_from_page_groupings($row, $meta_gather, $zone, $page);
 
         $struct = array(
-            'title' => make_string_tempcode(escape_html(titleify($page))),
+            'title' => null,
             'content_type' => 'page',
             'content_id' => $zone . ':' . $page,
             'modifiers' => array(),
@@ -205,6 +205,10 @@ class Hook_sitemap_page extends Hook_sitemap_base
                     $struct['title'] = make_string_tempcode(do_lang('PAGE') . ': ' . $page);
                 }
                 break;
+        }
+
+        if ($struct['title'] === null) {
+            $struct['title'] = make_string_tempcode(escape_html(titleify($page)));
         }
 
         // Get more details from menu link / page grouping?

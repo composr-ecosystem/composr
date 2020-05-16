@@ -319,12 +319,18 @@ class Block_main_members
         $count_sql = 'SELECT COUNT(DISTINCT r.id) FROM ' . $main_sql;
 
         inform_non_canonical_parameter($block_id . '_max');
-        $max = get_param_integer($block_id . '_max', array_key_exists('max', $map) ? intval($map['max']) : 30);
+        $default_max = array_key_exists('max', $map) ? intval($map['max']) : 30;
+        $max = get_param_integer($block_id . '_max', $default_max);
         if ($max == 0) {
             $max = 30;
         }
         inform_non_canonical_parameter($block_id . '_start');
         $start = get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0);
+
+        // Don't allow guest bots to probe too deep into the member directory, it gets very slow; the XML Sitemap is for guiding to topics like this
+        if (($start > $default_max * 5) && (is_guest()) && (!is_null(get_bot_type()))) {
+            access_denied('NOT_AS_GUEST');
+        }
 
         $max_rows = $GLOBALS['FORUM_DB']->query_value_if_there($count_sql);
 

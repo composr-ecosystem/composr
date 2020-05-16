@@ -46,21 +46,26 @@ class Hook_cron_newsletter_drip_send
 
         $to_send = $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', array('*'), null, 'ORDER BY d_inject_time DESC', $mails_per_send);
         if (count($to_send) != 0) {
-            // Quick cleanup for maximum performance
-            $id_list = '';
+            // Send
+            require_code('mail');
+            $sent = array();
             foreach ($to_send as $mail) {
+                $success = mail_wrap($mail['d_subject'], $mail['d_message'], array($mail['d_to_email']), array($mail['d_to_name']), $mail['d_from_email'], $mail['d_from_name'], $mail['d_priority'], null, true, null, true, $mail['d_html_only'] == 1, false, $mail['d_template'], true);
+
+                if ($success) {
+                    $sent[] = $mail['id'];
+                }
+            }
+
+            // Mass cleanup for maximum performance
+            $id_list = '';
+            foreach ($sent as $sent_id) {
                 if ($id_list != '') {
                     $id_list .= ' OR ';
                 }
-                $id_list .= 'id=' . strval($mail['id']);
+                $id_list .= 'id=' . strval($sent_id);
             }
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'newsletter_drip_send WHERE ' . $id_list, null, null, false, true);
-
-            // Send
-            require_code('mail');
-            foreach ($to_send as $mail) {
-                mail_wrap($mail['d_subject'], $mail['d_message'], array($mail['d_to_email']), array($mail['d_to_name']), $mail['d_from_email'], $mail['d_from_name'], $mail['d_priority'], null, true, null, true, $mail['d_html_only'] == 1, false, $mail['d_template'], true);
-            }
         }
     }
 }

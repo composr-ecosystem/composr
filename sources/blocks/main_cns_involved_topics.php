@@ -126,7 +126,7 @@ class Block_main_cns_involved_topics
             }
             $topic_rows_map = array();
             foreach ($topic_rows as $topic_row) {
-                if (has_category_access(get_member(), 'forums', strval($topic_row['t_forum_id']))) {
+                if (cns_may_access_topic($topic_row['id'], get_member(), $topic_row)) {
                     $topic_rows_map[$topic_row['id']] = $topic_row;
                 }
             }
@@ -147,6 +147,7 @@ class Block_main_cns_involved_topics
                 $topics = do_template('CNS_FORUM_TOPIC_WRAPPER', array(
                     '_GUID' => '8723270b128b4eea47ab3c756b342e14',
                     'ORDER' => '',
+                    'TYPE' => 'main_cns_involved_topics',
                     'MAX' => '15',
                     'MAY_CHANGE_MAX' => false,
                     'BREADCRUMBS' => $breadcrumbs,
