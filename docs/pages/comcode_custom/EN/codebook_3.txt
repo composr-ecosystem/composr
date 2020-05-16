@@ -623,6 +623,7 @@ We have the following which are either unlikely to be useful, or potentially uns
   - [tt]skip_fulltext_sqlserver[/tt] -- set this to '1' if you are using Microsoft SQL Server and want to disable full-text search support. You may do this if you don't like the limitations of SQL Server full-text search (per-table searching, not per-field searching).
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving language string fallback and Comcode fully before sorting)
+  - [tt]search_do_days_fallback[/tt] -- set this to '0' if you don't want to re-search without a recency filter if no results were found
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]
   - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
   - [tt]lots_of_data_in_*[/tt] -- set this to '1', with '*' replaced with a database table name, if you want the Selectcode mechanism to work with recursive DB lookups rather than one huge flat lookup
