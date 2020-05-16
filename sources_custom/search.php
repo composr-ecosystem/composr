@@ -61,7 +61,7 @@ And change create_table code
   + and -
   ", including how quote grabs phrases which may include stop words, how maximum ngram length affects quoting, and how stemming happens but only for ngrams that are singular (so quoted phrased will not be stemmed but +/- operators do operate on stemmed ngrams)
   How anything else is 'fuzzy' for a relevance search with highest relevance first, unless fuziness is disabled - and otherwise just works like '+'
- Explain how to dump the contents of *_fulltext_index tables to force regeneration
+ Explain how to dump the contents of *_fulltext_index tables to force regeneration, including index regeneration
  Explain how translations made through translation queue will not rebuild index, must be through content editing
  Explain advantages over regular full-text: multi-language, much more configurable
  Explain ft_index_commonality
@@ -98,7 +98,7 @@ function can_use_composr_fulltext_engine($hook, $query = null, $has_heavy_filter
         $only_singular_ngrams = (intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1);
 
         $_trigger_words = get_value('fulltext_trigger_words', '', true);
-        $trigger_words = ($_trigger_words == '') ? array() : array_map('cms_strtolower', array_map('trim', explode(',', $_trigger_words)));
+        $trigger_words = ($_trigger_words == '') ? array() : array_map('cms_mb_strtolower', array_map('trim', explode(',', $_trigger_words)));
 
         if (($only_singular_ngrams) || (!empty($trigger_words))) {
             $tokeniser = Composr_fulltext_engine::get_tokeniser(user_lang());
@@ -127,7 +127,7 @@ function can_use_composr_fulltext_engine($hook, $query = null, $has_heavy_filter
 
     if (($query !== null) && (strpos($query, '"') !== false)) {
         if (!empty($trigger_words)) {
-            if (!empty(array_intersect(array_map('cms_strtolower', array_keys($ngrams)), $trigger_words))) {
+            if (!empty(array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_words))) {
                 return true; // We will use Composr fast custom index if there's certain stop words
             }
         }

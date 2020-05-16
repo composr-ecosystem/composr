@@ -111,7 +111,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         foreach ($zones as $zone) {
             $langs = find_all_langs();
             foreach (array_keys($langs) as $lang) {
-                $pages = find_all_pages($zone, 'comcode_custom/' . $lang, 'txt', false, $since, FIND_ALL_PAGES__ALL);
+                $pages = find_all_pages($zone, 'comcode_custom/' . $lang, 'txt', false, $clean_scan ? null : $since, FIND_ALL_PAGES__ALL);
                 foreach ($pages as $page => $page_type) {
                     if (preg_match('#(^panel_|_)#', $page) == 0) {
                         list($file_base, $file_path) = find_comcode_page($lang, $page, $zone);
@@ -196,7 +196,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         require_lang('zones');
 
         // Calculate and perform query
-        if (can_use_composr_fulltext_engine('comcode_pages', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
+        $composr_fulltext_engine = can_use_composr_fulltext_engine('comcode_pages', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
+        if ($composr_fulltext_engine) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             // Calculate our where clause (search)
@@ -331,7 +332,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             }
         }
 
-        if ($author == '') {
+        if (($author == '') && (!$composr_fulltext_engine)) {
             // Make sure we record that for all cached Comcode pages, we know of them (only those not cached would not have been under the scope of the current search)
             $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('the_zone', 'the_page'));
             foreach ($all_pages as $row) {
