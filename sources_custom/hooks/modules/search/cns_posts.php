@@ -143,6 +143,8 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $index_table = 'f_posts_fulltext_index';
         $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
 
+        $has_custom_fields = ($GLOBALS['FORUM_DB']->query_select_value_if_there('catalogue_fields', 'id', array('c_name' => '_post')) !== null);
+
         $fields_to_index = array(
             'p_title' => APPEARANCE_CONTEXT_title,
             'p_post' => APPEARANCE_CONTEXT_body,
@@ -171,13 +173,17 @@ class Hook_search_cns_posts extends FieldsSearchHook
             foreach ($rows as $row) {
                 $content_fields = $row + array('i_starter' => ($row['t_cache_first_post_id'] == $row['id']) ? 1 : 0);
 
-                $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_post', $row['id']);
+                if ($has_custom_fields) {
+                    $ce_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entry_linkage', 'catalogue_entry_id', array('content_type' => 'post', 'content_id' => strval($row['id'])));
+                    if ($ce_id !== null) {
+                        $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_post', $ce_id);
+                    }
+                }
 
                 $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, null, $clean_scan);
 
                 $start_id = $row['id'];
             }
-            $start += $max;
         } while (!empty($rows));
     }
 

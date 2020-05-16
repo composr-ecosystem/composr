@@ -92,6 +92,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         $index_table = 'cpages_fulltext_index';
         $clean_scan = ($GLOBALS['SITE_DB']->query_value_null_ok($index_table, 'i_ngram') === null);
 
+        $has_custom_fields = ($GLOBALS['FORUM_DB']->query_select_value_if_there('catalogue_fields', 'id', array('c_name' => '_comcode_page')) !== null);
+
         $fields_to_index = array(
             'page_name' => APPEARANCE_CONTEXT_title,
             'page_content' => APPEARANCE_CONTEXT_body,
@@ -125,7 +127,12 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                             'meta_description' => $description,
                         );
 
-                        $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_comcode_page', $zone . ':' . $page, $lang);
+                        if ($has_custom_fields) {
+                            $ce_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entry_linkage', 'catalogue_entry_id', array('content_type' => 'comcode_page', 'content_id' => $zone . ':' . $page));
+                            if ($ce_id !== null) {
+                                $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_comcode_page', $zone . ':' . $page, $lang);
+                            }
+                        }
 
                         $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang, $clean_scan);
                     }
