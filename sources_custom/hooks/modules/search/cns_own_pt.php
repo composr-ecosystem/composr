@@ -169,7 +169,6 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
 
                 $start_id = $row['id'];
             }
-            $start += $max;
         } while (!empty($rows));
     }
 

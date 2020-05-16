@@ -66,6 +66,8 @@ And change create_table code
  Automatic reindexing of content edited via translation queue
 
 13) Code change: disclude -> exclude
+
+14) Make 'search_do_days_fallback' hidden option official
 */
 
 function init__search()

@@ -698,10 +698,10 @@ class Module_search
         // Now glue our templates together
         $out = build_search_results_interface($results, $start, $max, $direction, $id == '');
         if ($out->is_empty()) {
-            if ((is_integer($cutoff)) && ($GLOBALS['TOTAL_SEARCH_RESULTS'] == 0)) {
+            if ((is_integer($cutoff)) && ($GLOBALS['TOTAL_SEARCH_RESULTS'] == 0) && (get_value('search_do_days_fallback', '1') == '1')) {
                 $ret_maybe = $this->results($id, $author, $author_id, null, $sort, $direction, $only_titles, $search_under);
                 if (!$ret_maybe[0]->is_empty()) {
-                    attach_message(do_lang_tempcode('NO_RESULTS_DAYS', escape_html(integer_format(intval((time() - $cutoff) / 24.0 * 60.0 * 60.0)))), 'notice');
+                    attach_message(do_lang_tempcode('NO_RESULTS_DAYS', escape_html(integer_format(intval((time() - $cutoff) / (24.0 * 60.0 * 60.0))))), 'notice');
                     return $ret_maybe;
                 }
             }
