@@ -283,7 +283,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if (can_use_composr_fulltext_engine('catalogue_entries', $content)) {
+        if (can_use_composr_fulltext_engine('catalogue_entries', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'catalogue_entries r';
@@ -292,12 +292,29 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             $where_clause = '';
             $extra_join_clause = '';
             $sq = build_search_submitter_clauses('ixxx.i_submitter', $author_id, $author);
-            if (is_null($sq)) {
+            if ($sq === null) {
                 return array();
             } else {
                 $extra_join_clause .= $sq;
             }
             $this->_handle_date_check($cutoff, 'ixxx.i_add_time', $extra_join_clause);
+
+            // Category filter
+            if (($search_under != '!') && ($search_under != '-1')) {
+                $cats = explode(',', $search_under);
+                $extra_join_clause .= ' AND (';
+                foreach ($cats as $i => $cat) {
+                    if (trim($cat) == '') {
+                        continue;
+                    }
+
+                    if ($i != 0) {
+                        $extra_join_clause .= ' OR ';
+                    }
+                    $extra_join_clause .= 'ixxx.i_category_id=' . strval(intval($cat));
+                }
+                $extra_join_clause .= ')';
+            }
 
             if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
                 $where_clause .= ' AND ';

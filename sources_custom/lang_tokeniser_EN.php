@@ -66,8 +66,14 @@ class LangTokeniser_EN
         $utf = (get_charset() == 'utf-8');
         $word_char_regexp = '#\w#' . ($utf ? 'u' : '');
 
+        $c = null;
+        $past_c = null;
         $len = cms_mb_strlen($query);
         for ($i = 0; $i < $len; $i++) {
+            if ($c !== null) {
+                $past_c = $c;
+            }
+
             if ($utf) {
                 $c = cms_mb_substr($query, $i, 1);
             } else {
@@ -75,59 +81,53 @@ class LangTokeniser_EN
             }
 
             if (($operator === null) && (!$in_quotes) && ($current_search_token == '')) {
-                switch ($c) {
-                    case '"':
+                if ($c == '"') {
+                    if (($past_c === null) || (trim($past_c) == '')) {
                         $in_quotes = true;
-                        break;
+                        continue;
+                    }
+                } elseif ($c == '+' || $c == '-') {
+                    if ($support_boolean) {
+                        $operator = $c;
+                        continue;
+                    }
+                }
 
-                    case '+':
-                    case '-':
-                        if ($support_boolean) {
-                            $operator = $c;
-                            break;
-                        }
-                        // no break
-
-                    default:
-                        if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
-                            $current_search_token = $c;
-                        }
-                        break;
+                if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
+                    $current_search_token = $c;
                 }
             } else {
-                switch ($c) {
-                    case '"':
-                        if ($in_quotes) {
-                            $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
-                            break;
-                        }
-                        $in_quotes = true;
-                        break;
+                if ($c == '"') {
+                    if ($in_quotes) {
+                        $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
+                    } elseif ($current_search_token == '') {
+                        $in_quotes = true; // E.g. +"foo"
+                    }
+                    continue;
+                }
 
-                    default:
-                        if (($c == "'") && ($current_search_token != '') && ($i != $len - 1)) { // E.g. "Don't"
-                            if ($utf) {
-                                $next_c = cms_mb_substr($query, $i + 1, 1);
-                            } else {
-                                $next_c = $query[$i + 1];
-                            }
-                            if ((($has_ctype) && (ctype_alnum($next_c))) || (preg_match($word_char_regexp, $next_c) != 0)) {
-                                $current_search_token .= $c;
-                                break;
-                            }
-                        }
+                if (($c == "'") && ($current_search_token != '') && ($i != $len - 1)) { // E.g. "Don't"
+                    if ($utf) {
+                        $next_c = cms_mb_substr($query, $i + 1, 1);
+                    } else {
+                        $next_c = $query[$i + 1];
+                    }
+                    if ((($has_ctype) && (ctype_alnum($next_c))) || (preg_match($word_char_regexp, $next_c) != 0)) {
+                        $current_search_token .= $c . $next_c;
+                        $i++;
+                        continue;
+                    }
+                }
 
-                        if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
-                            $current_search_token .= $c;
-                        } elseif (!$in_quotes) {
-                            $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
-                        } else {
-                            $is_singular_ngram = false;
-                            if (substr($current_search_token, -1) != ' ') {
-                                $current_search_token .= ' ';
-                            }
-                        }
-                        break;
+                if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
+                    $current_search_token .= $c;
+                } elseif (!$in_quotes) {
+                    $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
+                } else {
+                    $is_singular_ngram = false;
+                    if (substr($current_search_token, -1) != ' ') {
+                        $current_search_token .= ' ';
+                    }
                 }
             }
         }

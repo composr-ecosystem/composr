@@ -196,14 +196,14 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         require_lang('zones');
 
         // Calculate and perform query
-        if (can_use_composr_fulltext_engine('comcode_pages', $content)) {
+        if (can_use_composr_fulltext_engine('comcode_pages', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             // Calculate our where clause (search)
             $where_clause = '';
             $extra_join_clause = '';
             $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
-            if (is_null($sq)) {
+            if ($sq === null) {
                 return array();
             } else {
                 $where_clause .= $sq;
@@ -212,6 +212,23 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             if ((!is_null($search_under)) && ($search_under != '!')) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= '(' . db_string_equal_to('ixxx.i_zone_name', $search_under) . ')';
+            }
+
+            // Category filter
+            if (($search_under != '!') && ($search_under != '-1')) {
+                $cats = explode(',', $search_under);
+                $extra_join_clause .= ' AND (';
+                foreach ($cats as $i => $cat) {
+                    if (trim($cat) == '') {
+                        continue;
+                    }
+
+                    if ($i != 0) {
+                        $extra_join_clause .= ' OR ';
+                    }
+                    $extra_join_clause .= db_string_equal_to('ixxx.i_zone_name', $cat);
+                }
+                $extra_join_clause .= ')';
             }
 
             if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {

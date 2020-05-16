@@ -18,6 +18,61 @@
  * @package    nusearch
  */
 
+/*
+TODO when integrating into v11...
+
+1)
+Grep for:
+$_content_bits = explode(' ', str_replace('"', '', cms_preg_replace_safe('#(^|\s)\+#', '', cms_preg_replace_safe('#(^|\s)\-#', '', $content))));
+And change to use query_to_search_tokens
+
+2) Move all to bundled
+
+3) Move new table creation code to modules, and add uninstallation code
+
+4) Call 'delete_from_index' throughout any delete actualiser functions
+
+5) Turn hidden options into real ones, and also...
+ Checkboxes for when to use nusearch  
+  Particular languages flagged to prefer it 
+  Heavy filtered queries 
+  If database driver does not have fulltext search 
+  Any simple search query
+  Queries matching a particular regular expression
+
+6) Fix any "Fix in v11" comments
+
+7) Leave our old get_search_rows implementation as a non-Cron or hidden-value activated fallback
+
+8) Make boolean search support implicit with no boolean tickbox and no conjunctive operator option, with simple support for only [+-"], and generally tidy up the API to just pass through queries to hooks unaltered
+
+9) Alter get_search_rows parameter naming and order to be sane and consistent with Composr_fulltext_engine->get_search_rows
+
+10) Change db_meta_indices primary key:
+$GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', array('i_table', 'i_name'));
+$GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
+And change create_table code
+
+11) Documentation for Composr fast custom index:
+ Generally review existing documentation
+ Overview of all the config options
+ Move the comments at the top of this file to the documentation
+ Clearly explain the boolean search syntax supported, including:
+  + and -
+  ", including how quote grabs phrases which may include stop words, how maximum ngram length affects quoting, and how stemming happens but only for ngrams that are singular (so quoted phrased will not be stemmed but +/- operators do operate on stemmed ngrams)
+  How anything else is 'fuzzy' for a relevance search with highest relevance first, unless fuziness is disabled - and otherwise just works like '+'
+ Explain how to dump the contents of *_fulltext_index tables to force regeneration
+ Explain how translations made through translation queue will not rebuild index, must be through content editing
+ Explain advantages over regular full-text: multi-language, much more configurable
+ Explain ft_index_commonality
+ Document tokeniser customisation in tut_intl
+
+12) Add future ideas to tracker
+ Synomym support
+
+13) Code change: disclude -> exclude
+*/
+
 function init__search()
 {
     define('APPEARANCE_CONTEXT_title', 1);
@@ -30,42 +85,60 @@ function init__search()
  *
  * @param string $hook The hook it is for (assumption that this hook is at least capable in some situations)
  * @param ?string $query Query to run for (null: no query to check at this point)
+ * @param ?boolean $has_heavy_filtering Whether there is heavy filtering (which suggests to use Composr fast custom index) (null: unknown at this point)
  * @return boolean Whether we can
  */
-function can_use_composr_fulltext_engine($hook, $query = null)
+function can_use_composr_fulltext_engine($hook, $query = null, $has_heavy_filtering = null)
 {
-    if ((!cron_installed()) && (get_param_integer('keep_composr_fulltext_engine', null) === null)) {
-        return false;
+    if (($query !== null) && ($query == '')) {
+        return false; // Blank queries not supported
     }
 
-    if (get_value('composr_fulltext_engine__comcode_pages', '1', true) == '0') {
-        return false;
+    if (($query !== null) && (strpos($query, '"') !== false)) {
+        $only_singular_ngrams = (intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1);
+
+        $_trigger_words = get_value('fulltext_trigger_words', '', true);
+        $trigger_words = ($_trigger_words == '') ? array() : array_map('cms_strtolower', array_map('trim', explode(',', $_trigger_words)));
+
+        if (($only_singular_ngrams) || (!empty($trigger_words))) {
+            $tokeniser = Composr_fulltext_engine::get_tokeniser(user_lang());
+            $ngrams = $tokeniser->query_to_search_tokens($query);
+        }
+
+        if ($only_singular_ngrams) {
+            if (array_unique(array_values($ngrams[0] + $ngrams[1] + $ngrams[2])) !== array(true)) {
+                return false; // Quoted text not supported in this configuration
+            }
+        }
     }
 
-    if (($query !== null) && (strpos($query, '"') !== false) && (intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1)) {
-        return false;
+    $by_url = get_param_integer('keep_composr_fulltext_engine', null);
+    if ($by_url !== null) {
+        return ($by_url == 1); // Explicitly specified by URL
     }
 
-    if (get_param_integer('keep_composr_fulltext_engine', 1) == 0) {
-        return false;
+    if (!cron_installed()) {
+        return false; // No indexing working
     }
 
-    return true;
+    if (get_value('composr_fulltext_engine__' . $hook, '1', true) == '0') {
+        return false; // Explicitly disabled
+    }
+
+    if (($query !== null) && (strpos($query, '"') !== false)) {
+        if (!empty($trigger_words)) {
+            if (!empty(array_intersect(array_map('cms_strtolower', array_keys($ngrams)), $trigger_words))) {
+                return true; // We will use Composr fast custom index if there's certain stop words
+            }
+        }
+    }
+
+    if ($has_heavy_filtering !== null) {
+        return $has_heavy_filtering; // We will use Composr fast custom index if there's heavy filtering as there'll be a big speed boost
+    }
+
+    return false; // Default to use traditional search
 }
-
-// This implements an alternative to MySQL full-text search, the Composr fast custom index.
-//  It is much faster as all content indexing happens through a single table, and we control how deep we search.
-//   Except quoted strings are an issue due to necessary index size, so we may revert to MySQL search for these cases, depending on configuration.
-//    Other algorithms store word sequencing information which goes completely against our strategy.
-//  Other limitations:
-//   Except searches with no keywords will not work
-//   Except to get maximum speed you'll need to limit ranking to the least common keyword
-//   Except to get maximum speed you'll need to turn off fuzzy and
-//  We also have full control over stemming, maximum ngram sizes, and stop word lists.
-//  We also can index in multiple-languages.
-//  We also don't have problems de-duplicating searches run across different fields.
-//  We do not need word size limits.
-// This does not 100% replace MySQL full-text search. The capability remains in the system for those who prefer it, or for non-search-engine uses of it.
 
 class Composr_fulltext_engine
 {
@@ -107,21 +180,39 @@ class Composr_fulltext_engine
             fatal_exit('By convention any Composr full-text index table must end with _fulltext_index');
         }
 
+        // Load configuration
+        global $SEARCH_CONFIG_OVERRIDE;
+        if (isset($SEARCH_CONFIG_OVERRIDE['fulltext_allow_fuzzy_search'])) {
+            $allow_fuzzy_search = ($SEARCH_CONFIG_OVERRIDE['fulltext_allow_fuzzy_search'] == '1');
+        } else {
+            $allow_fuzzy_search = (get_value('fulltext_allow_fuzzy_search', '1', true) == '1');
+        }
+        if (isset($SEARCH_CONFIG_OVERRIDE['fulltext_scale_by_commonality'])) {
+            $scale_by_commonality = ($SEARCH_CONFIG_OVERRIDE['fulltext_scale_by_commonality'] == '1');
+        } else {
+            $scale_by_commonality = (get_value('fulltext_scale_by_commonality', '1', true) == '1');
+        }
+        if (isset($SEARCH_CONFIG_OVERRIDE['fulltext_use_imprecise_ordering'])) {
+            $use_imprecise_ordering = ($SEARCH_CONFIG_OVERRIDE['fulltext_use_imprecise_ordering'] == '1');
+        } else {
+            $use_imprecise_ordering = (get_value('fulltext_use_imprecise_ordering', '1', true) == '1');
+        }
+
         $lang = user_lang();
 
-        $tokeniser = $this->get_tokeniser($lang);
-        $stemmer = $this->get_stemmer($lang);
+        $tokeniser = self::get_tokeniser($lang);
+        $stemmer = self::get_stemmer($lang);
 
         // We start with the content table, which is needed for things like validation checks, or other stuff that basically won't be a dominant index culling factor
         $join = $content_table;
 
-        if ($order == '') {
+        if (($order == '') || ($order == 'relevance')) {
             $order = 'contextual_relevance';
         }
 
         // Work out our search terms
         list($fuzzy_and, $and, $not) = $tokeniser->query_to_search_tokens($content, $boolean_search);
-        if (($order != 'contextual_relevance') || ($direction == 'ASC') || (get_value('fulltext_allow_fuzzy_search', '1', true) === '0')) {
+        if (($order != 'contextual_relevance') || ($direction == 'ASC') || (!$allow_fuzzy_search)) {
             // We only allow fuzzy search when returning results in relevance order, with most relevant first
             //  - this is because it makes no sense for any other orders
             // We also allow it to be disabled as it could have major performance slow-down for large datasets, it's a lot to pull out from the index, join, and sort.
@@ -135,15 +226,8 @@ class Composr_fulltext_engine
         );
 
         // Load commonalities so we can scale by them
-        if ((!empty($fuzzy_and)) && (!empty($and)) && (get_value('fulltext_scale_by_commonality', '1', true) == '1')) {
-            $commonality_query = 'SELECT * FROM ' . get_table_prefix() . 'ft_index_commonality WHERE ';
-            foreach (array_keys($fuzzy_and + $and) as $i => $ngram) {
-                if ($i != 0) {
-                    $commonality_query .= ' OR ';
-                }
-                $commonality_query .= db_string_equal_to('c_ngram', $ngram);
-            }
-            $commonalities = collapse_2d_complexity('c_ngram', 'c_commonality', $db->query($commonality_query . ' ORDER BY c_commonality'));
+        if (((!empty($fuzzy_and)) || (!empty($and))) && ($scale_by_commonality)) {
+            $commonalities = $this->load_commonalities($db, array_keys($fuzzy_and + $and));
 
             // Order search terms by commonality
             $_fuzzy_and = array();
@@ -163,8 +247,6 @@ class Composr_fulltext_engine
         } else {
             $commonalities = null;
         }
-
-        $use_imprecise_ordering = (get_value('fulltext_use_imprecise_ordering', '1', true) == '1');
 
         // Code for considering permissions
         if (($permissions_module !== null) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
@@ -227,7 +309,7 @@ class Composr_fulltext_engine
                     if ($i == 0) {
                         $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=r.' . $content_table_field;
                     } else {
-                        $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=i' . strval($i - 1) . '.' . $index_table_field;
+                        $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=i0.' . $index_table_field;
                     }
                     $key_i++;
                 }
@@ -324,9 +406,16 @@ class Composr_fulltext_engine
             exit($t_rows_sql);
         }
 
+        // Useful for automated testing
+        global $LAST_SEARCH_QUERY, $LAST_COUNT_QUERY;
+
+        $LAST_SEARCH_QUERY = $t_rows_sql;
         $t_rows = $db->query($t_rows_sql, $max, $start);
 
-        $t_count_sql = 'SELECT COUNT(*) FROM ' . $join . ' WHERE 1=1' . $where_clause;
+        $t_count_sql = '(SELECT COUNT(*) FROM (';
+        $t_count_sql .= 'SELECT 1 FROM ' . $join . ' WHERE 1=1' . $where_clause;
+        $t_count_sql .= ' LIMIT 1000) counter)';
+        $LAST_COUNT_QUERY = $t_count_sql;
         $t_count = $db->query_value_if_there($t_count_sql);
         $GLOBALS['TOTAL_SEARCH_RESULTS'] += $t_count;
 
@@ -349,6 +438,8 @@ class Composr_fulltext_engine
      */
     public function active_search_has_special_filtering()
     {
+        // TODO: This needs to be able to distinguish between tick boxes supported in index, and fully custom filtering -- and then can_use_composr_fulltext_engine can make use of this to infer which engine to use based on configuration
+
         foreach ($_GET as $key => $val) {
             if ((substr($key, 0, 7) == 'option_') && ($val != '')) {
                 return true;
@@ -586,8 +677,8 @@ class Composr_fulltext_engine
             $max_ngram_size = intval(get_value('fulltext_max_ngram_size', '1', true));
         }
 
-        $tokeniser = $this->get_tokeniser($lang);
-        $stemmer = $this->get_stemmer($lang);
+        $tokeniser = self::get_tokeniser($lang);
+        $stemmer = self::get_stemmer($lang);
 
         $ngrams = array();
 
@@ -647,13 +738,47 @@ class Composr_fulltext_engine
         return isset($stop_list[$lang][$ngram]);
     }
 
+
+    /**
+     * Load up the commonalities for some ngrams, with caching.
+     *
+     * @param  object $db Database connection
+     * @param  array $ngrams List of ngrams
+     * @return array Map between ngram and commonality
+     */
+    protected function load_commonalities($db, $ngrams)
+    {
+        static $cache = array();
+
+        $commonality_query = 'SELECT * FROM ' . get_table_prefix() . 'ft_index_commonality WHERE ';
+        $commonalities = array();
+        $where = '';
+        foreach ($ngrams as $ngram) {
+            if (isset($cache[$ngram])) {
+                $commonalities[$ngram] = $cache[$ngram];
+            } else {
+                if ($where != '') {
+                    $where .= ' OR ';
+                }
+                $where .= db_string_equal_to('c_ngram', $ngram);
+            }
+        }
+        if ($where != '') {
+            $commonality_query .= $where;
+            $results = collapse_2d_complexity('c_ngram', 'c_commonality', $db->query($commonality_query . ' ORDER BY c_commonality'));
+            $commonalities += $results;
+            $cache += $results;
+        }
+        return $commonalities;
+    }
+
     /**
      * Get a tokeniser for a language.
      *
      * @param  LANGUAGE_NAME $lang Language codename
      * @return object Tokeniser
      */
-    protected function get_tokeniser($lang)
+    static protected function get_tokeniser($lang)
     {
         static $tokeniser = array();
         if (!array_key_exists($lang, $tokeniser)) {
@@ -674,7 +799,7 @@ class Composr_fulltext_engine
      * @param  LANGUAGE_NAME $lang Language codename
      * @return ?object Stemmer (null: none)
      */
-    protected function get_stemmer($lang)
+    static protected function get_stemmer($lang)
     {
         static $stemmer = array();
         if (!array_key_exists($lang, $stemmer)) {
@@ -779,51 +904,3 @@ class CRC24
         return $crctab;
     }
 }
-
-/*
-TODO when integrating into v11...
-
-1)
-Grep for:
-$_content_bits = explode(' ', str_replace('"', '', cms_preg_replace_safe('#(^|\s)\+#', '', cms_preg_replace_safe('#(^|\s)\-#', '', $content))));
-And change to use query_to_search_tokens
-
-2) Move all to bundled
-
-3) Move new table creation code to modules, and add uninstallation code
-
-4) Call 'delete_from_index' throughout any delete actualiser functions
-
-5) Turn hidden options into real ones
-
-6) Fix any "Fix in v11" comments
-
-7) Leave our old get_search_rows implementation as a non-Cron or hidden-value activated fallback
-
-8) Make boolean search support implicit with no boolean tickbox and no conjunctive operator option, with simple support for only [+-"], and generally tidy up the API to just pass through queries to hooks unaltered
-
-9) Alter get_search_rows parameter naming and order to be sane and consistent with Composr_fulltext_engine->get_search_rows
-
-10) Change db_meta_indices primary key:
-$GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', array('i_table', 'i_name'));
-$GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
-And change create_table code
-
-11) Documentation for Composr fast custom index:
- Generally review existing documentation
- Overview of all the config options
- Move the comments at the top of this file to the documentation
- Clearly explain the boolean search syntax supported, including:
-  + and -
-  ", including how quote grabs phrases which may include stop words, how maximum ngram length affects quoting, and how stemming happens but only for ngrams that are singular (so quoted phrased will not be stemmed but +/- operators do operate on stemmed ngrams)
-  How anything else is 'fuzzy' for a relevance search with highest relevance first, unless fuziness is disabled - and otherwise just works like '+'
- Explain how to dump the contents of *_fulltext_index tables to force regeneration
- Explain how translations made through translation queue will not rebuild index, must be through content editing
- Explain advantages over regular full-text: multi-language, much more configurable
- Explain ft_index_commonality
- Document tokeniser customisation in tut_intl
-
-12) Add future ideas to tracker
- Synomym support
-
-*/

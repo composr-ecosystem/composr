@@ -42,6 +42,15 @@ class lang_tokeniser_test_set extends cms_test_case
         $got = $tokeniser->query_to_search_tokens("it's 'its'");
         $this->assertTrue(array_keys($got[0]) == array("it's", 'its'));
 
+        $got = $tokeniser->query_to_search_tokens('a "test search"');
+        $this->assertTrue(array_keys($got[0]) == array('a', 'test search'));
+
+        $got = $tokeniser->query_to_search_tokens('"test search"');
+        $this->assertTrue(array_keys($got[0]) == array('test search'));
+
+        $got = $tokeniser->query_to_search_tokens('test" search');
+        $this->assertTrue(array_keys($got[0]) == array('test', 'search'));
+
         $search = 'This, is; an    example- SEARCH +YES -No - + Blah-blah "Go Go Go" +"And this"';
         $expected = array(
             array('this' => true, 'is' => true, 'an' => true, 'example' => true, 'search' => true, 'blah' => true, 'go go go' => false),
