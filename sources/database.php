@@ -465,7 +465,7 @@ function db_escape_string($string)
  * Basic arithmetic and inequality operators are assumed supported without needing a function.
  *
  * @param string $function Function name
- * @set CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD GROUP_CONCAT X_ORDER_BY_BOOLEAN
+ * @set IFF CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD GROUP_CONCAT X_ORDER_BY_BOOLEAN
  * @param ?array $args List of string arguments, assumed already quoted/escaped correctly for the particular database (null: none)
  * @return string SQL fragment
  */
@@ -482,6 +482,33 @@ function db_function($function, $args = null)
     }
 
     switch ($function) {
+        case 'IFF':
+            /*
+                         CASE construct   IF function   IIF function   IF construct
+
+            mysql        Yes              Yes           No             IF...THEN...ELSEIF...ELSE...END IF
+            postgresql   Yes              No            No             IF...THEN...ELSIF...ELSE...END IF
+            sqlite       Yes              No            No             No
+            oracle       Yes              No            Yes            IF...THEN...ELSIF...ELSE...END IF
+            db2          Yes              No            No             IF...THEN...ELSEIF...ELSE...END IF
+            access       No               No            Yes            No
+            SQL server   Yes              No            Yes            IF...ELSE...
+
+            Anything supporting CASE supports both simple and complex forms, as both are standardised.
+            */
+            switch (get_db_type()) {
+                case 'mysql':
+                case 'mysqli':
+                case 'mysql_pdo':
+                case 'mysql_dbx':
+                    return 'IF(' . implode(',', $args) . ')';
+
+                case 'postgresql':
+                case 'sqlite':
+                case 'db2':
+                    return 'CASE WHEN ' . $args[0] . ' THEN ' . $args[1] . ' ELSE ' . $args[2] . ' END';
+            }
+
         case 'CONCAT':
             switch (get_db_type()) {
                 // Supported on most
@@ -1136,7 +1163,7 @@ class DatabaseConnector
                     if (is_integer($v)) {
                         $values .= strval($v);
                     } elseif (is_float($v)) {
-                        $values .= float_to_raw_string($v, 10);
+                        $values .= number_format($v, 10, '.', '');
                     } elseif (($key === 'begin_num') || ($key === 'end_num')) {
                         $values .= $v; // FUDGE: for all our known large unsigned integers
                     } else {
@@ -1216,7 +1243,7 @@ class DatabaseConnector
                 }
 
                 if (is_float($value)) {
-                    $where .= $key . '=' . float_to_raw_string($value, 10);
+                    $where .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $where .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -1510,7 +1537,7 @@ class DatabaseConnector
                                 $val = db_escape_string($val);
                             }
                         } elseif (is_float($val)) {
-                            $val = float_to_raw_string($val);
+                            $val = number_format($val, 10, '.', '');
 
                             if ($in_quotes_start || $in_quotes_end) {
                                 $val = db_escape_string($val);
@@ -1908,7 +1935,7 @@ class DatabaseConnector
                 }
 
                 if (is_float($value)) {
-                    $where .= $key . '=' . float_to_raw_string($value, 10);
+                    $where .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $where .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -1938,7 +1965,7 @@ class DatabaseConnector
                 $update .= $key . '=NULL';
             } else {
                 if (is_float($value)) {
-                    $update .= $key . '=' . float_to_raw_string($value, 10);
+                    $update .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $update .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -1988,7 +2015,7 @@ class DatabaseConnector
             }
 
             if (is_float($value)) {
-                $where .= $key . '=' . float_to_raw_string($value, 10);
+                $where .= $key . '=' . number_format($value, 10, '.', '');
             } elseif (is_integer($value)) {
                 $where .= $key . '=' . strval($value);
             } elseif (($key === 'begin_num') || ($key === 'end_num')) {

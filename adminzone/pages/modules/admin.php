@@ -362,7 +362,7 @@ class Module_admin
         }
 
         // Stemming, if available (needs Stemmer class like http://www.chuggnutt.com/stemmer-source.php which we can't redistribute due to it being GPL not LGPL)
-        if (((is_file(get_file_base() . '/sources/lang_stemmer_' . user_lang() . '.php')) || (is_file(get_file_base() . '/sources_custom/stemmer_' . user_lang() . '.php'))) && (!in_safe_mode())) {
+        if (((is_file(get_file_base() . '/sources/lang_stemmer_' . user_lang() . '.php')) || (is_file(get_file_base() . '/sources_custom/lang_stemmer_' . user_lang() . '.php'))) && (!in_safe_mode())) {
             require_code('lang_stemmer_' . user_lang());
             $stemmer = object_factory('Stemmer_' . user_lang());
             foreach ($keywords as $i => $keyword_group) {
