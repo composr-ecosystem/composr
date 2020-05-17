@@ -89,10 +89,10 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
             if ($member_id == $GLOBALS['CNS_DRIVER']->get_guest_id()) {
                 return null;
             }
-        }
 
-        if ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_pt_from=' . strval($member_id) . ' OR ' . 't_pt_to=' . strval($member_id)) == 0) {
-            return null;
+            if ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_pt_from=' . strval($member_id) . ' OR ' . 't_pt_to=' . strval($member_id)) == 0) {
+                return null;
+            }
         }
 
         require_lang('cns');
