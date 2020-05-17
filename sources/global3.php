@@ -959,11 +959,11 @@ function cms_mb_strlen($in, $force = false)
     if (!$force && get_charset() != 'utf-8') {
         return strlen($in);
     }
+    if ((function_exists('iconv_strlen')) && (get_value('disable_iconv') !== '1')) {
+        return @iconv_strlen($in, $force ? 'utf-8' : get_charset());
+    }
     if (function_exists('mb_strlen')) {
         return @mb_strlen($in, $force ? 'utf-8' : get_charset()); // @ is because there could be invalid unicode involved
-    }
-    if (function_exists('iconv_strlen')) {
-        return @iconv_strlen($in, $force ? 'utf-8' : get_charset());
     }
     return strlen($in);
 }
@@ -991,7 +991,7 @@ function cms_mb_substr($in, $from, $amount = null, $force = false)
         return substr($in, $from, $amount);
     }
 
-    if (function_exists('iconv_substr')) {
+    if ((function_exists('iconv_substr')) && (get_value('disable_iconv') !== '1')) {
         return @iconv_substr($in, $from, $amount, $force ? 'utf-8' : get_charset());
     }
     if (function_exists('mb_substr')) {
