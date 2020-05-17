@@ -248,7 +248,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $g_or = _get_where_clause_groups(get_member(), false);
             if ($g_or != '') {
                 $where_clause .= ' AND ';
-                $where_clause .= ' EXISTS(' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z ON (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
+                $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
 
             $engine = new Composr_fulltext_engine();
@@ -293,7 +293,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $g_or = _get_where_clause_groups(get_member(), false);
             if ($g_or != '') {
                 $where_clause .= ' AND ';
-                $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z ON (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
+                $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
 
             $table = 'cached_comcode_pages r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages q ON (q.the_zone=r.the_zone AND q.the_page=r.the_page)';
