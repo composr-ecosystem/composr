@@ -109,7 +109,7 @@ class sitemap_test_set extends cms_test_case
                     $node_searched_property = isset($node_searched[$property]) ? $node_searched[$property] : null;
                     $this->assertTrue($node_property === $node_searched_property, 'Search produced different node for ' . $page_link . ' (comparing ' . $property . '; ' . serialize($node_property) . '; vs ' . serialize($node_searched_property) . ')');
                     if ($node_property !== $node_searched_property) {
-                        if (!empty($_GET['debug'])) { // TODO: Change to $this->debug in v11
+                        if ($this->debug) {
                             var_dump($node_property);
                             var_dump($node_searched_property);
                         }
@@ -223,7 +223,10 @@ class sitemap_test_set extends cms_test_case
                     ':panel_bottom',
                     ':panel_left',
                     ':panel_right',
+                    'site:panel_left',
+                    'site:panel_right',
                     'adminzone:_modsecurity',
+                    ':_rules',
 
                     // Handled specially
                     ':home',

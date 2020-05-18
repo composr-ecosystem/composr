@@ -89,6 +89,8 @@ class Module_admin_version
         $GLOBALS['SITE_DB']->drop_table_if_exists('post_tokens');
         $GLOBALS['SITE_DB']->drop_table_if_exists('cron_progression');
         $GLOBALS['SITE_DB']->drop_table_if_exists('translation_cache');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('ft_index_commonality');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('cpages_fulltext_index');
 
         /* We don't want to get rid of on-disk data when reinstalling
         $zones = find_all_zones(true);
@@ -1119,6 +1121,9 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->add_table_field('urls_checked', 'url_destination_url', 'URLPATH');
 
             $GLOBALS['SITE_DB']->drop_table_if_exists('https_pages');
+
+            $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
+            $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 18)) {
@@ -1139,6 +1144,35 @@ class Module_admin_version
                 $include_on_sitemap = _comcode_page_include_on_sitemap_default($row['the_zone'], $row['the_page']);
                 $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_include_on_sitemap' => $include_on_sitemap ? 1 : 0], $row, '', 1);
             }
+
+            $GLOBALS['SITE_DB']->create_table('ft_index_commonality', [
+                'id' => '*AUTO',
+                'c_ngram' => 'SHORT_TEXT',
+                'c_commonality' => 'REAL',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_table('cpages_fulltext_index', [
+                'i_zone_name' => '*ID_TEXT',
+                'i_page_name' => '*ID_TEXT',
+
+                'i_lang' => '*LANGUAGE_NAME',
+                'i_ngram' => '*INTEGER',
+                'i_ac' => '*INTEGER',
+
+                'i_occurrence_rate' => 'REAL',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_index('cpages_fulltext_index', 'content_id', [ // Used for clean-outs and potentially optimising some JOINs if query planner decides to start at the content table
+                'i_zone_name',
+                'i_page_name',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_index('cpages_fulltext_index', 'main', [
+                'i_lang',
+                'i_ngram',
+                'i_ac',
+                'i_occurrence_rate', // For sorting
+            ]);
         }
     }
 

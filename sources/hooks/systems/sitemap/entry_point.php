@@ -87,7 +87,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
                     !$search_mode, // $support_crosslinks
                     !$search_mode // $be_deferential
                 ]);
-                if (!is_null($functions[0])) {
+                if ($functions[0] !== null) {
                     $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : eval($functions[0]);
 
                     if (($entry_points !== null) && (!$search_mode)) {

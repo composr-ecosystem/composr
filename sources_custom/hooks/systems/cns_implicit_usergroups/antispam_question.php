@@ -87,9 +87,11 @@ class Hook_implicit_usergroups_antispam_question
      * Run function for implicit usergroup hooks. Finds all members in the group.
      *
      * @param  GROUP $group_id The group ID to check (if only one group supported by the hook, can be ignored)
+     * @param  ?integer $max Return up to this many entries for members (null: no limit)
+     * @param  integer $start Return members after this offset
      * @return ?array The list of members as a map between member ID and member row (null: unsupported by hook)
      */
-    public function get_member_list($group_id)
+    public function get_member_list($group_id, $max = null, $start = 0)
     {
         if ($this->field_id === null) {
             return [];
@@ -99,7 +101,7 @@ class Hook_implicit_usergroups_antispam_question
             return [];
         }
 
-        return list_to_map('id', $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . $this->_where()));
+        return list_to_map('id', $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . $this->_where(), $max, $start));
     }
 
     /**

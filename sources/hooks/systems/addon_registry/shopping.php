@@ -374,7 +374,7 @@ class Hook_addon_registry_shopping
 
         return [
             lorem_globalise(do_lorem_template('CATALOGUE_products_CATEGORY_SCREEN', $map + [
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'ADD_DATE_RAW' => placeholder_date_raw(),
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
@@ -386,11 +386,11 @@ class Hook_addon_registry_shopping
                 'ADD_CAT_TITLE' => do_lang_tempcode('ADD_CATALOGUE_CATEGORY'),
                 'EDIT_CAT_URL' => placeholder_url(),
                 'EDIT_CATALOGUE_URL' => placeholder_url(),
-                'ENTRIES' => $entries,
-                'SUBCATEGORIES' => '',
                 'DESCRIPTION' => lorem_sentence(),
-                'TREE' => lorem_phrase(),
                 'DISPLAY_TYPE' => 'GRID',
+                'CC_SORT' => 'title',
+                'CAT_SELECT' => '*',
+                'FILTER' => '',
             ]), null, '', true)
         ];
     }

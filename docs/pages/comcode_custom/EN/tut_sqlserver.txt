@@ -147,19 +147,19 @@ CREATE TABLE cms_translate (
 [/code]
 [*] Edit the [tt].sql[/tt] file to make this substitution:
 [code="tsql"]
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='unique__cms_cached_comcode_pages' AND object_id=OBJECT_ID('cms_cached_comcode_pages')) CREATE UNIQUE INDEX unique__cms_cached_comcode_pages ON cms_cached_comcode_pages(the_page,the_theme,the_zone);
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name='unique__cms_cached_comcode_pages' AND object_id=OBJECT_ID('cms_cached_comcode_pages')) CREATE UNIQUE INDEX unique__cms_cached_comcode_pages ON cms_cached_comcode_pages(the_page,the_theme,the_zone);
 [/code]
 -->
 [code="tsql"]
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='unique__cms_cached_comcode_pages' AND object_id=OBJECT_ID('cms_cached_comcode_pages')) CREATE UNIQUE INDEX unique__cms_cached_comcode_pages ON cms_cached_comcode_pages(id);
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name='unique__cms_cached_comcode_pages' AND object_id=OBJECT_ID('cms_cached_comcode_pages')) CREATE UNIQUE INDEX unique__cms_cached_comcode_pages ON cms_cached_comcode_pages(id);
 [/code]
 [*] Edit the [tt].sql[/tt] file to make this substitution:
 [code="tsql"]
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='unique__cms_translate' AND object_id=OBJECT_ID('cms_translate')) CREATE UNIQUE INDEX unique__cms_translate ON cms_translate(id,language);
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name='unique__cms_translate' AND object_id=OBJECT_ID('cms_translate')) CREATE UNIQUE INDEX unique__cms_translate ON cms_translate(id,language);
 [/code]
 -->
 [code="tsql"]
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='unique__cms_translate' AND object_id=OBJECT_ID('cms_translate')) CREATE UNIQUE INDEX unique__cms_translate ON cms_translate(_id);
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name='unique__cms_translate' AND object_id=OBJECT_ID('cms_translate')) CREATE UNIQUE INDEX unique__cms_translate ON cms_translate(_id);
 [/code]
 [*] Copy the [tt].sql[/tt] file generated to a machine you can run SQL Management Studio from, if this is different from your website machine
 [*] Open a command prompt

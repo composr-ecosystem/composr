@@ -418,7 +418,11 @@ function cns_get_member_fields($mini_mode = true, $special_type = '', $member_id
     $hidden->attach($_hidden);
 
     if (!$mini_mode) {
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '14205f6bf83c469a1404d24967d7b6f6', 'TITLE' => do_lang_tempcode('PROFILE')]));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
+            '_GUID' => '14205f6bf83c469a1404d24967d7b6f6',
+            'TITLE' => do_lang_tempcode('PROFILE'),
+            'SECTION_HIDDEN' => (get_page_name() == 'admin_cns_members'),
+        ]));
         $added_section_1 = true;
     }
 
@@ -680,7 +684,7 @@ function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $
             }
 
             if (get_option_with_overrides('enable_pt_restrict', $adjusted_config_options) == '1') {
-                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '7e5deb351a7a5214fbff10049839e258', 'TITLE' => do_lang_tempcode('PRIVATE_TOPICS'), 'SECTION_HIDDEN' => true]));
+                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '7e5deb351a7a5214fbff10049839e258', 'TITLE' => do_lang_tempcode('PRIVATE_TOPICS'), 'SECTION_HIDDEN' => ($pt_allow == '*') && ($pt_rules_text == '')]));
                 $fields->attach(form_input_multi_list(do_lang_tempcode('PT_ALLOW'), addon_installed('chat') ? do_lang_tempcode('PT_ALLOW_DESCRIPTION_CHAT') : do_lang_tempcode('PT_ALLOW_DESCRIPTION'), 'pt_allow', $usergroup_list));
                 $fields->attach(form_input_text_comcode(do_lang_tempcode('PT_RULES_TEXT'), do_lang_tempcode('PT_RULES_TEXT_DESCRIPTION'), 'pt_rules_text', $pt_rules_text, false));
                 $added_section = true;
@@ -891,7 +895,11 @@ function cns_get_member_fields_profile($mini_mode = true, $member_id = null, $gr
         }
 
         if ($field_group_title != '') {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'af91e3c040a0a18a4d9cc1143c0d2007', 'TITLE' => $field_group_title]));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
+                '_GUID' => 'af91e3c040a0a18a4d9cc1143c0d2007',
+                'TITLE' => $field_group_title,
+                'SECTION_HIDDEN' => (get_page_name() == 'admin_cns_members'),
+            ]));
             $added_section = true;
         }
         $fields->attach($extra_fields);

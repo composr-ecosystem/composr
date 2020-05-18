@@ -85,6 +85,57 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
     }
 
     /**
+     * Perform indexing using the Composr fast custom index.
+     *
+     * @param  ?TIME $since Only index records newer than this (null: no limit)
+     * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
+     * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
+     */
+    public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    {
+        $engine = new Composr_fulltext_engine();
+
+        $index_table = 'f_pposts_fulltext_index';
+        $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
+
+        $fields_to_index = [
+            'p_title' => APPEARANCE_CONTEXT_TITLE,
+            'p_post' => APPEARANCE_CONTEXT_BODY,
+        ];
+        $key_transfer_map = [
+            'id' => 'i_post_id',
+        ];
+        $filter_field_transfer_map = [
+            'p_time' => 'i_add_time',
+            'p_poster' => 'i_poster_id',
+            'i_starter' => 'i_starter',
+            'i_for' => 'i_for',
+        ];
+
+        $db = $GLOBALS['FORUM_DB'];
+        $sql = 'SELECT p.id,p.p_time,p.p_last_edit_time,p.p_poster,p.p_title,p.p_post,t_cache_first_post_id,t_pt_from,t_pt_to FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
+        $sql .= ' WHERE p_cache_forum_id IS NULL';
+        $since_clause = $engine->generate_since_where_clause($db, $index_table, ['p_time' => false, 'p_last_edit_time' => true], $since, $statistics_map);
+        $sql .= $since_clause;
+        $max = 100;
+        $start_id = -1;
+        do {
+            $rows = $db->query($sql . ' AND p.id>' . strval($start_id) . ' ORDER BY p.id', $max);
+            foreach ($rows as $row) {
+                $content_fields = $row + ['i_starter' => ($row['t_cache_first_post_id'] == $row['id']) ? 1 : 0];
+
+                foreach (($row['t_pt_from'] == $row['t_pt_to']) ? ['t_pt_from'] : ['t_pt_from', 't_pt_to'] as $for_field) {
+                    $key_transfer_map['i_for'] = 'i_for';
+                    $content_fields['i_for'] = $row[$for_field];
+                    $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, null, $clean_scan);
+                }
+
+                $start_id = $row['id'];
+            }
+        } while (!empty($rows));
+    }
+
+    /**
      * Run function for search results.
      *
      * @param  string $content Search string
@@ -130,28 +181,73 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
 
         require_lang('cns');
 
-        // Calculate our where clause (search)
-        $where_clause .= ' AND ';
-        $where_clause .= 't_forum_id IS NULL AND (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ')';
-        $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
-        if ($sq === null) {
-            return [];
-        } else {
-            $where_clause .= $sq;
-        }
-        $this->_handle_date_check($cutoff, 'p_time', $where_clause);
-        if (get_param_integer('option_cns_posts_starter', 0) == 1) {
-            $where_clause .= ' AND ';
-            $where_clause .= 's.t_cache_first_post_id=r.id';
-        }
-
-        if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
-            $where_clause .= ' AND ';
-            $where_clause .= 'p_validated=1';
-        }
-
         // Calculate and perform query
-        $rows = get_search_rows(null, 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id', ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*', ['r.p_title']);
+        if (can_use_composr_fulltext_engine('cns_own_pt', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_ocf_own_pt_starter', 0) == 1)) {
+            // This search hook implements the Composr fast custom index, which we use where possible...
+
+            $table = 'f_posts r';
+
+            // Calculate our where clause (search)
+            $where_clause = '';
+            $extra_join_clause = '';
+            $sq = build_search_submitter_clauses('i_poster_id', $author_id, $author);
+            if ($sq === null) {
+                return [];
+            } else {
+                $where_clause .= $sq;
+            }
+            $this->_handle_date_check($cutoff, 'ixxx.i_add_time', $extra_join_clause);
+            if (get_param_integer('option_cns_own_pt_starter', 0) == 1) {
+                $extra_join_clause .= ' AND ';
+                $extra_join_clause .= 'ixxx.i_starter=1';
+            }
+
+            $extra_join_clause .= ' AND ixxx.i_for=' . strval(get_member());
+            $where_clause .= ' AND ';
+            $where_clause .= '(p_intended_solely_for IS NULL';
+            if (!is_guest()) {
+                $where_clause .= ' OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member());
+            }
+            $where_clause .= ')';
+            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                $where_clause .= ' AND ';
+                $where_clause .= 'p_validated=1';
+            }
+
+            $engine = new Composr_fulltext_engine();
+
+            $db = $GLOBALS['FORUM_DB'];
+            $index_table = 'f_pposts_fulltext_index';
+            $key_transfer_map = ['id' => 'i_post_id'];
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
+        } else {
+            // Calculate our where clause (search)
+            $where_clause .= ' AND ';
+            $where_clause .= 't_forum_id IS NULL AND (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ')';
+            $where_clause .= ' AND ';
+            $where_clause .= '(r.p_intended_solely_for IS NULL';
+            if (!is_guest()) {
+                $where_clause .= ' OR r.p_intended_solely_for=' . strval(get_member()) . ' OR r.p_poster=' . strval(get_member());
+            }
+            $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
+            if ($sq === null) {
+                return [];
+            } else {
+                $where_clause .= $sq;
+            }
+            $this->_handle_date_check($cutoff, 'p_time', $where_clause);
+            if (get_param_integer('option_cns_own_pt_starter', 0) == 1) {
+                $where_clause .= ' AND ';
+                $where_clause .= 's.t_cache_first_post_id=r.id';
+            }
+
+            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                $where_clause .= ' AND ';
+                $where_clause .= 'p_validated=1';
+            }
+
+            $rows = get_search_rows(null, 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id', ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*', ['r.p_title']);
+        }
 
         $out = [];
         foreach ($rows as $i => $row) {

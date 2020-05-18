@@ -88,6 +88,9 @@ class CMS_RSS
 
         if ($is_filesystem_path) {
             $data = @cms_file_get_contents_safe($url, FILE_READ_LOCK | FILE_READ_BOM);
+            if ($data === false) {
+                $data = null;
+            }
             $charset = '';
             $http_message = '';
         } else {

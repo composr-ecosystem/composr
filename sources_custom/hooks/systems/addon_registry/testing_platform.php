@@ -474,7 +474,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/html_dump/index.html',
 
             '_tests/codechecker/build.sh',
-            '_tests/codechecker/checker.ini',
             '_tests/codechecker/check.php',
             '_tests/codechecker/codechecker.app/Contents/Info.plist',
             '_tests/codechecker/codechecker.app/Contents/MacOS/codechecker',
@@ -680,7 +679,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/addon_screenshots.php',
             '_tests/tests/unit_tests/addon_setupwizard.php',
             '_tests/tests/unit_tests/adminzone_search.php',
-            '_tests/tests/unit_tests/_platform_imap.php',
+            '_tests/tests/unit_tests/_protocol_imap.php',
             '_tests/tests/unit_tests/_api_confluence.php',
             '_tests/tests/unit_tests/allow_php_in_templates.php',
             '_tests/tests/unit_tests/antispam.php',
@@ -761,7 +760,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/database_query_parameterised.php',
             '_tests/tests/unit_tests/database_relations.php',
             '_tests/tests/unit_tests/db_correctness.php',
-            '_tests/tests/unit_tests/demonstratr.php',
+            '_tests/tests/unit_tests/___demonstratr.php',
             '_tests/tests/unit_tests/dev_environment.php',
             '_tests/tests/unit_tests/diff.php',
             '_tests/tests/unit_tests/dns.php',
@@ -836,6 +835,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/members.php',
             '_tests/tests/unit_tests/menus.php',
             '_tests/tests/unit_tests/microformats.php',
+            '_tests/tests/unit_tests/lang_tokeniser.php',
             '_tests/tests/unit_tests/missing_block_params.php',
             '_tests/tests/unit_tests/missing_colour_equations.php',
             '_tests/tests/unit_tests/modularisation.php',
@@ -941,7 +941,8 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/xml_sitemaps.php',
             '_tests/tests/unit_tests/xss.php',
             '_tests/tests/unit_tests/zip.php',
-            '_tests/tests/unit_tests/_protocol_imap.php',
+
+            'data_custom/search_test.php',
         ];
     }
 }

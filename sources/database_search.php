@@ -1039,7 +1039,7 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
     }
 
     // Defined-keywords/tags search
-    if ((get_param_integer('keep_just_show_query', 0) == 0) && ($meta_type !== null) && ($content != '')) {
+    if ((get_param_integer('keep_just_show_query', 0) == 0) && ($meta_type !== null) && ($content != '') && (!$only_titles)) {
         if (strpos($content, '"') !== false || strpos($content, '+') !== false || strpos($content, '-') !== false || strpos($content, ' ') !== false) {
             list($meta_content_where) = build_content_where($content, $boolean_search, $boolean_operator, true);
             $meta_content_where = '(' . $meta_content_where . ' OR ' . db_string_equal_to('?', $content) . ')';
@@ -1235,6 +1235,10 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
 
             $db->dedupe_mode = true;
 
+            // Useful for automated testing
+            global $LAST_SEARCH_QUERY, $LAST_COUNT_QUERY;
+
+            $LAST_COUNT_QUERY = $_count_query_main_search;
             cms_profile_start_for('SEARCH:t_main_search_rows_count');
             $t_main_search_rows_count = $db->query_value_if_there($_count_query_main_search);
             if ($t_main_search_rows_count === null) {
@@ -1243,6 +1247,7 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
             cms_profile_end_for('SEARCH:t_main_search_rows_count', $_count_query_main_search);
             $t_count += $t_main_search_rows_count;
 
+            $LAST_SEARCH_QUERY = $query;
             cms_profile_start_for('SEARCH:t_main_search_rows');
             $t_main_search_rows = $db->query($query, $max * 2 /*In case of duplication*/ + $start, 0, false, true);
             cms_profile_end_for('SEARCH:t_main_search_rows', $query);
@@ -1381,11 +1386,16 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
 
             $db->dedupe_mode = true;
 
+            // Useful for automated testing
+            global $LAST_SEARCH_QUERY, $LAST_COUNT_QUERY;
+
+            $LAST_COUNT_QUERY = $_count_query_main_search;
             cms_profile_start_for('SEARCH:t_main_search_rows_count');
             $t_main_search_rows_count = $db->query_value_if_there($_count_query_main_search);
             cms_profile_end_for('SEARCH:t_main_search_rows_count', $_count_query_main_search);
             $t_count += $t_main_search_rows_count;
 
+            $LAST_SEARCH_QUERY = $query;
             cms_profile_start_for('SEARCH:t_main_search_rows');
             $t_main_search_rows = $db->query($query, $max + $start, 0, false, true/*, $fields Actually will hurt performance - we usually won't show text_parsed fields as we re-parse Comcode with syntax highlighting*/);
             cms_profile_end_for('SEARCH:t_main_search_rows', $query);

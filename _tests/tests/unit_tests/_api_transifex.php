@@ -38,7 +38,7 @@ class _api_transifex_test_set extends cms_test_case
         $temp_nam = cms_tempnam();
         $tar_file = tar_open($temp_nam, 'wb');
 
-        $project_slug = get_composr_transifex_project('10'); // TODO change in v11
+        $project_slug = get_composr_transifex_project('10'); // TODO: Change this when v11 released
         $files = [];
         _pull_ini_file_from_transifex($project_slug, $tar_file, 'DE', 'global', $files);
 
@@ -46,7 +46,10 @@ class _api_transifex_test_set extends cms_test_case
 
         $tar_file = tar_open($temp_nam, 'rb');
         $details = tar_get_file($tar_file, 'lang_custom/DE/global.ini');
-        $this->assertTrue(strpos($details['data'], 'ffnen') !== false);
+        $this->assertTrue($details !== null, 'lang_custom/DE/global.ini missing');
+        if ($details !== null) {
+            $this->assertTrue(strpos($details['data'], 'ffnen') !== false);
+        }
         tar_close($tar_file);
 
         unlink($temp_nam);

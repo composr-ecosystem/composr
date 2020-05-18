@@ -1,9 +1,9 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2016
+ Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licencing information.
+ See text/EN/licence.txt for full licensing information.
 
 */
 

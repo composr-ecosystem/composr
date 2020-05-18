@@ -215,7 +215,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null)
 //    \$GLOBALS['SITE_DB']->create_table('db_meta_indices', [
 //        'i_table' => '*ID_TEXT',
 //        'i_name' => '*ID_TEXT',
-//        'i_fields' => '*ID_TEXT',
+//        'i_fields' => 'LONG_TEXT',
 //    ]);
 ");
     get_table_backup($log_file, 'db_meta', 'db_meta_indices', $install_data_php_file, $callback);

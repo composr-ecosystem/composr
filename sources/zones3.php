@@ -509,7 +509,7 @@ function create_selection_list_zones($sel = null, $no_go = [], $reorder = null, 
     }
 
     if ($updated_since !== null) {
-        $rows = $GLOBALS['SITE_DB']->query('SELECT zone_name,zone_title FROM ' . get_table_prefix() . 'zones z WHERE EXISTS (SELECT * FROM ' . get_table_prefix() . 'comcode_pages c WHERE z.zone_name=c.the_zone AND p_add_date>' . strval($updated_since) . ') ORDER BY zone_name');
+        $rows = $GLOBALS['SITE_DB']->query('SELECT zone_name,zone_title FROM ' . get_table_prefix() . 'zones z WHERE EXISTS(SELECT * FROM ' . get_table_prefix() . 'comcode_pages c WHERE z.zone_name=c.the_zone AND p_add_date>' . strval($updated_since) . ') ORDER BY zone_name');
         $zones = [];
         foreach ($rows as $row) {
             $zones[] = [$row['zone_name'], get_translated_text($row['zone_title'])];

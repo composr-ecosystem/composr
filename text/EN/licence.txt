@@ -138,6 +138,7 @@ This product includes:
   - cssmin (MIT licence)
   - HMAC calculation code (public domain by Lance Rushing)
   - php-mail-signature (LGPL licence)
+  - CRC-24 (MIT licence)
  - Frontend code used under licence:
   - jQuery (MIT licence)
   - jQuery-UI (MIT licence)

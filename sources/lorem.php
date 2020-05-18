@@ -433,11 +433,21 @@ function placeholder_number()
 /**
  * Get suitable placeholder ID.
  *
- * @return string Place holder text
+ * @return string Place holder ID
  */
 function placeholder_id()
 {
     return 'x' . strval(123);
+}
+
+/**
+ * Get suitable numeric placeholder ID.
+ *
+ * @return string Numeric place holder ID
+ */
+function placeholder_numeric_id()
+{
+    return strval(123);
 }
 
 /**

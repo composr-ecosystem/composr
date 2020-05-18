@@ -53,7 +53,7 @@ function points_profile($member_id_of, $member_id_viewing)
     $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
     foreach ($hook_obs as $hook_ob) {
         $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing, $point_info);
-        if (!is_null($_array)) {
+        if ($_array !== null) {
             if (array_key_exists('POINTS_EACH', $_array)) {
                 array_push($points_records, $_array);
             } else {

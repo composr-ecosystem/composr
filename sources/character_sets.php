@@ -174,57 +174,6 @@ function _convert_request_data_encodings($known_utf8 = false)
         return;
     }
 
-    if ((function_exists('iconv')) && (get_value('disable_iconv') !== '1')) {
-        // iconv option
-
-        if (!function_exists('iconv_set_encoding') || @iconv_set_encoding('input_encoding', $input_charset)) {
-            if (function_exists('iconv_set_encoding')) {
-                @iconv_set_encoding('output_encoding', $internal_charset);
-                @iconv_set_encoding('internal_encoding', $internal_charset);
-            }
-
-            foreach ($_GET as $key => $val) {
-                if (is_string($val)) {
-                    $val = @iconv($input_charset, $internal_charset . '//TRANSLIT', $val);
-                    if ($val === false) {
-                        $val = @iconv($input_charset, $internal_charset . '//IGNORE', $val);
-                    }
-                    $_GET[$key] = $val;
-                } elseif (is_array($val)) {
-                    foreach ($val as $i => $v) {
-                        $v = @iconv($input_charset, $internal_charset . '//TRANSLIT', $v);
-                        if ($v === false) {
-                            $v = @iconv($input_charset, $internal_charset . '//IGNORE', $v);
-                        }
-                        $_GET[$key][$i] = $v;
-                    }
-                }
-            }
-            foreach ($_POST as $key => $val) {
-                if (is_string($val)) {
-                    $val = @iconv($input_charset, $internal_charset . '//TRANSLIT', $val);
-                    if ($val === false) {
-                        $val = @iconv($input_charset, $internal_charset . '//IGNORE', $val);
-                    }
-                    $_POST[$key] = $val;
-                } elseif (is_array($val)) {
-                    foreach ($val as $i => $v) {
-                        $v = @iconv($input_charset, $internal_charset . '//TRANSLIT', $v);
-                        if ($v === false) {
-                            $v = @iconv($input_charset, $internal_charset . '//IGNORE', $v);
-                        }
-                        $_POST[$key][$i] = $v;
-                    }
-                }
-            }
-        } else {
-            $VALID_ENCODING = false;
-        }
-
-        $CONVERTED_ENCODING = true;
-        return;
-    }
-
     if ((function_exists('mb_convert_encoding')) && (get_value('disable_mbstring') !== '1')) {
         // mbstring option
 
@@ -284,6 +233,57 @@ function _convert_request_data_encodings($known_utf8 = false)
             if (function_exists('mb_http_output')) {
                 mb_http_output($internal_charset);
             }
+        }
+
+        $CONVERTED_ENCODING = true;
+        return;
+    }
+
+    if ((function_exists('iconv')) && (get_value('disable_iconv') !== '1')) {
+        // iconv option
+
+        if (!function_exists('iconv_set_encoding') || @iconv_set_encoding('input_encoding', $input_charset)) {
+            if (function_exists('iconv_set_encoding')) {
+                @iconv_set_encoding('output_encoding', $internal_charset);
+                @iconv_set_encoding('internal_encoding', $internal_charset);
+            }
+
+            foreach ($_GET as $key => $val) {
+                if (is_string($val)) {
+                    $val = @iconv($input_charset, $internal_charset . '//TRANSLIT', $val);
+                    if ($val === false) {
+                        $val = @iconv($input_charset, $internal_charset . '//IGNORE', $val);
+                    }
+                    $_GET[$key] = $val;
+                } elseif (is_array($val)) {
+                    foreach ($val as $i => $v) {
+                        $v = @iconv($input_charset, $internal_charset . '//TRANSLIT', $v);
+                        if ($v === false) {
+                            $v = @iconv($input_charset, $internal_charset . '//IGNORE', $v);
+                        }
+                        $_GET[$key][$i] = $v;
+                    }
+                }
+            }
+            foreach ($_POST as $key => $val) {
+                if (is_string($val)) {
+                    $val = @iconv($input_charset, $internal_charset . '//TRANSLIT', $val);
+                    if ($val === false) {
+                        $val = @iconv($input_charset, $internal_charset . '//IGNORE', $val);
+                    }
+                    $_POST[$key] = $val;
+                } elseif (is_array($val)) {
+                    foreach ($val as $i => $v) {
+                        $v = @iconv($input_charset, $internal_charset . '//TRANSLIT', $v);
+                        if ($v === false) {
+                            $v = @iconv($input_charset, $internal_charset . '//IGNORE', $v);
+                        }
+                        $_POST[$key][$i] = $v;
+                    }
+                }
+            }
+        } else {
+            $VALID_ENCODING = false;
         }
 
         $CONVERTED_ENCODING = true;

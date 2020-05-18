@@ -725,7 +725,7 @@ class Hook_addon_registry_news
                 'EDIT_DATE_RAW' => '',
                 'SUBMITTER' => placeholder_id(),
                 'CATEGORY' => lorem_phrase(),
-                'IMG' => placeholder_image(),
+                'IMG' => placeholder_image_url(),
                 'TITLE' => lorem_title(),
                 'VIEWS' => '3',
                 'COMMENT_DETAILS' => $comment_details,

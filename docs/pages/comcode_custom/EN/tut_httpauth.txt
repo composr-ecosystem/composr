@@ -16,9 +16,9 @@ Sometimes, however, for additional security and/or integration reasons, it is de
 [box="Security Tip" width="25em" float="right"]
 Note that when using HTTP authentication, the username and passwords are available in plain text to any PHP script that can exist in the same domain as the Composr installation: although you would normally trust those with the ability to write PHP scripts on your domain, make sure you consider this ability for them to read anyone's password.
 [/box]
-If enabled, any new [concept]HTTP-Auth[/concept] user Composr sees, is added to Composr, after Composr collects some additional details for that user (including the desired username to connect to the HTTP-auth username, and their e-mail address). Note that by the time Composr sees a page view, the http-authentication scheme has already guaranteed that it is by a real, authenticated user. Once the activation information has been collected, no form of additional login is ever required for any zone controlled by HTTP authentication (although it is possible to override the HTTP authentication with a manual login if desired, for example, by staff).
+If enabled, any new [concept]HTTP-Auth[/concept] user Composr sees, is added to Composr, after Composr collects some additional details for that user (including the desired username to connect to the HTTP-auth username, and their e-mail address). Note that by the time Composr sees a page view, the HTTP-authentication scheme has already guaranteed that it is by a real, authenticated user. Once the activation information has been collected, no form of additional login is ever required for any zone controlled by HTTP authentication (although it is possible to override the HTTP authentication with a manual login if desired, for example, by staff).
 
-[i]Note: [/i] Account completion is not considered the same as joining. Members will by put into all default usergroups, but the Composr feature for giving members a choice of usergroup is not supported (that feature is only for members that join manually, as it requires a two-form join process, and we designed HTTP-auth profile completion to just by one-form).
+[i]Note: [/i] Account completion is not considered the same as joining. Members will by put into all default usergroups, but the Composr feature for giving members a choice of usergroup is not supported (that feature is only for members that join manually, as it requires a two-form join process, and we designed HTTP-auth profile completion to just be one-form).
 [/surround]
 
 [title="2"]Instructions[/title]
@@ -30,17 +30,62 @@ In order to use HTTP authentication, it must first be enabled via the "HTTP-Auth
 
 Unlike Composr LDAP integration, HTTP-auth members do not inherit any usergroups from the HTTP authentication system, as HTTP authentication does not define any such membership. Therefore you have full control over what usergroups members are of, once their account has become known to Composr (when it has been activated by a user authenticating under the associated HTTP-auth username). You cannot change the password of an HTTP-auth user, because Composr does not consider such a bound account to have a password. You also cannot log-out from an HTTP-auth user, although you can forcibly login as a normal user to create an override. HTTP-auth users may be edited as necessary (by editing their bound profiles), including banning them if desired.
 
+[surround]
 [media width="150" description="Upon first login, members must complete their profile, if the \"Ensure completed profiles\" configuration option (Admin Zone > Setup > Configuration > User/usergroup options > Log in) is enabled" float="right"]data_custom/images/docs/tut_httpauth/httpauth_finishprofile.png[/media]
-The default Composr install is intentionally split into different zones, such that the Welcome Zone is minimalistic, and most site functionality is contained in the [tt]site[/tt] zone. This allows you to use the Welcome Zone (located at your base URL) as a non-logged-in 'welcome' page available to anyone, while restricting all other zones (and possibly the [tt]uploads[/tt] directory or subdirectories there-of) with HTTP-authentication.
-Composr does not need any special configuration itself, and will simply bind to an HTTP-auth user only when it sees one is being used and when it sees that there is no normal-user override (i.e. you don't have a manual Composr login in addition to HTTP-authentication).
-When defining access rules on Apache you will need to define most of the HTTP-auth settings (i.e. define the security zone) in the main [tt].htaccess[/tt] file, and then place the actual restrictions (e.g. [tt]require valid-user[/tt]) on the files placed within individual zones (and the [tt]data[/tt] directory also -- it is key this is given it too, or parts of Composr will not function correctly due to inconsistent login state across frames). You must not define the full set of security settings separately for each zone because it will make the web browser treat each zone and the [tt]data[/tt] directory as having separate logins, causing a lot of repeated requests for re-authentication.
-One further note about the Welcome Zone: If you use the shoutbox or poll blocks, these make calls to the [tt]data[/tt] directory (which you will have secured via HTTP-auth), which will prompt for logins. Also the preview function on the Guestbook will do this too. To resolve this problem, [i]copy[/i] the [tt]data/preview.php[/tt] and [tt]data/iframe.php[/tt] files to the base directory; Composr will then be smart enough to find the right ones to use based on the zone the user is in.
+You can either protect your whole site with HTTP-authentication, or individual zones:
+The default Composr install is intentionally split into different zones, such that the Welcome Zone is minimalistic, and most site functionality is contained in the [tt]site[/tt] zone. This allows you to use the Welcome Zone (located at your base URL) as a non-logged-in 'welcome' page available to anyone, while restricting all other zones (and possibly the [tt]uploads[/tt] directory or subdirectories there-of) with HTTP-authentication. Composr does not need any special configuration itself for this, and will simply bind to an HTTP-auth user only when it sees one is being used and when it sees that there is no normal-user override (i.e. you don't have a manual Composr login in addition to HTTP-authentication).
 [/surround]
 
 [surround]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-As previously mentioned, but worth re-iterating: Composr is only accessible in HTTP-auth enabled areas if the user is actually able to HTTP-authenticate there. Composr will then assume that user is logged in. If Composr cannot see any HTTP-auth user, it can only be because that Composr zone is not secured with HTTP-auth.
+As previously mentioned, but worth re-iterating: Composr is only accessible in HTTP-auth enabled areas if the user is actually able to HTTP-authenticate there. Composr will then assume the associated user is logged in. If Composr cannot see any HTTP-auth user, it can only be because that Composr zone is not secured with HTTP-auth.
 This takes some time to get-your-head-around, but makes sense when you do. If it helps, consider the situation like this: with HTTP-authentication, security and authentication is being taken away from Composr and moved to another layer -- it puts Composr in a position to be able to make assumptions by placing a virtual shield in front of it.
+[/surround]
+
+[title="2"]Apache instructions[/title]
+
+These instructions apply only to Apache web server users.
+
+[title="3"]If you want to protect the entire site[/title]
+
+Define your HTTP-auth settings at the top of the main [tt].htaccess[/tt] file (the file in Composr's base directory).
+
+e.g. [tt].htaccess[/tt]:
+[code="htaccess"]
+AuthType Basic
+AuthName "Restricted Content"
+AuthUserFile /var/www/.htpasswd
+require valid-user
+
+... (original file follows) ...
+[/code]
+We have to give an absolute path for the Apache [tt]AuthUserFile[/tt] setting. This is a little annoying but it's an Apache requirement. These files can be generated using online tools or Linux commands (see links under "See also").
+
+[title="3"]If you want a public welcome zone[/title]
+
+You must define the core HTTP-auth settings (i.e. define the [tt]AuthType[/tt], [tt]AuthName[/tt], [tt]AuthUserFile[/tt]) only once in the main [tt].htaccess[/tt] file (the file in Composr's base directory).
+
+e.g. [tt].htaccess[/tt]:
+[code="htaccess"]
+AuthType Basic
+AuthName "Restricted Content"
+AuthUserFile /var/www/.htpasswd
+
+... (original file follows) ...
+[/code]
+We have to give an absolute path for the Apache [tt]AuthUserFile[/tt] setting. This is a little annoying but it's an Apache requirement. These files can be generated using online tools or Linux commands (see links under "See also").
+
+Then place only (*) the actual restrictions on the files placed within individual zones, and the [tt]data[/tt] directory also (&dagger;).
+
+e.g. [tt]site/.htaccess[/tt]:
+[code="htaccess"]
+require valid-user
+[/code]
+
+* You must not redefine the Apache [tt]Auth*[/tt] settings separately for each zone because it will make the web browser treat each zone and the [tt]data[/tt] directory as having separate logins, causing a lot of repeated requests for re-authentication.
+&dagger; It is key the [tt]data[/tt] directory is given it else parts of Composr will not function correctly due to inconsistent login state across frames)
+
+One further note about the Welcome Zone: If you use the shoutbox or poll blocks, these make calls to the [tt]data[/tt] directory (which you will have secured via HTTP-auth), which will prompt for logins. Also the preview function on the Guestbook will do this too. To resolve this problem, [i]copy[/i] the [tt]data/preview.php[/tt] and [tt]data/iframe.php[/tt] files to the base directory; Composr will then be smart enough to find the right ones to use based on the zone the user is in.
 [/surround]
 
 [concepts
@@ -49,8 +94,9 @@ This takes some time to get-your-head-around, but makes sense when you do. If it
 
 [title="2"]See also[/title]
 
- - [page="_SEARCH:tut_ldap"]Integrating Composr into a corporate network via LDAP[/page]
  - [url="Apache manual section"]http://httpd.apache.org/docs/1.3/howto/auth.html[/url]
- - [url="Tutorial"]https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-apache-on-ubuntu-14-04[/url]
+ - [url="Linux Command line tutorial"]https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-apache-on-ubuntu-14-04[/url]
+ - [url="HTPasswd Generator"]https://www.web2generators.com/apache-tools/htpasswd-generator[/url]
+ - [page="_SEARCH:tut_ldap"]Integrating Composr into a corporate network via LDAP[/page]
 
 {$SET,tutorial_tags,Third Party Integration,Security,Members,core_cns,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Sometimes, for integration reasons, you want users to login in to Composr via HTTP authentication. We show you how.}[block]main_tutorial_rating[/block]

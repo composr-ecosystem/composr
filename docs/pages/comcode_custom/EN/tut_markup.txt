@@ -215,7 +215,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>This is automatically included in Composr's templates.</td>
 		</tr>
 		<tr>
-			<td>[url="http://dublincore.org/"]Dublin Core[/url] and <a href="{$BASE_URL}/cmscore.rdf" title="Composr Core is a simple extension to Dublin Core, extending it to encapsulate social-networking data.">Composr Core</a></td>
+			<td>[url="https://dublincore.org/"]Dublin Core[/url] and <a href="{$BASE_URL}/cmscore.rdf" title="Composr Core is a simple extension to Dublin Core, extending it to encapsulate social-networking data.">Composr Core</a></td>
 			<td>This is the standard for adding metadata to web pages; it ties into the XHTML.</td>
 			<td>This is automatically included in Composr's templates.</td>
 		</tr>
@@ -1258,7 +1258,7 @@ It should also be stressed as a last point that [b]JavaScript is not secure[/b];
  - http://www.yourhtmlsource.com/
  - http://www.html.net/
  - http://www.tizag.com/
- - http://www.davesite.com/webstation/html/
+ - https://www.davesite.com/webstation/html/
  - http://www.w3schools.com/html/default.asp
  - http://jarmin.com/accessibility/index.html
  - http://en.wikiversity.org/wiki/Web_design
@@ -1273,7 +1273,6 @@ It should also be stressed as a last point that [b]JavaScript is not secure[/b];
  - http://www.blooberry.com/indexdot/css/propindex/all.htm
  - http://www.westciv.com/style_master/house/index.html
  - http://www.alistapart.com/
- - http://enjoycss.com/start/
  - http://www.skybound.ca/
  - http://www.layerstyles.org/builder.html
  - http://foundation.zurb.com/

@@ -115,21 +115,16 @@ class Hook_search_catalogue_categories extends FieldsSearchHook
             return [];
         }
         $this->_handle_date_check($cutoff, 'cc_add_date', $where_clause);
-        if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
-            $where_clause .= ' AND ';
-            $where_clause .= 'z.category_name IS NOT NULL';
-            $where_clause .= ' AND ';
-            $where_clause .= 'p.category_name IS NOT NULL';
-        }
-
-        $g_or = get_permission_where_clause_groups(get_member());
 
         // Calculate and perform query
-        if ($g_or == '') {
-            $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_categories r', ['r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*');
-        } else {
-            $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_categories r' . ((get_value('disable_cat_cat_perms') === '1') ? '' : (' JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.id AND ' . str_replace('group_id', 'z.group_id', $g_or))) . ' JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON ' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or), ['r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*');
+        $g_or = get_permission_where_clause_groups(get_member());
+        if ($g_or != '') {
+            if (get_value('disable_cat_cat_perms') !== '1') {
+                $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')';
+            }
+            $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON ' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
         }
+        $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_categories r', ['r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*');
 
         $out = [];
         foreach ($rows as $i => $row) {

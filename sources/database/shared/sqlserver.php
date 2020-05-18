@@ -278,14 +278,14 @@ abstract class Database_super_sqlserver extends DatabaseDriver
                 $_fields = implode(',', array_unique(explode(',', $_fields)));
 
                 // Full-text catalogue needed
-                $ret[] = 'IF NOT EXISTS (SELECT * FROM sys.fulltext_catalogs WHERE name=\'ft\') CREATE FULLTEXT CATALOG ft AS DEFAULT';
+                $ret[] = 'IF NOT EXISTS(SELECT * FROM sys.fulltext_catalogs WHERE name=\'ft\') CREATE FULLTEXT CATALOG ft AS DEFAULT';
 
                 // Create unique index on primary key if needed (required for full-text to function)
                 $unique_index_name = 'unique__' . $table_name;
-                $ret[] = 'IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name=\'' . $unique_index_name . '\' AND object_id=OBJECT_ID(\'' . $table_name . '\')) CREATE UNIQUE INDEX ' . $unique_index_name . ' ON ' . $table_name . '(' . $unique_key_fields . ')';
+                $ret[] = 'IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name=\'' . $unique_index_name . '\' AND object_id=OBJECT_ID(\'' . $table_name . '\')) CREATE UNIQUE INDEX ' . $unique_index_name . ' ON ' . $table_name . '(' . $unique_key_fields . ')';
 
                 // Delete full-text index if already exists
-                $ret[] = 'IF EXISTS (SELECT * FROM sys.fulltext_indexes WHERE object_id=OBJECT_ID(\'' . $table_name . '\')) DROP FULLTEXT INDEX ON ' . $table_name;
+                $ret[] = 'IF EXISTS(SELECT * FROM sys.fulltext_indexes WHERE object_id=OBJECT_ID(\'' . $table_name . '\')) DROP FULLTEXT INDEX ON ' . $table_name;
 
                 // Create full-text index on table if needed
                 $ret[] = 'CREATE FULLTEXT INDEX ON ' . $table_name . '(' . $_fields . ') KEY INDEX ' . $unique_index_name;
@@ -326,7 +326,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      */
     public function drop_table_if_exists($table, $connection)
     {
-        return ['IF EXISTS (SELECT * FROM sys.objects WHERE object_id=OBJECT_ID(\'' . $table . '\') AND type IN (\'U\')) DROP TABLE ' . $table];
+        return ['IF EXISTS(SELECT * FROM sys.objects WHERE object_id=OBJECT_ID(\'' . $table . '\') AND type IN (\'U\')) DROP TABLE ' . $table];
     }
 
     /**

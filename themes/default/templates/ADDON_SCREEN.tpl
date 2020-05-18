@@ -56,7 +56,7 @@
 						<tr>
 							<th colspan="7" class="table-heading-cell vertical-alignment">
 								{$,Category}
-								<h2>{_loop_key*}</h2>
+								<span class="h2">{_loop_key*}</span>
 							</th>
 						</tr>
 

@@ -204,10 +204,10 @@ class CMSAccountWrite
         require_code('cns_join');
         cns_require_all_forum_stuff();
         list($message, $member_id) = cns_join_actual(
-            /*$captcha_if_enabled=*/false,
-            /*$intro_message_if_enabled=*/false,
-            /*$invites_if_enabled=*/true,
-            /*$instant_login=*/false,
+            false,
+            false,
+            true,
+            false,
             $username,
             $email,
             $password,

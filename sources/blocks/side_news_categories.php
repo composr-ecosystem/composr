@@ -93,7 +93,7 @@ PHP;
 
         $cnt = $GLOBALS['SITE_DB']->query_select_value('news_categories', 'COUNT(*)', ['nc_owner' => null]);
         if ($cnt > 100) {
-            $_categories = $GLOBALS['SITE_DB']->query('SELECT r.* FROM ' . get_table_prefix() . 'news_categories r WHERE nc_owner IS NULL AND EXISTS (SELECT * FROM ' . get_table_prefix() . 'news n WHERE n.news_category=r.id AND n.validated=1) AND ' . $q_filter);
+            $_categories = $GLOBALS['SITE_DB']->query('SELECT r.* FROM ' . get_table_prefix() . 'news_categories r WHERE nc_owner IS NULL AND EXISTS(SELECT * FROM ' . get_table_prefix() . 'news n WHERE n.news_category=r.id AND n.validated=1) AND ' . $q_filter);
         } else {
             $_categories = $GLOBALS['SITE_DB']->query_select('news_categories r', ['*'], ['nc_owner' => null], ' AND ' . $q_filter);
         }

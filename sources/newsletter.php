@@ -769,13 +769,18 @@ function newsletter_domain_subscriber_stats($key)
  * @param  EMAIL $email_address Subscribers e-mail address
  * @param  ID_TEXT $send_id Specially encoded ID of subscriber (begins either 'n' for newsletter subscriber, or 'm' for member - then has normal subscriber/member ID following)
  * @param  SHORT_TEXT $hash Password hash of subscriber (blank: can not unsubscribe by URL)
+ * @param  array $extra_mappings Extra mappings to be substituted
  * @return string The new newsletter message
  */
-function newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $email_address, $send_id, $hash)
+function newsletter_variable_substitution($message, &$subject, $forename, $surname, $name, $email_address, $send_id, $hash, $extra_mappings = [])
 {
     $unsub_url = new Tempcode();
     if (($hash == '') || ($send_id == '')) {
-        $unsub_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, true, 'tab--edit');
+        if (get_option('staff_email_receipt_configurability') != '0') {
+            $unsub_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, true, 'tab--edit');
+        } else {
+            $unsub_url = new Tempcode();
+        }
     } else {
         $unsub_hash = get_unsubscribe_hash($hash);
         if (substr($send_id, 0, 1) == 'm') {
@@ -786,7 +791,8 @@ function newsletter_variable_substitution($message, $subject, $forename, $surnam
     }
 
     $member_id = null;
-    if (substr($send_id, 0, 1) == 'm') {
+    $prefix = substr($send_id, 0, 1);
+    if (($prefix == 'm') || ($prefix == 'w')) {
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($name);
         $name = $GLOBALS['FORUM_DRIVER']->get_displayname($name);
     }
@@ -803,11 +809,18 @@ function newsletter_variable_substitution($message, $subject, $forename, $surnam
         'send_id' => $send_id,
         'unsub_url' => $unsub_url,
         'unsub_comcode' => do_lang(cms_empty_safe($member_id) ? 'NEWSLETTER_UNSUBSCRIBE_NEWSLETTER' : 'NEWSLETTER_UNSUBSCRIBE_MEMBER', $unsub_url->evaluate()),
-    ];
+    ] + $extra_mappings;
 
     foreach ($vars as $var => $sub) {
         $message = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $message);
         $message = str_replace('{' . $var . '*}', escape_html(is_object($sub) ? $sub->evaluate() : $sub), $message);
+    }
+
+    foreach ($vars as $var => $sub) {
+        if ($var != 'subject') {
+            $subject = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $subject);
+            $subject = str_replace('{' . $var . '*}', escape_html(is_object($sub) ? $sub->evaluate() : $sub), $subject);
+        }
     }
 
     return $message;

@@ -74,9 +74,11 @@ class Hook_implicit_usergroups_usergroup_field_match
      * Run function for implicit usergroup hooks. Finds all members in the group.
      *
      * @param  GROUP $group_id The group ID to check (if only one group supported by the hook, can be ignored)
+     * @param  ?integer $max Return up to this many entries for members (null: no limit)
+     * @param  integer $start Return members after this offset
      * @return ?array The list of members as a map between member ID and member row (null: unsupported by hook)
      */
-    public function get_member_list($group_id)
+    public function get_member_list($group_id, $max = null, $start = 0)
     {
         if (!addon_installed('usergroup_field_match')) {
             return [];
@@ -88,7 +90,7 @@ class Hook_implicit_usergroups_usergroup_field_match
         $for_group = $structure[$group_id];
         foreach ($for_group as $pairs) {
             $cpf_key = 'field_' . strval($pairs[0]);
-            $_members = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', ['mf_member_id'], [$cpf_key => $pairs[1]]);
+            $_members = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', ['mf_member_id'], [$cpf_key => $pairs[1]], '', $max, $start);
             foreach ($_members as $m) {
                 $member_id = $m['mf_member_id'];
                 $out[$member_id] = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id);

@@ -125,7 +125,7 @@ function cns_get_group_members_raw($group_id, $include_primaries = true, $non_va
         $hooks = find_all_hook_obs('systems', 'cns_implicit_usergroups', 'Hook_implicit_usergroups_');
         foreach ($hooks as $ob) {
             if (in_array($group_id, $ob->get_bound_group_ids())) {
-                $c = $ob->get_member_list($group_id);
+                $c = $ob->get_member_list($group_id, $max, $start);
                 if ($c !== null) {
                     foreach ($c as $member_id => $member_row) {
                         $members[$member_id] = $non_validated ? ['gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => $member_row['m_username'], 'implicit' => true] : $member_id;

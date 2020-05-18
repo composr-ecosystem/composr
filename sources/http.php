@@ -893,7 +893,7 @@ abstract class HttpDownloader
      */
     protected function detect_character_encoding()
     {
-        if (($this->charset === null) && ($this->data !== null)) {
+        if (($this->charset === null) && ($this->data !== null) && ($this->data !== false)) {
             $matches = [];
             if (preg_match('#^\s*<' . '?xml[^<>]*\s+encoding="([^"]+)"#', $this->data, $matches) != 0) {
                 $this->charset = trim($matches[1]);

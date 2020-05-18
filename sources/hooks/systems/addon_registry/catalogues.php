@@ -263,7 +263,7 @@ class Hook_addon_registry_catalogues
     {
         return [
             lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_CATEGORY_SCREEN', [
-                'ID' => placeholder_id(),
+                'ID' => placeholder_numeric_id(),
                 'ADD_DATE_RAW' => placeholder_date_raw(),
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
@@ -312,6 +312,7 @@ class Hook_addon_registry_catalogues
         $entries = do_lorem_template('CATALOGUE_DEFAULT_GRID_ENTRY_WRAP', [
             'ID' => placeholder_id(),
             'FIELDS' => $fields,
+            'FIELDS_GRID' => '',
             'VIEW_URL' => placeholder_url(),
             'FIELD_0' => lorem_phrase(),
             'FIELD_0_PLAIN' => lorem_phrase(),

@@ -68,6 +68,13 @@ class third_party_code_test_set extends cms_test_case
 
         $files = list_untouchable_third_party_files();
         foreach ($files as $file) {
+            // Exceptions
+            if (in_array($file, [
+                '_tests/codechecker/codechecker.ini',
+            ])) {
+                continue;
+            }
+
             $this->assertTrue(is_file(get_file_base() . '/' . $file), 'Missing: ' . $file);
         }
     }

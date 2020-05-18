@@ -51,6 +51,74 @@ class Hook_search_comcode_pages extends FieldsSearchHook
     }
 
     /**
+     * Perform indexing using the Composr fast custom index.
+     *
+     * @param  ?TIME $since Only index records newer than this (null: no limit)
+     * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
+     * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
+     */
+    public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    {
+        $engine = new Composr_fulltext_engine();
+
+        $index_table = 'cpages_fulltext_index';
+        $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
+
+        $has_custom_fields = ($GLOBALS['FORUM_DB']->query_select_value_if_there('catalogue_fields', 'id', ['c_name' => '_comcode_page']) !== null);
+
+        $fields_to_index = [
+            'page_name' => APPEARANCE_CONTEXT_TITLE,
+            'page_content' => APPEARANCE_CONTEXT_BODY,
+            'meta_keywords' => APPEARANCE_CONTEXT_META,
+            'meta_description' => APPEARANCE_CONTEXT_BODY,
+        ];
+        $key_transfer_map = [
+            'zone_name' => 'i_zone_name',
+            'page_name' => 'i_page_name',
+        ];
+        $filter_field_transfer_map = [
+        ];
+
+        $db = $GLOBALS['SITE_DB'];
+
+        $zones = find_all_zones();
+        foreach ($zones as $zone) {
+            $langs = find_all_langs();
+            foreach (array_keys($langs) as $lang) {
+                $pages = find_all_pages($zone, 'comcode_custom/' . $lang, 'txt', false, $clean_scan ? null : $since, FIND_ALL_PAGES__ALL);
+                foreach ($pages as $page => $page_type) {
+                    if (preg_match('#(^panel_|_)#', $page) == 0) {
+                        require_code('global4');
+                        if (!comcode_page_include_on_sitemap($zone, $page)) {
+                            continue;
+                        }
+
+                        list($file_base, $file_path) = find_comcode_page($lang, $page, $zone);
+
+                        list($keywords, $description) = seo_meta_get_for('comcode_page', $zone . ':' . $page);
+                        $content_fields = [
+                            'zone_name' => $zone,
+                            'page_name' => $page,
+                            'page_content' => cms_file_get_contents_safe($file_base . '/' . $file_path),
+                            'meta_keywords' => $keywords,
+                            'meta_description' => $description,
+                        ];
+
+                        if ($has_custom_fields) {
+                            $ce_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entry_linkage', 'catalogue_entry_id', ['content_type' => 'comcode_page', 'content_id' => $zone . ':' . $page]);
+                            if ($ce_id !== null) {
+                                $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_comcode_page', $ce_id, $lang);
+                            }
+                        }
+
+                        $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, $lang, $clean_scan);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Get a list of entries for the content covered by this search hook. In hierarchical list selection format.
      *
      * @param  string $selected The default selected item
@@ -109,41 +177,102 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 break;
         }
 
-        $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
-        if ($sq === null) {
-            return [];
-        } else {
-            $where_clause .= $sq;
-        }
-
-        if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
-            $where_clause .= ' AND ';
-            $where_clause .= 'z.zone_name IS NOT NULL';
-        }
-        $where_clause .= ' AND q.p_include_on_sitemap=1';
-        if (($search_under !== null) && ($search_under != '!')) {
-            $where_clause .= ' AND ';
-            $where_clause .= '(' . db_string_equal_to('r.the_zone', $search_under) . ')';
-        }
-
-        if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
-            $where_clause .= ' AND ';
-            $where_clause .= 'p_validated=1';
-        }
-
         require_lang('zones');
-        $g_or = get_permission_where_clause_groups(get_member(), false);
-
-        $table = 'cached_comcode_pages r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages q ON q.the_zone=r.the_zone AND q.the_page=r.the_page';
-        $trans_fields = ['r.cc_page_title' => 'SHORT_TRANS', 'r.string_index' => 'LONG_TRANS__COMCODE'];
-        $nontrans_fields = [];
-        $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', ['r.the_zone', 'r.the_page']));
 
         // Calculate and perform query
-        if ($g_or == '') {
-            $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.the_zone,r.the_page', $nontrans_fields);
+        $composr_fulltext_engine = can_use_composr_fulltext_engine('comcode_pages', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
+        if ($composr_fulltext_engine) {
+            // This search hook implements the Composr fast custom index, which we use where possible...
+
+            // Calculate our where clause (search)
+            $where_clause = '';
+            $extra_join_clause = '';
+            $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
+            if ($sq === null) {
+                return [];
+            } else {
+                $where_clause .= $sq;
+            }
+
+            if (($search_under !== null) && ($search_under != '!')) {
+                $extra_join_clause .= ' AND ';
+                $extra_join_clause .= '(' . db_string_equal_to('ixxx.i_zone_name', $search_under) . ')';
+            }
+
+            // Category filter
+            if (($search_under != '!') && ($search_under != '-1')) {
+                $cats = explode(',', $search_under);
+                $extra_join_clause .= ' AND (';
+                foreach ($cats as $i => $cat) {
+                    if (trim($cat) == '') {
+                        continue;
+                    }
+
+                    if ($i != 0) {
+                        $extra_join_clause .= ' OR ';
+                    }
+                    $extra_join_clause .= db_string_equal_to('ixxx.i_zone_name', $cat);
+                }
+                $extra_join_clause .= ')';
+            }
+
+            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                $where_clause .= ' AND ';
+                $where_clause .= 'r.p_validated=1';
+            }
+
+            $table = 'comcode_pages r';
+
+            $g_or = get_permission_where_clause_groups(get_member(), false);
+            if ($g_or != '') {
+                $where_clause .= ' AND ';
+                $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
+            }
+
+            $engine = new Composr_fulltext_engine();
+
+            if ($engine->active_search_has_special_filtering()) {
+                $trans_fields = [];
+                $nontrans_fields = [];
+                $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', ['r.the_zone', 'r.the_page']));
+                // ^ Nothing done with trans_fields and nontrans_fields
+            }
+
+            $db = $GLOBALS['SITE_DB'];
+            $index_table = 'cpages_fulltext_index';
+            $key_transfer_map = ['the_zone' => 'i_zone_name', 'the_page' => 'i_page_name'];
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
         } else {
-            $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table . ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z ON z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')', $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields);
+            $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
+            if ($sq === null) {
+                return [];
+            } else {
+                $where_clause .= $sq;
+            }
+
+            $where_clause .= ' AND q.p_include_on_sitemap=1';
+            if (($search_under !== null) && ($search_under != '!')) {
+                $where_clause .= ' AND ';
+                $where_clause .= '(' . db_string_equal_to('r.the_zone', $search_under) . ')';
+            }
+
+            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                $where_clause .= ' AND ';
+                $where_clause .= 'p_validated=1';
+            }
+
+            $table = 'cached_comcode_pages r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages q ON q.the_zone=r.the_zone AND q.the_page=r.the_page';
+            $trans_fields = ['r.cc_page_title' => 'SHORT_TRANS', 'r.string_index' => 'LONG_TRANS__COMCODE'];
+            $nontrans_fields = [];
+            $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', ['r.the_zone', 'r.the_page']));
+
+            $g_or = get_permission_where_clause_groups(get_member(), false);
+            if ($g_or != '') {
+                $where_clause .= ' AND ';
+                $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
+            }
+
+            $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.the_zone,r.the_page', $nontrans_fields);
         }
 
         if (addon_installed('redirects_editor')) {
@@ -180,7 +309,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             }
         }
 
-        if ($author == '') {
+        if (($author == '') && (!$composr_fulltext_engine)) {
             // Make sure we record that for all cached Comcode pages, we know of them (only those not cached would not have been under the scope of the current search)
             $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['the_zone', 'the_page']);
             foreach ($all_pages as $row) {

@@ -551,7 +551,7 @@ Values are like hidden configuration options. They are either hidden because the
  - Unofficial functionality that may or may not work correctly:
   - [tt]unofficial_ecommerce[/tt] -- set to '1' if your forum driver contains usergroup manipulation functions (we don't support this, but wanted to be able to allow those willing to extend forum drivers to use our full eCommerce framework)
  - Workarounds for difficult server configurations:
-  - [tt]disable_iconv[/tt] -- set this to '1' if your iconv extension causes PHP to crash
+  - [tt]disable_iconv[/tt] -- set this to '1' if your iconv extension causes PHP to crash, or if it is very slow
   - [tt]disable_mbstring[/tt] -- set this to '1' if your mbstring extension causes PHP to crash
   - [tt]prefer_curl[/tt] -- set this to '1' if the server requires you to not use network sockets directly from PHP and instead use the CuRL extension (although if you need this it is likely you actually need to just configure the proxy server options instead)
   - [tt]real_memory_available_mb[/tt] -- set this to the number of MB GD should consider available for image generation, if PHP is lying about its memory limit
@@ -635,6 +635,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]addon_disabled_<addon>[/tt] -- set this to '1' to disable a particular addon (may not be supported by all addons)
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
+  - [tt]search_do_days_fallback[/tt] -- set this to '0' if you don't want to re-search without a recency filter if no results were found
   - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]:
   - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
@@ -750,6 +751,7 @@ The 'keep' parameters available are:
  - [tt]keep_translate_sort[/tt] -- set this to 'recent' to make the content translation interface show recent strings first; useful during debugging
  - [tt]keep_debug_fs[/tt] -- set this to '1', while in the installer, or logged in as an admin, for disk I/O to be slowed and file system case sensitivity to be checked. Or, to a higher number of milliseconds if you want to introduce fake I/O latency. It is for developer filesystem testing.
  - [tt]keep_manual_import_config[/tt] -- set this to '1' in the import module to disable automatic detection of the import target's database settings from its filesystem config file (if you don't have it, for example)
+ - [tt]keep_composr_fulltext_engine[/tt] set this to '0' or '1' to override which search engine to use, where possible; 0 for the database's own fulltext search, 1 for the Composr fast custom index
 
 The following 'keep' parameters have interface triggers, but are also handy for manual activation:
  - [tt]keep_markers[/tt] -- set this to '1' if you want template start/end markers to be output in the page HTML source when viewed in Composr

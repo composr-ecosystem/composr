@@ -222,6 +222,12 @@ class _broken_links_test_set extends cms_test_case
         ])) {
             return;
         }
+        if (in_array($url, [ // cURL doesn't like the SSL config
+            'https://www.davesite.com/webstation/html/',
+            'https://www.hobo-web.co.uk/website-design-tips/',
+        ])) {
+            return;
+        }
 
         require_code('urls2');
         $message = '';

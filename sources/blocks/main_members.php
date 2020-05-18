@@ -109,6 +109,20 @@ PHP;
             return do_template('RED_ALERT', ['_GUID' => 'lnxrdzazqbcnmcg8ubo3y915wcef6t13', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
+        $block_id = get_block_id($map);
+
+        $default_max = array_key_exists('max', $map) ? intval($map['max']) : 30;
+        $max = get_param_integer($block_id . '_max', $default_max);
+        if ($max == 0) {
+            $max = 30;
+        }
+        $start = get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0);
+
+        // Don't allow guest bots to probe too deep into the forum index, it gets very slow; the XML Sitemap is for guiding to topics like this
+        if (($start > $max * 5) && (is_guest()) && (get_bot_type() !== null)) {
+            access_denied('NOT_AS_GUEST');
+        }
+
         require_code('cns_members');
         require_code('cns_groups');
         require_code('cns_members2');
@@ -124,8 +138,6 @@ PHP;
         }
 
         push_query_limiting(false);
-
-        $block_id = get_block_id($map);
 
         $guid = array_key_exists('guid', $map) ? $map['guid'] : '';
 
@@ -328,12 +340,12 @@ PHP;
         $count_sql = 'SELECT COUNT(DISTINCT r.id) FROM ' . $main_sql;
 
         inform_non_canonical_parameter($block_id . '_max');
-        $max = get_param_integer($block_id . '_max', array_key_exists('max', $map) ? intval($map['max']) : 30);
-        if ($max == 0) {
-            $max = 30;
-        }
         inform_non_canonical_parameter($block_id . '_start');
-        $start = get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0);
+
+        // Don't allow guest bots to probe too deep into the member directory, it gets very slow; the XML Sitemap is for guiding to topics like this
+        if (($start > $default_max * 5) && (is_guest()) && (get_bot_type() !== null)) {
+            access_denied('NOT_AS_GUEST');
+        }
 
         $max_rows = $GLOBALS['FORUM_DB']->query_value_if_there($count_sql);
 

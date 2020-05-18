@@ -158,6 +158,9 @@ class Hook_addon_registry_search
             'sources/hooks/systems/config/minimum_autocomplete_past_search.php',
             'sources/hooks/systems/config/block_top_search.php',
             'themes/default/javascript/search.js',
+            'sources/lang_tokeniser_EN.php',
+            'sources/hooks/systems/cron/composr_fulltext_indexer.php',
+            'sources/crc24.php',
 
             'sources/hooks/modules/admin_stats/searches.php',
         ];

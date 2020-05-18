@@ -60,9 +60,14 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $info['lang'] = do_lang_tempcode('FORUM_POSTS');
         $info['default'] = (get_option('search_cns_posts') == '1');
         $info['special_on'] = [];
-        $info['special_off'] = ['open' => do_lang_tempcode('POST_SEARCH_OPEN'), 'closed' => do_lang_tempcode('POST_SEARCH_CLOSED'), 'pinned' => do_lang_tempcode('POST_SEARCH_PINNED'), 'starter' => do_lang_tempcode('POST_SEARCH_STARTER')];
+        $info['special_off'] = ['open' => do_lang_tempcode('POST_SEARCH_OPEN'), 'closed' => do_lang_tempcode('POST_SEARCH_CLOSED'), 'pinned' => do_lang_tempcode('POST_SEARCH_PINNED')];
         if ((has_privilege($member_id, 'see_unvalidated')) && (addon_installed('unvalidated'))) {
             $info['special_off']['unvalidated'] = do_lang_tempcode('POST_SEARCH_UNVALIDATED');
+        }
+        if (can_use_composr_fulltext_engine('cns_posts')) {
+            $info['special_on']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
+        } else {
+            $info['special_off']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
         }
         $info['category'] = 'p_cache_forum_id';
         $info['integer_category'] = true;
@@ -81,6 +86,86 @@ class Hook_search_cns_posts extends FieldsSearchHook
         ];
 
         return $info;
+    }
+
+    /**
+     * Perform indexing using the Composr fast custom index.
+     *
+     * @param  ?TIME $since Only index records newer than this (null: no limit)
+     * @param  ?integer $total_singular_ngram_tokens Write into a count of singular ngrams (typically, words) in here (null: do not count)
+     * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
+     */
+    public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    {
+        $engine = new Composr_fulltext_engine();
+
+        $index_table = 'f_posts_fulltext_index';
+        $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
+
+        $has_custom_fields = ($GLOBALS['FORUM_DB']->query_select_value_if_there('catalogue_fields', 'id', ['c_name' => '_post']) !== null);
+
+        $fields_to_index = [
+            'p_title' => APPEARANCE_CONTEXT_TITLE,
+            'p_post' => APPEARANCE_CONTEXT_BODY,
+        ];
+        $key_transfer_map = [
+            'id' => 'i_post_id',
+        ];
+        $filter_field_transfer_map = [
+            'p_time' => 'i_add_time',
+            'p_cache_forum_id' => 'i_forum_id',
+            'p_poster' => 'i_poster_id',
+            't_is_open' => 'i_open',
+            't_pinned' => 'i_pinned',
+            'i_starter' => 'i_starter',
+        ];
+
+        $db = $GLOBALS['FORUM_DB'];
+
+        // A way to force-resume where we left off, if we're debugging our way through
+        if (get_value('fulltext_startup_hack', '0', true) == '1') {
+            $last_post_id = $db->query_select_value_if_there('f_posts_fulltext_index', 'MAX(i_post_id)');
+            if ($last_post_id !== null) {
+                $_since = $db->query_select_value_if_there('f_posts', 'p_time', ['id' => $last_post_id]);
+                if ($_since !== null) {
+                    $since = $_since;
+                }
+            }
+        }
+
+
+        global $TABLE_LANG_FIELDS_CACHE;
+        $lang_fields = $TABLE_LANG_FIELDS_CACHE['f_posts'];
+
+        $sql = 'SELECT p.id,p.p_time,p.p_last_edit_time,p.p_poster,p.p_title,p.p_post,p.p_cache_forum_id,t_is_open,t_pinned,t_cache_first_post_id FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
+        $sql .= ' WHERE p_cache_forum_id IS NOT NULL';
+        $since_clause = $engine->generate_since_where_clause($db, $index_table, ['p_time' => false, 'p_last_edit_time' => true], $since, $statistics_map);
+        $sql .= $since_clause;
+
+        $max_post_length = intval(get_value('fulltext_max_post_length', '0', true));
+        if ($max_post_length > 0) {
+            $sql .= ' AND ' . db_function('LENGTH', [$GLOBALS['FORUM_DB']->translate_field_ref('p_post')]) . '<' . strval($max_post_length);
+        }
+
+        $max = 100;
+        $start_id = -1;
+        do {
+            $rows = $db->query($sql . ' AND p.id>' . strval($start_id) . ' ORDER BY p.id', $max, 0, false, false, $lang_fields);
+            foreach ($rows as $row) {
+                $content_fields = $row + ['i_starter' => ($row['t_cache_first_post_id'] == $row['id']) ? 1 : 0];
+
+                if ($has_custom_fields) {
+                    $ce_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entry_linkage', 'catalogue_entry_id', ['content_type' => 'post', 'content_id' => strval($row['id'])]);
+                    if ($ce_id !== null) {
+                        $engine->get_content_fields_from_catalogue_entry($content_fields, $fields_to_index, '_post', $ce_id);
+                    }
+                }
+
+                $engine->index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, $total_singular_ngram_tokens, $statistics_map, null, $clean_scan);
+
+                $start_id = $row['id'];
+            }
+        } while (!empty($rows));
     }
 
     /**
@@ -157,53 +242,134 @@ class Hook_search_cns_posts extends FieldsSearchHook
 
         require_lang('cns');
 
-        // Calculate our where clause (search)
-        $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
-        if ($sq === null) {
-            return [];
-        } else {
-            $where_clause .= $sq;
-        }
-        $this->_handle_date_check($cutoff, 'p_time', $where_clause);
-        if (get_param_integer('option_cns_posts_unvalidated', 0) == 1) {
-            $where_clause .= ' AND ';
-            $where_clause .= 'r.p_validated=0';
-        }
-        if (get_param_integer('option_cns_posts_open', 0) == 1) {
-            $where_clause .= ' AND ';
-            $where_clause .= 's.t_is_open=1';
-        }
-        if (get_param_integer('option_cns_posts_closed', 0) == 1) {
-            $where_clause .= ' AND ';
-            $where_clause .= 's.t_is_open=0';
-        }
-        if (get_param_integer('option_cns_posts_pinned', 0) == 1) {
-            $where_clause .= ' AND ';
-            $where_clause .= 's.t_pinned=1';
-        }
-        if (get_param_integer('option_cns_posts_starter', 0) == 1) {
-            $where_clause .= ' AND ';
-            $where_clause .= 's.t_cache_first_post_id=r.id';
-        }
-        $where_clause .= ' AND ';
-        $where_clause .= 'p_cache_forum_id IS NOT NULL AND (p_intended_solely_for IS NULL';
-        if (!is_guest()) {
-            $where_clause .= ' OR (p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member()) . ')';
-        }
-        $where_clause .= ')';
-
-        if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
-            $where_clause .= ' AND ';
-            $where_clause .= 'p_validated=1';
-        }
-
-        $table = 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id';
-        $trans_fields = ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'];
-        $nontrans_fields = ['r.p_title'/*,'s.t_description' Performance problem due to how full text works*/];
-        $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);
-
         // Calculate and perform query
-        $rows = get_search_rows(null, 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,t_forum_id,t_cache_first_title', $nontrans_fields, 'forums', 't_forum_id');
+        $permissions_module = 'forums';
+        if (can_use_composr_fulltext_engine('cns_posts', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_ocf_posts_starter', 0) == 1)) {
+            // This search hook implements the Composr fast custom index, which we use where possible...
+
+            $table = 'f_posts r';
+
+            // Calculate our where clause (search)
+            $where_clause = '';
+            $extra_join_clause = '';
+            $sq = build_search_submitter_clauses('ixxx.i_poster_id', $author_id, $author);
+            if ($sq === null) {
+                return [];
+            } else {
+                $extra_join_clause .= $sq;
+            }
+            $this->_handle_date_check($cutoff, 'ixxx.i_add_time', $extra_join_clause);
+            if (get_param_integer('option_cns_posts_unvalidated', 0) == 1) {
+                $where_clause .= ' AND ';
+                $where_clause .= 'r.p_validated=0';
+            }
+            if (get_param_integer('option_cns_posts_open', 0) == 1) {
+                $extra_join_clause .= ' AND ';
+                $extra_join_clause .= 'ixxx.i_open=1';
+            }
+            if (get_param_integer('option_cns_posts_closed', 0) == 1) {
+                $extra_join_clause .= ' AND ';
+                $extra_join_clause .= 'ixxx.i_open=0';
+            }
+            if (get_param_integer('option_cns_posts_pinned', 0) == 1) {
+                $extra_join_clause .= ' AND ';
+                $extra_join_clause .= 'ixxx.i_pinned=1';
+            }
+            if (get_param_integer('option_cns_posts_starter', 0) == 1) {
+                $extra_join_clause .= ' AND ';
+                $extra_join_clause .= 'ixxx.i_starter=1';
+            }
+
+            // Category filter
+            if (($search_under != '!') && ($search_under != '-1')) {
+                $cats = explode(',', $search_under);
+                $extra_join_clause .= ' AND (';
+                foreach ($cats as $i => $cat) {
+                    if (trim($cat) == '') {
+                        continue;
+                    }
+
+                    if ($i != 0) {
+                        $extra_join_clause .= ' OR ';
+                    }
+                    $extra_join_clause .= 'ixxx.i_forum_id=' . strval(intval($cat));
+                }
+                $extra_join_clause .= ')';
+            }
+
+            $where_clause .= ' AND ';
+            $where_clause .= '(p_intended_solely_for IS NULL';
+            if (!is_guest()) {
+                $where_clause .= ' OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member());
+            }
+            $where_clause .= ')';
+            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                $where_clause .= ' AND ';
+                $where_clause .= 'p_validated=1';
+            }
+
+            $engine = new Composr_fulltext_engine();
+
+            if ($engine->active_search_has_special_filtering()) {
+                $trans_fields = [];
+                $nontrans_fields = [];
+                $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);
+                // ^ Nothing done with trans_fields and nontrans_fields
+            }
+
+            $db = $GLOBALS['FORUM_DB'];
+            $index_table = 'f_posts_fulltext_index';
+            $key_transfer_map = ['id' => 'i_post_id'];
+            $index_permissions_field = 'i_forum_id';
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
+        } else {
+            // Calculate our where clause (search)
+            $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
+            if ($sq === null) {
+                return [];
+            } else {
+                $where_clause .= $sq;
+            }
+            $this->_handle_date_check($cutoff, 'p_time', $where_clause);
+            if (get_param_integer('option_cns_posts_unvalidated', 0) == 1) {
+                $where_clause .= ' AND ';
+                $where_clause .= 'r.p_validated=0';
+            }
+            if (get_param_integer('option_cns_posts_open', 0) == 1) {
+                $where_clause .= ' AND ';
+                $where_clause .= 's.t_is_open=1';
+            }
+            if (get_param_integer('option_cns_posts_closed', 0) == 1) {
+                $where_clause .= ' AND ';
+                $where_clause .= 's.t_is_open=0';
+            }
+            if (get_param_integer('option_cns_posts_pinned', 0) == 1) {
+                $where_clause .= ' AND ';
+                $where_clause .= 's.t_pinned=1';
+            }
+            if (get_param_integer('option_cns_posts_starter', 0) == 1) {
+                $where_clause .= ' AND ';
+                $where_clause .= 's.t_cache_first_post_id=r.id';
+            }
+            $where_clause .= ' AND ';
+            $where_clause .= 'r.p_cache_forum_id IS NOT NULL AND (r.p_intended_solely_for IS NULL';
+            if (!is_guest()) {
+                $where_clause .= ' OR (r.p_intended_solely_for=' . strval(get_member()) . ' OR r.p_poster=' . strval(get_member()) . ')';
+            }
+            $where_clause .= ')';
+
+            if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
+                $where_clause .= ' AND ';
+                $where_clause .= 'r.p_validated=1';
+            }
+
+            $table = 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id';
+            $trans_fields = ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'];
+            $nontrans_fields = ['r.p_title'/*,'s.t_description' Performance problem due to how full text works*/];
+            $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);
+
+            $rows = get_search_rows(null, 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,t_forum_id,t_cache_first_title', $nontrans_fields, $permissions_module, 't_forum_id');
+        }
 
         $out = [];
         foreach ($rows as $i => $row) {

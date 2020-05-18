@@ -2168,7 +2168,7 @@ class Hook_addon_registry_core
                 break;
 
             case 'table':
-                $content = $keymap;
+                $content = [['KEYMAP' => $keymap]];
                 break;
 
             case 'tiles':

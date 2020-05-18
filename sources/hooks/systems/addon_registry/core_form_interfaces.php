@@ -2233,13 +2233,13 @@ class Hook_addon_registry_core_form_interfaces
             'GROUP_ID' => placeholder_random_id(),
             'GROUP_NAME' => lorem_phrase(),
             'FORCE_PRESETS' => false,
-            'OVERRIDES' => placeholder_array(),
+            'OVERRIDES' => [['TITLE' => lorem_phrase()]],
         ]));
 
         $field = do_lorem_template('FORM_SCREEN_INPUT_PERMISSION_MATRIX', [
             'SERVER_ID' => placeholder_id(),
             'COLOR' => lorem_word(),
-            'OVERRIDES' => placeholder_array(),
+            'OVERRIDES' => [['TITLE' => lorem_phrase()]],
             'PERMISSION_ROWS' => $permission_rows,
         ]);
 

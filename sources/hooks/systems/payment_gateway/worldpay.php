@@ -166,6 +166,7 @@ class Hook_payment_gateway_worldpay
 
         $username = $this->_get_username();
         $form_url = $this->_get_remote_form_url();
+        $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
         $length_units_2 = '1';
         $first_repeat = time();
         switch ($length_units) {
@@ -207,6 +208,7 @@ class Hook_payment_gateway_worldpay
             'CURRENCY' => $currency,
             'USERNAME' => $username,
             'FORM_URL' => $form_url,
+            'EMAIL_ADDRESS' => $email_address,
             'MEMBER_ADDRESS' => $this->_build_member_address(),
         ]);
     }

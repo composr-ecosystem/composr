@@ -518,8 +518,8 @@ class Hook_addon_registry_ecommerce
                 'CURRENCY' => 'GBP',
                 'USERNAME' => lorem_word(),
                 'FORM_URL' => placeholder_url(),
-                'MEMBER_ADDRESS' => placeholder_array(),
                 'EMAIL_ADDRESS' => lorem_word(),
+                'MEMBER_ADDRESS' => placeholder_array(),
             ]), null, '', true)
         ];
     }
@@ -550,6 +550,7 @@ class Hook_addon_registry_ecommerce
                 'CURRENCY' => 'GBP',
                 'USERNAME' => lorem_word(),
                 'FORM_URL' => placeholder_url(),
+                'EMAIL_ADDRESS' => lorem_word(),
                 'MEMBER_ADDRESS' => placeholder_array(),
             ]), null, '', true)
         ];

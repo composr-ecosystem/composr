@@ -59,6 +59,7 @@ class Module_catalogues
         $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_entry_linkage');
         $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_cat_treecache');
         $GLOBALS['SITE_DB']->drop_table_if_exists('catalogue_childcountcache');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('ce_fulltext_index');
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'catalogues_category']);
         $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'catalogues_catalogue']);
@@ -353,6 +354,40 @@ class Module_catalogues
             $GLOBALS['SITE_DB']->query_update('catalogue_fields', ['cf_is_sortable' => 1, 'cf_include_in_main_search' => 1], ['cf_searchable' => 1]);
 
             $GLOBALS['FORUM_DB']->delete_table_field('catalogue_fields', 'cf_searchable');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 10)) {
+            $GLOBALS['SITE_DB']->create_table('ce_fulltext_index', [
+                'i_catalogue_entry_id' => '*AUTO_LINK',
+
+                'i_lang' => '*LANGUAGE_NAME',
+                'i_ngram' => '*INTEGER',
+                'i_ac' => '*INTEGER',
+
+                'i_occurrence_rate' => 'REAL',
+
+                // De-normalised stuff from main content tables for any major filters that shape the results provided
+                //  (other stuff will come in via join back to the main content table)
+                'i_add_time' => 'TIME',
+                'i_c_name' => 'ID_TEXT',
+                'i_category_id' => 'AUTO_LINK',
+                'i_submitter' => 'MEMBER',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_index('ce_fulltext_index', 'content_id', [ // Used for clean-outs and potentially optimising some JOINs if query planner decides to start at the content table
+                'i_catalogue_entry_id',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_index('ce_fulltext_index', 'main', [
+                'i_lang',
+                'i_ngram',
+                'i_ac',
+                'i_add_time',
+                'i_c_name',
+                'i_category_id',
+                'i_submitter',
+                'i_occurrence_rate', // For sorting
+            ]);
         }
     }
 
@@ -658,7 +693,7 @@ class Module_catalogues
         $max = get_param_integer('catalogues_max', 30);
 
         // Not done via main_multi_content block due to need for custom filtering
-        $query = 'FROM ' . get_table_prefix() . 'catalogues c WHERE EXISTS (SELECT * FROM ' . get_table_prefix() . 'catalogue_entries e WHERE e.c_name=c.c_name)';
+        $query = 'FROM ' . get_table_prefix() . 'catalogues c WHERE EXISTS(SELECT * FROM ' . get_table_prefix() . 'catalogue_entries e WHERE e.c_name=c.c_name)';
         $query .= ' AND ';
         $query .= ($ecommerce === null) ? '1=1' : ('c_ecommerce=' . strval($ecommerce));
         $query .= ' AND c.c_name NOT LIKE \'' . db_encode_like('\_%') . '\'';

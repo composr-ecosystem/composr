@@ -62,13 +62,13 @@ END;
 require_code('sitemap');
 
 $root = retrieve_sitemap_node(
-    /*$page_link=*/'',
-    /*$callback=*/null,
-    /*$valid_node_types=*/['root', 'zone', 'page_grouping', 'page', 'comcode_page'],
-    /*$child_cutoff=*/null,
-    /*$max_recurse_depth=*/null,
-    /*$options=*/SITEMAP_GEN_CHECK_PERMS,
-    /*$zone=*/'_SEARCH'
+    '',
+    null,
+    ['root', 'zone', 'page_grouping', 'page', 'comcode_page'],
+    null,
+    null,
+    SITEMAP_GEN_CHECK_PERMS,
+    '_SEARCH'
 );
 
 if (isset($root['children'])) {

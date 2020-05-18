@@ -3,7 +3,7 @@
 	<div class="cms-slider-item-inner {$?,{$EQ,{NEWS_ITEMS},1},has-1-news-item,has-{NEWS_ITEMS*}-news-items}">
 		{+START,LOOP,NEWS_ITEMS}
 			<div class="slide-news-item">
-				<a href="{FULL_URL*}" class="slide-news-item-image-wrapper"><img src="{IMG*}" alt="" class="slide-news-item-image"></a>
+				<a href="{FULL_URL*}" class="slide-news-item-image-wrapper"><img src="{IMG*}" alt="" class="slide-news-item-image" /></a>
 				<div class="slide-news-item-details">
 					<a href="{CATEGORY_URL*}" class="slide-news-item-category btn btn-secondary">{CATEGORY*}</a>
 					<a href="{FULL_URL*}" class="slide-news-item-details-inner">{+START,TRIM}

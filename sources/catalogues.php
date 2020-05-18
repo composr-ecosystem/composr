@@ -1095,9 +1095,10 @@ function get_catalogue_entry_map($entry, $catalogue = null, $view_type = 'PAGE',
  * @param  boolean $natural_order Whether to order the fields in their natural database order. This is only used for shopping catalogues as a defence against webmaster field reordering and not a strong guarantee
  * @param  ID_TEXT $view_type The view type we're doing
  * @set PAGE SEARCH CATEGORY
+ * @param  ?LANGUAGE_NAME $lang Language codename (null: current user's language)
  * @return array A list of maps (each field for the entry gets a map), where each map contains 'effective_value' (the value for the field). Some maps get additional fields (effective_value_pure), depending on the field type
  */
-function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fields = null, $fields = null, $natural_order = false, $view_type = 'PAGE')
+function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fields = null, $fields = null, $natural_order = false, $view_type = 'PAGE', $lang = null)
 {
     global $CAT_FIELDS_CACHE;
 
@@ -1158,7 +1159,7 @@ function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fiel
             continue;
         }
 
-        _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, $fields[$i], $i, array_keys($tables_to_scan));
+        _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, $fields[$i], $i, array_keys($tables_to_scan), $lang);
     }
 
     return $fields;
@@ -1173,10 +1174,11 @@ function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fiel
  * @param  array $target Save the result into here
  * @param  integer $i Position in field list (counting from zero)
  * @param  ?array $tables_to_scan Which value tables to look in (null: all)
+ * @param  ?LANGUAGE_NAME $lang Language codename (null: current user's language)
  *
  * @ignore
  */
-function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$target, $i, $tables_to_scan = null)
+function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$target, $i, $tables_to_scan = null, $lang = null)
 {
     $ob = get_fields_hook($field['cf_type']);
     list($raw_type, , $type) = $ob->get_field_value_row_bits($field);
@@ -1196,8 +1198,8 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
                 if (multi_lang_content()) {
                     $just_row['cv_value'] = intval($just_row['cv_value']);
                 }
-                $target['effective_value'] = get_translated_tempcode('catalogue_efv_' . $raw_type, $just_row, 'cv_value');
-                $target['effective_value_pure'] = get_translated_text($just_row['cv_value']);
+                $target['effective_value'] = get_translated_tempcode('catalogue_efv_' . $raw_type, $just_row, 'cv_value', null, $lang);
+                $target['effective_value_pure'] = get_translated_text($just_row['cv_value'], null, $lang);
             }
             break;
         case 'long_text':

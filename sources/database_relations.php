@@ -266,6 +266,11 @@ function get_table_purpose_flags()
         'wordfilter' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'zones' => TABLE_PURPOSE__NORMAL,
         'ecom_sales_expecting' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__MISC_NO_MERGE/*too-site-tied*/,
+        'ce_fulltext_index' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
+        'cpages_fulltext_index' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
+        'f_posts_fulltext_index' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
+        'f_pposts_fulltext_index' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
+        'ft_index_commonality' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
     ];
 }
 
@@ -364,6 +369,11 @@ function get_table_descriptions()
         'stats_known_tracking' => 'keeps a record of all the tracking codes that have been seen',
         'stats_known_links' => 'keeps a record of all the tracked links that have been seen',
         'stats_link_tracker' => 'outgoing click tracking (not really used much)',
+        'ce_fulltext_index' => 'search indexing for catalogue entries',
+        'cpages_fulltext_index' => 'search indexing for Comcode pages',
+        'f_posts_fulltext_index' => 'search indexing for forum posts',
+        'f_pposts_fulltext_index' => 'search indexing for forum posts in private topics',
+        'ft_index_commonality' => 'search indexing keyword stats',
     ];
 }
 
@@ -542,6 +552,11 @@ function get_relation_map()
         'shopping_order_details.p_type_code' => 'catalogue_entries.id',
         'ecom_transactions.t_parent_txn_id' => 'ecom_transactions.id',
         'ecom_transactions.t_session_id' => 'sessions.the_session',
+        'ce_fulltext_index.i_category_id' => 'catalogue_categories.id',
+        'ce_fulltext_index.i_catalogue_entry_id' => 'catalogue_entries.id',
+        'f_posts_fulltext_index.i_forum_id' => 'f_forums.id',
+        'f_posts_fulltext_index.i_post_id' => 'f_posts.id',
+        'f_pposts_fulltext_index.i_post_id' => 'f_posts.id',
     ];
 }
 

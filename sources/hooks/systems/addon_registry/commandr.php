@@ -85,9 +85,7 @@ class Hook_addon_registry_commandr
     public function get_dependencies()
     {
         return [
-            'requires' => [
-                'import',
-            ],
+            'requires' => [],
             'recommends' => [],
             'conflicts_with' => [],
         ];

@@ -150,6 +150,8 @@ function uninstall_cns()
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_member_cpf_perms');
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_group_join_log');
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_password_history');
+    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_pposts_fulltext_index');
+    $GLOBALS['FORUM_DB']->drop_table_if_exists('f_posts_fulltext_index');
 
     $GLOBALS['FORUM_DB']->query_delete('group_privileges', ['module_the_name' => 'forums']);
 
@@ -679,10 +681,6 @@ function install_cns($upgrade_from = null)
         cns_make_forum(do_lang('DEFAULT_FORUM_TITLE'), '', $forum_grouping_id, $typical_access, $root_forum);
         $trash_forum_id = cns_make_forum(do_lang('TRASH'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
         cns_make_forum(do_lang('COMMENT_FORUM_NAME'), '', $forum_grouping_id, $typical_access, $root_forum, 1, 1, 0, '', '', '', 'last_post', 1);
-        if (addon_installed('tickets')) {
-            require_lang('tickets');
-            cns_make_forum(do_lang('TICKET_FORUM_NAME'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
-        }
         $staff_forum_id = cns_make_forum(do_lang('STAFF'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
 
         $GLOBALS['FORUM_DB']->create_table('f_topics', [
@@ -1050,5 +1048,73 @@ function install_cns($upgrade_from = null)
         if ($test === null) {
             $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_is_default' => 1], ['id' => db_get_first_id() + 8], '', 1);
         }
+
+        $GLOBALS['FORUM_DB']->create_table('f_pposts_fulltext_index', [
+            'i_post_id' => '*AUTO_LINK',
+            'i_for' => '*MEMBER',
+
+            'i_lang' => '*LANGUAGE_NAME',
+            'i_ngram' => '*INTEGER',
+            'i_ac' => '*INTEGER',
+
+            'i_occurrence_rate' => 'REAL',
+
+            // De-normalised stuff from main content tables for any major filters that shape the results provided
+            //  (other stuff will come in via join back to the main content table)
+            'i_add_time' => 'TIME',
+            'i_poster_id' => 'MEMBER',
+            'i_starter' => 'BINARY',
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'content_id', [ // Used for clean-outs and potentially optimising some JOINs if query planner decides to start at the content table
+            'i_post_id',
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_poster_id',
+            'i_starter',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_table('f_posts_fulltext_index', [
+            'i_post_id' => '*AUTO_LINK',
+
+            'i_lang' => '*LANGUAGE_NAME',
+            'i_ngram' => '*INTEGER',
+            'i_ac' => '*INTEGER',
+
+            'i_occurrence_rate' => 'REAL',
+
+            // De-normalised stuff from main content tables for any major filters that shape the results provided
+            //  (other stuff will come in via join back to the main content table)
+            'i_add_time' => 'TIME',
+            'i_forum_id' => 'AUTO_LINK',
+            'i_poster_id' => 'MEMBER',
+            'i_open' => 'BINARY',
+            'i_pinned' => 'BINARY',
+            'i_starter' => 'BINARY',
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'content_id', [ // Used for clean-outs and potentially optimising some JOINs if query planner decides to start at the content table
+            'i_post_id',
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_forum_id',
+            'i_poster_id',
+            'i_open',
+            'i_pinned',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
     }
 }

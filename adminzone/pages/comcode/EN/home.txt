@@ -16,7 +16,7 @@
 	{+END}
 	{+START,IF,{$CONFIG_OPTION,dashboard_forum_topics}}
 		{+START,IF,{$CNS}}
-			[block="Staff" title="Staff forum" limit="3" failsafe="1"]main_forum_topics[/block]<br />
+			[block="Staff" title="Staff forums" limit="3" failsafe="1"]main_forum_topics[/block]<br />
 		{+END}
 	{+END}
 	{+START,IF,{$CONFIG_OPTION,dashboard_tips}}

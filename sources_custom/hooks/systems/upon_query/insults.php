@@ -52,7 +52,7 @@ class Hook_upon_query_insults
 
         //if ((strpos($query, $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members') !== false) && (strpos($query, 'BY RAND') == false)) // to test without registration
 
-        if (strpos($query, 'INTO ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts') !== false) {
+        if (strpos($query, 'INTO ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts ') !== false) {
             require_code('permissions');
 
             load_user_stuff();

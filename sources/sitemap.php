@@ -1106,7 +1106,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
                     $start = 0;
                     do {
-                        $rows = $cma_entry_info['db']->query_select($table, $select, $where, $extra_where_entries . $privacy_where . (is_null($explicit_order_by_entries) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), $max_rows_per_loop, $start, false, $lang_fields);
+                        $rows = $cma_entry_info['db']->query_select($table, $select, $where, $extra_where_entries . $privacy_where . (($explicit_order_by_entries === null) ? '' : (' ORDER BY ' . $explicit_order_by_entries)), $max_rows_per_loop, $start, false, $lang_fields);
 
                         if (($start == 0) && ($child_cutoff !== null) && (count($rows) > $child_cutoff)) {
                             $rows = []; // Too many to process. We don't do with a COUNT(*) query because on balance of probability there won't be too many child rows and we can save a count query at the cost of the small risk of loading excess data
@@ -1160,7 +1160,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
             $start = 0;
             do {
-                $rows = $cma_info['db']->query_select($table, $select, $where, (is_null($explicit_order_by_subcategories) ? '' : ('ORDER BY ' . $explicit_order_by_subcategories)), $max_rows_per_loop, $start, false, $lang_fields);
+                $rows = $cma_info['db']->query_select($table, $select, $where, (($explicit_order_by_subcategories === null) ? '' : ('ORDER BY ' . $explicit_order_by_subcategories)), $max_rows_per_loop, $start, false, $lang_fields);
 
                 if (($start == 0) && ($child_cutoff !== null) && (count($rows) > $child_cutoff)) {
                     $rows = []; // Too many to process. We don't do with a COUNT(*) query because on balance of probability there won't be too many child rows and we can save a count query at the cost of the small risk of loading excess data

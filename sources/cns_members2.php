@@ -42,8 +42,8 @@ function _members_filtercode($db, $info, $context, &$extra_join, $filter_key, $f
         return [$table_join_code . '.' . $filter_key, '', $field_val];
     }
 
-    // CPFS...
-    // -------
+    // Mostly CPFS...
+    // --------------
 
     $join_sql = ' LEFT JOIN ' . $db->get_table_prefix() . 'f_member_custom_fields f ON f.mf_member_id=r.id';
 
@@ -53,8 +53,11 @@ function _members_filtercode($db, $info, $context, &$extra_join, $filter_key, $f
 
     $new_filter_key = $filter_key;
     if (is_numeric($filter_key)) {
+        // CPF by just ID
         $new_filter_key = 'field_' . $new_filter_key;
     } elseif ($filter_key == 'gm_group_id') {
+        // Secondary usergroup membership
+
         $join_sql = ' LEFT JOIN ' . $db->get_table_prefix() . 'f_group_members gm ON gm.gm_member_id=r.id';
 
         if (!in_array($join_sql, $extra_join)) {
@@ -63,6 +66,7 @@ function _members_filtercode($db, $info, $context, &$extra_join, $filter_key, $f
 
         return [$new_filter_key, '', $field_val];
     } elseif (preg_match('#^field_\d+$#', $filter_key) == 0) { // If it's not already correct
+        // CPF by title
         require_code('cns_members');
         $cpf_id = find_cpf_field_id($filter_key);
         if ($cpf_id === null) {
@@ -70,10 +74,8 @@ function _members_filtercode($db, $info, $context, &$extra_join, $filter_key, $f
         }
         $new_filter_key = 'field_' . strval($cpf_id);
     } else {
-        if (!array_key_exists($filter_key, $db_fields)) {
-            return null;
-        }
-        $new_filter_key = $table_join_code . '.' . $new_filter_key;
+        // CPF like field_xxx
+        $new_filter_key = $filter_key;
     }
 
     return [$new_filter_key, '', $field_val];

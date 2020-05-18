@@ -1989,7 +1989,7 @@ function step_5_core()
     $GLOBALS['SITE_DB']->create_table('db_meta_indices', [
         'i_table' => '*ID_TEXT',
         'i_name' => '*ID_TEXT',
-        'i_fields' => '*ID_TEXT',
+        'i_fields' => 'LONG_TEXT',
     ]);
 
     $GLOBALS['SITE_DB']->create_index('db_meta', 'findtransfields', ['m_type']);

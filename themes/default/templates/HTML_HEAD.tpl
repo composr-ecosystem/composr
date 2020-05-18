@@ -111,7 +111,7 @@
 {$,Define the Microformats we support}
 {+START,COMMENT,Commented out by default to save bandwidth}
 	<link rel="profile" href="http://www.w3.org/2003/g/data-view" />
-	<link rel="profile" href="http://dublincore.org/documents/dcq-html/" />
+	<link rel="profile" href="https://www.dublincore.org/specifications/dublin-core/dcq-html/" />
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="profile" href="http://www.w3.org/2006/03/hcard" />
 	<link rel="profile" href="http://microformats.org/profile/hcalendar" />

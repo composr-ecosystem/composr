@@ -232,6 +232,7 @@ class Hook_addon_registry_cns_warnings
                     ['I' => 0, 'POST_TITLE' => lorem_phrase(), 'POST' => lorem_paragraph()],
                     ['I' => 1, 'POST_TITLE' => lorem_phrase(), 'POST' => lorem_paragraph()],
                 ],
+                'IP' => placeholder_ip(),
             ],
         ];
 

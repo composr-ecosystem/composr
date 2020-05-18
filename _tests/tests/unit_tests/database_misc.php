@@ -20,6 +20,17 @@
  */
 class database_misc_test_set extends cms_test_case
 {
+    public function testIFF()
+    {
+        $sql = 'SELECT ' . db_function('IFF', ['1=1', '2', '3']);
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === 2);
+
+        $sql = 'SELECT ' . db_function('IFF', ['1=2', '2', '3']);
+        $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+        $this->assertTrue($result === 3);
+    }
+
     public function testCONCAT()
     {
         $sql = 'SELECT ' . db_function('CONCAT', ['\'a\'', '\'b\'']);
