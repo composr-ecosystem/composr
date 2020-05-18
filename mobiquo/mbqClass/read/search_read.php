@@ -39,7 +39,6 @@ class CMSSearchRead
 
         require_code('database_search');
         $table_prefix = get_table_prefix();
-        $boolean_operator = 'AND';
 
         $sql1 = ' FROM ' . $table_prefix . 'f_posts p' . (($keywords == '') ? '' : $GLOBALS['FORUM_DB']->prefer_index('f_posts', 'p_title'));
         $sql1 .= ' JOIN ' . $table_prefix . 'f_topics t ON t.t_cache_first_post_id=p.id LEFT JOIN ' . $table_prefix . 'f_forums f ON f.id=t.t_forum_id WHERE 1=1';
@@ -51,7 +50,7 @@ class CMSSearchRead
         $where .= ' AND t_forum_id IN (' . get_allowed_forum_sql() . ')';
 
         if ($keywords != '') {
-            list($w) = build_content_where($keywords, false, $boolean_operator);
+            list($w) = build_content_where($keywords);
             if ($w != '') {
                 $sql1 .= ' AND ' . preg_replace('#\?#', 'p_title', $w);
                 $sql2 .= ' AND ' . preg_replace('#\?#', 't_description', $w);
@@ -173,9 +172,8 @@ class CMSSearchRead
 
         require_code('database_search');
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $boolean_operator = 'AND';
 
-        list($w) = build_content_where($keywords, false, $boolean_operator);
+        list($w) = build_content_where($keywords);
         if ($w == '') {
             $search_sql = '1=1';
         } else {

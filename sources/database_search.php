@@ -27,12 +27,1227 @@ function init__database_search()
 {
     $GLOBALS['TOTAL_SEARCH_RESULTS'] = 0;
 
-    $maximum_result_count_point = get_value('maximum_result_count_point');
-    if ($maximum_result_count_point === null) {
-        define('MAXIMUM_RESULT_COUNT_POINT', 1000);
-    } else {
+    if (!defined('MAXIMUM_RESULT_COUNT_POINT')) {
+        $maximum_result_count_point = get_option('search_maximum_result_count_point');
         define('MAXIMUM_RESULT_COUNT_POINT', intval($maximum_result_count_point));
     }
+
+    if (!defined('APPEARANCE_CONTEXT_TITLE')) {
+        define('APPEARANCE_CONTEXT_TITLE', 1);
+        define('APPEARANCE_CONTEXT_META', 2);
+        define('APPEARANCE_CONTEXT_BODY', 3); // Nothing will be indexed in here that is indexed in one of the above, to avoid duplicated content records when doing non-appearance-filtered searches
+    }
+}
+
+/**
+ * Server opensearch requests.
+ */
+function opensearch_script()
+{
+    if (!addon_installed('search')) {
+        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('search')));
+    }
+
+    if (!has_actual_page_access(get_member(), 'search')) {
+        return; // No access
+    }
+
+    $type = get_param_string('type', 'browse');
+    switch ($type) {
+        // Make a search suggestion (like Firefox's Awesome Bar)
+        case 'suggest':
+            require_code('search');
+
+            header('Content-Type: application/x-suggestions+json; charset=' . get_charset());
+            $request = get_param_string('request', false, INPUT_FILTER_GET_COMPLEX);
+
+            $suggestions = find_search_suggestions($request);
+
+            require_lang('search');
+
+            cms_ini_set('ocproducts.xss_detect', '0');
+
+            // JSON format
+            echo '[' . "\n";
+            // Original request
+            echo '"' . php_addslashes($request) . '",' . "\n";
+
+            // Suggestions
+            echo '[';
+            foreach ($suggestions as $i => $suggestion) {
+                if ($i != 0) {
+                    echo ',';
+                }
+                echo '"' . php_addslashes($suggestion) . '"';
+            }
+            echo '],' . "\n";
+
+            // Descriptions of suggestions
+            echo '[';
+            foreach (array_values($suggestions) as $i => $suggestion) {
+                if ($i != 0) {
+                    echo ',';
+                }
+                echo '"' . php_addslashes(do_lang('NUM_RESULTS', integer_format($suggestion))) . '"';
+            }
+            echo '],' . "\n";
+
+            // URLs to search suggestions
+            $filter = get_param_string('filter', '', INPUT_FILTER_GET_COMPLEX);
+            $filter_map = [];
+            if ($filter != '') {
+                foreach (explode(':', $filter) as $f) {
+                    if ($f != '') {
+                        $parts = explode('=', $f, 2);
+                        if (count($parts) == 1) {
+                            $parts = [$parts[0], '1'];
+                        }
+                        $filter_map[$parts[0]] = $parts[1];
+                    }
+                }
+            }
+            echo '[';
+            foreach (array_keys($suggestions) as $i => $suggestion) {
+                if ($i != 0) {
+                    echo ',';
+                }
+                $map = ['page' => 'search', 'type' => 'results', 'content' => $suggestion] + $filter_map;
+                $_search_url = build_url($map, get_param_string('zone', get_module_zone('search')));
+                $search_url = $_search_url->evaluate();
+                echo '"' . php_addslashes($search_url) . '"';
+            }
+            echo ']' . "\n";
+            echo ']' . "\n";
+            break;
+
+        // Provide details about the site search engine
+        default:
+            //header('Content-Type: application/opensearchdescription+xml; charset=' . get_charset());
+            header('Content-Type: text/xml; charset=' . get_charset());
+            $tpl = do_template('OPENSEARCH', ['_GUID' => '1fe46743805ade5958dcba0d58c4b0f2', 'DESCRIPTION' => get_option('description')], null, false, null, '.xml', 'xml');
+            $tpl->evaluate_echo();
+            break;
+    }
+}
+
+/**
+ * Find if we can use the Composr fast custom index.
+ *
+ * @param  string $hook The hook it is for (assumption that this hook is at least capable in some situations)
+ * @param  ?string $search_query Search uery to run for (null: no query to check at this point)
+ * @param  ?boolean $has_heavy_filtering Whether there is heavy filtering (which suggests to use Composr fast custom index) (null: unknown at this point)
+ * @return boolean Whether we can
+ */
+function can_use_composr_fast_custom_index($hook, $search_query = null, $has_heavy_filtering = null)
+{
+    if ($search_query !== null) {
+        $tokeniser = Composr_fast_custom_index::get_tokeniser(user_lang());
+        $ngrams = $tokeniser->query_to_search_tokens($search_query);
+    }
+
+    // Negative, cannot use for these reasons...
+
+    if (($search_query !== null) && ($search_query == '')) {
+        return false; // Blank queries not supported
+    }
+
+    if (($search_query !== null) && (Composr_fast_custom_index::max_ngram_size(user_lang()) <= 1)) {
+        if (array_unique(array_values($ngrams[0] + $ngrams[1] + $ngrams[2])) !== [true]) {
+            return false; // Quoted text not supported in this configuration (because there are only singular ngrams being indexed)
+        }
+    }
+
+    if (!cron_installed()) {
+        return false; // No indexing working
+    }
+
+    // Positive, must use for these reasons...
+
+    if ($search_query !== null) {
+        $_trigger_ngrams = get_option('composr_fast_custom_index__enable_for_ngrams');
+        $trigger_ngrams = ($_trigger_ngrams == '') ? [] : array_map('cms_mb_strtolower', array_map('trim', explode(',', $_trigger_ngrams)));
+
+        if (!empty($trigger_ngrams)) {
+            if (!empty(array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_ngrams))) {
+                return true; // We will use Composr fast custom index if there's certain trigger ngrams
+            }
+        }
+    }
+
+    if (($has_heavy_filtering === true) && (get_option('composr_fast_custom_index__enable_for_filtered') == '1')) {
+        return true; // We will use Composr fast custom index if there's heavy filtering as there'll be a big speed boost
+    }
+
+    if ((!$GLOBALS['SITE_DB']->has_full_text()) && (get_option('composr_fast_custom_index__enable_for_no_fulltext') == '1')) {
+        return true; // No full-text support in database
+    }
+
+    if (($search_query !== null) && (is_under_radar($search_query)) && (get_option('composr_fast_custom_index__enable_for_under_radar') == '1')) {
+        return true; // Query is very short
+    }
+
+    if (($search_query !== null) && (count($ngrams) >= intval(get_option('composr_fast_custom_index__enable_for_minimum_ngram_count')))) {
+        return true; // Query is very long
+    }
+
+    // Explicit choice...
+
+    $by_url = get_param_integer('keep_composr_fast_custom_index', null);
+    if ($by_url !== null) {
+        return ($by_url == 1); // Explicitly specified by URL
+    }
+
+    $default_choice = get_value('composr_fast_custom_index__enable_for__' . $hook, '');
+    if ($default_choice != '') {
+        return ($default_choice == '1'); // Explicitly specified by config for this hook
+    }
+
+    $default_choice = get_value('composr_fast_custom_index__enable_for__' . user_lang(), '');
+    if ($default_choice != '') {
+        return ($default_choice == '1'); // Explicitly specified by config for current language
+    }
+
+    // -
+
+    return (get_option('composr_fast_custom_index__enable') == '1');
+}
+
+/**
+ * The Composr fast custom index search engine.
+ *
+ * @package search
+ */
+class Composr_fast_custom_index
+{
+    // Querying...
+
+    /**
+     * Get some rows, queried from the database according to the search parameters, using the Composr fast custom index.
+     *
+     * @param  object $db Database connection
+     * @param  string $index_table Table containing our custom index
+     * @param  string $content_table The content table to query (may contain JOIN components)
+     * @param  array $key_transfer_map A map to show how keys relate between the index table and the content table, used to construct a JOIN
+     * @param  string $where_clause Special WHERE clause querying things from content table (i.e. stuff not covered in our index)
+     * @param  string $extra_join_clause Extra SQL to insert into the JOIN clauses of each keyword, used to enforce query constraints handled within our indexing
+     * @param  string $search_query Search query
+     * @param  boolean $only_search_meta Whether to only do a META (tags) search
+     * @param  boolean $only_titles Whether to only search titles (as opposed to both titles and content)
+     * @param  integer $max Start position in total results
+     * @param  integer $start Maximum results to return in total
+     * @param  ID_TEXT $order What to order by
+     * @param  ID_TEXT $direction Order direction
+     * @param  ?string $permissions_module The permission module to check category access for (null: none)
+     * @param  ?string $index_permissions_field The field that specifies the permissions ID to check category access for (null: none)
+     * @param  boolean $permissions_field_is_string Whether the permissions field is a string
+     * @return array The rows found
+     */
+    public function get_search_rows($db, $index_table, $content_table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $order, $direction, $permissions_module = null, $index_permissions_field = null, $permissions_field_is_string = false)
+    {
+        if ($only_search_meta) {
+            $appearance_context = APPEARANCE_CONTEXT_META;
+        } elseif ($only_titles) {
+            $appearance_context = APPEARANCE_CONTEXT_TITLE;
+        } else {
+            $appearance_context = null;
+        }
+
+        if (preg_match('#_fulltext_index$#', $index_table) == 0) {
+            fatal_exit('By convention any Composr full-text index table must end with _fulltext_index');
+        }
+
+        // Load configuration
+        global $SEARCH_CONFIG_OVERRIDE;
+        if (isset($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__allow_fuzzy_search'])) {
+            $allow_fuzzy_search = ($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__allow_fuzzy_search'] == '1');
+        } else {
+            $allow_fuzzy_search = (get_option('composr_fast_custom_index__allow_fuzzy_search') == '1');
+        }
+        if (isset($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__scale_by_commonality'])) {
+            $scale_by_commonality = ($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__scale_by_commonality'] == '1');
+        } else {
+            $scale_by_commonality = (get_option('composr_fast_custom_index__scale_by_commonality') == '1');
+        }
+        if (isset($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__use_imprecise_ordering'])) {
+            $use_imprecise_ordering = ($SEARCH_CONFIG_OVERRIDE['composr_fast_custom_index__use_imprecise_ordering'] == '1');
+        } else {
+            $use_imprecise_ordering = (get_option('composr_fast_custom_index__use_imprecise_ordering') == '1');
+        }
+
+        $lang = user_lang();
+
+        $tokeniser = self::get_tokeniser($lang);
+        $stemmer = self::get_stemmer($lang);
+
+        // We start with the content table, which is needed for things like validation checks, or other stuff that basically won't be a dominant index culling factor
+        $join = $content_table;
+
+        if (($order == '') || ($order == 'relevance')) {
+            $order = 'contextual_relevance';
+        }
+
+        // Work out our search terms
+        list($fuzzy_and, $and, $not) = $tokeniser->query_to_search_tokens($search_query);
+        if (($order != 'contextual_relevance') || ($direction == 'ASC') || (!$allow_fuzzy_search)) {
+            // We only allow fuzzy search when returning results in relevance order, with most relevant first
+            //  - this is because it makes no sense for any other orders
+            // We also allow it to be disabled as it could have major performance slow-down for large data-sets, it's a lot to pull out from the index, join, and sort.
+            $and = $and + $fuzzy_and;
+            $fuzzy_and = [];
+        }
+        $search_token_sets = [
+            'fuzzy_and' => $fuzzy_and,
+            'and' => $and,
+            'not' => $not,
+        ];
+
+        // Load commonalities so we can scale by them
+        if (((!empty($fuzzy_and)) || (!empty($and))) && ($scale_by_commonality)) {
+            $commonalities = $this->load_commonalities($db, array_keys($fuzzy_and + $and));
+
+            // Order search terms by commonality
+            $_fuzzy_and = [];
+            foreach ($commonalities as $ngram => $commonality) {
+                if (isset($fuzzy_and[$ngram])) {
+                    $_fuzzy_and[$ngram] = $fuzzy_and[$ngram];
+                }
+            }
+            $fuzzy_and = $_fuzzy_and;
+            $_and = [];
+            foreach ($commonalities as $ngram => $commonality) {
+                if (isset($and[$ngram])) {
+                    $_and[$ngram] = $and[$ngram];
+                }
+            }
+            $and = $_and;
+        } else {
+            $commonalities = null;
+        }
+
+        // Code for considering permissions
+        if (($permissions_module !== null) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+            $g_or = get_permission_where_clause_groups(get_member());
+
+            // this destroys mysqls query optimiser by forcing complexed OR's into the join, so we'll do this in PHP code
+            /*$table .= ' LEFT JOIN ' . $db->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', $permissions_module) . ' AND z.category_name=' . $permissions_field . (($g_or != '') ? (' AND ' . str_replace('group_id', 'z.group_id', $g_or)) : '') . ')';
+            $where_clause .= ' AND ';
+            $where_clause .= 'z.category_name IS NOT NULL';*/
+
+            $cat_sql = '';
+            $cat_sql .= 'SELECT DISTINCT category_name FROM ' . $db->get_table_prefix() . 'group_category_access WHERE (' . $g_or . ') AND ' . db_string_equal_to('module_the_name', $permissions_module);
+            $cat_sql .= ' UNION ALL ';
+            $cat_sql .= 'SELECT DISTINCT category_name FROM ' . $db->get_table_prefix() . 'member_category_access WHERE (member_id=' . strval(get_member()) . ' AND active_until>' . strval(time()) . ') AND ' . db_string_equal_to('module_the_name', $permissions_module);
+            $cat_access = array_keys(list_to_map('category_name', $db->query($cat_sql, null, null, false, true)));
+
+            if (empty($cat_access)) {
+                return [];
+            }
+
+            $extra_join_clause .= ' AND ixxx.' . $index_permissions_field . ' IN (';
+            foreach ($cat_access as $i => $cat) {
+                if ($i != 0) {
+                    $extra_join_clause .= ',';
+                }
+                if ($permissions_field_is_string) {
+                    $extra_join_clause .= '\'' . db_escape_string($cat) . '\'';
+                } else {
+                    if (is_numeric($cat)) {
+                        $extra_join_clause .= $cat;
+                    }
+                    // else should not be possible
+                }
+            }
+            $extra_join_clause .= ')';
+        }
+
+        // Code for querying against each ngram
+        $order_by_total_ngrams_matched = '';
+        $order_by_occurrence_rates = '';
+        $is_all_hard_joins = true;
+        $i = 0;
+        $open_brackets = 0;
+        foreach ($search_token_sets as $set_type => $search_tokens) {
+            foreach ($search_tokens as $ngram => $is_singular_ngram) {
+                if ($is_singular_ngram) {
+                    if ($this->singular_ngram_is_stop_word($ngram, $lang)) {
+                        continue;
+                    }
+
+                    if (is_object($stemmer)) {
+                        $ngram = $stemmer->stem($ngram);
+                    }
+                }
+
+                $join_condition = '';
+                $key_i = 0;
+                foreach ($key_transfer_map as $content_table_field => $index_table_field) {
+                    if ($key_i != 0) {
+                        $join_condition .= ' AND ';
+                    }
+                    if ($i == 0) {
+                        $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=r.' . $content_table_field;
+                    } else {
+                        $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=i0.' . $index_table_field;
+                    }
+                    $key_i++;
+                }
+                $join_condition .= ' AND i' . strval($i) . '.i_ngram=' . strval($this->crc($ngram));
+                if (strpos(get_db_type(), 'mysql') !== false) {
+                    $join_condition .= '/*' . str_replace('/', '\\', $ngram) . '*/';
+                }
+                $join_condition .= str_replace('ixxx.', 'i' . strval($i) . '.', $extra_join_clause);
+                $join_condition .= ' AND ' . db_string_equal_to('i' . strval($i) . '.i_lang', $lang);
+                if ($appearance_context !== null) {
+                    $join_condition .= ' AND i_ac=' . strval($appearance_context);
+                }
+
+                if (($i == 0) || (!$use_imprecise_ordering) || ($set_type == 'fuzzy_and')) {
+                    if ($set_type == 'and') {
+                        $join_type = 'JOIN'; // Will enforce the AND implicitly
+                    } else {
+                        $join_type = 'LEFT JOIN';
+                        $is_all_hard_joins = false;
+                    }
+                    $join .= ' ' . $join_type . ' ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' ON ' . $join_condition;
+
+                    if ($set_type == 'not') {
+                        $where_clause .= ' AND i' . strval($i) . '.i_ngram IS NULL';
+                    }
+                } else {
+                    $where_clause .= ' AND ' . (($set_type == 'and') ? 'EXISTS' : 'NOT EXISTS') . ' (SELECT * FROM ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' WHERE ' . $join_condition;
+                    $open_brackets++; // We keep opening up more brackets to stop the MySQL query optimiser doing whacky things, partly executing random sub-queries into temporary tables before the first join
+                }
+
+                if (($set_type != 'not') && ($order_by_total_ngrams_matched != '')) {
+                    $order_by_total_ngrams_matched .= '+';
+
+                    if (!$use_imprecise_ordering) {
+                        $order_by_occurrence_rates .= '+';
+                    }
+                }
+
+                if ($set_type != 'not') {
+                    $order_by_total_ngrams_matched .= db_function('IFF', ['i' . strval($i) . '.i_ngram IS NULL', '0', '1']);
+
+                    if (!$use_imprecise_ordering) {
+                        $scaler = (isset($commonalities[$ngram]) ? float_to_raw_string($commonalities[$ngram], 10) : '1');
+                        $order_by_occurrence_rates .= db_function('COALESCE', ['i' . strval($i) . '.i_occurrence_rate', '0']) . '*' . $scaler;
+                    } elseif ($order_by_occurrence_rates == '') {
+                        $order_by_occurrence_rates = 'i' . strval($i) . '.i_occurrence_rate';
+                    }
+                }
+
+                $i++;
+            }
+        }
+        while ($open_brackets > 0) {
+            $open_brackets--;
+            $where_clause .= ')';
+        }
+
+        if ($i == 0) {
+            // This is important - if there are no ngrams to index against, then security will not have run either
+            return [];
+        }
+
+        if (!$is_all_hard_joins) {
+            $where_clause .= ' AND ' . $order_by_total_ngrams_matched . '>0';
+        }
+
+        // Do querying...
+
+        if ($use_imprecise_ordering) {
+            $contextual_relevance_sql = $order_by_occurrence_rates; // Will just be the occurrence rate of the least common term
+        } else {
+            $contextual_relevance_sql = $order_by_total_ngrams_matched . ((($order_by_total_ngrams_matched == '') || ($order_by_occurrence_rates == '')) ? '' : '+') . $order_by_occurrence_rates; // $order_by_total_ngrams_matched will be the dominant factor (intended!) as it is an integer while $order_by_occurrence_rates cannot add to more than 1
+        }
+        if ($contextual_relevance_sql == '') {
+            $contextual_relevance_sql = '1';
+        }
+        $select = 'r.*,' . $contextual_relevance_sql . ' AS contextual_relevance';
+
+        // Rating ordering, via special encoding
+        if (strpos($order, 'compound_rating:') !== false) {
+            list(, $rating_type, $meta_rating_id_field) = explode(':', $order);
+            $select .= ',(SELECT SUM(rating-1) FROM ' . $db->get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $rating_type) . ' AND rating_for_id=' . db_cast($meta_rating_id_field, 'CHAR') . ') AS compound_rating';
+            $order = 'compound_rating';
+        }
+        if (strpos($order, 'average_rating:') !== false) {
+            list(, $rating_type, $meta_rating_id_field) = explode(':', $order);
+            $select .= ',(SELECT AVG(rating) FROM ' . $db->get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', $rating_type) . ' AND rating_for_id=' . db_cast($meta_rating_id_field, 'CHAR') . ') AS average_rating';
+            $order = 'average_rating';
+        }
+
+        $t_rows_sql = 'SELECT ' . $select . ' FROM ' . $join . ' WHERE 1=1' . $where_clause . ' ORDER BY ' . $order . ' ' . $direction;
+
+        if (get_param_integer('keep_show_query', 0) == 1) {
+            attach_message($t_rows_sql, 'inform');
+        }
+        if (get_param_integer('keep_just_show_query', 0) == 1) {
+            cms_ini_set('ocproducts.xss_detect', '0');
+            header('Content-type: text/plain; charset=' . get_charset());
+            exit($t_rows_sql);
+        }
+
+        // Useful for automated testing
+        global $LAST_SEARCH_QUERY, $LAST_COUNT_QUERY;
+
+        $LAST_SEARCH_QUERY = $t_rows_sql;
+        $t_rows = $db->query($t_rows_sql, $max, $start);
+
+        $t_count_sql = '(SELECT COUNT(*) FROM (';
+        $t_count_sql .= 'SELECT 1 FROM ' . $join . ' WHERE 1=1' . $where_clause;
+        $t_count_sql .= ' LIMIT ' . strval(MAXIMUM_RESULT_COUNT_POINT) . ') counter)';
+        $LAST_COUNT_QUERY = $t_count_sql;
+        $t_count = $db->query_value_if_there($t_count_sql);
+        $GLOBALS['TOTAL_SEARCH_RESULTS'] += $t_count;
+
+        if ((get_param_integer('keep_show_query', 0) == 1) && (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || ($GLOBALS['IS_ACTUALLY_ADMIN']))) {
+            if ((array_key_exists(0, $t_rows)) && (array_key_exists('id', $t_rows[0]))) {
+                $results = var_export(array_unique(collapse_1d_complexity('id', $t_rows)), true);
+            } else {
+                $results = var_export($t_rows, true);
+            }
+            attach_message(do_lang('COUNT_RESULTS') . ': ' . $results, 'inform');
+        }
+
+        return $t_rows;
+    }
+
+    /**
+     * Find if we have to join in custom fields due to filtering.
+     *
+     * @return boolean Whether we have special filtering
+     */
+    public static function active_search_has_special_filtering()
+    {
+        foreach ($_GET as $key => $val) {
+            if ((substr($key, 0, 7) == 'option_') && (substr($key, 0, 12) != 'option_tick_') && ($val != '')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Helper function for hooks, used to get catalogue entry data (useful also for custom fields).
+     *
+     * @param  array $content_fields Map of content fields, field name to data (may contain fake fields)
+     * @param  array $fields_to_index List of field names from $content_fields that should be indexed for ngram tokens
+     * @param  string $c_name Catalogue codename
+     * @param  integer $id Catalogue entry ID
+     * @param  ?LANGUAGE_NAME $lang Language codename (null: default)
+     */
+    public function get_content_fields_from_catalogue_entry(&$content_fields, &$fields_to_index, $c_name, $id, $lang = null)
+    {
+        require_code('catalogues');
+
+        $map = get_catalogue_entry_field_values($c_name, $id, null, null, false, 'PAGE', $lang);
+        $i = 0;
+        foreach ($map as $field) {
+            if (is_string($field['effective_value_pure'])) {
+                $fields_to_index['field_' . strval($i)] = ($i == 0) ? APPEARANCE_CONTEXT_TITLE : APPEARANCE_CONTEXT_BODY;
+                $content_fields['field_' . strval($i)] = $field['effective_value_pure'];
+            }
+            $i++;
+        }
+    }
+
+    /**
+     * Helper function for hooks, used to generate SQL for filtering rows by timestamp.
+     *
+     * @param  object $db Database connection
+     * @param  string $index_table Table containing our custom index
+     * @param  array $since_index_fields List of fields which contain timestamps that we use for recency checks
+     * @param  ?TIME $since Filter to records with recency since this timestamp (null: no limit)
+     * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
+     * @return string Extra SQL
+     */
+    public function generate_since_where_clause($db, $index_table, $since_index_fields, $since, &$statistics_map = null)
+    {
+        $where_clauses = [];
+
+        if ($since !== null) {
+            $test = $db->query_select_value_if_there($index_table, '1 AS test');
+            if ($test !== null) {
+                foreach ($since_index_fields as $field => $may_be_null) {
+                    if ($may_be_null) {
+                        $where_clause = $field . ' IS NOT NULL AND ' . $field . '>' . strval($since);
+                    } else {
+                        $where_clause = $field . '>' . strval($since);
+                    }
+                    $where_clauses[] = $where_clause;
+                }
+
+                // We nullify $statistics_map as it's useless if we're not doing a full indexing
+                $statistics_map = null;
+            }
+            // else: If the table has been truncated we treat that as a signal to do a full regeneration
+        }
+
+        if (empty($where_clauses)) {
+            return '';
+        }
+
+        return ' AND (' . implode(' OR ', $where_clauses) . ')';
+    }
+
+    // Indexing...
+
+    /**
+     * Index a content resource.
+     *
+     * @param  object $db Database connection
+     * @param  string $index_table Table containing our custom index
+     * @param  array $content_fields Map of content fields, field name to data (may contain fake fields)
+     * @param  array $fields_to_index List of field names from $content_fields that should be indexed for ngram tokens
+     * @param  array $key_transfer_map A map between content field keys to index field keys, so we can clear out old indexing for the content resource
+     * @param  array $filter_field_transfer_map A map between content field keys to index field keys, so we can fill out some of the filtering that goes inside the index
+     * @param  ?integer $total_singular_ngram_tokens Maintain a count of singular ngrams (typically words) in here (null: do not maintain)
+     * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
+     * @param  ?LANGUAGE_NAME $lang Passed content is for this specific language only (null: lookup for all installed languages)
+     * @param  boolean $clean_scan If we are doing a clean scan and hence do not need to clean up old records
+     */
+    public function index_for_search($db, $index_table, $content_fields, $fields_to_index, $key_transfer_map, $filter_field_transfer_map, &$total_singular_ngram_tokens = null, &$statistics_map = null, $lang = null, $clean_scan = false)
+    {
+        // Clear out any previous indexing for this content resource
+        $key_map = [];
+        foreach ($key_transfer_map as $content_table_field => $index_table_field) {
+            $key_map[$index_table_field] = $content_fields[$content_table_field];
+        }
+        if (!$clean_scan) {
+            if ($lang === null) {
+                $db->query_delete($index_table, $key_map);
+            } else {
+                $db->query_delete($index_table, $key_map + ['i_lang' => $lang]); // We're calling this method language-by-language
+            }
+        }
+
+        if ($lang === null) {
+            $langs = multi_lang_content() ? array_keys(find_all_langs()) : [get_site_default_lang()];
+        } else {
+            $langs = [$lang];
+        }
+
+        foreach ($langs as $lang) {
+            if ($statistics_map !== null) {
+                if (!array_key_exists($lang, $statistics_map)) {
+                    $statistics_map[$lang] = [];
+                }
+            }
+
+            $ngrams_for = [];
+            foreach ([APPEARANCE_CONTEXT_TITLE, APPEARANCE_CONTEXT_META, APPEARANCE_CONTEXT_BODY] as $appearance_context) {
+                $_fields_to_index = [];
+                foreach ($fields_to_index as $field => $_appearance_context) {
+                    if ($_appearance_context == $appearance_context) {
+                        $_fields_to_index[] = $field;
+                    }
+                }
+
+                if ($appearance_context == APPEARANCE_CONTEXT_BODY) {
+                    $ngrams_exclude = $ngrams_for[APPEARANCE_CONTEXT_TITLE] + $ngrams_for[APPEARANCE_CONTEXT_META];
+                } else {
+                    $ngrams_exclude = [];
+                }
+
+                $ngrams_for[$appearance_context] = $this->index_for_search__lang__appearance_context($db, $lang, $index_table, $content_fields, $appearance_context, $_fields_to_index, $key_map, $filter_field_transfer_map, $ngrams_exclude, $total_singular_ngram_tokens, $statistics_map);
+            }
+        }
+    }
+
+    /**
+     * Index a content resource, specifically for a particular language and appearance context.
+     *
+     * @param  object $db Database connection
+     * @param  LANGUAGE_NAME $lang Language codename
+     * @param  string $index_table Table containing our custom index
+     * @param  array $content_fields Map of content fields, field name to data (may contain fake fields)
+     * @param  integer $appearance_context An APPEARANCE_CONTEXT_* constant
+     * @param  array $fields_to_index List of field names from $content_fields that should be indexed for ngram tokens
+     * @param  array $key_map A map of keys for the index
+     * @param  array $filter_field_transfer_map A map between content field keys to index field keys, so we can fill out some of the filtering that goes inside the index
+     * @param  ?array $ngrams_exclude A list of ngrams to explicitly exclude (used internally to stop repetitions across multiple APPEARANCE_CONTEXTs, ultimately required to stop row repetition in output) (null: none)
+     * @param  ?integer $total_singular_ngram_tokens Maintain a count of singular ngrams (typically words) in here (null: do not maintain)
+     * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
+     * @return array Map between ngrams and number of occurrences
+     */
+    protected function index_for_search__lang__appearance_context($db, $lang, $index_table, $content_fields, $appearance_context, $fields_to_index, $key_map, $filter_field_transfer_map, $ngrams_exclude, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    {
+        $combined_text = '';
+        foreach ($fields_to_index as $field) {
+            $text = is_integer($content_fields[$field]) ? get_translated_text($content_fields[$field], $db, $lang) : $content_fields[$field];
+            $combined_text .= ' ' . $text;
+        }
+
+        $ngrams = $this->tokenise_text($combined_text, $lang, $ngrams_exclude, $total_singular_ngram_tokens, $statistics_map);
+
+        $fields = $key_map;
+
+        // Add indexing row for each ngram
+        foreach ($filter_field_transfer_map as $content_table_field => $index_table_field) {
+            $fields[$index_table_field] = $content_fields[$content_table_field];
+        }
+        $insert_arr = [];
+        $ngrams_crc = [];
+        foreach ($ngrams as $ngram => $count) {
+            $crc = $this->crc($ngram);
+            if (isset($ngrams_crc[$crc])) {
+                // CRC hash collision. Happens about 1 in 200,000 -- so we can ignore it from a UX perspective but we have to stop key collisions!s
+                $ngrams_crc[$crc] += $count;
+            } else {
+                $ngrams_crc[$crc] = $count;
+            }
+        }
+        foreach ($ngrams_crc as $crc => $count) {
+            $fields_for_ngram = [
+                'i_lang' => $lang,
+                'i_ngram' => $crc,
+                'i_ac' => $appearance_context,
+                'i_occurrence_rate' => floatval($count) / floatval($total_singular_ngram_tokens),
+            ] + $fields;
+
+            // We are bulk-inserting, for speed
+            if (empty($insert_arr)) {
+                foreach ($fields_for_ngram as $key => $val) {
+                    $insert_arr[$key] = [];
+                }
+            }
+            foreach ($fields_for_ngram as $key => $val) {
+                $insert_arr[$key][] = $val;
+            }
+        }
+
+        if (!empty($insert_arr)) {
+            $db->query_insert($index_table, $insert_arr);
+        }
+
+        return $ngrams;
+    }
+
+    /**
+     * Clear out a content resource from the index.
+     *
+     * @param  object $db Database connection
+     * @param  string $index_table Table containing our custom index
+     * @param  array $index_key_map Map of index keys, defining what to delete
+     */
+    public function delete_from_index($db, $index_table, $index_key_map)
+    {
+        $db->query_delete($index_table, $index_key_map);
+    }
+
+    /**
+     * Tokenise some text, so it can be indexed by token.
+     *
+     * @param  string $text The text
+     * @param  LANGUAGE_NAME $lang Language codename
+     * @param  ?array $ngrams_exclude A list of ngrams to explicitly exclude (used internally to stop repetitions across multiple APPEARANCE_CONTEXTs, ultimately required to stop row repetition in output) (null: none)
+     * @param  ?integer $total_singular_ngram_tokens Maintain a count of singular ngrams (typically words) in here (null: do not maintain)
+     * @param  ?array $statistics_map Write into this map of singular ngram (typically, words) to number of occurrences (null: do not maintain a map)
+     * @return array Map between ngrams and number of occurrences
+     */
+    protected function tokenise_text($text, $lang, $ngrams_exclude = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
+    {
+        if (strpos($text, '&') !== false) {
+            $text = html_entity_decode($text, ENT_QUOTES, get_charset());
+        }
+
+        static $max_ngram_size = null;
+        if ($max_ngram_size === null) {
+            $max_ngram_size = Composr_fast_custom_index::max_ngram_size($lang);
+        }
+
+        $tokeniser = self::get_tokeniser($lang);
+        $stemmer = self::get_stemmer($lang);
+
+        $ngrams = [];
+
+        $_ngrams = $tokeniser->text_to_ngrams($text, $max_ngram_size, $total_singular_ngram_tokens);
+        foreach ($_ngrams as $ngram => $is_singular_ngram) {
+            if ($is_singular_ngram) {
+                if ($statistics_map !== null) {
+                    if (!isset($statistics_map[$lang][$ngram])) {
+                        $statistics_map[$lang][$ngram] = 0;
+                    }
+                    $statistics_map[$lang][$ngram]++;
+                }
+            }
+
+            if ($is_singular_ngram) {
+                if ($this->singular_ngram_is_stop_word($ngram, $lang)) {
+                    continue;
+                }
+            }
+
+            if ($ngrams_exclude !== null) {
+                if (isset($ngrams_exclude[$ngram])) {
+                    continue;
+                }
+            }
+
+            if ($is_singular_ngram) {
+                if (is_object($stemmer)) {
+                    $ngram = $stemmer->stem($ngram);
+                }
+            }
+
+            if (!isset($ngrams[$ngram])) {
+                $ngrams[$ngram] = 0;
+            }
+            $ngrams[$ngram]++;
+        }
+
+        return $ngrams;
+    }
+
+    /**
+     * Find whether a singular ngram (typically a word) is a stop word (i.e. too banal to be indexed).
+     *
+     * @param  string $ngram Singular ngram
+     * @param  LANGUAGE_NAME $lang Language codename
+     * @return boolean Whether it is
+     */
+    protected function singular_ngram_is_stop_word($ngram, $lang)
+    {
+        static $stop_list = [];
+        if (!array_key_exists($lang, $stop_list)) {
+            require_code('textfiles');
+            $stop_list[$lang] = array_flip(explode("\n", read_text_file('too_common_words', $lang)));
+            unset($stop_list[$lang]['']);
+        }
+        return isset($stop_list[$lang][$ngram]);
+    }
+
+
+    /**
+     * Load up the commonalities for some ngrams, with caching.
+     *
+     * @param  object $db Database connection
+     * @param  array $ngrams List of ngrams
+     * @return array Map between ngram and commonality
+     */
+    protected function load_commonalities($db, $ngrams)
+    {
+        static $cache = [];
+
+        $commonality_query = 'SELECT * FROM ' . get_table_prefix() . 'ft_index_commonality WHERE ';
+        $commonalities = [];
+        $where = '';
+        foreach ($ngrams as $ngram) {
+            if (isset($cache[$ngram])) {
+                $commonalities[$ngram] = $cache[$ngram];
+            } else {
+                if ($where != '') {
+                    $where .= ' OR ';
+                }
+                $where .= db_string_equal_to('c_ngram', $ngram);
+            }
+        }
+        if ($where != '') {
+            $commonality_query .= $where;
+            $results = collapse_2d_complexity('c_ngram', 'c_commonality', $db->query($commonality_query . ' ORDER BY c_commonality'));
+            $commonalities += $results;
+            $cache += $results;
+        }
+        return $commonalities;
+    }
+
+    /**
+     * Find the maximum ngram size for us to index.
+     *
+     * @param  LANGUAGE_NAME $lang Language codename
+     * @return integer Maximum ngram size
+     */
+    public static function max_ngram_size($lang)
+    {
+        return intval(get_value('composr_fast_custom_index__max_ngram_size__' . $lang, get_option('composr_fast_custom_index__max_ngram_size')));
+    }
+
+    /**
+     * Get a tokeniser for a language.
+     *
+     * @param  LANGUAGE_NAME $lang Language codename
+     * @return object Tokeniser
+     */
+    public static function get_tokeniser($lang)
+    {
+        static $tokeniser = [];
+        if (!array_key_exists($lang, $tokeniser)) {
+            if (((is_file(get_file_base() . '/sources/lang_tokeniser_' . $lang . '.php')) || (is_file(get_file_base() . '/sources_custom/tokeniser_' . $lang . '.php'))) && (!in_safe_mode())) {
+                require_code('lang_tokeniser_' . $lang);
+                $tokeniser[$lang] = object_factory('LangTokeniser_' . $lang);
+            } else {
+                require_code('lang_tokeniser_' . fallback_lang());
+                $tokeniser[$lang] = object_factory('LangTokeniser_' . fallback_lang());
+            }
+        }
+        return $tokeniser[$lang];
+    }
+
+    /**
+     * Get a stemmer for a language.
+     *
+     * @param  LANGUAGE_NAME $lang Language codename
+     * @return ?object Stemmer (null: none)
+     */
+    public static function get_stemmer($lang)
+    {
+        static $stemmer = [];
+        if (!array_key_exists($lang, $stemmer)) {
+            $stemmer[$lang] = null;
+            if (((is_file(get_file_base() . '/sources/lang_stemmer_' . $lang . '.php')) || (is_file(get_file_base() . '/sources_custom/lang_stemmer_' . $lang . '.php'))) && (!in_safe_mode())) {
+                if (get_option('composr_fast_custom_index__do_stemming') === '1') {
+                    require_code('lang_stemmer_' . $lang);
+                    $stemmer[$lang] = object_factory('Stemmer_' . $lang);
+                }
+            }
+        }
+        return $stemmer[$lang];
+    }
+
+    /**
+     * Calculate a CRC, effectively converting a string ngram to an integer hash of it.
+     * CRC-24 algorithm, to avoid compatibility issues with PHP's crc32.
+     *
+     * @param  string $str String
+     * @return integer CRC
+     */
+    protected function crc($str)
+    {
+        static $ob = null;
+        if ($ob === null) {
+            require_code('crc24');
+            $ob = new CRC24();
+        }
+        return $ob->calculate($str);
+    }
+}
+
+/**
+ * Base class for catalogue search / custom content fields search.
+ *
+ * @package search
+ */
+abstract class FieldsSearchHook
+{
+    /**
+     * Get a list of extra sort fields.
+     *
+     * @param  string $catalogue_name Catalogue we are searching in in (may be a special custom content fields catalogue)
+     * @return array A map between parameter name and string label
+     */
+    protected function _get_extra_sort_fields($catalogue_name)
+    {
+        static $EXTRA_SORT_FIELDS_CACHE = [];
+        if (array_key_exists($catalogue_name, $EXTRA_SORT_FIELDS_CACHE)) {
+            return $EXTRA_SORT_FIELDS_CACHE[$catalogue_name];
+        }
+
+        $extra_sort_fields = [];
+
+        if (addon_installed('catalogues')) {
+            require_code('fields');
+
+            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name', 'cf_type', 'cf_default', 'cf_order'], ['c_name' => $catalogue_name, 'cf_is_sortable' => 1, 'cf_visible' => 1], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+            foreach ($rows as $i => $row) {
+                $ob = get_fields_hook($row['cf_type']);
+                $temp = $ob->inputted_to_sql_for_search($row, $i);
+                if ($temp === null) { // Standard direct 'substring' search
+                    $extra_sort_fields['f' . strval($i) . '_actual_value'] = get_translated_text($row['cf_name']);
+                }
+            }
+        }
+
+        $EXTRA_SORT_FIELDS_CACHE[$catalogue_name] = $extra_sort_fields;
+
+        return $extra_sort_fields;
+    }
+
+    /**
+     * Get a list of extra fields to ask for.
+     *
+     * @param  string $catalogue_name Catalogue to search in (may be a special custom content fields catalogue)
+     * @return array A list of maps specifying extra fields
+     */
+    protected function _get_fields($catalogue_name)
+    {
+        if (!addon_installed('catalogues')) {
+            return [];
+        }
+
+        $fields = [];
+        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name, 'cf_allow_template_search' => 1, 'cf_visible' => 1], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        require_code('fields');
+        foreach ($rows as $row) {
+            $ob = get_fields_hook($row['cf_type']);
+            $temp = $ob->get_search_inputter($row);
+            if ($temp === null) {
+                $type = '_TEXT';
+                $special = get_param_string('option_' . strval($row['id']), '', INPUT_FILTER_GET_COMPLEX);
+                $extra = '';
+                $display = get_translated_text($row['cf_name']);
+                $fields[] = ['NAME' => strval($row['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
+            } else {
+                $fields[] = $temp;
+            }
+        }
+        return $fields;
+    }
+
+    /**
+     * Get details needed (SQL etc) to perform an advanced field search.
+     *
+     * @param  string $catalogue_name Catalogue we are searching in in (may be a special custom content fields catalogue)
+     * @param  string $table_alias Table alias for main content table
+     * @return ?array A big tuple of details used to search with (null: no fields)
+     */
+    protected function _get_search_parameterisation_advanced($catalogue_name, $table_alias = 'r')
+    {
+        if (!addon_installed('catalogues')) {
+            return null;
+        }
+
+        $where_clause = '';
+
+        $fields = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'catalogue_fields WHERE ' . db_string_equal_to('c_name', $catalogue_name) . ' AND (cf_include_in_main_search = 1 OR cf_allow_template_search = 1) ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'), null, 0, false, false, ['cf_name' => 'SHORT_TRANS']);
+        if (empty($fields)) {
+            return null;
+        }
+
+        $table = '';
+        $trans_fields = ['!' => '!'];
+        $nontrans_fields = [];
+        $title_field = null;
+        require_code('fields');
+        foreach ($fields as $i => $field) {
+            $ob = get_fields_hook($field['cf_type']);
+            $include_in_main_search = $field['cf_include_in_main_search'] == 1;
+            $allow_template_search = $field['cf_allow_template_search'] == 1;
+            $temp = null;
+            if ($allow_template_search) {
+                $temp = $ob->inputted_to_sql_for_search($field, $i, $table_alias);
+            }
+            if ($temp === null) { // Standard direct 'substring' search
+                list(, , $row_type) = $ob->get_field_value_row_bits($field);
+                switch ($row_type) {
+                    case 'long_trans':
+                        if ($include_in_main_search) {
+                            $trans_fields['f' . strval($i) . '.cv_value'] = 'LONG_TRANS__COMCODE';
+                        }
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_long_trans f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
+                        if (multi_lang_content()) {
+                            $search_field = 't' . strval(count($trans_fields) - 1) . '.text_original';
+                        } else {
+                            $search_field = 'f' . strval($i) . '.cv_value';
+                        }
+                        break;
+                    case 'short_trans':
+                        if ($include_in_main_search) {
+                            $trans_fields['f' . strval($i) . '.cv_value'] = 'SHORT_TRANS__COMCODE';
+                        }
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short_trans f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
+                        if (multi_lang_content()) {
+                            $search_field = 't' . strval(count($trans_fields) - 1) . '.text_original';
+                        } else {
+                            $search_field = 'f' . strval($i) . '.cv_value';
+                        }
+                        break;
+                    case 'long':
+                        if ($include_in_main_search) {
+                            $nontrans_fields[] = 'f' . strval($i) . '.cv_value';
+                        }
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_long f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
+                        if (multi_lang_content()) {
+                            $search_field = 't' . strval(count($trans_fields) - 1) . '.text_original';
+                        } else {
+                            $search_field = 'f' . strval($i) . '.cv_value';
+                        }
+                        break;
+                    case 'short':
+                        if ($include_in_main_search) {
+                            $nontrans_fields[] = 'f' . strval($i) . '.cv_value';
+                        }
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
+                        $search_field = 'f' . strval($i) . '.cv_value';
+                        break;
+                    case 'float':
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_float f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
+                        $search_field = 'f' . strval($i) . '.cv_value';
+                        break;
+                    case 'integer':
+                        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_integer f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
+                        $search_field = 'f' . strval($i) . '.cv_value';
+                        break;
+                }
+
+                if ($allow_template_search) {
+                    $range_search = (option_value_from_field_array($field, 'range_search', 'off') == 'on');
+                    if ($range_search) {
+                        if (method_exists($ob, 'get_search_filter_from_env')) {
+                            list($from, $to) = explode(';', $ob->get_search_filter_from_env($field));
+                        } else {
+                            $from = get_param_string('option_' . strval($field['id']) . '_from', '');
+                            $to = get_param_string('option_' . strval($field['id']) . '_to', '');
+                        }
+                        if ($from != '' || $to != '') {
+                            if ($from == '') {
+                                $from = $to;
+                            }
+                            if ($to == '') {
+                                $to = $from;
+                            }
+
+                            $where_clause .= ' AND ';
+
+                            if (is_numeric($from) && is_numeric($to)) {
+                                $where_clause .= $search_field . '>=' . $from . ' AND ' . $search_field . '<=' . $to;
+                            } else {
+                                $where_clause .= $search_field . '>=\'' . db_escape_string($from) . '\' AND ' . $search_field . '<=\'' . db_escape_string($to) . '\'';
+                            }
+                        }
+                    } else {
+                        if (method_exists($ob, 'get_search_filter_from_env')) {
+                            $param = $ob->get_search_filter_from_env($field);
+                        } else {
+                            $param = get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX);
+                        }
+
+                        if ($param != '') {
+                            $where_clause .= ' AND ';
+
+                            if (substr($param, 0, 1) == '=') {
+                                $where_clause .= db_string_equal_to($search_field, substr($param, 1));
+                            } elseif ($row_type == 'integer' || $row_type == 'float') {
+                                if (is_numeric($param)) {
+                                    $where_clause .= $search_field . '=' . $param;
+                                } else {
+                                    $where_clause .= db_string_equal_to($search_field, $param);
+                                }
+                            } else {
+                                if (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->has_full_text_boolean()) && (!is_under_radar($param))) {
+                                    $temp = $GLOBALS['SITE_DB']->full_text_assemble('+"' . $param . '"');
+                                } else {
+                                    list($temp) = db_like_assemble($param);
+                                }
+                                $where_clause .= preg_replace('#\?#', $search_field, $temp);
+                            }
+                        }
+                    }
+                }
+            } else {
+                $table .= $temp[2];
+                $search_field = $temp[3];
+                if ($temp[4] != '') {
+                    $where_clause .= ' AND ';
+                    $where_clause .= $temp[4];
+                } else {
+                    $trans_fields = array_merge($trans_fields, $temp[0]);
+                    $nontrans_fields = array_merge($nontrans_fields, $temp[1]);
+                }
+            }
+            if ($i == 0) {
+                $title_field = $search_field;
+            }
+        }
+
+        $where_clause .= ' AND ';
+        if ($catalogue_name[0] == '_') {
+            $where_clause .= '(' . db_string_equal_to($table_alias . '.c_name', $catalogue_name) . ' OR ' . $table_alias . '.c_name IS NULL' . ')';
+        } else {
+            $where_clause .= db_string_equal_to($table_alias . '.c_name', $catalogue_name);
+        }
+
+        return [$table, $where_clause, $trans_fields, $nontrans_fields, $title_field];
+    }
+
+    /**
+     * Get details needed (SQL etc) to perform an advanced field search for custom content fields (builds on _get_search_parameterisation_advanced).
+     *
+     * @param  string $catalogue_name Catalogue we are searching in in (may be a special custom content fields catalogue)
+     * @param  string $table Table clause to add to
+     * @param  string $where_clause Where clause to add to
+     * @param  array $trans_fields Translatable fields to add to
+     * @param  array $nontrans_fields Non-translatable fields to add to
+     * @param  ?string $content_id_field Content-ID field (null: default r.id field)
+     */
+    protected function _get_search_parameterisation_advanced_for_content_type($catalogue_name, &$table, &$where_clause, &$trans_fields, &$nontrans_fields, $content_id_field = null)
+    {
+        $advanced = $this->_get_search_parameterisation_advanced($catalogue_name, 'ce');
+        if ($advanced === null) {
+            return;
+        }
+
+        if ($content_id_field === null) {
+            $content_id_field = db_cast('r.id', 'CHAR');
+        }
+
+        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entry_linkage l ON l.content_id=' . $content_id_field . ' AND ' . db_string_equal_to('content_type', substr($catalogue_name, 1));
+        $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries ce ON ce.id=l.catalogue_entry_id';
+
+        list($sup_table, $sup_where_clause, $sup_trans_fields, $sup_nontrans_fields) = $advanced;
+        $table .= $sup_table;
+        $where_clause .= $sup_where_clause;
+        $trans_fields = array_merge($trans_fields, $sup_trans_fields);
+        $nontrans_fields = array_merge($nontrans_fields, $sup_nontrans_fields);
+    }
+
+    /**
+     * Insert a date range check into a WHERE clause.
+     *
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  string $field The field name of the timestamp field in the database
+     * @param  string $where_clause Additional where clause will be written into here
+     */
+    protected function _handle_date_check($cutoff, $field, &$where_clause)
+    {
+        if ($cutoff !== null) {
+            if (is_integer($cutoff)) {
+                $where_clause .= ' AND ' . $field . '>' . strval($cutoff);
+            } elseif (is_array($cutoff)) {
+                if ($cutoff[0] !== null) {
+                    $where_clause .= ' AND ' . $field . '>=' . strval($cutoff[0]);
+                }
+                if ($cutoff[1] !== null) {
+                    $where_clause .= ' AND ' . $field . '<=' . strval($cutoff[1]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Do a date range check for a known timestamp.
+     *
+     * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
+     * @param  TIME $compare Timestamp to compare to
+     * @return boolean Whether the date matches the requirements of $cutoff
+     */
+    protected function _handle_date_check_runtime($cutoff, $compare)
+    {
+        if ($cutoff !== null) {
+            if (is_integer($cutoff)) {
+                if ($compare < $cutoff) {
+                    return false;
+                }
+            } elseif (is_array($cutoff)) {
+                if ((($cutoff[0] !== null) && ($compare < $cutoff[0])) || (($cutoff[1] !== null) && ($compare > $cutoff[1]))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+/**
+ * Find whether a phrase is too small for full-text search.
+ *
+ * @param  string $test The phrase
+ * @return boolean Whether it is
+ */
+function is_under_radar($test)
+{
+    return (strlen($test) < $GLOBALS['SITE_DB']->get_minimum_search_length()) && ($test != '');
 }
 
 /**
@@ -592,348 +1807,43 @@ function get_stopwords_list()
 }
 
 /**
- * Highlight keywords in an extracted portion of a piece of text.
+ * Perform a database-style in-memory boolean search on single item.
  *
- * @param  string $_temp_summary What was searched
- * @param  array $words_searched List of words searched
- * @return string Highlighted portion
+ * @param  array $filter A map of POST data in search-form style. May contain 'only_titles' and 'content' (the critical one!)
+ * @param  string $title The title to try and match
+ * @param  ?string $post The post to try and match (null: not used)
+ * @return boolean Whether we have a match
  */
-function generate_text_summary($_temp_summary, $words_searched)
+function in_memory_search_match($filter, $title, $post = null)
 {
-    require_code('xhtml');
-
-    $summary = '';
-
-    global $SEARCH__CONTENT_BITS;
-
-    $_temp_summary_lower = strtolower($_temp_summary);
-
-    // Add in some highlighting direct to XHTML
-    $all_occurrences = [];
-    foreach ($words_searched as $content_bit) {
-        if ($content_bit == '') {
-            continue;
-        }
-
-        $last_pos = 0;
-        $content_bit_pos = 0;
-        do {
-            $content_bit_matched = $content_bit;
-            if (strtoupper($content_bit) == $content_bit) { // all upper case so don't want case sensitive
-                $content_bit_pos = strpos($_temp_summary, $content_bit, $last_pos);
-            } else {
-                $content_bit_pos = stripos($_temp_summary_lower, $content_bit, $last_pos);
-                if (strpos($content_bit, '-') !== false) {
-                    $content_bit_pos_2 = strpos($_temp_summary_lower, str_replace('-', '', $content_bit), $last_pos);
-                    if (($content_bit_pos_2 !== false) && (($content_bit_pos === false) || ($content_bit_pos_2 < $content_bit_pos))) {
-                        $content_bit_pos = $content_bit_pos_2;
-                        $content_bit_matched = str_replace('-', '', $content_bit);
-                    }
-                }
-            }
-
-            if ($content_bit_pos !== false) {
-                $last_gt = strrpos(substr($_temp_summary, 0, $content_bit_pos), '>');
-                $last_lt = strrpos(substr($_temp_summary, 0, $content_bit_pos), '<');
-
-                if (($last_gt === false) || ($last_gt > $last_lt)) {
-                    $extra_pre = '<span class="comcode-highlight">';
-                    $extra_post = '</span>';
-                    $_temp_summary = substr($_temp_summary, 0, $content_bit_pos) .
-                                     $extra_pre .
-                                     substr($_temp_summary, $content_bit_pos, strlen($content_bit_matched)) .
-                                     $extra_post .
-                                     substr($_temp_summary, $content_bit_pos + strlen($content_bit_matched));
-                    $_temp_summary_lower = strtolower($_temp_summary);
-                    $last_pos = $content_bit_pos + strlen($extra_pre) + strlen($content_bit_matched) + strlen($extra_post);
-
-                    // Adjust all stores occurrence offsets
-                    foreach ($all_occurrences as $i => $occ) {
-                        if ($occ[0] > $last_pos) {
-                            $all_occurrences[$i] = [$all_occurrences[$i][0] + strlen($extra_pre) + strlen($extra_post), $all_occurrences[$i][0] + strlen($extra_pre) + strlen($extra_post)];
-                        } elseif ($occ[0] > $content_bit_pos) {
-                            $all_occurrences[$i] = [$all_occurrences[$i][0] + strlen($extra_pre), $all_occurrences[$i][0] + strlen($extra_pre)];
-                        }
-                    }
-
-                    $all_occurrences[] = [$content_bit_pos, $last_pos];
-                } else {
-                    $last_pos = $content_bit_pos + strlen($content_bit_matched);
-                }
-            }
-        } while ($content_bit_pos !== false);
+    if ((!array_key_exists('content', $filter)) || ($filter['content'] == '')) {
+        return true;
     }
 
-    if (strlen($_temp_summary) < 500) {
-        $summary = $_temp_summary;
+    $search_filter = $filter['content'];
+    if (((array_key_exists('only_titles', $filter)) && ($filter['only_titles'] == 1)) || ($post === null)) {
+        $context = $title;
     } else {
-        // Find optimal position
-        $len = strlen($_temp_summary);
-        $best_yet = 0;
-        $best_pos_min = 250;
-        $best_pos_max = 250;
-        if (count($all_occurrences) < 60) { // Only bother doing this if we need to dig for the keyword
-            for ($i = 250; $i < $len - 250; $i++) { // Move window along all possible positions
-                $count = 0;
-                $i_pre = $i - 250;
-                $i_post = $i + 250;
-                foreach ($all_occurrences as $occ) {
-                    $occ_pre = $occ[0];
-                    $occ_post = $occ[1];
-                    if (($occ_pre >= $i_pre) && ($occ_pre <= $i_post) && ($occ_post >= $i_pre) && ($occ_post <= $i_post)) {
-                        $count++;
+        $context = $title . ' ' . $post;
+    }
 
-                        if ($count > 5) {
-                            break; // Good enough
-                        }
-                    }
-                }
-                if (($count > $best_yet) || (($best_yet == $count) && ($i - 500 < $best_pos_min))) {
-                    if ($best_yet == $count) {
-                        $best_pos_max = $i;
-                    } else {
-                        $best_yet = $count;
-                        $best_pos_min = $i;
-                        $best_pos_max = $i;
-                    }
-
-                    if ($count > 5) {
-                        break; // Good enough
-                    }
-                }
-            }
-            $best_pos = intval(floatval($best_pos_min + $best_pos_max) / 2.0) - 250; // Move it from center pos, to where we want to start from
-        } else {
-            $best_pos = 0;
-        }
-
-        // Render (with ellipses if required)
-        if (false) { // Far far too slow
-            $summary = xhtml_substr($_temp_summary, $best_pos, min(500, $len - $best_pos), true, true);
-        } else {
-            $summary = substr($_temp_summary, $best_pos, min(500, $len - $best_pos));
-            $summary = xhtmlise_html($summary, true);
-            if ($best_pos > 0) {
-                $summary = '&hellip;' . $summary;
-            }
-            if ($best_pos + 500 < strlen($_temp_summary)) {
-                $summary .= '&hellip;';
-            }
+    list($body_words, $include_words, $exclude_words) = _boolean_search_prepare($search_filter);
+    foreach ($body_words as $word) {
+        if (!simulated_wildcard_match($context, $word)) {
+            return false;
         }
     }
-
-    return $summary;
-}
-
-/**
- * Server opensearch requests.
- */
-function opensearch_script()
-{
-    if (!addon_installed('search')) {
-        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('search')));
-    }
-
-    if (!has_actual_page_access(get_member(), 'search')) {
-        return; // No access
-    }
-
-    $type = get_param_string('type', 'browse');
-    switch ($type) {
-        // Make a search suggestion (like Firefox's Awesome Bar)
-        case 'suggest':
-            require_code('search');
-
-            header('Content-Type: application/x-suggestions+json; charset=' . get_charset());
-            $request = get_param_string('request', false, INPUT_FILTER_GET_COMPLEX);
-
-            $suggestions = find_search_suggestions($request);
-
-            require_lang('search');
-
-            cms_ini_set('ocproducts.xss_detect', '0');
-
-            // JSON format
-            echo '[' . "\n";
-            // Original request
-            echo '"' . php_addslashes($request) . '",' . "\n";
-
-            // Suggestions
-            echo '[';
-            foreach ($suggestions as $i => $suggestion) {
-                if ($i != 0) {
-                    echo ',';
-                }
-                echo '"' . php_addslashes($suggestion) . '"';
-            }
-            echo '],' . "\n";
-
-            // Descriptions of suggestions
-            echo '[';
-            foreach (array_values($suggestions) as $i => $suggestion) {
-                if ($i != 0) {
-                    echo ',';
-                }
-                echo '"' . php_addslashes(do_lang('NUM_RESULTS', integer_format($suggestion))) . '"';
-            }
-            echo '],' . "\n";
-
-            // URLs to search suggestions
-            $filter = get_param_string('filter', '', INPUT_FILTER_GET_COMPLEX);
-            $filter_map = [];
-            if ($filter != '') {
-                foreach (explode(':', $filter) as $f) {
-                    if ($f != '') {
-                        $parts = explode('=', $f, 2);
-                        if (count($parts) == 1) {
-                            $parts = [$parts[0], '1'];
-                        }
-                        $filter_map[$parts[0]] = $parts[1];
-                    }
-                }
-            }
-            echo '[';
-            foreach (array_keys($suggestions) as $i => $suggestion) {
-                if ($i != 0) {
-                    echo ',';
-                }
-                $map = ['page' => 'search', 'type' => 'results', 'content' => $suggestion] + $filter_map;
-                $_search_url = build_url($map, get_param_string('zone', get_module_zone('search')));
-                $search_url = $_search_url->evaluate();
-                echo '"' . php_addslashes($search_url) . '"';
-            }
-            echo ']' . "\n";
-            echo ']' . "\n";
-            break;
-
-        // Provide details about the site search engine
-        default:
-            //header('Content-Type: application/opensearchdescription+xml; charset=' . get_charset());
-            header('Content-Type: text/xml; charset=' . get_charset());
-            $tpl = do_template('OPENSEARCH', ['_GUID' => '1fe46743805ade5958dcba0d58c4b0f2', 'DESCRIPTION' => get_option('description')], null, false, null, '.xml', 'xml');
-            $tpl->evaluate_echo();
-            break;
-    }
-}
-
-/**
- * Build up a submitter search clause, taking into account members, authors, usernames, and usergroups.
- *
- * @param  ?ID_TEXT $member_field_name The field name for member IDs (null: Cannot match against member IDs)
- * @param  ?MEMBER $member_id Member ID (null: Unknown, so cannot search)
- * @param  ID_TEXT $author Author
- * @param  ?ID_TEXT $author_field_name The field name for authors (null: Cannot match against member IDs)
- * @return ?string An SQL fragment (null: block query)
- */
-function build_search_submitter_clauses($member_field_name, $member_id, $author, $author_field_name = null)
-{
-    $clauses = '';
-
-    // Member ID
-    if (($member_id !== null) && ($member_field_name !== null)) {
-        if ($clauses != '') {
-            $clauses .= ' OR ';
-        }
-        $clauses .= $member_field_name . '=' . strval($member_id);
-    }
-
-    // Groups
-    if (($member_field_name !== null) && ($author != '')) {
-        $all_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
-        foreach ($all_usergroups as $usergroup => $usergroup_name) {
-            if ($usergroup_name == $author) {
-                $members_in_group = $GLOBALS['FORUM_DRIVER']->member_group_query([$usergroup], 50);
-                if (count($members_in_group) < 50) { // Let's be reasonable with how long the SQL could get!
-                    foreach (array_keys($members_in_group) as $group_member_id) {
-                        if ($clauses != '') {
-                            $clauses .= ' OR ';
-                        }
-                        $clauses .= $member_field_name . '=' . strval($group_member_id);
-                    }
-                }
-                break;
-            }
+    foreach ($include_words as $word) {
+        if (!simulated_wildcard_match($context, $word)) {
+            return false;
         }
     }
-
-    // Author
-    if (($author_field_name !== null) && ($author != '')) {
-        if ($clauses != '') {
-            $clauses .= ' OR ';
-        }
-        $clauses .= db_string_equal_to($author_field_name, $author);
-    }
-
-    if ($clauses == '') {
-        if ($author != '') {
-            return null; // Query should never succeed
-        }
-
-        return '';
-    }
-
-    return ' AND (' . $clauses . ')';
-}
-
-/**
- * Get special SQL from POSTed parameters for a catalogue search field that is to be exact-matched.
- *
- * @param  array $field The field details
- * @param  integer $i We're processing for the ith row
- * @param  ID_TEXT $type Table type
- * @set short long
- * @param  ?string $param Search term (null: lookup from environment)
- * @param  string $table_alias Table alias for catalogue entry table
- * @return ?array Tuple of SQL details (array: extra trans fields to search, array: extra plain fields to search, string: an extra table segment for a join, string: the name of the field to use as a title, if this is the title, extra WHERE clause stuff) (null: nothing special)
- */
-function exact_match_sql($field, $i, $type = 'short', $param = null, $table_alias = 'r')
-{
-    $table = ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_' . $type . ' f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
-    $search_field = 'f' . strval($i) . '.cv_value';
-    if ($param === null) {
-        $param = get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX);
-    }
-    $where_clause = '';
-    if ($param != '') {
-        if (is_numeric($param) && ($type == 'float' || $type == 'integer')) {
-            $where_clause = $search_field . '=' . $param;
-        } else {
-            $where_clause = db_string_equal_to($search_field, $param);
+    foreach ($exclude_words as $word) {
+        if (simulated_wildcard_match($context, $word)) {
+            return false;
         }
     }
-
-    $nontrans_fields = [];
-    if (($type !== 'float') && ($type !== 'integer')) { // Numeric column types don't have fulltext indexes on them
-        $nontrans_fields[] = $search_field;
-    }
-
-    return [[], $nontrans_fields, $table, $search_field, $where_clause];
-}
-
-/**
- * Get special SQL from POSTed parameters for a catalogue search field for a multi-input field that is to be exact-matched.
- *
- * @param  array $field The field details
- * @param  integer $i We're processing for the ith row
- * @param  ID_TEXT $type Table type
- * @set short long
- * @param  ?string $param Search term (null: lookup from environment)
- * @param  string $table_alias Table alias for catalogue entry table
- * @return ?array Tuple of SQL details (array: extra trans fields to search, array: extra plain fields to search, string: an extra table segment for a join, string: the name of the field to use as a title, if this is the title, extra WHERE clause stuff) (null: nothing special)
- */
-function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_alias = 'r')
-{
-    $table = ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_' . $type . ' f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
-    $search_field = 'f' . strval($i) . '.cv_value';
-    if ($param === null) {
-        $param = get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX);
-    }
-    $where_clause = '';
-    if ($param != '') {
-        $where_clause = '(' . $search_field . ' LIKE \'' . db_encode_like($param) . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like('%' . "\n" . $param) . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like($param . "\n" . '%') . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like('%' . "\n" . $param . "\n" . '%') . '\')';
-    }
-
-    return [[], [$search_field], $table, $search_field, $where_clause];
+    return true;
 }
 
 /**
@@ -941,28 +1851,25 @@ function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_a
  *
  * @param  ?ID_TEXT $meta_type The META type used by our content (null: Cannot support META search)
  * @param  string $id_field The ID field that can be used to de-duplicate results / connect to the meta table; if there are multiple fields then delimit them with ':'
- * @param  string $content Search string
- * @param  boolean $boolean_search Whether to do a boolean search
- * @param  ID_TEXT $boolean_operator Boolean operator
- * @set OR AND
+ * @param  string $search_query Search query
+ * @param  string $content_where WHERE clause that selects the content according to the search query; passed in addition to $search_query to avoid unnecessary reparsing.  ? refers to the yet-unknown field name (blank: full-text search)
+ * @param  string $where_clause The WHERE clause
  * @param  boolean $only_search_meta Whether to only do a META (tags) search
- * @param  ID_TEXT $direction Order direction
+ * @param  boolean $only_titles Whether to only search titles (as opposed to both titles and content)
  * @param  integer $max Start position in total results
  * @param  integer $start Maximum results to return in total
- * @param  boolean $only_titles Whether to only search titles (as opposed to both titles and content)
- * @param  ID_TEXT $table The table name
- * @param  array $fields The translatable fields to search over (or an ! which is skipped). The first of these must be the title field or an '!'; if it is '!' then the title field will be the first raw-field
- * @param  string $where_clause The WHERE clause
- * @param  string $content_where The WHERE clause that applies specifically for content (this will be duplicated to check against multiple fields). ? refers to the yet-unknown field name
  * @param  ID_TEXT $order What to order by
+ * @param  ID_TEXT $direction Order direction
+ * @param  ID_TEXT $table The table name
  * @param  string $select What to select
+ * @param  array $fields The translatable fields to search over (or an ! which is skipped). The first of these must be the title field or an '!'; if it is '!' then the title field will be the first raw-field
  * @param  array $raw_fields The non-translatable fields to search over
  * @param  ?string $permissions_module The permission module to check category access for (null: none)
  * @param  ?string $permissions_field The field that specifies the permissions ID to check category access for (null: none)
  * @param  boolean $permissions_field_is_string Whether the permissions field is a string
  * @return array The rows found
  */
-function get_search_rows($meta_type, $id_field, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $fields, $where_clause, $content_where, &$order, $select = '*', $raw_fields = [], $permissions_module = null, $permissions_field = null, $permissions_field_is_string = false)
+function get_search_rows($meta_type, $id_field, $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, &$order, $direction, $table, $select = '*', $fields = [], $raw_fields = [], $permissions_module = null, $permissions_field = null, $permissions_field_is_string = false)
 {
     $db = get_db_for($table);
 
@@ -1039,12 +1946,12 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
     }
 
     // Defined-keywords/tags search
-    if ((get_param_integer('keep_just_show_query', 0) == 0) && ($meta_type !== null) && ($content != '') && (!$only_titles)) {
-        if (strpos($content, '"') !== false || strpos($content, '+') !== false || strpos($content, '-') !== false || strpos($content, ' ') !== false) {
-            list($meta_content_where) = build_content_where($content, $boolean_search, $boolean_operator, true);
-            $meta_content_where = '(' . $meta_content_where . ' OR ' . db_string_equal_to('?', $content) . ')';
+    if ((get_param_integer('keep_just_show_query', 0) == 0) && ($meta_type !== null) && ($search_query != '') && (!$only_titles)) {
+        if (strpos($search_query, '"') !== false || strpos($search_query, '+') !== false || strpos($search_query, '-') !== false || strpos($search_query, ' ') !== false) {
+            list($meta_content_where) = build_content_where($search_query, true);
+            $meta_content_where = '(' . $meta_content_where . ' OR ' . db_string_equal_to('?', $search_query) . ')';
         } else {
-            $meta_content_where = db_string_equal_to('?', $content);
+            $meta_content_where = db_string_equal_to('?', $search_query);
         }
 
         if (count($id_fields) > 1) { // Special case
@@ -1257,9 +2164,9 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
 
             $db->dedupe_mode = false;
         } else {
-            // If we don't have multi-lang-content we will also support boolean search...
+            // If we don't have multi-lang-content...
 
-            list(, $boolean_operator, $body_where, $include_where, $exclude_where) = build_content_where($content, $boolean_search, $boolean_operator);
+            list(, $body_where, $include_where, $exclude_where) = build_content_where($search_query);
 
             $simple_table = preg_replace('# .*#', '', $table);
             $indices_for_table = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['i_name', 'i_fields'], ['i_table' => $simple_table]);
@@ -1268,12 +2175,10 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
             $all_fields = array_merge($raw_fields, array_keys($fields));
             reset($raw_fields);
             reset($fields);
-            $search_clause_sets = [[$include_where, 'AND'], [$body_where, $boolean_operator]];
-            foreach ($search_clause_sets as $search_clause_set) {
-                list($_where, $_operator) = $search_clause_set;
-
+            $search_clause_sets = [$include_where, $body_where];
+            foreach ($search_clause_sets as $_where) {
                 foreach ($_where as $__where) {
-                    // See if we have a combined fulltext index covering multiple columns
+                    // See if we have a combined full-text index covering multiple columns
                     $has_combined_index_coverage = false;
                     foreach ($indices_for_table as $index) {
                         if (substr($index['i_name'], 0, 1) == '#') {
@@ -1333,7 +2238,7 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
 
                     if ($where_clause_or != '') {
                         if ($where_clause_and != '') {
-                            $where_clause_and .= ' ' . $boolean_operator . ' ';
+                            $where_clause_and .= ' AND ';
                         }
 
                         $where_clause_and .= '(' . $where_clause_or . ')';
@@ -1445,16 +2350,121 @@ function get_search_rows($meta_type, $id_field, $content, $boolean_search, $bool
 }
 
 /**
+ * Build a full-text query WHERE clause from given content.
+ *
+ * @param  string $search_query The search query
+ * @param  boolean $full_coverage Whether we can assume we require full coverage (i.e. not substring matches)
+ * @param  boolean $force_like Whether to force LIKE syntax rather than full-text search
+ * @return array A tuple (any SQL component may be blank): The combined where clause SQL, the boolean operator, body where clause SQL, positive where clause SQL, negative where clause SQL
+ */
+function build_content_where($search_query, $full_coverage = false, $force_like = false)
+{
+    list($body_words, $include_words, $exclude_words) = _boolean_search_prepare($search_query);
+
+    if ($search_query == '') {
+        $content_where = '';
+        $body_where = [];
+        $include_where = [];
+        $exclude_where = '';
+    } else {
+        $under_radar = is_under_radar($search_query);
+        $boolean = (preg_match('#[\-+"]#', $search_query) != 0);
+        if (($GLOBALS['SITE_DB']->has_full_text()) && (!$under_radar) && (!$force_like) && (($GLOBALS['SITE_DB']->has_full_text_boolean()) || (!$boolean))) {
+            $content_where = $GLOBALS['SITE_DB']->full_text_assemble($search_query);
+            $body_where = [$content_where];
+            $include_where = [];
+            $exclude_where = '';
+        } else {
+            list($content_where, $body_where, $include_where, $exclude_where) = db_like_assemble($search_query, $full_coverage);
+            if ($content_where == '') {
+                $content_where = '1=1';
+            }
+        }
+    }
+
+    return [$content_where, $body_where, $include_where, $exclude_where];
+}
+
+/**
+ * Generate SQL for a boolean search.
+ *
+ * @param  string $search_query Boolean search string
+ * @param  boolean $full_coverage Whether we can assume we require full coverage
+ * @return array A tuple (any SQL component may be blank): The combined where clause SQL, the boolean operator, body where clause SQL, positive where clause SQL, negative where clause SQL
+ */
+function db_like_assemble($search_query, $full_coverage = false)
+{
+    $search_query = str_replace('?', '_', $search_query);
+    $search_query = str_replace('*', '%', $search_query);
+
+    list($body_words, $include_words, $exclude_words) = _boolean_search_prepare($search_query);
+
+    $fc_before = $full_coverage ? '' : '%';
+    $fc_after = $full_coverage ? '' : '%';
+
+    $body_where = [];
+    foreach ($body_words as $word) {
+        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
+            $body_where[] = 'CONVERT(? USING latin1) LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
+        } else {
+            $body_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
+        }
+    }
+    $include_where = [];
+    foreach ($include_words as $word) {
+        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
+            $include_where[] = 'CONVERT(? USING latin1) LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
+        } else {
+            $include_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
+        }
+    }
+    $exclude_where = '';
+    foreach ($exclude_words as $word) {
+        if ($exclude_where != '') {
+            $exclude_where .= ' AND ';
+        }
+        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
+            $exclude_where .= 'CONVERT(? USING latin1) NOT LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
+        } else {
+            $exclude_where .= '? NOT LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
+        }
+    }
+
+    // $content_where combines all
+    $content_where = '';
+    if (!empty($body_words)) { // For a LIKE clause handler we can't do fuzzy search, so anything without an operator will just default to an AND
+        if ($content_where != '') {
+            $content_where .= ' AND ';
+        }
+        $content_where .= '(' . implode(' AND ', $body_where) . ')';
+    }
+    if (!empty($include_where)) {
+        if ($content_where != '') {
+            $content_where .= ' AND ';
+        }
+        $content_where .= '(' . implode(' AND ', $include_where) . ')';
+    }
+    if ($exclude_where != '') {
+        if ($content_where != '') {
+            $content_where .= ' AND ';
+        }
+        $content_where .= '(' . $exclude_where . ')';
+    }
+
+    return [$content_where, $body_where, $include_where, $exclude_where];
+}
+
+/**
  * Take a search string and find boolean search parameters from it.
  *
- * @param  string $search_filter The search string
+ * @param  string $search_query The search query
  * @return array Words to search under the boolean operator, words that must be included, words that must not be included
  *
  * @ignore
  */
-function _boolean_search_prepare($search_filter)
+function _boolean_search_prepare($search_query)
 {
-    $content_explode = explode(' ', $search_filter);
+    $content_explode = explode(' ', $search_query);
 
     $body_words = [];
     $include_words = [];
@@ -1498,189 +2508,123 @@ function _boolean_search_prepare($search_filter)
 }
 
 /**
- * Perform a database-style in-memory boolean search on single item.
+ * Build up a submitter search clause, taking into account members, authors, usernames, and usergroups.
  *
- * @param  array $filter A map of POST data in search-form style. May contain 'only_titles', 'content' (the critical one!) and 'conjunctive_operator'
- * @param  string $title The title to try and match
- * @param  ?string $post The post to try and match (null: not used)
- * @return boolean Whether we have a match
+ * @param  ?ID_TEXT $member_field_name The field name for member IDs (null: Cannot match against member IDs)
+ * @param  ?MEMBER $member_id Member ID (null: Unknown, so cannot search)
+ * @param  ID_TEXT $author Author
+ * @param  ?ID_TEXT $author_field_name The field name for authors (null: Cannot match against member IDs)
+ * @return ?string An SQL fragment (null: block query)
  */
-function in_memory_search_match($filter, $title, $post = null)
+function build_search_submitter_clauses($member_field_name, $member_id, $author, $author_field_name = null)
 {
-    if ((!array_key_exists('content', $filter)) || ($filter['content'] == '')) {
-        return true;
+    $clauses = '';
+
+    // Member ID
+    if (($member_id !== null) && ($member_field_name !== null)) {
+        if ($clauses != '') {
+            $clauses .= ' OR ';
+        }
+        $clauses .= $member_field_name . '=' . strval($member_id);
     }
 
-    $search_filter = $filter['content'];
-    if (((array_key_exists('only_titles', $filter)) && ($filter['only_titles'] == 1)) || ($post === null)) {
-        $context = $title;
-    } else {
-        $context = $title . ' ' . $post;
-    }
-
-    $boolean_operator = array_key_exists('conjunctive_operator', $filter) ? $filter['conjunctive_operator'] : 'OR';
-
-    list($body_words, $include_words, $exclude_words) = _boolean_search_prepare($search_filter);
-    foreach ($include_words as $word) {
-        if (!simulated_wildcard_match($context, $word)) {
-            return false;
-        }
-    }
-    foreach ($exclude_words as $word) {
-        if (simulated_wildcard_match($context, $word)) {
-            return false;
-        }
-    }
-    if ($boolean_operator == 'OR') {
-        $count = 0;
-        foreach ($body_words as $word) {
-            if (simulated_wildcard_match($context, $word)) {
-                $count++;
-            }
-        }
-        if ($count == 0) {
-            return false;
-        }
-    } else {
-        foreach ($body_words as $word) {
-            if (!simulated_wildcard_match($context, $word)) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-/**
- * Build a fulltext query WHERE clause from given content.
- *
- * @param  string $content The search content
- * @param  boolean $boolean_search Whether it's a boolean search
- * @param  string $boolean_operator Boolean operation to use
- * @set AND OR
- * @param  boolean $full_coverage Whether we can assume we require full coverage (i.e. not substring matches)
- * @return array A tuple (any SQL component may be blank): The combined where clause SQL, the boolean operator, body where clause SQL, positive where clause SQL, negative where clause SQL
- */
-function build_content_where($content, $boolean_search, &$boolean_operator, $full_coverage = false)
-{
-    list($body_words, $include_words, $exclude_words) = _boolean_search_prepare($content);
-
-    require_code('search');
-
-    $under_radar = false;
-    if ((is_under_radar($content)) && ($content != '')) {
-        $under_radar = true;
-    }
-    if (($under_radar) || ($boolean_search) || (!$GLOBALS['SITE_DB']->has_full_text())) {
-        if (!in_array(strtoupper($boolean_operator), ['AND', 'OR'])) {
-            log_hack_attack_and_exit('ORDERBY_HACK');
-        }
-
-        if ($content == '') {
-            $content_where = '';
-            $body_where = [];
-            $include_where = [];
-            $exclude_where = '';
-        } else {
-            if ((get_param_integer('force_like', 0) == 0) && ($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->has_full_text_boolean()) && (!$under_radar)) {
-                $content_where = $GLOBALS['SITE_DB']->full_text_assemble($content, true);
-                $body_where = [$content_where];
-                $include_where = [];
-                $exclude_where = '';
-            } else {
-                list($content_where, $boolean_operator, $body_where, $include_where, $exclude_where) = db_like_assemble($content, $boolean_operator, $full_coverage);
-                if ($content_where == '') {
-                    $content_where = '1=1';
+    // Groups
+    if (($member_field_name !== null) && ($author != '')) {
+        $all_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
+        foreach ($all_usergroups as $usergroup => $usergroup_name) {
+            if ($usergroup_name == $author) {
+                $members_in_group = $GLOBALS['FORUM_DRIVER']->member_group_query([$usergroup], 50);
+                if (count($members_in_group) < 50) { // Let's be reasonable with how long the SQL could get!
+                    foreach (array_keys($members_in_group) as $group_member_id) {
+                        if ($clauses != '') {
+                            $clauses .= ' OR ';
+                        }
+                        $clauses .= $member_field_name . '=' . strval($group_member_id);
+                    }
                 }
+                break;
             }
         }
-    } else {
-        if ($content == '') {
-            $content_where = '';
-            $body_where = [];
-            $include_where = [];
-            $exclude_where = '';
-        } else {
-            $content_where = $GLOBALS['SITE_DB']->full_text_assemble($content, false);
-            $body_where = [$content_where];
-            $include_where = [];
-            $exclude_where = '';
-        }
-        $boolean_operator = 'OR';
     }
 
-    return [$content_where, $boolean_operator, $body_where, $include_where, $exclude_where];
+    // Author
+    if (($author_field_name !== null) && ($author != '')) {
+        if ($clauses != '') {
+            $clauses .= ' OR ';
+        }
+        $clauses .= db_string_equal_to($author_field_name, $author);
+    }
+
+    if ($clauses == '') {
+        if ($author != '') {
+            return null; // Query should never succeed
+        }
+
+        return '';
+    }
+
+    return ' AND (' . $clauses . ')';
 }
 
 /**
- * Generate SQL for a boolean search.
+ * Get special SQL from POSTed parameters for a catalogue search field that is to be exact-matched.
  *
- * @param  string $content Boolean search string
- * @param  string $boolean_operator Boolean operator to use
- * @set AND OR
- * @param  boolean $full_coverage Whether we can assume we require full coverage
- * @return array A tuple (any SQL component may be blank): The combined where clause SQL, the boolean operator, body where clause SQL, positive where clause SQL, negative where clause SQL
+ * @param  array $field The field details
+ * @param  integer $i We're processing for the ith row
+ * @param  ID_TEXT $type Table type
+ * @set short long
+ * @param  ?string $param Search term (null: lookup from environment)
+ * @param  string $table_alias Table alias for catalogue entry table
+ * @return ?array Tuple of SQL details (array: extra trans fields to search, array: extra plain fields to search, string: an extra table segment for a join, string: the name of the field to use as a title, if this is the title, extra WHERE clause stuff) (null: nothing special)
  */
-function db_like_assemble($content, $boolean_operator = 'AND', $full_coverage = false)
+function exact_match_sql($field, $i, $type = 'short', $param = null, $table_alias = 'r')
 {
-    $content = str_replace('?', '_', $content);
-    $content = str_replace('*', '%', $content);
-
-    list($body_words, $include_words, $exclude_words) = _boolean_search_prepare($content);
-
-    $fc_before = $full_coverage ? '' : '%';
-    $fc_after = $full_coverage ? '' : '%';
-
-    $body_where = [];
-    foreach ($body_words as $word) {
-        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
-            $body_where[] = 'CONVERT(? USING latin1) LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
+    $table = ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_' . $type . ' f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
+    $search_field = 'f' . strval($i) . '.cv_value';
+    if ($param === null) {
+        $param = get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX);
+    }
+    $where_clause = '';
+    if ($param != '') {
+        if (is_numeric($param) && ($type == 'float' || $type == 'integer')) {
+            $where_clause = $search_field . '=' . $param;
         } else {
-            $body_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
-        }
-    }
-    $include_where = [];
-    foreach ($include_words as $word) {
-        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
-            $include_where[] = 'CONVERT(? USING latin1) LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
-        } else {
-            $include_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
-        }
-    }
-    $exclude_where = '';
-    foreach ($exclude_words as $word) {
-        if ($exclude_where != '') {
-            $exclude_where .= ' AND ';
-        }
-        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
-            $exclude_where .= 'CONVERT(? USING latin1) NOT LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
-        } else {
-            $exclude_where .= '? NOT LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
+            $where_clause = db_string_equal_to($search_field, $param);
         }
     }
 
-    // $content_where combines all
-    $content_where = '';
-    if (!empty($body_words)) {
-        if ($content_where != '') {
-            $content_where .= ' AND ';
-        }
-        $content_where .= '(' . implode($boolean_operator, $body_where) . ')';
-    }
-    if (!empty($include_where)) {
-        if ($content_where != '') {
-            $content_where .= ' AND ';
-        }
-        $content_where .= '(' . implode(' AND ', $include_where) . ')';
-    }
-    if ($exclude_where != '') {
-        if ($content_where != '') {
-            $content_where .= ' AND ';
-        }
-        $content_where .= '(' . $exclude_where . ')';
+    $nontrans_fields = [];
+    if (($type !== 'float') && ($type !== 'integer')) { // Numeric column types don't have full-text indexes on them
+        $nontrans_fields[] = $search_field;
     }
 
-    return [$content_where, $boolean_operator, $body_where, $include_where, $exclude_where];
+    return [[], $nontrans_fields, $table, $search_field, $where_clause];
+}
+
+/**
+ * Get special SQL from POSTed parameters for a catalogue search field for a multi-input field that is to be exact-matched.
+ *
+ * @param  array $field The field details
+ * @param  integer $i We're processing for the ith row
+ * @param  ID_TEXT $type Table type
+ * @set short long
+ * @param  ?string $param Search term (null: lookup from environment)
+ * @param  string $table_alias Table alias for catalogue entry table
+ * @return ?array Tuple of SQL details (array: extra trans fields to search, array: extra plain fields to search, string: an extra table segment for a join, string: the name of the field to use as a title, if this is the title, extra WHERE clause stuff) (null: nothing special)
+ */
+function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_alias = 'r')
+{
+    $table = ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_' . $type . ' f' . strval($i) . ' ON f' . strval($i) . '.ce_id=' . $table_alias . '.id AND f' . strval($i) . '.cf_id=' . strval($field['id']);
+    $search_field = 'f' . strval($i) . '.cv_value';
+    if ($param === null) {
+        $param = get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX);
+    }
+    $where_clause = '';
+    if ($param != '') {
+        $where_clause = '(' . $search_field . ' LIKE \'' . db_encode_like($param) . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like('%' . "\n" . $param) . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like($param . "\n" . '%') . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like('%' . "\n" . $param . "\n" . '%') . '\')';
+    }
+
+    return [[], [$search_field], $table, $search_field, $where_clause];
 }
 
 /**
@@ -1727,6 +2671,140 @@ function sort_search_results($hook_results, $results, $direction)
     }
 
     return $results;
+}
+
+/**
+ * Highlight keywords in an extracted portion of a piece of text.
+ *
+ * @param  string $_temp_summary What was searched
+ * @param  array $words_searched List of words searched
+ * @return string Highlighted portion
+ */
+function generate_text_summary($_temp_summary, $words_searched)
+{
+    require_code('xhtml');
+
+    $summary = '';
+
+    global $SEARCH_QUERY_TERMS;
+
+    $_temp_summary_lower = strtolower($_temp_summary);
+
+    // Add in some highlighting direct to XHTML
+    $all_occurrences = [];
+    foreach ($words_searched as $content_bit) {
+        if ($content_bit == '') {
+            continue;
+        }
+
+        $last_pos = 0;
+        $content_bit_pos = 0;
+        do {
+            $content_bit_matched = $content_bit;
+            if (strtoupper($content_bit) == $content_bit) { // all upper case so don't want case sensitive
+                $content_bit_pos = strpos($_temp_summary, $content_bit, $last_pos);
+            } else {
+                $content_bit_pos = stripos($_temp_summary_lower, $content_bit, $last_pos);
+                if (strpos($content_bit, '-') !== false) {
+                    $content_bit_pos_2 = strpos($_temp_summary_lower, str_replace('-', '', $content_bit), $last_pos);
+                    if (($content_bit_pos_2 !== false) && (($content_bit_pos === false) || ($content_bit_pos_2 < $content_bit_pos))) {
+                        $content_bit_pos = $content_bit_pos_2;
+                        $content_bit_matched = str_replace('-', '', $content_bit);
+                    }
+                }
+            }
+
+            if ($content_bit_pos !== false) {
+                $last_gt = strrpos(substr($_temp_summary, 0, $content_bit_pos), '>');
+                $last_lt = strrpos(substr($_temp_summary, 0, $content_bit_pos), '<');
+
+                if (($last_gt === false) || ($last_gt > $last_lt)) {
+                    $extra_pre = '<span class="comcode-highlight">';
+                    $extra_post = '</span>';
+                    $_temp_summary = substr($_temp_summary, 0, $content_bit_pos) .
+                                     $extra_pre .
+                                     substr($_temp_summary, $content_bit_pos, strlen($content_bit_matched)) .
+                                     $extra_post .
+                                     substr($_temp_summary, $content_bit_pos + strlen($content_bit_matched));
+                    $_temp_summary_lower = strtolower($_temp_summary);
+                    $last_pos = $content_bit_pos + strlen($extra_pre) + strlen($content_bit_matched) + strlen($extra_post);
+
+                    // Adjust all stores occurrence offsets
+                    foreach ($all_occurrences as $i => $occ) {
+                        if ($occ[0] > $last_pos) {
+                            $all_occurrences[$i] = [$all_occurrences[$i][0] + strlen($extra_pre) + strlen($extra_post), $all_occurrences[$i][0] + strlen($extra_pre) + strlen($extra_post)];
+                        } elseif ($occ[0] > $content_bit_pos) {
+                            $all_occurrences[$i] = [$all_occurrences[$i][0] + strlen($extra_pre), $all_occurrences[$i][0] + strlen($extra_pre)];
+                        }
+                    }
+
+                    $all_occurrences[] = [$content_bit_pos, $last_pos];
+                } else {
+                    $last_pos = $content_bit_pos + strlen($content_bit_matched);
+                }
+            }
+        } while ($content_bit_pos !== false);
+    }
+
+    if (strlen($_temp_summary) < 500) {
+        $summary = $_temp_summary;
+    } else {
+        // Find optimal position
+        $len = strlen($_temp_summary);
+        $best_yet = 0;
+        $best_pos_min = 250;
+        $best_pos_max = 250;
+        if (count($all_occurrences) < 60) { // Only bother doing this if we need to dig for the keyword
+            for ($i = 250; $i < $len - 250; $i++) { // Move window along all possible positions
+                $count = 0;
+                $i_pre = $i - 250;
+                $i_post = $i + 250;
+                foreach ($all_occurrences as $occ) {
+                    $occ_pre = $occ[0];
+                    $occ_post = $occ[1];
+                    if (($occ_pre >= $i_pre) && ($occ_pre <= $i_post) && ($occ_post >= $i_pre) && ($occ_post <= $i_post)) {
+                        $count++;
+
+                        if ($count > 5) {
+                            break; // Good enough
+                        }
+                    }
+                }
+                if (($count > $best_yet) || (($best_yet == $count) && ($i - 500 < $best_pos_min))) {
+                    if ($best_yet == $count) {
+                        $best_pos_max = $i;
+                    } else {
+                        $best_yet = $count;
+                        $best_pos_min = $i;
+                        $best_pos_max = $i;
+                    }
+
+                    if ($count > 5) {
+                        break; // Good enough
+                    }
+                }
+            }
+            $best_pos = intval(floatval($best_pos_min + $best_pos_max) / 2.0) - 250; // Move it from center pos, to where we want to start from
+        } else {
+            $best_pos = 0;
+        }
+
+        // Render (with ellipses if required)
+        if (false) { // Far far too slow
+            $summary = xhtml_substr($_temp_summary, $best_pos, min(500, $len - $best_pos), true, true);
+        } else {
+            $summary = substr($_temp_summary, $best_pos, min(500, $len - $best_pos));
+            $summary = xhtmlise_html($summary, true);
+            if ($best_pos > 0) {
+                $summary = '&hellip;' . $summary;
+            }
+            if ($best_pos + 500 < strlen($_temp_summary)) {
+                $summary .= '&hellip;';
+            }
+        }
+    }
+
+    return $summary;
 }
 
 /**
@@ -1812,7 +2890,7 @@ function build_search_results_interface($results, $start, $max, $direction, $gen
         'opensearch_itemsperpage' => strval($max),
     ]);
 
-    $SEARCH__CONTENT_BITS = null;
+    $SEARCH_QUERY_TERMS = null;
 
     return $out;
 }

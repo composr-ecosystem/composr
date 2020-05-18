@@ -410,14 +410,14 @@ Be aware of these reasonable limits (unless you have dedicated programming resou
 
 [title="3"]MySQL searches[/title]
 
-MySQL fulltext search can be a resource hog if your server is not configured properly and you have a large amount of content.
+MySQL full-text search can be a resource hog if your server is not configured properly and you have a large amount of content.
 
 To make it run efficiently, the MySQL [tt]key_buffer_size[/tt] setting (think of it as a general index buffer, it's not just for keys) must be high enough to contain all the indexes involved in searching:
- - the fulltext index on the [tt]translate[/tt] table
+ - the full-text index on the [tt]translate[/tt] table
  - indexes on the fields that join into that table
  - other indexes involved in the query (e.g. for sorting or additional constraints)
 It can be a matter of trial and error to find the right setting, but it may be something like [tt]500M[/tt].
-If the key buffer size is not large enough then indexing will work via disk, and for fulltext searches or joins, that can be very slow. In particular, if a user searches for common words, the index portion relating to those words may be large and require a large amount of traversal -- you really don't want this to be running off of disk.
+If the key buffer size is not large enough then indexing will work via disk, and for full-text searches or joins, that can be very slow. In particular, if a user searches for common words, the index portion relating to those words may be large and require a large amount of traversal -- you really don't want this to be running off of disk.
 If you notice searches for random phrases are sometimes fast, and sometimes slow, it's likely indicating the key buffer has filled up too far and is pushing critical indexes out.
 
 You can test cache coverage via priming the key buffer via the MySQL console. This example would be for searches on forum posts, and a key buffer size of 500MB:
@@ -444,7 +444,7 @@ You'll get a result like:
 [/code]
 You don't want [tt]Key_blocks_unused[/tt] to be [tt]0[/tt] like in this example, as it illustrates the key buffer is too small. So tune your settings until you have them right.
 
-Once you get it right, fulltext searches on large databases should complete in a small number of seconds, rather than tens of seconds. The first search may be slow, but subsequent ones should not be.
+Once you get it right, full-text searches on large databases should complete in a small number of seconds, rather than tens of seconds. The first search may be slow, but subsequent ones should not be.
 
 It also never hurts to optimise (via [tt]OPTIMIZE TABLE[/tt] or [tt]myisamchk -r *.MYI[/tt]) your MySQL tables. This helps MySQL know how to better conduct queries in general, and re-structures data in a more efficient way.
 

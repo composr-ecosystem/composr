@@ -159,27 +159,22 @@ class Hook_search_cns_members extends FieldsSearchHook
     /**
      * Run function for search results.
      *
-     * @param  string $content Search string
+     * @param  string $search_query Search query
+     * @param  string $content_where WHERE clause that selects the content according to the search query; passed in addition to $search_query to avoid unnecessary reparsing.  ? refers to the yet-unknown field name (blank: full-text search)
+     * @param  string $where_clause Initial WHERE clause that already takes $search_under into account (should be nothing else unless it is guaranteed hook will use the global get_search_rows function)
+     * @param  string $search_under Comma-separated list of categories to search under
      * @param  boolean $only_search_meta Whether to only do a META (tags) search
-     * @param  ID_TEXT $direction Order direction
+     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
      * @param  integer $max Start position in total results
      * @param  integer $start Maximum results to return in total
-     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
-     * @param  string $content_where Where clause that selects the content according to the main search string (SQL query fragment) (blank: full-text search)
+     * @param  string $sort The sort type (gets remapped to a field in this function)
+     * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
-     * @param  string $sort The sort type (gets remapped to a field in this function)
-     * @set title add_date
-     * @param  integer $limit_to Limit to this number of results
-     * @param  string $boolean_operator What kind of boolean search to do
-     * @set or and
-     * @param  string $where_clause Where constraints known by the main search code (SQL query fragment)
-     * @param  string $search_under Comma-separated list of categories to search under
-     * @param  boolean $boolean_search Whether it is a boolean search
      * @return array List of maps (template, orderer)
      */
-    public function run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $limit_to, $boolean_operator, $where_clause, $search_under, $boolean_search)
+    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
     {
         require_code('cns_members');
 
@@ -232,10 +227,9 @@ class Hook_search_cns_members extends FieldsSearchHook
                 $non_trans_fields++;
             }
         }
-        $index_issue = (get_param_integer('force_like', 0) == 0) && ($non_trans_fields > 16); // MySQL limit for fulltext index querying. We'll therefore not throw EVERY searchable field into the search query (only core ones, and ones we're explicitly filtering on)
-        if ($index_issue) {
-            $boolean_search = true;
-            list($content_where) = build_content_where($content, $boolean_search, $boolean_operator); // Rebuilding $content_where from what was passed to this function
+        $force_like = ($non_trans_fields > 16); // MySQL limit for full-text index querying. We'll therefore not throw EVERY searchable field into the search query (only core ones, and ones we're explicitly filtering on)
+        if ($force_like) {
+            list($content_where) = build_content_where($search_query, false, true); // Rebuilding $content_where from what was passed to this function
         }
         $gdpr_log = false;
         foreach ($rows as $i => $row) {
@@ -267,10 +261,12 @@ class Hook_search_cns_members extends FieldsSearchHook
                         $temp = db_string_equal_to('?', $param);
                     } elseif (
                         (array_key_exists('field_' . strval($row['id']), $indexes)) && ($indexes['field_' . strval($row['id'])][0] == '#') &&
-                        (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->has_full_text_boolean()) || (!$boolean_search)) &&
+                        ($GLOBALS['SITE_DB']->has_full_text()) &&
+                        ($GLOBALS['SITE_DB']->has_full_text_boolean()) &&
+                        (!$force_like) &&
                         (!is_under_radar($param))
                     ) {
-                        $temp = $GLOBALS['SITE_DB']->full_text_assemble('"' . $param . '"', true);
+                        $temp = $GLOBALS['SITE_DB']->full_text_assemble('"' . $param . '"');
                     } else {
                         list($temp,) = db_like_assemble($param);
                     }
@@ -286,15 +282,11 @@ class Hook_search_cns_members extends FieldsSearchHook
 
             // Standard search
             if ($row['cf_include_in_main_search'] == 1) {
-                if (((array_key_exists('field_' . strval($row['id']), $indexes)) && ($indexes['field_' . strval($row['id'])][0] == '#')) || ($boolean_search)) {
+                if (((array_key_exists('field_' . strval($row['id']), $indexes)) && ($indexes['field_' . strval($row['id'])][0] == '#')) || ($force_like)) {
                     if (strpos($storage_type, '_trans') === false) {
-                        if ((!$index_issue) || ($boolean_search)) {
-                            $raw_fields[] = 'field_' . strval($row['id']);
-                        }
+                        $raw_fields[] = 'field_' . strval($row['id']);
                     } else {
-                        if ((!$index_issue) || ($boolean_search) || (multi_lang_content())) { // MySQL limit for fulltext index querying
-                            $trans_fields['field_' . strval($row['id'])] = 'LONG_TRANS__COMCODE';
-                        }
+                        $trans_fields['field_' . strval($row['id'])] = 'LONG_TRANS__COMCODE';
                     }
                 }
             }
@@ -340,7 +332,7 @@ class Hook_search_cns_members extends FieldsSearchHook
         $where_clause .= ' AND r.id IS NOT NULL';
 
         // Calculate and perform query
-        $rows = get_search_rows(null, 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_members r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields a ON r.id=a.mf_member_id' . $table, ['!' => '!', 'm_signature' => 'LONG_TRANS__COMCODE'] + $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,a.*,r.id AS id', $raw_fields);
+        $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, 'f_members r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields a ON r.id=a.mf_member_id' . $table, 'r.*,a.*,r.id AS id', ['!' => '!', 'm_signature' => 'LONG_TRANS__COMCODE'] + $trans_fields, $raw_fields);
 
         $out = [];
         foreach ($rows as $i => $row) {

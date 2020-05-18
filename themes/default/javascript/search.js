@@ -47,7 +47,6 @@
         SearchFormScreen.base(this, 'constructor', arguments);
 
         this.primaryFormEl = this.$('.js-form-primary-form');
-        this.booleanOptionsEl = this.$('.js-el-boolean-options');
     }
 
     $util.inherits(SearchFormScreen, $cms.View, /**@lends SearchFormScreen#*/{
@@ -56,8 +55,7 @@
                 'keypress .js-keypress-enter-submit-primary-form': 'submitPrimaryForm',
                 'keyup .js-keyup-update-ajax-search-list': 'updateAjaxSearchList',
                 'keyup .js-keyup-update-author-list': 'updateAuthorList',
-                'click .js-click-trigger-resize': 'triggerResize',
-                'click .js-checkbox-click-toggle-boolean-options': 'toggleBooleanOptions'
+                'click .js-click-trigger-resize': 'triggerResize'
             };
         },
         submitPrimaryForm: function (e) {
@@ -79,9 +77,6 @@
         },
         triggerResize: function () {
             $dom.triggerResize();
-        },
-        toggleBooleanOptions: function (e, checkbox) {
-            $dom.toggle(this.booleanOptionsEl, checkbox.checked);
         }
     });
 

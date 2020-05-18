@@ -37,7 +37,7 @@ class Block_main_search
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = ['title', 'input_fields', 'limit_to', 'search_under', 'zone', 'sort', 'author', 'days', 'direction', 'only_titles', 'only_search_meta', 'boolean_search', 'conjunctive_operator', 'extra'];
+        $info['parameters'] = ['title', 'input_fields', 'limit_to', 'search_under', 'zone', 'sort', 'author', 'days', 'direction', 'only_titles', 'only_search_meta', 'extra'];
         return $info;
     }
 
@@ -64,8 +64,6 @@ class Block_main_search
             array_key_exists('direction', $map) ? $map['direction'] : 'DESC',
             (array_key_exists('only_titles', $map) ? $map['only_titles'] : '') == '1',
             (array_key_exists('only_search_meta', $map) ? $map['only_search_meta'] : '0') == '1',
-            (array_key_exists('boolean_search', $map) ? $map['boolean_search'] : '0') == '1',
-            array_key_exists('conjunctive_operator', $map) ? $map['conjunctive_operator'] : 'AND',
             array_key_exists('limit_to', $map) ? $map['limit_to'] : '',
             array_key_exists('search_under', $map) ? $map['search_under'] : '',
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('search'),

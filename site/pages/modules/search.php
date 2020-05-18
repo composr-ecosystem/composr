@@ -138,8 +138,6 @@ class Module_search
             inform_non_canonical_parameter('all_defaults');
             inform_non_canonical_parameter('days');
             inform_non_canonical_parameter('only_titles');
-            inform_non_canonical_parameter('conjunctive_operator');
-            inform_non_canonical_parameter('boolean_search');
             inform_non_canonical_parameter('only_search_meta');
             inform_non_canonical_parameter('content');
             inform_non_canonical_parameter('author');
@@ -225,7 +223,7 @@ class Module_search
         require_javascript('ajax_people_lists');
         require_javascript('tree_list');
 
-        $content = get_param_string('content', null, INPUT_FILTER_GET_COMPLEX);
+        $search_query = get_param_string('content', null, INPUT_FILTER_GET_COMPLEX);
 
         $user_label = do_lang_tempcode('SEARCH_USER');
 
@@ -280,7 +278,7 @@ class Module_search
                 $date_range_label = $info['date_range_label'];
             }
 
-            $extra_sort_fields = array_key_exists('extra_sort_fields', $info) ? $info['extra_sort_fields'] : [];
+            $extra_sort_fields = [];//array_key_exists('extra_sort_fields', $info) ? $info['extra_sort_fields'] : []; Disabled as we cannot offer decent performance with this
 
             $under = null;
             $got_tree_selector = false;
@@ -354,8 +352,8 @@ class Module_search
                 foreach ($info['special_on'] as $name => $display) {
                     $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', [
                         '_GUID' => 'c1853f42d0a110026453f8b94c9f623c',
-                        'CHECKED' => ($content === null) || (get_param_integer('option_' . $id . '_' . $name, 0) == 1),
-                        'NAME' => 'option_' . $id . '_' . $name,
+                        'CHECKED' => ($search_query === null) || (get_param_integer('option_tick_' . $id . '_' . $name, 0) == 1),
+                        'NAME' => 'option_tick_' . $id . '_' . $name,
                         'DISPLAY' => $display,
                     ]));
                 }
@@ -364,8 +362,8 @@ class Module_search
                 foreach ($info['special_off'] as $name => $display) {
                     $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', [
                         '_GUID' => '2223ada7636c85e6879feb9a6f6885d2',
-                        'CHECKED' => (get_param_integer('option_' . $id . '_' . $name, 0) == 1),
-                        'NAME' => 'option_' . $id . '_' . $name,
+                        'CHECKED' => (get_param_integer('option_tick_' . $id . '_' . $name, 0) == 1),
+                        'NAME' => 'option_tick_' . $id . '_' . $name,
                         'DISPLAY' => $display,
                     ]));
                 }
@@ -412,9 +410,10 @@ class Module_search
 
                 $is_default_or_advanced = (($info['default']) && ($id == '')) || ($hook == $id);
 
-                $checked = (get_param_integer('search_' . $hook, ((($content === null) && (get_param_integer('all_defaults', null) !== 0)) || (get_param_integer('all_defaults', 0) == 1)) ? ($is_default_or_advanced ? 1 : 0) : 0) == 1);
+                $checked = (get_param_integer('search_' . $hook, ((($search_query === null) && (get_param_integer('all_defaults', null) !== 0)) || (get_param_integer('all_defaults', 0) == 1)) ? ($is_default_or_advanced ? 1 : 0) : 0) == 1);
 
-                $options_url = ((array_key_exists('special_on', $info)) || (array_key_exists('special_off', $info)) || (array_key_exists('extra_sort_fields', $info)) || (method_exists($ob, 'get_fields')) || (method_exists($ob, 'get_tree')) || (method_exists($ob, 'get_ajax_tree'))) ? build_url(['page' => '_SELF', 'id' => $hook], '_SELF', [], false, true) : new Tempcode();
+                $has_extra_options = ((array_key_exists('special_on', $info)) || (array_key_exists('special_off', $info))/* || (array_key_exists('extra_sort_fields', $info))*/ || (method_exists($ob, 'get_fields')) || (method_exists($ob, 'get_tree')) || (method_exists($ob, 'get_ajax_tree')));
+                $options_url = $has_extra_options ? build_url(['page' => '_SELF', 'id' => $hook], '_SELF', [], false, true) : new Tempcode();
 
                 $_search_domains[] = ['_GUID' => '3d3099872184923aec0f49388f52c750', 'ADVANCED_ONLY' => (array_key_exists('advanced_only', $info)) && ($info['advanced_only']), 'CHECKED' => $checked, 'OPTIONS_URL' => $options_url, 'LANG' => $info['lang'], 'NAME' => $hook];
             }
@@ -438,7 +437,6 @@ class Module_search
         if ($search_under == '') {
             $search_under = '!';
         }
-        $boolean_operator = get_param_string('conjunctive_operator', 'OR');
 
         $has_fulltext_search = $GLOBALS['SITE_DB']->has_full_text();
 
@@ -469,8 +467,11 @@ class Module_search
         } else {
             $days = get_param_integer('days', null); // -1 for no limit, null for default limit
             if ($days === null) {
-                $_days = get_value('search_days__' . $id);
+                $_days = get_value('search_days__' . $id, '');
                 if ($_days === null) {
+                    $_days = get_option('search_days_default');
+                }
+                if ($_days == '') {
                     $days = -1;
                 } else {
                     $days = intval($_days);
@@ -483,36 +484,34 @@ class Module_search
             $cutoff = ($days == -1) ? null : (time() - $days * 24 * 60 * 60);
         }
 
-        if (($content === '') && ($author === '') && (get_param_integer('days', null) === -1)) {
-            $content = null;
+        if (($search_query === '') && ($author === '') && (get_param_integer('days', null) === -1)) {
+            $search_query = null;
         }
 
         // Perform search, if we did one
         $out = null;
         $pagination = '';
         $num_results = 0;
-        if ($content !== null) {
+        if ($search_query !== null) {
             list($out, $pagination, $num_results) = $this->results($id, $author, $author_id, $cutoff, $sort, $direction, $only_titles, $search_under);
 
             if (has_zone_access(get_member(), 'adminzone')) {
-                $admin_search_url = build_url(['page' => 'admin', 'type' => 'search', 'content' => $content], 'adminzone');
+                $admin_search_url = build_url(['page' => 'admin', 'type' => 'search', 'content' => $search_query], 'adminzone');
                 attach_message(do_lang_tempcode('ALSO_ADMIN_ZONE_SEARCH', escape_html($admin_search_url->evaluate())), 'inform');
             }
         }
 
         $tpl = do_template('SEARCH_FORM_SCREEN', [
             '_GUID' => '8bb208185740183323a6fe6e89d55de5',
-            'SEARCH_TERM' => ($content === null) ? '' : $content,
+            'SEARCH_TERM' => ($search_query === null) ? '' : $search_query,
             'HAS_TEMPLATE_SEARCH' => $has_template_search,
             'NUM_RESULTS' => integer_format($num_results),
             'EXTRA_SORT_FIELDS' => $extra_sort_fields,
             'USER_LABEL' => $user_label,
-            'BOOLEAN_SEARCH' => $this->_is_boolean_search(),
-            'AND' => $boolean_operator == 'AND',
             'ONLY_TITLES' => $only_titles,
             'SORT' => $sort,
             'DIRECTION' => $direction,
-            'CONTENT' => $content,
+            'CONTENT' => $search_query,
             'RESULTS' => $out,
             'PAGINATION' => $pagination,
             'HAS_FULLTEXT_SEARCH' => $has_fulltext_search,
@@ -539,25 +538,6 @@ class Module_search
     }
 
     /**
-     * Find whether we are doing a boolean search.
-     *
-     * @return boolean Whether we are
-     */
-    public function _is_boolean_search()
-    {
-        $content = get_param_string('content', '', INPUT_FILTER_GET_COMPLEX);
-
-        $boolean_search = get_param_integer('boolean_search', 0) == 1;
-        if (get_option('enable_boolean_search') == '0') {
-            $boolean_search = false;
-            if (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->has_full_text_boolean())) {
-                $boolean_search = (preg_match('#["\+\-]#', $content) != 0);
-            }
-        }
-        return $boolean_search;
-    }
-
-    /**
      * The actualiser of a search.
      *
      * @param  ID_TEXT $id Codename for what's being searched (blank: mixed search)
@@ -576,21 +556,21 @@ class Module_search
         cache_module_installed_status();
 
         // What we're searching for
-        $content = get_param_string('content', false, INPUT_FILTER_GET_COMPLEX);
+        $search_query = get_param_string('content', false, INPUT_FILTER_GET_COMPLEX);
 
         // Search keyword highlighting in any loaded Comcode
-        global $SEARCH__CONTENT_BITS;
-        $_content_bits = explode(' ', str_replace('"', '', cms_preg_replace_safe('#(^|\s)\+#', '', cms_preg_replace_safe('#(^|\s)\-#', '', $content))));
-        $SEARCH__CONTENT_BITS = [];
+        global $SEARCH_QUERY_TERMS;
+        $search_query_terms = explode(' ', str_replace('"', '', cms_preg_replace_safe('#(^|\s)[\-+]#', '', $search_query)));
+        $SEARCH_QUERY_TERMS = [];
         require_code('textfiles');
         $too_common_words = explode("\n", read_text_file('too_common_words', '', true));
-        foreach ($_content_bits as $content_bit) {
-            $content_bit = trim($content_bit);
-            if ($content_bit == '') {
+        foreach ($search_query_terms as $query_term) {
+            $query_term = trim($query_term);
+            if ($query_term == '') {
                 continue;
             }
-            if (!in_array(strtolower($content_bit), $too_common_words)) {
-                $SEARCH__CONTENT_BITS[] = $content_bit;
+            if (!in_array(strtolower($query_term), $too_common_words)) {
+                $SEARCH_QUERY_TERMS[] = $query_term;
             }
         }
 
@@ -598,9 +578,7 @@ class Module_search
         $default_max = intval(get_option('search_results_per_page'));
         $max = get_param_integer('search_max', $default_max);  // Also see get_search_rows
 
-        $boolean_operator = get_param_string('conjunctive_operator', 'OR');
-        $boolean_search = $this->_is_boolean_search();
-        list($content_where) = build_content_where($content, $boolean_search, $boolean_operator);
+        list($content_where) = build_content_where($search_query);
 
         disable_php_memory_limit();
 
@@ -648,7 +626,7 @@ class Module_search
                 $only_search_meta = get_param_integer('only_search_meta', 0) == 1;
                 $direction = get_param_string('direction', 'ASC');
                 cms_set_time_limit(10); // Prevent errant search hooks (easily written!) taking down a server. Each call given 5 seconds (calling cms_set_time_limit resets the timer).
-                $hook_results = $ob->run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $max, $boolean_operator, $where_clause, $search_under, $boolean_search ? 1 : 0);
+                $hook_results = $ob->run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff);
                 if ($hook_results === null) {
                     continue;
                 }
@@ -662,11 +640,11 @@ class Module_search
             }
         }
 
-        if (empty($results)) {
+        if ((empty($results)) && (get_option('search_did_you_mean') == '1')) {
             // Did you mean?
             require_code('spelling');
-            $corrected = spell_correct_phrase($content);
-            if (cms_mb_strtolower($corrected) != cms_mb_strtolower($content)) {
+            $corrected = spell_correct_phrase($search_query);
+            if (cms_mb_strtolower($corrected) != cms_mb_strtolower($search_query)) {
                 $search_url = get_self_url(true, false, ['content' => $corrected]);
                 attach_message(do_lang_tempcode('DID_YOU_MEAN', escape_html($corrected), escape_html($search_url)), 'notice');
             }
@@ -677,7 +655,7 @@ class Module_search
         // Now glue our templates together
         $out = build_search_results_interface($results, $start, $max, $direction, $id == '');
         if ($out->is_empty()) {
-            if ((is_integer($cutoff)) && ($GLOBALS['TOTAL_SEARCH_RESULTS'] == 0) && (get_value('search_do_days_fallback', '1') == '1')) {
+            if ((is_integer($cutoff)) && ($GLOBALS['TOTAL_SEARCH_RESULTS'] == 0) && (get_option('search_do_days_fallback') == '1')) {
                 $ret_maybe = $this->results($id, $author, $author_id, null, $sort, $direction, $only_titles, $search_under);
                 if (!$ret_maybe[0]->is_empty()) {
                     attach_message(do_lang_tempcode('NO_RESULTS_DAYS', escape_html(integer_format(intval((time() - $cutoff) / (24.0 * 60.0 * 60.0))))), 'notice');
@@ -692,11 +670,11 @@ class Module_search
         $pagination = pagination(do_lang_tempcode('RESULTS'), $start, 'search_start', $max, 'search_max', $GLOBALS['TOTAL_SEARCH_RESULTS'], true);
 
         if ($start == 0) {
-            cms_register_shutdown_function_safe(function () use ($content, $results) {
+            cms_register_shutdown_function_safe(function () use ($search_query, $results) {
                 $GLOBALS['SITE_DB']->query_insert('searches_logged', [
                     's_member_id' => get_member(),
                     's_time' => time(),
-                    's_primary' => cms_mb_substr($content, 0, 255),
+                    's_primary' => cms_mb_substr($search_query, 0, 255),
                     's_auxillary' => serialize(array_merge($_POST, $_GET)),
                     's_num_results' => count($results),
                 ]);

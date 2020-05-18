@@ -419,10 +419,9 @@ abstract class Database_super_sqlserver extends DatabaseDriver
      * Assemble part of a WHERE clause for doing full-text search.
      *
      * @param  string $content Our match string (assumes "?" has been stripped already)
-     * @param  boolean $boolean Whether to do a boolean full text search
      * @return string Part of a WHERE clause for doing full-text search
      */
-    public function full_text_assemble($content, $boolean)
+    public function full_text_assemble($content)
     {
         $content = str_replace('"', '', $content);
         return 'CONTAINS ((?),\'' . $this->escape_string($content) . '\')';

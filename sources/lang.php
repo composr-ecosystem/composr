@@ -103,10 +103,10 @@ function init__lang()
 
     /** Keywords parsed from an active search.
      *
-     * @global boolean $SEARCH__CONTENT_BITS
+     * @global boolean $SEARCH_QUERY_TERMS
      */
-    global $SEARCH__CONTENT_BITS;
-    $SEARCH__CONTENT_BITS = null;
+    global $SEARCH_QUERY_TERMS;
+    $SEARCH_QUERY_TERMS = null;
 
     /** Override member ID used for parsing and saving language string Comcode.
      *
@@ -1148,8 +1148,8 @@ function get_translated_tempcode($table, $row, $field_name, $db = null, $lang = 
             }
         }
 
-        global $SEARCH__CONTENT_BITS;
-        if ($SEARCH__CONTENT_BITS !== null) { // Doing a search so we need to reparse, with highlighting on
+        global $SEARCH_QUERY_TERMS;
+        if ($SEARCH_QUERY_TERMS !== null) { // Doing a search so we need to reparse, with highlighting on
             $_result = $db->query_select('translate', ['text_original', 'source_user'], ['id' => $entry, 'language' => $lang], '', 1);
             if (array_key_exists(0, $_result)) {
                 push_lax_comcode(true);
@@ -1161,7 +1161,7 @@ function get_translated_tempcode($table, $row, $field_name, $db = null, $lang = 
                     $result['text_original'] = force_clean_comcode($result['text_original']); // Highlighting only works with pure Comcode
                 }
 
-                $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH__CONTENT_BITS);
+                $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH_QUERY_TERMS);
 
                 pop_lax_comcode();
 
@@ -1177,8 +1177,8 @@ function get_translated_tempcode($table, $row, $field_name, $db = null, $lang = 
             }
         }
     } else {
-        global $SEARCH__CONTENT_BITS;
-        if ($SEARCH__CONTENT_BITS !== null) { // Doing a search so we need to reparse, with highlighting on
+        global $SEARCH_QUERY_TERMS;
+        if ($SEARCH_QUERY_TERMS !== null) { // Doing a search so we need to reparse, with highlighting on
             push_lax_comcode(true);
 
             if (get_value('really_want_highlighting') === '1') {
@@ -1186,7 +1186,7 @@ function get_translated_tempcode($table, $row, $field_name, $db = null, $lang = 
                 $row[$field_name] = force_clean_comcode($row[$field_name]); // Highlighting only works with pure Comcode
             }
 
-            $ret = comcode_to_tempcode($row[$field_name], $row[$field_name . '__source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH__CONTENT_BITS);
+            $ret = comcode_to_tempcode($row[$field_name], $row[$field_name . '__source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH_QUERY_TERMS);
 
             pop_lax_comcode();
 

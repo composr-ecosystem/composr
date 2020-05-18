@@ -1,6 +1,7 @@
 [title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Searching your website[/title]
 
 As you add content to your website, it becomes increasingly important that your visitors are able to find your content when they need to. Composr includes a 'search' feature, which allows you to search your entire website for content.
+Under-the-hood this is implemented using either database [concept]full-text search[/concept] capabilities of the [concept]Composr fast custom index[/concept].
 
 [contents]decimal,lower-alpha[/contents]
 
@@ -27,21 +28,16 @@ The [tt]search[/tt] module has many options:
 
 This is the text box where you type the content that you're searching for.
 
-[title="3"]Full-text vs Boolean searching[/title]
+[title="3"]Natural vs Boolean searching[/title]
 
-By default full-text searches are used. These are inexact but high performance and more natural. For example a search for "think" would match the word "thinking" or "thinker", and words that are not indexed like "the" would be ignored. Results are returned based on how well they match, so you'll get results that don't match your whole query. Word sequence does not matter unless you use quotes around the words that must be in sequence.
+By default [concept]natural search[/concept]es are used. These are inexact but don't require so much precision by the user. For example a search for "Jump the biggest bar" might match even if "biggest" isn't in the result. Results are ranked based on how well they match. Word sequence does not matter.
 
-You may also do boolean searches which are exact.
-
-Choosing to do a boolean search will make several more options available:
- - Content must contain all of these words
- - Content must contain one or more of these words
-These two options are self-explanatory.
-
-After selecting 'Boolean search', you also gain the several searching possibilities, that you may activate as follows:
+You may also do [concept]boolean search[/concept]es which are more exact. To activate boolean search, just use any of the following [concept]boolean operator[/concept]s in your query:
  - Put speech marks around words that you would like to occur in sequence
  - Put a '-' before a word to shun it
  - Put a '+' before a word to require it.
+
+For MySQL databases, boolean searches will still ignore [concept]stop word[/concept]s, or words shorter than MySQL is configured to index.
 
 [title="3"]Search only titles[/title]
 
@@ -98,11 +94,14 @@ Unfortunately result counts have to be an approximation. To de-duplicate the res
 
 The title fields, and meta keyword fields, get precedence when search results are determined. Tuning these manually for your can improve search results considerably. Additionally keywords are individually queried, rather than having to go through full sentence searching -- so you can specify things more precisely, e.g. to include hyphens (which full-text search treats like spaces).
 
-If you are using MySQL, also considering turning the [url="MySQL minimum word length"]http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_ft_min_word_len[/url] down to 3 (the default 4).
+Ultimately, full-text search effectiveness resides in MySQL (or whatever database you use), not Composr. Here are some particulars for MySQL:
+ - If you are using MySQL, considering turning the [url="MySQL minimum word length"]http://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html#sysvar_ft_min_word_len[/url] down to 3 (the default 4).
+ - You can also configure the [concept]stop word[/concept] list in MySQL.
+ - If there is only one entry in the table, nothing will be returned, because MySQL will only return words that match fewer than 50% of the rows in a table.
 
-Ultimately, full-text search effectiveness resides in MySQL (or whatever database you use), not Composr. For example, indexing does not work on very small words, very common words, and may split things up you did not expect to be (e.g. [tt]an-example[/tt] would split to two words). Also, if there is only one entry in the table, nothing will be returned, because MySQL will only return words that match fewer than 50% of the rows in a table.
+MySQL [concept]LIKE search[/concept]es are much more accurate than full-text searches, but also much slower due to a lack of indexing. Composr will only do a 'LIKE' search if it thinks MySQL's full-text-based boolean search won't be able to handle the query itself (e.g. due to using short words). Programmers can alter this logic based on editing the [tt]is_under_radar[/tt] function.
 
-True boolean search is much more accurate, but also much slower due to a lack of indexing. Composr will only use true boolean search if boolean search is selected and it thinks MySQL's fulltext-based boolean search won't be able to handle the query itself (e.g. due to using short words). Programmers can alter this logic based on editing the [tt]is_under_radar[/tt] function.
+Many of these issues can be solved by enabling Composr's own search engine, the Composr fast custom index -- discussed later in this tutorial.
 
 [title="2"]OpenSearch (advanced)[/title]
 
@@ -110,101 +109,19 @@ Composr can support [url="OpenSearch"]http://www.opensearch.org/[/url], which al
 
 By default OpenSearch is configured (via the [tt]HTML_HEAD.tpl[/tt] template) to only be active within a zone named [tt]docs[/tt] and for it to only search Comcode pages. You can, however, configure it to perform any search types you like via changing the code used in this template. You should make sure you have a 'favicon' before enabling OpenSearch, as it is important the web browser has one of these available to use.
 
-[title="2"]Slow searches on large sites (advanced)[/title]
+[title="2"]Slow searches on large sites[/title]
 
 If you have very large database tables due to very large amounts of content, or having large amounts of content on a multi-language site, you may experience slow-down doing some searches.
 
 In fact, the slow-down will cause read locks which prevent writes to those tables. Composr is designed to generally function without database write access, but it's not a good situation to have.
 
-This is a problem that MySQL has with fulltext search. It is not specific to Composr in any way but is worth us documenting.
+This is a problem that MySQL has with full-text search. It is not specific to Composr in any way but is worth us documenting.
 
-The problem happens particularly when Composr has to combine the fulltext search with other search constraints.
+The problem happens particularly when Composr has to combine the full-text search with other search constraints.
 
-The inherent technical problem is that if you:
-[list="a"]
-[*] run the fulltext first -- you have to spend a lot of time limiting those hits down to those that match other constraints. The time taken doing this can be extreme if only a small percentage (or even 0%) match your other search constraints, especially for a broad match that has potentially 10's of thousands of fulltext hits -- it will basically go on for ever because it never hits a maximum and thus never ends the query.
-[*] run the fulltext last -- MySQL can't use the fulltext index effectively, having to throw away large numbers of matches while intersecting against the huge pool of possible rows that matched the other search constraints.
-[/list]
+[title="3"]Workaround 1: Auto-kill slow searches via MySQL setting[/title]
 
-Or in other terms, calculating the intersection between fulltext hits, and other constraints (e.g. forum permissions, or search context) is unindexable and potentially a vast calculation.
-
-This is a serious problem on large databases, but not noticed by most users.
-
-Fortunately we have 3 workarounds.
-
-[title="3"]Workaround 1: Auto-kill slow searches via MySQL scheduler[/title]
-
-A workaround is to auto-kill searches that take too long (over 5-10 seconds). It requires server-level MySQL access. That is only a proportion of searches (typically ones with a lot of results, yet none matching the other constraints you are searching against).
-
-[list="1"]
-[*] Put this into your [tt]my.cnf/my.ini[/tt] file:
-[code="INI"]
-event_scheduler=ON
-[/code]
-[*] Restart MySQL.
-[*] Run [tt]mysql[/tt]
-[*] Run this query: [tt]USE <yourdbname>;[/tt]
-[*] Run this query:
-[code="MySQL"]
-delimiter |
-
-DROP EVENT IF EXISTS killslowsearches;
-
-CREATE EVENT killslowsearches ON SCHEDULE EVERY 5 SECOND
-
-DO
-        BEGIN
-        DECLARE done INT DEFAULT 0;
-        DECLARE connid INT UNSIGNED;
-        DECLARE cur1 CURSOR FOR SELECT ID FROM information_schema.PROCESSLIST
-            WHERE COMMAND = 'Query' AND INFO LIKE '%text_original) AGAINST%' AND TIME >= 5;
-
-        DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
-
-        OPEN cur1;
-
-        REPEAT
-                FETCH cur1 INTO connid;
-                IF NOT done THEN
-                        KILL connid;
-                END IF;
-        UNTIL done END REPEAT;
-        CLOSE cur1;
-        END|
-[/code]
-[/list]
-
-[title="3"]Workaround 2: Auto-kill slow searches via Cron[/title]
-
-Create a Cron script like:
-[code="Bash"]
-#!/bin/sh
-
-# Credentials for a MySQL user with PROCESS, SUPER permissions
-USERNAME=FILLME
-PASSWORD=FILLME
-
-for i in `seq 1 6`;
-do
-  	mysql -u $USERNAME --password=$PASSWORD -e 'show processlist\G' |\
-        egrep -b5 'Time: [0-9]{2,2}' |\
-        grep 'Id:' |\
-        cut -d':' -f2 |\
-        sed 's/^ //' |\
-        while read id
-        do
-          	mysql -u $USERNAME --password=$PASSWORD -e "kill $id;"
-        done
-	sleep 10
-done
-[/code]
-
-This kills any MySQL connections running for more than 2 digits of seconds, including sleeping ones.
-
-[title="3"]Workaround 3: Auto-kill slow searches via MySQL setting[/title]
-
-An alternate workaround is possible in MySQL 5.7+, as MySQL have introduced a query timeout setting.
-Set it in MySQL like:
+MySQL have introduced a query timeout setting in MySQL 5.7+. Set it in MySQL like:
 [code="MySQL"]
 SET GLOBAL MAX_STATEMENT_TIME=10000;
 [/code]
@@ -212,12 +129,116 @@ SET GLOBAL MAX_STATEMENT_TIME=10000;
 
 We actually automatically set this on a session level when you do a search, so there's no need to do anything if you're running MySQL 5.7+.
 
-[title="3"]Workaround 4: Use InnoDB[/title]
+[title="3"]Workaround 2: Use InnoDB[/title]
 
 Another workaround is to switch to InnoDB tables in MySQL. It won't stop slow queries, it'll just stop them locking the whole table and slowing other users down; your server will still suffer the load, but so long as your server is not overloaded that is likely not an issue.
 
+[title="3"]Actual solution: Use the Composr fast custom index[/title]
+
+Read on :).
+
+[title="2"]The Composr fast custom index[/title]
+
+When searching large amounts of content it is important for the content to be pre-indexed for search, as searching through all the bytes is too slow. As discussed in this tutorial, Composr uses of "full-text search" capabilities present in most database software, i.e. the database software's own search engine, and this handles all the indexing for you behind-the-scenes. For the sake of simplicity in this section of the tutorial we will assume all users are using MySQL.
+
+Composr also features its own search engine, which can run as a separate option triggered to run instead of MySQL full-text search in a number of configurable situations (by default it does not run). The search engine is implemented for forum posts (public and private), catalogue entries, and Comcode pages. For simplicity we'll just talk about public forum post search.
+
+The problem with MySQL full-text search is 2-fold:
+1) The search index is totally separated out from other indexing. If you want to do a search, and then filter it down to say a particular forum, or a particular poster, then it has to cleave a big chunk out of the search index and then cross-reference that with other index(es). It can be very inefficient.
+2) If there are common terms on a website that are not so common/irrelevant as to be filtered out by standard, e.g. 'car' on a car website, then when someone searches for those words it means an enormous amount is going to be cleaved out of the search index.
+And the worst is when these things combine. Let's say 40% of your forum posts contain the word 'car', and the user is searching for 'car maintenance' but the user is filtering to a forum with only 5% of the posts in it. Basically MySQL would cleave out 40% of its search index, calculate the ranking from all those rows and sort by that, and then cursor through almost all those rows until it gets just the top 30 that cross-reference with the forum index.
+
+There's no real way around this with MySQL full-text search indexing.
+
+The Composr fast custom index takes a totally different approach that is much more efficient in cases where MySQL is inefficient.
+
+The Composr fast custom index supports the same boolean syntax that is supported by MySQL full-text search, as well as being able to do natural searches.
+
+[title="3"]Technical explanation (advanced)[/title]
+
+The forum posts database table gets a matching search indexing table, which indexes all the common search filters (poster ID, forum ID, etc) directly against individual keywords extracted from the posts.
+
+So basically a row in that search indexing table might be like (keyword=car, forum_id=4, poster_id=300). The search indexing table is then also database-indexed against all the fields so that the database can very efficiently query out stuff from it.
+
+Of course searches may have multiple keywords, so it revisits the table for each keyword, basically, and it has a ranking algorithm. There's a lot more to it than that, but I'm keeping it simple here. It basically ranks by how prevalent the most obscure word in the search query is in the forum post.
+
+In terms of performance, the end result is the Composr fast custom index search system is a bit slower for most "straight" searches (searches with no additional filtering), but immensely faster for searches with additional filtering.
+
+[title="3"]Pros and Cons[/title]
+
+There are a few minor downsides to the Composr fast custom index:
+ - You cannot do 'blank' searches.
+ - There will be a short lag before new content is indexed.
+ - Performance considerations:
+  - If you want to allow multi-word quoted phrases it will use a lot more disk space because it has to separately store each combination of adjacent keywords, up to the limit you configure. That's due to how Composr fast custom index is designed: it is not building a data structure for the keywords in a document, it's separately indexing each keyword against all possible search filters.
+  - [concept]Fuzzy search[/concept]ing for large databases (basically analogous to the 'natural' MySQL full-text search) is very slow. Without fuzzy searching every keyword in the search will either be ANDed, ignored ([concept]stop word[/concept]s like 'is'), or excluded (if preceded with '-'). i.e. it doesn't take individual words as suggestions for match ranking, they all have to be taken into account.
+  - Ranking accuracy isn't going to be as good, as the Composr fast custom index ranks based on just the most obscure keyword, not a blend of all keywords. This is necessary to avoid having to do cross-computation between each keyword, instead it can rank rows using direct indexing. Actually you can configure all-keyword ranking, but it is not recommended.
+
+And some upsides:
+ - Radically better performance for filtered queries, as discussed. While MySQL full-text performance [i]degrades[/i] as filters are added, the Composr fast custom index performance is radically [i]improved[/i] with additional filtering.
+ - Configurable [concept]stop word[/concept] list without requring server admin access.
+ - Superior [concept]stemming[/concept]: MySQL will depluralise words but not much more, but Composr has a high-quality stemmer that will make words such as 'liking' and 'like' equivalent.
+ - Can return results for tables with only 1 row in (unlike MySQL).
+ - No minimum or maximum word sizes. So you can search for numbers, for example.
+ - Great multilingual support.
+ - Some database backends may not even provide full-text search of their own, so Composr fast custom index would fill the gap.
+
+Because there are both Pros and Cons, you can configure when the Composr fast custom index kicks in, and otherwise have MySQL full-text driving the majority of your search queries.
+
+[title="3"]Stop words[/title]
+
+[concept]Stop word[/concept]s are words that will be ignored by the search engine because they convey no meaning and just add noise to the search.
+A default list is provided for English, and can be edited by copying the [tt]text/EN/too_common_words.txt[/tt] file to [tt]text_custom/EN/too_common_words.txt[/tt] and customising it.
+
+[title="3"]Quoted phrases[/title]
+
+As discussed, enabling multi-word quoted phrases will use a lot of disk space. Enabling it involves configuring Composr to index index ngrams of length longer than 1. You get to decide how many words to allow.
+
+If you do enable multi-word quoted phrases then it works with [concept]stop word[/concept]s, which MySQL cannot do. So for example "This is a test" would work (assuming you are indexing at least 4 ngrams), even though there are [concept]stop word[/concept]s involved there.
+
+[concept]Stemming[/concept] doesn't operate when quoting phrases of more than one ngram. For example "This is a greatest day" would not be matched by a search query of "This is a great day".
+
+[title="3"]Index generation[/title]
+
+There's a background task within the system scheduler that populates the indexing tables.
+The first time it runs it:
+1) Indexes all existing data.
+2) Builds up a database table of ngram frequency (keyword frequency, basically) across all the supported searchable data (the [tt]<table-prefix>ft_index_commonality[/tt] table). This frequency data is used for ranking purposes.
+Subsequently it just adds indexing for new content created/changed since the last indexing run.
+
+If you want to reindex (perhaps you have changed some settings, or changed [concept]stop word[/concept]s, or want to regenerate commonality data to reflect the current status of your site), you need to manually wipe out the contents of the following database tables:
+ - [tt]<table-prefix>ce_fulltext_index[/tt]
+ - [tt]<table-prefix>cpages_fulltext_index[/tt]
+ - [tt]<table-prefix>f_posts_fulltext_index[/tt]
+ - [tt]<table-prefix>f_pposts_fulltext_index[/tt]
+Composr will automatically see this as a signal that they need rebuilding.
+
+[title="3"]Internationalisation[/title]
+
+Content is indexed against each language, according to translations of that language. So for example if you search for 'gift' in German you'd get results for the German meaning of that character string (very different to the English meaning!).
+
+When translating content, you need to either edit the content in the language you are translating to -- of if you use the translation queue you'll need to force reindexing for those changes to show up.
+
+Programmers can add grammar rules for different languages a lot more easily than they can to MySQL. Look at [tt]sources/lang_stemmer_EN.php[/tt] and [tt]sources/lang_tokeniser_EN.php[/tt] and just make equivalent files for your language.
+
+Not all languages use words. For this reason the Composr fast custom index doesn't actually implement words under-the-hood, it actually uses "ngrams". For most languages an ngram is the same as a word and they are separated by spaces, but it is actually up to the tokeniser what to make an ngram and how to separate them. Chinese, for example, might have each Chinese character as its own ngram (there are no spaces). For Vietnamese you might have each syllable as an ngram (they looks like word in English but alone have no real meaning). For each case you would need to configure Composr to index multiple combinations of ngrams, rather than the default combination of 1, because nobody is going to search for a collection of disconnected ngrams in these example languages like they would in English.
+
+[title="3"]Special considerations[/title]
+
+The PHP [tt]mbstring[/tt] extension is significantly faster than the iconv extension. If you use iconv then you may find search indexing is very slow.
+
 [concepts
- 1_key="Boolean search"   1_value="A search carried out by testing for exact word or phrasal matches to a number of criteria"
+ 1_key="Boolean search"            1_value="A search carried out by testing for exact word or phrasal matches to a number of criteria. This exists for MySQL full-text search and is activated automatically if any boolean operators are used."
+ 2_key="Boolean operator"          2_value="A +, - or &quot; symbol used to specify how exact matching will operate."
+ 3_key="Natural search"            3_value="A search where some words may not be matched and results are ordered by how well they match. The opposite of a boolean search."
+ 4_key="Full-text search"          4_value="A search that works using an index."
+ 5_key="Composr fast custom index" 5_value="Composr's own search index that is in some ways significantly faster than MySQL's full-text search"
+ 6_key="LIKE search"               6_value="A search that works using wildcard matches and no index. Only used by Composr in very specific circumstances due to severe performance issues."
+ 7_key="Fuzzy search"              7_value="The Composr fast custom index's equivalent to Natural search (in the Composr fast custom index boolean and natural searching can happen in the same query, so we refer to natural terms as fuzzy terms)."
+ 8_key="Stop word"                 8_value="A word that will not be indexed because it is so common and irrelevant. It would just add noise to the search index/process."
+ 9_key="Stemming"                  9_value="The process of normalising words by removing endings. For example, 'ending' and 'ender' would both reduce to 'end'. This is English-centric, but other languages may implement equivalent processes and we still refer to them as stemming."
+ 10_key="Keyword"                  10_value="A particular search term that is a part of a wider search query"
+ 11_key="Ngram"                    11_value="A technical name for a keyword or sequence of keywords; it exists in consideration of languages that don't actually have words"
 ]Concepts[/concepts]
 
 {$SET,tutorial_tags,Content,search,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Find out how Composr's search engine can make it easy to search all the content on your website at once.}[block]main_tutorial_rating[/block]

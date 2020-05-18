@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_maximum_autocomplete_suggestions
+class Hook_config_search_do_days_fallback
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,14 @@ class Hook_config_maximum_autocomplete_suggestions
     public function get_details()
     {
         return [
-            'human_name' => 'MAXIMUM_AUTOCOMPLETE_SUGGESTIONS',
-            'type' => 'integer',
+            'human_name' => 'SEARCH_DO_DAYS_FALLBACK',
+            'type' => 'tick',
             'category' => 'SEARCH',
             'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_maximum_autocomplete_suggestions',
+            'explanation' => 'CONFIG_OPTION_search_do_days_fallback',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 9,
+            'order_in_category_group' => 6,
             'required' => true,
 
             'public' => false,
@@ -58,6 +58,6 @@ class Hook_config_maximum_autocomplete_suggestions
             return null;
         }
 
-        return '7';
+        return '1';
     }
 }

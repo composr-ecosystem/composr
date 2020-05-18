@@ -90,7 +90,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
      */
     public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $engine = new Composr_fulltext_engine();
+        $engine = new Composr_fast_custom_index();
 
         $index_table = 'ce_fulltext_index';
         $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -198,27 +198,22 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
     /**
      * Run function for search results.
      *
-     * @param  string $content Search string
+     * @param  string $search_query Search query
+     * @param  string $content_where WHERE clause that selects the content according to the search query; passed in addition to $search_query to avoid unnecessary reparsing.  ? refers to the yet-unknown field name (blank: full-text search)
+     * @param  string $where_clause Initial WHERE clause that already takes $search_under into account (should be nothing else unless it is guaranteed hook will use the global get_search_rows function)
+     * @param  string $search_under Comma-separated list of categories to search under
      * @param  boolean $only_search_meta Whether to only do a META (tags) search
-     * @param  ID_TEXT $direction Order direction
+     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
      * @param  integer $max Start position in total results
      * @param  integer $start Maximum results to return in total
-     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
-     * @param  string $content_where Where clause that selects the content according to the main search string (SQL query fragment) (blank: full-text search)
+     * @param  string $sort The sort type (gets remapped to a field in this function)
+     * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
-     * @param  string $sort The sort type (gets remapped to a field in this function)
-     * @set title add_date
-     * @param  integer $limit_to Limit to this number of results
-     * @param  string $boolean_operator What kind of boolean search to do
-     * @set or and
-     * @param  string $where_clause Where constraints known by the main search code (SQL query fragment)
-     * @param  string $search_under Comma-separated list of categories to search under
-     * @param  boolean $boolean_search Whether it is a boolean search
      * @return array List of maps (template, orderer)
      */
-    public function run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $limit_to, $boolean_operator, $where_clause, $search_under, $boolean_search)
+    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
     {
         $remapped_orderer = '';
         switch ($sort) {
@@ -250,7 +245,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if (can_use_composr_fulltext_engine('catalogue_entries', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
+        if (can_use_composr_fast_custom_index('catalogue_entries', $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'catalogue_entries r';
@@ -290,8 +285,10 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
             $g_or = get_permission_where_clause_groups(get_member());
             if ($g_or != '') {
-                $where_clause .= ' AND ';
-                $where_clause .= 'EXISTS(SELECT * FROM ' . ((get_value('disable_cat_cat_perms') === '1') ? '' : (' ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.cc_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ') LEFT JOIN ')) . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON (' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . '))';
+                if (get_value('disable_cat_cat_perms') !== '1') {
+                    $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.cc_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')';
+                }
+                $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON ' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
             }
 
             if (addon_installed('content_privacy')) {
@@ -301,9 +298,9 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 $where_clause .= $privacy_where;
             }
 
-            $engine = new Composr_fulltext_engine();
+            $engine = new Composr_fast_custom_index();
 
-            if ($engine->active_search_has_special_filtering()) {
+            if (Composr_fast_custom_index::active_search_has_special_filtering()) {
                 $catalogue_name = get_param_string('catalogue_name', '');
                 if ($catalogue_name != '') {
                     $trans_fields = [];
@@ -319,7 +316,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             $index_table = 'ce_fulltext_index';
             $key_transfer_map = ['id' => 'i_catalogue_entry_id'];
             $index_permissions_field = 'i_category_id';
-            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
         } else {
             // Calculate our where clause (search)
             $sq = build_search_submitter_clauses('ce_submitter', $author_id, $author);
@@ -362,7 +359,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                     return []; // No fields in catalogue -- very odd
                 }
 
-                $rows = get_search_rows('catalogue_entry', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,r.id AS id,r.cc_id AS r_cc_id,' . $title_field . ' AS b_cv_value' . $extra_select, $nontrans_fields);
+                $rows = get_search_rows('catalogue_entry', 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*,r.id AS id,r.cc_id AS r_cc_id,' . $title_field . ' AS b_cv_value' . $extra_select, $trans_fields, $nontrans_fields);
             } else {
                 if (multi_lang_content() && $GLOBALS['SITE_DB']->query_select_value('translate', 'COUNT(*)') > 10000) { // Big sites can't do indiscriminate catalogue translatable searches for performance reasons
                     $trans_fields = [];
@@ -385,7 +382,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
                 $join .= $privacy_join;
 
-                $rows = get_search_rows('catalogue_entry', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_entries r LEFT JOIN ' . get_table_prefix() . 'catalogue_fields f ON r.c_name=f.c_name' . $join, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,r.id AS id,r.cc_id AS r_cc_id' . $extra_select, $non_trans_fields);
+                $rows = get_search_rows('catalogue_entry', 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, 'catalogue_entries r LEFT JOIN ' . get_table_prefix() . 'catalogue_fields f ON r.c_name=f.c_name' . $join, 'r.*,r.id AS id,r.cc_id AS r_cc_id' . $extra_select, $trans_fields, $non_trans_fields);
             }
         }
 

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_cron_composr_fulltext_indexer
+class Hook_cron_composr_fast_custom_index
 {
     /**
      * Get info from this hook.
@@ -39,7 +39,7 @@ class Hook_cron_composr_fulltext_indexer
         $num_queued = null;
 
         return [
-            'label' => 'Index content for Composr fulltext index',
+            'label' => 'Index content for Composr fast custom index',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 15,
         ];
@@ -61,7 +61,7 @@ class Hook_cron_composr_fulltext_indexer
         $total_singular_ngram_tokens = 0;
         $statistics_map = [];
 
-        require_code('search');
+        require_code('database_search');
 
         $hooks = find_all_hook_obs('modules', 'search', 'Hook_search_');
         foreach ($hooks as $hook => $ob) {

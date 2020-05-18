@@ -59,7 +59,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      */
     public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $engine = new Composr_fulltext_engine();
+        $engine = new Composr_fast_custom_index();
 
         $index_table = 'cpages_fulltext_index';
         $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -144,27 +144,22 @@ class Hook_search_comcode_pages extends FieldsSearchHook
     /**
      * Run function for search results.
      *
-     * @param  string $content Search string
+     * @param  string $search_query Search query
+     * @param  string $content_where WHERE clause that selects the content according to the search query; passed in addition to $search_query to avoid unnecessary reparsing.  ? refers to the yet-unknown field name (blank: full-text search)
+     * @param  string $where_clause Initial WHERE clause that already takes $search_under into account (should be nothing else unless it is guaranteed hook will use the global get_search_rows function)
+     * @param  string $search_under Comma-separated list of categories to search under
      * @param  boolean $only_search_meta Whether to only do a META (tags) search
-     * @param  ID_TEXT $direction Order direction
+     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
      * @param  integer $max Start position in total results
      * @param  integer $start Maximum results to return in total
-     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
-     * @param  string $content_where Where clause that selects the content according to the main search string (SQL query fragment) (blank: full-text search)
+     * @param  string $sort The sort type (gets remapped to a field in this function)
+     * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
-     * @param  string $sort The sort type (gets remapped to a field in this function)
-     * @set title add_date
-     * @param  integer $limit_to Limit to this number of results
-     * @param  string $boolean_operator What kind of boolean search to do
-     * @set or and
-     * @param  string $where_clause Where constraints known by the main search code (SQL query fragment)
-     * @param  string $search_under Comma-separated list of categories to search under
-     * @param  boolean $boolean_search Whether it is a boolean search
      * @return array List of maps (template, orderer)
      */
-    public function run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $limit_to, $boolean_operator, $where_clause, $search_under, $boolean_search)
+    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
     {
         $remapped_orderer = '';
         switch ($sort) {
@@ -180,8 +175,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         require_lang('zones');
 
         // Calculate and perform query
-        $composr_fulltext_engine = can_use_composr_fulltext_engine('comcode_pages', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
-        if ($composr_fulltext_engine) {
+        $composr_fast_custom_index = can_use_composr_fast_custom_index('comcode_pages', $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'));
+        if ($composr_fast_custom_index) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             // Calculate our where clause (search)
@@ -229,9 +224,9 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
 
-            $engine = new Composr_fulltext_engine();
+            $engine = new Composr_fast_custom_index();
 
-            if ($engine->active_search_has_special_filtering()) {
+            if (Composr_fast_custom_index::active_search_has_special_filtering()) {
                 $trans_fields = [];
                 $nontrans_fields = [];
                 $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', ['r.the_zone', 'r.the_page']));
@@ -241,7 +236,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $db = $GLOBALS['SITE_DB'];
             $index_table = 'cpages_fulltext_index';
             $key_transfer_map = ['the_zone' => 'i_zone_name', 'the_page' => 'i_page_name'];
-            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
         } else {
             $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
             if ($sq === null) {
@@ -272,7 +267,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
 
-            $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.the_zone,r.the_page', $nontrans_fields);
+            $rows = get_search_rows('comcode_page', 'the_zone:the_page', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.the_zone,r.the_page', $trans_fields, $nontrans_fields);
         }
 
         if (addon_installed('redirects_editor')) {
@@ -297,7 +292,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 continue;
             }
             $pages_found[$row['the_zone'] . ':' . $row['the_page']] = 1;
-            $out[$i]['data'] = $row + ['extra' => [$row['the_zone'], $row['the_page'], $limit_to]];
+            $out[$i]['data'] = $row + ['extra' => [$row['the_zone'], $row['the_page'], $max]];
             if (($remapped_orderer != '') && (array_key_exists($remapped_orderer, $row))) {
                 $out[$i]['orderer'] = $row[$remapped_orderer];
             } elseif (strpos($remapped_orderer, '_rating:') !== false) {
@@ -309,7 +304,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             }
         }
 
-        if (($author == '') && (!$composr_fulltext_engine)) {
+        if (($author == '') && (!$composr_fast_custom_index)) {
             // Make sure we record that for all cached Comcode pages, we know of them (only those not cached would not have been under the scope of the current search)
             $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['the_zone', 'the_page']);
             foreach ($all_pages as $row) {
@@ -358,8 +353,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                             $contents = preg_replace('#^.*\[title(="1")?\](.*)\[/title\].*$#Us', '${2}', $contents);
                         }
 
-                        if (in_memory_search_match(['content' => $content, 'conjunctive_operator' => $boolean_operator], $contents)) {
-                            $out[$i]['data'] = ['the_zone' => $zone, 'the_page' => $page] + ['extra' => [$zone, $page, $limit_to]];
+                        if (in_memory_search_match(['content' => $search_query], $contents)) {
+                            $out[$i]['data'] = ['the_zone' => $zone, 'the_page' => $page] + ['extra' => [$zone, $page, $max]];
                             if ($remapped_orderer == 'the_page') {
                                 $out[$i]['orderer'] = $page;
                             } elseif ($remapped_orderer == 'the_zone') {
@@ -405,7 +400,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
      */
     public function decide_template($zone, $page, $limit_to)
     {
-        global $SEARCH__CONTENT_BITS;
+        global $SEARCH_QUERY_TERMS;
 
         $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW); // This can be slow.
 
@@ -450,20 +445,20 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 }
                 */
                 $GLOBALS['OVERRIDE_SELF_ZONE'] = $zone;
-                $backup_search__contents_bits = $SEARCH__CONTENT_BITS;
-                $SEARCH__CONTENT_BITS = null; // We do not want highlighting, as it'll result in far too much Comcode being parsed (ok for short snippets, not many full pages!)
+                $backup_search__contents_bits = $SEARCH_QUERY_TERMS;
+                $SEARCH_QUERY_TERMS = null; // We do not want highlighting, as it'll result in far too much Comcode being parsed (ok for short snippets, not many full pages!)
                 $GLOBALS['TEMPCODE_SETGET']['no_comcode_page_edit_links'] = '1'; // FUDGE
                 push_output_state();
                 $temp_summary = request_page($page, true, $zone, strpos($comcode_file, '/comcode_custom/') ? 'comcode_custom' : 'comcode', true);
                 restore_output_state();
-                $SEARCH__CONTENT_BITS = $backup_search__contents_bits;
+                $SEARCH_QUERY_TERMS = $backup_search__contents_bits;
                 $GLOBALS['OVERRIDE_SELF_ZONE'] = null;
                 pop_lax_comcode();
                 $_temp_summary = $temp_summary->evaluate();
                 global $PAGES_CACHE;
                 $PAGES_CACHE = []; // Decache this, or we'll eat up a tonne of RAM
 
-                $summary = generate_text_summary($_temp_summary, ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS);
+                $summary = generate_text_summary($_temp_summary, ($SEARCH_QUERY_TERMS === null) ? [] : $SEARCH_QUERY_TERMS);
 
                 $GLOBALS['TEMPCODE_SETGET']['no_comcode_page_edit_links'] = '0';
             }

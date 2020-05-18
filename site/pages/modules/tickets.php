@@ -1002,10 +1002,10 @@ class Module_tickets
      *
      * @param  Tempcode $title Page title
      * @param  string $ticket_id Ticket ID we'd be creating
-     * @param  string $content What is being searched for
+     * @param  string $search_query Search query
      * @return ?Tempcode The search results (null: could not search)
      */
-    public function do_search($title, $ticket_id, $content)
+    public function do_search($title, $ticket_id, $search_query)
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -1037,9 +1037,8 @@ class Module_tickets
 
         // Category filter
         $where_clause = 'r.' . $info['category'] . '=' . strval($catalogue_id);
-        $boolean_operator = 'OR';
-        list($content_where) = build_content_where($content, true, $boolean_operator);
-        $hook_results = $object->run($content, false, 'ASC', $max, 0, false, $content_where, '', null, null, 'relevance', null, $boolean_operator, $where_clause, null, true);
+        list($content_where) = build_content_where($search_query);
+        $hook_results = $object->run($search_query, $content_where, $where_clause, '-1', false, false, null, 0, 'relevance', 'ASC', '', null, null);
         if (($hook_results === null) || (empty($hook_results))) {
             return null;
         }

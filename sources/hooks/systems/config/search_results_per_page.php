@@ -38,6 +38,7 @@ class Hook_config_search_results_per_page
             'explanation' => 'CONFIG_OPTION_search_results_per_page',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 3,
             'required' => true,
 
             'public' => false,

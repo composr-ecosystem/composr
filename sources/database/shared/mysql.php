@@ -673,10 +673,9 @@ abstract class Database_super_mysql extends DatabaseDriver
      * Assemble part of a WHERE clause for doing full-text search.
      *
      * @param  string $content Our match string (assumes "?" has been stripped already)
-     * @param  boolean $boolean Whether to do a boolean full text search
      * @return string Part of a WHERE clause for doing full-text search
      */
-    public function full_text_assemble($content, $boolean)
+    public function full_text_assemble($content)
     {
         static $stopwords = null;
         if ($stopwords === null) {
@@ -689,9 +688,10 @@ abstract class Database_super_mysql extends DatabaseDriver
             return db_string_equal_to('?', trim($content, '"'));
         }
 
+        $boolean = (preg_match('#[\-+"]#', $content) != 0);
+
         if (!$boolean) {
-            // These just cause muddling during full-text natural search
-            $content = str_replace('"', '', $content);
+            // This just causes muddling during full-text natural search
             $content = str_replace('?', '', $content);
             db_escape_string($content); // Hack to so SQL injection detector doesn't get confused
 

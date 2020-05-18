@@ -85,27 +85,22 @@ class Hook_search_confluence extends FieldsSearchHook
     /**
      * Run function for search results.
      *
-     * @param  string $content Search string
+     * @param  string $search_query Search query
+     * @param  string $content_where WHERE clause that selects the content according to the search query; passed in addition to $search_query to avoid unnecessary reparsing.  ? refers to the yet-unknown field name (blank: full-text search)
+     * @param  string $where_clause Initial WHERE clause that already takes $search_under into account (should be nothing else unless it is guaranteed hook will use the global get_search_rows function)
+     * @param  string $search_under Comma-separated list of categories to search under
      * @param  boolean $only_search_meta Whether to only do a META (tags) search
-     * @param  ID_TEXT $direction Order direction
+     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
      * @param  integer $max Start position in total results
      * @param  integer $start Maximum results to return in total
-     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
-     * @param  string $content_where Where clause that selects the content according to the main search string (SQL query fragment) (blank: full-text search)
+     * @param  string $sort The sort type (gets remapped to a field in this function)
+     * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
-     * @param  string $sort The sort type (gets remapped to a field in this function)
-     * @set title add_date
-     * @param  integer $limit_to Limit to this number of results
-     * @param  string $boolean_operator What kind of boolean search to do
-     * @set or and
-     * @param  string $where_clause Where constraints known by the main search code (SQL query fragment)
-     * @param  string $search_under Comma-separated list of categories to search under
-     * @param  boolean $boolean_search Whether it is a boolean search
      * @return array List of maps (template, orderer)
      */
-    public function run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $limit_to, $boolean_operator, $where_clause, $search_under, $boolean_search)
+    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
     {
         require_code('confluence');
         require_css('confluence');
@@ -133,15 +128,15 @@ class Hook_search_confluence extends FieldsSearchHook
             }
         }
 
-        if ($content != '') {
+        if ($search_query != '') {
             if ($cql_query != '') {
                 $cql_query .= ' and ';
             }
 
             if ($only_titles) {
-                $cql_query .= 'title ~ "' . $this->cleanup_search_verb($content) . '"';
+                $cql_query .= 'title ~ "' . $this->cleanup_search_verb($search_query) . '"';
             } else {
-                $cql_query .= '(title ~ "' . $this->cleanup_search_verb($content) . '" or text ~ "' . $this->cleanup_search_verb($content) . '")';
+                $cql_query .= '(title ~ "' . $this->cleanup_search_verb($search_query) . '" or text ~ "' . $this->cleanup_search_verb($search_query) . '")';
             }
         }
 
@@ -214,8 +209,8 @@ class Hook_search_confluence extends FieldsSearchHook
      */
     public function render($myrow)
     {
-        global $SEARCH__CONTENT_BITS;
-        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
+        global $SEARCH_QUERY_TERMS;
+        $highlight_bits = ($SEARCH_QUERY_TERMS === null) ? [] : $SEARCH_QUERY_TERMS;
 
         $text_summary_h = $this->cleanup_text($myrow['excerpt']);
         $text_summary = generate_text_summary($text_summary_h, []);

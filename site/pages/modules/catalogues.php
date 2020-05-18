@@ -162,28 +162,28 @@ class Module_catalogues
             $GLOBALS['SITE_DB']->create_index('catalogue_entries', 'ce_validated', ['ce_validated']);
 
             $GLOBALS['SITE_DB']->create_table('catalogue_efv_long_trans', [
-                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server fulltext indexing. This column doesn't exist on upgraded old installs.
+                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server full-text indexing. This column doesn't exist on upgraded old installs.
                 'cf_id' => 'AUTO_LINK',
                 'ce_id' => 'AUTO_LINK',
                 'cv_value' => 'LONG_TRANS__COMCODE', /* does your CV have value? */ // often Comcode but not always
             ]);
 
             $GLOBALS['SITE_DB']->create_table('catalogue_efv_long', [
-                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server fulltext indexing. This column doesn't exist on upgraded old installs.
+                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server full-text indexing. This column doesn't exist on upgraded old installs.
                 'cf_id' => 'AUTO_LINK',
                 'ce_id' => 'AUTO_LINK',
                 'cv_value' => 'LONG_TEXT',
             ]);
 
             $GLOBALS['SITE_DB']->create_table('catalogue_efv_short_trans', [
-                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server fulltext indexing. This column doesn't exist on upgraded old installs.
+                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server full-text indexing. This column doesn't exist on upgraded old installs.
                 'cf_id' => 'AUTO_LINK',
                 'ce_id' => 'AUTO_LINK',
                 'cv_value' => 'SHORT_TRANS__COMCODE', // often Comcode but not always
             ]);
 
             $GLOBALS['SITE_DB']->create_table('catalogue_efv_short', [
-                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server fulltext indexing. This column doesn't exist on upgraded old installs.
+                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server full-text indexing. This column doesn't exist on upgraded old installs.
                 'cf_id' => 'AUTO_LINK',
                 'ce_id' => 'AUTO_LINK',
                 'cv_value' => 'SHORT_TEXT',
@@ -212,14 +212,14 @@ class Module_catalogues
             $GLOBALS['SITE_DB']->create_index('catalogue_cat_treecache', 'cc_ancestor_id', ['cc_ancestor_id']);
 
             $GLOBALS['SITE_DB']->create_table('catalogue_efv_float', [
-                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server fulltext indexing. This column doesn't exist on upgraded old installs.
+                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server full-text indexing. This column doesn't exist on upgraded old installs.
                 'cf_id' => 'AUTO_LINK',
                 'ce_id' => 'AUTO_LINK',
                 'cv_value' => '?REAL',
             ]);
 
             $GLOBALS['SITE_DB']->create_table('catalogue_efv_integer', [
-                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server fulltext indexing. This column doesn't exist on upgraded old installs.
+                'id' => '*AUTO', // NEVER use this column: cf_id and ce_id also provide a key. This only exists for the SQL-server full-text indexing. This column doesn't exist on upgraded old installs.
                 'cf_id' => 'AUTO_LINK',
                 'ce_id' => 'AUTO_LINK',
                 'cv_value' => '?INTEGER',
@@ -255,7 +255,7 @@ class Module_catalogues
 
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_long', '#lcv_value', ['cv_value']);
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_short', '#scv_value', ['cv_value']);
-            //$GLOBALS['SITE_DB']->create_index('catalogue_efv_long', 'ilcv_value', ['cv_value']);  Not allowed, LONG_TEXT can not be in an index (except fulltext indices). People shouldn't order by this anyway
+            //$GLOBALS['SITE_DB']->create_index('catalogue_efv_long', 'ilcv_value', ['cv_value']);  Not allowed, LONG_TEXT can not be in an index (except full-text indices). People shouldn't order by this anyway
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_short', 'iscv_value', ['cv_value']);
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_long', 'lcf_id', ['cf_id']);
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_short', 'scf_id', ['cf_id']);

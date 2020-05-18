@@ -64,7 +64,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         if ((has_privilege($member_id, 'see_unvalidated')) && (addon_installed('unvalidated'))) {
             $info['special_off']['unvalidated'] = do_lang_tempcode('POST_SEARCH_UNVALIDATED');
         }
-        if (can_use_composr_fulltext_engine('cns_posts')) {
+        if (can_use_composr_fast_custom_index('cns_posts')) {
             $info['special_on']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
         } else {
             $info['special_off']['starter'] = do_lang_tempcode('POST_SEARCH_STARTER');
@@ -97,7 +97,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      */
     public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $engine = new Composr_fulltext_engine();
+        $engine = new Composr_fast_custom_index();
 
         $index_table = 'f_posts_fulltext_index';
         $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -123,7 +123,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $db = $GLOBALS['FORUM_DB'];
 
         // A way to force-resume where we left off, if we're debugging our way through
-        if (get_value('fulltext_startup_hack', '0', true) == '1') {
+        if (get_value('composr_fast_custom_index__startup_hack', '0') == '1') {
             $last_post_id = $db->query_select_value_if_there('f_posts_fulltext_index', 'MAX(i_post_id)');
             if ($last_post_id !== null) {
                 $_since = $db->query_select_value_if_there('f_posts', 'p_time', ['id' => $last_post_id]);
@@ -142,7 +142,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $since_clause = $engine->generate_since_where_clause($db, $index_table, ['p_time' => false, 'p_last_edit_time' => true], $since, $statistics_map);
         $sql .= $since_clause;
 
-        $max_post_length = intval(get_value('fulltext_max_post_length', '0', true));
+        $max_post_length = intval(get_option('composr_fast_custom_index__max_post_length'));
         if ($max_post_length > 0) {
             $sql .= ' AND ' . db_function('LENGTH', [$GLOBALS['FORUM_DB']->translate_field_ref('p_post')]) . '<' . strval($max_post_length);
         }
@@ -191,29 +191,24 @@ class Hook_search_cns_posts extends FieldsSearchHook
     /**
      * Run function for search results.
      *
-     * @param  string $content Search string
+     * @param  string $search_query Search query
+     * @param  string $content_where WHERE clause that selects the content according to the search query; passed in addition to $search_query to avoid unnecessary reparsing.  ? refers to the yet-unknown field name (blank: full-text search)
+     * @param  string $where_clause Initial WHERE clause that already takes $search_under into account (should be nothing else unless it is guaranteed hook will use the global get_search_rows function)
+     * @param  string $search_under Comma-separated list of categories to search under
      * @param  boolean $only_search_meta Whether to only do a META (tags) search
-     * @param  ID_TEXT $direction Order direction
+     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
      * @param  integer $max Start position in total results
      * @param  integer $start Maximum results to return in total
-     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
-     * @param  string $content_where Where clause that selects the content according to the main search string (SQL query fragment) (blank: full-text search)
+     * @param  string $sort The sort type (gets remapped to a field in this function)
+     * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
-     * @param  string $sort The sort type (gets remapped to a field in this function)
-     * @set title add_date
-     * @param  integer $limit_to Limit to this number of results
-     * @param  string $boolean_operator What kind of boolean search to do
-     * @set or and
-     * @param  string $where_clause Where constraints known by the main search code (SQL query fragment)
-     * @param  string $search_under Comma-separated list of categories to search under
-     * @param  boolean $boolean_search Whether it is a boolean search
      * @return array List of maps (template, orderer)
      */
-    public function run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $limit_to, $boolean_operator, $where_clause, $search_under, $boolean_search)
+    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
     {
-        if (in_array($content, [
+        if (in_array($search_query, [
             do_lang('POSTS_WITHIN_TOPIC'),
             do_lang('SEARCH_POSTS_WITHIN_TOPIC'),
             do_lang('SEARCH_FORUM_POSTS'),
@@ -244,7 +239,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if (can_use_composr_fulltext_engine('cns_posts', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_ocf_posts_starter', 0) == 1)) {
+        if (can_use_composr_fast_custom_index('cns_posts', $search_query, Composr_fast_custom_index::active_search_has_special_filtering() || $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_posts_starter', 0) == 1)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';
@@ -259,23 +254,23 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $extra_join_clause .= $sq;
             }
             $this->_handle_date_check($cutoff, 'ixxx.i_add_time', $extra_join_clause);
-            if (get_param_integer('option_cns_posts_unvalidated', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_unvalidated', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'r.p_validated=0';
             }
-            if (get_param_integer('option_cns_posts_open', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_open', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_open=1';
             }
-            if (get_param_integer('option_cns_posts_closed', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_closed', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_open=0';
             }
-            if (get_param_integer('option_cns_posts_pinned', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_pinned', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_pinned=1';
             }
-            if (get_param_integer('option_cns_posts_starter', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_starter', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_starter=1';
             }
@@ -308,9 +303,9 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $where_clause .= 'p_validated=1';
             }
 
-            $engine = new Composr_fulltext_engine();
+            $engine = new Composr_fast_custom_index();
 
-            if ($engine->active_search_has_special_filtering()) {
+            if (Composr_fast_custom_index::active_search_has_special_filtering()) {
                 $trans_fields = [];
                 $nontrans_fields = [];
                 $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);
@@ -321,7 +316,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
             $index_table = 'f_posts_fulltext_index';
             $key_transfer_map = ['id' => 'i_post_id'];
             $index_permissions_field = 'i_forum_id';
-            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
         } else {
             // Calculate our where clause (search)
             $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
@@ -331,23 +326,23 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $where_clause .= $sq;
             }
             $this->_handle_date_check($cutoff, 'p_time', $where_clause);
-            if (get_param_integer('option_cns_posts_unvalidated', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_unvalidated', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'r.p_validated=0';
             }
-            if (get_param_integer('option_cns_posts_open', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_open', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 's.t_is_open=1';
             }
-            if (get_param_integer('option_cns_posts_closed', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_closed', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 's.t_is_open=0';
             }
-            if (get_param_integer('option_cns_posts_pinned', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_pinned', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 's.t_pinned=1';
             }
-            if (get_param_integer('option_cns_posts_starter', 0) == 1) {
+            if (get_param_integer('option_tick_cns_posts_starter', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 's.t_cache_first_post_id=r.id';
             }
@@ -368,7 +363,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
             $nontrans_fields = ['r.p_title'/*,'s.t_description' Performance problem due to how full text works*/];
             $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);
 
-            $rows = get_search_rows(null, 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,t_forum_id,t_cache_first_title', $nontrans_fields, $permissions_module, 't_forum_id');
+            $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*,t_forum_id,t_cache_first_title', $trans_fields, $nontrans_fields, $permissions_module, 't_forum_id');
         }
 
         $out = [];
@@ -393,8 +388,8 @@ class Hook_search_cns_posts extends FieldsSearchHook
      */
     public function render($row)
     {
-        global $SEARCH__CONTENT_BITS;
-        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
+        global $SEARCH_QUERY_TERMS;
+        $highlight_bits = ($SEARCH_QUERY_TERMS === null) ? [] : $SEARCH_QUERY_TERMS;
         push_lax_comcode(true);
         $summary = get_translated_text($row['p_post']);
         $text_summary_h = comcode_to_tempcode($summary, null, false, null, null, COMCODE_NORMAL, $highlight_bits);

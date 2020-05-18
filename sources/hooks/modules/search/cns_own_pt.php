@@ -93,7 +93,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
      */
     public function index_for_search($since = null, &$total_singular_ngram_tokens = null, &$statistics_map = null)
     {
-        $engine = new Composr_fulltext_engine();
+        $engine = new Composr_fast_custom_index();
 
         $index_table = 'f_pposts_fulltext_index';
         $clean_scan = ($GLOBALS['FORUM_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
@@ -138,27 +138,22 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
     /**
      * Run function for search results.
      *
-     * @param  string $content Search string
+     * @param  string $search_query Search query
+     * @param  string $content_where WHERE clause that selects the content according to the search query; passed in addition to $search_query to avoid unnecessary reparsing.  ? refers to the yet-unknown field name (blank: full-text search)
+     * @param  string $where_clause Initial WHERE clause that already takes $search_under into account (should be nothing else unless it is guaranteed hook will use the global get_search_rows function)
+     * @param  string $search_under Comma-separated list of categories to search under
      * @param  boolean $only_search_meta Whether to only do a META (tags) search
-     * @param  ID_TEXT $direction Order direction
+     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
      * @param  integer $max Start position in total results
      * @param  integer $start Maximum results to return in total
-     * @param  boolean $only_titles Whether only to search titles (as opposed to both titles and content)
-     * @param  string $content_where Where clause that selects the content according to the main search string (SQL query fragment) (blank: full-text search)
+     * @param  string $sort The sort type (gets remapped to a field in this function)
+     * @param  ID_TEXT $direction Order direction
      * @param  SHORT_TEXT $author Username/Author to match for
      * @param  ?MEMBER $author_id Member-ID to match for (null: unknown)
      * @param  mixed $cutoff Cutoff date (TIME or a pair representing the range)
-     * @param  string $sort The sort type (gets remapped to a field in this function)
-     * @set title add_date
-     * @param  integer $limit_to Limit to this number of results
-     * @param  string $boolean_operator What kind of boolean search to do
-     * @set or and
-     * @param  string $where_clause Where constraints known by the main search code (SQL query fragment)
-     * @param  string $search_under Comma-separated list of categories to search under
-     * @param  boolean $boolean_search Whether it is a boolean search
      * @return array List of maps (template, orderer)
      */
-    public function run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $limit_to, $boolean_operator, $where_clause, $search_under, $boolean_search)
+    public function run($search_query, $content_where, $where_clause, $search_under, $only_search_meta, $only_titles, $max, $start, $sort, $direction, $author, $author_id, $cutoff)
     {
         if (get_member() == $GLOBALS['CNS_DRIVER']->get_guest_id()) {
             return [];
@@ -182,7 +177,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         require_lang('cns');
 
         // Calculate and perform query
-        if (can_use_composr_fulltext_engine('cns_own_pt', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_ocf_own_pt_starter', 0) == 1)) {
+        if (can_use_composr_fast_custom_index('cns_own_pt', $search_query, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_tick_cns_own_pt_starter', 0) == 1)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';
@@ -197,7 +192,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= $sq;
             }
             $this->_handle_date_check($cutoff, 'ixxx.i_add_time', $extra_join_clause);
-            if (get_param_integer('option_cns_own_pt_starter', 0) == 1) {
+            if (get_param_integer('option_tick_cns_own_pt_starter', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_starter=1';
             }
@@ -214,12 +209,12 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= 'p_validated=1';
             }
 
-            $engine = new Composr_fulltext_engine();
+            $engine = new Composr_fast_custom_index();
 
             $db = $GLOBALS['FORUM_DB'];
             $index_table = 'f_pposts_fulltext_index';
             $key_transfer_map = ['id' => 'i_post_id'];
-            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
         } else {
             // Calculate our where clause (search)
             $where_clause .= ' AND ';
@@ -236,7 +231,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= $sq;
             }
             $this->_handle_date_check($cutoff, 'p_time', $where_clause);
-            if (get_param_integer('option_cns_own_pt_starter', 0) == 1) {
+            if (get_param_integer('option_tick_cns_own_pt_starter', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 's.t_cache_first_post_id=r.id';
             }
@@ -246,7 +241,11 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= 'p_validated=1';
             }
 
-            $rows = get_search_rows(null, 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id', ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*', ['r.p_title']);
+            $table = 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id';
+
+            $trans_fields = ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'];
+
+            $rows = get_search_rows(null, 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*', $trans_fields, ['r.p_title']);
         }
 
         $out = [];

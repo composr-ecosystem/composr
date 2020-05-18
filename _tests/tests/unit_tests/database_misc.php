@@ -282,7 +282,6 @@ class database_misc_test_set extends cms_test_case
     public function testFullTextSearch()
     {
         require_code('database_search');
-        $boolean_operator = 'AND';
 
         $GLOBALS['SITE_DB']->drop_table_if_exists('testy_test_test');
         $GLOBALS['SITE_DB']->create_table('testy_test_test', [
@@ -309,7 +308,6 @@ class database_misc_test_set extends cms_test_case
             // By keyword
             'by_keyword' => [
                 /*$content = */'sample',
-                /*$boolean_search = */true,
                 /*$expected = */$total,
                 /*$fields = */[],
                 /*$raw_fields = */['r.test_data_1'],
@@ -317,29 +315,25 @@ class database_misc_test_set extends cms_test_case
 
             // Fulltext
             'boolean_yes__success' => [
-                /*$content = */'abacus',
-                /*$boolean_search = */true,
+                /*$content = */'+abacus',
                 /*$expected = */1,
                 /*$fields = */[],
                 /*$raw_fields = */['r.test_data_1'],
             ],
             'boolean_no__success' => [ // If this is failing on SQL Server, try resetting the SQL Server process (auto-indexing may be buggy or delayed, but nothing we can do)
-                /*$content = */'abacus',
-                /*$boolean_search = */false,
+                /*$content = */'-foobar',
                 /*$expected = */1,
                 /*$fields = */[],
                 /*$raw_fields = */['r.test_data_1'],
             ],
             'boolean_yes__fail' => [
-                /*$content = */'foobar',
-                /*$boolean_search = */true,
+                /*$content = */'+foobar',
                 /*$expected = */0,
                 /*$fields = */[],
                 /*$raw_fields = */['r.test_data_1'],
             ],
             'boolean_no__fail' => [
-                /*$content = */'foobar',
-                /*$boolean_search = */false,
+                /*$content = */'-abacus',
                 /*$expected = */0,
                 /*$fields = */[],
                 /*$raw_fields = */['r.test_data_1'],
@@ -351,26 +345,24 @@ class database_misc_test_set extends cms_test_case
                 continue;
             }
 
-            list($content, $boolean_search, $expected, $fields, $raw_fields) = $bits;
-            list($content_where) = build_content_where($content, $boolean_search, $boolean_operator);
+            list($content, $expected, $fields, $raw_fields) = $bits;
+            list($content_where) = build_content_where($content);
             $order = '';
             $rows = get_search_rows(
                 'test',
                 'id',
                 $content,
-                $boolean_search,
-                $boolean_operator,
+                $content_where,
+                '',
                 false,
-                'ASC',
+                false,
                 1000,
                 0,
-                false,
-                'testy_test_test r',
-                $fields,
-                '',
-                $content_where,
                 $order,
+                'ASC',
+                'testy_test_test r',
                 'r.id',
+                $fields,
                 $raw_fields
             );
             $this->assertTrue(count($rows) == $expected, $test_codename . ' failed, got ' . integer_format(count($rows)) . ' rows but expected ' . integer_format($expected) . ' rows');

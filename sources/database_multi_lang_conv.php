@@ -111,7 +111,7 @@ function disable_content_translation()
         $query = 'ALTER TABLE ' . $db->table_prefix . $field['m_table'] . ' CHANGE ' . $field['m_name'] . '__new ' . $field['m_name'] . ' ' . $type_remap['LONG_TEXT'] . ' NOT NULL';
         $db->_query($query);
 
-        // Create fulltext search index
+        // Create full-text search index
         $GLOBALS['SITE_DB']->create_index($field['m_table'], '#' . $field['m_name'], [$field['m_name']]);
 
         reload_lang_fields(true, $field['m_table']);
@@ -157,7 +157,7 @@ function enable_content_translation()
             @var_dump($field);
         }
 
-        // Remove old fulltext search index
+        // Remove old full-text search index
         $GLOBALS['SITE_DB']->delete_index_if_exists($field['m_table'], '#' . $field['m_name']);
 
         // Rename main field to temporary one

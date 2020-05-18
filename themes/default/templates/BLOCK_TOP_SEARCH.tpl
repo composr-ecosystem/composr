@@ -15,8 +15,6 @@
 	{+START,IF,{$NEQ,{DIRECTION},DESC}}<input type="hidden" name="direction" value="{DIRECTION*}" />{+END}
 	{+START,IF,{$NEQ,{ONLY_TITLES},0}}<input type="hidden" name="only_titles" value="{ONLY_TITLES*}" />{+END}
 	{+START,IF,{$NEQ,{ONLY_SEARCH_META},0}}<input type="hidden" name="only_search_meta" value="{ONLY_SEARCH_META*}" />{+END}
-	{+START,IF,{$NEQ,{BOOLEAN_SEARCH},0}}<input type="hidden" name="boolean_search" value="{BOOLEAN_SEARCH*}" />{+END}
-	{+START,IF,{$NEQ,{CONJUNCTIVE_OPERATOR},AND}}<input type="hidden" name="conjunctive_operator" value="{CONJUNCTIVE_OPERATOR*}" />{+END}
 
 	<a id="top-search-button" class="top-button top-button-search js-click-toggle-button-popup" href="#!">{+START,INCLUDE,ICON}
 		NAME=buttons/search

@@ -435,7 +435,7 @@ PHP;
      */
     protected function set_property_list_alignment($list, $columns_display)
     {
-        $_list = array_fill(0, count($columns_display), null);
+        $_list = empty($columns_display) ? [] : array_fill(0, count($columns_display), null);
         $i = 0;
         foreach ($list as $l) {
             $l = trim($l);

@@ -48,8 +48,6 @@
 			<input type="hidden" name="direction" value="{DIRECTION*}" />
 			<input type="hidden" name="only_titles" value="{ONLY_TITLES*}" />
 			<input type="hidden" name="only_search_meta" value="{ONLY_SEARCH_META*}" />
-			<input type="hidden" name="boolean_search" value="{BOOLEAN_SEARCH*}" />
-			<input type="hidden" name="conjunctive_operator" value="{CONJUNCTIVE_OPERATOR*}" />
 		</div>
 	</form>
 

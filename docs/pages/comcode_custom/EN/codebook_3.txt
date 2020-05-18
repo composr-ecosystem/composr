@@ -624,8 +624,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]site_location[/tt] -- a real-world address for where your website is, sometimes used in metadata.
   - [tt]google_news_urls[/tt] -- set this to '1' if news URLs should contain a Google-News-friendly entry ID.
   - [tt]enable_delayed_inserts[/tt] -- set this to '1' to enable MySQL delayed inserts. Delayed inserts can cause a very small performance improvement if log calculations happen quite regularly; however they only work on MyISAM tables and are deprecated as of MySQL 5.6
-  - [tt]really_want_highlighting[/tt] -- set this to '1' if you want to force HTML to be converted to Comcode when searches happen, so keyword highlighting works better.
-  - [tt]search_days__<search-hook>[/tt] -- set the default day search period for a search hook (e.g. 60, or blank for no limit). This may be set for reasons of user experience, or for performance -- searching without a day constraint is actually faster.
   - [tt]disable_cannot_access_url_messages[/tt] -- set this to '1' to turn off attached messages about broken URLs that Composr tries to process
   - [tt]force_spell_checker[/tt] -- set to 'pspell' or 'enchant' to force that particular spell-checker, rather than auto-detecting
   - [tt]disable_handle_conflict_resolution[/tt] -- set this to '1' if you want to disable conflict resolution checking
@@ -635,8 +633,14 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]addon_disabled_<addon>[/tt] -- set this to '1' to disable a particular addon (may not be supported by all addons)
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
-  - [tt]search_do_days_fallback[/tt] -- set this to '0' if you don't want to re-search without a recency filter if no results were found
   - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
+ - Low-level search tuning:
+  - [tt]really_want_highlighting[/tt] -- set this to '1' if you want to force HTML to be converted to Comcode when searches happen, so keyword highlighting works better.
+  - [tt]search_days__<search-hook>[/tt] -- set the default day search period for a search hook (e.g. 60, or blank for no limit). This may be set for reasons of user experience, or for performance -- searching without a day constraint is actually faster.
+  - [tt]composr_fast_custom_index__max_ngram_size__<language>[/tt] -- Overrides the maximum ngram size config option for a particular language
+  - [tt]composr_fast_custom_index__enable_for__<search-hook>[/tt] -- Enable the Composr fast custom index for a particular search hook (if you need more fidelity than the regular config allows)
+  - [tt]composr_fast_custom_index__enable_for__<language>[/tt] -- Enable the Composr fast custom index for a particular language (if you need more fidelity than the regular config allows)
+  - [tt]composr_fast_custom_index__startup_hack[/tt] -- Forces the forum post indexer to resume where it left off. Useful when debugging indexing problems.
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]:
   - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
   - [tt]lots_of_data_in_*[/tt] -- set this to '1', with '*' replaced with a database table name, if you want the Selectcode mechanism to work with recursive DB lookups rather than one huge flat lookup
@@ -751,7 +755,7 @@ The 'keep' parameters available are:
  - [tt]keep_translate_sort[/tt] -- set this to 'recent' to make the content translation interface show recent strings first; useful during debugging
  - [tt]keep_debug_fs[/tt] -- set this to '1', while in the installer, or logged in as an admin, for disk I/O to be slowed and file system case sensitivity to be checked. Or, to a higher number of milliseconds if you want to introduce fake I/O latency. It is for developer filesystem testing.
  - [tt]keep_manual_import_config[/tt] -- set this to '1' in the import module to disable automatic detection of the import target's database settings from its filesystem config file (if you don't have it, for example)
- - [tt]keep_composr_fulltext_engine[/tt] set this to '0' or '1' to override which search engine to use, where possible; 0 for the database's own fulltext search, 1 for the Composr fast custom index
+ - [tt]keep_composr_fast_custom_index[/tt] set this to '0' or '1' to override which search engine to use, where possible; 0 for the database's own full-text search, 1 for the Composr fast custom index
 
 The following 'keep' parameters have interface triggers, but are also handy for manual activation:
  - [tt]keep_markers[/tt] -- set this to '1' if you want template start/end markers to be output in the page HTML source when viewed in Composr

@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_maximum_autocomplete_suggestions
+class Hook_config_composr_fast_custom_index__do_stemming
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,13 @@ class Hook_config_maximum_autocomplete_suggestions
     public function get_details()
     {
         return [
-            'human_name' => 'MAXIMUM_AUTOCOMPLETE_SUGGESTIONS',
-            'type' => 'integer',
+            'human_name' => 'COMPOSR_FAST_CUSTOM_INDEX__DO_STEMMING',
+            'type' => 'tick',
             'category' => 'SEARCH',
-            'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_maximum_autocomplete_suggestions',
+            'group' => 'COMPOSR_FAST_CUSTOM_INDEX',
+            'explanation' => 'CONFIG_OPTION_composr_fast_custom_index__do_stemming',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 9,
             'required' => true,
 
             'public' => false,
@@ -58,6 +57,6 @@ class Hook_config_maximum_autocomplete_suggestions
             return null;
         }
 
-        return '7';
+        return '1';
     }
 }

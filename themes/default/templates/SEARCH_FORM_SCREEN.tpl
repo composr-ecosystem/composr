@@ -82,28 +82,6 @@
 							</td>
 						</tr>
 						<tr>
-							<th class="form-table-field-name">{!OPTIONS}</th>
-							<td class="form-table-field-input" colspan="2">
-								{+START,IF,{$CONFIG_OPTION,enable_boolean_search}}
-									{+START,IF,{HAS_FULLTEXT_SEARCH}}
-									<input type="checkbox" id="boolean_search"{+START,IF,{BOOLEAN_SEARCH}} checked="checked"{+END} name="boolean_search" value="1" class="js-checkbox-click-toggle-boolean-options js-click-trigger-resize" /> <label for="boolean_search">{!BOOLEAN_SEARCH}</label>
-									<div style="display: none" class="boolean-options js-el-boolean-options" id="boolean-options">
-									{+END}
-										{+START,IF,{$NOT,{HAS_FULLTEXT_SEARCH}}}
-											<p>
-												<input type="radio"{+START,IF,{AND}} checked="checked"{+END} id="conjunctive_operator_and" name="conjunctive_operator" value="AND" /><label for="conjunctive_operator_and">{!SEARCH_AND}</label>
-												<input type="radio"{+START,IF,{$NOT,{AND}}} checked="checked"{+END} id="conjunctive_operator_or" name="conjunctive_operator" value="OR" /><label for="conjunctive_operator_or">{!SEARCH_OR}</label>
-											</p>
-										{+END}
-										<p>{!BOOLEAN_HELP}</p>
-									{+START,IF,{HAS_FULLTEXT_SEARCH}}
-									</div>
-									{+END}
-								{+END}
-								<p><input type="checkbox"{+START,IF,{ONLY_TITLES}} checked="checked"{+END} id="only_titles" name="only_titles" value="1" /> <label for="only_titles">{!ONLY_TITLES}</label></p>
-							</td>
-						</tr>
-						<tr>
 							<th class="form-table-field-name">{USER_LABEL*}</th>
 							<td class="form-table-field-input" colspan="2">
 								<div class="accessibility-hidden"><label for="search-author">{USER_LABEL*}</label></div>

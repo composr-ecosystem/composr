@@ -122,7 +122,7 @@ function find_filedump_links($focus = '')
                 if ($GLOBALS['SITE_DB']->has_full_text()) { // For efficiency, pre-filter via full-text search
                     $index_name = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta_indices', 'i_name', ['i_table' => $table, 'i_fields' => $field_name], ' AND i_name LIKE \'' . db_encode_like('#%') . '\'');
                     if ($index_name !== null) {
-                        $query .= ' AND ' . preg_replace('#\?#', $_field_name, $GLOBALS['SITE_DB']->full_text_assemble('filedump', false));
+                        $query .= ' AND ' . preg_replace('#\?#', $_field_name, $GLOBALS['SITE_DB']->full_text_assemble('filedump'));
                     }
                 }
                 if ($focus == '') {

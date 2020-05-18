@@ -129,6 +129,41 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_password_reset_privacy_VALUE_email
         CONFIG_OPTION_password_reset_privacy_VALUE_silent
         PASSWORD_RESET_PRIVACY
+        COMPOSR_FAST_CUSTOM_INDEX
+        COMPOSR_FAST_CUSTOM_INDEX_ENABLE
+        CONFIG_GROUP_DEFAULT_DESCRIP_COMPOSR_FAST_CUSTOM_INDEX_ENABLE
+        COMPOSR_FAST_CUSTOM_INDEX__MAX_POST_LENGTH
+        CONFIG_OPTION_composr_fast_custom_index__max_post_length
+        COMPOSR_FAST_CUSTOM_INDEX__ALLOW_FUZZY_SEARCH
+        CONFIG_OPTION_composr_fast_custom_index__allow_fuzzy_search
+        COMPOSR_FAST_CUSTOM_INDEX__SCALE_BY_COMMONALITY
+        CONFIG_OPTION_composr_fast_custom_index__scale_by_commonality
+        COMPOSR_FAST_CUSTOM_INDEX__USE_IMPRECISE_ORDERING
+        CONFIG_OPTION_composr_fast_custom_index__use_imprecise_ordering
+        COMPOSR_FAST_CUSTOM_INDEX__DO_STEMMING
+        CONFIG_OPTION_composr_fast_custom_index__do_stemming
+        COMPOSR_FAST_CUSTOM_INDEX__MAX_NGRAM_SIZE
+        CONFIG_OPTION_composr_fast_custom_index__max_ngram_size
+        COMPOSR_FAST_CUSTOM_INDEX__ENABLE
+        CONFIG_OPTION_composr_fast_custom_index__enable
+        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_NGRAMS
+        CONFIG_OPTION_composr_fast_custom_index__enable_for_ngrams
+        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_FILTERED
+        CONFIG_OPTION_composr_fast_custom_index__enable_for_filtered
+        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_NO_FULLTEXT
+        CONFIG_OPTION_composr_fast_custom_index__enable_for_no_fulltext
+        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_UNDER_RADAR
+        CONFIG_OPTION_composr_fast_custom_index__enable_for_under_radar
+        COMPOSR_FAST_CUSTOM_INDEX__ENABLE_FOR_MINIMUM_NGRAM_COUNT
+        CONFIG_OPTION_composr_fast_custom_index__enable_for_minimum_ngram_count
+        SEARCH_MAXIMUM_RESULT_COUNT_POINT
+        CONFIG_OPTION_search_maximum_result_count_point
+        SEARCH_DO_DAYS_FALLBACK
+        CONFIG_OPTION_search_do_days_fallback
+        SEARCH_DAYS_DEFAULT
+        CONFIG_OPTION_search_days_default
+        SEARCH_DID_YOU_MEAN
+        CONFIG_OPTION_search_did_you_mean
         CAROUSEL_MODE
         MOSAIC_MODE
         CYCLE_DURATION
@@ -2178,10 +2213,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_search_DESCRIPTION
         BLOCK_main_search_PARAM_author
         BLOCK_main_search_PARAM_author_TITLE
-        BLOCK_main_search_PARAM_boolean_search
-        BLOCK_main_search_PARAM_boolean_search_TITLE
-        BLOCK_main_search_PARAM_conjunctive_operator
-        BLOCK_main_search_PARAM_conjunctive_operator_TITLE
         BLOCK_main_search_PARAM_days
         BLOCK_main_search_PARAM_days_TITLE
         BLOCK_main_search_PARAM_direction
@@ -2366,10 +2397,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_top_search_DESCRIPTION
         BLOCK_top_search_PARAM_author
         BLOCK_top_search_PARAM_author_TITLE
-        BLOCK_top_search_PARAM_boolean_search
-        BLOCK_top_search_PARAM_boolean_search_TITLE
-        BLOCK_top_search_PARAM_conjunctive_operator
-        BLOCK_top_search_PARAM_conjunctive_operator_TITLE
         BLOCK_top_search_PARAM_days
         BLOCK_top_search_PARAM_days_TITLE
         BLOCK_top_search_PARAM_direction
@@ -3388,7 +3415,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_enable_add_topic_btn_in_topic
         CONFIG_OPTION_enable_animations
         CONFIG_OPTION_enable_birthdays
-        CONFIG_OPTION_enable_boolean_search
         CONFIG_OPTION_enable_spreadsheet_recommend
         CONFIG_OPTION_enable_ecards
         CONFIG_OPTION_enable_feedback
@@ -5103,7 +5129,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ENABLE_ANIMATIONS
         ENABLE_AUTOBAN
         ENABLE_BIRTHDAYS
-        ENABLE_BOOLEAN_SEARCH
         ENABLE_SPREADSHEET_RECOMMEND
         ENABLE_ECARDS
         ENABLE_FEEDBACK
@@ -8534,8 +8559,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLUE
         BODY_CONTENT
         BODY_TICKET_REROUTED
-        BOOLEAN_HELP
-        BOOLEAN_SEARCH
         BREADCRUMBS
         BROWSE
         BROWSE_SENTENCE
@@ -10355,14 +10378,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SAVE_COMPUTER_USING_COOKIE
         SEARCH
         SEARCH_ADMIN
-        SEARCH_AND
         SEARCH_DOMAIN
         SEARCH_FOR
         SEARCH_FORUM_POSTS
         SEARCH_HELP
         SEARCH_HOOK_NOT_AVAILABLE
         SEARCH_OPTIONS
-        SEARCH_OR
         SEARCH_POSTS
         SEARCH_POSTS_WITHIN_TOPIC
         SEARCH_QUERY_TOO_SLOW

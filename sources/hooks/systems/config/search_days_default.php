@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_maximum_autocomplete_suggestions
+class Hook_config_search_days_default
 {
     /**
      * Gets the details relating to the config option.
@@ -31,14 +31,14 @@ class Hook_config_maximum_autocomplete_suggestions
     public function get_details()
     {
         return [
-            'human_name' => 'MAXIMUM_AUTOCOMPLETE_SUGGESTIONS',
-            'type' => 'integer',
+            'human_name' => 'SEARCH_DAYS_DEFAULT',
+            'type' => 'list',
             'category' => 'SEARCH',
             'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_maximum_autocomplete_suggestions',
+            'explanation' => 'CONFIG_OPTION_search_days_default',
             'shared_hosting_restricted' => '0',
-            'list_options' => '',
-            'order_in_category_group' => 9,
+            'list_options' => '|2|5|15|30|45|60|120|240|365',
+            'order_in_category_group' => 5,
             'required' => true,
 
             'public' => false,
@@ -58,6 +58,6 @@ class Hook_config_maximum_autocomplete_suggestions
             return null;
         }
 
-        return '7';
+        return '';
     }
 }

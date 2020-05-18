@@ -103,35 +103,32 @@ function search_test_script()
             continue;
         }
 
-        $boolean_operator = 'AND';
-        list($content_where) = build_content_where($content, false, $boolean_operator);
-
         for ($search_engine = 0; $search_engine <= 3; $search_engine++) {
             switch ($search_engine) {
                 case 0:
-                    $search_engine_label = 'MySQL fulltext natural';
-                    $boolean_search = false;
-                    $_GET['keep_composr_fulltext_engine'] = '0';
+                    $search_engine_label = 'MySQL full-text natural';
+                    $_GET['keep_composr_fast_custom_index'] = '0';
+                    list($content_where) = build_content_where($content);
                     break;
 
                 case 1:
-                    $search_engine_label = 'MySQL fulltext boolean';
-                    $boolean_search = true;
-                    $_GET['keep_composr_fulltext_engine'] = '0';
+                    $search_engine_label = 'MySQL full-text boolean';
+                    $_GET['keep_composr_fast_custom_index'] = '0';
+                    list($content_where) = build_content_where(preg_replace('#(^| )#', '$1+', $content));
                     break;
 
                 case 2:
-                    $search_engine_label = 'Composr fulltext (fuzzy search enabled)';
-                    $boolean_search = true;
-                    $SEARCH_CONFIG_OVERRIDE = ['fulltext_allow_fuzzy_search' => '1'];
-                    $_GET['keep_composr_fulltext_engine'] = '1';
+                    $search_engine_label = 'Composr full-text (fuzzy search enabled)';
+                    $SEARCH_CONFIG_OVERRIDE = ['composr_fast_custom_index__allow_fuzzy_search' => '1'];
+                    $_GET['keep_composr_fast_custom_index'] = '1';
+                    list($content_where) = build_content_where($content);
                     continue 2; // Too slow actually
 
                 case 3:
-                    $search_engine_label = 'Composr fulltext (fuzzy search disabled)';
-                    $boolean_search = true;
-                    $SEARCH_CONFIG_OVERRIDE = ['fulltext_allow_fuzzy_search' => '0'];
-                    $_GET['keep_composr_fulltext_engine'] = '1';
+                    $search_engine_label = 'Composr full-text (fuzzy search disabled)';
+                    $SEARCH_CONFIG_OVERRIDE = ['composr_fast_custom_index__allow_fuzzy_search' => '0'];
+                    $_GET['keep_composr_fast_custom_index'] = '1';
+                    list($content_where) = build_content_where($content);
                     break;
             }
 
@@ -211,8 +208,7 @@ function search_test_script()
                         30,
                         'AND',
                         $where_clause,
-                        $search_under,
-                        $boolean_search
+                        $search_under
                     );
                     $after_time = microtime(true);
                     $time = $after_time - $before_time;

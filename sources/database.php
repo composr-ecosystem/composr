@@ -782,10 +782,9 @@ abstract class DatabaseDriver
      * Assemble part of a WHERE clause for doing full-text search.
      *
      * @param  string $content Our match string (assumes "?" has been stripped already)
-     * @param  boolean $boolean Whether to do a boolean full text search
      * @return string Part of a WHERE clause for doing full-text search
      */
-    public function full_text_assemble($content, $boolean)
+    public function full_text_assemble($content)
     {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         return ''; // Not implemented
@@ -2158,12 +2157,11 @@ class DatabaseConnector
      * Assemble part of a WHERE clause for doing full-text search.
      *
      * @param  string $content Our match string (assumes "?" has been stripped already)
-     * @param  boolean $boolean Whether to do a boolean full text search
      * @return string Part of a WHERE clause for doing full-text search
      */
-    public function full_text_assemble($content, $boolean)
+    public function full_text_assemble($content)
     {
-        $ret = $this->static_ob->full_text_assemble($content, $boolean);
+        $ret = $this->static_ob->full_text_assemble($content);
 
         if (($GLOBALS['DEV_MODE']) || (!has_solemnly_declared(I_UNDERSTAND_SQL_INJECTION))) {
             require_code('database_security_filter');

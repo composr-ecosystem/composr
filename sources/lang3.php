@@ -541,7 +541,7 @@ function _lang_remap($field_name, $id, $text, $db = null, $comcode = false, $pas
  */
 function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $as_admin)
 {
-    global $SEARCH__CONTENT_BITS;
+    global $SEARCH_QUERY_TERMS;
 
     push_query_limiting(false);
 
@@ -584,8 +584,8 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
 
                 push_lax_comcode(true);
                 _lang_remap($field_name, $entry, ($result === null) ? '' : $result['text_original'], $db, true, null, $result['source_user'], $as_admin, true);
-                if ($SEARCH__CONTENT_BITS !== null) {
-                    $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH__CONTENT_BITS);
+                if ($SEARCH_QUERY_TERMS !== null) {
+                    $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH_QUERY_TERMS);
                     pop_lax_comcode();
                     pop_query_limiting();
                     return $ret;
@@ -611,8 +611,8 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
     if (multi_lang_content()) {
         _lang_remap($field_name, $entry, $result['text_original'], $db, true, null, $result['source_user'], $as_admin, true);
 
-        if ($SEARCH__CONTENT_BITS !== null) {
-            $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH__CONTENT_BITS);
+        if ($SEARCH_QUERY_TERMS !== null) {
+            $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH_QUERY_TERMS);
             pop_lax_comcode();
             pop_query_limiting();
             return $ret;
@@ -622,8 +622,8 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
         $db->query_update($table, $map, $row, '', 1);
         $row = $map + $row;
 
-        if ($SEARCH__CONTENT_BITS !== null) {
-            $ret = comcode_to_tempcode($row[$field_name], $row[$field_name . '__source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH__CONTENT_BITS);
+        if ($SEARCH_QUERY_TERMS !== null) {
+            $ret = comcode_to_tempcode($row[$field_name], $row[$field_name . '__source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH_QUERY_TERMS);
             pop_lax_comcode();
             pop_query_limiting();
             return $ret;

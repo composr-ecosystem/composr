@@ -951,7 +951,7 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
                                 if ($it_id != 0) {
                                     $alt .= ' OR ';
                                 }
-                                $alt .= str_replace('?', $filter_key, $GLOBALS['SITE_DB']->full_text_assemble($it_value, false));
+                                $alt .= str_replace('?', $filter_key, $GLOBALS['SITE_DB']->full_text_assemble($it_value));
                             }
                             $alt .= ')';
                         }
