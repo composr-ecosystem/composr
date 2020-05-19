@@ -113,6 +113,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     );
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        ADD_MEMBER_EMAIL_HELP
+        CONFIG_OPTION_new_member_default_email_message
+        CONFIG_OPTION_new_member_default_email_subject
+        CONFIG_OPTION_new_member_default_temporary_password
+        NEW_MEMBER_DEFAULT_EMAIL_MESSAGE
+        NEW_MEMBER_DEFAULT_EMAIL_SUBJECT
+        NEW_MEMBER_DEFAULT_TEMPORARY_PASSWORD
         IF_UNCHANGED_CURRENT_FILE_REMAINS
         MONIKER_TRANSLITERATION
         CONFIG_OPTION_moniker_transliteration
