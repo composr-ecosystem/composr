@@ -365,11 +365,6 @@ class Hook_search_cns_members extends FieldsSearchHook
         }
 
         require_code('cns_members');
-        if (get_param_integer('option__emails_only', 0) == 1) {
-            $link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['id'], $row['m_username'], false);
-            $link2 = ($row['m_email_address'] == '') ? new Tempcode() : hyperlink('mailto: ' . $row['m_email_address'], $row['m_email_address'], false, true);
-            return paragraph($link->evaluate() . ' &lt;' . $link2->evaluate() . '&gt;', 'wtoaz4b4yp5rwe4wcmyknihps8ujoguv');
-        }
         require_code('cns_members2');
         $GLOBALS['CNS_DRIVER']->MEMBER_ROWS_CACHED[$row['id']] = $row;
         $box = render_member_box($row['id']);
