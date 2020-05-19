@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: CRC24*/
+
 /**
  * Standard code module initialisation function.
  *
@@ -108,6 +110,10 @@ function opensearch_script()
             }
             echo '[';
             foreach (array_keys($suggestions) as $i => $suggestion) {
+                if (is_integer($suggestion)) {
+                    $suggestion = strval($suggestion);
+                }
+
                 if ($i != 0) {
                     echo ',';
                 }
@@ -161,7 +167,14 @@ function can_use_composr_fast_custom_index($hook, $search_query = null, $has_hea
         return false; // No indexing working
     }
 
-    // Positive, must use for these reasons...
+    // Explicit interactive choice...
+
+    $by_url = get_param_integer('keep_composr_fast_custom_index', null);
+    if ($by_url !== null) {
+        return ($by_url == 1); // Explicitly specified by URL
+    }
+
+    // Positive, should use for these reasons...
 
     if ($search_query !== null) {
         $_trigger_ngrams = get_option('composr_fast_custom_index__enable_for_ngrams');
@@ -190,12 +203,7 @@ function can_use_composr_fast_custom_index($hook, $search_query = null, $has_hea
         return true; // Query is very long
     }
 
-    // Explicit choice...
-
-    $by_url = get_param_integer('keep_composr_fast_custom_index', null);
-    if ($by_url !== null) {
-        return ($by_url == 1); // Explicitly specified by URL
-    }
+    // Explicit configured choice...
 
     $default_choice = get_value('composr_fast_custom_index__enable_for__' . $hook, '');
     if ($default_choice != '') {
@@ -206,8 +214,6 @@ function can_use_composr_fast_custom_index($hook, $search_query = null, $has_hea
     if ($default_choice != '') {
         return ($default_choice == '1'); // Explicitly specified by config for current language
     }
-
-    // -
 
     return (get_option('composr_fast_custom_index__enable') == '1');
 }
@@ -308,6 +314,10 @@ class Composr_fast_custom_index
             // Order search terms by commonality
             $_fuzzy_and = [];
             foreach ($commonalities as $ngram => $commonality) {
+                if (is_integer($ngram)) {
+                    $ngram = strval($ngram);
+                }
+
                 if (isset($fuzzy_and[$ngram])) {
                     $_fuzzy_and[$ngram] = $fuzzy_and[$ngram];
                 }
@@ -315,6 +325,10 @@ class Composr_fast_custom_index
             $fuzzy_and = $_fuzzy_and;
             $_and = [];
             foreach ($commonalities as $ngram => $commonality) {
+                if (is_integer($ngram)) {
+                    $ngram = strval($ngram);
+                }
+
                 if (isset($and[$ngram])) {
                     $_and[$ngram] = $and[$ngram];
                 }
@@ -345,6 +359,10 @@ class Composr_fast_custom_index
 
             $extra_join_clause .= ' AND ixxx.' . $index_permissions_field . ' IN (';
             foreach ($cat_access as $i => $cat) {
+                if (is_integer($cat)) {
+                    $cat = strval($cat);
+                }
+
                 if ($i != 0) {
                     $extra_join_clause .= ',';
                 }
@@ -368,6 +386,10 @@ class Composr_fast_custom_index
         $open_brackets = 0;
         foreach ($search_token_sets as $set_type => $search_tokens) {
             foreach ($search_tokens as $ngram => $is_singular_ngram) {
+                if (is_integer($ngram)) {
+                    $ngram = strval($ngram);
+                }
+
                 if ($is_singular_ngram) {
                     if ($this->singular_ngram_is_stop_word($ngram, $lang)) {
                         continue;
@@ -446,6 +468,11 @@ class Composr_fast_custom_index
         }
 
         if ($i == 0) {
+            // Useful for automated testing
+            global $LAST_SEARCH_QUERY, $LAST_COUNT_QUERY;
+            $LAST_SEARCH_QUERY = 'N/A';
+            $LAST_COUNT_QUERY = 'N/A';
+
             // This is important - if there are no ngrams to index against, then security will not have run either
             return [];
         }
@@ -691,6 +718,10 @@ class Composr_fast_custom_index
         $insert_arr = [];
         $ngrams_crc = [];
         foreach ($ngrams as $ngram => $count) {
+            if (is_integer($ngram)) {
+                $ngram = strval($ngram);
+            }
+
             $crc = $this->crc($ngram);
             if (isset($ngrams_crc[$crc])) {
                 // CRC hash collision. Happens about 1 in 200,000 -- so we can ignore it from a UX perspective but we have to stop key collisions!s
@@ -765,6 +796,10 @@ class Composr_fast_custom_index
 
         $_ngrams = $tokeniser->text_to_ngrams($text, $max_ngram_size, $total_singular_ngram_tokens);
         foreach ($_ngrams as $ngram => $is_singular_ngram) {
+            if (is_integer($ngram)) {
+                $ngram = strval($ngram);
+            }
+
             if ($is_singular_ngram) {
                 if ($statistics_map !== null) {
                     if (!isset($statistics_map[$lang][$ngram])) {
@@ -835,6 +870,10 @@ class Composr_fast_custom_index
         $commonalities = [];
         $where = '';
         foreach ($ngrams as $ngram) {
+            if (is_integer($ngram)) {
+                $ngram = strval($ngram);
+            }
+
             if (isset($cache[$ngram])) {
                 $commonalities[$ngram] = $cache[$ngram];
             } else {
@@ -1895,14 +1934,12 @@ function get_search_rows($meta_type, $id_field, $search_query, $content_where, $
     // Apply category permission restriction
     if (($permissions_module !== null) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
         $g_or = get_permission_where_clause_groups(get_member());
-        $where_clause .= get_category_permission_where_clause($permissions_module, $permissions_field, get_member(), $g_or);
+        $where_clause .= get_category_permission_where_clause($permissions_module, $permissions_field, get_member(), $g_or, '');
     }
 
     // No possible results, because no title field?
-    if (key($fields) == '') {
-        if (($only_titles) && (!empty($fields))) {
-            return [];
-        }
+    if ((!empty($fields)) && ($only_titles) && (key($fields) == '')) {
+        return [];
     }
 
     $table_clause = $db->get_table_prefix() . $table;
@@ -2311,6 +2348,11 @@ function get_search_rows($meta_type, $id_field, $search_query, $content_where, $
             $db->dedupe_mode = false;
         }
     } else {
+        // Useful for automated testing
+        global $LAST_SEARCH_QUERY, $LAST_COUNT_QUERY;
+        $LAST_SEARCH_QUERY = 'N/A';
+        $LAST_COUNT_QUERY = 'N/A';
+
         $t_main_search_rows = [];
     }
 

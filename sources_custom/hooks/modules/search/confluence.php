@@ -213,12 +213,12 @@ class Hook_search_confluence extends FieldsSearchHook
         $highlight_bits = ($SEARCH_QUERY_TERMS === null) ? [] : $SEARCH_QUERY_TERMS;
 
         $text_summary_h = $this->cleanup_text($myrow['excerpt']);
-        $text_summary = generate_text_summary($text_summary_h, []);
+        $text_summary = protect_from_escaping(generate_text_summary($text_summary_h, []));
 
         $title = $myrow['content']['title'];
 
         $url = build_url(['page' => 'docs', 'type' => $myrow['content']['id']], '_SEARCH');
-        $breadcrumbs = confluence_breadcrumbs($myrow['content']['id']);
+        $breadcrumbs = confluence_breadcrumbs(intval($myrow['content']['id']));
         return do_template('SIMPLE_PREVIEW_BOX', ['TITLE' => 'Documentation: ' . $title, 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
     }
 

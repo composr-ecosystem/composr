@@ -72,6 +72,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $info['category'] = 'p_cache_forum_id';
         $info['integer_category'] = true;
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_post');
+        $info['user_label'] = do_lang_tempcode('USERNAME');
 
         $info['permissions'] = [
             [
@@ -86,6 +87,14 @@ class Hook_search_cns_posts extends FieldsSearchHook
         ];
 
         return $info;
+    }
+
+    /**
+     * Empty the Composr fast custom index.
+     */
+    public function empty_index()
+    {
+        $GLOBALS['FORUM_DB']->query_delete('f_posts_fulltext_index');
     }
 
     /**

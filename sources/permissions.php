@@ -592,11 +592,13 @@ function get_permission_where_clause_groups($member_id, $consider_clubs = true, 
  */
 function get_category_permission_where_clause($module, $category_field, $member_id, $groups, $row_alias = 'r')
 {
+    $_category_field = (empty($row_alias) ? '' : ($row_alias . '.')) . $category_field;
+
     $query = ' AND (';
-    $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_category_access a WHERE ' . db_string_equal_to('a.module_the_name', $module) . ' AND ' . $row_alias . '.' . $category_field . '=a.category_name AND (' . $groups . '))';
+    $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'group_category_access a WHERE ' . db_string_equal_to('a.module_the_name', $module) . ' AND ' . $_category_field . '=a.category_name AND (' . $groups . '))';
     if ($member_id !== null) {
         $query .= ' OR ';
-        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_category_access ma WHERE ' . db_string_equal_to('ma.module_the_name', $module) . ' AND ' . $row_alias . '.' . $category_field . '=ma.category_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
+        $query .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'member_category_access ma WHERE ' . db_string_equal_to('ma.module_the_name', $module) . ' AND ' . $_category_field . '=ma.category_name AND (ma.active_until IS NULL OR ma.active_until>' . strval(time()) . ') AND ma.member_id=' . strval($member_id) . ')';
     }
     $query .= ')';
     return $query;

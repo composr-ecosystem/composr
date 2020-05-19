@@ -62,6 +62,9 @@ class lang_tokeniser_test_set extends cms_test_case
 
         // Indexing...
 
+        $got = $tokeniser->text_to_ngrams('Composr/ocProducts FAQ');
+        $this->assertTrue(array_keys($got) == ['composr', 'ocproducts', 'faq']);
+
         $got = $tokeniser->text_to_ngrams("it's 'its'");
         $this->assertTrue(array_keys($got) == ["it's", 'its']);
 

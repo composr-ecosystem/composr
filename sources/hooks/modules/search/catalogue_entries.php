@@ -82,6 +82,14 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
     }
 
     /**
+     * Empty the Composr fast custom index.
+     */
+    public function empty_index()
+    {
+        $GLOBALS['SITE_DB']->query_delete('ce_fulltext_index');
+    }
+
+    /**
      * Perform indexing using the Composr fast custom index.
      *
      * @param  ?TIME $since Only index records newer than this (null: no limit)
@@ -96,8 +104,8 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $clean_scan = ($GLOBALS['SITE_DB']->query_select_value_if_there($index_table, 'i_ngram') === null);
 
         $fields_to_index = [
-            'meta_keywords' => APPEARANCE_CONTEXT_meta,
-            'meta_description' => APPEARANCE_CONTEXT_body,
+            'meta_keywords' => APPEARANCE_CONTEXT_META,
+            'meta_description' => APPEARANCE_CONTEXT_BODY,
         ];
         $key_transfer_map = [
             'id' => 'i_catalogue_entry_id',

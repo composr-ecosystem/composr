@@ -321,7 +321,7 @@ class database_misc_test_set extends cms_test_case
                 /*$raw_fields = */['r.test_data_1'],
             ],
             'boolean_no__success' => [ // If this is failing on SQL Server, try resetting the SQL Server process (auto-indexing may be buggy or delayed, but nothing we can do)
-                /*$content = */'-foobar',
+                /*$content = */'-foobar abacus',
                 /*$expected = */1,
                 /*$fields = */[],
                 /*$raw_fields = */['r.test_data_1'],
@@ -333,7 +333,7 @@ class database_misc_test_set extends cms_test_case
                 /*$raw_fields = */['r.test_data_1'],
             ],
             'boolean_no__fail' => [
-                /*$content = */'-abacus',
+                /*$content = */'-abacus foobar',
                 /*$expected = */0,
                 /*$fields = */[],
                 /*$raw_fields = */['r.test_data_1'],
@@ -365,7 +365,7 @@ class database_misc_test_set extends cms_test_case
                 $fields,
                 $raw_fields
             );
-            $this->assertTrue(count($rows) == $expected, $test_codename . ' failed, got ' . integer_format(count($rows)) . ' rows but expected ' . integer_format($expected) . ' rows');
+            $this->assertTrue(count($rows) == $expected, $test_codename . ' failed, got ' . integer_format(count($rows)) . ' rows but expected ' . integer_format($expected) . ' rows; ' . $GLOBALS['LAST_SEARCH_QUERY']);
         }
 
         if ($this->only === null) {

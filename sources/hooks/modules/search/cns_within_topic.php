@@ -65,6 +65,7 @@ class Hook_search_cns_within_topic extends FieldsSearchHook
         $info['integer_category'] = true;
         $info['advanced_only'] = true;
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_topic');
+        $info['user_label'] = do_lang_tempcode('USERNAME');
 
         $info['permissions'] = [
             [

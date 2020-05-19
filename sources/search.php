@@ -18,8 +18,6 @@
  * @package    search
  */
 
-/*EXTRA FUNCTIONS: CRC24*/
-
 /**
  * Standard code module initialisation function.
  *
@@ -53,6 +51,8 @@ function find_search_suggestions($request, $search_type = '')
 
     // Based on past searches
     if (has_privilege(get_member(), 'autocomplete_past_search')) {
+        require_code('database_search');
+
         $q = 'SELECT s_primary AS search FROM ' . get_table_prefix() . 'searches_logged WHERE ';
         if (($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->has_full_text_boolean()) && (!is_under_radar($request))) {
             $q .= preg_replace('#\?#', 's_primary', $GLOBALS['SITE_DB']->full_text_assemble($request));

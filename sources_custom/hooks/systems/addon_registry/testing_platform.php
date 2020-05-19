@@ -882,7 +882,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/shopping_order_management.php',
             '_tests/tests/unit_tests/shopping.php',
             '_tests/tests/unit_tests/should_ignore_file.php',
-            '_tests/tests/unit_tests/sitemap.php',
+            '_tests/tests/unit_tests/__sitemap.php',
             '_tests/tests/unit_tests/sitemap_submit.php',
             '_tests/tests/unit_tests/sorting.php',
             '_tests/tests/unit_tests/_special_links.php',

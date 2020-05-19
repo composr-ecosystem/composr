@@ -65,6 +65,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         $info['default'] = (get_option('search_cns_own_pt') == '1');
         $info['special_on'] = [];
         $info['special_off'] = ['starter' => do_lang_tempcode('POST_SEARCH_STARTER')];
+        $info['user_label'] = do_lang_tempcode('USERNAME');
 
         $info['permissions'] = [
             [
@@ -82,6 +83,14 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         ];
 
         return $info;
+    }
+
+    /**
+     * Empty the Composr fast custom index.
+     */
+    public function empty_index()
+    {
+        $GLOBALS['FORUM_DB']->query_delete('f_pposts_fulltext_index');
     }
 
     /**

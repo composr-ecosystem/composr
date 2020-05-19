@@ -175,6 +175,7 @@ class Hook_addon_registry_search
             'themes/default/javascript/search.js',
             'sources/lang_tokeniser_EN.php',
             'sources/hooks/systems/cron/composr_fast_custom_index.php',
+            'sources/hooks/systems/cleanup/composr_fast_custom_index.php',
             'sources/crc24.php',
 
             'sources/hooks/modules/admin_stats/searches.php',

@@ -63,9 +63,10 @@ class Hook_cron_composr_fast_custom_index
 
         require_code('database_search');
 
+        $subhook = get_param_string('limit_subhook', null);
+
         $hooks = find_all_hook_obs('modules', 'search', 'Hook_search_');
         foreach ($hooks as $hook => $ob) {
-            $subhook = get_param_string('limit_subhook', null);
             if (($subhook !== null) && ($subhook !== $hook)) {
                 continue;
             }

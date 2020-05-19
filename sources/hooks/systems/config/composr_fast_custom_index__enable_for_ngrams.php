@@ -39,7 +39,7 @@ class Hook_config_composr_fast_custom_index__enable_for_ngrams
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'order_in_category_group' => 5,
-            'required' => true,
+            'required' => false,
 
             'public' => false,
 

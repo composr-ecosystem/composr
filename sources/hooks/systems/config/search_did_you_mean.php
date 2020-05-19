@@ -59,7 +59,7 @@ class Hook_config_search_did_you_mean
         }
 
         require_code('spelling');
-        if (!_find_spell_checker()) {
+        if (_find_spell_checker() === null) {
             return null;
         }
 

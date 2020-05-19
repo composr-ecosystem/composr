@@ -122,7 +122,7 @@ class Hook_search_catalogue_categories extends FieldsSearchHook
 
         $trans_fields = ['r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'];
 
-        $rows = get_search_rows('catalogue_category', 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, 'catalogue_categories r', $trans_fields, 'r.*', $trans_fields);
+        $rows = get_search_rows('catalogue_category', 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, 'catalogue_categories r', 'r.*', $trans_fields);
 
         $out = [];
         foreach ($rows as $i => $row) {

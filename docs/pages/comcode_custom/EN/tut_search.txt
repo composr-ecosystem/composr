@@ -62,7 +62,11 @@ Placing a checkmark beside each content type will cause Composr to search for en
 [title="2"]Advanced searches[/title]
 
 [media width="150" description="Performing an advanced search for a specific content type" float="right"]data_custom/images/docs/tut_search/search_advanced.png[/media]
-Many forms of content allow advanced searches which allow you to search underneath a chosen category. For members and catalogues you may also perform template searches. An advanced search limits you to that individual content type. The advanced searching screen is reached by clicking one of the 'Advanced' links on the main search screen.
+Many forms of content allow additional filters which allow you to:
+1) search underneath a chosen category
+2) perform template searches on individual fields (these apply as searches on top of the main search query)
+3) specify some extra checkbox options
+An advanced search limits you to that individual content type. The advanced searching screen is reached by clicking one of the 'Advanced' links on the main search screen.
 
 [title="2"]Searching from the Forum[/title]
 
@@ -206,12 +210,7 @@ The first time it runs it:
 2) Builds up a database table of ngram frequency (keyword frequency, basically) across all the supported searchable data (the [tt]<table-prefix>ft_index_commonality[/tt] table). This frequency data is used for ranking purposes.
 Subsequently it just adds indexing for new content created/changed since the last indexing run.
 
-If you want to reindex (perhaps you have changed some settings, or changed [concept]stop word[/concept]s, or want to regenerate commonality data to reflect the current status of your site), you need to manually wipe out the contents of the following database tables:
- - [tt]<table-prefix>ce_fulltext_index[/tt]
- - [tt]<table-prefix>cpages_fulltext_index[/tt]
- - [tt]<table-prefix>f_posts_fulltext_index[/tt]
- - [tt]<table-prefix>f_pposts_fulltext_index[/tt]
-Composr will automatically see this as a signal that they need rebuilding.
+If you want to reindex (perhaps you have changed some settings, or changed [concept]stop word[/concept]s, or want to regenerate commonality data to reflect the current status of your site), you need to run the Rebuild Composr fast custom index cleanup tool (Admin Zone > Tools > Cleanup tools).
 
 [title="3"]Internationalisation[/title]
 

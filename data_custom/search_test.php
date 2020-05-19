@@ -61,9 +61,9 @@ function search_test_script()
     $problematic_only = (get_param_integer('problematic_only', 0) == 1);
 
     $test_searches = [
-        'test',
-        'test search',
-        '"test search"',
+        'foobar',
+        'foobar search',
+        '"foobar search"',
     ];
 
     // Warm up database
@@ -82,7 +82,7 @@ function search_test_script()
     $info = $ob->info();
 
     $row_header = [
-        'Search term',
+        'Search query',
         'Search engine',
         'Search mode',
         'Time in seconds',
@@ -98,8 +98,8 @@ function search_test_script()
 
     row_header($download, $out, $row_header);
 
-    foreach ($test_searches as $keyword_i => $content) {
-        if (($filter_searches != '') && ($filter_searches != $content)) {
+    foreach ($test_searches as $keyword_i => $search_query) {
+        if (($filter_searches != '') && ($filter_searches != $search_query)) {
             continue;
         }
 
@@ -108,27 +108,27 @@ function search_test_script()
                 case 0:
                     $search_engine_label = 'MySQL full-text natural';
                     $_GET['keep_composr_fast_custom_index'] = '0';
-                    list($content_where) = build_content_where($content);
+                    list($content_where) = build_content_where($search_query);
                     break;
 
                 case 1:
                     $search_engine_label = 'MySQL full-text boolean';
                     $_GET['keep_composr_fast_custom_index'] = '0';
-                    list($content_where) = build_content_where(preg_replace('#(^| )#', '$1+', $content));
+                    list($content_where) = build_content_where(preg_replace('#(^| )#', '$1+', $search_query));
                     break;
 
                 case 2:
                     $search_engine_label = 'Composr full-text (fuzzy search enabled)';
                     $SEARCH_CONFIG_OVERRIDE = ['composr_fast_custom_index__allow_fuzzy_search' => '1'];
                     $_GET['keep_composr_fast_custom_index'] = '1';
-                    list($content_where) = build_content_where($content);
+                    list($content_where) = build_content_where($search_query);
                     continue 2; // Too slow actually
 
                 case 3:
                     $search_engine_label = 'Composr full-text (fuzzy search disabled)';
                     $SEARCH_CONFIG_OVERRIDE = ['composr_fast_custom_index__allow_fuzzy_search' => '0'];
                     $_GET['keep_composr_fast_custom_index'] = '1';
-                    list($content_where) = build_content_where($content);
+                    list($content_where) = build_content_where($search_query);
                     break;
             }
 
@@ -189,32 +189,32 @@ function search_test_script()
                         }
                     }
                     $where_clause .= ')';
+                } else {
+                    $where_clause = '';
                 }
 
                 for ($i = 1; $i <= $iterations; $i++) {
                     $before_time = microtime(true);
                     $results = $ob->run(
-                        $content,
+                        $search_query,
+                        $content_where,
+                        $where_clause,
+                        $search_under,
                         false,
-                        'DESC',
+                        false,
                         30,
                         0,
-                        false,
-                        $content_where,
+                        'contextual_relevance',
+                        'DESC',
                         $author,
                         $author_id,
-                        $cutoff,
-                        'contextual_relevance',
-                        30,
-                        'AND',
-                        $where_clause,
-                        $search_under
+                        $cutoff
                     );
                     $after_time = microtime(true);
                     $time = $after_time - $before_time;
 
                     $row = [
-                        $content,
+                        $search_query,
                         $search_engine_label,
                         $search_mode_label,
                         float_format($time),
@@ -225,7 +225,7 @@ function search_test_script()
                     $row = array_merge($row, [
                         strval(count($results)),
                         integer_format($TOTAL_RESULTS),
-                        $LAST_SEARCH_QUERY . ' LIMIT 30;' . "\n\n" . $LAST_COUNT_QUERY,
+                        @strval($LAST_SEARCH_QUERY) . ' LIMIT 30;' . "\n\n" . @strval($LAST_COUNT_QUERY),
                     ]);
 
                     if ((!$problematic_only) || ($time > 5.0)) {

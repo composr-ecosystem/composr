@@ -116,6 +116,8 @@ class lang_spelling_test_set extends cms_test_case
                 (strpos($string, 'Composr') !== false) &&
 
                 (strpos($key, 'SETUPWIZARD') === false) &&
+                (strpos($key, 'composr_fast_custom_index') === false) &&
+                (strpos($key, 'COMPOSR_FAST_CUSTOM_INDEX') === false) &&
                 (!in_array($key, [
                     'NO_PHP_IN_TEMPLATES',
                     'FORUM_BASE_URL_INVALID',

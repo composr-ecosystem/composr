@@ -232,7 +232,7 @@ function confluence_breadcrumbs($page_id, $no_link_for_me_sir = true)
 
     $zone = get_page_zone('docs');
 
-    $map = ['page' => 'docs', 'type' => $page_id];
+    $map = ['page' => 'docs', 'type' => strval($page_id)];
     $page_link = build_page_link($map, $zone);
 
     if (!array_key_exists($page_id, $mappings)) {
@@ -255,6 +255,9 @@ function confluence_breadcrumbs($page_id, $no_link_for_me_sir = true)
 
     $below = confluence_breadcrumbs(intval($mappings[$page_id]['parent_id']), false);
 
+    if ($below === null) {
+        return $segments;
+    }
     return array_merge($below, $segments);
 }
 
@@ -356,7 +359,7 @@ function confluence_clean_page($html)
 function confluence_query($query, $trigger_error = true)
 {
     $url = get_confluence_base_url() . '/rest/api/' . $query;
-    $json = confluence_call_url($url, $trigger_error, true);
+    list($json) = confluence_call_url($url, $trigger_error, true);
 
     if (empty($json)) {
         if (!$trigger_error) {
@@ -388,5 +391,5 @@ function confluence_call_url($url, $trigger_error = true, $text = false)
     }
 
     require_code('http');
-    return cache_and_carry('http_get_contents', [$url, $options], $CONFLUENCE_CACHE_TIME);
+    return cache_and_carry('cms_http_request', [$url, $options], $CONFLUENCE_CACHE_TIME);
 }

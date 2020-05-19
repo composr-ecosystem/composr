@@ -160,6 +160,10 @@ class Module_search
 
                 $this->ob = $ob;
                 $this->info = $info;
+
+                $this->title = get_screen_title('_SEARCH_RESULTS', true, [$info['lang']]);
+            } else {
+                $this->title = null;
             }
         }
 
@@ -168,7 +172,9 @@ class Module_search
         }
 
         if ($type == 'results') {
-            $this->title = get_screen_title('SEARCH_RESULTS');
+            if ($this->title === null) {
+                $this->title = get_screen_title('SEARCH_RESULTS');
+            }
 
             attach_to_screen_header('<meta name="robots" content="noindex,nofollow" />'); // XHTMLXHTML
         }
@@ -297,7 +303,8 @@ class Module_search
 
                     require_code('hooks/systems/ajax_tree/' . filter_naughty_harsh($ajax_hook));
                     $tree_hook_ob = object_factory('Hook_ajax_tree_' . filter_naughty_harsh($ajax_hook));
-                    $simple_content = $tree_hook_ob->simple(null, $ajax_options, preg_replace('#,.*$#', '', $under));
+                    $_under_simplified = preg_replace('#,.*$#', '', $under);
+                    $simple_content = $tree_hook_ob->simple(null, $ajax_options, empty($_under_simplified) ? null : $_under_simplified);
 
                     $ajax = true;
 
@@ -368,6 +375,12 @@ class Module_search
                     ]));
                 }
             }
+            $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', [
+                '_GUID' => '3223ada7636c85e6879feb9a6f6885d2',
+                'CHECKED' => (get_param_integer('only_titles', 0) == 1),
+                'NAME' => 'only_titles',
+                'DISPLAY' => do_lang_tempcode('ONLY_TITLES'),
+            ]));
             if (method_exists($ob, 'get_fields')) {
                 $fields = $ob->get_fields();
                 foreach ($fields as $field) {

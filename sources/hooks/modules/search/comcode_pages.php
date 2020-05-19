@@ -51,6 +51,14 @@ class Hook_search_comcode_pages extends FieldsSearchHook
     }
 
     /**
+     * Empty the Composr fast custom index.
+     */
+    public function empty_index()
+    {
+        $GLOBALS['SITE_DB']->query_delete('cpages_fulltext_index');
+    }
+
+    /**
      * Perform indexing using the Composr fast custom index.
      *
      * @param  ?TIME $since Only index records newer than this (null: no limit)
@@ -68,6 +76,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         $fields_to_index = [
             'page_name' => APPEARANCE_CONTEXT_TITLE,
+            'page_title' => APPEARANCE_CONTEXT_TITLE,
             'page_content' => APPEARANCE_CONTEXT_BODY,
             'meta_keywords' => APPEARANCE_CONTEXT_META,
             'meta_description' => APPEARANCE_CONTEXT_BODY,
@@ -82,8 +91,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         $db = $GLOBALS['SITE_DB'];
 
         $zones = find_all_zones();
+        $langs = find_all_langs();
         foreach ($zones as $zone) {
-            $langs = find_all_langs();
             foreach (array_keys($langs) as $lang) {
                 $pages = find_all_pages($zone, 'comcode_custom/' . $lang, 'txt', false, $clean_scan ? null : $since, FIND_ALL_PAGES__ALL);
                 foreach ($pages as $page => $page_type) {
@@ -99,6 +108,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                         $content_fields = [
                             'zone_name' => $zone,
                             'page_name' => $page,
+                            'page_title' => get_comcode_page_title_from_disk($file_base . '/' . $file_path),
                             'page_content' => cms_file_get_contents_safe($file_base . '/' . $file_path),
                             'meta_keywords' => $keywords,
                             'meta_description' => $description,

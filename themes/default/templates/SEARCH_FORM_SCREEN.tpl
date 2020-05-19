@@ -39,21 +39,6 @@
 		{+END}
 
 		<div id="search-form" class="toggleable-tray js-tray-content"{+START,IF_PASSED,RESULTS}{+START,IF_NON_EMPTY,{RESULTS}} style="display: none"{+END}{+END} aria-expanded="false">
-			<p>
-				{!SEARCH_HELP}
-			</p>
-
-			{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
-			{+START,IF,{$AND,{$SHOW_DOCS},{$HAS_PRIVILEGE,see_software_docs}}}
-				{+START,INCLUDE,STAFF_ACTIONS}
-					STAFF_ACTIONS_TITLE={!STAFF_ACTIONS}
-					1_URL={$TUTORIAL_URL*,tut_search}
-					1_TITLE={!HELP}
-					1_REL=help
-					1_ICON=help
-				{+END}
-			{+END}
-
 			<form title="{!PRIMARY_PAGE_FORM}" action="{$URL_FOR_GET_FORM*,{URL}}" target="_self" method="get" class="main-search-form js-form-primary-form">
 				{$HIDDENS_FOR_GET_FORM,{URL}}
 				<input type="hidden" name="all_defaults" value="0" />
@@ -179,6 +164,17 @@
 				<p class="proceed-button">
 					<button data-disable-on-click="1" accesskey="u" class="btn btn-primary btn-scr buttons--search" type="submit">{+START,INCLUDE,ICON}NAME=buttons/search{+END} {!SEARCH_TITLE}</button>
 				</p>
+
+				{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
+				{+START,IF,{$AND,{$SHOW_DOCS},{$HAS_PRIVILEGE,see_software_docs}}}
+					{+START,INCLUDE,STAFF_ACTIONS}
+						STAFF_ACTIONS_TITLE={!STAFF_ACTIONS}
+						1_URL={$TUTORIAL_URL*,tut_search}
+						1_TITLE={!HELP}
+						1_REL=help
+						1_ICON=help
+					{+END}
+				{+END}
 			</form>
 		</div>
 	{+START,IF_PASSED,RESULTS}

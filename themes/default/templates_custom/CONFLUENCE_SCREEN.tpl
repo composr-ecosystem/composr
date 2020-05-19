@@ -25,5 +25,5 @@ if(window.WRM._dataArrived)window.WRM._dataArrived();
 {TITLE}
 
 <div class="clearfix">
-	{HTML}
+	{HTML`}
 </div>

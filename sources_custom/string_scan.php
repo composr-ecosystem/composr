@@ -10381,13 +10381,13 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SEARCH_DOMAIN
         SEARCH_FOR
         SEARCH_FORUM_POSTS
-        SEARCH_HELP
         SEARCH_HOOK_NOT_AVAILABLE
         SEARCH_OPTIONS
         SEARCH_POSTS
         SEARCH_POSTS_WITHIN_TOPIC
         SEARCH_QUERY_TOO_SLOW
         SEARCH_RESULTS
+        _SEARCH_RESULTS
         SEARCH_RESULTS_ARE
         SEARCH_RESULTS_ARE_UNNAMED
         SEARCH_TITLE
@@ -10581,7 +10581,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TAG_CONTENTS
         TAKEN_RANDOM_WIKI_PAGE
         TAX
-        TEMPLATE_SEARCH_INFO
+        ADDITIONAL_FILTERS
         TESTS
         TEST_FAIL
         TEST_PASS
