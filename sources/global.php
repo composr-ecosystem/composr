@@ -568,7 +568,7 @@ function cms_ini_set($var, $value)
  */
 function cms_flush_safe()
 {
-    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On') && (ob_get_level()) == 0) {
         flush();
     }
 }
