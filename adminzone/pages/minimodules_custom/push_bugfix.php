@@ -354,6 +354,7 @@ END;
         $git_dirty = isset($git_found[$path]);
         echo '<option' . ($git_dirty ? ' selected="selected"' : '') . '>' . escape_html($path) . '</option>';
     }
+    $_default_project_id = strval($default_project_id);
     $_git_found = json_encode($git_found);
     echo <<<END
             </select>
@@ -396,7 +397,7 @@ END;
             // Now select the corresponding project
             var project_e = document.getElementById('project');
             for (var i = 0; i < project_e.options.length; i++) {
-                if (((project_e.options[i].value == '{$default_project_id}') && (category_title != 'General')) || ((project_e.options[i].value == '4') && (category_title == 'General'))) {
+                if (((project_e.options[i].value == '{$_default_project_id}') && (category_title != 'General')) || ((project_e.options[i].value == '4') && (category_title == 'General'))) {
                     project_e.selectedIndex = i;
                     break;
                 }
@@ -567,7 +568,7 @@ function git_find_uncommitted_files()
         $matches = [];
         if (preg_match('#\t(both modified|modified|new file):\s+(.*)$#', $line, $matches) != 0) {
             if (($matches[2] != 'data/files.bin') && ((basename($matches[2]) != 'push_bugfix.php') || (get_param_integer('include_push_bugfix', 0) == 1))) {
-                $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', ['filename' => $matches[2]]);
+                $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', ['filepath' => $matches[2]]);
                 if (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $file_addon . '.php')) {
                     $file_addon = null;
                 }
