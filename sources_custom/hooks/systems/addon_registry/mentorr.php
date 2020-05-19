@@ -135,6 +135,7 @@ New users should then be assigned a mentor/buddy who will receive an equal amoun
             'sources_custom/hooks/systems/upon_query/add_mentor.php',
             'lang_custom/EN/mentorr.ini',
             'sources_custom/hooks/systems/config/mentor_usergroup.php',
+            'sources_custom/hooks/systems/privacy/mentorr.php',
         ];
     }
 
@@ -166,8 +167,8 @@ New users should then be assigned a mentor/buddy who will receive an equal amoun
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('members_mentors', [
                 'id' => '*AUTO',
-                'member_id' => '*INTEGER',
-                'mentor_id' => '*INTEGER',
+                'member_id' => '*MEMBER',
+                'mentor_id' => '*MEMBER',
             ]);
         }
     }

@@ -208,7 +208,7 @@ class Module_admin_version
             ]);
 
             $GLOBALS['SITE_DB']->create_table('member_privileges', [
-                'member_id' => '*INTEGER',
+                'member_id' => '*MEMBER',
                 'privilege' => '*ID_TEXT',
                 'the_page' => '*ID_TEXT',
                 'module_the_name' => '*ID_TEXT',
@@ -1173,6 +1173,8 @@ class Module_admin_version
                 'i_ac',
                 'i_occurrence_rate', // For sorting
             ]);
+
+            $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*MEMBER'], ['m_name' => 'member_id', 'm_table' => 'member_privileges'], '', 1);
         }
     }
 
