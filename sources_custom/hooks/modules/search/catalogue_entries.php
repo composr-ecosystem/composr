@@ -320,7 +320,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 $where_clause .= 'ce_validated=1';
             }
 
-            $g_or = get_permission_where_clause_groups(get_member());
+            $g_or = _get_where_clause_groups(get_member());
             if ($g_or != '') {
                 if (get_value('disable_cat_cat_perms') !== '1') {
                     $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=i_category_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')';
