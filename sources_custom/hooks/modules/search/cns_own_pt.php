@@ -221,7 +221,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         require_lang('cns');
 
         // Calculate and perform query
-        if (can_use_composr_fulltext_engine('cns_own_pt', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_ocf_own_pt_starter', 0) == 1)) {
+        if (can_use_composr_fulltext_engine('cns_own_pt', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_cns_own_pt_starter', 0) == 1)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';
@@ -275,7 +275,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= $sq;
             }
             $this->_handle_date_check($cutoff, 'p_time', $where_clause);
-            if (get_param_integer('option_cns_own_pt_posts_starter', 0) == 1) {
+            if (get_param_integer('option_cns_own_pt_starter', 0) == 1) {
                 $where_clause .= ' AND ';
                 $where_clause .= 's.t_cache_first_post_id=r.id';
             }

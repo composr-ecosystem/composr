@@ -54,24 +54,24 @@ function search_test_script()
     $problematic_only = (get_param_integer('problematic_only', 0) == 1);
 
     $test_searches = array(
-        'test',
-        'test search',
-        '"test search"',
+        'foobar',
+        'foobar search',
+        '"foobar search"',
     );
 
     // Warm up database
     if ($warmup) {
         $GLOBALS['FORUM_DB']->query_select_value('f_posts_fulltext_index', 'COUNT(*)', array('i_lang' => fallback_lang()));
         $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)', array('p_cache_forum_id' => 6));
-        $GLOBALS['FORUM_DB']->query_value('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . "f_posts WHERE MATCH (p_post) AGAINST ('yohoho')");
+        $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . "f_posts WHERE MATCH (p_post) AGAINST ('yohoho')");
     }
 
-    $out = rows_header($download, $out);
+    $out = rows_header($download);
 
     require_code('search');
     require_code('database_search');
-    require_code('hooks/modules/search/ocf_posts');
-    $ob = new Hook_search_ocf_posts();
+    require_code('hooks/modules/search/cns_posts');
+    $ob = new Hook_search_cns_posts();
     $info = $ob->info();
 
     $row_header = array(
@@ -185,6 +185,8 @@ function search_test_script()
                         }
                     }
                     $where_clause .= ')';
+                } else {
+                    $where_clause = '';
                 }
 
                 for ($i = 1; $i <= $iterations; $i++) {
@@ -250,7 +252,7 @@ function search_test_script()
     rows_footer($download, $out);
 }
 
-function rows_header($download, $out)
+function rows_header($download)
 {
     if ($download) {
         header('Content-Type: text/plain');
