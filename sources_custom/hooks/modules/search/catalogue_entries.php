@@ -282,7 +282,6 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         require_lang('catalogues');
 
         // Calculate and perform query
-        $permissions_module = 'forums';
         if (can_use_composr_fulltext_engine('catalogue_entries', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!'))) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
@@ -323,8 +322,10 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
             $g_or = _get_where_clause_groups(get_member());
             if ($g_or != '') {
-                $where_clause .= ' AND ';
-                $where_clause .= 'EXISTS(SELECT * FROM ' . ((get_value('disable_cat_cat_perms') === '1') ? '' : (' ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.cc_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ') LEFT JOIN ')) . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON (' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . '))';
+                if (get_value('disable_cat_cat_perms') !== '1') {
+                    $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=i_category_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')';
+                }
+                $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON ' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=i.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
             }
 
             if (addon_installed('content_privacy')) {
@@ -351,8 +352,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             $db = $GLOBALS['SITE_DB'];
             $index_table = 'ce_fulltext_index';
             $key_transfer_map = array('id' => 'i_catalogue_entry_id');
-            $index_permissions_field = 'i_category_id';
-            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
         } else {
             // Calculate our where clause (search)
             $sq = build_search_submitter_clauses('ce_submitter', $author_id, $author);

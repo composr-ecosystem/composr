@@ -87,11 +87,7 @@ function init__search()
  */
 function can_use_composr_fulltext_engine($hook, $query = null, $has_heavy_filtering = null)
 {
-    if (($query !== null) && ($query == '')) {
-        return false; // Blank queries not supported
-    }
-
-    if (($query !== null) && (strpos($query, '"') !== false)) {
+    if ($query !== null) {
         $only_singular_ngrams = (intval(get_value('fulltext_max_ngram_size', '1', true)) <= 1);
 
         $_trigger_words = get_value('fulltext_trigger_words', '', true);
@@ -101,38 +97,49 @@ function can_use_composr_fulltext_engine($hook, $query = null, $has_heavy_filter
             $tokeniser = Composr_fulltext_engine::get_tokeniser(user_lang());
             $ngrams = $tokeniser->query_to_search_tokens($query);
         }
-
-        if ($only_singular_ngrams) {
-            if (array_unique(array_values($ngrams[0] + $ngrams[1] + $ngrams[2])) !== array(true)) {
-                return false; // Quoted text not supported in this configuration
-            }
-        }
     }
 
-    $by_url = get_param_integer('keep_composr_fulltext_engine', null);
-    if ($by_url !== null) {
-        return ($by_url == 1); // Explicitly specified by URL
+    // Negative, cannot use for these reasons...
+
+    if (($query !== null) && ($query == '')) {
+        return false; // Blank queries not supported
+    }
+
+    if (($query !== null) && ($only_singular_ngrams)) {
+        if (array_unique(array_values($ngrams[0] + $ngrams[1] + $ngrams[2])) !== array(true)) {
+            return false; // Quoted text not supported in this configuration
+        }
     }
 
     if (!cron_installed()) {
         return false; // No indexing working
     }
 
-    if (get_value('composr_fulltext_engine__' . $hook, '1', true) == '0') {
-        return false; // Explicitly disabled
-    }
+    // Positive, must use for these reasons...
 
-    if (($query !== null) && (strpos($query, '"') !== false)) {
-        if (!empty($trigger_words)) {
-            if (!empty(array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_words))) {
-                return true; // We will use Composr fast custom index if there's certain stop words
-            }
+    if (($query !== null) && (!empty($trigger_words))) {
+        if (!empty(array_intersect(array_map('cms_mb_strtolower', array_keys($ngrams)), $trigger_words))) {
+            return true; // We will use Composr fast custom index if there's certain stop words
         }
     }
 
-    if ($has_heavy_filtering !== null) {
-        return $has_heavy_filtering; // We will use Composr fast custom index if there's heavy filtering as there'll be a big speed boost
+    if ($has_heavy_filtering === true) {
+        return true; // We will use Composr fast custom index if there's heavy filtering as there'll be a big speed boost
     }
+
+    // Explicit choice...
+
+    $by_url = get_param_integer('keep_composr_fulltext_engine', null);
+    if ($by_url !== null) {
+        return ($by_url == 1); // Explicitly specified by URL
+    }
+
+    $default_choice = get_value('composr_fulltext_engine__' . $hook, '', true);
+    if ($default_choice != '') {
+        return ($default_choice == '1'); // Explicitly specified by config
+    }
+
+    // -
 
     return false; // Default to use traditional search
 }
@@ -182,7 +189,7 @@ class Composr_fulltext_engine
         if (isset($SEARCH_CONFIG_OVERRIDE['fulltext_allow_fuzzy_search'])) {
             $allow_fuzzy_search = ($SEARCH_CONFIG_OVERRIDE['fulltext_allow_fuzzy_search'] == '1');
         } else {
-            $allow_fuzzy_search = (get_value('fulltext_allow_fuzzy_search', '1', true) == '1');
+            $allow_fuzzy_search = (get_value('fulltext_allow_fuzzy_search', '0', true) == '1');
         }
         if (isset($SEARCH_CONFIG_OVERRIDE['fulltext_scale_by_commonality'])) {
             $scale_by_commonality = ($SEARCH_CONFIG_OVERRIDE['fulltext_scale_by_commonality'] == '1');
@@ -285,6 +292,7 @@ class Composr_fulltext_engine
         $order_by_occurrence_rates = '';
         $is_all_hard_joins = true;
         $i = 0;
+        $open_brackets = 0;
         foreach ($search_token_sets as $set_type => $search_tokens) {
             foreach ($search_tokens as $ngram => $is_singular_ngram) {
                 if ($is_singular_ngram) {
@@ -333,7 +341,8 @@ class Composr_fulltext_engine
                         $where_clause .= ' AND i' . strval($i) . '.i_ngram IS NULL';
                     }
                 } else {
-                    $where_clause .= ' AND ' . (($set_type == 'and') ? 'EXISTS' : 'NOT EXISTS') . ' (SELECT * FROM ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' WHERE ' . $join_condition .')';
+                    $where_clause .= ' AND ' . (($set_type == 'and') ? 'EXISTS' : 'NOT EXISTS') . ' (SELECT * FROM ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' WHERE ' . $join_condition;
+                    $open_brackets++; // We keep opening up more brackets to stop the MySQL query optimiser doing whacky things, partly executing random subqueries into temporary tables before the first join
                 }
 
                 if (($set_type != 'not') && ($order_by_total_ngrams_matched != '')) {
@@ -357,6 +366,10 @@ class Composr_fulltext_engine
 
                 $i++;
             }
+        }
+        while ($open_brackets > 0) {
+            $open_brackets--;
+            $where_clause .= ')';
         }
 
         if ($i == 0) {
@@ -775,7 +788,7 @@ class Composr_fulltext_engine
      * @param  LANGUAGE_NAME $lang Language codename
      * @return object Tokeniser
      */
-    static protected function get_tokeniser($lang)
+    static public function get_tokeniser($lang)
     {
         static $tokeniser = array();
         if (!array_key_exists($lang, $tokeniser)) {
@@ -796,7 +809,7 @@ class Composr_fulltext_engine
      * @param  LANGUAGE_NAME $lang Language codename
      * @return ?object Stemmer (null: none)
      */
-    static protected function get_stemmer($lang)
+    static public function get_stemmer($lang)
     {
         static $stemmer = array();
         if (!array_key_exists($lang, $stemmer)) {

@@ -162,14 +162,36 @@ class Hook_search_cns_posts extends FieldsSearchHook
         );
 
         $db = $GLOBALS['FORUM_DB'];
+
+        // A way to force-resume where we left off, if we're debugging our way through
+        if (get_value('fulltext_startup_hack', '0', true) == '1') {
+            $last_post_id = $db->query_select_value_if_there('f_posts_fulltext_index', 'MAX(i_post_id)');
+            if ($last_post_id !== null) {
+                $_since = $db->query_select_value_if_there('f_posts', 'p_time', array('id' => $last_post_id));
+                if ($_since !== null) {
+                    $since = $_since;
+                }
+            }
+        }
+
+
+        global $TABLE_LANG_FIELDS_CACHE;
+        $lang_fields = $TABLE_LANG_FIELDS_CACHE['f_posts'];
+
         $sql = 'SELECT p.id,p.p_time,p.p_last_edit_time,p.p_poster,p.p_title,p.p_post,p.p_cache_forum_id,t_is_open,t_pinned,t_cache_first_post_id FROM ' . $db->get_table_prefix() . 'f_posts p JOIN ' . $db->get_table_prefix() . 'f_topics t ON p.p_topic_id=t.id';
         $sql .= ' WHERE p_cache_forum_id IS NOT NULL';
         $since_clause = $engine->generate_since_where_clause($db, $index_table, array('p_time' => false, 'p_last_edit_time' => true), $since, $statistics_map);
         $sql .= $since_clause;
+
+        $max_post_length = intval(get_value('fulltext_max_post_length', '0', true));
+        if ($max_post_length > 0) {
+            $sql .= ' AND ' . db_function('LENGTH', array($GLOBALS['FORUM_DB']->translate_field_ref('p_post'))) . '<' . strval($max_post_length);
+        }
+
         $max = 100;
         $start_id = -1;
         do {
-            $rows = $db->query($sql . ' AND p.id>' . strval($start_id) . ' ORDER BY p.id', $max);
+            $rows = $db->query($sql . ' AND p.id>' . strval($start_id) . ' ORDER BY p.id', $max, 0, false, false, $lang_fields);
             foreach ($rows as $row) {
                 $content_fields = $row + array('i_starter' => ($row['t_cache_first_post_id'] == $row['id']) ? 1 : 0);
 
@@ -263,7 +285,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
 
         // Calculate and perform query
         $permissions_module = 'forums';
-        if (can_use_composr_fulltext_engine('cns_posts', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_ocf_posts_starter', 0) == 1)) {
+        if (can_use_composr_fulltext_engine('cns_posts', $content, $cutoff !== null || $author != '' || ($search_under != '-1' && $search_under != '!') || get_param_integer('option_cns_posts_starter', 0) == 1)) {
             // This search hook implements the Composr fast custom index, which we use where possible...
 
             $table = 'f_posts r';

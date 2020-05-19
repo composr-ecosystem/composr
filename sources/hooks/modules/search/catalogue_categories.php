@@ -126,13 +126,14 @@ class Hook_search_catalogue_categories extends FieldsSearchHook
             $where_clause .= 'p.category_name IS NOT NULL';
         }
 
+        $table = 'catalogue_categories r';
         $g_or = _get_where_clause_groups(get_member());
         if ($g_or != '') {
             $table .= ((get_value('disable_cat_cat_perms') === '1') ? '' : (' JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')')) . ' JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON (' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
         }
 
         // Calculate and perform query
-        $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_categories r', array('r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'), $where_clause, $content_where, $remapped_orderer, 'r.*');
+        $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, array('r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'), $where_clause, $content_where, $remapped_orderer, 'r.*');
 
         $out = array();
         foreach ($rows as $i => $row) {
