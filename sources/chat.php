@@ -307,7 +307,13 @@ function chat_room_prune($room_id)
     $extra = '';
     $last_active_prune = intval(get_value('last_active_prune'));
     if ($last_active_prune < time() - CHAT_ACTIVITY_PRUNE) {
-        $pruned = $GLOBALS['SITE_DB']->query('SELECT id,member_id,room_id FROM ' . get_table_prefix() . 'chat_active WHERE date_and_time<' . strval(time() - CHAT_ACTIVITY_PRUNE));
+        $sql = 'SELECT id,member_id,room_id FROM ' . get_table_prefix() . 'chat_active WHERE date_and_time<' . strval(time() - CHAT_ACTIVITY_PRUNE);
+        $sql .= ' AND (member_id<>' . strval(get_member()); // Exception for current member in the room they are in (for situation of them being the last to go and first to come back way later)
+        if ($room_id !== null) {
+            $sql .= ' OR room_id<>' . strval($room_id);
+        }
+        $sql .= ')';
+        $pruned = $GLOBALS['SITE_DB']->query($sql);
         foreach ($pruned as $p) {
             // Mark activity row for clearing out
             $extra .= ' OR id=' . strval($p['id']);
@@ -371,7 +377,7 @@ function chat_room_prune($room_id)
         $extra2 = 'room_id=' . strval($room_id);
     }
 
-    // Prune 'active' indication (delete's us, and anything that needs pruning)
+    // Prune 'active' indication (deletes us, and anything that needs pruning)
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'chat_active WHERE (member_id=' . strval(get_member()) . ' AND ' . $extra2 . ')' . $extra, null, null, false, true);
 
     // Note that *we are still here*
