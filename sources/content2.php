@@ -217,7 +217,7 @@ function metadata_get_fields($content_type, $content_id, $allow_no_owner = false
             } else {
                 $url_moniker_to_show = make_string_tempcode(escape_html($url_moniker));
             }
-            $fields->attach(form_input_codename(do_lang_tempcode('URL_MONIKER'), do_lang_tempcode('DESCRIPTION_META_URL_MONIKER', $url_moniker_to_show), 'meta_url_moniker', $manually_chosen ? $url_moniker : '', false, null, null, array('/')));
+            $fields->attach(form_input_codename(do_lang_tempcode('URL_MONIKER'), do_lang_tempcode('DESCRIPTION_META_URL_MONIKER', $url_moniker_to_show), 'meta_url_moniker', (($manually_chosen) && (!is_numeric($url_moniker))) ? $url_moniker : '', false, null, null, array('/')));
         }
     } else {
         if ($show_header != METADATA_HEADER_FORCE) {
@@ -408,7 +408,7 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = null, $ne
 
         if ($url_moniker !== null) {
             require_code('type_sanitisation');
-            if (!is_alphanumeric(str_replace('/', '', $url_moniker))) {
+            if ((!is_alphanumeric(str_replace('/', '', $url_moniker))) || (is_numeric($url_moniker))) {
                 attach_message(do_lang_tempcode('BAD_CODENAME'), 'warn');
                 $url_moniker = null;
             }
