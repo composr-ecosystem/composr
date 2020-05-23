@@ -272,10 +272,6 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 $where_clause .= $sq;
             }
 
-            if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
-                $where_clause .= ' AND ';
-                $where_clause .= 'z.zone_name IS NOT NULL';
-            }
             if (strpos($content, 'panel_') === false) {
                 $where_clause .= ' AND ';
                 $where_clause .= '(r.the_page NOT LIKE \'' . db_encode_like('panel\_%') . '\') AND (r.the_page NOT LIKE \'' . db_encode_like('\_%') . '\')';
