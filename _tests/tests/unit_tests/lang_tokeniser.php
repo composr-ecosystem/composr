@@ -39,6 +39,9 @@ class lang_tokeniser_test_set extends cms_test_case
 
         // Querying...
 
+        $got = $tokeniser->query_to_search_tokens('One Two Three Four Five Six', true, 5);
+        $this->assertTrue(array_keys($got[0]) == ['one', 'two', 'three', 'four', 'five']);
+
         $got = $tokeniser->query_to_search_tokens("it's 'its'");
         $this->assertTrue(array_keys($got[0]) == ["it's", 'its']);
 
