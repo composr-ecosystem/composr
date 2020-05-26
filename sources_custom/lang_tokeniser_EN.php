@@ -49,10 +49,19 @@ class LangTokeniser_EN
      *
      * @param  string $query Search query
      * @param  boolean $support_boolean Whether to support boolean syntax
+     * @param  integer $max_tokens The maximum number of tokens to parse
      * @return array A complex structure of search tokens
      */
-    public function query_to_search_tokens($query, $support_boolean = true)
+    public function query_to_search_tokens($query, $support_boolean = true, $max_tokens = 30)
     {
+        /*
+        Note the default for $max_tokens comes from being comfortably less than MySQL's:
+         - maximum number of joins ("Too many tables; MySQL can only use 31 tables in a join" / "Too many tables; MySQL can only use 61 tables in a join" - depending on 32 vs 64 bit)
+         - maximum nesting depth (61, "Too high level of nesting for select")
+
+        If it's longer then the query is probably just spam anyway, intended as post spam by a bot. We therefore don't need anything bigger.
+        */
+
         $fuzzy_and = array();
         $and = array();
         $not = array();
@@ -61,6 +70,7 @@ class LangTokeniser_EN
         $in_quotes = false;
         $operator = null;
         $current_search_token = '';
+        $num_tokens_found = 0;
 
         $has_ctype = function_exists('ctype_alnum');
         $utf = (get_charset() == 'utf-8');
@@ -99,7 +109,7 @@ class LangTokeniser_EN
             } else {
                 if ($c == '"') {
                     if ($in_quotes) {
-                        $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
+                        $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram, $num_tokens_found, $max_tokens);
                     } elseif ($current_search_token == '') {
                         $in_quotes = true; // E.g. +"foo"
                     }
@@ -122,7 +132,7 @@ class LangTokeniser_EN
                 if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
                     $current_search_token .= $c;
                 } elseif (!$in_quotes) {
-                    $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
+                    $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram, $num_tokens_found, $max_tokens);
                 } else {
                     $is_singular_ngram = false;
                     if (substr($current_search_token, -1) != ' ') {
@@ -132,7 +142,7 @@ class LangTokeniser_EN
             }
         }
 
-        $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram);
+        $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram, $num_tokens_found, $max_tokens);
 
         return array($fuzzy_and, $and, $not);
     }
@@ -147,9 +157,15 @@ class LangTokeniser_EN
      * @param  ?string $operator The special boolean operator for this token (null: none)
      * @param  string $current_search_token The current token
      * @param  boolean $is_singular_ngram If it is a singular ngram
+     * @param  integer $num_tokens_found The number of tokens found so far
+     * @param  integer $max_tokens The maximum number of tokens to parse
      */
-    protected function finish_search_token(&$fuzzy_and, &$and, &$not, &$in_quotes, &$operator, &$current_search_token, &$is_singular_ngram)
+    protected function finish_search_token(&$fuzzy_and, &$and, &$not, &$in_quotes, &$operator, &$current_search_token, &$is_singular_ngram, &$num_tokens_found, $max_tokens)
     {
+        if ($num_tokens_found == $max_tokens) {
+            return;
+        }
+
         if ($current_search_token != '') {
             $current_search_token = cms_mb_strtolower($current_search_token);
 
@@ -169,6 +185,8 @@ class LangTokeniser_EN
             } else {
                 fatal_exit('Unknown operator');
             }
+
+            $num_tokens_found++;
         }
 
         $is_singular_ngram = true;
