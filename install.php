@@ -7,6 +7,10 @@
 
 */
 
+/*
+> If you are seeing this message in your web browser then you need to install PHP on your web server.<!--
+*/
+
 /*EXTRA FUNCTIONS: ftp_.*|fileowner*/
 
 /**
@@ -75,12 +79,12 @@ if (!array_key_exists('type', $_GET)) {
         header('Content-Type: text/html; charset=utf-8');
     }
 
-    echo '<!DOCTYPE html>' . "\n";
+    echo '<' . '!' . 'DOCTYPE html' . '>' . "\n";
     if (empty($_GET)) { // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
-        echo '<script>
+        echo '<' . 'script' . '>
             window.setTimeout(function () { if (!document.getElementsByTagName("div")[0]) window.location+="?skip_slow_checks=1"; }, 30000);
             window.setInterval(function () { if ((!document.getElementsByTagName("div")[0]) && (document.body) && (document.body.innerHTML) && (document.body.innerHTML.indexOf("Maximum execution time")!=-1)) window.location+="?skip_slow_checks=1"; }, 500);
-        </script>';
+        </' . 'script' . '>';
     }
 }
 
@@ -2320,7 +2324,7 @@ function step_7()
         if (($module != 'admin_version') && ($module != 'admin_permissions')) {
             send_http_output_ping();
 
-            //echo '<!-- Installing ' . escape_html($module) . ' -->';
+            //echo '<' . '!-- Installing ' . escape_html($module) . ' --' . '>';
             if (reinstall_module('adminzone', $module)) {
                 $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
             }
@@ -2414,7 +2418,7 @@ function step_9()
     foreach ($blocks as $block => $type) {
         send_http_output_ping();
 
-        echo '<!-- Installing block: ' . $block . ' -->' . "\n";
+        echo '<' . '!-- Installing block: ' . $block . ' --' . '>' . "\n";
         if (reinstall_block($block)) {
             $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block))]));
         }
@@ -2612,8 +2616,8 @@ function require_code($codename)
 
     if (!array_key_exists('type', $_GET)) {
         $prior = memory_get_usage();
-        //echo '<!-- Memory: ' . number_format($prior) . ' -->' . "\n"; Can break JS validity if we inject this
-        //echo '<!-- Loading code file: ' . $codename . ' -->' . "\n";
+        //echo '<' . '!-- Memory: ' . number_format($prior) . ' --' . '>' . "\n"; Can break JS validity if we inject this
+        //echo '<' . '!-- Loading code file: ' . $codename . ' --' . '>' . "\n";
         cms_flush_safe();
     }
 
@@ -2649,7 +2653,7 @@ function require_code($codename)
         }
     }
     /*if (!array_key_exists('type', $_GET))   Memory usage debugging. Not safe, as can mess up Tempcode generation (mixed echos) {
-        echo '<!-- Memory diff for ' . $codename . ' was: ' . number_format(memory_get_usage() - $prior) . ' -->' . "\n";
+        echo '<' . '!-- Memory diff for ' . $codename . ' was: ' . number_format(memory_get_usage() - $prior) . ' --' . '>' . "\n";
     }*/
 }
 
