@@ -556,6 +556,7 @@ class Hook_addon_registry_core
             'sources/blocks/main_multi_content.php',
             'sources/hooks/systems/symbols/BETA_CSS_PROPERTY.php',
             'sources/hooks/systems/symbols/CONTENT_COUNT.php',
+            'sources/hooks/systems/symbols/FILE_EXISTS.php',
             'sources/antispam.php',
             'sources/static_cache.php',
             'sources/hooks/systems/notifications/spam_check_block.php',
