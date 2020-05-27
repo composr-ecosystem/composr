@@ -630,6 +630,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SESSION_ENTRY_PAGES
         SESSION_EXIT_PAGES
         SESSION_TOTAL_VIEWS
+        CONFIG_OPTION_wysiwyg_VALUE_-1=Off by default
+        CONFIG_OPTION_wysiwyg_VALUE_0=Off
+        CONFIG_OPTION_wysiwyg_VALUE_1=On by default
         STATS_CATEGORY_audience_demographics
         STATS_CATEGORY_audience_technical
         STATS_CATEGORY_content_growth

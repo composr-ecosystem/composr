@@ -21,8 +21,20 @@
     // HTML EDITOR
     // ===========
     function wysiwygOn() {
+        if ($cms.isMobile()) {
+            return false;
+        }
+
         var cookie = $cms.readCookie('use_wysiwyg');
-        return (!cookie || (cookie !== '0')) && $cms.configOption('wysiwyg') && !$cms.isMobile();
+        switch ($cms.configOption('wysiwyg')) {
+            case -1: // Off by default
+                return (cookie === '1');
+            case 0: // Off
+                return false;
+            case 1: // On by default
+                return (cookie !== '0');
+        }
+        return false; // Should never get here
     }
 
     function toggleWysiwyg(name) {

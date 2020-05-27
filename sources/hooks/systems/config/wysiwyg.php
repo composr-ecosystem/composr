@@ -32,12 +32,12 @@ class Hook_config_wysiwyg
     {
         return [
             'human_name' => 'comcode:ENABLE_WYSIWYG',
-            'type' => 'tick',
+            'type' => 'list',
             'category' => 'ACCESSIBILITY',
             'group' => 'GENERAL',
             'explanation' => 'CONFIG_OPTION_wysiwyg',
             'shared_hosting_restricted' => '0',
-            'list_options' => '',
+            'list_options' => '0|-1|1',
             'required' => true,
             'public' => true,
 

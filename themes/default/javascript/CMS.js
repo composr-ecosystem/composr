@@ -1189,7 +1189,7 @@
             case 'android':
                 return browser.includes('android');
             case 'wysiwyg':
-                return Boolean($cms.configOption('wysiwyg'));
+                return $cms.configOption('wysiwyg') != '0';
             case 'windows':
                 return os.includes('windows') || os.includes('win32');
             case 'mac':
