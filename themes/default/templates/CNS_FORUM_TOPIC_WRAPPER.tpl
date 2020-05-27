@@ -118,6 +118,8 @@
 							<option value="last_post"{$?,{$EQ,{SORT},last_post}, selected="selected",}>{!FORUM_ORDER_BY_LAST_POST}</option>
 							<option value="first_post"{$?,{$EQ,{SORT},first_post}, selected="selected",}>{!FORUM_ORDER_BY_FIRST_POST}</option>
 							<option value="title"{$?,{$EQ,{SORT},title}, selected="selected",}>{!FORUM_ORDER_BY_TITLE}</option>
+							<option value="views"{$?,{$EQ,{SORT},views}, selected="selected",}>{!COUNT_VIEWS}</option>
+							<option value="posts"{$?,{$EQ,{SORT},posts}, selected="selected",}>{!COUNT_POSTS}</option>
 						</select>
 					</form>
 				{+END}

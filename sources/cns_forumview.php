@@ -57,6 +57,18 @@ function get_forum_sort_order($_sort = 'first_post', $simplified = false)
             $keyset_field = 'first_title';
             break;
 
+        case 'views':
+            $sort .= 't_num_views DESC';
+            $keyset_clause = null;
+            $keyset_field = null;
+            break;
+
+        case 'posts':
+            $sort .= 't_cache_num_posts DESC';
+            $keyset_clause = null;
+            $keyset_field = null;
+            break;
+
         case 'read_time':
             $sort .= 'l_time DESC';
             $keyset_clause = null;
