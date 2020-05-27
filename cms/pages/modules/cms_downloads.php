@@ -386,6 +386,12 @@ class Module_cms_downloads extends Standard_crud_module
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
+        if ($id === null) {
+            if ($licence === null) {
+                $licence = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'download_licence', [], 'GROUP BY download_licence ORDER BY COUNT(*) DESC');
+            }
+        }
+
         if (($id === null) && ($category_id === null)) {
             $category_id = get_param_integer('cat', null);
         }

@@ -144,7 +144,7 @@ class Module_downloads
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'top_downloads', ['num_downloads']);
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'downloadauthor', ['author']);
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'dds', ['submitter']);
-            $GLOBALS['SITE_DB']->create_index('download_downloads', 'ddl', ['download_licence']); // For when deleting a download license
+            $GLOBALS['SITE_DB']->create_index('download_downloads', 'ddl', ['download_licence']); // For when deleting a download license and for choosing the most common as the new default
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'dvalidated', ['validated']);
 
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'ftjoin_dname', ['name']);
