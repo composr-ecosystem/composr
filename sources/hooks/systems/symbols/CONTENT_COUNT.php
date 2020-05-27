@@ -42,7 +42,7 @@ class Hook_symbol_CONTENT_COUNT
         require_code('content');
         $object = get_content_object($content_type);
         if ($object === null) {
-            return do_lang('INTERNAL_ERROR');
+            return do_lang('NO_SUCH_CONTENT_TYPE', escape_html($content_type));
         }
         $info = $object->info();
 
