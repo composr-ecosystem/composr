@@ -1338,6 +1338,10 @@ where:
 			<td>{$FONTS}</td>
 			<td>A comma-separated list of fonts that have been configured</td>
 		</tr>
+		<tr style="background: #DDFFDD">
+			<td>{$CONTENT_COUNT,content_type,selectcode_string,filtercode_string}</td>
+			<td>Find out how many content items match the given Selectcode and Filtercode strings. The content_type is a standard code representing a <kbd>content_meta_aware</kbd> hook filename (without [tt].php[/tt]). If the Selectcode/Filtercode strings are omitted or blank then counting happens broadly.</td>
+		</tr>
 	</tbody>
 </table>
 [/html]

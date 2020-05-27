@@ -731,11 +731,19 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
  *
  * @param  string $select The select string
  * @param  array $info Map of details of our content type
- * @param  string $category_field_select The field name of the category to select against
+ * @param  ?string $category_field_select The field name of the category to select against (null: work it out)
  * @return string SQL fragment
  */
-function build_selectcode_select_for_content_type($select, $info, $category_field_select)
+function build_selectcode_select_for_content_type($select, $info, $category_field_select = null)
 {
+    if ($category_field_select === null) {
+        if (is_array($info['category_field'])) {
+            $category_field_select = $info['category_field'][1];
+        } else {
+            $category_field_select = $info['category_field'];
+        }
+    }
+
     $parent_spec__table_name = array_key_exists('parent_spec__table_name', $info) ? $info['parent_spec__table_name'] : $info['table'];
     $parent_field_name = $info['is_category'] ? (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']) : $category_field_select;
     if ($parent_field_name === null) {
