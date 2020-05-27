@@ -388,7 +388,12 @@ class Module_cms_downloads extends Standard_crud_module
 
         if ($id === null) {
             if ($licence === null) {
-                $licence = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'download_licence', [], 'GROUP BY download_licence ORDER BY COUNT(*) DESC');
+                // Choose statistically
+                $total_count = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)');
+                $_licence = $GLOBALS['SITE_DB']->query_select('download_downloads', ['download_licence', 'COUNT(*) AS cnt'], [], 'GROUP BY download_licence ORDER BY COUNT(*) DESC');
+                if ((array_key_exists(0, $_licence)) && (floatval($_licence[0]['cnt']) * 1.25 >= floatval($total_count))) {
+                    $license = $_licence[0]['download_licence'];
+                }
             }
         }
 
