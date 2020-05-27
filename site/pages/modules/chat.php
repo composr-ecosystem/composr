@@ -167,6 +167,7 @@ class Module_chat
             $GLOBALS['SITE_DB']->create_table('chat_active', [
                 'id' => '*AUTO', // serves no purpose really, but needed as room_id can be null but is in compound key
                 'member_id' => 'MEMBER',
+                'ip' => 'IP',
                 'room_id' => '?AUTO_LINK',
                 'date_and_time' => 'TIME',
             ]);
@@ -243,6 +244,10 @@ class Module_chat
             ]);
 
             $GLOBALS['SITE_DB']->create_index('chat_rooms', 'is_im', ['is_im'/*, 'room_name' makes key too long*/]);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 13)) {
+            $GLOBALS['SITE_DB']->add_table_field('chat_active', 'ip', 'IP');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 13)) {

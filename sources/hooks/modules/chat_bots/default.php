@@ -61,11 +61,13 @@ class Hook_chat_bot_default
                 // In this room
                 $room_members = get_chatters_in_room($room_id);
                 $_room_members = '';
-                foreach ($room_members as $room_member) {
-                    if ($_room_members != '') {
-                        $_room_members .= ', ';
+                foreach ($room_members as $room_member_id => $room_member) {
+                    if (!is_guest($room_member_id)) {
+                        if ($_room_members != '') {
+                            $_room_members .= ', ';
+                        }
+                        $_room_members .= '{{' . $room_member[0] . '}}';
                     }
-                    $_room_members .= '{{' . $room_member . '}}';
                 }
 
                 // Show our complete result

@@ -36,7 +36,7 @@ function enter_chat_lobby()
     chat_room_prune(null);
 
     if ((!array_key_exists(get_member(), get_chatters_in_room(null))) && (!is_invisible())) {
-        $GLOBALS['SITE_DB']->query_insert('chat_active', ['member_id' => get_member(), 'date_and_time' => time(), 'room_id' => null]);
+        $GLOBALS['SITE_DB']->query_insert('chat_active', ['member_id' => get_member(), 'ip' => get_ip_address(), 'date_and_time' => time(), 'room_id' => null]);
 
         // Remove old active/inactive events for this member
         $GLOBALS['SITE_DB']->query_delete('chat_events', ['e_member_id' => get_member(), 'e_type_code' => 'BECOME_ACTIVE', 'e_room_id' => null]);
@@ -91,7 +91,7 @@ function show_im_contacts($member_id = null, $simpler = false, $max = null)
             $online = member_is_online($friend['member_liked']);
             $online_text = $online ? do_lang_tempcode('ONLINE') : do_lang_tempcode('OFFLINE');
         }
-        $username = array_key_exists($friend['member_liked'], $friend_active) ? $friend_active[$friend['member_liked']] : $GLOBALS['FORUM_DRIVER']->get_username($friend['member_liked'], false, USERNAME_DEFAULT_NULL);
+        $username = array_key_exists($friend['member_liked'], $friend_active) ? $friend_active[$friend['member_liked']][0] : $GLOBALS['FORUM_DRIVER']->get_username($friend['member_liked'], false, USERNAME_DEFAULT_NULL);
         if ($username !== null) {
             $member_profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($friend['member_liked'], true);
 

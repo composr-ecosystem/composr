@@ -387,7 +387,7 @@ function chat_room_prune($room_id)
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'chat_active WHERE (member_id=' . strval(get_member()) . ' AND ' . $extra2 . ')' . $extra, null, 0, false, true);
 
     // Note that *we are still here*
-    $GLOBALS['SITE_DB']->query_insert('chat_active', ['member_id' => get_member(), 'date_and_time' => time(), 'room_id' => ($room_id === null) ? null : $room_id]);
+    $GLOBALS['SITE_DB']->query_insert('chat_active', ['member_id' => get_member(), 'ip' => get_ip_address(), 'date_and_time' => time(), 'room_id' => ($room_id === null) ? null : $room_id]);
 }
 
 /**
@@ -439,7 +439,7 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
             $GLOBALS['SITE_DB']->query_update('chat_active', ['date_and_time' => time()], ['member_id' => get_member()]);
         } else {
             $GLOBALS['SITE_DB']->query_delete('chat_active', ['member_id' => get_member(), 'room_id' => $room_id], '', 1);
-            $GLOBALS['SITE_DB']->query_insert('chat_active', ['member_id' => get_member(), 'date_and_time' => time(), 'room_id' => $room_id]);
+            $GLOBALS['SITE_DB']->query_insert('chat_active', ['member_id' => get_member(), 'ip' => get_ip_address(), 'date_and_time' => time(), 'room_id' => $room_id]);
         }
     }
     chat_room_prune(null);
@@ -502,7 +502,7 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
             $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_message['member_id'], $_message['username'], false);
         } else {
             if (preg_match('#[:\.]#', $_message['ip_address']) != 0) {
-                $member_link = make_string_tempcode(escape_html(do_lang('GUEST') . '-' . substr(md5($_message['ip_address']), 0, 5)));
+                $member_link = make_string_tempcode(escape_html(generate_guest_chat_name($_message['ip_address'])));
             } else {
                 $member_link = make_string_tempcode(escape_html($_message['ip_address']));
             }
@@ -641,6 +641,17 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
     </result>
 </response>';
     echo $output;
+}
+
+/**
+ * Get the chat name for a Guest.
+ *
+ * @param  IP $ip_address The IP address of the guest
+ * @return string The guest chat name
+ */
+function generate_guest_chat_name($ip_address)
+{
+    return do_lang('GUEST') . '-' . substr(md5($ip_address), 0, 5);
 }
 
 /**
@@ -1026,13 +1037,26 @@ function get_chatters_in_room($room_id)
     } else {
         $extra2 = 'room_id=' . strval($room_id);
     }
-    $active = $GLOBALS['SITE_DB']->query('SELECT DISTINCT a.member_id FROM ' . get_table_prefix() . 'chat_active a LEFT JOIN ' . get_table_prefix() . 'sessions s ON s.member_id=a.member_id WHERE (session_invisible=0 OR session_invisible IS NULL) AND date_and_time>=' . strval(time() - 60 * 10) . ' AND ' . $extra2);
+    $sql = 'SELECT a.member_id,a.ip FROM ' . get_table_prefix() . 'chat_active a LEFT JOIN ' . get_table_prefix() . 'sessions s ON s.member_id=a.member_id WHERE (session_invisible=0 OR session_invisible IS NULL) AND date_and_time>=' . strval(time() - 60 * 10) . ' AND ' . $extra2 . ' GROUP BY a.member_id,a.ip';
+    $active = $GLOBALS['SITE_DB']->query($sql);
 
     $found_users = [];
     foreach ($active as $values) {
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($values['member_id'], false, USERNAME_DEFAULT_NULL);
-        if ($username !== null) {
-            $found_users[$values['member_id']] = $username;
+        if (is_guest($values['member_id'])) {
+            if (!isset($found_users[$values['member_id']])) {
+                $found_users[$values['member_id']] = [];
+            }
+
+            $found_users[$values['member_id']][] = generate_guest_chat_name(($values['ip'] === null) ? get_ip_address()/*keep_su likely being used*/ : $values['ip']);
+        } else {
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($values['member_id'], false, USERNAME_DEFAULT_NULL);
+            if ($username !== null) {
+                if (!isset($found_users[$values['member_id']])) {
+                    $found_users[$values['member_id']] = [];
+                }
+
+                $found_users[$values['member_id']][] = $username;
+            }
         }
     }
     return $found_users;
@@ -1052,21 +1076,32 @@ function get_chatters_in_room_tpl($users)
     foreach ($users as $member_id => $username) {
         if (!member_blocked(get_member(), $member_id)) {
             $some_users = true;
-            if (!$usernames->is_empty()) {
-                $usernames->attach(escape_html(', '));
-            }
             if (!is_guest($member_id)) {
+                if (!$usernames->is_empty()) {
+                    $usernames->attach(escape_html(', '));
+                }
                 if (get_forum_type() == 'cns') {
                     require_code('cns_general');
                     require_code('cns_members');
 
                     $colour = get_group_colour(cns_get_member_primary_group($member_id));
-                    $usernames->attach(do_template('CNS_USER_MEMBER', ['_GUID' => 'ef5f13f50d242a49474337b8e979c419', 'FIRST' => $usernames->is_empty(), 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true), 'MEMBER_ID' => strval($member_id), 'USERNAME' => $username, 'COLOUR' => $colour]));
+                    $usernames->attach(do_template('CNS_USER_MEMBER', ['_GUID' => 'ef5f13f50d242a49474337b8e979c419', 'FIRST' => $usernames->is_empty(), 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true), 'MEMBER_ID' => strval($member_id), 'USERNAME' => $username[0], 'COLOUR' => $colour]));
                 } else {
                     $usernames->attach($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, $username, false));
                 }
             } else {
-                $usernames->attach(escape_html(do_lang('GUEST')));
+                $self_guest_chat_name = generate_guest_chat_name(get_ip_address());
+
+                foreach ($username as $guest_chat_name) {
+                    if (!$usernames->is_empty()) {
+                        $usernames->attach(escape_html(', '));
+                    }
+                    if ($guest_chat_name == $self_guest_chat_name) {
+                        $usernames->attach(escape_html(do_lang('CHAT_GUEST_YOU', $guest_chat_name)));
+                    } else {
+                        $usernames->attach(escape_html($guest_chat_name));
+                    }
+                }
             }
         }
     }

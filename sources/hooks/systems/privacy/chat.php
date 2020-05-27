@@ -83,7 +83,7 @@ class Hook_privacy_chat extends Hook_privacy_base
                     'retention_days' => intval(ceil(floatval(CHAT_ACTIVITY_PRUNE) / 60.0 / 60.0 / 24.0)),
                     'retention_handle_method' => PRIVACY_METHOD__DELETE,
                     'member_id_fields' => ['member_id'],
-                    'ip_address_fields' => [],
+                    'ip_address_fields' => ['ip'],
                     'email_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,

@@ -8802,6 +8802,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COUNT_BANDWIDTH
         COUNT_DOWNLOADS
         COUNT_GIFT_POINTS_LEFT
+        CHAT_GUEST_YOU
         COUNT_MEMBERS
         COUNT_PAGES
         COUNT_POINTS
