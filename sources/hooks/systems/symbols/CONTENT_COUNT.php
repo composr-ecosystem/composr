@@ -31,9 +31,7 @@ class Hook_symbol_CONTENT_COUNT
      */
     public function run($param)
     {
-        require_code('filtercode');
-
-        if (!array_key_exists(0, $param)) {
+        if (empty($param[0])) {
             return '';
         }
 
