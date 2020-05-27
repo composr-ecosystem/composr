@@ -972,6 +972,24 @@ function chat_post_message($room_id, $message, $font_name, $text_colour)
             unset($TOTAL_POINTS_CACHE[$member_id]);
         }
 
+        // Log
+        if ($is_im) {
+            if ((get_value('log_actions__im') === '1')) {
+                $members = explode(',', $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'allow_list', ['id' => $room_id]));
+                array_shift($members); // Remove self-member
+                if (count($members) == 1) {
+                    $username = $GLOBALS['FORUM_DRIVER']->get_username(intval($members[0]));
+                } else {
+                    $username = null;
+                }
+                log_it('_INSTANT_MESSAGING', implode(',', $members), $username);
+            }
+        } else {
+            if ((get_value('log_actions__chat') === '1')) {
+                log_it('CHAT', strval($room_id), get_chatroom_name($room_id));
+            }
+        }
+
         delete_cache_entry('side_shoutbox');
 
         return true;

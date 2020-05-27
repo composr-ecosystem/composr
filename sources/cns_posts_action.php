@@ -323,6 +323,20 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
         }
     }
 
+    if ($is_starter) {
+        if (get_value('log_actions__create_topic') === '1') {
+            log_it('ADD_TOPIC', strval($topic_id), $title);
+        }
+    } else {
+        if (get_value('log_actions__reply') === '1') {
+            if ($intended_solely_for !== null) {
+                log_it('NEW_INLINE_PERSONAL_POST', strval($post_id), strval($intended_solely_for));
+            } else {
+                log_it('REPLY', strval($post_id), strval($topic_id));
+            }
+        }
+    }
+
     if ($update_caching) {
         if (function_exists('get_member')) {
             if (function_exists('cns_ping_topic_read')) {

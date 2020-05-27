@@ -166,6 +166,23 @@ class Hook_actionlog_chat extends Hook_actionlog
                     'TARGET' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
                 ],
             ],
+            '_INSTANT_MESSAGING' => [
+                'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
+                'cma_hook' => null,
+                'identifier_index' => null,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                ],
+            ],
+            'CHAT' => [
+                'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
+                'cma_hook' => 'chat',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'CHATROOM' => '_SEARCH:chat:room:{ID}',
+                ],
+            ],
         ];
     }
 

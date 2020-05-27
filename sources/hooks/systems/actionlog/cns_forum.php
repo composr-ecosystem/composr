@@ -216,6 +216,35 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
                     'EDIT_POST' => '_SEARCH:topics:edit_post:{ID}',
                 ],
             ],
+            'ADD_TOPIC' => [
+                'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
+                'cma_hook' => 'topic',
+                'identifier_index' => 0,
+                'written_context_index' => 1,
+                'followup_page_links' => [
+                    'VIEW_TOPIC' => '_SEARCH:topicview:browse:{ID}',
+                ],
+            ],
+            'NEW_INLINE_PERSONAL_POST' => [
+                'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
+                'cma_hook' => 'post',
+                'identifier_index' => 0,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'VIEW_TOPIC' => '_SEARCH:topicview:browse:{TOPIC}',
+                    'EDIT_POST' => '_SEARCH:topics:edit_post:{ID}',
+                ],
+            ],
+            'REPLY' => [
+                'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
+                'cma_hook' => 'post',
+                'identifier_index' => 0,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'VIEW_TOPIC' => '_SEARCH:topicview:browse:{TOPIC}',
+                    'EDIT_POST' => '_SEARCH:topics:edit_post:{ID}',
+                ],
+            ],
         ];
     }
 

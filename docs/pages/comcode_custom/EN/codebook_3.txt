@@ -634,6 +634,11 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
   - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
+ - Low-level Action log tuning:
+  - [tt]log_actions__create_topic[/tt] -- set this to '1' to enable Action logs for new topics
+  - [tt]log_actions__reply[/tt] -- set this to '1' to enable Action logs for topic replies
+  - [tt]log_actions__chat[/tt] -- set this to '1' to enable Action logs for chatroom posts
+  - [tt]log_actions__im[/tt] -- set this to '1' to enable Action logs for instant messaging messages
  - Low-level search tuning:
   - [tt]really_want_highlighting[/tt] -- set this to '1' if you want to force HTML to be converted to Comcode when searches happen, so keyword highlighting works better.
   - [tt]search_days__<search-hook>[/tt] -- set the default day search period for a search hook (e.g. 60, or blank for no limit). This may be set for reasons of user experience, or for performance -- searching without a day constraint is actually faster.
