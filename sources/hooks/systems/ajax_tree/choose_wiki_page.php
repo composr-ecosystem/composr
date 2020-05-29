@@ -46,7 +46,7 @@ class Hook_ajax_tree_choose_wiki_page
 
         $out = '';
 
-        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>';
+        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>' . "\n";
 
         if (!has_actual_page_access(null, 'wiki')) {
             $tree = [];
@@ -64,10 +64,10 @@ class Hook_ajax_tree_choose_wiki_page
             $selectable = true;
 
             $tag = 'category'; // category
-            $out .= '<' . $tag . ' id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>';
+            $out .= '<' . $tag . ' id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>' . "\n";
 
             if ($levels_to_expand > 0) {
-                $out .= '<expand>' . xmlentities($_id) . '</expand>';
+                $out .= '<expand>' . xmlentities($_id) . '</expand>' . "\n";
             }
         }
 
@@ -97,7 +97,7 @@ class Hook_ajax_tree_choose_wiki_page
                 $selectable = true;
 
                 $tag = 'category'; // category
-                $out .= '<' . $tag . ' id="' . $_id . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>';
+                $out .= '<' . $tag . ' id="' . $_id . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>' . "\n";
             }
         }
 

@@ -86,6 +86,16 @@ class Hook_search_cns_posts extends FieldsSearchHook
             ],
         ];
 
+        // Change search_under_children to search_under
+        $search_under_children = get_param_string('search_under_children', null);
+        if (is_numeric($search_under_children)) {
+            require_code('cns_forums');
+            require_code('cns_forums2');
+            list(, $search_under) = cns_get_forum_tree(null, intval($search_under_children), '', null, null, true, 1);
+            //$_GET['search_under'] = $search_under . (($search_under == '') ? '' : ',') . $search_under_children;
+            $_GET['search_under'] = $search_under_children . (($search_under == '') ? '' : (',' . $search_under));
+        }
+
         return $info;
     }
 
@@ -257,10 +267,12 @@ class Hook_search_cns_posts extends FieldsSearchHook
             $where_clause = '';
             $extra_join_clause = '';
             $sq = build_search_submitter_clauses('ixxx.i_poster_id', $author_id, $author);
+            $use_simple_index = !$only_titles && !$only_search_meta; // MySQL may pick an index that can't do sorting, requiring a lot of disk I/O, so we will guide it to one that can if we know it can; if there is extra filtering likely to narrow down results a lot to make sorting less of a perf hit then we let MySQL choose
             if ($sq === null) {
                 return [];
-            } else {
+            } elseif ($sq != '') {
                 $extra_join_clause .= $sq;
+                $use_simple_index = false;
             }
             $this->_handle_date_check($cutoff, 'ixxx.i_add_time', $extra_join_clause);
             if (get_param_integer('option_tick_cns_posts_unvalidated', 0) == 1) {
@@ -270,35 +282,40 @@ class Hook_search_cns_posts extends FieldsSearchHook
             if (get_param_integer('option_tick_cns_posts_open', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_open=1';
+                $use_simple_index = false;
             }
             if (get_param_integer('option_tick_cns_posts_closed', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_open=0';
+                $use_simple_index = false;
             }
             if (get_param_integer('option_tick_cns_posts_pinned', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_pinned=1';
+                $use_simple_index = false;
             }
             if (get_param_integer('option_tick_cns_posts_starter', 0) == 1) {
                 $extra_join_clause .= ' AND ';
                 $extra_join_clause .= 'ixxx.i_starter=1';
+                $use_simple_index = false;
             }
 
             // Category filter
             if (($search_under != '!') && ($search_under != '-1')) {
                 $cats = explode(',', $search_under);
-                $extra_join_clause .= ' AND (';
+                $_cats = [];
                 foreach ($cats as $i => $cat) {
                     if (trim($cat) == '') {
                         continue;
                     }
 
-                    if ($i != 0) {
-                        $extra_join_clause .= ' OR ';
-                    }
-                    $extra_join_clause .= 'ixxx.i_forum_id=' . strval(intval($cat));
+                    $_cats[] = strval(intval($cat));
                 }
-                $extra_join_clause .= ')';
+                $extra_join_clause .= ' AND ixxx.i_forum_id IN (' . implode(',', $_cats) . ')';
+
+                if (count($_cats) <= 1) {
+                    $use_simple_index = false;
+                }
             }
 
             $where_clause .= ' AND ';
@@ -325,7 +342,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
             $index_table = 'f_posts_fulltext_index';
             $key_transfer_map = ['id' => 'i_post_id'];
             $index_permissions_field = 'i_forum_id';
-            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field);
+            $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $permissions_module, $index_permissions_field, false, $use_simple_index ? 'main_19' : null);
         } else {
             // Calculate our where clause (search)
             $sq = build_search_submitter_clauses('p_poster', $author_id, $author);

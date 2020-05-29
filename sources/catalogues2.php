@@ -1438,6 +1438,11 @@ function actual_delete_catalogue_entry($id)
         log_it('DELETE_CATALOGUE_ENTRY', strval($id), $title);
     }
 
+    if (addon_installed('search')) {
+        require_code('database_search');
+        Composr_fast_custom_index::delete_from_index($GLOBALS['SITE_DB'], 'ce_fulltext_index', ['i_catalogue_entry_id' => $id]);
+    }
+
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
         expunge_resource_fs_moniker('catalogue_entry', strval($id));

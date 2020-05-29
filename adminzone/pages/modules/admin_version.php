@@ -1151,6 +1151,9 @@ class Module_admin_version
                 'c_commonality' => 'REAL',
             ]);
 
+            $GLOBALS['SITE_DB']->create_index('ft_index_commonality', 'c_ngram', ['c_ngram']);
+            $GLOBALS['SITE_DB']->create_index('ft_index_commonality', 'c_commonality', ['c_commonality']);
+
             $GLOBALS['SITE_DB']->create_table('cpages_fulltext_index', [
                 'i_zone_name' => '*ID_TEXT',
                 'i_page_name' => '*ID_TEXT',
@@ -1171,6 +1174,12 @@ class Module_admin_version
                 'i_lang',
                 'i_ngram',
                 'i_ac',
+                'i_occurrence_rate', // For sorting
+            ]);
+
+            $GLOBALS['SITE_DB']->create_index('cpages_fulltext_index', 'main_2', [
+                'i_lang',
+                'i_ngram',
                 'i_occurrence_rate', // For sorting
             ]);
 

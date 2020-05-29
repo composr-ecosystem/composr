@@ -71,7 +71,7 @@ class Hook_ajax_tree_choose_download
 
         $out = '';
 
-        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>';
+        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>' . "\n";
 
         foreach ($tree as $t) {
             $_id = $t['id'];
@@ -141,17 +141,17 @@ class Hook_ajax_tree_choose_download
                         $description_html = do_template('DOWNLOAD_AND_IMAGES_SIMPLE_BOX', ['_GUID' => 'a273f4beb94672ee44bdfdf06bf328c8', 'DESCRIPTION' => $description_html, 'IMAGES' => $_out]);
                     }
 
-                    $out .= '<entry id="' . xmlentities(strval($eid)) . '" description="' . xmlentities(strip_comcode($description)) . '" description_html="' . xmlentities($description_html->evaluate()) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>';
+                    $out .= '<entry id="' . xmlentities(strval($eid)) . '" description="' . xmlentities(strip_comcode($description)) . '" description_html="' . xmlentities($description_html->evaluate()) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>' . "\n";
                 }
                 continue;
             }
             $title = $t['title'];
             $has_children = ($t['child_count'] != 0) || ($t['child_entry_count'] != 0);
 
-            $out .= '<category id="' . xmlentities(strval($_id)) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="false"></category>';
+            $out .= '<category id="' . xmlentities(strval($_id)) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="false"></category>' . "\n";
 
             if ($levels_to_expand > 0) {
-                $out .= '<expand>' . xmlentities(strval($_id)) . '</expand>';
+                $out .= '<expand>' . xmlentities(strval($_id)) . '</expand>' . "\n";
             }
         }
 
@@ -159,7 +159,7 @@ class Hook_ajax_tree_choose_download
         if (!cms_empty_safe($default)) {
             $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', ['id' => intval($default)]);
             while ($cat !== null) {
-                $out .= '<expand>' . strval($cat) . '</expand>';
+                $out .= '<expand>' . strval($cat) . '</expand>' . "\n";
                 $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'parent_id', ['id' => $cat]);
             }
         }

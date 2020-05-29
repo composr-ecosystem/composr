@@ -17,7 +17,7 @@
 	{+START,IF,{$NEQ,{$_GET,type},pt}}
 		<div class="cns-search-box">
 			<form title="{!SEARCH}" action="{$URL_FOR_GET_FORM*,{$PAGE_LINK*,_SEARCH:search:results:cns_posts:search_under={$_GET,id},1}}" method="get">
-				{$HIDDENS_FOR_GET_FORM,{$PAGE_LINK,_SEARCH:search:results:cns_posts:search_under={$_GET,id},1}}
+				{$HIDDENS_FOR_GET_FORM,{$PAGE_LINK,_SEARCH:search:results:cns_posts:search_under_children={$_GET,id},1}}
 
 				<div class="vertical-alignment">
 					<label class="accessibility-hidden" for="member-bar-search">{!SEARCH_FORUM_POSTS}</label>

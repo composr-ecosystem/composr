@@ -936,6 +936,11 @@ function delete_cms_page($zone, $page, $type = 'comcode_custom', $use_afm = fals
                     $revision_engine->add_revision(dirname($existing_path), $page, 'txt', cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM), filemtime($existing_path));
                 }
             }
+
+            if (addon_installed('search')) {
+                require_code('database_search');
+                Composr_fast_custom_index::delete_from_index($GLOBALS['SITE_DB'], 'cpages_fulltext_index', ['i_zone_name' => $zone, 'i_page_name' => $page]);
+            }
         }
 
         $langs = find_all_langs(true);

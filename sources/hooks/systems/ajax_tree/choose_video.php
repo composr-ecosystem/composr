@@ -48,7 +48,7 @@ class Hook_ajax_tree_choose_video
 
         $out = '';
 
-        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>';
+        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>' . "\n";
 
         foreach ($tree as $t) {
             $_id = $t['id'];
@@ -64,17 +64,17 @@ class Hook_ajax_tree_choose_video
                     if (is_object($etitle)) {
                         $etitle = strip_html($etitle->evaluate());
                     }
-                    $out .= '<entry id="' . xmlentities(strval($eid)) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>';
+                    $out .= '<entry id="' . xmlentities(strval($eid)) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>' . "\n";
                 }
                 continue;
             }
             $title = $t['title'];
             $has_children = ($t['child_count'] != 0) || ($t['child_entry_count'] != 0);
 
-            $out .= '<category id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="false"></category>';
+            $out .= '<category id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="false"></category>' . "\n";
 
             if ($levels_to_expand > 0) {
-                $out .= '<expand>' . xmlentities($_id) . '</expand>';
+                $out .= '<expand>' . xmlentities($_id) . '</expand>' . "\n";
             }
         }
 
@@ -82,7 +82,7 @@ class Hook_ajax_tree_choose_video
         if (!cms_empty_safe($default)) {
             $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', ['id' => intval($default)]);
             while (!cms_empty_safe($cat)) {
-                $out .= '<expand>' . $cat . '</expand>';
+                $out .= '<expand>' . $cat . '</expand>' . "\n";
                 $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => $cat]);
             }
         }

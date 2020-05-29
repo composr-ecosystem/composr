@@ -1081,6 +1081,267 @@ function install_cns($upgrade_from = null)
             'i_occurrence_rate', // For sorting
         ]);
 
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_2', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_3', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_4', [
+            'i_lang',
+            'i_ngram',
+            'i_poster_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_5', [
+            'i_lang',
+            'i_ngram',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_6', [
+            'i_lang',
+            'i_ngram',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_7', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_8', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_poster_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_9', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_10', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_11', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_poster_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_12', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_13', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_14', [
+            'i_lang',
+            'i_ngram',
+            'i_poster_id',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_15', [
+            'i_lang',
+            'i_ngram',
+            'i_poster_id',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_16', [
+            'i_lang',
+            'i_ngram',
+            'i_starter',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_17', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_poster_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_18', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_19', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_20', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_poster_id',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_21', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_poster_id',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_22', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_starter',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_23', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_poster_id',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_24', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_poster_id',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_25', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_starter',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_26', [
+            'i_lang',
+            'i_ngram',
+            'i_poster_id',
+            'i_starter',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_27', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_poster_id',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_28', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_poster_id',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_29', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_starter',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_30', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_poster_id',
+            'i_starter',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_31', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_poster_id',
+            'i_starter',
+            'i_for',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_32', [
+            'i_lang',
+            'i_ngram',
+            'i_occurrence_rate', // For sorting
+        ]);
+
         $GLOBALS['FORUM_DB']->create_table('f_posts_fulltext_index', [
             'i_post_id' => '*AUTO_LINK',
 
@@ -1114,6 +1375,148 @@ function install_cns($upgrade_from = null)
             'i_open',
             'i_pinned',
             'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_2', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_3', [
+            'i_lang',
+            'i_ngram',
+            'i_forum_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_4', [
+            'i_lang',
+            'i_ngram',
+            'i_poster_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_5', [
+            'i_lang',
+            'i_ngram',
+            'i_open',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_6', [
+            'i_lang',
+            'i_ngram',
+            'i_pinned',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_7', [
+            'i_lang',
+            'i_ngram',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_8', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_forum_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_9', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_open',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_10', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_11', [
+            'i_lang',
+            'i_ngram',
+            'i_forum_id',
+            'i_open',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_12', [
+            'i_lang',
+            'i_ngram',
+            'i_forum_id',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_13', [
+            'i_lang',
+            'i_ngram',
+            'i_open',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_14', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_forum_id',
+            'i_open',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_15', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_forum_id',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_16', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_open',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_17', [
+            'i_lang',
+            'i_ngram',
+            'i_forum_id',
+            'i_open',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_18', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_forum_id',
+            'i_open',
+            'i_starter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main_19', [
+            'i_lang',
+            'i_ngram',
             'i_occurrence_rate', // For sorting
         ]);
     }

@@ -968,6 +968,14 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
         $out += _find_all_pages('site', $type, $ext, $keep_ext_on);
     }
 
+    // Filter out any duplicated page names (database is case insensitive so cannot hold them)
+    foreach (array_keys($out) as $page) {
+        $page_lower = strtolower($page);
+        if (($page_lower != $page) && (array_key_exists($page_lower, $out))) {
+            unset($out[$page]);
+        }
+    }
+
     cms_mb_ksort($out, SORT_NATURAL | SORT_FLAG_CASE);
 
     if ($do_cache) {

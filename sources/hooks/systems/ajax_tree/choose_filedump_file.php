@@ -53,7 +53,7 @@ class Hook_ajax_tree_choose_filedump_file
 
         $out = '';
 
-        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>';
+        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>' . "\n";
 
         if ((has_actual_page_access(null, 'filedump')) && (file_exists($full_path))) {
             $files = get_directory_contents($full_path, '', IGNORE_ACCESS_CONTROLLERS, false);
@@ -67,10 +67,10 @@ class Hook_ajax_tree_choose_filedump_file
                     $has_children = (!empty(get_directory_contents($full_path . '/' . $f, '', IGNORE_ACCESS_CONTROLLERS, false)));
 
                     if ($has_children) {
-                        $out .= '<category id="' . xmlentities((($id == '') ? '' : ($id . '/')) . $f) . '" title="' . xmlentities($f) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($folder ? 'true' : 'false') . '"></category>';
+                        $out .= '<category id="' . xmlentities((($id == '') ? '' : ($id . '/')) . $f) . '" title="' . xmlentities($f) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($folder ? 'true' : 'false') . '"></category>' . "\n";
 
                         if ($levels_to_expand > 0) {
-                            $out .= '<expand>' . xmlentities((($id == '') ? '' : ($id . '/')) . $f) . '</expand>';
+                            $out .= '<expand>' . xmlentities((($id == '') ? '' : ($id . '/')) . $f) . '</expand>' . "\n";
                         }
                     }
                 } elseif (!$folder) {
@@ -88,7 +88,7 @@ class Hook_ajax_tree_choose_filedump_file
                         } else {
                             $_description = escape_html(get_translated_text($description));
                         }
-                        $out .= '<entry id="' . xmlentities($entry_id) . '" title="' . xmlentities($f) . '" description_html="' . xmlentities($_description) . '" selectable="true"></entry>';
+                        $out .= '<entry id="' . xmlentities($entry_id) . '" title="' . xmlentities($f) . '" description_html="' . xmlentities($_description) . '" selectable="true"></entry>' . "\n";
                     }
                 }
             }
@@ -101,7 +101,7 @@ class Hook_ajax_tree_choose_filedump_file
                         $cat .= '/';
                         $cat .= $_cat;
                     }
-                    $out .= '<expand>' . $cat . '</expand>';
+                    $out .= '<expand>' . $cat . '</expand>' . "\n";
                 }
             }
         }

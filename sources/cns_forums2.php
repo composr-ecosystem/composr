@@ -322,17 +322,21 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
                 $cat_bit = array_key_exists($forum['f_forum_grouping_id'], $forum_groupings_titles_cache) ? $forum_groupings_titles_cache[$forum['f_forum_grouping_id']] : do_lang('NA');
             }
 
-            $below = cns_get_forum_tree($member_id, $forum['id'], $child_breadcrumbs, $skip, $forum, $use_compound_list, ($levels === null) ? null : ($levels - 1), $do_stats, $updated_since);
+            $below = cns_get_forum_tree($member_id, $forum['id'], $child_breadcrumbs, $skip, $forum, $use_compound_list, ($use_compound_list || $levels === null) ? null : ($levels - 1), $do_stats, $updated_since);
             if ($use_compound_list) {
                 list($below, $_compound_list) = $below;
-                $compound_list .= strval($forum['id']) . ',' . $_compound_list;
+
+                $it_compound_list = strval($forum['id']);
+                if ($_compound_list != '') {
+                    $it_compound_list.=','.$_compound_list;
+                }
             }
 
             $child = [
                 'id' => $forum['id'],
                 'title' => $forum['f_name'],
                 'breadcrumbs' => $child_breadcrumbs,
-                'compound_list' => (!$use_compound_list ? strval($forum['id']) : (strval($forum['id']) . ',' . $_compound_list)),
+                'compound_list' => ($use_compound_list ? $it_compound_list : strval($forum['id'])),
                 'second_cat' => $cat_bit,
                 'group' => $forum['f_forum_grouping_id'],
                 'children' => $below,
@@ -346,6 +350,11 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
                 $out[$cat_sort_key] = [];
             }
             $out[$cat_sort_key][] = $child;
+
+            if ($compound_list != '') {
+                $compound_list .= ',';
+            }
+            $compound_list .= $it_compound_list;
         }
     }
 

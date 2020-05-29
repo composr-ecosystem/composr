@@ -155,7 +155,7 @@ class Hook_ajax_tree_choose_theme_files
                             title="' . xmlentities($addon_name) . '"
                             has_children="' . ($has_children ? 'true' : 'false') . '"
                             selectable="true"
-                        ></category>';
+                        ></category>' . "\n";
                     }
                     break;
 
@@ -200,7 +200,7 @@ class Hook_ajax_tree_choose_theme_files
                                 selectable="true"
                                 description_html="' . xmlentities($description_html->evaluate()) . '"
                                 img_url="' . xmlentities($img_url) . '"
-                            ></entry>';
+                            ></entry>' . "\n";
                         }
                     } elseif (preg_match('#^(templates|css|javascript|xml|text)/\w+\.(tpl|css|js|xml|txt)$#', $id) != 0) {
                         // Must be for related templates
@@ -271,8 +271,8 @@ class Hook_ajax_tree_choose_theme_files
         }
 
         if (($default !== null) && (preg_match('#^\w*:\w+$#', $default) != 0)) {
-            $out .= '<expand>screens</expand>';
-            $out .= '<expand>' . $default . '</expand>';
+            $out .= '<expand>screens</expand>' . "\n";
+            $out .= '<expand>' . $default . '</expand>' . "\n";
         }
 
         return '<result>' . $out . '</result>';

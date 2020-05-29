@@ -135,6 +135,7 @@ class Module_search
 
         if ($type == 'browse' || $type == 'results') {
             inform_non_canonical_parameter('search_under');
+            inform_non_canonical_parameter('search_under_children');
             inform_non_canonical_parameter('all_defaults');
             inform_non_canonical_parameter('days');
             inform_non_canonical_parameter('only_titles');

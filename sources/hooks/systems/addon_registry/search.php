@@ -163,6 +163,7 @@ class Hook_addon_registry_search
             'sources/hooks/systems/config/composr_fast_custom_index__enable_for_no_fulltext.php',
             'sources/hooks/systems/config/composr_fast_custom_index__enable_for_under_radar.php',
             'sources/hooks/systems/config/composr_fast_custom_index__enable_for_minimum_ngram_count.php',
+            'sources/hooks/systems/config/composr_fast_custom_index__count_estimate.php',
             'sources/hooks/systems/config/search_maximum_result_count_point.php',
             'sources/hooks/systems/config/search_do_days_fallback.php',
             'sources/hooks/systems/config/search_days_default.php',

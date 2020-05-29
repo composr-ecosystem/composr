@@ -379,7 +379,7 @@ function cns_render_forumview($id, $forum_info, $current_filter_cat, $max, $star
     }
     if ($type != 'pt') {
         if (addon_installed('search')) {
-            $search_url = build_url(['page' => 'search', 'type' => 'browse', 'id' => 'cns_posts', 'search_under' => $id], get_module_zone('search'));
+            $search_url = build_url(['page' => 'search', 'type' => 'browse', 'id' => 'cns_posts', 'search_under_children' => $id], get_module_zone('search'));
             $button_array[] = ['immediate' => false, 'rel' => 'search', 'title' => do_lang_tempcode('SEARCH'), 'url' => $search_url, 'img' => 'buttons/search'];
         }
         $new_topic_url = build_url(['page' => 'topics', 'type' => 'new_topic', 'id' => $id], get_module_zone('topics'));

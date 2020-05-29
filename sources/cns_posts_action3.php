@@ -370,6 +370,17 @@ function cns_delete_posts_topic($topic_id, $posts, $reason = '', $check_perms = 
         }
     }
 
+    if (addon_installed('search')) {
+        require_code('database_search');
+        foreach ($_postdetails as $post) {
+            if ($forum_id === null) {
+                Composr_fast_custom_index::delete_from_index($GLOBALS['FORUM_DB'], 'f_pposts_fulltext_index', ['i_post_id' => $post['id']]);
+            } else {
+                Composr_fast_custom_index::delete_from_index($GLOBALS['FORUM_DB'], 'f_posts_fulltext_index', ['i_post_id' => $post['id']]);
+            }
+        }
+    }
+
     require_code('cns_posts_action');
     if ($forum_id !== null) {
         cns_decache_cms_blocks($forum_id);

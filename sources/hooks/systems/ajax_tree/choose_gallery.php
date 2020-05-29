@@ -67,7 +67,7 @@ class Hook_ajax_tree_choose_gallery
 
         $out = '';
 
-        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>';
+        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>' . "\n";
 
         for ($i = 0; $i < count($tree); $i++) {
             $t = $tree[$i];
@@ -103,10 +103,10 @@ class Hook_ajax_tree_choose_gallery
             }
 
             $tag = 'category'; // category
-            $out .= '<' . $tag . ' id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>';
+            $out .= '<' . $tag . ' id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>' . "\n";
 
             if ($levels_to_expand > 0) {
-                $out .= '<expand>' . xmlentities($_id) . '</expand>';
+                $out .= '<expand>' . xmlentities($_id) . '</expand>' . "\n";
             }
         }
 
@@ -114,7 +114,7 @@ class Hook_ajax_tree_choose_gallery
         if (!cms_empty_safe($default)) {
             $cat = $default;
             while (!cms_empty_safe($cat)) {
-                $out .= '<expand>' . $cat . '</expand>';
+                $out .= '<expand>' . $cat . '</expand>' . "\n";
                 $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => $cat]);
             }
         }

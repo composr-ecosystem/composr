@@ -246,9 +246,10 @@ class Composr_fast_custom_index
      * @param  ?string $permissions_module The permission module to check category access for (null: none)
      * @param  ?string $index_permissions_field The field that specifies the permissions ID to check category access for (null: none)
      * @param  boolean $permissions_field_is_string Whether the permissions field is a string
+     * @param  ?string $force_index Force a specific index to be used (null: none)
      * @return array The rows found
      */
-    public function get_search_rows($db, $index_table, $content_table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $order, $direction, $permissions_module = null, $index_permissions_field = null, $permissions_field_is_string = false)
+    public function get_search_rows($db, $index_table, $content_table, $key_transfer_map, $where_clause, $extra_join_clause, $search_query, $only_search_meta, $only_titles, $max, $start, $order, $direction, $permissions_module = null, $index_permissions_field = null, $permissions_field_is_string = false, $force_index = null)
     {
         if ($only_search_meta) {
             $appearance_context = APPEARANCE_CONTEXT_META;
@@ -287,6 +288,10 @@ class Composr_fast_custom_index
 
         // We start with the content table, which is needed for things like validation checks, or other stuff that basically won't be a dominant index culling factor
         $join = $content_table;
+        $count_table = '';
+
+        $extra_where_clause = '';
+        $count_extra_where_clause = '';
 
         if (($order == '') || ($order == 'relevance')) {
             $order = 'contextual_relevance';
@@ -344,8 +349,8 @@ class Composr_fast_custom_index
 
             // this destroys mysqls query optimiser by forcing complexed OR's into the join, so we'll do this in PHP code
             /*$table .= ' LEFT JOIN ' . $db->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', $permissions_module) . ' AND z.category_name=' . $permissions_field . (($g_or != '') ? (' AND ' . str_replace('group_id', 'z.group_id', $g_or)) : '') . ')';
-            $where_clause .= ' AND ';
-            $where_clause .= 'z.category_name IS NOT NULL';*/
+            $extra_where_clause .= ' AND ';
+            $extra_where_clause .= 'z.category_name IS NOT NULL';*/
 
             $cat_sql = '';
             $cat_sql .= 'SELECT DISTINCT category_name FROM ' . $db->get_table_prefix() . 'group_category_access WHERE (' . $g_or . ') AND ' . db_string_equal_to('module_the_name', $permissions_module);
@@ -401,19 +406,19 @@ class Composr_fast_custom_index
                 }
 
                 $join_condition = '';
+                $join_condition_keys = '';
                 $key_i = 0;
                 foreach ($key_transfer_map as $content_table_field => $index_table_field) {
-                    if ($key_i != 0) {
-                        $join_condition .= ' AND ';
-                    }
+                    $join_condition_keys .= ' AND ';
                     if ($i == 0) {
-                        $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=r.' . $content_table_field;
+                        $join_condition_keys .= 'i' . strval($i) . '.' . $index_table_field . '=r.' . $content_table_field;
                     } else {
-                        $join_condition .= 'i' . strval($i) . '.' . $index_table_field . '=i0.' . $index_table_field;
+                        $join_condition_keys .= 'i' . strval($i) . '.' . $index_table_field . '=i0.' . $index_table_field;
+                        break;
                     }
                     $key_i++;
                 }
-                $join_condition .= ' AND i' . strval($i) . '.i_ngram=' . strval($this->crc($ngram));
+                $join_condition .= 'i' . strval($i) . '.i_ngram=' . strval($this->crc($ngram));
                 if (strpos(get_db_type(), 'mysql') !== false) {
                     $join_condition .= '/*' . str_replace('/', '\\', $ngram) . '*/';
                 }
@@ -430,13 +435,23 @@ class Composr_fast_custom_index
                         $join_type = 'LEFT JOIN';
                         $is_all_hard_joins = false;
                     }
-                    $join .= ' ' . $join_type . ' ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' ON ' . $join_condition;
-
+                    $join .= ' ' . $join_type . ' ' . $db->get_table_prefix() . $index_table . ' i' . strval($i);
+                    if ($force_index !== null) {
+                        $join .= $db->prefer_index($index_table, $force_index, false);
+                    }
+                    $join .= ' ON ' . $join_condition . $join_condition_keys;
+                    if ($count_table == '') {
+                        $count_table = $db->get_table_prefix() . $index_table . ' i' . strval($i);
+                    } else {
+                        $count_table .= ' ' . $join_type . ' ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' ON ' . $join_condition . $join_condition_keys;
+                    }
+                    $count_extra_where_clause .= ' AND ' . $join_condition;
+ 
                     if ($set_type == 'not') {
-                        $where_clause .= ' AND i' . strval($i) . '.i_ngram IS NULL';
+                        $extra_where_clause .= ' AND i' . strval($i) . '.i_ngram IS NULL';
                     }
                 } else {
-                    $where_clause .= ' AND ' . (($set_type == 'and') ? 'EXISTS' : 'NOT EXISTS') . ' (SELECT * FROM ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' WHERE ' . $join_condition;
+                    $extra_where_clause .= ' AND ' . (($set_type == 'and') ? 'EXISTS' : 'NOT EXISTS') . ' (SELECT * FROM ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' WHERE ' . $join_condition;
                     $open_brackets++; // We keep opening up more brackets to stop the MySQL query optimiser doing whacky things, partly executing random sub-queries into temporary tables before the first join
                 }
 
@@ -464,7 +479,7 @@ class Composr_fast_custom_index
         }
         while ($open_brackets > 0) {
             $open_brackets--;
-            $where_clause .= ')';
+            $extra_where_clause .= ')';
         }
 
         if ($i == 0) {
@@ -478,7 +493,7 @@ class Composr_fast_custom_index
         }
 
         if (!$is_all_hard_joins) {
-            $where_clause .= ' AND ' . $order_by_total_ngrams_matched . '>0';
+            $extra_where_clause .= ' AND ' . $order_by_total_ngrams_matched . '>0';
         }
 
         // Do querying...
@@ -505,7 +520,7 @@ class Composr_fast_custom_index
             $order = 'average_rating';
         }
 
-        $t_rows_sql = 'SELECT ' . $select . ' FROM ' . $join . ' WHERE 1=1' . $where_clause . ' ORDER BY ' . $order . ' ' . $direction;
+        $t_rows_sql = 'SELECT ' . $select . ' FROM ' . $join . ' WHERE 1=1' . $where_clause . $extra_where_clause . ' ORDER BY ' . $order . ' ' . $direction;
 
         if (get_param_integer('keep_show_query', 0) == 1) {
             attach_message($t_rows_sql, 'inform');
@@ -523,7 +538,11 @@ class Composr_fast_custom_index
         $t_rows = $db->query($t_rows_sql, $max, $start);
 
         $t_count_sql = '(SELECT COUNT(*) FROM (';
-        $t_count_sql .= 'SELECT 1 FROM ' . $join . ' WHERE 1=1' . $where_clause;
+        if (get_option('composr_fast_custom_index__count_estimate') == '1') {
+            $t_count_sql .= 'SELECT 1 FROM ' . $count_table . ' WHERE 1=1' . $extra_where_clause . $count_extra_where_clause;
+        } else {
+            $t_count_sql .= 'SELECT 1 FROM ' . $join . ' WHERE 1=1' . $where_clause . $extra_where_clause;
+        }
         $t_count_sql .= ' LIMIT ' . strval(MAXIMUM_RESULT_COUNT_POINT) . ') counter)';
         $LAST_COUNT_QUERY = $t_count_sql;
         $t_count = $db->query_value_if_there($t_count_sql);
@@ -763,7 +782,7 @@ class Composr_fast_custom_index
      * @param  string $index_table Table containing our custom index
      * @param  array $index_key_map Map of index keys, defining what to delete
      */
-    public function delete_from_index($db, $index_table, $index_key_map)
+    public static function delete_from_index($db, $index_table, $index_key_map)
     {
         $db->query_delete($index_table, $index_key_map);
     }

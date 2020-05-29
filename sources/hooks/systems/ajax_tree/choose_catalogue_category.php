@@ -91,10 +91,10 @@ class Hook_ajax_tree_choose_catalogue_category
             $selectable = (($addable_filter !== true) || $t['addable']);
 
             $tag = 'category'; // category
-            $out .= '<' . $tag . ' id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>';
+            $out .= '<' . $tag . ' id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>' . "\n";
 
             if ($levels_to_expand > 0) {
-                $out .= '<expand>' . xmlentities($_id) . '</expand>';
+                $out .= '<expand>' . xmlentities($_id) . '</expand>' . "\n";
             }
         }
 
@@ -102,7 +102,7 @@ class Hook_ajax_tree_choose_catalogue_category
         if (!cms_empty_safe($default)) {
             $cat = intval($default);
             while ($cat !== null) {
-                $out .= '<expand>' . strval($cat) . '</expand>';
+                $out .= '<expand>' . strval($cat) . '</expand>' . "\n";
                 $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'cc_parent_id', ['id' => $cat]);
             }
         }

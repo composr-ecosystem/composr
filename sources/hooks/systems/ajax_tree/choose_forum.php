@@ -55,12 +55,17 @@ class Hook_ajax_tree_choose_forum
 
         $out = '';
 
-        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>';
+        $out .= '<options>' . xmlentities(json_encode($options)) . '</options>' . "\n";
 
         $categories = collapse_2d_complexity('id', 'c_title', $GLOBALS['FORUM_DB']->query_select('f_forum_groupings', ['id', 'c_title']));
 
         if ($compound_list) {
             list($tree,) = $tree;
+        }
+
+        $second_cats = [];
+        foreach ($tree as $t) {
+            $second_cats[$t['second_cat']] = true;
         }
 
         foreach ($tree as $t) {
@@ -78,25 +83,62 @@ class Hook_ajax_tree_choose_forum
             $has_children = ($t['child_count'] != 0);
             $selectable = ((!$addable_filter) || cns_may_post_topic($t['id']));
 
+            if ((!empty($t['second_cat'])) && (count($second_cats) > 1)) {
+                $title = $t['second_cat'] . ' > ' . $title;
+            }
+
             $tag = 'category'; // category
-            $out .= '<' . $tag . ' id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" description="' . xmlentities($description) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>';
+            $out .= '<' . $tag . ' id="' . xmlentities($_id) . '" title="' . xmlentities($title) . '" description="' . xmlentities($description) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($selectable ? 'true' : 'false') . '"></' . $tag . '>' . "\n";
 
             if ($levels_to_expand > 0) {
-                $out .= '<expand>' . xmlentities($_id) . '</expand>';
+                $out .= '<expand>' . xmlentities($_id) . '</expand>' . "\n";
             }
         }
 
         // Mark parent cats for pre-expansion
         if (!cms_empty_safe($default)) {
-            $cat = intval($default);
+            if ($compound_list) {
+                $_full_tree = cns_get_forum_tree(null, null, '', null, null, $compound_list, null, true);
+                list($_full_tree,) = $_full_tree;
+                $full_tree = $this->make_tree_map($_full_tree);
+
+                $_default = explode(',', $default);
+                $cat = intval($_default[0]);
+            } else {
+                $cat = intval($default);
+            }
+
+            $expansions = [];
             while ($cat !== null) {
-                $out .= '<expand>' . strval($cat) . '</expand>';
+                if ($compound_list) {
+                    $expansions[] = '<expand>' . $full_tree[$cat] . '</expand>' . "\n";
+                } else {
+                    $expansions[] = '<expand>' . strval($cat) . '</expand>';
+                }
                 $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $cat]);
             }
+            $expansions = array_reverse($expansions);
+            $out .= implode('', $expansions);
         }
 
         $tag = 'result'; // result
         return '<' . $tag . '>' . $out . '</' . $tag . '>';
+    }
+
+    /**
+     * Build a map between IDs and compound lists.
+     *
+     * @param  array $_full_tree Full tree structure
+     * @return array The map
+     */
+    protected function make_tree_map($_full_tree)
+    {
+        $out = [];
+        foreach ($_full_tree as $t) {
+            $out[$t['id']] = $t['compound_list'];
+            $out += $this->make_tree_map($t['children']);
+        }
+        return $out;
     }
 
     /**
