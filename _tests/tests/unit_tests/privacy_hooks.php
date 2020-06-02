@@ -133,7 +133,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'w_members',
                 ];
                 if (!in_array($table, $exceptions)) {
-                    $this->assertTrue($found_tables[$table]['timestamp_field'] !== null || empty($relevant_fields_time), 'Could have set a timestamp field for ' . $table);
+                    $this->assertTrue($found_tables[$table]['timestamp_field'] !== null || empty($relevant_fields_time), 'Could have set a timestamp field for ' . $table . '[' . serialize($relevant_fields_time) . ']');
                 }
 
                 $this->assertTrue(array_keys($relevant_fields_member_id) == $found_tables[$table]['member_id_fields'], 'Member field mismatch for: ' . $table . ' (' . serialize($relevant_fields_member_id) . ')');

@@ -113,6 +113,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        COMPOSR_FAST_CUSTOM_INDEX__COUNT_ESTIMATE
+        CONFIG_OPTION_composr_fast_custom_index__count_estimate
+        CONFIG_OPTION_wysiwyg_VALUE_-1
+        CONFIG_OPTION_wysiwyg_VALUE_0
+        CONFIG_OPTION_wysiwyg_VALUE_1
+        DESCRIPTION_CLEAR_COMPOSR_FAST_CUSTOM_INDEX
         LAUNCH_WITH_TEST_CONTENT
         LAUNCH_IN_BLANK_STATE
         STOCK_DEFAULT_BANNER_FALLBACK
@@ -630,9 +636,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SESSION_ENTRY_PAGES
         SESSION_EXIT_PAGES
         SESSION_TOTAL_VIEWS
-        CONFIG_OPTION_wysiwyg_VALUE_-1=Off by default
-        CONFIG_OPTION_wysiwyg_VALUE_0=Off
-        CONFIG_OPTION_wysiwyg_VALUE_1=On by default
         STATS_CATEGORY_audience_demographics
         STATS_CATEGORY_audience_technical
         STATS_CATEGORY_content_growth

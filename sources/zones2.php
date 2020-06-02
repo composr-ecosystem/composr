@@ -970,6 +970,10 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
 
     // Filter out any duplicated page names (database is case insensitive so cannot hold them)
     foreach (array_keys($out) as $page) {
+        if (is_integer($page)) {
+            $page = strval($page);
+        }
+
         $page_lower = strtolower($page);
         if (($page_lower != $page) && (array_key_exists($page_lower, $out))) {
             unset($out[$page]);

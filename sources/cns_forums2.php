@@ -328,7 +328,7 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
 
                 $it_compound_list = strval($forum['id']);
                 if ($_compound_list != '') {
-                    $it_compound_list.=','.$_compound_list;
+                    $it_compound_list .= ',' . $_compound_list;
                 }
             }
 
@@ -351,10 +351,12 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
             }
             $out[$cat_sort_key][] = $child;
 
-            if ($compound_list != '') {
-                $compound_list .= ',';
+            if ($use_compound_list) {
+                if ($compound_list != '') {
+                    $compound_list .= ',';
+                }
+                $compound_list .= $it_compound_list;
             }
-            $compound_list .= $it_compound_list;
         }
     }
 

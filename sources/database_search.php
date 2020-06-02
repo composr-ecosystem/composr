@@ -446,7 +446,7 @@ class Composr_fast_custom_index
                         $count_table .= ' ' . $join_type . ' ' . $db->get_table_prefix() . $index_table . ' i' . strval($i) . ' ON ' . $join_condition . $join_condition_keys;
                     }
                     $count_extra_where_clause .= ' AND ' . $join_condition;
- 
+
                     if ($set_type == 'not') {
                         $extra_where_clause .= ' AND i' . strval($i) . '.i_ngram IS NULL';
                     }
