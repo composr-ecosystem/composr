@@ -183,7 +183,7 @@
       <free/>
       <text>
         <name>CPAL</name>
-        <file>htdocs/text/EN/licence.txt</file>
+        <file>htdocs/docs/LICENSE.md</file>
       </text>
     </license>
     <presentation>

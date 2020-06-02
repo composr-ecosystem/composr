@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 
  NOTE TO PROGRAMMERS:
@@ -1308,7 +1308,14 @@ class Hook_addon_registry_core
             'text/bots.txt',
             'text/EN/.htaccess',
             'text/EN/index.html',
-            'text/EN/licence.txt',
+            'docs/INSTALL.md',
+            'docs/LICENSE.md',
+            'docs/README.md',
+            'docs/THANKS.md',
+            'docs/CODE_OF_CONDUCT.md',
+            'docs/CONTRIBUTING.md',
+            'docs/SECURITY.md',
+            'docs/SUPPORT.md',
             'text/EN/too_common_words.txt',
             'text/EN/word_characters.txt',
             'text/EN/synonyms.txt',

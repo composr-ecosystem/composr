@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licencing information.
+ See docs/LICENSE.md for full licensing information.
 
 
  NOTE TO PROGRAMMERS:

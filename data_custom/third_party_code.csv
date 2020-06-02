@@ -19,7 +19,7 @@ FirePHP,,https://github.com/firephp/insight/tree/master/lib/FirePHPCore,No,Yes,R
 Flip,,https://github.com/nnattawat/flip,Yes,No,Re-sync regularly,29th Mar 2020,1.1.2,IE9+,N/A,N/A,dist folder. Keep custom code at top of jquery_flip.js
 GeSHI,,https://github.com/GeSHi/geshi-1.0,Yes,No,Re-sync regularly,21st Apr 2020,1.0.9.1,N/A,geshi,N/A,"Actual website is outdated, but GitHub is being updated"
 getid3,,https://github.com/JamesHeinrich/getID3,Yes,No,Re-sync regularly,30th Mar 2020,1.9.19,PHP 5.0.5+,getid3,N/A,Just getid3 folder
-GNU FreeFont,,http://savannah.gnu.org/projects/freefont/,Yes,Yes,Re-sync regularly,30th Mar 2020,20120503,N/A,N/A,N/A,freefont-ttf-<latestdate>.zip
+Noto fonts,,https://www.google.com/get/noto/,Yes,Yes,Re-sync regularly,2nd June 2020,,N/A,N/A,N/A,Select files from Noto Sans and Noto Mono
 HTML5-Desktop-Notifications,,https://github.com/ttsvetko/HTML5-Desktop-Notifications,Yes,Yes,Remove when browsers don't need it,N/A,3.0.0,IE9+,N/A,N/A,
 jQuery,,https://jquery.com/,Yes,Yes,Re-sync regularly,29th Mar 2020,3.4.1,IE9+,N/A,N/A,
 jQuery-UI,,https://jqueryui.com/,Unsure,Yes,Re-sync regularly,30th Mar 2020,1.12.1,IE11+,N/A,N/A,"Project dead now, due to prevalance of React? Can remove with Date/Time polyfills when appropriate."

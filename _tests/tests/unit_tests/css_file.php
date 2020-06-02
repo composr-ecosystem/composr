@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -309,6 +309,7 @@ class css_file_test_set extends cms_test_case
         }
 
         $exceptions = [
+            'md',
             'responsive-video',
             'content-wrap-auto-center',
             'table-header-sorted',

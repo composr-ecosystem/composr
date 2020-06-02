@@ -2236,7 +2236,7 @@ Provide addon screenshots
 | Product development only
 | Manually
 | If you include some third party code you must update:
- - [tt]text/EN/licence.txt[/tt] (this file is shown when users install)
+ - [tt]docs/LICENSE.md[/tt] (this file is shown when users install)
  - [tt]sources_custom/third_party_code.php[/tt] (general list of files)
  - [tt]phpdoc.dist.xml[/tt] (if appropriate, PHPDoc generation)
  - [tt]data/maintenance_sheet.csv[/tt] (if appropriate, non-maintained systems)

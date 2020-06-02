@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licencing information.
+ See docs/LICENSE.md for full licensing information.
 
 
  NOTE TO PROGRAMMERS:
@@ -42,7 +42,7 @@ function has_ttf()
         return $result;
     }
 
-    if (@imagettfbbox(26.0, 0.0, get_file_base() . '/data/fonts/FreeMono.ttf', 'test') === false) {
+    if (@imagettfbbox(26.0, 0.0, get_file_base() . '/data/fonts/NotoMono-Regular.ttf', 'test') === false) {
         $result = false;
         return $result;
     }
@@ -72,13 +72,14 @@ function check_ttf()
  */
 function find_default_font($mono = false)
 {
-    // We have some knowledge of fonts we like, even though we don't bundle them all (for file-size and licensing reasons)
+    // We have some knowledge of fonts that are fairly comprehensive, widely available, and normal looking, even though we don't bundle them all (for file-size and licensing reasons)
     if ($mono) {
         $precedence = [
             'Courier New Bold', // Microsoft (preferred, de facto standard)
             'Courier New', // Microsoft (preferred, de facto standard)
-            'FreeMonoBold', // GNU FreeFont (bundled)
-            'FreeMono', // GNU FreeFont (bundled)
+            'NotoMono-Regular', // Google (bundled)
+            'FreeMonoBold', // GNU FreeFont
+            'FreeMono', // GNU FreeFont
             'LiberationMono-Bold', // Liberation fonts
             'LiberationMono', // Liberation fonts
             'UbuntuMono-Bold', // Ubuntu
@@ -93,8 +94,9 @@ function find_default_font($mono = false)
             'Segoe UI', // Microsoft (preferred, de facto standard)
             'Tahoma', // Microsoft (preferred, de facto standard)
             'Verdana', // Microsoft (preferred, de facto standard)
-            'FreeSans', // GNU FreeFont (bundled)
-            'FreeSerif', // GNU FreeFont (bundled)
+            'NotoMono-Regular', // Google (bundled)
+            'FreeSans', // GNU FreeFont
+            'FreeSerif', // GNU FreeFont
             'Calibri', // Microsoft
             'Arial', // Microsoft
             'Microsoft Sans Serif', // Microsoft
@@ -109,6 +111,11 @@ function find_default_font($mono = false)
             'FiraSans', // Firefox OS
             'Roboto', // Google
             'OpenSans', // Google
+            'Cantarell', // GNOME
+            'Quivira',
+            'Libertine',
+            'Lato',
+            'Gentium',
         ];
     }
 

@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -103,7 +103,7 @@ class third_party_code_test_set extends cms_test_case
             return;
         }
 
-        $licence = file_get_contents(get_file_base() . '/text/EN/licence.txt');
+        $licence = file_get_contents(get_file_base() . '/docs/THANKS.md');
 
         foreach ($this->third_party_code as $row) {
             if (substr($row['Project'], 0, 1) == '(') {
@@ -111,7 +111,7 @@ class third_party_code_test_set extends cms_test_case
             }
 
             if ($row['Bundled?'] == 'Yes') {
-                $this->assertTrue(strpos($licence, $row['Project']) !== false, 'Project not apparently referenced in licencing, ' . $row['Project']);
+                $this->assertTrue(strpos($licence, $row['Project']) !== false, 'Project not apparently referenced in THANKS.md, ' . $row['Project']);
             }
         }
     }

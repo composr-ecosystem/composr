@@ -140,7 +140,7 @@ Full list of parameters:
  - [tt]ont_size[/tt] (e.g. "12" for 12pt)
  - [tt]x[/tt] and [tt]y[/tt] (where to write the text)
  - [tt]color[/tt] (has to be 6 hex digits, e.g. 'FFFFFF')
- - [tt]font[/tt] (e.g. "Vera" for the [tt]data/fonts/Vera.ttf[/tt] file we bundle with Composr [there are a number of other [tt].ttf[/tt] files in that directory ready for use])
+ - [tt]font[/tt] (e.g. "NotoSans-Regular" for the [tt]data/fonts/NotoSans-Regular.ttf[/tt] file we bundle with Composr [there are a number of other [tt].ttf[/tt] files in that directory ready for use])
  - [tt]center[/tt] (set to "1" to center the text)
 
 [title="3"]Custom rollovers[/title]

@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -37,6 +37,8 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         // Many of these aren't real words, but they appear for good reasons so we whitelist them
         $okay_words = [
+            'composrcms',
+            'freenode',
             'cyrus',
             'ngrams',
             'ngram',
@@ -3349,7 +3351,8 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
             'pages' => 'php',
             'site' => 'php',
-            'docs' => 'php',
+            'docs/pages' => 'php',
+            'docs' => 'md',
             'forum' => 'php',
             'adminzone' => 'php',
             'cms' => 'php',
@@ -3427,11 +3430,13 @@ class _lang_spelling_epic_test_set extends cms_test_case
                         $c = clean_simple_html_for_spellcheck($c);
                         break;
 
+                    case 'md':
                     case 'txt':
                         if (in_array($path, [
-                            'text/EN/licence.txt',
                             'docs/pages/comcode_custom/EN/tut_addon_index.txt',
                             'text/EN/synonyms.txt',
+                            'docs/LICENSE.md',
+                            'docs/THANKS.md',
                         ])) {
                             continue 2;
                         }

@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -20,10 +20,8 @@ if (!addon_installed__messaged('composr_homesite', $error_msg)) {
     return $error_msg;
 }
 
-$text = cms_file_get_contents_safe(get_file_base() . '/text/EN/licence.txt', FILE_READ_LOCK | FILE_READ_BOM);
-
-$text = preg_replace('#(^|\n)(.*)\n=+\r?\n#', '${1}[title]${2}[/title]' . "\n", $text);
-$text = preg_replace('#(^|\n)(.*)\n\-+\r?\n#', '${1}[title="2"]${2}[/title]' . "\n", $text);
+$licence = cms_file_get_contents_safe(get_file_base() . '/docs/LICENSE.md', FILE_READ_LOCK | FILE_READ_BOM);
+$licence = preg_replace('#\((\w+\.md)\)#', '(https://gitlab.com/composr-foundation/composr/-/blob/master/docs/$1)', $licence);
 
 require_code('comcode');
-echo static_evaluate_tempcode(comcode_to_tempcode($text));
+echo static_evaluate_tempcode(comcode_to_tempcode($licence));

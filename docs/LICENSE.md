@@ -1,5 +1,6 @@
-Common Public Attribution License Version 1.0 (CPAL)  [Composr licensing]
-==========================================================================
+# Composr CMS Terms & Conditions #
+
+## Common Public Attribution License Version 1.0 (CPAL) ##
 
 1. "Definitions"
 1.0.1 "Commercial Use" means distribution or otherwise making the Covered Code available to a third party.
@@ -105,81 +106,10 @@ Attribution URL: https://compo.sr/
 Graphic Image as provided in the Covered Code (Composr logo in the help panel of the Admin Zone).
 Display of Attribution Information is required in any Larger Works that you distribute.
 
-Privacy Policy
---------------
+## Privacy Policy ##
 
-You should read [url]https://compo.sr/privacy.htm[/url] our privacy policy before using this product.
+You should read the [privacy policy](https://compo.sr/privacy.htm) before using Composr CMS.
 
-Third Party Materials
----------------------
+## Third Party Materials ##
 
-This product includes:
- - Resources:
-  - Emoticons and avatars, created for ocProducts by Dave Buckley (licensed as per Composr, mentioned here for crediting purposes only)
-  - Flag images from https://github.com/hjnilsson/country-flags
-  - GNU FreeFont (GPL with font exception)
-  - Sound effects from Asterisk (Copyright Allison Smith, Creative Commons Attribution License)
-  - Sound effects (Copyright 2008 bns <banasio@o2.pl>, Creative Commons Attribution License)
-  - Country IP address database (Creative Commons Attribution 4.0, by DB-IP.com)
-  - Hero-slider background images (CC0 "no copyright reserved" license from pixabay.com)
- - Backend code used under licence:
-  - Text_Diff (LGPL licence, ocProducts modifications also therefore are also licensed under the LGPL)
-  - FirePHP (BSD-like licence)
-  - SabreDAV (BSD-like licence)
-  - m-zip (Francesco M. Munafo', liberal custom licence)
-  - convert_to_html_encoding implementation (from php.net comment by silverbeat, Creative Commons Attribution License)
-  - mergesort implementation (from php.net comment by sreid, Creative Commons Attribution License)
-  - GUID implementation (from php.net comment by Andrew Moore, Creative Commons Attribution License)
-  - adjust_pic_orientation function (from stackoverflow comment)
-  - animated gif detection (from php.net comment by ZeBadger, Creative Commons Attribution License)
-  - Exif transfer code (from php.net comment by ebashkoff, Creative Commons Attribution License)
-  - Stemmer (BSD-like licence)
-  - JShrink (BSD-like licence)
-  - cssmin (MIT licence)
-  - HMAC calculation code (public domain by Lance Rushing)
-  - php-mail-signature (LGPL licence)
-  - CRC-24 (MIT licence)
- - Frontend code used under licence:
-  - jQuery (MIT licence)
-  - jQuery-UI (MIT licence)
-  - Spectrum, a JS color selection widget (MIT licence)
-  - Date polyfill (MIT licence)
-  - Time polyfill (MIT licence)
-  - Select2 (Apache licence)
-  - Skitter (MIT licence)
-  - modalwindow.js (PHP-like licence)
-  - SoundManager2 (BSD-like licence)
-  - Plupload (used under commercial licence; sponsored by Tom McMasters)
-  - HTML5-Desktop-Notifications (https://github.com/ttsvetko/HTML5-Desktop-Notifications, Apache licence)
-  - CKEditor WYSIWYG editor (MPL licence)
-  - Ace code editor (BSD-like licence)
-  - xsl_mopup.js (public domain)
-  - JavaScript base-64 code (http://www.webtoolkit.info/, liberal custom licence)
-  - JW-Player (used under commercial licence)
-  - Sew, autocomplete implementation (BSD-like licence / public domain)
-  - Modernizr (MIT & BSD-like licences)
-  - Osano Cookie Consent (MIT licence)
-  - Invoice template (MIT licence)
-  - Browser detection code (http://stackoverflow.com/a/9851769/362006, public domain)
-  - Camel case code (http://stackoverflow.com/a/32604073/362006, public domain)
-  - Cookie management code (https://github.com/js-cookie/js-cookie, MIT licence)
-  - URL encode code (http://locutus.io/php/url/urlencode/, public domain)
-  - Glide.js (MIT licence)
-  - Chart.js (MIT licence)
-  - Chart.js datalabels plugin (MIT licence)
-  - Masonry (MIT licence)
-  - MediaElement.js (MIT licence)
-  - JSON5 (MIT licence)
- - Smaller front-end polyfills:
-  - Web Animations (Google, Apache licence)
-  - URL Search parameters (WebReflection, BSD-like licence)
-  - RequireJS (jQuery Foundation and others, MIT licence)
-  - Promises (Forbes Lindesay, public domain)
-  - Keyboard Events (Chris Van, MIT licence)
-  - Fetch API (Xavier Badosa, public domain)
-  - Class Lists (Eli Grey, public domain)
-  - WeakMap polyfill (BSD-like license)
-  - $cms.debounce() and $cms.throttle() functions inspired by Underscore.js (MIT licence)
-  - Assorted polyfills (Joshua Bell, Mozilla, public domain)
-
-Non-bundled addons will often have their own third party materials documented within the addon.
+Licensing for bundled third party materials is covered in [Acknowledgments](THANKS.md).

@@ -4,7 +4,7 @@
  Copyright (c) ocProducts, 2004-2020
 
  You may not distribute a modified version of this file, unless it is solely as a Composr modification.
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 */
 

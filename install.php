@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -535,16 +535,17 @@ function step_2()
     }
     global $FILE_ARRAY;
     if (@is_array($FILE_ARRAY)) {
-        $licence = unixify_line_format(handle_string_bom(file_array_get('text/' . filter_naughty($_POST['default_lang']) . '/licence.txt')));
+        $licence = unixify_line_format(handle_string_bom(file_array_get('docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md')));
         if ($licence === null) {
-            $licence = unixify_line_format(handle_string_bom(file_array_get('text/EN/licence.txt')));
+            $licence = unixify_line_format(handle_string_bom(file_array_get('docs/LICENSE.md')));
         }
     } else {
-        $licence = @cms_file_get_contents_safe(get_file_base() . '/text/' . filter_naughty($_POST['default_lang']) . '/licence.txt', FILE_READ_LOCK | FILE_READ_BOM);
-        if ($licence == '') {
-            $licence = cms_file_get_contents_safe(get_file_base() . '/text/EN/licence.txt', FILE_READ_LOCK | FILE_READ_BOM);
+        $licence = @cms_file_get_contents_safe(get_file_base() . '/docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md', FILE_READ_LOCK | FILE_READ_BOM);
+        if ($licence === false) {
+            $licence = cms_file_get_contents_safe(get_file_base() . '/docs/LICENSE.md', FILE_READ_LOCK | FILE_READ_BOM);
         }
     }
+    $licence = preg_replace('#\((\w+\.md)\)#', '(https://gitlab.com/composr-foundation/composr/-/blob/master/docs/$1)', $licence);
 
     $url = prepare_installer_url('install.php?step=3');
 

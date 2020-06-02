@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 
  NOTE TO PROGRAMMERS:
@@ -111,18 +111,11 @@ class Hook_addon_registry_core_graphic_text
             'sources/hooks/systems/addon_registry/core_graphic_text.php',
             'sources/fonts.php',
             'themes/default/css/fonts.css',
-            'data/fonts/FreeMono.ttf',
-            'data/fonts/FreeMonoBold.ttf',
-            'data/fonts/FreeMonoBoldOblique.ttf',
-            'data/fonts/FreeMonoOblique.ttf',
-            'data/fonts/FreeSans.ttf',
-            'data/fonts/FreeSansBold.ttf',
-            'data/fonts/FreeSansBoldOblique.ttf',
-            'data/fonts/FreeSansOblique.ttf',
-            'data/fonts/FreeSerif.ttf',
-            'data/fonts/FreeSerifBold.ttf',
-            'data/fonts/FreeSerifBoldItalic.ttf',
-            'data/fonts/FreeSerifItalic.ttf',
+            'data/fonts/NotoMono-Regular.ttf',
+            'data/fonts/NotoSans-Bold.ttf',
+            'data/fonts/NotoSans-BoldItalic.ttf',
+            'data/fonts/NotoSans-Italic.ttf',
+            'data/fonts/NotoSans-Regular.ttf',
             'data/fonts/index.html',
             'data/gd_text.php',
             'data_custom/fonts/index.html',

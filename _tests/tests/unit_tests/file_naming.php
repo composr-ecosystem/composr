@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See text/EN/licence.txt for full licensing information.
+ See docs/LICENSE.md for full licensing information.
 
 */
 
@@ -39,6 +39,7 @@ class file_naming_test_set extends cms_test_case
                 'themes/default/images/skitter',
                 'data/mediaelement',
                 'data/plupload',
+                'data/fonts',
             ]);
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
