@@ -1310,7 +1310,7 @@ class Hook_addon_registry_core
             'text/EN/index.html',
             'docs/INSTALL.md',
             'docs/LICENSE.md',
-            'docs/README.md',
+            'README.md',
             'docs/THANKS.md',
             'docs/CODE_OF_CONDUCT.md',
             'docs/CONTRIBUTING.md',

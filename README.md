@@ -6,13 +6,13 @@ Composr lets you decide how your site will look and behave. Features are plentif
 
 ## Sections ##
 
- - [Installation](INSTALL.md)
- - [Licence](LICENSE.md)
- - [Code of conduct](CODE_OF_CONDUCT.md)
- - [Support](SUPPORT.md)
- - [Security](SECURITY.md)
- - [Contributing](CONTRIBUTING.md)
- - [Acknowledgments](THANKS.md)
+ - [Installation](docs/INSTALL.md)
+ - [Licence](docs/LICENSE.md)
+ - [Code of conduct](docs/CODE_OF_CONDUCT.md)
+ - [Support](docs/SUPPORT.md)
+ - [Security](docs/SECURITY.md)
+ - [Contributing](docs/CONTRIBUTING.md)
+ - [Acknowledgments](docs/THANKS.md)
 
 ## See also ##
 
