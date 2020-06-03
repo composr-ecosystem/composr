@@ -666,7 +666,7 @@ function _dispatch_notification_to_member($to_member_id, $setting, $notification
                     false,
                     false,
                     'MAIL',
-                    get_option('tasks_background') == '1',
+                    get_option('tasks_background') == '0',
                     null,
                     null,
                     $join_time
