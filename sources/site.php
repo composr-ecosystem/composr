@@ -807,8 +807,9 @@ function process_url_monikers($page, $redirect_if_non_canonical = true)
                                 return;
                             }
 
-                            // Okay it was deleted or never existed then?!
-                            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+                            // Okay it was deleted or never existed then?! Just set to -1 as nothing will have that ID, and we'll get an error from the module when bootstrapping is fully finished
+                            $_GET['id'] = '-1';
+                            return;
                         }
 
                         // Map back 'id'
