@@ -124,7 +124,7 @@ class Module_admin_setupwizard
         $type = get_param_string('type', 'browse');
 
         if (($type != 'browse') && ($type != 'step11') && ($type != 'install_test_content') && ($type != 'uninstall_test_content')) {
-            if ((empty($_POST)) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
+            if ($_SERVER['REQUEST_METHOD'] != 'POST') {
                 warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
             }
         }
@@ -1544,7 +1544,7 @@ class Module_admin_setupwizard
      */
     public function install_test_content()
     {
-        if (($_SERVER['REQUEST_METHOD'] != 'POST') && (strpos($_SERVER['HTTP_REFERER'], get_base_url() . '/install.php?') !== 0)) {
+        if ((post_param_integer('submitting', 0) == 0) && (strpos($_SERVER['HTTP_REFERER'], get_base_url() . '/install.php?') !== 0)) {
             $post_url = build_url(['page' => '_SELF', 'type' => 'install_test_content'], '_SELF');
 
             return do_template('CONFIRM_SCREEN', [
@@ -1552,7 +1552,7 @@ class Module_admin_setupwizard
                 'TITLE' => $this->title,
                 'TEXT' => do_lang_tempcode('Q_SURE'),
                 'URL' => $post_url,
-                'HIDDEN' => '',
+                'HIDDEN' => form_input_hidden('submitting', '1'),
                 'FIELDS' => '',
                 'PREVIEW' => '',
             ]);
@@ -1575,7 +1575,7 @@ class Module_admin_setupwizard
      */
     public function uninstall_test_content()
     {
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+        if (post_param_integer('submitting', 0) == 0) {
             $post_url = build_url(['page' => '_SELF', 'type' => 'uninstall_test_content'], '_SELF');
 
             return do_template('CONFIRM_SCREEN', [
@@ -1583,7 +1583,7 @@ class Module_admin_setupwizard
                 'TITLE' => $this->title,
                 'TEXT' => do_lang_tempcode('Q_SURE'),
                 'URL' => $post_url,
-                'HIDDEN' => '',
+                'HIDDEN' => form_input_hidden('submitting', '1'),
                 'FIELDS' => '',
                 'PREVIEW' => '',
             ]);

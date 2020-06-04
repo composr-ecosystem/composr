@@ -6,6 +6,8 @@
 	<form title="{!NOTIFICATIONS}" method="post" action="{ACTION_URL*}">
 		{$INSERT_SPAMMER_BLACKHOLE}
 
+		<input type="hidden" name="submitting" value="1" />
+
 		<div>
 			{INTERFACE}
 

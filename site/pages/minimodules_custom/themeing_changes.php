@@ -76,7 +76,7 @@ $special_file_types = [
 ];
 
 // Read defaults
-if ($_SERVER['REQUEST_METHOD'] == 'POST') { // From form
+if (post_param_integer('submitting', 0) == 1) { // From form
     $files_to_show = [];
     $i = 0;
     foreach ($special_file_types as $label => $_search) {
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // From form
         'themes/default/templates/GLOBAL_HTML_WRAP.tpl',
     ];
 }
-if ($_SERVER['REQUEST_METHOD'] == 'POST') { // From form
+if (post_param_integer('submitting', 0) == 1) { // From form
     $versions_interested_in = isset($_POST['releases']) ? $_POST['releases'] : [];
 } elseif (isset($_GET['releases'])) { // By URL
     $versions_interested_in = explode(',', $_GET['releases']);
@@ -110,6 +110,7 @@ require_css('widget_select2');
 echo '<div class="clearfix">';
 echo '<form action="' . escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'show_all' => get_param_integer('show_all', 0)], '_SELF'))) . '" method="post">';
 echo static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
+echo '<input type="hidden" name="submitting" value="1" />';
 
 // Output file selectors
 $i = 0;

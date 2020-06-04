@@ -68,7 +68,7 @@ if (strpos($git_result, 'git: command not found') !== false) {
 // Actualisation
 // =============
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (post_param_integer('submitting', 0) == 1) {
     $git_commit_id = post_param_string('git_commit_id', '');
 
     $done = [];
@@ -320,6 +320,8 @@ echo <<<END
 
 <form action="{$post_url}" method="post" id="bugfix-form">
     {$spammer_blackhole}
+
+    <input type="hidden" name="submitting" value="1" />
 
     <fieldset>
         <legend>Description</legend>

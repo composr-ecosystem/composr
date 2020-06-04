@@ -552,6 +552,13 @@ Don't add more than a few lines of code to an "entry script"
 | HTTP [tt]GET[/tt] requests should not change database state in any major way (it can cause problems with web spiders, problems with web accelerator systems, and XSS vulnerabilities). [tt]POST[/tt] requests should not be used for screens that might be reasonably bookmarked (e.g. search result screens, or result filtering screens). Composr has specific features in its API to allow you to choose whether forms use [tt]GET[/tt] or [tt]POST[/tt] requests. You absolutely must not make anything that will show up directly on the Sitemap change state in a major way.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"][tt]REQUEST_METHOD[/tt] being [tt]POST[/tt] is not a good enough check for a form being submitted[/color]
+| Security
+| Composr development +
+| Manually
+| You may be tempted to distinguish between showing forms and actualising them by looking at [tt]REQUEST_METHOD[/tt]. However, a login screen will generate a [tt]POST[/tt] that relays any existing (if any) POST data along with login POST data to whatever URL the login had to happen from. This means that you cannot relay on [tt]REQUEST_METHOD[/tt] being [tt]POST[/tt] alone for there being a genuine regular form submission to where the user is at. You need to either have some required POST fields, or do detection based on a special hidden POST field being present. 
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 Set appropriate class visibility.
 | Technical debt
 | Composr development +

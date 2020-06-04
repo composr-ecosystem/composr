@@ -1184,8 +1184,8 @@ function may_see_stack_traces()
     if ($GLOBALS['CURRENT_SHARE_USER'] !== null) {
         return true; // Demonstratr exception
     }
-    if ($_SERVER['REQUEST_METHOD'] == '') {
-        return true; // Command line
+    if ((function_exists('is_cli')) && (is_cli())) {
+        return true;
     }
     if ((function_exists('running_script')) && (running_script('upgrader'))) {
         return true;

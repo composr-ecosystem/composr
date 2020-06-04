@@ -50,7 +50,7 @@ class Hook_profiles_tabs_edit_notifications
 
         $order = 100;
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (get_param_integer('submitting_settings_tab', 0) == 1) {
             $auto_monitor_contrib_content = post_param_integer('auto_monitor_contrib_content', 0);
             $smart_topic_notification = post_param_integer('smart_topic_notification', 0);
             $mailing_list_style = post_param_integer('mailing_list_style', 0);

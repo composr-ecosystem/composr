@@ -821,7 +821,7 @@ class Module_filedump
 
         $generated = null;
         $rendered = null;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (isset($_POST['description'])) {
             $generated = '[media';
             $param = post_param_string('description', '');
             if ($param != '') {
@@ -932,7 +932,7 @@ class Module_filedump
         }
         $_description = cms_preg_replace_safe('#\s*' . do_lang('BLOCK_IND_DEFAULT') . ': ["\']([^"]*)["\'](?-U)\.?(?U)#Ui', '', $_description);
         $thumb_ticked = true;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (isset($_POST['description'])) {
             $thumb_ticked = (post_param_integer('thumb', 0) == 1);
         }
         $fields->attach(form_input_tick(do_lang_tempcode('COMCODE_TAG_attachment_PARAM_thumb_TITLE'), ucfirst(substr($_description, 12)), 'thumb', $thumb_ticked));

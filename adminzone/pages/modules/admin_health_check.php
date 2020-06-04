@@ -111,7 +111,7 @@ class Module_admin_health_check
      */
     public function browse()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (post_param_integer('submitting', 0) == 1) {
             $sections_to_run = isset($_POST['sections_to_run']) ? $_POST['sections_to_run'] : [];
 
             $passes = (post_param_integer('passes', 0) == 1);
@@ -129,7 +129,7 @@ class Module_admin_health_check
 
         $sections = create_selection_list_health_check_sections($sections_to_run);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (post_param_integer('submitting', 0) == 1) {
             $has_fails = false;
             $categories = run_health_check($has_fails, $sections_to_run, $passes, $skips, $manual_checks, $automatic_repair);
 

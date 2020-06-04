@@ -244,7 +244,7 @@ class Module_admin_notifications
                         $tick_label = do_lang_tempcode('INBUILT_DEFAULT_WRAP', $tick_label, $inbuilt_default ? do_lang_tempcode('YES') : do_lang_tempcode('NO'));
                     }
 
-                    $_checked = post_param_integer('notification_' . $notification_code . '_' . $ntype, (($_SERVER['REQUEST_METHOD'] != 'POST') && $checked) ? 1 : 0);
+                    $_checked = post_param_integer('notification_' . $notification_code . '_' . $ntype, ((post_param_integer('submitting', 0) == 0) && $checked) ? 1 : 0);
 
                     $notification_types[] = [
                         'NTYPE' => $ntype,
@@ -273,7 +273,7 @@ class Module_admin_notifications
         }
 
         // Save
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (post_param_integer('submitting', 0) == 1) {
             if ($mode == self::NOTIFICATIONS_LOCKDOWN) {
                 $GLOBALS['SITE_DB']->query_delete('notification_lockdown');
             } else { // NOTIFICATIONS_DEFAULT

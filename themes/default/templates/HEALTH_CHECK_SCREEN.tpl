@@ -3,6 +3,8 @@
 <form action="{$SELF_URL*}" method="post" title="{!PRIMARY_PAGE_FORM}">
 	{$INSERT_SPAMMER_BLACKHOLE}
 
+	<input type="hidden" name="submitting" value="1" />
+
 	<div>
 		<label for="sections_to_run" class="lonely-label">{!SECTIONS}:</label>
 		<select name="sections_to_run[]" id="sections_to_run" multiple="multiple" size="30" class="form-control form-control-wide" data-submit-on-enter="1">

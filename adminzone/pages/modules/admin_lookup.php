@@ -172,7 +172,7 @@ class Module_admin_lookup
             '_GUID' => '9cc407037ec01a8f3483746a22889471',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
-            'HIDDEN' => '',
+            'HIDDEN' => form_input_hidden('submitting', '1'),
             'TITLE' => $this->title,
             'TEXT' => '',
             'SUBMIT_ICON' => 'buttons/proceed',
@@ -241,7 +241,7 @@ class Module_admin_lookup
             }
             $all_ips[] = $mask;
         }
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (post_param_integer('submitting', 0) == 1) {
             if (!array_key_exists('banned', $_POST)) {
                 $_POST['banned'] = [];
             }
