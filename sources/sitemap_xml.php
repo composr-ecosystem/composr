@@ -51,13 +51,31 @@ function init__sitemap_xml()
 }
 
 /**
- * Remove something from the Sitemap and rebuild.
+ * Remove something from the Sitemap and rebuild, by page-link.
  * Useful for resolving Google Search Coverage errors, for example.
  *
- * @param SHORT_TEXT $page_link The page-link
+ * @param  SHORT_TEXT $page_link The page-link
+ * @return boolean Whether anything happened
  */
 function purge_sitemap_xml_node_immediately($page_link)
 {
+    $ret = notify_sitemap_node_delete($page_link);
+    if ($ret) {
+        sitemap_xml_build();
+    }
+    return $ret;
+}
+
+/**
+ * Remove something from the Sitemap and rebuild, by URL.
+ * Useful for resolving Google Search Coverage errors, for example.
+ *
+ * @param  SHORT_TEXT $url The URL
+ * @return boolean Whether anything happened
+ */
+function purge_sitemap_xml_node_immediately_by_url($url)
+{
+    $page_link = url_to_page_link($url);
     $ret = notify_sitemap_node_delete($page_link);
     if ($ret) {
         sitemap_xml_build();
@@ -619,16 +637,4 @@ function notify_sitemap_node_delete($page_link)
     ], ['page_link' => $page_link], '', 1);
 
     return true;
-}
-
-/**
- * Manually delete a node from the sitemap. Sometimes useful if Google Search Console is complaining, because something changed that Composr did not detect.
- *
- * @param  SHORT_TEXT $url The URL
- */
-function delete_sitemap_node_manually_by_url($url)
-{
-    $page_link = url_to_page_link($url);
-    notify_sitemap_node_delete($page_link);
-    sitemap_xml_build();
 }
