@@ -26,6 +26,11 @@ build_sitemap_cache_table();
 sitemap_xml_build(null, true);
 */
 
+/*
+To force something out of the Sitemap immediately that should not be there and can't otherwise be deleted (maybe already deleted manually), run this from Commandr:
+:require_code('sitemap_xml'); var_dump(purge_sitemap_xml_node_immediately('some-page-link'));
+*/
+
 /**
  * Standard code module initialisation function.
  *
@@ -43,6 +48,21 @@ function init__sitemap_xml()
 
     global $RUNNING_BUILD_SITEMAP_CACHE_TABLE;
     $RUNNING_BUILD_SITEMAP_CACHE_TABLE = false;
+}
+
+/**
+ * Remove something from the Sitemap and rebuild.
+ * Useful for resolving Google Search Coverage errors, for example.
+ *
+ * @param SHORT_TEXT $page_link The page-link
+ */
+function purge_sitemap_xml_node_immediately($page_link)
+{
+    $ret = notify_sitemap_node_delete($page_link);
+    if ($ret) {
+        sitemap_xml_build();
+    }
+    return $ret;
 }
 
 /**
@@ -582,15 +602,23 @@ function notify_sitemap_node_edit($page_link, $guest_access = null)
  * This may be called on page-links that may not actually be in the sitemap cache.
  *
  * @param  SHORT_TEXT $page_link The page-link
+ * @return boolean Whether anything happened
  */
 function notify_sitemap_node_delete($page_link)
 {
     canonicalise_sitemap_page_link($page_link);
 
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'page_link', array('page_link' => $page_link));
+    if ($test === null) {
+        return false;
+    }
+
     $GLOBALS['SITE_DB']->query_update('sitemap_cache', [
         'last_updated' => time(),
         'is_deleted' => 1,
     ], ['page_link' => $page_link], '', 1);
+
+    return true;
 }
 
 /**
