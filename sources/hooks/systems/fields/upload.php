@@ -185,6 +185,10 @@ class Hook_fields_upload
 
             $value = $temp[0];
             if ($value != '') {
+                if (strpos($value, '::') !== false) { // Required for security, else someone may be able to delete any file by putting "::" at the end of a matching filename they upload and then delete
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+
                 $value .= '::' . $temp[2];
             }
             if (($editing) && ($value == '') && (post_param_integer($tmp_name . '_unlink', 0) != 1)) {
@@ -210,8 +214,9 @@ class Hook_fields_upload
     public function cleanup($value)
     {
         if ($value['cv_value'] != '') {
-            @unlink(get_custom_file_base() . '/' . rawurldecode($value['cv_value']));
-            sync_file(rawurldecode($value['cv_value']));
+            $path = preg_replace('#::.*$#', '', $value['cv_value']);
+            @unlink(get_custom_file_base() . '/' . rawurldecode($path));
+            sync_file(rawurldecode($path));
         }
     }
 }

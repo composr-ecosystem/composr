@@ -1763,11 +1763,12 @@ function form_input_upload_multi($pretty_name, $description, $name, $required, $
 
     $_required = ($required) ? '-required' : '';
 
-    $edit = mixed();
+    $edit = [];
     if (($default !== null) && (!empty($default))) {
-        list($edit, $is_image) = make_previewable_url_absolute($default[0]);
-    } else {
-        $edit = [];
+        foreach ($default as $file) {
+            list($_edit, $is_image) = make_previewable_url_absolute($file);
+            $edit[] = $_edit;
+        }
     }
     $input = do_template('FORM_SCREEN_INPUT_UPLOAD_MULTI', [
         '_GUID' => 'e8712ede08591604738762ac03852ac1',

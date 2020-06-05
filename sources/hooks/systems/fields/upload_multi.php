@@ -220,6 +220,10 @@ class Hook_fields_upload_multi
 
                 $_value = $temp[0];
                 if ($_value != '') {
+                    if (strpos($_value, '::') !== false) { // Required for security, else someone may be able to delete any file by putting "::" at the end of a matching filename they upload and then delete
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                    }
+
                     $_value .= '::' . $temp[2];
 
                     if ($value != '') {
@@ -246,7 +250,8 @@ class Hook_fields_upload_multi
     {
         if ($value['cv_value'] != '') {
             $files = explode("\n", $value['cv_value']);
-            foreach ($files as $path) {
+            foreach ($files as $ev) {
+                $path = preg_replace('#::.*$#', '', $ev);
                 @unlink(get_custom_file_base() . '/' . rawurldecode($path));
                 sync_file(rawurldecode($path));
             }

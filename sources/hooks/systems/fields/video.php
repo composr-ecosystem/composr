@@ -265,8 +265,9 @@ class Hook_fields_video
     public function cleanup($value)
     {
         if ($value['cv_value'] != '') {
-            @unlink(get_custom_file_base() . '/' . rawurldecode($value['cv_value']));
-            sync_file(rawurldecode($value['cv_value']));
+            $path = preg_replace('# .*$#', '', $value['cv_value']);
+            @unlink(get_custom_file_base() . '/' . rawurldecode($path));
+            sync_file(rawurldecode($path));
         }
     }
 }

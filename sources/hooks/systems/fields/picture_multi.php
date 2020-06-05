@@ -81,17 +81,15 @@ class Hook_fields_picture_multi
         if ($is_metadata != '0') {
             $evs = explode("\n", $ev);
             foreach ($evs as $j => $ev) {
-                $img_url = preg_replace('#::.*$#', '', $ev);
-                if (url_is_local($img_url)) {
-                    $img_url = get_custom_base_url() . '/' . $img_url;
-                }
-
                 if (($j == 0) && ($is_metadata == '1')) { // Take priority?
                     global $METADATA;
                     unset($METADATA['image']);
                 }
 
-                $img_url = find_theme_image($ev);
+                $img_url = $ev;
+                if (url_is_local($img_url)) {
+                    $img_url = get_custom_base_url() . '/' . $img_url;
+                }
 
                 set_extra_request_metadata([
                     'image' => $img_url,

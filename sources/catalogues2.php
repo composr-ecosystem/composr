@@ -523,13 +523,14 @@ function actual_delete_catalogue($name)
  */
 function actual_edit_catalogue_field($id, $c_name, $name, $description, $order, $defines_order, $visible, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category = 1, $put_in_search = 1, $options = '', $type = null) // You cannot edit a field type
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['cf_description', 'cf_name'], ['id' => $id]);
+    $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['cf_description', 'cf_name', 'cf_type'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     $myrow = $rows[0];
     $_name = $myrow['cf_name'];
     $_description = $myrow['cf_description'];
+    $_type = $myrow['cf_type'];
 
     $map = [
         'c_name' => $c_name,
@@ -547,6 +548,21 @@ function actual_edit_catalogue_field($id, $c_name, $name, $description, $order, 
     ];
     if ($type !== null) {
         $map['cf_type'] = $type;
+
+        // FUDGE: We need to strip out some exotic syntax and convert to common-denominators
+        if (($_type == 'video') && ($type == 'upload')) { // video -> upload
+            catalogue_field_strip_exotic_syntax($id, 'catalogue_efv_short', ' ');
+        } elseif (($_type == 'video_multi') && ($type == 'upload_multi')) { // video_multi -> upload_multi
+            catalogue_field_strip_exotic_syntax($id, 'catalogue_efv_long', ' ');
+        } elseif (($_type == 'upload') && ($type == 'picture')) { // upload -> picture
+            catalogue_field_strip_exotic_syntax($id, 'catalogue_efv_short', '::');
+        } elseif (($_type == 'upload_multi') && ($type == 'picture_multi')) { // upload_multi -> picture_multi
+            catalogue_field_strip_exotic_syntax($id, 'catalogue_efv_long', '::');
+        } elseif (($_type == 'upload') && ($type == 'video')) { // upload -> video
+            catalogue_field_strip_exotic_syntax($id, 'catalogue_efv_short', '::');
+        } elseif (($_type == 'upload_multi') && ($type == 'video_multi')) { // upload_multi -> video_multi
+            catalogue_field_strip_exotic_syntax($id, 'catalogue_efv_long', '::');
+        }
     }
     if ($name !== null) {
         $map += lang_remap('cf_name', $_name, $name);
@@ -556,6 +572,34 @@ function actual_edit_catalogue_field($id, $c_name, $name, $description, $order, 
     }
 
     $GLOBALS['SITE_DB']->query_update('catalogue_fields', $map, ['id' => $id], '', 1);
+}
+
+/**
+ * Strip any extra syntax from a field, when converting to another format.
+ *
+ * @param  AUTO_LINK $id The ID of the field
+ * @param  string $table The table
+ * @param  string $delimiter Delimiter which separates special syntax
+ */
+function catalogue_field_strip_exotic_syntax($id, $table, $delimiter)
+{
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
+    $start = 0;
+    do {
+        $rows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'cv_value'], ['cf_id' => $id], 'ORDER BY id', 100, $start);
+        foreach ($rows as $row) {
+            $value = $row['cv_value'];
+            $lines = explode("\n", $value);
+            foreach ($lines as &$line) {
+                $bits = explode($delimiter, $line, 2);
+                $line = $bits[0];
+            }
+            $value = implode("\n", $lines);
+            $GLOBALS['SITE_DB']->query_update($table, ['cv_value' => $value], ['id' => $row['id']], '', 1);
+        }
+        $start += 100;
+    } while (!empty($rows));
 }
 
 /**
