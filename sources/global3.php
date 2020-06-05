@@ -4983,6 +4983,10 @@ function statistical_update_model($table, $view_count)
         return 0;
     }
 
+    if ((get_value('disable_view_counts') === '-1') && ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()))) {
+        return 0;
+    }
+
     if (get_value('statistical_update_model') == '1') {
         $st_increment = max(1, intval(round(floatval($view_count) / 20.0)));
     } else {
