@@ -24,6 +24,12 @@ if(window.WRM._dataArrived)window.WRM._dataArrived();
 
 {TITLE}
 
+{+START,IF_PASSED,HTML_PRE}
+	{HTML_PRE}
+
+	<hr />
+{+END}
+
 <div class="clearfix">
 	{HTML`}
 </div>

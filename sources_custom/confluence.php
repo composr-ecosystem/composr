@@ -66,12 +66,12 @@ function confluence_current_page_id()
     // Special case: Already a number
     if (is_numeric($current_page)) {
         $id = intval($current_page);
-        $content_type = 'page';
-        $posting_day = '';
+        $content_type = null; // Unknown. Probably 'page', but not guaranteed
+        $posting_day = null;
         return [$content_type, $id, $posting_day];
     }
 
-    // Special case: Is a blog post
+    // Special case: Is a blog post (which confluence_get_mappings cannot find btw)
     $matches = [];
     if (preg_match('#^(\d\d\d\d)/(\d\d)/(\d\d)/(.*)$#', $current_page, $matches) != 0) {
         $id = $matches[4];
@@ -93,8 +93,8 @@ function confluence_current_page_id()
     }
 
     $id = $mappings_by_complex_id[$current_page]['id'];
-    $content_type = 'page';
-    $posting_day = '';
+    $content_type = $mappings_by_complex_id[$current_page]['type'];
+    $posting_day = null;
 
     return [$content_type, $id, $posting_day];
 }
@@ -151,6 +151,7 @@ function confluence_get_mappings()
     foreach ($pages['results'] as $page) {
         $id = $page['id'];
         $title = $page['title'];
+        $type = $page['type'];
         $slug = substr($page['_links']['webui'], strlen('/display/' . $CONFLUENCE_SPACE . '/'));
 
         $parent_id = null;
@@ -167,6 +168,7 @@ function confluence_get_mappings()
         $mappings[$id] = [
             'id' => $id,
             'title' => $title,
+            'type' => $type,
 
             'slug' => $slug,
             'url' => $url,
@@ -268,26 +270,8 @@ function confluence_clean_page($html)
 
     // Fix internal links, which should be served under our docs module
     $html = preg_replace_callback('#\shref="\s*([^"]+)"#', function ($matches) {
-        $url = qualify_url($matches[1], get_confluence_base_url());
-        $url = str_replace('http://', 'https://', $url);
-
-        // These are being proxied
-        global $CONFLUENCE_SPACE;
-        $stub_stem_slug = get_confluence_base_url() . '/display/' . $CONFLUENCE_SPACE . '/';
-        $stub_stem_raw = get_confluence_base_url() . '/pages/viewpage.action?pageId=';
-        $stub_stems = [
-            $stub_stem_slug,
-            $stub_stem_raw,
-        ];
-        foreach ($stub_stems as $stub_stem) {
-            if (substr($url, 0, strlen($stub_stem)) == $stub_stem) {
-                $localised_url = get_local_confluence_url(substr($url, strlen($stub_stem)));
-                return ' href="' . $localised_url . '"';
-            }
-        }
-
-        // These have to be done remotely, we're not proxying these kinds of pages
-        return ' href="' . $url . '"';
+        $url = rewrite_confluence_url(html_entity_decode($matches[1], ENT_QUOTES, get_charset()));
+        return ' href="' . escape_html($url) . '"';
     }, $html);
 
     // Strip out links to usernames
@@ -354,6 +338,34 @@ function confluence_clean_page($html)
     }
 
     return $html;
+}
+
+function rewrite_confluence_url($url, $force_general_proxy = false)
+{
+    $url = qualify_url($url, get_confluence_base_url());
+    $url = str_replace('http://', 'https://', $url);
+
+    // These are being proxied
+    global $CONFLUENCE_SPACE;
+    $stub_stem_slug = get_confluence_base_url() . '/display/' . $CONFLUENCE_SPACE . '/';
+    $stub_stem_raw = get_confluence_base_url() . '/pages/viewpage.action?pageId=';
+    $stub_stems = [
+        $stub_stem_slug,
+        $stub_stem_raw,
+    ];
+    foreach ($stub_stems as $stub_stem) {
+        if (substr($url, 0, strlen($stub_stem)) == $stub_stem) {
+            $localised_url = get_local_confluence_url(substr($url, strlen($stub_stem)));
+            return $localised_url;
+        }
+    }
+
+    if ($force_general_proxy) {
+        return find_script('external_url_proxy') . '?url=' . urlencode($url);
+    }
+
+    // These have to be done remotely, we're not proxying these kinds of pages
+    return $url;
 }
 
 function confluence_query($query, $trigger_error = true)

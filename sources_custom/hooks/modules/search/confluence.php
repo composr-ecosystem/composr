@@ -163,6 +163,11 @@ class Hook_search_confluence extends FieldsSearchHook
             $cql_query .= '))';
         }
 
+        /*if ($cql_query != '') {   Actually allowing attachment results is good so long as we render them well
+            $cql_query .= ' and ';
+        }
+        $cql_query .= 'type IN (blogpost, page)';*/
+
         $remapped_orderer = '';
         switch ($sort) {
             case 'title':
@@ -217,16 +222,32 @@ class Hook_search_confluence extends FieldsSearchHook
 
         $title = $myrow['content']['title'];
 
+        switch ($myrow['content']['type']) {
+            case 'blogpost':
+                $document_type = 'Documentation blog post';
+                break;
+
+            case 'attachment':
+                $document_type = 'Documentation attachment';
+                $title = $title . ' (from ' . $myrow['resultParentContainer']['title'] . ')';
+                break;
+
+            default:
+                $document_type = 'Documentation page';
+                break;
+        }
+
         $url = build_url(['page' => 'docs', 'type' => $myrow['content']['id']], '_SEARCH');
         $breadcrumbs = confluence_breadcrumbs(intval($myrow['content']['id']));
-        return do_template('SIMPLE_PREVIEW_BOX', ['TITLE' => 'Documentation: ' . $title, 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
+        return do_template('SIMPLE_PREVIEW_BOX', ['TITLE' => $document_type . ': ' . $title, 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
     }
 
     protected function cleanup_text($in)
     {
         $out = $in;
         $out = preg_replace('#\n+#', "\n", $out);
-        $out = nl2br($out);
+        $out = preg_replace('#\.{4,}#', '.', $out);
+        //$out = nl2br($out); Actually compact is better
         $out = preg_replace('#@@@hl@@@(.*)@@@endhl@@@#U', '<span class="comcode_highlight">\1</span>', $out);
         return $out;
     }

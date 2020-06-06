@@ -39,33 +39,67 @@ if (get_param_string('type', '') == 'index') {
 
 list($content_type, $id, $posting_day) = confluence_current_page_id();
 
-if ($content_type == 'page') {
-    $query = 'content/' . strval($id) . '?expand=body.view,container';
-    $full = confluence_query($query);
-    if (isset($full['results'])) {
-        $html = $full['results'][0]['body']['view']['value'];
-    } else {
-        $html = $full['body']['view']['value'];
+if ($posting_day !== null) {
+    if ($content_type != 'blogpost') {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    $title = get_screen_title($full['title'], false);
-} else {
-    $query = 'content?expand=body.view,container,history&type=' . urlencode($content_type) . '&title=' . urlencode($id) . '&postingDay=' . urlencode($posting_day);
+    // Searches for a blog post. The only way we can reference these is via $blog_title+$posting_day query, as we cannot get IDs for direct querying through a confluence_get_mappings search
+    $blog_title = $id;
+    $query = 'content?expand=body.view,container,history&type=blogpost&title=' . urlencode($blog_title) . '&postingDay=' . urlencode($posting_day);
     $full = confluence_query($query);
     if (!isset($full['results'][0])) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
-    $html = $full['results'][0]['body']['view']['value'];
-
-    $sub = null;
-    if ($content_type == 'blogpost') {
-        $sub = do_lang('BLOG_POST_BY', $full['results'][0]['history']['createdBy']['username']);
-    }
-
-    $title = get_screen_title($full['results'][0]['title'], false, [], null, [], true, $sub);
+    $result = $full['results'][0];
+} else {
+    // Search by ID
+    $query = 'content/' . strval($id) . '?expand=body.view,container,history';
+    $result = confluence_query($query);
 }
 
+$html_pre = null;
 
+switch ($result['type']) {
+    case 'blogpost':
+        $sub = 'Blog post by ' . $result['history']['createdBy']['username'];
+        $title = get_screen_title($result['title'], false, null, null, null, true, $sub);
+        break;
+
+    case 'attachment':
+        $filename_pre = $result['title'];
+
+        if (isset($result['_links']['download'])) {
+            $url_pre = rewrite_confluence_url($result['_links']['download'], true);
+
+            $attributes = [];
+            if ((isset($result['metadata']['mediaType'])) && ($result['metadata']['mediaType'] == 'application/pdf')) {
+                $attributes += ['width' => '1020', 'height' => '700'];
+            }
+
+            require_code('media_renderer');
+            $html_pre = render_media_url($url_pre, $url_pre, $attributes, true, null, MEDIA_TYPE_ALL, is_mobile() ? ['download'] : null, null, $filename_pre);
+        }
+
+        if ($result['container']['type'] == 'page') {
+            // Render actual page normally underneath
+            $query = 'content/' . strval($result['container']['id']) . '?expand=body.view,container';
+            $result = confluence_query($query);
+
+            $sub = $filename_pre;
+            $title = get_screen_title($result['title'], false, null, null, null, true, $sub);
+        } else {
+            $title = get_screen_title($result['title'], false);
+        }
+
+        break;
+
+    default:
+        $title = get_screen_title($result['title'], false);
+        break;
+}
+
+$html = $result['body']['view']['value'];
 $html = confluence_clean_page($html);
 
 $root_id = confluence_root_id();
@@ -78,6 +112,7 @@ if ($breadcrumbs !== null) {
 return do_template('CONFLUENCE_SCREEN', [
     '_GUID' => '33a65e7f6832fac49cbb1f8e77a9c7b0',
     'TITLE' => $title,
+    'HTML_PRE' => $html_pre,
     'HTML' => $html,
     'ROOT_ID' => strval($root_id),
     'BREADCRUMBS' => ($breadcrumbs === null) ? new Tempcode() : breadcrumb_segments_to_tempcode($breadcrumbs),
