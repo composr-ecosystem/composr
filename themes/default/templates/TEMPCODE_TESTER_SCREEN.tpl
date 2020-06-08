@@ -17,13 +17,13 @@
 	<h2>{!PARAMETERS}</h2>
 
 	{+START,LOOP,1\,2\,3\,4\,5\,6\,7\,8\,9\,10}
-		<div class="vertical_alignment">
+		<p class="vertical_alignment">
 			<label class="accessibility_hidden" for="key_{_loop_var*}">{!TEMPCODE_PARAMETER} #{_loop_var*}</label>
 			<label class="accessibility_hidden" for="val_{_loop_var*}">{!TEMPCODE_VALUE} #{_loop_var*}</label>
 			<input type="text" id="key_{_loop_var*}" name="key_{_loop_var*}" size="10" value="" />
 			&rarr;
 			<input type="text" id="val_{_loop_var*}" name="val_{_loop_var*}" size="60" value="" />
-		</div>
+		</p>
 	{+END}
 
 	<p class="proceed_button">
