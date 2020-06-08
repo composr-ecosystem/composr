@@ -133,7 +133,7 @@ For example:
 }
 
 .menu_type__dropdown .nlevel, .menu_type__dropdown .nlevel a, .menu_type__dropdown .nlevel a:visited, .menu_type__dropdown .nlevel a:hover {
-	color: {$GET,area_text};
+	color: {$GET,slightly_seeded_text};
 }
 
 .menu_type__dropdown .nlevel .current a {

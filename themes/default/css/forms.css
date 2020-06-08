@@ -35,7 +35,7 @@
 }
 
 .required_star {
-	{$BETA_CSS_PROPERTY,opacity: 0.4;}
+	{$BETA_CSS_PROPERTY,opacity: 0.6;}
 	color: {$GET,red_highlight_text};
 	{$BETA_CSS_PROPERTY,user-select: none;} {$,To stop accidental touching when touching inputs}
 }
