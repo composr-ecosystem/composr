@@ -42,6 +42,10 @@ search_test_script();
 
 function search_test_script()
 {
+    if (!addon_installed('cns_forum')) {
+        warn_exit('cns_forum needed');
+    }
+
     global $LAST_SEARCH_QUERY, $LAST_COUNT_QUERY, $TOTAL_RESULTS, $SEARCH_CONFIG_OVERRIDE;
 
     $download = (get_param_integer('csv', 0) == 1);
