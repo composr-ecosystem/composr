@@ -940,7 +940,7 @@ function auth_is_cookie_string_unique( $p_cookie_string ) {
  * @access public
  */
 function auth_get_current_user_cookie( $p_login_anonymous = true ) {
-	global $g_script_login_cookie, $g_cache_anonymous_user_cookie_string;
+	global $g_script_login_cookie, $g_cache_anonymous_user_cookie_string, $cms_extra_signin_sql;
 
 	# if logging in via a script, return that cookie
 	if( $g_script_login_cookie !== null ) {
@@ -963,8 +963,10 @@ function auth_get_current_user_cookie( $p_login_anonymous = true ) {
 			user_cache_row($user);
 
 			$t_query = 'SELECT u.id,u.cookie_string
-							FROM '.$cms_sc_db_prefix.'f_members m LEFT JOIN ' . db_get_table('user') . ' u ON u.username=m.m_username
-							WHERE m.id<>1 AND m.id=' . strval($user);
+							FROM '.$cms_sc_db_prefix.'f_members m
+							LEFT JOIN '.$cms_sc_db_prefix.'f_member_custom_fields f ON f.mf_member_id=m.id
+							LEFT JOIN ' . db_get_table('user') . ' u ON u.username=m.m_username
+							WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $cms_extra_signin_sql;
 			$t_result = db_query($t_query);
 			if ($t_row = db_fetch_array($t_result)) {
 				$t_cookie = $t_row['cookie_string'];
