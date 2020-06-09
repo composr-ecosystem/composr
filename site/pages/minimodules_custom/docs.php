@@ -63,7 +63,7 @@ $html_pre = null;
 switch ($result['type']) {
     case 'blogpost':
         $sub = 'Blog post by ' . $result['history']['createdBy']['username'];
-        $title = get_screen_title($result['title'], false, null, null, null, true, $sub);
+        $title = get_screen_title($result['title'], false, [], null, [], true, $sub);
         break;
 
     case 'attachment':
@@ -78,7 +78,7 @@ switch ($result['type']) {
             }
 
             require_code('media_renderer');
-            $html_pre = render_media_url($url_pre, $url_pre, $attributes, true, null, MEDIA_TYPE_ALL, is_mobile() ? ['download'] : null, null, $filename_pre);
+            $html_pre = render_media_url($url_pre, $url_pre, $attributes, true, null, MEDIA_TYPE_ALL, is_mobile() ? 'download' : null, null, $filename_pre);
         }
 
         if ($result['container']['type'] == 'page') {
@@ -87,7 +87,7 @@ switch ($result['type']) {
             $result = confluence_query($query);
 
             $sub = $filename_pre;
-            $title = get_screen_title($result['title'], false, null, null, null, true, $sub);
+            $title = get_screen_title($result['title'], false, [], null, [], true, $sub);
         } else {
             $title = get_screen_title($result['title'], false);
         }
