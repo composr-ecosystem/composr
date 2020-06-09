@@ -54,7 +54,7 @@
 				</div>
 			{+END}
 			<div class="constrain_field">
-				<textarea onchange="set_edited_panel(null,'{ID;*}');" rows="50" cols="20" class="{$?,{IS_PANEL},ze_textarea,ze_textarea_middle} textarea_scroll{CLASS*}" id="edit_{ID*}_textarea" name="{ID*}">{COMCODE*}</textarea>
+				<textarea onchange="set_edited_panel(null,'{ID;*}');" rows="50" cols="20" class="{$?,{IS_PANEL},ze_textarea,ze_textarea_middle} textarea_scroll{CLASS*}" id="edit_{ID*}_textarea" name="edit_{ID*}_textarea">{COMCODE*}</textarea>
 
 				{+START,IF,{$IN_STR,{CLASS},wysiwyg}}
 					<script>// <![CDATA[
