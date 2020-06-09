@@ -40,7 +40,7 @@ class database_query_parameterised_test_set extends cms_test_case
 
             // Quotes Omitted
             "SELECT * FROM foobar WHERE x={int}" => "SELECT * FROM foobar WHERE x=1",
-            "SELECT * FROM foobar WHERE x={float}" => "SELECT * FROM foobar WHERE x=1.34",
+            "SELECT * FROM foobar WHERE x={float}" => "SELECT * FROM foobar WHERE x=1.3400000000",
             "SELECT * FROM foobar WHERE x={bool}" => "SELECT * FROM foobar WHERE x=1",
             "SELECT * FROM foobar WHERE x={null}" => "SELECT * FROM foobar WHERE x=NULL",
             "SELECT * FROM foobar WHERE x={string_dangerous_1}" => "SELECT * FROM foobar WHERE x='let\'s be unsafe'",
@@ -48,7 +48,7 @@ class database_query_parameterised_test_set extends cms_test_case
 
             // Quotes given
             "SELECT * FROM foobar WHERE x='{int}'" => "SELECT * FROM foobar WHERE x='1'",
-            "SELECT * FROM foobar WHERE x='{float}'" => "SELECT * FROM foobar WHERE x='1.34'",
+            "SELECT * FROM foobar WHERE x='{float}'" => "SELECT * FROM foobar WHERE x='1.3400000000'",
             "SELECT * FROM foobar WHERE x='{bool}'" => "SELECT * FROM foobar WHERE x='1'",
             "SELECT * FROM foobar WHERE x='{null}'" => "SELECT * FROM foobar WHERE x=NULL",
             "SELECT * FROM foobar WHERE x='{string_dangerous_1}'" => "SELECT * FROM foobar WHERE x='let\'s be unsafe'",
