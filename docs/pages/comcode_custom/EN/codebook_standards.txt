@@ -195,7 +195,7 @@ Write comments in the standard way
 | Offline development and Intranets
 | Product development only
 | Manually
-| Unless intrinsically necessary for a particular piece of functionality, do not rely on external URLs such as CDNs. External URLs create a number of problems, including: network firewalls operating with whitelists blocking functionality (e.g. in museums), erratic firewall blocking (e.g. in China), full functionality not being available offline (e.g. when developing on an airplane), or full functionality not working in private offline Intranets (e.g. in schools). If users want to make use of CDNs they can make manual changes to achieve it.
+| Unless intrinsically necessary for a particular piece of functionality, do not rely on external URLs such as CDNs. External URLs create a number of problems, including: network firewalls operating with safelist blocking functionality (e.g. in museums), erratic firewall blocking (e.g. in China), full functionality not being available offline (e.g. when developing on an airplane), or full functionality not working in private offline Intranets (e.g. in schools). If users want to make use of CDNs they can make manual changes to achieve it.
 |}
 
 [title="4"]Code text formatting[/title]
@@ -454,7 +454,7 @@ Don't assume PHP extensions or PEAR are installed
 | Never assume that any extensions are installed unless they are listed in Composr's [page="_SEARCH:tut_webhosting"]minimum requirements[/page]. If you do use something else (necessarily so, and only for auxiliary behaviour) you must cleanly handle the situation where it is not present using either code branching or helpful error messages.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Use only white-listed functions
+Use only safelisted functions
 | Portability: PHP [tt]disabled_functions[/tt] option
 | Product development only
 | Code Quality Checker
@@ -1453,6 +1453,13 @@ Don't define binary options in negative terms
 | Composr development +
 | Manually
 | Do not create an option such as "Disable widgets". It is unnecessarily confusing because you can just make an option "Enable widgets" that defaults to on. This coding standard applies universally across the product, including configuration options, form fields, and code. The only exception is hidden configuration options, which are often set to '1' to disable something.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Do not use problematic language
+| Social equity
+| Composr development +
+| Manually
+| Instead of saying "blacklist", say "blocklist" or "exclusion-list" or "deny-list". Instead of saying "whitelist", say "safelist" or "inclusion-list" or "allow-list". This is to reduce subconcious suggestion that black=bad and white=good.
 |}
 
 Respect the Queen of England ;), but also do not confuse Americans...

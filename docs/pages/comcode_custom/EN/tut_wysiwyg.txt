@@ -140,13 +140,13 @@ Composr does not accept the HTML from the WYSIWYG editor directly as input for C
 HTML acts as a container for numerous technologies, including CSS and JavaScript. JavaScript can be used as a vehicle for attacking websites via a technique called 'XSS' (Cross Site Scripting). Basically an XSS attack can be used to steal logins; it works by a user submitting content that includes malicious JavaScript code that causes hijacking of the web browser of the viewer of the said-content. This is a major issue, and means that Composr has to go to great lengths to protect against it.
 
 The HTML is treated to one of two possible security filters, depending on circumstances:
-1) The white-list filter (more finicky)
-2) The black-list filter (more liberal)
+1) The safelist filter (more finicky)
+2) The blocklist filter (more liberal)
 ([i]super-administrators are not subject to any filter[/i])
 
-The white-list filter is subjected to those users who do not have the "Use Dangerous Comcode" permission, and blocks any HTML that is not known as safe. Users subjected to the white-list filter will find that some complex formatting may be lost.
+The safelist filter is subjected to those users who do not have the "Use Dangerous Comcode" permission, and blocks any HTML that is not known as safe. Users subjected to the safelist filter will find that some complex formatting may be lost.
 
-The black-list filter is subjected to the users who do have the "Subject to a more liberal HTML filter" permission, and will go to great lengths to try and strip any JavaScript from the HTML. There are no known problems with the black-list filter, but the developers can not accept any liability for the consequences of using it (although we have gone to great lengths to make the black-list filter very safe).
+The blocklist filter is subjected to the users who do have the "Subject to a more liberal HTML filter" permission, and will go to great lengths to try and strip any JavaScript from the HTML. There are no known problems with the blocklist filter, but the developers can not accept any liability for the consequences of using it (although we have gone to great lengths to make the blocklist filter very safe).
 
 [title="3"]Cleanup[/title]
 

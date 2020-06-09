@@ -2424,7 +2424,7 @@ function _cms_strip_tags_callback($matches)
  *
  * @param  string $str Subject
  * @param  string $tags Comma-separated list of tags
- * @param  boolean $tags_as_allow Whether tags represents a whitelist (set for false to allow all by default and make $tags a blacklist)
+ * @param  boolean $tags_as_allow Whether tags represents a safelist (set for false to allow all by default and make $tags a blocklist)
  * @return string Result
  */
 function cms_strip_tags($str, $tags, $tags_as_allow = true)

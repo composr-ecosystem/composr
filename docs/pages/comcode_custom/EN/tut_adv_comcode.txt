@@ -38,7 +38,7 @@ The following privileges impact Comcode permissions (referencing the tiers above
 			<td>Subject to a more liberal HTML filter</td>
 			<td>[tt]allow_html[/tt]</td>
 			<td>2</td>
-			<td>Instead of only whitelisting HTML, it applies a blacklist &dagger;.</td>
+			<td>Instead of only blocklisting HTML, it applies a safelist &dagger;.</td>
 		</tr>
 		<tr>
 			<td>Avoid broad input filtering security layer</td>
@@ -63,8 +63,8 @@ The following privileges impact Comcode permissions (referencing the tiers above
 [/semihtml]
 [box]
 &dagger; There are two alternative security filters available in Composr:
-1) The whitelist filter. This is the most secure filter, and is used by default. It only allows certain HTML fragments to be used (fragments likely to be produced via usage of the WYSIWYG editor).
-2) The blacklist filter. This is designed for high security, filtering out anything it sees as dangerous. At this level you are trusting the user won't and can't find a security hole in the sophisticated blacklist filter.
+1) The safelist filter. This is the most secure filter, and is used by default. It only allows certain HTML fragments to be used (fragments likely to be produced via usage of the WYSIWYG editor).
+2) The blocklist filter. This is designed for high security, filtering out anything it sees as dangerous. At this level you are trusting the user won't and can't find a security hole in the sophisticated blocklist filter.
 [/box]
 
 [box]

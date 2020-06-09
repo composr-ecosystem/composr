@@ -463,9 +463,9 @@ Throughout Composr, measures are taken to reduce the chance of e-mail addresses 
 
 To remove the possibility of search engines indexing the login screens of your Admin Zone you can create a [tt]robots.txt[/tt] file on the root of your domain name. The bundled [tt]robots_txt[/tt] addon provides a good default. The installer puts this default in place if you don't already have a [tt]robots.txt[/tt] and if it can write out the file. There is also an editing UI at Admin Zone > Structure > Search engine policy ([tt]robots.txt[/tt]).
 
-[title="2"]File-type white-list[/title]
+[title="2"]File-type safelisting[/title]
 
-In the security configuration, Composr defines a list of file types that may be uploaded to the website, via the various upload mechanisms that exist in Composr, such as that of the download module and the attachment system. By default, this white-list is roughly (this is not kept up-to-date):
+In the security configuration, Composr defines a list of file types that may be uploaded to the website, via the various upload mechanisms that exist in Composr, such as that of the download module and the attachment system. By default, this safelist is roughly (this is not kept up-to-date):
  - [tt]sql,odt,ods,ps,pdf,doc,txt,psd,tga,tif,gif,png,bmp,jpg,jpeg,avi,mov,mpg,mpeg,asf,wmv,ram,ra,rm,qt,mov,zip,tar,rar,gz,wav,mp3,ogg,torrent,php[/tt]
 
 It is important to understand that there are two sides to the security of file uploads:
@@ -698,7 +698,7 @@ If you are managing your own server, you may want to consider:
 
 [concepts
  1_key="SSL"          1_value="Secure Socket Layer -- encryption over Internet connections so as to avoid interception of information"
- 2_key="White-list"   2_value="White lists show what things are allowed, as opposed to what are not (black lists); they are theoretically better (but not always practical), as they guard against changes that could add insecurity (e.g. if a file type suddenly starts supporting dangerous macros and wasn't black-listed, it would spell trouble) or oversights"
+ 2_key="Safelist"     2_value="Safelists show what things are allowed, as opposed to what are not (blocklists); they are theoretically better (but not always practical), as they guard against changes that could add insecurity (e.g. if a file type suddenly starts supporting dangerous macros and wasn't blocklisted, it would spell trouble) or oversights"
  3_key="Obfuscated"   3_value="Muddled up, made difficult to understand: but still correct"
  4_key="Mime-type"    4_value="A special code that identifies a file type; this allows web systems to make it explicit how files should be treated (e.g. as an attachment, as a 'open in' link, or as a pure file download), rather than being bound by the file extension (which can't really be changed)"
 ]Concepts[/concepts]

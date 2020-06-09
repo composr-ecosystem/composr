@@ -29,7 +29,7 @@ connect-src                 (outbound connections from JavaScript)      base on 
 script-src                  (JavaScript files)                          base on list of trusted sites, and 'self' (if not strict nonces), and 'unsafe-inline' if configured otherwise nonce
 -
 base-uri                    (<base> URL)                                'self'
-plugin-types                (embedded plugin types)                     configurable ["csp_whitelisted_plugins"]
+plugin-types                (embedded plugin types)                     configurable ["csp_safelisted_plugins"]
 form-action                 (form targets)                              base on list of trusted sites, and 'self'
 frame-ancestors             (what may embed the site)                   base on list of trusted sites, and 'self', and extra configuration ["csp_allowed_iframe_ancestors"]
 block-all-mixed-content     (block HTTP content when HTTPS running)     configurable ["csp_allow_insecure_resources" inverted] if HTTPS running
@@ -100,7 +100,7 @@ function init__csp()
     if (!defined('CSP_PRETTY_STRICT')) {
         define('CSP_PRETTY_STRICT', serialize([
             'csp_enabled' => '1',
-            'csp_whitelisted_plugins' => '',
+            'csp_safelisted_plugins' => '',
 
             'csp_allow_inline_js' => '0',
         ]));
@@ -108,7 +108,7 @@ function init__csp()
         define('CSP_VERY_STRICT', serialize([
             'csp_enabled' => '1',
             'csp_exceptions' => '',
-            'csp_whitelisted_plugins' => '',
+            'csp_safelisted_plugins' => '',
             'csp_allowed_iframe_ancestors' => '',
             'csp_allowed_iframe_descendants' => '',
 
@@ -126,7 +126,7 @@ function init__csp()
  * Load up CSP settings.
  *
  * @param  ?array $options Overrides for options; any non-set properties will result in no-change to the current CSP state or if for a new state CSP_VERY_STRICT (null: load full clean state from configuration)
- * @param  ?MEMBER $enable_more_open_html_for Allow more open HTML for a particular member ID (null: no member). It still will use the HTML blacklist functionality (unless they have even higher access already), but will remove the more restrictive whitelist functionality. Should only be used with CSP_PRETTY_STRICT/CSP_VERY_STRICT which will further decreasing the risk from dangerous HTML, even though the risk should be very low anyway due to the blacklist filter.
+ * @param  ?MEMBER $enable_more_open_html_for Allow more open HTML for a particular member ID (null: no member). It still will use the HTML blocklist functionality (unless they have even higher access already), but will remove the more restrictive safelist functionality. Should only be used with CSP_PRETTY_STRICT/CSP_VERY_STRICT which will further decreasing the risk from dangerous HTML, even though the risk should be very low anyway due to the blocklist filter.
  */
 function load_csp($options = null, $enable_more_open_html_for = null)
 {
@@ -143,7 +143,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
         $options = [
             'csp_enabled' => get_option('csp_enabled'),
             'csp_exceptions' => get_option('csp_exceptions'),
-            'csp_whitelisted_plugins' => get_option('csp_whitelisted_plugins'),
+            'csp_safelisted_plugins' => get_option('csp_safelisted_plugins'),
             'csp_allowed_iframe_ancestors' => get_option('csp_allowed_iframe_ancestors'),
             'csp_allowed_iframe_descendants' => get_option('csp_allowed_iframe_descendants'),
 
@@ -162,7 +162,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     $csp_enabled = ($options['csp_enabled'] != '0');
     $report_only = ($options['csp_enabled'] == '2');
     $csp_exceptions = $options['csp_exceptions'];
-    $csp_whitelisted_plugins = trim($options['csp_whitelisted_plugins']);
+    $csp_safelisted_plugins = trim($options['csp_safelisted_plugins']);
     $csp_allowed_iframe_ancestors = $options['csp_allowed_iframe_ancestors'];
     $csp_allowed_iframe_descendants = $options['csp_allowed_iframe_descendants'];
 
@@ -252,7 +252,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
 
     // object-src (unlimited)
     $_sources_list = [];
-    $_sources_list[] = ($csp_whitelisted_plugins !== 'none') ? '*' : "'none'";
+    $_sources_list[] = ($csp_safelisted_plugins !== 'none') ? '*' : "'none'";
     $clauses[] = 'object-src ' . implode(' ', $_sources_list);
 
     // img-src (unlimited)
@@ -278,8 +278,8 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     $clauses[] = "base-uri 'self'";
 
     // plugin-types
-    if (($csp_whitelisted_plugins !== '') && ($csp_whitelisted_plugins !== 'none')) {
-        $clauses[] = 'plugin-types ' . str_replace("\n", ' ', $csp_whitelisted_plugins);
+    if (($csp_safelisted_plugins !== '') && ($csp_safelisted_plugins !== 'none')) {
+        $clauses[] = 'plugin-types ' . str_replace("\n", ' ', $csp_safelisted_plugins);
     }
 
     // form-action

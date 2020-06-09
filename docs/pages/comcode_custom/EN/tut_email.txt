@@ -57,7 +57,7 @@ What I have just described is the primary mechanism for e-mail. However, there i
 
 It is important to understand that IMAP/POP3/webmail are entirely separate from SMTP itself, except for two areas:
 1) They access the same mailbox that SMTP writes to
-2) SMTP often whitelists the IP addresses of users who have recently logged into POP3 or IMAP to say that relaying should be allowed from those IP addresses (this is one mechanism for relaying to be allowed, another is authenticated SMTP, and another is from-address whitelisting)
+2) SMTP often safelists the IP addresses of users who have recently logged into POP3 or IMAP to say that relaying should be allowed from those IP addresses (this is one mechanism for relaying to be allowed, another is authenticated SMTP, and another is from-address safelisting)
 
 [title="2"]SMTP configuration in Composr[/title]
 
@@ -134,7 +134,7 @@ Positive advice:[list="1"]
 More extreme advice:[list="1"]
 [*] If you're really stuck with your e-mail server being blocked, you could [b]use a third-party e-mailing service[/b] like [url="Amazon SES"]https://aws.amazon.com/ses/[/url] or [url="Mandrill"]https://www.mandrill.com/[/url]. Amazon SES likely needs the non-bundled [tt]aws[/tt] and [tt]better_mail[/tt] addons installing. Mandrill may require the "Enable Blind CC (BCC)" configuration option (Admin Zone > Setup > Configuration > Messages > E-mail addresses for staff) to be turned off, as we have had a report of it not working on Mandrill, but that they provide an account setting to make CC behave like BCC.
 [*] You can [b]send out newsletters using a totally different e-mail address and third-party newsletter tool[/b] such as MailChimp. This is extreme unless you want to benefit from the features of such a tool, but it will mean that if your newsletter activities get marked as spammy it won't affect your important day-to-day website e-mailing functionality.
-[*] If you have a lot of cash then you can [b]get your server onto a [url="whitelist"]https://returnpath.com/[/url][/b].
+[*] If you have a lot of cash then you can [b]get your server onto a [url="safelist"]https://returnpath.com/[/url][/b].
 [/list]
 
 [title="3"]Implementing DKIM (advanced)[/title]

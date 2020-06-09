@@ -458,7 +458,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         // By User Agent
         $query = 'SELECT COUNT(*) AS cnt,browser FROM ' . get_table_prefix() . 'stats WHERE ';
         $query .= $where;
-        $query .= ' AND browser NOT LIKE \'' . db_encode_like('%Mozilla%') . '\''; // This is common to all real web browser user agents; unfortunately some bots also put it in. Realistically we cannot find bots as we cannot maintain a whitelist of all web browser user agent patterns
+        $query .= ' AND browser NOT LIKE \'' . db_encode_like('%Mozilla%') . '\''; // This is common to all real web browser user agents; unfortunately some bots also put it in. Realistically we cannot find bots as we cannot maintain an inclusion-list of all web browser user agent patterns
         $query .= ' GROUP BY browser HAVING COUNT(*)>=' . strval($threshold) . ' ORDER BY cnt DESC';
         $rows = $GLOBALS['SITE_DB']->query($query);
         foreach ($rows as $row) {

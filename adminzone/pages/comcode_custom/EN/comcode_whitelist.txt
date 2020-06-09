@@ -1,6 +1,0 @@
-[title]Edit Comcode whitelist[/title]
-
-Normally there is a set of Comcode tags that regular users simply cannot use. However, with the whitelist addon you can define a list of special cases, portions of Comcode that are allowed regardless of the limitation on the tag itself.
-Put each sequence of Comcode on its own line below, and make sure that each line starts and ends with the open/close for the tag that is being whitelisted on (i.e. each line should look like [tt][tag...]...[/tag][/tt]). Alternatively you can also use [url="regular expressions"]http://php.net/manual/en/book.pcre.php[/url], if you surround with slashes and encode things appropriately.
-
-[block="comcode_whitelist" lang_none="1" title="White-list" scrolls="1"]main_notes[/block]

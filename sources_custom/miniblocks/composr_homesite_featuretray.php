@@ -522,7 +522,7 @@ $feature_tree = [
                 ['Configurable swear filtering <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Word Filter" href="http://shareddemo.composr.info/adminzone/index.php?page=admin_wordfilter"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
                 ['IP address analysis', 'Audit, check, and ban <a target="_blank" class="link-exempt no-print" title="(Opens in new window) Example of Lookup Tools" href="http://shareddemo.composr.info/adminzone/index.php?page=admin_lookup"><img class="inline-image-3" alt="" width="12" height="12" src="{$IMG*,icons/arrow_box/arrow_box}" /></a>'],
                 ['<abbr title="Completely Automated Public Turing test to tell Computers and Humans Apart">CAPTCHA</abbr>'],
-                (!is_maintained('stop_forum_spam')) ? false : ['Integrate with known-spammer blacklists', 'Multiple configurable levels of enforcement'],
+                (!is_maintained('stop_forum_spam')) ? false : ['Integrate with known-spammer blocklists', 'Multiple configurable levels of enforcement'],
                 ['Honeypots and blackholes', 'Find and ban bots via automated traps'],
                 ['Heuristics', 'Clever ways to detect and block spammers based on behaviour'],
                 null, // divider

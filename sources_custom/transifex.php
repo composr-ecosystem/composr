@@ -50,7 +50,7 @@ function init__transifex()
     $EXTRA_LANGUAGE_FILES = [
         'adminzone/pages/comcode/EN/netlink.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
         'adminzone/pages/comcode/EN/quotes.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
-        'adminzone/pages/comcode_custom/EN/comcode_whitelist.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES],
+        'adminzone/pages/comcode_custom/EN/comcode_safelist.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES],
         'adminzone/pages/comcode_custom/EN/insults.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES],
         'adminzone/pages/comcode_custom/EN/referrals.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES],
         'buildr/pages/comcode_custom/EN/docs.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO],

@@ -728,7 +728,7 @@ function _get_specify_url($member_id, $specify_name, $upload_folder, $enforce_ty
             (
                 (substr($url[0], 0, strlen($upload_folder) + 1) != $upload_folder . '/') &&
                 (substr($url[0], 0, strlen('data/images/') + 1) != 'data/images/') &&
-                (preg_match('#^[^\?\.]*\.(m4v|mp4|f4v|mpeg|mpg|webm|ogv|png|gif|jpg|jpeg|jpe)$#', $url[0]) == 0)/*Streaming/compression plugins can mess up our script detection so whitelist some formats*/
+                (preg_match('#^[^\?\.]*\.(m4v|mp4|f4v|mpeg|mpg|webm|ogv|png|gif|jpg|jpeg|jpe)$#', $url[0]) == 0)/*Streaming/compression plugins can mess up our script detection so safelist some formats*/
             ) ||
             (strpos($url[0], '..') !== false)
         ) {

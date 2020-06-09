@@ -86,7 +86,7 @@ class lang_html_safe_test_set extends cms_test_case
 
         // Apparent conflicts between usage as HTML and plain text...
 
-        $whitelist = [
+        $safelist = [
             // Checked are ok manually already
             'PERMISSION_CELL',
             '_MISSING_RESOURCE',
@@ -122,7 +122,7 @@ class lang_html_safe_test_set extends cms_test_case
         $result = array_keys(array_intersect_key($LANGUAGE_LITERAL, $LANGUAGE_HTML));
         $cnt = 0;
         foreach ($result as $r) {
-            if (in_array($r, $whitelist)) {
+            if (in_array($r, $safelist)) {
                 continue;
             }
 

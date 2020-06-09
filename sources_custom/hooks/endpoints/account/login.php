@@ -66,7 +66,7 @@ class Hook_endpoint_account_login
         $where_groups = get_permission_where_clause_groups($member_id);
         if ($where_groups === null) {
             $privileges_perhaps = $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name AS privilege']);
-            $pages_blacklist = [];
+            $pages_exclusion_list = [];
             $zones_perhaps = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name']);
         } else {
             $where = ' AND ' . db_string_equal_to('the_page', '');
@@ -80,7 +80,7 @@ class Hook_endpoint_account_login
             $sql = 'SELECT page_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_page_access WHERE (' . $where_groups . ')';
             $sql .= ' UNION ALL ';
             $sql .= 'SELECT page_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'member_page_access WHERE member_id=' . strval($member_id) . ' AND (active_until IS NULL OR active_until>' . strval(time()) . ')';
-            $pages_blacklist = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true);
+            $pages_exclusion_list = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true);
 
             $sql = 'SELECT zone_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access WHERE (' . $where_groups . ')';
             $sql .= ' UNION ALL ';
@@ -99,7 +99,7 @@ class Hook_endpoint_account_login
         $data += [
             'memberID' => $member_id,
             'privileges' => collapse_1d_complexity('privilege', $privileges_perhaps),
-            'pages_blacklist' => collapse_1d_complexity('page_name', $pages_blacklist),
+            'pages_exclusion_list' => collapse_1d_complexity('page_name', $pages_exclusion_list),
             'zone_access' => collapse_1d_complexity('zone_name', $zones_perhaps),
             'staff_status' => $GLOBALS['FORUM_DRIVER']->is_staff($member_id),
             'admin_status' => $GLOBALS['FORUM_DRIVER']->is_super_admin($member_id),

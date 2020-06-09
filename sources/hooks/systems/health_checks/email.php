@@ -51,7 +51,7 @@ class Hook_health_check_email extends Hook_Health_Check
         $this->process_checks_section('testSMTPLogin', 'SMTP login', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testIMAPLogin', 'IMAP login', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testEmailOperation', 'E-mail operation (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testSMTPBlacklisting', 'SMTP blacklisting', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testSMTPBlocklisting', 'SMTP blocklisting', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testEmailTemplates', 'E-mail templates', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSpamStatus', 'Spam status', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testListUnsubscribe', 'List-Unsubscribe header', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -697,7 +697,7 @@ class Hook_health_check_email extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testSMTPBlacklisting($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testSMTPBlocklisting($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;

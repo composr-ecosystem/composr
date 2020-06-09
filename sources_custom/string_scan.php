@@ -3691,7 +3691,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_notification_enable_private_topics
         CONFIG_OPTION_notification_keep_days
         CONFIG_OPTION_notification_poll_frequency
-        CONFIG_OPTION_oembed_html_whitelist
+        CONFIG_OPTION_oembed_html_safelist
         CONFIG_OPTION_oembed_manual_patterns
         CONFIG_OPTION_oembed_max_size
         CONFIG_OPTION_one_per_email_address
@@ -4239,8 +4239,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_URL_METADATA_CACHE
         FONTS
         GOOGLE_FONTS
-        HC_WEBSTANDARDS_WHITELIST
-        CONFIG_OPTION_hc_webstandards_whitelist
+        HC_WEBSTANDARDS_SAFELIST
+        CONFIG_OPTION_hc_webstandards_safelist
         HC_DATABASE_THRESHOLD
         REBUILD_SITEMAP
         EMAIL_BOUNCES
@@ -6506,7 +6506,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         READERS
         NUM_WINNERS
         OBSCENITY_WARNING
-        OEMBED_HTML_WHITELIST
+        OEMBED_HTML_SAFELIST
         OEMBED_MANUAL_PATTERNS
         OEMBED_MAX_SIZE
         OLD
@@ -7363,7 +7363,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_csp_allowed_iframe_ancestors
         CONFIG_OPTION_csp_enabled
         CONFIG_OPTION_csp_exceptions
-        CONFIG_OPTION_csp_whitelisted_plugins
+        CONFIG_OPTION_csp_safelisted_plugins
         CONFIG_OPTION_grow_template_meta_tree
         CONFIG_OPTION_newsletter_auto_pause
         CONFIG_OPTION_newsletter_paused
@@ -7435,7 +7435,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CSP_EXCEPTIONS
         CSP_SCRIPT_TAG
         CSP_STYLE_TAG
-        CSP_WHITELISTED_PLUGINS
+        CSP_SAFELISTED_PLUGINS
         CONFIG_OPTION_csp_allow_dyn_js
         CONFIG_OPTION_csp_allowed_iframe_descendants
         CONFIG_OPTION_csp_enabled_VALUE_0

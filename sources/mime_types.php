@@ -185,7 +185,7 @@ function get_mime_types($as_admin)
 }
 
 /**
- * Find the mime type for the given file extension. It does not take into account whether the file type has been white-listed or not, and returns a binary download mime type for any unknown extensions.
+ * Find the mime type for the given file extension. It does not take into account whether the file type has been safelisted or not, and returns a binary download mime type for any unknown extensions.
  *
  * @param  string $extension The file extension (no dot)
  * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)
@@ -205,7 +205,7 @@ function get_mime_type($extension, $as_admin)
 }
 
 /**
- * Find the file extension for the given mime type. It does not take into account whether the file type has been white-listed or not.
+ * Find the file extension for the given mime type. It does not take into account whether the file type has been safelisted or not.
  *
  * @param  string $mime_type The mime type
  * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)

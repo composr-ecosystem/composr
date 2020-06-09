@@ -65,7 +65,7 @@ At the time of writing the list of check sections is:
  - E-mail \ E-mail templates">E-mail \ E-mail templates
  - E-mail \ IMAP login">E-mail \ IMAP login
  - E-mail \ List-Unsubscribe header">E-mail \ List-Unsubscribe header
- - E-mail \ SMTP blacklisting">E-mail \ SMTP blacklisting
+ - E-mail \ SMTP blocklisting">E-mail \ SMTP blocklisting
  - E-mail \ SMTP login">E-mail \ SMTP login
  - E-mail \ Spam status">E-mail \ Spam status
  - E-mail \ SPF">E-mail \ SPF

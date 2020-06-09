@@ -846,7 +846,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             }
         }
 
-        $ignore_errors = explode("\n", get_option('hc_webstandards_whitelist'));
+        $ignore_errors = explode("\n", get_option('hc_webstandards_safelist'));
 
         foreach ($html_segments as $field_title => $html) {
             require_lang('webstandards');

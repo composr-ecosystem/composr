@@ -360,7 +360,7 @@ function cron_bridge_script($caller)
 
         // Call the hooks which do the real work
         foreach ($cron_hooks as $hook => $object) {
-            // Whitelisted?
+            // Inclusion-listed?
             if (($limit_hooks !== null) && (!in_array($hook, $limit_hooks))) {
                 unset($cron_hooks[$hook]);
                 continue;

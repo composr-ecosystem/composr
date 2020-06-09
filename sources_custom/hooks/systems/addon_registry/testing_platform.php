@@ -776,7 +776,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/__extra_logging.php',
             '_tests/tests/unit_tests/_feeds_and_podcasts.php',
             '_tests/tests/unit_tests/file_naming.php',
-            '_tests/tests/unit_tests/file_type_whitelisting.php',
+            '_tests/tests/unit_tests/file_type_safelisting.php',
             '_tests/tests/unit_tests/__filtering.php',
             '_tests/tests/unit_tests/_filter_xml.php',
             '_tests/tests/unit_tests/_api_ecommerce_shipping.php',

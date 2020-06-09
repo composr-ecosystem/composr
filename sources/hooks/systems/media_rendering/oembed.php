@@ -221,8 +221,8 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 // Check security
                 $url_details = parse_url(normalise_idn_url($url));
                 $url_details2 = parse_url(normalise_idn_url($endpoint));
-                $whitelist = explode("\n", get_option('oembed_html_whitelist'));
-                if ((!in_array($url_details['host'], $whitelist)) && (!in_array($url_details2['host'], $whitelist)) && (!in_array(preg_replace('#^www\.#', '', $url_details['host']), $whitelist))) {
+                $safelist = explode("\n", get_option('oembed_html_safelist'));
+                if ((!in_array($url_details['host'], $safelist)) && (!in_array($url_details2['host'], $safelist)) && (!in_array(preg_replace('#^www\.#', '', $url_details['host']), $safelist))) {
                     /* We could do this but it's not perfect, it still has some level of trust
                     require_code('comcode_compiler');
                     $len = strlen($data['html']);

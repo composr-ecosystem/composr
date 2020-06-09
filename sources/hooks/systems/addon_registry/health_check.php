@@ -215,7 +215,7 @@ class Hook_addon_registry_health_check
             'data/xml_config/page_errors.xml',
             'sources_custom/hooks/systems/health_checks/.htaccess',
             'sources_custom/hooks/systems/health_checks/index.html',
-            'sources/hooks/systems/config/hc_webstandards_whitelist.php',
+            'sources/hooks/systems/config/hc_webstandards_safelist.php',
         ];
     }
 

@@ -35,7 +35,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
             return;
         }
 
-        // Many of these aren't real words, but they appear for good reasons so we whitelist them
+        // Many of these aren't real words, but they appear for good reasons so we safelist them
         $okay_words = [
             'composrcms',
             'freenode',
@@ -3191,10 +3191,14 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'whatsmore',
             'whatsnew',
             'wheremap',
-            'whitelist',
-            'whitelisted',
-            'whitelisting',
-            'whitelists',
+            'safelist',
+            'safelisted',
+            'safelisting',
+            'safelists',
+            'blocklist',
+            'blocklisted',
+            'blocklisting',
+            'blocklists',
             'whitepaper',
             'whitespace',
             'whiz',

@@ -72,7 +72,7 @@ class xss_test_set extends cms_test_case
 
         $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
 
-        $this->assertTrue(strpos($parsed, '<test') === false); // Not white-listed
+        $this->assertTrue(strpos($parsed, '<test') === false); // Not safelisted
 
         // target="_blank" attack (assumes browser has implemented https://github.com/whatwg/html/issues/4078)...
 
@@ -85,7 +85,7 @@ class xss_test_set extends cms_test_case
         $parsed = str_replace('noopener', '', $parsed);
         $this->assertTrue(preg_match('#rel=.*opener#', $parsed) == 0);
 
-        // Some more hard-core stuff, where no white-list check needed...
+        // Some more hard-core stuff, where no safelist check needed...
 
         set_privilege($guest_group_id, 'allow_html', true);
 

@@ -577,7 +577,7 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
 }
 
 /**
- * Find if some Comcode tag sequence in the parsing stream is white-listed.
+ * Find if some Comcode tag sequence in the parsing stream is safelisted.
  *
  * @param  string $tag The tag being converted
  * @param  integer $marker The position this tag occurred at in the Comcode
@@ -586,7 +586,7 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
  *
  * @ignore
  */
-function comcode_white_listed($tag, $marker, $comcode)
+function comcode_safelisted($tag, $marker, $comcode)
 {
     static $comcode_parsing_hooks = null;
     if ($comcode_parsing_hooks === null) {
@@ -600,8 +600,8 @@ function comcode_white_listed($tag, $marker, $comcode)
         $comcode_portion = substr($comcode_portion_at_and_after, 0, $end_pos);
 
         foreach ($comcode_parsing_hooks as $comcode_parsing_ob) {
-            if (method_exists($comcode_parsing_ob, 'comcode_white_listed')) {
-                if ($comcode_parsing_ob->comcode_white_listed($comcode_portion)) {
+            if (method_exists($comcode_parsing_ob, 'comcode_safelisted')) {
+                if ($comcode_parsing_ob->comcode_safelisted($comcode_portion)) {
                     return true;
                 }
             }
@@ -648,7 +648,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
     // No permission
     global $DANGEROUS_TAGS, $STRUCTURE_LIST, $COMCODE_PARSE_TITLE;
-    if ((isset($DANGEROUS_TAGS[$tag])) && (!$comcode_dangerous) && (!comcode_white_listed($tag, $marker, $comcode))) {
+    if ((isset($DANGEROUS_TAGS[$tag])) && (!$comcode_dangerous) && (!comcode_safelisted($tag, $marker, $comcode))) {
         $username = $GLOBALS['FORUM_DRIVER']->get_username($source_member);
         if ($semiparse_mode) { // Can't load through error for this, so just show it as a tag
             return make_string_tempcode(add_wysiwyg_comcode_markup($tag, $attributes, $embed, ($in_semihtml) || ($is_all_semihtml), WYSIWYG_COMCODE__STANDOUT_BLOCK, $html_errors));

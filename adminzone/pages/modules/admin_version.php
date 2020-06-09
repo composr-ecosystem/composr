@@ -1093,6 +1093,8 @@ class Module_admin_version
 
             rename_config_option('gzip_output', 'output_compression');
 
+            rename_config_option('oembed_html_whitelist', 'oembed_html_safelist');
+
             $GLOBALS['FORUM_DB']->add_table_field('logged_mail_messages', 'm_sender_email', 'SHORT_TEXT');
             $GLOBALS['FORUM_DB']->add_table_field('logged_mail_messages', 'm_plain_subject', 'BINARY');
 

@@ -107,11 +107,11 @@ function can_static_cache_request($consider_failover_mode = false)
         return false;
     }
 
-    if (!empty($SITE_INFO['static_caching_blacklist'])) {
-        if (preg_match('#' . $SITE_INFO['static_caching_blacklist'] . '#', $url) != 0) {
+    if (!empty($SITE_INFO['static_caching_exclusion_list'])) {
+        if (preg_match('#' . $SITE_INFO['static_caching_exclusion_list'] . '#', $url) != 0) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No, pattern-matched URL to blacklist on ' . $url);
+                    @error_log('SC: No, pattern-matched URL to exclusion list on ' . $url);
                 }
             }
 
@@ -119,11 +119,11 @@ function can_static_cache_request($consider_failover_mode = false)
         }
     }
 
-    if (!empty($SITE_INFO['static_caching_whitelist'])) {
-        if (preg_match('#' . $SITE_INFO['static_caching_whitelist'] . '#', $url) == 0) {
+    if (!empty($SITE_INFO['static_caching_inclusion_list'])) {
+        if (preg_match('#' . $SITE_INFO['static_caching_inclusion_list'] . '#', $url) == 0) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No, non-pattern-matched URL to whitelist on ' . $url);
+                    @error_log('SC: No, non-pattern-matched URL to inclusion list on ' . $url);
                 }
             }
 

@@ -30,8 +30,8 @@ class ___performance_test_set extends cms_test_case
     protected $quick = true; // Times will be less accurate if they're fast enough, focus on finding slow pages only
     protected $threshold = 0.50; // If loading times exceed this a page is considered slow
     protected $start_page_link = '';
-    protected $whitelist = null;
-    protected $blacklist = [
+    protected $inclusion_list = null;
+    protected $exclusion_list = [
         // These are non-bundled tooling screens that are irrevocably slow
         'adminzone:string_scan',
         'adminzone:sql_dump',
@@ -46,7 +46,7 @@ class ___performance_test_set extends cms_test_case
         // Irrevocably slow for some other reason
         'adminzone:admin_addons:addon_export', // Does full file-system scan, particularly slow on a full git clone
     ];
-    protected $whitelist_zone = null;
+    protected $only_zone = null;
 
     public function setUp()
     {
@@ -73,17 +73,17 @@ class ___performance_test_set extends cms_test_case
 
         $page_link = $node['page_link'];
 
-        if (($this->whitelist !== null) && (!in_array($page_link, $this->whitelist))) {
+        if (($this->inclusion_list !== null) && (!in_array($page_link, $this->inclusion_list))) {
             return;
         }
 
-        if (($this->blacklist !== null) && (in_array($page_link, $this->blacklist))) {
+        if (($this->exclusion_list !== null) && (in_array($page_link, $this->exclusion_list))) {
             return;
         }
 
-        if ($this->whitelist_zone !== null) {
+        if ($this->only_zone !== null) {
             list($zone) = page_link_decode($page_link);
-            if ($zone != $this->whitelist_zone) {
+            if ($zone != $this->only_zone) {
                 return;
             }
         }

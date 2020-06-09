@@ -78,7 +78,7 @@ function rss_backend_script()
     require_lang('rss');
     require_code('xml');
 
-    load_csp(['csp_enabled' => '0']); // FUDGE: We need this for XSLT to work. We cannot put a nonce on an XSLT import, and we can't whitelist specific scripts
+    load_csp(['csp_enabled' => '0']); // FUDGE: We need this for XSLT to work. We cannot put a nonce on an XSLT import, and we can't safelist specific scripts
 
     if ($type == 'xslt-rss') {
         // Feed stylesheet for RSS

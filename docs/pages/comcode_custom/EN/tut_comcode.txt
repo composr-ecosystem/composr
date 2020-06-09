@@ -344,7 +344,7 @@ For a list of symbols/directives, see the [page="_SEARCH:tut_tempcode"]Tempcode 
 
 Composr provides a [page="_SEARCH:tut_wysiwyg"]WYSIWYG[/page] editor for those who would rather not type Comcode directly. You may mix in raw Comcode tags with the normal formatted text of the WYSIWYG editor if you wish; this is necessary if you need to insert things that don't have a regular appearance, such as blocks.
 
-Composr uses the Comcode [tt]semihtml[/tt] tag is used in order to mix HTML and Comcode. You don't see this within the editor, but it is used when saving. Any HTML is subjected to Composr's whitelist/blacklist filter when it is being parsed for final output (see the "Security" section of the [page="_SEARCH:tut_adv_comcode"]Advanced Comcode[/page] tutorial), unless the Comcode was submitted by staff in which case it would not be filtered.
+Composr uses the Comcode [tt]semihtml[/tt] tag is used in order to mix HTML and Comcode. You don't see this within the editor, but it is used when saving. Any HTML is subjected to Composr's safelist/blocklist filter when it is being parsed for final output (see the "Security" section of the [page="_SEARCH:tut_adv_comcode"]Advanced Comcode[/page] tutorial), unless the Comcode was submitted by staff in which case it would not be filtered.
 
 [title="2"]Spacing[/title]
 

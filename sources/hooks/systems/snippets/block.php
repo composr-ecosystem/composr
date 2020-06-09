@@ -46,10 +46,10 @@ class Hook_snippet_block
 
         $pass = false;
 
-        $_whitelisted_blocks = get_value('whitelisted_blocks');
-        if (!empty($_whitelisted_blocks)) {
-            $whitelisted_blocks = explode(',', $_whitelisted_blocks);
-            if (in_array($map['block'], $whitelisted_blocks)) {
+        $_safelisted_blocks = get_value('safelisted_blocks');
+        if (!empty($_safelisted_blocks)) {
+            $safelisted_blocks = explode(',', $_safelisted_blocks);
+            if (in_array($map['block'], $safelisted_blocks)) {
                 $pass = true;
             }
         }

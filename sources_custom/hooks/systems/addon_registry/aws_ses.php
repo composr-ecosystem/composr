@@ -97,7 +97,7 @@ To configure SES we recommend you specifically set the newsletter configuration 
 2) SES is subject to an approval step, so you can\'t switch over to it immediately anyway
 3) SES has particular policies that you must comply with, and if they judge you as non-compliant you don\'t want all your e-mail to stop
 4) Usually your host-based e-mail is free, while SES is paid -- so it makes sense to only use SES for when you really do need the high-volume stuff
-5) SES is more likely to be on spam blacklists, so it makes sense to isolate its use to bulk e-mail only
+5) SES is more likely to be on spam blocklists, so it makes sense to isolate its use to bulk e-mail only
 6) Putting your bulk e-mail through a separate queue will avoid clogging up the delivery of your other e-mails, which may be more time-sensitive
 
 To use SES via SMTP, you need to use TLS, which means you need the [tt]better_mail[/tt] addon.

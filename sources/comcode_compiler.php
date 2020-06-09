@@ -380,7 +380,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
     $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
     $allowed_html_seqs = [
-        // HTML tag may actually be used in very limited conditions: only the following HTML seqs will come out as HTML. This is, unless the blacklist filter is used instead.
+        // HTML tag may actually be used in very limited conditions: only the following HTML seqs will come out as HTML. This is, unless the blocklist filter is used instead.
         '<table>',
         '<table( class="[^"<>]*")?( summary="[^"<>]*")?' . '>',
         '</table>',
@@ -1709,11 +1709,11 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
 
                                         if (($entity) && (!$in_code_tag)) {
                                             if (($matches[1] === '') && (($in_semihtml) || (isset($ALLOWED_COMCODE_ENTITIES[$matches[2]])))) {
-                                                // Explicitly white-listed
+                                                // Explicitly safelisted
                                                 $pos += strlen($matches[2]) + 1;
                                                 $continuation .= '&' . $matches[2] . ';';
                                             } elseif ((is_numeric($matches[2])) && ($matches[1] === '#')) {
-                                                // Implicitly white-listed
+                                                // Implicitly safelisted
                                                 $matched_entity = intval(base_convert($matches[2], 16, 10));
                                                 if (($matched_entity < 127) && (array_key_exists(chr($matched_entity), $POTENTIAL_JS_NAUGHTY_ARRAY))) {
                                                     $continuation .= '&amp;';
@@ -2315,7 +2315,7 @@ function filter_html($as_admin, $source_member, $pos, &$len, &$comcode, $in_html
 }
 
 /**
- * Used by filter_html to temporarily obscure white-listed complex HTML so it doesn't get mangled by the input filter.
+ * Used by filter_html to temporarily obscure safelisted complex HTML so it doesn't get mangled by the input filter.
  *
  * @param  array $matches Array of matches
  * @return string Substituted text

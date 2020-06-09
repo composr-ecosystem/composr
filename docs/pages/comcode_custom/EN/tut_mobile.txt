@@ -62,7 +62,7 @@ mobile_pages=#:(?!.*(foo|bar)).*$#
 [/code]
 This will make all pages use mobile-mode except 'foo' and 'bar' in any zone.
 It's a complex example. It's not front-bound (no [tt]^[/tt] at the start) hence why any zone works.
-The black-listed pages are specified within a single "negative forward assertion".
+The excluded pages are specified within a single "negative forward assertion".
 
 Any regular expression will work, this is just an example. Composr recognises a regular expression by the surrounding [tt]#[/tt] symbols.
 

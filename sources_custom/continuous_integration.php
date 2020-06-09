@@ -30,7 +30,7 @@ function init__continuous_integration()
         define('COMPOSR_GITLAB_PROJECT_ID', '14182874');
 
         $status = cms_version_branch_status();
-        define('CI_BLACKLISTED_TESTS', [
+        define('CI_EXCLUDED_TESTS', [
             // Will be added back to run first
             'unit_tests/cqc__function_sigs',
 
@@ -358,7 +358,7 @@ function find_all_applicable_tests($limit_to = null)
     $tests = get_directory_contents(get_file_base() . '/_tests/tests', '', 0, true, true, ['php']);
     foreach ($tests as $test) {
         $_test = preg_replace('#\.php$#', '', $test);
-        if ((!@in_array($_test, CI_BLACKLISTED_TESTS)) && (($limit_to === null) || (in_array($_test, $limit_to)))) {
+        if ((!@in_array($_test, CI_EXCLUDED_TESTS)) && (($limit_to === null) || (in_array($_test, $limit_to)))) {
             $_tests[] = $_test;
         }
     }

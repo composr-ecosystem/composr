@@ -540,10 +540,10 @@ function get_bound_content_entry($content_type, $id)
  * @param  Tempcode $fields Fields (passed by reference)
  * @param  Tempcode $hidden Hidden Fields (passed by reference)
  * @param  ?array $field_filter Limit fields to a set (null: no limit)
- * @param  boolean $field_filter_whitelist Whether $field_filter is a whitelist (if false, it is a blacklist)
+ * @param  boolean $field_filter_inclusion_list Whether $field_filter is a inclusion list (if false, it is a exclusion-list)
  * @param  boolean $add_separate_header Whether to add a separate header above the fields, so long as not all the fields are already under some other header
  */
-function append_form_custom_fields($content_type, $id, &$fields, &$hidden, $field_filter = null, $field_filter_whitelist = true, $add_separate_header = false)
+function append_form_custom_fields($content_type, $id, &$fields, &$hidden, $field_filter = null, $field_filter_inclusion_list = true, $add_separate_header = false)
 {
     if (!addon_installed('catalogues')) {
         return;
@@ -562,10 +562,10 @@ function append_form_custom_fields($content_type, $id, &$fields, &$hidden, $fiel
 
     require_code('fields');
     foreach ($special_fields as $field_num => $field) {
-        if (($field_filter !== null) && ($field_filter_whitelist) && (!in_array($field['id'], $field_filter))) {
+        if (($field_filter !== null) && ($field_filter_inclusion_list) && (!in_array($field['id'], $field_filter))) {
             continue;
         }
-        if (($field_filter !== null) && (!$field_filter_whitelist) && (in_array($field['id'], $field_filter))) {
+        if (($field_filter !== null) && (!$field_filter_inclusion_list) && (in_array($field['id'], $field_filter))) {
             continue;
         }
 

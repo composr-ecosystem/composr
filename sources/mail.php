@@ -893,7 +893,7 @@ abstract class Mail_dispatcher_base
             $headers .= 'Return-Path: <' . $this->_sender_email . '>' . $this->line_term;
             $headers .= 'X-Sender: <' . $this->_sender_email . '>' . $this->line_term;
         }
-        // else maybe server won't let us set it due to whitelist security, and we must let it use it's default (i.e. accountname@hostname)
+        // else maybe server won't let us set it due to safelist security, and we must let it use it's default (i.e. accountname@hostname)
         $headers .= 'Reply-To: <' . $from_email . '>' . $this->line_term;
         if (!empty($this->cc_addresses)) {
             $headers .= 'Cc: ';

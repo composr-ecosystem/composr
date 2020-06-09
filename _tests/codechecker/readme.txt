@@ -131,10 +131,10 @@ The intentionally skipped aspects are:
  - dynamic variable referencing ($$foo) (Reason: sloppy, a likely bug)
  - PHP 5.4 Class::{expr}() Syntax (Reason: sloppy, a likely bug)
  - object iteration (Reason: treating objects like arrays hurts type-checking, better to just allow returning an array using an object method)
- - certain functions, including insecure or platform-dependant ones (these can be white-listed per-file though) (Reason: they should not be used)
+ - certain functions, including insecure or platform-dependant ones (these can be safelisted per-file though) (Reason: they should not be used)
 
 Some checks we could do but don't:
- - namespace resolution is not implemented, we just match on class names (Reason: We do not use namespaces internally in Composr; if namespaces are involved the class names can just be whitelisted)
+ - namespace resolution is not implemented, we just match on class names (Reason: We do not use namespaces internally in Composr; if namespaces are involved the class names can just be safelisted)
  - compatibility checks when implementing multiple interfaces (Reason: Complexity and a very rare event that would cause a run-time crash anyway)
  - goto label presence/position checks (Reason: We don't, and shouldn't, use goto)
  - full validation of use of inbuilt PHP objects (Reason: We don't use them much and we'd need to define all their skeletons in phpstub.php)

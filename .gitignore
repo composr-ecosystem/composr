@@ -133,7 +133,7 @@ _meta_tree
 pages/comcode_custom/*/*.txt
 */pages/comcode_custom/*/*.txt
 !docs/pages/comcode_custom/*/*.txt
-!adminzone/pages/comcode_custom/EN/comcode_whitelist.txt
+!adminzone/pages/comcode_custom/EN/comcode_safelist.txt
 !adminzone/pages/comcode_custom/EN/insults.txt
 !adminzone/pages/comcode_custom/EN/referrals.txt
 !adminzone/pages/comcode_custom/EN/website.txt

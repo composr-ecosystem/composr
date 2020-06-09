@@ -180,7 +180,7 @@ class Module_notifications
             $effective_member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
         }
 
-        //$_message = get_translated_tempcode('digestives_tin', $row, 'd_message'); We'll recalculate below, for custom security (due to possible embedded HTML we want to go through whitelist filter, using CSP)
+        //$_message = get_translated_tempcode('digestives_tin', $row, 'd_message'); We'll recalculate below, for custom security (due to possible embedded HTML we want to go through safelist filter, using CSP)
         $_message = comcode_to_tempcode(get_translated_text($row['d_message']), $effective_member_id);
 
         if ($row['d_read'] == 0) {

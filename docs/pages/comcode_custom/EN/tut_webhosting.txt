@@ -87,7 +87,7 @@ The remainder of this section details Composr's requirements. If you have troubl
 We require:
  - At least 50MB of disk space (plus your needs for space for downloads, images, etc).
  - No maximum file size limit under 25MB (some free webhosts will impose such a limit).
- - No file type whitelists (some free webhosts will impose such a limit -- which explains why [tt]data.cms[/tt] might disappear when you try to upload it).
+ - No file type safelists (some free webhosts will impose such a limit -- which explains why [tt]data.cms[/tt] might disappear when you try to upload it).
  - Certain file permissions are required as described in the [page="_SEARCH:tut_install_permissions"]File permissions[/page] tutorial.
  - That the server does not have a Firewall that stops outgoing connections or internal connections to itself (sometimes referred to 'HTTP loopback') -- this applies to both TCP port 80 and 443.
  - Connectivity to a mail server (SMTP) so that outgoing e-mail can be sent out to the staff e-mail address or the addresses of individual members.
@@ -254,7 +254,7 @@ There are a few notes to give, although the only one of likely major significanc
 | Disabling PHP in certain directories
 | [tt].htaccess[/tt] files strewn around
 | [i]No default support[/i]
-| This is an extra layer of security but is not required because Composr prohibits the upload of [tt].php[/tt] files by users and white-lists accepted file-types
+| This is an extra layer of security but is not required because Composr prohibits the upload of [tt].php[/tt] files by users and safelists accepted file-types
 |-
 | Disabling URL access in certain directories
 | [tt].htaccess[/tt] files strewn around
