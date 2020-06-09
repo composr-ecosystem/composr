@@ -119,7 +119,7 @@ SOFTWARE.
 
 ## Apache license ##
 
-_Version 2.0, January 2004_  
+_Version 2.0, January 2004_
 _&lt;<http://www.apache.org/licenses/>&gt;_
 
 ### Terms and Conditions for use, reproduction, and distribution
@@ -298,13 +298,13 @@ the same “printed page” as the copyright notice for easier identification wi
 third-party archives.
 
     Copyright [yyyy] [name of copyright owner]
-    
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-    
+
       http://www.apache.org/licenses/LICENSE-2.0
-    
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -315,24 +315,24 @@ third-party archives.
 
 ### 1. Definitions
 
-**1.1. “Contributor”**  
+**1.1. “Contributor”**
     means each individual or legal entity that creates, contributes to
     the creation of, or owns Covered Software.
 
-**1.2. “Contributor Version”**  
+**1.2. “Contributor Version”**
     means the combination of the Contributions of others (if any) used
     by a Contributor and that particular Contributor's Contribution.
 
-**1.3. “Contribution”**  
+**1.3. “Contribution”**
     means Covered Software of a particular Contributor.
 
-**1.4. “Covered Software”**  
+**1.4. “Covered Software”**
     means Source Code Form to which the initial Contributor has attached
     the notice in Exhibit A, the Executable Form of such Source Code
     Form, and Modifications of such Source Code Form, in each case
     including portions thereof.
 
-**1.5. “Incompatible With Secondary Licenses”**  
+**1.5. “Incompatible With Secondary Licenses”**
     means
 
 * **(a)** that the initial Contributor has attached the notice described
@@ -341,22 +341,22 @@ third-party archives.
     version 1.1 or earlier of the License, but not also under the
     terms of a Secondary License.
 
-**1.6. “Executable Form”**  
+**1.6. “Executable Form”**
     means any form of the work other than Source Code Form.
 
-**1.7. “Larger Work”**  
-    means a work that combines Covered Software with other material, in 
+**1.7. “Larger Work”**
+    means a work that combines Covered Software with other material, in
     a separate file or files, that is not Covered Software.
 
-**1.8. “License”**  
+**1.8. “License”**
     means this document.
 
-**1.9. “Licensable”**  
+**1.9. “Licensable”**
     means having the right to grant, to the maximum extent possible,
     whether at the time of the initial grant or subsequently, any and
     all of the rights conveyed by this License.
 
-**1.10. “Modifications”**  
+**1.10. “Modifications”**
     means any of the following:
 
 * **(a)** any file in Source Code Form that results from an addition to,
@@ -365,7 +365,7 @@ third-party archives.
 * **(b)** any new file in Source Code Form that contains any Covered
     Software.
 
-**1.11. “Patent Claims” of a Contributor**  
+**1.11. “Patent Claims” of a Contributor**
     means any patent claim(s), including without limitation, method,
     process, and apparatus claims, in any patent Licensable by such
     Contributor that would be infringed, but for the grant of the
@@ -373,16 +373,16 @@ third-party archives.
     made, import, or transfer of either its Contributions or its
     Contributor Version.
 
-**1.12. “Secondary License”**  
+**1.12. “Secondary License”**
     means either the GNU General Public License, Version 2.0, the GNU
     Lesser General Public License, Version 2.1, the GNU Affero General
     Public License, Version 3.0, or any later versions of those
     licenses.
 
-**1.13. “Source Code Form”**  
+**1.13. “Source Code Form”**
     means the form of the work preferred for making modifications.
 
-**1.14. “You” (or “Your”)**  
+**1.14. “You” (or “Your”)**
     means an individual or a legal entity exercising rights under this
     License. For legal entities, “You” includes any entity that
     controls, is controlled by, or is under common control with You. For
@@ -668,7 +668,7 @@ You may add additional accurate notices of copyright ownership.
 
 ## LGPL ##
 
-_Version 3, 29 June 2007_  
+_Version 3, 29 June 2007_
 _Copyright © 2007 Free Software Foundation, Inc. &lt;<http://fsf.org/>&gt;_
 
 Everyone is permitted to copy and distribute verbatim copies

@@ -177,6 +177,7 @@ class basic_code_formatting_test_set extends cms_test_case
             }
             $exceptions = array_merge(list_untouchable_third_party_files(), [
                 'lang/langs.ini',
+                'docs/THANKS.md',
             ]);
             if (in_array($path, $exceptions)) {
                 continue;

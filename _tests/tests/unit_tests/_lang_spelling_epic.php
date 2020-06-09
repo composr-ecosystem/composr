@@ -3441,6 +3441,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                             'text/EN/synonyms.txt',
                             'docs/LICENSE.md',
                             'docs/THANKS.md',
+                            'docs/CODE_OF_CONDUCT.md',
                         ])) {
                             continue 2;
                         }

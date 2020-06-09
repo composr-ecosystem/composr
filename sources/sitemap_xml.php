@@ -626,7 +626,7 @@ function notify_sitemap_node_delete($page_link)
 {
     canonicalise_sitemap_page_link($page_link);
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'page_link', array('page_link' => $page_link));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'page_link', ['page_link' => $page_link]);
     if ($test === null) {
         return false;
     }
