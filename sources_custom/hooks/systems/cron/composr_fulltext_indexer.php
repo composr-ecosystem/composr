@@ -36,6 +36,8 @@ class Hook_cron_composr_fulltext_indexer
             $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', array('i_table', 'i_name'));
             $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
 
+            //$GLOBALS['SITE_DB']->drop_table_if_exists('ft_index_commonality');
+
             $GLOBALS['SITE_DB']->create_table('ft_index_commonality', array(
                 'id' => '*AUTO',
                 'c_ngram' => 'SHORT_TEXT',

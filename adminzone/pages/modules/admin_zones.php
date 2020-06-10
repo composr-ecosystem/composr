@@ -297,14 +297,16 @@ class Module_admin_zones
 
         // Page editing stuff
         $editor = array();
-        foreach (array('panel_left', $default_page, 'panel_right') as $i => $for) {
-            $page_info = _request_page($for, $id, null, $lang);
+        foreach (array('panel_left', 'start', 'panel_right') as $i => $for) {
+            $_for = ($for == 'start') ? $default_page : $for;
+
+            $page_info = _request_page($_for, $id, null, $lang);
             if ($page_info === false) {
-                $page_info = array('COMCODE_CUSTOM', $id, $for, $lang);
+                $page_info = array('COMCODE_CUSTOM', $id, $_for, $lang);
             }
             $is_comcode = false;
             $redirecting_to = null;
-            $current_for = $for;
+            $current_for = $_for;
             $pure = false;
             switch ($page_info[0]) {
                 case 'COMCODE_CUSTOM_PURE':
@@ -401,11 +403,11 @@ class Module_admin_zones
             } else {
                 require_code('urls2');
                 list($old_get, $old_zone, $old_current_script) = set_execution_context(
-                    array('page' => $for),
+                    array('page' => $_for),
                     $id
                 );
 
-                $preview = request_page($for, false, $id, null, true);
+                $preview = request_page($_for, false, $id, null, true);
 
                 // Get things back to prior state
                 set_execution_context(
@@ -442,7 +444,7 @@ class Module_admin_zones
                 $zone_list = null;
             } else {
                 require_code('zones3');
-                $zone_list = ($for == $current_for) ? create_selection_list_zones($redirecting_to, array($id)) : new Tempcode(); // not simple so leave field out
+                $zone_list = ($_for == $current_for) ? create_selection_list_zones($redirecting_to, array($id)) : new Tempcode(); // not simple so leave field out
             }
 
             $editor[$for] = static_evaluate_tempcode(do_template('ZONE_EDITOR_PANEL', array(
@@ -475,7 +477,7 @@ class Module_admin_zones
             'URL' => $post_url,
             'LEFT_EDITOR' => $editor['panel_left'],
             'RIGHT_EDITOR' => $editor['panel_right'],
-            'MIDDLE_EDITOR' => $editor[$default_page],
+            'MIDDLE_EDITOR' => $editor['start'],
         ));
     }
 
@@ -535,16 +537,18 @@ class Module_admin_zones
 
             $comcode = post_param_string($for, null);
             if (!is_null($comcode)) {
+                $_for = ($for == 'start') ? $default_page : $for;
+
                 // Where to save to
-                $full_path = zone_black_magic_filterer(get_custom_file_base() . (((is_null($redirect) ? $id : $redirect) == '') ? '' : '/') . (is_null($redirect) ? $id : $redirect) . '/pages/comcode_custom/' . $lang . '/' . $for . '.txt');
+                $full_path = zone_black_magic_filterer(get_custom_file_base() . (((is_null($redirect) ? $id : $redirect) == '') ? '' : '/') . (is_null($redirect) ? $id : $redirect) . '/pages/comcode_custom/' . $lang . '/' . $_for . '.txt');
 
                 // Store revision
                 if (addon_installed('actionlog')) {
                     require_code('revisions_engine_files');
                     $revision_engine = new RevisionEngineFiles();
-                    list(, , $existing_path) = find_comcode_page($lang, $for, $id);
+                    list(, , $existing_path) = find_comcode_page($lang, $_for, $id);
                     if ($existing_path != '') {
-                        $revision_engine->add_revision(dirname($existing_path), $for, 'txt', file_get_contents($existing_path), filemtime($existing_path));
+                        $revision_engine->add_revision(dirname($full_path), $_for, 'txt', file_get_contents($existing_path), filemtime($existing_path));
                     }
                 }
 
@@ -553,11 +557,11 @@ class Module_admin_zones
                 cms_file_put_contents_safe($full_path, $comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
                 // De-cache
-                $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('string_index'), array('the_zone' => is_null($redirect) ? $id : $redirect, 'the_page' => $for));
+                $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('string_index'), array('the_zone' => is_null($redirect) ? $id : $redirect, 'the_page' => $_for));
                 foreach ($caches as $cache) {
                     delete_lang($cache['string_index']);
                 }
-                $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', array('the_zone' => is_null($redirect) ? $id : $redirect, 'the_page' => $for));
+                $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', array('the_zone' => is_null($redirect) ? $id : $redirect, 'the_page' => $_for));
                 $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = array();
             }
         }

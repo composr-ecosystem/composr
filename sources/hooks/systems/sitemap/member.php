@@ -49,7 +49,7 @@ class Hook_sitemap_member extends Hook_sitemap_content
     public function handles_page_link($page_link)
     {
         if (preg_match('#^\w+:members:view$#', $page_link) != 0) { // We don't actually support taking a default member ID in here, entry_point can handle that case
-            return false;
+            return SITEMAP_NODE_NOT_HANDLED;
         }
         return parent::handles_page_link($page_link);
     }

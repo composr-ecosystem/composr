@@ -38,14 +38,14 @@ When editing theme CSS we recommend you comment out code you're removing and hea
 {$THEME_WIZARD_COLOR,#000000,native_ui_foreground,100% 000000}
 {$THEME_WIZARD_COLOR,#ffffff,native_ui_background,100% FFFFFF}
 {$THEME_WIZARD_COLOR,#feffcb,native_ui_active_background,100% FEFFCB}
-{$THEME_WIZARD_COLOR,#316AC5,native_ui_selected_background,100% 316AC5}
+{$THEME_WIZARD_COLOR,#27539B,native_ui_selected_background,100% 27539B}
 {$THEME_WIZARD_COLOR,#ffffff,native_ui_selected_foreground,100% FFFFFF}
 {$THEME_WIZARD_COLOR,#ffffff,native_ui_button_foreground,100% FFFFFF}
 {$THEME_WIZARD_COLOR,#ff0000,native_ui_alertfield_background,100% FF0000}
 {$THEME_WIZARD_COLOR,#ffffff,native_ui_alertfield_foreground,100% FFFFFF}
-{$THEME_WIZARD_COLOR,#A9A9A9,unfilled_input_text,100% A9A9A9}
+{$THEME_WIZARD_COLOR,#545454,unfilled_input_text,100% 545454}
 {$THEME_WIZARD_COLOR,#888888,locked_input_field,100% 888888}
-{$THEME_WIZARD_COLOR,#3d434c,comfortable_input_field_text,20% WB + 65% BW + 15% seed}
+{$THEME_WIZARD_COLOR,#0a1019,comfortable_input_field_text,85% BW + 15% seed}
 {$THEME_WIZARD_COLOR,#b5b5b5,tab_border,100% b5b5b5}
 {$THEME_WIZARD_COLOR,#008000,adwords_style_text,100% 008000} /* Google adwords style */
 {$THEME_WIZARD_COLOR,#ffffff,floating_section_background,100% WB}
@@ -53,12 +53,12 @@ When editing theme CSS we recommend you comment out code you're removing and hea
 
 /* Colours to mirror human understandings (i.e. non-thematic) */
 {$THEME_WIZARD_COLOR,#ffffc9,yellow_highlight_background,100% #FFFFC9}
-{$THEME_WIZARD_COLOR,#ff8888,red_highlight_background,100% FF8888}
+{$THEME_WIZARD_COLOR,#cc3333,red_highlight_background,100% CC3333}
 {$THEME_WIZARD_COLOR,#e7981e,orange_highlight_text,100% E7981E}
 {$THEME_WIZARD_COLOR,#ff8888,light_error_border,100% FF8888}
 {$THEME_WIZARD_COLOR,#fff2f2,light_error_background,95% WB + 5% FF0000}
-{$THEME_WIZARD_COLOR,#d91522,red_highlight_text,80% FF0000 + 20% seed}
-{$THEME_WIZARD_COLOR,#009900,green_highlight_text,100% 009900}
+{$THEME_WIZARD_COLOR,#cc0000,red_highlight_text,80% FF0000 + 20% 000000}
+{$THEME_WIZARD_COLOR,#007A00,green_highlight_text,100% 007A00}
 {$THEME_WIZARD_COLOR,#ede2e4,required_background,60% (area_4_background hue_to 0) + 40% area_background}
 {$THEME_WIZARD_COLOR,#ebe6eb,required_2_background,40% (area_4_background hue_to 0) + 60% area_background}
 {$THEME_WIZARD_COLOR,#000000,dark_shadow,100% BW}
@@ -101,6 +101,7 @@ When editing theme CSS we recommend you comment out code you're removing and hea
 
 /* Text */
 {$THEME_WIZARD_COLOR,#0d1522,slightly_seeded_text,20% seed + 80% BW}
+{$THEME_WIZARD_COLOR,#f9fafc,slightly_seeded_pale_text,3% seed + 97% WB}
 {$THEME_WIZARD_COLOR,#3d434c,slightly_seeded_gray_text,20% WB + 65% BW + 15% seed}
 {$THEME_WIZARD_COLOR,#325180,area_text,76% seed + 24% BW}
 {$THEME_WIZARD_COLOR,#2a3d5a,area_key_text,53% (seed sat_to 53) + 47% BW}
@@ -135,7 +136,6 @@ When editing theme CSS we recommend you comment out code you're removing and hea
 /* Footer */
 {$THEME_WIZARD_COLOR,#8ba4ca,footer_tinting,61% seed + 39% WB}
 {$THEME_WIZARD_COLOR,#ffffff,footer_text,100% WB}
-{$THEME_WIZARD_COLOR,#dbe6f7,inverted_text,35% footer_tinting + 65% WB}
 
 /* Used for image generation */
 {$THEME_WIZARD_COLOR,#e8edf6,washed_out,10% (seed sat_to 85) + 90% WB}
@@ -154,20 +154,20 @@ When editing theme CSS we recommend you comment out code you're removing and hea
 
 /* Range of bright varying colours */
 {$THEME_WIZARD_COLOR,#9c029a,gcol_1,100% #9C029A}
-{$THEME_WIZARD_COLOR,#fa0c00,gcol_2,100% #FA0C00}
-{$THEME_WIZARD_COLOR,#aa6a04,gcol_3,100% #AA6A04}
+{$THEME_WIZARD_COLOR,#d10a00,gcol_2,100% #D10A00}
+{$THEME_WIZARD_COLOR,#8b5704,gcol_3,100% #8B5704}
 {$THEME_WIZARD_COLOR,#5800fa,gcol_4,100% #5800FA}
-{$THEME_WIZARD_COLOR,#0099fa,gcol_5,100% #0099FA}
-{$THEME_WIZARD_COLOR,#859638,gcol_6,100% #859638}
-{$THEME_WIZARD_COLOR,#2bab03,gcol_7,100% #2BAB03}
-{$THEME_WIZARD_COLOR,#7d7e04,gcol_8,100% #7D7E04}
+{$THEME_WIZARD_COLOR,#0068a8,gcol_5,100% #0068A8}
+{$THEME_WIZARD_COLOR,#637029,gcol_6,100% #637029}
+{$THEME_WIZARD_COLOR,#1f7c03,gcol_7,100% #1F7C03}
+{$THEME_WIZARD_COLOR,#6c6c04,gcol_8,100% #6C6C04}
 {$THEME_WIZARD_COLOR,#966038,gcol_9,100% #966038}
 {$THEME_WIZARD_COLOR,#96384a,gcol_10,100% #96384A}
 {$THEME_WIZARD_COLOR,#963895,gcol_11,100% #963895}
 {$THEME_WIZARD_COLOR,#4e3896,gcol_12,100% #4E3896}
 {$THEME_WIZARD_COLOR,#386296,gcol_13,100% #386296}
-{$THEME_WIZARD_COLOR,#389596,gcol_14,100% #389596}
-{$THEME_WIZARD_COLOR,#389653,gcol_15,100% #389653}
+{$THEME_WIZARD_COLOR,#2b7173,gcol_14,100% #2B7173}
+{$THEME_WIZARD_COLOR,#2d7b45,gcol_15,100% #2D7B45}
 
 /*
 =========================
@@ -550,7 +550,7 @@ header h1 {
 .global_navigation {
 	border-top: 1px solid {$GET,standard_border};
 	border-bottom: 1px solid {$GET,standard_border};
-	background-color: {$GET,lgrad};
+	background-color: {$GET,dgrad};
 	{$BETA_CSS_PROPERTY,background-image: linear-gradient(to bottom\, {$GET,lgrad}\, {$GET,dgrad}) !important;}
 	color: {$GET,WB};
 	/*{+START,IF,{$MOBILE}}*/
@@ -911,7 +911,7 @@ body.popup_spacer h2 {
 }
 
 footer {
-	background-color: {$GET,footer_background};
+	background-color: {$GET,dgrad};
 	margin-top: 2em;
 	{$BETA_CSS_PROPERTY,background-image: linear-gradient(to bottom\, {$GET,footer_background}\, {$GET,footer_2_background});}
 
@@ -1763,7 +1763,7 @@ a.toggleable_tray_button { /* Override above for toggleable_tray_button */
 
 .meta_details {
 	font-size: 0.9em;
-	color: {$GET,area_text};
+	color: {$GET,area_key_text};
 	border-bottom: 1px dotted {$GET,pale_border};
 	/*{+START,IF,{$NOT,{$MOBILE}}}*/
 		width: 25em;
@@ -3343,7 +3343,7 @@ input.magic_image_edit_link {
 	margin: 0.25em;
 	{$BETA_CSS_PROPERTY,box-shadow: 0 0 5px {$GET,standard_border};}
 	text-shadow: 2px 1px 2px {$GET,dark_shadow};
-	background-color: {$GET,lgrad};
+	background-color: {$GET,dgrad};
 	background-repeat: no-repeat;
 	background-position: 96% 3px; /*fallback*/
 	background-position: right 7px center;
@@ -4086,6 +4086,7 @@ div:hover>.edit_menu_link_inline, div:hover>.edit_page_link_inline {
 	position: absolute;
 	float: left;
 	margin-left: 0.25em;
+	color: {$GET,slightly_seeded_pale_text};
 }
 .edit_page_link_inline {
 	position: absolute;
@@ -4145,6 +4146,7 @@ td>.comcode_code_wrap>.comcode_quote, td>.comcode_code_wrap>.comcode_code {
 	padding: 4px;
 	margin: 0;
 	background: {$GET,code_title_background} url('{$IMG;,quote_gradient}') repeat-y;
+	color: {$GET,slightly_seeded_text};
 }
 
 .comcode_quote_inner, .comcode_code_inner {

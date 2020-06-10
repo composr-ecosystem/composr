@@ -466,10 +466,13 @@ class Composr_fulltext_engine
      * @param  string $c_name Catalogue codename
      * @param  integer $id Catalogue entry ID
      * @param  ?LANGUAGE_NAME $lang Language codename (null: default)
-     * @return array A pair: Fields to index, Content fields
      */
     public function get_content_fields_from_catalogue_entry(&$content_fields, &$fields_to_index, $c_name, $id, $lang = null)
     {
+        if (!addon_installed('catalogues')) {
+            return;
+        }
+
         require_code('catalogues');
 
         $map = get_catalogue_entry_field_values($c_name, $id, null, null, false, 'PAGE', $lang);
