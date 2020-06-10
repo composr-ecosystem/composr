@@ -45,6 +45,8 @@ function initialise_special_page_types($special_page_type)
         global $RECORD_LANG_STRINGS;
         $RECORD_LANG_STRINGS = true;
     } elseif ($special_page_type == 'theme_images') {
+        $GLOBALS['NO_QUERY_LIMIT'] = true; // TODO: Fix in v11
+
         global $RECORD_THEME_IMAGES_CACHE;
         $RECORD_THEME_IMAGES_CACHE = true;
     } elseif ($special_page_type == 'ide_linkage') {
