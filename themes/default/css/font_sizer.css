@@ -8,7 +8,7 @@
 	margin-top: -0.75em;
 	margin-right: -0.8em;
 	float: right;
-	border: 1px solid {$GET,dark_border};
+	border: 1px solid {$GET,pale_border};
 	padding: 0.2em 0.4em;
 }
 .font_sizers a {

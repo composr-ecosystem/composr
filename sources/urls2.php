@@ -740,7 +740,7 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
 
     if ($moniker === null) {
         if (is_numeric($moniker_src)) {
-            $moniker = $id;
+            $moniker = $id; // No need for a proper moniker, as it would just be a number (which is not a valid moniker)
         } else {
             $scope = _give_moniker_scope($page, $type, $id, $zone, '');
             $moniker = $scope . _choose_moniker($page, $type, $id, $moniker_src, null, $scope);
@@ -863,6 +863,11 @@ function _generate_moniker($moniker_src)
     }
     $moniker = preg_replace('#\-+#', '-', $moniker);
     $moniker = rtrim($moniker, '-');
+
+    // No numbers
+    if (is_numeric($moniker)) {
+        $moniker = '-' . $moniker;
+    }
 
     // A bit lame, but maybe we'll have to
     if ($moniker == '') {

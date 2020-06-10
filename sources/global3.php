@@ -959,11 +959,11 @@ function cms_mb_strlen($in, $force = false)
     if (!$force && get_charset() != 'utf-8') {
         return strlen($in);
     }
+    if ((function_exists('iconv_strlen')) && (function_exists('disable_iconv')) && (get_value('disable_iconv') !== '1')) {
+        return @iconv_strlen($in, $force ? 'utf-8' : get_charset());
+    }
     if (function_exists('mb_strlen')) {
         return @mb_strlen($in, $force ? 'utf-8' : get_charset()); // @ is because there could be invalid unicode involved
-    }
-    if (function_exists('iconv_strlen')) {
-        return @iconv_strlen($in, $force ? 'utf-8' : get_charset());
     }
     return strlen($in);
 }
@@ -991,7 +991,7 @@ function cms_mb_substr($in, $from, $amount = null, $force = false)
         return substr($in, $from, $amount);
     }
 
-    if (function_exists('iconv_substr')) {
+    if ((function_exists('iconv_substr')) && (function_exists('disable_iconv')) && (get_value('disable_iconv') !== '1')) {
         return @iconv_substr($in, $from, $amount, $force ? 'utf-8' : get_charset());
     }
     if (function_exists('mb_substr')) {
@@ -1542,9 +1542,9 @@ function _multi_sort($a, $b)
     if (($a === null) && ($b === null)) {
         return 0;
     } elseif ($a === null) {
-        return ($key[0] === '!') ? 1 : -1;
+        return ($first_key[0] === '!') ? 1 : -1;
     } elseif ($b === null) {
-        return ($key[0] === '!') ? -1 : 1;
+        return ($first_key[0] === '!') ? -1 : 1;
     }
 
     if ((is_string($a[$first_key])) || (is_object($a[$first_key]))) {

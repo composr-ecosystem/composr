@@ -412,7 +412,7 @@ function _check_stopforumspam($user_ip, $username = null, $email = null)
             foreach (array('username', 'email', 'ip') as $criterion) {
                 if (array_key_exists($criterion, $result)) {
                     $c = $result[$criterion];
-                    if ($c['appears'] == 1) {
+                    if ((array_key_exists('appears', $c)) && ($c['appears'] == 1)) {
                         $_confidence_level = $c['confidence'] / 100.0;
 
                         $spam_stale_threshold = intval(get_option('spam_stale_threshold'));

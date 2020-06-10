@@ -13,7 +13,7 @@ function set_edited_panel(object_ignore /* No longer used */,id)
 		if (!store)
 		{
 			store=document.createElement('textarea');
-			store.name=object.name;
+			store.name=id;
 			store.id='store_'+id;
 			document.getElementById('edit_field_store').appendChild(store);
 		}
@@ -29,7 +29,7 @@ function set_edited_panel(object_ignore /* No longer used */,id)
 		if (!store)
 		{
 			store=document.createElement('textarea');
-			store.name=object.name;
+			store.name=id+'__is_wysiwyg';
 			store.id='wysiwyg_store_'+id;
 			document.getElementById('edit_field_store').appendChild(store);
 		}
@@ -45,7 +45,7 @@ function set_edited_panel(object_ignore /* No longer used */,id)
 		if (!store)
 		{
 			store=document.createElement('textarea');
-			store.name=object.name;
+			store.name='redirect_'+id;
 			store.id='redirects_store_'+id;
 			document.getElementById('edit_field_store').appendChild(store);
 		}
@@ -55,11 +55,12 @@ function set_edited_panel(object_ignore /* No longer used */,id)
 
 function fetch_more_fields()
 {
-	set_edited_panel(null,'panel_left');
-	set_edited_panel(null,'panel_right');
-	set_edited_panel(null,'panel_top');
-	set_edited_panel(null,'panel_bottom');
-	set_edited_panel(null,'start');
+	var places=['panel_left','panel_right','panel_top','panel_bottom','start'];
+
+	for (var i=0;i<places.length;i++) {
+		if (typeof CKEDITOR.instances['edit_'+places[i]+'_textarea']!='undefined') CKEDITOR.instances['edit_'+places[i]+'_textarea'].updateElement();
+		set_edited_panel(null,places[i]);
+	}
 
 	var form=document.getElementById('middle_fields');
 	var edit_field_store=document.getElementById('edit_field_store');
@@ -80,7 +81,6 @@ function fetch_more_fields()
 		}
 		edit_field_store.appendChild(store);
 	}
-//	window.setTimeout(function() { form.submit(); } , 1000);
 }
 
 function select_ze_tab(id,tab)

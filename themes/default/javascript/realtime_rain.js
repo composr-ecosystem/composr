@@ -57,7 +57,7 @@ function start_realtime_rain()
 
 	var news_ticker=document.getElementById('news_ticker');
 	news_ticker.style.top='20px';
-	news_ticker.style.left=(get_window_width()/2-find_width(news_ticker)/2)+'px';
+	news_ticker.style.left=(find_width(document.getElementById('main_website_inner'))/2-find_width(news_ticker)/2)+'px';
 
 	document.getElementById('loading_icon').style.display='block';
 

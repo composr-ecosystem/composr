@@ -1152,7 +1152,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
             $table = $cma_info['parent_spec__table_name'] . ' r';
 
-            $lang_fields = [];
+            $lang_fields = array();
             if ($cma_info['parent_spec__table_name'] != $cma_info['table']) {
                 $select = $this->select_fields($cma_info, 'r2', $lang_fields);
                 $select[] = 'r.' . $cma_info['parent_spec__field_name'];
