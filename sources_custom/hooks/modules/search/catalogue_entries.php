@@ -325,7 +325,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 if (get_value('disable_cat_cat_perms') !== '1') {
                     $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z WHERE ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=i_category_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')';
                 }
-                $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p WHERE ' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=i.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
+                $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p WHERE ' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=i_c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
             }
 
             if (addon_installed('content_privacy')) {
