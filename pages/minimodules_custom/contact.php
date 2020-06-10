@@ -59,6 +59,8 @@ if (is_guest()) {
     }
 }
 
+require_code('decision_tree');
+
 $decision_tree = array(
     'start' => array(
         'title' => 'Contact request',
@@ -184,6 +186,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'required' => false,
             ),
         ) + $extra_brief_details,
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
         'next' => build_url(array('page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Job'), '_SEARCH'),
     ),
 
@@ -882,6 +885,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'required' => false,
             ),
         ),
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
         'next' => build_url(array('page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Project'), '_SEARCH'),
         'expects_parameters' => array(
             'title',
@@ -944,6 +948,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'required' => false,
             ),
         ) + $extra_brief_details,
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
         'next' => build_url(array('page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Installation'), '_SEARCH'),
     ),
 
@@ -1005,6 +1010,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'required' => true,
             ),
         ) + $extra_brief_details,
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
         'next' => build_url(array('page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Secondment'), '_SEARCH'),
     ),
 
@@ -1050,6 +1056,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'required' => false,
             ),
         ) + $extra_brief_details,
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
         'next' => build_url(array('page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Professional support'), '_SEARCH'),
     ),
 
@@ -1104,6 +1111,7 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'required' => false,
             ),
         ) + $extra_brief_details,
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
         'next' => build_url(array('page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Professional support'), '_SEARCH'),
     ),
 
@@ -1198,11 +1206,11 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'required' => false,
             ),
         ) + $extra_brief_details,
+        'needs_captcha' => ((addon_installed('captcha')) && (get_option('captcha_on_feedback') == '1') && (use_captcha())),
         'next' => build_url(array('page' => 'tickets', 'type' => 'post', 'ticket_type' => 'Upgrade'), '_SEARCH'),
     ),
 );
 
-require_code('decision_tree');
 $ob = new DecisionTree($decision_tree, 'start');
 $tpl = $ob->run();
 $tpl->evaluate_echo();
