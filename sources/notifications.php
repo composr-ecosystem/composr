@@ -515,7 +515,7 @@ class Notification_dispatcher
                             'as' => (($from_member_id < 0) ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : $from_member_id),
                             'as_admin' => ($from_member_id == A_FROM_SYSTEM_PRIVILEGED),
                             'require_recipient_valid_since' => $join_time,
-                            'bypass_queue' => (get_option('tasks_background') == '1'), // If this code is going to be running from a background task then it is okay to bypass the queue
+                            'bypass_queue' => running_script('tasks') || running_script('cron_bridge'),
                         ]
                     );
 
