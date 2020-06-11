@@ -77,7 +77,7 @@ class Module_users_online
 
         require_lang('cns');
 
-        $this->title = get_screen_title('USERS_ONLINE');
+        $this->title = get_screen_title('USERS_ONLINE', true, [], null, [], true, escape_html(get_timezoned_date_time(time(), false)));
 
         attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
