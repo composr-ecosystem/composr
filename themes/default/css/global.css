@@ -77,9 +77,6 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#feffcb,native_ui_active_background,100% FEFFCB}
 {$THEMEWIZARD_COLOR,#27539b,native_ui_selected_background,100% 27539B}
 {$THEMEWIZARD_COLOR,#ffffff,native_ui_selected_foreground,100% FFFFFF}
-{$THEMEWIZARD_COLOR,#ffffff,native_ui_button_foreground,100% FFFFFF}
-{$THEMEWIZARD_COLOR,#ff0000,native_ui_alertfield_background,100% FF0000}
-{$THEMEWIZARD_COLOR,#ffffff,native_ui_alertfield_foreground,100% FFFFFF}
 {$THEMEWIZARD_COLOR,#545454,unfilled_input_text,100% 545454}
 {$THEMEWIZARD_COLOR,#888888,locked_input_field,100% 888888}
 {$THEMEWIZARD_COLOR,#0a1019,comfortable_input_field_text,85% WB + 15% seed}
@@ -109,16 +106,12 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#1b67b6,heading_text,76% seed + 24% BW}
 {$THEMEWIZARD_COLOR,#2388ef,a.link,100% seed}
 {$THEMEWIZARD_COLOR,#1e74cb,a.hover,85% a.link + 15% BW}
-{$THEMEWIZARD_COLOR,#1a66b3,a.visited,75% a.link + 25% BW}
 {$THEMEWIZARD_COLOR,#b2d6fa,th_secondary_text,35% seed + 65% WB}
 {$THEMEWIZARD_COLOR,#99c7f8,hr,60% area_background + 40% seed}
 {$THEMEWIZARD_COLOR,#1b67b6,divider_line,76% seed + 24% BW}
 
 {$THEMEWIZARD_COLOR,#ffffff,text_light,100% ffffff}
 {$THEMEWIZARD_COLOR,#212529,text_dark,100% 212529}
-
-/* Logo text color */
-{$THEMEWIZARD_COLOR,#2388ef,site_name_text_color,100% seed}
 
 /* Borders */
 {$THEMEWIZARD_COLOR,#dddddd,standard_border,100% DDDDDD}
@@ -132,7 +125,6 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#ebf4fe,area_3_background,60% area_2_background + 40% WB}
 {$THEMEWIZARD_COLOR,#d3e7fc,area_4_background,20% seed + 80% WB}
 {$THEMEWIZARD_COLOR,#f8fbfe,area_5_background,3% seed + 97% WB}
-{$THEMEWIZARD_COLOR,#f2f2f2,area_6_background,100% main_2_background}
 {$THEMEWIZARD_COLOR,#6da4de,area_light_background,65% (seed val_to 80) + 35% WB}
 {$THEMEWIZARD_COLOR,#ecf5fd,area_faded_background,80% area_background + 20% WB}
 {$THEMEWIZARD_COLOR,#f2f2f2,area_zebra_background,100% area_6_background}
@@ -146,10 +138,8 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#e9ecef,input_disabled_background,100% E9ECEF}
 
 /* Backgrounds, employing color wheel theory */
-{$THEMEWIZARD_COLOR,#d3e7fc,area_highlight_background,20% seed + 80% WB}
 {$THEMEWIZARD_COLOR,#d3fbfc,area_highlight_left_complement_background,20% (seed hue_add -21) + 80% WB}
 {$THEMEWIZARD_COLOR,#d3d3fc,area_highlight_right_complement_background,20% (seed hue_add +21) + 80% WB}
-{$THEMEWIZARD_COLOR,#fce8d3,area_highlight_complement_background,20% (seed hue_add 128) + 80% WB}
 
 /* Text */
 {$THEMEWIZARD_COLOR,#071b30,slightly_seeded_text,20% seed + 80% BW}
@@ -158,12 +148,6 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#1b67b6,area_text,76% seed + 24% BW}
 {$THEMEWIZARD_COLOR,#3b5d7f,area_key_text,53% (seed sat_to 53) + 47% BW}
 {$THEMEWIZARD_COLOR,#134a83,area_link,55% (seed sat_to 86) + 45% BW}
-{$THEMEWIZARD_COLOR,#051424,area_2_link,15% seed + 85% BW}
-{$THEMEWIZARD_COLOR,#0e3660,area_2_link_hover,40% seed + 60% BW}
-/* Text, employing color wheel theory */
-{$THEMEWIZARD_COLOR,#127778,slightly_seeded_left_complement_text,50% (seed hue_add -21) + 50% BW}
-{$THEMEWIZARD_COLOR,#121278,slightly_seeded_right_complement_text,50% (seed hue_add +21) + 50% BW}
-{$THEMEWIZARD_COLOR,#784612,slightly_seeded_complement_text,50% (seed hue_add 128) + 50% BW}
 
 /* Special colour for box titles */
 {$THEMEWIZARD_COLOR,#212529,box_title_text,100% text_dark}
@@ -183,16 +167,16 @@ In mobile mode:
 {$THEMEWIZARD_COLOR,#ffffff,dropdown_menu_item_background_hover,100% WB}
 
 /* Global-level messages should stand out compared to other styling */
-{$THEMEWIZARD_COLOR,#ebe773,message_border,100% EBE773} /* Intentionally coloured on all themes */
 {$THEMEWIZARD_COLOR,#f1f1f1,message_highlighted_part,40% standard_border + 60% WB}
 
 /* Footer */
 {$THEMEWIZARD_COLOR,#ffffff,panel_bottom_text,100% WB}
-{$THEMEWIZARD_COLOR,#78b6f5,footer_tinting,61% seed + 39% WB}
 {$THEMEWIZARD_COLOR,#ffffff,footer_text,100% WB}
 
 /* Used for image generation */
 {$THEMEWIZARD_COLOR,#eaf4fe,washed_out,10% (seed sat_to 85) + 90% WB}
+{$THEMEWIZARD_COLOR,#5a85c5,lgrad,67% (seed sat_to 95) + 33% FFFFFF} /* We always want the light source coming from the top */
+{$THEMEWIZARD_COLOR,#345495,dgrad,95% (seed sat_to 65) + 5% 000000} /* We always want the light source coming from the top */
 {$THEMEWIZARD_COLOR,#c0ddfb,comcode_quote_left,48% comcode_quote_right + 52% WB}
 {$THEMEWIZARD_COLOR,#7bb8f5,comcode_quote_right,100% code_title_background}
 {$THEMEWIZARD_COLOR,#175697,a.link__dark,63% (seed sat_to 85) + 37% BW}
