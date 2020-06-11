@@ -28,12 +28,14 @@
 
         fetchAndSubmit: function (e, btn) {
             var params = this.params;
+            var places = ['panel_left', 'panel_right', 'panel_top', 'panel_bottom', '{$DEFAULT_ZONE_PAGE_NAME;}'];
 
-            setEditedPanel('panel_left');
-            setEditedPanel('panel_right');
-            setEditedPanel('panel_top');
-            setEditedPanel('panel_bottom');
-            setEditedPanel(params.defaultZonePageName);
+            for (var i = 0; i < places.length; i++) {
+                if (window.CKEDITOR && CKEDITOR.instances['edit_' + places[i] + '_textarea']) {
+                    CKEDITOR.instances['edit_' + places[i] + '_textarea'].updateElement();
+                }
+                setEditedPanel(places[i]);
+            }
 
             var form = $dom.$id('middle-fields');
             var editFieldStore = $dom.$id('edit-field-store');
@@ -241,7 +243,7 @@
             store = $dom.$('#store_' + id);
             if (!store) {
                 store = document.createElement('textarea');
-                store.name = el.name;
+                store.name = id;
                 store.id = 'store_' + id;
                 $dom.$('#edit-field-store').appendChild(store);
             }
@@ -256,7 +258,7 @@
             if (!store) {
                 store = document.createElement('textarea');
                 store.id = 'wysiwyg_store_' + id;
-                store.name = el.name;
+                store.name = id + '__is_wysiwyg';
                 $dom.$id('edit-field-store').appendChild(store);
             }
             store.value = el.value;
@@ -269,7 +271,7 @@
             store = $dom.$id('redirects_store_' + id);
             if (!store) {
                 store = document.createElement('textarea');
-                store.name = el.name;
+                store.name = 'redirect_' + id;
                 store.id = 'redirects_store_' + id;
                 $dom.$id('edit-field-store').appendChild(store);
             }

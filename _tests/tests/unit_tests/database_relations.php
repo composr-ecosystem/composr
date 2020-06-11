@@ -68,6 +68,7 @@ class database_relations_test_set extends cms_test_case
         foreach ($all_links as $l) {
             if (!table_has_purpose_flag($l['m_table'], TABLE_PURPOSE__NON_BUNDLED)) {
                 $_l = $l['m_table'] . '.' . $l['m_name'];
+
                 $this->assertTrue(array_key_exists($_l, $links), 'Link not described: ' . $_l);
             }
         }

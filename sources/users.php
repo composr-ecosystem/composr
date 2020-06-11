@@ -254,6 +254,7 @@ function get_member($quick_only = false)
     }
 
     // Try via additional login providers. They can choose whether to respect existing $member_id of get_session_id() settings. Some may do an account linkage, so we need to let them decide what to do.
+    require_code('zones');
     $hooks = find_all_hook_obs('systems', 'login_providers', 'Hook_login_provider_');
     foreach ($hooks as $ob) {
         $member_id = $ob->try_login($member_id, $quick_only);

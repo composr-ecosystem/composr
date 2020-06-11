@@ -47,7 +47,7 @@ class Hook_realtime_rain_calendar
                 $timestamp = $row[2];
                 $member_id = $row[1]['e_submitter'];
 
-                if ($timestamp[2] < $timestamp) {
+                if ($timestamp < $from) {
                     continue;
                 }
 

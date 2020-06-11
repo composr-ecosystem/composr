@@ -121,7 +121,7 @@ PHP;
             'PAGES' => $pages,
             'WIDTH' => $width,
             'HEIGHT' => $height,
-            'FLUID' => (substr($width, -1) == '%'),
+            'FLUID' => (substr($width, -1) == '%') || ($width == ''),
             'BUTTONS' => $buttons,
             'DELAY' => $delay,
             'SPEED' => $speed,

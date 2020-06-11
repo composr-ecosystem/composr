@@ -67,7 +67,7 @@
 					</div>
 				{+END}
 				<div>
-					<textarea rows="50" cols="20" class="form-control {$?,{IS_PANEL},ze-textarea,ze-textarea-middle} {CLASS*} js-ta-ze-comcode textarea-scroll" id="edit_{ID*}_textarea" name="{ID*}">{COMCODE*}</textarea>
+					<textarea rows="50" cols="20" class="form-control {$?,{IS_PANEL},ze-textarea,ze-textarea-middle} {CLASS*} js-ta-ze-comcode textarea-scroll" id="edit_{ID*}_textarea" name="edit_{ID*}_textarea">{COMCODE*}</textarea>
 
 					{+START,IF_PASSED,DEFAULT_PARSED}
 						<textarea cols="1" rows="1" style="display: none" readonly="readonly" disabled="disabled" name="edit_{ID*}_textarea_parsed">{DEFAULT_PARSED*}</textarea>

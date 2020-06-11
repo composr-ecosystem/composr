@@ -274,7 +274,11 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
             return false;
         }
 
-        return str_getcsv($line, $delimiter, '"', (version_compare(PHP_VERSION, '7.4.0') >= 0) ? '' : '\\'/*LEGACY*/);
+        $row = str_getcsv($line, $delimiter, '"', (version_compare(PHP_VERSION, '7.4.0') >= 0) ? '' : '\\'/*LEGACY*/);
+        if ($row === [null]) {
+            return false;
+        }
+        return $row;
     }
 
     /**

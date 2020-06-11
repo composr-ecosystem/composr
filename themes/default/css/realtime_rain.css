@@ -10,7 +10,7 @@
 {$THEMEWIZARD_COLOR,#ffffff,bubble_text,100% #FFFFFF}
 {$THEMEWIZARD_COLOR,#333333,bubblescape,100% #333333}
 {$THEMEWIZARD_COLOR,#444444,bubblescape_background,100% #444444}
-{$THEMEWIZARD_COLOR,#777777,bubblescape_island,100% #777777}
+{$THEMEWIZARD_COLOR,#757575,bubblescape_island,100% #757575}
 {$THEMEWIZARD_COLOR,#3a3a3a,bubblescape_outside,100% #3A3A3A}
 
 .page-running-admin-realtime-rain {
@@ -154,6 +154,7 @@
 	position: absolute;
 	bottom: 10px;
 	z-index: 100;
+	color: {$GET,slightly_seeded_pale_text};
 }
 /*{+START,CSS_MODE,desktop}*/
 	#timer-inner {
@@ -169,6 +170,7 @@
 	width: 80px;
 	height: 43px;
 	padding: 8px 5px 0 8px;
+	color: {$GET,slightly_seeded_pale_text};
 }
 #real-time-indicator span {
 	width: 90px;
@@ -328,105 +330,105 @@
 }
 
 .bubble-post {
-	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-post .avatar-icon {
 	background: url('{$IMG;,realtime_rain/post-avatar}') no-repeat;
 }
 
 .bubble-news {
-	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-news .avatar-icon {
 	background: url('{$IMG;,realtime_rain/post-avatar}') no-repeat;
 }
 
 .bubble-recommend {
-	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-recommend .avatar-icon {
 	background: url('{$IMG;,realtime_rain/post-avatar}') no-repeat;
 }
 
 .bubble-polls {
-	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/post-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-polls .avatar-icon {
 	background: url('{$IMG;,realtime_rain/post-avatar}') no-repeat;
 }
 
 .bubble-ecommerce {
-	background: url('{$IMG;,realtime_rain/ecommerce-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/ecommerce-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-ecommerce .avatar-icon {
 	background: url('{$IMG;,realtime_rain/ecommerce-avatar}') no-repeat;
 }
 
 .bubble-actionlog {
-	background: url('{$IMG;,realtime_rain/actionlog-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/actionlog-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-actionlog .avatar-icon {
 	background: url('{$IMG;,realtime_rain/actionlog-avatar}') no-repeat;
 }
 
 .bubble-security {
-	background: url('{$IMG;,realtime_rain/security-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/security-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-security .avatar-icon {
 	background: url('{$IMG;,realtime_rain/security-avatar}') no-repeat;
 }
 
 .bubble-chat {
-	background: url('{$IMG;,realtime_rain/chat-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/chat-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-chat .avatar-icon {
 	background: url('{$IMG;,realtime_rain/chat-avatar}') no-repeat;
 }
 
 .bubble-stats {
-	background: url('{$IMG;,realtime_rain/stats-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/stats-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-stats .avatar-icon {
 	background: url('{$IMG;,realtime_rain/stats-avatar}') no-repeat;
 }
 
 .bubble-join, .bubble-lorem {
-	background: url('{$IMG;,realtime_rain/join-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/join-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-join .avatar-icon, .bubble-lorem .avatar-icon {
 	background: url('{$IMG;,realtime_rain/join-avatar}') no-repeat;
 }
 
 .bubble-calendar {
-	background: url('{$IMG;,realtime_rain/calendar-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/calendar-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-calendar .avatar-icon {
 	background: url('{$IMG;,realtime_rain/calendar-avatar}') no-repeat;
 }
 
 .bubble-search {
-	background: url('{$IMG;,realtime_rain/search-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/search-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-search .avatar-icon {
 	background: url('{$IMG;,realtime_rain/search-avatar}') no-repeat;
 }
 
 .bubble-point-charges {
-	background: url('{$IMG;,realtime_rain/point_charges-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/point_charges-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-point-charges .avatar-icon {
 	background: url('{$IMG;,realtime_rain/point_charges-avatar}') no-repeat;
 }
 
 .bubble-banners {
-	background: url('{$IMG;,realtime_rain/banners-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/banners-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-banners .avatar-icon {
 	background: url('{$IMG;,realtime_rain/banners-avatar}') no-repeat;
 }
 
 .bubble-point-gifts {
-	background: url('{$IMG;,realtime_rain/point_gifts-bubble}') no-repeat;
+	background: url('{$IMG;,realtime_rain/point_gifts-bubble}') no-repeat {$GET,bubblescape_island};
 }
 .bubble-point-gifts .avatar-icon {
 	background: url('{$IMG;,realtime_rain/point_gifts-avatar}') no-repeat;

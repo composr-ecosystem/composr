@@ -751,6 +751,8 @@ function process_url_monikers($redirect_if_non_canonical = true, $env_change = t
             $page_place = _request_page($page_place[1]['r_to_page'], $page_place[1]['r_to_zone']);
         }
         if (($page_place === false) || ((substr($page_place[0], 0, 7) == 'COMCODE') && ($type !== null/*looking deeper than a normal Comcode page*/))) {
+            // This code branch is finding absolute monikers (easy case), or monikers pointing to a Comcode page (special case)...
+
             // Reassemble source URL moniker from incorrectly-derived URL components
             $url_moniker = '';
             $url_moniker .= ($_page === null) ? get_param_string('page', '', INPUT_FILTER_GET_COMPLEX) : $_page; /* Has to be unadulterated, $page has /s/-/_ */
@@ -762,48 +764,52 @@ function process_url_monikers($redirect_if_non_canonical = true, $env_change = t
             }
 
             // ... and query it
-            $sql = 'SELECT m_resource_page,m_resource_type,m_resource_id FROM ' . get_table_prefix() . 'url_id_monikers WHERE ';
-            $sql .= db_string_equal_to('m_moniker', '/' . $url_moniker) . ' OR ';
-            $sql .= db_string_equal_to('m_moniker', $url_moniker) . ' AND ' . db_string_equal_to('m_resource_type', '') . ' AND ' . db_string_equal_to('m_resource_id', $zone) . ' OR ';
-            $sql .= db_string_equal_to('m_moniker', '/' . str_replace('-', '_', $url_moniker)) . ' OR ';
-            $sql .= db_string_equal_to('m_moniker', str_replace('-', '_', $url_moniker)) . ' AND ' . db_string_equal_to('m_resource_type', '') . ' AND ' . db_string_equal_to('m_resource_id', $zone);
-            $test = $GLOBALS['SITE_DB']->query($sql, 1);
-            if (array_key_exists(0, $test)) {
-                if (_request_page($test[0]['m_resource_page'], $zone) !== false) { // ... if operable within the zone we're in
+            $sql = 'SELECT * FROM ' . get_table_prefix() . 'url_id_monikers WHERE ';
+            $sql .= db_string_equal_to('m_moniker', '/' . $url_moniker) . ' OR '; // Absolute
+            $sql .= db_string_equal_to('m_moniker', $url_moniker) . ' AND ' . db_string_equal_to('m_resource_type', '') . ' AND ' . db_string_equal_to('m_resource_id', $zone) . ' OR '; // Comcode page
+            // (dash replacement...)
+            $sql .= db_string_equal_to('m_moniker', '/' . str_replace('-', '_', $url_moniker)) . ' OR '; // Absolute
+            $sql .= db_string_equal_to('m_moniker', str_replace('-', '_', $url_moniker)) . ' AND ' . db_string_equal_to('m_resource_type', '') . ' AND ' . db_string_equal_to('m_resource_id', $zone); // Comcode page
+            $monikers = $GLOBALS['SITE_DB']->query($sql, 1);
+            if (array_key_exists(0, $monikers)) {
+                if (_request_page($monikers[0]['m_resource_page'], $zone) !== false) { // ... if operable within the zone we're in
                     // Bind to correct new values
                     if ($env_change) {
                         global $PAGE_NAME_CACHE, $GETTING_PAGE_NAME;
-                        $PAGE_NAME_CACHE = $test[0]['m_resource_page'];
+                        $PAGE_NAME_CACHE = $monikers[0]['m_resource_page'];
                         $GETTING_PAGE_NAME = false;
                     }
-                    if ($test[0]['m_resource_type'] == '') {
+                    if ($monikers[0]['m_resource_type'] == '') {
                         if ($env_change) {
-                            $_GET['page'] = $test[0]['m_resource_page'];
+                            $_GET['page'] = $monikers[0]['m_resource_page'];
                             unset($_GET['type']);
                             unset($_GET['id']);
                         } else {
-                            $page = $test[0]['m_resource_page'];
+                            $page = $monikers[0]['m_resource_page'];
                             $type = null;
                             $url_id = null;
                         }
                     } else {
                         if ($env_change) {
-                            $_GET['page'] = $test[0]['m_resource_page'];
-                            $_GET['type'] = $test[0]['m_resource_type'];
-                            $_GET['id'] = $test[0]['m_resource_id'];
+                            $_GET['page'] = $monikers[0]['m_resource_page'];
+                            $_GET['type'] = $monikers[0]['m_resource_type'];
+                            $_GET['id'] = $monikers[0]['m_resource_id'];
                         } else {
-                            $page = $test[0]['m_resource_page'];
-                            $type = $test[0]['m_resource_type'];
-                            $url_id = $test[0]['m_resource_id'];
+                            $page = $monikers[0]['m_resource_page'];
+                            $type = $monikers[0]['m_resource_type'];
+                            $url_id = $monikers[0]['m_resource_id'];
                         }
                     }
+
+                    // Check for (and handle) deprecation
+                    handle_moniker_deprecation_redirect($zone, $monikers[0], $redirect_if_non_canonical, true);
+
                     return true;
                 }
             }
         }
 
-        // Yet more SEO redirection (monikers)
-        // Does this URL arrangement support monikers?
+        // Does this URL arrangement support monikers? We find out by interrogating hooks to see if the moniker can sit under the module's zone+page+type stub.
         if (($url_id !== null) && ($redirect_if_non_canonical)) { // NB: Comcode page monikers would have been handled in the code above
             $type = get_param_string('type', 'browse');
             $looking_for = '_SEARCH:' . $page . ':' . $type . ':_WILD';
@@ -835,14 +841,17 @@ function process_url_monikers($redirect_if_non_canonical = true, $env_change = t
                             exit();
                         }
                     } else {
-                        // See if it is deprecated
+                        // Look up the moniker row
                         $table = 'url_id_monikers' . $GLOBALS['SITE_DB']->prefer_index('url_id_monikers', 'uim_moniker');
-                        $monikers = $GLOBALS['SITE_DB']->query_select($table, ['m_resource_id', 'm_deprecated'], ['m_resource_page' => $page, 'm_resource_type' => get_param_string('type', 'browse'), 'm_moniker' => $url_id]);
-                        if (!array_key_exists(0, $monikers)) { // hmm, deleted?
+                        $monikers = $GLOBALS['SITE_DB']->query_select($table, ['*'], ['m_resource_page' => $page, 'm_resource_type' => get_param_string('type', 'browse'), 'm_moniker' => $url_id]);
+                        if (!array_key_exists(0, $monikers)) { // Uh oh
+                            // Assume that it wasn't a moniker after all
                             if (!$ob_info['id_field_numeric']) {
                                 return false;
                             }
 
+                            // Okay it was deleted or never existed then?! Just set to -1 as nothing will have that ID, and we'll get an error from the module when bootstrapping is fully finished
+                            $_GET['id'] = '-1';
                             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
                         }
 
@@ -853,18 +862,12 @@ function process_url_monikers($redirect_if_non_canonical = true, $env_change = t
                             $url_id = $monikers[0]['m_resource_id'];
                         }
 
-                        $deprecated = $monikers[0]['m_deprecated'] == 1;
-                        if (($deprecated) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (get_param_integer('keep_failover', null) !== 0)) {
-                            $correct_moniker = find_id_moniker(['page' => $page, 'type' => get_param_string('type', 'browse'), 'id' => $monikers[0]['m_resource_id']], $zone);
-                            if (($correct_moniker !== null) && ($correct_moniker != $url_id)) { // Just in case database corruption means ALL are deprecated
-                                set_http_status_code(301);
-                                $_new_url = build_url(['page' => '_SELF', 'id' => $correct_moniker], '_SELF', [], true);
-                                $new_url = $_new_url->evaluate();
-                                header('Location: ' . escape_header($new_url)); // assign_refresh not used, as it is a pre-page situation
-                                exit();
-                            }
-                        }
+                        // Check for (and handle) deprecation
+                        handle_moniker_deprecation_redirect($zone, $monikers[0], $redirect_if_non_canonical);
+
+                        return true;
                     }
+
                     return false;
                 }
             }
@@ -872,6 +875,40 @@ function process_url_monikers($redirect_if_non_canonical = true, $env_change = t
     }
 
     return false;
+}
+
+/**
+ * Redirect to the latest moniker, if appropriate.
+ *
+ * @param  ID_TEXT $zone The zone
+ * @param  array $moniker_row The current moniker row
+ * @param  boolean $redirect_if_non_canonical Do a redirect if we're not on the canonical URL
+ * @param  boolean $is_complete_url_under_zone Is the moniker representing the full URL (as opposed to being underneath a module)?
+ */
+function handle_moniker_deprecation_redirect($zone, $moniker_row, $redirect_if_non_canonical, $is_complete_url_under_zone = false)
+{
+    $deprecated = $moniker_row['m_deprecated'] == 1;
+    if (($redirect_if_non_canonical) && ($deprecated) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (get_param_integer('keep_failover', null) !== 0)) {
+        $_moniker_row = $moniker_row;
+        unset($_moniker_row['id']);
+        unset($_moniker_row['m_moniker']);
+        unset($_moniker_row['m_moniker_reversed']);
+        unset($_moniker_row['m_manually_chosen']);
+        $_moniker_row['m_deprecated'] = 0;
+        $correct_moniker_rows = $GLOBALS['SITE_DB']->query_select('url_id_monikers', ['m_moniker'], $_moniker_row, '', 1);
+        $correct_moniker = array_key_exists(0, $correct_moniker_rows) ? $correct_moniker_rows[0]['m_moniker'] : null;
+        if (($correct_moniker !== null) && ($correct_moniker != $moniker_row['m_moniker'])) { // Just in case database corruption means ALL are deprecated
+            set_http_status_code(301);
+            if ($is_complete_url_under_zone) {
+                $_new_url = build_url(['page' => $correct_moniker], '_SELF', [], true);
+            } else {
+                $_new_url = build_url(['page' => '_SELF', 'id' => $correct_moniker], '_SELF', [], true);
+            }
+            $new_url = $_new_url->evaluate();
+            header('Location: ' . escape_header($new_url)); // assign_refresh not used, as it is a pre-page situation
+            exit();
+        }
+    }
 }
 
 /**

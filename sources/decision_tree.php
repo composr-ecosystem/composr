@@ -60,6 +60,18 @@ Other features
 */
 
 /**
+ * Standard code module initialisation function.
+ *
+ * @ignore
+ */
+function init__decision_tree()
+{
+    if (addon_installed('captcha')) {
+        require_code('captcha');
+    }
+}
+
+/**
  * Provide multi-screen (multi-form) decision trees.
  *
  * @package core
@@ -312,6 +324,10 @@ class DecisionTree
             foreach ($details['hidden'] as $key => $val) {
                 $hidden->attach(form_input_hidden($key, $val));
             }
+        }
+
+        if (!empty($details['needs_captcha'])) {
+            $fields->attach(form_input_captcha($hidden));
         }
 
         $form_method = empty($details['form_method']) ? 'POST' : $details['form_method'];
