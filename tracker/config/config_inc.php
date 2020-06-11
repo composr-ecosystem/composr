@@ -110,7 +110,7 @@ $cms_developer_groups = array(22);
 $cms_manager_groups = array();
 $cms_admin_groups = array(2, 3);
 $cms_guest_id = 1;
-$cms_extra_signin_sql = ' AND field_36=\'Content Management System\'';
+$cms_extra_signin_sql = ' AND field_46 IN(\'\',\'Content Management System\')';
 
 // Branding
 $g_window_title = 'Composr CMS feature tracker'; // TODO: Customise
