@@ -74,7 +74,6 @@
 			<td class="blk2">
 				<strong>Name :</strong> Chris Graham<br />
 				CEO, ocProducts<br /><br />
-				<a class="link_exempt" target="_blank" title="Chris Graham's Facebook profile {!LINK_NEW_WINDOW}" href="http://www.facebook.com/ocpchris"><img src="{$IMG*,icons/24x24/links/facebook}" srcset="{$IMG*,icons/48x48/links/facebook} 2x" alt="" /></a>
 				<a class="link_exempt" target="_blank" title="Chris Graham's Twitter profile {!LINK_NEW_WINDOW}" href="http://twitter.com/occhris"><img src="{$IMG*,icons/24x24/links/twitter}" srcset="{$IMG*,icons/48x48/links/twitter} 2x" alt="" /></a>
 			</td>
 
