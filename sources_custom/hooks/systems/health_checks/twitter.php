@@ -83,10 +83,10 @@ class Hook_health_check_twitter extends Hook_Health_Check
         $twitter->setOAuthTokenSecret($token_secret);
 
         $twitter_statuses = $twitter->statusesUserTimeline(null, 'ubuntu');
-        $this->assertTrue(is_string($twitter_statuses[0]['text']), 'Could not find any tweet text from an account');
+        $this->assertTrue(is_array($twitter_statuses) && array_key_exists(0, $twitter_statuses) && is_string($twitter_statuses[0]['text']), 'Could not find any tweet text from an account');
 
         $twitter_result = $twitter->searchTweets('testing');
-        $this->assertTrue(is_string($twitter_result['statuses'][0]['text']), 'Could not find any tweet text from a search');
+        $this->assertTrue(is_array($twitter_result) && array_key_exists(0, $twitter_result['statuses']) && is_string($twitter_result['statuses'][0]['text']), 'Could not find any tweet text from a search');
 
         cms_ini_set('ocproducts.type_strictness', $before);
     }
