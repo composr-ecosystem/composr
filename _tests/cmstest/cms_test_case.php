@@ -159,7 +159,7 @@ class cms_test_case extends WebTestCase
         return create_session(get_first_admin_user(), 1, false, false, $ip_address);
     }
 
-    protected function load_key_options($substring)
+    protected function load_key_options($substring, $prefix = '', $substring_is_at_start = true)
     {
         $ret = [];
 
@@ -176,30 +176,49 @@ class cms_test_case extends WebTestCase
             if (!isset($row['Option'])) {
                 exit('Option column missing');
             }
+            $option_name = $row['Option'];
+
             if (!isset($row['Value'])) {
                 exit('Value column missing');
             }
+
             if (!isset($row['Type'])) {
                 exit('Type column missing');
             }
 
-            if (strpos($row['Option'], $substring) !== false) {
+            if ($substring_is_at_start) {
+                if ($prefix == '') {
+                    $does_match = (substr($option_name, 0, strlen($substring)) == $substring);
+                } else {
+                    $does_match = (substr($option_name, 0, strlen($prefix . $substring)) == $prefix . $substring);
+                }
+            } else {
+                if ($prefix == '') {
+                    $does_match = (strpos($option_name, $substring) !== false);
+                } else {
+                    $does_match = (substr($option_name, 0, strlen($prefix)) == $prefix) && (strpos(substr($option_name, strlen($prefix)), $substring) !== false);
+                }
+            }
+
+            if ($does_match) {
+@               $option_name = substr($option_name, strlen($prefix));
+
                 switch ($row['Type']) {
                     case 'option':
                         require_code('config2');
-                        set_option($row['Option'], $row['Value']);
+                        set_option($option_name, $row['Value']);
                         break;
 
                     case 'hidden':
-                        set_value($row['Option'], $row['Value']);
+                        set_value($option_name, $row['Value']);
                         break;
 
                     case 'hidden_elective':
-                        set_value($row['Option'], $row['Value'], true);
+                        set_value($option_name, $row['Value'], true);
                         break;
 
                     case 'return':
-                        $ret[$row['Option']] = $row['Value'];
+                        $ret[$option_name] = $row['Value'];
                         break;
                 }
             }

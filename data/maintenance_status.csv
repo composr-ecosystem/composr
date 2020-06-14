@@ -70,7 +70,7 @@ install_aps,APS installer,ocProducts,,We maintain builds via an automated proces
 transifex,Transifex integration,ocProducts,ocProducts,Could potentially break due to third-party changes.,Yes,_api_transifex automated test. Part of release process.
 caches_filesystem,Persistent cache via filesystem,ocProducts,,Not regularly tested. Liable to break due to cross-cutting complexity.,No,
 rootkit_detector,Rootkit detector,ocProducts,,Not compatible with all systems. Intended for developers.,No,Partly tested by rootkit_detection automated test.
-youtube,YouTube media,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
+youtube,YouTube media,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,_api_youtube automated test.
 vimeo,Vimeo media,ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,
 sitemap_submit,XML Sitemap auto-submit,ocProducts,,Could potentially break due to third-party changes.,No,sitemap_submit automated test.
 external_urls,"Recommended links on staff dashboard, and accuracy of external URLs in general",ocProducts,,Not regularly tested. Could potentially break due to third-party changes.,No,_broken_links automated test.
