@@ -130,7 +130,7 @@ facebook,Facebook login integration and syndication,ocProducts,ocProducts,Could 
 facebook_media,Facebook media (video embed),ocProducts,,Could potentially break due to third-party changes.,Yes,
 tapatalk,Tapatalk,ocProducts,,Could potentially break due to third-party changes.,Yes,
 google_maps,"Google maps (DataMappr, UserMappr)",ocProducts,,Could potentially break due to third-party changes.,Yes,
-twitter,Twitter syndication,ocProducts,,Could potentially break due to third-party changes.,Yes,
+twitter,Twitter syndication,ocProducts,,Could potentially break due to third-party changes.,Yes,_api_twitter automated test.
 webdav,WebDav access for The Repository,ocProducts,,Could potentially break due to third-party changes.,Yes,
 os_windows,Windows servers,ocProducts,ocProducts,,No,
 os_linux,Linux servers,ocProducts,ocProducts,,No,
