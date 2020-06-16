@@ -156,6 +156,7 @@ For YouTube syndication you must first:
             'sources_custom/hooks/systems/config/gallery_sync_selectcode.php',
             'sources_custom/hooks/systems/config/gallery_sync_orphaned_handling.php',
             'sources_custom/hooks/systems/config/video_sync_transcoding.php',
+            'sources_custom/hooks/systems/health_checks/youtube.php',
         ];
     }
 }

@@ -66,6 +66,9 @@ function sync_video_syndication($local_id = null, $new_upload = false, $reupload
         if ($ob->is_active()) {
             // What is already on remote server
             $remote_videos = $new_upload ? /*no remote search needed*/[] : $ob->get_remote_videos($local_id);
+            if ($remote_videos === null) {
+                continue; // An error
+            }
 
             foreach ($remote_videos as $video) {
                 if (!$GLOBALS['DEV_MODE']) {
@@ -185,8 +188,6 @@ function _get_local_video($row)
         'url' => $url,
         '_raw_url' => $row['url'],
         'thumb_url' => $row['thumb_url'],
-        'allow_rating' => ($row['allow_rating'] == 1),
-        'allow_comments' => ($row['allow_comments'] >= 1),
         'validated' => ($row['validated'] == 1),
     ];
 }
@@ -198,7 +199,7 @@ function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reu
 
         // Handle changes
         $changes = [];
-        foreach (['title', 'description', 'tags', 'allow_rating', 'allow_comments', 'validated'] as $property) {
+        foreach (['title', 'description', 'tags', 'validated'] as $property) {
             if (($video[$property] !== null) && ($video[$property] != $local_video[$property])) {
                 $changes[$property] = $local_video[$property];
             }
@@ -220,12 +221,11 @@ function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reu
         // Orphaned remotes
         switch ($orphaned_handling) {
             case SYNDICATION_ORPHANS__LEAVE:
-                $ob->unbind_remote_video($video);
+                $ob->change_remote_video($video, [], true);
                 break;
 
             case SYNDICATION_ORPHANS__UNVALIDATE:
-                $ob->unbind_remote_video($video);
-                $ob->change_remote_video($video, ['validated' => false]);
+                $ob->change_remote_video($video, ['validated' => false], true);
                 break;
 
             case SYNDICATION_ORPHANS__DELETE:

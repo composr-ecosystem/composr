@@ -44,7 +44,13 @@ function cache_and_carry($func, $args, $timeout = null, $cache_errors = false)
 {
     $ret = mixed();
 
-    $path = get_custom_file_base() . '/caches/http/' . md5(serialize($func)) . '__' . md5(serialize($args)) . '.bin';
+    $args_cache_signature = $args;
+    if (!$cache_errors) {
+        // Things likely to change that would break our cache signature
+        unset($args_cache_signature[1]['extra_headers']['Authorization']);
+    }
+
+    $path = get_custom_file_base() . '/caches/http/' . md5(serialize($func)) . '__' . md5(serialize($args_cache_signature)) . '.bin';
     if (is_file($path) && ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || (get_param_integer('keep_cache_and_carry', 1) == 1)) && (($timeout === null) || (filemtime($path) > time() - $timeout * 60))) {
         $_ret = cms_file_get_contents_safe($path, FILE_READ_LOCK);
         if ($func === 'cms_http_request') {

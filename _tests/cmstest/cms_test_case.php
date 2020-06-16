@@ -201,7 +201,7 @@ class cms_test_case extends WebTestCase
             }
 
             if ($does_match) {
-@               $option_name = substr($option_name, strlen($prefix));
+                $option_name = substr($option_name, strlen($prefix));
 
                 switch ($row['Type']) {
                     case 'option':

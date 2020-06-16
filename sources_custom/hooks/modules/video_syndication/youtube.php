@@ -13,6 +13,10 @@
  * @package    gallery_syndication
  */
 
+// IDEA: #4276 Also sync Composr categories to YouTube playlists
+
+// Note we unfortunately cannot sync allow_rating and allow_comments. This is because Google did not include this in the v3 API (https://issuetracker.google.com/issues/35174729).
+
 /**
  * Hook class.
  */
@@ -22,11 +26,6 @@ class Hook_video_syndication_youtube
 
     public function uninstall()
     {
-    }
-
-    public function __construct()
-    {
-        require_code('xml');
     }
 
     public function get_service_title()
@@ -68,156 +67,156 @@ class Hook_video_syndication_youtube
         return ($youtube_client_id != '');
     }
 
-    public function get_remote_videos($local_id)
+    public function get_remote_videos($local_id = null, $standard_format = true, $max_rows = null)
     {
         $videos = [];
 
-        // This code is a bit annoying. Ideally we'd do a remote tag search, but YouTube's API is lagged here, and only works for listed videos. We'll therefore look at our local mappings.
-        $transcoding_id = $GLOBALS['SITE_DB']->query_value_if_there('SELECT t_id FROM ' . get_table_prefix() . 'video_transcoding WHERE t_local_id=' . strval($local_id) . ' AND t_id LIKE \'' . db_encode_like('youtube\_%') . '\'');
-        if ($transcoding_id === null) {
-            return []; // Not uploaded yet
+        if (($max_rows !== null) && ($max_rows < 1)) {
+            return [];
         }
 
-        $transcoding_id = preg_replace('#^youtube_#', '', $transcoding_id);
+        if ($local_id === null) {
+            $remote_id = null;
+        } else {
+            // This code is a bit annoying. Ideally we'd do a remote tag search, but YouTube's API is lagged here, and only works for listed videos. We'll therefore look at our local mappings.
+            $transcoding_id = $GLOBALS['SITE_DB']->query_value_if_there('SELECT t_id FROM ' . get_table_prefix() . 'video_transcoding WHERE t_local_id=' . strval($local_id) . ' AND t_id LIKE \'' . db_encode_like('youtube\_%') . '\'');
+            if ($transcoding_id === null) {
+                return []; // Not uploaded yet
+            }
 
-        $start = 1;
-        do {
-            if ($transcoding_id !== null) {
-                /* EDIT: Actually we looked at transcoding table instead and lookup individual video and process as such
-                $query_params['category'] = 'sync' . strval($local_id); // Covers {http://gdata.youtube.com/schemas/2007/developertags.cat} and {http://gdata.youtube.com/schemas/2007/keywords.cat}
-                $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads', $query_params);
-                $xml = $http_result->data;
+            $remote_id = preg_replace('#^youtube_#', '', $transcoding_id);
+        }
 
-                if (!isset($parsed->entry)) { // Annoying! YouTube search index takes time and doesn't consider unlisted. We therefore need to search much harder.
-                    unset($query_params['category']);
-                    $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads', $query_params);
-                    $xml = $http_result->data;
-                }
-                */
+        if ($remote_id !== null) { // Searching for a specific linked video
+            try {
+                $url = 'https://www.googleapis.com/youtube/v3/videos';
+                $params = [
+                    'part' => 'snippet,status',
+                    'id' => $remote_id,
+                ];
+                $result = $this->_http($url, $params);
 
-                $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads/' . $transcoding_id, []);
-                $xml = $http_result->data;
-
-                if ($xml === null) {
-                    break;
-                }
-
-                $p = simplexml_load_string($xml);
-
-                $detected_video = $this->_process_remote_video($p);
-
-                if ($detected_video !== null) {
-                    $remote_id = $detected_video['remote_id'];
-                    if ((!array_key_exists($remote_id, $videos)) || (!$videos[$remote_id]['validated'])) { // If new match, or last match was non-validated (i.e. old version)
-                        $videos[$remote_id] = $detected_video;
+                if (!empty($result['items'])) {
+                    if ($standard_format) {
+                        $detected_video = $this->process_remote_video($result['items'][0]);
+                        if ($detected_video !== null) {
+                            $remote_id = $detected_video['remote_id'];
+                            $videos[$remote_id] = $detected_video;
+                        }
+                    } else {
+                        $videos[] = $result['items'][0];
                     }
                 }
-
-                break; // Done
+            } catch (Exception $e) {
+                $this->convert_exception_to_attached_message($url, $e);
+                return null;
             }
+        } else { // Listing all linked videos
+            try {
+                // First we need to find the 'videos' playlist
+                $url = 'https://www.googleapis.com/youtube/v3/channels';
+                $params = [
+                    'part' => 'contentDetails',
+                    'mine' => true,
+                ];
+                $result = $this->_http($url, $params);
+                $playlist_id = $result['items'][0]['contentDetails']['relatedPlaylists']['uploads'];
 
-            $query_params = ['max-results' => strval(50), 'start-index' => strval($start)];
-            $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads', $query_params);
-            $xml = $http_result->data;
-
-            if ($xml === null) {
-                break;
-            }
-            $parsed = simplexml_load_string($xml);
-
-            if (!isset($parsed->entry)) {
-                break;
-            }
-
-            foreach ($parsed->entry as $p) {
-                $detected_video = $this->_process_remote_video($p);
-
-                if ($detected_video !== null) {
-                    $remote_id = $detected_video['remote_id'];
-                    if ((!array_key_exists($remote_id, $videos)) || (!$videos[$remote_id]['validated'])) { // If new match, or last match was non-validated (i.e. old version)
-                        $videos[$remote_id] = $detected_video;
+                $next_page_token = null;
+                do {
+                    $url = 'https://www.googleapis.com/youtube/v3/playlistItems';
+                    $params = [
+                        'part' => 'snippet,status',
+                        'maxResults' => ($max_rows === null) ? 50 : min(50, $max_rows - count($videos)),
+                        'playlistId' => $playlist_id,
+                    ];
+                    if ($next_page_token !== null) {
+                        $params['pageToken'] = $next_page_token;
                     }
-                }
-            }
+                    $result = $this->_http($url, $params);
 
-            $start += 50;
-        } while (!empty($parsed['entry']));
+                    foreach ($result['items'] as $remote_video) {
+                        if ($standard_format) {
+                            $detected_video = $this->process_remote_video($remote_video);
+                            if ($detected_video !== null) {
+                                $remote_id = $detected_video['remote_id'];
+                                if (!array_key_exists($remote_id, $videos)) { // If new match
+                                    $videos[$remote_id] = $detected_video;
+
+                                    if (count($videos) >= $max_rows) {
+                                        break 2;
+                                    }
+                                }
+                            }
+                        } else {
+                            $videos[] = $remote_video;
+
+                            if (count($videos) >= $max_rows) {
+                                break 2;
+                            }
+                        }
+                    }
+
+                    if (empty($result['nextPageToken'])) {
+                        $next_page_token = null;
+                    } else {
+                        $next_page_token = $result['nextPageToken'];
+                    }
+                } while ($next_page_token !== null);
+            } catch (Exception $e) {
+                $this->convert_exception_to_attached_message($url, $e);
+                return null;
+            }
+        }
 
         return $videos;
     }
 
-    protected function _process_remote_video($p)
+    protected function process_remote_video($remote_video)
     {
-        $_remote_id = $p->xpath('//media:group/yt:videoid');
-        $remote_id = @strval($_remote_id[0]);
+        $snippet = $remote_video['snippet'];
 
-        $add_date = strtotime(@strval($p->published[0]));
-        $edit_date = isset($p->updated[0]) ? strtotime(@strval($p->updated[0])) : $add_date;
+        $categories = $this->get_remote_categories();
 
-        $allow_rating = null;
-        $allow_comments = null;
-        $validated = true;
-        foreach ($p->xpath('//yt:accessControl') as $a) {
-            if (@strval($a['action']) == 'rate') {
-                $allow_rating = (@strval($a['permission']) == 'allowed');
-            }
-            if (@strval($a['action']) == 'comment') {
-                $allow_comments = (@strval($a['permission']) == 'allowed');
-            }
-            if (@strval($a['action']) == 'list') {
-                $validated = (@strval($a['permission']) == 'allowed');
-            }
+        // Find bound ID, and real tags, from remote tags and remote category
+        $local_id = null;
+        $tags = [];
+        $category_id = $snippet['categoryId'];
+        if (array_key_exists($category_id, $categories)) {
+            $tags[] = $categories[$category_id];
         }
-        $bound_to_local_id = null;
-        $category = null;
-
-        $_keywords = $p->xpath('//media:group/media:keywords');
-        $keywords = explode(', ', @strval($_keywords[0]));
-
-        // Find category and bound ID
-        foreach ($p->xpath('//media:group/media:category') as $k) {
-            if (@strval($k['scheme']) == 'http://gdata.youtube.com/schemas/2007/developertags.cat') {
-                $matches = [];
-                if (preg_match('#^sync(\d+)$#', @strval($k), $matches) != 0) {
-                    $bound_to_local_id = intval($matches[1]);
-                }
-            } elseif (@strval($k['scheme']) == 'http://gdata.youtube.com/schemas/2007/categories.cat') {
-                $category = @strval($k);
-                array_unshift($keywords, $category);
-            }
-        }
-
-        // Maybe bound ID was explicitly put in via keywords (takes precedence, as this is the one thing that can be re-edited [dev ID is locked at initial upload])
-        foreach ($keywords as $i => $k) {
+        $tags = array_merge($tags, $snippet['tags']);
+        foreach ($tags as $k) {
             $matches = [];
             if (preg_match('#^sync(\d+)$#', $k, $matches) != 0) {
-                $bound_to_local_id = intval($matches[1]);
-                unset($keywords[$i]);
+                $local_id = intval($matches[1]);
+                array_unshift($tags, $k);
             }
         }
 
-        $_description = $p->xpath('//media:group/media:description');
-
-        $_thumbnail = $p->xpath('//media:group/media:thumbnail');
-
-        $_player = $p->xpath('//media:group/media:player');
+        // Find highest resolution thumbnail
+        $best_width = null;
+        foreach ($snippet['thumbnails'] as $thumbnail) {
+            if (($best_width === null) || ($thumbnail['width'] > $best_width)) {
+                $thumb_url = $thumbnail['url'];
+                $best_width = $thumbnail['width'];
+            }
+        }
 
         $detected_video = [
-            'bound_to_local_id' => $bound_to_local_id,
-            'remote_id' => $remote_id,
+            'local_id' => $local_id,
+            'remote_id' => $remote_video['id'],
 
-            'title' => @strval($p->title),
-            'description' => isset($_description[0]) ? @strval($_description[0]) : '',
-            'mtime' => $edit_date,
-            'tags' => $keywords,
-            'url' => @strval($_thumbnail[0]['url']),
-            'thumb_url' => @strval($p->thumbnails->thumbnail[1]->_content),
-            'allow_rating' => $allow_rating,
-            'allow_comments' => $allow_comments,
-            'validated' => $validated,
+            'title' => $snippet['title'],
+            'description' => $snippet['description'],
+            'mtime' => strtotime($snippet['publishedAt']),
+            'tags' => $tags,
+            'url' => null,
+            'thumb_url' => $thumb_url,
+            'validated' => ($remote_video['status']['privacyStatus'] == 'public'),
         ];
 
-        if ($bound_to_local_id !== null) {
+        if ($local_id !== null) {
             return $detected_video; // else we ignore remote videos that aren't bound to local ones
         }
 
@@ -226,48 +225,97 @@ class Hook_video_syndication_youtube
 
     public function upload_video($video)
     {
-        $extra_headers = ['Slug' => basename($video['url'])];
+        cms_disable_time_limit();
 
-        $xml = $this->_generate_video_xml($video/*PHP has weird overwrite precedence with + operator, opposite to the intuitive ordering*/, true);
-
-        list($file_path, $is_temp_file, $mime_type) = $this->_url_to_file_path($video['url']);
+        // Tests before we do anything
+        list($file_path, $is_temp_file, $mime_type) = $this->url_to_file_path($video['url']);
         if (!is_file($file_path)) {
             return null;
         }
 
-        $api_url = 'https://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads';
-
-        cms_disable_time_limit();
+        // Upload metadata
         try {
-            $test_http_response = $this->_http($api_url, [], 'POST', $xml, 1000.0, $extra_headers/*, $file_path*/);
-            $http_result = $this->_http($test_http_response->download_url, null, 'PUT', null, 10000.0, $extra_headers, $file_path, $mime_type);
+            $url = 'https://www.googleapis.com/upload/youtube/v3/videos';
+            $params = [
+                'part' => 'snippet,status',
+            ];
+            $json = $this->generate_video_json($video, true);
+            $metadata_http_result = $this->_http_lowlevel($url, $params, 'POST', $json, 1000.0, [], null, 'video/*');
 
-            if ($is_temp_file) {
-                @unlink($file_path);
-            }
+            // Error?
+            if ($metadata_http_result->message != '200') {
+                if (empty($metadata_http_result->data)) {
+                    throw new Exception(($metadata_http_result->message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($metadata_http_result->message_b));
+                }
 
-            $parsed = simplexml_load_string($http_result->data);
+                $metadata_result = @json_decode($metadata_http_result->data, true);
 
-            if (isset($parsed->error)) {
-                throw new Exception(@strval($parsed->error->internalReason), @strval($parsed->error->code));
+                if (is_array($metadata_result)) {
+                    throw new Exception(@strval($metadata_result['error']['message']), @strval($metadata_result['error']['code']));
+                } else {
+                    throw new Exception($metadata_http_result->data);
+                }
             }
         } catch (Exception $e) {
+            // Cleanup
             if ($is_temp_file) {
                 @unlink($file_path);
             }
 
-            require_lang('gallery_syndication_youtube');
-            $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage());
-            require_code('failure');
-            relay_error_notification($error_msg->evaluate());
-            attach_message($error_msg, 'warn', false, true);
+            $this->convert_exception_to_attached_message($url, $e);
             return null;
         }
 
-        return $this->_process_remote_video($parsed);
+        // Upload actual video file
+        try {
+            $url = $metadata_http_result->download_url;
+            $params = [];
+            $result = $this->_http($url, $params, 'PUT', null, 10000.0, [], $file_path, $mime_type, false);
+        } catch (Exception $e) {
+            $this->convert_exception_to_attached_message($url, $e);
+            return null;
+        } finally {
+            // Cleanup
+            if ($is_temp_file) {
+                @unlink($file_path);
+            }
+        }
+
+        // Upload thumbnail
+        if ($video['thumb_url'] != '') {
+            list($file_path, $is_temp_file) = $this->url_to_file_path($video['thumb_url']);
+            if (is_file($file_path)) {
+                try {
+                    require_code('images');
+                    $temppath_a = cms_tempnam();
+                    $temppath_b = $temppath_a;
+                    convert_image($file_path, $temppath_b, 1280, 720, null, false, 'png', true);
+                    if (($temppath_a == $temppath_b) && (is_file($temppath_b))) { // Did indeed manage to make a PNG file
+                        try {
+                            $url = 'https://www.googleapis.com/upload/youtube/v3/thumbnails/set';
+                            $params = ['videoId' => $result['snippet']['id']];
+                            $result = $this->_http($url, $params, 'POST', null, 1000.0, [], $temppath_b, 'image/png', false);
+                        } catch (Exception $e) {
+                            // We do not care if this fails
+                        }
+                    }
+                } catch (Exception $e) {
+                    $this->convert_exception_to_attached_message($url, $e);
+                    return null;
+                } finally {
+                    // Cleanup
+                    if ($is_temp_file) {
+                        @unlink($file_path);
+                    }
+                    @unlink($temppath_b);
+                }
+            }
+        }
+
+        return $this->process_remote_video($result);
     }
 
-    protected function _url_to_file_path($url)
+    protected function url_to_file_path($url)
     {
         $is_temp_file = false;
 
@@ -289,56 +337,38 @@ class Hook_video_syndication_youtube
         return [$video_path, $is_temp_file, $mime_type];
     }
 
-    public function change_remote_video($video, $changes)
+    public function change_remote_video($video, $changes, $unbind = false)
     {
-        if (array_key_exists('url', $changes)) { // Oh, if URL changes we'll need to actually unvalidate existing one and put up a new one (this is all that YouTube allows).
-            $this->upload_video($changes + $video/*PHP has weird overwrite precedence with + operator, opposite to the intuitive ordering*/); // Put up a new one.
+        if (!empty($changes['url'])) { // Oh, if URL changes we'll need to actually delete existing one and put up a new one (this is all that YouTube allows).
+            $this->upload_video($changes + $video/*PHP has weird overwrite precedence with + operator, opposite to the intuitive ordering*/); // Put up a new one
 
             $changes['validated'] = false; // Let the existing one unvalidate, flow on...
         }
 
-        $xml = $this->_generate_video_xml($changes + $video/*PHP has weird overwrite precedence with + operator, opposite to the intuitive ordering*/, false);
+        $json = $this->generate_video_json($changes + $video/*PHP has weird overwrite precedence with + operator, opposite to the intuitive ordering*/, !$unbind);
 
         try {
-            $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads/' . $video['remote_id'], null, 'PUT', $xml);
-
-            $parsed = simplexml_load_string($http_result->data);
-
-            if (isset($parsed->error)) {
-                throw new Exception(@strval($parsed->error->internalReason), @strval($parsed->error->code));
-            }
+            $url = 'https://www.googleapis.com/youtube/v3/videos';
+            $params = [
+                'id' => $video['remote_id'],
+                'part' => 'snippet,status',
+            ];
+            $result = $this->_http($url, $params, 'PUT', $json);
         } catch (Exception $e) {
-            require_lang('gallery_syndication_youtube');
-            $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage());
-            require_code('failure');
-            relay_error_notification($error_msg->evaluate());
-            attach_message($error_msg, 'warn', false, true);
+            $this->convert_exception_to_attached_message($url, $e);
             return null;
         }
-    }
-
-    public function unbind_remote_video($video)
-    {
-        // No-op for youtube, can't be done via YouTube Data API. Fortunately we don't really need this method.
-        return false;
+        return $this->process_remote_video($result);
     }
 
     public function delete_remote_video($video)
     {
         try {
-            $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads/' . $video['remote_id'], null, 'DELETE');
-
-            $parsed = simplexml_load_string($http_result->data);
-
-            if (isset($parsed->error)) {
-                throw new Exception(@strval($parsed->error->internalReason), @strval($parsed->error->code));
-            }
+            $url = 'https://www.googleapis.com/youtube/v3/videos';
+            $params = ['id' => $video['remote_id']];
+            $result = $this->_http($url, $params, 'DELETE');
         } catch (Exception $e) {
-            require_lang('gallery_syndication_youtube');
-            $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage());
-            require_code('failure');
-            relay_error_notification($error_msg->evaluate());
-            attach_message($error_msg, 'warn', false, true);
+            $this->convert_exception_to_attached_message($url, $e);
             return false;
         }
         return true;
@@ -346,92 +376,80 @@ class Hook_video_syndication_youtube
 
     public function leave_comment($video, $comment)
     {
-        $xml = trim('
-            <' . '?xml version="1.0" encoding="utf-8"?' . '>
-            <entry xmlns="http://www.w3.org/2005/Atom" xmlns:yt="http://gdata.youtube.com/schemas/2007">
-                    <content>' . xmlentities($comment) . '</content>
-            </entry>
-        ');
-
         try {
-            $http_result = $this->_http('https://gdata.youtube.com/feeds/api/videos/' . $video['remote_id'] . '/comments', [], 'POST', $xml);
-
-            $parsed = simplexml_load_string($http_result->data);
-
-            if (isset($parsed->error)) {
-                throw new Exception(@strval($parsed->error->internalReason), @strval($parsed->error->code));
-            }
+            $url = 'https://www.googleapis.com/youtube/v3/comments';
+            $params = ['part' => 'snippet'];
+            $request = [
+                'snippet' => [
+                    'textOriginal' => $comment,
+                    'videoId' => $video['remote_id'],
+                ],
+            ];
+            $json = json_encode($request);
+            $result = $this->_http($url, $params, 'POST', $json);
         } catch (Exception $e) {
-            require_lang('gallery_syndication_youtube');
-            $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage());
-            require_code('failure');
-            relay_error_notification($error_msg->evaluate());
-            attach_message($error_msg, 'warn', false, true);
+            $this->convert_exception_to_attached_message($url, $e);
             return false;
         }
-
         return true;
     }
 
-    protected function _generate_video_xml($video, $is_initial)
+    protected function generate_video_json($video, $bind = true)
     {
         // Match to a category using remote list
-        $category = 'People';
-        $possible_categories = [
-            'Animals',
-            'Autos',
-            'Comedy',
-            'Education',
-            'Entertainment',
-            'Film',
-            'Games',
-            'Howto',
-            'Music',
-            'News',
-            'Nonprofit',
-            'Shortmov',
-            'Sports',
-            'Tech',
-            'Travel',
-            'Videoblog',
-        ];
-        foreach ($possible_categories as $possible) { // Try to bind to one of our tags. Already-bound-remote-category intentionally will be on start of tags list, so automatically maintained through precedence.
+        $category_id = 1;
+        $possible_categories = $this->get_remote_categories();
+        foreach ($possible_categories as $_category_id => $_tag) { // Try to bind to one of our tags. Already-bound-remote-category intentionally will be on start of tags list, so automatically maintained through precedence.
             foreach ($video['tags'] as $i => $tag) {
-                if ($possible == $tag) {
-                    $category = $tag;
+                if ($_tag == $tag) {
+                    $category_id = $_category_id;
                     unset($video['tags'][$i]);
                     break 2;
                 }
             }
         }
 
-        // Now generate the XML...
-        $xml = '
-            <' . '?xml version="1.0"?' . '>
-            <entry xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://gdata.youtube.com/schemas/2007">
-                    <media:group>
-                            <media:title type="plain">' . xmlentities($video['title']) . '</media:title>
-                            <media:description type="plain">' . xmlentities($video['the_description']) . '</media:description>';
-        if ($category !== null) {
-            $xml .= '
-                            <media:category scheme="http://gdata.youtube.com/schemas/2007/categories.cat">' . xmlentities($category) . '</media:category>';
+        $_tags = $video['tags'];
+        if (($bind) && (!empty($video['local_id']))) {
+            $_tags[] = 'sync' . strval($video['local_id']);
         }
-        $xml .= '
-                            <media:keywords>' . xmlentities(implode(', ', $video['tags'])) . ', sync' . strval($video['local_id']) . '</media:keywords>';
-        if ($is_initial) {
-            $xml .= '
-                            <media:category scheme="http://gdata.youtube.com/schemas/2007/developertags.cat">sync' . xmlentities(strval($video['local_id'])) . '</media:category>';
-        }
-        $xml .= '
-                    </media:group>
-                    <yt:accessControl action="rate" permission="' . ($video['allow_rating'] ? 'allowed' : 'denied') . '" />
-                    <yt:accessControl action="comment" permission="' . ($video['allow_comments'] ? 'allowed' : 'denied') . '" />
-                    <yt:accessControl action="list" permission="' . ($video['validated'] ? 'allowed' : 'denied') . '" />
-                    <updated>' . date('c', $video['mtime']) . '</updated>
-            </entry>
-        ';
 
-        return trim($xml);
+        $request = [
+            'snippet' => [
+                'title' => $video['title'],
+                'description' => $video['description'],
+                'tags' => $_tags,
+                'categoryId' => $category_id,
+            ],
+            'status' => [
+                'privacyStatus' => $video['validated'] ? 'public' : 'unlisted',
+            ],
+        ];
+        return json_encode($request);
+    }
+
+    public function get_remote_categories()
+    {
+        static $categories = [];
+
+        if (empty($categories)) {
+            $country = get_value('youtube_primary_country', 'US', true);
+            try {
+                $url = 'https://www.googleapis.com/youtube/v3/videoCategories';
+                $params = ['part' => 'snippet', 'regionCode' => $country];
+                $_categories = $this->_http($url, $params, 'GET', null, 6.0, [], null, 'application/json', true, true);
+            } catch (Exception $e) {
+                $this->convert_exception_to_attached_message($url, $e);
+                return [1 => do_lang('GENERAL')];
+            }
+            foreach ($_categories['items'] as $category) {
+                if ($category['snippet']['assignable']) {
+                    $categories[$category['id']] = $category['snippet']['title'];
+                }
+            }
+        }
+
+        return $categories;
     }
 
     protected function _connect()
@@ -459,28 +477,56 @@ class Hook_video_syndication_youtube
         return ($this->_access_token !== null);
     }
 
-    protected function _http($url, $params, $http_verb = 'GET', $xml = null, $timeout = 6.0, $extra_headers = [], $file_to_upload = null, $content_type = 'application/atom+xml', $text = true)
+    protected function _http($url, $params = [], $http_verb = 'GET', $request_body = null, $timeout = 6.0, $extra_headers = [], $file_to_upload = null, $content_type = 'application/json', $text = true, $support_caching = false)
     {
-        $youtube_developer_key = get_option('google_apis_api_key');
+        $http_result = $this->_http_lowlevel($url, $params, $http_verb, $request_body, $timeout, $extra_headers, $file_to_upload, $content_type, $text, $support_caching);
 
+        if ($support_caching) {
+            list($data, , , , $message, $message_b) = $http_result;
+        } else {
+            $data = $http_result->data;
+            $message = $http_result->message;
+            $message_b = $http_result->message_b;
+        }
+
+        if (empty($data)) {
+            throw new Exception(($message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($message_b));
+        }
+
+        $result = @json_decode($data, true);
+
+        if (is_array($result)) {
+            if (isset($result['error'])) {
+                throw new Exception(@strval($result['error']['message']), @strval($result['error']['code']));
+            }
+        } else {
+            throw new Exception($data);
+        }
+
+        return $result;
+    }
+
+    protected function _http_lowlevel($url, $params = [], $http_verb = 'GET', $request_body = null, $timeout = 6.0, $extra_headers = [], $file_to_upload = null, $content_type = 'application/json', $text = true, $support_caching = false)
+    {
         if ($this->_access_token === null) {
             if (!$this->_connect()) {
                 return null;
             }
         }
 
+        $youtube_developer_key = get_option('google_apis_api_key');
+        if ($youtube_developer_key != '') {
+            $params['key'] = $youtube_developer_key;
+        }
+
         if (!empty($params)) {
-            $full_url = $url . '?strict=1&v=2.1&' . http_build_query($params);
+            $full_url = $url . '?' . http_build_query($params);
         } else {
             $full_url = $url;
         }
 
         if ($this->_access_token !== null) {
             $extra_headers['Authorization'] = 'Bearer ' . $this->_access_token;
-        }
-
-        if ($youtube_developer_key != '') {
-            $extra_headers['X-GData-Key'] = 'key=' . $youtube_developer_key;
         }
 
         $files = null;
@@ -490,31 +536,42 @@ class Hook_video_syndication_youtube
             $files = [$mime_type => $file_to_upload];
         }
 
-        if ($xml !== null) {
+        if (($request_body !== null) && ($text)) {
             require_code('character_sets');
-            $xml = convert_to_internal_encoding($xml, get_charset(), 'utf-8');
+            $request_body = convert_to_internal_encoding($request_body, get_charset(), 'utf-8');
         }
 
         $options = [
             'trigger_error' => false,
-            'post_params' => ($xml === null) ? null : [$xml],
+            'post_params' => ($request_body === null) ? null : [$request_body],
             'timeout' => $timeout,
-            'raw_post' => $xml !== null,
+            'raw_post' => $request_body !== null,
             'files' => $files,
             'extra_headers' => $extra_headers,
             'http_verb' => $http_verb,
             'raw_content_type' => $content_type,
+            'ignore_http_status' => true,
         ];
         if ($text) {
             $options['convert_to_internal_encoding'] = true;
         }
 
-        $http_result = cms_http_request($full_url, $options);
-
-        if ($http_result->data === null) {
-            throw new Exception(($http_result->message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($http_result->message_b));
+        if ($support_caching) {
+            $http_result = cache_and_carry('cms_http_request', [$full_url, $options]);
+        } else {
+            $http_result = cms_http_request($full_url, $options);
         }
 
         return $http_result;
+    }
+
+    protected function convert_exception_to_attached_message($url, $e)
+    {
+        require_lang('gallery_syndication_youtube');
+        $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage(), escape_html($url));
+fatal_exit($error_msg);//TODO
+        require_code('failure');
+        relay_error_notification($error_msg->evaluate());
+        attach_message($error_msg, 'warn', false, true);
     }
 }

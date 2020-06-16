@@ -10,6 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
+ * @package    gallery_syndication
  * @package    youtube_channel_integration_block
  */
 
@@ -35,9 +36,13 @@ class Hook_health_check_youtube extends Hook_Health_Check
      */
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null, $show_unusable_categories = false)
     {
-        if (($show_unusable_categories) || (($check_context != CHECK_CONTEXT__INSTALL) && (addon_installed('youtube_channel_integration_block')))) {
-            require_code('oauth');
-            if ((($show_unusable_categories) || ((get_option('google_apis_api_key') != '') && (get_oauth_refresh_token('youtube') !== null)))) {
+        if (
+            ($show_unusable_categories) ||
+            (
+                ($check_context != CHECK_CONTEXT__INSTALL) && ((addon_installed('youtube_channel_integration_block')) || (addon_installed('gallery_syndication')))
+            )
+        ) {
+            if (($show_unusable_categories) || (get_option('google_apis_api_key') != '')) {
                 $this->process_checks_section('testYouTubeConnection', 'YouTube', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             }
         }
@@ -66,12 +71,24 @@ class Hook_health_check_youtube extends Hook_Health_Check
 
         $youtube_api_key = get_option('google_apis_api_key');
 
-        // Direct querying used by block...
+        require_code('oauth');
+        if ((addon_installed('gallery_syndication')) && (get_oauth_refresh_token('youtube') !== null)) {
+            require_code('hooks/modules/video_syndication/youtube');
+            $ob = new Hook_video_syndication_youtube();
 
-        $channel_name = 'ocportal';
-        $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . urlencode($channel_name) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true]));
-        $playlist_id = $channel->items[0]->contentDetails->relatedPlaylists->uploads;
-        $playlist_items = json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&playlistId=' . urlencode($playlist_id) . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true]));
-        $this->assertTrue(array_key_exists(0, $playlist_items->items), 'Could not search for any video on a public YouTube channel');
+            $this->assertTrue(array_search('Music', $ob->get_remote_categories()) !== false, 'Could not get a list of YouTube categories');
+
+            $this->assertTrue($ob->get_remote_videos(null, false, 1) !== null, 'Error listing YouTube videos');
+        }
+
+        if (addon_installed('youtube_channel_integration_block')) {
+            // Direct querying used by youtube_channel_integration_block addon...
+
+            $channel_name = 'ocportal';
+            $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . urlencode($channel_name) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true]));
+            $playlist_id = $channel->items[0]->contentDetails->relatedPlaylists->uploads;
+            $playlist_items = json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&playlistId=' . urlencode($playlist_id) . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true]));
+            $this->assertTrue(array_key_exists(0, $playlist_items->items), 'Could not search for any video on a public YouTube channel');
+        }
     }
 }

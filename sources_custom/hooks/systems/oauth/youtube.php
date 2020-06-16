@@ -39,7 +39,7 @@ class Hook_oauth_youtube
             ],
             'refresh_token' => null,
             'endpoint' => 'https://accounts.google.com/o/oauth2',
-            'scope' => 'https://gdata.youtube.com',
+            'scope' => 'https://www.googleapis.com/auth/youtube.force-ssl',
         ];
     }
 }

@@ -626,7 +626,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     check_command($catch[2], $depth + 1, $function_guard, $nogo_parameters, $jump_structures); // Goes first so that we get local variables defined inside loop for use in our loop conditional
                 }
                 if ($c[3] !== null) {
-                    check_command($c[3], $depth + 1, $function_guard, $nogo_parameters, $jump_structures); // Finally
+                    check_command($c[3][0], $depth + 1, $function_guard, $nogo_parameters, $jump_structures); // Finally
                 }
                 break;
 
