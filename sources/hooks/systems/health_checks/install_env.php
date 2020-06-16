@@ -280,10 +280,10 @@ class Hook_health_check_install_env extends Hook_Health_Check
             );
         }
 
-        if (!is_maintained('platform_phalanger')) {
+        if (!is_maintained('platform_peachpie')) {
             $this->assertTrue(
-                !defined('PHALANGER'),
-                '[html]' . do_lang('WARNING_NON_MAINTAINED', escape_html('Phalanger'), escape_html(get_brand_base_url()), escape_html('platform_phalanger')) . '[/html]'
+                !defined('PEACHPIE_VERSION'),
+                '[html]' . do_lang('WARNING_NON_MAINTAINED', escape_html('PeachPie'), escape_html(get_brand_base_url()), escape_html('platform_peachpie')) . '[/html]'
             );
         }
     }

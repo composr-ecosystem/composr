@@ -533,13 +533,12 @@ PHP configuration tips:
 [title="4"]Alternative PHP engines (not supported)[/title]
 
 We have tried in the past to support:
- - HHVM (by Facebook)
- - Roadsend (commercial software)
- - Phalanger/PeachPie (Microsoft-sponsored)
- - Quercus (Caucho-sponsored)
- - Project Zero (IBM-sponsored)
+ - HHVM (by Facebook) [no longer PHP-compatible]
+ - PeachPie (for .net) [active]
+ - Roadsend (commercial software) [dead]
+ - Quercus (Caucho-sponsored) [dead]
+ - Project Zero (IBM-sponsored) [dead]
 But after quite a lot of work we have concluded these projects are too buggy to be realistic, not well maintained, no longer maintained, or don't actually offer any performance improvement. Never-the-less, making Composr work on these platforms in the past has led to improvements in the Composr code quality, as these PHP replacements have a tendency to float different kinds of subtle coding errors to the surface.
-There are also newer PHP alternatives such as HippyVM, or approaches that limit the PHP language significantly such as PH7.
 
 [title="3"]Reverse proxying[/title]
 
