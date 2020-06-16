@@ -131,7 +131,7 @@ facebook_media,Facebook media (video embed),ocProducts,,Could potentially break 
 tapatalk,Tapatalk,ocProducts,,Could potentially break due to third-party changes.,Yes,
 google_maps,"Google maps (DataMappr, UserMappr)",ocProducts,,Could potentially break due to third-party changes.,Yes,
 twitter,Twitter syndication,ocProducts,,Could potentially break due to third-party changes.,Yes,_api_twitter automated test.
-webdav,WebDav access for The Repository,ocProducts,,Could potentially break due to third-party changes.,Yes,
+webdav,WebDav access for The Repository,ocProducts,,Could potentially break due to third-party changes.,Yes,webdav automated test.
 os_windows,Windows servers,ocProducts,ocProducts,,No,
 os_linux,Linux servers,ocProducts,ocProducts,,No,
 os_macos,Mac OS servers,ocProducts,ocProducts,,No,
@@ -144,5 +144,5 @@ alexa,Alexa Traffic Stats,ocProducts,ocProducts,,No,seo_tracking automated test
 url_shortener,is.gd URL shortener,ocProducts,ocProducts,,No,url_shortener automated test
 sugarcrm,Sugar CRM integration,,,,Yes,SugarCRM Health Check
 cloudinary,Cloudinary integration,,,,Yes,_api_cloudinary automated test
-aws_ses,AWS SES notifications,,,,Yes,
-confluence,Confluence integration,,,,Yes,
+aws_ses,AWS SES notifications,,,,Yes,aws_ses automated test
+confluence,Confluence integration,ocProducts,,,Yes,_api_confluence automated test
