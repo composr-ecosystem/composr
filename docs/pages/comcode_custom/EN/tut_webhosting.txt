@@ -200,6 +200,8 @@ If spell checking is needed, the Pspell ([tt]pspell[/tt]) or Enchant ([tt]enchan
 
 If transliteration of non-European languages is desired (for quality URL moniker generation), or Punycode support, or locale-aware sorting, the PHP intl extension ([tt]intl[/tt]) is required.
 
+If PDF download indexing is required, [tt]pdftohtml[/tt] ([tt]poppler-utils[/tt]) is required.
+
 [title="2"]Further recommendations[/title]
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/tip.png[/media]

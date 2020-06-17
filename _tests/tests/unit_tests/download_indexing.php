@@ -35,9 +35,17 @@ class download_indexing_test_set extends cms_test_case
         tar_add_file($tar, 'test.txt', 'foobar blah', 0666, time());
         tar_close($tar);
 
-        $data_mash = create_data_mash('foo.tar', cms_file_get_contents_safe($temp_name, FILE_READ_LOCK));
+        $data_mash = create_data_mash('foo.tar', file_get_contents($temp_name));
 
         $this->assertTrue(strpos($data_mash, 'foobar') !== false);
+
+        if (function_exists('gzencode')) {
+            $data_mash = create_data_mash('foo.tar.gz', gzencode(file_get_contents($temp_name)));
+
+            $this->assertTrue(strpos($data_mash, 'foobar') !== false);
+        } else {
+            $this->asssertTrue(false, 'PHP Gzip extension is not enabled on server, cannot run test');
+        }
 
         unlink($temp_name);
     }
@@ -61,10 +69,26 @@ class download_indexing_test_set extends cms_test_case
         $tmp_path2 = cms_tempnam();
         create_zip_file($tmp_path2, $file_array);
 
-        $data_mash = create_data_mash('foo.zip', cms_file_get_contents_safe($tmp_path2));
+        $data_mash = create_data_mash('foo.zip', file_get_contents($tmp_path2));
 
         unlink($tmp_path2);
 
         $this->assertTrue(strpos($data_mash, 'foobar') !== false);
+    }
+
+    public function testPdfIndexing()
+    {
+        if (!addon_installed('composr_tutorials')) {
+            $this->asssertTrue(false, 'Composr tutorials addon needed');
+            return;
+        }
+        if (_find_pdftohtml() == 'pdftohtml'/*could not explicitly find*/) {
+            $this->asssertTrue(false, 'pdftohtml is not available on server');
+            return;
+        }
+
+        $data_mash = create_data_mash('pdf_sample.pdf', file_get_contents(get_file_base() . '/_tests/assets/pdf_sample.pdf'));
+
+        $this->assertTrue(strpos($data_mash, 'incompatibilities') !== false);
     }
 }

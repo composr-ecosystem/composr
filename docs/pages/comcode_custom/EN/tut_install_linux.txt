@@ -73,7 +73,7 @@ php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-mbstring php-pspe
 php-xml php-intl php-json openssl mysql-server mysql-client \
 postfix nano wget lynx hunspell aspell aspell-en git openssh-server nano wget sysstat iotop \
 screen zip unzip bzip2 gzip tar whois dnsutils \
-lsof mlocate certbot python-certbot-apache
+lsof mlocate certbot python-certbot-apache poppler-utils
 [/code]
 
 Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need changing:
@@ -109,7 +109,7 @@ enchant freetype php-gd php-imap php-pecl-zip php-mysqlnd php-mbstring php-pspel
 php-xml php-intl php-json openssl mysql-server mysql \
 sendmail nano wget lynx hunspell hunspell-en aspell aspell-en git openssh-server sysstat iotop \
 screen zip unzip bzip2 gzip tar whois dnsutils bind-utils \
-lsof mlocate certbot python-certbot-apache dnf-automatic
+lsof mlocate certbot python-certbot-apache dnf-automatic poppler-utils
 [/code]
 
 You may have selinux installed, you can see if you do with [tt]sestatus[/tt]:

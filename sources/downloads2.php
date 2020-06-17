@@ -621,6 +621,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
             }
             @unlink($tmp_file);
             break;
+
         case 'tar':
             require_code('tar');
             $tmp_file = cms_tempnam();
@@ -646,6 +647,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
             }
             @unlink($tmp_file);
             break;
+
         case 'gz':
             if ((function_exists('gzopen')) && (function_exists('gzclose'))) {
                 if ((function_exists('gzeof')) && (function_exists('gzread'))) {
@@ -668,10 +670,12 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
                 }
             }
             break;
+
         case 'txt':
         case '1st':
             $mash .= $data;
             break;
+
         case 'rtf':
             $len = strlen($data);
             $skipping_section_depth = 0;
@@ -734,21 +738,20 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
                 }
             }
             break;
+
         case 'pdf':
-            if ((php_function_allowed('shell_exec')) && ($tmp_file !== null)) {
+            if (php_function_allowed('shell_exec')) {
+                $tmp_file = cms_tempnam();
+                file_put_contents($tmp_file, $data);
                 $enc = (get_charset() == 'utf-8') ? ' -enc UTF-8' : '';
-                $path = 'pdftohtml -i -noframes -stdout -hidden' . $enc . ' -q -xml ' . cms_escapeshellarg($tmp_file);
-                if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-                    if (file_exists(get_file_base() . '/data_custom/pdftohtml.exe')) {
-                        $path = '"' . get_file_base() . '/data_custom/' . '"' . $path;
-                    }
-                }
+                $path = _find_pdftohtml() . ' -i -noframes -stdout -hidden' . $enc . ' -q -xml ' . cms_escapeshellarg($tmp_file);
                 $tmp_file_2 = cms_tempnam();
                 @shell_exec($path . ' > ' . $tmp_file_2);
                 $mash = create_data_mash($tmp_file_2, null, 'xml', true);
                 @unlink($tmp_file_2);
             }
             break;
+
         case 'htm':
         case 'html':
             $head_patterns = ['#<\s*script.*<\s*/\s*script\s*>#misU', '#<\s*link[^<>]*>#misU', '#<\s*style.*<\s*/\s*style\s*>#misU'];
@@ -760,6 +763,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
             $mash = str_replace('&apos;', '\'', str_replace(' false ', ' ', str_replace(' true ', ' ', @html_entity_decode(preg_replace('#<[^<>]*>#', ' ', $data), ENT_QUOTES))));
             $mash = preg_replace('#Error : Bad \w+#', '', $mash);
             break;
+
         case 'xls':
         case 'doc':
         case 'ppt':
@@ -823,6 +827,36 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
     }
 
     return $mash;
+}
+
+/**
+ * Find the pdftohtml executable, or just assume it is in the path if appropriate.
+ *
+ * @return string Path to executable
+ *
+ * @ignore
+ */
+function _find_pdftohtml()
+{
+    $path = 'pdftohtml';
+    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        $_path = get_file_base() . '/data_custom/pdftohtml.exe';
+        if (is_file($_path)) {
+            $path = $_path;
+        }
+    } else {
+        $search = [
+            '/usr/local/bin/pdftohtml',
+            '/usr/bin/pdftohtml',
+        ];
+        foreach ($search as $_path) {
+            if (is_file($_path)) {
+                $path = $_path;
+                break;
+            }
+        }
+    }
+    return $path;
 }
 
 /**

@@ -660,6 +660,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/assets/text/utf-8.txt',
             '_tests/assets/xml/atom.cms',
             '_tests/assets/xml/rss.cms',
+            '_tests/assets/pdf_sample.pdf',
 
             // It is worth noting that most of these are not true unit tests, but integration tests, or other kinds of test.
             // We use the broad term 'automated test'.
