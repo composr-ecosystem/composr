@@ -95,6 +95,9 @@ function encrypt_data($data)
 
         $output .= $encrypted;
     }
+
+    openssl_free_key($key);
+
     return '(Encrypted!)' . base64_encode($output);
 }
 
@@ -187,5 +190,8 @@ function decrypt_data($data, $passphrase)
 
         $output .= $decrypted;
     }
+
+    openssl_free_key($key);
+
     return $output;
 }
