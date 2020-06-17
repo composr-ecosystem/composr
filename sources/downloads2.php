@@ -744,7 +744,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
                 $tmp_file = cms_tempnam();
                 file_put_contents($tmp_file, $data);
                 $enc = (get_charset() == 'utf-8') ? ' -enc UTF-8' : '';
-                $path = _find_pdftohtml() . ' -i -noframes -stdout -hidden' . $enc . ' -q -xml ' . cms_escapeshellarg($tmp_file);
+                $path = '"' . _find_pdftohtml() . '" -i -noframes -stdout -hidden' . $enc . ' -q -xml ' . cms_escapeshellarg($tmp_file);
                 $tmp_file_2 = cms_tempnam();
                 @shell_exec($path . ' > ' . $tmp_file_2);
                 $mash = create_data_mash($tmp_file_2, null, 'xml', true);
