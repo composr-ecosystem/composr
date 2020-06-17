@@ -121,7 +121,7 @@ class Hook_health_check_security extends Hook_Health_Check
 
             $urls = [];
             foreach ($page_links as $page_link) {
-                $_url = page_link_to_url($page_link);
+                $_url = page_link_to_url($page_link, true);
                 if (!empty($_url)) {
                     $urls[] = ['url' => $_url];
                 }
