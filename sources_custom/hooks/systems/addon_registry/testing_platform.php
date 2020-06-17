@@ -661,6 +661,9 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/assets/xml/atom.cms',
             '_tests/assets/xml/rss.cms',
             '_tests/assets/pdf_sample.pdf',
+            '_tests/assets/encryption/index.html',
+            '_tests/assets/encryption/private.pem',
+            '_tests/assets/encryption/public.pem',
 
             // It is worth noting that most of these are not true unit tests, but integration tests, or other kinds of test.
             // We use the broad term 'automated test'.
@@ -913,6 +916,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/_tracker_categories.php',
             '_tests/tests/unit_tests/_api_translation.php',
             '_tests/tests/unit_tests/transliteration.php',
+            '_tests/tests/unit_tests/encryption.php',
             '_tests/tests/unit_tests/tutorial_image_consistency.php',
             '_tests/tests/unit_tests/tutorial_nav_paths.php',
             '_tests/tests/unit_tests/_tutorial_quality.php',

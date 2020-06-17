@@ -37,7 +37,7 @@ google_translate,Google Translate integration,ocProducts,ocProducts,Could potent
 bing_translator,Bing Translator integration,ocProducts,ocProducts,Could potentially break due to third-party changes.,No,_api_translation automated test.
 ldap,LDAP,,,Not regularly tested due to the complexity of having multiple working LDAP test environments.,No,
 httpauth,HTTP authentication,,,Not regularly tested.,No,Partly tested by httpauth automated test.
-cpf_encryption,CPF encryption,ocProducts,,Not regularly tested.,No,
+cpf_encryption,CPF encryption,ocProducts,,Not regularly tested.,No,encryption automated test (back-end testing only).
 itunes,iTunes podcasts,,,Not regularly tested in iTunes.,No,Partially tested by _feeds_and_podcasts automated test.
 theme_rtl,Right-to-left support in default theme,,,Too burdensome to routinely maintain and test.,No,
 theme_print,Custom print layout support in default theme,ocProducts,,Not regularly tested.,No,
