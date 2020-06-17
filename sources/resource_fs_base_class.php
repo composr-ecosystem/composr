@@ -2095,7 +2095,7 @@ abstract class Resource_fs_base
         $properties['comment__resource_id'] = $resource_id;
         $properties['comment__path'] = $path;
         $properties['comment__filename'] = $filename;
-        //$properties['comment__generation_time'] = remap_time_as_portable(time()); Would break git history
+        //$properties['comment__generation_time'] = remap_time_as_portable(time()); Would break Git history
         if (isset($properties['edit_date'])) {
             $properties['comment__edit_date_note'] = 'You may remove the edit_date if you want it to auto-generate to the current-time when saving';
         }

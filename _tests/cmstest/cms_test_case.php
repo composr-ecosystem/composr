@@ -165,7 +165,7 @@ class cms_test_case extends WebTestCase
 
         $path = get_file_base() . '/_tests/assets/keys.csv';
         if (!is_file($path)) {
-            $this->assertTrue(false, 'Cannot proceed, we need _tests/assets/keys.csv, which is not supplied in git for security reasons');
+            $this->assertTrue(false, 'Cannot proceed, we need _tests/assets/keys.csv, which is not supplied in Git for security reasons');
             exit();
         }
 

@@ -2,7 +2,7 @@
 /data_custom/latest_activity.txt
 /safe_mode_temp
 
-; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
+; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in Git
 /_tests/assets/keys.csv
 /lorem
 /psalm.xml

@@ -52,7 +52,7 @@ class third_party_code_test_set extends cms_test_case
 
         $dirs = list_untouchable_third_party_directories();
         foreach ($dirs as $dir) {
-            // Exceptions, stuff that does not exist git
+            // Exceptions, stuff that does not exist in Git
             if (in_array($dir, [
                 'data_custom/ckeditor',
                 'docs/api',

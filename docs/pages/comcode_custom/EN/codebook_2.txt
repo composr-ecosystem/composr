@@ -409,7 +409,7 @@ Some people might wonder why entry viewing isn't done via blocks, or really any 
 [title="3"]Making theme changes outside Composr[/title]
 
 [media description="" width="250" float="right" framed="0"]data_custom/images/docs/codebook_2/1.jpg[/media]
-When you add/edit theme images inside Composr, it makes up a filename. But instead if you make the [tt]themes/<theme>/images_custom[/tt] naming structure match that of [tt]themes/default/images[/tt], then Composr automatically finds them. This is better when working collaboratively with git, or if synching development and live sites, because a new database record is not needed to track the theme image reference.
+When you add/edit theme images inside Composr, it makes up a filename. But instead if you make the [tt]themes/<theme>/images_custom[/tt] naming structure match that of [tt]themes/default/images[/tt], then Composr automatically finds them. This is better when working collaboratively with Git, or if synching development and live sites, because a new database record is not needed to track the theme image reference.
 
 Generally you should rarely use the Composr inbuilt theming tools when acting as a programmer. Just put the files in the right place and use your text editor to alter the CSS and templates. This makes for a more integrated, programmer-friendly, workflow.
 

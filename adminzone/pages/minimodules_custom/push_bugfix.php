@@ -14,12 +14,12 @@
  */
 
 /*
-If you get git errors about missing username/email, you may need to set your git config system-wide...
+If you get Git errors about missing username/email, you may need to set your Git config system-wide...
 
 sudo git config --system user.name <user>
 sudo git config --system user.email <user>@<domain>
 
-If it is not pushing, you may need to tell git about your key directly (as it may not have access to environment settings)...
+If it is not pushing, you may need to tell Git about your key directly (as it may not have access to environment settings)...
 sudo git config --system core.sshCommand "ssh -i /home/you/.ssh/id_rsa -F /dev/null"
 Your key will have to be not encrypted. A key can be decrypted with:
 openssl rsa -in /home/you/.ssh/id_rsa -out /home/you/.ssh/id_rsa
@@ -145,7 +145,7 @@ if (post_param_integer('submitting', 0) == 1) {
         }
     }
 
-    // A git commit and push happens on the changed files, with the ID number of the tracker issue in it
+    // A Git commit and push happens on the changed files, with the ID number of the tracker issue in it
     $git_commit_command_data = '';
     if ($git_commit_id == '') {
         if ($tracker_severity == 95) {
@@ -158,10 +158,10 @@ if (post_param_integer('submitting', 0) == 1) {
             if ($git_commit_id !== null) {
                 echo '<!-- ' . $git_commit_command_data . ' -->';
                 $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
-                $done['Committed to git'] = $git_url;
+                $done['Committed to Git'] = $git_url;
             } else {
                 $git_url = null;
-                $done['Failed to commit to git, ' . $git_commit_command_data] = null;
+                $done['Failed to commit to Git, ' . $git_commit_command_data] = null;
             }
         } else {
             $git_url = null;
@@ -175,7 +175,7 @@ if (post_param_integer('submitting', 0) == 1) {
     $create_hotfix = (post_param_integer('create_hotfix', 0) == 1);
     $tracker_comment_message = '';
     if ($git_commit_id !== null) {
-        $tracker_comment_message .= 'Fixed in git commit ' . escape_html($git_commit_id) . ' (' . escape_html($git_url) . ' - link will become active once code pushed to GitLab)';
+        $tracker_comment_message .= 'Fixed in Git commit ' . escape_html($git_commit_id) . ' (' . escape_html($git_url) . ' - link will become active once code pushed to GitLab)';
         if ($create_hotfix) {
             $tracker_comment_message .= "\n\n";
         }
@@ -264,7 +264,7 @@ $git_status_3 = 'Git commit ID';
 $choose_files_label = 'Choose files';
 
 if ((empty($git_found)) && (!$do_full_scan)) {
-    echo '<p><em>Found no changed files so done a full filesystem scan (rather than relying on git). You can enter a git ID or select files.</p>';
+    echo '<p><em>Found no changed files so done a full filesystem scan (rather than relying on Git). You can enter a Git ID or select files.</p>';
     $git_status_3 = 'Git commit ID';
     $choose_files_label = 'Choose files';
 }
@@ -614,7 +614,7 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
     }
 
     // Error
-    $git_commit_command_data = 'Failed to make a git commit: ' . escape_html($git_commit_command_data) . '; Command was: ' . escape_html($cmd);
+    $git_commit_command_data = 'Failed to make a Git commit: ' . escape_html($git_commit_command_data) . '; Command was: ' . escape_html($cmd);
     return null;
 }
 

@@ -274,7 +274,7 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
             'likes_recent' => @intval(round($db_row['likes_recent'])),
         ];
     } else {
-        // From git
+        // From Git
 
         if ($db_row === null) {
             $db_rows = $GLOBALS['SITE_DB']->query_select('tutorials_internal t', ['t.*', tutorial_sql_rating(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_rating_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME)], ['t_page_name' => $tutorial_name], '', 1);

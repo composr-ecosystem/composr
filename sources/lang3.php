@@ -323,7 +323,7 @@ function lang_code_to_static_content($field_name, $str, $comcode = false, $level
  * @param  ?string $pass_id The special identifier for this content language string on the page it will be displayed on; this is used to provide an explicit binding between languaged elements and greater templated areas (null: none)
  * @param  ?string $text_parsed Assembled Tempcode portion (null: work it out)
  * @param  boolean $preparse_mode Whether to generate a fatal error if there is invalid Comcode
- * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+ * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
  * @return array The content language string save fields
  *
  * @ignore

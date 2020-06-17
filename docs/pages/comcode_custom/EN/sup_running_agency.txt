@@ -251,16 +251,16 @@ Our values:
 [title="2"]Server/hosting-access process[/title]
 
 [media description="" width="300" float="right" framed="0"]data_custom/images/docs/sup_running_agency/7.jpg[/media]
-Here is a sample process for deploying files to a server individually (using git to deploy is a more modern process, but would have similar steps):
+Here is a sample process for deploying files to a server individually (using Git to deploy is a more modern process, but would have similar steps):
 [list="1"]
 [*] Never access hosting without getting permission first.[/*]
 [*] Never access hosting outside office hours unless given specific permission.[/*]
 [*] Never access hosting unless a senior member of staff is available through IM, unless given specific permission.[/*]
 [*] When overwriting files always take a backup of what was there already.[/*]
 [*] Keep an archive of the hosting log for each upload.[/*]
-[*] If it is possible that the files in git are much newer than what is on the site, and can't be uploaded yet:[list="a"]
+[*] If it is possible that the files in Git are much newer than what is on the site, and can't be uploaded yet:[list="a"]
  [*] Download files that are going to be overwritten, into a minimal duplicated directory tree that mirrors the live server[/*]
- [*] Run a diff tool (like Kompare) between that directory and the git directory[/*]
+ [*] Run a diff tool (like Kompare) between that directory and the Git directory[/*]
  [*] For each file, you can decide whether:[list="i"]
   [*] It is new, so can be uploaded immediately[/*]
   [*] The only changes are changes you're trying to deploy, so can be uploaded immediately[/*]
@@ -324,7 +324,7 @@ Here is a sample checklist for managing an overall project:
  [color="green"]&#10003;[/color] Design finalised with client, “sign off”
  [color="green"]&#10003;[/color] Design invoiced/paid (if applicable)
  [color="green"]&#10003;[/color] Developer properly briefed and booked in
- [color="green"]&#10003;[/color] Work getting done in git
+ [color="green"]&#10003;[/color] Work getting done in Git
  [color="green"]&#10003;[/color] Work regularly updated to staging server, if appropriate
  [color="green"]&#10003;[/color] Change management process used correctly: changes must mean scheduled changes. Any freebies or infractions should be recorded in a spreadsheet
  [color="green"]&#10003;[/color] Developer progress to schedule

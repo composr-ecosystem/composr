@@ -644,7 +644,7 @@ abstract class DatabaseDriver
      * @param  array $map The INSERT/UPDATE map, minus anything in the key
      * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return ?string SQL query (null: not supported)
      */
     public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)
@@ -1848,7 +1848,7 @@ class DatabaseConnector
      * @param  boolean $get_insert_id Whether to get an insert ID
      * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: none)
      * @param  string $field_prefix All the core fields have a prefix of this on them, so when we fiddle with language lookup we need to use this (only consider this if you're setting $lang_fields)
-     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return ?mixed The results (null: no result set) (empty array: empty result set)
      */
     public function _query($query, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false, $lang_fields = null, $field_prefix = '', $save_as_volatile = false)
@@ -2210,7 +2210,7 @@ class DatabaseConnector
      * @param  array $map The INSERT/UPDATE map, minus anything in the key
      * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return boolean Whether a smart operation was performed by the DB backend (rather than just delete-then-add)
      */
     public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)
@@ -2234,7 +2234,7 @@ class DatabaseConnector
      * @param  array $map The insertion map. The map values may be arrays for a multi-insert, but if so they must all have the same arity. You must not pass an array of maps.
      * @param  boolean $ret Whether to return the auto-insert-id
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return ?integer The ID of the new row (null: no ID / batch insert)
      */
     public function query_insert($table, $map, $ret = false, $fail_ok = false, $save_as_volatile = false)

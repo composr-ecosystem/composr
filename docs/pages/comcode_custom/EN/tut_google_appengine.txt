@@ -65,7 +65,7 @@ You will also need to install MySQL, as this doesn't come with the SDK. MySQL is
 
 [media width="150" description="The application launcher, after the application has been created.
 
-I have created mine under my local Apache server root (where I already have a git checkout), but that is only for convenience." float="right"]data_custom/images/docs/tut_google_appengine/appengine_launcher.png[/media]
+I have created mine under my local Apache server root (where I already have a Git checkout), but that is only for convenience." float="right"]data_custom/images/docs/tut_google_appengine/appengine_launcher.png[/media]
 [list="1"]
 [*] Extract the Composr manual installation package to a directory on your development machine (not the quick installer!).
 [*] Start up the GAE launcher.

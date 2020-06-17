@@ -603,7 +603,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      * @param  array $map The INSERT/UPDATE map, minus anything in the key
      * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
      * @return ?string SQL query (null: not supported)
      */
     public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)

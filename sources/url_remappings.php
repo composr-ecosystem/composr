@@ -22,7 +22,7 @@
 This script defines the rewrite rules from Composr's end.
 
 Also see build_rewrite_rules.php for web-server script file generation [creates files like recommended.htaccess] (and to a lesser extent, urls.php and urls2.php).
-build_rewrite_rules.php is in git / the composr_release_build addon.
+build_rewrite_rules.php is in Git / the composr_release_build addon.
 */
 
 /**

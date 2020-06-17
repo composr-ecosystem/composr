@@ -132,7 +132,7 @@ $SITE_INFO['prefer_direct_code_call'] = '1'; // Assume a good opcode cache is pr
 /* Very minor ones */
 $SITE_INFO['charset'] = 'utf-8'; // To avoid having to do lookup of character set via a preload of the language file
 $SITE_INFO['known_suexec'] = '1'; // To assume .htaccess is writable for implementing security blocks, so don't check
-$SITE_INFO['dev_mode'] = '0'; // Don't check for dev mode by looking for traces of git
+$SITE_INFO['dev_mode'] = '0'; // Don't check for dev mode by looking for traces of Git
 $SITE_INFO['no_extra_logs'] = '1'; // Don't allow extra permission/query logs
 $SITE_INFO['no_extra_bots'] = '1'; // Don't read in extra bot signatures from disk
 $SITE_INFO['no_extra_closed_file'] = '1'; // Don't support reading closed.html for closing down the site

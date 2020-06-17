@@ -59,26 +59,26 @@ switch (gethostname()) {
 [title="2"]Synching files[/title]
 
 There are 2 plausible approaches for synching files:[list="a"]
-[*] [b]Using git[/b]. You are likely already using git for development. Consider also using the same git repository for deployment, as described below. This is what we recommend.
+[*] [b]Using Git[/b]. You are likely already using Git for development. Consider also using the same Git repository for deployment, as described below. This is what we recommend.
 [*] Zipping up changed files. Our bundled [tt]recentchanges.sh[/tt] script can do this.
 [/list]
 
-[title="3"]Using git[/title]
+[title="3"]Using Git[/title]
 
-Using git works as follows:
-1) Install git on the staging server and live server.
-2) Set up the staging and live server SSH keys as 'deploy keys' on your git server (deploy keys are read-only keys).
+Using Git works as follows:
+1) Install Git on the staging server and live server.
+2) Set up the staging and live server SSH keys as 'deploy keys' on your Git server (deploy keys are read-only keys).
 3) When you have finished development and developer testing, do a pull to the staging server, and conduct testing there, then when ready pull to the live server.
 
 More sophisticated users may:
-1) Use multiple git branches so you can parallel-develop new functionality while functionality is going through testing.
-2) Also run a continuous integration server, where changes made in git (or multiple git branches) have automated tests run against them every time a new push is made. 
+1) Use multiple Git branches so you can parallel-develop new functionality while functionality is going through testing.
+2) Also run a continuous integration server, where changes made in Git (or multiple Git branches) have automated tests run against them every time a new push is made. 
 
 The level of sophistication you have will typically depend on the size of your development team.
 
-It is easy to accidentally run git as the wrong user, messing up file ownership. This [tt].bashrc[/tt] line will help you avoid that:
+It is easy to accidentally run Git as the wrong user, messing up file ownership. This [tt].bashrc[/tt] line will help you avoid that:
 [code="Bash"]
-alias git='echo Stop using git as the wrong user'
+alias git='echo Stop using Git as the wrong user'
 [/code]
 
 You may want to run [tt]git config core.fileMode false[/tt], as you are unlikely to want file permissions to be tracked.
@@ -110,7 +110,7 @@ There are 4 plausible approaches for synching Content:[list="a"]
 [*] Make it in code using the Composr API and run code to make it live. This is similar to the approach for Configuration, so is covered below.
 [/list]
 
-Page content is a special case. Because Comcode pages are stored as files, you may manage these directly through git. The 'Git Status' addon makes this easier -- you can easily download staging server changes to a development server, revert them, then pull them through properly using Git.
+Page content is a special case. Because Comcode pages are stored as files, you may manage these directly through Git. The 'Git Status' addon makes this easier -- you can easily download staging server changes to a development server, revert them, then pull them through properly using Git.
 
 [title="3"]Configuration and Structure[/title]
 
@@ -147,7 +147,7 @@ Functions:
 
 [title="4"]Site-specific versioning scripts[/title]
 
-You can give each site update an incremental version number, and code in changes relating to this update. By coding it within a Composr [tt]systems/startup[/tt] hook it will run on the first page view as soon as git code is pulled through.
+You can give each site update an incremental version number, and code in changes relating to this update. By coding it within a Composr [tt]systems/startup[/tt] hook it will run on the first page view as soon as Git code is pulled through.
 
 Here's an example:
 [code="PHP"]
@@ -239,7 +239,7 @@ This code assumes the staging site is at [tt]staging.example.com[/tt].
  1_key="Staging server"       1_value="A server that mirrors the live server, used for final testing. Others might also use the following terms: sandbox, testing."
  2_key="Staging site"         2_value="The site on the staging server."
  3_key="git"                  3_value="A revision control system for files, very popular with programmers. Keeps track of changes made in a code-base."
- 4_key="Deploy key"           4_value="A key for SSH that provides read-only access to a git repository."
+ 4_key="Deploy key"           4_value="A key for SSH that provides read-only access to a Git repository."
  5_key="Portability"          5_value="Something is portable if it is easily transferable between sites or systems."
 ]Concepts[/concepts]
 

@@ -200,7 +200,7 @@ Tapatalk\'s API is documented on Tapatalk\'s website. At the time of writing it 
 
 The Tapatalk implementation is organised by API category. The API functions (aka methods, aka endpoints) call read/write classes. The classes generally are Tapatalk-independent, while the direct API functions convert XML-RPC inputs and formulate things into the XML-RPC and precise structure that Tapatalk requires.
 
-To help with security we are using Composr\'s [tt]cms_verify_parameters_phpdoc[/tt] function to check API calls. We also check input method signatures if in development mode (i.e. running from git); see [tt]server_define.php for this[/tt].
+To help with security we are using Composr\'s [tt]cms_verify_parameters_phpdoc[/tt] function to check API calls. We also check input method signatures if in development mode (i.e. running from Git); see [tt]server_define.php for this[/tt].
 
 Tapatalk uses XML-RPC for communication. A simple test harness and testing framework is included for programmers. [tt]call_mobiquo_test[/tt] is used to call a test in the framework.
 

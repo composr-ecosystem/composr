@@ -783,7 +783,7 @@ function should_ignore_file($path, $bitmask = 0)
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
             'critical_errors' => '',
 
-            // Non-bundled addons inside the git repository
+            // Non-bundled addons inside the Git repository
             'upgrades' => '', // composr_homesite
             'sites' => '', // demonstratr
 
@@ -841,7 +841,7 @@ function should_ignore_file($path, $bitmask = 0)
             'EN.pwl' => 'data_custom/spelling/personal_dicts',
             '_critical_error.html' => '',
 
-            // Non-bundled addons inside the git repository
+            // Non-bundled addons inside the Git repository
             'out.csv' => 'data_custom/modules/user_export', // user_simple_spreadsheet_sync
             'request_helper.bin' => 'mobiquo/include', // tapatalk
             'server_certificates.pem' => 'data_custom/modules/composr_mobile_sdk/ios', // composr_mobile_sdk

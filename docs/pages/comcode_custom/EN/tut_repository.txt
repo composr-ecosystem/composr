@@ -17,7 +17,7 @@ Specifically, the following use-cases are served by the repository:
  - [b]Configuration management[/b] -- track what options have been changed, and transfer them between sites
  - [b]Backups[/b] -- copy portions of the repository to another location for backup; for example, if you are about to make major changes to the catalogue structure, take a backup of the catalogues
  - [b]Revision control[/b] (built-in) -- content types supporting the revisions system can save the full data of any edited or deleted resource, for retrieval later
- - [b]Revision control[/b] (advanced) -- hook up git to the repository directory, either locally, on your server, or both, to backup content as it is modified
+ - [b]Revision control[/b] (advanced) -- hook up Git to the repository directory, either locally, on your server, or both, to backup content as it is modified
  - A [b]file system[/b] for the Composr command line (Commandr)
  - Creating an abstract [b]resource API[/b] (for programmers) -- by having a resource model that is abstract (i.e. it's a single model that can be used for manipulating any kind of content/resource), programmers can come up with some clever functionality; Aggregate Content Types is an example of Composr functionality that is built on top of the repository
  - An [b]API[/b] for separate apps (e.g. mobile apps) to connect through to
@@ -160,7 +160,7 @@ In most cases you should work just under [tt]var[/tt] for this kind of thing, an
 
 Of particular note is that there may be overlap with different parts of the repository. In particular, stuff under [tt]database[/tt] will overlap with stuff under [tt]var[/tt]. Never think about copying stuff from directly under [tt]database[/tt] from one site to another as it has no sense for how to port associated resources over and almost certainly will lead to corruption.
 
-Don't do things like run [tt]rsync[/tt] or git over the repository as a whole -- although you may have good results if you carefully focus such things on specific parts of the repository.
+Don't do things like run [tt]rsync[/tt] or Git over the repository as a whole -- although you may have good results if you carefully focus such things on specific parts of the repository.
 
 [title="2"]Incorrect reporting[/title]
 

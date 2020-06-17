@@ -32,7 +32,7 @@ Any standard not marked in [color="red"]red[/color] has some kind of automatic w
 
 [title="3"]Development mode[/title]
 
-The mentioned Composr development mode runs automatically if you are working out of a git repository.
+The mentioned Composr development mode runs automatically if you are working out of a Git repository.
 
 [title="3"]Code Quality Checker[/title]
 
@@ -2285,7 +2285,7 @@ Some general advice regarding (re)integrating libraries:
 | Use text-based file formats rather than binary documents (like [tt]xlsx[/tt] or [tt]docx[/tt]). Revision management and global search and replace works much better with text files.
 |}
 
-[title="4"]Use of the Composr git repository[/title]
+[title="4"]Use of the Composr Git repository[/title]
 
 {|
 ! Standard
@@ -2296,17 +2296,17 @@ Some general advice regarding (re)integrating libraries:
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Use standardised commit messages
-| So that the tracker and git are bound together. Also so that typos don't generally happen in git commit messages, given all the custom text is in the tracker issue.
+| So that the tracker and Git are bound together. Also so that typos don't generally happen in Git commit messages, given all the custom text is in the tracker issue.
 | Composr development
 | Git hooks
-| The message for any commit on a stable branch must start with either "Fixed MANTIS-<tracker-ID>" or "Implementing MANTIS-<tracker-ID>" or "Implemented MANTIS-<tracker-ID>" or "Security fix for MANTIS-<tracker-ID>" or "New build" (for updating metadata files around a new release) or "Merge branch" (for a merge). Multiple commits may reference the same tracker issue. When doing a clone get the hooks working via [tt]git config core.hooksPath git-hooks; chmod +x git-hooks/*[/tt] (Linux/Mac OS -- perform whatever equivalent action for Windows). When fixing bugs you can use the "push bugfix" Admin Zone module to automatically create appropriate git commits, tracker issues, and hotfixes. Note that this guideline does not apply for alpha branches, as commits tend to be more chaotic when major project reworkings are under way, and the commit log is also going to be under less scrutiny.
+| The message for any commit on a stable branch must start with either "Fixed MANTIS-<tracker-ID>" or "Implementing MANTIS-<tracker-ID>" or "Implemented MANTIS-<tracker-ID>" or "Security fix for MANTIS-<tracker-ID>" or "New build" (for updating metadata files around a new release) or "Merge branch" (for a merge). Multiple commits may reference the same tracker issue. When doing a clone get the hooks working via [tt]git config core.hooksPath git-hooks; chmod +x git-hooks/*[/tt] (Linux/Mac OS -- perform whatever equivalent action for Windows). When fixing bugs you can use the "push bugfix" Admin Zone module to automatically create appropriate Git commits, tracker issues, and hotfixes. Note that this guideline does not apply for alpha branches, as commits tend to be more chaotic when major project reworkings are under way, and the commit log is also going to be under less scrutiny.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Granular commits[/color]
-| Changelogs are auto-generated from git history for new releases.
+| Changelogs are auto-generated from Git history for new releases.
 | Composr development
 | Manually
-| Any commit on a stable branch should fix one issue only (tip: [url="use the git patch technique"]https://stackoverflow.com/questions/1085162/commit-only-part-of-a-file-in-git[/url] if a file contains changes that should be made across multiple commits).
+| Any commit on a stable branch should fix one issue only (tip: [url="use the Git patch technique"]https://stackoverflow.com/questions/1085162/commit-only-part-of-a-file-in-git[/url] if a file contains changes that should be made across multiple commits).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use temporary branches and commit regularly[/color]
@@ -2316,7 +2316,7 @@ Use standardised commit messages
 [/list]
 | Composr development
 | Manually
-| If working on something for extended periods of time (days or longer), use a git branch for it. That branch may or may not be pushed upstream, this is your choice depending on whether collaboration is required while it is developed as a separate branch. By the way, it's your personal choice whether to use merge or rebase.
+| If working on something for extended periods of time (days or longer), use a Git branch for it. That branch may or may not be pushed upstream, this is your choice depending on whether collaboration is required while it is developed as a separate branch. By the way, it's your personal choice whether to use merge or rebase.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Appropriate branch naming

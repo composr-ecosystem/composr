@@ -325,7 +325,7 @@ class file_type_safelisting_test_set extends cms_test_case
             $found[$ext] = true;
         }
 
-        // Test git is conclusive
+        // Test Git is conclusive
         $lines = explode("\n", shell_exec('git ls-files'));
         $exts = [];
         foreach ($lines as $line) {
@@ -337,7 +337,7 @@ class file_type_safelisting_test_set extends cms_test_case
         }
         ksort($exts);
         foreach (array_keys($exts) as $ext) {
-            $this->assertTrue(array_key_exists($ext, $found), 'Unknown file type in git that should be in .gitattributes to clarify how to manage it: ' . $ext);
+            $this->assertTrue(array_key_exists($ext, $found), 'Unknown file type in Git that should be in .gitattributes to clarify how to manage it: ' . $ext);
         }
     }
 

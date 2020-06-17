@@ -163,7 +163,7 @@ function phase_0()
         <br />
         <fieldset>
             <legend>Changes</legend>
-            <label for="changes">For a patch release the default is usually fine (links to our hotfixes and git history). A list of changes is rarely of much use and takes many hours to put together. Users should just stay updated regardless, and will know if there is some specific hotfix that was already made available to them. For a major release much more consideration is needed.</label>
+            <label for="changes">For a patch release the default is usually fine (links to our hotfixes and Git history). A list of changes is rarely of much use and takes many hours to put together. Users should just stay updated regardless, and will know if there is some specific hotfix that was already made available to them. For a major release much more consideration is needed.</label>
             <textarea name="changes" id="changes" style="width: 100%" cols="40" rows="20">' . escape_html($changes) . '</textarea>
             </fieldset>
             <fieldset>
@@ -426,12 +426,12 @@ function phase_2()
             </ul></li>
 
             <li><strong>Update compo.sr</strong>:<ul>
-                <li>Do a git pull/checkout to get to the <kbd>composr_homesite</kbd> branch</li>
-                <li>Do a git merge of the <kbd>master</kbd> branch to update the branch</li>
+                <li>Do a Git pull/checkout to get to the <kbd>composr_homesite</kbd> branch</li>
+                <li>Do a Git merge of the <kbd>master</kbd> branch to update the branch</li>
                 <li>Make sure the site still works, as you may have just upgraded compo.sr to a new Composr CMS version; common sense needed</li>
                 <li>Git commit/push the updated branch
                 <li>Close the site on the server</li>
-                <li>Do a git pull of the latest branch onto the server</li>
+                <li>Do a Git pull of the latest branch onto the server</li>
                 <li>Make sure things are working on the server</li>
                 <li>Re-open the site on the server</li>
                 <li>Make sure the history on the vision page is up-to-date</li>

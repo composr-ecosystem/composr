@@ -44,7 +44,7 @@ class ___performance_test_set extends cms_test_case
         'adminzone:static_export',
 
         // Irrevocably slow for some other reason
-        'adminzone:admin_addons:addon_export', // Does full file-system scan, particularly slow on a full git clone
+        'adminzone:admin_addons:addon_export', // Does full file-system scan, particularly slow on a full Git clone
     ];
     protected $only_zone = null;
 

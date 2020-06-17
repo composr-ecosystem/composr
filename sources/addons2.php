@@ -57,7 +57,7 @@ function resolve_addon_dependency_problems(&$installing, &$uninstalling)
         $addon_names_to_filenames[$addon_info['name']] = $addon_file;
     }
 
-    // Only uninstall if we're not working from a git repository
+    // Only uninstall if we're not working from a Git repository
     if (file_exists(get_file_base() . '/.git')) {
         $uninstalling = [];
     }

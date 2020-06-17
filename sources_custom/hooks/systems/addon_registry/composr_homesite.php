@@ -94,7 +94,7 @@ class Hook_addon_registry_composr_homesite
  - Error message explainer system for Composr
  - Various other scripts for running compo.sr
 
-This addon does not contain the compo.sr install code and the overall site and theme. That is not categorised into an addon, but is in the composr_homesite git branch.
+This addon does not contain the compo.sr install code and the overall site and theme. That is not categorised into an addon, but is in the composr_homesite Git branch.
 ';
     }
 

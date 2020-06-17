@@ -65,7 +65,7 @@ function git_status__browse($include_ignored = null)
 
     $branch = find_branch();
     if ($branch === null) {
-        warn_exit('Could not find git branch, git may not be operating correctly (at least via the web server)');
+        warn_exit('Could not find Git branch, Git may not be operating correctly (at least via the web server)');
     }
 
     $num_unsynched_local_commits = num_unsynched_local_commits();

@@ -92,7 +92,7 @@ If running on Windows, you need to install the following commands in your path o
  - Infozip\'s zip.exe (ftp://ftp.info-zip.org/pub/infozip/win32/zip231xn-x64.zip)
  - gzip.exe (http://gnuwin32.sourceforge.net/packages/gzip.htm), and gunzip.exe (copy gzip.exe to gunzip.exe)
  - tar.exe (http://gnuwin32.sourceforge.net/packages/gtar.htm)
-You may want to put them in your git \'cmd\' directory, as that is in your path.
+You may want to put them in your Git \'cmd\' directory, as that is in your path.
 ';
     }
 

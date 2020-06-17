@@ -1504,7 +1504,7 @@ where:
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$GALLERY_VIDEO_FOR_URL,uploads/galleries/foo.mov}</td>
-			<td>Get the gallery video ID for a named URL, importing to a new video if needed. This is useful for managing documentation out of git, referencing videos that will then be synchronised with YouTube upon first reference. You'll likely use this symbol to pass as a parameter to the <kbd>main_content</kbd> block.</td>
+			<td>Get the gallery video ID for a named URL, importing to a new video if needed. This is useful for managing documentation out of Git, referencing videos that will then be synchronised with YouTube upon first reference. You'll likely use this symbol to pass as a parameter to the <kbd>main_content</kbd> block.</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$GENERATE_CAPTCHA}</td>

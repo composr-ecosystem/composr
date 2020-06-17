@@ -14,7 +14,7 @@
  */
 
 /*
-Run this script after installing a fresh site. Don't run the Setup Wizard or do any config before running it. template.sql will be generated and it should replace the template.sql in git.
+Run this script after installing a fresh site. Don't run the Setup Wizard or do any config before running it. template.sql will be generated and it should replace the template.sql in Git.
 */
 
 /*EXTRA FUNCTIONS: shell_exec*/

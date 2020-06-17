@@ -88,7 +88,7 @@ class Hook_addon_registry_git_status
     {
         return 'Adds an administrative Git Status module.
 
-This is useful when using Git for deployment on staging and live servers, where non-development staff are making on-server changes through the Composr UI that regularly need to be re-synched with the main Git repository. It helps you assess on-server and development changes, as well as get server changes back onto a development machine for proper committing through git.';
+This is useful when using Git for deployment on staging and live servers, where non-development staff are making on-server changes through the Composr UI that regularly need to be re-synched with the main Git repository. It helps you assess on-server and development changes, as well as get server changes back onto a development machine for proper committing through Git.';
     }
 
     /**

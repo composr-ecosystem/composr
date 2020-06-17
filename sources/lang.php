@@ -958,7 +958,7 @@ function create_selection_list_langs($select_lang = null, $show_unset = false)
  * @param  boolean $insert_as_admin Whether to insert it as an admin (any Comcode parsing will be carried out with admin privileges)
  * @param  ?string $pass_id The special identifier for this content language string on the page it will be displayed on; this is used to provide an explicit binding between languaged elements and greater templated areas (null: none)
  * @param  boolean $preparse_mode Whether to generate a fatal error if there is invalid Comcode
- * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+ * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
  * @return array The content language string save fields
  */
 function insert_lang_comcode($field_name, $text, $level, $db = null, $insert_as_admin = false, $pass_id = null, $preparse_mode = true, $save_as_volatile = false)
@@ -990,7 +990,7 @@ function insert_lang_comcode($field_name, $text, $level, $db = null, $insert_as_
  * @param  ?string $pass_id The special identifier for this content language string on the page it will be displayed on; this is used to provide an explicit binding between languaged elements and greater templated areas (null: none)
  * @param  ?string $text_parsed Assembled Tempcode portion (null: work it out)
  * @param  boolean $preparse_mode Whether to generate a fatal error if there is invalid Comcode
- * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+ * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to Git)
  * @return array The content language string save fields
  */
 function insert_lang($field_name, $text, $level, $db = null, $comcode = false, $id = null, $lang = null, $insert_as_admin = false, $pass_id = null, $text_parsed = null, $preparse_mode = true, $save_as_volatile = false)

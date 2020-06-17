@@ -603,7 +603,7 @@ I have just explained the history of Tempcode so I can make an important point -
 [title="3"]Development mode[/title]
 
 [media description="" width="250" float="right" framed="0"]data_custom/images/docs/codebook_1b/1.jpg[/media]
-If Composr is running out of a git repository, or with our own custom version of PHP, it will automatically run inside 'development mode'. Development mode involves a number of intentionally quirky and strict changes to how Composr runs, including:
+If Composr is running out of a Git repository, or with our own custom version of PHP, it will automatically run inside 'development mode'. Development mode involves a number of intentionally quirky and strict changes to how Composr runs, including:
  - You will get error messages if you use too many queries, unless [tt]push_query_limiting(false);[/tt] is done.
  - Cookies will be disabled, forcing use of [tt]keep_session[/tt] for session propagating. This helps us make sure Composr doesn't need cookies to run.
  - Persistent caching will randomly toggle between on and off (this can cause strange XML errors occasionally due to a race condition in the text-based persistent cache -- try refreshing the page if you get random XML errors).
@@ -1087,16 +1087,16 @@ The following steps are required for correct use of Composr's language/Comcode/a
 
 [title="3"]Non-bundled addons[/title]
 
-If you are working with the Composr git repository, you can commit addons into git without them having to be a part of Composr.
+If you are working with the Composr Git repository, you can commit addons into Git without them having to be a part of Composr.
 
-Only do this if the addon would generally be useful to a decent number of people -- things specific to one website, or one specific kind of website, should not be in the official git repository (unless it is a part of the Composr build/publish/website infrastructure).
+Only do this if the addon would generally be useful to a decent number of people -- things specific to one website, or one specific kind of website, should not be in the official Git repository (unless it is a part of the Composr build/publish/website infrastructure).
 
 To add the addon as non-bundled:
  - Decide on the informal and formal names for your addon (e.g. "Fun time" and [tt]fun_time[/tt])
  - Save files into [tt]*_custom[/tt] directories wherever possible.
  - Create a [tt]sources_custom/hooks/systems/addon_registry/<addon_name>.php[/tt] file that lists [i]all[/i] the files relating to your addon (including the addon_registry hook itself). Of course, all other settings in the addon_registry hook should be filled out.
  - Put a screenshot in [tt]data_custom/addon_screenshots[/tt]
- - 'Add' the files to git, commit and push
+ - 'Add' the files to Git, commit and push
 
 Your addon can then be managed through the bugfix push system, and will be pushed when the addons are bulk-uploaded (done as a part of the new version release process).
 

@@ -1753,9 +1753,9 @@ function step_5_write_config()
     $config_contents .= '
 if (!function_exists(\'git_repos\')) {
     /**
-     * Find the git branch name. This is useful for making this config file context-adaptive (i.e. dev settings vs production settings).
+     * Find the Git branch name. This is useful for making this config file context-adaptive (i.e. dev settings vs production settings).
      *
-     * @return ?ID_TEXT Branch name (null: not in git)
+     * @return ?ID_TEXT Branch name (null: not in Git)
      */
     function git_repos()
     {
@@ -2135,7 +2135,7 @@ function step_5_core_2()
     $trans5 = insert_lang('zone_header_text', do_lang('CMS'), 1, null, false, null, $INSTALL_LANG);
     $h5 = insert_lang('zone_title', do_lang('CMS'), 1, null, false, null, $INSTALL_LANG);
     $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'cms', 'zone_default_page' => 'cms', 'zone_theme' => 'admin', 'zone_require_session' => 1] + $trans5 + $h5);
-    if (file_exists(get_file_base() . '/docs')) { // installing from git
+    if (file_exists(get_file_base() . '/docs')) { // installing from Git
         $trans6 = insert_lang('zone_header_text', '', 1, null, false, null, $INSTALL_LANG);
         $h6 = insert_lang('zone_title', do_lang('TUTORIALS'), 1, null, false, null, $INSTALL_LANG);
         $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'docs', 'zone_default_page' => 'tutorials', 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans6 + $h6);
@@ -2507,7 +2507,7 @@ function step_10_populate_database()
     $ADD_MENU_COUNTER = 100;
 
     $zones = find_all_zones();
-    if (file_exists(get_file_base() . '/docs')) { // installing from git
+    if (file_exists(get_file_base() . '/docs')) { // installing from Git
         $zones[] = 'docs';
     }
     foreach (array_unique($zones)/*in case find_all_zones did find docs*/ as $zone) {
@@ -3066,7 +3066,7 @@ function get_dir_contents($dir, $php = false)
  */
 function get_default_table_prefix()
 {
-    // If we're running out of the main git repository (approximation: test framework exists), then sandbox with a version-specific table prefix
+    // If we're running out of the main Git repository (approximation: test framework exists), then sandbox with a version-specific table prefix
     return file_exists(get_file_base() . '/_tests') ? ('cms' . strval(intval(cms_version_number())) . '_') : 'cms_';
 }
 

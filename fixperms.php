@@ -124,7 +124,7 @@ if ($trial) {
 } else {
     // Git hooks should be writable, and linked in correctly
     if (file_exists(__DIR__ . '/.git')) {
-        echo "0/2 Setting up git hooks to run correctly\n";
+        echo "0/2 Setting up Git hooks to run correctly\n";
 
         echo execute_nicely('git config core.hooksPath git-hooks');
         echo execute_nicely('git config core.fileMode false');
@@ -135,7 +135,7 @@ if ($trial) {
         }
     }
 
-    // Commonly the uploads directory can be missing in git repositories backing up live sites (due to size); but we need it
+    // Commonly the uploads directory can be missing in Git repositories backing up live sites (due to size); but we need it
     if ((!file_exists(__DIR__ . '/uploads')) && (file_exists(__DIR__ . '/data'))) {
         mkdir(__DIR__ . '/uploads', 0755);
     }

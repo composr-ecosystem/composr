@@ -4,14 +4,14 @@ This tutorial will show you how to add a new supplementary tutorial to Composr.
 You will need commit access to do this, which is given out to established community members.
 If you do not yet have commit access then you can submit a merge request, however. This isn't directly described in this tutorial, [url="but GitLab has a tutorial"]https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html[/url].
 
-Git too complex? Very understandable, in which case you can ask a developer to help you, or simply submit a link to your own hosted copy of the tutorial via the obvious spot on the compo.sr website. We prefer to have things in git so they stay online, and stay updated, but something is always better than nothing.
+Git too complex? Very understandable, in which case you can ask a developer to help you, or simply submit a link to your own hosted copy of the tutorial via the obvious spot on the compo.sr website. We prefer to have things in Git so they stay online, and stay updated, but something is always better than nothing.
 
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Adding your tutorial[/title]
 
 [list="1"]
-[*] Set up git. You'll need to pull and install Composr from the git repository, so you have a working site to write into.
+[*] Set up Git. You'll need to pull and install Composr from the Git repository, so you have a working site to write into.
 
 [*] You'll find the tutorials are all written as Comcode pages in [tt]docs/pages/comcode_custom/EN[/tt].
 
@@ -60,7 +60,7 @@ The difficulty level can be either [tt]novice[/tt], [tt]regular[/tt], or [tt]exp
 
 [*] We also have some automated tests for testing the tutorials all stay consistent. To run these go to [tt]http://yourbaseurl/_tests[/tt] and run all the tests starting [tt]tutorial[/tt]. Make sure they pass. Also running the [tt]modularisation[/tt] test is a good idea, to make sure you have updated the [tt]addon_registry[/tt] file correctly, and haven't left unreferenced files.
 
-[*] Add/Commit/Push your work (standard git workflow).
+[*] Add/Commit/Push your work (standard Git workflow).
 
 [*] It would be good to then post on the forum to let people know of your commit (with a link to see it on GitLab), so people can appreciate and discuss your work, and collaborate.
 [/list]

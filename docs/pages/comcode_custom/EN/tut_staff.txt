@@ -71,7 +71,7 @@ Novice users may simply copy & paste stuff from a test/staging site, to a live s
 
 Advanced users who are mainly aiming to stage content changes can use the [page="_SEARCH:tut_repository"]Composr repository[/page] WebDAV feature to mass-copy data between sites.
 
-Programmers managing site deployment also have a number of options, as Composr includes a number of APIs for import/export of content types (for example, menus). These are handy when used in coordination with the popular [tt]git[/tt] tool (i.e. hosting site code in git, and writing deployment scripts to deploy things such as menu changes).
+Programmers managing site deployment also have a number of options, as Composr includes a number of APIs for import/export of content types (for example, menus). These are handy when used in coordination with the popular [tt]git[/tt] tool (i.e. hosting site code in Git, and writing deployment scripts to deploy things such as menu changes).
 
 There's no magic-bullet when it comes to staging site changes in any software because of all the different change factors that could be involved (e.g. interconnected structural changes between two diverged versions of a website). However a skilled team has many options available to them, so can always come up with a workable deployment plan for both small and major site updates.
 

@@ -20,7 +20,7 @@ class dev_environment_test_set extends cms_test_case
 {
     public function testDevMode()
     {
-        $this->assertTrue($GLOBALS['DEV_MODE'], 'Not running out of git or development mode disabled, therefore not all run-time checks enabled');
+        $this->assertTrue($GLOBALS['DEV_MODE'], 'Not running out of Git or development mode disabled, therefore not all run-time checks enabled');
     }
 
     public function testCMSPHP()

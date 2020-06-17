@@ -87,7 +87,7 @@ foreach ($addons as $name => $place) {
     $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $name)) . '-' . get_version_branch(floatval($addon_info['version'])) . '.tar';
     $full_path = get_custom_file_base() . '/exports/addons/' . $file;
 
-    // Copy through times from previous build IF the files didn't change (as git munges mtimes)
+    // Copy through times from previous build IF the files didn't change (as Git munges mtimes)
     if (is_file($full_path)) {
         $tar_file = tar_open($full_path, 'rb');
         $directory = list_to_map('path', tar_get_directory($tar_file));

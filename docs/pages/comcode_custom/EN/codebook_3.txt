@@ -393,7 +393,7 @@ That's life, so try and minimise your dependencies and environment assumptions a
 
 [title="3"]git[/title]
 
-It is in your interest to build up a decent understanding of git, including:
+It is in your interest to build up a decent understanding of Git, including:
  - The very basics: Cloning, Adding files, Committing, Pushing, Pulling
  - Creating branches
  - Merging branches
@@ -417,14 +417,14 @@ The solution is to be logical, calm, and rigorous. Also, over time your ability 
 
 Here is a good workflow for writing high-quality code for Composr:
 1) Work out generally what needs doing.
-2) Create a new feature branch in git, if you are doing dangerous/experimental changes or are coding for core Composr (as opposed to a client website).
+2) Create a new feature branch in Git, if you are doing dangerous/experimental changes or are coding for core Composr (as opposed to a client website).
 3) Lay out the basic structure of how the code will come together (files, classes, functions).
 4) Document the solution using pseudo-code comments throughout the structure. Put a "TODO" comment under each of the pseudo-code comments.
 5) Fill in the TODOs with real code. Make sure you are writing quality code and matching appropriate coding standards.
 6) Run the ocProducts Code Quality checker on the code. Specifically: recalculate function signatures, then check the files you've added/changed. Fix any errors found, it should be possible to have zero reported errors with the default settings (all of Composr passes).
 7) Write automated tests to prove to yourself it works well, if appropriate. This makes most sense if your code implements algorithms or APIs. User-interfacing testing is a lot harder, more subtle, and the tests more fragile, so frankly this is usually left to human testers.
 8) Test manually / debug.
-9) Add new files to git, and Commit/push (actually you may do this a few times throughout the work, depending on task length).
+9) Add new files to Git, and Commit/push (actually you may do this a few times throughout the work, depending on task length).
 10) Come back the next day and check over your work. A fresh look often reveals some things you missed before. Also fix any issues that you already realised in the interim (often you will think of things later).
 11) If you created a branch, do whatever is appropriate for it. That might be merging it into the master repository, submitting a merge request on GitLab, or asking a senior developer to review then merge it.
 
@@ -503,9 +503,9 @@ To save time and auto-populate form fields during testing, if you have the Web d
 
 [title="2"]Advanced deployment and customisation[/title]
 
-[title="3"]Using git to deploy[/title]
+[title="3"]Using Git to deploy[/title]
 
-Deploying to a live server using git is a great idea. However, be aware some caveats...
+Deploying to a live server using Git is a great idea. However, be aware some caveats...
 [list="1"]
 [*] Disable dev-mode in the config file using:
 [code="PHP"]
@@ -513,11 +513,11 @@ $SITE_INFO['dev_mode'] = '0';
 [/code]
 git automatically enables dev mode, which intentionally interferes with things to help you develop quality code -- such as adding extra checks, or disabling cookies so that you don't rely on them. This is great for development, where the developer is in control of everything, but not correct for production.
 [*] Use a decent [tt].gitignore[/tt] so you don't get a lot of noise when running [tt]git status[/tt]. Our default one is good but may need tuning.
-[*] Either keep the config file out of git, or put code in there to differentiate between machines via checking [tt]get_hostname()[/tt].
-[*] Make heavy use of git branches so that you don't get stuck having to perfect all code before you can update anything onto the server.
+[*] Either keep the config file out of Git, or put code in there to differentiate between machines via checking [tt]get_hostname()[/tt].
+[*] Make heavy use of Git branches so that you don't get stuck having to perfect all code before you can update anything onto the server.
 [/list]
 
-You can consider a half-way house, by having a full checkout on the server, then separately symlinking specific directories into the main public_html. This is useful if you only want certain directories in git, such as a docs zone (docs in this example being managed offline, and pushed live using git).
+You can consider a half-way house, by having a full checkout on the server, then separately symlinking specific directories into the main public_html. This is useful if you only want certain directories in Git, such as a docs zone (docs in this example being managed offline, and pushed live using Git).
 
 You can also consider multiple checkouts on the server, such as a testing site, and a live site. This allows you to test things with greater care.
 
@@ -584,7 +584,7 @@ Values are like hidden configuration options. They are either hidden because the
  - For back-end developers:
   - [tt]textmate[/tt] -- set this to '1' if you are developing on a local machine and use the {$IS_MAINTAINED,textmate,Apple Mac TextMate editor}. It will cause TextMate editing links to come up in stack traces. You can also adapt other software to work with it, see the Emulating TextMate section.
   - [tt]allow_php_in_templates[/tt] -- set this to '1' to enable the undocumented Tempcode 'PHP' directive, and its short-hand syntax (written like normal PHP long-tags). This allows you to write PHP code inside templates, but please aware there are strong risks associated with this. It means that themes you install may contain PHP code, or people submitting Comcode content may put in PHP code which you could accidentally unwittingly activate when validating content (as it would be validated against your own security credentials). Note this option is not designed to work from Comcode, because Comcode will add HTML formatting around your PHP code, corrupting it (from a security point of view you need to be aware though, as that could be avoided with some care by a hacker)
-  - [tt]git_autopull[/tt] -- set this to '1' if git changes should automatically be pulled every minute (less frequently if the system scheduler interval is longer). Assumes a suEXEC-like server and a git deployment and working [tt]shell_exec[/tt]
+  - [tt]git_autopull[/tt] -- set this to '1' if Git changes should automatically be pulled every minute (less frequently if the system scheduler interval is longer). Assumes a suEXEC-like server and a Git deployment and working [tt]shell_exec[/tt]
  - Interface tuning for usability:
   - [tt]disable_multi_homed_upload__cns_avatar[/tt] -- set this to '1' to not allow members to put in a URL for their avatar
   - [tt]disable_multi_homed_upload__cns_photo[/tt] -- set this to '1' to not allow members to put in a URL for their photo

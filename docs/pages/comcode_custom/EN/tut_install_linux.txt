@@ -149,20 +149,20 @@ Specifically on Rackspace Cloud, you will need to set execution permissions of t
  - Open your SFTP/FTP client and find [tt]install.php[/tt]
  - Access the permissions for the file, and remove [tt]write[/tt] access for the [tt]owner[/tt], [tt]group[/tt], and [tt]others[/tt] (the UNIX code for this is [tt]444[/tt])
 
-[title="2"]Working out of git (advanced)[/title]
+[title="2"]Working out of Git (advanced)[/title]
 
-It is possible to run Composr direct from a [url="main git repository"]{$COMPOSR_REPOS_URL}[/url] checkout.
+It is possible to run Composr direct from a [url="main Git repository"]{$COMPOSR_REPOS_URL}[/url] checkout.
 
-However, be aware the main git repository contains all non-bundled addons. It is used by developers who want to keep everything in the ecosystem in-harmony when developing new features.
+However, be aware the main Git repository contains all non-bundled addons. It is used by developers who want to keep everything in the ecosystem in-harmony when developing new features.
 
-If you are going to run from the main git repository, it is best to install it properly rather than just downloading the ZIP from GitLab. Then you can do [tt]git pull[/tt] commands whenever you want to update the code with the latest changes.
+If you are going to run from the main Git repository, it is best to install it properly rather than just downloading the ZIP from GitLab. Then you can do [tt]git pull[/tt] commands whenever you want to update the code with the latest changes.
 
-If you are a programmer making your own standalone site you can use git, but you should make your own repository from a normal Composr install.
+If you are a programmer making your own standalone site you can use Git, but you should make your own repository from a normal Composr install.
 
-Here is some specific advice for people working from our git repository:
+Here is some specific advice for people working from our Git repository:
  - To temporarily turn off addons, use safe mode ([tt]&keep_safe_mode=1[/tt])
  - You'll want to uninstall lots of non-bundled addons hosted in the repository. When merging with upstream files may come back, so there is a script [tt]delete_alien_files.php[/tt] which should help you decide what files to delete.
- - Running from git runs Composr in dev mode, which adds extra constraints and checks (or maybe even removes some designed for live sites). No live site should ever be left in dev mode. To change that add this to [tt]_config.php[/tt]: [tt]$SITE_INFO['dev_mode'] = '0';[/tt]
+ - Running from Git runs Composr in dev mode, which adds extra constraints and checks (or maybe even removes some designed for live sites). No live site should ever be left in dev mode. To change that add this to [tt]_config.php[/tt]: [tt]$SITE_INFO['dev_mode'] = '0';[/tt]
  - To stop Composr complaints about the installer being there, while also blocking the installer from running, create empty [tt]install_ok[/tt] and [tt]install_locked[/tt] files.
 
 [title="2"]See also[/title]

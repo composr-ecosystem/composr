@@ -633,9 +633,9 @@ global \$SITE_INFO;
 
 if (!function_exists('git_repos')) {
     /**
-     * Find the git branch name. This is useful for making this config file context-adaptive (i.e. dev settings vs production settings).
+     * Find the Git branch name. This is useful for making this config file context-adaptive (i.e. dev settings vs production settings).
      *
-     * @return ?ID_TEXT Branch name (null: not in git)
+     * @return ?ID_TEXT Branch name (null: not in Git)
      */
     function git_repos()
     {
