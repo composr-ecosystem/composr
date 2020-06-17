@@ -100,6 +100,11 @@ SetEnvIfNoCase Request_URI \.tar$ no-gzip dont-vary
 # Exotic file types we may want
 AddType text/vtt .vtt
 
+<IfModule mod_alias.c>
+# Security - block access to .git
+RedirectMatch 404 /\.git
+</IfModule>
+
 <IfModule mod_rewrite.c>
 
 # Needed for mod_rewrite. Disable this line if your server does not have AllowOverride permission (can be one cause of Internal Server Errors)
@@ -190,6 +195,7 @@ RewriteRule ^([^/\&\?]+)\.htm$ index.php\?page=$1 [L,QSA]
 #RewriteRule ^([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$ index.php\?page=$1&type=$2&id=$3 [L,QSA]
 #RewriteRule ^([^/\&\?]+)/([^/\&\?]*)$ index.php\?page=$1&type=$2 [L,QSA]
 #RewriteRule ^([^/\&\?]+)$ index.php\?page=$1 [L,QSA]
+
 </IfModule>
 
 
