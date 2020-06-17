@@ -1,5 +1,5 @@
 <div class="wide_table_wrap" itemprop="mainContentOfPage" content="true" itemscope="itemscope" itemtype="http://schema.org/Table">
-	<table class="columned_table results_table wide_table">
+	<table class="columned_table results_table wide_table autosized_table">
 		{+START,IF,{$NOT,{$MOBILE}}}
 			<colgroup>
 				{$SET,INC,0}
