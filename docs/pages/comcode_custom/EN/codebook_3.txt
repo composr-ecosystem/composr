@@ -521,6 +521,8 @@ You can consider a half-way house, by having a full checkout on the server, then
 
 You can also consider multiple checkouts on the server, such as a testing site, and a live site. This allows you to test things with greater care.
 
+Make sure your web server configuration blocks access to the [tt].git[/tt] directory. The default Composr [tt].htaccess[/tt] file should do this for Apache users.
+
 [title="3"]Hidden features inside Composr[/title]
 
 Composr contains a number of hidden 'values', 'keep' parameters, and empty file flags. These allow activation of special functionality that isn't considered important/mainstream enough to warrant user-interface space within Composr.

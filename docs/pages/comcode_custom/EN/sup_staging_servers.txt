@@ -85,6 +85,8 @@ You may want to run [tt]git config core.fileMode false[/tt], as you are unlikely
 
 There is a non-bundled addon called 'Git Status' which provides a nice UI to seeing what changes have been made on-server and off-server.
 
+Make sure your web server configuration blocks access to the [tt].git[/tt] directory. The default Composr [tt].htaccess[/tt] file should do this for Apache users.
+
 [title="2"]Synching data[/title]
 
 Initially you can push a database live just by doing an SQL dump and import using standard MySQL tools. However, it becomes much more difficult to managing subsequent changes as your live server will have data that you cannot just overwrite with data from a development machine (you would lose live data and inject test data).
