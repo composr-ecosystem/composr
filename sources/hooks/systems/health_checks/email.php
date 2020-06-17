@@ -579,6 +579,9 @@ class Hook_health_check_email extends Hook_Health_Check
 
         $mbox = @imap_open($server_spec . $folder, $username, $password);
         $this->assertTrue($mbox !== false, 'Cannot connect to IMAP server');
+        if ($mbox !== false) {
+            imap_close($mbox);
+        }
     }
 
     /**
