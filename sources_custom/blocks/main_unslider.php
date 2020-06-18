@@ -63,7 +63,7 @@ class Block_main_unslider
         require_css('unslider');
 
         $pages = explode(',', isset($map['pages']) ? $map['pages'] : 'slide1,slide2,slide3,slide4,slide5,slide6');
-        $width = isset($map['width']) ? $map['width'] : '100%';
+        $width = isset($map['width']) ? $map['width'] : '';
         if ($width == '100%') {
             $width = '';
         }
