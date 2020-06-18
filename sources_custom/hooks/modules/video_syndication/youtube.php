@@ -94,7 +94,8 @@ class Hook_video_syndication_youtube
                     'part' => 'snippet,status',
                     'id' => $remote_id,
                 ];
-                $result = $this->_http($url, $params);
+                $http_verb = 'GET';
+                $result = $this->_http($url, $params, $http_verb);
 
                 if (!empty($result['items'])) {
                     if ($standard_format) {
@@ -108,7 +109,7 @@ class Hook_video_syndication_youtube
                     }
                 }
             } catch (Exception $e) {
-                $this->convert_exception_to_attached_message($url, $e);
+                $this->convert_exception_to_attached_message($url, $http_verb, $e);
                 return null;
             }
         } else { // Listing all linked videos
@@ -119,7 +120,8 @@ class Hook_video_syndication_youtube
                     'part' => 'contentDetails',
                     'mine' => true,
                 ];
-                $result = $this->_http($url, $params);
+                $http_verb = 'GET';
+                $result = $this->_http($url, $params, $http_verb);
                 $playlist_id = $result['items'][0]['contentDetails']['relatedPlaylists']['uploads'];
 
                 $next_page_token = null;
@@ -133,7 +135,8 @@ class Hook_video_syndication_youtube
                     if ($next_page_token !== null) {
                         $params['pageToken'] = $next_page_token;
                     }
-                    $result = $this->_http($url, $params);
+                    $http_verb = 'GET';
+                    $result = $this->_http($url, $params, $http_verb);
 
                     foreach ($result['items'] as $remote_video) {
                         if ($standard_format) {
@@ -164,7 +167,7 @@ class Hook_video_syndication_youtube
                     }
                 } while ($next_page_token !== null);
             } catch (Exception $e) {
-                $this->convert_exception_to_attached_message($url, $e);
+                $this->convert_exception_to_attached_message($url, $http_verb, $e);
                 return null;
             }
         }
@@ -237,23 +240,25 @@ class Hook_video_syndication_youtube
         try {
             $url = 'https://www.googleapis.com/upload/youtube/v3/videos';
             $params = [
+                'uploadType' => 'media',
                 'part' => 'snippet,status',
             ];
             $json = $this->generate_video_json($video, true);
-            $metadata_http_result = $this->_http_lowlevel($url, $params, 'POST', $json, 1000.0, [], null, 'video/*');
+            $http_verb = 'POST';
+            $teeup_http_result = $this->_http_lowlevel($url, $params, $http_verb, $json, 1000.0, ['X-Upload-Content-Length' => filesize($file_path), 'X-Upload-Content-Type' => $mime_type], null, 'video/*');
 
             // Error?
-            if ($metadata_http_result->message != '200') {
-                if (empty($metadata_http_result->data)) {
-                    throw new Exception(($metadata_http_result->message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($metadata_http_result->message_b));
+            if ($teeup_http_result->message != '200') {
+                if (empty($teeup_http_result->data)) {
+                    throw new Exception(($teeup_http_result->message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($teeup_http_result->message_b));
                 }
 
-                $metadata_result = @json_decode($metadata_http_result->data, true);
+                $teeup_result = @json_decode($teeup_http_result->data, true);
 
-                if (is_array($metadata_result)) {
-                    throw new Exception(@strval($metadata_result['error']['message']), @strval($metadata_result['error']['code']));
+                if (is_array($teeup_result)) {
+                    throw new Exception(@strval($teeup_result['error']['message']), @strval($teeup_result['error']['code']));
                 } else {
-                    throw new Exception($metadata_http_result->data);
+                    throw new Exception($teeup_http_result->data);
                 }
             }
         } catch (Exception $e) {
@@ -262,17 +267,19 @@ class Hook_video_syndication_youtube
                 @unlink($file_path);
             }
 
-            $this->convert_exception_to_attached_message($url, $e);
+            $this->convert_exception_to_attached_message($url, $http_verb, $e);
             return null;
         }
 
         // Upload actual video file
         try {
-            $url = $metadata_http_result->download_url;
+@var_dump($teeup_http_result);exit();//TODO
+//            $url = $metadata_http_result->download_url;
             $params = [];
-            $result = $this->_http($url, $params, 'PUT', null, 10000.0, [], $file_path, $mime_type, false);
+            $http_verb = 'PUT';
+            $result = $this->_http($url, $params, $http_verb, null, 10000.0, [], $file_path, $mime_type, false);
         } catch (Exception $e) {
-            $this->convert_exception_to_attached_message($url, $e);
+            $this->convert_exception_to_attached_message($url, $http_verb, $e);
             return null;
         } finally {
             // Cleanup
@@ -294,13 +301,14 @@ class Hook_video_syndication_youtube
                         try {
                             $url = 'https://www.googleapis.com/upload/youtube/v3/thumbnails/set';
                             $params = ['videoId' => $result['snippet']['id']];
-                            $result = $this->_http($url, $params, 'POST', null, 1000.0, [], $temppath_b, 'image/png', false);
+                            $http_verb = 'POST';
+                            $result = $this->_http($url, $params, $http_verb, null, 1000.0, [], $temppath_b, 'image/png', false);
                         } catch (Exception $e) {
                             // We do not care if this fails
                         }
                     }
                 } catch (Exception $e) {
-                    $this->convert_exception_to_attached_message($url, $e);
+                    $this->convert_exception_to_attached_message($url, $http_verb, $e);
                     return null;
                 } finally {
                     // Cleanup
@@ -353,9 +361,10 @@ class Hook_video_syndication_youtube
                 'id' => $video['remote_id'],
                 'part' => 'snippet,status',
             ];
-            $result = $this->_http($url, $params, 'PUT', $json);
+            $http_verb = 'PUT';
+            $result = $this->_http($url, $params, $http_verb, $json);
         } catch (Exception $e) {
-            $this->convert_exception_to_attached_message($url, $e);
+            $this->convert_exception_to_attached_message($url, $http_verb, $e);
             return null;
         }
         return $this->process_remote_video($result);
@@ -366,9 +375,10 @@ class Hook_video_syndication_youtube
         try {
             $url = 'https://www.googleapis.com/youtube/v3/videos';
             $params = ['id' => $video['remote_id']];
-            $result = $this->_http($url, $params, 'DELETE');
+            $http_verb = 'DELETE';
+            $result = $this->_http($url, $params, $http_verb);
         } catch (Exception $e) {
-            $this->convert_exception_to_attached_message($url, $e);
+            $this->convert_exception_to_attached_message($url, $http_verb, $e);
             return false;
         }
         return true;
@@ -386,9 +396,10 @@ class Hook_video_syndication_youtube
                 ],
             ];
             $json = json_encode($request);
-            $result = $this->_http($url, $params, 'POST', $json);
+            $http_verb = 'POST';
+            $result = $this->_http($url, $params, $http_verb, $json);
         } catch (Exception $e) {
-            $this->convert_exception_to_attached_message($url, $e);
+            $this->convert_exception_to_attached_message($url, $http_verb, $e);
             return false;
         }
         return true;
@@ -437,9 +448,10 @@ class Hook_video_syndication_youtube
             try {
                 $url = 'https://www.googleapis.com/youtube/v3/videoCategories';
                 $params = ['part' => 'snippet', 'regionCode' => $country];
-                $_categories = $this->_http($url, $params, 'GET', null, 6.0, [], null, 'application/json', true, true);
+                $http_verb = 'GET';
+                $_categories = $this->_http($url, $params, $http_verb, null, 6.0, [], null, 'application/json', true, true);
             } catch (Exception $e) {
-                $this->convert_exception_to_attached_message($url, $e);
+                $this->convert_exception_to_attached_message($url, $http_verb, $e);
                 return [1 => do_lang('GENERAL')];
             }
             foreach ($_categories['items'] as $category) {
@@ -551,6 +563,7 @@ class Hook_video_syndication_youtube
             'http_verb' => $http_verb,
             'raw_content_type' => $content_type,
             'ignore_http_status' => true,
+            'no_redirect' => true,
         ];
         if ($text) {
             $options['convert_to_internal_encoding'] = true;
@@ -565,10 +578,10 @@ class Hook_video_syndication_youtube
         return $http_result;
     }
 
-    protected function convert_exception_to_attached_message($url, $e)
+    protected function convert_exception_to_attached_message($url, $http_verb, $e)
     {
         require_lang('gallery_syndication_youtube');
-        $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage(), escape_html($url));
+        $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage(), [escape_html($url), escape_html($http_verb)]);
 fatal_exit($error_msg);//TODO
         require_code('failure');
         relay_error_notification($error_msg->evaluate());

@@ -154,7 +154,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $_data = convert_to_internal_encoding($_data, get_charset(), 'utf-8');
 
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or Google issue
-            $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => [$_data], 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json']);
+            $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => [$_data], 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
 
             if ($http_result->data !== null) {
                 break;
@@ -164,13 +164,19 @@ class Hook_health_check_security extends Hook_Health_Check
             }
         }
 
-        $this->assertTrue(!in_array($http_result->message, ['401', '403']), 'Error with our Google Safe Browsing API key (' . $http_result->message . ')');
-        $this->assertTrue(!in_array($http_result->message, ['400', '501', '503', '504']), 'Internal error with our Google Safe Browsing check (' . $http_result->message . ')');
+        $result = @json_decode($http_result->data, true);
+
+        if (isset($result['error']['message'])) {
+            $error_message = $result['error']['message'];
+        } else {
+            $error_message = $http_result->message;
+        }
+
+        $this->assertTrue(!in_array($http_result->message, ['401', '403']), 'Error with our Google Safe Browsing API key (' . $error_message . ')');
+        $this->assertTrue(!in_array($http_result->message, ['400', '501', '503', '504']), 'Internal error with our Google Safe Browsing check (' . $error_message . ')');
 
         $ok = in_array($http_result->message, ['200']);
         if ($ok) {
-            $result = json_decode($http_result->data, true);
-
             if (empty($result['matches'])) {
                 $this->assertTrue(true, 'Malware advisory provided by [url="Google"]https://developers.google.com/safe-browsing/v3/advisory[/url]');
             } else {

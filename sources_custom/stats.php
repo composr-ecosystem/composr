@@ -87,7 +87,6 @@ function get_google_search_console_data($_start_month = null, $_end_month = null
         'post_params' => [$json],
         'raw_post' => true,
         'raw_content_type' => 'application/json',
-        'ignore_http_status' => true,//TODO
     ];
     $_result = http_get_contents($url, $options);
 

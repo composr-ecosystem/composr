@@ -85,10 +85,15 @@ class Hook_health_check_youtube extends Hook_Health_Check
             // Direct querying used by youtube_channel_integration_block addon...
 
             $channel_name = 'ocportal';
-            $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . urlencode($channel_name) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true]));
-            $playlist_id = $channel->items[0]->contentDetails->relatedPlaylists->uploads;
-            $playlist_items = json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&playlistId=' . urlencode($playlist_id) . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true]));
-            $this->assertTrue(array_key_exists(0, $playlist_items->items), 'Could not search for any video on a public YouTube channel');
+            $playlist_search_response = http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . urlencode($channel_name) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
+            $channel = @json_decode($playlist_search_response);
+            if (isset($channel->items[0]->contentDetails->relatedPlaylists->uploads)) {
+                $playlist_id = $channel->items[0]->contentDetails->relatedPlaylists->uploads;
+                $playlist_items = json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&playlistId=' . urlencode($playlist_id) . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]));
+                $this->assertTrue(isset($playlist_items->items) && array_key_exists(0, $playlist_items->items), 'Could not search for any video on a public YouTube channel');
+            } else {
+                $this->assertTrue(false, 'Could not find playlist ID for YouTube uploads' . (isset($channel->error->message) ? ('; ' . $channel->error->message) : ''));
+            }
         }
     }
 }
