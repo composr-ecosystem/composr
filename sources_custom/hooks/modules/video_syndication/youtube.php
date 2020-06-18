@@ -240,12 +240,12 @@ class Hook_video_syndication_youtube
         try {
             $url = 'https://www.googleapis.com/upload/youtube/v3/videos';
             $params = [
-                'uploadType' => 'media',
-                'part' => 'snippet,status',
+                'uploadType' => 'resumable',
+                'part' => 'snippet,status,contentDetails',
             ];
             $json = $this->generate_video_json($video, true);
             $http_verb = 'POST';
-            $teeup_http_result = $this->_http_lowlevel($url, $params, $http_verb, $json, 1000.0, ['X-Upload-Content-Length' => filesize($file_path), 'X-Upload-Content-Type' => $mime_type], null, 'video/*');
+            $teeup_http_result = $this->_http_lowlevel($url, $params, $http_verb, $json, 1000.0, ['X-Upload-Content-Length' => filesize($file_path), 'X-Upload-Content-Type' => $mime_type], null, 'application/json');
 
             // Error?
             if ($teeup_http_result->message != '200') {
@@ -273,8 +273,7 @@ class Hook_video_syndication_youtube
 
         // Upload actual video file
         try {
-@var_dump($teeup_http_result);exit();//TODO
-//            $url = $metadata_http_result->download_url;
+            $url = $teeup_result->download_url;
             $params = [];
             $http_verb = 'PUT';
             $result = $this->_http($url, $params, $http_verb, null, 10000.0, [], $file_path, $mime_type, false);
@@ -429,7 +428,7 @@ class Hook_video_syndication_youtube
             'snippet' => [
                 'title' => $video['title'],
                 'description' => $video['description'],
-                'tags' => $_tags,
+                'tags' => array_values($_tags),
                 'categoryId' => $category_id,
             ],
             'status' => [
@@ -526,13 +525,17 @@ class Hook_video_syndication_youtube
             }
         }
 
-        $youtube_developer_key = get_option('google_apis_api_key');
-        if ($youtube_developer_key != '') {
-            $params['key'] = $youtube_developer_key;
-        }
+        if (strpos($url, '?') === false) {
+            $youtube_developer_key = get_option('google_apis_api_key');
+            if ($youtube_developer_key != '') {
+                $params['key'] = $youtube_developer_key;
+            }
 
-        if (!empty($params)) {
-            $full_url = $url . '?' . http_build_query($params);
+            if (!empty($params)) {
+                $full_url = $url . '?' . http_build_query($params);
+            } else {
+                $full_url = $url;
+            }
         } else {
             $full_url = $url;
         }
