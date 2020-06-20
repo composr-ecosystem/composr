@@ -189,11 +189,11 @@ class Hook_video_syndication_youtube
             $tags[] = $categories[$category_id];
         }
         $tags = array_merge($tags, $snippet['tags']);
-        foreach ($tags as $k) {
+        foreach ($tags as $i => $k) {
             $matches = [];
             if (preg_match('#^sync(\d+)$#', $k, $matches) != 0) {
                 $local_id = intval($matches[1]);
-                array_unshift($tags, $k);
+                unset($tags[$i]);
             }
         }
 
@@ -217,6 +217,8 @@ class Hook_video_syndication_youtube
             'url' => null,
             'thumb_url' => $thumb_url,
             'validated' => ($remote_video['status']['privacyStatus'] == 'public'),
+
+            '_raw' => $remote_video,
         ];
 
         if ($local_id !== null) {
@@ -243,7 +245,7 @@ class Hook_video_syndication_youtube
                 'uploadType' => 'resumable',
                 'part' => 'snippet,status,contentDetails',
             ];
-            $json = $this->generate_video_json($video, true);
+            $json = json_encode($this->generate_video_structure($video, true));
             $http_verb = 'POST';
             $teeup_http_result = $this->_http_lowlevel($url, $params, $http_verb, $json, 1000.0, ['X-Upload-Content-Length' => filesize($file_path), 'X-Upload-Content-Type' => $mime_type], null, 'application/json');
 
@@ -273,7 +275,14 @@ class Hook_video_syndication_youtube
 
         // Upload actual video file
         try {
-            $url = $teeup_result->download_url;
+            $url = $teeup_http_result->download_url;
+            foreach ($teeup_http_result->headers as $header) {
+                $matches = [];
+                if (preg_match("#^Location: (.*)\r\n#i", $header, $matches) != 0) {
+                    $url = $matches[1];
+                }
+            }
+
             $params = [];
             $http_verb = 'PUT';
             $result = $this->_http($url, $params, $http_verb, null, 10000.0, [], $file_path, $mime_type, false);
@@ -299,9 +308,9 @@ class Hook_video_syndication_youtube
                     if (($temppath_a == $temppath_b) && (is_file($temppath_b))) { // Did indeed manage to make a PNG file
                         try {
                             $url = 'https://www.googleapis.com/upload/youtube/v3/thumbnails/set';
-                            $params = ['videoId' => $result['snippet']['id']];
+                            $params = ['videoId' => $result['id']];
                             $http_verb = 'POST';
-                            $result = $this->_http($url, $params, $http_verb, null, 1000.0, [], $temppath_b, 'image/png', false);
+                            $thumb_result = $this->_http($url, $params, $http_verb, null, 1000.0, [], $temppath_b, 'image/png', false);
                         } catch (Exception $e) {
                             // We do not care if this fails
                         }
@@ -352,7 +361,9 @@ class Hook_video_syndication_youtube
             $changes['validated'] = false; // Let the existing one unvalidate, flow on...
         }
 
-        $json = $this->generate_video_json($changes + $video/*PHP has weird overwrite precedence with + operator, opposite to the intuitive ordering*/, !$unbind);
+        $structure = $this->generate_video_structure($changes + $video/*PHP has weird overwrite precedence with + operator, opposite to the intuitive ordering*/, !$unbind);
+        $structure['id'] = $video['remote_id'];
+        $json = json_encode($structure);
 
         try {
             $url = 'https://www.googleapis.com/youtube/v3/videos';
@@ -375,7 +386,8 @@ class Hook_video_syndication_youtube
             $url = 'https://www.googleapis.com/youtube/v3/videos';
             $params = ['id' => $video['remote_id']];
             $http_verb = 'DELETE';
-            $result = $this->_http($url, $params, $http_verb);
+            $request_body = '';
+            $result = $this->_http($url, $params, $http_verb, $request_body);
         } catch (Exception $e) {
             $this->convert_exception_to_attached_message($url, $http_verb, $e);
             return false;
@@ -386,11 +398,16 @@ class Hook_video_syndication_youtube
     public function leave_comment($video, $comment)
     {
         try {
-            $url = 'https://www.googleapis.com/youtube/v3/comments';
+            $url = 'https://www.googleapis.com/youtube/v3/commentThreads';
             $params = ['part' => 'snippet'];
             $request = [
                 'snippet' => [
-                    'textOriginal' => $comment,
+                    'channelId' => $video['_raw']['snippet']['channelId'],
+                    'topLevelComment' => [
+                        'snippet' => [
+                            'textOriginal' => $comment,
+                        ],
+                    ],
                     'videoId' => $video['remote_id'],
                 ],
             ];
@@ -404,7 +421,7 @@ class Hook_video_syndication_youtube
         return true;
     }
 
-    protected function generate_video_json($video, $bind = true)
+    protected function generate_video_structure($video, $bind = true)
     {
         // Match to a category using remote list
         $category_id = 1;
@@ -435,7 +452,7 @@ class Hook_video_syndication_youtube
                 'privacyStatus' => $video['validated'] ? 'public' : 'unlisted',
             ],
         ];
-        return json_encode($request);
+        return $request;
     }
 
     public function get_remote_categories()
@@ -508,7 +525,7 @@ class Hook_video_syndication_youtube
 
         if (is_array($result)) {
             if (isset($result['error'])) {
-                throw new Exception(@strval($result['error']['message']), @strval($result['error']['code']));
+                throw new Exception($result['error']['message'], @strval($result['error']['code']));
             }
         } else {
             throw new Exception($data);
@@ -546,9 +563,7 @@ class Hook_video_syndication_youtube
 
         $files = null;
         if ($file_to_upload !== null) {
-            require_code('mime_types');
-            $mime_type = get_mime_type(get_file_extension($file_to_upload), false);
-            $files = [$mime_type => $file_to_upload];
+            $files = [$file_to_upload];
         }
 
         if (($request_body !== null) && ($text)) {
@@ -560,7 +575,7 @@ class Hook_video_syndication_youtube
             'trigger_error' => false,
             'post_params' => ($request_body === null) ? null : [$request_body],
             'timeout' => $timeout,
-            'raw_post' => $request_body !== null,
+            'raw_post' => ($request_body !== null) || (!empty($files)),
             'files' => $files,
             'extra_headers' => $extra_headers,
             'http_verb' => $http_verb,

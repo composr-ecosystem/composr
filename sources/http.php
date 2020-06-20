@@ -346,9 +346,8 @@ abstract class HttpDownloader
     protected $connecting_url = null;
     protected $raw_payload = null;
     protected $sent_http_post_content = false;
-    protected $put = null;
-    protected $put_path = null;
-    protected $put_no_delete = null;
+    protected $raw_post_handle = null;
+    protected $raw_post_path = null;
 
     // Output
     public $data = null; // ?string. The result returned from the last HTTP lookup.
@@ -480,30 +479,31 @@ abstract class HttpDownloader
 
         $this->raw_payload = ''; // Note that this will contain HTTP headers (it is appended directly after headers with no \r\n between -- so it contains \r\n\r\n itself when the content body is going to start)
         $this->sent_http_post_content = false;
-        $this->put = null;
-        $this->put_path = null;
-        $this->put_no_delete = false;
-        if (($this->post_params !== null) || ($this->raw_post) || (!empty($this->files))) {
+        $this->raw_post_handle = null;
+        $this->raw_post_path = null;
+        if (($this->raw_post) || ($this->post_params !== null) || (!empty($this->files))) {
             if ($this->post_params === null) {
                 $this->post_params = []; // POST is implied
             }
 
             $this->sent_http_post_content = true;
 
-            if ($this->raw_post) {
+            if (($this->raw_post) && (empty($this->post_params)) && (count($this->files) == 1)) {
+                $_postdetails_params = null; // Will use the first file instead
+            } elseif ($this->raw_post) {
                 $_postdetails_params = $this->post_params[0];
             } else {
                 $_postdetails_params = '';//$this->url_parts['scheme'] . '://' . $this->url_parts['host'] . $url2 . '?';
-                if (array_keys($this->post_params) === ['_']) {
-                    $_postdetails_params = $this->post_params['_'];
-                } else {
-                    if (!empty($this->post_params)) {
-                        $_postdetails_params .= http_build_query($this->post_params);
-                    }
+                if (!empty($this->post_params)) {
+                    $_postdetails_params .= http_build_query($this->post_params);
                 }
             }
 
-            if (empty($this->files)) { // If no files, use simple application/x-www-form-urlencoded
+            if ($_postdetails_params === null) { // Direct output from file
+                $this->raw_post_path = $this->files[0];
+                $this->raw_post_handle = fopen($this->files[0], 'rb');
+                $this->raw_payload .= 'Content-Length: ' . strval(filesize($this->files[0])) . "\r\n";
+            } elseif ((empty($this->files))) { // If no files, use simple application/x-www-form-urlencoded
                 if (!$this->add_content_type_header_manually) {
                     if ($this->raw_post) {
                         if (!isset($this->extra_headers['Content-Type'])) {
@@ -522,21 +522,9 @@ abstract class HttpDownloader
                     $this->raw_payload .= "\r\n\r\n";
                 }
             } else { // If files, use more complex multipart/form-data
-                if (($this->http_verb !== null) && (strtolower($this->http_verb) == 'put')) {
-                    $this->put_no_delete = (empty($this->post_params)) && (count($this->files) == 1); // Can we just use the one referenced file as a direct PUT
-                    if ($this->put_no_delete) { // Yes
-                        reset($this->files);
-                        $this->put_path = current($this->files);
-                        $this->put = fopen($this->put_path, 'rb');
-                    } else { // No, we need to spool out HTTP blah to make a new file to PUT
-                        $this->put_path = cms_tempnam();
-                        $this->put = fopen($this->put_path, 'wb');
-                    }
-                }
-
                 $this->divider = uniqid('', true);
                 $raw_payload2 = '';
-                if (($this->put === null) || (!empty($this->post_params)) || (!empty($this->files))) {
+                if ((!empty($this->post_params)) || (!empty($this->files))) {
                     $this->raw_payload .= 'Content-Type: multipart/form-data; boundary="--cms' . $this->divider . '"; charset=' . get_charset() . "\r\n";
                 }
                 foreach ($this->post_params as $key => $val) {
@@ -550,12 +538,8 @@ abstract class HttpDownloader
                     }
                     $raw_payload2 .= $val . "\r\n";
                 }
-                if (($this->put !== null) && (!$this->put_no_delete)) {
-                    fwrite($this->put, $raw_payload2);
-                    $raw_payload2 = '';
-                }
                 foreach ($this->files as $upload_field => $file_path) {
-                    if (($this->put === null) || (!empty($this->post_params)) || (count($this->files) != 1)) {
+                    if ((!empty($this->post_params)) || (count($this->files) != 1)) {
                         $raw_payload2 .= '----cms' . $this->divider . "\r\n";
                         if (strpos($upload_field, '/') === false) {
                             $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . str_replace('"', '\"', basename($file_path)) . '"' . "\r\n";
@@ -572,44 +556,15 @@ abstract class HttpDownloader
                             $this->raw_content_type = $upload_field;
                         }
                     }
-                    if (($this->put !== null) && (!$this->put_no_delete)) {
-                        fwrite($this->put, $raw_payload2);
-                        $raw_payload2 = '';
-                    }
-                    if (($this->put !== null) && (!$this->put_no_delete)) {
-                        $myfile = fopen($file_path, 'rb');
-                        while (!feof($myfile)) {
-                            $data = @fread($myfile, 1024 * 100);
-                            if (($data !== false) && ($data !== null)) {
-                                fwrite($this->put, $data);
-                            } else {
-                                break;
-                            }
-                        }
-                        @fclose($myfile);
-                    } else {
-                        $raw_payload2 .= cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
-                    }
-                    if (($this->put === null) || (!empty($this->post_params)) || (count($this->files) != 1)) {
+                    $raw_payload2 .= cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
+                    if ((!empty($this->post_params)) || (count($this->files) != 1)) {
                         $raw_payload2 .= "\r\n";
                     }
-                    if (($this->put !== null) && (!$this->put_no_delete)) {
-                        fwrite($this->put, $raw_payload2);
-                        $raw_payload2 = '';
+                    if ((!empty($this->post_params)) || (count($this->files) != 1)) {
+                        $raw_payload2 .= '----cms' . $this->divider . "--\r\n";
                     }
                 }
-                if (($this->put === null) || (!empty($this->post_params)) || (count($this->files) != 1)) {
-                    $raw_payload2 .= '----cms' . $this->divider . "--\r\n";
-                }
-                if (($this->put !== null) && (!$this->put_no_delete)) {
-                    fwrite($this->put, $raw_payload2);
-                    $raw_payload2 = '';
-                }
-                if ($this->put !== null) {
-                    $this->raw_payload .= 'Content-Length: ' . strval(filesize($this->put_path)) . "\r\n";
-                } else {
-                    $this->raw_payload .= 'Content-Length: ' . strval(strlen($raw_payload2)) . "\r\n";
-                }
+                $this->raw_payload .= 'Content-Length: ' . strval(filesize($this->raw_post_path)) . "\r\n";
                 $this->raw_payload .= "\r\n" . $raw_payload2;
                 if ($this->add_files_manually) {
                     $this->raw_payload = $raw_payload2; // Other settings will be passed via cURL itself
@@ -956,13 +911,8 @@ abstract class HttpDownloader
     public function __destruct()
     {
         // Cleanup
-        if ($this->put !== null) {
-            fclose($this->put);
-        }
-        if (!$this->put_no_delete) {
-            if ($this->put_path !== null) {
-                @unlink($this->put_path);
-            }
+        if ($this->raw_post_handle !== null) {
+            fclose($this->raw_post_handle);
         }
     }
 }
@@ -1059,7 +1009,7 @@ class HttpDownloaderCurl extends HttpDownloader
         curl_setopt($ch, CURLOPT_TIMEOUT, intval($this->timeout));
 
         // Request type
-        if ($this->http_verb == 'HEAD') {
+        if (($this->http_verb !== null) && (strtolower($this->http_verb) == 'head')) {
             curl_setopt($ch, CURLOPT_NOBODY, true); // Branch needed as doing a HEAD via CURLOPT_CUSTOMREQUEST can cause a timeout bug in cURL
         } else {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->http_verb);
@@ -1079,18 +1029,17 @@ class HttpDownloaderCurl extends HttpDownloader
         foreach ($this->extra_headers as $key => $val) {
             $curl_headers[] = $key . ': ' . $val;
         }
-        if (($this->raw_post) && ((empty($this->files)) || ($this->put !== null))) {
+        if ($this->raw_post) {
             if (!isset($this->extra_headers['Content-Type'])) {
                 $curl_headers[] = 'Content-Type: ' . $this->raw_content_type;
             }
         }
+
         if ($this->post_params !== null) {
-            if ($this->put !== null) {
-                fclose($this->put);
-                $this->put = fopen($this->put_path, 'rb');
+            if ($this->raw_post_handle !== null) {
                 curl_setopt($ch, CURLOPT_PUT, true);
-                curl_setopt($ch, CURLOPT_INFILE, $this->put);
-                curl_setopt($ch, CURLOPT_INFILESIZE, filesize($this->put_path));
+                curl_setopt($ch, CURLOPT_INFILE, $this->raw_post_handle);
+                curl_setopt($ch, CURLOPT_INFILESIZE, filesize($this->raw_post_path));
             } else {
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $this->raw_payload);
@@ -1426,20 +1375,19 @@ class HttpDownloaderSockets extends HttpDownloader
             $out .= 'Host: ' . $this->url_parts['host'] . "\r\n";
             $out .= $this->get_header_string();
             $out .= $this->raw_payload;
-            if (!$this->sent_http_post_content) {
-                $out .= 'Connection: Close' . "\r\n\r\n";
-            }
             @fwrite($mysock, $out);
-            if ($this->put !== null) {
-                rewind($this->put);
-                while (!feof($this->put)) {
-                    $data = @fread($this->put, 1024 * 100);
+            if ($this->raw_post_handle !== null) {
+                while (!feof($this->raw_post_handle)) {
+                    $data = @fread($this->raw_post_handle, 1024 * 100);
                     if (($data !== false) && ($data !== null)) {
                         @fwrite($mysock, $data);
                     } else {
                         break;
                     }
                 }
+            }
+            if (!$this->sent_http_post_content) {
+                $out .= 'Connection: Close' . "\r\n\r\n";
             }
             $data_started = false;
             $input = '';
@@ -1842,8 +1790,8 @@ class HttpDownloaderFileWrapper extends HttpDownloader
             $this->timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', strval($this->timeout));
 
-            if ($this->put !== null) {
-                $this->raw_payload .= cms_file_get_contents_safe($this->put_path, FILE_READ_LOCK);
+            if ($this->raw_post_handle !== null) {
+                $this->raw_payload .= cms_file_get_contents_safe($this->raw_post_path, FILE_READ_LOCK);
             }
 
             $crt_path = get_file_base() . '/data/curl-ca-bundle.crt';

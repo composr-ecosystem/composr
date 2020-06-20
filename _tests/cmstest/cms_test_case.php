@@ -186,6 +186,10 @@ class cms_test_case extends WebTestCase
                 exit('Type column missing');
             }
 
+            if ($row['Option'][0] == '#') { // Comment
+                continue;
+            }
+
             if ($substring_is_at_start) {
                 if ($prefix == '') {
                     $does_match = (substr($option_name, 0, strlen($substring)) == $substring);
