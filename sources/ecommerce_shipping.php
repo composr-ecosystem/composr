@@ -212,8 +212,7 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
     $url = 'https://api.goshippo.com/shipments/';
     $options = [
         'convert_to_internal_encoding' => true,
-        'post_params' => [$_request],
-        'raw_post' => true,
+        'post_params' => $_request,
         'timeout' => 20.0,
         'extra_headers' => [
             'Authorization' => 'ShippoToken ' . $shippo_token,

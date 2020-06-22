@@ -151,9 +151,8 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
         $_request = json_encode($request);
         require_code('character_sets');
         $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
-        $post_params = [$_request];
 
-        $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $post_params, 'timeout' => 20.0, 'raw_post' => true, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+        $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
         $response = json_decode($_response, true);
         $this->assertTrue((is_array($response)) && ($response['ResponseType'] == 3), 'Could not perform TaxCloud ping request');
     }

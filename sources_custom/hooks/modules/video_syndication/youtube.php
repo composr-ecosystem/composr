@@ -565,11 +565,6 @@ class Hook_video_syndication_youtube
             $extra_headers['Authorization'] = 'Bearer ' . $this->_access_token;
         }
 
-        $files = null;
-        if ($file_to_upload !== null) {
-            $files = [$file_to_upload];
-        }
-
         if (($request_body !== null) && ($text)) {
             require_code('character_sets');
             $request_body = convert_to_internal_encoding($request_body, get_charset(), 'utf-8');
@@ -577,10 +572,9 @@ class Hook_video_syndication_youtube
 
         $options = [
             'trigger_error' => false,
-            'post_params' => ($request_body === null) ? null : [$request_body],
+            'post_params' => ($request_body === null) ? null : $request_body,
             'timeout' => $timeout,
-            'raw_post' => ($request_body !== null) || (!empty($files)),
-            'files' => $files,
+            'files' => $file_to_upload,
             'extra_headers' => $extra_headers,
             'http_verb' => $http_verb,
             'raw_content_type' => $content_type,

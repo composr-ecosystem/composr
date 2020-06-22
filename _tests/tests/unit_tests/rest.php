@@ -49,12 +49,11 @@ class rest_test_set extends cms_test_case
         }
 
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
-        $post_params = [json_encode(['summary' => 'test'])];
+        $post_params = json_encode(['summary' => 'test']);
         $cookies = [get_session_cookie() => $this->session_id];
-        $raw_post = true;
         $http_verb = 'POST';
         $raw_content_type = 'application/json';
-        $result = http_get_contents($url, ['timeout' => 10.0, 'convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
+        $result = http_get_contents($url, ['timeout' => 10.0, 'convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
         $_result = @json_decode($result, true);
         $this->assertTrue(is_array($_result));
         if (is_array($_result)) {
@@ -80,12 +79,11 @@ class rest_test_set extends cms_test_case
         }
 
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
-        $post_params = [json_encode(['summary' => 'test'])];
+        $post_params = json_encode(['summary' => 'test']);
         $cookies = [get_session_cookie() => $this->session_id];
-        $raw_post = true;
         $http_verb = 'PUT';
         $raw_content_type = 'application/json';
-        $result = http_get_contents($url, ['timeout' => 10.0, 'convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
+        $result = http_get_contents($url, ['timeout' => 10.0, 'convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
         $_result = @json_decode($result, true);
         $this->assertTrue(is_array($_result));
         if (is_array($_result)) {
@@ -108,12 +106,11 @@ class rest_test_set extends cms_test_case
         }
 
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
-        $post_params = [json_encode(['summary' => 'test'])];
+        $post_params = json_encode(['summary' => 'test']);
         $cookies = [get_session_cookie() => $this->session_id];
-        $raw_post = true;
         $http_verb = 'DELETE';
         $raw_content_type = 'application/json';
-        $result = http_get_contents($url, ['timeout' => 10.0, 'convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
+        $result = http_get_contents($url, ['timeout' => 10.0, 'convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
         $_result = @json_decode($result, true);
         $this->assertTrue(is_array($_result));
         if (is_array($_result)) {

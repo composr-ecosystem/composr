@@ -200,9 +200,8 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
             $_request = json_encode($request);
             require_code('character_sets');
             $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
-            $post_params = [$_request];
 
-            $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $post_params, 'timeout' => 20.0, 'raw_post' => true, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+            $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
             $response = json_decode($_response, true);
 
             if ($response['ErrNumber'] == '0') {
@@ -277,11 +276,10 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
             $_request = json_encode($request);
             require_code('character_sets');
             $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
-            $post_params = [$_request];
 
             // Do TaxCloud call...
 
-            $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $post_params, 'timeout' => 20.0, 'raw_post' => true, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+            $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
             $response = json_decode($_response, true);
 
             // Error handling...
@@ -462,9 +460,8 @@ function taxcloud_declare_completed($tracking_id, $txn_id, $member_id, $session_
     $_request = json_encode($request);
     require_code('character_sets');
     $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
-    $post_params = [$_request];
 
-    $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $post_params, 'timeout' => 20.0, 'raw_post' => true, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+    $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
     $response = json_decode($_response, true);
 
     if ($response['ResponseType'] != 3) {

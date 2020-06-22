@@ -51,7 +51,7 @@ function syndicate_spammer_report($ip_addr, $username, $email, $reason, $trigger
         require_code('character_sets');
         $payload = convert_to_internal_encoding($payload, get_charset(), 'utf-8');
 
-        $_result = http_get_contents($torn_url, ['convert_to_internal_encoding' => true, 'http_verb' => 'PUT', 'raw_post' => true, 'post_params' => [$payload], 'trigger_error' => false, 'raw_content_type' => 'application/json']);
+        $_result = http_get_contents($torn_url, ['convert_to_internal_encoding' => true, 'http_verb' => 'PUT', 'post_params' => $payload, 'trigger_error' => false, 'raw_content_type' => 'application/json']);
 
         if ($trigger_error) {
             $result = @json_decode($_result);

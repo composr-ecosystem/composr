@@ -914,14 +914,9 @@ function _transifex($call, $http_verb, $params = [], $trigger_error = true, $tex
 
     if (is_array($params)) {
         $raw_content_type = 'multipart/form-data';
-        $raw_post = false;
     } else {
-        if ($params === null) {
-            $raw_post = false;
-        } else {
+        if ($params !== null) {
             $params = convert_to_internal_encoding($params, get_charset(), 'utf-8');
-            $params = [$params];
-            $raw_post = true;
         }
 
         $raw_content_type = 'application/json';
@@ -931,10 +926,9 @@ function _transifex($call, $http_verb, $params = [], $trigger_error = true, $tex
     $auth = [$username, $password];
     $options = [
         'trigger_error' => $trigger_error,
-        'post_params' => ($http_verb == 'GET') ? null : $params,
+        'post_params' => $params,
         'auth' => $auth,
         'timeout' => 30.0,
-        'raw_post' => $raw_post,
         'http_verb' => $http_verb,
         'raw_content_type' => $raw_content_type,
     ];

@@ -154,7 +154,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $_data = convert_to_internal_encoding($_data, get_charset(), 'utf-8');
 
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or Google issue
-            $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => [$_data], 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+            $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $_data, 'timeout' => 200.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
 
             if ($http_result->data !== null) {
                 break;

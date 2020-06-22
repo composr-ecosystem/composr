@@ -83,6 +83,6 @@ class AndroidPushNotifications
             'Authorization' => 'key=' . $api_access_key,
         ];
         $url = 'https://android.googleapis.com/gcm/send';
-        http_get_contents($url, ['trigger_error' => true, 'post_params' => [$post_params], 'raw_post' => true, 'extra_headers' => $extra_headers, 'raw_content_type' => 'application/json']);
+        http_get_contents($url, ['trigger_error' => true, 'post_params' => $post_params, 'extra_headers' => $extra_headers, 'raw_content_type' => 'application/json']);
     }
 }

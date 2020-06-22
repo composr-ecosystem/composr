@@ -42,8 +42,7 @@ class webdav_test_set extends cms_test_case
         ';
         $result = http_get_contents($webdav_filedump_base_url, [
             'http_verb' => 'PROPFIND',
-            'raw_post' => true,
-            'post_params' => [$xml],
+            'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $guest_cookies,
         ]);
@@ -53,8 +52,7 @@ class webdav_test_set extends cms_test_case
         $file_data = file_get_contents(get_file_base() . '/_tests/assets/media/early_cinema.mp4');
         $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'PUT',
-            'raw_post' => true,
-            'post_params' => [$file_data],
+            'post_params' => $file_data,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
@@ -70,8 +68,7 @@ class webdav_test_set extends cms_test_case
         ';
         $result = http_get_contents($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
-            'raw_post' => true,
-            'post_params' => [$xml],
+            'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
@@ -86,8 +83,7 @@ class webdav_test_set extends cms_test_case
         ';
         $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'PROPFIND',
-            'raw_post' => true,
-            'post_params' => [$xml],
+            'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
@@ -106,8 +102,7 @@ class webdav_test_set extends cms_test_case
         // Test edit
         $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'PUT',
-            'raw_post' => true,
-            'post_params' => [str_repeat('x', 12343)],
+            'post_params' => str_repeat('x', 12343),
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
@@ -122,8 +117,7 @@ class webdav_test_set extends cms_test_case
         ';
         $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'PROPFIND',
-            'raw_post' => true,
-            'post_params' => [$xml],
+            'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
@@ -146,8 +140,7 @@ class webdav_test_set extends cms_test_case
         ';
         $result = http_get_contents($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
-            'raw_post' => true,
-            'post_params' => [$xml],
+            'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
@@ -170,8 +163,7 @@ class webdav_test_set extends cms_test_case
         ';
         $result = http_get_contents($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
-            'raw_post' => true,
-            'post_params' => [$xml],
+            'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
@@ -194,8 +186,7 @@ class webdav_test_set extends cms_test_case
         ';
         $result = http_get_contents($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
-            'raw_post' => true,
-            'post_params' => [$xml],
+            'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);

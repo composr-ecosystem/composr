@@ -315,7 +315,7 @@ abstract class HttpDownloader
     protected $trigger_error = true; // boolean. Whether to throw a Composr error, on error
     protected $no_redirect = false; // boolean. Whether to block redirects (returns null when found)
     protected $ua = 'Composr'; // ~?string. The user-agent to identify as (null: simulate Google Chrome) (false: none, useful to avoid filtering rules on the other end)
-    protected $post_params = null; // ?array. An optional array of POST parameters to send; if this is null, a GET request is used (null: none). If $raw_post is set, it should be [$data]
+    protected $post_params = null; // ?array or string. An optional array of POST parameters to send or a string of a request body; if this is null, a GET request is used for the default for http_verb (null: none)
     protected $cookies = []; // array. An optional array of cookies to send
     protected $accept = null; // ?string. 'accept' header value (null: don't pass one)
     protected $accept_charset = null; // ?string. 'accept-charset' header value (null: don't pass one)
@@ -324,11 +324,10 @@ abstract class HttpDownloader
     protected $referer = null; // ?string. The HTTP referer (null: none)
     protected $auth = null; // ?array. A pair: authentication username and password (null: none)
     protected $timeout = 6.0; // float. The timeout (for connecting/stalling, not for overall download time); usually it is rounded up to the nearest second, depending on the downloader implementation
-    protected $raw_post = false; // boolean. Whether to treat the POST parameters as a raw POST (rather than using MIME)
-    protected $files = []; // array. Files to send. Map between field name to file path
+    protected $files = []; // array or string. Files to send, map between field name to file path; or a file path to use for the whole request body
     protected $extra_headers = []; // array. Extra headers to send
     protected $http_verb = null; // ?string. HTTP verb (null: auto-decide based on other parameters)
-    protected $raw_content_type = 'application/xml'; // string. The content type to use if a raw HTTP post
+    protected $raw_content_type = null; // string. The content type to use if a raw HTTP post
     protected $ignore_http_status = false; // boolean. Return a result regardless of HTTP status
     protected $verifypeer_enabled = true; // boolean. Whether to check SSL certificates
     protected $convert_to_internal_encoding = false; // boolean. Whether to look at the character set of the request (from HTTP headers and BOMs) and convert it
@@ -481,31 +480,34 @@ abstract class HttpDownloader
         $this->sent_http_post_content = false;
         $this->raw_post_handle = null;
         $this->raw_post_path = null;
-        if (($this->raw_post) || ($this->post_params !== null) || (!empty($this->files))) {
+        if (($this->post_params !== null) || (!empty($this->files))) {
             if ($this->post_params === null) {
                 $this->post_params = []; // POST is implied
             }
 
+            if ((is_string($this->files)) && (!empty($this->post_params))) {
+                fatal_exit('Internal error - you cannot do a PUT-style request from a file AND use post parameters at the same time');
+            }
+
             $this->sent_http_post_content = true;
 
-            if (($this->raw_post) && (empty($this->post_params)) && (count($this->files) == 1)) {
+            if (is_string($this->files)) {
                 $_postdetails_params = null; // Will use the first file instead
-            } elseif ($this->raw_post) {
-                $_postdetails_params = $this->post_params[0];
+            } elseif (is_string($this->post_params)) {
+                $_postdetails_params = $this->post_params;
+            } elseif (empty($this->post_params)) {
+                $_postdetails_params = '';
             } else {
-                $_postdetails_params = '';//$this->url_parts['scheme'] . '://' . $this->url_parts['host'] . $url2 . '?';
-                if (!empty($this->post_params)) {
-                    $_postdetails_params .= http_build_query($this->post_params);
-                }
+                $_postdetails_params .= http_build_query($this->post_params);
             }
 
             if ($_postdetails_params === null) { // Direct output from file
-                $this->raw_post_path = $this->files[0];
-                $this->raw_post_handle = fopen($this->files[0], 'rb');
-                $this->raw_payload .= 'Content-Length: ' . strval(filesize($this->files[0])) . "\r\n";
+                $this->raw_post_path = $this->files;
+                $this->raw_post_handle = fopen($this->files, 'rb');
+                $this->raw_payload .= 'Content-Length: ' . strval(filesize($this->files)) . "\r\n";
             } elseif ((empty($this->files))) { // If no files, use simple application/x-www-form-urlencoded
                 if (!$this->add_content_type_header_manually) {
-                    if ($this->raw_post) {
+                    if ($this->raw_content_type !== null) {
                         if (!isset($this->extra_headers['Content-Type'])) {
                             $this->raw_payload .= 'Content-Type: ' . $this->raw_content_type . "\r\n";
                         }
@@ -515,59 +517,56 @@ abstract class HttpDownloader
                     $this->raw_payload .= 'Content-Length: ' . strval(strlen($_postdetails_params)) . "\r\n";
                     $this->raw_payload .= "\r\n";
                 }
-                // curl sets the above itself
+                // ^ curl sets the above itself
 
                 $this->raw_payload .= $_postdetails_params;
-                if (!$this->add_content_type_header_manually) {
-                    $this->raw_payload .= "\r\n\r\n";
-                }
             } else { // If files, use more complex multipart/form-data
                 $this->divider = uniqid('', true);
-                $raw_payload2 = '';
-                if ((!empty($this->post_params)) || (!empty($this->files))) {
-                    $this->raw_payload .= 'Content-Type: multipart/form-data; boundary="--cms' . $this->divider . '"; charset=' . get_charset() . "\r\n";
-                }
+                $raw_payload_mime = '';
                 foreach ($this->post_params as $key => $val) {
-                    $raw_payload2 .= '----cms' . $this->divider . "\r\n";
+                    $raw_payload_mime .= '----cms' . $this->divider . "\r\n";
                     if ($this->raw_post) {
                         if (!isset($this->extra_headers['Content-Type'])) {
-                            $raw_payload2 .= 'Content-Type: ' . $this->raw_content_type . "\r\n\r\n";
+                            $raw_payload_mime .= 'Content-Type: ' . $this->raw_content_type . "\r\n\r\n";
                         }
                     } else {
-                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $key) . '"' . "\r\n\r\n";
+                        $raw_payload_mime .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $key) . '"' . "\r\n\r\n";
                     }
-                    $raw_payload2 .= $val . "\r\n";
+                    $raw_payload_mime .= $val . "\r\n";
                 }
                 foreach ($this->files as $upload_field => $file_path) {
                     if ((!empty($this->post_params)) || (count($this->files) != 1)) {
-                        $raw_payload2 .= '----cms' . $this->divider . "\r\n";
+                        $raw_payload_mime .= '----cms' . $this->divider . "\r\n";
                         if (strpos($upload_field, '/') === false) {
-                            $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . str_replace('"', '\"', basename($file_path)) . '"' . "\r\n";
+                            $raw_payload_mime .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . str_replace('"', '\"', basename($file_path)) . '"' . "\r\n";
 
                             require_code('mime_types');
                             require_code('files');
-                            $raw_payload2 .= 'Content-Type: ' . get_mime_type(get_file_extension($file_path), true) . "; charset=" . get_charset() . "\r\n\r\n";
+                            $raw_payload_mime .= 'Content-Type: ' . get_mime_type(get_file_extension($file_path), true) . "; charset=" . get_charset() . "\r\n\r\n";
                         } else {
                             // mime-type given rather than file-name
-                            $raw_payload2 .= 'Content-Type: ' . $upload_field . "\r\n\r\n";
+                            $raw_payload_mime .= 'Content-Type: ' . $upload_field . "\r\n\r\n";
                         }
                     } else {
                         if ((strpos($upload_field, '/') === false) && ($this->raw_content_type == '')) {
                             $this->raw_content_type = $upload_field;
                         }
                     }
-                    $raw_payload2 .= cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
+                    $raw_payload_mime .= cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
                     if ((!empty($this->post_params)) || (count($this->files) != 1)) {
-                        $raw_payload2 .= "\r\n";
+                        $raw_payload_mime .= "\r\n";
                     }
                     if ((!empty($this->post_params)) || (count($this->files) != 1)) {
-                        $raw_payload2 .= '----cms' . $this->divider . "--\r\n";
+                        $raw_payload_mime .= '----cms' . $this->divider . "--\r\n";
                     }
                 }
-                $this->raw_payload .= 'Content-Length: ' . strval(filesize($this->raw_post_path)) . "\r\n";
-                $this->raw_payload .= "\r\n" . $raw_payload2;
+
                 if ($this->add_files_manually) {
-                    $this->raw_payload = $raw_payload2; // Other settings will be passed via cURL itself
+                    $this->raw_payload = $raw_payload_mime; // Other settings will be passed via cURL itself
+                } else {
+                    $this->raw_payload = 'Content-Type: multipart/form-data; boundary="--cms' . $this->divider . '"; charset=' . get_charset() . "\r\n";
+                    $this->raw_payload .= 'Content-Length: ' . strval(strlen($raw_payload_mime)) . "\r\n";
+                    $this->raw_payload .= "\r\n" . $raw_payload_mime;
                 }
             }
         }
@@ -674,10 +673,6 @@ abstract class HttpDownloader
 
         if (array_key_exists('timeout', $options)) {
             $this->timeout = $options['timeout'];
-        }
-
-        if (array_key_exists('raw_post', $options)) {
-            $this->raw_post = $options['raw_post'];
         }
 
         if (array_key_exists('files', $options)) {
@@ -1029,7 +1024,7 @@ class HttpDownloaderCurl extends HttpDownloader
         foreach ($this->extra_headers as $key => $val) {
             $curl_headers[] = $key . ': ' . $val;
         }
-        if ($this->raw_post) {
+        if ($this->raw_content_type !== null) {
             if (!isset($this->extra_headers['Content-Type'])) {
                 $curl_headers[] = 'Content-Type: ' . $this->raw_content_type;
             }

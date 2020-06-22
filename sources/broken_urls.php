@@ -369,8 +369,7 @@ class BrokenURLScanner
                     'trigger_error' => false,
                     'auth' => $auth,
                     'timeout' => 5.0,
-                    'post_params' => [$json],
-                    'raw_post' => true,
+                    'post_params' => $json,
                 ];
 
                 $_result = http_get_contents($api_url, $options);
