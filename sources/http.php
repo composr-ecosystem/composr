@@ -1134,7 +1134,6 @@ class HttpDownloaderCurl extends HttpDownloader
         }
 
         curl_close($ch);
-
         // Process HTTP status
         switch ((substr($this->message, 0, 1) == '2') ? '200' : $this->message) {
             case '200':

@@ -251,14 +251,14 @@ class Hook_video_syndication_youtube
 
             // Error?
             if ($teeup_http_result->message != '200') {
-                if (empty($teeup_http_result->data)) {
+                if ($teeup_http_result->data === null) {
                     throw new Exception(($teeup_http_result->message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($teeup_http_result->message_b));
                 }
 
                 $teeup_result = @json_decode($teeup_http_result->data, true);
 
                 if (is_array($teeup_result)) {
-                    throw new Exception(@strval($teeup_result['error']['message']), @strval($teeup_result['error']['code']));
+                    throw new Exception(@strval($teeup_result['error']['message']), $teeup_result['error']['code']);
                 } else {
                     throw new Exception($teeup_http_result->data);
                 }
@@ -517,15 +517,19 @@ class Hook_video_syndication_youtube
             $message_b = $http_result->message_b;
         }
 
-        if (empty($data)) {
+        if ($data === null) {
             throw new Exception(($message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($message_b));
+        }
+
+        if ($data === '') {
+            return null;
         }
 
         $result = @json_decode($data, true);
 
         if (is_array($result)) {
             if (isset($result['error'])) {
-                throw new Exception($result['error']['message'], @strval($result['error']['code']));
+                throw new Exception($result['error']['message'], $result['error']['code']);
             }
         } else {
             throw new Exception($data);
@@ -600,7 +604,7 @@ class Hook_video_syndication_youtube
     {
         require_lang('gallery_syndication_youtube');
         $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage(), [escape_html($url), escape_html($http_verb)]);
-fatal_exit($error_msg);//TODO
+
         require_code('failure');
         relay_error_notification($error_msg->evaluate());
         attach_message($error_msg, 'warn', false, true);

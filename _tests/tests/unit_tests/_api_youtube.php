@@ -22,12 +22,12 @@ class _api_youtube_test_set extends cms_test_case
     {
         $this->load_key_options('google_apis_', 'youtube__'); // We have to use a prefix on here because Google deactivates YouTube quota if left unused too long and has a horrible process to re-enable it
 
-        // Simple non-destructive Health Check
-        require_code('health_check');
-//TODO Reenable        $this->run_health_check('API connections', 'YouTube', CHECK_CONTEXT__TEST_SITE, true);
-
         require_code('hooks/modules/video_syndication/youtube');
         $ob = new Hook_video_syndication_youtube();
+
+        // Simple non-destructive Health Check
+        require_code('health_check');
+        $this->run_health_check('API connections', 'YouTube', CHECK_CONTEXT__TEST_SITE, true);
 
         $this->assertTrue($ob->is_active(), 'YouTube video syndication provider does not register as active');
 
