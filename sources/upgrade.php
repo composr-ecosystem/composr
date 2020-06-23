@@ -1057,7 +1057,7 @@ function move_modules()
                         continue; // This has moved between versions
                     }
 
-                    $out .= '<li><input type="checkbox" name="' . uniqid('', true) . '" value="move:' . escape_html($_path_a . ':' . $_path_b) . '" /> ' . do_lang('FILE_MOVED', '<kbd>' . escape_html($page) . '</kbd>', '<kbd>' . escape_html($zone2) . '</kbd>', '<kbd>' . escape_html($zone) . '</kbd>') . '</li>';
+                    $out .= '<li><input type="checkbox" name="' . uniqid('', true) . '" value="move:' . escape_html(base64_encode($_path_a) . ':' . base64_encode($_path_b)) . '" /> ' . do_lang('FILE_MOVED', '<kbd>' . escape_html($page) . '</kbd>', '<kbd>' . escape_html($zone2) . '</kbd>', '<kbd>' . escape_html($zone) . '</kbd>') . '</li>';
                     $outr[] = $path_b;
                 }
             }
@@ -1500,7 +1500,7 @@ function check_alien($addon_files, $old_files, $files, $dir, $rela = '', $raw = 
                 if (file_exists(get_file_base() . '/' . $x)) {
                     $alien .= '<li>';
                     if (!$raw) {
-                        $alien .= '<input checked="checked" type="checkbox" name="' . uniqid('', true) . '" value="delete:' . escape_html($x) . '" /> ';
+                        $alien .= '<input checked="checked" type="checkbox" name="' . uniqid('', true) . '" value="delete:' . escape_html(base64_encode($x)) . '" /> ';
                     }
                     $alien .= '<kbd>' . escape_html($x) . '</kbd></li>';
                 }
@@ -1573,7 +1573,7 @@ function check_alien($addon_files, $old_files, $files, $dir, $rela = '', $raw = 
                     $file_html = '';
                     $file_html .= '<li>';
                     if (!$raw) {
-                        $file_html .= '<input ' . $disabled . $checked . 'type="checkbox" name="' . uniqid('', true) . '" value="delete:' . escape_html($rela . $file) . '" /> ';
+                        $file_html .= '<input ' . $disabled . $checked . 'type="checkbox" name="' . uniqid('', true) . '" value="delete:' . escape_html(base64_encode($rela . $file)) . '" /> ';
                     }
                     $file_html .= '<kbd>' . escape_html($rela . $file) . '</kbd></li>' . "\n";
                     if (array_key_exists($rela . $file, $addon_files)) {
@@ -1612,14 +1612,14 @@ function _integrity_scan()
             $bits = explode(':', $val);
 
             if ($bits[0] == 'delete') {
-                afm_delete_file($bits[1]);
+                afm_delete_file(base64_decode($bits[1]));
             } elseif ($bits[0] == 'move') {
-                afm_delete_file($bits[2]);
-                afm_move($bits[1], $bits[2]);
+                afm_delete_file(base64_decode($bits[2]));
+                afm_move(base64_decode($bits[1]), base64_decode($bits[2]));
             }
 
             // Now delete empty directories
-            $_subdirs = explode('/', dirname($bits[1]));
+            $_subdirs = explode('/', dirname(base64_decode($bits[1])));
             $subdirs = array();
             $buildup = '';
             foreach ($_subdirs as $subdir) {

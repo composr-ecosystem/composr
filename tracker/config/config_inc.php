@@ -110,7 +110,7 @@ $cms_developer_groups = array(22);
 $cms_manager_groups = array();
 $cms_admin_groups = array(2, 3);
 $cms_guest_id = 1;
-$cms_extra_signin_sql = ' AND field_36=\'Content Management System\'';
+$cms_extra_signin_sql = ' AND field_46 IN(\'\',\'Content Management System\')';
 
 // Branding
 $g_window_title = 'Composr CMS feature tracker'; // TODO: Customise
@@ -197,6 +197,35 @@ $g_bug_view_page_fields = array(
 	'steps_to_reproduce',
 	'summary',
 	'tags',
+	//'target_version',
+	'view_state',
+);
+$g_bug_update_page_fields = array(
+	'additional_info',
+	'category_id',
+	'date_submitted',
+	'description',
+	//'due_date',
+	//'eta',
+	'fixed_in_version',
+	'handler',
+	'id',
+	'last_updated',
+	//'os',
+	//'os_version',
+	//'platform',
+	//'priority',
+	//'product_build',
+	'product_version',
+	'project',
+	'projection',
+	'reporter',
+	//'reproducibility',
+	'resolution',
+	'severity',
+	'status',
+	'steps_to_reproduce',
+	'summary',
 	//'target_version',
 	'view_state',
 );
