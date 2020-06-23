@@ -43,9 +43,12 @@ this is the attachment text
 
         require_code('mail');
         require_code('mail2');
-        list($spam_report, $spam_score, $raw, $http_response) = email_spam_check($mime_email);
-
-        $this->assertTrue($spam_report !== null, 'Failed to retrieve spam report [' . serialize($raw) . ', ' . serialize($http_response) . ']');
-        $this->assertTrue($spam_score !== null, 'Failed to retrieve spam score [' . serialize($raw) . ', ' . serialize($http_response) . ']');
+        try {
+            list($spam_report, $spam_score) = email_spam_check($mime_email);
+            $this->assertTrue($spam_report !== null, 'Failed to retrieve spam report');
+            $this->assertTrue($spam_score !== null, 'Failed to retrieve spam score');
+        } catch (Exception $e) {
+            $this->assertTrue(false, 'Failed to retrieve spam information: ' . $e->getMessage());
+        }
     }
 }

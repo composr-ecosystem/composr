@@ -110,14 +110,14 @@ PHP;
                 break;
         }
 
-        $errormsg = '';
+        try {
+            $result = weather_lookup($location_search, $latitude, $longitude, $units, $max_days, $api);
+        } catch (Exception $e) {
+            $errormsg = $e->getMessage();
 
-        $result = weather_lookup($location_search, $latitude, $longitude, $units, $max_days, $errormsg, $api);
-
-        if ($result === null) {
             $GLOBALS['DO_NOT_CACHE_THIS'] = true;
             require_code('failure');
-            relay_error_notification($errormsg, false, 'error_occurred_weather');
+            cms_error_log($errormsg, 'error_occurred_api');
 
             if (cron_installed(true)) {
                 if (!$GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {

@@ -201,14 +201,21 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
             require_code('character_sets');
             $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
 
-            $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
-            $response = json_decode($_response, true);
+            $_response = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+            $response = @json_decode($_response->data, true);
 
-            if ($response['ErrNumber'] == '0') {
-                $street_address = trim($response['Address1'] . (isset($response['Address2']) ? ("\n" . $response['Address2']) : ''));
-                $city = $response['City'];
-                $state = $response['State'];
-                $post_code = $response['Zip5'] . (($response['Zip4'] == '') ? '' : ('-' . $response['Zip4']));
+            if (!is_array($response)) {
+                $errormsg = 'TaxCloud: ' . $_response->message;
+                require_code('failure');
+                cms_error_log($errormsg, 'error_occurred_api');
+            } else {
+                if ($response['ErrNumber'] == '0') {
+                    $street_address = trim($response['Address1'] . (isset($response['Address2']) ? ("\n" . $response['Address2']) : ''));
+                    $city = $response['City'];
+                    $state = $response['State'];
+                    $post_code = $response['Zip5'] . (($response['Zip4'] == '') ? '' : ('-' . $response['Zip4']));
+                }
+                // ^ Other error codes are not logged as it could just be user error
             }
 
             // Work out TaxCloud call...
@@ -279,13 +286,27 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
 
             // Do TaxCloud call...
 
-            $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
-            $response = json_decode($_response, true);
+            $_response = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+            $response = @json_decode($_response->data, true);
 
             // Error handling...
 
+            if (!is_array($response)) {
+                $errormsg = $_response->message;
+
+                require_code('failure');
+                cms_error_log('TaxCloud: ' . $errormsg);
+
+                warn_exit($errormsg);
+            }
+
             if ($response['ResponseType'] != 3) {
-                fatal_exit($response['Messages'][0]['Message']);
+                $errormsg = $response['Messages'][0]['Message'];
+
+                require_code('failure');
+                cms_error_log('TaxCloud: ' . $errormsg);
+
+                warn_exit($errormsg);
             }
 
             // Process TaxCloud results...
@@ -330,7 +351,7 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
         if ($tax_code == 'EU') {
             require_code('http');
             list($__rates) = cache_and_carry('cms_http_request', ['https://euvat.ga/rates.json', ['convert_to_internal_encoding' => true, 'timeout' => 20.0]]);
-            $_rates = json_decode($__rates, true);
+            $_rates = @json_decode($__rates, true);
 
             if (isset($_rates['rates'][$country])) {
                 $rate = $_rates['rates'][$country]['standard_rate'];
@@ -462,17 +483,21 @@ function taxcloud_declare_completed($tracking_id, $txn_id, $member_id, $session_
     $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
 
     $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
-    $response = json_decode($_response, true);
+    $response = @json_decode($_response, true);
 
-    if ($response['ResponseType'] != 3) {
-        $messages = [];
-        foreach ($response['Messages'] as $message) {
-            if (strpos($message['Message'], 'already') === false) {
-                $messages[] = $message['Message'];
+    if (!is_array($response)) {
+        trigger_error('TaxCloud: ' . $response->message, E_USER_WARNING);
+    } else {
+        if ($response['ResponseType'] != 3) {
+            $messages = [];
+            foreach ($response['Messages'] as $message) {
+                if (strpos($message['Message'], 'already') === false) {
+                    $messages[] = $message['Message'];
+                }
             }
-        }
-        if (!empty($messages)) {
-            trigger_error(implode('; ', $messages), E_USER_WARNING);
+            if (!empty($messages)) {
+                trigger_error(implode('; ', $messages), E_USER_WARNING);
+            }
         }
     }
 }
@@ -724,7 +749,7 @@ function form_input_tax_code($set_title, $description, $set_name, $default, $req
     require_code('http');
     list($__tics) = cache_and_carry('cms_http_request', ['https://taxcloud.com/tic/json/', ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false]]);
     $_tics = @json_decode($__tics, true);
-    if (($_tics !== false) && ($_tics !== null)) {
+    if (is_array($_tics)) {
         $tics = new Tempcode();
         $tics->attach(_prepare_tics_list($_tics['tic_list'], $has_tic ? substr($default, 4) : '', 'root'));
         $tics->attach(_prepare_tics_list($_tics['tic_list'], $has_tic ? substr($default, 4) : '', ''));

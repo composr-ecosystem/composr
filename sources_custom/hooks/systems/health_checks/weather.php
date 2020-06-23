@@ -65,14 +65,20 @@ class Hook_health_check_weather extends Hook_Health_Check
 
         require_code('weather');
 
-        $errormsg = '';
-        $result = weather_lookup(null, 24.466667, 39.6, 'metric', null, $errormsg, 'openweathermap');
-        $this->assertTrue(($result !== null) && ($result[0]['city_name'] == 'Medina'), 'Failed to lookup weather current conditions by GPS; ' . $errormsg);
-        $this->assertTrue(($result !== null) && (array_key_exists(0, $result[1])) && ($result[1][0]['city_name'] == 'Medina'), 'Failed to lookup weather forecast by GPS; ' . $errormsg);
+        try {
+            $result = weather_lookup(null, 24.466667, 39.6, 'metric', null, 'openweathermap');
+            $this->assertTrue(($result !== null) && ($result[0]['city_name'] == 'Medina'), 'Unexpected result looking up weather current conditions by GPS');
+            $this->assertTrue(($result !== null) && (array_key_exists(0, $result[1])) && ($result[1][0]['city_name'] == 'Medina'), 'Unexpected result looking up weather forecast by GPS');
+        } catch (Exception $e) {
+            $this->assertTrue(false, 'Failed to lookup weather by GPS: ' . $e->getMessage());
+        }
 
-        $errormsg = '';
-        $result = weather_lookup('Medina', null, null, 'metric', null, $errormsg, 'openweathermap');
-        $this->assertTrue(($result !== null) && (preg_match('#Medina|Munawwarah#', $result[0]['city_name']) != 0), 'Failed to lookup weather current conditions by location string; ' . $errormsg);
-        $this->assertTrue(($result !== null) && (array_key_exists(0, $result[1])) && (preg_match('#Medina|Munawwarah#', $result[1][0]['city_name']) != 0), 'Failed to lookup weather forecast by location string; ' . $errormsg);
+        try {
+            $result = weather_lookup('Medina', null, null, 'metric', null, 'openweathermap');
+            $this->assertTrue(($result !== null) && (preg_match('#Medina|Munawwarah#', $result[0]['city_name']) != 0), 'Unexpected result looking up weather current conditions by location string');
+            $this->assertTrue(($result !== null) && (array_key_exists(0, $result[1])) && (preg_match('#Medina|Munawwarah#', $result[1][0]['city_name']) != 0), 'Unexpected result looking up weather forecast by location string');
+        } catch (Exception $e) {
+            $this->assertTrue(false, 'Failed to lookup weather by location string: ' . $e->getMessage());
+        }
     }
 }

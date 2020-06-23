@@ -57,19 +57,24 @@ function choose_geocoding_service(&$service = null)
  * Geocode a written location.
  *
  * @param  string $location Written location
- * @param  ?Tempcode $error_msg Error message (written by reference) (null: not returned)
+ * @param  ?Tempcode $errormsg Error message (returned by reference) (null: not set yet)
  * @param  ?string $service Force geocoding through a particular service (null: not enforced)
  * @set google bing mapquest
  * @return ?array A pair: Latitude, Longitude (null: error)
  */
-function geocode($location, &$error_msg = null, $service = null)
+function geocode($location, &$errormsg = null, $service = null)
 {
     $ob = choose_geocoding_service($service);
     if ($ob === null) {
         $error_msg = do_lang('API_NOT_CONFIGURED');
         return null;
     }
-    return $ob->geocode($location, $error_msg);
+    $ret = $ob->geocode($location, $errormsg);
+    if ($errormsg !== null) {
+        require_code('failure');
+        cms_error_log($errormsg->evaluate(), 'error_occurred_api');
+    }
+    return $ret;
 }
 
 /**
@@ -77,13 +82,18 @@ function geocode($location, &$error_msg = null, $service = null)
  *
  * @param  float $latitude Latitude
  * @param  float $longitude Longitude
- * @param  ?Tempcode $error_msg Error message (written by reference) (null: not returned)
+ * @param  ?Tempcode $errormsg Error message (returned by reference) (null: not set yet)
  * @param  ?string $service Force geocoding through a particular service (null: not enforced)
  * @set google bing mapquest
  * @return ?array A tuple: Formatted address, Street Address, City, County, State, Zip/Postcode, Country (null: error)
  */
-function reverse_geocode($latitude, $longitude, &$error_msg = null, $service = null)
+function reverse_geocode($latitude, $longitude, &$errormsg = null, $service = null)
 {
     $ob = choose_geocoding_service($service);
-    return $ob->reverse_geocode($latitude, $longitude, $error_msg);
+    $ret = $ob->reverse_geocode($latitude, $longitude, $errormsg);
+    if ($errormsg !== null) {
+        require_code('failure');
+        cms_error_log($errormsg->evaluate(), 'error_occurred_api');
+    }
+    return $ret;
 }

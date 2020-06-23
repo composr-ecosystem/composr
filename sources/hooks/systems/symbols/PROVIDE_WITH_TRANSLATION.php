@@ -50,7 +50,13 @@ class Hook_symbol_PROVIDE_WITH_TRANSLATION
 
         $from = empty($param[2]) ? null : $param[2];
 
-        $text_translated = translate_text($text, $context, $from, user_lang());
+        $errormsg = null;
+        $text_translated = translate_text($text, $context, $from, user_lang(), null, $errormsg);
+
+        if ($errormsg !== null) {
+            require_code('failure');
+            cms_error_log($errormsg, 'error_occurred_api');
+        }
 
         if ($text_translated === null) {
             return $text;

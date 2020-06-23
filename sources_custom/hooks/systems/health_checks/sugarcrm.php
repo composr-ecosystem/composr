@@ -64,9 +64,11 @@ class Hook_health_check_sugarcrm extends Hook_Health_Check
         }
 
         require_code('sugarcrm');
-        sugarcrm_initialise_connection();
-
-        global $SUGARCRM;
-        $this->assertTrue($SUGARCRM !== null, 'Configured SugarCRM connection is able to log in');
+        try {
+            $success = sugarcrm_initialise_connection();
+            $this->assertTrue($success, 'Configured SugarCRM connection is able to log in');
+        } catch (Exception $e) {
+            $this->assertTrue(false, 'SugarCRM error: ' . $e->getMessage());
+        }
     }
 }

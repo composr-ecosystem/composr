@@ -134,6 +134,8 @@ class IOSPushNotifications
         $push->send();
         $push->disconnect();
 
+        require_code('failure');
+
         // Examine the error message container
         $error_queue = $push->getErrors();
         if (!empty($error_queue)) {
@@ -144,7 +146,7 @@ class IOSPushNotifications
                 }
             }
             foreach (array_keys($all_errors) as $error) {
-                relay_error_notification($error, false);
+                cms_error_log($error);
             }
         }
     }

@@ -72,7 +72,11 @@ class Hook_health_check_google_search_console extends Hook_Health_Check
             $url = get_base_url();
         }
 
-        $results = get_google_search_console_data(null, null, null, $url);
-        $this->assertTrue(($results !== null) && (array_key_exists('rows', $results)), 'Could not get result rows');
+        try {
+            $results = get_google_search_console_data(null, null, null, $url);
+            $this->assertTrue(($results !== null) && (array_key_exists('rows', $results)), 'Could not get result rows');
+        } catch (Exception $e) {
+            $this->assertTrue(false, 'Google Search Console error: ' . $e->getMessage());
+        }
     }
 }

@@ -44,8 +44,7 @@ class _api_translation_test_set extends cms_test_case
 
         foreach ($hooks as $hook) {
             $translation_object = get_translation_object_for_hook($hook);
-            $errormsg = null;
-            $this->assertTrue(has_translation($from, $to, $translation_object, $errormsg));
+            $this->assertTrue(has_translation($from, $to, $translation_object));
 
             if ($hook == 'google_translate') {
                 $this->assertTrue(get_translation_credit($from, $to, $hook) != '', 'Got empty translation credit for google_translate');

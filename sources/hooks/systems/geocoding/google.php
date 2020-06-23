@@ -40,25 +40,25 @@ class Hook_geocoding_google
      * Geocode a written location.
      *
      * @param  string $location Written location
-     * @param  ?Tempcode $error_msg Error message (written by reference) (null: not returned)
+     * @param  ?Tempcode $errormsg Error message (returned by reference) (null: not set yet)
      * @return ?array A tuple: Latitude, Longitude, NE lat, NE lng, SW lat, SW lng (null: error)
      */
-    public function geocode($location, &$error_msg = null)
+    public function geocode($location, &$errormsg = null)
     {
         $url_params = '&address=' . urlencode($location);
-        $result = $this->_geocode($url_params, $error_msg);
+        $result = $this->_geocode($url_params, $errormsg);
         if ($result === null) {
             return null;
         }
 
         if (!isset($result['results'][0])) {
-            $error_msg = do_lang_tempcode('GEOCODE_INCOMPLETE');
+            $errormsg = do_lang_tempcode('GEOCODE_INCOMPLETE');
             return null;
         }
         $r = $result['results'][0];
 
         if (!isset($r['geometry']['location'])) {
-            $error_msg = do_lang_tempcode('GEOCODE_INCOMPLETE');
+            $errormsg = do_lang_tempcode('GEOCODE_INCOMPLETE');
             return null;
         }
 
@@ -85,19 +85,19 @@ class Hook_geocoding_google
      *
      * @param  float $latitude Latitude
      * @param  float $longitude Longitude
-     * @param  ?Tempcode $error_msg Error message (written by reference) (null: not returned)
+     * @param  ?Tempcode $errormsg Error message (returned by reference) (null: not set yet)
      * @return ?array A tuple: Formatted address, Street Address, City, County, State, Zip/Postcode, Country, NE lat, NE lng, SW lat, SW lng (null: error)
      */
-    public function reverse_geocode($latitude, $longitude, &$error_msg = null)
+    public function reverse_geocode($latitude, $longitude, &$errormsg = null)
     {
         $url_params = '&latlng=' . urlencode(float_to_raw_string($latitude, 30)) . ',' . urlencode(float_to_raw_string($longitude, 30));
-        $result = $this->_geocode($url_params, $error_msg);
+        $result = $this->_geocode($url_params, $errormsg);
         if ($result === null) {
             return null;
         }
 
         if (!isset($result['results'][0])) {
-            $error_msg = do_lang_tempcode('GEOCODE_INCOMPLETE');
+            $errormsg = do_lang_tempcode('GEOCODE_INCOMPLETE');
             return null;
         }
         $r = $result['results'][0];
@@ -110,7 +110,7 @@ class Hook_geocoding_google
         $country = null;
 
         if (!isset($r['formatted_address'])) {
-            $error_msg = do_lang_tempcode('GEOCODE_INCOMPLETE');
+            $errormsg = do_lang_tempcode('GEOCODE_INCOMPLETE');
             return null;
         }
         $location = $r['formatted_address'];
@@ -163,16 +163,16 @@ class Hook_geocoding_google
      * Geocode a written location.
      *
      * @param  string $url_params What to add into the URL
-     * @param  ?Tempcode $error_msg Error message (written by reference) (null: not returned)
+     * @param  ?Tempcode $errormsg Error message (written by reference) (null: not returned)
      * @return ?array Geocode results (null: error)
      * @ignore
      */
-    protected function _geocode($url_params, &$error_msg = null)
+    protected function _geocode($url_params, &$errormsg = null)
     {
         // Test to see if we know we were over the limit in the last 24h
         $limit_test = get_value_newer_than('over_geocode_query_limit', time() - 60 * 60 * 24, true);
         if ($limit_test === 1) {
-            $error_msg = do_lang_tempcode('GEOCODE_OVER_QUERY_LIMIT');
+            $errormsg = do_lang_tempcode('GEOCODE_OVER_QUERY_LIMIT');
             return null;
         }
 
@@ -188,32 +188,32 @@ class Hook_geocoding_google
         }
         $url .= $url_params;
 
-        $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => false]);
+        $_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]);
 
-        if (empty($_result)) {
-            $error_msg = do_lang_tempcode('GEOCODE_COULD_NOT_CONNECT');
+        if (empty($_result->data)) {
+            $errormsg = do_lang_tempcode('GEOCODE_COULD_NOT_CONNECT', escape_html($_result->message));
             return null;
         }
 
-        $result = @json_decode($_result, true);
+        $result = @json_decode($_result->data, true);
         if (!is_array($result)) {
-            $error_msg = do_lang_tempcode('GEOCODE_COULD_NOT_PARSE');
+            $errormsg = do_lang_tempcode('GEOCODE_COULD_NOT_PARSE', escape_html($_result->message));
             return null;
         }
 
         if ($result['status'] == 'OVER_QUERY_LIMIT') {
             set_value('over_geocode_query_limit', '1', true);
-            $error_msg = do_lang_tempcode('GEOCODE_OVER_QUERY_LIMIT');
+            $errormsg = do_lang_tempcode('GEOCODE_OVER_QUERY_LIMIT');
             return null;
         }
 
         if (isset($result['error_message'])) {
-            $error_msg = make_string_tempcode($result['error_message']);
+            $errormsg = make_string_tempcode('Google: ' . $result['error_message']);
             return null;
         }
 
         if ($result['status'] == 'ZERO_RESULTS' || $result['status'] == 'REQUEST_DENIED' || $result['status'] == 'UNKNOWN_ERROR') {
-            $error_msg = do_lang_tempcode('GEOCODE_' . $result['status']);
+            $errormsg = do_lang_tempcode('GEOCODE_' . $result['status']);
             return null;
         }
 

@@ -344,7 +344,7 @@ abstract class HttpDownloader
     protected $do_ip_forwarding = null;
     protected $connecting_url = null;
     protected $raw_payload = null;
-    protected $sent_http_post_content = false;
+    protected $sending_request_content = false;
     protected $raw_post_handle = null;
     protected $raw_post_path = null;
 
@@ -477,7 +477,7 @@ abstract class HttpDownloader
         // More preprocessing...
 
         $this->raw_payload = ''; // Note that this will contain HTTP headers (it is appended directly after headers with no \r\n between -- so it contains \r\n\r\n itself when the content body is going to start)
-        $this->sent_http_post_content = false;
+        $this->sending_request_content = false;
         $this->raw_post_handle = null;
         $this->raw_post_path = null;
         if (($this->post_params !== null) || (!empty($this->files))) {
@@ -489,7 +489,7 @@ abstract class HttpDownloader
                 fatal_exit('Internal error - you cannot do a PUT-style request from a file AND use post parameters at the same time');
             }
 
-            $this->sent_http_post_content = true;
+            $this->sending_request_content = true;
 
             if (is_string($this->files)) {
                 $_postdetails_params = null; // Will use the first file instead
@@ -498,7 +498,7 @@ abstract class HttpDownloader
             } elseif (empty($this->post_params)) {
                 $_postdetails_params = '';
             } else {
-                $_postdetails_params .= http_build_query($this->post_params);
+                $_postdetails_params = http_build_query($this->post_params);
             }
 
             if ($_postdetails_params === null) { // Direct output from file
@@ -525,7 +525,7 @@ abstract class HttpDownloader
                 $raw_payload_mime = '';
                 foreach ($this->post_params as $key => $val) {
                     $raw_payload_mime .= '----cms' . $this->divider . "\r\n";
-                    if ($this->raw_post) {
+                    if ($this->raw_content_type !== null) {
                         if (!isset($this->extra_headers['Content-Type'])) {
                             $raw_payload_mime .= 'Content-Type: ' . $this->raw_content_type . "\r\n\r\n";
                         }
@@ -1369,6 +1369,10 @@ class HttpDownloaderSockets extends HttpDownloader
             $out .= 'Host: ' . $this->url_parts['host'] . "\r\n";
             $out .= $this->get_header_string();
             $out .= $this->raw_payload;
+            if (!$this->sending_request_content) {
+                $out .= 'Connection: Close' . "\r\n\r\n";
+            }
+
             @fwrite($mysock, $out);
             if ($this->raw_post_handle !== null) {
                 while (!feof($this->raw_post_handle)) {
@@ -1379,9 +1383,6 @@ class HttpDownloaderSockets extends HttpDownloader
                         break;
                     }
                 }
-            }
-            if (!$this->sent_http_post_content) {
-                $out .= 'Connection: Close' . "\r\n\r\n";
             }
             $data_started = false;
             $input = '';

@@ -319,9 +319,14 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     if (get_option('ipstack_api_key') != '') {
         // NB: https requires a paid plan
         $ip_stack_url = 'http://api.ipstack.com/' . rawurlencode($ip) . '?access_key=' . urlencode(get_option('ipstack_api_key'));
-        $_json = http_get_contents($ip_stack_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
-        $json = @json_decode($_json, true);
+        $_json = cms_http_request($ip_stack_url, ['ignore_http_status' => true, 'convert_to_internal_encoding' => true, 'trigger_error' => false]);
+        $json = @json_decode($_json->data, true);
         if (is_array($json)) {
+            if (array_key_exists('error', $json)) {
+                require_code('failure');
+                cms_error_log('IP Stack: ' . $json['error']['info'], 'error_occurred_api');
+            }
+
             $useful_fields = [
                 'ip' => 'IP address',
                 'country_name' => 'Country',
@@ -338,6 +343,9 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
             }
 
             $got_geo_lookup = true;
+        } else {
+            require_code('failure');
+            cms_error_log('IP Stack: ' . $_json->message, 'error_occurred_api');
         }
     }
     if (!$got_geo_lookup) {

@@ -237,15 +237,11 @@ class Hook_translation_google_translate
             $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
         }
 
-        $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'post_params' => $_request, 'timeout' => 0.5, 'http_verb' => ($request === null) ? 'GET' : 'POST', 'raw_content_type' => 'application/json']);
+        $_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'post_params' => $_request, 'timeout' => 0.5, 'http_verb' => ($request === null) ? 'GET' : 'POST', 'raw_content_type' => 'application/json']);
 
-        $result = @json_decode($_result, true);
-        if (($result === false) || (array_key_exists('error', $result))) {
-            $errormsg = (array_key_exists('error', $result) ? $result['error']['message'] : $_result);
-            if (php_function_allowed('error_log')) {
-                error_log('Google Translate issue: ' . $_result, 0);
-            }
-
+        $result = @json_decode($_result->data, true);
+        if ((!is_array($result)) || (array_key_exists('error', $result))) {
+            $errormsg = 'Google Translate: ' . ((!is_array($result) ? $_result->message : $result['error']['message']));
             return null;
         }
         return $result;

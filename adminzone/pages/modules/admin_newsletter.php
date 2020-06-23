@@ -1279,7 +1279,12 @@ class Module_admin_newsletter extends Standard_crud_module
         if ($mail_dispatcher->mime_data !== null) {
             require_code('mail');
             require_code('mail2');
-            list($spam_report, $spam_score) = email_spam_check($mail_dispatcher->mime_data);
+            try {
+                list($spam_report, $spam_score) = email_spam_check($mail_dispatcher->mime_data);
+            } catch (Exception $e) {
+                require_code('failure');
+                cms_error_log('Postmark: ' . $e->getMessage(), 'error_occurred_api');
+            }
         }
 
         // Inline preview

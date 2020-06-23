@@ -84,9 +84,17 @@ class Hook_health_check_apis extends Hook_Health_Check
 
         // NB: https requires a paid plan
         $ip_stack_url = 'http://api.ipstack.com/' . rawurlencode('216.58.192.142') . '?access_key=' . urlencode(get_option('ipstack_api_key'));
-        $_json = http_get_contents($ip_stack_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]);
-        $json = json_decode($_json, true);
-        $this->assertTrue($json['country_name'] == 'United States', 'ipstack did not return expected result');
+        $_json = cms_http_request($ip_stack_url, ['ignore_http_status' => true, 'convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]);
+        $json = @json_decode($_json->data, true);
+        if (!is_array($_json->data)) {
+            $this->assertTrue(false, 'IP Stack error: ' . $_json->message);
+        } else {
+            if (array_key_exists('error', $json)) {
+                $this->assertTrue(false, 'IP Stack error: ' . $json['error']['info']);
+            } else {
+                $this->assertTrue($json['country_name'] == 'United States', 'ipstack did not return expected result');
+            }
+        }
     }
 
     /**
@@ -115,9 +123,13 @@ class Hook_health_check_apis extends Hook_Health_Check
             require_code('hooks/systems/geocoding/' . $service);
             $ob = object_factory('Hook_geocoding_' . $service);
             if ($ob->is_available()) {
-                $error_msg = new Tempcode();
-                $result = geocode('Berlin, DE', $error_msg, $service);
-                $this->assertTrue(($result !== null) && ($result[0] > 52.0) && ($result[0] < 53.0) && ($result[1] > 13.0) && ($result[1] < 14.0), 'Wrong coordinate on ' . $service);
+                $errormsg = null;
+                $result = geocode('Berlin, DE', $errormsg, $service);
+                if ($errormsg !== null) {
+                    $this->assertTrue(false, $service . ' error: ' . $errormsg->evaluate());
+                } else {
+                    $this->assertTrue(($result !== null) && ($result[0] > 52.0) && ($result[0] < 53.0) && ($result[1] > 13.0) && ($result[1] < 14.0), 'Wrong coordinate on ' . $service);
+                }
             }
         }
         // Note if this breaks there's also similar code in locations_catalogues_geoposition and locations_catalogues_geopositioning (non-bundled addons)
@@ -127,27 +139,27 @@ class Hook_health_check_apis extends Hook_Health_Check
             require_code('hooks/systems/geocoding/' . $service);
             $ob = object_factory('Hook_geocoding_' . $service);
             if ($ob->is_available(true)) {
-                $error_msg = new Tempcode();
-                $address = reverse_geocode(52.516667, 13.388889, $error_msg, $service);
-                if (!empty($GLOBALS['UNIT_TEST_WITH_DEBUG'])) {
-                    var_dump($error_msg->evaluate());
-                    var_dump($address);
-                }
-                $this->assertTrue($address !== null, 'Failure on ' . $service);
-                if ($address !== null) {
-                    $this->assertTrue($address[2] == 'Berlin', 'Wrong city on ' . $service . ', got ' . $address[2] . ', expected Berlin');
-                    $this->assertTrue($address[6] == 'DE', 'Wrong country on ' . $service . ', got ' . $address[6] . ', expected DE');
+                $errormsg = null;
+                $address = reverse_geocode(52.516667, 13.388889, $errormsg, $service);
+                if ($errormsg !== null) {
+                    $this->assertTrue(false, $service . ' error: ' . $errormsg->evaluate());
+                } else {
+                    $this->assertTrue($address !== null, 'Failure on ' . $service);
+                    if ($address !== null) {
+                        $this->assertTrue($address[2] == 'Berlin', 'Wrong city on ' . $service . ', got ' . $address[2] . ', expected Berlin');
+                        $this->assertTrue($address[6] == 'DE', 'Wrong country on ' . $service . ', got ' . $address[6] . ', expected DE');
+                    }
                 }
 
-                $error_msg = new Tempcode();
-                $address = reverse_geocode(64.133333, -21.933333, $error_msg, $service);
-                if (!empty($GLOBALS['UNIT_TEST_WITH_DEBUG'])) {
-                    var_dump($error_msg->evaluate());
-                    var_dump($address);
-                }
-                $this->assertTrue($address !== null, 'Failure on ' . $service);
-                if ($address !== null) {
-                    $this->assertTrue(substr($address[2], 0, 3) == 'Rey', 'Wrong city on ' . $service . ', got ' . $address[2] . ', expected ~Raycevick'); // Only check first chars due to charset issues
+                $errormsg = null;
+                $address = reverse_geocode(64.133333, -21.933333, $errormsg, $service);
+                if ($errormsg !== null) {
+                    $this->assertTrue(false, $service . ' error: ' . $errormsg->evaluate());
+                } else {
+                    $this->assertTrue($address !== null, 'Failure on ' . $service);
+                    if ($address !== null) {
+                        $this->assertTrue(substr($address[2], 0, 3) == 'Rey', 'Wrong city on ' . $service . ', got ' . $address[2] . ', expected ~Raycevick'); // Only check first chars due to charset issues
+                    }
                 }
             }
         }
@@ -189,7 +201,11 @@ class Hook_health_check_apis extends Hook_Health_Check
 
                 $from_text = 'Hello';
                 $to_text = translate_text($from_text, TRANS_TEXT_CONTEXT__AUTODETECT, $from, $to, $hook, $errormsg);
-                $this->assertTrue(($to_text !== null) && (($to_text == 'Bonjour') || ($to_text == 'Salut')), 'Translation failed from ' . $from . ' to ' . $to . ', got ' . @strval($to_text) . ' for ' . $from_text . ' (error message is ' . @strval($errormsg) . ')');
+                if ($errormsg !== null) {
+                    $this->assertTrue(false, 'Translation failed from ' . $from . ' to ' . $to . ' (error message is ' . $errormsg . ')');
+                } else {
+                    $this->assertTrue(($to_text !== null) && (($to_text == 'Bonjour') || ($to_text == 'Salut')), 'Translation failed from ' . $from . ' to ' . $to . ', got ' . $to_text . ' for ' . $from_text . ' (error message is ' . @strval($errormsg) . ')');
+                }
             }
         }
     }
@@ -221,8 +237,11 @@ class Hook_health_check_apis extends Hook_Health_Check
 
         require_code('broken_urls');
         $ob = new BrokenURLScanner();
-        $error = false;
-        $urls = $ob->enumerate_moz_backlinks([$url], 1, $error);
-        $this->assertTrue((!$error) && (($use_test_data_for_pass === null) || (count($urls) > 0)), 'Error trying to retrieve backlinks');
+        try {
+            $urls = $ob->enumerate_moz_backlinks([$url], 1);
+            $this->assertTrue((($use_test_data_for_pass === null) || (count($urls) > 0)), 'Error trying to retrieve backlinks');
+        } catch (Exception $e) {
+            $this->assertTrue(false, 'Backlink error: ' . $e->getMessage());
+        }
     }
 }

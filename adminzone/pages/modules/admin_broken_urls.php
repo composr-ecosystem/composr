@@ -207,7 +207,13 @@ class Module_admin_broken_urls
                 continue;
             }
 
-            $_urls = call_user_func([$url_scanner, 'enumerate_' . $type], $live_base_urls, $maximum_api_results);
+            try {
+                $_urls = call_user_func([$url_scanner, 'enumerate_' . $type], $live_base_urls, $maximum_api_results);
+            } catch (Exception $e) {
+                attach_message($e->getMessage(), 'warn', false, true);
+                continue;
+            }
+
             foreach ($_urls as $url_bits) {
                 $url = $url_bits['url'];
 

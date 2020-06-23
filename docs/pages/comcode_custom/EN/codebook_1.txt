@@ -1158,9 +1158,11 @@ Composr will react fatally on most errors unless they are suppressed. This inclu
 
 [title="4"]Manually raising errors / showing messages[/title]
 
-To raise an error you'll typically call one of these functions:.
+To raise an error you'll typically call one of these functions:
  - [tt]trigger_error[/tt] -- routed through PHP error handling (which itself is taken up by Composr, with logging and error notifications).
+ - [tt]relay_error_notification[/tt] -- just send an error notification
  - [tt]error_log[/tt] -- direct logging to the Composr error log (via the PHP error logging system)
+ - [tt]cms_error_log[/tt] -- as above, but also includes an error notification
  - [tt]fatal_exit[/tt] -- some kind of particularly unexpected/egregious error, that needs to come with a stack track. Includes logging and error notifications.
  - [tt]warn_exit[/tt] -- normal error situation, inform the user.
  - [tt]inform_exit[/tt] -- not actually an error, but exit with a message.
@@ -1185,11 +1187,25 @@ Use [tt]trigger_error[/tt]/[tt]fatal_exit[/tt] if it is a totally unexpected but
 | Yes
 | Yes
 |-
+! [tt]relay_error_notification[/tt]
+| N/A
+| Skip
+| No
+| Yes
+| Yes
+|-
 | [tt]error_log[/tt]
 | N/A
 | Skip
 | Yes
 | No
+| No
+|-
+! [tt]cms_error_log[/tt]
+| N/A
+| Skip
+| Yes
+| Yes
 | No
 |-
 ! [tt]fatal_exit[/tt]

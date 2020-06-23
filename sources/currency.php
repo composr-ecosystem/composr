@@ -252,19 +252,27 @@ function _currency_convert__currency_conv_api($amount, $from_currency, $to_curre
     }
 
     $conv_api_url = 'https://free.currconv.com/api/v7/convert?q=' . $rate_key . '&compact=y&apiKey=' . urlencode($api_key);
-    $result = http_get_contents($conv_api_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+    $result = cms_http_request($conv_api_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]);
 
-    if (is_string($result)) {
-        $data = json_decode($result, true);
-        if (isset($data[$rate_key]['val'])) {
-            $rate = $data[$rate_key]['val'];
+    $data = @json_decode($result->data, true);
+    if (is_array($data)) {
+        if (isset($data['error'])) {
+            require_code('failure');
+            cms_error_log('currconv.com: ' . $data['error'], 'error_occurred_api');
+        } else {
+            if (isset($data[$rate_key]['val'])) {
+                $rate = $data[$rate_key]['val'];
 
-            set_value($cache_key, float_to_raw_string($rate, 10, false), true); // Will be de-cached in currency_convert
+                set_value($cache_key, float_to_raw_string($rate, 10, false), true); // Will be de-cached in currency_convert
 
-            $ret = round(floatval($rate) * $amount, 2);
+                $ret = round(floatval($rate) * $amount, 2);
 
-            return $ret;
+                return $ret;
+            }
         }
+    } else {
+        require_code('failure');
+        cms_error_log('currconv.com: ' . $result->message, 'error_occurred_api');
     }
     return null;
 }

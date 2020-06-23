@@ -1228,7 +1228,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADDON_WARNING_OVERWRITE
         ADDON_WARNING_PHP
         ADDON_WARNING_PRESENT_DEPENDENCIES
-        _ERROR_CHECKING_FOR_SPAMMERS
         ERROR_CHECKING_FOR_SPAMMERS
         BLOCK_TRANS_NAME_top_login
         BLOCK_TRANS_NAME_main_staff_links

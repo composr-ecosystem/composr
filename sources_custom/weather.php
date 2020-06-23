@@ -32,11 +32,10 @@ function init__weather()
  * @param  string $units Units to use
  * @set imperial metric
  * @param  ?integer $max_days Maximum number of days to return if supported (null: no limit)
- * @param  string $errormsg Error message (returned by reference)
  * @param  ?string $api The API to use (null: first available)
  * @return ?array A pair: Weather API current conditions in standardised simple format, Weather API forecast in standardised simple format (null: not available)
  */
-function weather_lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null, &$errormsg = '', $api = null)
+function weather_lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null, $api = null)
 {
     if ($location_search === '') {
         $location_search = null;
@@ -45,7 +44,7 @@ function weather_lookup($location_search = null, $latitude = null, $longitude = 
     if ($location_search === null) {
         if (($latitude === null) || ($longitude === null)) {
             $errormsg = do_lang('NO_LOCATION_SPECIFIED');
-            return null;
+            throw new Exception($errormsg);
         }
     }
 
@@ -59,9 +58,6 @@ function weather_lookup($location_search = null, $latitude = null, $longitude = 
         }
     }
 
-    if ($errormsg == '') {
-        $error_msg = do_lang('API_NOT_CONFIGURED');
-    }
-
-    return null;
+    $errormsg = do_lang('API_NOT_CONFIGURED');
+    throw new Exception($errormsg);
 }

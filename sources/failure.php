@@ -1047,6 +1047,21 @@ function get_webservice_result($error_message)
 }
 
 /**
+ * Log an error message and send a notification about it (to site staff but not to ocProducts).
+ * Generally used when a web API fails.
+ *
+ * @param  string $errormsg A error message
+ * @param  ID_TEXT $notification_type The notification type
+ */
+function cms_error_log($errormsg, $notification_type = 'error_occurred')
+{
+   if (php_function_allowed('error_log')) {
+       @error_log($errormsg);
+   }
+   relay_error_notification(escape_html($errormsg), false, $notification_type);
+}
+
+/**
  * Relay an error message, if appropriate, to e-mail listeners (sometimes ocProducts, and site staff).
  *
  * @param  string $text A error message (in HTML)

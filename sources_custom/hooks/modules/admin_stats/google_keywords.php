@@ -114,9 +114,10 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
             $keyword = null;
         }
 
-        $result = get_google_search_console_data($_start_month, $_end_month, $keyword);
-        if ($result === null) {
-            attach_message('Failed to query the Google Search Console API', 'warn');
+        try {
+            $result = get_google_search_console_data($_start_month, $_end_month, $keyword, null);
+        } catch (Exception $e) {
+            attach_message('Google Search Console API: ' . $e->getMessage(), 'warn', false, true);
             return null;
         }
 

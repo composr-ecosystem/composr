@@ -29,10 +29,9 @@ class Hook_weather_openweathermap
      * @param  string $units Units to use
      * @set imperial metric
      * @param  ?integer $max_days Maximum number of days to return if supported (null: no limit)
-     * @param  string $errormsg Error message (returned by reference)
      * @return ?array A pair: Weather API current conditions in standardised simple format, Weather API forecast in standardised simple format (null: not available)
      */
-    public function lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null, &$errormsg = '')
+    public function lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null)
     {
         if (!addon_installed('weather')) {
             return null;
@@ -42,7 +41,7 @@ class Hook_weather_openweathermap
 
         if ($api_key == '') {
             $errormsg = 'Missing API key';
-            return null;
+            throw new Exception($errormsg);
         }
 
         $lang = strtolower(user_lang());
@@ -54,7 +53,7 @@ class Hook_weather_openweathermap
 
         // Current conditions...
 
-        $_current_conditions = $this->query_endpoint($location_search, $latitude, $longitude, $units, $lang, $api_key, 'https://api.openweathermap.org/data/2.5/weather', $errormsg);
+        $_current_conditions = $this->query_endpoint($location_search, $latitude, $longitude, $units, $lang, $api_key, 'https://api.openweathermap.org/data/2.5/weather');
         if ($_current_conditions === null) {
             return null;
         }
@@ -84,7 +83,7 @@ class Hook_weather_openweathermap
 
         // Forecast...
 
-        $_forecast_hourly = $this->query_endpoint($location_search, $latitude, $longitude, $units, $lang, $api_key, 'https://api.openweathermap.org/data/2.5/forecast', $errormsg);
+        $_forecast_hourly = $this->query_endpoint($location_search, $latitude, $longitude, $units, $lang, $api_key, 'https://api.openweathermap.org/data/2.5/forecast');
         if ($_forecast_hourly === null) {
             return null;
         }
@@ -132,7 +131,7 @@ class Hook_weather_openweathermap
         }
         if (empty($forecast_hourly)) {
             $errormsg = do_lang('NO_ENTRIES');
-            return null;
+            throw new Exception($errormsg);
         }
 
         // Convert from 3-hour intervals to daily intervals
@@ -228,7 +227,7 @@ class Hook_weather_openweathermap
         return $result;
     }
 
-    protected function query_endpoint($location_search, $latitude, $longitude, $units, $lang, $api_key, $url, &$errormsg)
+    protected function query_endpoint($location_search, $latitude, $longitude, $units, $lang, $api_key, $url)
     {
         if ($location_search === null) {
             $url .= '?lat=' . float_to_raw_string($latitude) . '&lon=' . float_to_raw_string($longitude);
@@ -243,19 +242,15 @@ class Hook_weather_openweathermap
         $response = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]], 30);
         list($data, , , , $http_message) = $response;
 
-        if ($http_message != '200') {
-            $errormsg = do_lang('WEATHER_ERROR', 'OpenWeatherMap', strval($http_message) . ' error, ' . $data);
-            return null;
-        }
-
         $result = @json_decode($data, true);
 
         if (!is_array($result)) {
-            return null;
+            $errormsg = do_lang('WEATHER_ERROR', 'OpenWeatherMap', strval($http_message) . ' error, ' . $data);
+            throw new Exception($errormsg);
         }
         if ((!array_key_exists('list', $result)) && (array_key_exists('message', $result))) {
             $errormsg = do_lang('WEATHER_ERROR', 'OpenWeatherMap', $result['message']);
-            return null;
+            throw new Exception($errormsg);
         }
 
         return $result;

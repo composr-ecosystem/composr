@@ -65,7 +65,14 @@ function sync_video_syndication($local_id = null, $new_upload = false, $reupload
 
         if ($ob->is_active()) {
             // What is already on remote server
-            $remote_videos = $new_upload ? /*no remote search needed*/[] : $ob->get_remote_videos($local_id);
+            try {
+                $remote_videos = $new_upload ? /*no remote search needed*/[] : $ob->get_remote_videos($local_id);
+            } catch (Exception $e) {
+                require_code('failure');
+                cms_error_log($e->getMessage());
+
+                continue;
+            }
             if ($remote_videos === null) {
                 continue; // An error
             }
@@ -215,21 +222,41 @@ function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reu
             }
         }
         if (!empty($changes)) {
-            $ob->change_remote_video($video + $local_video, $changes);
+            try {
+                $ob->change_remote_video($video + $local_video, $changes);
+            } catch (Exception $e) {
+                require_code('failure');
+                cms_error_log($e->getMessage());
+            }
         }
     } else {
         // Orphaned remotes
         switch ($orphaned_handling) {
             case SYNDICATION_ORPHANS__LEAVE:
-                $ob->change_remote_video($video, [], true);
+                try {
+                    $ob->change_remote_video($video, [], true);
+                } catch (Exception $e) {
+                    require_code('failure');
+                    cms_error_log($e->getMessage());
+                }
                 break;
 
             case SYNDICATION_ORPHANS__UNVALIDATE:
-                $ob->change_remote_video($video, ['validated' => false], true);
+                try {
+                    $ob->change_remote_video($video, ['validated' => false], true);
+                } catch (Exception $e) {
+                    require_code('failure');
+                    cms_error_log($e->getMessage());
+                }
                 break;
 
             case SYNDICATION_ORPHANS__DELETE:
-                $ob->delete_remote_video($video);
+                try {
+                    $ob->delete_remote_video($video);
+                } catch (Exception $e) {
+                    require_code('failure');
+                    cms_error_log($e->getMessage());
+                }
                 break;
         }
     }
@@ -237,7 +264,13 @@ function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reu
 
 function _sync_onlylocal_video($ob, $local_video)
 {
-    $remote_video = $ob->upload_video($local_video);
+    try {
+        $remote_video = $ob->upload_video($local_video);
+    } catch (Exception $e) {
+        require_code('failure');
+        cms_error_log($e->getMessage());
+        return;
+    }
     if ($remote_video === null) {
         return; // Didn't work, can't do anything further
     }
@@ -253,7 +286,12 @@ function _sync_onlylocal_video($ob, $local_video)
     $comment = do_lang('VIDEO_SYNC_INITIAL_COMMENT', $service_title, get_site_name(), [$_local_video_url, $_local_video_url_cleaned]);
 
     if ($comment != '') {
-        $ob->leave_comment($remote_video, $comment);
+        try {
+            $ob->leave_comment($remote_video, $comment);
+        } catch (Exception $e) {
+            require_code('failure');
+            cms_error_log($e->getMessage());
+        }
     }
 
     // Store the DB mapping for the transcoding

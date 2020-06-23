@@ -568,6 +568,7 @@ class Hook_addon_registry_core
             'sources/hooks/systems/notifications/error_occurred_cron.php',
             'sources/hooks/systems/notifications/error_occurred_missing_reference.php',
             'sources/hooks/systems/notifications/error_occurred_missing_reference_important.php',
+            'sources/hooks/systems/notifications/error_occurred_api.php',
             'sources/hooks/systems/notifications/adminzone_dashboard_accessed.php',
             'sources/hooks/systems/disposable_values/page_views.php',
             'sources/hooks/blocks/main_staff_checklist/version.php',

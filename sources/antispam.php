@@ -329,8 +329,8 @@ function rbl_resolve($ip, $rbl_domain, $page_level)
     if ($result[0] != '127') { // This is how the RBL indicates an error happened
         if (!$page_level) {
             require_code('failure');
-            $error = do_lang('_ERROR_CHECKING_FOR_SPAMMERS', $rbl_domain, $_result, $ip);
-            relay_error_notification($error, false, 'error_occurred');
+            $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', $rbl_domain, $_result, $ip);
+            cms_error_log($error, 'error_occurred_api');
         }
         return null;
     }
@@ -461,10 +461,10 @@ function _check_stopforumspam($user_ip, $username = null, $email = null)
     if ($key != '') {
         $url .= '&api_key=' . urlencode($key); // Key not needed for read requests, but give it as a courtesy
     }
-    $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+    $_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]);
 
-    $result = @json_decode($_result, true);
-    if ($result !== false) {
+    $result = @json_decode($_result->data, true);
+    if (is_array($result)) {
         if ($result['success']) {
             foreach (['username', 'email', 'ip'] as $criterion) {
                 if (array_key_exists($criterion, $result)) {
@@ -495,14 +495,14 @@ function _check_stopforumspam($user_ip, $username = null, $email = null)
             }
         } else {
             require_code('failure');
-            $error = do_lang('_ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $result['error'], $user_ip);
-            relay_error_notification($error, false, 'error_occurred');
+            $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $result['error'], $user_ip);
+            cms_error_log($error, 'error_occurred_api');
             return [ANTISPAM_RESPONSE_ERROR, $confidence_level];
         }
     } else {
         require_code('failure');
-        $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $user_ip);
-        relay_error_notification($error, false, 'error_occurred');
+        $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $_result->message, $user_ip);
+        cms_error_log($error, 'error_occurred_api');
         return [ANTISPAM_RESPONSE_ERROR, $confidence_level];
     }
 

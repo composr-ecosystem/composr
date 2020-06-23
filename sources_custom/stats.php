@@ -20,7 +20,7 @@
  * @param  ?integer $end_month End month (null: today)
  * @param  ?string $keyword Keyword (null: no filter)
  * @param  ?URLPATH $url URL (null: base URL)
- * @return boolean Data
+ * @return ?array Data (null: error)
  */
 function get_google_search_console_data($_start_month = null, $_end_month = null, $keyword = null, $url = null)
 {
@@ -83,15 +83,26 @@ function get_google_search_console_data($_start_month = null, $_end_month = null
 
     $options = [
         'trigger_error' => false,
+        'ignore_http_status' => true,
         'convert_to_internal_encoding' => true,
         'post_params' => $json,
         'raw_content_type' => 'application/json',
     ];
-    $_result = http_get_contents($url, $options);
+    $_result = cms_http_request($url, $options);
 
-    if ($_result === null) {
-        return null;
+    $this_result = @json_decode($_result->data, true);
+
+    if (!is_array($this_result)) {
+        $errormsg = $_result->message;
+        throw new Exception($errormsg);
     }
-    $result[$sz] = json_decode($_result, true);
-    return $result[$sz];
+
+    if (array_key_exists('error', $this_result)) {
+        $errormsg = $this_result['error']['errors'][0]['message'];
+        throw new Exception($errormsg);
+    }
+
+    $result[$sz] = $this_result;
+
+    return $this_result;
 }

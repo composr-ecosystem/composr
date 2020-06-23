@@ -47,9 +47,8 @@ function init__facebook_connect()
             'persistent_data_handler' => new \Facebook\PersistentData\FacebookSessionPersistentDataHandler(false),
         ]);
     } catch (Exception $e) {
-        if (php_function_allowed('error_log')) {
-            @error_log('Facebook returned an error: ' . $e->__toString());
-        }
+        require_code('failure');
+        cms_error_log('Facebook: ' . $e->getMessage(), 'error_occurred_api');
         $fb = null;
     }
     cms_ini_set('ocproducts.type_strictness', $before);
@@ -77,9 +76,8 @@ function facebook_get_access_token_from_js_sdk()
     try {
         $access_token = $helper->getAccessToken();
     } catch (Exception $e) {
-        if (php_function_allowed('error_log')) {
-            @error_log('Facebook returned an error: ' . $e->__toString());
-        }
+        require_code('failure');
+        cms_error_log('Facebook: ' . $e->getMessage(), 'error_occurred_api');
         $access_token = null;
     }
 
@@ -125,9 +123,7 @@ function facebook_get_api_request($graph_path, $access_token = null, &$errormsg 
     } catch (Exception $e) {
         $errormsg = $e->getMessage();
 
-        if (php_function_allowed('error_log')) {
-            @error_log('Facebook returned an error: ' . $e->__toString());
-        }
+        cms_error_log('Facebook: ' . $e->getMessage(), 'error_occurred_api');
         $response = null;
     }
 

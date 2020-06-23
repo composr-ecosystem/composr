@@ -608,6 +608,51 @@ Use the correct redirection APIs
 | There are a number of internal functions to do redirects ([tt]redirect_screen[/tt], [tt]redirect_exit[/tt], [tt]assign_refresh[/tt]), supporting [tt]<meta>[/tt]-redirect for situations that don't allow HTTP-redirect, and attached-message hand-over. If you must output a [tt]Location[/tt] header manually then comment why you are doing so.
 |}
 
+[title="4"]Calling web APIs[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Show good error messages[/color]
+| Stability
+| Composr development +
+| Manually
+| Web API calls must be able to sense the best possible error messages within payloads, or if a payload is missing ([tt]!is_array[/tt]) then an error message from the HTTP message. This implies to call [tt]cms_http_request[/tt] with [tt]ignore_http_status[/tt] as true. We need to do this to help people debug their key configuration, and so people can provide good bug reports.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Log errors[/color]
+| Stability
+| Composr development +
+| Manually
+| Web API calls must log their errors and send an error notification (usually both via [tt]cms_error_log[/tt]), or pass back their errors via exceptions or reference parameters (then the callers must do said logging/notification). This implies to call [tt]cms_http_request[/tt] with [tt]trigger_error[/tt] as false, so that errors don't result in insta-exit (most APIs should be designed to gracefully handle errors rather than exiting anyway). We need to do this because API failure should not go unnoticed.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not e-mail ocProducts[/color]
+| Stability
+| Composr development +
+| Manually
+| Web API errors should not result in anything that would send an error e-mail to ocProducts (e.g. [tt]fatal_exit[/tt]). We do not want to be spammed when people mess up their key configuration or exceed quota.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Write automated tests[/color]
+| Stability
+| Composr development +
+| Manually
+| Any web API with an API key should have a Health Check to ensure the key continues to function correctly; otherwise at least a testing platform automated test is still probably needed.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not assume JSON is intact[/color]
+| Stability
+| Composr development +
+| Manually
+| When calling [tt]json_decode[/tt] use [tt]@[/tt]. Generally also we will parse into PHP arrays, as we tend to use arrays for data structures in Composr.
+|}
+
 [title="4"]Addons[/title]
 
 {|
@@ -2245,11 +2290,11 @@ Provide addon screenshots
 | For example, Chris once found that [tt]XMLHttpRequest[/tt] on Internet Explorer had a caching bug... so instead of just throwing in a solution to where it affected him, he considered the problem architecturally, making sure all AJAX-facing PHP scripts have a common approach to solving the problem. This kind of approach is essential.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Properly index 3rd-party code[/color]
+[color="red"]Properly index 3rd-party code/APIs[/color]
 | Legal, ethics, maintainability, communication, stability
 | Product development only
 | Manually
-| If you include some third party code you must update:
+| If you include some third party code/API you must update:
  - [tt]docs/LICENSE.md[/tt] (this file is shown when users install)
  - [tt]sources_custom/third_party_code.php[/tt] (general list of files)
  - [tt]phpdoc.dist.xml[/tt] (if appropriate, PHPDoc generation)

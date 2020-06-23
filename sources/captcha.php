@@ -421,7 +421,7 @@ function generate_captcha()
     $session = get_session_id();
     if ($session == '') {
         if (php_function_allowed('error_log')) {
-            error_log('CAPTCHA generated aainst blank session - static caching is misconfigured');
+            error_log('CAPTCHA generated against blank session - static caching is misconfigured');
         }
     }
 
@@ -517,23 +517,32 @@ function check_captcha($code_entered = null, $regenerate_on_error = true, &$erro
             'secret' => get_option('recaptcha_server_key'),
             'response' => post_param_string('g-recaptcha-response'),
         ];
-        $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $post_params]);
-        $response = json_decode($_response, true);
+        $_response = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post_params, 'ignore_http_status' => true]);
 
-        if (!$response['success']) {
-            foreach ($response['error-codes'] as $error_code) {
-                switch ($error_code) {
-                    case 'timeout-or-duplicate':
-                        $error_message = do_lang_tempcode('RECAPTCHA_ERROR_' . str_replace('-', '_', $error_code));
-                        break;
+        $response = @json_decode($_response->data, true);
 
-                    case 'missing-input-secret':
-                    case 'invalid-input-secret':
-                    case 'missing-input-response':
-                    case 'invalid-input-response':
-                    case 'bad-request':
-                        $error_message = do_lang_tempcode('RECAPTCHA_ERROR_' . str_replace('-', '_', $error_code));
-                        break;
+        if (!is_array($response)) {
+            $error_message = make_string_tempcode('reCAPTCHA: ' . $response->message);
+            require_code('failure');
+            cms_error_log($error_message->evaluate(), 'error_occurred_api');
+        } else {
+            if (!$response['success']) {
+                foreach ($response['error-codes'] as $error_code) {
+                    switch ($error_code) {
+                        case 'timeout-or-duplicate':
+                            $error_message = do_lang_tempcode('RECAPTCHA_ERROR_' . str_replace('-', '_', $error_code));
+                            break;
+
+                        case 'missing-input-secret':
+                        case 'invalid-input-secret':
+                        case 'missing-input-response':
+                        case 'invalid-input-response':
+                        case 'bad-request':
+                            $error_message = do_lang_tempcode('RECAPTCHA_ERROR_' . str_replace('-', '_', $error_code));
+                            require_code('failure');
+                            cms_error_log($error_message->evaluate(), 'error_occurred_api');
+                            break;
+                    }
                 }
             }
         }

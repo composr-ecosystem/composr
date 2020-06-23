@@ -221,8 +221,15 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
         'raw_content_type' => 'application/json',
         'ignore_http_status' => true,
     ];
-    $_response = http_get_contents($url, $options);
-    $response = json_decode($_response, true);
+    $_response = cms_http_request($url, $options);
+    $response = @json_decode($_response->data, true);
+
+    if (!is_array($response)) {
+        $error_message = $response->message;
+        require_code('failure');
+        cms_error_log('Shippo: ' . $error_message, 'error_occurred_api');
+        warn_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
+    }
 
     // Error handling
     $error_message = '';
@@ -235,14 +242,18 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
         }
     }
     if ($response['status'] == 'ERROR') {
-        fatal_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
+        require_code('failure');
+        cms_error_log('Shippo: ' . $error_message, 'error_occurred_api');
+        warn_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
     }
     if (!isset($response['rates'][0])) {
         if ($error_message != '') {
-            fatal_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
+            require_code('failure');
+            cms_error_log('Shippo: ' . $error_message, 'error_occurred_api');
+            warn_exit(do_lang_tempcode('SHIPPING_ERROR', escape_html($error_message)));
         }
 
-        fatal_exit(do_lang_tempcode('NO_SHIPPING_RESULT'));
+        warn_exit(do_lang_tempcode('NO_SHIPPING_RESULT'));
     }
 
     require_code('currency');

@@ -30,5 +30,5 @@ Tornevall,tornevall,https://www.tornevall.net/,Maintain,Yes,Apr 10th 2020,3,anti
 Transifex,transifex,https://docs.transifex.com/api/introduction,Maintain,No,Apr 10th 2020,2,_api_transifex,N/A,
 Vimeo thumbnail detection,vimeo,,Maintain,Yes,Apr 11th 2020,N/A,media,N/A,
 WorldPay,gateway_worldpay,https://developer.worldpay.com/docs,No action,Yes,N/A,N/A,N/A,N/A,Deprecated API. No sponsor so no action.
-YouTube Data,youtube,https://developers.google.com/youtube/,Maintain,No,Apr 10th 2020,3,_api_youtube,youtube,
+YouTube Data,youtube,https://developers.google.com/youtube/,Maintain,No,Apr 10th 2020,3,_api_youtube,YouTube,
 YouTube thumbnail detection,youtube,,Maintain,Yes,Apr 11th 2020,N/A,media,N/A,

@@ -88,88 +88,78 @@ class Hook_video_syndication_youtube
         }
 
         if ($remote_id !== null) { // Searching for a specific linked video
-            try {
-                $url = 'https://www.googleapis.com/youtube/v3/videos';
-                $params = [
-                    'part' => 'snippet,status',
-                    'id' => $remote_id,
-                ];
-                $http_verb = 'GET';
-                $result = $this->_http($url, $params, $http_verb);
+            $url = 'https://www.googleapis.com/youtube/v3/videos';
+            $params = [
+                'part' => 'snippet,status',
+                'id' => $remote_id,
+            ];
+            $http_verb = 'GET';
+            $result = $this->_http($url, $params, $http_verb);
 
-                if (!empty($result['items'])) {
-                    if ($standard_format) {
-                        $detected_video = $this->process_remote_video($result['items'][0]);
-                        if ($detected_video !== null) {
-                            $remote_id = $detected_video['remote_id'];
-                            $videos[$remote_id] = $detected_video;
-                        }
-                    } else {
-                        $videos[] = $result['items'][0];
+            if (!empty($result['items'])) {
+                if ($standard_format) {
+                    $detected_video = $this->process_remote_video($result['items'][0]);
+                    if ($detected_video !== null) {
+                        $remote_id = $detected_video['remote_id'];
+                        $videos[$remote_id] = $detected_video;
                     }
+                } else {
+                    $videos[] = $result['items'][0];
                 }
-            } catch (Exception $e) {
-                $this->convert_exception_to_attached_message($url, $http_verb, $e);
-                return null;
             }
         } else { // Listing all linked videos
-            try {
-                // First we need to find the 'videos' playlist
-                $url = 'https://www.googleapis.com/youtube/v3/channels';
+            // First we need to find the 'videos' playlist
+            $url = 'https://www.googleapis.com/youtube/v3/channels';
+            $params = [
+                'part' => 'contentDetails',
+                'mine' => true,
+            ];
+            $http_verb = 'GET';
+            $result = $this->_http($url, $params, $http_verb);
+            $playlist_id = $result['items'][0]['contentDetails']['relatedPlaylists']['uploads'];
+
+            $next_page_token = null;
+            do {
+                $url = 'https://www.googleapis.com/youtube/v3/playlistItems';
                 $params = [
-                    'part' => 'contentDetails',
-                    'mine' => true,
+                    'part' => 'snippet,status',
+                    'maxResults' => ($max_rows === null) ? 50 : min(50, $max_rows - count($videos)),
+                    'playlistId' => $playlist_id,
                 ];
+                if ($next_page_token !== null) {
+                    $params['pageToken'] = $next_page_token;
+                }
                 $http_verb = 'GET';
                 $result = $this->_http($url, $params, $http_verb);
-                $playlist_id = $result['items'][0]['contentDetails']['relatedPlaylists']['uploads'];
 
-                $next_page_token = null;
-                do {
-                    $url = 'https://www.googleapis.com/youtube/v3/playlistItems';
-                    $params = [
-                        'part' => 'snippet,status',
-                        'maxResults' => ($max_rows === null) ? 50 : min(50, $max_rows - count($videos)),
-                        'playlistId' => $playlist_id,
-                    ];
-                    if ($next_page_token !== null) {
-                        $params['pageToken'] = $next_page_token;
-                    }
-                    $http_verb = 'GET';
-                    $result = $this->_http($url, $params, $http_verb);
+                foreach ($result['items'] as $remote_video) {
+                    if ($standard_format) {
+                        $detected_video = $this->process_remote_video($remote_video);
+                        if ($detected_video !== null) {
+                            $remote_id = $detected_video['remote_id'];
+                            if (!array_key_exists($remote_id, $videos)) { // If new match
+                                $videos[$remote_id] = $detected_video;
 
-                    foreach ($result['items'] as $remote_video) {
-                        if ($standard_format) {
-                            $detected_video = $this->process_remote_video($remote_video);
-                            if ($detected_video !== null) {
-                                $remote_id = $detected_video['remote_id'];
-                                if (!array_key_exists($remote_id, $videos)) { // If new match
-                                    $videos[$remote_id] = $detected_video;
-
-                                    if (count($videos) >= $max_rows) {
-                                        break 2;
-                                    }
+                                if (count($videos) >= $max_rows) {
+                                    break 2;
                                 }
                             }
-                        } else {
-                            $videos[] = $remote_video;
+                        }
+                    } else {
+                        $videos[] = $remote_video;
 
-                            if (count($videos) >= $max_rows) {
-                                break 2;
-                            }
+                        if (count($videos) >= $max_rows) {
+                            break 2;
                         }
                     }
+                }
 
-                    if (empty($result['nextPageToken'])) {
-                        $next_page_token = null;
-                    } else {
-                        $next_page_token = $result['nextPageToken'];
-                    }
-                } while ($next_page_token !== null);
-            } catch (Exception $e) {
-                $this->convert_exception_to_attached_message($url, $http_verb, $e);
-                return null;
-            }
+                if (empty($result['nextPageToken'])) {
+                    $next_page_token = null;
+                } else {
+                    $next_page_token = $result['nextPageToken'];
+                }
+            } while ($next_page_token !== null);
         }
 
         return $videos;
@@ -179,7 +169,11 @@ class Hook_video_syndication_youtube
     {
         $snippet = $remote_video['snippet'];
 
-        $categories = $this->get_remote_categories();
+        try {
+            $categories = $this->get_remote_categories();
+        } catch (Exception $e) {
+            $categories = [1 => do_lang('GENERAL')];
+        }
 
         // Find bound ID, and real tags, from remote tags and remote category
         $local_id = null;
@@ -269,8 +263,7 @@ class Hook_video_syndication_youtube
                 @unlink($file_path);
             }
 
-            $this->convert_exception_to_attached_message($url, $http_verb, $e);
-            return null;
+            throw $e;
         }
 
         // Upload actual video file
@@ -287,8 +280,7 @@ class Hook_video_syndication_youtube
             $http_verb = 'PUT';
             $result = $this->_http($url, $params, $http_verb, null, 10000.0, [], $file_path, $mime_type, false);
         } catch (Exception $e) {
-            $this->convert_exception_to_attached_message($url, $http_verb, $e);
-            return null;
+            throw $e;
         } finally {
             // Cleanup
             if ($is_temp_file) {
@@ -316,8 +308,7 @@ class Hook_video_syndication_youtube
                         }
                     }
                 } catch (Exception $e) {
-                    $this->convert_exception_to_attached_message($url, $http_verb, $e);
-                    return null;
+                    throw $e;
                 } finally {
                     // Cleanup
                     if ($is_temp_file) {
@@ -365,59 +356,44 @@ class Hook_video_syndication_youtube
         $structure['id'] = $video['remote_id'];
         $json = json_encode($structure);
 
-        try {
-            $url = 'https://www.googleapis.com/youtube/v3/videos';
-            $params = [
-                'id' => $video['remote_id'],
-                'part' => 'snippet,status',
-            ];
-            $http_verb = 'PUT';
-            $result = $this->_http($url, $params, $http_verb, $json);
-        } catch (Exception $e) {
-            $this->convert_exception_to_attached_message($url, $http_verb, $e);
-            return null;
-        }
+        $url = 'https://www.googleapis.com/youtube/v3/videos';
+        $params = [
+            'id' => $video['remote_id'],
+            'part' => 'snippet,status',
+        ];
+        $http_verb = 'PUT';
+        $result = $this->_http($url, $params, $http_verb, $json);
         return $this->process_remote_video($result);
     }
 
     public function delete_remote_video($video)
     {
-        try {
-            $url = 'https://www.googleapis.com/youtube/v3/videos';
-            $params = ['id' => $video['remote_id']];
-            $http_verb = 'DELETE';
-            $request_body = '';
-            $result = $this->_http($url, $params, $http_verb, $request_body);
-        } catch (Exception $e) {
-            $this->convert_exception_to_attached_message($url, $http_verb, $e);
-            return false;
-        }
+        $url = 'https://www.googleapis.com/youtube/v3/videos';
+        $params = ['id' => $video['remote_id']];
+        $http_verb = 'DELETE';
+        $request_body = '';
+        $result = $this->_http($url, $params, $http_verb, $request_body);
         return true;
     }
 
     public function leave_comment($video, $comment)
     {
-        try {
-            $url = 'https://www.googleapis.com/youtube/v3/commentThreads';
-            $params = ['part' => 'snippet'];
-            $request = [
-                'snippet' => [
-                    'channelId' => $video['_raw']['snippet']['channelId'],
-                    'topLevelComment' => [
-                        'snippet' => [
-                            'textOriginal' => $comment,
-                        ],
+        $url = 'https://www.googleapis.com/youtube/v3/commentThreads';
+        $params = ['part' => 'snippet'];
+        $request = [
+            'snippet' => [
+                'channelId' => $video['_raw']['snippet']['channelId'],
+                'topLevelComment' => [
+                    'snippet' => [
+                        'textOriginal' => $comment,
                     ],
-                    'videoId' => $video['remote_id'],
                 ],
-            ];
-            $json = json_encode($request);
-            $http_verb = 'POST';
-            $result = $this->_http($url, $params, $http_verb, $json);
-        } catch (Exception $e) {
-            $this->convert_exception_to_attached_message($url, $http_verb, $e);
-            return false;
-        }
+                'videoId' => $video['remote_id'],
+            ],
+        ];
+        $json = json_encode($request);
+        $http_verb = 'POST';
+        $this->_http($url, $params, $http_verb, $json);
         return true;
     }
 
@@ -425,7 +401,11 @@ class Hook_video_syndication_youtube
     {
         // Match to a category using remote list
         $category_id = 1;
-        $possible_categories = $this->get_remote_categories();
+        try {
+            $possible_categories = $this->get_remote_categories();
+        } catch (Exception $e) {
+            $possible_categories = [1 => do_lang('GENERAL')];
+        }
         foreach ($possible_categories as $_category_id => $_tag) { // Try to bind to one of our tags. Already-bound-remote-category intentionally will be on start of tags list, so automatically maintained through precedence.
             foreach ($video['tags'] as $i => $tag) {
                 if ($_tag == $tag) {
@@ -461,15 +441,10 @@ class Hook_video_syndication_youtube
 
         if (empty($categories)) {
             $country = get_value('youtube_primary_country', 'US', true);
-            try {
-                $url = 'https://www.googleapis.com/youtube/v3/videoCategories';
-                $params = ['part' => 'snippet', 'regionCode' => $country];
-                $http_verb = 'GET';
-                $_categories = $this->_http($url, $params, $http_verb, null, 6.0, [], null, 'application/json', true, true);
-            } catch (Exception $e) {
-                $this->convert_exception_to_attached_message($url, $http_verb, $e);
-                return [1 => do_lang('GENERAL')];
-            }
+            $url = 'https://www.googleapis.com/youtube/v3/videoCategories';
+            $params = ['part' => 'snippet', 'regionCode' => $country];
+            $http_verb = 'GET';
+            $_categories = $this->_http($url, $params, $http_verb, null, 6.0, [], null, 'application/json', true, true);
             foreach ($_categories['items'] as $category) {
                 if ($category['snippet']['assignable']) {
                     $categories[$category['id']] = $category['snippet']['title'];
@@ -529,10 +504,10 @@ class Hook_video_syndication_youtube
 
         if (is_array($result)) {
             if (isset($result['error'])) {
-                throw new Exception($result['error']['message'], $result['error']['code']);
+                throw new Exception('YouTube: ' . $result['error']['message'] . ' @ ' . $http_verb . ' ' . $url, $result['error']['code']);
             }
         } else {
-            throw new Exception($data);
+            throw new Exception('YouTube: ' . $message . ' @ ' . $http_verb . ' ' . $url);
         }
 
         return $result;
@@ -592,15 +567,5 @@ class Hook_video_syndication_youtube
         }
 
         return $http_result;
-    }
-
-    protected function convert_exception_to_attached_message($url, $http_verb, $e)
-    {
-        require_lang('gallery_syndication_youtube');
-        $error_msg = do_lang_tempcode('YOUTUBE_ERROR', escape_html(strval($e->getCode())), $e->getMessage(), [escape_html($url), escape_html($http_verb)]);
-
-        require_code('failure');
-        relay_error_notification($error_msg->evaluate());
-        attach_message($error_msg, 'warn', false, true);
     }
 }

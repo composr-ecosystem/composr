@@ -81,13 +81,16 @@ class Hook_health_check_cloudinary extends Hook_Health_Check
         $ob = new \Cloudinary\Search();
         try {
             $result = $ob->expression('format:jpg')->execute();
-            $error = '';
         } catch (Exception $e) {
             $result = null;
-            $error = $e->getMessage();
+            $errormsg = $e->getMessage();
         }
 
-        $this->assertTrue(($result !== null) && (is_integer($result['total_count'])), 'Could not get Cloudinary result: ' . $error);
+        if ($errormsg !== null) {
+            $this->assertTrue(false, 'Cloudinary error: ' . $errormsg);
+        } else {
+            $this->assertTrue(($result !== null) && (is_integer($result['total_count'])), 'Could not get Cloudinary result');
+        }
 
         cms_ini_set('ocproducts.type_strictness', $before);
     }

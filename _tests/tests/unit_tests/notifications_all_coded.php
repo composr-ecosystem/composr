@@ -51,7 +51,7 @@ class notifications_all_coded_test_set extends cms_test_case
             'error_occurred_missing_reference',
             'error_occurred_missing_reference_important',
             'error_occurred_missing_resource',
-            'error_occurred_weather',
+            'error_occurred_api',
             'error_occurred_rss',
             'ticket_new_staff',
             'ticket_reply_staff',

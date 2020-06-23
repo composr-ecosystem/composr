@@ -926,6 +926,7 @@ function _transifex($call, $http_verb, $params = [], $trigger_error = true, $tex
     $auth = [$username, $password];
     $options = [
         'trigger_error' => $trigger_error,
+        'ignore_http_status' => true,
         'post_params' => $params,
         'auth' => $auth,
         'timeout' => 30.0,
@@ -937,7 +938,24 @@ function _transifex($call, $http_verb, $params = [], $trigger_error = true, $tex
     }
 
     $http_result = cms_http_request($url, $options);
-    $result = $http_result->data;
+
+    if ($http_result->message[0] == '2') {
+        $result = $http_result->data;
+    } else {
+        $result = '';
+
+        if ($trigger_error) {
+            $arr = @json_decode($http_result->data, true);
+            if (!empty($arr['errors'])) {
+                $errormsg = 'Transifex error: ' . $arr['errors'][0]['detail'];
+            } else {
+                $errormsg = 'Transifex error: ' . $http_result->message;
+            }
+            require_code('failure');
+            cms_error_log($errormsg, 'error_occurred_api');
+            warn_exit($errormsg);
+        }
+    }
 
     if (is_cli()) {
         @print('Done call to ' . $url . ' [' . $http_result->message . ']' . "\n");

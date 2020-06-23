@@ -118,9 +118,28 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
             ],
             'ignore_http_status' => true,
         ];
-        $_response = http_get_contents($url, $options);
-        $response = json_decode($_response, true);
-        $this->assertTrue(array_key_exists('results', $response) && is_array($response['results']), 'Did not get expected Shippo result list');
+        $_response = cms_http_request($url, $options);
+        $response = @json_decode($_response->data, true);
+
+        if (is_array($response)) {
+            $error_message = '';
+            if (isset($response['messages'])) {
+                foreach ($response['messages'] as $error_struct) {
+                    if ($error_message != '') {
+                        $error_message = '';
+                    }
+                    $error_message .= $error_struct['text'];
+                }
+            }
+
+            if ($error_message == '') {
+                $this->assertTrue(array_key_exists('results', $response) && is_array($response['results']), 'Did not get expected Shippo result list');
+            } else {
+                $this->assertTrue(false, 'Shippo error: ' . $error_message);
+            }
+        } else {
+            $this->assertTrue(false, 'Shippo error: ' . $_response->message);
+        }
     }
 
     /**
@@ -152,8 +171,18 @@ class Hook_health_check_ecommerce extends Hook_Health_Check
         require_code('character_sets');
         $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
 
-        $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
-        $response = json_decode($_response, true);
-        $this->assertTrue((is_array($response)) && ($response['ResponseType'] == 3), 'Could not perform TaxCloud ping request');
+        $_response = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $_request, 'timeout' => 20.0, 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
+        $response = @json_decode($_response->data, true);
+
+        if (is_array($response)) {
+            if ($response['ResponseType'] != 3) {
+                $errormsg = $response['Messages'][0]['Message'];
+                $this->assertTrue(false, 'TaxCloud: ' . $errormsg);
+            } else {
+                $this->assertTrue((is_array($response)) && ($response['ResponseType'] == 3), 'Could not perform TaxCloud ping request');
+            }
+        } else {
+            $this->assertTrue(false, 'TaxCloud: ' . $_response->message);
+        }
     }
 }

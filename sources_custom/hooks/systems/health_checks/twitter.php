@@ -78,15 +78,20 @@ class Hook_health_check_twitter extends Hook_Health_Check
         cms_ini_set('ocproducts.type_strictness', '0');
 
         require_code('twitter');
-        $twitter = new Twitter($api_key, $api_secret);
-        $twitter->setOAuthToken($token);
-        $twitter->setOAuthTokenSecret($token_secret);
 
-        $twitter_statuses = $twitter->statusesUserTimeline(null, 'ubuntu');
-        $this->assertTrue(is_array($twitter_statuses) && array_key_exists(0, $twitter_statuses) && is_string($twitter_statuses[0]['text']), 'Could not find any tweet text from an account');
+        try {
+            $twitter = new Twitter($api_key, $api_secret);
+            $twitter->setOAuthToken($token);
+            $twitter->setOAuthTokenSecret($token_secret);
 
-        $twitter_result = $twitter->searchTweets('testing');
-        $this->assertTrue(is_array($twitter_result) && array_key_exists(0, $twitter_result['statuses']) && is_string($twitter_result['statuses'][0]['text']), 'Could not find any tweet text from a search');
+            $twitter_statuses = $twitter->statusesUserTimeline(null, 'ubuntu');
+            $this->assertTrue(is_array($twitter_statuses) && array_key_exists(0, $twitter_statuses) && is_string($twitter_statuses[0]['text']), 'Could not find any tweet text from an account');
+
+            $twitter_result = $twitter->searchTweets('testing');
+            $this->assertTrue(is_array($twitter_result) && array_key_exists(0, $twitter_result['statuses']) && is_string($twitter_result['statuses'][0]['text']), 'Could not find any tweet text from a search');
+        } catch (TwitterException $e) {
+            $this->assertTrue(false, 'Twitter error: ' . $e->getMessage());
+        }
 
         cms_ini_set('ocproducts.type_strictness', $before);
     }

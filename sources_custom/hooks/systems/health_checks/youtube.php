@@ -76,23 +76,36 @@ class Hook_health_check_youtube extends Hook_Health_Check
             require_code('hooks/modules/video_syndication/youtube');
             $ob = new Hook_video_syndication_youtube();
 
-            $this->assertTrue(array_search('Music', $ob->get_remote_categories()) !== false, 'Could not get a list of YouTube categories');
+            try {
+                $this->assertTrue(array_search('Music', $ob->get_remote_categories()) !== false, 'Could not get a list of YouTube categories');
 
-            $this->assertTrue($ob->get_remote_videos(null, false, 1) !== null, 'Error listing YouTube videos');
+                $this->assertTrue($ob->get_remote_videos(null, false, 1) !== null, 'Error listing YouTube videos');
+            } catch (Exception $e) {
+                $this->assertTrue(false, 'YouTube error: ' . $e->getMessage());
+            }
         }
 
         if (addon_installed('youtube_channel_integration_block')) {
             // Direct querying used by youtube_channel_integration_block addon...
 
             $channel_name = 'ocportal';
-            $playlist_search_response = http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . urlencode($channel_name) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
-            $channel = @json_decode($playlist_search_response);
-            if (isset($channel->items[0]->contentDetails->relatedPlaylists->uploads)) {
-                $playlist_id = $channel->items[0]->contentDetails->relatedPlaylists->uploads;
-                $playlist_items = json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&playlistId=' . urlencode($playlist_id) . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]));
-                $this->assertTrue(isset($playlist_items->items) && array_key_exists(0, $playlist_items->items), 'Could not search for any video on a public YouTube channel');
+            $playlist_search_response = cms_http_request('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . urlencode($channel_name) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
+            $channel = @json_decode($playlist_search_response->data);
+            if (!is_array($channel)) {
+                $this->assertTrue(false, 'Could not find playlist ID for YouTube uploads: ' . $playlist_search_response->message);
+            } elseif (isset($channel->error->message)) {
+                $this->assertTrue(false, 'Could not find playlist ID for YouTube uploads: ' . $channel->error->message);
             } else {
-                $this->assertTrue(false, 'Could not find playlist ID for YouTube uploads' . (isset($channel->error->message) ? ('; ' . $channel->error->message) : ''));
+                $playlist_id = $channel->items[0]->contentDetails->relatedPlaylists->uploads;
+                $uploads_search_response = cms_http_request('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&playlistId=' . urlencode($playlist_id) . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
+                $playlist_items = @json_decode($uploads_search_response);
+                if (!is_array($playlist_items)) {
+                    $this->assertTrue(false, 'Could not search for any video on a public YouTube channel: ' . $uploads_search_response->message);
+                } elseif (isset($playlist_items->error->message)) {
+                    $this->assertTrue(false, 'Could not search for any video on a public YouTube channel: ' . $channel->error->message);
+                } else {
+                    $this->assertTrue(isset($playlist_items->items) && array_key_exists(0, $playlist_items->items), 'Could not search for any video on a public YouTube channel');
+                }
             }
         }
     }

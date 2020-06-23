@@ -373,15 +373,20 @@ function confluence_query($query, $trigger_error = true)
     $url = get_confluence_base_url() . '/rest/api/' . $query;
     list($json) = confluence_call_url($url, $trigger_error, true);
 
-    if (empty($json)) {
+    $ret = @json_decode($json, true);
+
+    if (!is_array($json)) {
         if (!$trigger_error) {
             return null;
         }
 
+        require_code('failure');
+        cms_error_log('Confluence: ' . $json . ' @ ' . $url, 'error_occurred_api');
+
         warn_exit('Internal error processing query ' . $url);
     }
 
-    return json_decode($json, true);
+    return $ret;
 }
 
 function confluence_call_url($url, $trigger_error = true, $text = false)
@@ -394,7 +399,7 @@ function confluence_call_url($url, $trigger_error = true, $text = false)
     }
 
     global $CONFLUENCE_CACHE_TIME;
-    $options = ['trigger_error' => $trigger_error];
+    $options = ['trigger_error' => $trigger_error, 'ignore_http_status' => true];
     if ($auth !== null) {
         $options['auth'] = $auth;
     }

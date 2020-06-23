@@ -30,11 +30,12 @@ class Hook_task_sugarcrm_sync_contact_metadata
         }
 
         require_code('sugarcrm');
-        sugarcrm_initialise_connection();
-
-        global $SUGARCRM;
-
-        if ($SUGARCRM === null) {
+        try {
+            $success = sugarcrm_initialise_connection();
+            if (!$success) {
+                return false;
+            }
+        } catch (Exception $e) {
             return false;
         }
 

@@ -228,15 +228,11 @@ class Hook_translation_bing_translator
             'raw_content_type' => 'application/json',
             'extra_headers' => ['Ocp-Apim-Subscription-Key' => $key],
         ];
-        $_result = http_get_contents($url, $options);
+        $_result = cms_http_request($url, $options);
 
-        $result = @json_decode($_result, true);
-        if (($result === false) || (array_key_exists('error', $result))) {
-            $errormsg = (array_key_exists('error', $result) ? $result['error']['message'] : $_result);
-            if (php_function_allowed('error_log')) {
-                error_log('Bing Translator issue: ' . $_result, 0);
-            }
-
+        $result = @json_decode($_result->data, true);
+        if ((!is_array($result)) || (array_key_exists('error', $result))) {
+            $errormsg = 'Bing Translator: ' . ((!is_array($result) ? $_result->message : $result['error']['message']));
             return null;
         }
         return $result;

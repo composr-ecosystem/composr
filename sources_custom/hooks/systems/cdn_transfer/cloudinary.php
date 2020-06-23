@@ -115,11 +115,16 @@ class Hook_cdn_transfer_cloudinary
                 $options
             );
         } catch (Exception $e) {
+            $errormsg = 'Cloudinary: ' . $e->getMessage();
+
+            require_code('failure');
+            cms_error_log($errormsg, 'error_occurred_api');
+
             if ($accept_errors) {
-                attach_message($e->getMessage(), 'warn');
+                attach_message($errormsg, 'warn');
                 return false;
             }
-            warn_exit($e->getMessage());
+            warn_exit($errormsg);
         }
 
         if (strpos(get_base_url(), 'https://') === false) {

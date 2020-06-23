@@ -93,9 +93,8 @@ class Hook_syndication_facebook
         try {
             $access_token = $helper->getAccessToken();
         } catch (Exception $e) {
-            if (php_function_allowed('error_log')) {
-                @error_log('Facebook returned an error: ' . $e->__toString());
-            }
+            require_code('failure');
+            cms_error_log('Facebook: ' . $e->getMessage(), 'error_occurred_api');
             $access_token = null;
         }
         if ($access_token === null) { // Actually it didn't
@@ -109,9 +108,8 @@ class Hook_syndication_facebook
             try {
                 $access_token_extended = $oauth2_client->getLongLivedAccessToken($access_token);
             } catch (Exception $e) {
-                if (php_function_allowed('error_log')) {
-                    @error_log('Facebook returned an error: ' . $e->__toString());
-                }
+                require_code('failure');
+                cms_error_log('Facebook: ' . $e->getMessage(), 'error_occurred_api');
                 $access_token_extended = null;
             }
             if ($access_token_extended !== null) {
@@ -202,12 +200,13 @@ class Hook_syndication_facebook
         try {
             $ret = $FACEBOOK_CONNECT->post('/' . $post_to_uid . '/feed', $attachment, $access_token);
         } catch (Exception $e) {
-            if (php_function_allowed('error_log')) {
-                @error_log('Facebook returned an error: ' . $e->__toString());
-            }
+            $errormsg = $e->getMessage();
+
+            require_code('failure');
+            cms_error_log('Facebook: ' . $errormsg, 'error_occurred_api');
 
             if (!$silent_warn) {
-                attach_message($e->getMessage(), 'warn', false, true);
+                attach_message($errormsg, 'warn', false, true);
             }
         }
 

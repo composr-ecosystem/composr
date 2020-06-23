@@ -221,7 +221,7 @@ class BrokenURLScanner
      * @param  integer $maximum_api_results Maximum results to query from APIs
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_catalogue_fields($live_base_urls, $maximum_api_results)
+    public function enumerate_catalogue_fields($live_base_urls, $maximum_api_results = 50)
     {
         $urls = [];
 
@@ -265,7 +265,7 @@ class BrokenURLScanner
      * @param  integer $maximum_api_results Maximum results to query from APIs
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_comcode_pages($live_base_urls, $maximum_api_results)
+    public function enumerate_comcode_pages($live_base_urls, $maximum_api_results = 50)
     {
         $urls = [];
 
@@ -325,13 +325,10 @@ class BrokenURLScanner
      *
      * @param  array $live_base_urls The live base URL(s)
      * @param  integer $maximum_api_results Maximum results to query from APIs (more than 50 is very slow unless you have a paid API key)
-     * @param  boolean $error Whether there was an error (returned by reference)
      * @return array List of URLs (each list entry is a map of URL details)
      */
-    public function enumerate_moz_backlinks($live_base_urls, $maximum_api_results = 50, &$error = false)
+    public function enumerate_moz_backlinks($live_base_urls, $maximum_api_results = 50)
     {
-        $error = false;
-
         $domains = [];
         foreach ($live_base_urls as $live_base_url) {
             $domain = @parse_url($live_base_url, PHP_URL_HOST);
@@ -370,12 +367,19 @@ class BrokenURLScanner
                     'auth' => $auth,
                     'timeout' => 5.0,
                     'post_params' => $json,
+                    'ignore_http_status' => true,
                 ];
 
-                $_result = http_get_contents($api_url, $options);
-                if ($_result !== null) {
-                    $result = json_decode($_result, true);
+                $_result = cms_http_request($api_url, $options);
+                $result = @json_decode($_result->data, true);
 
+                if (!is_array($result)) {
+                    $errormsg = $_result->message;
+                    throw new Exception($errormsg);
+                } elseif (array_key_exists('message', $result)) {
+                    $errormsg = $result['message'];
+                    throw new Exception($errormsg);
+                } else {
                     foreach ($result['results'] as $_url) {
                         $urls[] = [
                             'url' => 'https://' . $_url['target']['page'],
@@ -390,8 +394,6 @@ class BrokenURLScanner
                         $continuing = true;
                         $next_token = $result['next_token'];
                     }
-                } else {
-                    $error = true;
                 }
 
                 if ($continuing) {

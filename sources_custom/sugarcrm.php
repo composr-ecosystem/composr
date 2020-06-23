@@ -47,12 +47,15 @@ function sugarcrm_initialise_connection()
 
     try {
         if (!$SUGARCRM->connect()) {
-            sugarcrm_failed('Could not connect to SugarCRM');
-            return false;
+            throw new Exception('Could not connect to SugarCRM');
         }
     } catch (Exception $e) {
-        sugarcrm_failed($e->getMessage());
-        return false;
+        $SUGARCRM = null;
+
+        require_code('failure');
+        cms_error_log('SugarCRM: ' . $e->getMessage(), 'error_occurred_api');
+
+        throw $e;
     }
 
     return true;
@@ -64,18 +67,6 @@ function sugarcrm_configured()
     $username = get_option('sugarcrm_username');
 
     return (!empty($base_url)) && (!empty($username));
-}
-
-function sugarcrm_failed($message)
-{
-    global $SUGARCRM;
-    $SUGARCRM = null;
-
-    if (php_function_allowed('error_log')) {
-        error_log('SugarCRM issue: ' . $message, 0);
-    }
-    require_code('failure');
-    relay_error_notification($message, false);
 }
 
 function get_or_create_sugarcrm_account($company, $timestamp = null)
