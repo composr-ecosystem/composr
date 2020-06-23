@@ -37,7 +37,7 @@ class _api_youtube_test_set extends cms_test_case
             'local_id' => $local_id,
             'title' => 'Test',
             'description' => 'Test description',
-            'mtime' =>time(),
+            'mtime' => time(),
             'tags' => ['test', 'Music'],
             'url' => get_custom_base_url() . '/_tests/assets/media/early_cinema.mp4',
             '_raw_url' => get_custom_base_url() . '/_tests/assets/media/early_cinema.mp4',

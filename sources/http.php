@@ -1134,6 +1134,7 @@ class HttpDownloaderCurl extends HttpDownloader
             case '200':
             case '301':
             case '302':
+            case '303':
             case '307':
                 break;
 
@@ -1568,7 +1569,7 @@ class HttpDownloaderSockets extends HttpDownloader
 
                         if (preg_match("#HTTP/(\d*\.\d*) (\d*) #", $line, $matches) != 0) {
                             // 200=Ok
-                            // 301/302/307=Redirected: Not good, we should not be here
+                            // 301/302/303/307=Redirected: Not good, we should not be here
                             // 401/403=Unauthorized
                             // 404=Not found
                             // 400/500=Internal error
@@ -1583,6 +1584,7 @@ class HttpDownloaderSockets extends HttpDownloader
 
                                 case '301':
                                 case '302':
+                                case '303':
                                 case '307':
                                     // We'll expect a location header
                                     break;

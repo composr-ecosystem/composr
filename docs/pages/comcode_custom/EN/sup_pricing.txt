@@ -264,7 +264,7 @@ Here are some links I've collected over the years that talk about website quotat
 [*] http://www.outofwebsite.com/web-design-tips/tips/archives/planning-budget.html
 [*] http://www.pearsonified.com/2006/06/how_much_should_a_design_cost.php
 [*] https://web.archive.org/web/20150420035723/http://www.executionists.com/blog/cost-to-build-websites-2014/
-[*] http://www.creativebloq.com/app-design/how-much-make-app-9134501
+[*] https://www.creativebloq.com/app-design/how-much-make-app-9134501
 [*] https://news.ycombinator.com/item?id=4505112
 [/list]
 Note that some of these may be out-dated by now.

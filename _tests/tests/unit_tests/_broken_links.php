@@ -205,17 +205,11 @@ class _broken_links_test_set extends cms_test_case
             return;
         }
         if (in_array($url, [ // These just won't check from a bot guest user
-            'https://www.optimizely.com/',
             'https://cloud.google.com/console',
             'https://www.google.com/webmasters/tools/home',
             'https://console.developers.google.com/project',
-            'https://itouchmap.com/latlong.html',
-            'https://www.techsmith.com/jing-tool.html',
             'https://developer.twitter.com/en/apps',
             'http://dev.twitter.com/apps/new',
-            'http://purl.org/dc/elements/1.1/',
-            'http://purl.org/dc/terms/',
-            'https://notepad-plus-plus.org/',
             'https://compo.sr/themeing-changes.htm',
             'https://pixabay.com/',
             'https://www.patreon.com/posts/18644315',
@@ -231,7 +225,7 @@ class _broken_links_test_set extends cms_test_case
 
         require_code('urls2');
         $message = '';
-        $exists = check_url_exists($url, null, false, 3, $message);
+        $exists = check_url_exists($url, null, true, 3, $message);
         $this->assertTrue($exists, 'Broken URL: ' . $url . ' (' . $message . ') in ' . $context);
     }
 }

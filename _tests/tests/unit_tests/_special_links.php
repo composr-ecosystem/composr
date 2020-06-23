@@ -118,7 +118,7 @@ class _special_links_test_set extends cms_test_case
             'https://www.cloudflare.com/ips-v4',
             'https://www.cloudflare.com/ips-v6',
             'https://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz',
-            'https://euvat.ga/rates.json',
+            'https://euvatrates.com/rates.json',
         ];
         foreach ($urls as $url) {
             require_code('urls2');

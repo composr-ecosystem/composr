@@ -86,7 +86,7 @@ class Hook_health_check_apis extends Hook_Health_Check
         $ip_stack_url = 'http://api.ipstack.com/' . rawurlencode('216.58.192.142') . '?access_key=' . urlencode(get_option('ipstack_api_key'));
         $_json = cms_http_request($ip_stack_url, ['ignore_http_status' => true, 'convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]);
         $json = @json_decode($_json->data, true);
-        if (!is_array($_json->data)) {
+        if (!is_array($json)) {
             $this->assertTrue(false, 'IP Stack error: ' . $_json->message);
         } else {
             if (array_key_exists('error', $json)) {

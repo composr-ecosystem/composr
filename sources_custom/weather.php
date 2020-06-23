@@ -51,7 +51,7 @@ function weather_lookup($location_search = null, $latitude = null, $longitude = 
     $hook_obs = find_all_hook_obs('systems', 'weather', 'Hook_weather_');
     foreach ($hook_obs as $hook => $ob) {
         if (($api === null) || ($hook == $api)) {
-            $result = $ob->lookup($location_search, $latitude, $longitude, $units, $max_days, $errormsg);
+            $result = $ob->lookup($location_search, $latitude, $longitude, $units, $max_days);
             if ($result !== null) {
                 return $result;
             }

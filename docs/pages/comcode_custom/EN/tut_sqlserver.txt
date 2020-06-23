@@ -33,7 +33,7 @@ Make sure you have the SQL Server network service started. It will start automat
 
 You will need to manually create your database in SQL Server, using SQL Management Studio.
 
-If using SQL Server Express, you need to [url="enable Network connections"]https://technet.microsoft.com/en-us/library/ms165718(v=sql.105).aspx[/url]. Also make sure TCP/IP is enabled on any network interface you're connecting on, in the same area of configuration, "IP Addresses tab". Also set the "IPAll" port to "1433" in here.
+If using SQL Server Express, you need to [url="enable Network connections"]https://docs.microsoft.com/en-us/previous-versions/sql/sql-server-2008-r2/ms165718(v=sql.105)[/url]. Also make sure TCP/IP is enabled on any network interface you're connecting on, in the same area of configuration, "IP Addresses tab". Also set the "IPAll" port to "1433" in here.
 
 You will also need to configure your Firewall. If you disable the Windows Firewall it may block by default. Specifically enable incoming traffic on port 1433.
 

@@ -42,6 +42,7 @@ class themewizard_colours_test_set extends cms_test_case
 
         // Some are just used for image generation
         $c = file_get_contents(get_file_base() . '/sources/themewizard.php');
+        $needed = [];
         preg_match('#(\$needed = \[.*\];)#', $c, $matches);
         eval($matches[1]);
         foreach ($needed as $variable) {

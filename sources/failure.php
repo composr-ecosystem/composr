@@ -1055,10 +1055,10 @@ function get_webservice_result($error_message)
  */
 function cms_error_log($errormsg, $notification_type = 'error_occurred')
 {
-   if (php_function_allowed('error_log')) {
-       @error_log($errormsg);
-   }
-   relay_error_notification(escape_html($errormsg), false, $notification_type);
+    if (php_function_allowed('error_log')) {
+        @error_log($errormsg);
+    }
+    relay_error_notification(escape_html($errormsg), false, $notification_type);
 }
 
 /**

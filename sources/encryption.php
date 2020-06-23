@@ -75,7 +75,7 @@ function encrypt_data($data)
         return $data;
     }
 
-    // See http://php.net/manual/en/function.openssl-pkey-get-public.php 
+    // See http://php.net/manual/en/function.openssl-pkey-get-public.php
     $key = openssl_pkey_get_public('file://' . str_replace('{file_base}', get_file_base(), get_option('encryption_key')));
     if ($key === false) {
         attach_message(do_lang_tempcode('ENCRYPTION_KEY_ERROR'), 'warn');

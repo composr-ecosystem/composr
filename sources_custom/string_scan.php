@@ -6395,6 +6395,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NOTIFICATION_TYPE_cns_group_join_request_staff
         NOTIFICATION_TYPE_cns_member_needs_validation
         NOTIFICATION_TYPE_error_occurred
+        NOTIFICATION_TYPE_error_occurred_api
         NOTIFICATION_TYPE_error_occurred_cron
         NOTIFICATION_TYPE_error_occurred_missing_page
         NOTIFICATION_TYPE_error_occurred_missing_reference

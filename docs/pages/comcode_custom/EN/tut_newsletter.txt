@@ -241,6 +241,6 @@ Welcome e-mails allow you to automatically send out e-mails to new members. This
 
  - [page="_SEARCH:tut_news"]Releasing news & running a Blog[/page]
  - [page="_SEARCH:tut_email"]Understanding and configuring e-mail[/page]
- - https://litmus.com/
+ - https://www.litmus.com/
 
 {$SET,tutorial_tags,Newsletters,newsletter,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,How to send out news bulletins to newsletter subscribers, and to members of your community.}[block]main_tutorial_rating[/block]

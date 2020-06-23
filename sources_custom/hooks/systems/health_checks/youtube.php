@@ -98,7 +98,7 @@ class Hook_health_check_youtube extends Hook_Health_Check
             } else {
                 $playlist_id = $channel->items[0]->contentDetails->relatedPlaylists->uploads;
                 $uploads_search_response = cms_http_request('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&playlistId=' . urlencode($playlist_id) . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
-                $playlist_items = @json_decode($uploads_search_response);
+                $playlist_items = @json_decode($uploads_search_response->data);
                 if (!is_array($playlist_items)) {
                     $this->assertTrue(false, 'Could not search for any video on a public YouTube channel: ' . $uploads_search_response->message);
                 } elseif (isset($playlist_items->error->message)) {

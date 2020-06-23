@@ -207,7 +207,7 @@ If in doubt, you could survey what is important, but chances are you won't get a
  - http://www.slideshare.net/stephenpa/eye-candy-is-a-critical-business-requirement
  - http://www.smashingmagazine.com/2011/12/designing-for-the-mind/
  - http://www.smashingmagazine.com/2008/05/applying-divine-proportion-to-web-design/
- - http://www.creativebloq.com/web-design/10-design-concepts-developers-9134391
+ - https://www.creativebloq.com/web-design/10-design-concepts-developers-9134391
  - https://web.archive.org/web/20090604122807/http://wefunction.com/2009/04/quality-within-web-design
  - https://web.archive.org/web/20190124193026/https://webdesignfromscratch.com/
  - http://www.thedesignedtree.com/
@@ -216,7 +216,7 @@ If in doubt, you could survey what is important, but chances are you won't get a
  - http://www.welie.com/patterns/
  - http://patterntap.com/patterntap
  - http://www.designyourway.net/drb/web-designers-should-focus-more-on-typography/
- - http://www.creativebloq.com/netmag/6-questions-every-homepage-should-answer-101413151
+ - https://www.creativebloq.com/netmag/6-questions-every-homepage-should-answer-101413151
  - http://www.userfocus.co.uk/resources/guidelines.html
  - http://www.webdesignerdepot.com/2013/11/4-essential-ux-rules-taught-by-eye-tracking-research/
  - https://web.archive.org/web/20190322094047/http://archived.getfinch.com/2011/03/ux-is-mostly-desirability/

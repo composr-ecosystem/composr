@@ -65,6 +65,9 @@ class ecommerce_custom_test_set extends cms_test_case
         // Test custom product is there
         $url = build_url(['page' => 'purchase', 'type' => 'browse', 'keep_su' => $test_username, 'keep_ecommerce_local_test' => 1]);
         $purchase_screen = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => [get_session_cookie() => $session_id]]);
+        if ($this->debug) {
+            @var_dump($purchase_screen);
+        }
         $this->assertTrue(strpos($purchase_screen, 'TestCustomItem') !== false);
 
         // Test button generates

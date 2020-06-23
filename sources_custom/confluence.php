@@ -375,7 +375,7 @@ function confluence_query($query, $trigger_error = true)
 
     $ret = @json_decode($json, true);
 
-    if (!is_array($json)) {
+    if (!is_array($ret)) {
         if (!$trigger_error) {
             return null;
         }
