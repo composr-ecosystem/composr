@@ -148,7 +148,6 @@ For YouTube syndication you must first:
             'sources_custom/hooks/systems/oauth/.htaccess',
             'sources_custom/hooks/systems/oauth/youtube.php',
             'lang_custom/EN/gallery_syndication.ini',
-            'lang_custom/EN/oauth.ini',
             'sources_custom/gallery_syndication.php',
             'sources_custom/hooks/modules/video_syndication/youtube.php',
             'sources_custom/hooks/systems/cron/gallery_syndication.php',

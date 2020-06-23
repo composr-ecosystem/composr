@@ -115,20 +115,22 @@ function refresh_oauth2_token($service_name, $trigger_error = true)
         'grant_type' => 'refresh_token',
     ];
 
-    $result = http_get_contents($endpoint . '/token', ['trigger_error' => false, 'post_params' => $post_params]);
-    if ($result === null) {
+    $result = cms_http_request($endpoint . '/token', ['trigger_error' => false, 'post_params' => $post_params, 'ignore_http_status' => true]);
+
+    $parsed_result = @json_decode($result->data, true);
+
+    if (!is_array($parsed_result)) {
         if (!$trigger_error) {
             return null;
         }
-        warn_exit(do_lang_tempcode('ERROR_OBTAINING_ACCESS_TOKEN'));
+        warn_exit(do_lang_tempcode('ERROR_OBTAINING_ACCESS_TOKEN', escape_html($result->message)));
     }
-    $parsed_result = json_decode($result, true);
 
     if (!array_key_exists('access_token', $parsed_result)) {
         if (!$trigger_error) {
             return null;
         }
-        warn_exit(do_lang_tempcode('ERROR_OBTAINING_ACCESS_TOKEN'));
+        warn_exit(do_lang_tempcode('ERROR_OBTAINING_ACCESS_TOKEN', escape_html(empty($parsed_result['error_description']) ? $parsed_result['error'] : $parsed_result['error_description'])));
     }
 
     $cache[$service_name] = $parsed_result['access_token'];
