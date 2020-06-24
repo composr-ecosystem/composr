@@ -20,7 +20,9 @@ class _api_youtube_test_set extends cms_test_case
 {
     public function testYouTubeApi()
     {
-        $this->load_key_options('google_apis_', 'youtube__'); // We have to use a prefix on here because Google deactivates YouTube quota if left unused too long and has a horrible process to re-enable it
+        // We have to use a prefix on here because Google deactivates YouTube quota if left unused too long and has a horrible process to re-enable it
+        $this->load_key_options('google_apis_', 'youtube__');
+        $this->load_key_options('youtube_', 'youtube__');
 
         require_code('hooks/modules/video_syndication/youtube');
         $ob = new Hook_video_syndication_youtube();

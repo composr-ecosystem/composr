@@ -91,7 +91,7 @@ class Hook_health_check_youtube extends Hook_Health_Check
             $channel_name = 'ocportal';
             $playlist_search_response = cms_http_request('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . urlencode($channel_name) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
             $channel = @json_decode($playlist_search_response->data);
-            if (!is_array($channel)) {
+            if (!is_object($channel)) {
                 $this->assertTrue(false, 'Could not find playlist ID for YouTube uploads: ' . $playlist_search_response->message);
             } elseif (isset($channel->error->message)) {
                 $this->assertTrue(false, 'Could not find playlist ID for YouTube uploads: ' . $channel->error->message);
@@ -99,7 +99,7 @@ class Hook_health_check_youtube extends Hook_Health_Check
                 $playlist_id = $channel->items[0]->contentDetails->relatedPlaylists->uploads;
                 $uploads_search_response = cms_http_request('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&playlistId=' . urlencode($playlist_id) . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]);
                 $playlist_items = @json_decode($uploads_search_response->data);
-                if (!is_array($playlist_items)) {
+                if (!is_object($playlist_items)) {
                     $this->assertTrue(false, 'Could not search for any video on a public YouTube channel: ' . $uploads_search_response->message);
                 } elseif (isset($playlist_items->error->message)) {
                     $this->assertTrue(false, 'Could not search for any video on a public YouTube channel: ' . $channel->error->message);
