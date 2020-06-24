@@ -805,7 +805,24 @@ function ecv($lang, $escaped, $type, $name, $param)
                 break;
 
             default:
-                trigger_error(do_lang('UNKNOWN_DIRECTIVE', escape_html($name)), E_USER_NOTICE);
+                // Maybe a hook?
+                static $extra_directives = null;
+                if ($extra_directives === null) {
+                    $extra_directives = [];
+                    $hooks = find_all_hooks('systems', 'directives');
+                    foreach (array_keys($hooks) as $hook) {
+                        $extra_directives[$hook] = [];
+                    }
+                }
+                if (isset($extra_directives[$name])) {
+                    if (!isset($extra_directives[$name]['ob'])) {
+                        require_code('hooks/systems/directives/' . filter_naughty_harsh($name));
+                        $extra_directives[$name]['ob'] = object_factory('Hook_directive_' . filter_naughty_harsh($name));
+                    }
+                    $value = $extra_directives[$name]['ob']->run($param);
+                } else {
+                    trigger_error(do_lang('UNKNOWN_DIRECTIVE', escape_html($name)), E_USER_NOTICE);
+                }
         }
 
         if (!empty($escaped)) {
