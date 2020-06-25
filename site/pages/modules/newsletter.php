@@ -318,7 +318,7 @@ class Module_newsletter
 
         // Build up the join form
         $fields = new Tempcode();
-        $fields->attach(form_input_line(do_lang_tempcode('EMAIL_ADDRESS'), do_lang_tempcode('DESCRIPTION_SUBSCRIBE_ADDRESS'), 'email', $their_email, true));
+        $fields->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), do_lang_tempcode('DESCRIPTION_SUBSCRIBE_ADDRESS'), 'email', $their_email, true));
         $fields->attach(form_input_line(do_lang_tempcode('FORENAME'), '', 'forename', $forename, false));
         $fields->attach(form_input_line(do_lang_tempcode('SURNAME'), '', 'surname', $surname, false));
         $fields->attach(form_input_password(do_lang_tempcode('YOUR_PASSWORD'), do_lang_tempcode('DESCRIPTION_MAINTENANCE_PASSWORD'), 'password', false));
@@ -347,6 +347,15 @@ class Module_newsletter
             }
         }
 
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            if (use_captcha()) {
+                $fields->attach(form_input_captcha());
+                $text->attach(' ');
+                $text->attach(do_lang_tempcode('FORM_TIME_SECURITY'));
+            }
+        }
+
         url_default_parameters__disable();
 
         $text->attach(paragraph(do_lang_tempcode('CHANGE_SETTINGS_BY_RESUBSCRIBING')));
@@ -365,6 +374,8 @@ class Module_newsletter
             };
         ";
 
+        $javascript .= (function_exists('captcha_ajax_check') ? captcha_ajax_check() : '');
+
         return do_template('FORM_SCREEN', array('_GUID' => '24d7575465152f450c5a8e62650bf6c8', 'JAVASCRIPT' => $javascript, 'HIDDEN' => '', 'FIELDS' => $fields, 'SUBMIT_ICON' => 'buttons__proceed', 'SUBMIT_NAME' => $submit_name, 'URL' => $post_url, 'TITLE' => $this->title, 'TEXT' => $text));
     }
 
@@ -377,6 +388,11 @@ class Module_newsletter
     {
         require_code('type_sanitisation');
         require_code('crypt');
+
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            enforce_captcha();
+        }
 
         // Add
         $email = trim(post_param_string('email'));
