@@ -307,7 +307,7 @@ class Block_main_members
         }
 
         $sql = 'SELECT r.*' . $extra_select_sql . ' FROM ';
-        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r';
+        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=r.id';
         $main_sql .= $extra_join_sql;
         if ((!$has_exists) && ($usergroup != '')) {
             $main_sql .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON (r.id=g.gm_member_id AND gm_validated=1)';
@@ -370,6 +370,9 @@ class Block_main_members
         $member_boxes = array();
         foreach ($rows as $row) {
             $member_id = $row['id'];
+
+            $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id] = $row;
+
             if ($display_mode != 'listing') {
                 $box = render_member_box($member_id, true, $hooks, $hook_objects, $show_avatar, null, false);
             } else {
