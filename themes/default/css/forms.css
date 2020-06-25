@@ -558,7 +558,7 @@ span.validated_checkbox+input[name="validated"].input_tick {
 	}
 	.mobile .preview_box_inner {
 		overflow: hidden;
-		width: 320px;
+		width: 314px;
 		height: 355px;
 	}
 /*{+END}*/

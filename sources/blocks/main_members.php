@@ -370,7 +370,11 @@ class Block_main_members
         $member_boxes = array();
         foreach ($rows as $row) {
             $member_id = $row['id'];
-            $box = render_member_box($member_id, true, $hooks, $hook_objects, $show_avatar, null, false);
+            if ($display_mode != 'listing') {
+                $box = render_member_box($member_id, true, $hooks, $hook_objects, $show_avatar, null, false);
+            } else {
+                $box = null;
+            }
 
             if ($display_mode == 'media') {
                 $gallery_sql = 'SELECT name,fullname FROM ' . get_table_prefix() . 'galleries WHERE';
@@ -401,7 +405,7 @@ class Block_main_members
                 $member_boxes[$member_id] = array(
                     'I' => strval($cnt + 1),
                     'BREAK' => (!is_null($per_row)) && (($cnt + 1) % $per_row == 0),
-                    'BOX' => $box,
+                    'BOX' => ($display_mode != 'listing') ? $box : null,
                     'MEMBER_ID' => strval($member_id),
                     'GALLERY_NAME' => '',
                     'GALLERY_TITLE' => '',
@@ -448,7 +452,6 @@ class Block_main_members
                     'PHOTO_THUMB_URL' => $row['m_photo_thumb_url'],
                     'VALIDATED' => ($row['m_validated'] == 1),
                     'CONFIRMED' => ($row['m_validated_email_confirm_code'] == ''),
-                    'BOX' => $member_boxes[$row['id']]['BOX'],
                 ));
 
                 $member_primary_group = cns_get_member_primary_group($row['id']);
