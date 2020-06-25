@@ -56,7 +56,7 @@
 	}
 
 	.menu_type__tree .current a {
-		background: url('{$IMG;,2x/menus/menu_bullet_current}');
+		background-image: url('{$IMG;,2x/menus/menu_bullet_current}');
 		background-size: 5px 6px;
 	}
 
