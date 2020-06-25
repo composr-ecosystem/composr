@@ -46,7 +46,7 @@ Here are some areas to consider, and suggestions:
  - Online signatures (e.g. Echosign)
  - CRM (e.g. vTiger)
  - Annotating PDFs (available in the standard Preview app on a Mac)
- - Recording screencasts (e.g. Jing for quick and dirty screencasts, ScreenFlow for Mac, Camtasia for Windows)
+ - Recording screencasts (e.g. TechSmith Capture for quick and dirty screencasts, ScreenFlow for Mac, Camtasia for Windows)
  - Diagramming (e.g. LibreOffice, Balsamiq, ArgoUML)
  - E-mail client (e.g. Thunderbird)
  - Graphics (e.g. Photoshop, GIMP) -- sadly, no Open Source tool can come close to Photoshop or have good support for psd files which are very much a standard

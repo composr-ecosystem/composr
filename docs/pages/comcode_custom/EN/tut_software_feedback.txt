@@ -39,7 +39,7 @@ Before starting your report:
  - [b]Check the FAQ[/b]. If your problem looks like it might be caused by a server configuration issue (for example if you are getting an 'Internal server error' message), please check our [page="_SEARCH:faq"]FAQ[/page] first.
 
 What to include on your report:
- - [b]Describe your problem[/b]. If the problem it is at all complex it may also help if you can give precise [b]steps to reproduce the problem[/b]. That said, we are a huge fan of [url="Jing"]https://www.techsmith.com/jing-tool.html[/url], and often simply spending a few minutes recording a video means you won't need to type much explanation and your problem will be more easily understood without ambiguity or language problems.
+ - [b]Describe your problem[/b]. If the problem it is at all complex it may also help if you can give precise [b]steps to reproduce the problem[/b]. That said, we are a huge fan of [url="TechSmith Capture"]https://www.techsmith.com/jing-tool.html[/url], and often simply spending a few minutes recording a video means you won't need to type much explanation and your problem will be more easily understood without ambiguity or language problems.
  - If you think there is any chance that the problem only happens on some browsers (e.g. some kind of layout problem or JavaScript problem), [b]report which browser you are using[/b] (e.g. Mozilla Firefox 58).
  - If you are not running the latest stable version of Composr, state [b]which Composr version you are running[/b].
  - If you get an error message, copy and paste the [b]error message[/b]. The developers need to know precisely what it said, without paraphrasing or typos.
