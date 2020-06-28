@@ -1566,7 +1566,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                 }
 
                                 // Search highlighting lookahead
-                                if ($highlight_bits !== null) {
+                                if (($highlight_bits !== null) && ($textual_area)) {
                                     foreach ($highlight_bits as $highlight_bit) {
                                         if (strtolower($next) === strtolower($highlight_bit[0])) { // optimisation
                                             if (strtolower(substr($comcode, $pos - 1, strlen($highlight_bit))) === strtolower($highlight_bit)) {
