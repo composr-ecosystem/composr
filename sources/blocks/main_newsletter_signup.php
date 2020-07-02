@@ -128,7 +128,7 @@ class Block_main_newsletter_signup
             // Form...
 
             if ($button_only) {
-                $url = build_url(['page' => 'newsletter'], get_module_zone('newsletter'));
+                $url = build_url(array('page' => 'newsletter'), get_module_zone('newsletter'));
             } else {
                 $url = get_self_url();
             }
