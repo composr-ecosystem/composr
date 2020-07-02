@@ -93,6 +93,10 @@ function init__caches()
         }
     } else {
         $bucket_name = 'script__' . current_script();
+
+        if ($RELATIVE_PATH == '_tests') {
+            $bucket_name .= '__' . get_param_string('id', '');
+        }
     }
     $SMART_CACHE = new Self_learning_cache($bucket_name);
 

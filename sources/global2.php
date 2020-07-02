@@ -492,7 +492,7 @@ function init__global2()
     }
     safe_ini_set('memory_limit', $default_memory_limit);
     memory_limit_for_max_param('max');
-    if ((isset($GLOBALS['FORUM_DRIVER'])) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+    if (((isset($GLOBALS['FORUM_DRIVER'])) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) || ($GLOBALS['DEV_MODE'])) {
         if (get_param_integer('keep_avoid_memory_limit', 0) == 1) {
             disable_php_memory_limit();
         } else {
@@ -696,10 +696,25 @@ function memory_limit_for_max_param($max_param)
 }
 
 /**
+ * Find if running on lower memory than we'd like.
+ *
+ * @return boolean Whether we are
+ */
+function has_low_memory()
+{
+    $ml = ini_get('memory_limit');
+    return ((substr($ml, -1) == 'M') && (intval(substr($ml, 0, strlen($ml) - 1)) < 64));
+}
+
+/**
  * Disable the PHP memory limit. Do not use this carelessly, use it if a screen is a bit fat or in an importer, don't use it assuming memory is infinite.
  */
 function disable_php_memory_limit()
 {
+    if (get_value('memory_limit_simulate_hard') === '1') {
+        return;
+    }
+
     $shl = @ini_get('suhosin.memory_limit');
     if (($shl === false) || ($shl == '') || ($shl == '0')) {
         // Progressively relax more and more (some PHP installs may block at some point)

@@ -25,10 +25,14 @@ class sitemap_test_set extends cms_test_case
 
     public function setUp()
     {
+        parent::setUp();
+
         if ($GLOBALS['SITE_DB']->query_select_value('sitemap_cache', 'COUNT(*)') > 3000) {
             $this->assertTrue(false, 'Test will not work on databases with a huge sitemap');
             return;
         }
+
+        disable_php_memory_limit();
 
         $this->establish_admin_session();
 
@@ -47,8 +51,6 @@ class sitemap_test_set extends cms_test_case
 
         $this->sitemap = retrieve_sitemap_node($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $this->options, $zone, $this->meta_gather);
         $this->flattened = $this->flatten_sitemap($this->sitemap);
-
-        parent::setUp();
     }
 
     public function flatten_sitemap($sitemap)
@@ -203,7 +205,7 @@ class sitemap_test_set extends cms_test_case
                 }
 
                 list($zone, $page) = explode(':', $k);
-                $test = _request_page($page, $zone);
+                $test = __request_page($page, $zone);
                 if ($test === false) {
                     continue;
                 }

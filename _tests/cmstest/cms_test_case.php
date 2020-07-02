@@ -30,6 +30,10 @@ class cms_test_case extends WebTestCase
         if (php_function_allowed('set_time_limit')) {
             @set_time_limit(0);
         }
+
+        // We need to be compatible with low memory limits
+        ini_set('memory_limit', '32M');
+        set_value('memory_limit', '32M');
     }
 
     public function tearDown()
