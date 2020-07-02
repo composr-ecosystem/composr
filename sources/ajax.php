@@ -29,7 +29,6 @@ function cor_prepare()
 {
     require_code('input_filter');
     $allowed_partners = get_allowed_partner_sites();
-header('Foo: ' . $_SERVER['HTTP_ORIGIN'] . cms_srv('HTTP_HOST'). serialize($allowed_partners)); // TODO
     if (in_array(preg_replace('#^.*://([^:/]*).*$#', '${1}', $_SERVER['HTTP_ORIGIN']), $allowed_partners)) {
         header('Access-Control-Allow-Origin: ' . /*escape_header  function not needed and may not be loaded yet*/($_SERVER['HTTP_ORIGIN']));
 
