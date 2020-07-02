@@ -449,8 +449,8 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
         $keep = array();
     }
 
-    $mergeable_arrays = array('METADATA' => true, 'JAVASCRIPTS' => true, 'CSSS' => true, 'TEMPCODE_SETGET' => true, 'CYCLES' => true);
-    $mergeable_tempcode = array('EXTRA_HEAD' => true, 'EXTRA_FOOT' => true, 'JAVASCRIPT' => true);
+    $mergeable_arrays = array('METADATA' => true, 'JAVASCRIPTS' => true, 'CSSS' => true, 'TEMPCODE_SETGET' => true, 'CYCLES' => true, 'ATTACHED_MESSAGES_RAW' => true);
+    $mergeable_tempcode = array('EXTRA_HEAD' => true, 'EXTRA_FOOT' => true, 'JAVASCRIPT' => true, 'ATTACHED_MESSAGES' => true, 'LATE_ATTACHED_MESSAGES' => true);
 
     $old_state = array_pop($OUTPUT_STATE_STACK);
     if ($old_state === null) {
@@ -471,7 +471,9 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
                         if ($GLOBALS[$var] === null) {
                             $GLOBALS[$var] = new Tempcode();
                         }
-                        $GLOBALS[$var]->attach($val);
+                        if ($val !== null) {
+                            $GLOBALS[$var]->attach($val);
+                        }
                     } elseif (!$merge_current || !isset($GLOBALS[$var]) || $GLOBALS[$var] === array() || $GLOBALS[$var] === false || $GLOBALS[$var] === '' || $var == 'REFRESH_URL') {
                         $GLOBALS[$var] = $val;
                     }
