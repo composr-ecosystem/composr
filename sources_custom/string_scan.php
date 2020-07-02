@@ -1226,6 +1226,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_newsletter_signup_PARAM_subject_TITLE
         BLOCK_main_newsletter_signup_PARAM_to
         BLOCK_main_newsletter_signup_PARAM_to_TITLE
+        BLOCK_main_newsletter_signup_PARAM_button_only
+        BLOCK_main_newsletter_signup_PARAM_button_only_TITLE
         BLOCK_main_newsletter_signup_USE
         BLOCK_main_notes_DESCRIPTION
         BLOCK_main_notes_PARAM_lang_none
