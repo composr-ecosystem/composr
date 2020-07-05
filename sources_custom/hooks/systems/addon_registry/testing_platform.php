@@ -864,6 +864,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/___performance.php',
             '_tests/tests/unit_tests/permissions.php',
             '_tests/tests/unit_tests/persistent_cache.php',
+            '_tests/tests/unit_tests/temporal.php',
             '_tests/tests/unit_tests/phpdoc.php',
             '_tests/tests/unit_tests/phpstub_accuracy.php',
             '_tests/tests/unit_tests/php_versioning.php',

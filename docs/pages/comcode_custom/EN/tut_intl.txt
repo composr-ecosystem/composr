@@ -182,9 +182,6 @@ Setting the correct locale may be tricky. Different operating systems may use a 
 
 For German, the following should work [tt]de-DE.UTF-8,de_DE.UTF-8,de.UTF-8,de-DE,de_DE,de[/tt] (a little simpler as we don't normally worry about different variants of German).
 
-Microsoft Windows is good at accepting anything that vaguely matches, but it unfortunately cannot produce utf-8. So if you want a non-Latin-based language to work on Windows you'll need to fill in the [tt]locale_subst[/tt] language string with all the long and short month and day names. See what the Tamil language pack does as an example:
-[tt]locale_subst=Monday=திங்கட்கிழமை,Tuesday=செவ்வாய்க்கிழமை,Wednesday=புதன்கிழமை,Thursday=வியாழக்கிழமை,Friday=வெள்ளிக்கிழமை,Saturday=சனிக்கிழமை,Sunday=ஞாயிற்றுக்கிழமை,Mon=தி,Tue=செ,Wed=பு,Thu=வி,Fri=வெ,Sat=ச,Sun=ஞா,January=ஜனவரி,February=பிப்ரவரி,March=மார்ச்,April=ஏப்ரல்,May=மே,June=ஜூன்,July=ஜுலை,August=ஆகஸ்ட்,September=ஸெப்டம்பர்,October=அக்டோபர்,November=நவம்பர்,December=டிஸம்பர்,Jan=ஜன,Feb=பிப்,Mar=மார்,Apr=ஏப்ரல்,May=மே,Jun=ஜூன்,Jul=ஜூலை,Aug=ஆக,Sep=செப்,Oct=அக்,Nov=நவ,Dec=டிச,th=,st=,nd=[/tt]
-
 [title="4"]Common points of confusion[/title]
 
 [b]The software[/b]:

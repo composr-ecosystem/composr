@@ -2710,18 +2710,6 @@ function strcmp($str1, $str2)
 }
 
 /**
- * Format a local time/date according to locale settings (uses alternative formatting to 'date' function).
- *
- * @param  string $format The formatting string
- * @param  ?TIME $timestamp The timestamp (null: now)
- * @return string The formatted string
- */
-function strftime($format, $timestamp = null)
-{
-    return '';
-}
-
-/**
  * Strip HTML and PHP tags from a string.
  *
  * @param  string $str Subject
@@ -3411,18 +3399,6 @@ function getrandmax()
 function gmmktime($hour, $minute, $second, $month, $day, $year)
 {
     return 0;
-}
-
-/**
- * Format a GMT/UTC time/date according to locale settings.
- *
- * @param  string $format The formatting string
- * @param  ?TIME $timestamp The timestamp (null: now)
- * @return string The formatted string
- */
-function gmstrftime($format, $timestamp = null)
-{
-    return '';
 }
 
 /**
@@ -5099,6 +5075,8 @@ Disabled due to being locale-dependent, which is not thread-safe:
 fgetcsv
 str_getcsv
 str_word_count
+strftime
+gmstrftime
 
 Disabled due to often being ill-configured or disabled on hosts...
 

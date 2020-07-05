@@ -27,9 +27,6 @@ function init__temporal()
 {
     global $TIMEZONE_MEMBER_CACHE;
     $TIMEZONE_MEMBER_CACHE = [];
-
-    global $LOCALE_FILTER_CACHE;
-    $LOCALE_FILTER_CACHE = null;
 }
 
 /**
@@ -324,7 +321,7 @@ function _get_timezoned_date_time($include_time, $timestamp, $use_contextual_dat
     $usered_now_timestamp = $utc_time ? time() : utctime_to_usertime(time(), $member_id);
 
     if ($usered_timestamp < 0) {
-        if (@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
+        if (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
             return 'pre-1970';
         }
     }
@@ -421,6 +418,7 @@ function get_timezoned_time($timestamp, $use_contextual_times = true, $utc_time 
 /**
  * Format a local time/date according to locale settings. Combines best features of 'strftime' and 'date'.
  * %o is 'S' in date.
+ * Does not depend on locales, which are not thread-safe.
  *
  * @param  string $format The formatting string
  * @param  ?TIME $timestamp The timestamp (null: now). Assumed to already be timezone-shifted as required
@@ -432,6 +430,29 @@ function cms_strftime($format, $timestamp = null)
         $timestamp = time();
     }
 
+    // A) Hack so we do not have to rely on locales (unstable) for textual components that should be translatable
+    $day_short = false;
+    if (strpos($format, '%a') !== false) {
+        $day_short = true;
+        $format = str_replace('%a', '<<' . '%w>>', $format);
+    }
+    $day_long = false;
+    if (strpos($format, '%a') !== false) {
+        $day_long = true;
+        $format = str_replace('%A', '[[%w]]', $format);
+    }
+    $month_short = false;
+    if (strpos($format, '%a') !== false) {
+        $month_short = true;
+        $format = str_replace('%b', '{{%m}}', $format);
+    }
+    $month_long = false;
+    if (strpos($format, '%a') !== false) {
+        $month_long = true;
+        $format = str_replace('%B', '((%m))', $format);
+    }
+
+    // B) Hack to make sure we do not have leading zeroes or spaces
     static $is_windows = null;
     if ($is_windows === null) {
         $is_windows = (stripos(PHP_OS, 'WIN') === 0);
@@ -446,51 +467,46 @@ function cms_strftime($format, $timestamp = null)
         $format = str_replace('%e', '%-d', $format);
         $format = str_replace('%l', '%-I', $format);
     }
+
+    // Hack to add support for ordinal suffix
     $format = str_replace('%o', date('S'/*English ordinal suffix for the day of the month, 2 characters*/, $timestamp), $format);
-    $ret = @strftime($format, $timestamp);
-    if ($ret === false) {
-        $ret = '';
+
+    $ret = @strval(strftime($format, $timestamp));
+
+    // A continued
+    if ($day_short || $day_long || $month_short || $month_long) {
+        require_lang('dates');
+        if ($day_short) {
+            $arr = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+            foreach ($arr as $i => $str) {
+                $format = str_replace('[[' . strval($i) . ']]', do_lang($str . '__SHORT'), $ret);
+            }
+        }
+        if ($day_long) {
+            $arr = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+            foreach ($arr as $i => $str) {
+                $format = str_replace('<<' . strval($i) . '>>', do_lang($str), $ret);
+            }
+        }
+        if ($month_short) {
+            $arr = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+            foreach ($arr as $i => $str) {
+                $format = str_replace('{{' . str_pad(strval($i + 1), 2, '0', STR_PAD_LEFT) . '}}', do_lang($str . '__SHORT'), $ret);
+            }
+        }
+        if ($month_long) {
+            $arr = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+            foreach ($arr as $i => $str) {
+                $format = str_replace('((' . str_pad(strval($i + 1), 2, '0', STR_PAD_LEFT) . '))', do_lang($str), $ret);
+            }
+        }
     }
+
+    // B continued
     if (PHP_OS == 'SunOS') {
         $ret = preg_replace('#\{\{[ 0]?([^\{\}]+)\}\}#', '${1}', $ret);
     }
-    return trim(locale_filter($ret)); // Needed as %e comes with a leading space
-}
 
-/**
- * Set up the locale filter array from the terse language string specifying it.
- */
-function make_locale_filter()
-{
-    global $LOCALE_FILTER_CACHE;
-    $LOCALE_FILTER_CACHE = explode(',', trim(do_lang('locale_subst')));
-    foreach ($LOCALE_FILTER_CACHE as $i => $filter) {
-        if ($filter == '') {
-            unset($LOCALE_FILTER_CACHE[$i]);
-        } else {
-            $LOCALE_FILTER_CACHE[$i] = explode('=', $filter);
-        }
-    }
-}
-
-/**
- * Filter locale-tainted strings through the locale filter.
- * Let's pretend a user's operating system doesn't fully support they're locale. They have a nice language pack, but whenever the O.S. is asked for dates in the chosen locale, it puts month names in English instead. The locale_filter function is used to cleanup these problems. It does a simple set of string replaces, as defined by the 'locale_subst' language string.
- *
- * @param  string $ret Tainted string
- * @return string Filtered string
- */
-function locale_filter($ret)
-{
-    global $LOCALE_FILTER_CACHE;
-    if ($LOCALE_FILTER_CACHE === null) {
-        make_locale_filter();
-    }
-    foreach ($LOCALE_FILTER_CACHE as $filter) {
-        if (count($filter) == 2) {
-            $ret = str_replace($filter[0], $filter[1], $ret);
-        }
-    }
     return $ret;
 }
 

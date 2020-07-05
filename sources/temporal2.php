@@ -437,7 +437,7 @@ function _post_param_date($stub, $get_also = false, $do_timezone_conversion = tr
         }
     }
     if ($do_timezone_conversion) {
-        if (($year >= 1970) || (@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) == '1963')) { // Only try and do timezone conversion if we can do proper maths this far back
+        if (($year >= 1970) || (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) == '1963')) { // Only try and do timezone conversion if we can do proper maths this far back
             $time = $time * 2 - tz_time($time, $timezone);
         }
     }

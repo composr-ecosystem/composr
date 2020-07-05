@@ -474,7 +474,7 @@ function get_member_dob_details($member_id)
     $_dob = mktime(12, 0, 0, $month, $day, $year);
     $_dob_censored = mktime(12, 0, 0, $month, $day);
     if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_reveal_age') == 1) {
-        if (@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
+        if (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
             $dob = strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($day), 2, '0', STR_PAD_LEFT);
             $_dob = $_dob_censored; // Have to use censored as other is broken
         } else {
@@ -491,7 +491,7 @@ function get_member_dob_details($member_id)
             $age--;
         }
     } else {
-        if (@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
+        if (@cms_strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) != '1963') {
             $_dob = $_dob_censored; // Have to use censored as other is broken
         }
         $_dob_censored_if_needed = $_dob_censored;

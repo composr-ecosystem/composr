@@ -9604,7 +9604,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         LOAD
         LOADING
         LOAD_MORE
-        locale_subst
         locale_ctype_hack
         LOCATED_IN
         LOCATION
