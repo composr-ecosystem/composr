@@ -2685,7 +2685,7 @@ function str_replace($search, $replace, $subject)
 }
 
 /**
- * Replace all occurrences of the search string with the replacement string (case insensitive).
+ * Replace all occurrences of the search string with the replacement string (case-insensitive).
  *
  * @param  mixed $search What's being replaced (string or array)
  * @param  mixed $replace What's being replaced with (string or array)
@@ -3693,7 +3693,7 @@ function strcspn($str1, $str2)
 }
 
 /**
- * Case insensitive string comparisons using a "natural order" algorithm.
+ * Case-insensitive string comparisons using a "natural order" algorithm.
  *
  * @param  string $str1 The first string
  * @param  string $str2 The second string
@@ -4191,35 +4191,6 @@ function fgetc($handle)
 }
 
 /**
- * Gets line from file pointer and parse for CSV fields.
- *
- * @param  resource $handle File handle
- * @param  ?integer $length The maximum length of the line (null: no limit)
- * @param  string $delimiter Delimiter
- * @param  string $enclosure Set the field enclosure character (one character only)
- * @param  string $escape Set the escape character (one character only)
- * @return ~array Line (false: error)
- */
-function fgetcsv($handle, $length = null, $delimiter = ',', $enclosure = '"', $escape = '\\')
-{
-    return [];
-}
-
-/**
- * Parse a CSV string into an array.
- *
- * @param  string $input The string to parse
- * @param  string $delimiter Delimiter (one character only)
- * @param  string $enclosure Set the field enclosure character (one character only)
- * @param  string $escape Set the escape character (one character only)
- * @return array An indexed array containing the fields read
- */
-function str_getcsv($input, $delimiter = ',', $enclosure = '"', $escape = '\\')
-{
-    return [];
-}
-
-/**
  * Gets line from file pointer and strip HTML tags.
  *
  * @param  resource $handle File handle
@@ -4508,20 +4479,6 @@ function file_get_contents($filename, $use_include_path = false, $context = null
 }
 
 /**
- * Isolate the words in the input string.
- *
- * @param  string $input String to count words in
- * @param  integer $format The format
- * @set 0 1 2
- * @param  string $chars A list of additional characters which will be considered as 'word'
- * @return mixed Typically a list - the words of the input string
- */
-function str_word_count($input, $format = 0, $chars = '')
-{
-    return [];
-}
-
-/**
  * Decode the HTML entity encoded input string.
  *
  * @param  string $input The text to decode
@@ -4584,13 +4541,13 @@ function strpbrk($haystack, $char_list)
 }
 
 /**
- * Binary safe optionally case insensitive comparison of two strings from an offset, up to length characters.
+ * Binary safe optionally case-insensitive comparison of two strings from an offset, up to length characters.
  *
  * @param  string $main_str The main string being compared
  * @param  string $str The secondary string being compared
  * @param  integer $offset The start position for the comparison. If negative, it starts counting from the end of the string.
  * @param  ?integer $length The length of the comparison (null: the largest of the length of the str compared to the length of main_str less the offset)
- * @param  boolean $case_insensitivity Whether to compare as case insensitive
+ * @param  boolean $case_insensitivity Whether to compare as case-insensitive
  * @return ~integer Returns < 0 if main_str from position offset is less than str, > 0 if it is greater than str, and 0 if they are equal (false: out of bounds)
  */
 function substr_compare($main_str, $str, $offset, $length = null, $case_insensitivity = false)
@@ -5137,6 +5094,11 @@ sleep
 usleep
 time_nanosleep
 time_sleep_until
+
+Disabled due to being locale-dependent, which is not thread-safe:
+fgetcsv
+str_getcsv
+str_word_count
 
 Disabled due to often being ill-configured or disabled on hosts...
 

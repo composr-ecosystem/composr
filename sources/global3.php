@@ -1320,14 +1320,14 @@ function cms_mb_strtoupper($in)
 
 
 /**
- * Unicode-safe case-insensitive string comparison.
- * Note we have no cms_mb_strcmp because intl (Collator class) cannot do case-sensitive comparison.
+ * Unicode-safe case-sensitive string comparison.
+ * Note we have no cms_mb_strcasecmp because intl (Collator class) cannot do case-insensitive comparison.
  *
  * @param  string $str1 The first string
  * @param  string $str2 The second string
  * @return integer <0 if s1<s2, 0 if s1=s2, >1 if s1>s2
  */
-function cms_mb_strcasecmp($str1, $str2)
+function cms_mb_strcmp($str1, $str2)
 {
     _local_ctype_hack(true);
 
@@ -1353,7 +1353,7 @@ function cms_mb_strcasecmp($str1, $str2)
 
     // Ideally we'd use strcoll, but that's case-sensitive and also doesn't work on Windows for Unicode
 
-    $ret = strcasecmp($str1, $str2);
+    $ret = strcmp($str1, $str2);
 
     _local_ctype_hack(false);
 
@@ -1361,13 +1361,13 @@ function cms_mb_strcasecmp($str1, $str2)
 }
 
 /**
- * Case insensitive string comparisons using a "natural order" algorithm, Unicode-safe.
+ * Case-sensitive string comparisons using a "natural order" algorithm, Unicode-safe.
  *
  * @param  string $str1 The first string
  * @param  string $str2 The second string
  * @return integer <0 if s1<s2, 0 if s1=s2, >1 if s1>s2
  */
-function cms_mb_strnatcasecmp($str1, $str2)
+function cms_mb_strnatcmp($str1, $str2)
 {
     _local_ctype_hack(true);
 
@@ -1391,7 +1391,7 @@ function cms_mb_strnatcasecmp($str1, $str2)
         }
     }
 
-    $ret = strnatcasecmp($str1, $str2);
+    $ret = strnatcmp($str1, $str2);
 
     _local_ctype_hack(false);
 
@@ -1408,7 +1408,7 @@ function cms_mb_sort(&$array, $sort_flags = 0)
 {
     _local_ctype_hack(true);
 
-    usort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcasecmp' : 'cms_mb_strcasecmp'));
+    usort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
 
     _local_ctype_hack(false);
 }
@@ -1439,7 +1439,7 @@ function cms_mb_asort(&$array, $sort_flags = 0)
 {
     _local_ctype_hack(true);
 
-    uasort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcasecmp' : 'cms_mb_strcasecmp'));
+    uasort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
 
     _local_ctype_hack(false);
 }
@@ -1470,7 +1470,7 @@ function cms_mb_ksort(&$array, $sort_flags = 0)
 {
     _local_ctype_hack(true);
 
-    uksort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcasecmp' : 'cms_mb_strcasecmp'));
+    uksort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
 
     _local_ctype_hack(false);
 }
@@ -2237,7 +2237,7 @@ function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false, $
  * @param  array $array Sort array
  * @param  mixed $cmp_function Comparison function
  */
-function merge_sort(&$array, $cmp_function = 'cms_mb_strcasecmp')
+function merge_sort(&$array, $cmp_function = 'cms_mb_strcmp')
 {
     // Arrays of size<2 require no action.
     if (count($array) < 2) {
@@ -2366,9 +2366,9 @@ function _multi_sort($a, $b)
             }
 
             if ((is_numeric($av)) && (is_numeric($bv)) || $M_SORT_NATURAL) {
-                $ret = cms_mb_strnatcasecmp(@strval($av), @strval($bv));
+                $ret = cms_mb_strnatcmp(@strval($av), @strval($bv));
             } else {
-                $ret = cms_mb_strcasecmp($av, $bv);
+                $ret = cms_mb_strcmp($av, $bv);
             }
 
             if ($backwards) {

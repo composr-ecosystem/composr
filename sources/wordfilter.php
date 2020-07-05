@@ -89,7 +89,8 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
     }
 
     // Find words
-    $words = str_word_count($a, 2);
+    require_code('global4');
+    $words = cms_mb_str_word_count($a, 2);
 
     // Apply filter for complete blocked words
     $changes = [];

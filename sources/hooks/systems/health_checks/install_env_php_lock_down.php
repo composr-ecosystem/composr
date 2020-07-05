@@ -258,14 +258,14 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             gettype var_dump vprintf vsprintf touch tanh sinh stripcslashes
             restore_error_handler rewind rewinddir exp lcg_value localtime addcslashes
             array_filter array_map array_merge_recursive array_multisort array_pad array_reduce array_walk
-            atan2 fgetc fgetcsv fgetss filetype fscanf fstat array_change_key_case
+            atan2 fgetc fgetss filetype fscanf fstat array_change_key_case
             date_default_timezone_get ftruncate func_get_arg func_get_args func_num_args
             parse_ini_file parse_ini_string parse_str is_executable memory_get_usage
             is_scalar nl2br ob_get_length ob_implicit_flush getopt
             ob_clean printf cosh count_chars gethostbynamel getlastmod fpassthru
             gettimeofday get_cfg_var get_resource_type hypot ignore_user_abort array_intersect_assoc
             is_link is_callable debug_print_backtrace stream_context_create next array_sum
-            file_get_contents str_word_count html_entity_decode
+            file_get_contents html_entity_decode
             array_combine array_walk_recursive header_remove
             str_split strpbrk substr_compare file_put_contents get_headers headers_list
             http_build_query scandir str_shuffle fnmatch gethostname
@@ -276,7 +276,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             gethostbyname htmlspecialchars stat str_ireplace stripos key pi print set_exception_handler acos
             array_column array_fill_keys getimagesizefromstring hash_equals preg_last_error
             http_response_code memory_get_peak_usage password_get_info password_hash hex2bin
-            password_needs_rehash password_verify str_getcsv strripos spl_autoload_register
+            password_needs_rehash password_verify strripos spl_autoload_register
 END;
 
         if (function_exists('imagecreatefromstring')) {

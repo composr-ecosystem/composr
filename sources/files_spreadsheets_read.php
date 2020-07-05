@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: str_getcsv*/
+
 /**
  * Find whether a file is a readable spreadsheet.
  *
@@ -273,6 +275,8 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
         if ($line === false) {
             return false;
         }
+
+        // str_getcsv is locale-dependent, but we already did our character set conversion so it is okay now
 
         $row = str_getcsv($line, $delimiter, '"', (version_compare(PHP_VERSION, '7.4.0') >= 0) ? '' : '\\'/*LEGACY*/);
         if ($row === [null]) {

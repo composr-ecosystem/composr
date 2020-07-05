@@ -710,6 +710,8 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
 
     $errors = [];
 
+    require_code('global4');
+
     // Check captioning
     global $A_LINKS;
     if (!isset($attributes['title'])) {
@@ -734,7 +736,7 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
         }
         $_content = strip_tags($content);
         if (($_content == $content) && (strlen($content) < 12)) {
-            $in_strings = str_word_count($_content, 1);
+            $in_strings = cms_mb_str_word_count($_content, 1);
             foreach ($bad_strings as $string) {
                 if (in_array($string, $in_strings) !== false) {
                     $errors[] = ['WCAG_DODGY_LINK_2', $string];

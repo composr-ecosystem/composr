@@ -480,6 +480,41 @@ function member_personal_links_and_details($member_id)
 }
 
 /**
+ * Isolate the words in the input string, with utf-8 awareness where possible/required.
+ *
+ * @param  string $input String to count words in
+ * @param  integer $format The format
+ * @set 0 1 2
+ * @return mixed Typically a list - the words of the input string
+ */
+function cms_mb_str_word_count($input, $format = 0)
+{
+    $matches = [];
+    if ($format == 1) {
+        $num_matches = cms_preg_match_all_safe("#[\w']+#", $input, $matches);
+        $words = [];
+        for ($i = 0; $i < $num_matches; $i++) {
+            $words[] = $matches[0][$i];
+        }
+        return $words;
+    }
+
+    if ($format == 2) {
+        $num_matches = cms_preg_match_all_safe("#[\w']+#", $input, $matches, PREG_OFFSET_CAPTURE);
+        $words = [];
+        for ($i = 0; $i < $num_matches; $i++) {
+            $words[$matches[0][$i][1]] = $matches[0][$i][0];
+        }
+        return $words;
+    }
+
+    // 0...
+
+    $num_matches = cms_preg_match_all_safe("#[\w']+#", $input, $matches);
+    return $num_matches;
+}
+
+/**
  * Convert a string to an array, with utf-8 awareness where possible/required.
  *
  * @param  string $str Input
@@ -522,7 +557,7 @@ function cms_mb_chunk_split($str, $len = 76, $glue = "\r\n", $force = false)
             $n = 0;
         }
     }
-    return $new;
+    return $new . $glue;
 }
 
 /**

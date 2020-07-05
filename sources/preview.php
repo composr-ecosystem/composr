@@ -267,7 +267,8 @@ function build_preview($multi_return = false)
             if (($keywordcheck) && ((strpos($val, ' ') !== false) || ($key == 'title'))) {
                 $keyword_explode = explode(',', $meta_keywords);
                 $keywords = [];
-                $word_count = str_word_count($val);
+                require_code('global4');
+                $word_count = cms_mb_str_word_count($val);
                 if ($word_count != 0) {
                     foreach ($keyword_explode as $meta_keyword) {
                         $meta_keyword = trim($meta_keyword);

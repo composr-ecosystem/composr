@@ -949,6 +949,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/xml_sitemaps.php',
             '_tests/tests/unit_tests/xss.php',
             '_tests/tests/unit_tests/zip.php',
+            '_tests/tests/unit_tests/string_functions.php',
 
             'data_custom/search_test.php',
         ];
