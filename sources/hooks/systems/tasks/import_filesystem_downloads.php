@@ -122,7 +122,7 @@ class Hook_task_import_filesystem_downloads
                                 $shouldbe = null;
                             }
                             $actuallyis = cms_http_request($full_url, ['trigger_error' => false, 'byte_limit' => 8000]);
-                            if (($actuallyis->message == '200') && ($shouldbe !== null) && (strcmp($shouldbe, $actuallyis->data) == 0)) {
+                            if (($actuallyis->message == '200') && ($shouldbe !== null) && ($shouldbe === $actuallyis->data)) {
                                 // Ok, add it
                                 $filesize = filesize($full_path);
                                 add_download($dest_cat, titleify($entry), $full_url, '', $GLOBALS['FORUM_DRIVER']->get_username(get_member()), '', null, 1, 1, 1, 1, '', $entry, $filesize, 0, 0);

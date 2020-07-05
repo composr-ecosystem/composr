@@ -745,7 +745,7 @@ function _get_specify_url($member_id, $specify_name, $upload_folder, $enforce_ty
                 // No error downloading, but error using file system - therefore file exists and we'll use URL to download. Hence no security check.
                 $missing_ok = true;
             } else {
-                if (@strcmp(substr($shouldbe, 0, 8000), substr($actuallyis->data, 0, 8000)) != 0) {
+                if (substr($shouldbe, 0, 8000) !== substr($actuallyis->data, 0, 8000)) {
                     log_hack_attack_and_exit('TRY_TO_DOWNLOAD_SCRIPT');
                 }
             }

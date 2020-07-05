@@ -3645,18 +3645,6 @@ function strcasecmp($str1, $str2)
 }
 
 /**
- * Locale based string comparison.
- *
- * @param  string $str1 The first string
- * @param  string $str2 The second string
- * @return integer <0 if s1<s2, 0 if s1=s2, >1 if s1>s2
- */
-function strcoll($str1, $str2)
-{
-    return 0;
-}
-
-/**
  * Find length of initial segment not matching mask.
  *
  * @param  string $str1 The subject string
@@ -5077,6 +5065,7 @@ str_getcsv
 str_word_count
 strftime
 gmstrftime
+strcoll
 
 Disabled due to often being ill-configured or disabled on hosts...
 

@@ -253,7 +253,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             connection_aborted connection_status crc32 decbin empty fflush fileatime flock flush
             gethostbyaddr getrandmax gmmktime gmstrftime ip2long is_dir is_file
             levenshtein log log10 long2ip md5_file pow preg_quote prev rad2deg
-            range readfile shuffle similar_text sqrt strcasecmp strcoll strcspn stristr strnatcasecmp
+            range readfile shuffle similar_text sqrt strcasecmp strcspn stristr strnatcasecmp
             strnatcmp strncasecmp strncmp strrchr strrev strspn substr_replace tan unpack version_compare
             gettype var_dump vprintf vsprintf touch tanh sinh stripcslashes
             restore_error_handler rewind rewinddir exp lcg_value localtime addcslashes

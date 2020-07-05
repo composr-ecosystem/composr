@@ -484,7 +484,7 @@ class Hook_payment_gateway_paypal
                 }
                 fatal_ipn_exit(do_lang('IPN_SOCKET_ERROR'));
             }
-            if (!(strcmp($res, 'VERIFIED') == 0)) {
+            if ($res !== 'VERIFIED') {
                 if ($silent_fail) {
                     return null;
                 }

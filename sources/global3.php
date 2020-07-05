@@ -1351,7 +1351,7 @@ function cms_mb_strcmp($str1, $str2)
         }
     }
 
-    // Ideally we'd use strcoll, but that's case-sensitive and also doesn't work on Windows for Unicode
+    // Ideally we'd use strcoll, but that's case-sensitive and also doesn't work on Windows for Unicode, and also relies on unstable collations
 
     $ret = strcmp($str1, $str2);
 
