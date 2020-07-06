@@ -203,7 +203,7 @@ abstract class CMS_Spreadsheet_Writer
 }
 
 /**
- * CSV spreadsheet file reader.
+ * CSV spreadsheet file writer.
  *
  * @package core
  */

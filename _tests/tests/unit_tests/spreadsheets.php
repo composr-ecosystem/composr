@@ -41,23 +41,23 @@ class spreadsheets_test_set extends cms_test_case
 
         $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_RAW] = [
             ['A', 'B', 'C'],
-            ['A1', 'B1', 'C1'],
-            ['A2', 'B2', 'C2'],
-            ['', '', 'C3'],
+            ['A1', 'B1', 'C,"1'],
+            ['A2', 'B2', 'C"2'],
+            ['', '', "C3\nC3"],
             ['A4', '', ''],
         ];
 
         $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_UNNAMED_FIELDS] = [
-            ['A1', 'B1', 'C1'],
-            ['A2', 'B2', 'C2'],
-            ['', '', 'C3'],
+            ['A1', 'B1', 'C,"1'],
+            ['A2', 'B2', 'C"2'],
+            ['', '', "C3\nC3"],
             ['A4', '', ''],
         ];
 
         $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_NAMED_FIELDS] = [
-            ['A' => 'A1', 'B' => 'B1', 'C' => 'C1'],
-            ['A' => 'A2', 'B' => 'B2', 'C' => 'C2'],
-            ['A' => '', 'B' => '', 'C' => 'C3'],
+            ['A' => 'A1', 'B' => 'B1', 'C' => 'C,"1'],
+            ['A' => 'A2', 'B' => 'B2', 'C' => 'C"2'],
+            ['A' => '', 'B' => '', 'C' => "C3\nC3"],
             ['A' => 'A4', 'B' => '', 'C' => ''],
         ];
     }

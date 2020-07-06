@@ -18,8 +18,6 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: str_getcsv*/
-
 /**
  * Find whether a file is a readable spreadsheet.
  *
@@ -271,18 +269,103 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
+        $ret = $this->getcsv_record($this->handle, $this->charset, $delimiter);
+        if ($ret == [null]) {
+            return [];
+        }
+        return $ret;
+    }
+
+    /**
+     * Get a CSV record, equivalent to PHP's fgetcsv. However, we don't use fgetcsv because:
+     * 1) We need to do character set conversions efficiently for whole file lines
+     * 2) fgetcsv (and str_getcsv) depends on locales, which are not thread-safe in PHP so cannot be reliably set correctly
+     *
+     * @param  resource $handle The file
+     * @param  string $charset The character set
+     * @param  string $delimiter The delimiter
+     * @return ~array Row (false: error)
+     */
+    protected function getcsv_record($handle, $charset, $delimiter)
+    {
         $line = cms_fgets($this->handle, $this->charset);
         if ($line === false) {
             return false;
         }
 
-        // str_getcsv is locale-dependent, but we already did our character set conversion so it is okay now
+        $arr = [];
+        $next_val = '';
 
-        $row = str_getcsv($line, $delimiter, '"', (version_compare(PHP_VERSION, '7.4.0') >= 0) ? '' : '\\'/*LEGACY*/);
-        if ($row === [null]) {
-            return [''];
+        $in_enclosure = false;
+        $i = 0;
+        $len = cms_mb_strlen($line);
+        while (true) {
+            $c = cms_mb_substr($line, $i, 1);
+            if ($in_enclosure) {
+                if ($i == $len - 1) {
+                    $line_extension = cms_fgets($this->handle, $this->charset);
+                    if ($line_extension === false) {
+                        if ($c != '"') { // Non-closed enclosure
+                            $next_val .= $c;
+                        }
+                        $arr[] = $next_val;
+                        break;
+                    }
+
+                    $line .= $line_extension;
+                    $len += cms_mb_strlen($line_extension);
+                }
+
+                if ($c == '"') {
+                    $c_next = cms_mb_substr($line, $i + 1, 1);
+                    if ($c_next == '"') {
+                        $i++; // Escaped "
+                    } else {
+                        $in_enclosure = false;
+                        if ($i == $len - 1) {
+                            break;
+                        } else {
+                            $i++;
+                            continue;
+                        }
+                    }
+                }
+
+                $next_val .= $c;
+                $i++;
+            } else {
+                if ($i == $len - 1) {
+                    if ($c != "\n") {
+                        $next_val .= $c;
+                    }
+
+                    if ((empty($arr)) && (empty($next_val))) {
+                        $arr[] = null; // Weird, but this is what PHP does in fgetcsv and we're trying to emulate behaviour
+                    } else {
+                        $arr[] = $next_val;
+                    }
+                    break;
+                }
+
+                if (($c == '"') && ($next_val == '')) {
+                    $in_enclosure = true;
+                    $i++;
+                    continue;
+                }
+
+                if ($c == $delimiter) {
+                    $arr[] = $next_val;
+                    $next_val = '';
+                    $i++;
+                    continue;
+                }
+
+                $next_val .= $c;
+                $i++;
+            }
         }
-        return $row;
+
+        return $arr;
     }
 
     /**
