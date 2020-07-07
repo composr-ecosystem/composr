@@ -262,7 +262,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
                             $filename = zip_entry_name($entry);
 
-                            if ((strtolower(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
+                            if ((cms_strtolower_ascii(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
                                 $data = '';
                                 do {
                                     $more = zip_entry_read($entry);
@@ -291,7 +291,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                         foreach ($directory as $entry) {
                             $filename = $entry['path'];
 
-                            if ((strtolower(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
+                            if ((cms_strtolower_ascii(substr($filename, -4)) == '.txt') && (!should_ignore_file($filename))) {
                                 // Load in file
                                 $_in = tar_get_file($myfile, $entry['path'], false);
 
@@ -303,7 +303,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                     }
                     break;
                 default:
-                    if (strtolower(substr($file, -4)) == '.txt') {
+                    if (cms_strtolower_ascii(substr($file, -4)) == '.txt') {
                         $this->_import_stock_response($file, cms_file_get_contents_safe($tmp_name, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), $target_forum);
                     } else {
                         attach_message(do_lang_tempcode('BAD_ARCHIVE_FORMAT'), 'warn');
@@ -327,7 +327,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
     {
         require_code('cns_moderation_action');
 
-        $name = do_lang('STOCK_RESPONSE', ucwords(str_replace(['/', '\\'], [': ', ': '], preg_replace('#\.txt$#', '', $path))));
+        $name = do_lang('STOCK_RESPONSE', cms_ucwords_ascii(str_replace(['/', '\\'], [': ', ': '], preg_replace('#\.txt$#', '', $path))));
 
         $data = fix_bad_unicode($data);
 
@@ -400,7 +400,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
             'mm_pin_state' => do_lang_tempcode('PIN_STATE'),
             'mm_open_state' => do_lang_tempcode('OPEN_STATE'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

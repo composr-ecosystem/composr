@@ -527,7 +527,7 @@ function ecv($lang, $escaped, $type, $name, $param)
                         static $is_in_remaining_table = false;
 
                         if ($matches[1] == '') { // Opening element
-                            $element = strtolower($matches[2]);
+                            $element = cms_strtolower_ascii($matches[2]);
                             $attributes = isset($matches[3]) ? $matches[3] : '';
 
                             if ($element == 'table') {
@@ -2897,19 +2897,19 @@ function cms_trim($text, $try_hard = true)
         $before = $text;
         $c = substr($text, 0, 1);
         if ($c === '<') {
-            if (strtolower(substr($text, 1, 1)) === 'b') {
-                if (strtolower(substr($text, 0, 6)) === '<br />') {
+            if (cms_strtolower_ascii(substr($text, 1, 1)) === 'b') {
+                if (cms_strtolower_ascii(substr($text, 0, 6)) === '<br />') {
                     $text = substr($text, 6);
                 }
-                if (strtolower(substr($text, 0, 5)) === '<br/>') {
+                if (cms_strtolower_ascii(substr($text, 0, 5)) === '<br/>') {
                     $text = substr($text, 5);
                 }
-                if (strtolower(substr($text, 0, 4)) === '<br>') {
+                if (cms_strtolower_ascii(substr($text, 0, 4)) === '<br>') {
                     $text = substr($text, 4);
                 }
             }
         } elseif ($c == '&') {
-            if (strtolower(substr($text, 0, 6)) === '&nbsp;') {
+            if (cms_strtolower_ascii(substr($text, 0, 6)) === '&nbsp;') {
                 $text = substr($text, 6);
             }
         }
@@ -2919,17 +2919,17 @@ function cms_trim($text, $try_hard = true)
         $before = $text;
         $c = substr($text, -1, 1);
         if ($c === '>') {
-            if (strtolower(substr($text, -6)) === '<br />') {
+            if (cms_strtolower_ascii(substr($text, -6)) === '<br />') {
                 $text = substr($text, 0, -6);
             }
-            if (strtolower(substr($text, -5)) === '<br/>') {
+            if (cms_strtolower_ascii(substr($text, -5)) === '<br/>') {
                 $text = substr($text, 0, -5);
             }
-            if (strtolower(substr($text, -4)) === '<br>') {
+            if (cms_strtolower_ascii(substr($text, -4)) === '<br>') {
                 $text = substr($text, 0, -4);
             }
         } elseif ($c == ';') {
-            if (strtolower(substr($text, -6)) === '&nbsp;') {
+            if (cms_strtolower_ascii(substr($text, -6)) === '&nbsp;') {
                 $text = substr($text, 0, -6);
             }
         }
@@ -4349,7 +4349,7 @@ function ecv_HAS_EDIT_PERMISSION($lang, $escaped, $param)
     $value = '';
 
     if (!empty($param[0])) {
-        $range = strtolower($param[0]);
+        $range = cms_strtolower_ascii($param[0]);
         $owner = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
         $member_id = ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member();
         $cms_page = ((!@cms_empty_safe($param[3]))) ? $param[3] : get_page_name();
@@ -4381,7 +4381,7 @@ function ecv_HAS_DELETE_PERMISSION($lang, $escaped, $param)
     $value = '';
 
     if (!empty($param[0])) {
-        $range = strtolower($param[0]);
+        $range = cms_strtolower_ascii($param[0]);
         $owner = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
         $member_id = ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member();
         $cms_page = ((!@cms_empty_safe($param[3]))) ? $param[3] : get_page_name();
@@ -6871,8 +6871,7 @@ function ecv_BACKSLASH($lang, $escaped, $param)
  */
 function ecv_DECIMAL_POINT($lang, $escaped, $param)
 {
-    $locale = localeconv();
-    $value = $locale['decimal_point'];
+    $value = do_lang('locale_decimal_point');
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);

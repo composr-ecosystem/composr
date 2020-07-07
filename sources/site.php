@@ -1777,7 +1777,7 @@ function __request_page($codename, $zone, $page_type = null, $lang = null, $redi
  */
 function _request_page__redirects($codename, $zone, $wildcard_mode = false)
 {
-    $codename = strtolower($codename);
+    $codename = cms_mb_strtolower($codename);
 
     static $internal_cache = [];
     if (isset($internal_cache[$codename][$zone][$wildcard_mode])) {

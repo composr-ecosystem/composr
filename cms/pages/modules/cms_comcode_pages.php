@@ -392,7 +392,7 @@ class Module_cms_comcode_pages
         if (get_value('disable_comcode_page_order') !== '1') {
             $sortables['order'] = do_lang_tempcode('ORDER');
         }
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

@@ -428,7 +428,7 @@ function user_sync_handle_field_remap($field_name, $remap_scheme, $remote_data, 
             if ($data[0] === null) {
                 return null;
             }
-            $data[0] = strtolower(@strval($data[0]));
+            $data[0] = cms_strtolower_ascii(@strval($data[0]));
             if (($data[0] == '0') || ($data[0] == 'false') || ($data[0] == 'no') || ($data[0] == 'off')) {
                 return '0';
             }
@@ -451,7 +451,7 @@ function user_sync_handle_field_remap($field_name, $remap_scheme, $remote_data, 
                 return null;
             }
             if (is_string($data[0])) {
-                $data[0] = strtolower($data[0]);
+                $data[0] = cms_strtolower_ascii($data[0]);
             }
             if (($data[0] === '1') || ($data[0] === 1) || ($data[0] === 'true') || ($data[0] === 'yes') || ($data[0] === 'on') || ($data[0] === true)) {
                 return 1;

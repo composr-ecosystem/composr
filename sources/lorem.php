@@ -861,7 +861,7 @@ function render_screen_preview($template, $hook, $function)
         }
 
         if ((substr($path, -3) == '.js') && (substr($path, 0, 7) == 'themes/')) {
-            require_javascript(strtolower(basename($path, '.js')));
+            require_javascript(cms_strtolower_ascii(basename($path, '.js')));
         }
     }
 

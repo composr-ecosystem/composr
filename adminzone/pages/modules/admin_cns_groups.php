@@ -377,7 +377,7 @@ class Module_admin_cns_groups extends Standard_crud_module
                 warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
             list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-            if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
                 log_hack_attack_and_exit('ORDERBY_HACK');
             }
         }

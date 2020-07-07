@@ -1928,16 +1928,6 @@ function isset(&$path_a, &$path_b = true, &$path_c = true, &$path_d = true)
 }
 
 /**
- * Get numeric formatting information.
- *
- * @return array Array of formatting information
- */
-function localeconv()
-{
-    return [];
-}
-
-/**
  * Strip whitespace from the beginning of a string.
  *
  * @param  string $string The string to trim from
@@ -2844,17 +2834,6 @@ function strtok($subject, $delimiters = null)
 }
 
 /**
- * Make a string lower case.
- *
- * @param  string $str Subject
- * @return string Result
- */
-function strtolower($str)
-{
-    return '';
-}
-
-/**
  * Parse about any English textual datetime description into a UNIX timestamp.
  *
  * @param  string $time The subject
@@ -2864,17 +2843,6 @@ function strtolower($str)
 function strtotime($time, $now = null)
 {
     return 0;
-}
-
-/**
- * Make a string upper case.
- *
- * @param  string $str Subject
- * @return string Result
- */
-function strtoupper($str)
-{
-    return '';
 }
 
 /**
@@ -2958,39 +2926,6 @@ function trim($str, $characters = " \t\n\r\0\x0B")
  */
 function trigger_error($error_msg, $error_type)
 {
-}
-
-/**
- * Make a string's first character lower case.
- *
- * @param  string $str Subject
- * @return string Result
- */
-function lcfirst($str)
-{
-    return '';
-}
-
-/**
- * Make a string's first character upper case.
- *
- * @param  string $str Subject
- * @return string Result
- */
-function ucfirst($str)
-{
-    return '';
-}
-
-/**
- * Upper case the first character of each word in a string.
- *
- * @param  string $str Subject
- * @return string Result
- */
-function ucwords($str)
-{
-    return '';
 }
 
 /**
@@ -5066,6 +5001,12 @@ str_word_count
 strftime
 gmstrftime
 strcoll
+strtoupper
+strtolower
+lcfirst
+ucfirst
+ucwords
+localeconv
 
 Disabled due to often being ill-configured or disabled on hosts...
 
@@ -5250,7 +5191,6 @@ spl_autoload_unregister
 iterator_to_array
 iterator_count
 iterator_apply
-lcfirst
 header_register_callback
 parse_ini_string
 checkdnsrr

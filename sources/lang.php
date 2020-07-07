@@ -313,7 +313,7 @@ function get_lang_browser()
         $http_langs = explode(',', $http_lang);
         foreach ($http_langs as $lang) {
             // Clean up
-            $lang = strtoupper(trim($lang));
+            $lang = cms_strtoupper_ascii(trim($lang));
             $pos = strpos($lang, ';');
             if ($pos !== false) {
                 $lang = substr($lang, 0, $pos);
@@ -407,7 +407,7 @@ function get_lang_member($member_id)
     // In forum?
     $lang = $GLOBALS['FORUM_DRIVER']->forum_get_lang($member_id);
     if (!cms_empty_safe($lang)) {
-        $_lang = strtoupper($lang);
+        $_lang = cms_strtoupper_ascii($lang);
         if (!does_lang_exist($_lang)) {
             require_code('files');
             $map_file_a = get_file_base() . '/lang/map.ini';

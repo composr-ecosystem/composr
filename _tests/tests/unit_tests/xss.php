@@ -46,7 +46,7 @@ class xss_test_set extends cms_test_case
 
         set_privilege($guest_group_id, 'allow_html', true);
 
-        $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
+        $parsed = cms_strtolower_ascii(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
 
         $this->assertTrue(strpos($parsed, '<iframe') === false);
 
@@ -70,7 +70,7 @@ class xss_test_set extends cms_test_case
 
         set_privilege($guest_group_id, 'allow_html', false);
 
-        $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
+        $parsed = cms_strtolower_ascii(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
 
         $this->assertTrue(strpos($parsed, '<test') === false); // Not safelisted
 
@@ -80,7 +80,7 @@ class xss_test_set extends cms_test_case
 
         $comcode = '[semihtml]<a href="http://evilsite.com/" target="_blank" rel="opener">test</a> <a href="http://evilsite.com/" target="_blank"' . "\t" . 'rel=\'foo' . "\t" . 'opener' . "\t" . 'bar\'>test</a> <a href="http://evilsite.com/" target=_blank' . "\n" . 'rel=opener>test</a> [url rel="opener"]test[/url][/semihtml]';
 
-        $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
+        $parsed = cms_strtolower_ascii(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
 
         $parsed = str_replace('noopener', '', $parsed);
         $this->assertTrue(preg_match('#rel=.*opener#', $parsed) == 0);
@@ -90,11 +90,11 @@ class xss_test_set extends cms_test_case
         set_privilege($guest_group_id, 'allow_html', true);
 
         $comcode = '<scr<script>'; // Browser will interpret as a script tag
-        $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
+        $parsed = cms_strtolower_ascii(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
         $this->assertTrue(strpos($parsed, '<script') === false);
 
         $comcode = '<script/foobar>'; // Browser will interpret as a script tag
-        $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
+        $parsed = cms_strtolower_ascii(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
         $this->assertTrue(strpos($parsed, '<script') === false);
 
         set_privilege($guest_group_id, 'allow_html', false);

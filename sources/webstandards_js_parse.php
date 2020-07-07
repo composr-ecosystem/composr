@@ -18,6 +18,8 @@
  * @package    core_webstandards
  */
 
+/*EXTRA FUNCTIONS: strtolower*/
+
 /*
 Unsupported for good reasons...
 
@@ -1072,7 +1074,7 @@ function _webstandards_js_parse_variable_actual()
             parser_next();
             $next_2 = parser_peek(true);
             if ($next_2[0] != 'IDENTIFIER') {
-                $next_2 = ['IDENTIFIER', strtolower($next_2[0])];
+                $next_2 = ['IDENTIFIER', function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($next_2[0]) : strtolower($next_2[0])];
                 parser_next();
             } else {
                 if (parser_expect('IDENTIFIER') === null) {

@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+/*EXTRA FUNCTIONS: str_word_count*/
+
 /**
  * Composr test case class (unit testing).
  */
@@ -32,9 +34,15 @@ class string_functions_test_set extends cms_test_case
             'cms_mb_strlen' => 'strlen',
             'cms_mb_strtolower' => 'strtolower',
             'cms_mb_strtoupper' => 'strtoupper',
+            'cms_mb_ucfirst' => 'ucfirst',
             'cms_mb_ucwords' => 'ucwords',
             'cms_mb_chunk_split' => 'chunk_split',
             'cms_mb_str_split' => 'str_split',
+            'cms_strtoupper_ascii' => 'strtoupper',
+            'cms_strtolower_ascii' => 'strtolower',
+            'cms_lcfirst_ascii' => 'lcfirst',
+            'cms_ucfirst_ascii' => 'ucfirst',
+            'cms_ucwords_ascii' => 'ucwords',
         ];
         foreach ($funcs as $func_a => $func_b) {
             $a = call_user_func($func_a, $str);
@@ -77,7 +85,7 @@ class string_functions_test_set extends cms_test_case
         $this->assertTrue($a == $b, strval($a) . ' vs ' . strval($b));
     }
 
-    function clamp_cmp_returns($cmp)
+    protected function clamp_cmp_returns($cmp)
     {
         if ($cmp <= -1) {
             return -1;

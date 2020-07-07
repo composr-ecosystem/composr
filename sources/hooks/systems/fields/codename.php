@@ -66,7 +66,7 @@ class Hook_fields_codename
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        if (($default !== null) && (strtoupper($default) === 'RANDOM') && ($field !== null) && ($field['id'] !== null)) { // We need to calculate a default even if not required, because the defaults are programmatic
+        if (($default !== null) && (cms_strtoupper_ascii($default) === 'RANDOM') && ($field !== null) && ($field['id'] !== null)) { // We need to calculate a default even if not required, because the defaults are programmatic
             $default = $this->get_field_random($field['id'], $default);
         }
         return ['short_text', $default, 'short'];
@@ -113,7 +113,7 @@ class Hook_fields_codename
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
         $default = option_value_from_field_array($field, 'default', $field['cf_default']);
-        if ($new && strtoupper($default) == 'RANDOM') {
+        if ($new && cms_strtoupper_ascii($default) == 'RANDOM') {
             return null;
         }
 
@@ -140,7 +140,7 @@ class Hook_fields_codename
         $tmp_name = 'field_' . strval($id);
 
         $default = option_value_from_field_array($field, 'default', $field['cf_default']);
-        if (!$editing && strtoupper($default) == 'RANDOM') {
+        if (!$editing && cms_strtoupper_ascii($default) == 'RANDOM') {
             return $this->get_field_random($id, $field['cf_default']);
         }
 

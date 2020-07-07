@@ -88,7 +88,7 @@ class lang_duplication_test_set extends cms_test_case
 
         // Find if there is any unnecessary underscoring
         /*foreach (array_keys($all_keys) as $key) {     Was useful once, but there are reasonable cases remaining
-            if ((substr($key, 0, 1) == '_') && (strtoupper($key) == $key) && (!isset($all_keys[substr($key, 1)]))) {
+            if ((substr($key, 0, 1) == '_') && (cms_strtoupper_ascii($key) == $key) && (!isset($all_keys[substr($key, 1)]))) {
                 $this->assertTrue(false, 'Unnecessary prefixing of ' . $key);
             }
         }*/

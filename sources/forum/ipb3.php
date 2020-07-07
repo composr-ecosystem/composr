@@ -794,7 +794,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
         }
         switch ($member_extra_rows[0]['avatar_type']) {
             case 'gravatar':
-                $gravatar_img = md5(strtolower(trim($avatar)));
+                $gravatar_img = md5(cms_strtolower_ascii(trim($avatar)));
                 $avatar = 'http://www.gravatar.com/avatar/' . $gravatar_img;
                 break;
             case 'local':

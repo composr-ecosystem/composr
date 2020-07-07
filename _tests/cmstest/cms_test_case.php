@@ -186,7 +186,7 @@ class cms_test_case extends WebTestCase
                 exit('Type column missing');
             }
 
-            if ($row['Option'][0] == '#') { // Comment
+            if ($option_name[0] == '#') { // Comment
                 continue;
             }
 

@@ -1270,7 +1270,7 @@ function ecv2_HAS_SUBMIT_PERMISSION($lang, $escaped, $param)
     $value = '';
 
     if (!empty($param[0])) {
-        $range = strtolower($param[0]);
+        $range = cms_strtolower_ascii($param[0]);
         $ip_address = $param[1];
         $member_id = ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member();
         $cms_page = (!@cms_empty_safe($param[3])) ? $param[3] : get_page_name();
@@ -1995,7 +1995,7 @@ function ecv2_MATURITY_FILTER_REQUESTED($lang, $escaped, $param)
     } elseif (isset($_SERVER['HTTP_PREFER'])) {
         $safe = $_SERVER['HTTP_PREFER'];
     }
-    if (strtolower($safe) == 'safe') {
+    if (cms_strtolower_ascii($safe) == 'safe') {
         return '1';
     }
     return '0';

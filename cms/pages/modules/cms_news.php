@@ -264,7 +264,7 @@ class Module_cms_news extends Standard_crud_module
         if (addon_installed('unvalidated')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
@@ -956,7 +956,7 @@ class Module_cms_news_cat extends Standard_crud_module
             'nc_title' => do_lang_tempcode('TITLE'),
         ];
         $sortables['((SELECT COUNT(*) FROM ' . get_table_prefix() . 'news WHERE news_category=r.id) + (SELECT COUNT(*) FROM ' . get_table_prefix() . 'news_category_entries WHERE news_entry_category=r.id))'] = do_lang_tempcode('COUNT_TOTAL');
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

@@ -97,7 +97,7 @@ function xmlentities($string, $charset = null)
  */
 function convert_bad_entities($data, $charset = 'ISO-8859-1')
 {
-    if ((strtoupper($charset) != 'ISO-8859-1') && (strtolower($charset) != 'utf-8')) {
+    if ((cms_strtoupper_ascii($charset) != 'ISO-8859-1') && (cms_strtolower_ascii($charset) != 'utf-8')) {
         $charset = 'ISO-8859-1';
     }
     $table = array_flip(get_html_translation_table(HTML_ENTITIES, ENT_COMPAT | ENT_HTML401, $charset));

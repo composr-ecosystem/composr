@@ -542,8 +542,8 @@ class Database_Static_xml extends DatabaseDriver
 
             if (($next == "'") || ($next == '"')) {
                 if (trim($current_token) != '') {
-                    if (isset($DELIMITERS_FLIPPED[strtoupper($current_token)])) {
-                        $tokens[] = strtoupper($current_token);
+                    if (isset($DELIMITERS_FLIPPED[cms_strtoupper_ascii($current_token)])) {
+                        $tokens[] = cms_strtoupper_ascii($current_token);
                     } else {
                         $tokens[] = $current_token;
                     }
@@ -581,8 +581,8 @@ class Database_Static_xml extends DatabaseDriver
                     (!$this->is_start_of_delimiter($current_token . $next)) /*And the next character does not fit onto the end of our current token*/
                 ) {
                     if (trim($current_token) != '') {
-                        if (isset($DELIMITERS_FLIPPED[strtoupper($current_token)])) {
-                            $tokens[] = strtoupper($current_token);
+                        if (isset($DELIMITERS_FLIPPED[cms_strtoupper_ascii($current_token)])) {
+                            $tokens[] = cms_strtoupper_ascii($current_token);
                         } else {
                             $tokens[] = $current_token;
                         }
@@ -648,7 +648,7 @@ class Database_Static_xml extends DatabaseDriver
         global $DELIMITERS_FLIPPED, $DELIMITERS, $DELIMITERS_ALPHA;
 
         $len = strlen($looking);
-        $looking = strtoupper($looking);
+        $looking = cms_strtoupper_ascii($looking);
         if ($len == 1) {
             return isset($DELIMITERS_FLIPPED[$looking]);
         }
@@ -983,7 +983,7 @@ class Database_Static_xml extends DatabaseDriver
                 }
             }
             $full_path = $db[0] . '/' . $table_name . '/' . $file;
-            if ((strlen($full_path) >= 255) && (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')) {
+            if ((strlen($full_path) >= 255) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
                 continue; // :(
             }
             $read = $this->_read_record($full_path, $schema, $must_contain, $include_unused_fields, $fail_ok);
@@ -1275,7 +1275,7 @@ class Database_Static_xml extends DatabaseDriver
             $this->_write_record($db, $table_name . '/sup', $guid, $record_copy, $fail_ok, true);
         }
 
-        if ((strlen($path) > 255) && (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')) {
+        if ((strlen($path) > 255) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
             attach_message('File path too long on Windows (' . $path . ')', 'warn', false, true);
             return;
         }
@@ -4213,7 +4213,7 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
-        $fuzz = strtoupper(md5(uniqid(strval(mt_rand(0, mt_getrandmax())), true)));
+        $fuzz = cms_strtoupper_ascii(md5(uniqid(strval(mt_rand(0, mt_getrandmax())), true)));
 
         return '{'
             . substr($fuzz, 0, 8) . '-'

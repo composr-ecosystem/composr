@@ -107,7 +107,7 @@ class Hook_health_check_domains extends Hook_Health_Check
             $domains = get_server_names(false);
 
             foreach ($domains as $domain) {
-                if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {
+                if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) != 'WIN') {
                     $cmd = 'whois ' . escapeshellarg('domain ' . $domain);
                     $data = @strval(shell_exec($cmd));
                     if (strpos($data, 'Unknown AS number') !== false) {

@@ -181,7 +181,7 @@ class Module_admin_sitemap
                 if ($page_details === false) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('PAGE')));
                 }
-                $pages[$page] = strtolower($page_details[0]);
+                $pages[$page] = cms_strtolower_ascii($page_details[0]);
             }
         }
         foreach ($pages as $page => $type) {
@@ -316,7 +316,7 @@ class Module_admin_sitemap
                 if ($page_details === false) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('PAGE')));
                 }
-                $pages[$page] = strtolower($page_details[0]);
+                $pages[$page] = cms_strtolower_ascii($page_details[0]);
                 if (array_key_exists(3, $page_details)) {
                     $pages[$page] .= '/' . $page_details[3];
                 }

@@ -40,7 +40,7 @@ function list_tutorial_tags($skip_addons_and_specials = false)
     foreach ($tutorials as $tutorial) {
         foreach ($tutorial['tags'] as $tag) {
             if ($skip_addons_and_specials) {
-                if (strtolower($tag) != $tag) {
+                if (cms_mb_strtolower($tag) != $tag) {
                     $tags[] = $tag;
                 }
             } else {
@@ -54,7 +54,7 @@ function list_tutorial_tags($skip_addons_and_specials = false)
     // We can't store mixed case in the database, let's just have one set of tags
     foreach ($tags as $tag) {
         if (preg_match('#^[A-Z]#', $tag) != 0) {
-            $at = array_search(strtolower($tag), $tags);
+            $at = array_search(cms_mb_strtolower($tag), $tags);
             if ($at !== false) {
                 unset($tags[$at]);
             }
@@ -197,7 +197,7 @@ function templatify_tutorial($metadata, $simple = false)
 {
     $tags = [];
     foreach ($metadata['tags'] as $tag) {
-        if (strtolower($tag) != $tag) {
+        if (cms_mb_strtolower($tag) != $tag) {
             $tags[] = $tag;
         }
     }
@@ -431,7 +431,7 @@ function _find_tutorial_image_for_tag($tag)
     $tag = str_replace(' ', '_', $tag);
     $tag = str_replace('+', '', $tag); // E.g. Wiki+
     $tag = str_replace('&', 'and', $tag);
-    $tag = strtolower($tag);
+    $tag = cms_strtolower_ascii($tag);
 
     switch ($tag) {
         case 'addon':

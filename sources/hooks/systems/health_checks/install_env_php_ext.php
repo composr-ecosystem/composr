@@ -216,7 +216,7 @@ class Hook_health_check_install_env_php_ext extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue(function_exists('ctype_upper'), do_lang('NO_CTYPE_ON_SERVER'));
+        $this->assertTrue(function_exists('ctype_xdigit'), do_lang('NO_CTYPE_ON_SERVER'));
     }
 
     /**

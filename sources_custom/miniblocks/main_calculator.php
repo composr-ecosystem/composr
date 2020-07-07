@@ -26,12 +26,12 @@ require_javascript('calculatr');
 
 $message = $map['message'];
 $equation = $map['equation'];
-$equation = str_replace('math.', 'Math.', strtolower($equation)); // Name fields come out lower case, so equation needs to be
+$equation = str_replace('math.', 'Math.', cms_strtolower_ascii($equation)); // Name fields come out lower case, so equation needs to be
 ?>
 <form data-tpl="miniblockMainCalculator" data-tp-message="<?= escape_html($message) ?>" data-tp-equation="<?= escape_html($equation) ?>" action="#!" method="post">
 <?php
 foreach ($map as $key => $val) {
-    $key = strtolower($key);
+    $key = cms_strtolower_ascii($key);
     if (($key != 'equation') && ($key != 'block') && ($key != 'message') && ($key != 'cache')) {
         echo '<p>
             <input class="input-integer-required right" size="6" type="text" id="' . escape_html($key) . '" name="' . escape_html($key) . '" value="" />

@@ -554,7 +554,7 @@ function comcode_helper_script_step2()
 
                     if (!_try_for_special_comcode_tag_specific_param_ui($tag, $actual_tag, $param, $parameter_name, $descriptiont, $fields, $fields_advanced, $hidden, $default)) {
                         if (substr($descriptiont, 0, 12) == '0|1 &ndash; ') {
-                            $descriptiont = ucfirst(substr($descriptiont, 12));
+                            $descriptiont = cms_mb_ucfirst(substr($descriptiont, 12));
                             if ($GLOBALS['XSS_DETECT']) {
                                 ocp_mark_as_escaped($descriptiont);
                             }
@@ -774,7 +774,7 @@ function _try_for_special_comcode_tag_all_params_ui($tag, $actual_tag, &$fields,
         $default_embed = array_key_exists('', $defaults) ? ($defaults['']) : get_param_string('default', '');
         $fields->attach(form_input_float(do_lang_tempcode('AMOUNT'), do_lang_tempcode('COMCODE_TAG_currency_EMBED'), 'tag_contents', floatval($default_embed), true));
         $default = array_key_exists('bracket', $defaults) ? $defaults['bracket'] : get_param_string('default_bracket', '');
-        $descriptiont = ucfirst(substr(do_lang('COMCODE_TAG_currency_PARAM_bracket'), 12));
+        $descriptiont = cms_mb_ucfirst(substr(do_lang('COMCODE_TAG_currency_PARAM_bracket'), 12));
         if ($GLOBALS['XSS_DETECT']) {
             ocp_mark_as_escaped($descriptiont);
         }

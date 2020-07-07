@@ -648,7 +648,7 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
     }
 
     if ($ext2 == 'png') {
-        if ((strtolower(substr($to, -4)) != '.png') && (get_file_extension($to) != '')) {
+        if ((cms_strtolower_ascii(substr($to, -4)) != '.png') && (get_file_extension($to) != '')) {
             $to .= '.png';
         }
     }

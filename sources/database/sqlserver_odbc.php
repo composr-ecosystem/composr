@@ -109,14 +109,14 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
         $this->rewrite_to_unicode_syntax($query);
 
         $results = @odbc_exec($connection, $query);
-        if (($results === false) && (strtoupper(substr($query, 0, 12)) == 'INSERT INTO ') && ((strpos($query, '(id, ') !== false) || (strpos($query, '(_id, ') !== false))) {
+        if (($results === false) && (cms_strtoupper_ascii(substr($query, 0, 12)) == 'INSERT INTO ') && ((strpos($query, '(id, ') !== false) || (strpos($query, '(_id, ') !== false))) {
             $pos = strpos($query, '(');
             $table_name = substr($query, 12, $pos - 13);
             if ((!multi_lang_content()) || (substr($table_name, -strlen('translate')) != 'translate')) {
                 $results = @odbc_exec($connection, 'SET IDENTITY_INSERT ' . $table_name . ' ON; ' . $query);
             }
         }
-        if ((($results === false) || (((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true))) && (!$fail_ok)) {
+        if ((($results === false) || (((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true))) && (!$fail_ok)) {
             $err = odbc_errormsg($connection);
             if (function_exists('ocp_mark_as_escaped')) {
                 ocp_mark_as_escaped($err);
@@ -134,12 +134,12 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
         }
 
         $sub = substr(ltrim($query), 0, 4);
-        if (((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results !== false) && ($results !== true)) {
+        if (((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results !== false) && ($results !== true)) {
             return $this->get_query_rows($results, $query, $start);
         }
 
         if ($get_insert_id) {
-            if (strtoupper(substr($query, 0, 7)) == 'UPDATE ') {
+            if (cms_strtoupper_ascii(substr($query, 0, 7)) == 'UPDATE ') {
                 return null;
             }
 
@@ -174,8 +174,8 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
         $types = [];
         $names = [];
         for ($x = 1; $x <= $num_fields; $x++) {
-            $types[$x] = strtoupper(odbc_field_type($results, $x));
-            $names[$x] = strtolower(odbc_field_name($results, $x));
+            $types[$x] = cms_strtoupper_ascii(odbc_field_type($results, $x));
+            $names[$x] = cms_strtolower_ascii(odbc_field_name($results, $x));
         }
 
         while (odbc_fetch_row($results, $start + $i + 1)) {

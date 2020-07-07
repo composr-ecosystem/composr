@@ -108,18 +108,18 @@ class CMS_RSS
             $matches = [];
             if ((preg_match($exp, $data, $matches) != 0) && (array_key_exists(2, $matches))) {
                 $charset = $matches[2];
-                if (strtolower($charset) == 'windows-1252') {
+                if (cms_strtolower_ascii($charset) == 'windows-1252') {
                     $charset = 'ISO-8859-1';
                 }
             }
             // Weed out if isn't supported
-            if (($charset === null) || (!in_array(strtoupper($charset), ['ISO-8859-1', 'US-ASCII', 'UTF-8']))) {
+            if (($charset === null) || (!in_array(cms_strtoupper_ascii($charset), ['ISO-8859-1', 'US-ASCII', 'UTF-8']))) {
                 $charset = 'utf-8';
             }
 
             // Our internal charset
             $target_charset = get_charset();
-            if (!in_array(strtoupper($target_charset), ['ISO-8859-1', 'US-ASCII', 'UTF-8'])) {
+            if (!in_array(cms_strtoupper_ascii($target_charset), ['ISO-8859-1', 'US-ASCII', 'UTF-8'])) {
                 $target_charset = 'utf-8';
             }
 
@@ -156,7 +156,7 @@ class CMS_RSS
                 if (($extra_data != '') && (strpos($data, $extra_data) === false)) {
                     $data = $extra_data . $data;
                 }
-                if ((strtoupper($charset) == 'ISO-8859-1') || (strtolower($charset) == 'utf-8')) { // Hack to fix bad use of entities (we can't encode them all above)
+                if ((cms_strtoupper_ascii($charset) == 'ISO-8859-1') || (cms_strtolower_ascii($charset) == 'utf-8')) { // Hack to fix bad use of entities (we can't encode them all above)
                     $data = convert_bad_entities($data, $charset);
                 }
                 $convert_bad_entities = true;
@@ -171,7 +171,7 @@ class CMS_RSS
             $data = unixify_line_format($data, $charset); // Fixes Windows characters
 
             if ($convert_bad_entities) {
-                if (strtoupper(get_charset()) == 'ISO-8859-1') { // Hack to fix bad use of entities (we can't encode them all above)
+                if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') { // Hack to fix bad use of entities (we can't encode them all above)
                     $data = convert_bad_entities($data, get_charset());
                 }
             }

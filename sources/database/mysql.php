@@ -276,11 +276,6 @@ class Database_Static_mysql extends Database_super_mysql
      */
     public function escape_string($string)
     {
-        if (function_exists('ctype_alnum')) {
-            if (ctype_alnum($string)) {
-                return $string; // No non-trivial characters
-            }
-        }
         if (preg_match('#[^a-zA-Z0-9\.]#', $string) === 0) {
             return $string; // No non-trivial characters
         }

@@ -243,7 +243,7 @@ function strip_attachments_from_comcode($comcode, $inline_image_substitutions = 
  */
 function _tag_case_fix($matches)
 {
-    $tag = strtolower($matches[1]);
+    $tag = cms_strtolower_ascii($matches[1]);
     $attributes = $matches[2];
     $inner = $matches[3];
     return '[' . $tag . '' . $attributes . ']' . $inner . '[/' . $tag . ']';

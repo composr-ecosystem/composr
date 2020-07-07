@@ -463,7 +463,7 @@ function demonstratr_add_site_raw($server, $codename, $email_address, $password)
 {
     global $SITE_INFO;
 
-    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+    if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
         fatal_exit('Windows is not supported for this operation.');
     }
 

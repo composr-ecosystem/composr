@@ -495,7 +495,7 @@ function is_image($name, $criteria, $as_admin = false, $mime_too = false)
     }
     $found = false;
     foreach ($types as $val) {
-        if (strtolower($val) == $ext) {
+        if (cms_strtolower_ascii($val) == $ext) {
             $found = true;
         }
     }

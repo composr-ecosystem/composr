@@ -184,7 +184,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                 if (($GLOBALS['WEBSTANDARDS_MANUAL']) && (isset($attributes['name'])) && ($attributes['name'] == 'robots')) {
                     $errors[] = ['MANUAL_META'];
                 }
-                if ((isset($attributes['http-equiv'], $attributes['content'])) && (strtolower($attributes['http-equiv']) == 'content-type') && ((strpos($attributes['content'], 'text/html;') !== false) || (strpos($attributes['content'], 'application/xhtml+xml;') !== false)) && (strpos($attributes['content'], 'charset=') !== false)) {
+                if ((isset($attributes['http-equiv'], $attributes['content'])) && (cms_strtolower_ascii($attributes['http-equiv']) == 'content-type') && ((strpos($attributes['content'], 'text/html;') !== false) || (strpos($attributes['content'], 'application/xhtml+xml;') !== false)) && (strpos($attributes['content'], 'charset=') !== false)) {
                     $GLOBALS['FOUND_CONTENTTYPE'] = true;
                 }
                 if (!empty($attributes['content'])) {
@@ -328,7 +328,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
 
             case 'table':
                 if (!isset($attributes['class']) || (strpos($attributes['class'], 'layout-table') === false)) {
-                    $content = strtolower(substr($OUT, $POS, strpos($OUT, '</table>', $POS) - $POS)); // While the </table> found may not be the closing tag to our table, we do know a <th> should occur before any such one (unless it's a really weird table layout)
+                    $content = cms_strtolower_ascii(substr($OUT, $POS, strpos($OUT, '</table>', $POS) - $POS)); // While the </table> found may not be the closing tag to our table, we do know a <th> should occur before any such one (unless it's a really weird table layout)
                     $th_count = substr_count($content, '<th');
                     if (($th_count == 0) && (trim($content) != 'x')) {
                         $errors[] = ['WCAG_MISSING_TH'];
@@ -498,7 +498,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
 
     $stub = $tag . '.';
     foreach ($attributes as $attribute => $value) {
-        $lattribute = strtolower($attribute);
+        $lattribute = cms_strtolower_ascii($attribute);
         if ($lattribute != $attribute) {
             if ($XML_CONSTRAIN) {
                 $errors[] = ['XHTML_CASE_ATTRIBUTE', $tag, $attribute];
@@ -544,7 +544,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
             }
         }
 
-        if ((($attribute == 'alt') || ($attribute == 'title') || (($attribute == 'content') && (array_key_exists('http-equiv', $attributes)) && ((strtolower($attributes['http-equiv']) == 'description') || (strtolower($attributes['http-equiv']) == 'keywords')))) && (function_exists('pspell_new')) && (!empty($GLOBALS['FLAG__SPELLING'])) && ($value != '')) {
+        if ((($attribute == 'alt') || ($attribute == 'title') || (($attribute == 'content') && (array_key_exists('http-equiv', $attributes)) && ((cms_strtolower_ascii($attributes['http-equiv']) == 'description') || (cms_strtolower_ascii($attributes['http-equiv']) == 'keywords')))) && (function_exists('pspell_new')) && (!empty($GLOBALS['FLAG__SPELLING'])) && ($value != '')) {
             $errors = array_merge($errors, check_spelling(clean_simple_html_for_spellcheck($value)));
         }
 
@@ -560,7 +560,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
             $EMBED_URLS[] = @html_entity_decode($value, ENT_QUOTES);
         }
 
-        if (($attribute == 'href') && (@strtolower(@$value[0]) == 'j') && (strtolower(substr($value, 0, 11)) == 'javascript:')) {
+        if (($attribute == 'href') && (@cms_strtolower_ascii(@$value[0]) == 'j') && (cms_strtolower_ascii(substr($value, 0, 11)) == 'javascript:')) {
             $errors[] = ['XHTML_BAD_ATTRIBUTE_VALUE', $attribute, $value, 'no js href'];
         }
 
@@ -586,10 +586,10 @@ function _check_attributes($tag, $attributes, $self_close, $close)
         }
 
         if ($attribute == 'id') { // Check we don't have duplicate IDs
-            if (isset($IDS_SO_FAR[strtolower($value)])) { // strtolower is for compatibility - in reality, IDs are not meant to be case insensitive
+            if (isset($IDS_SO_FAR[cms_strtolower_ascii($value)])) { // cms_strtolower_ascii is for compatibility - in reality, IDs are not meant to be case insensitive
                 $errors[] = ['XHTML_DUPLICATED_ID', $value];
             }
-            $IDS_SO_FAR[strtolower($value)] = 1;
+            $IDS_SO_FAR[cms_strtolower_ascii($value)] = 1;
         }
     }
 
@@ -605,7 +605,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
 function check_spelling($value)
 {
     global $THE_LANGUAGE;
-    $lang = strtolower($THE_LANGUAGE);
+    $lang = cms_strtolower_ascii($THE_LANGUAGE);
 
     require_code('spelling');
     if (!defined('WORD_REGEXP')) {
@@ -719,7 +719,7 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
     } else {
         $title = $attributes['title'];
     }
-    $content = strtolower(substr($OUT, $POS, strpos($OUT, '</a>', $POS) - $POS));
+    $content = cms_mb_strtolower(substr($OUT, $POS, strpos($OUT, '</a>', $POS) - $POS));
     if ((isset($attributes['target'])) && ($attributes['target'] == '_blank') && (function_exists('do_lang')) && (strpos($content, do_lang('LINK_NEW_WINDOW')) === false) && (strpos($title, do_lang('LINK_NEW_WINDOW')) === false)) {
         $errors[] = ['WCAG_BLANK'];
     }
@@ -744,7 +744,7 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
             }
         }
         if ($title == '') {
-            if (strtolower($content) == 'more') {
+            if (cms_mb_strtolower($content) == 'more') {
                 $errors[] = ['WCAG_DODGY_LINK_2', $string];
             }
         }

@@ -318,7 +318,7 @@ These rules are very standard, but if broken then code-overriding may not work c
 | Internationalisation / consistency
 | All development
 | Manually
-| Don't forget about users potentially being in different timezones. Rarely if ever use PHP's inbuilt date/time functions -- use Composr's temporal API.
+| Don't forget about users potentially being in different timezones. Rarely if ever use PHP's inbuilt date/time functions -- use Composr's temporal API. The PHP [tt]date[/tt] function doesn't even support non-English strings, and [tt]strftime[/tt] has many issues.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use the [tt]type[/tt] parameter for your modules[/color]

@@ -232,7 +232,7 @@ class Module_cms_banners extends Standard_crud_module
         if (addon_installed('unvalidated')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
@@ -740,7 +740,7 @@ class Module_cms_banners_cat extends Standard_crud_module
             't_comcode_inline' => do_lang_tempcode('COMCODE_INLINE'),
         ];
         $sortables['(SELECT COUNT(*) FROM ' . get_table_prefix() . 'banners WHERE b_type=r.id)'] = do_lang_tempcode('COUNT_TOTAL');
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

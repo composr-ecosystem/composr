@@ -364,7 +364,7 @@ class Module_cms_catalogues extends Standard_crud_module
         if (addon_installed('unvalidated')) {
             $sortables['ce_validated'] = do_lang_tempcode('VALIDATED');
         }
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
@@ -1257,7 +1257,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
             'cc_title' => do_lang_tempcode('TITLE'),
             'cc_add_date' => do_lang_tempcode('ADDED'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

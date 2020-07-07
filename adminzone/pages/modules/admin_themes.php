@@ -1272,7 +1272,7 @@ class Module_admin_themes
         $templates = [];
         $dh = opendir(get_file_base() . '/themes/default/templates');
         while (($f = readdir($dh)) !== false) {
-            if (strtolower(substr($f, -4)) == '.tpl') {
+            if (cms_strtolower_ascii(substr($f, -4)) == '.tpl') {
                 $templates[] = 'templates/' . $f;
             }
         }

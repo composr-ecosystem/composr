@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: strftime*/
+
 /**
  * Standard code module initialisation function.
  *
@@ -416,7 +418,7 @@ function get_timezoned_time($timestamp, $use_contextual_times = true, $utc_time 
 }
 
 /**
- * Format a local time/date according to locale settings. Combines best features of 'strftime' and 'date'.
+ * Format a local time/date according to language pack. Combines best features of 'strftime' and 'date'.
  * %o is 'S' in date.
  * Does not depend on locales, which are not thread-safe.
  *
@@ -479,25 +481,25 @@ function cms_strftime($format, $timestamp = null)
         if ($day_short) {
             $arr = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
             foreach ($arr as $i => $str) {
-                $format = str_replace('[[' . strval($i) . ']]', do_lang($str . '__SHORT'), $ret);
+                $ret = str_replace('<<' . strval($i) . '>>', do_lang($str . '_SHORT'), $ret);
             }
         }
         if ($day_long) {
             $arr = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
             foreach ($arr as $i => $str) {
-                $format = str_replace('<<' . strval($i) . '>>', do_lang($str), $ret);
+                $ret = str_replace('[[' . strval($i) . ']]', do_lang($str), $ret);
             }
         }
         if ($month_short) {
             $arr = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
             foreach ($arr as $i => $str) {
-                $format = str_replace('{{' . str_pad(strval($i + 1), 2, '0', STR_PAD_LEFT) . '}}', do_lang($str . '__SHORT'), $ret);
+                $ret = str_replace('{{' . str_pad(strval($i + 1), 2, '0', STR_PAD_LEFT) . '}}', do_lang($str . '_SHORT'), $ret);
             }
         }
         if ($month_long) {
             $arr = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
             foreach ($arr as $i => $str) {
-                $format = str_replace('((' . str_pad(strval($i + 1), 2, '0', STR_PAD_LEFT) . '))', do_lang($str), $ret);
+                $ret = str_replace('((' . str_pad(strval($i + 1), 2, '0', STR_PAD_LEFT) . '))', do_lang($str), $ret);
             }
         }
     }

@@ -251,11 +251,11 @@ class ForumEmailIntegration extends EmailIntegration
         $possible_reply = /*false*/true; // Better to just let anything be a possible reply, more user-friendly
         do {
             $changed = false;
-            if (strtolower(substr($title, 0, 4)) == 're: ') {
+            if (cms_strtolower_ascii(substr($title, 0, 4)) == 're: ') {
                 $title = substr($title, 4);
                 $changed = true;
                 $possible_reply = true;
-            } elseif (strtolower(substr($title, 0, 4)) == 'fw: ') {
+            } elseif (cms_strtolower_ascii(substr($title, 0, 4)) == 'fw: ') {
                 $title = substr($title, 4);
                 $changed = true;
             }

@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+setlocale(LC_ALL, 'en-GB.UTF-8,en_GB.UTF-8,en-US.UTF-8,en_US.UTF-8,en.UTF-8,en-GB,en_GB,en-US,en_US,en'); // To avoid Turkish issue
+
 load_table_fields();
 load_function_signatures();
 load_php_metadetails();

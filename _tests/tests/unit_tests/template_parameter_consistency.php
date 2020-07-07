@@ -234,7 +234,7 @@ class template_parameter_consistency_test_set extends cms_test_case
             $num_matches_2 = preg_match_all('#\'([^\']+)\' => (null)?#m', $_parameters, $matches_2);
             for ($j = 0; $j < $num_matches_2; $j++) {
                 $parameter = $matches_2[1][$j];
-                if (strtoupper($parameter) == $parameter) {
+                if (cms_strtoupper_ascii($parameter) == $parameter) {
                     $parameters[$parameter] = ($matches_2[2][$j] == 'null');
                 }
             }
@@ -258,7 +258,7 @@ class template_parameter_consistency_test_set extends cms_test_case
             $num_matches_2 = preg_match_all('#^\s*\'([^\']+)\' => (null)?#m', $_parameters, $matches_2);
             for ($j = 0; $j < $num_matches_2; $j++) {
                 $parameter = $matches_2[1][$j];
-                if (strtoupper($parameter) == $parameter) {
+                if (cms_strtoupper_ascii($parameter) == $parameter) {
                     $parameters[$parameter] = ($matches_2[2][$j] == 'null');
                 }
             }

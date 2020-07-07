@@ -47,7 +47,7 @@ class lang_descriptions_test_set extends cms_test_case
             $descriptions = get_lang_file_section(fallback_lang(), $file, 'descriptions');
             $strings = get_lang_file_section(fallback_lang(), $file, 'strings');
             foreach ($strings as $key => $val) {
-                if (strtolower($key) == $key) {
+                if (cms_strtolower_ascii($key) == $key) {
                     $this->assertTrue(isset($descriptions[$key]), 'Lower case string has no description to match: ' . $key);
                 }
             }

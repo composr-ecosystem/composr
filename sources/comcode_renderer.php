@@ -136,7 +136,7 @@ function check_naughty_javascript_url($source_member, $url, $as_admin)
     global $POTENTIAL_JS_NAUGHTY_ARRAY;
 
     if ((!$as_admin) && (!has_privilege($source_member, 'use_very_dangerous_comcode'))) {
-        $url2 = strtolower($url);
+        $url2 = cms_strtolower_ascii($url);
 
         $matches = [];
         $bad = preg_match_all('#&\#(\d+)#', preg_replace('#\s#', '', $url), $matches) != 0;
@@ -199,7 +199,7 @@ function _custom_comcode_import($db)
         if (method_exists($GLOBALS['FORUM_DRIVER'], 'get_custom_bbcode')) {
             $custom_bbcode = $GLOBALS['FORUM_DRIVER']->get_custom_bbcode();
             foreach ($custom_bbcode as $code) {
-                $code['tag'] = strtolower($code['tag']);
+                $code['tag'] = cms_strtolower_ascii($code['tag']);
 
                 $VALID_COMCODE_TAGS[$code['tag']] = true;
                 if ($code['block_tag'] == 1) {
@@ -233,7 +233,7 @@ function _custom_comcode_import($db)
             $tags = array_merge($tags, $db->query_select('custom_comcode', ['tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'], ['tag_enabled' => 1]));
         }
         foreach ($tags as $tag) {
-            $tag['tag_tag'] = strtolower($tag['tag_tag']);
+            $tag['tag_tag'] = cms_strtolower_ascii($tag['tag_tag']);
 
             $VALID_COMCODE_TAGS[$tag['tag_tag']] = true;
             if ($tag['tag_block_tag'] == 1) {
@@ -257,7 +257,7 @@ function _custom_comcode_import($db)
                 continue;
             }
 
-            $tag['tag_tag'] = strtolower($tag['tag_tag']);
+            $tag['tag_tag'] = cms_strtolower_ascii($tag['tag_tag']);
 
             $VALID_COMCODE_TAGS[$tag['tag_tag']] = true;
             if ($tag['tag_block_tag'] == 1) {
@@ -2384,9 +2384,9 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 if ((!array_key_exists($parameter, $attributes)) || ($attributes[$parameter] == '')) {
                     $attributes[$parameter] = $default;
                 }
-                $binding[strtoupper($parameter)] = $attributes[$parameter];
+                $binding[cms_strtoupper_ascii($parameter)] = $attributes[$parameter];
                 if (is_string($replace)) {
-                    $replace = str_replace('{' . $parameter . '}', '{' . strtoupper($parameter) . '*}', $replace);
+                    $replace = str_replace('{' . $parameter . '}', '{' . cms_strtoupper_ascii($parameter) . '*}', $replace);
                 }
             }
             if (is_string($replace)) {
@@ -2417,7 +2417,7 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
 {
     $_embed = null;
     $title = do_lang_tempcode('CODE');
-    if ((file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) && (!in_safe_mode())) {
+    if ((file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : cms_strtolower_ascii($type)) . '.php')) && (!in_safe_mode())) {
         $evaluated = $embed->evaluate();
 
         if (($in_semihtml) || ($is_all_semihtml)) {
@@ -2431,7 +2431,7 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
         if (class_exists('GeSHi')) {
             require_code('developer_tools');
             destrictify();
-            $geshi = new GeSHi($evaluated, ($type == 'HTML') ? 'html5' : strtolower($type));
+            $geshi = new GeSHi($evaluated, ($type == 'HTML') ? 'html5' : cms_strtolower_ascii($type));
             $geshi->set_header_type(GESHI_HEADER_DIV);
             if ($numbers) {
                 $geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
@@ -2442,7 +2442,7 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
             restrictify();
         }
     } else {
-        switch (strtolower($type)) {
+        switch (cms_strtolower_ascii($type)) {
             case 'php':
                 if (php_function_allowed('highlight_string')) {
                     $evaluated = $embed->evaluate();

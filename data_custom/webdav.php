@@ -13,6 +13,8 @@
  * @package    webdav
  */
 
+/*EXTRA FUNCTIONS: strtolower*/
+
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 

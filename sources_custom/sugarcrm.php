@@ -249,7 +249,7 @@ function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $fro
         $timestamp = time();
     }
 
-    $_sync_type = ucfirst($sync_type);
+    $_sync_type = cms_ucfirst_ascii($sync_type);
 
     $lead_source = do_lang('DEFAULT_LEAD_SOURCE');
 

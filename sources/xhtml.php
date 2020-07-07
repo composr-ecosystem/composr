@@ -396,7 +396,7 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
 
                 // The regexp just checks for img tag match and grabs the src into $matches[1]
                 $matches = [];
-                if (isset($html[$i + 1]) && strtolower($html[$i + 1]) == 'i'/*Optimisation before we bother looking harder*/ && preg_match('#<img[^<>]+src="([^"]+)"#iA', $html, $matches, 0, $i) != 0) {
+                if (isset($html[$i + 1]) && cms_strtolower_ascii($html[$i + 1]) == 'i'/*Optimisation before we bother looking harder*/ && preg_match('#<img[^<>]+src="([^"]+)"#iA', $html, $matches, 0, $i) != 0) {
                     require_code('images');
                     $test = cms_getimagesize_url(html_entity_decode($matches[1], ENT_QUOTES), true); // Safe way to grab image dimensions
                     if (($test === false) || ($test[0] === null) || ($test[1] === null)) {

@@ -319,7 +319,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                         if ($details === false) {
                             continue;
                         }
-                        $page_type = strtolower($details[0]);
+                        $page_type = cms_strtolower_ascii($details[0]);
                         $pages[$page] = $page_type;
                     }
 

@@ -24,7 +24,7 @@ class js_strict_mode_test_set extends cms_test_case
         $path = get_file_base() . '/themes/default/javascript';
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
-            if (strtolower(substr($file, -3)) == '.js') {
+            if (cms_strtolower_ascii(substr($file, -3)) == '.js') {
                 if (in_array($file, [
                     'ATTACHMENT_UI_DEFAULTS.js',
                     'button_realtime_rain.js',

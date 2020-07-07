@@ -287,7 +287,7 @@ class Hook_chat_bot_trickstr
             $lines_array[$x] = preg_replace('#[\]#', '', $lines_array[$x]);
             if (strstr($lines_array[$x], 'key:')) {
                 preg_match('#key: (.*)#i', $lines_array[$x], $kw);
-                $kwarray[$kwcount] = strtoupper($kw[1]);
+                $kwarray[$kwcount] = cms_strtoupper_ascii($kw[1]);
                 $currentkw = $kwcount;
                 $kwcount++;
                 $varcount = 0; // reset varcount to null
@@ -296,7 +296,7 @@ class Hook_chat_bot_trickstr
             } else {
                 if (strstr($lines_array[$x], 'var:')) {
                     preg_match('#var: (.*)#i', $lines_array[$x], $variance);
-                    $vararray[$currentkw][$varcount] = strtoupper($variance[1]);
+                    $vararray[$currentkw][$varcount] = cms_strtoupper_ascii($variance[1]);
                     $varcurrent = $varcount;
                     $varcount++;
                     $respcount = 0;
@@ -312,12 +312,12 @@ class Hook_chat_bot_trickstr
                         } else {
                             if (strstr($lines_array[$x], 'syn:')) {
                                 preg_match('#syn: (.*)#i', $lines_array[$x], $synonym);
-                                $synonymarray[$syncount] = strtoupper($synonym[1]);
+                                $synonymarray[$syncount] = cms_strtoupper_ascii($synonym[1]);
                                 $syncount++;
                             } else {
                                 if (strstr($lines_array[$x], 'goto:')) {
                                     preg_match('#goto: (.*)#i', $lines_array[$x], $goto);
-                                    $goto = strtoupper($goto[1]);
+                                    $goto = cms_strtoupper_ascii($goto[1]);
                                     // find the keyword
                                     for ($zcount = 0; $zcount < count($kwarray); $zcount++) {
                                         // if the keyword already exists
@@ -343,7 +343,7 @@ class Hook_chat_bot_trickstr
         if (!$string) {
             $string = 'hello';
         }
-        $string = strtoupper($string);
+        $string = cms_strtoupper_ascii($string);
 
         // Figures out what word in the string has the most priority.
         // It can then check words to the left/right of this word depending
@@ -379,7 +379,7 @@ class Hook_chat_bot_trickstr
                 preg_match('#@(.*)#i', $vararray[$bestpriority][$vcount], $syn); // fix this
                 $syn = $syn[1];
                 for ($x = 0; $x < count($synonymarray); $x++) {
-                    if (preg_match('#' . $syn . '#i', strtoupper($synonymarray[$x]))) {
+                    if (preg_match('#' . $syn . '#i', cms_strtoupper_ascii($synonymarray[$x]))) {
                         $sarray = explode(' ', $synonymarray[$x]);
                         for ($f = 0; $f < count($sarray); $f++) {
                             $newstring = preg_match('#@(.*)$#', $sarray[$f], $vararray[$bestpriority][$vcount]);

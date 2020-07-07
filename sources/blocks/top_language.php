@@ -89,7 +89,7 @@ PHP;
         foreach (array_keys($langs) as $lang) {
             $langs[$lang] = [
                 'FULL_NAME' => lookup_language_full_name($lang),
-                'COUNTRY_FLAG' => strtolower($this->get_lang_country($lang)),
+                'COUNTRY_FLAG' => cms_strtolower_ascii($this->get_lang_country($lang)),
             ];
         }
         sort_maps_by($langs, 'FULL_NAME');
@@ -101,7 +101,7 @@ PHP;
             'BLOCK_ID' => $block_id,
             'LANGS' => $langs,
             'CURRENT_LANG_FULL_NAME' => lookup_language_full_name($current_lang),
-            'CURRENT_LANG_COUNTRY_FLAG' => strtolower($this->get_lang_country($current_lang)),
+            'CURRENT_LANG_COUNTRY_FLAG' => cms_strtolower_ascii($this->get_lang_country($current_lang)),
             'CURRENT_LANG' => $current_lang,
         ]);
     }
@@ -155,7 +155,7 @@ PHP;
         } else {
             $country = $lang_iso;
         }
-        if (find_theme_image('flags_large/' . strtolower($country), true) == '') {
+        if (find_theme_image('flags_large/' . cms_strtolower_ascii($country), true) == '') {
             $country = '';
         }
 

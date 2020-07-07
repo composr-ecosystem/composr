@@ -516,7 +516,7 @@ class Module_admin_ecommerce_logs
                 $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_time' => $new_s_time], ['id' => $purchase_id]);
             }
 
-            $period = strtolower(strval($s_length) . ' ' . $s_length_units);
+            $period = cms_strtolower_ascii(strval($s_length) . ' ' . $s_length_units);
         } else {
             $is_subscription = false;
 
@@ -625,7 +625,7 @@ class Module_admin_ecommerce_logs
             $test[1] = 'DESC';
         }
         list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

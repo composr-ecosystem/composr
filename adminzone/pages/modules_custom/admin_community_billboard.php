@@ -198,7 +198,7 @@ class Module_admin_community_billboard extends Standard_crud_module
             'order_time' => do_lang_tempcode('ORDER_DATE'),
             'member_id' => do_lang_tempcode('metadata:OWNER'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

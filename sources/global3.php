@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: fileowner|filegroup*/
+/*EXTRA FUNCTIONS: fileowner|filegroup|collator_.**/
 
 /*
 global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
@@ -170,6 +170,10 @@ function init__global3()
         define('TIME_LIMIT_EXTEND__SLOW', 300);
         define('TIME_LIMIT_EXTEND__CRAWL', 1000);
     }
+
+    global $ASCII_LCASE_MAP, $ASCII_UCASE_MAP;
+    $ASCII_LCASE_MAP = ['a' => 'A', 'b' => 'B', 'c' => 'C', 'd' => 'D', 'e' => 'E', 'f' => 'F', 'g' => 'G', 'h' => 'H', 'i' => 'I', 'j' => 'J', 'k' => 'K', 'l' => 'L', 'm' => 'M', 'n' => 'N', 'o' => 'O', 'p' => 'P', 'q' => 'Q', 'r' => 'R', 's' => 'S', 't' => 'T', 'u' => 'U', 'v' => 'V', 'w' => 'W', 'x' => 'X', 'y' => 'Y', 'z' => 'Z'];
+    $ASCII_UCASE_MAP = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd', 'E' => 'e', 'F' => 'f', 'G' => 'g', 'H' => 'h', 'I' => 'i', 'J' => 'j', 'K' => 'k', 'L' => 'l', 'M' => 'm', 'N' => 'n', 'O' => 'o', 'P' => 'p', 'Q' => 'q', 'R' => 'r', 'S' => 's', 'T' => 't', 'U' => 'u', 'V' => 'v', 'W' => 'w', 'X' => 'x', 'Y' => 'y', 'Z' => 'z'];
 }
 
 /**
@@ -249,7 +253,7 @@ function get_file_extension($name, $mime_type = null)
     if ($dot_pos === false) {
         return '';
     }
-    return strtolower(substr($name, $dot_pos + 1));
+    return cms_strtolower_ascii(substr($name, $dot_pos + 1));
 }
 
 /**
@@ -495,7 +499,7 @@ function cms_http_request($url, $options = [])
  */
 function cms_is_writable($path)
 {
-    if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {
+    if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) != 'WIN') {
         return is_writable($path);
     }
 
@@ -1225,31 +1229,6 @@ function cms_mb_substr($in, $from, $amount = null, $force = false)
 }
 
 /**
- * Workaround for when we can't enable LC_CTYPE on the locale - temporarily enable it when we really need it.
- *
- * @param  boolean $start Whether to start the workaround (as opposed to ending it)
- */
-function _local_ctype_hack($start)
-{
-    $ctype_hack = (function_exists('do_lang')) && (do_lang('locale_ctype_hack') == '1');
-    if ($ctype_hack) {
-        if ($start) {
-            static $proper_locale = null;
-            if ($proper_locale === null) {
-                $proper_locale = explode(',', do_lang('locale'));
-            }
-            setlocale(LC_CTYPE, $proper_locale);
-        } else {
-            static $fallback_locale = null;
-            if ($fallback_locale === null) {
-                $fallback_locale = explode(',', do_lang('locale'));
-            }
-            setlocale(LC_CTYPE, $fallback_locale);
-        }
-    }
-}
-
-/**
  * Make a string title-case, with utf-8 awareness where possible/required.
  *
  * @param  string $in Subject
@@ -1257,17 +1236,36 @@ function _local_ctype_hack($start)
  */
 function cms_mb_ucwords($in)
 {
-    _local_ctype_hack(true);
-
-    if (get_charset() != 'utf-8') {
-        $ret = ucwords($in);
+    if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') {
+        $ret = cms_ucwords_ascii($in);
     } elseif (function_exists('mb_convert_case')) {
         $ret = @mb_convert_case($in, MB_CASE_TITLE, get_charset());
+    } elseif (function_exists('ucwords')) {
+        $ret = ucwords($in); // Relies on locale, which is not ideal
     } else {
-        $ret = ucwords($in);
+        $ret = $in;
     }
 
-    _local_ctype_hack(false);
+    return $ret;
+}
+
+/**
+ * Make a string's first character upper case, with utf-8 awareness where possible/required.
+ *
+ * @param  string $in Subject
+ * @return string Result
+ */
+function cms_mb_ucfirst($in)
+{
+    if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') {
+        $ret = cms_ucfirst_ascii($in);
+    } elseif (function_exists('mb_convert_case')) {
+        $ret = @mb_convert_case(cms_mb_substr($in, 0, 1), MB_CASE_UPPER, get_charset()) . cms_mb_substr($in, 1);
+    } elseif (function_exists('ucfirst')) {
+        $ret = ucfirst($in); // Relies on locale, which is not ideal
+    } else {
+        $ret = $in;
+    }
 
     return $ret;
 }
@@ -1280,17 +1278,15 @@ function cms_mb_ucwords($in)
  */
 function cms_mb_strtolower($in)
 {
-    _local_ctype_hack(true);
-
-    if (get_charset() != 'utf-8') {
-        $ret = strtolower($in);
+    if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') {
+        $ret = cms_strtolower_ascii($in);
     } elseif (function_exists('mb_strtolower')) {
         $ret = @mb_strtolower($in, get_charset());
+    } elseif (function_exists('strtolower')) {
+        $ret = strtolower($in); // Relies on locale, which is not ideal
     } else {
-        $ret = strtolower($in);
+        $ret = $in;
     }
-
-    _local_ctype_hack(false);
 
     return $ret;
 }
@@ -1303,21 +1299,18 @@ function cms_mb_strtolower($in)
  */
 function cms_mb_strtoupper($in)
 {
-    _local_ctype_hack(true);
-
-    if (get_charset() != 'utf-8') {
-        $ret = strtoupper($in);
+    if (cms_strtoupper_ascii(get_charset()) == 'ISO-8859-1') {
+        $ret = cms_strtoupper_ascii($in);
     } elseif (function_exists('mb_strtoupper')) {
         $ret = @mb_strtoupper($in, get_charset());
+    } elseif (function_exists('strtoupper')) {
+        $ret = strtoupper($in); // Relies on locale, which is not ideal
     } else {
-        $ret = strtoupper($in);
+        $ret = $in;
     }
-
-    _local_ctype_hack(false);
 
     return $ret;
 }
-
 
 /**
  * Unicode-safe case-sensitive string comparison.
@@ -1329,33 +1322,20 @@ function cms_mb_strtoupper($in)
  */
 function cms_mb_strcmp($str1, $str2)
 {
-    _local_ctype_hack(true);
-
     if (function_exists('collator_create')) {
-        if (function_exists('collator_set_attribute')) {
-            if (function_exists('collator_compare')) {
-                static $collator = false;
-                if ($collator === false) {
-                    $collator = collator_create(setlocale(LC_ALL, '0'));
-                }
-                if ($collator !== null) {
-                    collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::OFF);
+        $collator = cms_collator_create();
+        if ($collator !== null) {
+            collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::OFF);
 
-                    $ret = collator_compare($collator, $str1, $str2);
+            $ret = collator_compare($collator, $str1, $str2);
 
-                    _local_ctype_hack(false);
-
-                    return $ret;
-                }
-            }
+            return $ret;
         }
     }
 
     // Ideally we'd use strcoll, but that's case-sensitive and also doesn't work on Windows for Unicode, and also relies on unstable collations
 
     $ret = strcmp($str1, $str2);
-
-    _local_ctype_hack(false);
 
     return $ret;
 }
@@ -1369,32 +1349,125 @@ function cms_mb_strcmp($str1, $str2)
  */
 function cms_mb_strnatcmp($str1, $str2)
 {
-    _local_ctype_hack(true);
-
     if (function_exists('collator_create')) {
-        if (function_exists('collator_set_attribute')) {
-            if (function_exists('collator_compare')) {
-                static $collator = false;
-                if ($collator === false) {
-                    $collator = collator_create(setlocale(LC_ALL, '0'));
-                }
-                if ($collator !== null) {
-                    collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::ON);
+        $collator = cms_collator_create();
+        if ($collator !== null) {
+            collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::ON);
 
-                    $ret = collator_compare($collator, $str1, $str2);
+            $ret = collator_compare($collator, $str1, $str2);
 
-                    _local_ctype_hack(false);
-
-                    return $ret;
-                }
-            }
+            return $ret;
         }
     }
 
     $ret = strnatcmp($str1, $str2);
 
-    _local_ctype_hack(false);
+    return $ret;
+}
 
+/**
+ * Create a collator for the configured locale.
+ *
+ * @return ?object Collator (null: none)
+ */
+function cms_collator_create()
+{
+    static $collator = null;
+    if ($collator !== null) {
+        return $collator;
+    }
+    if (function_exists('collator_create')) {
+        $locales = explode(',', do_lang('locale'));
+        foreach ($locales as $locale) {
+            $collator = collator_create($locale);
+            if ($collator !== null) {
+                if (collator_get_locale($collator, Locale::VALID_LOCALE) != 'root') {
+                    return $collator;
+                }
+                unset($collator);
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Make a string upper case.
+ *
+ * @param  string $str Subject
+ * @return string Result
+ */
+function cms_strtoupper_ascii($str)
+{
+    global $ASCII_LCASE_MAP;
+    $ret = '';
+    foreach (str_split($str) as $c) {
+        $ret .= isset($ASCII_LCASE_MAP[$c]) ? $ASCII_LCASE_MAP[$c] : $c;
+    }
+    return $ret;
+}
+
+/**
+ * Make a string lower case.
+ *
+ * @param  string $str Subject
+ * @return string Result
+ */
+function cms_strtolower_ascii($str)
+{
+    global $ASCII_UCASE_MAP;
+    $ret = '';
+    foreach (str_split($str) as $c) {
+        $ret .= isset($ASCII_UCASE_MAP[$c]) ? $ASCII_UCASE_MAP[$c] : $c;
+    }
+    return $ret;
+}
+
+/**
+ * Make a string's first character lower case.
+ *
+ * @param  string $str Subject
+ * @return string Result
+ */
+function cms_lcfirst_ascii($str)
+{
+    return cms_strtolower_ascii(substr($str, 0, 1)) . substr($str, 1);
+}
+
+/**
+ * Make a string's first character upper case.
+ *
+ * @param  string $str Subject
+ * @return string Result
+ */
+function cms_ucfirst_ascii($str)
+{
+    return cms_strtoupper_ascii(substr($str, 0, 1)) . substr($str, 1);
+}
+
+/**
+ * Upper case the first character of each word in a string.
+ *
+ * @param  string $str Subject
+ * @return string Result
+ */
+function cms_ucwords_ascii($str)
+{
+    $starting_word = true;
+    global $ASCII_LCASE_MAP;
+    $ret = '';
+    foreach (str_split($str) as $c) {
+        $is_whitespace = (trim($c) == '');
+        if (($starting_word) && (!$is_whitespace)) {
+            $ret .= isset($ASCII_LCASE_MAP[$c]) ? $ASCII_LCASE_MAP[$c] : $c;
+            $starting_word = false;
+        } else {
+            if ($is_whitespace) {
+                $starting_word = true;
+            }
+            $ret .= $c;
+        }
+    }
     return $ret;
 }
 
@@ -1406,11 +1479,7 @@ function cms_mb_strnatcmp($str1, $str2)
  */
 function cms_mb_sort(&$array, $sort_flags = 0)
 {
-    _local_ctype_hack(true);
-
     usort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
-
-    _local_ctype_hack(false);
 }
 
 /**
@@ -1421,12 +1490,8 @@ function cms_mb_sort(&$array, $sort_flags = 0)
  */
 function cms_mb_rsort(&$array, $sort_flags = 0)
 {
-    _local_ctype_hack(true);
-
     cms_mb_sort($array, $sort_flags);
     $array = array_reverse($array);
-
-    _local_ctype_hack(false);
 }
 
 /**
@@ -1437,11 +1502,7 @@ function cms_mb_rsort(&$array, $sort_flags = 0)
  */
 function cms_mb_asort(&$array, $sort_flags = 0)
 {
-    _local_ctype_hack(true);
-
     uasort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
-
-    _local_ctype_hack(false);
 }
 
 /**
@@ -1452,12 +1513,8 @@ function cms_mb_asort(&$array, $sort_flags = 0)
  */
 function cms_mb_arsort(&$array, $sort_flags = 0)
 {
-    _local_ctype_hack(true);
-
     cms_mb_asort($array, $sort_flags);
     $array = array_reverse($array);
-
-    _local_ctype_hack(false);
 }
 
 /**
@@ -1468,11 +1525,7 @@ function cms_mb_arsort(&$array, $sort_flags = 0)
  */
 function cms_mb_ksort(&$array, $sort_flags = 0)
 {
-    _local_ctype_hack(true);
-
     uksort($array, ((($sort_flags & SORT_NATURAL) != 0) ? 'cms_mb_strnatcmp' : 'cms_mb_strcmp'));
-
-    _local_ctype_hack(false);
 }
 
 /**
@@ -1483,12 +1536,8 @@ function cms_mb_ksort(&$array, $sort_flags = 0)
  */
 function cms_mb_krsort(&$array, $sort_flags = 0)
 {
-    _local_ctype_hack(true);
-
     cms_mb_ksort($array, $sort_flags);
     $array = array_reverse($array);
-
-    _local_ctype_hack(false);
 }
 
 /**
@@ -1655,7 +1704,7 @@ function float_to_raw_string($num, $decs_wanted = 2, $only_needed_decs = false)
 }
 
 /**
- * Format the given float number as a nicely formatted string (using the locale). Inverted with float_unformat.
+ * Format the given float number as a nicely formatted string. Inverted with float_unformat.
  *
  * @param  float $val The value to format
  * @param  integer $decs_wanted The number of fractional digits
@@ -1664,11 +1713,7 @@ function float_to_raw_string($num, $decs_wanted = 2, $only_needed_decs = false)
  */
 function float_format($val, $decs_wanted = 2, $only_needed_decs = false)
 {
-    $locale = localeconv();
-    if ($locale['thousands_sep'] == '') {
-        $locale['thousands_sep'] = ',';
-    }
-    $str = number_format($val, $decs_wanted, $locale['decimal_point'], $locale['thousands_sep']);
+    $str = number_format($val, $decs_wanted, do_lang('locale_decimal_point'), do_lang('locale_thousands_sep'));
     $dot_pos = strpos($str, '.');
     $decs_here = ($dot_pos === false) ? 0 : (strlen($str) - $dot_pos - 1);
     if ($decs_here < $decs_wanted) {
@@ -1696,8 +1741,6 @@ function float_format($val, $decs_wanted = 2, $only_needed_decs = false)
  */
 function float_unformat($str, $includes_thousands_sep = true)
 {
-    $locale = localeconv();
-
     // Simplest case?
     if (preg_match('#^\d+$#', $str) != 0) { // E.g. "123"
         return floatval($str);
@@ -1717,10 +1760,10 @@ function float_unformat($str, $includes_thousands_sep = true)
 
     // Now it must e E.g. "123.456,789" or "123.456", or something from another language which uses other separators...
 
-    if ($locale['thousands_sep'] != '') {
-        $str = str_replace($locale['thousands_sep'], '', $str);
+    if (do_lang('locale_thousands_sep') != '') {
+        $str = str_replace(do_lang('locale_thousands_sep'), '', $str);
     }
-    $str = str_replace($locale['decimal_point'], '.', $str);
+    $str = str_replace(do_lang('locale_decimal_point'), '.', $str);
     return floatval($str);
 }
 
@@ -1732,14 +1775,7 @@ function float_unformat($str, $includes_thousands_sep = true)
  */
 function integer_format($val)
 {
-    static $locale = null;
-    if ($locale === null) {
-        $locale = localeconv();
-        if ($locale['thousands_sep'] == '') {
-            $locale['thousands_sep'] = ',';
-        }
-    }
-    return number_format(floatval($val), 0, $locale['decimal_point'], $locale['thousands_sep']);
+    return number_format(floatval($val), 0, do_lang('locale_decimal_point'), do_lang('locale_thousands_sep'));
 }
 
 /**
@@ -3270,8 +3306,8 @@ function browser_matches($code, $comcode = null)
         return $browser_matches_cache[$code];
     }
 
-    $browser = strtolower(get_browser_string());
-    $os = strtolower(get_os_string());
+    $browser = cms_strtolower_ascii(get_browser_string());
+    $os = cms_strtolower_ascii(get_os_string());
     $is_safari = strpos($browser, 'applewebkit') !== false;
     $is_chrome = strpos($browser, 'chrome/') !== false;
     $is_gecko = (strpos($browser, 'gecko') !== false) && !$is_safari;
@@ -3488,7 +3524,7 @@ function get_bot_type($agent = null)
         }
     }
 
-    $agent = strtolower($agent);
+    $agent = cms_strtolower_ascii($agent);
 
     global $BOT_MAP_CACHE, $SITE_INFO;
     if ($BOT_MAP_CACHE === null) {
@@ -3828,7 +3864,7 @@ function titleify($boring)
         $ret = preg_replace('#([/\\\\])#', ' ${1} ', $ret);
     }
 
-    $ret = ucwords(trim(str_replace('_', ' ', $ret)));
+    $ret = cms_ucwords_ascii(trim(str_replace('_', ' ', $ret)));
 
     $acronyms = [
         'CMS',

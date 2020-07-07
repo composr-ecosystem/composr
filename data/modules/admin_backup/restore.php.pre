@@ -12,6 +12,8 @@
 
 */
 
+/*EXTRA FUNCTIONS: strtolower*/
+
 global $IN_MINIKERNEL_VERSION;
 $IN_MINIKERNEL_VERSION = true;
 
@@ -276,7 +278,8 @@ function object_factory($class, $failure_ok = false, $parameters = [])
  */
 function cms_ini_set($var, $value)
 {
-    if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#', strtolower(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'))) != 0) {
+    $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+    if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#i', $blocked) != 0) {
         return false;
     }
 

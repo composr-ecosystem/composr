@@ -105,7 +105,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
         $this->rewrite_to_unicode_syntax($query);
 
         $results = @sqlsrv_query($connection, $query, [], ['Scrollable' => 'static', 'QueryTimeout' => $this->query_timeout]);
-        if (($results === false) && (strtoupper(substr(ltrim($query), 0, 12)) == 'INSERT INTO ') && ((strpos($query, '(id, ') !== false) || (strpos($query, '(_id, ') !== false))) {
+        if (($results === false) && (cms_strtoupper_ascii(substr(ltrim($query), 0, 12)) == 'INSERT INTO ') && ((strpos($query, '(id, ') !== false) || (strpos($query, '(_id, ') !== false))) {
             $pos = strpos($query, '(');
             $table_name = substr($query, 12, $pos - 13);
             if ((!multi_lang_content()) || (substr($table_name, -strlen('translate')) != 'translate')) {
@@ -115,7 +115,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
         if ($start != 0) {
             sqlsrv_fetch($results, SQLSRV_SCROLL_ABSOLUTE, $start - 1);
         }
-        if ((($results === false) || ((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true)) && (!$fail_ok)) {
+        if ((($results === false) || ((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true)) && (!$fail_ok)) {
             $err = serialize(sqlsrv_errors());
             if ((!running_script('upgrader')) && ((!get_mass_import_mode()) || (get_param_integer('keep_fatalistic', 0) != 0))) {
                 if ((!function_exists('do_lang')) || (do_lang('QUERY_FAILED', null, null, null, null, false) === null)) {
@@ -129,12 +129,12 @@ class Database_Static_sqlserver extends Database_super_sqlserver
             }
         }
 
-        if (((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results !== false) && ($results !== true)) {
+        if (((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results !== false) && ($results !== true)) {
             return $this->get_query_rows($results, $query, $start);
         }
 
         if ($get_insert_id) {
-            if (strtoupper(substr(ltrim($query), 0, 7)) == 'UPDATE ') {
+            if (cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'UPDATE ') {
                 return null;
             }
 

@@ -85,7 +85,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
         $hook_obs = find_all_hook_obs('systems', 'config_categories', 'Hook_config_categories_');
         foreach ($hook_obs as $hook => $hook_ob) {
             if ($hook_ob->is_enabled()) {
-                $categories[strtoupper($hook)] = do_lang('CONFIG_CATEGORY_' . strtoupper($hook));
+                $categories[cms_strtoupper_ascii($hook)] = do_lang('CONFIG_CATEGORY_' . cms_strtoupper_ascii($hook));
             }
         }
         cms_mb_asort($categories, SORT_NATURAL | SORT_FLAG_CASE);

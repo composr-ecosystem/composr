@@ -240,7 +240,7 @@ function output_ical($headers_and_exit = true)
                         if ($time2 !== null) {
                             echo "DTEND:" . date('Ymd', $time2) . (($event['e_end_hour'] === null) ? "" : ("T" . date('His', $time2))) . "\r\n";
                         }
-                        $recurrence_code = 'FREQ=' . strtoupper($parts[0]); // MONTHLY etc
+                        $recurrence_code = 'FREQ=' . cms_strtoupper_ascii($parts[0]); // MONTHLY etc
                         echo "RRULE:" . $recurrence_code;
                         if (strlen($parts[1]) != 1) {
                             echo ";INTERVAL=" . strval(strlen($parts[1]));
@@ -392,7 +392,7 @@ function ical_import($file_path)
         // Add missing event types
         if ($type_id === null) {
             require_code('calendar2');
-            $type_id = add_event_type(ucfirst($type), 'icons/calendar/general');
+            $type_id = add_event_type(cms_mb_ucwords($type), 'icons/calendar/general');
         }
 
         // Add event
@@ -502,7 +502,7 @@ function get_event_data_ical($event_nodes)
                         break;
 
                     case 'FREQ':
-                        $e_recurrence = strtolower(end($matches));
+                        $e_recurrence = cms_strtolower_ascii(end($matches));
                         break;
 
                     case 'INTERVAL':
@@ -524,7 +524,7 @@ function get_event_data_ical($event_nodes)
     }
 
     if (array_key_exists('CATEGORIES', $event_nodes)) {
-        $type = strtolower($event_nodes['CATEGORIES']);
+        $type = cms_mb_strtolower($event_nodes['CATEGORIES']);
     }
 
     // Check existency of category
@@ -534,7 +534,7 @@ function get_event_data_ical($event_nodes)
     }
     $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', ['id', 't_title']);
     foreach ($rows as $row) {
-        if (strtolower($type) == strtolower(get_translated_text($row['t_title']))) {
+        if (cms_mb_strtolower($type) == cms_mb_strtolower(get_translated_text($row['t_title']))) {
             $type_id = $row['id'];
         }
     }

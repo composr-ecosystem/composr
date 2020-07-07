@@ -193,7 +193,7 @@ class Hook_translation_google_translate
     protected function get_google_lang_code($in, &$errormsg = null)
     {
         $url = 'https://translation.googleapis.com/language/translate/v2/languages';
-        $ret = str_replace('_', '-', strtolower($in));
+        $ret = str_replace('_', '-', cms_strtolower_ascii($in));
 
         // Now check the language actually exists...
 

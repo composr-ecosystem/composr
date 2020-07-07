@@ -321,14 +321,14 @@ function cns_ldap_hash($cn, $password)
     }
     $type_pos = strpos($stored, '}');
     $type = substr($stored, 1, $type_pos - 1);
-    if ((strtolower($type) == 'crypt') && (strlen($stored) == 41)) {
+    if ((cms_strtolower_ascii($type) == 'crypt') && (strlen($stored) == 41)) {
         $type = 'md5crypt';
     }
-    if ((strtolower($type) == 'crypt') && (strlen($stored) == 45)) {
+    if ((cms_strtolower_ascii($type) == 'crypt') && (strlen($stored) == 45)) {
         $type = 'blowfish';
     }
 
-    switch (strtolower($type)) {
+    switch (cms_strtolower_ascii($type)) {
         case '':
             return $password;
         case 'crypt':
@@ -361,7 +361,7 @@ function ldap_get_login_string($cn)
         $login = $pre . $cn;
     } else {
         if (member_property() == 'sAMAccountName') {
-            $login = $cn . '@' . preg_replace('#^dc=#', '', str_replace(',dc=', '.', strtolower(get_option('ldap_base_dn'))));
+            $login = $cn . '@' . preg_replace('#^dc=#', '', str_replace(',dc=', '.', cms_strtolower_ascii(get_option('ldap_base_dn'))));
         } else {
             if (strpos($cn, '=') === false) {
                 $login = member_property() . '=' . $cn . ',' . member_search_qualifier() . get_option('ldap_base_dn');

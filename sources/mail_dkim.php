@@ -142,7 +142,7 @@ class DKIMSignature
         if (isset($options['signed_headers'])) {
             // lower case fields
             foreach ($options['signed_headers'] as $key => $value) {
-                $options['signed_headers'][$key] = strtolower($value);
+                $options['signed_headers'][$key] = cms_strtolower_ascii($value);
             }
 
             // delete the default fields if a custom list is provided, not merge
@@ -177,7 +177,7 @@ class DKIMSignature
                 // header value
                 $line_parts = explode(':', $line, 2);
 
-                $header_type = trim(strtolower($line_parts[0]));
+                $header_type = trim(cms_strtolower_ascii($line_parts[0]));
                 $header_value = trim($line_parts[1]);
 
                 if ((in_array($header_type, $this->options['signed_headers'])) || ($header_type == 'dkim-signature')) {
@@ -259,7 +259,7 @@ class DKIMSignature
                 // new header
                 if (!in_array($c, array("\r", "\n", "\t", ' '))) {
                     $h = explode(':', $line);
-                    $header_type = strtolower(trim($h[0]));
+                    $header_type = cms_strtolower_ascii(trim($h[0]));
 
                     // keep only signature headers
                     if (in_array($header_type, $this->options['signed_headers'])) {
@@ -305,7 +305,7 @@ class DKIMSignature
         foreach ($a_headers as $key => $line) {
             if (!empty($line)) {
                 $h = explode(':', $line);
-                $header_type = strtolower(trim($h[0]));
+                $header_type = cms_strtolower_ascii(trim($h[0]));
 
                 // keep only signature headers
                 if (in_array($header_type, $this->options['signed_headers'])) {

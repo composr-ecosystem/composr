@@ -159,7 +159,7 @@ function reprocess_url($url, $operation_base_url)
                 $new_url = $self_url . '&url=' . urlencode(static_evaluate_tempcode(protect_url_parameter($m_url)));
             }
 
-            if ((strtolower($m_type) == 'action') && (strpos($new_url, '?') !== false)) {
+            if ((cms_strtolower_ascii($m_type) == 'action') && (strpos($new_url, '?') !== false)) {
                 if (preg_match('#<form.*\smethod="get".*>#i', $m_to_replace) != 0) {
                     $extra_get_fields = [];
                     parse_str(preg_replace('#^.*\?#', '', $new_url), $extra_get_fields);

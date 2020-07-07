@@ -445,7 +445,7 @@ function typed_answer_is_correct($given_answer, $all_answers, $strict = false)
     if ($strict) {
         $filtered_given_answer = trim($given_answer);
     } else {
-        $filtered_given_answer = preg_replace('#[^\d\w]#', '', strtolower($given_answer));
+        $filtered_given_answer = preg_replace('#[^\d\w]#', '', cms_mb_strtolower($given_answer));
     }
     if ($filtered_given_answer == '') {
         return false;
@@ -457,7 +457,7 @@ function typed_answer_is_correct($given_answer, $all_answers, $strict = false)
         if ($strict) {
             $filtered_answer = trim(get_translated_text($a['q_answer_text']));
         } else {
-            $filtered_answer = preg_replace('#[^\d\w]#', '', strtolower(get_translated_text($a['q_answer_text'])));
+            $filtered_answer = preg_replace('#[^\d\w]#', '', cms_mb_strtolower(get_translated_text($a['q_answer_text'])));
         }
 
         if (get_translated_text($a['q_answer_text']) === $filtered_given_answer) {

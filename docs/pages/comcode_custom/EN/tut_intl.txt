@@ -9,7 +9,7 @@ Composr has great support for [concept]internationalisation[/concept], including
  - translation of text into different languages (text files)
  - translation of images into different languages (e.g. buttons with some text on)
  - different character sets (for example, Cyrillic)
- - different locales, for different numbering systems (for example, European comma and decimal-point difference)
+ - different locale formatting, for different writing systems
  - there is support for translating content into different languages
 
 [contents]decimal,lower-alpha[/contents]
@@ -167,6 +167,19 @@ Commonly non-English users will want to switch to a 24-hour clock for time. Here
 We define times with some different variations. This is because practically it isn't appropriate to try and use only one format across the entire system. The calendar may use time formats from [tt]global[/tt], but the rest of Composr will not use time formats from the calendar.
 
 [title="4"]Locales[/title]
+
+Locales are for:
+ - Number formatting (decimal points and digit grouping; for example, European comma and decimal-point difference)
+ - Date formatting
+ - Text sorting
+ - Upper/lower case conversion
+
+Note that any first-party Composr code actually does not rely on system locales, except for text sorting, so the locale settings make little direct difference.
+The reason for this is that locales are not reliable for a number of reasons:
+1) The one you want might not be installed on the server you are on
+2) Locales are not 'thread-safe' in PHP, meaning other users on a multi-threaded server can interfere with your locale processing inside your page requests
+3) Generally it's simpler that we bring the same kind of functionality through language packs
+However, third-party code you may integrate almost certain will make use of locales. We have a Health Check for detecting the server configuration described above in '2'.
 
 Setting the correct locale may be tricky. Different operating systems may use a number of different values, for example in English we list all these locales:
  - [tt]en-GB.UTF-8[/tt] -- British English, for systems that use hyphens and support a flag for utf-8 output

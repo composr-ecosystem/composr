@@ -500,13 +500,13 @@ class Hook_health_check_email extends Hook_Health_Check
 
                     fwrite($socket, "AUTH LOGIN\r\n");
                     $rcv = fread($socket, 1024);
-                    if (strtolower(substr($rcv, 0, 3)) == '334') {
+                    if (substr($rcv, 0, 3) == '334') {
                         fwrite($socket, base64_encode($username) . "\r\n");
                         $rcv = fread($socket, 1024);
-                        if ((strtolower(substr($rcv, 0, 3)) == '235') || (strtolower(substr($rcv, 0, 3)) == '334')) {
+                        if ((substr($rcv, 0, 3) == '235') || (substr($rcv, 0, 3) == '334')) {
                             fwrite($socket, base64_encode($password) . "\r\n");
                             $rcv = fread($socket, 1024);
-                            if (strtolower(substr($rcv, 0, 3)) == '235') {
+                            if (substr($rcv, 0, 3) == '235') {
                             } else {
                                 $error = do_lang('MAIL_ERROR_CONNECT_PASSWORD') . ' (' . str_replace($password, '*', $rcv) . ')';
                             }

@@ -415,7 +415,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             'cf_required' => do_lang_tempcode('REQUIRED'),
             'cf_order' => do_lang_tempcode('ORDER'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

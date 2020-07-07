@@ -305,7 +305,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
             'aggregate_type' => do_lang_tempcode('TYPE'),
             'add_time' => do_lang_tempcode('DATE'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

@@ -430,7 +430,7 @@ function step_1()
             $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));
         }
     }
-    if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')) {
+    if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
         $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions')))]));
     }
 
@@ -811,7 +811,7 @@ function step_4()
     $cookie_days = '120';
     $use_persistent = false;
     require_code('version');
-    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+    if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
         $db_site_host = '127.0.0.1';
     } else {
         $db_site_host = 'localhost';
@@ -987,7 +987,7 @@ function step_4()
     } else {
         $_forum_type = do_lang('FORUM_CLASS_' . preg_replace('#\d+$#', '', $forum_type), null, null, null, null, false);
         if ($_forum_type === null) {
-            $_forum_type = ucwords($forum_type);
+            $_forum_type = cms_ucwords_ascii($forum_type);
         }
         $forum_title = do_lang_tempcode('_FORUM_SETTINGS', escape_html($_forum_type));
     }
@@ -2680,7 +2680,8 @@ function object_factory($class, $failure_ok = false, $parameters = [])
  */
 function cms_ini_set($var, $value)
 {
-    if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#', strtolower(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'))) != 0) {
+    $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+    if (@preg_match('#(\s|,|^)ini_set(\s|$|,)#i', $blocked) != 0) {
         return false;
     }
 
@@ -3044,7 +3045,7 @@ function get_dir_contents($dir, $php = false)
         while (false !== ($file = readdir($_dir))) {
             if (($file != 'index.php') && ($file != '.htaccess') && ($file[0] != '.')) {
                 if ($php) {
-                    if (strtolower(substr($file, -4, 4)) == '.php') {
+                    if (cms_strtolower_ascii(substr($file, -4, 4)) == '.php') {
                         $file2 = substr($file, 0, strlen($file) - 4);
                         $out[$file2] = $dir;
                     }

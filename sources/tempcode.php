@@ -200,7 +200,7 @@ function missing_template_parameter($origin)
         return '';
     }
     list($template_name, $parameter) = ($origin === '') ? [do_lang('UNKNOWN'), do_lang('UNKNOWN')] : explode(':', $origin, 2);
-    if (strtolower($template_name) !== $template_name && (!is_file(get_file_base() . '/themes/default/templates/' . $template_name . '.tpl'))) {
+    if (cms_strtolower_ascii($template_name) !== $template_name && (!is_file(get_file_base() . '/themes/default/templates/' . $template_name . '.tpl'))) {
         return ''; // Some kind of custom template, will be error prone
     }
     trigger_error(do_lang('MISSING_TEMPLATE_PARAMETER', $parameter, ($template_name === '') ? '???' : $template_name), E_USER_NOTICE);
@@ -227,14 +227,10 @@ function build_closure_tempcode($type, $name, $parameters, $escaping = [])
 
     $_type = strval($type);
 
-    if ((function_exists('ctype_alnum')) && (ctype_alnum(str_replace(['_', '-'], ['', ''], $name)))) {
-        $_name = $name;
+    if (preg_match('#^[\w\-]*$#', $name) === 0) {
+        $_name = php_addslashes_twice($name);
     } else {
-        if (preg_match('#^[\w\-]*$#', $name) === 0) {
-            $_name = php_addslashes_twice($name);
-        } else {
-            $_name = $name;
-        }
+        $_name = $name;
     }
 
     static $generator_base = null;
@@ -561,7 +557,7 @@ function camel_case_array_keys($arr)
         }
 
         $leading_underscore = $k[0] === '_';
-        $k = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', strtolower($k))))); // camelCase the key
+        $k = cms_lcfirst_ascii(str_replace(' ', '', cms_ucwords_ascii(str_replace('_', ' ', cms_strtolower_ascii($k))))); // camelCase the key
 
         if ($leading_underscore) {
             $k = '_' . $k;
@@ -827,7 +823,7 @@ function do_template($codename, $parameters = [], $lang = null, $light_error = f
     }
 
     if ($GLOBALS['SEMI_DEV_MODE']) {
-        if (($codename === strtolower($codename)) && ($directory === 'templates')) {
+        if (($codename === cms_strtolower_ascii($codename)) && ($directory === 'templates')) {
             fatal_exit('Template names should be in upper case, and the files should be stored in upper case (' . $codename . ').');
         }
 

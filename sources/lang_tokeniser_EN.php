@@ -18,8 +18,6 @@
  * @package    search
  */
 
-/*EXTRA FUNCTIONS: ctype_alnum*/
-
 /**
  * Reference implementation of language tokeniser, coded for English.
  *
@@ -72,7 +70,6 @@ class LangTokeniser_EN
         $current_search_token = '';
         $num_tokens_found = 0;
 
-        $has_ctype = function_exists('ctype_alnum');
         $utf = (get_charset() == 'utf-8');
         $word_char_regexp = '#\w#' . ($utf ? 'u' : '');
 
@@ -103,7 +100,7 @@ class LangTokeniser_EN
                     }
                 }
 
-                if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
+                if (preg_match($word_char_regexp, $c) != 0) {
                     $current_search_token = $c;
                 }
             } else {
@@ -122,14 +119,14 @@ class LangTokeniser_EN
                     } else {
                         $next_c = $query[$i + 1];
                     }
-                    if ((($has_ctype) && (ctype_alnum($next_c))) || (preg_match($word_char_regexp, $next_c) != 0)) {
+                    if (preg_match($word_char_regexp, $next_c) != 0) {
                         $current_search_token .= $c . $next_c;
                         $i++;
                         continue;
                     }
                 }
 
-                if ((($has_ctype) && (ctype_alnum($c))) || (preg_match($word_char_regexp, $c) != 0)) {
+                if (preg_match($word_char_regexp, $c) != 0) {
                     $current_search_token .= $c;
                 } elseif (!$in_quotes) {
                     $this->finish_search_token($fuzzy_and, $and, $not, $in_quotes, $operator, $current_search_token, $is_singular_ngram, $num_tokens_found, $max_tokens);

@@ -470,13 +470,13 @@ class Module_downloads
 
         // Sorting
         $sort = get_param_string('sort', get_option('downloads_default_sort_order'), INPUT_FILTER_GET_COMPLEX);
-        if ((strtoupper($sort) != strtoupper('title ASC')) && (strtoupper($sort) != strtoupper('title DESC'))
-            && (strtoupper($sort) != strtoupper('file_size ASC')) && (strtoupper($sort) != strtoupper('file_size DESC'))
-            && (strtoupper($sort) != strtoupper('num_downloads DESC'))
-            && (strtoupper($sort) != strtoupper('add_date DESC')) && (strtoupper($sort) != strtoupper('add_date ASC'))
-            && (strtoupper($sort) != strtoupper('compound_rating DESC')) && (strtoupper($sort) != strtoupper('compound_rating ASC'))
-            && (strtoupper($sort) != strtoupper('average_rating DESC')) && (strtoupper($sort) != strtoupper('average_rating ASC'))
-            && (strtoupper($sort) != strtoupper('fixed_random ASC'))
+        if ((cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('title ASC')) && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('title DESC'))
+            && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('file_size ASC')) && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('file_size DESC'))
+            && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('num_downloads DESC'))
+            && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('add_date DESC')) && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('add_date ASC'))
+            && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('compound_rating DESC')) && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('compound_rating ASC'))
+            && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('average_rating DESC')) && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('average_rating ASC'))
+            && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('fixed_random ASC'))
         ) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
@@ -605,7 +605,7 @@ class Module_downloads
         $rows = $GLOBALS['SITE_DB']->query('SELECT p.name,p.category_id FROM ' . get_table_prefix() . 'download_downloads p' . $privacy_join . ' WHERE ' . (addon_installed('unvalidated') ? 'validated=1 AND ' : '') . '(' . $sql_select . ')' . $privacy_where . ' ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'), null, 0, false, true, ['name' => 'SHORT_TRANS']);
         foreach ($rows as $row) {
             $download_name = get_translated_text($row['name']);
-            $letter = strtoupper(substr($download_name, 0, 1));
+            $letter = cms_mb_strtoupper(cms_mb_substr($download_name, 0, 1));
 
             if (!may_enter_download_category(get_member(), $row['category_id'])) {
                 continue;

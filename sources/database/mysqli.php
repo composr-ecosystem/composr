@@ -171,7 +171,7 @@ class Database_Static_mysqli extends Database_super_mysql
         }
 
         if ($get_insert_id) {
-            if (strtoupper(substr(ltrim($query), 0, 7)) === 'UPDATE ') {
+            if (cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) === 'UPDATE ') {
                 return mysqli_affected_rows($db_link);
             }
             $ins = mysqli_insert_id($db_link);
@@ -260,11 +260,6 @@ class Database_Static_mysqli extends Database_super_mysql
      */
     public function escape_string($string)
     {
-        if (function_exists('ctype_alnum')) {
-            if (ctype_alnum($string)) {
-                return $string; // No non-trivial characters
-            }
-        }
         if (preg_match('#[^a-zA-Z0-9\.]#', $string) === 0) {
             return $string; // No non-trivial characters
         }

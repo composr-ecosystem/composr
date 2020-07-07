@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: strftime*/
+/*EXTRA FUNCTIONS: strftime|ucwords*/
 
 // NB: Make sure to update the version in minikernel.php too if you add new common functions or change behaviours
 
@@ -422,12 +422,13 @@ function init__global2()
 
     // Register Internationalisation settings
     @header('Content-Type: text/html; charset=' . get_charset());
-    setlocale(LC_ALL, explode(',', do_lang('locale')));
-    if (substr(@strftime('%M'), 0, 2) == '??') { // Windows may do this because it can't output a utf-8 character set, so gets mangled to question marks by PHP
-        setlocale(LC_ALL, explode(',', do_lang('locale', null, null, null, fallback_lang())));
-    }
-    if (do_lang('locale_ctype_hack') == '1') {
-        setlocale(LC_CTYPE, explode(',', do_lang('locale', null, null, null, fallback_lang())));
+    $locale_str = do_lang('locale');
+    if ($locale_str != '') {
+        $locale_sections = explode(';', $locale_str);
+        foreach ($locale_sections as $locale_section) {
+            $parts = explode(':', $locale_section, 2);
+            setlocale(@constant($parts[0]), explode(',', $parts[1]));
+        }
     }
 
     // Check RBLs
@@ -866,7 +867,7 @@ function get_base_url_hostname()
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['base_url'])) {
-        return strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+        return parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
     }
     if (!empty($_SERVER['HTTP_HOST'])) {
         return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
@@ -887,7 +888,7 @@ function get_request_hostname()
     }
     global $SITE_INFO;
     if (!empty($SITE_INFO['base_url'])) {
-        return strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+        return parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
     }
     return gethostname();
 }
@@ -907,7 +908,7 @@ function get_domain()
     if (empty($ret)) {
         // Derive from base URL
         if (!empty($SITE_INFO['base_url'])) {
-            $ret = strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+            $ret = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
         }
     }
     if (empty($ret)) {
@@ -1293,7 +1294,7 @@ function composr_error_handler($errno, $errstr, $errfile, $errline)
                     syslog($syslog_type, $php_error_label);
                 }
                 if (php_function_allowed('error_log')) {
-                    @error_log('PHP ' . ucwords($type) . ': ' . $php_error_label, 0);
+                    @error_log('PHP ' . (function_exists('cms_ucwords_ascii') ? cms_ucwords_ascii($type) : ucwords($type)) . ': ' . $php_error_label, 0);
                 }
 
                 critical_error('EMERGENCY', $errstr . escape_html(' [' . $errfile . ' at ' . strval($errline) . ']'));

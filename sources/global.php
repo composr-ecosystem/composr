@@ -12,6 +12,8 @@
 
 */
 
+/*EXTRA FUNCTIONS: strtoupper|strtolower*/
+
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
@@ -143,18 +145,10 @@ function require_code($codename, $light_exit = false, $has_custom = null)
 
                 call_included_code($path_custom, $codename, $light_exit); // Include our custom
 
-                $has_upper_case_function_name = false;
                 $functions_diff = [];
                 foreach ($possible_new_functions as $possible_new_function) {
                     if (function_exists($possible_new_function)) {
                         $functions_diff[] = $possible_new_function;
-                        if (function_exists('ctype_lower')) {
-                            if (!ctype_lower($possible_new_function)) {
-                                $has_upper_case_function_name = true;
-                            }
-                        } else {
-                            $has_upper_case_function_name = true;
-                        }
                     }
                 }
                 $classes_diff = [];
@@ -166,8 +160,8 @@ function require_code($codename, $light_exit = false, $has_custom = null)
 
                 $pure = true; // We will set this to false if it does not have all functions the main one has. If it does have all functions we know we should not run the original init, as it will almost certainly just have been the same code copy&pasted through.
                 $overlaps = false;
-                $strpos_func = $has_upper_case_function_name ? 'stripos' : 'strpos';
-                $str_replace_func = $has_upper_case_function_name ? 'str_ireplace' : 'str_replace';
+                $strpos_func = 'strpos';
+                $str_replace_func = 'str_replace';
                 foreach ($functions_diff as $function) { // Go through override's functions and make sure original doesn't have them: rename original's to non_overridden__ equivs.
                     if ($strpos_func($orig, 'function ' . $function . '(') !== false) { // NB: If this fails, it may be that "function\t" is in the file (you can't tell with a three-width proper tab)
                         $orig = $str_replace_func('function ' . $function . '(', 'function non_overridden__' . $function . '(', $orig);
@@ -177,11 +171,11 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                     }
                 }
                 foreach ($classes_diff as $class) {
-                    if (strtolower(substr($class, 0, 6)) === 'module') {
-                        $class = ucfirst($class);
+                    if (cms_strtolower_ascii(substr($class, 0, 6)) === 'module') {
+                        $class = cms_ucfirst_ascii($class);
                     }
-                    if (strtolower(substr($class, 0, 4)) === 'hook') {
-                        $class = ucfirst($class);
+                    if (cms_strtolower_ascii(substr($class, 0, 4)) === 'hook') {
+                        $class = cms_ucfirst_ascii($class);
                     }
 
                     if (strpos($orig, 'class ' . $class) !== false) {
@@ -448,7 +442,7 @@ function cms_error_get_last()
             break;
     }
 
-    $ret = '<strong>' . strtoupper($type) . '</strong> [' . strval($error['type']) . '] ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . strval($error['line']);
+    $ret = '<strong>' . (function_exists('cms_strtoupper_ascii') ? cms_strtoupper_ascii($type) : strtoupper($type)) . '</strong> [' . strval($error['type']) . '] ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . strval($error['line']);
     return $ret;
 }
 
@@ -543,7 +537,8 @@ function php_function_allowed($function)
             return false;
         }
     }
-    $cache[$function] = (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#', strtolower(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'))) == 0);
+    $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+    $cache[$function] = (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#i', $blocked) == 0);
     return $cache[$function];
 }
 
@@ -615,10 +610,6 @@ function get_custom_file_base()
  */
 function filter_naughty($in, $preg = false)
 {
-    if ((function_exists('ctype_alnum')) && (ctype_alnum($in))) {
-        return $in;
-    }
-
     if (strpos($in, "\0") !== false) {
         log_hack_attack_and_exit('PATH_HACK');
     }
@@ -646,9 +637,6 @@ function filter_naughty($in, $preg = false)
  */
 function filter_naughty_harsh($in, $preg = false)
 {
-    if ((function_exists('ctype_alnum')) && (ctype_alnum($in))) {
-        return $in;
-    }
     if (preg_match('#^[' . URL_CONTENT_REGEXP . ']*$#', $in) !== 0) {
         return $in;
     }

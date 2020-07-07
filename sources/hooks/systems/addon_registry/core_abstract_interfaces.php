@@ -505,7 +505,7 @@ class Hook_addon_registry_core_abstract_interfaces
                 $traces[] = [
                     'LINE' => $value1,
                     'FILE' => lorem_phrase(),
-                    'KEY' => ucfirst($value1),
+                    'KEY' => cms_ucfirst_ascii($value1),
                     'VALUE' => lorem_sentence(),
                 ];
             }

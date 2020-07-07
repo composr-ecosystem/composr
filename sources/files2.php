@@ -638,7 +638,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
             'cgi',
             'fcgi',
         ];
-        if ((in_array($ext, $dangerous_code_types)) || (strtolower($name) == '.htaccess')) {
+        if ((in_array($ext, $dangerous_code_types)) || (cms_strtolower_ascii($name) == '.htaccess')) {
             if ($file_to_delete !== null) {
                 unlink($file_to_delete);
             }
@@ -651,7 +651,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
 
     if ($_types != '') {
         foreach ($types as $val) {
-            if (strtolower(trim($val)) == $ext) {
+            if (cms_strtolower_ascii(trim($val)) == $ext) {
                 return true;
             }
         }

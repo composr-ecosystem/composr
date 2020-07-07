@@ -40,7 +40,7 @@ class _tracker_categories_test_set extends cms_test_case
         $categories = json_decode($_categories, true);
         $addons = find_all_hooks('systems', 'addon_registry');
         foreach ($categories as $category) {
-            if (strtolower($category) != $category) {
+            if (cms_strtolower_ascii($category) != $category) {
                 continue; // Only lower case must correspond to addons
             }
 

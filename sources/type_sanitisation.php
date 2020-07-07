@@ -35,10 +35,6 @@ function init__type_sanitisation()
          */
         function is_alphanumeric($string, $strict = false)
         {
-            if ((function_exists('ctype_alnum')) && (ctype_alnum($string))) {
-                return true;
-            }
-
             if ($strict) {
                 return preg_match('#^[\w\-]*$#', $string) != 0;
             }

@@ -211,13 +211,13 @@ abstract class Standard_crud_module
         if ($top_level) {
             // Load lang file if it exists
             $this->module_type = get_class($this);
-            if (strtolower(substr($this->module_type, 0, 11)) == 'module_cms_') {
+            if (cms_strtolower_ascii(substr($this->module_type, 0, 11)) == 'module_cms_') {
                 $this->module_type = substr($this->module_type, 11);
             }
-            if (strtolower(substr($this->module_type, 0, 13)) == 'module_admin_') {
+            if (cms_strtolower_ascii(substr($this->module_type, 0, 13)) == 'module_admin_') {
                 $this->module_type = substr($this->module_type, 13);
             }
-            if (strtolower(substr($this->module_type, 0, 7)) == 'module_') {
+            if (cms_strtolower_ascii(substr($this->module_type, 0, 7)) == 'module_') {
                 $this->module_type = substr($this->module_type, 7);
             }
             if (substr($this->module_type, 0, 4) == 'cns_') {
@@ -1078,7 +1078,7 @@ abstract class Standard_crud_module
             }
         }
 
-        $select_field = ($this->orderer !== null) ? $this->orderer : ($this->table_prefix . strtolower($this->select_name));
+        $select_field = ($this->orderer !== null) ? $this->orderer : ($this->table_prefix . cms_strtolower_ascii($this->select_name));
 
         $table_raw = (($this->table === null) ? $this->module_type : $this->table);
         $table = $table_raw . ' r';

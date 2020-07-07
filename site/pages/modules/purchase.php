@@ -1383,7 +1383,7 @@ class Module_purchase
             $parent_txn_id = '';
             $is_subscription = ($details['type'] == PRODUCT_SUBSCRIPTION);
             if ($is_subscription) {
-                $period = strtolower(strval($details['type_special_details']['length']) . ' ' . $details['type_special_details']['length_units']);
+                $period = cms_strtolower_ascii(strval($details['type_special_details']['length']) . ' ' . $details['type_special_details']['length_units']);
             } else {
                 $period = '';
             }

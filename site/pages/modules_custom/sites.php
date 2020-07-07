@@ -477,7 +477,7 @@ class Module_sites
             warn_exit('This requires MySQL');
         }
 
-        $codename = strtolower(post_param_string('codename'));
+        $codename = cms_mb_strtolower(post_param_string('codename'));
         $name = post_param_string('name', '');
         $email_address = post_param_string('email');
         $description = post_param_string('description', '');

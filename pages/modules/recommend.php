@@ -454,7 +454,7 @@ class Module_recommend
                     $email_field_index = null;
                     foreach ($possible_email_fields as $field) {
                         foreach ($spreadsheet_header_line_fields as $i => $header_field) {
-                            if (strtolower($header_field) == strtolower($field)) {
+                            if (cms_strtolower_ascii($header_field) == cms_strtolower_ascii($field)) {
                                 $email_field_index = $i;
                                 $success_read = true;
                                 break 2;
@@ -475,7 +475,7 @@ class Module_recommend
                         $name_field_index = null;
                         foreach ($possible_name_fields as $field) {
                             foreach ($spreadsheet_header_line_fields as $i => $header_field) {
-                                if ((strtolower($header_field) == strtolower($field)) && ($i != $email_field_index)) {
+                                if ((cms_strtolower_ascii($header_field) == cms_strtolower_ascii($field)) && ($i != $email_field_index)) {
                                     $name_field_index = $i;
                                     break 2;
                                 }
@@ -501,7 +501,7 @@ class Module_recommend
                             }
 
                             $found_email_address = $spreadsheet_line[$email_field_index];
-                            $found_name = ucwords($spreadsheet_line[$name_field_index]);
+                            $found_name = cms_mb_ucwords($spreadsheet_line[$name_field_index]);
 
                             if (is_email_address($found_email_address)) {
                                 // Add to the list what we've found

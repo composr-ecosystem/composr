@@ -78,7 +78,7 @@ function build_news_sitemap()
                             <news:news>
                                         <news:publication>
                                                         <news:name>' . xmlentities(get_site_name()) . '</news:name>
-                                                        <news:language>' . xmlentities(strtolower(get_site_default_lang())) . '</news:language>
+                                                        <news:language>' . xmlentities(cms_strtolower_ascii(get_site_default_lang())) . '</news:language>
                                         </news:publication>
             ');
             if (!$has_guest_category_access || !$has_guest_page_access) {

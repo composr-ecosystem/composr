@@ -271,7 +271,7 @@ class Module_cms_calendar extends Standard_crud_module
         if (($sortable == 'e_start_year,e_start_month,e_start_day,e_start_hour,e_start_minute') && ($sort_order == 'DESC')) {
             $sortable = 'e_start_year DESC,e_start_month DESC,e_start_day DESC,e_start_hour DESC,e_start_minute';
         } else {
-            if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
                 log_hack_attack_and_exit('ORDERBY_HACK');
             }
         }
@@ -1459,7 +1459,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
         $sortables = [
             't_title' => do_lang_tempcode('TITLE'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

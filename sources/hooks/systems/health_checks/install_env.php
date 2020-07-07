@@ -54,6 +54,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         $this->process_checks_section('testPCRE', 'PCRE settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSELinux', 'SELinux settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testUmask', 'Umask settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testLocaleStability', 'Locale stability', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
     }
@@ -626,5 +627,25 @@ class Hook_health_check_install_env extends Hook_Health_Check
         @unlink($path);
 
         return [$ok, $perms, $dir_perms];
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    protected function testLocaleStability($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        $current_locale = setlocale(LC_ALL, '0');
+        setlocale(LC_ALL, 'tr_TR');
+        $set_locale = setlocale(LC_ALL, '0');
+        setlocale(LC_ALL, $current_locale);
+
+        $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Non-threaded mode of PHP on a server with Turkish locale');
     }
 }

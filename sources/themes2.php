@@ -290,7 +290,7 @@ function _get_template_files_list($base_dir, $subdir, $suffix)
         // Find all the themes
         $files_list = [];
         while (false !== ($file = readdir($_dir))) {
-            if (strtolower(substr($file, -strlen($suffix))) == $suffix) {
+            if (cms_strtolower_ascii(substr($file, -strlen($suffix))) == $suffix) {
                 $files_list[$file] = $base_dir . '/themes/' . $subdir . '/' . $file;
             }
         }
@@ -628,7 +628,7 @@ function check_form_field_image($name, $val, $delete_on_error = null)
                     } else {
                         $image_size = $image_size_cache[$val];
                     }
-                    if (in_array(strtolower($restriction), ['minaspectratio', 'maxaspectratio'])) {
+                    if (in_array(cms_strtolower_ascii($restriction), ['minaspectratio', 'maxaspectratio'])) {
                         $matches = [];
                         if (preg_match('#^([\d\.]+):([\d\.]+)$#', $attributes['embed'], $matches) != 0) {
                             $_embed = float_to_raw_string(floatval($matches[1]) / floatval($matches[2]), 10, true);
@@ -636,7 +636,7 @@ function check_form_field_image($name, $val, $delete_on_error = null)
                             $_embed = $attributes['embed'];
                         }
                     }
-                    if (in_array(strtolower($restriction), ['maxfilesize'])) {
+                    if (in_array(cms_strtolower_ascii($restriction), ['maxfilesize'])) {
                         $matches = [];
                         if (preg_match('#^([\d\.]+)\s*B?$#i', $attributes['embed'], $matches) != 0) {
                             $_embed = strval(intval(round(floatval($matches[1]))));
@@ -649,7 +649,7 @@ function check_form_field_image($name, $val, $delete_on_error = null)
                         }
                     }
 
-                    switch (strtolower($restriction)) {
+                    switch (cms_strtolower_ascii($restriction)) {
                         case 'minwidth':
                             if (($image_size[0] !== null) && ($image_size[0] < intval($attributes['embed']))) {
                                 if ($delete_on_error !== null) {
@@ -741,7 +741,7 @@ function check_form_field_image($name, $val, $delete_on_error = null)
                             break;
 
                         case 'forcefileextension':
-                            if (!in_array($image_size[3], array_map('strtolower', array_map('trim', explode(',', str_replace('.', '', $attributes['embed'])))))) {
+                            if (!in_array($image_size[3], array_map('cms_strtolower_ascii', array_map('trim', explode(',', str_replace('.', '', $attributes['embed'])))))) {
                                 if ($delete_on_error !== null) {
                                     unlink($delete_on_error);
                                 }
@@ -963,7 +963,7 @@ function _get_all_image_ids_type(&$ids, $dir, $type, $recurse, $dirs_only, $skip
             $is_dir = is_dir($path);
 
             if ($is_dir) {
-                if (($recurse) && (!should_ignore_file($file, IGNORE_ACCESS_CONTROLLERS)) && ((strlen($file) != 2) || (strtoupper($file) != $file))) {
+                if (($recurse) && (!should_ignore_file($file, IGNORE_ACCESS_CONTROLLERS)) && ((strlen($file) != 2) || (cms_strtoupper_ascii($file) != $file))) {
                     $type_path = $type . (($type != '') ? '/' : '');
 
                     if ($dirs_only) {
@@ -1038,7 +1038,7 @@ function get_image_paths($base_url, $base_path)
                         $this_url = cms_rawurlrecode($base_url . rawurlencode($file));
                         $out[$this_path] = $this_url;
                     }
-                } elseif ((strlen($file) != 2) || (strtoupper($file) != $file)) {
+                } elseif ((strlen($file) != 2) || (cms_strtoupper_ascii($file) != $file)) {
                     $out = array_merge($out, get_image_paths($base_url . $file . '/', $base_path . $file . '/'));
                 }
             }
@@ -1082,7 +1082,7 @@ function get_all_image_codes($base_path, $search_under, $recurse = true)
                         $short_path = ($search_under == '') ? $_file : ($search_under . '/' . $_file);
                         $out[$short_path] = 1;
                     }
-                } elseif ((strlen($file) != 2) || (strtoupper($file) != $file)) {
+                } elseif ((strlen($file) != 2) || (cms_strtoupper_ascii($file) != $file)) {
                     if ($recurse) {
                         $out += get_all_image_codes($base_path, $search_under . '/' . $file);
                     }

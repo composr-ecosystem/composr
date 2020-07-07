@@ -41,7 +41,7 @@ class Hook_cns_auth_smf
                 return do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
             }
         } else {
-            $username = strtolower(post_param_string('username', null, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES)); //prepare inputted username
+            $username = cms_mb_strtolower(post_param_string('username', null, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES)); // prepare inputted username
             $password_given = strtr(post_param_string('password', '', INPUT_FILTER_NONE), array_flip(get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES)) + ['&#039;' => '\'', '&nbsp;' => ' ']); //prepare inputted password
 
             if (sha1($username . $password_given) != $row['m_pass_hash_salted']) {

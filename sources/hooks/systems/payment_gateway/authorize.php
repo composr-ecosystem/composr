@@ -855,7 +855,7 @@ class Hook_payment_gateway_authorize
         $text = $this->_substring_between($response, '<text>', '</text>'); // in <message>
         $subscription_id = $this->_substring_between($response, '<subscriptionId>', '</subscriptionId>');
 
-        return [strtoupper($result_code), $code, $text, $subscription_id];
+        return [cms_strtoupper_ascii($result_code), $code, $text, $subscription_id];
     }
 
     /**

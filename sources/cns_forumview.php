@@ -135,7 +135,7 @@ function cns_render_forumview($id, $forum_info, $current_filter_cat, $max, $star
             // Was there a question answering attempt?
             $answer = post_param_string('answer', null);
             if ($answer !== null) {
-                if (strtolower(trim($answer)) == strtolower(trim($details['answer']))) { // They got it right
+                if (cms_mb_strtolower(trim($answer)) == cms_mb_strtolower(trim($details['answer']))) { // They got it right
                     if (!is_guest()) {
                         $GLOBALS['FORUM_DB']->query_insert('f_forum_intro_member', ['i_forum_id' => $id, 'i_member_id' => get_member()]);
                     } else {

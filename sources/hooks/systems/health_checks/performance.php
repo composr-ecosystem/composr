@@ -168,7 +168,7 @@ class Hook_health_check_performance extends Hook_Health_Check
                 continue;
             }
 
-            if (strtolower($key) == strtolower('Set-Cookie')) {
+            if (cms_strtolower_ascii($key) == cms_strtolower_ascii('Set-Cookie')) {
                 if (is_string($vals)) {
                     $vals = [$vals];
                 }
@@ -252,7 +252,7 @@ class Hook_health_check_performance extends Hook_Health_Check
                     $vals = [$vals];
                 }
 
-                switch (strtolower($key)) {
+                switch (cms_strtolower_ascii($key)) {
                     case 'content-encoding':
                         foreach ($vals as $val) {
                             if ($val == 'gzip') {

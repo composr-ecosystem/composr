@@ -1396,12 +1396,12 @@ function do_command_help($command, $options, $parameters)
         if ($option_name == 'h') {
             $_options['-h'] = do_lang('GENERAL_HELP');
         } else {
-            $_options['-' . $option_name] = do_lang('CMD_' . strtoupper($command) . '_HELP_' . strtoupper($option_name));
+            $_options['-' . $option_name] = do_lang('CMD_' . cms_strtoupper_ascii($command) . '_HELP_' . cms_strtoupper_ascii($option_name));
         }
     }
 
     foreach (array_keys($parameters) as $parameter_number) {
-        $_parameter = do_lang('CMD_' . strtoupper($command) . '_HELP_PARAM_' . strval($parameter_number));
+        $_parameter = do_lang('CMD_' . cms_strtoupper_ascii($command) . '_HELP_PARAM_' . strval($parameter_number));
         if ($_parameter === null) {
             continue;
         }
@@ -1422,7 +1422,7 @@ function do_command_help($command, $options, $parameters)
 
     return do_template('COMMANDR_HELP', [
         '_GUID' => '6abdbac52ae2a63f219f5d2e44687bb9',
-        'INTRODUCTION' => do_lang_tempcode('CMD_' . strtoupper($command) . '_HELP'),
+        'INTRODUCTION' => do_lang_tempcode('CMD_' . cms_strtoupper_ascii($command) . '_HELP'),
         'OPTIONS' => $_options,
         'PARAMETERS' => $_parameters,
     ]);

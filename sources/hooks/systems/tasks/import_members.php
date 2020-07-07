@@ -122,7 +122,7 @@ class Hook_task_import_members
                     $_surname = preg_replace('#[^[' . URL_CONTENT_REGEXP . ']]#', '', trim(cms_preg_replace_safe('#\s*[A-Z\d][A-Z\d]+#', '', $surname)));
 
                     // Put it together
-                    $line['Username'] = ucfirst($_forename) . ucfirst($_surname) . $year;
+                    $line['Username'] = cms_mb_ucfirst($_forename) . cms_mb_ucfirst($_surname) . $year;
 
                     if ($line['Username'] == '') {
                         continue;
@@ -215,7 +215,7 @@ class Hook_task_import_members
                 $dob_month = null;
                 $dob_year = null;
             }
-            $validated = array_key_exists('Validated', $line) ? ((strtoupper($line['Validated']) == 'YES' || $line['Validated'] == '1' || strtoupper($line['Validated']) == 'Y' || strtoupper($line['Validated']) == 'ON') ? 1 : 0) : 1;
+            $validated = array_key_exists('Validated', $line) ? ((cms_strtoupper_ascii($line['Validated']) == 'YES' || $line['Validated'] == '1' || cms_strtoupper_ascii($line['Validated']) == 'Y' || cms_strtoupper_ascii($line['Validated']) == 'ON') ? 1 : 0) : 1;
             if (array_key_exists('Join time', $line)) {
                 if (strpos($line['Join time'], '-') !== false) {
                     $parts = explode('-', $line['Join time']);
@@ -252,9 +252,9 @@ class Hook_task_import_members
             }
             $signature = array_key_exists('Signature', $line) ? $line['Signature'] : '';
             if ((array_key_exists('Banned', $line)) && ($line['Banned'] != '')) {
-                if (strtoupper($line['Banned']) == 'YES' || $line['Banned'] == '1' || strtoupper($line['Banned']) == 'Y' || strtoupper($line['Banned']) == 'ON') {
+                if (cms_strtoupper_ascii($line['Banned']) == 'YES' || $line['Banned'] == '1' || cms_strtoupper_ascii($line['Banned']) == 'Y' || cms_strtoupper_ascii($line['Banned']) == 'ON') {
                     $is_perm_banned = '1';
-                } elseif (strtoupper($line['Banned']) == 'NO' || $line['Banned'] == '0' || strtoupper($line['Banned']) == 'N' || strtoupper($line['Banned']) == 'OFF') {
+                } elseif (cms_strtoupper_ascii($line['Banned']) == 'NO' || $line['Banned'] == '0' || cms_strtoupper_ascii($line['Banned']) == 'N' || cms_strtoupper_ascii($line['Banned']) == 'OFF') {
                     $is_perm_banned = '0';
                 } else {
                     $is_perm_banned = $line['Banned'];
@@ -262,10 +262,10 @@ class Hook_task_import_members
             } else {
                 $is_perm_banned = '0';
             }
-            $reveal_age = array_key_exists('Reveal age', $line) ? ((strtoupper($line['Reveal age']) == 'YES' || $line['Reveal age'] == '1' || strtoupper($line['Reveal age']) == 'Y' || strtoupper($line['Reveal age']) == 'ON') ? 1 : 0) : 0;
+            $reveal_age = array_key_exists('Reveal age', $line) ? ((cms_strtoupper_ascii($line['Reveal age']) == 'YES' || $line['Reveal age'] == '1' || cms_strtoupper_ascii($line['Reveal age']) == 'Y' || cms_strtoupper_ascii($line['Reveal age']) == 'ON') ? 1 : 0) : 0;
             $language = array_key_exists('Language', $line) ? $line['Language'] : '';
-            $allow_emails = array_key_exists('Accept member e-mails', $line) ? ((strtoupper($line['Accept member e-mails']) == 'YES' || $line['Accept member e-mails'] == '1' || strtoupper($line['Accept member e-mails']) == 'Y' || strtoupper($line['Accept member e-mails']) == 'ON') ? 1 : 0) : 0;
-            $allow_emails_from_staff = array_key_exists('Opt-in', $line) ? ((strtoupper($line['Opt-in']) == 'YES' || $line['Opt-in'] == '1' || strtoupper($line['Opt-in']) == 'Y' || strtoupper($line['Opt-in']) == 'ON') ? 1 : 0) : 0;
+            $allow_emails = array_key_exists('Accept member e-mails', $line) ? ((cms_strtoupper_ascii($line['Accept member e-mails']) == 'YES' || $line['Accept member e-mails'] == '1' || cms_strtoupper_ascii($line['Accept member e-mails']) == 'Y' || cms_strtoupper_ascii($line['Accept member e-mails']) == 'ON') ? 1 : 0) : 0;
+            $allow_emails_from_staff = array_key_exists('Opt-in', $line) ? ((cms_strtoupper_ascii($line['Opt-in']) == 'YES' || $line['Opt-in'] == '1' || cms_strtoupper_ascii($line['Opt-in']) == 'Y' || cms_strtoupper_ascii($line['Opt-in']) == 'ON') ? 1 : 0) : 0;
             $primary_group = null;
             $groups = null;
             if ((array_key_exists('Usergroup', $line)) && (has_privilege($initiator_id, 'assume_any_member'))) {
@@ -308,7 +308,7 @@ class Hook_task_import_members
                 if ($cpf['cf_type'] == 'integer') {
                     $custom_fields[$cpf['id']] = ($custom_fields[$cpf['id']] === null) ? null : @intval($custom_fields[$cpf['id']]);
                 } elseif ($cpf['cf_type'] == 'tick') {
-                    $custom_fields[$cpf['id']] = ((strtoupper($custom_fields[$cpf['id']]) == 'YES' || strtoupper($custom_fields[$cpf['id']]) == 'Y' || strtoupper($custom_fields[$cpf['id']]) == 'ON' || $custom_fields[$cpf['id']] == '1') ? 1 : 0);
+                    $custom_fields[$cpf['id']] = ((cms_strtoupper_ascii($custom_fields[$cpf['id']]) == 'YES' || cms_strtoupper_ascii($custom_fields[$cpf['id']]) == 'Y' || cms_strtoupper_ascii($custom_fields[$cpf['id']]) == 'ON' || $custom_fields[$cpf['id']] == '1') ? 1 : 0);
                 } elseif (($cpf['cf_type'] == 'short_text') || ($cpf['cf_type'] == 'short_trans')) {
                     $custom_fields[$cpf['id']] = cms_mb_substr(str_replace("\n", ', ', str_replace(',' . "\n", "\n", $custom_fields[$cpf['id']])), 0, 255);
                 } elseif (($cpf['cf_type'] == 'long_text') || ($cpf['cf_type'] == 'long_trans')) {

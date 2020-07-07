@@ -270,8 +270,8 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
         }
 
         $ret = $this->getcsv_record($this->handle, $this->charset, $delimiter);
-        if ($ret == [null]) {
-            return [];
+        if ($ret === [null]) {
+            return $this->_read_row();
         }
         return $ret;
     }

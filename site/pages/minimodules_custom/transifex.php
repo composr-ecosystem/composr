@@ -45,7 +45,7 @@ foreach ($languages as $language_code => $language_details_basic) {
         continue; // Not started yet
     }
 
-    $language_name = lookup_language_full_name(strtoupper($language_code));
+    $language_name = lookup_language_full_name(cms_strtoupper_ascii($language_code));
 
     $test = cache_and_carry('_transifex', ['/project/' . $project_slug . '/language/' . $language_code . '/?details', 'GET', null, false], 10);
     if (is_string($test)) {
@@ -57,16 +57,16 @@ foreach ($languages as $language_code => $language_details_basic) {
         $percentage = intval(round(100.0 * $language_details['translated_segments'] / $language_details['total_segments'])); // calculate %age
 
         $download_url = find_script('transifex_pull');
-        $download_url .= '?lang=' . urlencode(strtoupper($language_code));
+        $download_url .= '?lang=' . urlencode(cms_strtoupper_ascii($language_code));
         $download_url .= '&output=1';
 
         $download_core_url = find_script('transifex_pull');
-        $download_core_url .= '?lang=' . urlencode(strtoupper($language_code));
+        $download_core_url .= '?lang=' . urlencode(cms_strtoupper_ascii($language_code));
         $download_core_url .= '&core_only=1';
         $download_core_url .= '&output=1';
 
         $_languages[str_pad(strval($percentage), 3, '0', STR_PAD_LEFT) . '__' . $language_code] = [
-            'LANGUAGE_CODE' => strtoupper($language_code),
+            'LANGUAGE_CODE' => cms_strtoupper_ascii($language_code),
             'LANGUAGE_NAME' => $language_name,
             'TRANSLATORS' => implode(', ', array_merge($language_details_basic['reviewers'], $language_details_basic['translators'])),
             'PERCENTAGE' => integer_format($percentage) . '%',

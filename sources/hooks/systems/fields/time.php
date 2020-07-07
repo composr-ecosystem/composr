@@ -129,7 +129,7 @@ class Hook_fields_time
         }
 
         if ($ev != '') {
-            if (strtoupper($ev) == 'NOW') {
+            if (cms_strtoupper_ascii($ev) == 'NOW') {
                 $time = time();
             } else {
                 // Y-m-d H:i:s

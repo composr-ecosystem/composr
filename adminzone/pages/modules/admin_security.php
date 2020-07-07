@@ -208,7 +208,7 @@ class Module_admin_security
             $test[1] = 'DESC';
         }
         list($_sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($_sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($_sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

@@ -238,16 +238,16 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             getdate getenv gmdate header headers_sent hexdec htmlentities is_float ob_get_level
             implode in_array include include_once ini_get ini_set intval is_a is_array is_bool
             is_integer is_null is_numeric is_object is_readable is_resource is_string is_uploaded_file
-            isset krsort ksort localeconv ltrim mail max md5 method_exists microtime min is_writable
+            isset krsort ksort ltrim mail max md5 method_exists microtime min is_writable
             mkdir mktime move_uploaded_file mt_getrandmax mt_rand mt_srand number_format ob_end_clean
             ob_end_flush ob_get_contents ob_start octdec opendir ord pack parse_url pathinfo
             preg_replace preg_replace_callback preg_split print_r rawurldecode rmdir
             rawurlencode readdir realpath register_shutdown_function rename require require_once reset
             round rsort rtrim serialize set_error_handler preg_match preg_grep preg_match_all
             setcookie setlocale sha1 sin sort fprintf sprintf srand str_pad str_repeat str_replace
-            strcmp strftime strip_tags stripslashes strlen strpos strrpos strstr strtok strtolower
-            strtotime strtoupper strtr strval substr substr_count time trim trigger_error
-            uasort ucfirst lcfirst ucwords uksort uniqid unlink unserialize unset urldecode urlencode usort
+            strcmp strftime strip_tags stripslashes strlen strpos strrpos strstr strtok
+            strtotime strtr strval substr substr_count time trim trigger_error
+            uasort uksort uniqid unlink unserialize unset urldecode urlencode usort
             utf8_decode utf8_encode wordwrap cos array_rand array_unshift asin assert
             assert_options atan base_convert basename bin2hex bindec call_user_func_array
             connection_aborted connection_status crc32 decbin empty fflush fileatime flock flush
@@ -358,7 +358,7 @@ END;
         }
 
         require_code('files2');
-        if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) != 'WIN') {
             $files = get_directory_contents('/home', '', null, false);
         } else {
             $files = get_directory_contents('C:\\Users', '', null, false);

@@ -65,8 +65,8 @@ function jestr_name_filter($in)
 
     $alphabetic = @explode("\n", $option);
 
-    if (strtoupper($in[0]) != strtolower($in[0])) {
-        return $alphabetic[ord(strtoupper($in[0])) - ord('A')] . ' ' . $in;
+    if ((ord($in[0]) < 128) && (cms_strtoupper_ascii($in[0]) != cms_mb_strtolower($in[0]))) {
+        return $alphabetic[ord(cms_strtoupper_ascii($in[0])) - ord('A')] . ' ' . $in;
     }
     return $in;
 }

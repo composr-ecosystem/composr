@@ -82,7 +82,7 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
                     if (($i == 0) && (!array_key_exists('w_replacement', $r))) {
                         return $a; // Safe upgrading
                     }
-                    $WORDS_TO_FILTER_CACHE[strtolower($r['word'])] = $r;
+                    $WORDS_TO_FILTER_CACHE[cms_mb_strtolower($r['word'])] = $r;
                 }
             }
         }
@@ -95,7 +95,7 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
     // Apply filter for complete blocked words
     $changes = [];
     foreach ($words as $pos => $word) {
-        $w = isset($WORDS_TO_FILTER_CACHE[strtolower($word)]) ? $WORDS_TO_FILTER_CACHE[strtolower($word)] : null;
+        $w = isset($WORDS_TO_FILTER_CACHE[cms_mb_strtolower($word)]) ? $WORDS_TO_FILTER_CACHE[cms_mb_strtolower($word)] : null;
 
         if (is_array($w) && ($w['w_match_type'] === WORDFILTER_MATCH_TYPE_FULL)) {
             if (($w['w_replacement'] == '') && ($exit)) {

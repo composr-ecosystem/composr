@@ -179,7 +179,7 @@ class Hook_translation_bing_translator
         // Pre-cleanup
         $remap = ['ZH' => 'zh-Hant'];
         $ret = str_replace(array_keys($remap), array_values($remap), $in);
-        $ret = str_replace('_', '-', strtolower($in));
+        $ret = str_replace('_', '-', cms_strtolower_ascii($in));
 
         $url = 'https://api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation';
 

@@ -621,7 +621,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$DECIMAL_POINT}</td>
-			<td>Find the decimal point character for the current locale (e.g. <kbd>.</kbd>)</td>
+			<td>Find the decimal point character for the current language (e.g. <kbd>.</kbd>)</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$LANG}</td>
@@ -1833,7 +1833,7 @@ Understanding of these symbols requires an understanding of basic boolean operat
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$FLOAT_UNFORMAT,1234.56}</td>
-			<td>Make a decimal number that look nice with commas etc, into a rawer representation that isn't locale-specific</td>
+			<td>Make a decimal number that look nice with commas etc, into a rawer representation that isn't language-pack-specific</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$TEMPCODE,{$MEMBER}}</td>

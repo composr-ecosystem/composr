@@ -58,7 +58,7 @@ class Hook_config_hc_cpu_pct_threshold
             return null;
         }
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
             return null;
         }
 

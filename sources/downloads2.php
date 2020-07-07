@@ -151,7 +151,7 @@ function dload_script()
     // Filename
     $full = $myrow['url'];
     require_code('files');
-    $extension = strtolower(get_file_extension($full));
+    $extension = cms_strtolower_ascii(get_file_extension($full));
     if (url_is_local($full)) {
         $_full = get_custom_file_base() . '/' . rawurldecode(/*filter_naughty*/($full));
     } else {
@@ -793,7 +793,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
                             break;
                         }
                     }
-                    if ((strlen($x) < $min_length) || ($x == strtoupper($x)) || ($x == 'Microsoft Word Document') || ($x == 'WordDocument') || ($x == 'SummaryInformation') || ($x == 'DocumentSummaryInformation')) { // Valid word okay
+                    if ((strlen($x) < $min_length) || ($x == cms_strtoupper_ascii($x)) || ($x == 'Microsoft Word Document') || ($x == 'WordDocument') || ($x == 'SummaryInformation') || ($x == 'DocumentSummaryInformation')) { // Valid word okay
                         $i = $j;
                         continue;
                     }
@@ -839,7 +839,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
 function _find_pdftohtml()
 {
     $path = 'pdftohtml';
-    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+    if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
         $_path = get_file_base() . '/data_custom/pdftohtml.exe';
         if (is_file($_path)) {
             $path = $_path;

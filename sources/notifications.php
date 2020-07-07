@@ -1027,7 +1027,7 @@ class Hook_Notification
     public function list_handled_codes()
     {
         $list = [];
-        $codename = preg_replace('#^Hook_Notification_#', '', strtolower(get_class($this)));
+        $codename = preg_replace('#^Hook_Notification_#', '', cms_strtolower_ascii(get_class($this)));
         $list[$codename] = [do_lang('GENERAL'), do_lang('NOTIFICATION_TYPE_' . $codename)];
         return $list;
     }
@@ -1439,7 +1439,7 @@ class Hook_notification__Staff extends Hook_Notification
     public function list_handled_codes()
     {
         $list = [];
-        $codename = preg_replace('#^Hook_Notification_#', '', strtolower(get_class($this)));
+        $codename = preg_replace('#^Hook_Notification_#', '', cms_strtolower_ascii(get_class($this)));
         $list[$codename] = [do_lang('STAFF'), do_lang('NOTIFICATION_TYPE_' . $codename)];
         return $list;
     }

@@ -625,7 +625,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                     }
                     $use_pos = min($equal_pos, $space_pos, $end_pos, $lax_end_pos, $cl_pos);
 
-                    $potential_tag = strtolower(substr($ahead, 0, $use_pos));
+                    $potential_tag = cms_strtolower_ascii(substr($ahead, 0, $use_pos));
                     if (($use_pos != 22) && ((!$in_semihtml) || ($dif === 1) || (($potential_tag != 'html') && ($potential_tag != 'semihtml'))) && ((!$in_html) || (($dif === 1) && ($potential_tag === 'html'))) && ((!$in_code_tag) || ((isset($CODE_TAGS[$potential_tag])) && ($potential_tag === $current_tag))) && ((!$structure_sweep) || ($potential_tag != 'contents'))) {
                         if ($in_code_tag) {
                             if ($dif === 1) {
@@ -644,7 +644,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                                     _custom_comcode_import($db);
                                 }
                             }
-                            if ((isset($VALID_COMCODE_TAGS[$potential_tag])) && (strtolower(substr($ahead, 0, 2)) != 'i ')) { // The "i" bit is just there to block a common annoyance: [i] doesn't take parameters and we don't want "[i think]" (for example) being parsed.
+                            if ((isset($VALID_COMCODE_TAGS[$potential_tag])) && (cms_strtolower_ascii(substr($ahead, 0, 2)) != 'i ')) { // The "i" bit is just there to block a common annoyance: [i] doesn't take parameters and we don't want "[i think]" (for example) being parsed.
                                 $close = false;
                                 $current_tag = '';
                                 if ($GLOBALS['XSS_DETECT']) {
@@ -1554,8 +1554,8 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                                     // Apply
                                     if ($ADVERTISING_BANNERS_CACHE !== null) {
                                         foreach ($ADVERTISING_BANNERS_CACHE as $ad_trigger => $ad_bits) {
-                                            if (strtolower($next) === strtolower($ad_trigger[0])) { // optimisation
-                                                if (strtolower(substr($comcode, $pos - 1, strlen($ad_trigger))) === strtolower($ad_trigger)) {
+                                            if (@cms_mb_strtolower($next) === cms_mb_strtolower($ad_trigger[0])) { // optimisation
+                                                if (cms_mb_strtolower(substr($comcode, $pos - 1, strlen($ad_trigger))) === cms_mb_strtolower($ad_trigger)) {
                                                     $just_banner_row = db_map_restrict($ad_bits, ['name', 'caption']);
 
                                                     if ($GLOBALS['XSS_DETECT']) {
@@ -1581,8 +1581,8 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
 
                                 // Search highlighting lookahead
                                 foreach ($highlight_bits as $highlight_bit) {
-                                    if (strtolower($next) === strtolower($highlight_bit[0])) { // optimisation
-                                        if (strtolower(substr($comcode, $pos - 1, strlen($highlight_bit))) === strtolower($highlight_bit)) {
+                                    if (cms_mb_strtolower($next) === cms_mb_strtolower($highlight_bit[0])) { // optimisation
+                                        if (@cms_mb_strtolower(substr($comcode, $pos - 1, strlen($highlight_bit))) === cms_mb_strtolower($highlight_bit)) {
                                             if ($GLOBALS['XSS_DETECT']) {
                                                 ocp_mark_as_escaped($continuation);
                                             }
@@ -1695,8 +1695,8 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                             if (!$differented) {
                                 if (($stupidity_mode != '') && ($textual_area)) {
                                     if (($stupidity_mode === 'leet') && (mt_rand(0, 1) === 1)) {
-                                        if (array_key_exists(strtoupper($next), $LEET_FILTER)) {
-                                            $next = $LEET_FILTER[strtoupper($next)];
+                                        if (array_key_exists(cms_strtoupper_ascii($next), $LEET_FILTER)) {
+                                            $next = $LEET_FILTER[cms_strtoupper_ascii($next)];
                                         }
                                     } elseif (($stupidity_mode === 'bork') && (mt_rand(0, 60) === 1)) {
                                         $next .= '-bork-bork-bork-';
@@ -1884,7 +1884,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                         }
                     }
                 } elseif ($status === CCP_IN_TAG_NAME) {
-                    $current_tag .= strtolower($next);
+                    $current_tag .= cms_strtolower_ascii($next);
                 }
                 break;
 
@@ -1905,7 +1905,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                 } elseif ($next === '/') {
                     $close = true;
                 } else {
-                    $current_tag .= strtolower($next);
+                    $current_tag .= cms_strtolower_ascii($next);
                     $status = CCP_IN_TAG_NAME;
                 }
                 break;
@@ -1998,7 +1998,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                 } elseif ($next === '=') {
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT;
                 } elseif ($next != ' ') {
-                    $current_attribute_name .= strtolower($next);
+                    $current_attribute_name .= cms_strtolower_ascii($next);
                 } else {
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_LEFT;
                 }
@@ -2214,7 +2214,7 @@ function _opened_tag($as_admin, $source_member, $attribute_map, $current_tag, $p
     $textual_area = isset($TEXTUAL_TAGS[$current_tag]);
 
     $white_space_area = $textual_area;
-    if (((($current_tag === 'code') || ($current_tag === 'codebox')) && (isset($attribute_map['param'])) && ((strtolower($attribute_map['param']) === 'php') || (file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($attribute_map['param'] === 'HTML') ? 'html5' : strtolower($attribute_map['param'])) . '.php')))) || ($current_tag === 'attachment') || ($current_tag === 'attachment_safe') || ($current_tag === 'menu')) {
+    if (((($current_tag === 'code') || ($current_tag === 'codebox')) && (isset($attribute_map['param'])) && ((cms_strtolower_ascii($attribute_map['param']) === 'php') || (file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($attribute_map['param'] === 'HTML') ? 'html5' : cms_strtolower_ascii($attribute_map['param'])) . '.php')))) || ($current_tag === 'attachment') || ($current_tag === 'attachment_safe') || ($current_tag === 'menu')) {
         $in_separate_parse_section = true;
     } else {
         // Code tags are white space area, but not textual area

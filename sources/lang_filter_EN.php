@@ -311,7 +311,7 @@ class LangFilter_EN extends LangFilter
         }
 
         // Process remappings
-        $lc_value = strtolower($value);
+        $lc_value = cms_strtolower_ascii($value);
         foreach ($remapping as $authentic => $perverted) {
             if (strpos($lc_value, $authentic) !== false) {
                 $value = preg_replace(
@@ -320,14 +320,14 @@ class LangFilter_EN extends LangFilter
                     $value
                 );
                 $value = preg_replace(
-                    '#(^|\s|\(|"|\')' . preg_quote(ucfirst($authentic), '#') . '#',
-                    '$1' . ucfirst($perverted),
+                    '#(^|\s|\(|"|\')' . preg_quote(cms_ucfirst_ascii($authentic), '#') . '#',
+                    '$1' . cms_ucfirst_ascii($perverted),
                     $value
                 );
             }
         }
 
-        if (!empty($key) && $is_american && strtolower($key[0]) == $key[0]) {
+        if (!empty($key) && $is_american && cms_strtolower_ascii($key[0]) == $key[0]) {
             // Day comes after month
             switch ($key . '=' . $value) {
                 case 'calendar_date=%d-%m-%Y':
@@ -350,8 +350,8 @@ class LangFilter_EN extends LangFilter
                     $value = '%b %e%o';
                     break;
 
-                case 'locale=en-GB.UTF-8,en_GB.UTF-8,en-US.UTF-8,en_US.UTF-8,en.UTF-8,en-GB,en_GB,en-US,en_US,en':
-                    $value = 'en-US.UTF-8,en_US.UTF-8,en.UTF-8,en-US,en_US,en';
+                case 'locale=LC_ALL:en-GB.UTF-8,en_GB.UTF-8,en-US.UTF-8,en_US.UTF-8,en.UTF-8,en-GB,en_GB,en-US,en_US,en':
+                    $value = 'LC_ALL:en-US.UTF-8,en_US.UTF-8,en.UTF-8,en-US,en_US,en';
                     break;
 
                 case 'dictionary=en_GB':
@@ -414,13 +414,13 @@ class LangFilter_EN extends LangFilter
                             $specific = $content_type;
                         }
                         if ($specific === null) {
-                            $specific = strtolower($content_type);
+                            $specific = cms_strtolower_ascii($content_type);
                         } else {
-                            $specific = strtolower($specific);
+                            $specific = cms_strtolower_ascii($specific);
                         }
                     } else {
                         $info = $object->info();
-                        $specific = strtolower(do_lang($info['content_type_label']));
+                        $specific = cms_strtolower_ascii(do_lang($info['content_type_label']));
                     }
 
                     $is_vowel = $specific !== '' && isset($this->vowels[$specific[0]]);
@@ -438,7 +438,7 @@ class LangFilter_EN extends LangFilter
                         case 'resource':
                             $reps = [
                                 'a resource' => $article_word . ' ' . $specific,
-                                'A resource' => ucfirst($article_word) . ' ' . $specific,
+                                'A resource' => cms_ucfirst_ascii($article_word) . ' ' . $specific,
                                 'resources' => $specific_plural,
                                 'resource' => $specific,
                             ];
@@ -447,7 +447,7 @@ class LangFilter_EN extends LangFilter
                         case 'category':
                             $reps = [
                                 'a category' => $article_word . ' ' . $specific,
-                                'A category' => ucfirst($article_word) . ' ' . $specific,
+                                'A category' => cms_ucfirst_ascii($article_word) . ' ' . $specific,
                                 'categories' => $specific_plural,
                                 'category' => $specific,
                             ];
@@ -456,7 +456,7 @@ class LangFilter_EN extends LangFilter
                         case 'entry':
                             $reps = [
                                 'an entry' => $article_word . ' ' . $specific,
-                                'An entry' => ucfirst($article_word) . ' ' . $specific,
+                                'An entry' => cms_ucfirst_ascii($article_word) . ' ' . $specific,
                                 'entries' => $specific_plural,
                                 'entry' => $specific,
                             ];
@@ -465,7 +465,7 @@ class LangFilter_EN extends LangFilter
                         case 'content_type_module':
                             $reps = [
                                 'a content-type' => $article_word . ' ' . $specific . ' module',
-                                'A content-type' => ucfirst($article_word) . ' ' . $specific . ' module',
+                                'A content-type' => cms_ucfirst_ascii($article_word) . ' ' . $specific . ' module',
                                 'content-types' => $specific_plural . ' module',
                                 'content-type' => $specific . ' module',
                             ];

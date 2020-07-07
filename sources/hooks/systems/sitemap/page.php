@@ -326,7 +326,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                                     list($entry_point_zone, $entry_point_codename) = explode(':', $entry_point);
                                     $_page_type = __request_page($entry_point_codename, $entry_point_zone);
                                     if ($_page_type !== false) {
-                                        $page_type = strtolower($_page_type[0]);
+                                        $page_type = cms_strtolower_ascii($_page_type[0]);
                                     }
                                 }
 

@@ -388,7 +388,7 @@ function get_downloads_tree($submitter = null, $category_id = null, $breadcrumbs
     }
     $children[0]['entries'] = [];
     foreach ($erows as $row) {
-        if (($tar_filter) && (substr(strtolower($row['original_filename']), -4) != '.tar')) {
+        if (($tar_filter) && (substr(cms_strtolower_ascii($row['original_filename']), -4) != '.tar')) {
             continue;
         }
         if (($editable_filter) && (!has_edit_permission('mid', get_member(), $row['submitter'], 'cms_downloads', ['download_downloads', $category_id]))) {

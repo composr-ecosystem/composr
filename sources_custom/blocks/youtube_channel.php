@@ -80,7 +80,7 @@ class Block_youtube_channel
         $channel_maxvideos = array_key_exists('max_videos', $map) ? intval($map['max_videos']) : 25;
         $channel_showplayer = array_key_exists('show_player', $map) ? intval($map['show_player']) : 1;
         $channel_embedallowed = array_key_exists('embed_allowed', $map) ? intval($map['embed_allowed']) : 1;
-        $channel_playeralign = strtolower(array_key_exists('player_align', $map) ? $map['player_align'] : 'center');
+        $channel_playeralign = cms_strtolower_ascii(array_key_exists('player_align', $map) ? $map['player_align'] : 'center');
         $channel_playerwidth = array_key_exists('player_width', $map) ? intval($map['player_width']) : 480;
         $channel_playerheight = array_key_exists('player_height', $map) ? intval($map['player_height']) : 270;
         $channel_style = array_key_exists('style', $map) ? intval($map['style']) : 1;
@@ -89,7 +89,7 @@ class Block_youtube_channel
         $channel_formoretext = array_key_exists('formoretext', $map) ? $map['formoretext'] : '';
         $channel_formoreurl = array_key_exists('formoreurl', $map) ? $map['formoreurl'] : '';
         $channel_thumbnail = array_key_exists('thumbnail', $map) ? intval($map['thumbnail']) : 0;
-        $channel_descriptiontype = strtolower(array_key_exists('description_type', $map) ? $map['description_type'] : 'long');
+        $channel_descriptiontype = cms_strtolower_ascii(array_key_exists('description_type', $map) ? $map['description_type'] : 'long');
         if ($channel_name_param == '') {
             $playlist_id = array_key_exists('playlist_id', $map) ? trim($map['playlist_id']) : '';
         } else {
@@ -146,7 +146,7 @@ class Block_youtube_channel
         $channel_name = '';
         if (!empty($channel_name_param)) {
             // Determine if name is username or channel ID
-            if (strtolower(substr($channel_name_param, 0, 9)) == 'username=') {
+            if (cms_strtolower_ascii(substr($channel_name_param, 0, 9)) == 'username=') {
                 $channel_name =  substr($channel_name_param, 9);
                 $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . urlencode($channel_name) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]));
 
@@ -163,7 +163,7 @@ class Block_youtube_channel
 
                 // Set channel URL using username
                 $channel_url = 'http://www.youtube.com/user/' . $channel_name;
-            } elseif (strtolower(substr($channel_name_param, 0, 3)) == 'id=') {
+            } elseif (cms_strtolower_ascii(substr($channel_name_param, 0, 3)) == 'id=') {
                 $channel_id =  substr($channel_name_param, 3);
                 $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&id=' . urlencode($channel_id) . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . urlencode($youtube_api_key), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true]));
 

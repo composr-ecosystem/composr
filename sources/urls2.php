@@ -485,8 +485,8 @@ function _url_to_page_link($url, $abs_only = false, $perfect_only = true)
                 $bits_real = explode('/', $_path, count($bits_pattern));
 
                 foreach ($bits_pattern as $i => $bit) {
-                    if ((strtoupper($bit) == $bit) && (array_key_exists(strtolower($bit), $params)) && ($params[strtolower($bit)]) === null) {
-                        $attributes[strtolower($bit)] = $bits_real[$i];
+                    if ((cms_strtoupper_ascii($bit) == $bit) && (array_key_exists(cms_strtolower_ascii($bit), $params)) && ($params[cms_strtolower_ascii($bit)]) === null) {
+                        $attributes[cms_strtolower_ascii($bit)] = $bits_real[$i];
                     }
                 }
 

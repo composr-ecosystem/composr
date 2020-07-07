@@ -214,7 +214,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
             do_lang_tempcode('ENABLED'),
             do_lang_tempcode('ACTIONS'),
         ], $sortables, 'sort', $sortable . ' ' . $sort_order);
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
@@ -385,7 +385,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
     {
         $parameters = [];
         foreach ($_parameters as $param) {
-            $parameters[] = strtolower(preg_replace('#=.*$#', '', $param));
+            $parameters[] = cms_strtolower_ascii(preg_replace('#=.*$#', '', $param));
         }
         $parameters[] = 'content'; // implied
 
@@ -393,7 +393,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
         $num_matches = preg_match_all('#\{(\w+)[^\w\}]*\}#', $replace, $matches);
         $parameters_in_replace = [];
         for ($i = 0; $i < $num_matches; $i++) {
-            $parameters_in_replace[] = strtolower($matches[1][$i]);
+            $parameters_in_replace[] = cms_strtolower_ascii($matches[1][$i]);
         }
 
         foreach (array_unique($parameters) as $param) {

@@ -86,16 +86,6 @@ abstract class Database_super_mysql extends DatabaseDriver
     }
 
     /**
-     * Find whether collate support is present.
-     *
-     * @return boolean Whether it is
-     */
-    public function has_collate_settings()
-    {
-        return true;
-    }
-
-    /**
      * Find whether update queries may have joins.
      *
      * @return boolean Whether it is
@@ -170,7 +160,7 @@ abstract class Database_super_mysql extends DatabaseDriver
         $tokens_to_escape = array_flip(['description', 'groups', 'path']);
         $tokens = $this->tokenise_query($query);
         foreach ($tokens as $i => $token) {
-            if (isset($tokens_to_escape[strtolower($token)])) {
+            if (isset($tokens_to_escape[cms_strtolower_ascii($token)])) {
                 $new_query .= '`' . $token . '`';
             } else {
                 $new_query .= $token;
@@ -682,7 +672,7 @@ abstract class Database_super_mysql extends DatabaseDriver
             require_code('database_search');
             $stopwords = get_stopwords_list();
         }
-        if (isset($stopwords[trim(strtolower($content), '"')])) {
+        if (isset($stopwords[trim(cms_mb_strtolower($content), '"')])) {
             // This is an imperfect solution for searching for a stop-word
             // It will not cover the case where the stop-word is within the wider text. But we can't handle that case efficiently anyway
             return db_string_equal_to('?', trim($content, '"'));
@@ -695,9 +685,6 @@ abstract class Database_super_mysql extends DatabaseDriver
             $content = str_replace('?', '', $content);
             db_escape_string($content); // Hack to so SQL injection detector doesn't get confused
 
-            if ((strtoupper($content) == $content) && (!is_numeric($content))) {
-                return 'MATCH (?) AGAINST (_latin1\'' . $this->escape_string($content) . '\' COLLATE latin1_general_cs)';
-            }
             return 'MATCH (?) AGAINST (\'' . $this->escape_string($content) . '\')';
         }
 

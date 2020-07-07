@@ -112,13 +112,13 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
                 if ($m == '') {
                     continue;
                 }
-                if (strtolower(trim($m, ':')) == 'password') {
+                if (cms_strtolower_ascii(trim($m, ':')) == 'password') {
                     continue;
                 }
-                if (strtolower(trim($m, ':')) == 'username') {
+                if (cms_strtolower_ascii(trim($m, ':')) == 'username') {
                     continue;
                 }
-                if (strtolower($m) == 'reminder') {
+                if (cms_strtolower_ascii($m) == 'reminder') {
                     continue;
                 }
                 if ($GLOBALS['FORUM_DRIVER']->get_member_from_username($m) !== null) {

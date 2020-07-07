@@ -2469,30 +2469,18 @@ function db_like_assemble($search_query, $full_coverage = false)
 
     $body_where = [];
     foreach ($body_words as $word) {
-        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
-            $body_where[] = 'CONVERT(? USING latin1) LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
-        } else {
-            $body_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
-        }
+        $body_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
     }
     $include_where = [];
     foreach ($include_words as $word) {
-        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
-            $include_where[] = 'CONVERT(? USING latin1) LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
-        } else {
-            $include_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
-        }
+        $include_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
     }
     $exclude_where = '';
     foreach ($exclude_words as $word) {
         if ($exclude_where != '') {
             $exclude_where .= ' AND ';
         }
-        if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
-            $exclude_where .= 'CONVERT(? USING latin1) NOT LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
-        } else {
-            $exclude_where .= '? NOT LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
-        }
+        $exclude_where .= '? NOT LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
     }
 
     // $content_where combines all
@@ -2753,7 +2741,7 @@ function generate_text_summary($_temp_summary, $words_searched)
 
     global $SEARCH_QUERY_TERMS;
 
-    $_temp_summary_lower = strtolower($_temp_summary);
+    $_temp_summary_lower = cms_mb_strtolower($_temp_summary);
 
     // Add in some highlighting direct to XHTML
     $all_occurrences = [];
@@ -2766,7 +2754,7 @@ function generate_text_summary($_temp_summary, $words_searched)
         $content_bit_pos = 0;
         do {
             $content_bit_matched = $content_bit;
-            if (strtoupper($content_bit) == $content_bit) { // all upper case so don't want case sensitive
+            if (cms_mb_strtoupper($content_bit) == $content_bit) { // all upper case so don't want case insensitive
                 $content_bit_pos = strpos($_temp_summary, $content_bit, $last_pos);
             } else {
                 $content_bit_pos = stripos($_temp_summary_lower, $content_bit, $last_pos);
@@ -2791,7 +2779,7 @@ function generate_text_summary($_temp_summary, $words_searched)
                                      substr($_temp_summary, $content_bit_pos, strlen($content_bit_matched)) .
                                      $extra_post .
                                      substr($_temp_summary, $content_bit_pos + strlen($content_bit_matched));
-                    $_temp_summary_lower = strtolower($_temp_summary);
+                    $_temp_summary_lower = cms_mb_strtolower($_temp_summary);
                     $last_pos = $content_bit_pos + strlen($extra_pre) + strlen($content_bit_matched) + strlen($extra_post);
 
                     // Adjust all stores occurrence offsets

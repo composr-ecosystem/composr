@@ -71,7 +71,7 @@ function _convert_request_data_encodings($known_utf8 = false)
 
     $input_charset = $known_utf8 ? 'utf-8' : get_charset();
 
-    if ((strtolower($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered(serialize($_GET) . serialize($_POST))) && (in_array(strtoupper($internal_charset), ['ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP']))) {
+    if ((cms_strtolower_ascii($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered(serialize($_GET) . serialize($_POST))) && (in_array(cms_strtoupper_ascii($internal_charset), ['ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP']))) {
         // Inbuilt PHP option, but only supports certain character sets.
         // Preferred as it will sub entities where there's no equivalent character.
 
@@ -116,7 +116,7 @@ function _convert_request_data_encodings($known_utf8 = false)
         return;
     }
 
-    if ((strtolower($input_charset) == 'utf-8') && (strtoupper($internal_charset) == 'ISO-8859-1')) {
+    if ((cms_strtolower_ascii($input_charset) == 'utf-8') && (cms_strtoupper_ascii($internal_charset) == 'ISO-8859-1')) {
         // utf8_decode (mail extension) option. Imperfect as it needs utf-8 vs ISO-8859-1.
 
         foreach ($_GET as $key => $val) {
@@ -145,7 +145,7 @@ function _convert_request_data_encodings($known_utf8 = false)
         return;
     }
 
-    if ((strtoupper($input_charset) == 'ISO-8859-1') && ($internal_charset == 'utf-8')) {
+    if ((cms_strtoupper_ascii($input_charset) == 'ISO-8859-1') && ($internal_charset == 'utf-8')) {
         // utf8_encode (mail extension) option. Imperfect as it needs utf-8 vs ISO-8859-1.
 
         foreach ($_GET as $key => $val) {
@@ -178,7 +178,7 @@ function _convert_request_data_encodings($known_utf8 = false)
         // mbstring option
 
         if (function_exists('mb_list_encodings')) {
-            $VALID_ENCODING = in_array(strtolower($internal_charset), array_map('strtolower', mb_list_encodings()));
+            $VALID_ENCODING = in_array(cms_strtolower_ascii($internal_charset), array_map('cms_strtolower_ascii', mb_list_encodings()));
         } else {
             $VALID_ENCODING = true;
         }
@@ -314,7 +314,7 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
         return $data;
     }
 
-    if (strtolower($input_charset) == strtolower($internal_charset)) {
+    if (cms_strtolower_ascii($input_charset) == cms_strtolower_ascii($internal_charset)) {
         // No change needed
         return $data;
     }
@@ -328,7 +328,7 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
 
     convert_request_data_encodings(); // In case it hasn't run yet. We need $VALID_ENCODING to be set.
 
-    if ((strtolower($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered($data)) && (in_array(strtoupper($internal_charset), ['ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP']))) { // Preferred as it will use sub entities where there's no equivalent character
+    if ((cms_strtolower_ascii($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered($data)) && (in_array(cms_strtoupper_ascii($internal_charset), ['ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP']))) { // Preferred as it will use sub entities where there's no equivalent character
         // Inbuilt PHP option, but only supports certain character sets.
         // Preferred as it will sub entities where there's no equivalent character.
 
@@ -338,7 +338,7 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
         }
     }
 
-    if ((strtolower($input_charset) == 'utf-8') && (strtoupper($internal_charset) == 'ISO-8859-1')) {
+    if ((cms_strtolower_ascii($input_charset) == 'utf-8') && (cms_strtoupper_ascii($internal_charset) == 'ISO-8859-1')) {
         // utf8_decode (mail extension) option. Imperfect as it needs utf-8 vs ISO-8859-1.
 
         $test = @utf8_decode($data);
@@ -347,7 +347,7 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
         }
     }
 
-    if ((strtoupper($input_charset) == 'ISO-8859-1') && (strtolower($internal_charset) == 'utf-8')) {
+    if ((cms_strtoupper_ascii($input_charset) == 'ISO-8859-1') && (cms_strtolower_ascii($internal_charset) == 'utf-8')) {
         // utf8_encode (mail extension) option. Imperfect as it needs utf-8 vs ISO-8859-1.
 
         $test = @utf8_encode($data);
@@ -381,7 +381,7 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
         if (function_exists('mb_list_encodings')) {
             static $good_encodings = [];
             if (!isset($good_encodings[$input_charset])) {
-                $good_encodings[$input_charset] = (in_array(strtolower($input_charset), array_map('strtolower', mb_list_encodings())));
+                $good_encodings[$input_charset] = (in_array(cms_strtolower_ascii($input_charset), array_map('cms_strtolower_ascii', mb_list_encodings())));
             }
             $good_encoding = $good_encodings[$input_charset];
         } else {
@@ -449,7 +449,7 @@ function entity_utf8_decode($data, $internal_charset)
         $test = preg_replace_callback('/&#x([0-9a-f]+);/i', '_unichrm_hex', $encoded); // imperfect as it can only translate lower ascii back, but better than nothing. htmlentities would have encoded key other ones as named entities though which get_html_translation_table can handle
         $test = preg_replace_callback('/&#([0-9]+);/', '_unichrm', $test); // imperfect as it can only translate lower ascii back, but better than nothing. htmlentities would have encoded key other ones as named entities though which get_html_translation_table can handle
 
-        if (strtoupper($internal_charset) == 'ISO-8859-1') { // trans table only valid for this charset. Else we just need to live with things getting turned into named entities. However we don't allow this function to be called if this code branch would be skipped here.
+        if (cms_strtoupper_ascii($internal_charset) == 'ISO-8859-1') { // trans table only valid for this charset. Else we just need to live with things getting turned into named entities. However we don't allow this function to be called if this code branch would be skipped here.
             require_code('xml');
             $test2 = convert_bad_entities($test, $internal_charset);
             if ((strlen($test2) != 0) || ($data == '')) {

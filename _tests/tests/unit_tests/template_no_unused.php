@@ -229,7 +229,7 @@ class template_no_unused_test_set extends cms_test_case
                 $dh = @opendir($path);
                 if ($dh !== false) {
                     while (($file = readdir($dh)) !== false) {
-                        if (strtolower(substr($file, -4)) == '.tpl') {
+                        if (cms_strtolower_ascii(substr($file, -4)) == '.tpl') {
                             $file = basename($file, '.tpl');
 
                             if (in_array($file, $exceptions)) {

@@ -466,8 +466,8 @@ class Module_buildr
                 // Mark them
                 $pass = 0;
                 for ($i = 1; $i <= $num_questions; $i++) {
-                    $given = strtolower(post_param_string('a' . strval($i)));
-                    $stored = strtolower($a[$i]);
+                    $given = cms_mb_strtolower(post_param_string('a' . strval($i)));
+                    $stored = cms_mb_strtolower($a[$i]);
                     if ($given == $stored) {
                         $pass++;
                     } elseif (strstr(':' . $stored . ':', ':' . $given . ':') !== false) {

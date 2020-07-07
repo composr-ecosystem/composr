@@ -82,7 +82,7 @@ class Hook_task_import_newsletter_subscribers
 
                 $forename = (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line))) ? $spreadsheet_line[$forename_index] : '';
                 if ($forename == $email_address) {
-                    $forename = ucfirst(strtolower(preg_replace('#^(\w+)([^\w].*)?$#', '\\1', $forename)));
+                    $forename = cms_mb_ucfirst(cms_mb_strtolower(preg_replace('#^(\w+)([^\w].*)?$#', '\\1', $forename)));
                     if (in_array($forename, ['Sales', 'Info', 'Business', 'Enquiries', 'Admin', 'Webmaster'])) {
                         $forename = '';
                     }

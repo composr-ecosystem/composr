@@ -288,7 +288,7 @@ abstract class EmailIntegration
         // De-forward
         $forwarded = false;
         foreach (['fwd: ', 'fw: '] as $prefix) {
-            if (substr(strtolower($subject), 0, strlen($prefix)) == $prefix) {
+            if (substr(cms_strtolower_ascii($subject), 0, strlen($prefix)) == $prefix) {
                 $subject = substr($subject, strlen($prefix));
                 $forwarded = true;
 
@@ -359,7 +359,7 @@ abstract class EmailIntegration
     {
         $primary_mime_type = ['TEXT', 'MULTIPART', 'MESSAGE', 'APPLICATION', 'AUDIO', 'IMAGE', 'VIDEO', 'OTHER'];
         if ($structure->subtype) {
-            return $primary_mime_type[intval($structure->type)] . '/' . strtoupper($structure->subtype);
+            return $primary_mime_type[intval($structure->type)] . '/' . cms_strtoupper_ascii($structure->subtype);
         }
         return 'TEXT/PLAIN';
     }
@@ -412,7 +412,7 @@ abstract class EmailIntegration
 
         // Anything 'attachment' will be considered as 'application/octet-stream' so long as it is not plain text or HTML
         if ($needed_mime_type == 'APPLICATION/OCTET-STREAM') {
-            $disposition = $structure->ifdisposition ? strtoupper($structure->disposition) : '';
+            $disposition = $structure->ifdisposition ? cms_strtoupper_ascii($structure->disposition) : '';
             if (
                 (isset($structure->bytes)) &&
                 (
@@ -501,7 +501,7 @@ abstract class EmailIntegration
             if ($structure->ifparameters == 1) {
                 $parameters = [];
                 foreach ($structure->parameters as $param) {
-                    $parameters[strtolower($param->attribute)] = $param->value;
+                    $parameters[cms_strtolower_ascii($param->attribute)] = $param->value;
                 }
                 if (isset($parameters['charset'])) {
                     $input_charset = $parameters['charset'];
@@ -890,7 +890,7 @@ abstract class EmailIntegration
             return true;
         }
 
-        $full_header = "\r\n" . strtolower($full_header);
+        $full_header = "\r\n" . cms_strtolower_ascii($full_header);
         if (strpos($full_header, "\r\nfrom: <>") !== false) {
             $this->log_message('Considered non-human due to: empty-from field');
 

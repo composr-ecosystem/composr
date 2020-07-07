@@ -47,7 +47,7 @@ if (!function_exists('xml_parser_create'))
 {
 	// For PHP 4 onward, XML functionality is always compiled-in on windows:
 	// no more need to dl-open it. It might have been compiled out on *nix...
-	if (strtoupper(substr(PHP_OS,0,3)!='WIN'))
+	if (cms_strtoupper_ascii(substr(PHP_OS,0,3)!='WIN'))
 	{
 		dl('xml.so');
 	}
@@ -264,7 +264,7 @@ function xmlrpc_encode_entitites($data,$src_encoding='',$dest_encoding='')
 		$src_encoding=$GLOBALS['xmlrpc_internalencoding'];
 	}
 
-	switch (strtoupper($src_encoding.'_'.$dest_encoding))
+	switch (cms_strtoupper_ascii($src_encoding.'_'.$dest_encoding))
 	{
 		case 'ISO-8859-1_':
 		case 'ISO-8859-1_US-ASCII':
@@ -3779,7 +3779,7 @@ function guess_encoding($httpheader='',$xmlchunk='',$encoding_prefs=NULL)
 	$matches=array();
 	if (preg_match('/;\s*charset=([^;]+)/i',$httpheader,$matches))
 	{
-		return strtoupper(trim($matches[1]));
+		return cms_strtoupper_ascii(trim($matches[1]));
 	}
 
 	// 2 - scan the first bytes of the data for a UTF-16 (or other) BOM pattern
@@ -3810,7 +3810,7 @@ function guess_encoding($httpheader='',$xmlchunk='',$encoding_prefs=NULL)
 						'\s+encoding\s*=\s*'."((?:\"[A-Za-z][A-Za-z0-9._-]*\")|(?:'[A-Za-z][A-Za-z0-9._-]*'))/",
 		$xmlchunk,$matches))
 	{
-		return strtoupper(substr($matches[2],1,-1));
+		return cms_strtoupper_ascii(substr($matches[2],1,-1));
 	}
 
 	// 4 - if mbstring is available, let it do the guesswork
@@ -3884,7 +3884,7 @@ function is_valid_charset($encoding,$validlist)
 	{
 		$validlist=explode(',',$validlist);
 	}
-	if (@in_array(strtoupper($encoding),$validlist))
+	if (@in_array(cms_strtoupper_ascii($encoding),$validlist))
 	{
 		return true;
 	}

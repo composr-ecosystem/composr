@@ -788,7 +788,7 @@ class Module_admin_cns_members
 
         // File name
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '16d396d2357684d2dbfebefbd20776a3', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('FILENAME')]));
-        $filename = strtolower(do_lang('MEMBERS')) . '-' . date('Y-m-d');
+        $filename = cms_mb_strtolower(do_lang('MEMBERS')) . '-' . date('Y-m-d');
         $fields->attach(form_input_line(do_lang_tempcode('NAME'), '', 'filename', $filename, true));
 
         // ...

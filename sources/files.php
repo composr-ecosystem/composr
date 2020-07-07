@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: strtoupper|strtolower*/
+
 /**
  * Standard code module initialisation function.
  *
@@ -349,7 +351,7 @@ function php_return_bytes($val)
     if ($val == '') {
         return 0;
     }
-    $last = strtolower($val[strlen($val) - 1]);
+    $last = cms_strtolower_ascii($val[strlen($val) - 1]);
     $_val = intval(preg_replace('#[^\d]#', '', $val));
     switch ($last) {
         case 'g':
@@ -505,7 +507,7 @@ function should_ignore_file($path, $bitmask = 0)
         $dir = '';
         $filename = $path;
     }
-    $filename_lower = strtolower($filename);
+    $filename_lower = function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($filename) : strtolower($filename);
 
     $ignore_filenames_and_dir_names = [ // Case insensitive, define in lower case
         '.' => '.*',
@@ -707,7 +709,17 @@ function should_ignore_file($path, $bitmask = 0)
 
     if (($bitmask & IGNORE_CUSTOM_LANGS) != 0) {
         // Wrong lang packs
-        if (((strlen($filename) == 2) && (strtoupper($filename) == $filename) && ($filename_lower != $filename) && ($filename != 'EN')) || ($filename == 'EN_us') || ($filename == 'ZH-TW') || ($filename == 'ZH-CN')) {
+        if (
+            (
+                (strlen($filename) == 2) &&
+                ((function_exists('cms_strtoupper_ascii') ? cms_strtoupper_ascii($filename) : strtoupper($filename)) == $filename) &&
+                ($filename_lower != $filename) &&
+                ($filename != 'EN')
+            ) ||
+            ($filename == 'EN_us') ||
+            ($filename == 'ZH-TW') ||
+            ($filename == 'ZH-CN')
+        ) {
             return true;
         }
     }
@@ -726,17 +738,17 @@ function should_ignore_file($path, $bitmask = 0)
                         require_code('addons');
                         $hook_path = get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
                         $addon_info = read_addon_info($hook, false, null, null, $hook_path);
-                        $addon_files = array_merge($addon_files, array_map('strtolower', $addon_info['files']));
+                        $addon_files = array_merge($addon_files, array_map('cms_strtolower_ascii', $addon_info['files']));
                     } else { // Running from outside Composr
                         require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($hook));
                         $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($hook));
-                        $addon_files = array_merge($addon_files, array_map('strtolower', $ob->get_file_list()));
+                        $addon_files = array_merge($addon_files, array_map(function_exists('cms_strtolower_ascii') ? 'cms_strtolower_ascii' : 'strtolower', $ob->get_file_list()));
                     }
                 }
             }
             $addon_files = array_flip($addon_files);
         }
-        if ((isset($addon_files[$path])) || (isset($addon_files[strtolower($path)]))) {
+        if ((isset($addon_files[$path])) || (isset($addon_files[function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($path) : strtolower($path)]))) {
             return true;
         }
         // Note that we have no support for identifying directories related to addons, only files inside. Code using this function should detect directories with no usable files in as relating to addons.
@@ -865,7 +877,7 @@ function should_ignore_file($path, $bitmask = 0)
     }
 
     $extension = get_file_extension($filename);
-    $extension_lower = strtolower($extension);
+    $extension_lower = function_exists('cms_strtolower_ascii') ? cms_strtolower_ascii($extension) : strtolower($extension);
     if (isset($ignore_extensions[$extension_lower])) {
         if (preg_match('#^' . $ignore_extensions[$extension_lower] . '$#i', $dir) != 0) {
             return true; // Check dir context

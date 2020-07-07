@@ -39,7 +39,7 @@ class Hook_spam_heuristics_autonomous
         $autonomous = get_option('spam_heuristic_autonomous');
         if ($autonomous != '') {
             foreach (explode(',', $autonomous) as $keyword) {
-                if (strpos($post_data, strtolower(trim($keyword))) !== false) {
+                if (strpos($post_data, cms_mb_strtolower(trim($keyword))) !== false) {
                     return $score;
                 }
             }

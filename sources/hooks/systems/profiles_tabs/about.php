@@ -249,7 +249,7 @@ class Hook_profiles_tabs_about
                 }
             }
 
-            $field_codename = strtoupper(trim(preg_replace('#[^\w]+#', '_', $name), '_'));
+            $field_codename = cms_strtoupper_ascii(trim(preg_replace('#[^\w]+#', '_', $name), '_'));
             $fields_map['FIELD__' . $field_codename . '__RENDERED'] = $rendered_value;
             $fields_map['FIELD__' . $field_codename . '__RAW'] = $value;
         }

@@ -503,11 +503,11 @@ PHP;
             $symbols = [['START' => '0', 'SYMBOL' => do_lang('ALL')], ['START' => '0', 'SYMBOL' => '#']];
             foreach (['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'] as $s) {
                 foreach ($alpha_query as $i => $q) {
-                    if (strtolower(substr($q['m_username'], 0, 1)) == $s) {
+                    if (cms_strtolower_ascii(substr($q['m_username'], 0, 1)) == $s) {
                         break;
                     }
                 }
-                if (substr(strtolower($q['m_username']), 0, 1) != $s) {
+                if (substr(cms_strtolower_ascii($q['m_username']), 0, 1) != $s) {
                     $i = intval($symbols[count($symbols) - 1]['START']);
                 }
                 $symbols[] = ['START' => strval(intval($max * floor(floatval($i) / floatval($max)))), 'SYMBOL' => $s];

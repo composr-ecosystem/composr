@@ -64,7 +64,7 @@ abstract class Database_super_sqlserver extends DatabaseDriver
                 '(SELECT' => true,
             ];
             foreach ($prefixes_recognised as $prefix => $use) {
-                if (strtoupper(substr($query, 0, strlen($prefix) + 1)) == $prefix . ' ') {
+                if (cms_strtoupper_ascii(substr($query, 0, strlen($prefix) + 1)) == $prefix . ' ') {
                     if ($use) {
                         $query = $prefix . ' TOP ' . strval(intval($_max)) . ' ' . substr($query, strlen($prefix) + 1);
                     }

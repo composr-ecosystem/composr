@@ -457,7 +457,7 @@ abstract class CMSPermissionsScanner
         if (!function_exists($function)) {
             return false;
         }
-        $disabled_functions = @strtolower(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+        $disabled_functions = @cms_strtolower_ascii(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
         return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#', $disabled_functions) == 0);
     }
 
@@ -1182,7 +1182,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         }
 
         $this->key_users = array_unique($this->key_users);
-        $this->key_users = array_map('strtolower', $this->key_users);
+        $this->key_users = array_map('cms_mb_strtolower', $this->key_users);
 
         // Work out users to avoid...
 
@@ -1203,7 +1203,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
         $this->common_users[] = 'Domain Guests';
         $this->common_users[] = 'Domain Computers';
 
-        $this->common_users = array_map('strtolower', $this->common_users);
+        $this->common_users = array_map('cms_mb_strtolower', $this->common_users);
     }
 
     /**
@@ -1578,7 +1578,7 @@ class CMSPermissionsScannerWindows extends CMSPermissionsScanner
 
             $matches = [];
             if (preg_match('#^\s*(.*):((\([A-Z,]+\))+)#', $line, $matches) != 0) {
-                $sid = strtolower(preg_replace('#^.*\\\#', '', $matches[1]));
+                $sid = cms_mb_strtolower(preg_replace('#^.*\\\#', '', $matches[1]));
                 $permissions_negative = [];
                 $permissions_positive = [];
                 $permissions_negative_inherited = [];

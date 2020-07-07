@@ -119,7 +119,7 @@ class Hook_cron_catalogue_view_reports
                     $members[$entry['ce_submitter']][] = $entry;
                 }
                 $catalogue_title = get_translated_text($catalogue['c_title']);
-                $regularity = do_lang('VR_' . strtoupper($catalogue['c_send_view_reports']));
+                $regularity = do_lang('VR_' . cms_strtoupper_ascii($catalogue['c_send_view_reports']));
                 $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue['c_name']], 'ORDER BY cf_order', 1);
 
                 // And now we send out mails, and get ready for the next report

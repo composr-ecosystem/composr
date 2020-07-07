@@ -180,7 +180,7 @@ class Module_cms_polls extends Standard_crud_module
             'poll_views' => do_lang_tempcode('COUNT_VIEWS'),
             'votes1+votes2+votes3+votes4+votes5+votes6+votes7+votes8+votes9+votes10' => do_lang_tempcode('COUNT_TOTAL'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

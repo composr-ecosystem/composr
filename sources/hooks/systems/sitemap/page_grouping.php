@@ -74,7 +74,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
         $page_grouping = $matches[3];
 
         $icon = null;
-        $lang_string = strtoupper($page_grouping);
+        $lang_string = cms_strtoupper_ascii($page_grouping);
         $description = null;
 
         // Locate all pages in page groupings, and the icon for this page grouping
@@ -282,7 +282,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                     if ($details === false) {
                         continue;
                     }
-                    $page_type = strtolower($details[0]);
+                    $page_type = cms_strtolower_ascii($details[0]);
 
                     $child_links[] = [$title, $child_page_link, $icon, $page_type, $child_description];
                 }
@@ -304,7 +304,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
 
                             if (preg_match('#^redirect:#', $page_type) != 0) {
                                 $details = $this->_request_page_details($page, $_zone);
-                                $page_type = strtolower($details[0]);
+                                $page_type = cms_strtolower_ascii($details[0]);
                                 $pages[$page] = $page_type;
                             }
 

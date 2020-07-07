@@ -899,7 +899,7 @@ abstract class ListFieldHook
                 break;
 
             default:
-                if ((addon_installed('nested_cpf_spreadsheet_lists')) && (strtolower(substr($default, -4)) == '.spreadsheet')) {
+                if ((addon_installed('nested_cpf_spreadsheet_lists')) && (cms_strtolower_ascii(substr($default, -4)) == '.spreadsheet')) {
                     $spreadsheet_heading = option_value_from_field_array($field, 'spreadsheet_heading', '');
 
                     require_code('nested_spreadsheet');

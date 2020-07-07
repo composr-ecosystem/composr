@@ -773,7 +773,7 @@ class Module_filedump
                 break;
 
             case 'videos':
-                if ((strtolower(substr($filename, -4)) == '.mp3') || (strtolower(substr($filename, -4)) == '.wav') || (strtolower(substr($filename, -4)) == '.ogg')) {
+                if ((cms_strtolower_ascii(substr($filename, -4)) == '.mp3') || (cms_strtolower_ascii(substr($filename, -4)) == '.wav') || (cms_strtolower_ascii(substr($filename, -4)) == '.ogg')) {
                     return false;
                 }
                 if (!is_video($filename, true)) {
@@ -794,7 +794,7 @@ class Module_filedump
                 if (is_video($filename, true)) {
                     return false;
                 }
-                if ((strtolower(substr($filename, -4)) == '.mp3') || (strtolower(substr($filename, -4)) == '.wav') || (strtolower(substr($filename, -4)) == '.ogg')) {
+                if ((cms_strtolower_ascii(substr($filename, -4)) == '.mp3') || (cms_strtolower_ascii(substr($filename, -4)) == '.wav') || (cms_strtolower_ascii(substr($filename, -4)) == '.ogg')) {
                     return false;
                 }
                 break;
@@ -935,7 +935,7 @@ class Module_filedump
         if (isset($_POST['description'])) {
             $thumb_ticked = (post_param_integer('thumb', 0) == 1);
         }
-        $fields->attach(form_input_tick(do_lang_tempcode('COMCODE_TAG_attachment_PARAM_thumb_TITLE'), ucfirst(substr($_description, 12)), 'thumb', $thumb_ticked));
+        $fields->attach(form_input_tick(do_lang_tempcode('COMCODE_TAG_attachment_PARAM_thumb_TITLE'), cms_mb_ucfirst(substr($_description, 12)), 'thumb', $thumb_ticked));
 
         $_description = do_lang('COMCODE_TAG_attachment_PARAM_thumb_url');
         if (substr($_description, 0, strlen($adv) + 1) == $adv) {

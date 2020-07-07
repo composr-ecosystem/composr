@@ -257,7 +257,7 @@ function make_installers($skip_file_grab = false)
         // Do the main work...
 
         chdir($builds_path . '/builds/build/' . $version_branch);
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
             $cmd = 'tar --force-local -cvf ' . cms_escapeshellarg($bundled) . ' *'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
             $cmd = 'tar -cvf ' . cms_escapeshellarg($bundled) . ' *';
@@ -270,7 +270,7 @@ function make_installers($skip_file_grab = false)
         //$out .= do_build_archive_output($v, $output2);  Don't mention, as will get auto-deleted after gzipping anyway
 
         chdir(get_file_base() . '/data_custom/builds');
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
             $cmd = 'tar --force-local -rvf ' . cms_escapeshellarg($bundled) . ' readme.txt'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
             $cmd = 'tar -rvf ' . cms_escapeshellarg($bundled) . ' readme.txt';
@@ -453,7 +453,7 @@ function make_installers($skip_file_grab = false)
 
         // Do the main work
         chdir($builds_path . '/builds/build/' . $version_branch);
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
             $cmd = 'tar --force-local --exclude=_config.php --exclude=install.php -cvf ' . cms_escapeshellarg($omni_upgrader) . ' *'; // --force-local is required for Windows style absolute paths https://stackoverflow.com/a/37996249/362006
         } else {
             $cmd = 'tar --exclude=_config.php --exclude=install.php -cvf ' . cms_escapeshellarg($omni_upgrader) . ' *';
@@ -512,7 +512,7 @@ function _shell_exec_bin($cmd)
     static $bin_path = null;
 
     if ($bin_path === null) {
-        if ((strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') && file_exists('C:\cygwin64\bin\\')) {
+        if ((cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') && file_exists('C:\cygwin64\bin\\')) {
             $bin_path = 'C:\cygwin64\bin\\';
         } else {
             $bin_path = '';
@@ -1108,7 +1108,7 @@ function _download_latest_data_ip_country()
     }
 
     if (cms_empty_safe($spreadsheet_data)) {
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
             fatal_exit('Failed to extract MaxMind IP address data - the build process is not regularly tested on Windows - you need to install certain Cygwin tools, even then it may not work');
         }
 

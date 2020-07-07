@@ -95,7 +95,7 @@ $allowed_image_types = array('image/pjpeg' => "jpg", 'image/jpeg' => "jpg", 'ima
 $allowed_image_ext = array_unique($allowed_image_types); // do not change this
 $image_ext = "";    // initialise variable, do not change this.
 foreach ($allowed_image_ext as $mime_type => $ext) {
-    $image_ext .= strtoupper($ext) . " ";
+    $image_ext .= cms_strtoupper_ascii($ext) . " ";
 }
 
 

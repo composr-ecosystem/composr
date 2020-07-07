@@ -857,7 +857,7 @@ function catalogue_entries_manual_sort($fields, &$entries, $order_by, $direction
                     $r = (floatval($a) < floatval($b)) ? -1 : 1;
                 }
             } else { // Normal case
-                $r = cms_mb_strnatcmp(strtolower($a), strtolower($b));
+                $r = cms_mb_strnatcmp(cms_mb_strtolower($a), cms_mb_strtolower($b));
             }
             if ((($r < 0) && ($direction == 'ASC')) || (($r > 0) && ($direction == 'DESC'))) {
                 $temp = $entries[$i];

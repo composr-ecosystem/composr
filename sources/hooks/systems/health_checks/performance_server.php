@@ -83,7 +83,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
         }
 
         $suggested_cache = 'APCu';
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
             $suggested_cache = 'WinCache';
         }
 
@@ -290,7 +290,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 $_uptime = sys_getloadavg();
                 $uptime = $_uptime[0];
             } else {
-                if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {
+                if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) != 'WIN') {
                     $data = shell_exec('uptime');
 
                     $matches = [];
@@ -558,7 +558,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 if (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
                     $bytes_free = intval($matches[3]) * 1024;
                 }
-            } elseif (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            } elseif (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
                 $data = shell_exec('wmic OS get FreePhysicalMemory /Value');
                 if (preg_match('#FreePhysicalMemory=(\d+)#m', $data, $matches) != 0) {
                     $bytes_free = intval($matches[1]) * 1024;

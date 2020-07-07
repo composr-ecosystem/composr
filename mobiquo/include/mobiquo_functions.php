@@ -37,7 +37,7 @@ function initialise_mobiquo()
 function mobiquo_input_protocol()
 {
     global $MOBIQUO_SERVER;
-    switch (strtolower(get_class($MOBIQUO_SERVER))) {
+    switch (cms_strtolower_ascii(get_class($MOBIQUO_SERVER))) {
         case 'mobiquoserverjson':
             return 'json';
         case 'mobiquoserverxmlrpc':

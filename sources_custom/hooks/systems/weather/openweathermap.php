@@ -44,7 +44,7 @@ class Hook_weather_openweathermap
             throw new Exception($errormsg);
         }
 
-        $lang = strtolower(user_lang());
+        $lang = cms_strtolower_ascii(user_lang());
 
         require_code('http');
         require_code('locations');

@@ -199,7 +199,7 @@ class Module_cms_blogs extends Standard_crud_module
         if (addon_installed('unvalidated')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

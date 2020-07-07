@@ -315,7 +315,7 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
             $info['tar_path'] = $full;
 
             foreach ($addons_available_for_installation as $i => $a) { // Deduplicate, may be multiple versions in imports/addons
-                if ((strtolower($a['name']) == strtolower($info['name'])) && (isset($a['version'], $info['version']))) {
+                if ((cms_strtolower_ascii($a['name']) == cms_strtolower_ascii($info['name'])) && (isset($a['version'], $info['version']))) {
                     if (version_compare($a['version'], $info['version']) > 0) {
                         continue 2;
                     } else {
@@ -512,7 +512,7 @@ function inform_about_addon_install($file, $also_uninstalling = [], $also_instal
             continue;
         }
 
-        $data = (strtolower(substr($entry['path'], -4, 4)) == '.tpl') ? tar_get_file($tar, $entry['path'], true) : null;
+        $data = (cms_strtolower_ascii(substr($entry['path'], -4, 4)) == '.tpl') ? tar_get_file($tar, $entry['path'], true) : null;
 
         // check valid path
         $success = @file_exists(get_file_base() . '/' . $entry['path']); //@d due to possible bad file paths
@@ -521,7 +521,7 @@ function inform_about_addon_install($file, $also_uninstalling = [], $also_instal
         }
 
         // .php?
-        if ((strtolower(substr($entry['path'], -4, 4)) == '.php') || (($data !== null) && ((strpos($data['data'], '{+START,PHP') !== false) || (strpos($data['data'], '<' . '?php') !== false)))) {
+        if ((cms_strtolower_ascii(substr($entry['path'], -4, 4)) == '.php') || (($data !== null) && ((strpos($data['data'], '{+START,PHP') !== false) || (strpos($data['data'], '<' . '?php') !== false)))) {
             $php = true;
             $this_php = true;
         } else {
@@ -548,7 +548,7 @@ function inform_about_addon_install($file, $also_uninstalling = [], $also_instal
         }
 
         // Comcode?
-        if ((strtolower(substr($entry['path'], -4, 4)) == '.txt') && (strpos($entry['path'], 'pages/comcode') !== false)) {
+        if ((cms_strtolower_ascii(substr($entry['path'], -4, 4)) == '.txt') && (strpos($entry['path'], 'pages/comcode') !== false)) {
             $this_comcode_page = true;
         } else {
             $this_comcode_page = false;
@@ -708,7 +708,7 @@ function inform_about_addon_install($file, $also_uninstalling = [], $also_instal
 function has_feature($dependency)
 {
     // Normalise
-    $dependency = str_replace(' ', '', strtolower(preg_replace('# (enabled|needed|required)$#', '', $dependency)));
+    $dependency = str_replace(' ', '', cms_strtolower_ascii(preg_replace('# (enabled|needed|required)$#', '', $dependency)));
 
     $remapping = [ // Useful for carrying legacy remappings, currently there are none
     ];
@@ -737,25 +737,25 @@ function has_feature($dependency)
     if ((($dependency == 'cns') || ($dependency == 'conversr')) && (get_forum_type() == 'cns')) {
         return true;
     }
-    if ((strtolower($dependency) == 'php gd extension') && (function_exists('imagetypes'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php gd extension') && (function_exists('imagetypes'))) {
         return true;
     }
-    if ((strtolower($dependency) == 'php curl extension') && (function_exists('curl_init'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php curl extension') && (function_exists('curl_init'))) {
         return true;
     }
-    if ((strtolower($dependency) == 'php simplexml extension') && (function_exists('simplexml_load_string'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php simplexml extension') && (function_exists('simplexml_load_string'))) {
         return true;
     }
-    if ((strtolower($dependency) == 'php openssl extension') && (function_exists('openssl_encrypt'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php openssl extension') && (function_exists('openssl_encrypt'))) {
         return true;
     }
-    if ((strtolower($dependency) == 'php sessions extension') && (function_exists('session_start'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php sessions extension') && (function_exists('session_start'))) {
         return true;
     }
-    if ((strtolower($dependency) == 'php xml extension') && (function_exists('xml_parser_create'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php xml extension') && (function_exists('xml_parser_create'))) {
         return true;
     }
-    if ((strtolower($dependency) == 'php zip extension') && (function_exists('zip_open'))) {
+    if ((cms_strtolower_ascii($dependency) == 'php zip extension') && (function_exists('zip_open'))) {
         return true;
     }
     if (substr($dependency, 0, 4) == 'php ') {
@@ -768,7 +768,7 @@ function has_feature($dependency)
         // Client side requirements
         return true;
     }
-    if ((strtolower($dependency) == 'ssl') && (substr(get_base_url(), 0, 8) == 'https://')) {
+    if ((cms_strtolower_ascii($dependency) == 'ssl') && (substr(get_base_url(), 0, 8) == 'https://')) {
         return true;
     }
 

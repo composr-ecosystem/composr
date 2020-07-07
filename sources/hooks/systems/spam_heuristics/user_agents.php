@@ -36,12 +36,12 @@ class Hook_spam_heuristics_user_agents
             return 0;
         }
 
-        $user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+        $user_agent = cms_strtolower_ascii($_SERVER['HTTP_USER_AGENT']);
 
         $bad_user_agents = get_option('spam_heuristic_user_agents');
         if ($bad_user_agents != '') {
             foreach (explode(',', $bad_user_agents) as $bad_user_agent) {
-                if (strpos($user_agent, strtolower(trim($bad_user_agent))) !== false) {
+                if (strpos($user_agent, cms_strtolower_ascii(trim($bad_user_agent))) !== false) {
                     return $score;
                 }
             }

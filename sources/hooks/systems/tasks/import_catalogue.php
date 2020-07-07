@@ -275,7 +275,7 @@ class Hook_task_import_catalogue
                                 break;
                             case 'short_trans':
                             case 'long_trans':
-                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', ['c_name' => $catalogue_name, $GLOBALS['SITE_DB']->translate_field_ref('cv_value') => $key], '', false, ['cv_value' => strtoupper($db_type)]);
+                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', ['c_name' => $catalogue_name, $GLOBALS['SITE_DB']->translate_field_ref('cv_value') => $key], '', false, ['cv_value' => cms_strtoupper_ascii($db_type)]);
                                 break;
                             default:
                                 $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', ['c_name' => $catalogue_name, 'cv_value' => $key]);

@@ -360,7 +360,7 @@ class config_test_set extends cms_test_case
             require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
             $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
             $details = $ob->get_details();
-            $categories_found[strtolower($details['category'])] = true;
+            $categories_found[cms_strtolower_ascii($details['category'])] = true;
         }
         ksort($categories_found);
 

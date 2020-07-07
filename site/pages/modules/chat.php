@@ -1198,7 +1198,7 @@ class Module_chat
         $dh = @opendir(get_file_base() . '/data/sounds');
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
-                if (strtolower(substr($f, -4)) == '.mp3') {
+                if (cms_strtolower_ascii(substr($f, -4)) == '.mp3') {
                     $library[$f] = [
                         'EFFECT_SHORT' => $f,
                         'EFFECT' => 'data/sounds/' . $f,
@@ -1210,7 +1210,7 @@ class Module_chat
         $dh = @opendir(get_file_base() . '/data_custom/sounds');
         if ($dh !== false) {
             while (($f = readdir($dh)) !== false) {
-                if (strtolower(substr($f, -4)) == '.mp3') {
+                if (cms_strtolower_ascii(substr($f, -4)) == '.mp3') {
                     $library[$f] = [
                         'EFFECT_SHORT' => $f,
                         'EFFECT' => 'data_custom/sounds/' . $f,

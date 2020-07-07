@@ -570,7 +570,7 @@ function get_field_restrict_property($property, $field, $page = null, $type = nu
             if (simulated_wildcard_match($field, trim($__r), true)) {
                 foreach ($_restrictions as $bits) {
                     list($restriction, $attributes) = $bits;
-                    if (strtolower($restriction) == strtolower($property)) {
+                    if (cms_strtolower_ascii($restriction) == cms_strtolower_ascii($property)) {
                         return $bits[1]['embed'];
                     }
                 }

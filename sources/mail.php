@@ -175,7 +175,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
     public function __construct($advanced_parameters = [])
     {
         // Line termination is tricky. SMTP requires \r\n (PHP uses SMTP on Windows), while CLI interface must use \n.
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
             $this->line_term = "\r\n";
         } else {
             $this->line_term = "\n";
@@ -230,7 +230,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
                 }
             }
             $_to_name = $to_names[$i];
-            if (($_to_email == $_to_name) || (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')) {
+            if (($_to_email == $_to_name) || (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN')) {
                 $to_line = $_to_email;
             } else {
                 $to_line = '"' . $_to_name . '" <' . $_to_email . '>';
@@ -389,7 +389,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                     // Test connection still works
                     fwrite($socket, "NOOP\r\n");
                     $rcv = fread($socket, 1024);
-                    if (strtolower(substr($rcv, 0, 3)) != '250') {
+                    if (substr($rcv, 0, 3) != '250') {
                         @fclose($socket);
                         $socket = null;
                     }
@@ -417,13 +417,13 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
 
                         fwrite($socket, "AUTH LOGIN\r\n");
                         $rcv = fread($socket, 1024);
-                        if (strtolower(substr($rcv, 0, 3)) == '334') {
+                        if (substr($rcv, 0, 3) == '334') {
                             fwrite($socket, base64_encode($this->smtp_sockets_username) . "\r\n");
                             $rcv = fread($socket, 1024);
-                            if ((strtolower(substr($rcv, 0, 3)) == '235') || (strtolower(substr($rcv, 0, 3)) == '334')) {
+                            if ((substr($rcv, 0, 3) == '235') || (substr($rcv, 0, 3) == '334')) {
                                 fwrite($socket, base64_encode($this->smtp_sockets_password) . "\r\n");
                                 $rcv = fread($socket, 1024);
-                                if (strtolower(substr($rcv, 0, 3)) == '235') {
+                                if (substr($rcv, 0, 3) == '235') {
                                 } else {
                                     $error = do_lang('MAIL_ERROR_CONNECT_PASSWORD') . ' (' . str_replace($this->smtp_sockets_password, '*', $rcv) . ')';
                                 }
@@ -442,11 +442,11 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                 if (($error === null)) {
                     fwrite($socket, 'MAIL FROM:<' . $this->smtp_from_address . ">\r\n");
                     $rcv = fread($socket, 1024);
-                    if ((strtolower(substr($rcv, 0, 3)) == '250') || (strtolower(substr($rcv, 0, 3)) == '251')) {
+                    if ((substr($rcv, 0, 3) == '250') || (substr($rcv, 0, 3) == '251')) {
                         $sent_one = false;
                         fwrite($socket, "RCPT TO:<" . $to_emails[$i] . ">\r\n");
                         $rcv = fread($socket, 1024);
-                        if ((strtolower(substr($rcv, 0, 3)) != '250') && (strtolower(substr($rcv, 0, 3)) != '251')) {
+                        if ((substr($rcv, 0, 3) != '250') && (substr($rcv, 0, 3) != '251')) {
                             $error = do_lang('MAIL_ERROR_TO') . ' (' . $rcv . ')' . ' ' . $to_emails[$i];
                         } else {
                             $sent_one = true;
@@ -454,7 +454,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                         if ($sent_one) {
                             fwrite($socket, "DATA\r\n");
                             $rcv = fread($socket, 1024);
-                            if (strtolower(substr($rcv, 0, 3)) == '354') {
+                            if (substr($rcv, 0, 3) == '354') {
                                 $to_line = '';
                                 $mime_message = $this->assemble_full_mime_message($to_emails, $to_names, $i, $subject_wrapped, $signed_headers . $headers, $sending_message, $to_line);
 
@@ -467,7 +467,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                                 fwrite($socket, preg_replace('#^\.#m', '..', $mime_message));
                                 fwrite($socket, "\r\n.\r\n");
                                 $rcv = fread($socket, 1024);
-                                if (strtolower(substr($rcv, 0, 3)) != '250') {
+                                if (substr($rcv, 0, 3) != '250') {
                                     $error = do_lang('MAIL_ERROR_DATA') . ' (' . $rcv . ')';
                                 }
                                 fwrite($socket, "QUIT\r\n");

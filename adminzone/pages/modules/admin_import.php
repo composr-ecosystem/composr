@@ -521,7 +521,7 @@ class Module_admin_import
                 continue;
             }
 
-            $text = do_lang_tempcode((strtolower($lang_array[$import]) != $lang_array[$import]) ? $lang_array[$import] : strtoupper($lang_array[$import]));
+            $text = do_lang_tempcode((cms_strtolower_ascii($lang_array[$import]) != $lang_array[$import]) ? $lang_array[$import] : cms_strtoupper_ascii($lang_array[$import]));
             $_import_list_2[$import] = $text;
         }
         if ((array_key_exists('cns_members', $_import_list_2)) && (get_forum_type() == $importer) && ($db_name == get_db_forums()) && ($db_table_prefix == $GLOBALS['FORUM_DB']->get_table_prefix())) {

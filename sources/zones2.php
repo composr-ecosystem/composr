@@ -90,7 +90,7 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
             $subtitle = $matches2[1];
             if (!cms_empty_safe($subtitle)) {
                 if (stripos($subtitle, $raw_title) !== false) {
-                    $raw_title = ucfirst($subtitle);
+                    $raw_title = cms_mb_ucfirst($subtitle);
                 } else {
                     $raw_title .= ' (' . $subtitle . ')';
                 }
@@ -974,7 +974,7 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
             $page = strval($page);
         }
 
-        $page_lower = strtolower($page);
+        $page_lower = cms_mb_strtolower($page);
         if (($page_lower != $page) && (array_key_exists($page_lower, $out))) {
             unset($out[$page]);
         }

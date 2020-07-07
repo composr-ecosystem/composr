@@ -636,7 +636,7 @@ class Module_admin_addons
             $urls = get_url('url', 'file', 'imports/addons', 0, CMS_UPLOAD_ANYTHING, false, '', '', true);
 
             $full = get_custom_file_base() . '/' . $urls[0];
-            if (strtolower(substr($full, -4)) != '.tar') {
+            if (cms_strtolower_ascii(substr($full, -4)) != '.tar') {
                 return warn_screen(get_screen_title('ERROR_OCCURRED'), do_lang_tempcode('ADDON_NOT_TAR'));
             }
 

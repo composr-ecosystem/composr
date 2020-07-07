@@ -345,7 +345,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
 
             case 'video':
             case 'rich':
-                return do_template('MEDIA_WEBPAGE_OEMBED_' . strtoupper($data['type']), [
+                return do_template('MEDIA_WEBPAGE_OEMBED_' . cms_strtoupper_ascii($data['type']), [
                     'TITLE' => array_key_exists('title', $data) ? $data['title'] : '',
                     'HTML' => $data['html'],
                     'WIDTH' => array_key_exists('width', $data) ? $data['width'] : '',

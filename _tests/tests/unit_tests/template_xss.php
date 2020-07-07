@@ -50,7 +50,7 @@ class template_xss_test_set extends cms_test_case
             $dh = @opendir($path);
             if ($dh !== false) {
                 while (($file = readdir($dh)) !== false) {
-                    if (strtolower(substr($file, -4)) == '.tpl') {
+                    if (cms_strtolower_ascii(substr($file, -4)) == '.tpl') {
                         $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                         $c_orig = $c;
 
@@ -135,7 +135,7 @@ class template_xss_test_set extends cms_test_case
             $dh = @opendir($path);
             if ($dh !== false) {
                 while (($file = readdir($dh)) !== false) {
-                    if (strtolower(substr($file, -4)) == '.tpl') {
+                    if (cms_strtolower_ascii(substr($file, -4)) == '.tpl') {
                         $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
                         $c_orig = $c;
 

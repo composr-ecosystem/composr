@@ -148,7 +148,7 @@ class DatabaseRepair
 
             $index_details = $GLOBALS['SITE_DB']->query('SHOW INDEXES FROM ' . get_table_prefix() . $table_name); // Table, Non_unique, Key_name, Seq_in_index, Column_name, Collation, Cardinality, Sub_part, Packed, Null, Index_type
             foreach ($index_details as $index) {
-                $index_name = strtolower($index['Key_name']);
+                $index_name = cms_strtolower_ascii($index['Key_name']);
 
                 if ($index_name == 'primary') {
                     continue;
@@ -589,7 +589,7 @@ class DatabaseRepair
      */
     private function cleanup_mysql_field_type($raw_type)
     {
-        $raw_type = strtolower($raw_type);
+        $raw_type = cms_strtolower_ascii($raw_type);
         $raw_type = preg_replace('#\(.*#', '', $raw_type);
         $raw_type = preg_replace('# .*#', '', $raw_type);
         $raw_type = str_replace('integer', 'int', $raw_type);

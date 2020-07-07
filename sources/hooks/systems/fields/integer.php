@@ -82,7 +82,7 @@ class Hook_fields_integer
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        if (($default !== null) && (strtoupper($default) == 'AUTO_INCREMENT') && ($field !== null) && ($field['id'] !== null)) { // We need to calculate a default even if not required, because the defaults are programmatic
+        if (($default !== null) && (cms_strtoupper_ascii($default) == 'AUTO_INCREMENT') && ($field !== null) && ($field['id'] !== null)) { // We need to calculate a default even if not required, because the defaults are programmatic
             $default = ($field === null) ? '0' : $this->get_field_auto_increment($field['id'], $default);
         } else {
             if ($required !== null) {
@@ -148,7 +148,7 @@ class Hook_fields_integer
     {
         $default = option_value_from_field_array($field, 'default', $field['cf_default']);
 
-        if ($new && strtoupper($default) == 'AUTO_INCREMENT') {
+        if ($new && cms_strtoupper_ascii($default) == 'AUTO_INCREMENT') {
             return null;
         }
 
@@ -175,7 +175,7 @@ class Hook_fields_integer
         $id = $field['id'];
         $tmp_name = 'field_' . strval($id);
         $default = option_value_from_field_array($field, 'default', $field['cf_default']);
-        if (!$editing && strtoupper($default) == 'AUTO_INCREMENT') {
+        if (!$editing && cms_strtoupper_ascii($default) == 'AUTO_INCREMENT') {
             return $this->get_field_auto_increment($id, $field['cf_default']);
         }
         $ret = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');

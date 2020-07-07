@@ -1352,7 +1352,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
 
     if (($success) || ($length !== null)) {
         $status = (($length !== null) && (!$success)) ? 'SCancelled' : 'Completed';
-        $period = ($length === null) ? '' : strtolower(strval($length) . ' ' . $length_units);
+        $period = ($length === null) ? '' : cms_strtolower_ascii(strval($length) . ' ' . $length_units);
         list(, $member_id) = handle_confirmed_transaction($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $message_raw, $amount, $tax, $currency, true, '', '', $memo, $period, get_member(), $payment_gateway, false, true);
     }
 
@@ -1517,7 +1517,7 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
         if ($period != '') {
             $length = array_key_exists('length', $found['type_special_details']) ? strval($found['type_special_details']['length']) : '1';
             $length_units = array_key_exists('length_units', $found['type_special_details']) ? $found['type_special_details']['length_units'] : 'm';
-            if (strtolower($period) != strtolower($length . ' ' . $length_units)) {
+            if (cms_strtolower_ascii($period) != cms_strtolower_ascii($length . ' ' . $length_units)) {
                 if ($silent_fail) {
                     return null;
                 }

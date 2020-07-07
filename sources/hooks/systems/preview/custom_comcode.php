@@ -81,8 +81,8 @@ class Hook_preview_custom_comcode
                 continue;
             }
             list($parameter, $default) = $parts;
-            $binding[strtoupper($parameter)] = $default;
-            $replace = str_replace('{' . $parameter . '}', '{' . strtoupper($parameter) . '*}', $replace);
+            $binding[cms_strtoupper_ascii($parameter)] = $default;
+            $replace = str_replace('{' . $parameter . '}', '{' . cms_strtoupper_ascii($parameter) . '*}', $replace);
         }
 
         require_code('tempcode_compiler');

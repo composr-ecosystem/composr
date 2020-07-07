@@ -389,7 +389,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_mrow($name)
     {
-        $rows = $this->db->query_select('users', ['*'], ['username_clean' => strtolower($name)], '', 1);
+        $rows = $this->db->query_select('users', ['*'], ['username_clean' => cms_mb_strtolower($name)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return null;
         }
@@ -1020,7 +1020,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_matching_members($pattern, $limit = null)
     {
-        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'users WHERE username LIKE \'' . db_encode_like(strtolower($pattern)) . '\' AND user_id<>' . strval($this->get_guest_id()) . ' ORDER BY user_lastvisit DESC', $limit);
+        $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'users WHERE username LIKE \'' . db_encode_like(cms_mb_strtolower($pattern)) . '\' AND user_id<>' . strval($this->get_guest_id()) . ' ORDER BY user_lastvisit DESC', $limit);
         sort_maps_by($rows, 'username');
         return $rows;
     }
@@ -1252,7 +1252,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
      */
     public function get_member_from_username($name)
     {
-        return $this->db->query_select_value_if_there('users', 'user_id', ['username_clean' => strtolower($name)]);
+        return $this->db->query_select_value_if_there('users', 'user_id', ['username_clean' => cms_mb_strtolower($name)]);
     }
 
     /**
@@ -1340,7 +1340,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
     public function forum_md5($data, $key, $just_first = false)
     {
         $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $hash = $GLOBALS['FORUM_DB']->query_select_value_if_there('users', 'user_password', ['username_clean' => strtolower($key)]);
+        $hash = $GLOBALS['FORUM_DB']->query_select_value_if_there('users', 'user_password', ['username_clean' => cms_mb_strtolower($key)]);
         if ($hash === null) {
             return '';
         }
@@ -1431,7 +1431,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         $out['id'] = null;
 
         if ($user_id === null) {
-            $rows = $this->db->query_select('users', ['*'], ['username_clean' => strtolower($username)], '', 1);
+            $rows = $this->db->query_select('users', ['*'], ['username_clean' => cms_mb_strtolower($username)], '', 1);
             if (array_key_exists(0, $rows)) {
                 $this->MEMBER_ROWS_CACHED[$rows[0]['user_id']] = $rows[0];
             }

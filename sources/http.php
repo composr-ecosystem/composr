@@ -833,7 +833,7 @@ abstract class HttpDownloader
                 $_ct_more = explode(';', str_replace(' ', '', trim($matches[2])));
                 foreach ($_ct_more as $ct_more) {
                     $ct_bits = explode('=', $ct_more, 2);
-                    if ((count($ct_bits) == 2) && (strtolower($ct_bits[0]) == 'charset')) {
+                    if ((count($ct_bits) == 2) && (cms_strtolower_ascii($ct_bits[0]) == 'charset')) {
                         $this->charset = trim($ct_bits[1]);
                     }
                 }
@@ -1004,7 +1004,7 @@ class HttpDownloaderCurl extends HttpDownloader
         curl_setopt($ch, CURLOPT_TIMEOUT, intval($this->timeout));
 
         // Request type
-        if (($this->http_verb !== null) && (strtolower($this->http_verb) == 'head')) {
+        if (($this->http_verb !== null) && (cms_strtolower_ascii($this->http_verb) == 'head')) {
             curl_setopt($ch, CURLOPT_NOBODY, true); // Branch needed as doing a HEAD via CURLOPT_CUSTOMREQUEST can cause a timeout bug in cURL
         } else {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->http_verb);

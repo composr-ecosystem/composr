@@ -193,7 +193,7 @@ function get_mime_types($as_admin)
  */
 function get_mime_type($extension, $as_admin)
 {
-    $extension = strtolower($extension);
+    $extension = cms_strtolower_ascii($extension);
 
     $mime_types = get_mime_types($as_admin);
 
@@ -213,7 +213,7 @@ function get_mime_type($extension, $as_admin)
  */
 function get_ext_from_mime_type($mime_type, $as_admin = true)
 {
-    $mime_type = strtolower($mime_type);
+    $mime_type = cms_strtolower_ascii($mime_type);
 
     $mime_types = get_mime_types($as_admin);
 

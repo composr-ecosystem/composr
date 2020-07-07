@@ -71,7 +71,7 @@ class Hook_actionlog_backups extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'BACKUP':
                 require_lang('backups');
-                $type = do_lang(strtoupper($actionlog_row['param_b']) . '_BACKUP', null, null, null, null, false);
+                $type = do_lang(cms_strtoupper_ascii($actionlog_row['param_b']) . '_BACKUP', null, null, null, null, false);
                 if ($type === null) {
                     $type = '?';
                 }

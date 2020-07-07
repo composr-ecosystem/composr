@@ -130,7 +130,7 @@ function find_theme_dark($theme)
     $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
     $matches = [];
     if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),WB,.*\}#', $css_file_contents, $matches) != 0) {
-        $THEME_DARK_CACHE[$theme] = (strtoupper($matches[1]) != 'FFFFFF');
+        $THEME_DARK_CACHE[$theme] = (cms_strtoupper_ascii($matches[1]) != 'FFFFFF');
     } else {
         $THEME_DARK_CACHE[$theme] = false;
     }
@@ -1353,7 +1353,7 @@ function themewizard_colours_to_css($contents, $landscape, $source_theme, $algor
         for ($i = 0; $i < $num_matches; $i++) {
             list($h, $s, $v) = rgb_to_hsv((strlen($matches[1][$i]) == 3) ? ($matches[1][$i][0] . $matches[1][$i][0] . $matches[1][$i][1] . $matches[1][$i][1] . $matches[1][$i][2] . $matches[1][$i][2]) : $matches[1][$i]);
             $new_colour = hsv_to_rgb(floatval(fix_colour($h + $hue_dif, true)), floatval(fix_colour($s + $sat_dif)), floatval(fix_colour($v + $val_dif)));
-            $contents = str_replace([strtolower($matches[0][$i]), strtoupper($matches[0][$i])], ['#' . $new_colour . $matches[2][$i], '#' . $new_colour . $matches[2][$i]], $contents);
+            $contents = str_replace([cms_strtolower_ascii($matches[0][$i]), cms_strtoupper_ascii($matches[0][$i])], ['#' . $new_colour . $matches[2][$i], '#' . $new_colour . $matches[2][$i]], $contents);
         }
 
         return $contents;

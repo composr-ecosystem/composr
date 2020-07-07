@@ -829,7 +829,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
                 if ($is_in_word) {
                     // Exiting word?
                     $is_exiting_word = false;
-                    if ((!$codename) && (!$is_word_char) && (/*Not space-separated*/($current_char != ' ') || (/*Current word not starting with Caps*/!$word_starts_caps) || (/*Next word not starting with Caps*/strtolower(substr($source, $i + 1, 1)) == substr($source, $i + 1, 1)))) { // End of apparent word and not a space-separated Proper Noun
+                    if ((!$codename) && (!$is_word_char) && (/*Not space-separated*/($current_char != ' ') || (/*Current word not starting with Caps*/!$word_starts_caps) || (/*Next word not starting with Caps*/cms_mb_strtolower(substr($source, $i + 1, 1)) == substr($source, $i + 1, 1)))) { // End of apparent word and not a space-separated Proper Noun
                         $is_exiting_word = true;
                     } elseif ($i == $len - 1) { // End of string; we don't look for outstanding words at the end of the loop so we have to trigger $is_exiting_word early
                         $is_exiting_word = true;
@@ -878,7 +878,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
                 if ($is_in_word) {
                     // Exiting word?
                     $is_exiting_word = false;
-                    if ((!$codename) && (!$is_word_char) && (/*Not space-separated*/($current_char != ' ') || (/*Current word not starting with Caps*/!$word_starts_caps) || (/*Next word not starting with Caps*/strtolower(substr($source, $i + 1, 1)) == substr($source, $i + 1, 1)))) { // End of apparent word and not a space-separated Proper Noun
+                    if ((!$codename) && (!$is_word_char) && (/*Not space-separated*/($current_char != ' ') || (/*Current word not starting with Caps*/!$word_starts_caps) || (/*Next word not starting with Caps*/cms_mb_strtolower(substr($source, $i + 1, 1)) == substr($source, $i + 1, 1)))) { // End of apparent word and not a space-separated Proper Noun
                         $is_exiting_word = true;
                     } elseif ($i == $len - 1) { // End of string; we don't look for outstanding words at the end of the loop so we have to trigger $is_exiting_word early
                         $is_exiting_word = true;
@@ -895,7 +895,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
                         // If word is long enough, we might use it
                         if (($i - $word_start) >= $min_word_length) {
                             // If word is not a stop word, we might use it
-                            if (!isset($common_words_flip[strtolower($this_word)])) {
+                            if (!isset($common_words_flip[cms_mb_strtolower($this_word)])) {
                                 // We store the word, either as one we might use, or one we must use, and we store how many occurrences it had
                                 if (!isset($keywords_might_use[$this_word])) {
                                     $keywords_might_use[$this_word] = 0;
@@ -912,7 +912,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
                 } else {
                     // Entering word?
                     if ($is_word_char) {
-                        $word_starts_caps = (strtolower($current_char) != $current_char);
+                        $word_starts_caps = (cms_mb_strtolower($current_char) != $current_char);
                         $word_start = $i;
                         $is_in_word = true;
                     }

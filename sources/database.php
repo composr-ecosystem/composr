@@ -813,16 +813,6 @@ abstract class DatabaseDriver
     }
 
     /**
-     * Find whether collate support is present.
-     *
-     * @return boolean Whether it is
-     */
-    public function has_collate_settings()
-    {
-        return false;
-    }
-
-    /**
      * Find whether update queries may have joins.
      *
      * @return boolean Whether it is
@@ -1768,7 +1758,7 @@ class DatabaseConnector
     {
         global $DEV_MODE;
         if ((!$skip_safety_check) && (stripos($query, 'union') !== false) && (strpos(get_db_type(), 'mysql') !== false)) {
-            $_query = cms_preg_replace_safe('#\s#', ' ', strtolower($query));
+            $_query = cms_preg_replace_safe('#\s#', ' ', cms_strtolower_ascii($query));
             $queries = 1;//substr_count($_query, 'insert into ') + substr_count($_query, 'replace into ') + substr_count($_query, 'update ') + substr_count($_query, 'select ') + substr_count($_query, 'delete from '); Not reliable
             if ((strpos(preg_replace('#\'[^\']*\'#', '\'\'', str_replace('\\\'', '', $_query)), ' union ') !== false) || ($queries > 1)) {
                 log_hack_attack_and_exit('SQL_INJECTION_HACK', $query);

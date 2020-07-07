@@ -133,7 +133,7 @@ function convert_lang_code_to_transifex($lang)
     }
 
     $lang_parts = explode('_', $lang, 2);
-    return strtolower($lang_parts[0]) . (isset($lang_parts[1]) ? ('_' . $lang_parts[1]) : '');
+    return cms_strtolower_ascii($lang_parts[0]) . (isset($lang_parts[1]) ? ('_' . $lang_parts[1]) : '');
 }
 
 function transifex_push_script()

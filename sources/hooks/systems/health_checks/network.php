@@ -103,7 +103,7 @@ class Hook_health_check_network extends Hook_Health_Check
         }
 
         if (php_function_allowed('shell_exec')) {
-            if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
                 $cmd = 'ping -n 10 8.8.8.8';
             } else {
                 $cmd = 'ping -c 10 8.8.8.8';

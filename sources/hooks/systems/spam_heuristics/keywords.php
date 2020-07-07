@@ -39,7 +39,7 @@ class Hook_spam_heuristics_keywords
         $keywords = get_option('spam_heuristic_keywords');
         if ($keywords != '') {
             foreach (explode(',', $keywords) as $keyword) {
-                if (strpos($post_data, strtolower(trim($keyword))) !== false) {
+                if (strpos($post_data, cms_mb_strtolower(trim($keyword))) !== false) {
                     return $score;
                 }
             }

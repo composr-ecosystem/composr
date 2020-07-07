@@ -594,8 +594,7 @@ PHP;
             }
         }
 
-        $locale = localeconv();
-        if ($locale['thousands_sep'] == '.') {
+        if (do_lang('locale_thousands_sep') == '.') {
             if ($sortable_type === 'integer') {
                 $sortable_type = 'integer_comma';
             }

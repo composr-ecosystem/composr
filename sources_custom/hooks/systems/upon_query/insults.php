@@ -106,7 +106,7 @@ class Hook_upon_query_insults
 
                     if ($to_member == $poster_id) {
                         // Start comparing insult reply and the post
-                        if (levenshtein(trim(strtolower($post)), trim(strtolower($get_reply))) < intval(0.1 * strlen($get_reply))) {
+                        if (levenshtein(trim(cms_mb_strtolower($post)), trim(cms_mb_strtolower($get_reply))) < intval(0.1 * strlen($get_reply))) {
                             $_insult_points = get_option('insult_points', true);
                             $insult_points = (isset($_insult_points) && intval($_insult_points) > 0) ? intval($_insult_points) : 10;
 

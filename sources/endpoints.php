@@ -72,7 +72,7 @@ function endpoint_script()
             }
 
             // Convert from REST's use of standard HTTP verbs to Composr's standard $type names (also corresponds with CRUD)
-            switch (strtoupper($_SERVER['REQUEST_METHOD'])) {
+            switch (cms_strtoupper_ascii($_SERVER['REQUEST_METHOD'])) {
                 case 'POST': // REST POST = CRUD create = Composr add
                     $type = 'add';
                     break;

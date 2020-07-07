@@ -196,7 +196,7 @@ function check_posted_field($name, $val, $filters)
  */
 function strip_url_to_representative_domain($url)
 {
-    return preg_replace('#^www\.#', '', strtolower(parse_url(normalise_idn_url($url), PHP_URL_HOST)));
+    return preg_replace('#^www\.#', '', cms_strtolower_ascii(parse_url(normalise_idn_url($url), PHP_URL_HOST)));
 }
 
 /**
@@ -460,7 +460,7 @@ function filter_form_field_default($name, $val, $live = false)
                         $attributes['error'] = do_lang(substr($attributes['error'], 1));
                     }
 
-                    switch (strtolower($restriction)) {
+                    switch (cms_strtolower_ascii($restriction)) {
                         case 'minlength':
                             if ($live && strlen($val) < intval($attributes['embed'])) {
                                 warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_FIELD_TOO_SHORT', escape_html($name), strval(intval($attributes['embed']))));
@@ -590,7 +590,7 @@ function make_sentence_case_callback($matches)
  */
 function deshout_callback($matches)
 {
-    return ucwords(strtolower($matches[0]));
+    return cms_ucwords_ascii(cms_mb_strtolower($matches[0]));
 }
 
 /**
@@ -703,11 +703,11 @@ class Field_restriction_loader
         array_push($this->tag_stack, $tag);
         $attributes = [];
         foreach ($_attributes as $key => $val) {
-            $attributes[strtolower($key)] = $val;
+            $attributes[cms_strtolower_ascii($key)] = $val;
         }
         array_push($this->attribute_stack, $attributes);
 
-        switch (strtolower($tag)) {
+        switch (cms_strtolower_ascii($tag)) {
             case 'qualify':
                 if ($this->levels_from_filtered == 0) {
                     $applies = true;
@@ -804,7 +804,7 @@ class Field_restriction_loader
         $tag = array_pop($this->tag_stack);
         $attributes = array_pop($this->attribute_stack);
 
-        switch (strtolower($tag)) {
+        switch (cms_strtolower_ascii($tag)) {
             case 'qualify':
                 array_pop($this->field_qualification_stack);
                 break;
@@ -943,7 +943,7 @@ class Advanced_banning_loader
         array_push($this->tag_stack, $tag);
         $attributes = [];
         foreach ($_attributes as $key => $val) {
-            $attributes[strtolower($key)] = $val;
+            $attributes[cms_strtolower_ascii($key)] = $val;
         }
         array_push($this->attribute_stack, $attributes);
     }
@@ -958,7 +958,7 @@ class Advanced_banning_loader
         $tag = array_pop($this->tag_stack);
         $attributes = array_pop($this->attribute_stack);
 
-        switch (strtolower($tag)) {
+        switch (cms_strtolower_ascii($tag)) {
             case 'automaticrule':
                 $applies = true;
                 if ($applies) {

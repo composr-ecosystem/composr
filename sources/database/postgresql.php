@@ -121,7 +121,7 @@ class Database_Static_postgresql extends DatabaseDriver
      */
     public function apply_sql_limit_clause(&$query, $max = null, $start = 0)
     {
-        if ((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) {
+        if ((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) {
             if (($max !== null) && ($start != 0)) {
                 $query .= ' LIMIT ' . strval(intval($max)) . ' OFFSET ' . strval(intval($start));
             } elseif ($max !== null) {
@@ -173,7 +173,7 @@ class Database_Static_postgresql extends DatabaseDriver
         }
 
         if ($get_insert_id) {
-            if (strtoupper(substr(ltrim($query), 0, 7)) == 'UPDATE ') {
+            if (cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'UPDATE ') {
                 return null;
             }
 
@@ -206,7 +206,7 @@ class Database_Static_postgresql extends DatabaseDriver
         $names = [];
         for ($x = 1; $x <= $num_fields; $x++) {
             $types[$x - 1] = pg_field_type($results, $x - 1);
-            $names[$x - 1] = strtolower(pg_field_name($results, $x - 1));
+            $names[$x - 1] = cms_strtolower_ascii(pg_field_name($results, $x - 1));
         }
 
         $out = [];
@@ -464,7 +464,7 @@ class Database_Static_postgresql extends DatabaseDriver
             require_code('database_search');
             $stopwords = get_stopwords_list();
         }
-        if (isset($stopwords[trim(strtolower($content), '"')])) {
+        if (isset($stopwords[trim(cms_mb_strtolower($content), '"')])) {
             // This is an imperfect solution for searching for a stop-word
             // It will not cover the case where the stop-word is within the wider text. But we can't handle that case efficiently anyway
             return db_string_equal_to('?', trim($content, '"'));

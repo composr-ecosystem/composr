@@ -199,7 +199,7 @@ class EmToPx extends CSSCleanup
                     $back_offset = max(strrpos($_full, ';'), strrpos($_full, '{')) + 1;
                     $colon_offset = strrpos($_full, ':');
                     $property = trim(substr($full, $back_offset, $colon_offset - $back_offset));
-                    $is_for_font_size = (strtolower($property) == 'font-size');
+                    $is_for_font_size = (cms_strtolower_ascii($property) == 'font-size');
 
                     $_amount_em = $matches[1][$i][0];
                     $amount_em = floatval($_amount_em);
@@ -294,7 +294,7 @@ class EmToPx extends CSSCleanup
      */
     protected function normalise_font_size($font_size)
     {
-        $font_size = strtolower($font_size);
+        $font_size = cms_strtolower_ascii($font_size);
 
         if (substr($font_size, -1) == '%') {
             $_font_size = substr($font_size, 0, strlen($font_size) - 1);

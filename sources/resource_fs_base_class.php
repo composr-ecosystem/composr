@@ -353,7 +353,7 @@ abstract class Resource_fs_base
             '.ds_store',
         ];
         foreach ($all_disallowed as $disallowed) {
-            if (strtolower($filename) == $disallowed) {
+            if (cms_strtolower_ascii($filename) == $disallowed) {
                 return false;
             }
         }
@@ -857,7 +857,7 @@ abstract class Resource_fs_base
      */
     protected function _create_name_from_label($label)
     {
-        $name = strtolower($label);
+        $name = cms_strtolower_ascii($label);
         $name = preg_replace('#[^\w\.\-]#', '_', $name);
         $name = preg_replace('#_+\$#', '', $name);
         if ($name == '') {
@@ -1058,7 +1058,7 @@ abstract class Resource_fs_base
                         if ($subpath_id === null) { // Missing, find via moniker that doesn't match a label due to prefixing
                             if (preg_match('#^[A-Z]+-#', $subpath_bit) != 0) {
                                 $_subpath_bit = preg_replace('#^[A-Z]+-#', '', $subpath_bit);
-                                $detected_resource_type = strtolower(preg_replace('#-.*$#', '', $subpath_bit));
+                                $detected_resource_type = cms_strtolower_ascii(preg_replace('#-.*$#', '', $subpath_bit));
                                 $subpath_id = find_id_via_label($detected_resource_type, $_subpath_bit, $subpath_above);
                             }
                         }

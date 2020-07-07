@@ -94,10 +94,10 @@ while (($sheet = readdir($dh)) !== false) {
             $matches = [];
             $num_matches = preg_match_all('#\#[A-Fa-f0-9]{6}(.*)' . preg_quote($peak[2], '#') . '#', $output, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
-                if (strtolower($matches[0][$i]) == strtolower('#' . $peak[3] . $matches[1][$i] . $peak[2])) { // i.e. unaltered in our theme
+                if (cms_strtolower_ascii($matches[0][$i]) == cms_strtolower_ascii('#' . $peak[3] . $matches[1][$i] . $peak[2])) { // i.e. unaltered in our theme
                     foreach ($theme_landscape as $new_peak) { // Try and find the new-seeded solution to this particular equation
                         if ($new_peak[2] == $peak[2]) {
-                            $output = str_replace([strtoupper($matches[0][$i]), strtolower($matches[0][$i])], ['#' . $new_peak[3] . $matches[1][$i] . $new_peak[2], '#' . $new_peak[3] . $matches[1][$i] . $new_peak[2]], $output);
+                            $output = str_replace([cms_strtoupper_ascii($matches[0][$i]), cms_strtolower_ascii($matches[0][$i])], ['#' . $new_peak[3] . $matches[1][$i] . $new_peak[2], '#' . $new_peak[3] . $matches[1][$i] . $new_peak[2]], $output);
                             break;
                         }
                     }

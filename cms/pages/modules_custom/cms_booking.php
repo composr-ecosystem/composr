@@ -241,7 +241,7 @@ class Module_cms_booking extends Standard_crud_module
             'sort_order' => do_lang_tempcode('SORT_ORDER'),
             'enabled' => do_lang_tempcode('ENABLED'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
@@ -500,7 +500,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
             'price' => do_lang_tempcode('PRICE'),
             'sort_order' => do_lang_tempcode('SORT_ORDER'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
@@ -704,7 +704,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
         $sortables = [
             'blacked_from_year,blacked_from_month,blacked_from_day' => do_lang_tempcode('DATE'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
@@ -974,7 +974,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
             'bookable_id' => do_lang_tempcode('BOOKABLE'),
             'booked_at' => do_lang_tempcode('BOOKING_DATE'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

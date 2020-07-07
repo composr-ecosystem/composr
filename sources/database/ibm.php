@@ -250,7 +250,7 @@ class Database_Static_ibm extends DatabaseDriver
         if ($max !== null) {
             $max += $start;
 
-            if ((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) { // Unfortunately we can't apply to DELETE FROM and update :(. But its not too important, LIMIT'ing them was unnecessarily anyway
+            if ((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) { // Unfortunately we can't apply to DELETE FROM and update :(. But its not too important, LIMIT'ing them was unnecessarily anyway
                 $query .= ' FETCH FIRST ' . strval($max + $start) . ' ROWS ONLY';
             }
         }
@@ -271,7 +271,7 @@ class Database_Static_ibm extends DatabaseDriver
     {
         $this->apply_sql_limit_clause($query, $max, $start);
 
-        if ((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) { // Unfortunately we can't apply to DELETE FROM and update :(. But its not too important, LIMIT'ing them was unnecessarily anyway
+        if ((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) { // Unfortunately we can't apply to DELETE FROM and update :(. But its not too important, LIMIT'ing them was unnecessarily anyway
             $query .= ' FETCH FIRST ' . strval($max) . ' ROWS ONLY';
         }
 
@@ -293,12 +293,12 @@ class Database_Static_ibm extends DatabaseDriver
             }
         }
 
-        if ((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ') && (!$results !== false)) {
+        if ((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ') && (!$results !== false)) {
             return $this->get_query_rows($results, $query, $start);
         }
 
         if ($get_insert_id) {
-            if (strtoupper(substr(ltrim($query), 0, 7)) == 'UPDATE ') {
+            if (cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'UPDATE ') {
                 return null;
             }
 
@@ -342,7 +342,7 @@ class Database_Static_ibm extends DatabaseDriver
                     $v = odbc_result($results, $j);
 
                     $type = $types[$j];
-                    $name = strtolower($names[$j]);
+                    $name = cms_strtolower_ascii($names[$j]);
 
                     if (($type == 'INTEGER') || ($type == 'SMALLINT') || ($type == 'UINTEGER')) {
                         if ($v !== null) {

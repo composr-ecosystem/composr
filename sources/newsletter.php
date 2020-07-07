@@ -656,34 +656,34 @@ function detect_newsletter_spreadsheet_columns($header_row)
     $join_time_index = null;
 
     foreach ($header_row as $j => $val) {
-        if (in_array(strtolower($val), ['e-mail', 'email', 'email address', 'e-mail address', strtolower(do_lang('EMAIL_ADDRESS')), 'to'])) {
+        if (in_array(cms_mb_strtolower($val), ['e-mail', 'email', 'email address', 'e-mail address', cms_mb_strtolower(do_lang('EMAIL_ADDRESS')), 'to'])) {
             $email_address_index = $j;
         }
-        if (in_array(strtolower($val), ['forename', 'forenames', 'first name', strtolower(do_lang('FORENAME'))])) {
+        if (in_array(cms_mb_strtolower($val), ['forename', 'forenames', 'first name', cms_mb_strtolower(do_lang('FORENAME'))])) {
             $forename_index = $j;
         }
-        if (in_array(strtolower($val), ['surname', 'surnames', 'last name', strtolower(do_lang('SURNAME'))])) {
+        if (in_array(cms_mb_strtolower($val), ['surname', 'surnames', 'last name', cms_mb_strtolower(do_lang('SURNAME'))])) {
             $surname_index = $j;
         }
-        if (in_array(strtolower($val), ['name', 'username', strtolower(do_lang('NAME'))])) {
+        if (in_array(cms_mb_strtolower($val), ['name', 'username', cms_mb_strtolower(do_lang('NAME'))])) {
             $name_index = $j;
         }
-        if (in_array(strtolower($val), ['id', 'identifier', do_lang('NEWSLETTER_SEND_ID')])) {
+        if (in_array(cms_mb_strtolower($val), ['id', 'identifier', do_lang('NEWSLETTER_SEND_ID')])) {
             $send_id_index = $j;
         }
-        if (in_array(strtolower($val), ['hash', 'password', 'pass', 'pword', 'pw', 'p/w', 'code', 'secret', strtolower(do_lang('PASSWORD_HASH'))])) {
+        if (in_array(cms_mb_strtolower($val), ['hash', 'password', 'pass', 'pword', 'pw', 'p/w', 'code', 'secret', cms_mb_strtolower(do_lang('PASSWORD_HASH'))])) {
             $hash_index = $j;
         }
-        if (in_array(strtolower($val), ['salt', strtolower(do_lang('SALT'))])) {
+        if (in_array(cms_mb_strtolower($val), ['salt', cms_mb_strtolower(do_lang('SALT'))])) {
             $salt_index = $j;
         }
-        if (in_array(strtolower($val), ['lang', 'language', strtolower(do_lang('LANGUAGE'))])) {
+        if (in_array(cms_mb_strtolower($val), ['lang', 'language', cms_mb_strtolower(do_lang('LANGUAGE'))])) {
             $language_index = $j;
         }
-        if (in_array(strtolower($val), ['confirm', 'confirm code', strtolower(do_lang('CONFIRM_CODE'))])) {
+        if (in_array(cms_mb_strtolower($val), ['confirm', 'confirm code', cms_mb_strtolower(do_lang('CONFIRM_CODE'))])) {
             $code_confirm_index = $j;
         }
-        if ((stripos($val, 'time') !== false) || (stripos($val, 'date') !== false) || (strtolower($val) == do_lang('JOIN_DATE'))) {
+        if ((stripos($val, 'time') !== false) || (stripos($val, 'date') !== false) || (cms_mb_strtolower($val) == do_lang('JOIN_DATE'))) {
             $join_time_index = $j;
         }
     }

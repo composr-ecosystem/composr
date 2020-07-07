@@ -362,7 +362,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
 
             // Record rules
             if (preg_match('#^([\w-]+):\s*(.*)\s*$#i', $line, $matches) != 0) {
-                $key = strtolower($matches[1]);
+                $key = cms_strtolower_ascii($matches[1]);
                 $value = trim($matches[2]);
 
                 $core_rule = ($key == 'allow') || ($key == 'disallow');
@@ -371,7 +371,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
                     $this->assertTrue(in_array($key, ['allow', 'disallow', 'sitemap', 'crawl-delay']), 'Unrecognised [tt]robots.txt[/tt] rule:' . $key);
 
                     if ($core_rule) {
-                        $this->assertTrue($did_some_ua_line, 'Floating [tt]' . ucwords($key) . '[/tt] outside of any User-Agent section of [tt]robots.txt[/tt]');
+                        $this->assertTrue($did_some_ua_line, 'Floating [tt]' . cms_ucwords_ascii($key) . '[/tt] outside of any User-Agent section of [tt]robots.txt[/tt]');
                     }
                 }
 

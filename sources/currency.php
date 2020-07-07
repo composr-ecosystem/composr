@@ -135,13 +135,12 @@ function currency_convert($amount, $from_currency = null, $to_currency = null, $
         $to_currency = get_currency();
     }
 
-    $from_currency = strtoupper($from_currency);
-    $to_currency = strtoupper($to_currency);
+    $from_currency = cms_strtoupper_ascii($from_currency);
+    $to_currency = cms_strtoupper_ascii($to_currency);
 
     $map = get_currency_map();
 
     // Check from currency
-    $from_currency = strtoupper($from_currency);
     if (!array_key_exists($from_currency, $map)) {
         attach_message(do_lang_tempcode('UNKNOWN_CURRENCY', escape_html($from_currency)), 'warn', false, true);
 

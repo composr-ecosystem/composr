@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: ucfirst*/
+
 if ((isset($_SERVER['argv'][0])) && (strpos($_SERVER['argv'][0], 'critical_errors.php') !== false)) {
     $cli = ((function_exists('php_sapi_name')) && (strpos(ini_get('disable_functions'), 'php_sapi_name') === false) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR'])));
     if ($cli) {
@@ -217,7 +219,7 @@ if (!function_exists('critical_error')) {
                         $_value = str_replace($SITE_INFO['db_forums_password'], '(password removed)', $_value);
                     }
 
-                    $traces .= ucfirst($key) . ' -> ' . htmlentities($_value) . '<br />' . "\n";
+                    $traces .= (function_exists('cms_ucfirst_ascii') ? cms_ucfirst_ascii($key) : ucfirst($key)) . ' -> ' . htmlentities($_value) . '<br />' . "\n";
                 }
                 $extra .= '<p>' . $traces . '</p>' . "\n";
             }

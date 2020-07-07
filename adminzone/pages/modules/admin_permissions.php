@@ -1299,7 +1299,7 @@ class Module_admin_permissions
                     }
 
                     if ($module == 'topics') {
-                        $m_list .= ' (' . strtolower(do_lang((strpos($privilege, 'lowrange') !== false) ? 'FORUM_POSTS' : 'FORUM_TOPICS')) . ')';
+                        $m_list .= ' (' . cms_strtolower_ascii(do_lang((strpos($privilege, 'lowrange') !== false) ? 'FORUM_POSTS' : 'FORUM_TOPICS')) . ')';
                     }
                 }
                 if (function_exists('ocp_mark_as_escaped')) {

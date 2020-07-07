@@ -206,7 +206,7 @@ function captcha_audio($code_needed)
 {
     $data = '';
     for ($i = 0; $i < strlen($code_needed); $i++) {
-        $char = strtolower($code_needed[$i]);
+        $char = cms_strtolower_ascii($code_needed[$i]);
 
         $file_path = get_file_base() . '/data_custom/sounds/' . $char . '.wav';
         if (!file_exists($file_path)) {
@@ -564,7 +564,7 @@ function check_captcha($code_entered = null, $regenerate_on_error = true, &$erro
         attach_message(do_lang_tempcode('NO_SESSION_SECURITY_CODE'), 'warn');
         return false;
     }
-    $passes = (strtolower($code_needed) == strtolower($code_entered));
+    $passes = (cms_strtolower_ascii($code_needed) == cms_strtolower_ascii($code_entered));
     if ($regenerate_on_error) {
         if (get_option('captcha_single_guess') == '1') {
             if ($passes) {

@@ -443,7 +443,7 @@ class Module_search
         $author_id = ($author != '') ? $GLOBALS['FORUM_DRIVER']->get_member_from_username($author) : null;
         $sort = get_param_string('sort', 'relevance');
         $direction = get_param_string('direction', 'DESC');
-        if (!in_array(strtoupper($direction), ['ASC', 'DESC'])) {
+        if (!in_array(cms_strtoupper_ascii($direction), ['ASC', 'DESC'])) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
         $only_titles = get_param_integer('only_titles', 0) == 1;
@@ -583,7 +583,7 @@ class Module_search
             if ($query_term == '') {
                 continue;
             }
-            if (!in_array(strtolower($query_term), $too_common_words)) {
+            if (!in_array(cms_mb_strtolower($query_term), $too_common_words)) {
                 $SEARCH_QUERY_TERMS[] = $query_term;
             }
         }

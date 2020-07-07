@@ -471,10 +471,10 @@ class Module_galleries
                         make_string_tempcode(has_edit_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', ['galleries', $cat]) ? '1' : '0'),
                     ]
                 );
-                $this->title = get_screen_title((((get_translated_text($myrow['title']) == '') ? 'VIEW_' : '_VIEW_') . strtoupper($type)), true, [$fe], null, $awards);
+                $this->title = get_screen_title((((get_translated_text($myrow['title']) == '') ? 'VIEW_' : '_VIEW_') . cms_strtoupper_ascii($type)), true, [$fe], null, $awards);
             }
 
-            $title_plain = do_lang((((get_translated_text($myrow['title']) == '') ? 'VIEW_' : '_VIEW_') . strtoupper($type)), get_translated_text($myrow['title']));
+            $title_plain = do_lang((((get_translated_text($myrow['title']) == '') ? 'VIEW_' : '_VIEW_') . cms_strtoupper_ascii($type)), get_translated_text($myrow['title']));
 
             $root = get_param_string('keep_gallery_root', 'root');
 

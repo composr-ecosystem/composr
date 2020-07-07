@@ -248,7 +248,7 @@ function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $sys
     }
 
     // Generate error message
-    $outx = '<strong>' . strtoupper($type) . '</strong> [' . strval($errno) . '] ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline) . '<br />' . "\n";
+    $outx = '<strong>' . cms_strtoupper_ascii($type) . '</strong> [' . strval($errno) . '] ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline) . '<br />' . "\n";
     if (class_exists('Tempcode')) {
         if ($fatal) {
             $trace = get_html_trace();
@@ -270,7 +270,7 @@ function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $sys
             syslog($syslog_type, $php_error_label);
         }
         if (php_function_allowed('error_log')) {
-            @error_log('PHP ' . ucwords($type) . ': ' . $php_error_label, 0);
+            @error_log('PHP ' . cms_ucwords_ascii($type) . ': ' . $php_error_label, 0);
         }
 
         // Send error e-mail
@@ -295,7 +295,7 @@ function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $sys
 
     // Display in appropriate way
     if ($fatal) {
-        $error_str = 'PHP ' . strtoupper($type) . ' [' . strval($errno) . '] ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline);
+        $error_str = 'PHP ' . cms_strtoupper_ascii($type) . ' [' . strval($errno) . '] ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline);
 
         if (throwing_errors()) {
             throw new CMSException($error_str);
@@ -1244,7 +1244,7 @@ function die_html_trace($message)
                 $_value = str_replace($SITE_INFO['db_forums_password'], '(password removed)', $_value);
             }
 
-            $traces .= ucfirst($key) . ' -> ' . $_value . '<br />' . "\n";
+            $traces .= cms_ucfirst_ascii($key) . ' -> ' . $_value . '<br />' . "\n";
         }
         $trace .= '<p>' . $traces . '</p>' . "\n";
     }
@@ -1344,7 +1344,7 @@ function get_html_trace()
                 $_value = put_value_in_stack_trace($__value);
             }
 
-            $traces[] = ['LINE' => $line, 'FILE' => $file, 'KEY' => ucfirst($key), 'VALUE' => $_value];
+            $traces[] = ['LINE' => $line, 'FILE' => $file, 'KEY' => cms_ucfirst_ascii($key), 'VALUE' => $_value];
         }
         $trace[] = ['TRACES' => $traces];
     }

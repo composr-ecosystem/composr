@@ -37,7 +37,7 @@ function tar_open($path, $mode, $known_exists = false, $real_filename = null)
     }
 
     $exists = ($known_exists ? true : file_exists($path)) && (strpos($mode, 'c+') !== false);
-    if ((function_exists('gzopen')) && (strtolower(substr($real_filename, -3)) == '.gz')) {
+    if ((function_exists('gzopen')) && (cms_strtolower_ascii(substr($real_filename, -3)) == '.gz')) {
         $myfile = @gzopen($path, $mode);
     } else {
         $myfile = @fopen($path, $mode);
@@ -97,7 +97,7 @@ function tar_get_directory(&$resource, $tolerate_errors = false)
 
     $chr_0 = chr(0);
 
-    $is_windows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+    $is_windows = (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) === 'WIN');
 
     do {
         if (feof($myfile)) {
@@ -579,7 +579,7 @@ function tar_add_file(&$resource, $target_path, $data, $_mode = 0644, $_mtime = 
         $target_path = substr($target_path, 1);
     }
 
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) === 'WIN') {
         $target_path = utf8_encode($target_path);
     }
 
@@ -723,7 +723,7 @@ function tar_close($resource)
     }
 
     @flock($resource['myfile'], LOCK_UN);
-    if ((function_exists('gzclose')) && (strtolower(substr($resource['real_filename'], -3)) == '.gz')) {
+    if ((function_exists('gzclose')) && (cms_strtolower_ascii(substr($resource['real_filename'], -3)) == '.gz')) {
         gzclose($resource['myfile']);
     } else {
         fclose($resource['myfile']);

@@ -288,7 +288,7 @@ function _find_words($text, $unicode_accepted = true)
                 continue;
             }
         } else {
-            if (strtoupper($word) == $word) { // Full caps means acronym
+            if (cms_mb_strtoupper($word) == $word) { // Full caps means acronym [we have to use cms_mb_strtoupper because strtoupper is unreliably based on locales]
                 continue;
             }
             if (strlen($word) == 1) { // Too short for a word
@@ -307,7 +307,7 @@ function _find_words($text, $unicode_accepted = true)
 
         $word = preg_replace('#\'s$#', '', $word); // Strip back possession structure
 
-        $word = $is_unicode ? cms_mb_strtolower($word) : strtolower($word);
+        $word = cms_mb_strtolower($word);
 
         $words[$word] = true;
     }
@@ -506,7 +506,7 @@ function add_spellchecker_words_temp($spell_link, $words)
             break;
 
         case 'mock':
-            $spell_link[] = strtolower($word);
+            $spell_link[] = cms_mb_strtolower($word);
             break;
     }
 }

@@ -184,7 +184,7 @@ if (count($langs) != 1) {
     // Recognise when language supported by browser
     if (get_option('detect_lang_browser') == '1') {
         foreach (array_keys($langs) as $lang) {
-            $data .= 'RewriteCond %{HTTP:Accept-Language} (^' . strtolower($lang) . ') [NC]' . "\n";
+            $data .= 'RewriteCond %{HTTP:Accept-Language} (^' . cms_strtolower_ascii($lang) . ') [NC]' . "\n";
             $data .= 'RewriteRule (^.*\.htm.*$) ' . $lang . '/$1 [L]' . "\n";
 
             $data .= "\n";
@@ -348,9 +348,30 @@ function post_param_string($key, $default)
     return isset($_POST[$key]) ? $_POST[$key] : $default;
 }
 
+function cms_ucwords_ascii($str)
+{
+    $starting_word = false;
+    global $ascii_lcase_map;
+    $ascii_lcase_map = ["a" => "A", "b" => "B", "c" => "C", "d" => "D", "e" => "E", "f" => "F", "g" => "G", "h" => "H", "i" => "I", "j" => "J", "k" => "K", "l" => "L", "m" => "M", "n" => "N", "o" => "O", "p" => "P", "q" => "Q", "r" => "R", "s" => "S", "t" => "T", "u" => "U", "v" => "V", "w" => "W", "x" => "X", "y" => "Y", "z" => "Z"];
+    $ret = "";
+    foreach (str_split($str) as $c) {
+        $is_whitespace = (trim($c) == "");
+        if (($starting_word) && (!$is_whitespace)) {
+            $ret .= isset($ascii_lcase_map[$c]) ? $ascii_lcase_map[$c] : $c;
+            $starting_word = false;
+        } else {
+            if ($is_whitespace) {
+                $starting_word = true;
+            }
+            $ret .= $c;
+        }
+    }
+    return $ret;
+}
+
 function titleify($boring)
 {
-    return ucwords(str_replace("_", " ", $boring));
+    return cms_ucwords_ascii(str_replace("_", " ", $boring));
 }
 
 if (!isset($_COOKIE["js_on"])) {

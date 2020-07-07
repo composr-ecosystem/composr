@@ -331,7 +331,7 @@ class Hook_import_vb3
                 if (!empty($row['languageid'])) {
                     $rows2 = $db->query_select('language', ['languagecode'], ['languageid' => $row['languageid']]);
                     if (array_key_exists(0, $rows2)) {
-                        $language = strtoupper($rows2[0]['languagecode']);
+                        $language = cms_strtoupper_ascii($rows2[0]['languagecode']);
                         if ((!file_exists(get_custom_file_base() . '/lang_custom/' . $language)) && (!file_exists(get_file_base() . '/lang/' . $language))) {
                             $language = '';
                         }

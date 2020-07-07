@@ -163,7 +163,7 @@ function moveLetter(&$word)
     }
 
     if (!isVowel(substr($word, 0, 1))) {
-        $ch_letter = strtolower(substr($word, 0, 1));
+        $ch_letter = cms_strtolower_ascii(substr($word, 0, 1));
         $word = substr($word, 1) . $ch_letter;
         return moveLetter($word);
     } else {
@@ -189,7 +189,7 @@ function isVowel($ch_letter)
     $letters = ['a', 'e', 'i', 'o', 'u', 'y'];
 
     for ($i = 0; $i < 6; $i++) {
-        if (strtolower($ch_letter) == $letters[$i]) {
+        if (cms_strtolower_ascii($ch_letter) == $letters[$i]) {
             return true;
         }
     }

@@ -247,7 +247,7 @@ class Module_cms_chat
             $test[1] = 'DESC';
         }
         list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
         require_code('templates_results_table');
@@ -339,7 +339,7 @@ class Module_cms_chat
             $test[1] = 'DESC';
         }
         list($sortable, $sort_order) = $test;
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('chat_messages', 'COUNT(*)', ['room_id' => $room_id]);

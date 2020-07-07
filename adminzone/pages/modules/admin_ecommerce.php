@@ -351,7 +351,7 @@ class Module_admin_ecommerce extends Standard_crud_module
                 $fields->attach(form_input_text_comcode(do_lang_tempcode('BODY'), do_lang_tempcode('DESCRIPTION_SUBSCRIPTION_BODY'), 'body_' . strval($i), $body, false, null, true));
                 $radios = new Tempcode();
                 foreach (['start', 'term_start', 'term_end', 'expiry'] as $ref_point_type) {
-                    $radios->attach(form_input_radio_entry('ref_point_' . strval($i), $ref_point_type, $ref_point == $ref_point_type, do_lang_tempcode('_SUBSCRIPTION_' . strtoupper($ref_point_type) . '_TIME')));
+                    $radios->attach(form_input_radio_entry('ref_point_' . strval($i), $ref_point_type, $ref_point == $ref_point_type, do_lang_tempcode('_SUBSCRIPTION_' . cms_strtoupper_ascii($ref_point_type) . '_TIME')));
                 }
                 $fields->attach(form_input_radio(do_lang_tempcode('SUBSCRIPTION_REF_POINT'), do_lang_tempcode('DESCRIPTION_SUBSCRIPTION_REF_POINT'), 'ref_point_' . strval($i), $radios, true));
                 $fields->attach(form_input_integer(do_lang_tempcode('SUBSCRIPTION_REF_POINT_OFFSET'), do_lang_tempcode('DESCRIPTION_SUBSCRIPTION_REF_POINT_OFFSET'), 'ref_point_offset_' . strval($i), $ref_point_offset, true));
@@ -391,7 +391,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             's_group_id' => do_lang_tempcode('USERGROUP'),
             's_enabled' => do_lang('ENABLED'),
         ];
-        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+        if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 

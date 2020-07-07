@@ -88,7 +88,7 @@ function bookables_ical_script()
             $parts = explode(' ', $event['cycle_type']);
             if (count($parts) == 1) {
                 echo "DTSTART;TZ=" . get_site_timezone() . ":" . date('Ymd', $time) . "\n";
-                $recurrence_code = 'FREQ=' . strtoupper($parts[0]);
+                $recurrence_code = 'FREQ=' . cms_strtoupper_ascii($parts[0]);
                 echo "RRULE:" . $recurrence_code . "\n";
             } else {
                 for ($i = 0; $i < strlen($parts[1]); $i++) {
@@ -122,7 +122,7 @@ function bookables_ical_script()
                     }
                     if ($parts[1][$i] != '0') {
                         echo "DTSTART:" . date('Ymd', $time) . "\n";
-                        $recurrence_code = 'FREQ=' . strtoupper($parts[0]);
+                        $recurrence_code = 'FREQ=' . cms_strtoupper_ascii($parts[0]);
                         echo "RRULE:" . $recurrence_code . ";INTERVAL=" . strval(strlen($parts[1])) . ";COUNT=1\n";
                     }
                 }

@@ -536,7 +536,7 @@ function calculation_internal_heuristic_confidence()
     $post_data = '';
     foreach ($_POST as $val) {
         if (is_string($val)) {
-            $post_data .= strtolower($val) . "\n\n";
+            $post_data .= cms_mb_strtolower($val) . "\n\n";
         }
     }
 

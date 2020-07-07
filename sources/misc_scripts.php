@@ -148,7 +148,7 @@ function gd_text_script()
         }
         imagefilledrectangle($img, 0, 0, $width, $height, $trans);
         require_code('character_sets');
-        $text = convert_to_html_encoding(convert_to_internal_encoding($text, strtolower(get_param_string('charset', get_charset())), get_charset()));
+        $text = convert_to_html_encoding(convert_to_internal_encoding($text, cms_strtolower_ascii(get_param_string('charset', get_charset())), get_charset()));
         if (strpos($text, '&#') === false) {
             $previous = null;
             $nxpos = 0;

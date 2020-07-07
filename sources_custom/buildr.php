@@ -309,8 +309,8 @@ function try_to_enter_room($member_id, $dx, $dy, $given_password)
 
         // Or Was the given password wrong? (give them fail message)
         $answer = $room['password_answer'];
-        if (!((strtolower($given_password) == 'cheat') && ((has_privilege($member_id, 'administer_buildr')) || ($owner == $member_id)))) { // Admins may enter 'cheat' to always-get-in
-            if ((strtolower($answer) != strtolower($given_password))) {
+        if (!((cms_mb_strtolower($given_password) == 'cheat') && ((has_privilege($member_id, 'administer_buildr')) || ($owner == $member_id)))) { // Admins may enter 'cheat' to always-get-in
+            if ((cms_mb_strtolower($answer) != cms_mb_strtolower($given_password))) {
                 $GLOBALS['SITE_DB']->query_insert('w_attempts', [
                     'a_datetime' => time(),
                     'attempt' => $given_password,

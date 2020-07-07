@@ -179,7 +179,7 @@ class Hook_geocoding_google
         $key = get_option('google_apis_api_key');
 
         $url = 'https://maps.googleapis.com/maps/api/geocode/json';
-        $url .= '?language=' . urlencode(strtolower(get_site_default_lang()));
+        $url .= '?language=' . urlencode(cms_strtolower_ascii(get_site_default_lang()));
         if (isset($_COOKIE['google_bias'])) {
             $url .= '&region=' . urlencode($_COOKIE['google_bias']);
         }

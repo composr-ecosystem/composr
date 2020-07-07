@@ -814,7 +814,7 @@ function _url_rewrite_params($zone_name, $parameters, $force_index_php = false)
                         $key = 'ID';
                         break;
                     default:
-                        $key = strtoupper($key);
+                        $key = cms_strtoupper_ascii($key);
                         break;
                 }
                 $makeup = str_replace($key, cms_rawurlencode($val, true), $makeup);
@@ -916,7 +916,7 @@ function looks_like_url($value, $lax = false)
          (substr($value, 0, 17) === '{$BRAND_BASE_URL') ||
          (substr($value, 0, 10) === '{$BASE_URL') ||
          (substr($value, 0, 3) === '../') ||
-         (strtolower(substr($value, 0, 11)) === 'javascript:') ||
+         (cms_strtolower_ascii(substr($value, 0, 11)) === 'javascript:') ||
          (substr($value, 0, 4) === 'tel:') ||
          (substr($value, 0, 7) === 'mailto:') ||
          (substr($value, 0, 7) === 'http://') ||
@@ -1278,9 +1278,9 @@ function find_id_moniker($url_parts, $zone, $search_redirects = true)
         }
 
         global $REDIRECT_CACHE;
-        if ((isset($REDIRECT_CACHE[$zone][strtolower($page)])) && ($REDIRECT_CACHE[$zone][strtolower($page)]['r_is_transparent'] === 1)) {
-            $new_page = $REDIRECT_CACHE[$zone][strtolower($page)]['r_to_page'];
-            $new_zone = $REDIRECT_CACHE[$zone][strtolower($page)]['r_to_zone'];
+        if ((isset($REDIRECT_CACHE[$zone][cms_mb_strtolower($page)])) && ($REDIRECT_CACHE[$zone][cms_mb_strtolower($page)]['r_is_transparent'] === 1)) {
+            $new_page = $REDIRECT_CACHE[$zone][cms_mb_strtolower($page)]['r_to_page'];
+            $new_zone = $REDIRECT_CACHE[$zone][cms_mb_strtolower($page)]['r_to_zone'];
             $page = $new_page;
             $zone = $new_zone;
         }

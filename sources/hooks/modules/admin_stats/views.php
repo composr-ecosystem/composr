@@ -1214,9 +1214,9 @@ class Hook_admin_stats_views extends CMSStatsProvider
                         if (empty($bar)) {
                             $nice_bar = do_lang('_UNKNOWN');
                         } else {
-                            $nice_bar = lookup_language_full_name(strtoupper($bar));
+                            $nice_bar = lookup_language_full_name(cms_strtoupper_ascii($bar));
                             if (empty($nice_bar)) {
-                                $nice_bar = lookup_language_full_name(strtoupper(preg_replace('#_.*$#', '', $bar)));
+                                $nice_bar = lookup_language_full_name(cms_strtoupper_ascii(preg_replace('#_.*$#', '', $bar)));
                             }
                             if (empty($nice_bar)) {
                                 $nice_bar = $bar;

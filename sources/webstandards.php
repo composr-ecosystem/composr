@@ -2014,12 +2014,9 @@ function _get_next_tag()
                     if (function_exists('require_code')) {
                         require_code('type_sanitisation');
                     }
-                    if ((function_exists('ctype_alnum')) && (ctype_alnum($current_attribute_name))) {
-                    } else {
-                        if ((preg_match('#^\w+$#', $current_attribute_name) == 0/*optimisation*/) && (!is_alphanumeric(preg_replace('#^([^:]+):#', '${1}', $current_attribute_name)))) {
-                            $errors[] = ['XML_TAG_BAD_ATTRIBUTE', $current_attribute_name];
-                            $current_attribute_name = 'wrong' . strval($POS);
-                        }
+                    if ((preg_match('#^\w+$#', $current_attribute_name) == 0/*optimisation*/) && (!is_alphanumeric(preg_replace('#^([^:]+):#', '${1}', $current_attribute_name)))) {
+                        $errors[] = ['XML_TAG_BAD_ATTRIBUTE', $current_attribute_name];
+                        $current_attribute_name = 'wrong' . strval($POS);
                     }
                     $status = IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT;
                 } elseif ($next == '<') {
@@ -2275,7 +2272,7 @@ function _check_tag($tag, $attributes, $self_close, $close, $errors)
 {
     global $XML_CONSTRAIN, $LAST_TAG_ATTRIBUTES, $WELL_FORMED_ONLY, $WEBSTANDARDS_CHECKER_OFF, $MUST_SELFCLOSE_TAGS;
 
-    $ltag = strtolower($tag);
+    $ltag = cms_strtolower_ascii($tag);
     if ($ltag != $tag) {
         if ($XML_CONSTRAIN) {
             $errors[] = ['XHTML_CASE_TAG', $tag];

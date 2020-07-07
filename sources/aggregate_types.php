@@ -148,7 +148,7 @@ function delete_aggregate_type_instance($id, $delete_matches = false)
     $other_parameters = unserialize($GLOBALS['SITE_DB']->query_select_value_if_there('aggregate_type_instances', 'other_parameters', ['id' => $id]));
     foreach ($other_parameters as $key => $val) {
         unset($other_parameters[$key]);
-        $other_parameters[strtoupper($key)] = $val;
+        $other_parameters[cms_strtoupper_ascii($key)] = $val;
     }
 
     // Delete all instance stuff of requested
@@ -224,7 +224,7 @@ function _find_parameters_in($src_text, &$parameters)
     $matches = [];
     $cnt = preg_match_all('#\{(\w+)[^\}]+\}#', $src_text, $matches);
     for ($i = 0; $i < $cnt; $i++) {
-        $parameters[] = strtolower($matches[1][$i]);
+        $parameters[] = cms_strtolower_ascii($matches[1][$i]);
     }
 }
 
@@ -477,18 +477,18 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
     // Make sure we have values for all the parameters- default ones we don't have to blank -- and make it all Tempcode ready
     $parameters = [];
     foreach ($other_parameters as $key => $val) {
-        $parameters[strtoupper($key)] = $val;
+        $parameters[cms_strtoupper_ascii($key)] = $val;
     }
     $parameters['LABEL'] = $aggregate_label;
     $parameters_needed = find_aggregate_type_parameters($aggregate_type);
     foreach ($parameters_needed as $parameter) {
-        if (!array_key_exists(strtoupper($parameter), $parameters)) {
-            $parameters[strtoupper($parameter)] = '';
+        if (!array_key_exists(cms_strtoupper_ascii($parameter), $parameters)) {
+            $parameters[cms_strtoupper_ascii($parameter)] = '';
         }
     }
     foreach ($old_parameters as $key => $val) {
         unset($old_parameters[$key]);
-        $old_parameters[strtoupper($key)] = $val;
+        $old_parameters[cms_strtoupper_ascii($key)] = $val;
     }
 
     // Process the resources

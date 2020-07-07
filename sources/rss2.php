@@ -108,7 +108,7 @@ function rss_backend_script()
         return;
     }
 
-    $type = strtoupper($type);
+    $type = cms_strtoupper_ascii($type);
     if (($type != 'RSS2') && ($type != 'ATOM')) {
         $type = 'RSS2';
     }

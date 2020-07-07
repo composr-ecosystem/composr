@@ -119,7 +119,7 @@ class Database_Static_oracle extends DatabaseDriver
      */
     public function apply_sql_limit_clause(&$query, $max = null, $start = 0)
     {
-        if (($start != 0) && ($max !== null) && (strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) {
+        if (($start != 0) && ($max !== null) && (cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) {
             $old_query = $query;
             $pos = stripos($old_query, 'FROM ');
             $pos2 = strpos($old_query, ' ', $pos + 5);
@@ -165,7 +165,7 @@ class Database_Static_oracle extends DatabaseDriver
 
         $stmt = ociparse($connection, $query);
         $results = @ociexecute($stmt);
-        if ((($results === false) || (((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true))) && (!$fail_ok)) {
+        if ((($results === false) || (((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true))) && (!$fail_ok)) {
             $err = ocierror($connection);
             if (function_exists('ocp_mark_as_escaped')) {
                 ocp_mark_as_escaped($err);
@@ -182,12 +182,12 @@ class Database_Static_oracle extends DatabaseDriver
             }
         }
 
-        if (($results !== true) && ((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results !== false)) {
+        if (($results !== true) && ((cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'SELECT ') || (cms_strtoupper_ascii(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results !== false)) {
             return $this->get_query_rows($stmt, $query, $start);
         }
 
         if ($get_insert_id) {
-            if (strtoupper(substr(ltrim($query), 0, 7)) == 'UPDATE ') {
+            if (cms_strtoupper_ascii(substr(ltrim($query), 0, 7)) == 'UPDATE ') {
                 return null;
             }
 
@@ -221,7 +221,7 @@ class Database_Static_oracle extends DatabaseDriver
         $names = [];
         for ($x = 1; $x <= $num_fields; $x++) {
             $types[$x] = ocicolumntype($results, $x);
-            $names[$x] = strtolower(ocicolumnname($results, $x));
+            $names[$x] = cms_strtolower_ascii(ocicolumnname($results, $x));
         }
         while (ocifetch($results)) {
             if ($i >= $start) {
@@ -447,7 +447,7 @@ class Database_Static_oracle extends DatabaseDriver
      */
     public function get_table_count_approx($table, $connection)
     {
-        $sql = 'SELECT NUM_ROWS FROM ALL_TABLES WHERE TABLE_NAME=\'' . strtoupper($this->escape_string($table)) . '\'';
+        $sql = 'SELECT NUM_ROWS FROM ALL_TABLES WHERE TABLE_NAME=\'' . cms_strtoupper_ascii($this->escape_string($table)) . '\'';
         $values = $this->query($sql, $connection, null, 0, true);
         if (!isset($values[0])) {
             return null; // No result found

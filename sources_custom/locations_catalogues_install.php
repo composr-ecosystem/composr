@@ -241,10 +241,10 @@ function _worldcities_remaining_locations()
     require_code('files_spreadsheets_read');
     $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/worldcitiespop.csv');
     while (($line = $sheet_reader->read_row()) !== false) {
-        $country_name = find_country_name_from_iso(strtoupper($line['Country']));
+        $country_name = find_country_name_from_iso(cms_strtoupper_ascii($line['Country']));
         $many_locations[$country_name][$line['City']] = $line['Latitude'] . ',' . $line['Longitude'];
-        $many_locations[$country_name][strtolower($line['AccentCity'])] = $line['Latitude'] . ',' . $line['Longitude'];
-        $many_locations[$country_name][strtolower(remove_accents($line['AccentCity']))] = $line['Latitude'] . ',' . $line['Longitude'];
+        $many_locations[$country_name][cms_mb_strtolower($line['AccentCity'])] = $line['Latitude'] . ',' . $line['Longitude'];
+        $many_locations[$country_name][cms_mb_strtolower(remove_accents($line['AccentCity']))] = $line['Latitude'] . ',' . $line['Longitude'];
     }
     $sheet_reader->close();
 
@@ -253,7 +253,7 @@ function _worldcities_remaining_locations()
         $unknown = $GLOBALS['SITE_DB']->query('SELECT id,l_country,l_place FROM ' . get_table_prefix() . 'locations WHERE l_latitude IS NULL AND id>' . strval($from) . ' ORDER BY id', 1000);
 
         foreach ($unknown as $location) {
-            $place = strtolower(remove_accents($location['l_place']));
+            $place = cms_mb_strtolower(remove_accents($location['l_place']));
             if (isset($many_locations[$location['l_country']][$place])) {
                 list($latitude, $longitude) = explode(',', $many_locations[$location['l_country']][$place]);
                 $GLOBALS['SITE_DB']->query_update('locations', ['l_latitude' => floatval($latitude), 'l_longitude' => floatval($longitude)], ['id' => $location['id']], '', 1);

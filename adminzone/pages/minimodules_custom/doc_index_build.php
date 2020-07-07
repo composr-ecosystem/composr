@@ -65,7 +65,7 @@ foreach ($_addons as $addon_name => $place) {
 
         $pretty = titleify($addon_name);
 
-        $stemmed_addon = strtolower($stemmer->stem($pretty));
+        $stemmed_addon = cms_strtolower_ascii($stemmer->stem($pretty));
         $_synonyms = [];
         foreach ($synonyms as $ss) {
             if (in_array($ss[0], ['export', 'permission'])) {

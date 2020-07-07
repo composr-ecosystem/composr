@@ -36,7 +36,7 @@ class js_lang_references_test_set extends cms_test_case
             $path = get_file_base() . '/themes/default/' . $subdir;
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
-                if (strtolower(substr($file, -3)) == '.js') {
+                if (cms_strtolower_ascii(substr($file, -3)) == '.js') {
                     $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
                     $matches = [];

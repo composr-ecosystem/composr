@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: strtoupper|strtolower|ucfirst*/
+
 // Composr can install basically from the real final code, except for...
 // -- global.php
 // -- global2.php
@@ -293,7 +295,7 @@ function get_base_url_hostname()
 {
     global $SITE_INFO;
     if (!empty($SITE_INFO['base_url'])) {
-        return strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+        return parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
     }
     if (!empty($_SERVER['HTTP_HOST'])) {
         return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
@@ -310,7 +312,7 @@ function get_base_url_hostname()
 function get_request_hostname()
 {
     if (!empty($_SERVER['HTTP_HOST'])) {
-        return strtolower(preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']));
+        return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
     }
     return gethostname();
 }
@@ -330,7 +332,7 @@ function get_domain()
     if (empty($ret)) {
         // Derive from base URL
         if (!empty($SITE_INFO['base_url'])) {
-            $ret = strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+            $ret = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
         }
     }
     if (empty($ret)) {
@@ -392,7 +394,7 @@ function cms_error_get_last()
             break;
     }
 
-    return '<strong>' . strtoupper($type) . '</strong> [' . strval($error['type']) . '] ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . strval($error['line']);
+    return '<strong>' . (function_exists('cms_strtoupper_ascii') ? cms_strtoupper_ascii($type) : strtoupper($type)) . '</strong> [' . strval($error['type']) . '] ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . strval($error['line']);
 }
 
 /**
@@ -439,7 +441,8 @@ function php_function_allowed($function)
             return false;
         }
     }
-    return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#', strtolower(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'))) == 0);
+    $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+    return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#i', $blocked) == 0);
 }
 
 /**
@@ -508,7 +511,7 @@ function get_html_trace()
                     ob_end_clean();
                 }
             }
-            $traces[] = ['LINE' => $line, 'FILE' => $file, 'KEY' => ucfirst($key), 'VALUE' => $_value];
+            $traces[] = ['LINE' => $line, 'FILE' => $file, 'KEY' => function_exists('cms_ucfirst_ascii') ? cms_ucfirst_ascii($key) : ucfirst($key), 'VALUE' => $_value];
         }
         $trace[] = ['TRACES' => $traces];
     }

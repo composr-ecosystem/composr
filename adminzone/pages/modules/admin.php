@@ -88,7 +88,7 @@ class Module_admin
             case 'setup':
             case 'tools':
             case 'security':
-                breadcrumb_set_self(do_lang_tempcode(($type == 'browse') ? 'ADMIN_ZONE' : strtoupper($type)));
+                breadcrumb_set_self(do_lang_tempcode(($type == 'browse') ? 'ADMIN_ZONE' : cms_strtoupper_ascii($type)));
                 break;
         }
 
@@ -353,7 +353,7 @@ class Module_admin
             }
 
             foreach ($synonym_rows as $synonyms) {
-                if ((in_array(strtolower($keyword), $synonyms)) || ((array_key_exists($xi + 1, $_keywords)) && (in_array(strtolower($_keywords[$xi] . ' ' . $_keywords[$xi + 1]), $synonyms)))) {
+                if ((in_array(cms_mb_strtolower($keyword), $synonyms)) || ((array_key_exists($xi + 1, $_keywords)) && (in_array(cms_mb_strtolower($_keywords[$xi] . ' ' . $_keywords[$xi + 1]), $synonyms)))) {
                     if (in_array('', $synonyms)) {
                         foreach ($synonyms as $synonym) {
                             if (($synonym != '') || (count($_keywords) > 2/*Stop word only if longish search*/)) {
@@ -451,7 +451,7 @@ class Module_admin
                     if (($i[0] != '') && ($this->_keyword_match(is_object($n) ? $n->evaluate() : $n)) && (has_actual_page_access(get_member(), $i[2][0], $i[2][2]))) {
                         $_url = build_url(['page' => $i[2][0]] + $i[2][1], $i[2][2]);
                         $breadcrumbs = new Tempcode();
-                        $breadcrumbs->attach(hyperlink(build_url(['page' => 'admin', 'type' => $i[0]], 'adminzone'), do_lang_tempcode(($i[0] == 'social') ? 'SECTION_SOCIAL' : strtoupper($i[0])), false, false));
+                        $breadcrumbs->attach(hyperlink(build_url(['page' => 'admin', 'type' => $i[0]], 'adminzone'), do_lang_tempcode(($i[0] == 'social') ? 'SECTION_SOCIAL' : cms_strtoupper_ascii($i[0])), false, false));
                         $sup = do_lang_tempcode('LOCATED_IN', $breadcrumbs);
                         $content[$current_results_type]->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
                             '_GUID' => 'ec53a1d45fe6a80308bf509b896d2763',
@@ -549,7 +549,7 @@ class Module_admin
                                                     require_lang('menus');
 
                                                     $breadcrumbs->attach(do_template('BREADCRUMB_SEPARATOR'));
-                                                    $breadcrumbs->attach(hyperlink($_url, do_lang_tempcode(($i[0] == 'social') ? 'SECTION_SOCIAL' : strtoupper($i[0])), false, false));
+                                                    $breadcrumbs->attach(hyperlink($_url, do_lang_tempcode(($i[0] == 'social') ? 'SECTION_SOCIAL' : cms_strtoupper_ascii($i[0])), false, false));
                                                     if ($type != 'browse') {
                                                         $breadcrumbs->attach(do_template('BREADCRUMB_SEPARATOR'));
                                                         $breadcrumbs->attach(hyperlink(build_url(['page' => $page, 'type' => 'browse'], $zone), $i[3], false, false));
@@ -1181,7 +1181,7 @@ class Module_admin
                     $dh = @opendir(get_file_base() . '/' . $lang_dir . '/' . fallback_lang() . '/');
                     if ($dh !== false) {
                         while (($file = readdir($dh)) !== false) {
-                            if (strtolower(substr($file, -4)) == '.ini') {
+                            if (cms_strtolower_ascii(substr($file, -4)) == '.ini') {
                                 if (!array_key_exists($file, $lang_file_contents)) {
                                     $lang_file_contents[$file] = cms_file_get_contents_safe(get_file_base() . '/' . $lang_dir . '/' . fallback_lang() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
                                 }
@@ -1269,7 +1269,7 @@ class Module_admin
             foreach (['templates_custom', 'templates', 'xml_custom', 'xml', 'text_custom', 'text'] as $template_dir) {
                 $dh = opendir(get_file_base() . '/themes/default/' . $template_dir . '/');
                 while (($file = readdir($dh)) !== false) {
-                    if (((strtolower(substr($file, -4)) == '.tpl') || (strtolower(substr($file, -4)) == '.xml') || (strtolower(substr($file, -4)) == '.txt') || (strtolower(substr($file, -3)) == '.js')) && (!array_key_exists($file, $tpl_found))) {
+                    if (((cms_strtolower_ascii(substr($file, -4)) == '.tpl') || (cms_strtolower_ascii(substr($file, -4)) == '.xml') || (cms_strtolower_ascii(substr($file, -4)) == '.txt') || (cms_strtolower_ascii(substr($file, -3)) == '.js')) && (!array_key_exists($file, $tpl_found))) {
                         $n = $file;
                         if (($this->_keyword_match(basename($n, '.' . get_file_extension($n)))) || ($this->_keyword_match($n)) || (($template_dir == 'templates_custom') && ($this->_keyword_match(cms_file_get_contents_safe(get_file_base() . '/themes/default/' . $template_dir . '/' . $n, FILE_READ_LOCK | FILE_READ_BOM))))) {
                             $_url = build_url(['page' => 'admin_themes', 'type' => 'edit_templates', 'theme' => $default_theme, 'f0file' => $template_dir . '/' . $file], get_module_zone('admin_themes'));
@@ -1303,7 +1303,7 @@ class Module_admin
             $content[$current_results_type] = new Tempcode();
             $dh = opendir(get_file_base() . '/themes/default/css/');
             while (($file = readdir($dh)) !== false) {
-                if (strtolower(substr($file, -4)) == '.css') {
+                if (cms_strtolower_ascii(substr($file, -4)) == '.css') {
                     $n = $file;
                     if ($this->_keyword_match(cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $n, FILE_READ_LOCK | FILE_READ_BOM))) {
                         $url = build_url(['page' => 'admin_themes', 'type' => 'edit_templates', 'theme' => $default_theme, 'f0file' => 'css/' . $file], get_module_zone('admin_themes'), [], false, false, false, isset($keywords[0]) ? $keywords[0][0] : '');

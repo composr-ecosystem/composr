@@ -49,9 +49,9 @@ function is_simple_query($query)
     $complex_operators = ['<', '>', '!', '+', '-', '/', '*'];
     $query = _trim_quoted_substrings($query);
     $query_parts = explode(' ', $query);
-    if (in_array(strtolower(trim($query_parts[0])), ['select', 'update', 'delete'])) {
+    if (in_array(cms_strtolower_ascii(trim($query_parts[0])), ['select', 'update', 'delete'])) {
         foreach ($query_parts as $part) {
-            if (array_key_exists(strtoupper(trim($part)), $complex_keywords)) {
+            if (array_key_exists(cms_strtoupper_ascii(trim($part)), $complex_keywords)) {
                 return false;
             }
         }
@@ -60,7 +60,7 @@ function is_simple_query($query)
                 return false;
             }
         }
-        if (preg_match('/[a-z]\(/', strtolower($query))) {
+        if (preg_match('/[a-z]\(/', cms_strtolower_ascii($query))) {
             return false; // SQL functions
         }
         return true;

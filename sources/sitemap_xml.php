@@ -171,7 +171,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
                 $_url = _build_url($attributes + ['keep_lang' => $lang], $zone, [], false, false, true, $hash);
 
                 $optional_details = '
-        <xhtml:link rel="alternate" hreflang="' . strtolower($lang) . '" href="' . xmlentities($_url) . '" />';
+        <xhtml:link rel="alternate" hreflang="' . cms_strtolower_ascii($lang) . '" href="' . xmlentities($_url) . '" />';
             }
         }
 
