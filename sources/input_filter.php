@@ -377,21 +377,21 @@ function hard_filter_input_data__html(&$val, $lite = false)
     } while ($old_val != $val);
 
     // Tag vectors
-    $bad_tags = 'noscript|script|link|style|meta|iframe|frame|object|embed|applet|html|xml|body|head|form|base|layer|v:vmlframe|svg';
+    $bad_tags = 'noscr[iI]pt|scr[iI]pt|l[iI]nk|style|meta|[iI]frame|frame|object|embed|applet|html|xml|body|head|form|base|layer|v:vmlframe|svg'; // I is doubled up due to Turkish issue
     $val = preg_replace('#<(' . $bad_tags . ')#i', '<span', $val); // Intentionally does not strip so as to avoid attacks like <<scriptscript --> <script
     $val = preg_replace('#</(' . $bad_tags . ')#i', '</span', $val);
 
     // CSS attack vectors
     $val = preg_replace('#\\\\(\d+)#i', '${1}', $val); // CSS escaping
-    $val = preg_replace('#e\s*(x\s*p\s*r\s*e\s*s\s*s\s*i\s*o\s*n\()#i', '&eacute;${1}', $val); // expression(
-    $val = preg_replace('#b\s*(e\s*h\s*a\s*v\s*i\s*o\s*r\s*\()#i', '&szlig;${1}', $val); // behavior(
-    $val = preg_replace('#b\s*(i\s*n\s*d\s*i\s*n\s*g\s*\()#i', '&szlig;${1}', $val); // bindings(
+    $val = preg_replace('#e\s*(x\s*p\s*r\s*e\s*s\s*s\s*[iI]\s*o\s*n\()#i', '&eacute;${1}', $val); // expression(
+    $val = preg_replace('#b\s*(e\s*h\s*a\s*v\s*[iI]\s*o\s*r\s*\()#i', '&szlig;${1}', $val); // behavior(
+    $val = preg_replace('#b\s*([iI]\s*n\s*d\s*[iI]\s*n\s*g\s*\()#i', '&szlig;${1}', $val); // bindings(
 
     // Script-URL vectors (protocol handlers)
-    $val = preg_replace('#((j[\\\\\s]*a[\\\\\s]*v[\\\\\s]*a[\\\\\s]*|v[\\\\\s]*b[\\\\\s]*)s[\\\\\s]*c[\\\\\s]*r[\\\\\s]*i[\\\\\s]*p[\\\\\s]*t[\\\\\s]*):#i', '${1};', $val);
+    $val = preg_replace('#((j[\\\\\s]*a[\\\\\s]*v[\\\\\s]*a[\\\\\s]*|v[\\\\\s]*b[\\\\\s]*)s[\\\\\s]*c[\\\\\s]*r[\\\\\s]*[iI][\\\\\s]*p[\\\\\s]*t[\\\\\s]*):#i', '${1};', $val);
 
     // Behavior protocol handler
-    $val = preg_replace('#(b[\\\\\s]*e[\\\\\s]*h[\\\\\s]*a[\\\\\s]*v[\\\\\s]*i[\\\\\s]*o[\\\\\s]*r[\\\\\s]*):#i', '${1};', $val);
+    $val = preg_replace('#(b[\\\\\s]*e[\\\\\s]*h[\\\\\s]*a[\\\\\s]*v[\\\\\s]*[iI][\\\\\s]*o[\\\\\s]*r[\\\\\s]*):#i', '${1};', $val);
 
     // Event vectors (anything that *might* have got into a tag context, or out of an attribute context, that looks like it could potentially be a JS attribute -- intentionally broad as invalid-but-working HTML can trick regexps)
     do {

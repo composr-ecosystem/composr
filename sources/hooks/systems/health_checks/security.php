@@ -384,11 +384,11 @@ class Hook_health_check_security extends Hook_Health_Check
             '[^\w]popen\(',
             '[^\w]proc_open\(',
             '[^\w]eval\(',
-            '[^\w]move_uploaded_file\(',
+            '[^\w]move_uploaded_f[iI]le\(', // I is doubled up due to Turkish issue
             '\$\w+\(',
             '\$_FILES',
             '/etc/passwd',
-            '(require|include)(_once)?\([\'"]https?://',
+            '(requ[iI]re|[iI]nclude)(_once)?\([\'"]https?://', // "
         ];
 
         foreach ($triggers as $trigger) {

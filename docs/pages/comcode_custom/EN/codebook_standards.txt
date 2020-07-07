@@ -356,6 +356,13 @@ These rules are very standard, but if broken then code-overriding may not work c
 | We put performance ahead of what other's may consider strong architecture -- we don't create complex or abstractions or heavy code structures for core code to keep our framework's footprint low. Latency and memory usage is very important, and we don't want to make the same overhead mistakes other systems have made.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Be careful with case conversions and case insensitivity checks[/color]
+| Stability
+| Product development only
+| Manually
+| If you use the PHP [tt]strtoupper[/tt] or [tt]strtolower[/tt] functions, it won't work correctly for the letter i/I if the locale is Turkish, and on a threaded shared server environment the locale may be changed by other system users. Similarly, [tt]preg_*[/tt] functions in case insensitivity mode won't work for i/I, so if you really need case insensitivity for that letter then provide both in a character class, [tt][iI][/tt].
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 Never start a file [tt]<?[/tt]
 | Portability
 | Composr development +

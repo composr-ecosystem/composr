@@ -710,8 +710,8 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                             }
                             if (!$seq_ok) {
                                 $unstrippable_tags = [
-                                    'table', 'tr', 'th', 'td', 'ul', 'ol', 'dl', 'dir', 'li', // Stop big structural problems causing out-of-scope corruptions (e.g. orphaned tr making preceding text move away completely when there's a wider surrounding table)
-                                    'div', 'p', // Stop disallowed opening tags paired with allowed closing tags causing mess up of surrounding layout
+                                    'table', 'tr', 'th', 'td', 'ul', 'ol', 'dl', 'd[iI]r', 'l[iI]', // Stop big structural problems causing out-of-scope corruptions (e.g. orphaned tr making preceding text move away completely when there's a wider surrounding table)
+                                    'd[iI]v', 'p', // Stop disallowed opening tags paired with allowed closing tags causing mess up of surrounding layout
                                 ];
                                 foreach ($unstrippable_tags as $unstrippable_tag) {
                                     if (preg_match('#^<' . $unstrippable_tag . '(\s[^<>]*|)>$#i', $portion) != 0) {

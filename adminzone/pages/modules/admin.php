@@ -237,7 +237,7 @@ class Module_admin
                     if ($regexp != '') {
                         $regexp .= '|';
                     }
-                    $regexp_for_keyword = '((^|\.|\#|\s|\/|\-|>|\)|\(|\})' . preg_quote($keyword, '#') . ')';
+                    $regexp_for_keyword = '((^|\.|\#|\s|\/|\-|>|\)|\(|\})' . str_replace('i', '[iI]', preg_quote($keyword, '#')) . ')'; // str_replace is for Turkish issue
                     $regexp .= $regexp_for_keyword;
 
                     if (!$there_somewhere) {

@@ -153,7 +153,7 @@ abstract class Database_super_mysql extends DatabaseDriver
      */
     protected function fix_mysql8_query($query)
     {
-        if (preg_match('#(descriptions|groups|path)#i', $query) == 0) {
+        if (preg_match('#(descriptions|DESCRIPTIONS|groups|path)#i', $query) == 0) { // We define 'descriptions' as well as 'DESCRIPTIONS' due to Turkish issue
             return $query;
         }
         $new_query = '';

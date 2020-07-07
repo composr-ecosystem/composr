@@ -178,7 +178,7 @@ function find_all_fonts($test_character_support = false)
                     $font_label = $font;
                     do {
                         $_font_label = $font_label;
-                        $font_label = preg_replace('#\s*(Italic|It|Oblique)($| )#i', ' Italic$2', $font_label);
+                        $font_label = preg_replace('#\s*(italic|Italic|it|It|Oblique)($| )#i', ' Italic$2', $font_label); // We double define due to Turkish issue
                         $font_label = preg_replace('#\s*(Extra Bold)($| )#i', ' Extra Bold$2', $font_label);
                         $font_label = preg_replace('#\s*(Bold|Bd)($| )#i', ' Bold$2', $font_label);
                         $font_label = preg_replace('#\s*(Semi Bold)($| )#i', ' Semi Bold$2', $font_label);
