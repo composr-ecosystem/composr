@@ -641,6 +641,10 @@ class Hook_health_check_install_env extends Hook_Health_Check
      */
     protected function testLocaleStability($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            return;
+        }
+
         $current_locale = setlocale(LC_ALL, '0');
         setlocale(LC_ALL, 'tr_TR');
         $set_locale = setlocale(LC_ALL, '0');
