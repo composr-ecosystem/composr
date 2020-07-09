@@ -277,12 +277,12 @@ class Module_admin_ip_ban
             if (trim($ban) == '') {
                 continue;
             }
-            if (preg_match('#^\s*([\d\.:A-F]+)(.*)$#i', $ban, $matches) == 0) {
+            if (preg_match('#^\s*([\d\.:A-F\*]+)(.*)$#i', $ban, $matches) == 0) {
                 $ip = $ban; // Will fail
             } else {
                 $ip = $matches[1];
             }
-            if (!is_ip_address($ip)) {
+            if (!is_valid_ip($ip, true)) {
                 attach_message(do_lang_tempcode('IP_ADDRESS_NOT_VALID', escape_html($ip)), 'warn');
             } else {
                 if (!in_array($ip, $old_bans)) {
@@ -316,12 +316,12 @@ class Module_admin_ip_ban
             if (trim($str) == '') {
                 continue;
             }
-            if (preg_match('#^\s*([\d\.:A-F]+)(.*)$#i', $str, $matches) == 0) {
+            if (preg_match('#^\s*([\d\.:A-F\*]+)(.*)$#i', $str, $matches) == 0) {
                 $ip = $str; // Will fail
             } else {
                 $ip = $matches[1];
             }
-            if (!is_ip_address($ip)) {
+            if (!is_valid_ip($ip, true)) {
                 attach_message(do_lang_tempcode('IP_ADDRESS_NOT_VALID_MAKE_UNBANNABLE', escape_html($ip)), 'warn');
             } else {
                 if (!in_array($ip, $unbannable_already)) {

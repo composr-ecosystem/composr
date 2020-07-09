@@ -755,7 +755,7 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
         return false;
     }
     require_code('type_sanitisation');
-    if (!is_ip_address($ip)) {
+    if (!is_valid_ip($ip, true)) {
         return false;
     }
 
@@ -769,10 +769,8 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     persistent_cache_delete('IP_BANS');
     if ((is_writable_wrap(get_file_base() . '/.htaccess')) && (is_null($ban_until))) {
         $contents = unixify_line_format(cms_file_get_contents_safe(get_file_base() . '/.htaccess'));
-        $ip_cleaned = str_replace('*', '', $ip);
-        $ip_cleaned = str_replace('..', '.', $ip_cleaned);
-        $ip_cleaned = str_replace('..', '.', $ip_cleaned);
-        if ((stripos($contents, "\n" . 'deny from ' . $ip_cleaned) === false) && (stripos($contents, "\n" . 'require not ip ' . $ip_cleaned) === false)) {
+        $ip_cleaned = ip_wild_to_apache($ip);
+        if (($ip_cleaned != '') && (stripos($contents, "\n" . 'deny from ' . $ip_cleaned) === false) && (stripos($contents, "\n" . 'require not ip ' . $ip_cleaned) === false)) {
             require_code('files');
 
             // < Apache 2.4
@@ -786,6 +784,60 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     }
 
     return true;
+}
+
+/**
+ * Convert simple Composr wildcard syntax in IP addresses to Apache netmask syntax.
+ *
+ * @param  IP $ip The IP address (potentially encoded with *'s)
+ * @return string The Apache-style IP
+ */
+function ip_wild_to_apache($ip)
+{
+    $ip = normalise_ip_address($ip, 4);
+    if ($ip == '') {
+        return '';
+    }
+
+    if (strpos($ip, '*') === false) {
+        return $ip;
+    }
+
+    $ipv6 = (strpos($ip, ':') !== false);
+    if ($ipv6) {
+        $delimiter = ':';
+    } else {
+        $delimiter = '.';
+    }
+    $parts = explode($delimiter, $ip);
+    $ip_section = '';
+    $range_bits = 0;
+    foreach ($parts as $i => $part) {
+        if ($i > 0) {
+            $ip_section .= $delimiter;
+        }
+        if ($part == '*') {
+            if ($ipv6) {
+                $ip_section .= '0000';
+            } else {
+                $ip_section .= '0';
+            }
+        } else {
+            $ip_section .= $part;
+            if ($ipv6) {
+                $range_bits += 16;
+            } else {
+                $range_bits += 8;
+            }
+        }
+    }
+    if ($ipv6) {
+        while ($i < 7) {
+            $range_bit .= ':FFFF';
+            $i++;
+        }
+    }
+    return $ip_section . '/' . strval($range_bits);
 }
 
 /**
@@ -803,10 +855,8 @@ function remove_ip_ban($ip)
     persistent_cache_delete('IP_BANS');
     if (is_writable_wrap(get_file_base() . '/.htaccess')) {
         $contents = unixify_line_format(cms_file_get_contents_safe(get_file_base() . '/.htaccess'));
-        $ip_cleaned = str_replace('*', '', $ip);
-        $ip_cleaned = str_replace('..', '.', $ip_cleaned);
-        $ip_cleaned = str_replace('..', '.', $ip_cleaned);
-        if (trim($ip_cleaned) != '') {
+        $ip_cleaned = ip_wild_to_apache($ip);
+        if ($ip_cleaned != '') {
             require_code('files');
 
             // < Apache 2.4

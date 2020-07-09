@@ -572,6 +572,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/_resource_fs.php',
             '_tests/tests/unit_tests/google_appengine.php',
             '_tests/tests/unit_tests/tutorials_all_linked.php',
+            '_tests/tests/unit_tests/ip_addresses.php',
             '_tests/tests/unit_tests/addon_setupwizard.php',
             '_tests/tests/unit_tests/override_notes_consistency.php',
             '_tests/tests/unit_tests/copyright.php',
