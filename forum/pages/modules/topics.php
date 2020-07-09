@@ -3468,8 +3468,11 @@ END;
         $forum_id = $topic_info[0]['t_forum_id'];
         $private_topic = is_null($forum_id);
 
-        if (($topic_info[0]['t_validated'] == 1) && ($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_validated', array('id' => $topic_info[0]['t_cache_first_post_id'])) == 0)) {
-            attach_message(do_lang_tempcode('FIRST_POST_IS_UNVALIDATED'), 'notice');
+        $validated = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_validated', array('id' => $topic_info[0]['t_cache_first_post_id']));
+        if ($validated !== null) {
+            if (($topic_info[0]['t_validated'] == 1) && ($validated == 0)) {
+                attach_message(do_lang_tempcode('FIRST_POST_IS_UNVALIDATED'), 'notice');
+            }
         }
 
         $this->handle_topic_breadcrumbs($forum_id, $topic_id, $topic_info[0]['t_cache_first_title'], do_lang_tempcode('EDIT_TOPIC'));
