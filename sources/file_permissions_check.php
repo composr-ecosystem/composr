@@ -275,6 +275,7 @@ function get_chmod_array($runtime = true, $non_bundled = true)
             'uploads/cns_photos',
             'uploads/cns_photos_thumbs',
             'uploads/downloads',
+            'uploads/ecommerce',
             'uploads/filedump',
             'uploads/galleries',
             'uploads/galleries_thumbs',
@@ -457,8 +458,8 @@ abstract class CMSPermissionsScanner
         if (!function_exists($function)) {
             return false;
         }
-        $disabled_functions = @cms_strtolower_ascii(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
-        return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#', $disabled_functions) == 0);
+        $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+        return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#i', $disabled_functions) == 0);
     }
 
     /**
