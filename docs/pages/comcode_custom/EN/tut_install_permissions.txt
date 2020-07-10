@@ -97,6 +97,7 @@ Set the following to [b]777[/b] (full directory permissions):
  - [tt]uploads/cns_photos[/tt]
  - [tt]uploads/cns_photos_thumbs[/tt]
  - [tt]uploads/downloads[/tt]
+ - [tt]uploads/ecommerce[/tt]
  - [tt]uploads/filedump[/tt]
  - [tt]uploads/galleries[/tt]
  - [tt]uploads/galleries_thumbs[/tt]

@@ -97,6 +97,11 @@ class Module_purchase
         $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_prods_prices');
         $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_prods_custom');
         $GLOBALS['SITE_DB']->drop_table_if_exists('ecom_prods_permissions');
+
+        require_code('files');
+        if (!$GLOBALS['DEV_MODE']) {
+            deldir_contents(get_custom_file_base() . '/uploads/ecommerce', true);
+        }
     }
 
     /**
@@ -263,6 +268,7 @@ class Module_purchase
 
                 $GLOBALS['SITE_DB']->rename_table('pstore_customs', 'ecom_prods_custom');
                 $GLOBALS['SITE_DB']->alter_table_field('ecom_prods_custom', 'c_cost', '?INTEGER', 'c_price_points');
+                $GLOBALS['SITE_DB']->add_table_field('ecom_prods_custom', 'c_image_url', 'URLPATH');
                 $GLOBALS['SITE_DB']->add_table_field('ecom_prods_custom', 'c_price', '?REAL', null);
                 $GLOBALS['SITE_DB']->add_table_field('ecom_prods_custom', 'c_tax_code', 'ID_TEXT', '0%');
                 $GLOBALS['SITE_DB']->add_table_field('ecom_prods_custom', 'c_shipping_cost', 'REAL', 0.00);
@@ -359,6 +365,7 @@ class Module_purchase
                 'id' => '*AUTO',
                 'c_title' => 'SHORT_TRANS',
                 'c_description' => 'LONG_TRANS__COMCODE',
+                'c_image_url' => 'URLPATH',
                 'c_mail_subject' => 'SHORT_TRANS',
                 'c_mail_body' => 'LONG_TRANS',
                 'c_enabled' => 'BINARY',

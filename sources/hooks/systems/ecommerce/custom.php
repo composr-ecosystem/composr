@@ -35,24 +35,29 @@ class Hook_ecommerce_custom
         foreach ($rows as $i => $row) {
             $fields = new Tempcode();
             $hidden = new Tempcode();
-            $fields->attach($this->_get_fields('_' . strval($i), get_translated_text($row['c_title']), get_translated_text($row['c_description']), $row['c_enabled'], $row['c_price'], $row['c_tax_code'], $row['c_shipping_cost'], $row['c_price_points'], $row['c_one_per_member'], get_translated_text($row['c_mail_subject']), get_translated_text($row['c_mail_body'])));
+            $fields->attach($this->_get_fields($hidden, '_' . strval($i), get_translated_text($row['c_title']), get_translated_text($row['c_description']), $row['c_image_url'], $row['c_enabled'], $row['c_price'], $row['c_tax_code'], $row['c_shipping_cost'], $row['c_price_points'], $row['c_one_per_member'], get_translated_text($row['c_mail_subject']), get_translated_text($row['c_mail_body'])));
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '01362c21b40d7905b76ee6134198a128', 'TITLE' => do_lang_tempcode('ACTIONS')]));
             $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete_custom_' . strval($i), false));
             $hidden->attach(form_input_hidden('custom_' . strval($i), strval($row['id'])));
             $out[] = [$fields, $hidden, do_lang_tempcode('_EDIT_CUSTOM_PRODUCT', escape_html(get_translated_text($row['c_title'])))];
         }
 
+        $hidden_new = new Tempcode();
+        $fields_new = $this->_get_fields($hidden_new);
+
         return [
-            [$out, do_lang_tempcode('ADD_NEW_CUSTOM_PRODUCT'), $this->_get_fields(), do_lang_tempcode('CUSTOM_PRODUCT_DESCRIPTION')],
+            [$out, do_lang_tempcode('ADD_NEW_CUSTOM_PRODUCT'), $fields_new, do_lang_tempcode('CUSTOM_PRODUCT_DESCRIPTION')],
         ];
     }
 
     /**
      * Get fields for adding/editing one of these.
      *
+     * @param  Tempcode $hidden Hidden fields
      * @param  string $name_suffix What to place onto the end of the field name
      * @param  SHORT_TEXT $title Title
      * @param  LONG_TEXT $description Description
+     * @param  URLPATH $image_url Image URL
      * @param  BINARY $enabled Whether it is enabled
      * @param  ?REAL $price The price (null: not set)
      * @param  ID_TEXT $tax_code The tax code
@@ -63,12 +68,15 @@ class Hook_ecommerce_custom
      * @param  LONG_TEXT $mail_body Confirmation mail body
      * @return Tempcode The fields
      */
-    protected function _get_fields($name_suffix = '', $title = '', $description = '', $enabled = 1, $price = null, $tax_code = '0%', $shipping_cost = 0.00, $price_points = null, $one_per_member = 0, $mail_subject = '', $mail_body = '')
+    protected function _get_fields($hidden, $name_suffix = '', $title = '', $description = '', $image_url = '', $enabled = 1, $price = null, $tax_code = '0%', $shipping_cost = 0.00, $price_points = null, $one_per_member = 0, $mail_subject = '', $mail_body = '')
     {
         $fields = new Tempcode();
 
+        require_code('images');
+
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'custom_title' . $name_suffix, $title, true));
         $fields->attach(form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'custom_description' . $name_suffix, $description, true));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image' . $name_suffix, null, true, $image_url, false, null, IMAGE_CRITERIA_WEBSAFE));
         $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_PRICE'), 'custom_price' . $name_suffix, $price, false));
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_TAX_CODE'), 'custom_tax_code' . $name_suffix, $tax_code, false));
         $fields->attach(form_input_float(do_lang_tempcode('SHIPPING_COST'), do_lang_tempcode('DESCRIPTION_SHIPPING_COST'), 'custom_shipping_cost' . $name_suffix, $shipping_cost, true));
@@ -91,12 +99,15 @@ class Hook_ecommerce_custom
      */
     public function save_config()
     {
+        require_code('themes2');
+
         $i = 0;
         $rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', ['*']));
         while (array_key_exists('custom_' . strval($i), $_POST)) {
             $id = post_param_integer('custom_' . strval($i));
             $title = post_param_string('custom_title_' . strval($i));
             $description = post_param_string('custom_description_' . strval($i));
+            $image_url = post_param_image('image_' . strval($i), 'uploads/ecommerce', null, false, true);
             $enabled = post_param_integer('custom_enabled_' . strval($i), 0);
             $_price = post_param_string('custom_price_' . strval($i), '');
             $price = ($_price == '') ? null : float_unformat($_price);
@@ -134,6 +145,9 @@ class Hook_ecommerce_custom
                     'c_price_points' => $price_points,
                     'c_one_per_member' => $one_per_member,
                 ];
+                if ($image_url !== null) {
+                    $map['c_image_url'] = $image_url;
+                }
                 $map += lang_remap('c_title', $_title, $title);
                 $map += lang_remap_comcode('c_description', $_description, $description);
                 $map += lang_remap('c_mail_subject', $_mail_subject, $mail_subject);
@@ -146,6 +160,7 @@ class Hook_ecommerce_custom
         $title = post_param_string('custom_title', null);
         if ($title !== null) {
             $description = post_param_string('custom_description');
+            $image_url = post_param_image('image_' . strval($i), 'uploads/ecommerce', null, false, false);
             $enabled = post_param_integer('custom_enabled', 0);
             $_price = post_param_string('custom_price', '');
             $price = ($_price == '') ? null : float_unformat($_price);
@@ -162,6 +177,7 @@ class Hook_ecommerce_custom
             $mail_body = post_param_string('custom_mail_body');
 
             $map = [
+                'c_image_url' => $image_url,
                 'c_enabled' => $enabled,
                 'c_price' => $price,
                 'c_tax_code' => $tax_code,
@@ -202,10 +218,13 @@ class Hook_ecommerce_custom
         foreach ($rows as $i => $row) {
             $just_row = db_map_restrict($row, ['id', 'c_description']);
             $description = get_translated_tempcode('ecom_prods_custom', $just_row, 'c_description');
-            if (strpos($description->evaluate(), '<img') === false) {
+            if ($row['c_image_url'] == '') {
                 $image_url = find_theme_image('icons/spare/' . strval(($i % 8) + 1));
             } else {
-                $image_url = '';
+                $image_url = $row['c_image_url'];
+                if (url_is_local($image_url)) {
+                    $image_url = get_custom_base_url() . '/' . $image_url;
+                }
             }
 
             $shipping_cost = floatval($row['c_shipping_cost']);

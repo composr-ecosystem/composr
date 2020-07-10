@@ -339,6 +339,8 @@ sites/www/uploads/cns_photos_thumbs/index.html
 sites/www/uploads/downloads
 sites/www/uploads/downloads/.htaccess
 sites/www/uploads/downloads/index.html
+sites/www/uploads/ecommerce
+sites/www/uploads/ecommerce/index.html
 sites/www/uploads/filedump
 sites/www/uploads/filedump/index.html
 sites/www/uploads/galleries

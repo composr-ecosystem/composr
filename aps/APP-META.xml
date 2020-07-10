@@ -461,6 +461,9 @@
           <mapping url="uploads/downloads">
             <php:permissions writable="true"/>
           </mapping>
+          <mapping url="uploads/ecommerce">
+            <php:permissions writable="true"/>
+          </mapping>
           <mapping url="uploads/filedump">
             <php:permissions writable="true"/>
           </mapping>

@@ -114,6 +114,7 @@
   <setAcl path="composr/uploads/cns_photos" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/uploads/cns_photos_thumbs" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/uploads/downloads" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="composr/uploads/ecommerce" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/uploads/filedump" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/uploads/galleries" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/uploads/galleries_thumbs" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />

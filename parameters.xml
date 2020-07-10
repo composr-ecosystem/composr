@@ -574,6 +574,11 @@
   </parameter>
 
   <parameter
+    name="SetAclParameter162" description="Sets the ACL on the right file" defaultValue="{Application Path}/uploads/ecommerce" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="composr/uploads/ecommerce" />
+  </parameter>
+
+  <parameter
     name="SetAclParameter45" description="Sets the ACL on the right file" defaultValue="{Application Path}/uploads/filedump" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="composr/uploads/filedump" />
   </parameter>

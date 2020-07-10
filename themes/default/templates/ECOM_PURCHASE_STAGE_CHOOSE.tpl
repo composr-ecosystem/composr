@@ -21,7 +21,7 @@
 
 						<div class="clearfix">
 							{+START,IF_NON_EMPTY,{IMAGE_URL}}
-								<img width="48" height="48" src="{$THUMBNAIL,{IMAGE_URL*},48x48}" alt="" class="right float-separation" />
+								<img width="48" height="48" src="{$THUMBNAIL*,{IMAGE_URL},48x48}" alt="" class="right float-separation" />
 							{+END}
 
 							{+START,IF_NON_EMPTY,{DESCRIPTION}}
