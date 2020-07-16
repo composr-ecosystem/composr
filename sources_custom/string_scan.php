@@ -1368,6 +1368,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_menu_USE
         INDEX_DOWNLOAD
         SPAM_URLS
+        BLOCK_side_tag_cloud_PARAM_apply_permissions_TITLE
+        BLOCK_side_tag_cloud_PARAM_apply_permissions
         BLOCK_side_calendar_DESCRIPTION
         BLOCK_side_calendar_PARAM_as_guest
         BLOCK_side_calendar_PARAM_as_guest_TITLE
