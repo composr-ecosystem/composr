@@ -66,7 +66,7 @@ class Hook_symbol_SYMBOL_DATA_AS_JSON
 
         $value['page_type'] = get_param_string('type', '', INPUT_FILTER_GET_COMPLEX);
         $value['zone_default_page'] = ($ZONE !== null) ? $ZONE['zone_default_page'] : '';
-        $value['sees_javascript_error_alerts'] = has_privilege(get_member(), 'sees_javascript_error_alerts');
+        $value['sees_javascript_error_alerts'] = (has_privilege(get_member(), 'sees_javascript_error_alerts')) && (get_option('javascript_error_alerts') == '1');
         $value['can_try_url_schemes'] = can_try_url_schemes();
 
         require_code('locations');

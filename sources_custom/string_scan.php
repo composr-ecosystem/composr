@@ -114,6 +114,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
         COMPOSR_FAST_CUSTOM_INDEX__COUNT_ESTIMATE
+        JAVASCRIPT_ERROR_ALERTS
+        CONFIG_OPTION_javascript_error_alerts
         CONFIG_OPTION_composr_fast_custom_index__count_estimate
         CONFIG_OPTION_wysiwyg_VALUE_-1
         CONFIG_OPTION_wysiwyg_VALUE_0
