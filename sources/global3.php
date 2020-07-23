@@ -2128,6 +2128,10 @@ function get_ip_address($amount = 4, $ip = null)
  */
 function normalise_ip_address($ip, $amount = null)
 {
+    if ($ip == '') {
+        return '';
+    }
+
     $raw_ip = $ip;
 
     static $ip_cache = array();
@@ -2153,8 +2157,12 @@ function normalise_ip_address($ip, $amount = null)
         }
         $parts = explode(':', $ip);
         for ($i = 0; $i < (is_null($amount) ? 8 : ($amount * 2)); $i++) {
-            if ($parts[$i] != '*') {
-                $parts[$i] = isset($parts[$i]) ? strtoupper(str_pad($parts[$i], 4, '0', STR_PAD_LEFT)) : '0000';
+            if (isset($parts[$i])) {
+                if ($parts[$i] != '*') {
+                    $parts[$i] = strtoupper(str_pad($parts[$i], 4, '0', STR_PAD_LEFT));
+                }
+            } else {
+                $parts[$i] = '0000';
             }
         }
         if (!is_null($amount)) {
