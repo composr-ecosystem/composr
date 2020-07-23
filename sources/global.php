@@ -559,11 +559,11 @@ function cms_ini_set($var, $value)
 }
 
 /**
- * Flush but don't break Brotli compression.
+ * Flush but only if compression streams are not active.
  */
 function cms_flush_safe()
 {
-    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On') && (ob_get_level()) == 0) {
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On') && (ini_get('zlib.output_compression') !== 'On') && (ob_get_level()) == 0) {
         flush();
     }
 }
