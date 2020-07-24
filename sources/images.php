@@ -854,8 +854,8 @@ function _fix_corrupt_png_alpha(&$image, $path)
 {
     if (_will_fix_corrupt_png_alpha($image)) {
         require_code('images2');
-        $imagemagick = find_imagemagick();
-        if ($imagemagick !== null) {
+        $imagemagick = get_option('imagemagick_path');
+        if ($imagemagick != '') {
             if ((php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
                 $tempnam = cms_tempnam();
                 shell_exec($imagemagick . ' -depth 32 ' . escapeshellarg($path) . ' PNG32:' . $tempnam);

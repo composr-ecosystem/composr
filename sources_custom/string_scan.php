@@ -113,6 +113,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     );
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        IMAGEMAGICK_PATH
+        CONFIG_OPTION_imagemagick_path
         ADD_MEMBER_EMAIL_HELP
         CONFIG_OPTION_new_member_default_email_message
         CONFIG_OPTION_new_member_default_email_subject
