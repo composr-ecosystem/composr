@@ -2027,7 +2027,7 @@ function is_valid_ip($ip, $allow_wildcards = false)
         }
 
         for ($i = 1; $i <= 4; $i++) {
-            if (intval($parts[$i]) > 255) {
+            if ((is_numeric($parts[$i])) && (intval($parts[$i]) > 255)) {
                 return false;
             }
         }
