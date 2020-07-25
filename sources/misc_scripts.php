@@ -436,7 +436,7 @@ function cron_bridge_script($caller)
                 $time_after = time();
 
                 // Reset time limit (hook may have overwritten / we provide same max time for each hook)
-                cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+                cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
                 // Update cron_progression table
                 if (isset($cron_progression[$hook])) {

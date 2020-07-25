@@ -22,6 +22,8 @@ class microformats_test_set extends cms_test_case
     {
         parent::setUp();
 
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
+
         require_code('lorem');
 
         require_once(get_file_base() . '/_tests/libs/mf_parse.php');

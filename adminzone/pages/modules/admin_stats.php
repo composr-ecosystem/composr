@@ -393,12 +393,12 @@ class Module_admin_stats extends Standard_crud_module
         } elseif ($type == 'install_data') {
             return $this->install_geolocation_data();
         } elseif ($type == 'category') {
-            cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+            cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
             disable_php_memory_limit();
 
             return $this->category();
         } elseif ($type == 'graph') {
-            cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+            cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
             disable_php_memory_limit();
 
             return $this->graph();

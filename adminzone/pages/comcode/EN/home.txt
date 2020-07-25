@@ -12,7 +12,7 @@
 	{+END}
 |
 	{+START,IF,{$CONFIG_OPTION,dashboard_new_version}}
-		[block defer="1"]main_staff_new_version[/block]<br /> 
+		[block defer="1"]main_staff_new_version[/block]<br />
 	{+END}
 	{+START,IF,{$CONFIG_OPTION,dashboard_forum_topics}}
 		{+START,IF,{$CNS}}
