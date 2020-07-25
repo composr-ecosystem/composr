@@ -369,7 +369,6 @@ function perform_keyword_search($limit_to = null, $keyword_prefix = null, $max =
 
         $cma_hooks = find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware');
         foreach (array_keys($cma_hooks) as $content_type) {
-if ($content_type!='news_category') continue;
             $cma_ob = get_content_object($content_type);
             $cma_info = $cma_ob->info();
 
