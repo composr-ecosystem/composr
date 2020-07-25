@@ -248,7 +248,7 @@ function get_trusted_sites($level, $include_self = true)
         }
     }
 
-    if (isset($SITE_INFO['custom_base_url'])) {
+    if (!empty($SITE_INFO['custom_base_url'])) {
         $base_url = $SITE_INFO['custom_base_url'];
         $trusted_sites[] = parse_url($base_url, PHP_URL_HOST);
     }

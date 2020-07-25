@@ -37,7 +37,7 @@ class Block_main_newsletter_signup
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = ['subject', 'path', 'to', 'param'];
+        $info['parameters'] = ['subject', 'path', 'to', 'param', 'button_only'];
         return $info;
     }
 
@@ -81,6 +81,8 @@ PHP;
 
         $newsletter_id = @cms_empty_safe($map['param']) ? db_get_first_id() : intval($map['param']);
 
+        $button_only = array_key_exists('button_only', $map) ? ($map['button_only'] == '1') : false;
+
         $_newsletter_title = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletters', 'title', ['id' => $newsletter_id]);
         if ($_newsletter_title === null) {
             return paragraph(do_lang_tempcode('MISSING_RESOURCE'), '6rg82p4wj198c6p8h9t4qcn6x7ke9q88', 'nothing-here');
@@ -89,6 +91,8 @@ PHP;
 
         $address = post_param_string('address' . strval($newsletter_id), '');
         if ($address != '') {
+            // Actualiser...
+
             require_code('newsletter');
 
             require_code('type_sanitisation');
@@ -102,6 +106,7 @@ PHP;
                     'NID' => strval($newsletter_id),
                     'URL' => get_self_url(),
                     'MSG' => $msg,
+                    'BUTTON_ONLY' => $button_only,
                 ]);
             }
 
@@ -150,13 +155,22 @@ PHP;
                 'PATH_EXISTS' => $path_exists,
             ]);
         } else {
+            // Form...
+
+            if ($button_only) {
+                $url = build_url(['page' => 'newsletter'], get_module_zone('newsletter'));
+            } else {
+                $url = get_self_url();
+            }
+
             return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
                 '_GUID' => 'c0e6f9cdab3d624bf3d27b745e3de38f',
                 'BLOCK_PARAMS' => block_params_arr_to_str($map),
                 'BLOCK_ID' => $block_id,
                 'NEWSLETTER_TITLE' => $newsletter_title,
                 'NID' => strval($newsletter_id),
-                'URL' => get_self_url(),
+                'URL' => $url,
+                'BUTTON_ONLY' => $button_only,
             ]);
         }
     }

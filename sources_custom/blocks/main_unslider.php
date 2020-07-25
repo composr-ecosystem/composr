@@ -82,11 +82,14 @@ PHP;
         $block_id = get_block_id($map);
 
         $pages = explode(',', isset($map['pages']) ? $map['pages'] : 'slide1,slide2,slide3,slide4,slide5,slide6');
-        $width = isset($map['width']) ? $map['width'] : '100%';
-        if ($width == '100%') {
+        $width = isset($map['width']) ? $map['width'] : '';
+        if (($width == '100%') || ($width == 'auto')) {
             $width = '';
         }
         $height = isset($map['height']) ? $map['height'] : '';
+        if ($height == 'auto') {
+            $height = '';
+        }
         if (is_numeric($width)) {
             $width .= 'px';
         }

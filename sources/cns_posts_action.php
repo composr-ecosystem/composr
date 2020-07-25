@@ -281,6 +281,18 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
 
     @ignore_user_abort(false);
 
+    if (!$is_pt) {
+        /*
+        The !$is_pt check is needed because it would get out of control if mentions were sent for notifications saved in private topics.
+        We call dispatch_member_mention_notifications early so that mentions collected during Comcode parsing for other notifications won't pollute our member mention pool.
+        */
+
+        cms_profile_start_for('cns_make_post:dispatch_member_mention_notifications');
+        require_code('member_mentions');
+        dispatch_member_mention_notifications('post', strval($post_id), $anonymous ? db_get_first_id() : $poster);
+        cms_profile_end_for('cns_make_post:dispatch_member_mention_notifications');
+    }
+
     $_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $post_id], 'forum', [], false, false, true, 'post_' . strval($post_id));
     $url = $_url->evaluate();
     if ($validated == 0) {
@@ -428,11 +440,6 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
         generate_resource_fs_moniker('post', strval($post_id), null, null, true);
         cms_profile_end_for('cns_make_post:generate_resource_fs_moniker');
     }
-
-    cms_profile_start_for('cns_make_post:dispatch_member_mention_notifications');
-    require_code('member_mentions');
-    dispatch_member_mention_notifications('post', strval($post_id), $anonymous ? db_get_first_id() : $poster);
-    cms_profile_end_for('cns_make_post:dispatch_member_mention_notifications');
 
     if (($is_starter) && (!$is_pt) && ($forum_id !== null)) {
         require_code('sitemap_xml');

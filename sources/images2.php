@@ -737,8 +737,8 @@ function check_memory_limit_for($file_path, $exit_on_error = true)
                 $max_dim = intval(sqrt(floatval($what_we_will_allow) / 4.0 / $magic_factor/* 4 1 byte channels */));
 
                 // Can command line imagemagick save the day?
-                $imagemagick = find_imagemagick();
-                if ($imagemagick !== null) {
+                $imagemagick = get_option('imagemagick_path');
+                if ($imagemagick != '') {
                     $shrink_command = $imagemagick . ' ' . cms_escapeshellarg($file_path);
                     $shrink_command .= ' -resize ' . strval(intval(floatval($max_dim) / 1.5)) . 'x' . strval(intval(floatval($max_dim) / 1.5));
                     $shrink_command .= ' ' . cms_escapeshellarg($file_path);
@@ -765,29 +765,6 @@ function check_memory_limit_for($file_path, $exit_on_error = true)
     }
 
     return true;
-}
-
-/**
- * Find the path to imagemagick.
- *
- * @return ?PATH Path to imagemagick (null: not found)
- */
-function find_imagemagick()
-{
-    $imagemagick = '/usr/bin/convert';
-    if (!@file_exists($imagemagick)) {
-        $imagemagick = '/usr/local/bin/convert';
-    }
-    if (!@file_exists($imagemagick)) {
-        $imagemagick = '/opt/local/bin/convert';
-    }
-    if (!@file_exists($imagemagick)) {
-        $imagemagick = '/opt/cloudlinux/bin/convert';
-    }
-    if (!@file_exists($imagemagick)) {
-        return null;
-    }
-    return $imagemagick;
 }
 
 /**

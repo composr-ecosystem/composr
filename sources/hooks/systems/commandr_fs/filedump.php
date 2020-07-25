@@ -69,15 +69,19 @@ class Hook_commandr_fs_filedump
 
         list($path, $subpath) = $this->get_complete_path($meta_dir);
 
+        $records = array_flip(collapse_1d_complexity('name', $GLOBALS['SITE_DB']->query_select('filedump', ['name'], ['subpath' => cms_mb_substr($subpath, 0, 80)])));
+
         $listing = [];
         if (is_dir($path)) {
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if (($file != '.') && ($file != '..') && ($file != '.git')) {
+                    $filesize = ((!is_dir($path . '/' . $file)) && (!isset($records[cms_mb_substr($file, 0, 80)]))) ? filesize($path . '/' . $file)/*will be raw binary*/ : null/*don't calculate a filesize*/;
+
                     $listing[] = [
                         $file,
                         is_dir($path . '/' . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
-                        null/*don't calculate a filesize*/,
+                        $filesize,
                         filemtime($path . '/' . $file),
                     ];
                 }
@@ -238,17 +242,17 @@ class Hook_commandr_fs_filedump
         }
 
         if ((is_dir($path)) && (file_exists($path . '/' . $file_name)) && (is_readable($path . '/' . $file_name))) {
+            disable_php_memory_limit();
+
             $data = cms_file_get_contents_safe($path . '/' . $file_name, FILE_READ_LOCK);
 
-            $output = ['data' => base64_encode($data)];
             $rows = table_to_portable_rows('filedump', ['id'], ['name' => cms_mb_substr($file_name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
             if (array_key_exists(0, $rows)) {
-                $output += $rows[0];
-            } else {
-                $output += ['the_description' => '', 'the_member' => remap_resource_id_as_portable('member', get_member())];
+                $output = ['data' => base64_encode($data)] + $rows[0];
+                return json_encode($output);
             }
 
-            return json_encode($output);
+            return $data;
         } else {
             return false; // File doesn't exist
         }

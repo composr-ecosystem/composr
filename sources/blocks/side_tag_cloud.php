@@ -37,7 +37,7 @@ class Block_side_tag_cloud
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
-        $info['parameters'] = ['param', 'title', 'zone', 'max'];
+        $info['parameters'] = ['param', 'title', 'zone', 'max', 'apply_permissions'];
         return $info;
     }
 
@@ -55,6 +55,7 @@ class Block_side_tag_cloud
             array_key_exists('max', $map) ? intval($map['max']) : 30,
             array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
             array_key_exists('param', $map) ? $map['param'] : '',
+            ((array_key_exists('apply_permissions', $map) ? intval($map['apply_permissions']) : 0) == 1),
         ]
 PHP;
         $info['ttl'] = 60 * 1;
@@ -77,11 +78,13 @@ PHP;
         require_lang('search');
         require_css('search');
         require_code('content');
+        require_code('search');
 
         $block_id = get_block_id($map);
 
         $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('search');
         $max_tags = array_key_exists('max', $map) ? intval($map['max']) : 30;
+        $apply_permissions = ((array_key_exists('apply_permissions', $map) ? intval($map['apply_permissions']) : 0) == 1);
 
         $tags = [];
         $largest_num = 0;
@@ -92,37 +95,27 @@ PHP;
         // Find all keywords, hence all tags
         $limit_to = array_key_exists('param', $map) ? $map['param'] : '';
         if ($limit_to != '') {
-            $where = '';
+            $limit_to_arr = [];
             foreach (explode(',', $limit_to) as $l) {
-                if ($where != '') {
-                    $where .= ' OR ';
-                }
-                $where .= db_string_equal_to('meta_for_type', $l);
+                $limit_to_arr[] = trim($l);
 
                 $l2 = convert_composr_type_codes('seo_type_code', $l, 'search_hook');
                 $search_limiter['search_' . $l2] = 1;
             }
             $search_limiter['all_defaults'] = '0';
         } else {
-            $where = '1=1';
+            $limit_to_arr = null;
         }
-        $sql = '
-            SELECT
-                ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . ' AS meta_keyword,
-                COUNT(*) AS cnt
-            FROM ' . get_table_prefix() . 'seo_meta_keywords m
-            WHERE ' . $where . '
-            GROUP BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . '
-            ORDER BY COUNT(*) DESC';
-        $meta_rows = $GLOBALS['SITE_DB']->query($sql, 300/*reasonable limit*/, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
-        foreach ($meta_rows as $mr) {
-            $keyword = $mr['meta_keyword'];
+        $keywords = perform_keyword_search($limit_to_arr, null, $max_tags * 2, $apply_permissions);
+        foreach ($keywords as $keyword => $cnt) {
+            if (!is_string($keyword)) {
+                $keyword = strval($keyword);
+            }
             if (strlen(is_numeric($keyword) ? strval(intval($keyword)) : $keyword) < 4) {
                 continue; // Won't be indexed, plus will uglify the tag list
             }
-            $tags[$keyword] = $mr['cnt'];
+            $tags[$keyword] = $cnt;
         }
-        cms_mb_arsort($tags, SORT_NATURAL | SORT_FLAG_CASE);
         $_tags = $tags;
         $tags = [];
         foreach ($_tags as $tag => $count) {

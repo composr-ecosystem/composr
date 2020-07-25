@@ -40,23 +40,31 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url, [
+        $result = cms_http_request($webdav_filedump_base_url, [
             'http_verb' => 'PROPFIND',
             'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $guest_cookies,
         ]);
-        $this->assertTrue($result === null);
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue($result->data === null);
 
         // Test upload
         $file_data = file_get_contents(get_file_base() . '/_tests/assets/media/early_cinema.mp4');
-        $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
+        $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'PUT',
             'post_params' => $file_data,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(is_string($result));
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(is_string($result->data));
 
         // Test folder listing
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -66,13 +74,17 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url . '/', [
+        $result = cms_http_request($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
             'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(strpos($result, 'early_cinema.mp4') !== false);
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(strpos($result->data, 'early_cinema.mp4') !== false);
 
         // Test file properties
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -81,32 +93,44 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
+        $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'PROPFIND',
             'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(strpos($result, '259941') !== false); // Higher file-size than actual file due to JSON encoding
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(strpos($result->data, '191805') !== false || strpos($result->data, '259941') !== false); // May have higher file-size than actual file due to JSON encoding
 
         // Test download
-        $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
+        $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'GET',
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $_result = json_decode($result, true);
-        $__result = is_array($_result) ? base64_decode($_result['data']) : null;
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $_result = json_decode($result->data, true);
+        $__result = is_array($_result) ? base64_decode($_result['data']) : $result->data;
         $this->assertTrue($__result === $file_data);
 
         // Test edit
-        $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
+        $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'PUT',
             'post_params' => str_repeat('x', 12343),
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(is_string($result));
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(is_string($result->data));
 
         // Test file properties
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -115,21 +139,29 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
+        $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'PROPFIND',
             'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(strpos($result, '16605') !== false); // Higher file-size than actual file due to JSON encoding
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(strpos($result->data, '12343') !== false || strpos($result->data, '16605') !== false); // May have higher file-size than actual file due to JSON encoding
 
         // Test delete
-        $result = http_get_contents($webdav_filedump_base_url . '/early_cinema.mp4', [
+        $result = cms_http_request($webdav_filedump_base_url . '/early_cinema.mp4', [
             'http_verb' => 'DELETE',
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(is_string($result));
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(is_string($result->data));
 
         // Test folder listing
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -138,21 +170,29 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url . '/', [
+        $result = cms_http_request($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
             'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(strpos($result, 'early_cinema.mp4') === false);
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(strpos($result->data, 'early_cinema.mp4') === false);
 
         // Test create folder
-        $result = http_get_contents($webdav_filedump_base_url . '/xxx123/', [
+        $result = cms_http_request($webdav_filedump_base_url . '/xxx123/', [
             'http_verb' => 'MKCOL',
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(is_string($result));
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(is_string($result->data));
 
         // Test folder listing
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -161,21 +201,29 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url . '/', [
+        $result = cms_http_request($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
             'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(strpos($result, 'xxx123') !== false);
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(strpos($result->data, 'xxx123') !== false);
 
         // Test delete folder
-        $result = http_get_contents($webdav_filedump_base_url . '/xxx123/', [
+        $result = cms_http_request($webdav_filedump_base_url . '/xxx123/', [
             'http_verb' => 'DELETE',
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(is_string($result));
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(is_string($result->data));
 
         // Test folder listing
         $xml = '<' . '?xml version="1.0" encoding="utf-8" ?' . '>
@@ -184,12 +232,16 @@ class webdav_test_set extends cms_test_case
             </D:prop>
         </D:propfind>
         ';
-        $result = http_get_contents($webdav_filedump_base_url . '/', [
+        $result = cms_http_request($webdav_filedump_base_url . '/', [
             'http_verb' => 'PROPFIND',
             'post_params' => $xml,
             'trigger_error' => false,
             'cookies' => $cookies,
         ]);
-        $this->assertTrue(strpos($result, 'xxx123') === false);
+        if ($this->debug) {
+            var_dump($result->message);
+            var_dump(gettype($result->data));
+        }
+        $this->assertTrue(strpos($result->data, 'xxx123') === false);
     }
 }

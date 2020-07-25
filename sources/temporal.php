@@ -41,7 +41,7 @@ function display_seconds_period($seconds)
 {
     $hours = intval(floor(floatval($seconds) / 60.0 / 60.0));
     $minutes = intval(floor(floatval($seconds) / 60.0)) - 60 * $hours;
-    $seconds = $seconds - 60 * $minutes;
+    $seconds = $seconds - 60 * 60 * $hours - 60 * $minutes;
 
     $out = '';
     if ($hours != 0) {

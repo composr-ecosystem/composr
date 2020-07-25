@@ -208,7 +208,7 @@ function ensure_version_exists_in_tracker($version)
                     1,
                     '" . db_escape_string($version) . "',
                     '',
-                    0,
+                    1,
                     0,
                     " . strval(time()) . "
             )

@@ -750,14 +750,13 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 		}
 
 		# Changelog Page
-		/* Composr - disabled for simplicity
 		$t_sidebar_items[] = array(
 			'url' => 'changelog_page.php',
 			'title' => 'changelog_link',
 			'icon' => 'fa-retweet',
 			'access_level' => config_get( 'view_changelog_threshold' )
+			'category' => 'issues', /*Composr - provide some link structure*/
 		);
-		*/
 
 		# Roadmap Page
 		/* Composr - disabled for simplicity

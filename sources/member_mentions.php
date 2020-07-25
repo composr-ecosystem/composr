@@ -54,6 +54,10 @@ function dispatch_member_mention_notifications($content_type, $content_id, $subm
             continue;
         }
 
+        if ($member_id == get_member()) {
+            continue;
+        }
+
         $cma_ob = get_content_object($content_type);
         $info = $cma_ob->info();
         list($content_title, $submitter_id, $cma_info, $row, , $content_url_email_safe, $cma_ob) = content_get_details($content_type, $content_id);

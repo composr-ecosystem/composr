@@ -40,6 +40,10 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 @chdir($FILE_BASE);
 
+if (basename($_SERVER['REQUEST_URI']) == 'webdav.php') {
+    exit('The webdav.php script should not be called directly');
+}
+
 // Workaround for Mac OS slow-downs
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method == 'PROPFIND') {

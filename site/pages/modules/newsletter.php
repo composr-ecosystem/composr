@@ -360,7 +360,7 @@ class Module_newsletter
 
         // Build up the join form
         $fields = new Tempcode();
-        $fields->attach(form_input_line(do_lang_tempcode('EMAIL_ADDRESS'), do_lang_tempcode('DESCRIPTION_SUBSCRIBE_ADDRESS'), 'email', $their_email, true));
+        $fields->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), do_lang_tempcode('DESCRIPTION_SUBSCRIBE_ADDRESS'), 'email', $their_email, true));
         $fields->attach(form_input_line(do_lang_tempcode('FORENAME'), '', 'forename', $forename, false));
         $fields->attach(form_input_line(do_lang_tempcode('SURNAME'), '', 'surname', $surname, false));
         $fields->attach(form_input_password(do_lang_tempcode('YOUR_PASSWORD'), do_lang_tempcode('DESCRIPTION_MAINTENANCE_PASSWORD'), 'password', false));
@@ -376,15 +376,31 @@ class Module_newsletter
             $fields->attach(form_input_tick(do_lang_tempcode('SUBSCRIBE_TO', make_string_tempcode(escape_html($newsletter_title))), make_string_tempcode(escape_html($newsletter_description)), 'subscribe' . strval($newsletter['id']), true));
         }
 
+        $hidden = new Tempcode();
+
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            if (use_captcha()) {
+                $fields->attach(form_input_captcha($hidden));
+                $text->attach(' ');
+                $text->attach(do_lang_tempcode('FORM_TIME_SECURITY'));
+            }
+        }
+
         url_default_parameters__disable();
 
         $text->attach(paragraph(do_lang_tempcode('CHANGE_SETTINGS_BY_RESUBSCRIBING')));
 
+        $js_function_calls = ['newsletterNewsletterForm'];
+        if ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) {
+            $js_function_calls[] = captcha_ajax_check_function();
+        }
+
         require_javascript('newsletter');
         return do_template('FORM_SCREEN', [
             '_GUID' => '24d7575465152f450c5a8e62650bf6c8',
-            'JS_FUNCTION_CALLS' => ['newsletterNewsletterForm'],
-            'HIDDEN' => '',
+            'JS_FUNCTION_CALLS' => $js_function_calls,
+            'HIDDEN' => $hidden,
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
@@ -404,6 +420,11 @@ class Module_newsletter
     {
         require_code('type_sanitisation');
         require_code('crypt');
+
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            enforce_captcha();
+        }
 
         // Add
         $email = trim(post_param_string('email'));

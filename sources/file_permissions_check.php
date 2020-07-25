@@ -459,7 +459,7 @@ abstract class CMSPermissionsScanner
             return false;
         }
         $blocked = @strval(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
-        return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#i', $disabled_functions) == 0);
+        return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#i', $blocked) == 0);
     }
 
     /**

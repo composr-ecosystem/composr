@@ -7,9 +7,10 @@
 		<kbd>{NAME*}</kbd>
 
 		{+START,IF_NON_EMPTY,{DESCRIPTION}}
-			<p>
-				{DESCRIPTION*}
-			</p>
+			<a class="help-icon" data-cms-rich-tooltip="{}" title="{DESCRIPTION=}" href="#!">{+START,INCLUDE,ICON}
+				NAME=help
+				ICON_SIZE=24
+			{+END}</a>
 		{+END}
 	</th>
 	<td class="translate-line-second js-mouseover-enable-textarea-translate-field">

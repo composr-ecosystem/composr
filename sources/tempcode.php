@@ -1304,12 +1304,12 @@ function handle_symbol_preprocessing($seq_part, &$children)
 
                     if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] === '1')) {
                         if (function_exists('attach_message')) {
-                            attach_message('block: ' . $block_parms['block'] . ' (' . clean_file_size(memory_get_usage() - $before) . ' bytes used, now at ' . integer_format(memory_get_usage()) . ')', 'inform');
+                            attach_message('block: ' . $block_parms['block'] . ' (' . clean_file_size(memory_get_usage() - $before) . ' used, now at ' . integer_format(memory_get_usage()) . ')', 'inform');
                         } else {
                             @ob_end_flush();
                             @ob_end_flush();
                             @ob_end_flush();
-                            print('<!-- block: ' . htmlentities($block_parms['block']) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(integer_format(memory_get_usage())) . ') -->' . "\n");
+                            print('<!-- block: ' . htmlentities($block_parms['block']) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' used, now at ' . htmlentities(integer_format(memory_get_usage())) . ') -->' . "\n");
                             cms_flush_safe();
                         }
                     }
@@ -1406,12 +1406,12 @@ function handle_symbol_preprocessing($seq_part, &$children)
                         $tp_value = request_page('panel_' . $param[0], false, array_key_exists(1, $param) ? $param[1] : null, null);
                         if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] === '1')) {
                             if (function_exists('attach_message')) {
-                                attach_message('panel: ' . 'panel_' . $param[0] . ' (' . clean_file_size(memory_get_usage() - $before) . ' bytes used, now at ' . number_format(memory_get_usage()) . ')', 'inform');
+                                attach_message('panel: ' . 'panel_' . $param[0] . ' (' . clean_file_size(memory_get_usage() - $before) . ' bytes used, now at ' . clean_file_size(memory_get_usage()) . ')', 'inform');
                             } else {
                                 @ob_end_flush();
                                 @ob_end_flush();
                                 @ob_end_flush();
-                                print('<!-- panel: ' . htmlentities('panel_' . $param[0]) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
+                                print('<!-- panel: ' . htmlentities('panel_' . $param[0]) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(clean_file_size(memory_get_usage())) . ') -->' . "\n");
                                 cms_flush_safe();
                             }
                         }
@@ -1519,12 +1519,12 @@ function handle_symbol_preprocessing($seq_part, &$children)
 
                 if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] === '1')) {
                     if (function_exists('attach_message')) {
-                        attach_message('page: ' . $param[0] . ' (' . clean_file_size(memory_get_usage() - $before) . ' bytes used, now at ' . number_format(memory_get_usage()) . ')', 'inform');
+                        attach_message('page: ' . $param[0] . ' (' . clean_file_size(memory_get_usage() - $before) . ' bytes used, now at ' . clean_file_size(memory_get_usage()) . ')', 'inform');
                     } else {
                         @ob_end_flush();
                         @ob_end_flush();
                         @ob_end_flush();
-                        print('<!-- page: ' . htmlentities($param[0]) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
+                        print('<!-- page: ' . htmlentities($param[0]) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(clean_file_size(memory_get_usage())) . ') -->' . "\n");
                         cms_flush_safe();
                     }
                 }

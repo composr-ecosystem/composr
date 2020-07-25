@@ -275,7 +275,10 @@ function _get_lang_file_map($b, &$entries, $section = 'strings', $given_whole_fi
 
             if (isset($parts[1])) {
                 $key = $parts[0];
-                $value = str_replace('\n', "\n", rtrim($parts[1], $nl));
+                $value = $parts[1];
+                if (strpos($value, '\n') !== false) { // This pre-check to save memory allocations that happen even if no replacement happens
+                    $value = str_replace('\n', "\n", $value);
+                }
                 if ($apply_filter) {
                     $value = $LANG_FILTER_OB->compile_time($key, $value, $lang);
                 }

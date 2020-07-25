@@ -118,6 +118,14 @@ class Hook_fields_list extends ListFieldHook
         if (is_object($ev)) {
             return $ev;
         }
+
+        if (option_value_from_field_array($field, 'display_val', 'off') == 'on') {
+            $map = $this->get_input_list_map($field, false);
+            if (isset($map[$ev])) {
+                $ev = $map[$ev];
+            }
+        }
+
         return comcode_to_tempcode($ev, null, true);
     }
 

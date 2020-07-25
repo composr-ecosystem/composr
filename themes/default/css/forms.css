@@ -328,6 +328,15 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 .input-tick-required, .input-float-required, .input-text-required, .input-upload-required {
 }
 
+.input-colour, .input-list, .input-line, .input-integer,
+.input-author, .input-username, .input-email, .input-codename,
+.input-tick, .input-float, .input-text, .input-upload,
+.input-colour-required, .input-list-required, .input-line-required, .input-integer-required,
+.input-author-required, .input-username-required, .input-email-required, .input-codename-required,
+.input-tick-required, .input-float-required, .input-text-required, .input-upload-required {
+	max-width: 100%;
+}
+
 .input-captcha {
 	/*display: inline-flex;*/
 }
@@ -641,7 +650,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	}
 	.mobile .preview-box-inner {
 		overflow: hidden;
-		width: 320px;
+		width: 314px;
 		height: 355px;
 	}
 /*{+END}*/

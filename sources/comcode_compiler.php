@@ -1580,19 +1580,21 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                                 }
 
                                 // Search highlighting lookahead
-                                foreach ($highlight_bits as $highlight_bit) {
-                                    if (cms_mb_strtolower($next) === cms_mb_strtolower($highlight_bit[0])) { // optimisation
-                                        if (@cms_mb_strtolower(substr($comcode, $pos - 1, strlen($highlight_bit))) === cms_mb_strtolower($highlight_bit)) {
-                                            if ($GLOBALS['XSS_DETECT']) {
-                                                ocp_mark_as_escaped($continuation);
+                                if ($textual_area) {
+                                    foreach ($highlight_bits as $highlight_bit) {
+                                        if (cms_mb_strtolower($next) === cms_mb_strtolower($highlight_bit[0])) { // optimisation
+                                            if (@cms_mb_strtolower(substr($comcode, $pos - 1, strlen($highlight_bit))) === cms_mb_strtolower($highlight_bit)) {
+                                                if ($GLOBALS['XSS_DETECT']) {
+                                                    ocp_mark_as_escaped($continuation);
+                                                }
+                                                $tag_output->attach($continuation);
+                                                $continuation = '';
+                                                $differented = true;
+                                                $embed_output = _do_tags_comcode('highlight', [], escape_html(substr($comcode, $pos - 1, strlen($highlight_bit))), $comcode_dangerous, $pass_id, $pos, $source_member, $as_admin, $db, $comcode, $structure_sweep, $semiparse_mode, $highlight_bits, null, false, false, $html_errors);
+                                                $pos += strlen($highlight_bit) - 1;
+                                                $tag_output->attach($embed_output);
+                                                break;
                                             }
-                                            $tag_output->attach($continuation);
-                                            $continuation = '';
-                                            $differented = true;
-                                            $embed_output = _do_tags_comcode('highlight', [], escape_html(substr($comcode, $pos - 1, strlen($highlight_bit))), $comcode_dangerous, $pass_id, $pos, $source_member, $as_admin, $db, $comcode, $structure_sweep, $semiparse_mode, $highlight_bits, null, false, false, $html_errors);
-                                            $pos += strlen($highlight_bit) - 1;
-                                            $tag_output->attach($embed_output);
-                                            break;
                                         }
                                     }
                                 }

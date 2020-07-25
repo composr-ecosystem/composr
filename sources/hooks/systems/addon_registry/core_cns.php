@@ -803,7 +803,6 @@ class Hook_addon_registry_core_cns
                 'PHOTO_THUMB_URL' => placeholder_image_url(),
                 'VALIDATED' => true,
                 'CONFIRMED' => true,
-                'BOX' => lorem_paragraph_html(),
             ]), null, '', true)
         ];
     }

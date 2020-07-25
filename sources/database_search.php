@@ -2345,7 +2345,7 @@ function get_search_rows($meta_type, $id_field, $search_query, $content_where, $
             }
             if (get_param_integer('keep_just_show_query', 0) == 1) {
                 cms_ini_set('ocproducts.xss_detect', '0');
-                header('Content-Type: text/plain; charset=' . get_charset());
+                @header('Content-Type: text/plain; charset=' . get_charset());
                 exit($query);
             }
 

@@ -29,8 +29,6 @@ NB: This script must be located in the data_custom directory, otherwise there wi
 NB: There is a requirement that overrides that do code re-writing, must not call Composr API funcs, such as require_code. They must use pure PHP to do their string replaces.
 */
 
-/*EXTRA FUNCTIONS: php_sapi_name*/
-
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 

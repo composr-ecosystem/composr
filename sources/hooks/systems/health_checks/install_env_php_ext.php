@@ -173,7 +173,7 @@ class Hook_health_check_install_env_php_ext extends Hook_Health_Check
             return;
         }
 
-        $this->assertTrue((function_exists('zip_open')) || (@file_exists('/usr/bin/unzip')), do_lang('NO_ZIP_ON_SERVER'));
+        $this->assertTrue((function_exists('zip_open')) || (@file_exists('/usr/local/bin/unzip') || (@file_exists('/usr/bin/unzip'))), do_lang('NO_ZIP_ON_SERVER'));
     }
 
     /**

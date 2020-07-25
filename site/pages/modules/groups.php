@@ -593,17 +593,12 @@ class Module_groups
         // Secondary members
         $s_start = get_param_integer('s_start', 0);
         $s_max = get_param_integer('s_max', intval(get_option('secondary_members_per_page')));
-        $_secondary_members = cns_get_group_members_raw($id, false, false, true, false, $s_max, $s_start);
+        $_secondary_members = cns_get_group_members_raw($id, false, true, true, false, $s_max, $s_start);
         $secondary_members = new Tempcode();
         $prospective_members = new Tempcode();
         $s_max_rows = cns_get_group_members_raw_count($id, false, false, true, false);
         $d_max_rows = $may_control_group ? cns_get_group_members_raw_count($id, false, true, true) : 0;
         foreach ($_secondary_members as $secondary_member) {
-            if (!$may_control_group) {
-                // Update to consistent map format, as we use it here
-                $secondary_member = ['gm_member_id' => $secondary_member, 'gm_validated' => 1, 'implicit' => false];
-            }
-
             if ($this->filter_out($GLOBALS['FORUM_DRIVER']->get_member_row($secondary_member['gm_member_id']))) {
                 continue;
             }

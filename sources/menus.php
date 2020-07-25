@@ -49,7 +49,7 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
         $root = _build_sitemap_menu($menu_id);
 
         if ($root === null) {
-            return [new Tempcode(), []];
+            return [new Tempcode(), [], false];
         }
     } else {
         $root = _build_stored_menu($menu_id);
@@ -57,7 +57,7 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
         // Empty?
         if (empty($root['children'])) {
             if ($silent_failure) {
-                return [new Tempcode(), []];
+                return [new Tempcode(), [], false];
             }
 
             $redirect = get_self_url(true, true);
@@ -65,7 +65,7 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
             $add_url = $_add_url->evaluate();
 
             $content = do_template('INLINE_WIP_MESSAGE', ['_GUID' => '276e6600571b8b4717ca742b6e9da17a', 'MESSAGE' => do_lang_tempcode('MISSING_MENU', escape_html($menu_id), escape_html($add_url))]);
-            return [$content, []];
+            return [$content, [], false];
         }
     }
 

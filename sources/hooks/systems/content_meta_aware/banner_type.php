@@ -50,8 +50,8 @@ class Hook_content_meta_aware_banner_type extends Hook_CMA
             'parent_category_meta_aware_type' => null,
             'is_category' => true,
             'is_entry' => false,
-            'category_field' => null, // For category permissions
-            'category_type' => null, // For category permissions
+            'category_field' => 'id', // For category permissions
+            'category_type' => 'banner_type', // For category permissions
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,

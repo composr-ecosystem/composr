@@ -235,9 +235,9 @@ function require_code($codename, $light_exit = false, $has_custom = null)
 
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
             if (function_exists('attach_message')) {
-                attach_message('require_code: ' . $codename . ' (' . number_format(memory_get_usage() - $before) . ' bytes used, now at ' . number_format(memory_get_usage()) . ')', 'inform');
+                attach_message('require_code: ' . $codename . ' (' . @number_format(memory_get_usage() - $before) . ' bytes used, now at ' . @number_format(memory_get_usage()) . ')', 'inform');
             } else {
-                print('<!-- require_code: ' . htmlentities($codename) . ' (' . htmlentities(number_format(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
+                print('<!-- require_code: ' . htmlentities($codename) . ' (' . htmlentities(@number_format(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(@number_format(memory_get_usage())) . ') -->' . "\n");
                 cms_flush_safe();
             }
         }
@@ -259,9 +259,9 @@ function require_code($codename, $light_exit = false, $has_custom = null)
         // Optional process tracking (has to run before init function called)
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
             if (function_exists('attach_message')) {
-                attach_message('require_code: ' . $codename . ' (' . number_format(memory_get_usage() - $before) . ' bytes used, now at ' . number_format(memory_get_usage()) . ')', 'inform');
+                attach_message('require_code: ' . $codename . ' (' . @number_format(memory_get_usage() - $before) . ' bytes used, now at ' . @number_format(memory_get_usage()) . ')', 'inform');
             } else {
-                print('<!-- require_code: ' . htmlentities($codename) . ' (' . htmlentities(number_format(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
+                print('<!-- require_code: ' . htmlentities($codename) . ' (' . htmlentities(@number_format(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(@number_format(memory_get_usage())) . ') -->' . "\n");
                 cms_flush_safe();
             }
         }

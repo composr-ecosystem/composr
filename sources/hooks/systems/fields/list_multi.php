@@ -85,7 +85,7 @@ class Hook_fields_list_multi extends ListFieldHook
                     $default = preg_replace('#^(=.*)?\|#U', '', $default); // Get key of blank option
                 }
                 $default = preg_replace('#\|.*$#', '', $default); // Remove all the non-first list options
-                $default = preg_replace('#=.*$#', '', $default); // Get key of first
+                //$default = preg_replace('#=.*$#', '', $default); // Get key of first      key->val support does not exist for this field type, #4301
             }
         }
         return ['long_unescaped', $default, 'long'];

@@ -44,6 +44,8 @@ class addon_references_test_set extends cms_test_case
                 $addon_name = $matches[1][$i];
                 $this->assertTrue(addon_installed($addon_name), 'Could not find PHP-referenced addon, ' . $addon_name);
             }
+
+            unset($c);
         }
     }
 
@@ -61,6 +63,8 @@ class addon_references_test_set extends cms_test_case
                 $addon_name = $matches[1][$i];
                 $this->assertTrue(addon_installed($addon_name), 'Could not find template-referenced addon, ' . $addon_name);
             }
+
+            unset($c);
         }
     }
 }

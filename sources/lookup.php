@@ -106,7 +106,7 @@ function lookup_user($param, &$username, &$member_id, &$ip)
         }
     }
 
-    return $GLOBALS['SITE_DB']->query_select('stats', ['ip', 'MAX(date_and_time) AS date_and_time'], ['member_id' => $member_id], 'GROUP BY ip ORDER BY date_and_time DESC');
+    return $GLOBALS['SITE_DB']->query_select('stats', ['ip', 'MAX(date_and_time) AS date_and_time'], ['member_id' => $member_id], 'GROUP BY ip ORDER BY date_and_time DESC', 100);
 }
 
 /**

@@ -755,6 +755,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SECURITY_LEVEL_high
         MAINTENANCE_SCRIPT_ACCESS
         CONFIG_OPTION_maintenance_script_htaccess
+        IMAGEMAGICK_PATH
+        CONFIG_OPTION_imagemagick_path
         ADD_MEMBER_EMAIL_HELP
         CONFIG_OPTION_new_member_default_email_message
         CONFIG_OPTION_new_member_default_email_subject
@@ -2166,6 +2168,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_newsletter_signup_PARAM_subject_TITLE
         BLOCK_main_newsletter_signup_PARAM_to
         BLOCK_main_newsletter_signup_PARAM_to_TITLE
+        BLOCK_main_newsletter_signup_PARAM_button_only
+        BLOCK_main_newsletter_signup_PARAM_button_only_TITLE
         BLOCK_main_newsletter_signup_USE
         BLOCK_main_notes_DESCRIPTION
         BLOCK_main_notes_PARAM_lang_none
@@ -2290,6 +2294,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_menu_USE
         INDEX_DOWNLOAD
         SPAM_URLS
+        BLOCK_side_tag_cloud_PARAM_apply_permissions_TITLE
+        BLOCK_side_tag_cloud_PARAM_apply_permissions
         BLOCK_side_calendar_DESCRIPTION
         BLOCK_side_calendar_PARAM_as_guest
         BLOCK_side_calendar_PARAM_as_guest_TITLE
@@ -10690,6 +10696,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TREE
         TT_COMPLAINT
         TT_OTHER
+        locale_decimal_point
+        locale_thousands_sep
         TUTORIALS
         TUTORIAL_ON_THIS
         TYPE

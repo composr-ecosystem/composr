@@ -38,6 +38,7 @@ class Hook_config_javascript_error_alerts
             'explanation' => 'CONFIG_OPTION_javascript_error_alerts',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 8,
             'required' => false,
 
             'public' => false,

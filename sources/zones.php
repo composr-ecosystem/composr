@@ -1748,6 +1748,8 @@ function extract_module_functions($path, $functions, $params = [], $prefer_direc
     }
 
     if (strpos($file, 'class Mx_') !== false) {
+        unset($file); // To save memory
+
         return extract_module_functions($path, $functions, $params, true);
     }
 
@@ -1812,6 +1814,8 @@ function extract_module_functions($path, $functions, $params = [], $prefer_direc
             $pre = ''; // Can only load that bit once
         }
     }
+
+    unset($file); // To save memory
 
     return $out;
 }

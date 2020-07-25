@@ -332,7 +332,7 @@ PHP;
         }
 
         $sql = 'SELECT DISTINCT r.* FROM ';
-        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r';
+        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=r.id';
         $main_sql .= $extra_join_sql;
         $main_sql .= ' WHERE ' . $where;
         $sql .= $main_sql;
@@ -368,7 +368,13 @@ PHP;
         $member_boxes = [];
         foreach ($rows as $row) {
             $member_id = $row['id'];
-            $box = render_member_box($member_id, true, $show_avatar, [], false);
+            $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id] = $row;
+
+            if ($display_mode != 'listing') {
+                $box = render_member_box($member_id, true, $show_avatar, [], false);
+            } else {
+                $box = null;
+            }
 
             if ($display_mode == 'media') {
                 $gallery_sql = 'SELECT name,fullname FROM ' . get_table_prefix() . 'galleries WHERE';
@@ -399,7 +405,7 @@ PHP;
                 $member_boxes[$member_id] = [
                     'I' => strval($cnt + 1),
                     'BREAK' => ($per_row !== null) && (($cnt + 1) % $per_row == 0),
-                    'BOX' => $box,
+                    'BOX' => ($display_mode != 'listing') ? $box : null,
                     'MEMBER_ID' => strval($member_id),
                     'GALLERY_NAME' => '',
                     'GALLERY_TITLE' => '',
@@ -446,7 +452,6 @@ PHP;
                     'PHOTO_THUMB_URL' => $row['m_photo_thumb_url'],
                     'VALIDATED' => ($row['m_validated'] == 1),
                     'CONFIRMED' => ($row['m_validated_email_confirm_code'] == ''),
-                    'BOX' => $member_boxes[$row['id']]['BOX'],
                 ]);
 
                 $member_primary_group = cns_get_member_primary_group($row['id']);

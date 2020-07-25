@@ -50,6 +50,10 @@ class cms_test_case extends WebTestCase
         }
 
         cms_ini_set('ocproducts.type_strictness', '1');
+
+        // We need to be compatible with low memory limits
+        ini_set('memory_limit', '32M');
+        set_value('memory_limit', '32M');
     }
 
     public function reopen_site()

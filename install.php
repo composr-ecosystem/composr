@@ -2654,7 +2654,7 @@ function require_code($codename)
         }
     }
     /*if (!array_key_exists('type', $_GET))   Memory usage debugging. Not safe, as can mess up Tempcode generation (mixed echos) {
-        echo '<' . '!-- Memory diff for ' . $codename . ' was: ' . number_format(memory_get_usage() - $prior) . ' --' . '>' . "\n";
+        echo '<' . '!-- Memory diff for ' . $codename . ' was: ' . @number_format(memory_get_usage() - $prior) . ' --' . '>' . "\n";
     }*/
 }
 

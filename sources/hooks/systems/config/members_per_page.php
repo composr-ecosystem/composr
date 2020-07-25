@@ -56,6 +56,6 @@ class Hook_config_members_per_page
         if (get_forum_type() != 'cns') {
             return null;
         }
-        return '50';
+        return '30';
     }
 }

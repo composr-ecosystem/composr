@@ -255,6 +255,30 @@ if ($news_id === null) {
 }
 $urls['News: ' . $news_title] = static_evaluate_tempcode(build_url(['page' => 'news', 'type' => 'view', 'id' => $news_id], get_module_zone('news'), [], false, false, true));
 
+// Set 'fixed in' in tracker for any issues referenced
+
+$issues_found = [];
+
+$regexp = '#' . preg_quote(get_base_url(), '#') . '/tracker/view\.php\?id=(\d+)#';
+$matches = [];
+$num_matches = preg_match_all($regexp, $changes, $matches);
+for ($i = 0; $i < $num_matches; $i++) {
+    $issues_found[] = intval($matches[1][$i]);
+}
+
+if (!empty($issues_found)) {
+    $or_list = '';
+    foreach ($issues_found as $id) {
+        if ($or_list != '') {
+            $or_list .= ' OR ';
+        }
+        $or_list .= 'id=' . strval($id);
+    }
+
+    $sql = 'UPDATE mantis_bug_table SET fixed_in_version=\'' . db_escape_string($version_dotted) . '\' WHERE (' . $or_list . ') AND fixed_in_version=\'\'';
+    $GLOBALS['SITE_DB']->query($sql);
+}
+
 // DONE!
 
 echo '<p>Done version ' . escape_html($version_pretty) . '!</p>';
@@ -264,3 +288,6 @@ foreach ($urls as $title => $url) {
     echo '<li><a href="' . escape_html($url) . '">' . escape_html($title) . '</a></li>';
 }
 echo '</ul>';
+
+require_code('mantis');
+ensure_version_exists_in_tracker($version_dotted);

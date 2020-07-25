@@ -34,6 +34,8 @@ class __sitemap_test_set extends cms_test_case
             return;
         }
 
+        disable_php_memory_limit();
+
         $this->establish_admin_session();
 
         require_code('sitemap');
@@ -186,7 +188,7 @@ class __sitemap_test_set extends cms_test_case
                         continue;
                     }
 
-                    $test = _request_page($link[2][0], $link[2][2]);
+                    $test = __request_page($link[2][0], $link[2][2]);
                     if ($test === false) {
                         $this->assertTrue(true, 'Cannot locate page ' . $link[2][0]);
                     } else {
