@@ -831,12 +831,6 @@ function ip_wild_to_apache($ip)
             }
         }
     }
-    if ($ipv6) {
-        while ($i < 7) {
-            $range_bit .= ':FFFF';
-            $i++;
-        }
-    }
     return $ip_section . '/' . strval($range_bits);
 }
 
