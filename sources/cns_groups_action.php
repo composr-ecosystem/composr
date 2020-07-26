@@ -202,7 +202,7 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
     dispatch_member_mention_notifications('group', strval($group_id));
 
     require_code('sitemap_xml');
-    notify_sitemap_node_add('_SEARCH:groups:view:' . strval($group_id), null, null, SITEMAP_IMPORTANCE_LOW, 'yearly', true);
+    notify_sitemap_node_add('_SEARCH:groups:view:' . strval($group_id), null, null, SITEMAP_IMPORTANCE_LOW, 'yearly', $hidden == 0);
 
     return $group_id;
 }
