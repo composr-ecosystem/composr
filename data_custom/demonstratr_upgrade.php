@@ -116,7 +116,11 @@ upgrade_sharedinstall_sites(get_param_integer('from', 1) - 1);
 // Save new SQL dump
 $out_path = dirname(dirname(get_file_base())) . '/uploads/website_specific/compo.sr/demonstratr/template.sql';
 if (!file_exists($out_path . '.tmp')) {
-    $cmd = '/usr/bin/mysqldump -u' . escapeshellarg(substr(md5($SITE_INFO['db_site_user'] . '_shareddemo'), 0, 16)) . ' -p' . escapeshellarg($SITE_INFO['db_site_password']) . ' ' . escapeshellarg($SITE_INFO['db_site']) . '_shareddemo';
+    $cmd = '/usr/local/bin/mysqldump';
+    if (!is_file($cmd)) {
+        $cmd = '/usr/bin/mysqldump';
+    }
+    $cmd .= ' -u' . escapeshellarg(substr(md5($SITE_INFO['db_site_user'] . '_shareddemo'), 0, 16)) . ' -p' . escapeshellarg($SITE_INFO['db_site_password']) . ' ' . escapeshellarg($SITE_INFO['db_site']) . '_shareddemo';
     $cmd_secret = 'mysqldump -uxxx_shareddemo -pxxx xxx_shareddemo';
     $sql_dump_output = '';
     $sql_dump_output .= '<kbd>' . escape_html($cmd_secret) . ' > ' . $out_path . '.tmp</kbd>:<br />';

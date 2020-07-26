@@ -659,6 +659,7 @@ We have the following which are either unlikely to be useful, or potentially uns
  - Performance tuning (negative)
   - [tt]flush_cache_on_action[/tt] -- set this to '1' to automatically flush the static cache when actions are performed
   - [tt]allow_admin_in_other_zones[/tt] -- set this to '1' if you want to allow admin and CMS modules to run in other zones (small performance cost)
+  - [tt]memory_limit_simulate_hard[/tt] -- set this to '1' if you do not want the memory limit to be disableable; useful for testing compatibility with hosts that have low limits
  - Easter eggs
   - [tt]stupidity_mode[/tt] -- set to [tt]leet[/tt] or [tt]bork[/tt], for a fun April Fools-style Comcode joke (clear the Comcode cache after you're done though)
  - Experimental functionality

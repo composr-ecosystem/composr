@@ -1522,11 +1522,11 @@ class Module_topics
                 if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated')) && ($_postdetails[0]['p_validated'] == 0) && (($_postdetails[0]['p_poster'] != get_member()) || ((is_guest($_postdetails[0]['p_poster'])) && ($_postdetails[0]['p_ip_address'] != get_ip_address())))) {
                     access_denied('I_ERROR');
                 }
+            }
 
-                $_topic = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_cache_first_title'), array('id' => $_postdetails[0]['p_topic_id']), '', 1);
-                if (!array_key_exists(0, $_topic)) {
-                    warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
-                }
+            $_topic = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_cache_first_title'), array('id' => $_postdetails[0]['p_topic_id']), '', 1);
+            if (!array_key_exists(0, $_topic)) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
             }
 
             if (!cns_may_access_topic($_postdetails[0]['p_topic_id'])) {
@@ -3468,8 +3468,11 @@ END;
         $forum_id = $topic_info[0]['t_forum_id'];
         $private_topic = is_null($forum_id);
 
-        if (($topic_info[0]['t_validated'] == 1) && ($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_validated', array('id' => $topic_info[0]['t_cache_first_post_id'])) == 0)) {
-            attach_message(do_lang_tempcode('FIRST_POST_IS_UNVALIDATED'), 'notice');
+        $validated = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_validated', array('id' => $topic_info[0]['t_cache_first_post_id']));
+        if ($validated !== null) {
+            if (($topic_info[0]['t_validated'] == 1) && ($validated == 0)) {
+                attach_message(do_lang_tempcode('FIRST_POST_IS_UNVALIDATED'), 'notice');
+            }
         }
 
         $this->handle_topic_breadcrumbs($forum_id, $topic_id, $topic_info[0]['t_cache_first_title'], do_lang_tempcode('EDIT_TOPIC'));

@@ -320,7 +320,7 @@ NB: When adding there is no UI if 'AUTO_INCREMENT' was used.
 ! Special default values
 | Options are delimited by "|" (e.g. "This|That|Other"), with the real default value coming first. If you want the real default to be blank, start the list with a blank (it won't allow actual selection unless the list is set as non-required).
 
-You can also do like "a=This|b=That|c=Other" if you need the saved values to be different from the values displayed for selection.
+You can also do like "a=This|b=That|c=Other" if you need the saved values to be different from the values displayed for selection, and optionally also displayed on the site. This is called "key-val format".
 
 You can input a pathname relative to a [tt].csv[/tt] file (relative to base directory), if the non-bundled Nested CPF CSV Lists addon is installed.
 |-
@@ -328,6 +328,8 @@ You can input a pathname relative to a [tt].csv[/tt] file (relative to base dire
 | [tt]custom_values=on|off[/tt] (whether to allow a custom typed value; if enabled then inline list widgets will not be available; default is off)
 
 [tt]dynamic_choices[/tt] (whether to feed custom values back in as possible selections for others; default is off)
+
+[tt]display_val=on|off[/tt] (when key-val format is used this sets whether it also influences display not just input)
 
 [tt]value_remap=none|country[/tt] (if set to country then the full country names are shown for ISO country codes in the list options; default is none)
 

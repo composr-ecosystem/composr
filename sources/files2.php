@@ -569,55 +569,63 @@ function delete_csv_column($in_path, $column_name)
  * Find path to the PHP executable.
  *
  * @param  boolean $cgi Whether we need a CGI interpreter
- * @return PATH Path to PHP
+ * @return PATH Path to PHP (or just raw php command if cannot find a full path)
  */
 function find_php_path($cgi = false)
 {
-    $search_dirs = array(
-        '/bin',
-        '/usr/bin',
-        '/usr/local/bin',
-        '/usr/php/bin',
-        '/usr/php/sbin',
-        '/usr/php5/bin',
-        '/usr/php5/sbin',
-        '/usr/php7/bin',
-        '/usr/php7/sbin',
-        'c:\\php',
-        'c:\\php5',
-        'c:\\php7',
-        'c:\\progra~1\\php',
-        'c:\\progra~1\\php5',
-        'c:\\progra~1\\php7',
-    );
-    $filenames = array(
-        'php.dSYM',
-        'php',
-        'php5',
-        'php7',
-        'php-cli.dSYM',
-        'php-cli',
-        'php5-cli',
-        'php7-cli',
-        'php-cgi.dSYM',
-        'php-cgi',
-        'php5-cgi',
-        'php7-cgi',
-        'php-win.exe',
-    );
+    if (strpos(PHP_OS, 'WIN') !== false) {
+        $search_dirs = array(
+            'c:\\php*',
+            'c:\\progra~1\\php*',
+        );
+        $filenames = array(
+            'php.exe',
+            'php-win.exe',
+            'php-cli.exe',
+            'php-cgi.exe',
+        );
+    } elseif (strpos(PHP_OS, 'Darwin') !== false) {
+        $search_dirs = array(
+            '/usr/local/bin',
+            '/usr/bin',
+            '/bin',
+        );
+        $filenames = array(
+            'php',
+            'php.dSYM',
+            'php-cli',
+            'php-cli.dSYM',
+            'php-cgi',
+            'php-cgi.dSYM',
+        );
+    } else {
+        $search_dirs = array(
+            '/usr/local/bin',
+            '/usr/bin',
+            '/bin',
+        );
+        $filenames = array(
+            'php',
+            'php-cli',
+            'php-cgi',
+        );
+    }
+    $php_path = '';
     foreach ($search_dirs as $dir) {
         foreach ($filenames as $file) {
             if ((!$cgi) || (strpos($file, 'cgi') !== false)) {
-                if (@file_exists($dir . '/' . $file)) {
+                $path = $dir . '/' . $file;
+                $_path = glob($path);
+                if (!@empty($_path)) {
+                    $php_path = $_path[0];
                     break 2;
                 }
             }
         }
     }
-    if (!@file_exists($dir . '/' . $file)) {
+    if ($php_path == '') {
+        // Make up what we'd expect by default then
         $php_path = $cgi ? 'php-cgi' : 'php';
-    } else {
-        $php_path = $dir . '/' . $file;
     }
     return $php_path;
 }
@@ -982,7 +990,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
     }
 
     // Initialisation
-    global $DOWNLOAD_LEVEL, $HTTP_DOWNLOAD_MIME_TYPE, $HTTP_CHARSET, $HTTP_DOWNLOAD_SIZE, $HTTP_DOWNLOAD_URL, $HTTP_DOWNLOAD_MTIME, $HTTP_MESSAGE, $HTTP_MESSAGE_B, $HTTP_NEW_COOKIES, $HTTP_FILENAME;
+    global $DOWNLOAD_LEVEL, $HTTP_DOWNLOAD_MIME_TYPE, $HTTP_CHARSET, $HTTP_DOWNLOAD_SIZE, $HTTP_DOWNLOAD_URL, $HTTP_DOWNLOAD_MTIME, $HTTP_MESSAGE, $HTTP_MESSAGE_B, $HTTP_NEW_COOKIES, $HTTP_FILENAME, $HTTP_HEADERS;
     $DOWNLOAD_LEVEL++;
     $HTTP_DOWNLOAD_MIME_TYPE = null;
     $HTTP_CHARSET = null;

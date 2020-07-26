@@ -316,6 +316,7 @@ class Hook_addon_registry_newsletter
                 'URL' => placeholder_url(),
                 'NEWSLETTER_TITLE' => lorem_word(),
                 'NID' => placeholder_id(),
+                'BUTTON_ONLY' => false,
             )), null, '', true)
         );
     }

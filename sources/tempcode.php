@@ -1098,12 +1098,12 @@ function handle_symbol_preprocessing($seq_part, &$children)
                     $b_value = do_block($block_parms['block'], $block_parms);
                     if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] == '1')) {
                         if (function_exists('attach_message')) {
-                            attach_message('block: ' . $block_parms['block'] . ' (' . clean_file_size(memory_get_usage() - $before) . ' bytes used, now at ' . integer_format(memory_get_usage()) . ')', 'inform');
+                            attach_message('block: ' . $block_parms['block'] . ' (' . clean_file_size(memory_get_usage() - $before) . ' used, now at ' . integer_format(memory_get_usage()) . ')', 'inform');
                         } else {
                             @ob_end_flush();
                             @ob_end_flush();
                             @ob_end_flush();
-                            print('<!-- block: ' . htmlentities($block_parms['block']) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(integer_format(memory_get_usage())) . ') -->' . "\n");
+                            print('<!-- block: ' . htmlentities($block_parms['block']) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' used, now at ' . htmlentities(integer_format(memory_get_usage())) . ') -->' . "\n");
                             flush();
                         }
                     }

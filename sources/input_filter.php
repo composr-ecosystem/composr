@@ -217,7 +217,7 @@ function get_allowed_partner_sites()
         }
     }
 
-    if (isset($SITE_INFO['base_url'])) {
+    if (!empty($SITE_INFO['base_url'])) {
         $base_url = $SITE_INFO['base_url'];
         $allowed_partners[] = parse_url($base_url, PHP_URL_HOST);
     } else {

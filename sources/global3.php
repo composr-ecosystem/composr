@@ -449,8 +449,8 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
         $keep = array();
     }
 
-    $mergeable_arrays = array('METADATA' => true, 'JAVASCRIPTS' => true, 'CSSS' => true, 'TEMPCODE_SETGET' => true, 'CYCLES' => true);
-    $mergeable_tempcode = array('EXTRA_HEAD' => true, 'EXTRA_FOOT' => true, 'JAVASCRIPT' => true);
+    $mergeable_arrays = array('METADATA' => true, 'JAVASCRIPTS' => true, 'CSSS' => true, 'TEMPCODE_SETGET' => true, 'CYCLES' => true, 'ATTACHED_MESSAGES_RAW' => true);
+    $mergeable_tempcode = array('EXTRA_HEAD' => true, 'EXTRA_FOOT' => true, 'JAVASCRIPT' => true, 'ATTACHED_MESSAGES' => true, 'LATE_ATTACHED_MESSAGES' => true);
 
     $old_state = array_pop($OUTPUT_STATE_STACK);
     if ($old_state === null) {
@@ -471,7 +471,9 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
                         if ($GLOBALS[$var] === null) {
                             $GLOBALS[$var] = new Tempcode();
                         }
-                        $GLOBALS[$var]->attach($val);
+                        if ($val !== null) {
+                            $GLOBALS[$var]->attach($val);
+                        }
                     } elseif (!$merge_current || !isset($GLOBALS[$var]) || $GLOBALS[$var] === array() || $GLOBALS[$var] === false || $GLOBALS[$var] === '' || $var == 'REFRESH_URL') {
                         $GLOBALS[$var] = $val;
                     }
@@ -1994,32 +1996,85 @@ function cms_strip_tags($str, $tags, $tags_as_allow = true)
  * Find whether an IP address is valid
  *
  * @param  IP $ip IP address to check.
+ * @param  boolean $allow_wildcards Allow wildcards.
  * @return boolean Whether the IP address is valid.
  */
-function is_valid_ip($ip)
+function is_valid_ip($ip, $allow_wildcards = false)
 {
-    if ($ip == '') {
-        return false;
-    }
     $parts = array();
-    if ((strpos($ip, '.') !== false) && (preg_match('#^(\d+)\.(\d+)\.(\d+)\.(\d+)$#', $ip, $parts) != 0)) {
-        if (intval($parts[1]) > 255) {
-            return false;
+
+    if (strpos($ip, '.') !== false) {
+        // ipv4
+
+        if ($allow_wildcards) {
+            if (preg_match('#^(\d+|\*)\.(\d+|\*)\.(\d+|\*)\.(\d+|\*)$#', $ip, $parts) == 0) {
+                return false;
+            }
+
+            for ($i = 1; $i <= 4; $i++) {
+                if ($parts[$i] == '*') {
+                    for ($j = $i + 1; $j <= 4; $j++) {
+                        if ($parts[$j] != '*') {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } else {
+            if (preg_match('#^(\d+)\.(\d+)\.(\d+)\.(\d+)$#', $ip, $parts) == 0) {
+                return false;
+            }
         }
-        if (intval($parts[2]) > 255) {
-            return false;
+
+        for ($i = 1; $i <= 4; $i++) {
+            if ((is_numeric($parts[$i])) && (intval($parts[$i]) > 255)) {
+                return false;
+            }
         }
-        if (intval($parts[3]) > 255) {
-            return false;
-        }
-        if (intval($parts[4]) > 255) {
-            return false;
-        }
+
         return true;
     }
-    if ((strpos($ip, ':') !== false) && (preg_match('#^[\d:a-fA-F]*$#', $ip) != 0)) {
+
+    if (strpos($ip, ':') !== false) {
+        // ipv6
+
+        if (substr_count($ip, '::') > 1) {
+            return false;
+        }
+
+        $parts = explode(':', $ip);
+
+        if (count($parts) > 8) {
+            return false;
+        }
+
+        if ((count($parts) < 8) && (strpos($ip, '::') === false)) {
+            return false;
+        }
+
+        foreach ($parts as $i => $part) {
+            if ($allow_wildcards) {
+                if (preg_match('#^(\*|[\dA-F]{0,4})$#i', $part) == 0) {
+                    return false;
+                }
+
+                if ($part == '*') {
+                    for ($j = $i + 1; $j < count($parts); $j++) {
+                        if ($parts[$j] != '*') {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                if (preg_match('#^[\dA-F]{0,4}$#i', $part) == 0) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
+
     return false;
 }
 
@@ -2065,14 +2120,18 @@ function get_ip_address($amount = 4, $ip = null)
 }
 
 /**
- * Normalise a provided IP address
+ * Normalise/fix a provided IP address, including wildcarding part of it if requested.
  *
  * @param  IP $ip The IP address to normalise
- * @param  ?integer $amount Amount to mask out (null: do not)
+ * @param  ?integer $amount The number of groups to include in the IP address (rest will be replaced with *'s). For IP6, this is doubled. (null: wildcards not allowed)
  * @return IP The normalised IP address
  */
 function normalise_ip_address($ip, $amount = null)
 {
+    if ($ip == '') {
+        return '';
+    }
+
     $raw_ip = $ip;
 
     static $ip_cache = array();
@@ -2091,11 +2150,6 @@ function normalise_ip_address($ip, $amount = null)
         $ip = preg_replace('#%14$#', '', $ip);
     }
 
-    if (!is_valid_ip($ip)) {
-        $ip_cache[$raw_ip][$amount] = '';
-        return '';
-    }
-
     // Normalise
     if (strpos($ip, '.') === false) { // IPv6
         if (substr_count($ip, ':') < 7) {
@@ -2103,14 +2157,21 @@ function normalise_ip_address($ip, $amount = null)
         }
         $parts = explode(':', $ip);
         for ($i = 0; $i < (is_null($amount) ? 8 : ($amount * 2)); $i++) {
-            $parts[$i] = isset($parts[$i]) ? str_pad($parts[$i], 4, '0', STR_PAD_LEFT) : '0000';
+            if (isset($parts[$i])) {
+                if ($parts[$i] != '*') {
+                    $parts[$i] = strtoupper(str_pad($parts[$i], 4, '0', STR_PAD_LEFT));
+                }
+            } else {
+                $parts[$i] = '0000';
+            }
         }
         if (!is_null($amount)) {
             for ($i = $amount * 2; $i < 8; $i++) {
                 $parts[$i] = '*';
             }
         }
-        $ip_cache[$raw_ip][$amount] = implode(':', $parts);
+        $ip = implode(':', $parts);
+        $ip_cache[$raw_ip][$amount] = $ip;
     } else { // IPv4
         $parts = explode('.', $ip);
         for ($i = 0; $i < (is_null($amount) ? 4 : $amount); $i++) {
@@ -2123,8 +2184,16 @@ function normalise_ip_address($ip, $amount = null)
                 $parts[$i] = '*';
             }
         }
-        $ip_cache[$raw_ip][$amount] = implode('.', $parts);
+        $ip = implode('.', $parts);
+        $ip_cache[$raw_ip][$amount] = $ip;
     }
+
+    if (!is_valid_ip($ip_cache[$raw_ip][$amount], $amount !== null)) {
+        // If still not valid after normalisation
+        $ip_cache[$raw_ip][$amount] = '';
+        return '';
+    }
+
     return $ip_cache[$raw_ip][$amount];
 }
 
@@ -2209,44 +2278,31 @@ function cron_installed($absolutely_sure = false)
  */
 function compare_ip_address($wild, $full)
 {
-    $wild_parts = explode((strpos($full, '.') !== false) ? '.' : ':', $wild);
-    $full_parts = explode((strpos($full, '.') !== false) ? '.' : ':', $full);
-    foreach ($wild_parts as $i => $wild_part) {
-        if (($wild_part != '*') && ($wild_part != $full_parts[$i])) {
-            return false;
-        }
+    $full = normalise_ip_address($full);
+    if ($full == '') {
+        return false;
     }
-    return true;
+    if (strpos($full, '.') !== false) {
+        return _compare_ip_address($wild, explode('.', $full), '.');
+    }
+    return _compare_ip_address($wild, explode(':', $full), ':');
 }
 
 /**
- * Compare two IP addresses for potential correlation. Not as simple as equality due to '*' syntax. IP4-only variant
+ * Compare two IP addresses for potential correlation, pre-exploded. Not as simple as equality due to '*' syntax.
  *
  * @param  string $wild The general IP address that is potentially wildcarded
  * @param  array $full_parts The exploded parts of the specific IP address we are checking
+ * @param  string $delimiter The delimiter
  * @return boolean Whether the IP addresses correlate
  */
-function compare_ip_address_ip4($wild, $full_parts)
+function _compare_ip_address($wild, $full_parts, $delimiter)
 {
-    $wild_parts = explode('.', $wild);
-    foreach ($wild_parts as $i => $wild_part) {
-        if (($wild_part != '*') && ($wild_part != $full_parts[$i])) {
-            return false;
-        }
+    $wild = normalise_ip_address($wild, 4);
+    if ($wild == '') {
+        return false;
     }
-    return true;
-}
-
-/**
- * Compare two IP addresses for potential correlation. Not as simple as equality due to '*' syntax. IP6-only variant
- *
- * @param  string $wild The general IP address that is potentially wildcarded
- * @param  array $full_parts The exploded parts of the specific IP address we are checking
- * @return boolean Whether the IP addresses correlate
- */
-function compare_ip_address_ip6($wild, $full_parts)
-{
-    $wild_parts = explode(':', $wild);
+    $wild_parts = explode($delimiter, $wild);
     foreach ($wild_parts as $i => $wild_part) {
         if (($wild_part != '*') && ($wild_part != $full_parts[$i])) {
             return false;
@@ -2328,7 +2384,7 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
             continue;
         }
 
-        if ((($ip4) && (compare_ip_address_ip4($ban['ip'], $ip_parts))) || ((!$ip4) && (compare_ip_address_ip6($ban['ip'], $ip_parts)))) {
+        if ((($ip4) && (_compare_ip_address($ban['ip'], $ip_parts, '.'))) || ((!$ip4) && (_compare_ip_address($ban['ip'], $ip_parts, ':')))) {
             if ($self_ip === null) {
                 $self_host = cms_srv('HTTP_HOST');
                 if (($self_host == '') || (preg_match('#^localhost[\.\:$]#', $self_host) != 0)) {

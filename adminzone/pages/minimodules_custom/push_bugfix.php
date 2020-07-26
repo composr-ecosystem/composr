@@ -669,6 +669,8 @@ function create_forum_post($replying_to_post, $post_reply_title, $post_reply_mes
 
 function create_hotfix_tar($tracker_id, $files)
 {
+    disable_php_memory_limit();
+
     require_code('make_release');
     require_code('tar');
 

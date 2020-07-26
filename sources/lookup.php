@@ -109,7 +109,7 @@ function lookup_member_page($member, &$name, &$id, &$ip)
         }
     }
 
-    return $GLOBALS['SITE_DB']->query_select('stats', array('ip', 'MAX(date_and_time) AS date_and_time'), array('member_id' => $id), 'GROUP BY ip ORDER BY date_and_time DESC');
+    return $GLOBALS['SITE_DB']->query_select('stats', array('ip', 'MAX(date_and_time) AS date_and_time'), array('member_id' => $id), 'GROUP BY ip ORDER BY date_and_time DESC', 100);
 }
 
 /**
