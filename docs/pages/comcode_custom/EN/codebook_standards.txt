@@ -110,7 +110,7 @@ It is a good idea to use an editor/IDE with support for the [tt].editorconfig[/t
 | Technical debt
 | All development
 | Manually
-| Just generally try and keep your code neat. Don't misspell in comments and variable names. Tidy code encourages a mindset of zero tolerance for messiness in other areas, and increases general team morale such as to keep a high level of standards. See [url="Broken Windows Theory"]https://en.wikipedia.org/wiki/Broken_windows_theory[/url].
+| Just generally try and keep your code neat. Don't misspell in comments and variable names. Tidy code encourages a mindset of zero tolerance for messiness in other areas, and increases general team morale such as to keep a high level of standards.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Separate code chunks with blank lines[/color]
