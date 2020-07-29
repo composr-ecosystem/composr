@@ -242,7 +242,7 @@ function get_composr_branches()
     $branches = [];
     foreach (explode("\n", $_branches) as $_branch) {
         $matches = [];
-        if (preg_match('#^\s*\*?\s*(master|v[\d\.]+)$#', $_branch, $matches) != 0) {
+        if (preg_match('#^\s*\*?\s*(master|main|v[\d\.]+)$#', $_branch, $matches) != 0) {
             $git_branch = $matches[1];
 
             $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
@@ -468,16 +468,16 @@ function demonstratr_add_site_raw($server, $codename, $email_address, $password)
     }
 
     // Create database
-    $master_conn = new DatabaseConnector(get_db_site(), 'localhost'/*$server*/, 'root', $SITE_INFO['mysql_root_password'], 'cms_');
-    $master_conn->query('DROP DATABASE IF EXISTS `demonstratr_site_' . $codename . '`');
-    $master_conn->query('CREATE DATABASE `demonstratr_site_' . $codename . '`');
+    $central_conn = new DatabaseConnector(get_db_site(), 'localhost'/*$server*/, 'root', $SITE_INFO['mysql_root_password'], 'cms_');
+    $central_conn->query('DROP DATABASE IF EXISTS `demonstratr_site_' . $codename . '`');
+    $central_conn->query('CREATE DATABASE `demonstratr_site_' . $codename . '`');
     $user = substr(md5('demonstratr_site_' . $codename), 0, 16);
-    $master_conn->query('DROP USER \'' . $user . '\'@\'%\'', null, 0, true); // tcp/ip
-    $master_conn->query('CREATE USER \'' . $user . '\'@\'%\' IDENTIFIED BY \'' . db_escape_string($SITE_INFO['mysql_demonstratr_password']) . '\'');
-    $master_conn->query('GRANT ALL PRIVILEGES ON `demonstratr_site_' . $codename . '`.* TO \'' . $user . '\'@\'%\'');
-    $master_conn->query('DROP USER \'' . $user . '\'@\'localhost\'', null, 0, true); // local socket
-    $master_conn->query('CREATE USER \'' . $user . '\'@\'localhost\' IDENTIFIED BY \'' . db_escape_string($SITE_INFO['mysql_demonstratr_password']) . '\'');
-    $master_conn->query('GRANT ALL PRIVILEGES ON `demonstratr_site_' . $codename . '`.* TO \'' . $user . '\'@\'localhost\'');
+    $central_conn->query('DROP USER \'' . $user . '\'@\'%\'', null, 0, true); // tcp/ip
+    $central_conn->query('CREATE USER \'' . $user . '\'@\'%\' IDENTIFIED BY \'' . db_escape_string($SITE_INFO['mysql_demonstratr_password']) . '\'');
+    $central_conn->query('GRANT ALL PRIVILEGES ON `demonstratr_site_' . $codename . '`.* TO \'' . $user . '\'@\'%\'');
+    $central_conn->query('DROP USER \'' . $user . '\'@\'localhost\'', null, 0, true); // local socket
+    $central_conn->query('CREATE USER \'' . $user . '\'@\'localhost\' IDENTIFIED BY \'' . db_escape_string($SITE_INFO['mysql_demonstratr_password']) . '\'');
+    $central_conn->query('GRANT ALL PRIVILEGES ON `demonstratr_site_' . $codename . '`.* TO \'' . $user . '\'@\'localhost\'');
 
     // Import database contents
     $cmd = '/usr/local/bin/mysql';
@@ -911,11 +911,11 @@ function demonstratr_delete_site($server, $codename, $bulk = false)
     global $SITE_INFO;
 
     // Database
-    $master_conn = new DatabaseConnector(get_db_site(), 'localhost'/*$server*/, 'root', $SITE_INFO['mysql_root_password'], 'cms_');
-    $master_conn->query('DROP DATABASE IF EXISTS `demonstratr_site_' . $codename . '`');
+    $central_conn = new DatabaseConnector(get_db_site(), 'localhost'/*$server*/, 'root', $SITE_INFO['mysql_root_password'], 'cms_');
+    $central_conn->query('DROP DATABASE IF EXISTS `demonstratr_site_' . $codename . '`');
     $user = substr(md5('demonstratr_site_' . $codename), 0, 16);
-    $master_conn->query('REVOKE ALL ON `demonstratr_site_' . $codename . '`.* FROM \'' . $user . '\'', null, 0, true); // Suppress errors in case access denied
-    //$master_conn->query('DROP USER \'demonstratr_site_' . $codename . '\'');
+    $central_conn->query('REVOKE ALL ON `demonstratr_site_' . $codename . '`.* FROM \'' . $user . '\'', null, 0, true); // Suppress errors in case access denied
+    //$central_conn->query('DROP USER \'demonstratr_site_' . $codename . '\'');
 
     $GLOBALS['SITE_DB']->query_delete('sites_deletion_codes', ['s_codename' => $codename], '', 1);
     $GLOBALS['SITE_DB']->query_update('sites_email', ['s_codename' => $codename . '__expired_' . strval(mt_rand(0, mt_getrandmax()))], ['s_codename' => $codename], '', 1);
