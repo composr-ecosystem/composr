@@ -20,7 +20,7 @@ Or, as an overlay using the button in the footer if you have left that enabled (
 
 [title="2"]Commands[/title]
 
-Although the system is very flexible, there are many commands to use, designed for interaction with the Composr Repository and other systems designed specifically for Commandr. Since UNIX is the grandfather of almost all of the operating systems where command-line use is most prevalent -- and administrators comfortable with command-lines will probably be UNIX experts -- many of the commands mirror their UNIX counterparts.
+Although the system is very flexible, there are many commands to use, designed for interaction with the Composr Repository and other systems designed specifically for Commandr. Since UNIX is the grandparent of almost all of the operating systems where command-line use is most prevalent -- and administrators comfortable with command-lines will probably be UNIX experts -- many of the commands mirror their UNIX counterparts.
 
 The basic format for a command is as follows:
 [code="Commandr"]

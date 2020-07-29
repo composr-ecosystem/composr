@@ -6,7 +6,7 @@ There is a commercial opportunity for individuals or organisations that want to 
 
 Th process works like this:[list="1"]
 [*] Join the translation team on [url="Transifex"]https://www.transifex.com/ocproducts/[/url]
-[*] Ensure all urgent and high priority strings have been translated (this is a big job, it may take around 2 weeks of man hours)
+[*] Ensure all urgent and high priority strings have been translated (this is a big job, it may take around 2 weeks of person hours)
 [*] [url="Send a partnership request"]https://compo.sr/tickets/ticket.htm?ticket_type=Partnership[/url] telling us:[list]
 [*] which language you've finished translating
 [*] your Transifex username
