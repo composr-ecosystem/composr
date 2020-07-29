@@ -303,7 +303,7 @@
                                 window.alreadyAutonomous = false;
                             }
 
-                            window.opener.$util.inform('Reattaching chat window to re-navigated master window.');
+                            window.opener.$util.inform('Reattaching chat window to re-navigated top-level window.');
                         }
                     }
                 }
@@ -319,7 +319,7 @@
                     becomeAutonomousOnLost = false;
                 }
 
-                if (becomeAutonomousOnLost) { // Becoming autonomous means allowing to work with a master window
+                if (becomeAutonomousOnLost) { // Becoming autonomous means allowing to work with a top-level window
                     chatWindowBecomeAutonomous();
                 } else if (dieOnLost) {
                     window.isShutdown = true;
@@ -806,7 +806,7 @@
                 }
 
                 if (!messageContainerGlobal) {
-                    currentRoomId = -1; // We'll be gathering for all rooms we're in now, because this messaging is coming through the master control window
+                    currentRoomId = -1; // We'll be gathering for all rooms we're in now, because this messaging is coming through the top-level window
                 }
             } else if (xmlEl.nodeName.toLowerCase() === 'chat_members_update') { // UPDATE MEMBERS LIST IN ROOM
                 var membersElement = document.getElementById('chat-members-update');

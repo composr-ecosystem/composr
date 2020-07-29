@@ -999,7 +999,7 @@
         }
 
         function shutdownOverlay() {
-            setTimeout(function () { // Close master window in timeout, so that this will close first (issue on Firefox) / give chance for messages
+            setTimeout(function () { // Close top-level window in timeout, so that this will close first (issue on Firefox) / give chance for messages
                 if (window.fauxClose !== undefined) {
                     window.fauxClose();
                 } else {
