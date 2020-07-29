@@ -685,7 +685,7 @@ Composr contains 2 kinds of hooks for sending off uploads to third-party servers
 
 [title="4"]Database replication[/title]
 
-In order to implement replication, just change the [tt]db_site_host[/tt] and [tt]db_forums_host[/tt] values using [tt]http://yourbaseurl/config_editor.php[/tt] (or editing [tt]_config.php[/tt] by hand in a text editor) so that they contain a comma-separated list of host names. The first host in the list must be the master server. It is assumed that each server has equivalent credentials and database naming. Due to the master server being a bottleneck, it will never be picked as a read-access server in the randomisation process, unless there is only one slave.
+In order to implement replication, just change the [tt]db_site_host[/tt] and [tt]db_forums_host[/tt] values using [tt]http://yourbaseurl/config_editor.php[/tt] (or editing [tt]_config.php[/tt] by hand in a text editor) so that they contain a comma-separated list of host names. The first host in the list must be the source server. It is assumed that each server has equivalent credentials and database naming. Due to the source server being a bottleneck, it will never be picked as a read-access server in the randomisation process, unless there is only one replica.
 
 It is advised to not set replication for the Composr [tt]sessions[/tt] table, as this is highly volatile. Instead you should remove any display of 'users online' from your templates because if you're at the point of replication there will be too many to list anyway (and Composr will have realised this and stopped showing it consistently in many cases, to stop performance issues).
 
