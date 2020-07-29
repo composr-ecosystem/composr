@@ -23,7 +23,7 @@ Composr complies with the highest level of the WCAG (to the latest version at th
 
 [contents]decimal,lower-alpha[/contents]
 
-[title="2"]Web master concerns[/title]
+[title="2"]Webmaster concerns[/title]
 
 [media width="150" description="Composr displays HTML and any errors in an easily readable fashion" float="right"]data_custom/images/docs/tut_accessibility/accessibility_webstandards_checker.png[/media]
 After you have decided on the layout of your website, and created appropriate pages, you will need to create a site-map. The site-map is linked to from the bottom of every Composr page, and you will see that Composr comes with a default place-holder.
@@ -31,7 +31,7 @@ After you have decided on the layout of your website, and created appropriate pa
 The complexity of your site-map depends upon the complexity of your website. A small website may be able to just point the user to the left hand menu, while a large website should detail the full site structure, with links to all pages that should be directly accessible.
 
 [media width="150" description="This image displays how colour can be used to improve usability, but without it being required to understand an interface" float="left"]data_custom/images/docs/tut_accessibility/accessibility_colour_useful_not_needed.png[/media]
-The checkpoint tables included in this document, under the template compliance section, include checkpoints that apply to webmaster rather, or in addition to, the design of Composr itself. Therefore it is important to read this table and act in accordance with it. Web-master concerns are mainly:[html]<ul><li>Fill in optional captions for media</li>
+The checkpoint tables included in this document, under the template compliance section, include checkpoints that apply to webmaster rather, or in addition to, the design of Composr itself. Therefore it is important to read this table and act in accordance with it. Webmaster concerns are mainly:[html]<ul><li>Fill in optional captions for media</li>
 <li>Layout your site in a clear and consistent manner</li>
 <li>Do not fill your site with multimedia without providing information about that multimedia</li>
 <li>Avoid using Comcode tags that make the page dynamic in the user web browser, such as [ticker] and [jumping]</li></ul>[/html]
@@ -127,7 +127,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 				</p>
 			</td>
 			<td>
-				<p>The web-master should avoid such content,
+				<p>The webmaster should avoid such content,
 				including usage of the [ticker] Comcode tag, and possibly the
 				[jumping] Comcode tag.</p>
 			</td>

@@ -39,6 +39,8 @@ function init__version()
         define('VERSION_MAINLINE', 'Mainline');
         define('VERSION_SUPPORTED', 'Supported');
         define('VERSION_EOL', 'EOL');
+
+        define('STABLE_BRANCH_NAME', 'master');
     }
 }
 

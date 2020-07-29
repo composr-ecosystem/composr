@@ -427,7 +427,7 @@ function phase_2()
 
             <li><strong>Update compo.sr</strong>:<ul>
                 <li>Do a Git pull/checkout to get to the <kbd>composr_homesite</kbd> branch</li>
-                <li>Do a Git merge of the <kbd>master</kbd> branch to update the branch</li>
+                <li>Do a Git merge of the ' . STABLE_BRANCH_NAME . ' branch to update the branch</li>
                 <li>Make sure the site still works, as you may have just upgraded compo.sr to a new Composr CMS version; common sense needed</li>
                 <li>Git commit/push the updated branch
                 <li>Close the site on the server</li>

@@ -30,7 +30,7 @@ class sensible_git_branches_test_set extends cms_test_case
 
         $branches = get_composr_branches();
         foreach ($branches as $branch) {
-            $this->assertTrue(($branch['status'] != VERSION_MAINLINE) || ($branch['git_branch'] == 'master'), $branch['git_branch'] . ' does not seem to have the expected version status');
+            $this->assertTrue(($branch['status'] != VERSION_MAINLINE) || (in_array($branch['git_branch'], ['master', 'main'])), $branch['git_branch'] . ' does not seem to have the expected version status');
         }
     }
 }

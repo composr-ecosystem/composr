@@ -2375,7 +2375,7 @@ Appropriate branch naming
 | Consistency
 | Composr development
 | Automated test ([tt]sensible_git_branches[/tt])
-| The current 'mainline' version branch should be in [tt]master[/tt], and any other version branch should be in [tt]v<version-number>[/tt].
+| The current stable version branch should be in the {$STABLE_BRANCH_NAME} branch, and any other version branch should be in [tt]v<version-number>[/tt].
 |}
 
 [title="3"]Agency standards[/title]

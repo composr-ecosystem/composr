@@ -78,7 +78,7 @@ $addons_definitely_not_wanted = [
 
 $extra_files_to_delete = [];
 
-if (git_repos() != 'master') {
+if (!in_array(git_repos(), ['master', 'main'])) {
     $addons_definitely_not_wanted[] = 'installer';
     $extra_files_to_delete[] = 'install_ok';
     $extra_files_to_delete[] = 'install.php';
