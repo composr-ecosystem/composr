@@ -4265,6 +4265,8 @@ END;
         }
 
         $GLOBALS['FORUM_DB']->query_update('f_topics', array('t_pt_from' => $a, 't_pt_to' => $b, 't_forum_id' => null), array('id' => $topic_id), '', 1);
+        require_code('sitemap_xml');
+        notify_sitemap_node_delete('_SEARCH:topicview:id=' . strval($topic_id));
 
         require_code('notifications');
         enable_notifications('cns_topic', strval($topic_id), $a); // from
