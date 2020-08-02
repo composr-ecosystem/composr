@@ -13,6 +13,20 @@
  * @package    confluence
  */
 
+function handle_confluence_page_error_result($id, $result, $http_message, $http_message_b)
+{
+    if ($http_message == '404') {
+        $title = get_screen_title('Could not find documentation page', false);
+        $url = build_url(['page' => '_SELF'], '_SELF');
+        attach_message('Could not find documentation page ' . confluence_current_page() . ', redirected to main page', 'notice');
+        $tpl = redirect_screen($title, $url);
+        $tpl->evaluate_echo();
+        return;
+    }
+
+    warn_exit($http_message_b);
+}
+
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 $error_msg = new Tempcode();
@@ -39,6 +53,9 @@ if (get_param_string('type', '') == 'index') {
 
 list($content_type, $id, $posting_day) = confluence_current_page_id();
 
+$http_message = null;
+$http_message_b = null;
+
 if ($posting_day !== null) {
     if ($content_type != 'blogpost') {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -47,7 +64,13 @@ if ($posting_day !== null) {
     // Searches for a blog post. The only way we can reference these is via $blog_title+$posting_day query, as we cannot get IDs for direct querying through a confluence_get_mappings search
     $blog_title = $id;
     $query = 'content?expand=body.view,container,history&type=blogpost&title=' . urlencode($blog_title) . '&postingDay=' . urlencode($posting_day);
-    $full = confluence_query($query);
+    $full = confluence_query($query, false, $http_message, $http_message_b);
+
+    if ($full === null) {
+        handle_confluence_page_error_result($id, $full, $http_message, $http_message_b);
+        return;
+    }
+
     if (!isset($full['results'][0])) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -55,7 +78,12 @@ if ($posting_day !== null) {
 } else {
     // Search by ID
     $query = 'content/' . strval($id) . '?expand=body.view,container,history';
-    $result = confluence_query($query);
+    $result = confluence_query($query, false, $http_message, $http_message_b);
+
+    if ($result === null) {
+        handle_confluence_page_error_result($id, $result, $http_message, $http_message_b);
+        return;
+    }
 }
 
 $html_pre = null;

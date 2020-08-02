@@ -368,10 +368,18 @@ function rewrite_confluence_url($url, $force_general_proxy = false)
     return $url;
 }
 
-function confluence_query($query, $trigger_error = true)
+function confluence_query($query, $trigger_error = true, &$http_message = null, &$http_message_b = null)
 {
     $url = get_confluence_base_url() . '/rest/api/' . $query;
-    list($json) = confluence_call_url($url, $trigger_error, true);
+    list($json, , , , $http_message, $http_message_b) = confluence_call_url($url, $trigger_error, true);
+
+    if (empty($json)) {
+        if (!$trigger_error) {
+            return null;
+        }
+
+        warn_exit('Internal error processing query ' . $url);
+    }
 
     $ret = @json_decode($json, true);
 
