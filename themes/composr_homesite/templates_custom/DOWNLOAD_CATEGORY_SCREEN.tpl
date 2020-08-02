@@ -65,7 +65,7 @@
 				Top Rated Addons:
 			</div>
 
-			{$BLOCK,block=main_multi_content,param=download,select={ID}*,efficient=0,zone=_SELF,sort=average_rating DESC,max=20,no_links=1,guid=top_downloads}
+			{$BLOCK,block=main_multi_content,param=download,select={ID}*,efficient=0,zone=_SELF,sort=average_rating DESC,max=10,no_links=1,guid=top_downloads,quick_cache=1}
 
 			<script>// <![CDATA[
 				$(document).ready(function() {
