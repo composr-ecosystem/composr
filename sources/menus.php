@@ -193,7 +193,11 @@ function _build_sitemap_menu($menu)
                     $setting = $bit_parts[1];
                     switch ($bit_parts[0]) {
                         case 'valid_node_types':
-                            $valid_node_types = explode('|', $setting);
+                            if (substr($setting, 0, 1) == '-') {
+                                $valid_node_types = array_diff(array_keys(find_all_hooks('systems', 'sitemap')), explode('|', substr($setting, 1)));
+                            } else {
+                                $valid_node_types = explode('|', $setting);
+                            }
                             break;
 
                         case 'child_cutoff':
