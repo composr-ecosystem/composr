@@ -521,6 +521,7 @@ Note that a page viewed under HTTPS must use HTTPS for all images and other embe
 
 It you change the protocol (or domain name) in the base URL, Composr will automatically provide redirects to the corrected version of the URL.
 The CSP implementation will also provide automatic redirects. We just don't rely on all clients having a CSP implementation.
+Ideally these redirects would happen for all requests though, not just dynamic PHP requests. There are some default rules in the [tt]recommended.htaccess[/tt] for this.
 
 If you are on Apache then you can add this to your [tt].htaccess[/tt] file to tell web users to use HTTPS for the whole domain:
 [code="htaccess"]

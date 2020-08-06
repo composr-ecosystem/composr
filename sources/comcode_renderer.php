@@ -1806,7 +1806,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             } else {
                 $rel = '';
             }
-            if ((!$as_admin) && (!has_privilege($source_member, 'search_engine_links'))) {
+            if ((!$as_admin) && (!has_privilege($source_member, 'search_engine_links')) && (@parse_url($url_full, PHP_URL_HOST) != parse_url(get_base_url(), PHP_URL_HOST))) {
                 if ($rel != '') {
                     $rel .= ' ';
                 }

@@ -59,6 +59,9 @@ function init__site()
     if (function_exists('get_value')) {
         $is_non_canonical = false;
         $canonical_keep_params = explode(',', (get_value('canonical_keep_params') === null) ? 'keep_devtest' : get_value('canonical_keep_params'));
+        if ((get_site_default_lang() != user_lang()) || ((get_option('detect_lang_forum') == '1') && (!is_guest())) || (get_option('detect_lang_browser') == '1')) {
+            $canonical_keep_params[] = 'keep_lang';
+        }
         foreach (array_merge(array_keys($_GET), ['keep_session'/*may be inserted later*/]) as $key) {
             if ((is_string($key)) && (substr($key, 0, 5) == 'keep_') && (!@in_array($key, $canonical_keep_params))) {
                 $NON_CANONICAL_PARAMS[$key] = true;

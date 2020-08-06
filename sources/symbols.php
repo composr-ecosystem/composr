@@ -749,19 +749,61 @@ function ecv($lang, $escaped, $type, $name, $param)
                     $value = preg_replace('#(' . $active_html_components . ')\s*\n\s*#i', "$1\n", $value);
                     $value = preg_replace('#\s*\n\s*(' . $active_html_components . ')#i', "\n$1", $value);
 
-                    if (in_array('relativeurls', $options)) {
+                    if ((in_array('relativeurls', $options)) || (in_array('protocolrelativeurls', $options))) {
                         $matches = [];
-                        if (preg_match('#^(.*/)(.*)$#', get_self_url_easy(), $matches) != 0) {
+                        $is_outside_root = (preg_match('#^(.*/)(.*)$#', get_self_url_easy(), $matches) != 0);
+                        if ($is_outside_root) {
                             $current_relative_base = $matches[1];
                             $current_relative_url = $matches[2];
-                            $value = preg_replace('#(\s(href|src|action)=")' . preg_quote(escape_html($current_relative_base), '#') . '([^"]*")#i', '$1$3', $value);
-                            $value = str_ireplace('<link rel="canonical" href="', '<link rel="canonical" href="' . $current_relative_base, $value); // We don't want this to be relative, it's confusing
+                            $current_relative_base_len = strlen($current_relative_base);
                         }
-                    }
 
-                    if (in_array('protocolrelativeurls', $options)) {
-                        $current_relative_url = preg_replace('#^(.*/)(.*)$#', '$1', get_self_url_easy());
-                        $value = preg_replace('#(\s(href|src|action)=")' . (tacit_https() ? 'https' : 'http') . '://#i', '$1//', $value);
+                        for ($i = 0; $i < 2; $i++) { // 2 sweeps, because some tags may have multiple URLs in them
+                            $matches = [];
+                            $value_new = '';
+                            $last_offset = 0;
+                            $num_matches = preg_match_all('#(<\w+[^<>]*\s)(action|href|src|srcset)(=")([^"]*://[^"]*)("[^<>]*>)#i', $value, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+                            for ($j = 0; $j < $num_matches; $j++) {
+                                $url = $matches[$j][4][0];
+                                $offset = $matches[$j][4][1];
+
+                                $start_tag = $matches[$j][1][0] . $matches[$j][2][0] . $matches[$j][3][0];
+                                $end_tag = $matches[$j][5][0];
+                                $remaining_tag = $start_tag . $end_tag;
+
+                                $value_new .= substr($value, $last_offset, $offset - $last_offset);
+
+                                // We don't want those to be relative, search engines need them to be absolute as they are to be used out-of-context
+                                $preserved_url = false;
+                                if (strpos($remaining_tag, 'rel="canonical"') !== false) {
+                                    $preserved_url = true;
+                                }
+                                if (strpos($remaining_tag, 'hreflang="') !== false) {
+                                    $preserved_url = true;
+                                }
+
+                                if (!$preserved_url) {
+                                    $multi_urls = preg_split('#(\s+)#', $url, -1, PREG_SPLIT_DELIM_CAPTURE);
+                                    $url = '';
+                                    foreach ($multi_urls as $_url) {
+                                        if (trim($_url) != '') {
+                                            if ((in_array('relativeurls', $options)) && ($is_outside_root) && (substr($_url, 0, $current_relative_base_len) == $current_relative_base)) {
+                                                $_url = substr($_url, $current_relative_base_len);
+                                            } elseif (in_array('protocolrelativeurls', $options)) {
+                                                $_url = preg_replace('#^' . (tacit_https() ? 'https' : 'http') . '://#i', '//', $_url);
+                                            }
+                                        }
+                                        $url .= $_url;
+                                    }
+                                }
+
+                                $value_new .= $url;
+
+                                $last_offset = $offset + strlen($matches[$j][4][0]);
+                            }
+                            $value_new .= substr($value, $last_offset);
+                            $value = $value_new;
+                        }
                     }
 
                     if (in_array('selfclose', $options)) {
@@ -6996,9 +7038,10 @@ function ecv_TRANSLATION_LINKS($lang, $escaped, $param)
         $langs = find_all_langs();
         $alt_langs = [];
         foreach (array_keys($langs) as $lang) {
-            if ($lang != user_lang()) {
-                $alt_langs[] = $lang;
-            }
+            $alt_langs[] = array(
+                'LANG' => $lang,
+                'CONSISTENT_DEFAULT' => (get_site_default_lang() == $lang) && ((get_option('detect_lang_forum') == '0') || (is_guest())) && (get_option('detect_lang_browser') == '0'),
+            );
         }
 
         if (!empty($alt_langs)) {

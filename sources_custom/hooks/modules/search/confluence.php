@@ -237,7 +237,7 @@ class Hook_search_confluence extends FieldsSearchHook
                 break;
         }
 
-        $url = build_url(['page' => 'docs', 'type' => $myrow['content']['id']], '_SEARCH');
+        $url = build_confluence_id_url($myrow['content']['id']);
         $breadcrumbs = confluence_breadcrumbs(intval($myrow['content']['id']));
         return do_template('SIMPLE_PREVIEW_BOX', ['TITLE' => $document_type . ': ' . $title, 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
     }

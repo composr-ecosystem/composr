@@ -51,7 +51,22 @@ if (get_param_string('type', '') == 'index') {
     return do_block('menu', ['type' => 'sitemap', 'param' => get_zone_name() . ':docs']);
 }
 
-list($content_type, $id, $posting_day) = confluence_current_page_id();
++list($content_type, $id, $posting_day, $is_canonical_format) = confluence_current_page_id();
+
+// We prefer slugs
+if (!$is_canonical_format) {
+    $url = build_confluence_id_url($id);
+    set_http_status_code(301);
+    header('Location: ' . $url->evaluate());
+    exit();
+}
+
+// Canonical URL is just raw docs page for root
+if (($content_type === null) && (confluence_current_page_raw() != '') && ($id === confluence_root_id())) {
+    set_http_status_code(301);
+    header('Location: ' . static_evaluate_tempcode(build_url(array('page' => '_SELF'), '_SELF')));
+    exit();
+}
 
 $http_message = null;
 $http_message_b = null;

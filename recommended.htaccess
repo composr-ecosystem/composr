@@ -1,6 +1,12 @@
 # Stop any potential content-type sniffing vulnerabilities
 <IfModule mod_headers.c>
 Header set X-Content-Type-Options "nosniff"
+
+# Enable these lines if you want whole domain to be HTTPS
+#<If "%{HTTP_HOST} in { 'example.com', 'www.example.com' }">
+#Header always set Strict-Transport-Security "max-age=31536000"
+#Header set Content-Security-Policy "upgrade-insecure-requests"
+#</If>
 </IfModule>
 
 # Disable inaccurate security scanning (Composr has its own). This disabling only works with modsecurity1 unfortunately.
@@ -111,6 +117,16 @@ RedirectMatch 404 /\.git
 Options +SymLinksIfOwnerMatch -MultiViews
 
 RewriteEngine on
+
+# Example to ensure canonical URLs: www.example.com --> example.com
+#RewriteCond %{HTTP_HOST} ^www\.example\.com [NC]
+#RewriteRule ^(.*)$ https://example.com/$1 [L,R=301]
+
+# Example to ensure canonical URLs: HTTP --> HTTPS
+#RewriteCond %{HTTP_HOST} ^(www\.)?example\.com [NC]
+#RewriteCond %{SERVER_PORT} 80 [OR]
+#RewriteCond %{HTTP_X_FORWARDED_PROTO} http
+#RewriteRule ^(.*)$ https://example.com/$1 [L,R=301]
 
 # Needed to pass HTTP-auth header on PHP CGI (it's not automatic, unlike PHP Module)
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

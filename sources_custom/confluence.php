@@ -68,7 +68,7 @@ function confluence_current_page_id()
         $id = intval($current_page);
         $content_type = null; // Unknown. Probably 'page', but not guaranteed
         $posting_day = null;
-        return [$content_type, $id, $posting_day];
+        return [$content_type, $id, $posting_day, false];
     }
 
     // Special case: Is a blog post (which confluence_get_mappings cannot find btw)
@@ -78,7 +78,7 @@ function confluence_current_page_id()
         $content_type = 'blogpost';
         $posting_day = $matches[1] . '-' . $matches[2] . '-' . $matches[3];
 
-        return [$content_type, $id, $posting_day];
+        return [$content_type, $id, $posting_day, true];
     }
 
     // Is a slug...
@@ -96,13 +96,15 @@ function confluence_current_page_id()
     $content_type = $mappings_by_complex_id[$current_page]['type'];
     $posting_day = null;
 
-    return [$content_type, $id, $posting_day];
+    return [$content_type, $id, $posting_day, true];
 }
 
-function confluence_current_page()
+function confluence_current_page_raw()
 {
     $current_url_path = $_SERVER['REQUEST_URI'];
     $current_url_path = _strip_url_path($current_url_path);
+
+    $current_url_path = preg_replace('#%25([0-9A-F]{2})#', '%$1', $current_url_path); // Fix buggy user agents that do double-encoding
 
     $root_url_path = parse_url(get_local_confluence_url(), PHP_URL_PATH);
     $root_url_path = _strip_url_path($root_url_path);
@@ -111,6 +113,13 @@ function confluence_current_page()
     if (substr($current_page, 0, 1) == '/') {
         $current_page = urldecode(substr($current_page, 1));
     }
+
+    return $current_page;
+}
+
+function confluence_current_page()
+{
+    $current_page = confluence_current_page_raw();
 
     if ($current_page == '') {
         $current_page = strval(confluence_root_id());
@@ -234,7 +243,7 @@ function confluence_breadcrumbs($page_id, $no_link_for_me_sir = true)
 
     $zone = get_page_zone('docs');
 
-    $map = ['page' => 'docs', 'type' => strval($page_id)];
+    $map = _build_confluence_id_url($page_id);
     $page_link = build_page_link($map, $zone);
 
     if (!array_key_exists($page_id, $mappings)) {
@@ -261,6 +270,26 @@ function confluence_breadcrumbs($page_id, $no_link_for_me_sir = true)
         return $segments;
     }
     return array_merge($below, $segments);
+}
+
+function _build_confluence_id_url($id)
+{
+    $mappings = confluence_get_mappings();
+    $mappings_by_complex_id = list_to_map('id', $mappings);
+
+    if (isset($mappings_by_complex_id[$id])) {
+        $slug = $mappings_by_complex_id[$id]['slug'];
+        $map = ['page' => 'docs', 'type' => $slug];
+    } else {
+        $map = ['page' => 'docs', 'type' => $id];
+    }
+    return $map;
+}
+
+function build_confluence_id_url($id)
+{
+    $map = _build_confluence_id_url($id);
+    return build_url($map, get_page_zone('docs'));
 }
 
 function confluence_clean_page($html)
