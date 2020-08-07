@@ -183,6 +183,13 @@ function _build_sitemap_menu($menu)
         $title = mixed();
         $icon = mixed();
 
+        // Stitching on a stored menu?
+        if (preg_match('#^\w+$#', $_node) != 0) {
+            $stored_menu = _build_stored_menu($_node);
+            $root['children'] = array_merge($root['children'], $stored_menu['children']);
+            continue;
+        }
+
         // Parse options
         if ($menu != '') {
             $bits = explode(',', $_node);
