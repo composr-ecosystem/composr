@@ -450,9 +450,11 @@ function confluence_call_url($url, $trigger_error = true, $text = false)
     require_code('http');
     $ret = cache_and_carry('cms_http_request', [$url, $options], $CONFLUENCE_CACHE_TIME);
 
-    if ($trigger_error) {
-        $options['trigger_error'] = true; // Set trigger_error to true now though, as if there's no caching then we want http_download_file to be called and die this time
-        $ret = cache_and_carry('cms_http_request', [$url, $options]);
+    if ($ret[0] == '') { // Revert to cache if we could not get a response
+        if ($trigger_error) {
+            $options['trigger_error'] = true; // Set trigger_error to true now though, as if there's no caching then we want http_download_file to be called and die this time
+            $ret = cache_and_carry('cms_http_request', [$url, $options]);
+        }
     }
 
     return $ret;
