@@ -81,7 +81,7 @@ if ($posting_day !== null) {
     $query = 'content?expand=body.view,container,history&type=blogpost&title=' . urlencode($blog_title) . '&postingDay=' . urlencode($posting_day);
     $full = confluence_query($query, false, $http_message, $http_message_b);
 
-    if ($full === null) {
+    if (($full === null) || ($http_message == '404')) {
         handle_confluence_page_error_result($id, $full, $http_message, $http_message_b);
         return;
     }
@@ -95,7 +95,7 @@ if ($posting_day !== null) {
     $query = 'content/' . strval($id) . '?expand=body.view,container,history';
     $result = confluence_query($query, false, $http_message, $http_message_b);
 
-    if ($result === null) {
+    if (($result === null) || ($http_message == '404')) {
         handle_confluence_page_error_result($id, $result, $http_message, $http_message_b);
         return;
     }

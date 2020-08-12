@@ -68,7 +68,10 @@ function confluence_current_page_id()
         $id = intval($current_page);
         $content_type = null; // Unknown. Probably 'page', but not guaranteed
         $posting_day = null;
-        return [$content_type, $id, $posting_day, false];
+
+        $mappings = list_to_map('id', confluence_get_mappings());
+
+        return [$content_type, $id, $posting_day, $current_page == strval(confluence_root_id()) || !isset($mappings[$current_page])/*Only canonical if we cannot find a slug*/];
     }
 
     // Special case: Is a blog post (which confluence_get_mappings cannot find btw)
@@ -436,7 +439,7 @@ function confluence_call_url($url, $trigger_error = true, $text = false)
     }
 
     global $CONFLUENCE_CACHE_TIME;
-    $options = ['trigger_error' => $trigger_error, 'ignore_http_status' => true];
+    $options = ['trigger_error' => false, 'ignore_http_status' => true];
     if ($auth !== null) {
         $options['auth'] = $auth;
     }
@@ -445,5 +448,12 @@ function confluence_call_url($url, $trigger_error = true, $text = false)
     }
 
     require_code('http');
-    return cache_and_carry('cms_http_request', [$url, $options], $CONFLUENCE_CACHE_TIME);
+    $ret = cache_and_carry('cms_http_request', [$url, $options], $CONFLUENCE_CACHE_TIME);
+
+    if ($trigger_error) {
+        $options['trigger_error'] = true; // Set trigger_error to true now though, as if there's no caching then we want http_download_file to be called and die this time
+        $ret = cache_and_carry('cms_http_request', [$url, $options]);
+    }
+
+    return $ret;
 }
