@@ -221,8 +221,12 @@ function _forum_authorise_login($this_ref, $username, $userid, $password_hashed,
                     $path = get_file_base() . '/sources/hooks/systems/cns_auth/' . $password_compatibility_scheme . '.php';
                 }
                 if (!file_exists($path)) {
-                    $reset_url = build_url(array('page' => 'lost_password'), get_module_zone('lost_password'));
-                    $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html($reset_url->evaluate()));
+                    if (function_exists('build_url')) {
+                        $reset_url = build_url(array('page' => 'lost_password'), get_module_zone('lost_password'));
+                        $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html($reset_url->evaluate()));
+                    } else {
+                        $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html(get_base_url() . '/index.php?page=lost_password'));
+                    }
                     return $out;
                 }
                 require_code('hooks/systems/cns_auth/' . $password_compatibility_scheme);
