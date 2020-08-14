@@ -569,8 +569,19 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
             case CCP_NO_MANS_LAND:
                 if ($next === '[') {
                     // Look ahead to make sure it's a valid tag. If it's not then it's considered normal user input, not a tag at all
-                    $dif = (($pos < $len) && ($comcode[$pos] === '/')) ? 1 : 0; // '0' if it's an opening tag, '1' if it's a closing tag
-                    $ahead = substr($comcode, $pos + $dif, MAX_COMCODE_TAG_LOOK_AHEAD_LENGTH);
+                    $next_2 = $comcode[$pos];
+                    $dif = 0; // '0' if it's an opening tag
+                    if ($pos < $len) {
+                        if ($next_2 === '/') {
+                            $dif = 1; // '1' if it's a closing tag
+                        } else {
+                            $matches = array();
+                            if (($pos + 1 < $len) && (preg_match('#^\s*/#', substr($comcode, $pos), $matches) != 0)) {
+                                $dif = strlen($matches[0]); // A closing tag with odd spaces
+                            }
+                        }
+                    }
+                    $ahead = ltrim(substr($comcode, $pos + $dif, MAX_COMCODE_TAG_LOOK_AHEAD_LENGTH));
                     $equal_pos = strpos($ahead, '=');
                     $space_pos = strpos($ahead, ' ');
                     $end_pos = strpos($ahead, ']');
@@ -593,10 +604,10 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                     }
                     $use_pos = min($equal_pos, $space_pos, $end_pos, $lax_end_pos, $cl_pos);
 
-                    $potential_tag = strtolower(substr($ahead, 0, $use_pos));
-                    if (($use_pos != 22) && ((!$in_semihtml) || ($dif === 1) || (($potential_tag != 'html') && ($potential_tag != 'semihtml'))) && ((!$in_html) || (($dif === 1) && ($potential_tag === 'html'))) && ((!$in_code_tag) || ((isset($CODE_TAGS[$potential_tag])) && ($potential_tag === $current_tag))) && ((!$structure_sweep) || ($potential_tag != 'contents'))) {
+                    $potential_tag = trim(strtolower(substr($ahead, 0, $use_pos)));
+                    if (($use_pos != 22) && ((!$in_semihtml) || ($dif !== 0) || (($potential_tag != 'html') && ($potential_tag != 'semihtml'))) && ((!$in_html) || (($dif !== 0) && ($potential_tag === 'html'))) && ((!$in_code_tag) || ((isset($CODE_TAGS[$potential_tag])) && ($potential_tag === $current_tag))) && ((!$structure_sweep) || ($potential_tag != 'contents'))) {
                         if ($in_code_tag) {
-                            if ($dif === 1) {
+                            if ($dif !== 0) {
                                 $code_nest_stack--;
                             } else {
                                 $code_nest_stack++;
@@ -963,10 +974,11 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                         $tag_output->attach($continuation);
                                         $continuation = '';
                                         if ($comcode[$pos] === '+') {
-                                            $p_end = $pos + 5;
+                                            $p_end = $pos + 1;
+                                            $matches = array();
                                             while ($p_end < $len) {
-                                                $p_portion = substr($comcode, $pos - 1, $p_end - ($pos - 1) + 5);
-                                                if (substr_count($p_portion, '{+START') === substr_count($p_portion, '{+END')) {
+                                                $p_portion = substr($comcode, $pos - 1, strpos($comcode, '}', $p_end) - ($pos - 1) + 1);
+                                                if (preg_match_all('#\{\+\s*START\s*,#', $p_portion, $matches) == preg_match_all('#\{\+\s*END\s*\}#', $p_portion, $matches)) {
                                                     break;
                                                 }
                                                 $p_end++;
@@ -983,7 +995,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
 
                                             $p_opener = substr($comcode, $pos - 1, $p_len + 1);
                                             $p_portion = substr($comcode, $pos + $p_len, $p_end - ($pos + $p_len));
-                                            $p_closer = substr($comcode, $p_end, 6);
+                                            $p_closer = substr($comcode, $p_end, strpos($comcode, '}', $p_end) - $p_end + 1);
 
                                             if ($semiparse_mode) {
                                                 $ret = new Tempcode();
@@ -1005,14 +1017,14 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                             } else {
                                                 require_code('tempcode_compiler');
                                                 $ret = template_to_tempcode($p_opener . '{DIRECTIVE_EMBEDMENT}' . $p_closer);
-                                                if (substr($comcode, $pos - 1, strlen('{+START,CASES,')) === '{+START,CASES,') {
+                                                if (preg_match('#^\{\+\s*START\s*,\s*CASES\s*,#', substr($comcode, $pos - 1, 30)) != 0) {
                                                     $ret->singular_bind('DIRECTIVE_EMBEDMENT', make_string_tempcode($p_portion));
                                                 } else {
                                                     $p_portion_comcode = comcode_to_tempcode($p_portion, $source_member, $as_admin, $wrap_pos, $pass_id, $connection, $semiparse_mode, $preparse_mode, $in_semihtml, $structure_sweep, $check_only, $highlight_bits, $on_behalf_of_member);
                                                     $ret->singular_bind('DIRECTIVE_EMBEDMENT', $p_portion_comcode);
                                                 }
 
-                                                $pos = $p_end + 6;
+                                                $pos = $p_end + strlen($p_closer);
                                             }
                                         } elseif ($comcode[$pos] === '!') {
                                             $p_len = $pos;
@@ -1739,7 +1751,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                 if ($next === '=') {
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT;
                     $current_attribute_name = 'param';
-                } elseif (trim($next) === '') {
+                } elseif ((!$close) && (trim($next) === '')) {
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTES;
                 } elseif ($next === '[') {
                     if (!$lax) {
@@ -1876,7 +1888,9 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                         }
                     }
                 } elseif ($status === CCP_IN_TAG_NAME) {
-                    $current_tag .= strtolower($next);
+                    if (trim($next) != '') {
+                        $current_tag .= strtolower($next);
+                    }
                 }
                 break;
 
@@ -1896,7 +1910,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                     $status = CCP_NO_MANS_LAND;
                 } elseif ($next === '/') {
                     $close = true;
-                } else {
+                } elseif (trim($next) != '') {
                     $current_tag .= strtolower($next);
                     $status = CCP_IN_TAG_NAME;
                 }
@@ -1941,6 +1955,9 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                     }
 
                     $pos--;
+                } elseif ($next == '=') {
+                    $status = CCP_IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT;
+                    $current_attribute_name = 'param';
                 } elseif (trim($next) != '') {
                     $status = CCP_IN_TAG_ATTRIBUTE_NAME;
                     $current_attribute_name = $next;

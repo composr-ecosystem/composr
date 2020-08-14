@@ -1059,6 +1059,10 @@ function handle_symbol_preprocessing($seq_part, &$children)
                 $param = block_params_str_to_arr($param[0], true);
             }
 
+            foreach ($param as &$_param) {
+                $_param = preg_replace('#^\s*([^\s]+)\s*=#', '$1=', $_param);
+            }
+
             if (in_array('defer=1', $param)) {
                 // Nothing has to be done here, except preparing for AJAX
                 require_javascript('ajax');
@@ -1095,7 +1099,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                     $before = memory_get_usage();
                 }
                 if (isset($block_parms['block'])) {
-                    $b_value = do_block($block_parms['block'], $block_parms);
+                    $b_value = do_block(trim($block_parms['block']), $block_parms);
                     if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] == '1')) {
                         if (function_exists('attach_message')) {
                             attach_message('block: ' . $block_parms['block'] . ' (' . clean_file_size(memory_get_usage() - $before) . ' used, now at ' . integer_format(memory_get_usage()) . ')', 'inform');

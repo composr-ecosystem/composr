@@ -63,6 +63,8 @@ function init__symbols()
  */
 function ecv($lang, $escaped, $type, $name, $param)
 {
+    $name = trim($name);
+
     // SYMBOLS...
     if ($type === TC_SYMBOL) {
         // Built-in
@@ -3047,6 +3049,10 @@ function ecv_BLOCK($lang, $escaped, $param)
             $param_2 = $param;
         }
 
+        foreach ($param_2 as &$_param) {
+            $_param = preg_replace('#^\s*([^\s]+)\s*=#', '$1=', $_param);
+        }
+
         if (in_array('defer=1', $param_2)) {
             $value = static_evaluate_tempcode(do_template('JS_BLOCK', array('_GUID' => '2334719e23b2773ad04fe0fcbdce684d', 'BLOCK_PARAMS' => block_params_arr_to_str($param_2))));
         } else {
@@ -4763,7 +4769,7 @@ function ecv_ADDON_INSTALLED($lang, $escaped, $param)
     $value = '';
 
     if ((isset($param[0])) && (!running_script('install'))) {
-        $value = (addon_installed($param[0], (isset($param[1])) && ($param[1] == '1'))) ? '1' : '0';
+        $value = (addon_installed(trim($param[0]), (isset($param[1])) && ($param[1] == '1'))) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
