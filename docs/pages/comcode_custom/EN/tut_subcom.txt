@@ -91,16 +91,18 @@ When a usergroup application is made a notification is dispatched to the leader 
 
 [title="3"]Clubs[/title]
 
-The [concept]Conversr[/concept] system provides a clubs feature (Content Management > Clubs). Clubs are special usergroups:
- - that can not have special permissions (they are not shown in permission editing interfaces)
- - that may be joined and left like ordinary usergroups (via secondary usergroup membership)
- - that come with their own forum (privileges to this are automatically assigned when the club and forum are created and cannot be revoked through the Composr permission editing interfaces)
- - may be added by ordinary members
+The [concept]Conversr[/concept] system provides a clubs feature (Content Management > Clubs). Clubs are a feature written around usergroups. Clubs:
+ - can not have special permissions (they are not shown in permission editing interfaces)
+ - may be joined and left like ordinary usergroups (via secondary usergroup membership)
+ - come with their own forum with the same name as the club (privileges to this are automatically assigned when the club and forum are created and cannot be revoked through the Composr permission editing interfaces)
+ - may be added by ordinary members, depending on how you have configured permissions
 Clubs are provided so that members may create their own subcommunities on the website. They are not given any special permissions so as to not overcomplicate the regular permission configuration process (as potentially you might have hundreds or even thousands of clubs).
 
 The club forum has default permissions that only allow website staff and club members into it. The club functionality provides no special moderation controls -- so by default the forum would need to be moderated by the website staff, rather than self-moderated. As it is a regular forum, additional permission changes can be achieved manually (for example, creating a new usergroup for the club's management and assigning moderator permissions over the forum to members of that).
 
 The parent forum and forum grouping for new club forums is configurable.
+
+You can only add a club from the Clubs module. However, once added it can be edited as a usergroup by website staff and converted to a normal usergroup by removing the special "Private club" setting you see when editing it (this is a one-way operation and removes any special club behaviour).
 [/surround]
 
 [title="2"]Zones[/title]
