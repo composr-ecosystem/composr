@@ -2091,8 +2091,9 @@ function get_ip_address($amount = 4, $ip = null)
     require_code('config');
 
     if ((get_value('cloudflare_workaround') === '1') && (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) && (isset($_SERVER['REMOTE_ADDR']))) {
-        $regexp = '^(204\.93\.240\.|204\.93\.177\.|199\.27\.|173\.245\.|103\.21\.|103\.22\.|103\.31\.|141\.101\.|108\.162\.|190\.93\.|188\.114\.|197\.234\.|198\.41\.|162\.)';
+        $regexp = '^(173\.245\.|103\.21\.|103\.22\.|103\.31\.|141\.101\.|108\.162\.|190\.93\.|188\.114\.|197\.234\.|198\.41\.|162\.|104\.|172\.|131\.0\.)';
         if (preg_match('#' . $regexp . '#', $_SERVER['REMOTE_ADDR']) != 0) {
+            $_SERVER['ORIGINAL_REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
             $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
             unset($_SERVER['HTTP_X_FORWARDED_FOR']);
         }
