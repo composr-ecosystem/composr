@@ -1084,7 +1084,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                 }
 
                 $block_parms = array();
-                foreach ($param as $_param) {
+                foreach ($param as &$_param) {
                     $block_parts = explode('=', $_param, 2);
                     if (!isset($block_parts[1])) {
                         $BLOCKS_CACHE[serialize($param)] = make_string_tempcode(do_lang('INTERNAL_ERROR') . ' (bad block parameter: ' . escape_html($_param) . ')');
