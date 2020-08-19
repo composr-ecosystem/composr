@@ -723,7 +723,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             ), null, false, 'MENU_BRANCH_tree'));
         }
     }
-    if (($page_link == '') && ($children->is_empty())) {
+    if (($page_link == '') && ($url->is_empty()) && ($children->is_empty())) {
         return array(null, false); // Nothing here!
     }
 
