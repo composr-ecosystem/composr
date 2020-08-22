@@ -26,11 +26,11 @@ function s_update_get_data()
 					// If not then remember the new value
 					window.latest_activity=window.parseInt(data);
 
-					// Now grab whatever updates are available
+					// Now grab whatever updates are available (this is NOT pagination, it's checking for updates and doesn't use the block code)
 					var url='{$BASE_URL;,0}/data_custom/activities_updater.php'+keep_stub(true);
 					var list_elements=$('li','#activities_feed');
 					var last_id=((typeof list_elements.attr('id')=='undefined')?'-1':list_elements.attr('id').replace(/^activity_/,''));
-					var post_val='last_id='+last_id+'&mode='+window.activities_mode;
+					var post_val='last_id='+last_id+'&mode='+window.activities_mode+'&max='+window.activities_feed_max;
 
 					if ((window.activities_member_ids!==null) && (window.activities_member_ids!==''))
 						post_val=post_val+'&member_ids='+window.activities_member_ids;
