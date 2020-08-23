@@ -161,6 +161,9 @@ class Hook_ecommerce_support_credits
                 if (!is_null($username)) {
                     $manual = 1;
                     $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
+                    if ($member_id === null) {
+                        $member_id = get_member();
+                    }
                 }
             }
         }

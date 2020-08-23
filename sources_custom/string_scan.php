@@ -7232,6 +7232,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ACTIVITY_PASSED_TEST
         ACTIVITY_SUBSCRIBED_EVENT
         ADD
+        NO_PRIVATE_SELF
         ADDED
         ADDED_COMCODE_ONLY
         ADDED_COMCODE_ONLY_ATTACHMENT
