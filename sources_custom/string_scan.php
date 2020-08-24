@@ -8423,6 +8423,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SHIPPING_ADDRESS
         PAYMENT_DETAILS
         ADD
+        NO_PRIVATE_SELF
         ADDED
         ADDED_COMCODE_ONLY_SAFE_ATTACHMENT
         ADDED_COMMENT_ON

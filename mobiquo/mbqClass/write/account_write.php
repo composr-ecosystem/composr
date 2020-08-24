@@ -274,7 +274,7 @@ class CMSAccountWrite
         }
 
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-        if ($member_id !== null) {
+        if (($member_id !== null) && (!is_guest($member_id))) {
             // Has to go through full process...
 
             $result = $this->lost_password($member_id);

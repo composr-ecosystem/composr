@@ -53,6 +53,9 @@ class Hook_commandr_command_give
             require_code('points2');
 
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[0]);
+            if (($member_id === null) || (is_guest($member_id))) {
+                return ['', '', '', do_lang('MEMBER_NO_EXIST')];
+            }
 
             give_points($parameters[1], $member_id, get_member(), $parameters[2], ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))));
             return ['', '', do_lang('SUCCESS'), ''];

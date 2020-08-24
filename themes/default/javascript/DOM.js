@@ -3159,13 +3159,7 @@
         });
 
         paginations.some(function (pagination) {
-            if (moreLinksFromPagination != null) {// Cleanup old pagination
-                if (pagination !== moreLinksFromPagination) {
-                    $util.toArray(pagination.getElementsByTagName('a')).forEach(function (a) {
-                        a.remove();
-                    });
-                }
-            } else { // Find links from an already-hidden pagination
+            if (moreLinksFromPagination == null) { // Find links from an already-hidden pagination
                 moreLinks = $util.toArray(pagination.getElementsByTagName('a'));
                 if (moreLinks.length !== 0) {
                     return true; // (break)
@@ -3185,7 +3179,7 @@
                 paginationLoadMore.remove();
             }
 
-            return;
+            return false;
         }
 
         // Used for calculating if we need to scroll down
@@ -3202,6 +3196,19 @@
                 internaliseInfiniteScrollingGo(urlStem, wrapper, moreLinks);
             }
         }
+
+        return true;
+    }
+
+    /**
+     * @param wrapper
+     */
+    function removePreviousPaginations(wrapper) {
+        $util.toArray(wrapper.getElementsByClassName('pagination')).forEach(function (pagination) {
+            $util.toArray(pagination.getElementsByTagName('a')).forEach(function (a) {
+                a.remove();
+            });
+        });
     }
 
     /**
@@ -3215,7 +3222,7 @@
         }
 
         var wrapperInner = document.getElementById(wrapper.id + '-inner') || wrapper,
-            rgxStartParam = /[&?](start|[^_]*_start|start_[^_]*)=([^&]*)/,
+            rgxStartParam = /[&?](start|[^_&]*_start|start_[^_]*)=([^&]*)/,
             nextLink = moreLinks.find(function (link) {
                 return link.rel.includes('next') && rgxStartParam.test(link.href);
             });
@@ -3223,6 +3230,7 @@
         if (nextLink != null) {
             var startParam = nextLink.href.match(rgxStartParam);
             infiniteScrollPending = true;
+            removePreviousPaginations(wrapper);
             $cms.callBlock(urlStem + (urlStem.includes('?') ? '&' : '?') + (startParam[1] + '=' + startParam[2]) + '&raw=1', '', wrapperInner, true).then(function () {
                 infiniteScrollPending = false;
                 internaliseInfiniteScrolling(urlStem, wrapper, true);

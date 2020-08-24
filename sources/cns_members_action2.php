@@ -2550,3 +2550,46 @@ function cns_make_predefined_content_field($type)
 
     return cns_make_custom_field($title, 0, $description, '', $public_view, $owner_view, $owner_set, 0, $_type, $required, $show_in_posts, $show_in_post_previews, null, '', 0, '', $include_in_main_search, $allow_template_search, $icon, $section, $tempcode, true);
 }
+
+/**
+ * Rebuild custom profile field indices.
+ * It is possible for these to get in a mess, especially when upgrading from old versions, or tweaking which of the maximum of 60 to have.
+ */
+function rebuild_all_cpf_indices()
+{
+    push_query_limiting(false);
+
+    $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type'], [], 'ORDER BY cf_include_in_main_search DESC,cf_required+cf_show_on_join_form DESC,cf_public_view+cf_owner_set DESC,cf_order DESC');
+
+    // Delete existing indexes
+    foreach ($fields as $field) {
+        $id = $field['id'];
+
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
+    }
+
+    // Delete any stragglers (already deleted fields or inconsistent naming)
+    $GLOBALS['FORUM_DB']->query_delete('db_meta_indices', ['i_table' => 'f_member_custom_fields']);
+    if (strpos(get_db_type(), 'mysql') !== false) {
+        $indexes = $GLOBALS['FORUM_DB']->query('SHOW INDEXES FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields WHERE Column_name<>\'mf_member_id\'');
+        foreach ($indexes as $index) {
+            $GLOBALS['FORUM_DB']->query('DROP INDEX ' . $index['Key_name'] . ' ON ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields');
+        }
+    }
+
+    // Rebuild indexes
+    require_code('cns_members_action');
+    foreach ($fields as $field) {
+        $id = $field['id'];
+        $type = $field['cf_type'];
+        list($_type, $index) = get_cpf_storage_for($type);
+
+        $okay = build_cpf_indices($id, $index, $type, $_type);
+        if (!$okay) { // Limit was hit
+            break;
+        }
+    }
+
+    pop_query_limiting();
+}

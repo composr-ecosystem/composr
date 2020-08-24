@@ -2209,7 +2209,7 @@ function sort_maps_by__strlen($rows, $sort_key)
         return;
     }
 
-    @uasort($rows, '_strlen_sort'); // @ is to stop PHP bug warning about altered array contents when Tempcode copies are evaluated internally
+    @uasort($rows, '_strlen_sort'); // LEGACY (< PHP 7): @ is to stop PHP bug (https://bugs.php.net/bug.php?id=50688 / https://github.com/php/php-src/commit/179c8a2a09a993bfa35f65828d40b68e3f69f64e#diff-497f073aa1ab88afcb8b248fc25d2a12) warning about altered array contents when Tempcode copies are evaluated internally
 }
 
 /**
@@ -2267,9 +2267,9 @@ function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false, $
 
         $first_key = key($rows);
         if ((is_integer($first_key)) && (array_unique(array_map('is_integer', array_keys($rows))) === [true])) {
-            usort($rows, '_multi_sort');
+            @usort($rows, '_multi_sort'); // LEGACY (< PHP 7): @ is to stop PHP bug (https://bugs.php.net/bug.php?id=50688 / https://github.com/php/php-src/commit/179c8a2a09a993bfa35f65828d40b68e3f69f64e#diff-497f073aa1ab88afcb8b248fc25d2a12) warning about altered array contents when Tempcode copies are evaluated internally
         } else {
-            uasort($rows, '_multi_sort');
+            @uasort($rows, '_multi_sort'); // LEGACY (< PHP 7): @ is to stop PHP bug (https://bugs.php.net/bug.php?id=50688 / https://github.com/php/php-src/commit/179c8a2a09a993bfa35f65828d40b68e3f69f64e#diff-497f073aa1ab88afcb8b248fc25d2a12) warning about altered array contents when Tempcode copies are evaluated internally
         }
     }
 }

@@ -281,9 +281,9 @@ function get_user_topic_func($raw_params)
         }
     } else {
         $user_id = get_member();
-        if (is_guest()) {
-            access_denied('NOT_AS_GUEST');
-        }
+    }
+    if (is_guest($user_id)) {
+        access_denied('NOT_AS_GUEST');
     }
 
     $max = 50;
@@ -320,9 +320,9 @@ function get_user_reply_post_func($raw_params)
         }
     } else {
         $user_id = get_member();
-        if (is_guest()) {
-            access_denied('NOT_AS_GUEST');
-        }
+    }
+    if (is_guest($user_id)) {
+        access_denied('NOT_AS_GUEST');
     }
 
     $max = 50;

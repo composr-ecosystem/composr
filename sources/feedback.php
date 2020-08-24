@@ -358,7 +358,7 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
                         $liked_by = [];
                     }
                     if (count($liked_by) < MAX_LIKES_TO_SHOW) {
-                        $_liked_by = $GLOBALS['SITE_DB']->query_select('rating', ['rating_member'], ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating' => 10]);
+                        $_liked_by = $GLOBALS['SITE_DB']->query_select('rating', ['rating_member'], ['rating_for_type' => $real_feedback_type, 'rating_for_id' => $content_id, 'rating' => 10], '', MAX_LIKES_TO_SHOW);
                         foreach ($_liked_by as $l) {
                             $username = $GLOBALS['FORUM_DRIVER']->get_username($l['rating_member'], false, USERNAME_DEFAULT_NULL);
                             if ($username !== null) {

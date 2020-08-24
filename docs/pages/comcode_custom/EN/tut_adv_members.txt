@@ -236,7 +236,7 @@ If you know validation may take a while, make sure any non-immediate welcome e-m
 
 [title="3"]E-mails sent when members are added manually[/title]
 
-A very similar feature to welcome e-mails is the ability to send an e-mail when you manually add a new member. There are fields on the "Add member account" form to accomodate this.
+A very similar feature to welcome e-mails is the ability to send an e-mail when you manually add a new member. There are fields on the "Add member account" form to accommodate this.
 The only differences between this and having a welcome e-mail set to send at zero hours, are:
 1) It is only sent to manually added members
 2) It does not require the system scheduler to be configured

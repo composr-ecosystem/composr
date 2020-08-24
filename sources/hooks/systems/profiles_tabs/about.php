@@ -277,13 +277,14 @@ class Hook_profiles_tabs_about
                     $club_row = $club_rows[$club_id];
                 }
 
-                $club_name = get_translated_text($club_row['g_name'], $GLOBALS['FORUM_DB']);
-                $club_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('f_description') => do_lang('FORUM_FOR_CLUB', $club_name)]);
+                $group_name = get_translated_text($club_row['g_name'], $GLOBALS['FORUM_DB']);
+                $forum_where = ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))];
+                $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', $forum_where);
 
                 $clubs[] = [
-                    'CLUB_NAME' => $club_name,
+                    'CLUB_NAME' => $group_name,
                     'CLUB_ID' => strval($club_row['id']),
-                    'CLUB_FORUM' => ($club_forum === null) ? '' : strval($club_forum),
+                    'CLUB_FORUM' => ($forum_id === null) ? '' : strval($forum_id),
                 ];
             }
         }

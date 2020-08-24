@@ -242,7 +242,9 @@ class Module_admin_cns_members
      */
     public function browse()
     {
-        require_lang('lookup');
+        if (addon_installed('securitylogging')) {
+            require_lang('lookup');
+        }
         if (addon_installed('welcome_emails')) {
             require_lang('cns_welcome_emails');
         }

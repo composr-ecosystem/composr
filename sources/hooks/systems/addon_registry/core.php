@@ -1446,6 +1446,7 @@ class Hook_addon_registry_core
             'sources_custom/hooks/systems/startup/index.html',
             'data/confirm_session.php',
             'data/cron_bridge.php',
+            'data/cron_bridge.sh',
             'data/curl-ca-bundle.crt',
             'data/db_meta.bin',
             'data/files.bin',

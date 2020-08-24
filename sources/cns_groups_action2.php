@@ -188,7 +188,7 @@ function cns_edit_group($group_id, $name, $is_default, $is_super_admin, $is_supe
     persistent_cache_delete('OPEN_GROUPS');
 
     require_code('sitemap_xml');
-    notify_sitemap_node_edit('_SEARCH:groups:view:' . strval($group_id));
+    notify_sitemap_node_edit('_SEARCH:groups:view:' . strval($group_id), $hidden == 0);
 }
 
 /**

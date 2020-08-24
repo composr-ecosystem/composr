@@ -367,7 +367,9 @@ function install_cns($upgrade_from = null)
 
         // Fix up legacy issues with CPFs that we can no longer tolerate
         $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type']);
+        require_code('cns_members_action');
         foreach ($fields as $field) {
+            $id = $field['id'];
             $type = $field['cf_type'];
             list($_type, $index) = get_cpf_storage_for($type);
 
@@ -380,9 +382,10 @@ function install_cns($upgrade_from = null)
                 $GLOBALS['FORUM_DB']->query('SET sql_mode=\'\'', null, 0, true); // Turn off strict mode, suppress errors in case access denied
             }
             $GLOBALS['FORUM_DB']->alter_table_field('f_member_custom_fields', 'field_' . strval($id), $_type);
-
-            build_cpf_indices($id, $index, $type, $_type);
         }
+
+        require_code('cns_members_action2');
+        rebuild_all_cpf_indices();
     }
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
         $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_mail_email_address', 'SHORT_TEXT');

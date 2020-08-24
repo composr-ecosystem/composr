@@ -50,7 +50,7 @@ class Hook_commandr_command_ban_member
 
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[0]);
 
-            if ($member_id === null) {
+            if (($member_id === null) || (is_guest($member_id))) {
                 return ['', '', '', do_lang('_MEMBER_NO_EXIST', $parameters[0])];
             }
 

@@ -1896,7 +1896,7 @@ class DatabaseConnector
 
         // Optimisation: Load language fields in advance so we don't need to do additional details when calling get_translated_* functions
         $lang_strings_expecting = [];
-        if ($lang_fields !== null) {
+        if (!empty($lang_fields)) {
             if (multi_lang_content()) {
                 if ((strpos($query, 'text_original') !== false) || (function_exists('user_lang')) && ($start < 200)) {
                     $lang = function_exists('user_lang') ? user_lang() : get_site_default_lang(); // We can we assume this, as we will cache against it -- if subsequently code wants something else it'd be a cache miss which is fine

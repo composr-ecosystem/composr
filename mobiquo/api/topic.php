@@ -212,9 +212,9 @@ function get_participated_topic_func($raw_params)
         $participant_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($params[0]);
     } else {
         $participant_id = get_member();
-        if (is_guest()) {
-            access_denied('NOT_AS_GUEST');
-        }
+    }
+    if (is_guest($participant_id)) {
+        access_denied('NOT_AS_GUEST');
     }
 
     $topic_object = new CMSTopicRead();

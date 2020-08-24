@@ -220,11 +220,11 @@
                         // If not then remember the new value
                         window.latestActivity = parseInt(data);
 
-                        // Now grab whatever updates are available
+                        // Now grab whatever updates are available (this is NOT pagination, it's checking for updates and doesn't use the block code)
                         var url = '{$FIND_SCRIPT_NOHTTP;,activities_updater}' + $cms.keep(true),
                             listElements = jQuery('li', '#activities-feed'),
                             lastId = ((listElements.attr('id') == null) ? '-1' : listElements.attr('id').replace(/^activity-/, '')),
-                            postVal = 'last_id=' + lastId + '&mode=' + window.activitiesMode;
+                            postVal = 'last_id=' + lastId + '&mode=' + window.activitiesMode + '&max=' + window.activitiesFeedMax;
 
                         if ((window.activitiesMemberIds != null) && (window.activitiesMemberIds !== '')) {
                             postVal = postVal + '&member_ids=' + window.activitiesMemberIds;

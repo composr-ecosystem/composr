@@ -245,7 +245,7 @@ class Hook_weather_openweathermap
         $result = @json_decode($data, true);
 
         if (!is_array($result)) {
-            $errormsg = do_lang('WEATHER_ERROR', 'OpenWeatherMap', strval($http_message) . ' error, ' . $data);
+            $errormsg = do_lang('WEATHER_ERROR', 'OpenWeatherMap', $http_message . ' error, ' . $data);
             throw new Exception($errormsg);
         }
         if ((!array_key_exists('list', $result)) && (array_key_exists('message', $result))) {

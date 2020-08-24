@@ -191,6 +191,10 @@ function update_tracker_issue($tracker_id, $version = null, $tracker_severity = 
 
 function ensure_version_exists_in_tracker($version)
 {
+    if ($version === null) {
+        return;
+    }
+
     if ($GLOBALS['SITE_DB']->query_value_if_there('SELECT version FROM mantis_project_version_table WHERE ' . db_string_equal_to('version', $version)) === null) {
         $query = "
             INSERT INTO

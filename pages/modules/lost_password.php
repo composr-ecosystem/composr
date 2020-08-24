@@ -283,7 +283,7 @@ class Module_lost_password
             $username = get_param_string('username', null);
             if ($username !== null) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-                if ($member_id === null) {
+                if (($member_id === null) || (is_guest($member_id))) {
                     if (get_option('password_reset_privacy') != 'disclose') {
                         warn_exit(do_lang_tempcode('INCORRECT_PASSWORD_RESET_CODE')); // This is a lie we have to give. They wouldn't have been given a reset code to try though!
                     }

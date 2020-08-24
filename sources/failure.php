@@ -657,12 +657,12 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     // Work out basic metadata...
 
     $ip = get_ip_address();
-    if (function_exists('get_member')) {
+    if ((function_exists('get_member')) && (!$GLOBALS['BOOTSTRAPPING'])) {
         $id = get_member();
         $username = $GLOBALS['FORUM_DRIVER']->get_username($id);
     } else {
         $id = db_get_first_id();
-        $username = function_exists('do_lang') ? do_lang('UNKNOWN') : 'Unknown';
+        $username = ((function_exists('do_lang')) && (!$GLOBALS['BOOTSTRAPPING'])) ? do_lang('UNKNOWN') : 'Unknown';
     }
 
     $url = $_SERVER['REQUEST_URI'];
@@ -747,7 +747,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
     // Send notification...
 
-    if (function_exists('do_lang')) {
+    if ((function_exists('do_lang')) && (!$GLOBALS['BOOTSTRAPPING'])) {
         require_code('notifications');
 
         $reason_full = do_lang($reason, $reason_param_a, $reason_param_b, null, get_site_default_lang());
@@ -801,10 +801,16 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     if ($silent_to_user) {
         return;
     }
-    if ($GLOBALS['DEV_MODE']) {
-        fatal_exit(do_lang('HACK_ATTACK'));
+
+    if ((function_exists('do_lang')) && (!$GLOBALS['BOOTSTRAPPING'])) {
+        if ($GLOBALS['DEV_MODE']) {
+            fatal_exit(do_lang('HACK_ATTACK'));
+        }
+        warn_exit(do_lang_tempcode('HACK_ATTACK_USER'));
     }
-    warn_exit(do_lang_tempcode('HACK_ATTACK_USER'));
+
+    require_code('critical_errors');
+    critical_error('EMERGENCY', 'Suspected hack attempt averted');
 }
 
 /**

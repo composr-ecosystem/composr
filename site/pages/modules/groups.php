@@ -643,9 +643,9 @@ class Module_groups
         }
 
         $edit_url = new Tempcode();
-        if (has_actual_page_access(get_member(), 'admin_cns_groups', get_module_zone('admin_cns_groups'))) {
+        if ((!$club) && (has_actual_page_access(get_member(), 'admin_cns_groups', get_module_zone('admin_cns_groups')))) {
             $edit_url = build_url(['page' => 'admin_cns_groups', 'type' => '_edit', 'id' => $id], get_module_zone('admin_cns_groups'));
-        } elseif (has_actual_page_access(get_member(), 'cms_cns_groups', get_module_zone('cms_cns_groups'))) {
+        } elseif (($club) && (has_actual_page_access(get_member(), 'cms_cns_groups', get_module_zone('cms_cns_groups')))) {
             $is_super_admin = $group['g_is_super_admin'];
             if (cns_may_control_group($id, get_member(), $group)) {
                 $edit_url = build_url(['page' => 'cms_cns_groups', 'type' => '_edit', 'id' => $id], get_module_zone('cms_cns_groups'));
@@ -661,7 +661,8 @@ class Module_groups
 
         $forum_id = null;
         if ($club) {
-            $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))]);
+            $forum_where = ['f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))];
+            $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', $forum_where);
         }
 
         $tpl = do_template('CNS_VIEW_GROUP_SCREEN', [
@@ -744,7 +745,7 @@ class Module_groups
         }
 
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-        if ($member_id === null) {
+        if (($member_id === null) || (is_guest($member_id))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
         }
 

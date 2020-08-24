@@ -20,6 +20,8 @@ class optimisations_fragile_test_set extends cms_test_case
 {
     public function testSymbols2Optimisation()
     {
+        global $SYMBOLS2_CAUSE;
+
         $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'forum', 'group_id' => db_get_first_id()], false, true); // errors suppressed in case already there
 
         $db = $GLOBALS[(get_forum_type() == 'cns') ? 'FORUM_DB' : 'SITE_DB'];
@@ -37,7 +39,7 @@ class optimisations_fragile_test_set extends cms_test_case
             unset($_GET['id']);
             require_lang('cns');
             $this->assertTrue(strpos($out->evaluate(), do_lang('ROOT_FORUM')) !== false);
-            $this->assertTrue(!function_exists('ecv2_MAKE_URL_ABSOLUTE'), 'symbols2.php used on forumview');
+            $this->assertTrue(empty($SYMBOLS2_CAUSE), 'symbols2.php used on forumview (' . implode(', ', $SYMBOLS2_CAUSE) . ')');
         }
 
         require_code('failure');
@@ -51,6 +53,7 @@ class optimisations_fragile_test_set extends cms_test_case
             }
             $bad = function_exists('ecv2_MAKE_URL_ABSOLUTE');
             $this->assertTrue(!$bad, 'Loaded symbols2.php in module ' . $module);
+            $this->assertTrue(empty($SYMBOLS2_CAUSE), 'Loaded symbols2.php in module ' . $module . ' (' . implode(', ', $SYMBOLS2_CAUSE) . ')');
             if ($bad) {
                 break;
             }

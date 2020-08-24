@@ -839,7 +839,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
 
     // Give points
     if ($rendering_context != 'tickets') {
-        if ((addon_installed('points')) && (!is_guest()) && (!is_guest($_postdetails['poster'])) && (has_privilege($_postdetails['poster'], 'use_points'))) {
+        if ((addon_installed('points')) && (!is_guest()) && (!is_guest($_postdetails['poster'])) && ($_postdetails['poster'] != get_member()) && (has_privilege($_postdetails['poster'], 'use_points'))) {
             require_css('points');
             $action_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $_postdetails['poster']], get_module_zone('points'));
             $_title = do_lang_tempcode('__POINTS_THANKS');

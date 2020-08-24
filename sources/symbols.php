@@ -25,11 +25,12 @@
  */
 function init__symbols()
 {
-    global $BLOCKS_CACHE, $PAGES_CACHE, $PANELS_CACHE, $STATIC_TEMPLATE_TEST_MODE;
+    global $BLOCKS_CACHE, $PAGES_CACHE, $PANELS_CACHE, $STATIC_TEMPLATE_TEST_MODE, $SYMBOLS2_CAUSE;
     $BLOCKS_CACHE = [];
     $PAGES_CACHE = [];
     $PANELS_CACHE = [];
     $STATIC_TEMPLATE_TEST_MODE = false;
+    $SYMBOLS2_CAUSE = [];
 }
 
 /**
@@ -45,6 +46,8 @@ function init__symbols()
  */
 function ecv($lang, $escaped, $type, $name, $param)
 {
+    $name = trim($name);
+
     // SYMBOLS...
     if ($type === TC_SYMBOL) {
         // Built-in
@@ -96,6 +99,9 @@ function ecv($lang, $escaped, $type, $name, $param)
                 } else {
                     require_code('symbols2');
                     if (function_exists('ecv2_' . $name)) {
+                        global $SYMBOLS2_CAUSE;
+                        $SYMBOLS2_CAUSE[] = $name;
+
                         $value = call_user_func('ecv2_' . $name, $lang, $escaped, $param); // A constant?
                     } else { // Error :-(
                         $value = '';
@@ -3859,6 +3865,10 @@ function ecv_BLOCK($lang, $escaped, $param)
             $param_2 = $param;
         }
 
+        foreach ($param_2 as &$_param) {
+            $_param = preg_replace('#^\s*([^\s]+)\s*=#', '$1=', $_param);
+        }
+
         if (in_array('defer=1', $param_2)) {
             $value = static_evaluate_tempcode(do_template('JS_BLOCK', ['_GUID' => '2334719e23b2773ad04fe0fcbdce684d', 'BLOCK_PARAMS' => block_params_arr_to_str($param_2)]));
         } else {
@@ -6521,7 +6531,7 @@ function ecv_ADDON_INSTALLED($lang, $escaped, $param)
     $value = '';
 
     if ((!empty($param[0])) && (!running_script('install'))) {
-        $value = (addon_installed($param[0], !empty($param[1]))) ? '1' : '0';
+        $value = (addon_installed(trim($param[0]), !empty($param[1]))) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -7038,10 +7048,10 @@ function ecv_TRANSLATION_LINKS($lang, $escaped, $param)
         $langs = find_all_langs();
         $alt_langs = [];
         foreach (array_keys($langs) as $lang) {
-            $alt_langs[] = array(
+            $alt_langs[] = [
                 'LANG' => $lang,
                 'CONSISTENT_DEFAULT' => (get_site_default_lang() == $lang) && ((get_option('detect_lang_forum') == '0') || (is_guest())) && (get_option('detect_lang_browser') == '0'),
-            );
+            ];
         }
 
         if (!empty($alt_langs)) {
@@ -7362,6 +7372,26 @@ function ecv_ROUND($lang, $escaped, $param)
             $value = strval(intval(round(floatval($param[0]), $amount)));
         }
     }
+
+    if (!empty($escaped)) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv_TAPATALK($lang, $escaped, $param)
+{
+    $value = (defined('IN_MOBIQUO') ? '1' : '0');
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);

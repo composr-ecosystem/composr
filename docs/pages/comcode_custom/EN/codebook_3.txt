@@ -636,6 +636,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving content language string fallback and Comcode fully before sorting)
   - [tt]assume_indices_exist[/tt] -- set this to '1' to assume all indices exist, to avoid having to check before using them
+  - [tt]sitemap_orphans_to_pages[/tt] -- set this to '0' if you don't want orphaned pages to be put under the default Pages page grouping of the Sitemap 
  - Low-level Action log tuning:
   - [tt]log_actions__create_topic[/tt] -- set this to '1' to enable Action logs for new topics
   - [tt]log_actions__reply[/tt] -- set this to '1' to enable Action logs for topic replies

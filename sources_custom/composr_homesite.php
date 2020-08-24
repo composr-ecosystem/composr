@@ -325,9 +325,9 @@ function server__create_tracker_issue($version_dotted, $tracker_title, $tracker_
 
 function server__create_tracker_post($tracker_id, $tracker_comment_message, $version_dotted = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
 {
-    // If the last 3 parameters are passed, this will update the issue along with making the post
+    // If the last 4 parameters are passed, this will update the issue along with making the post
     require_code('mantis');
-    if (($version_dotted === null) && ($tracker_severity === null) && ($tracker_category === null) && ($tracker_project === null)) {
+    if (($version_dotted !== null) && ($tracker_severity !== null) && ($tracker_category !== null) && ($tracker_project !== null)) {
         update_tracker_issue(intval($tracker_id), $version_dotted, $tracker_severity, $tracker_category, $tracker_project);
     }
     echo strval(create_tracker_post(intval($tracker_id), $tracker_comment_message));

@@ -395,6 +395,9 @@ class CMSModerationWrite
         }
 
         $user_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
+        if (($user_id === null) || (is_guest($user_id))) {
+            warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
+        }
 
         require_lang('cns_warnings');
 

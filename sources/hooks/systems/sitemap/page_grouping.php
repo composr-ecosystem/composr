@@ -289,7 +289,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
             }
 
             // Extra ones to get merged in? (orphaned children)
-            if ($page_grouping == 'pages' || $page_grouping == 'tools' || $page_grouping == 'cms') {
+            if (((get_value('sitemap_orphans_to_pages') !== '0') && ($page_grouping == 'pages')) || $page_grouping == 'tools' || $page_grouping == 'cms') {
                 if ($orphaned_pages === null) {
                     // Any left-behind pages
                     // NB: Code largely repeated in zone.php

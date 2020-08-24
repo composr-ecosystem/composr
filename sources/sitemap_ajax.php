@@ -558,7 +558,8 @@ function sitemap_script_saving()
                 $zone = $matches[1];
                 $page = $matches[2];
 
-                $node = retrieve_sitemap_node($page_link);
+                $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS);
+
                 if ($node === null) {
                     fatal_exit('Could not lookup node for ' . $page_link);
                 }
@@ -600,7 +601,7 @@ function sitemap_script_saving()
                 $zone = $matches[1];
                 $page = $matches[2];
 
-                $node = retrieve_sitemap_node($page_link);
+                $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS);
                 $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
 
                 $overridable_privileges = _get_overridable_privileges_for_privilege_page($privilege_page);

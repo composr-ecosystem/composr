@@ -256,7 +256,7 @@ class Module_admin_invoices
 
         $to = post_param_string('to');
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($to);
-        if ($member_id === null) {
+        if (($member_id === null) || (is_guest($member_id))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($to)), false, false, 404);
         }
 

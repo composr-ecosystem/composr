@@ -1508,6 +1508,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 if (is_integer($key)) {
                     $key = strval($key);
                 }
+
                 $_attributes[] = $key . '=' . $val;
             }
             $temp_tpl = symbol_tempcode('BLOCK', $_attributes);

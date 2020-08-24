@@ -1261,6 +1261,10 @@ function handle_symbol_preprocessing($seq_part, &$children)
                 $param = block_params_str_to_arr($param[0], true);
             }
 
+            foreach ($param as &$_param) {
+                $_param = preg_replace('#^\s*([^\s]+)\s*=#', '$1=', $_param);
+            }
+
             if (in_array('defer=1', $param)) {
                 // Nothing has to be done here, except preparing for AJAX
             } else {
@@ -1281,7 +1285,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                 }
 
                 $block_parms = [];
-                foreach ($param as $_param) {
+                foreach ($param as &$_param) {
                     $block_parts = explode('=', $_param, 2);
                     if (!isset($block_parts[1])) {
                         $BLOCKS_CACHE[serialize($param)] = make_string_tempcode(do_lang('INTERNAL_ERROR') . ' (bad block parameter: ' . escape_html($_param) . ')');

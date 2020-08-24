@@ -116,7 +116,7 @@ class Hook_fields_url_multi
 
         $auto_sort = option_value_from_field_array($field, 'auto_sort', 'off');
         if ($auto_sort == 'on') {
-            @cms_mb_asort($out, SORT_NATURAL | SORT_FLAG_CASE);
+            cms_mb_asort($out, SORT_NATURAL | SORT_FLAG_CASE);
         }
 
         $ret = new Tempcode();
