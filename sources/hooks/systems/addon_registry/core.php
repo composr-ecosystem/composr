@@ -626,6 +626,7 @@ class Hook_addon_registry_core
             'sources_custom/hooks/systems/spam_heuristics/.htaccess',
             'sources_custom/hooks/systems/spam_heuristics/index.html',
             'sources/web_resources.php',
+            'sources/hooks/systems/cron/missing_editfrom.php',
             'sources/hooks/systems/cron/git_autopull.php',
             'sources/hooks/systems/cron/dynamic_firewall.php',
             'data_custom/firewall_rules.txt',
