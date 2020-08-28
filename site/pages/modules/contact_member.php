@@ -283,7 +283,7 @@ class Module_contact_member
 
         $from_email = trim(post_param_string('email'));
         require_code('type_sanitisation');
-        if (!is_email_address($from_email)) {
+        if (!is_valid_email_address($from_email)) {
             warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));
         }
         $from_name = post_param_string('name');
@@ -297,12 +297,12 @@ class Module_contact_member
             foreach ($_POST as $key => $val) {
                 if (($val != '') && ((substr($key, 0, 3) == 'cc_') || (substr($key, 0, 4) == 'bcc_'))) {
                     $address = post_param_string($key);
-                    if (!is_email_address($address)) {
+                    if (!is_valid_email_address($address)) {
                         $address = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_email_address', ['m_username' => $address]);
                         if ($address === null) {
                             warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                         }
-                        if (!is_email_address($address)) {
+                        if (!is_valid_email_address($address)) {
                             warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));
                         }
                     }

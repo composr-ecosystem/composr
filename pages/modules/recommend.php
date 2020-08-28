@@ -461,7 +461,7 @@ class Module_recommend
                             }
 
                             // No header
-                            if (is_email_address($header_field)) {
+                            if (is_valid_email_address($header_field)) {
                                 $email_field_index = $i;
                                 $success_read = true;
                                 $sheet_reader->rewind();
@@ -503,7 +503,7 @@ class Module_recommend
                             $found_email_address = $spreadsheet_line[$email_field_index];
                             $found_name = cms_mb_ucwords($spreadsheet_line[$name_field_index]);
 
-                            if (is_email_address($found_email_address)) {
+                            if (is_valid_email_address($found_email_address)) {
                                 // Add to the list what we've found
                                 $fields->attach(form_input_tick($found_name, do_lang_tempcode('RECOMMENDING_TO_LINE', escape_html($found_name), escape_html($found_email_address)), 'use_details_' . strval($email_counter), true));
                                 $hidden->attach(form_input_hidden('details_email_' . strval($email_counter), $found_email_address));
@@ -567,7 +567,7 @@ class Module_recommend
                 continue;
             }
 
-            if (!is_email_address($email_address)) {
+            if (!is_valid_email_address($email_address)) {
                 attach_message(do_lang_tempcode('INVALID_EMAIL_ADDRESS'), 'warn');
                 return $this->gui();
             } else {
@@ -588,7 +588,7 @@ class Module_recommend
                 continue;
             }
             if (preg_match('#details_email_#', $key) != 0) {
-                if (is_email_address($email_address)) {
+                if (is_valid_email_address($email_address)) {
                     $curr_num = intval(preg_replace('#details_email_#', '', $key));
                     $adrbook_emails[$curr_num] = $email_address;
                 }

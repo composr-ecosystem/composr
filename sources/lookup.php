@@ -57,7 +57,7 @@ function lookup_user($param, &$username, &$member_id, &$ip)
         if ($ip === null) {
             $ip = '127.0.0.1';
         }
-    } elseif (is_email_address($param)) {
+    } elseif (is_valid_email_address($param)) {
         // From e-mail address
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($param);
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);

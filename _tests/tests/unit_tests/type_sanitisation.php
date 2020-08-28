@@ -61,7 +61,7 @@ class type_sanitisation_test_set extends cms_test_case
         ];
 
         foreach ($expectations as $string => $status) {
-            $this->assertTrue(is_email_address($string) == $status, 'Incorrect e-mail address status for ' . $string);
+            $this->assertTrue(is_valid_email_address($string) == $status, 'Incorrect e-mail address status for ' . $string);
         }
     }
 }

@@ -2495,7 +2495,7 @@ function is_valid_ip($ip, $allow_wildcards = false)
         // ipv4
 
         if ($allow_wildcards) {
-            if (preg_match('#^(\d+|\*)\.(\d+|\*)\.(\d+|\*)\.(\d+|\*)$#', $ip, $parts) == 0) {
+            if (preg_match('#^(\d+|\*)\.(\d+|\*)\.(\d+|\*)\.(\d+|\*)$#D', $ip, $parts) == 0) {
                 return false;
             }
 
@@ -2509,7 +2509,7 @@ function is_valid_ip($ip, $allow_wildcards = false)
                 }
             }
         } else {
-            if (preg_match('#^(\d+)\.(\d+)\.(\d+)\.(\d+)$#', $ip, $parts) == 0) {
+            if (preg_match('#^(\d+)\.(\d+)\.(\d+)\.(\d+)$#D', $ip, $parts) == 0) {
                 return false;
             }
         }
@@ -2542,7 +2542,7 @@ function is_valid_ip($ip, $allow_wildcards = false)
 
         foreach ($parts as $i => $part) {
             if ($allow_wildcards) {
-                if (preg_match('#^(\*|[\dA-F]{0,4})$#i', $part) == 0) {
+                if (preg_match('#^(\*|[\dA-F]{0,4})$#iD', $part) == 0) {
                     return false;
                 }
 
@@ -2554,7 +2554,7 @@ function is_valid_ip($ip, $allow_wildcards = false)
                     }
                 }
             } else {
-                if (preg_match('#^[\dA-F]{0,4}$#i', $part) == 0) {
+                if (preg_match('#^[\dA-F]{0,4}$#iD', $part) == 0) {
                     return false;
                 }
             }
@@ -4831,6 +4831,7 @@ function cms_unpack_to_uinteger($str, $bytes = null, $little_endian = false)
 /**
  * Perform a regular expression match.
  * Automatically applies utf-8 if possible and appropriate. \s is not actually Unicode-safe, for example (as it matches non-breaking-spaces).
+ * Also automatically applies the 'D' modifier so that trailing blank lines don't mess with '$'.
  *
  * @param  string $pattern The pattern
  * @param  string $subject The subject string
@@ -4841,6 +4842,7 @@ function cms_unpack_to_uinteger($str, $bytes = null, $little_endian = false)
  */
 function cms_preg_match_safe($pattern, $subject, &$matches = null, $flags = 0, $offset = 0)
 {
+    $pattern .= 'D';
     if (get_charset() == 'utf-8') {
         $result = @preg_match($pattern . 'u', $subject, $matches, $flags, $offset);
         if ($result !== false) {
@@ -4853,6 +4855,7 @@ function cms_preg_match_safe($pattern, $subject, &$matches = null, $flags = 0, $
 /**
  * Array entries that match the pattern.
  * Automatically applies utf-8 if possible and appropriate. \s is not actually Unicode-safe, for example (as it matches non-breaking-spaces).
+ * Also automatically applies the 'D' modifier so that trailing blank lines don't mess with '$'.
  *
  * @param  string $pattern The pattern
  * @param  array $subject The subject strings
@@ -4861,6 +4864,7 @@ function cms_preg_match_safe($pattern, $subject, &$matches = null, $flags = 0, $
  */
 function cms_preg_grep_safe($pattern, $subject, $flags = 0)
 {
+    $pattern .= 'D';
     if (get_charset() == 'utf-8') {
         $result = @preg_grep($pattern . 'u', $subject, $flags);
         if ($result !== false) {
@@ -4873,6 +4877,7 @@ function cms_preg_grep_safe($pattern, $subject, $flags = 0)
 /**
  * Perform a global regular expression match.
  * Automatically applies utf-8 if possible and appropriate. \s is not actually Unicode-safe, for example (as it matches non-breaking-spaces).
+ * Also automatically applies the 'D' modifier so that trailing blank lines don't mess with '$'.
  *
  * @param  string $pattern The pattern
  * @param  string $subject The subject string
@@ -4882,6 +4887,7 @@ function cms_preg_grep_safe($pattern, $subject, $flags = 0)
  */
 function cms_preg_match_all_safe($pattern, $subject, &$matches, $flags = 0)
 {
+    $pattern .= 'D';
     if (get_charset() == 'utf-8') {
         $result = @preg_match_all($pattern . 'u', $subject, $matches, $flags);
         if ($result !== false) {
@@ -4894,6 +4900,7 @@ function cms_preg_match_all_safe($pattern, $subject, &$matches, $flags = 0)
 /**
  * Perform a regular expression search and replace.
  * Automatically applies utf-8 if possible and appropriate. \s is not actually Unicode-safe, for example (as it matches non-breaking-spaces).
+ * Also automatically applies the 'D' modifier so that trailing blank lines don't mess with '$'.
  *
  * @param  mixed $pattern The pattern (string or array)
  * @param  mixed $replacement The replacement string (string or array)
@@ -4903,6 +4910,7 @@ function cms_preg_match_all_safe($pattern, $subject, &$matches, $flags = 0)
  */
 function cms_preg_replace_safe($pattern, $replacement, $subject, $limit = -1)
 {
+    $pattern .= 'D';
     if (get_charset() == 'utf-8') {
         $result = @preg_replace($pattern . 'u', $replacement, $subject, $limit);
         if ($result !== false) {
@@ -4915,6 +4923,7 @@ function cms_preg_replace_safe($pattern, $replacement, $subject, $limit = -1)
 /**
  * Perform a regular expression search and replace using a callback.
  * Automatically applies utf-8 if possible and appropriate. \s is not actually Unicode-safe, for example (as it matches non-breaking-spaces).
+ * Also automatically applies the 'D' modifier so that trailing blank lines don't mess with '$'.
  *
  * @param  string $pattern The pattern
  * @param  mixed $callback The callback
@@ -4924,6 +4933,7 @@ function cms_preg_replace_safe($pattern, $replacement, $subject, $limit = -1)
  */
 function cms_preg_replace_callback_safe($pattern, $callback, $subject, $limit = -1)
 {
+    $pattern .= 'D';
     if (get_charset() == 'utf-8') {
         $result = @preg_replace_callback($pattern . 'u', $callback, $subject, $limit);
         if ($result !== false) {
@@ -4936,6 +4946,7 @@ function cms_preg_replace_callback_safe($pattern, $callback, $subject, $limit = 
 /**
  * Split string by a regular expression.
  * Automatically applies utf-8 if possible and appropriate. \s is not actually Unicode-safe, for example (as it matches non-breaking-spaces).
+ * Also automatically applies the 'D' modifier so that trailing blank lines don't mess with '$'.
  *
  * @param  string $pattern The pattern
  * @param  string $subject The subject
@@ -4945,6 +4956,7 @@ function cms_preg_replace_callback_safe($pattern, $callback, $subject, $limit = 
  */
 function cms_preg_split_safe($pattern, $subject, $max_splits = null, $mode = null)
 {
+    $pattern .= 'D';
     if (get_charset() == 'utf-8') {
         $result = @preg_split($pattern . 'u', $subject, $max_splits, $mode);
         if ($result !== false) {

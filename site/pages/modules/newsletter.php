@@ -435,7 +435,7 @@ class Module_newsletter
             warn_exit(make_string_tempcode(escape_html(do_lang('PASSWORD_MISMATCH'))));
         }
         $language = post_param_string('lang', user_lang());
-        if (!is_email_address($email)) {
+        if (!is_valid_email_address($email)) {
             return warn_screen($this->title, do_lang_tempcode('IMPROPERLY_FILLED_IN'));
         }
 

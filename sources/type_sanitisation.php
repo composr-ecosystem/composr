@@ -36,16 +36,16 @@ function init__type_sanitisation()
         function is_alphanumeric($string, $strict = false)
         {
             if ($strict) {
-                return preg_match('#^[\w\-]*$#', $string) != 0;
+                return preg_match('#^[\w\-]*$#D', $string) != 0;
             }
 
             if (get_charset() == 'utf-8') {
-                $test = @preg_match('#^[\pL\w\-\.]*$#u', $string) != 0; // unicode version, may fail on some servers
+                $test = @preg_match('#^[\pL\w\-\.]*$#uD', $string) != 0; // unicode version, may fail on some servers
                 if ($test !== false) {
                     return $test;
                 }
             }
-            return preg_match('#^[\w\-\.]*$#', $string) != 0;
+            return preg_match('#^[\w\-\.]*$#D', $string) != 0;
         }
     }
 }
@@ -56,11 +56,11 @@ function init__type_sanitisation()
  * @param  string $string The string to test (Note: This is typed string, not e-mail, because it has to function on failure + we could make an infinite loop)
  * @return boolean Whether the string is an e-mail address or not
  */
-function is_email_address($string)
+function is_valid_email_address($string)
 {
     if ($string == '') {
         return false;
     }
 
-    return (preg_match('#^[\w\.\-\+]+@[\w\.\-]+$#', $string) != 0); // Put "\.[a-zA-Z0-9_\-]+" before $ to ensure a two+ part domain
+    return (preg_match('#^[\w\.\-\+]+@[\w\.\-]+$#D', $string) != 0); // Put "\.[a-zA-Z0-9_\-]+" before $ to ensure a two+ part domain
 }

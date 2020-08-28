@@ -479,7 +479,7 @@ class Hook_ecommerce_email
 
                 // Does the prefix contain valid characters?
                 require_code('type_sanitisation');
-                if (!is_email_address($prefix . '@' . $suffix)) {
+                if (!is_valid_email_address($prefix . '@' . $suffix)) {
                     warn_exit(do_lang_tempcode('INVALID_EMAIL_PREFIX'));
                 }
 
@@ -503,12 +503,12 @@ class Hook_ecommerce_email
 
                 // Does the prefix contain valid characters?
                 require_code('type_sanitisation');
-                if (!is_email_address($prefix . '@' . $suffix)) {
+                if (!is_valid_email_address($prefix . '@' . $suffix)) {
                     warn_exit(do_lang_tempcode('INVALID_EMAIL_PREFIX'));
                 }
 
                 // Is the e-mail for things to be forwarded to valid?
-                if (!is_email_address($email)) {
+                if (!is_valid_email_address($email)) {
                     warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));
                 }
 

@@ -962,7 +962,7 @@ function cns_edit_member($member_id, $username = null, $password = null, $email_
 
         $email_address_required = member_field_is_required($member_id, 'email_address');
 
-        if ((!cms_empty_safe($email_address)) && ($email_address != STRING_MAGIC_NULL) && (!is_email_address($email_address))) {
+        if ((!cms_empty_safe($email_address)) && ($email_address != STRING_MAGIC_NULL) && (!is_valid_email_address($email_address))) {
             warn_exit(do_lang_tempcode('_INVALID_EMAIL_ADDRESS', escape_html($email_address)));
         }
 

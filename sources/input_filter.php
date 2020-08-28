@@ -41,7 +41,7 @@ function init__input_filter()
  */
 function check_input_field_string($name, &$val, $posted, $filters)
 {
-    if (preg_match('#^\w*$#', $val) !== 0) {
+    if (preg_match('#^\w*$#D', $val) !== 0) {
         return;
     }
 

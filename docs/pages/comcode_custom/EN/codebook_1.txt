@@ -1397,7 +1397,7 @@ We also some separate security functions for preventing things like filesystem a
  - [tt]filter_naughty[/tt] -- make sure no file paths are in something that will be used as a path component
  - [tt]filter_naughty_harsh[/tt] -- make sure something is strictly alphanumeric
  - [tt]is_alphanumeric[/tt] -- an alphanumeric test that doesn't result in bail-out if failed
- - [tt]is_email_address[/tt] -- an e-mail address sanitisation check (valid syntax, does not check if it is real, although [tt]is_mail_bounced[/tt] can help find if an e-mail address has bounced in the past)
+ - [tt]is_valid_email_address[/tt] -- an e-mail address sanitisation check (valid syntax, does not check if it is real, although [tt]is_mail_bounced[/tt] can help find if an e-mail address has bounced in the past)
 
 For database queries (i.e. to avoid SQL injection) use the simplified database APIs wherever appropriate, [tt]query_select[/tt] for example.
 

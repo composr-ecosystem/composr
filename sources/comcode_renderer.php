@@ -1834,7 +1834,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             require_code('crypt');
 
             // If we need to switch
-            if ((!is_email_address($_embed)) && (is_email_address($attributes['param']))) {
+            if ((!is_valid_email_address($_embed)) && (is_valid_email_address($attributes['param']))) {
                 $temp = $embed; // Is Tempcode
                 $_embed = $attributes['param'];
                 $attributes['param'] = $temp;

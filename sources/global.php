@@ -637,7 +637,7 @@ function filter_naughty($in, $preg = false)
  */
 function filter_naughty_harsh($in, $preg = false)
 {
-    if (preg_match('#^[' . URL_CONTENT_REGEXP . ']*$#', $in) !== 0) {
+    if (preg_match('#^[' . URL_CONTENT_REGEXP . ']*$#D', $in) !== 0) {
         return $in;
     }
     if (preg_match('#^[\w\-]*/#', $in) !== 0) {
@@ -645,7 +645,7 @@ function filter_naughty_harsh($in, $preg = false)
     }
 
     if ($preg) {
-        return preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '', $in);
+        return preg_replace('#[^' . URL_CONTENT_REGEXP . ']#D', '', $in);
     }
     log_hack_attack_and_exit('EVAL_HACK', $in);
     return ''; // trick to make linters happy

@@ -228,7 +228,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
         }
         if ((!function_exists('has_actual_page_access')) || (!has_actual_page_access(get_member(), 'admin_cns_members'))) {
             require_code('type_sanitisation');
-            if ((!is_email_address($email_address)) && ($email_address != '')) {
+            if ((!is_valid_email_address($email_address)) && ($email_address != '')) {
                 warn_exit(do_lang_tempcode('_INVALID_EMAIL_ADDRESS', escape_html($email_address)));
             }
         }

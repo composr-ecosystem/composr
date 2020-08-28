@@ -225,7 +225,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
         foreach ($to_emails as $i => $_to_email) {
             $additional = '';
             if (($this->enveloper_override) && ($this->_sender_email !== null)) {
-                if (is_email_address($this->_sender_email)) { // Required for security
+                if (is_valid_email_address($this->_sender_email)) { // Required for security
                     $additional = '-f ' . $this->_sender_email;
                 }
             }
@@ -307,7 +307,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
         if (empty($smtp_from_address)) {
             $smtp_from_address = $this->website_email;
         }
-        if (!is_email_address($smtp_from_address)) { // Required for security
+        if (!is_valid_email_address($smtp_from_address)) { // Required for security
             $smtp_from_address = '';
         }
 
@@ -581,7 +581,7 @@ abstract class Mail_dispatcher_base
         if ($website_email !== null) {
             $this->website_email = $website_email;
         }
-        if (!is_email_address($this->website_email)) { // Required for security
+        if (!is_valid_email_address($this->website_email)) { // Required for security
             $this->website_email = '';
         }
 
@@ -1134,7 +1134,7 @@ abstract class Mail_dispatcher_base
         escape_header($subject_line);
 
         $staff_address = get_option('staff_address');
-        if (!is_email_address($staff_address)) { // Required for security
+        if (!is_valid_email_address($staff_address)) { // Required for security
             $staff_address = '';
         }
 
@@ -1189,7 +1189,7 @@ abstract class Mail_dispatcher_base
         if ($from_email == '') {
             $from_email = get_option('staff_address');
         }
-        if (!is_email_address($from_email)) { // Required for security
+        if (!is_valid_email_address($from_email)) { // Required for security
             $from_email = '';
         }
         escape_header($from_email);

@@ -389,7 +389,7 @@ function _find_mail_bounces($host, $port, $type, $folder, $username, $password, 
                 $matches2 = [];
                 preg_match('#X-Failed-Recipients:\s*([^\"\n<>@]+@[^\n<>@]+)#', $header, $matches2);
                 $email = str_replace('@localhost.localdomain', '', $matches2[1]);
-                if (($email != get_option('staff_address')) && ($email != get_option('website_email')) && (is_email_address($email)) && ((!isset($out[$email])) || (!$out[$email][1]))) {
+                if (($email != get_option('staff_address')) && ($email != get_option('website_email')) && (is_valid_email_address($email)) && ((!isset($out[$email])) || (!$out[$email][1]))) {
                     $out[$email] = [$overview->subject, $is_bounce, strtotime($overview->date), $body];
                 }
             } else {
@@ -410,7 +410,7 @@ function _find_mail_bounces($host, $port, $type, $folder, $username, $password, 
                 for ($i = 0; $i < $num_matches; $i++) {
                     $email = str_replace('@localhost.localdomain', '', $matches[1][$i]);
 
-                    if (($email != get_option('staff_address')) && ($email != get_option('website_email')) && (is_email_address($email)) && ((!isset($out[$email])) || (!$out[$email][1]))) {
+                    if (($email != get_option('staff_address')) && ($email != get_option('website_email')) && (is_valid_email_address($email)) && ((!isset($out[$email])) || (!$out[$email][1]))) {
                         $out[$email] = [$overview->subject, $is_bounce, strtotime($overview->date), $body];
                     }
                 }

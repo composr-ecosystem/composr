@@ -109,7 +109,7 @@ class Block_main_contact_us
             // Checking
             if ($from_email != '') {
                 require_code('type_sanitisation');
-                if (!is_email_address($from_email)) {
+                if (!is_valid_email_address($from_email)) {
                     return do_template('RED_ALERT', ['_GUID' => '5pu5qw042z8exijsgty78o4tvq9mpnb6', 'TEXT' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')]);
                 }
             }

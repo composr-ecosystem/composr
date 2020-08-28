@@ -184,7 +184,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
             }
         }
         require_code('type_sanitisation');
-        if (!is_email_address($email_address)) {
+        if (!is_valid_email_address($email_address)) {
             warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));
         }
     }

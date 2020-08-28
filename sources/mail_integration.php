@@ -544,7 +544,7 @@ abstract class EmailIntegration
                 }
 
                 require_code('type_sanitisation');
-                if (!is_email_address($from_email)) {
+                if (!is_valid_email_address($from_email)) {
                     $mail_nonmatch_policy = 'block';
                     break;
                 }
