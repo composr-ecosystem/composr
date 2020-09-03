@@ -151,7 +151,7 @@ function currency_convert($amount, $from_currency = null, $to_currency = null, $
 
     // Case: No conversion needed
     if ($new_amount === null) {
-        if ($from_currency == $to_currency) {
+        if (($from_currency == $to_currency) || ($amount == 0.0)) {
             $new_amount = $amount;
         }
     }
