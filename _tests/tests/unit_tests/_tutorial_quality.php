@@ -27,6 +27,10 @@ class _tutorial_quality_test_set extends cms_test_case
             return;
         }
 
+        if ($this->debug) {
+            cms_ob_end_clean();
+        }
+
         cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
     }
 

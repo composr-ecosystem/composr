@@ -822,6 +822,9 @@ function check_css($data)
     }
     $errors = [];
     global $POS, $OUT;
+    $POS = 0;
+    $LINENO = 0;
+    $LINESTART = 0;
     global $CSS_TAG_RANGES, $CSS_VALUE_RANGES;
     $OUT = $data;
 

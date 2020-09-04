@@ -881,7 +881,7 @@ function render_screen_preview($template, $hook, $function)
     $previews = call_user_func([$ob, $function]);
 
     if ($text) {
-        $previews[0] = with_whitespace($previews[0]);
+        $previews[0] = with_whitespace($previews[0]->evaluate());
     }
     $tmp = substr($function, 13);
 

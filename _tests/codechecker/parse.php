@@ -997,27 +997,17 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             do {
                 pparse__parser_expect('CATCH');
                 $catch_position = $GLOBALS['I'];
-                switch (pparse__parser_peek()) {
-                    case 'PARENTHESIS_OPEN':
-                        // We are catching something specific. Let's treat it as a
-                        // function's parameter list for the moment, as that's simplest,
-                        // although it accepts a bit too much
-                        pparse__parser_expect('PARENTHESIS_OPEN');
-                        pparse__parser_expect('IDENTIFIER'); // E.g. 'EXCEPTION'
-                        $exception = _parse_comma_parameters();
-                        pparse__parser_expect('PARENTHESIS_CLOSE');
-                        if (pparse__parser_peek() != 'CURLY_OPEN') {
-                            parser_error('Expected code block after "catch".');
-                        }
-                        // no break
-                    case 'CURLY_OPEN':
-                        $catch = _parse_command(true);
-                        $catches[] = ['CATCH', $exception, $catch, $catch_position];
-                        break;
-                    default:
-                        parser_error('Expected PARENTHESIS_OPEN or CURLY_OPEN after "catch".');
-                        break;
+
+                pparse__parser_expect('PARENTHESIS_OPEN');
+                pparse__parser_expect('IDENTIFIER'); // E.g. 'EXCEPTION'
+                $exception = _parse_parameter();
+                pparse__parser_expect('PARENTHESIS_CLOSE');
+                if (pparse__parser_peek() != 'CURLY_OPEN') {
+                    parser_error('Expected code block after "catch".');
                 }
+
+                $catch = _parse_command(true);
+                $catches[] = ['CATCH', $exception, $catch, $catch_position];
             } while (pparse__parser_peek() == 'CATCH');
             if (pparse__parser_peek() == 'FINALLY') {
                 pparse__parser_expect('FINALLY');

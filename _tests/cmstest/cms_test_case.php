@@ -101,11 +101,10 @@ class cms_test_case extends WebTestCase
         $parts = [];
         if ((preg_match('#([' . URL_CONTENT_REGEXP . ']*):([' . URL_CONTENT_REGEXP . ']+|[^/]|$)((:(.*))*)#', $url, $parts) != 0) && ($parts[1] != 'mailto')) { // Specially encoded page-link. Complex regexp to make sure URLs do not match
             $real_url = page_link_to_url($url);
-
-            $ret = parent::get($real_url, $parameters);
         } else {
-            $ret = parent::get($url, $parameters);
+            $real_url = $url;
         }
+        $ret = http_get_contents($real_url);
 
         require_code('files');
 
@@ -114,11 +113,10 @@ class cms_test_case extends WebTestCase
         if (!file_exists($path)) {
             mkdir($path, 0777);
         }
-        $content = $this->browser->getContent();
-        cms_file_put_contents_safe($path . '/' . url_to_filename($url) . '.htm.tmp', $content, FILE_WRITE_FIX_PERMISSIONS);
+        cms_file_put_contents_safe($path . '/' . url_to_filename($url) . '.htm.tmp', $ret, FILE_WRITE_FIX_PERMISSIONS);
 
         // Save the text so we can run through Word's grammar checker
-        $text_content = $content;
+        $text_content = $ret;
         $text_content = preg_replace('#<[^>]* title="([^"]+)"<[^>]*>#U', '\\1', $text_content);
         $text_content = preg_replace('#<[^>]* alt="([^"]+)"<[^>]*>#U', '\\1', $text_content);
         $text_content = preg_replace('#<style[^>]*>.*</style>#Us', '', $text_content);

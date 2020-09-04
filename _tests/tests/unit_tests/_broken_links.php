@@ -27,6 +27,9 @@ class _broken_links_test_set extends cms_test_case
         require_code('files2');
         require_code('site');
         require_code('global4');
+
+        cms_disable_time_limit();
+        disable_php_memory_limit();
     }
 
     public function testStaffLinks()
@@ -54,9 +57,6 @@ class _broken_links_test_set extends cms_test_case
     public function testTutorials()
     {
         set_option('is_on_comcode_page_cache', '1');
-
-        cms_disable_time_limit();
-        disable_php_memory_limit();
 
         $path = get_file_base() . '/docs/pages/comcode_custom/' . fallback_lang();
         $files = get_directory_contents($path, $path, 0, true, true, ['txt']);
@@ -202,6 +202,9 @@ class _broken_links_test_set extends cms_test_case
             return;
         }
         if (preg_match('#^http://v\.t\.qq\.com/share/share\.php\?url=#', $url) != 0) {
+            return;
+        }
+        if (preg_match('#^http://service\.weibo\.com/share/share\.php\?url=#', $url) != 0) {
             return;
         }
         if (in_array($url, [ // These just won't check from a bot guest user

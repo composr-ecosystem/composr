@@ -624,7 +624,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
             case 'TRY':
                 check_command($c[1], $depth + 1, $function_guard, $nogo_parameters, $jump_structures); // Goes first so that we get local variables defined inside loop for use in our loop conditional
                 foreach ($c[2] as $catch) {
-                    add_variable_reference($catch[1][0][1], $c_pos, false);
+                    add_variable_reference($catch[1][1], $c_pos, false);
                     check_command($catch[2], $depth + 1, $function_guard, $nogo_parameters, $jump_structures); // Goes first so that we get local variables defined inside loop for use in our loop conditional
                 }
                 if ($c[3] !== null) {

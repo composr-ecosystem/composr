@@ -184,7 +184,12 @@ class _web_resources_test_set extends cms_test_case
                 continue;
             }
 
-            $path = css_enforce(basename($path, '.css'), $theme);
+            $filename = basename($path, '.css');
+            if ($filename[0] == '_') {
+                continue;
+            }
+
+            $path = css_enforce($filename, $theme);
             if ($path == '') {
                 continue; // Nothing in file after minimisation
             }
