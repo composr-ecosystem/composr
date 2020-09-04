@@ -18,6 +18,39 @@
  */
 class Hook_syndication_facebook
 {
+    protected $api = null;
+
+    public function __construct()
+    {
+        $appid = get_option('facebook_appid');
+        $app_secret = get_option('facebook_secret_code');
+        if ((!empty($appid)) && (!empty($app_secret))) {
+            require_code('facebook/vendor/autoload');
+
+            $before = ini_get('ocproducts.type_strictness');
+            cms_ini_set('ocproducts.type_strictness', '0');
+            try {
+                $this->api = new \Facebook\Facebook([
+                    'app_id' => $appid,
+                    'app_secret' => $app_secret,
+                    'persistent_data_handler' => new \Facebook\PersistentData\FacebookSessionPersistentDataHandler(false),
+                ]);
+            } catch (Exception $e) {
+                require_code('failure');
+                cms_error_log('Facebook: ' . $e->getMessage(), 'error_occurred_api');
+                $this->api = null;
+            }
+            cms_ini_set('ocproducts.type_strictness', $before);
+
+            if ((function_exists('session_status') && session_status() !== PHP_SESSION_ACTIVE) || session_id() == '') {
+                @session_start();
+
+                // Performance optimisation
+                @session_write_close();
+            }
+        }
+    }
+
     public function get_service_name()
     {
         return 'Facebook';
@@ -60,10 +93,7 @@ class Hook_syndication_facebook
 
     public function auth_set($member_id, $oauth_url)
     {
-        require_code('facebook_connect');
-
-        global $FACEBOOK_CONNECT;
-        if ($FACEBOOK_CONNECT === null) {
+        if ($this->api === null) {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
@@ -76,7 +106,7 @@ class Hook_syndication_facebook
             $scope[] = 'manage_pages';
             $scope[] = 'publish_pages';
 
-            $helper = $FACEBOOK_CONNECT->getRedirectLoginHelper();
+            $helper = $this->api->getRedirectLoginHelper();
 
             $oauth_redir_url = $helper->getLoginUrl($oauth_url->evaluate(), $scope);
             require_code('site2');
@@ -89,7 +119,7 @@ class Hook_syndication_facebook
         }
 
         // oAuth apparently worked
-        $helper = $FACEBOOK_CONNECT->getRedirectLoginHelper();
+        $helper = $this->api->getRedirectLoginHelper();
         try {
             $access_token = $helper->getAccessToken();
         } catch (Exception $e) {
@@ -103,7 +133,7 @@ class Hook_syndication_facebook
         }
 
         // Extend token
-        $oauth2_client = $FACEBOOK_CONNECT->getOAuth2Client();
+        $oauth2_client = $this->api->getOAuth2Client();
         if (!$access_token->isLongLived()) {
             try {
                 $access_token_extended = $oauth2_client->getLongLivedAccessToken($access_token);
@@ -138,10 +168,7 @@ class Hook_syndication_facebook
 
     public function auth_is_set_site()
     {
-        require_code('facebook_connect');
-
-        global $FACEBOOK_CONNECT;
-        if ($FACEBOOK_CONNECT === null) {
+        if ($this->api === null) {
             return false;
         }
 
@@ -171,10 +198,7 @@ class Hook_syndication_facebook
 
     protected function _send($access_token, $row, $post_to_uid = 'me', $member_id = null, $silent_warn = false)
     {
-        require_code('facebook_connect');
-
-        global $FACEBOOK_CONNECT;
-        if ($FACEBOOK_CONNECT === null) {
+        if ($this->api === null) {
             return false;
         }
 
@@ -198,7 +222,7 @@ class Hook_syndication_facebook
             $attachment['link'] = $link;
         }
         try {
-            $ret = $FACEBOOK_CONNECT->post('/' . $post_to_uid . '/feed', $attachment, $access_token);
+            $ret = $this->api->post('/' . $post_to_uid . '/feed', $attachment, $access_token);
         } catch (Exception $e) {
             $errormsg = $e->getMessage();
 

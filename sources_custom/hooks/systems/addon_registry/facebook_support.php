@@ -93,7 +93,7 @@ class Hook_addon_registry_facebook_support
         return 'Substantial {$IS_MAINTAINED,facebook,Facebook integration} for your Composr website.
 
 Features:
- - User\'s can log in to your site using their Facebook profile (for Conversr-sites only)
+ - User\'s can log in to your site using their Facebook profile (for Conversr-sites only, and requires hybridauth addon also)
  - News and calendar actions can be syndicated to a Facebook group/page
  - New Facebook Page block (allows users to like your site, shows those that have, and view page posts)
  - New Facebook \'Like button\' block (liking a page)
@@ -135,6 +135,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
             ],
             'recommends' => [
                 'activity_feed',
+                'hybridauth',
             ],
             'conflicts_with' => [],
         ];
@@ -158,48 +159,27 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
     public function get_file_list()
     {
         return [
-            'adminzone/pages/minimodules_custom/facebook_oauth.php',
-            'facebook_connect.php',
-            'lang_custom/EN/facebook.ini',
             'sources_custom/blocks/main_facebook_comments.php',
             'sources_custom/blocks/main_facebook_like.php',
             'sources_custom/blocks/main_facebook_page.php',
-            'sources_custom/cns_field_editability.php',
-            'sources_custom/cns_members.php',
-            'sources_custom/facebook_connect.php',
-            'sources_custom/hooks/modules/members/facebook.php',
             'sources_custom/hooks/systems/addon_registry/facebook_support.php',
             'sources_custom/hooks/systems/config/facebook_allow_signups.php',
             'sources_custom/hooks/systems/config/facebook_appid.php',
             'sources_custom/hooks/systems/config/facebook_secret_code.php',
-            'sources_custom/hooks/systems/config/facebook_sync_avatar.php',
-            'sources_custom/hooks/systems/config/facebook_sync_dob.php',
-            'sources_custom/hooks/systems/config/facebook_sync_email.php',
-            'sources_custom/hooks/systems/config/facebook_sync_username.php',
             'sources_custom/hooks/systems/config/facebook_uid.php',
-            'sources_custom/hooks/systems/login_providers/facebook.php',
-            'sources_custom/hooks/systems/page_groupings/facebook.php',
-            'sources_custom/hooks/systems/startup/facebook.php',
-            'sources_custom/hooks/systems/symbols/FB_CONNECT_ACCESS_TOKEN.php',
-            'sources_custom/hooks/systems/symbols/FB_CONNECT_FINISHING_PROFILE.php',
-            'sources_custom/hooks/systems/symbols/FB_CONNECT_LOGGED_OUT.php',
-            'sources_custom/hooks/systems/symbols/FB_CONNECT_UID.php',
-            'sources_custom/hooks/systems/symbols/USER_FB_CONNECT.php',
             'sources_custom/hooks/systems/syndication/facebook.php',
-            'sources_custom/users_active_actions.php',
-            'sources_custom/users.php',
-            'themes/default/javascript_custom/facebook_support.js',
+            'lang_custom/EN/facebook.ini',
             'themes/default/templates_custom/BLOCK_MAIN_FACEBOOK_COMMENTS.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_FACEBOOK_LIKE.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_FACEBOOK_PAGE.tpl',
             'themes/default/templates_custom/BLOCK_MAIN_SCREEN_ACTIONS.tpl',
-            'themes/default/templates_custom/BLOCK_SIDE_PERSONAL_STATS_NO.tpl',
-            'themes/default/templates_custom/BLOCK_SIDE_PERSONAL_STATS.tpl',
-            'themes/default/templates_custom/BLOCK_TOP_LOGIN.tpl',
-            'themes/default/templates_custom/CNS_GUEST_BAR.tpl',
+            'adminzone/pages/minimodules_custom/facebook_oauth.php',
+            'sources_custom/hooks/systems/page_groupings/facebook.php',
+            'sources_custom/hooks/systems/hybridauth/facebook.php',
+
+            'themes/default/javascript_custom/facebook_support.js',
+            'sources_custom/hooks/systems/startup/facebook.php',
             'themes/default/templates_custom/FACEBOOK_FOOTER.tpl',
-            'themes/default/templates_custom/LOGIN_SCREEN.tpl',
-            'themes/default/templates_custom/MEMBER_FACEBOOK.tpl',
 
             'sources_custom/facebook/composer.json',
             'sources_custom/facebook/composer.lock',

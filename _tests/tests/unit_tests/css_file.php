@@ -279,6 +279,7 @@ class css_file_test_set extends cms_test_case
     protected function is_class_defined_and_intentionally_not_explicitly_used($class)
     {
         $prefix_exceptions = [
+            'btn-\w+-login',
             'zone-running-',
             'page-running-',
             'has-header-', // Dynamically set on <html> in GLOBAL_HTML_WRAP.tpl

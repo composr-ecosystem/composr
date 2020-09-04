@@ -49,6 +49,7 @@ function list_untouchable_third_party_directories()
         'sources_custom/spout',
         'sources_custom/swift_mailer',
         'sources_custom/Transliterator',
+        'sources_custom/hybridauth',
         'temp',
         '_tests/assets',
         '_tests/codechecker',

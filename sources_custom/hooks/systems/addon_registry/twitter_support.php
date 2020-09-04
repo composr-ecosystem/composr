@@ -127,6 +127,7 @@ Once configured then syndication will be an option when adding news posts or cal
             ],
             'recommends' => [
                 'activity_feed',
+                'hybridauth',
             ],
             'conflicts_with' => [],
         ];
@@ -158,7 +159,9 @@ Once configured then syndication will be an option when adding news posts or cal
             'sources_custom/hooks/systems/page_groupings/twitter.php',
             'sources_custom/hooks/systems/config/twitter_api_key.php',
             'sources_custom/hooks/systems/config/twitter_api_secret.php',
+            'sources_custom/hooks/systems/config/twitter_allow_signups.php',
             'sources_custom/hooks/systems/health_checks/twitter.php',
+            'sources_custom/hooks/systems/hybridauth/twitter.php',
         ];
     }
 }

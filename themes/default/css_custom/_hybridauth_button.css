@@ -1,0 +1,4 @@
+.button--{CODENAME|} {
+	background-color: #{BACKGROUND_COLOUR*} !important;
+	color: #{TEXT_COLOUR*} !important;
+}

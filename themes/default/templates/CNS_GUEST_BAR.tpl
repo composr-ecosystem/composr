@@ -8,7 +8,7 @@
 				ICON_SIZE=24
 			{+END}</a>
 
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!_LOGIN}{+START,IF,{$ADDON_INSTALLED,search}}{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,search}} / {!SEARCH}{+END}{+END}</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!_LOGIN}{+START,IF,{$ADDON_INSTALLED,search}}{+START,IF,{$ADDON_INSTALLED,search}}{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,search}} / {!SEARCH}{+END}{+END}{+END}</a>
 		</h2>
 
 		<div class="toggleable-tray js-tray-content">
@@ -29,6 +29,8 @@
 								<input class="{+START,IF,{$NOT,{$CONFIG_OPTION,remember_me_by_default}}}js-click-checkbox-remember-me-confirm{+END}"{+START,IF,{$CONFIG_OPTION,remember_me_by_default}} checked="checked"{+END} type="checkbox" value="1" id="remember" name="remember" />
 							{+END}
 							<button class="btn btn-primary btn-scri menu--site-meta--user-actions--login" type="submit">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} {!_LOGIN}</button>
+
+							{$GET,guest_bar_supplemental}
 
 							<ul class="horizontal-links associated-links-block-group">
 								<li><a href="{JOIN_URL*}">{!_JOIN}</a></li>

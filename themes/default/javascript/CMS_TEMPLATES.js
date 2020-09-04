@@ -59,8 +59,8 @@
             $cms.statsEventTrack(null, 'social__tumblr', null, null, true);
         });
 
-        $dom.on(container, 'click', '.js-click-add-to-vk', function () {
-            $cms.statsEventTrack(null, 'social__vk', null, null, true);
+        $dom.on(container, 'click', '.js-click-add-to-vkontakte', function () {
+            $cms.statsEventTrack(null, 'social__vkontakte', null, null, true);
         });
 
         $dom.on(container, 'click', '.js-click-add-to-sina-weibo', function () {

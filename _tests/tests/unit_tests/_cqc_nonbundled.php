@@ -95,6 +95,9 @@ class _cqc_nonbundled_test_set extends cms_test_case
                 if (strpos($line, ' has a return with a value, and the function doesn\'t return a value') !== false) {
                     continue;
                 }
+                if (strpos($line, ' is in non-canonical format') !== false) {
+                    continue;
+                }
 
                 $this->assertTrue($this->should_filter_cqc_line($line), $line);
             }

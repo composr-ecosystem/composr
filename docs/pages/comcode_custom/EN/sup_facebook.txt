@@ -86,12 +86,16 @@ To install...
 
 [title="3"]Special case: Theme integration (advanced)[/title]
 
-Installing the addon to Composr will override some key templates to [tt]themes/default/templates_custom[/tt]; this may be blocked by your existing themeing having its own overrides already in place. If you have a theme with overrides in place then you'll need to amend those overrides to incorporate the changes within the new overrides from the default theme. The templates involved are:
+Installing the addon to Composr will override some key templates to [tt]themes/default/templates_custom[/tt]; this may be blocked by your existing themeing having its own overrides already in place. If you have a theme with overrides in place then you'll need to amend those overrides to incorporate the changes within the new overrides from the default theme.
+
+The templates involved from the [tt]facebook_support[/tt] addon are:
+ - [tt]themes/default/templates_custom/BLOCK_MAIN_SCREEN_ACTIONS.tpl[/tt]
+
+The templates involved from the [tt]hybridauth[/tt] addon are:
  - [tt]themes/default/templates_custom/BLOCK_SIDE_PERSONAL_STATS_NO.tpl[/tt]
  - [tt]themes/default/templates_custom/BLOCK_SIDE_PERSONAL_STATS.tpl[/tt]
  - [tt]themes/default/templates_custom/LOGIN_SCREEN.tpl[/tt]
  - [tt]themes/default/templates_custom/CNS_GUEST_BAR.tpl[/tt]
- - [tt]themes/default/templates_custom/BLOCK_MAIN_SCREEN_ACTIONS.tpl[/tt]
  - [tt]themes/default/templates_custom/BLOCK_TOP_LOGIN.tpl[/tt]
 
 [title="3"]Step 3) Configuration[/title]
@@ -302,7 +306,7 @@ If you want to add validation rules to make sure the chosen metadata image meets
 
 [title="2"]Logging in using Facebook[/title]
 
-You can allow users to log in to your Composr site using their Facebook accounts.
+You can allow users to log in to your Composr site using their Facebook accounts, as long as the [tt]hybridauth[/tt] addon is installed.
 
 Be aware that this is a trade-off: allowing quick log in, but limiting your ability to control sign-ups. Facebook login differs from normal Composr joining in the following ways:
  - Password or username restriction rules will not apply, as the user does not choose these on your site
@@ -335,69 +339,10 @@ Because the login happens in JavaScript rather than using Composr login cookies,
 
 You could increase the Composr session length to prevent these regular refreshes, but it's not really advisable, as it lowers security (longer sessions = greater risk of attack by someone trying to steal session IDs). A lot of popular non-Composr sites do do that, so take that as you will.
 
-[title="3"]Technical details regarding refreshes (advanced)[/title]
-
-As described in the previous section, the Composr page has to refresh itself when it detects a Facebook session is available but the Composr member is not yet logged in.
-
-When it refreshes for the first time it appends [tt]&refreshed_once=1[/tt]/[tt]?refreshed_once=1[/tt] to the URL, as a marker so our JavaScript knows it has made an attempt. If it has failed to make the login connection it refreshes again with [tt]&keep_refreshed_once=1[/tt]/[tt]?keep_refreshed_once=1[/tt]. It tries no further attempts. It does it like this (only up to two re-attempts) because various kinds of connectivity problem, authorisation problem, or problems on Facebook, could otherwise lead to infinite refreshing.
-
-When testing log in, make sure you're not starting a login from a URL with any of the above described  [tt]&refreshed_once=1[/tt]/[tt]?refreshed_once=1[/tt]/[tt]&keep_refreshed_once=1[/tt]/[tt]?keep_refreshed_once=1[/tt] markers in it. Also never use such URLs for sharing or putting in your navigation.
-
-[title="3"]Problems on Facebook's end[/title]
-
-Be aware that logging in with Facebook is putting a dependency on Facebook's systems always working. Every once in a while Facebook may have some problems on their end that block things working correctly.
-
-[title="3"]Debugging[/title]
-
-[media width="150" description="Where to find Response Headers in Google Chrome" float="right"]data_custom/images/docs/sup_facebook/facebook_headers.png[/media]
-It is hard to debug Facebook login. Every few months Facebook change something, often invalidating the steps in this tutorial or changing API compatibility. For someone to debug it properly they need to be granted access to the Facebook app and write access to the website, then likely spend half a day stepping through it all, so you likely won't be able to get a lot of free support tracking an issue down. If it's not some easily identifiable basic error you'd probably need to pay a developer to step through it all properly as it's not really possible for the addon developer to tell upfront what is user-error, what is a very specific Facebook bug, or when there is a need to update the addon.
-
-If it's a basic error (clicking the Facebook log in button doesn't appear to do anything) then Facebook is probably returning an error message which we relay in the network request's response headers, giving you a little insight into what is happening under-the-hood. Look for the [tt]Facebook-Error[/tt] header.
-
-[title="3"]Logging out[/title]
-
-[surround]
-[media width="150" description="Removing login permission on Facebook (2)" float="right"]data_custom/images/docs/sup_facebook/facebook_logout_b.png[/media]
-[media width="150" description="Removing login permission on Facebook (1)" float="right"]data_custom/images/docs/sup_facebook/facebook_logout_a.png[/media]
-Facebook is particularly aggressive at maintaining its logins: you can't directly log out from individual sites as such. We can't workaround that within Composr's code. Facebook actually has rules saying that sites must enforce automatic logins, so contractually log out is not allowed even if there was a way we could do it.
-
-A user who wishes to de-link Facebook to your site has two choices:
-1) Log out of Facebook entirely (probably undesirable)
-2) Remove your website from the allowed apps, via Facebook's privacy settings (see images).
-[/surround]
-
-If you find the log out buttons are not doing anything, and you see an error in the browser error console about "X-Frame-Options", then it may mean the "App Domain" option is blank. To set that you need to add a "Website" platform, with your base URL as the Site URL.
-
-[title="3"]Account binding (advanced)[/title]
-
-If you are logged in, but your account is not attached to Facebook, and you are using the [tt]side_personal_stats[/tt] block in your design (which is [b]not[/b] used by default in Composr), Composr will include a login button to let you bind your existing account to Facebook. This is a feature to let existing users syndicate their activity to Facebook.
-
-Once an account is bound, it is just like any other Facebook-tied account -- logging in works via your external Facebook login. i.e. your password is wiped out of the account and it gets tied to your Facebook account.
-
-The login button is placed there within an overridden version of the [tt]BLOCK_SIDE_PERSONAL_STATS.tpl[/tt] template.
-
-If you do not want this, edit the template, remove this code:
-[code="HTML"]
-{+START,IF,{$CNS}}{+START,IF,{$NEQ,{$CPF_VALUE,m_password_compat_scheme},facebook}}
-	{+START,IF_NON_EMPTY,{$CONFIG_OPTION,facebook_appid}}{+START,IF,{$CONFIG_OPTION,facebook_allow_signups}}
-		<div class="fb-login-button" data-scope="email{$,Asking for this stuff is now a big hassle as it needs a screencast(s) making: user_birthday,user_about_me,user_hometown,user_location,user_website}"></div>
-	{+END}{+END}
-{+END}{+END}
-[/code]
-This will not affect the version of the block for logging in that is shown to guests (that is a different template, [tt]BLOCK_SIDE_PERSONAL_STATS_NO.tpl[/tt]).
-
 [title="3"]Account de-binding[/title]
 
 If you joined using Facebook, or bound an existing account using Facebook (as above), you may want to convert it (back) to a normal account.
 This is very simple. Just do a "reset password" on your account and it will be turned into a normal account you log in with.
-
-[title="3"]Links in member profiles[/title]
-
-[i]This section is relevant even if you are not using the Facebook Support addon.[/i]
-
-Composr comes with a default "Facebook profile" Custom Profile Field, available to members.
-
-The Facebook login process does [b]not[/b] populate this field. You may delete the field if you wish, as the Facebook Connect support automatically inserts a link back elsewhere on the profile -- or you may keep it for users to fill in if they are not logging in with Facebook but want to link to themselves anyway.
 
 [title="2"]Activity syndication[/title]
 

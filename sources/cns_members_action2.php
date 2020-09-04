@@ -2390,9 +2390,9 @@ function cns_predefined_custom_field_details()
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
         ],
-        'stack_exchange' => [
+        'stackexchange' => [
             'type' => 'url',
-            'icon' => 'icons/links/stack_exchange',
+            'icon' => 'icons/links/stackexchange',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
         ],
@@ -2414,9 +2414,9 @@ function cns_predefined_custom_field_details()
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
         ],
-        'sn_vk' => [
+        'sn_vkontakte' => [
             'type' => 'url',
-            'icon' => 'icons/links/vk',
+            'icon' => 'icons/links/vkontakte',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
         ],
@@ -2559,7 +2559,7 @@ function rebuild_all_cpf_indices()
 {
     push_query_limiting(false);
 
-    $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type'], [], 'ORDER BY cf_include_in_main_search DESC,cf_required+cf_show_on_join_form DESC,cf_public_view+cf_owner_set DESC,cf_order DESC');
+    $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['*'], [], 'ORDER BY cf_include_in_main_search DESC,cf_required+cf_show_on_join_form DESC,cf_public_view+cf_owner_set DESC,cf_order DESC');
 
     // Delete existing indexes
     foreach ($fields as $field) {

@@ -140,10 +140,6 @@ Here are the top ~100 buzzwords that will help you understand what web designers
 			<td>A web application designed to run on top of the Facebook website. It can interact with Facebook user accounts, but provide its own functionality. Many Facebook Apps are games (such as Farmville).</td>
 		</tr>
 		<tr>
-			<td>Facebook Connect</td>
-			<td>A mechanism for logging into a website using a Facebook account login. It prevents the need for users to create a new user account just for your website. There are benefits and drawbacks to Facebook Connect, so it is best to provide your own account system in addition to it (assuming your website has a login function).</td>
-		</tr>
-		<tr>
 			<td>Facebook Page</td>
 			<td>You can create a page for your brand on Facebook, which is free to do. Facebook users can then become 'fans' of your page, which will show up in their personal feed and on their profiles, helping spread the word out to their friends who may have similar interests. You can post status updates on your page, which is similar to sending out a newsletter to your subscribers (you can post special offers and competitions, for instance). If you have a page you can also place a 'like' button on your own website so that passing Facebook users can easily show their interest to their friends direct from your website.</td>
 		</tr>
@@ -254,6 +250,10 @@ Here are the top ~100 buzzwords that will help you understand what web designers
 		<tr>
 			<td>Navigation</td>
 			<td>The particular structure of menus and links used for finding your way around a website.</td>
+		</tr>
+		<tr>
+			<td>OAuth</td>
+			<td>A mechanism for logging into a website using a third-party provider such as Facebook and/or authorising your site to be able to make changes on behalf of a remote user. It prevents the need for users to create a new user account just for your website. There are benefits and drawbacks to OAuth, so it is best to provide your own account system in addition to it (assuming your website has a login function).</td>
 		</tr>
 		<tr>
 			<td>Open Source Software</td>

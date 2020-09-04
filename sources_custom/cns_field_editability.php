@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    facebook_support
+ * @package    hybridauth
  */
 
 /* This file is designed to be overwritten by addons that implement external user sync schemes. */
@@ -25,69 +25,29 @@
  */
 function cns_field_editable($field_name, $special_type)
 {
-    if (!addon_installed('facebook_support')) {
-        return non_overridden__cns_field_editable($field_name, $special_type);
+    if ((addon_installed('hybridauth')) && ($special_type != '')) {
+        require_code('hybridauth');
+        $is_hybridauth_account = is_hybridauth_special_type($special_type);
+
+        if ($is_hybridauth_account) {
+            switch ($field_name) {
+                case 'username':
+                    if (get_option('hybridauth_sync_username') == '1') {
+                        return false;
+                    }
+                    break;
+
+                case 'password':
+                    return false;
+
+                case 'email':
+                    if (get_option('hybridauth_sync_email') == '1') {
+                        return false;
+                    }
+                    break;
+            }
+        }
     }
 
-    switch ($field_name) {
-        case 'username':
-            switch ($special_type) {
-                case 'facebook':
-                    if (get_option('facebook_sync_username') == '1') {
-                        return false;
-                    }
-                    break;
-
-                case 'ldap':
-                    return false;
-            }
-            break;
-
-        case 'password':
-            switch ($special_type) {
-                case 'facebook':
-                    return false;
-
-                case 'ldap':
-                case 'httpauth':
-                    return false;
-            }
-            break;
-
-        case 'primary_group':
-            switch ($special_type) {
-                case 'ldap':
-                    return false;
-            }
-            break;
-
-        case 'secondary_groups':
-            switch ($special_type) {
-                case 'ldap':
-                    return false;
-            }
-            break;
-
-        case 'dob':
-            switch ($special_type) {
-                case 'facebook':
-                    if (get_option('facebook_sync_dob') == '1') {
-                        return false;
-                    }
-                    break;
-            }
-            break;
-
-        case 'email':
-            switch ($special_type) {
-                case 'facebook':
-                    if (get_option('facebook_sync_email') == '1') {
-                        return false;
-                    }
-                    break;
-            }
-            break;
-    }
-
-    return true;
+    return non_overridden__cns_field_editable($field_name, $special_type);
 }

@@ -590,6 +590,7 @@ class Module_admin_setupwizard
             'data_mappr', // this will be downloaded as it is not bundled
             'user_mappr', // this will be downloaded as it is not bundled
             'facebook_support', // this will be downloaded as it is not bundled
+            'hybridauth', // this will be downloaded as it is not bundled
             'twitter_support', // this will be downloaded as it is not bundled
         ];
         if (GOOGLE_APPENGINE) {

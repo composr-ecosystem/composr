@@ -68,9 +68,9 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>It is advised to set this up to reduce spam and fraud.</td>
 		</tr>
 		<tr>
-			<td>oAuth</td>
+			<td>OAuth</td>
 			<td>A protocol allowing your website to authenticate itself to act as a user on a target website.</td>
-			<td>oAuth is used for creating some API connections.</td>
+			<td>OAuth is used for creating some API connections.</td>
 		</tr>
 		<tr>
 			<td>Trackbacks</td>

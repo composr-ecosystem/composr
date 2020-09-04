@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    facebook_support
+ * @package    hybridauth
  */
 
 function unused_other_func()
@@ -25,7 +25,7 @@ function unused_other_func()
  */
 function is_httpauth_login()
 {
-    if (!addon_installed('facebook_support')) {
+    if (!addon_installed('hybridauth')) {
         return non_overridden__is_httpauth_login();
     }
 
@@ -38,8 +38,14 @@ function is_httpauth_login()
 
     $ret = non_overridden__is_httpauth_login();
 
-    $compat = $GLOBALS['FORUM_DRIVER']->get_member_row_field(get_member(), 'm_password_compat_scheme');
-    if ($compat == 'facebook') {
+    require_code('hybridauth');
+
+    $special_type = $GLOBALS['CNS_DRIVER']->get_member_row_field(get_member(), 'm_password_compat_scheme');
+
+    require_code('hybridauth');
+    $is_hybridauth_account = is_hybridauth_special_type($special_type);
+
+    if ($is_hybridauth_account) {
         global $SESSION_CONFIRMED_CACHE;
         $SESSION_CONFIRMED_CACHE = true;
     }

@@ -128,6 +128,7 @@ class resource_closing_test_set extends cms_test_case
         $exceptions = [
             'sources/files_spreadsheets_write.php',
             'sources_custom/files_spreadsheets_write__spout.php',
+            'sources_custom/hybridauth/HttpClient/Guzzle.php',
         ];
         $exception_stubs = [
             'sources/hooks/systems/tasks/',

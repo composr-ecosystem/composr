@@ -234,6 +234,8 @@ class Module_admin_oauth
 
         $result = http_get_contents($endpoint . '/token', ['convert_to_internal_encoding' => true, 'post_params' => $post_params]);
         $parsed_result = json_decode($result, true);
+
+        // We assume the oAuth provider we are using supports refresh tokens - or the hook can lie and call a regular token a refresh token and never call refresh_oauth2_token()
         $refresh_token_key = $service_info['saved_data']['refresh_token_key'];
         set_value($refresh_token_key, $parsed_result['refresh_token'], true);
 

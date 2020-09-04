@@ -159,7 +159,7 @@ Because of this no-group issue, the staff filter feature is disabled for phpBB: 
 
 [title="3"]Invision Power Board[/title]
 
-LDAP, and Facebook connect integration is not supported via the IPB forum driver.
+LDAP, and OAuth integration is not supported via the IPB forum driver.
 
 If you use IPB stronghold cookies (version 2.2 and later) put:
 [code="PHP"]

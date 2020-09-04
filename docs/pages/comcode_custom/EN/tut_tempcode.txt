@@ -747,7 +747,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$METADATA,created}</td>
-			<td>Fetch a defined dublin core metadata property (by code name), relating to the current content. Also supports some Facebook connect fields, HTML SEO metadata (keywords, meta_description). You can also query HTML SEO metadata for specific content item, by giving two additional parameters: the content type and the content ID</td>
+			<td>Fetch a defined dublin core metadata property (by code name), relating to the current content. Also supports some Open Graph fields, HTML SEO metadata (keywords, meta_description). You can also query HTML SEO metadata for specific content item, by giving two additional parameters: the content type and the content ID</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$REFRESH}</td>

@@ -8457,7 +8457,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADD_TO_LINKEDIN
         ADD_TO_PINTEREST
         ADD_TO_TUMBLR
-        ADD_TO_VK
+        ADD_TO_VKONTAKTE
         ADD_TO_SINA_WEIBO
         ADD_TO_TENCENT_WEIBO
         ADD_TO_QZONE
@@ -8958,8 +8958,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DEFAULT_CPF_soundcloud_DESCRIPTION
         DEFAULT_CPF_spotify_NAME
         DEFAULT_CPF_spotify_DESCRIPTION
-        DEFAULT_CPF_stack_exchange_NAME
-        DEFAULT_CPF_stack_exchange_DESCRIPTION
+        DEFAULT_CPF_stackexchange_NAME
+        DEFAULT_CPF_stackexchange_DESCRIPTION
         DEFAULT_CPF_stack_overflow_NAME
         DEFAULT_CPF_stack_overflow_DESCRIPTION
         DEFAULT_CPF_im_telegram_NAME
@@ -8974,8 +8974,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DEFAULT_CPF_im_whatsapp_DESCRIPTION
         DEFAULT_CPF_youtube_NAME
         DEFAULT_CPF_youtube_DESCRIPTION
-        DEFAULT_CPF_sn_vk_NAME
-        DEFAULT_CPF_sn_vk_DESCRIPTION
+        DEFAULT_CPF_sn_vkontakte_NAME
+        DEFAULT_CPF_sn_vkontakte_DESCRIPTION
         DEFAULT_CPF_sn_baidu_tieba_NAME
         DEFAULT_CPF_sn_baidu_tieba_DESCRIPTION
         DEFAULT_CPF_sn_sina_weibo_NAME

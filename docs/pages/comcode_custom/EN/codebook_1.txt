@@ -79,7 +79,7 @@ Composr is split into addons. Some addons are core, some are optional. Optional 
 Example:
  - [b]Bundled core addon[/b] -- [tt]core_rich_media[/tt] (the implementation of Comcode, basically)
  - [b]Bundled non-core addon[/b] -- [tt]downloads[/tt] (file publishing / document management)
- - [b]Non-bundled addon[/b] -- [tt]facebook_support[/tt] (Login using a Facebook account, etc)
+ - [b]Non-bundled addon[/b] -- [tt]hybridauth[/tt] (Login using a Facebook account, etc)
 
 Addons contain module-pages (and blocks), and it is these modules (and blocks) that define things like database structure. Actually addons may define this too directly in their registry file, but it is rare for us to do it this way. Modules (and blocks) are independently versioned, but the versions of individual modules (and blocks) are hidden from user -- the module versions exist so that modules have a way of tracking when they need to upgrade themselves (a mismatch between the version on-disk, and the installed version in the database will prompt a module to upgrade itself).
 

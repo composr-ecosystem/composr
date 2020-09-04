@@ -5,6 +5,8 @@
 	{$SET,login_screen,1}
 
 	<div class="login-page">
+		{$GET,login_supplemental}
+
 		{+START,IF,{$HAS_FORUM,1}}
 			<div class="box box---login-screen"><div class="box-inner">
 				{!LOGIN_TEXT,<a href="{JOIN_URL*}"><strong>{!JOIN_HERE}</strong></a>}

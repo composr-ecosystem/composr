@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    facebook_support
+ * @package    hybridauth
  */
 
 /**
@@ -21,13 +21,16 @@
  */
 function cns_is_httpauth_member($member_id)
 {
-    if (addon_installed('facebook_support')) {
-        $scheme = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
+    $special_type = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
 
-        if ($scheme == 'facebook') {
+    if (addon_installed('hybridauth')) {
+        require_code('hybridauth');
+        $is_hybridauth_account = is_hybridauth_special_type($special_type);
+
+        if ($is_hybridauth_account) {
             return true;
         }
     }
 
-    return $scheme == 'httpauth';
+    return $special_type == 'httpauth';
 }

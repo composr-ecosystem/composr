@@ -246,7 +246,7 @@ Here are the inbuilt events...
 [tt]social__linkedin[/tt]
 [tt]social__pinterest[/tt]
 [tt]social__tumblr[/tt]
-[tt]social__vk[/tt]
+[tt]social__vkontakte[/tt]
 [tt]social__sina_weibo[/tt]
 [tt]social__tencent_weibo[/tt]
 [tt]social__qzone[/tt]

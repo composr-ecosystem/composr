@@ -52,6 +52,6 @@ class Hook_config_facebook_allow_signups
             return null;
         }
 
-        return '1';
+        return '0';
     }
 }
