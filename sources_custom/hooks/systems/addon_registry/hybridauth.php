@@ -86,41 +86,62 @@ class Hook_addon_registry_hybridauth
      */
     public function get_description()
     {
-        return 'This addon integrates Hybridauth, to add around 50 social network (etc) login options to your site (Facebook, Google, Apple, etc).
+        return 'This addon integrates Hybridauth, to add many social network (etc) login options to your site (Facebook, Google, Apple, etc).
 
 Hybridauth essentially implements the OAuth1, OAuth2, OpenID Connect, and OpenID standards, and proprietary APIs, necessary to unify all the different login integrations of different services.
 
-For the full list of login options refer to the list of providers on the [url="Hybridauth website"]https://hybridauth.github.io/hybridauth/[/url].
+Hybridauth supports many providers (around 50), and likely will support more in the future. For the purposes of this addon we can confirm the following common ones work well:
+ - BitBucket (*)
+ - Discord
+ - Dropbox
+ - Facebook
+ - GitHub
+ - GitLab
+ - Google
+ - MicrosoftGraph (*) (this is Microsoft login, either of your account with Microsoft, or of a private Active Directory installation)
+ - Reddit
+ - Twitter
+ - Vkontakte
+ - Yahoo
+* These do not support avatars/photos, which you might care about when deciding what login options to feature.
 
-The OAuth Redirect URI used will be [tt]http://yourbaseurl/data_custom/hybridauth.php[/tt]
+For the full list of login options and integration notes refer to the list of providers on the [url="Hybridauth website"]https://hybridauth.github.io/hybridauth/[/url], and the code comments in the [tt]sources_custom/hybridauth/Provider[/tt] files.
+We expect any Hybridauth provider will work with Composr, but we have not tested or optimized any not listed in this documentation.
 
-Some Composr addons come with config options for OAuth that work with Hybridauth ([tt]facebook_support[/tt] does this). For these addons, it\'s therefore pretty easy to set up login integration. A little configuration on the service\'s end (e.g. configuring an app), and a little configuration on Composr\'s end.
+[title="2"]Setting up providers[/title]
 
-To enable an integration that has no matching config options you need to set hidden options. These options are based on some naming conventions and the codenames of providers in the Hybridauth code.
+[title="3"]On the provider\'s end[/title]
 
-To find the codename of a provider as recognised in the code, look at the filenames in [tt]sources_custom/hybridauth/src/Provider[/tt] (without the [tt].php[/tt], e.g. [tt]Yahoo[/tt]).
+The first thing you do is create an \'app\' on the developers section of the provider\'s website.
+The vast majority of providers work via OAuth2.
+The actual steps vary from provider-to-provider, but for most you will end up with an OAuth ID and an OAuth secret.
+The OAuth Redirect URI used will be [tt]http://yourbaseurl/data_custom/hybridauth.php[/tt]. You will probably need to set it up on the app for security reasons.
 
-Set hidden options in Commandr like...
+[title="3"]On the Composr end[/title]
+
+You configure a provider by setting hidden options using Commandr, which are mapped automatically to Hybridauth configuration settings. These options are based on some naming conventions, and the Hybridauth filenames of providers (listed above).
+
+Set hidden options in Commandr like:
 [code="Commandr"]
-:set_value(\'hybridauth_Yahoo_key_id\', \'abcdef\');
-:set_value(\'hybridauth_Yahoo_key_secret\', \'abcdef\');
+:set_value(\'hybridauth_<Provider>_key_id\', \'abcdef\');
+:set_value(\'hybridauth_<Provider>_key_secret\', \'abcdef\');
 [/code]
 
-The [tt]id[/tt] and [tt]secret[/tt] values here are standard OAuth key parameters you would be provided by the service you are integrating (Yahoo in this case). i.e. You set up an app on Yahoo and it will give you these details.
-
-For some services there may also be an API key, set like:
+E.g.:
 [code="Commandr"]
-:set_value(\'hybridauth_Example_key_key\', \'abcdef\');
+:set_value(\'hybridauth_Facebook_key_id\', \'abcdef\');
+:set_value(\'hybridauth_Facebook_key_secret\', \'abcdef\');
 [/code]
-For Twitter actually you set the [tt]key[/tt] and no [tt]id[/tt], because the integration is using OAuth1 not OAuth2.
 
-And a scope to specify what service permissions you want, set like:
-[code="Commandr"]
-:set_value(\'hybridauth_Facebook_scope\', \'email,user_gender,user_birthday,user_location\');
-[/code]
-The actual value taken and whether spaces/commas are used as delimiters, depends on the provider. A safe low-pain default will be picked if you do not specify. The example above sets permissions on Facebook to gather a bit more, but would require you go through their approval process.
+The [tt]id[/tt] and [tt]secret[/tt] values here are standard OAuth2 key parameters. This is of course assuming the provider works via OAuth2, but most do.
 
-The [url="Apple provider actually takes different values"]https://hybridauth.github.io/providers/apple.html[/url]...
+[title="2"]Provider-specific notes[/title]
+
+[title="3"]Apple (untested)[/title]
+
+You may wonder why Apple is not on the list. This is supported by Hybridauth but you will need to set up and upload special key files, along with extra PHP software dependencies for Firebase. It likely is not worth the extra effort for you given Apple users likely also have Facebook accounts.
+
+The [url="Apple provider actually takes different values"]https://hybridauth.github.io/providers/apple.html[/url]:
 [code="Commandr"]
 :set_value(\'hybridauth_Apple_key_id\', \'abcdef\');
 :set_value(\'hybridauth_Apple_key_team_id\', \'abcdef\');
@@ -128,13 +149,77 @@ The [url="Apple provider actually takes different values"]https://hybridauth.git
 :set_value(\'hybridauth_Apple_key_key_content\', \'abcdef\');
 :set_value(\'hybridauth_Apple_key_key_file\', \'abcdef\');
 [/code]
+See the code comments in [tt]sources_custom/hybridauth/Provider/Apple.php[/tt] for clearer details on these config settings.
 
-The [tt]MicrosoftGraph[/tt] provider may need a tenant value setting, you probably will want:
+[title="3"]Facebook[/title]
+
+If you have the [tt]facebook_support[/tt] addon installed then there are friendly configuration options for setting up OAuth2 and enabling login. No hidden options need setting.
+
+Facebook has a wide variety of extra fields, but only if you go through a special approval process and extend the configured scope, e.g.:
+[code="Commandr"]
+:set_value(\'hybridauth_Facebook_scope\', \'email,user_gender,user_birthday,user_location\');
+[/code]
+
+[title="3"]Google[/title]
+
+There are friendly configuration options for setting up OAuth2 and enabling login. No hidden options need setting.
+
+[title="3"]Twitter[/title]
+
+If you have the [tt]twitter_support[/tt] addon installed then there are friendly configuration options for setting up OAuth2 and enabling login. No hidden options need setting.
+
+Twitter is using OAuth1 instead of OAuth2. Set hidden options in Commandr like:
+[code="Commandr"]
+:set_value(\'hybridauth_Yahoo_key_key\', \'abcdef\');
+:set_value(\'hybridauth_Yahoo_key_secret\', \'abcdef\');
+[/code]
+
+Twitter apps need to go through an approval process.
+
+[title="3"]LinkedIn (untested)[/title]
+
+You may wonder why LinkedIn is not on the list. LinkedIn apps need to go through an approval process and we imagine most users will not want to make the effort. Hybridauth does support it.
+
+[title="3"]MicrosoftGraph[/title]
+
+Setting up of [tt]MicrosoftGraph[/tt] on Microsoft\'s end is a bit complicated. You need to create and configure an "Azure Active Directory" resource on the [url="Azure Portal"]https://portal.azure.com/[/url].
+There is an extra [tt]tenant[/tt] value option that relates to the "Supported account types" choice you made. You probably will need:
 [code="Commandr"]
 :set_value(\'hybridauth_MicrosoftGraph_tenant\', \'consumers\');
 [/code]
 
-The addon optimises the display of the following providers: Apple, Facebook, Google, MicrosoftGraph, Twitter. This is based on a pragmatic assessment of what is most likely to be popular. New [tt]sources_custom/hooks/systems/hybridauth[/tt] hooks may be added, or existing ones changed, to adjust this -- or you can actually override any setting in hidden options (as the naming of the hidden option parallels the settings in the hooks).
+[title="3"]Pinterest (untested)[/title]
+
+You may wonder why Pinterest is not on the list. Pinterest is not currently accepting new apps. Hybridauth does support it.
+
+[title="3"]StackExchange (suboptimal)[/title]
+
+You may wonder why StackExchange is not on the list. StackExchange does not allow transfer of e-mail address, which is important for most sites. Hybridauth does support it.
+
+There is an extra [tt]site[/tt] value option that relates to the particular StackExchange site you want to use. It must be set. For example:
+[code="Commandr"]
+:set_value(\'hybridauth_StackExchange_site\', \'stackoverflow.com\');
+[/code]
+
+[title="3"]Vkontakte[/title]
+
+The terminology displayed on Vkontakte\'s end is a little different:
+ - App ID is the OAuth2 ID.
+ - Secure key is OAuth2 secret.
+
+[title="2"]Button display[/title]
+
+All the providers mentioned in this documentation are guaranteed to have a nice button icon bundled with Composr, and a human-friendly label. Others may or may not.
+
+You can customise the button display for any provider via more hidden options:
+[code="Commandr"]
+:set_value(\'hybridauth_<Provider>_label\', \'Some label\');
+:set_value(\'hybridauth_<Provider>_prominent_button\', \'1\'); // 0 for only showing on the main login screen
+:set_value(\'hybridauth_<Provider>_button_precedence\', \'5\'); // for manual sorting
+:set_value(\'hybridauth_<Provider>_background_colour\', \'FF0000\'); // a hex colour code
+:set_value(\'hybridauth_<Provider>_text_colour\', \'FFFFFF\'); // a hex colour code
+:set_value(\'hybridauth_<Provider>_icon\', \'links/microsoft\'); // a theme image path under \'icons/\'
+[/code]
 ';
     }
 

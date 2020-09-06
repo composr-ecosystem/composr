@@ -151,11 +151,11 @@ function enumerate_hybridauth_providers()
 
         $value = get_value('hybridauth_' . $provider . '_' . 'background_colour', null);
         if ($value !== null) {
-            $info['background_colour'] = $value;
+            $info['background_colour'] = ltrim($value, '#');
         }
         $value = get_value('hybridauth_' . $provider . '_' . 'text_colour', null);
         if ($value !== null) {
-            $info['text_colour'] = $value;
+            $info['text_colour'] = ltrim($value, '#');
         }
         $value = get_value('hybridauth_' . $provider . '_' . 'icon', null);
         if ($value === null) {

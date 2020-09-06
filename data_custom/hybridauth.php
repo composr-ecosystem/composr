@@ -13,6 +13,8 @@
  * @package    hybridauth
  */
 
+$get = $_GET;
+
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
@@ -48,6 +50,10 @@ $before_type_strictness = ini_get('ocproducts.type_strictness');
 cms_ini_set('ocproducts.type_strictness', '0');
 $before_xss_detect = ini_get('ocproducts.xss_detect');
 cms_ini_set('ocproducts.xss_detect', '0');
+
+if ((empty($get)) && (empty($_POST))) {
+    warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+}
 
 session_start();
 
