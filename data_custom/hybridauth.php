@@ -55,6 +55,14 @@ if ((empty($get)) && (empty($_POST))) {
     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
 }
 
+cms_ini_set('session.name', 'hybridauth');
+cms_ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 365 * 2);  // 2 year server-side cookie lifetime
+cms_ini_set('session.cookie_lifetime', 60 * 60 * 24 * 365 * 2);  // 2 year client-side lifetime
+cms_ini_set('session.cookie_httponly', 'On');
+cms_ini_set('session.cookie_samesite', 'On');
+if (strpos(get_base_url(), 'https://') !== false) {
+    cms_ini_set('session.cookie_secure', 'On');
+}
 session_start();
 
 $composr_return_url = get_param_string('composr_return_url', null, INPUT_FILTER_URL_GENERAL);
