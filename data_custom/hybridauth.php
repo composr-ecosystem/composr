@@ -55,15 +55,7 @@ if ((empty($get)) && (empty($_POST))) {
     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
 }
 
-cms_ini_set('session.name', 'hybridauth');
-cms_ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 365 * 2);  // 2 year server-side cookie lifetime
-cms_ini_set('session.cookie_lifetime', 60 * 60 * 24 * 365 * 2);  // 2 year client-side lifetime
-cms_ini_set('session.cookie_httponly', 'On');
-cms_ini_set('session.cookie_samesite', 'On');
-if (strpos(get_base_url(), 'https://') !== false) {
-    cms_ini_set('session.cookie_secure', 'On');
-}
-session_start();
+initiate_hybridauth_session_state();
 
 $composr_return_url = get_param_string('composr_return_url', null, INPUT_FILTER_URL_GENERAL);
 if ($composr_return_url !== null) {
@@ -82,10 +74,11 @@ if ($composr_return_url !== null) {
     $composr_return_url = $_SESSION['composr_return_url'];
 }
 
-try {
-    $hybridauth = initiate_hybridauth();
+$hybridauth = initiate_hybridauth();
 
-    $adapter = $hybridauth->getAdapter($provider);
+$adapter = $hybridauth->getAdapter($provider);
+
+try {
     $adapter->authenticate($provider); // Will either push the flow off-site, complete the authentication started previously, or just bring the user's authentication credentials out from a previous authentication
 
     $success = $adapter->isConnected();
@@ -93,7 +86,10 @@ try {
     if ($success) {
         $userProfile = $adapter->getUserProfile();
 
-        hybridauth_handle_authenticated_account($provider, $userProfile);
+        $member_id = hybridauth_handle_authenticated_account($provider, $userProfile);
+
+        // Set log in
+        hybridauth_log_in_authenticated_account($member_id);
     }
 
     $message = do_lang_tempcode($success ? 'LOGGED_IN_WITH_SUCCESS' : 'LOGGED_IN_WITH_FAILURE', escape_html($provider));

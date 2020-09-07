@@ -13,6 +13,29 @@
  * @package    hybridauth
  */
 
+function initiate_hybridauth_session_state()
+{
+    @session_destroy();
+    $options = [
+        'name' => 'hybridauth',
+        'gc_maxlifetime' => strval(60 * 60 * 24 * 365 * 2),  // 2 year server-side cookie lifetime
+        'cookie_lifetime' => strval(60 * 60 * 24 * 365 * 2),  // 2 year client-side lifetime
+        'cookie_httponly' => 'On',
+        'cookie_samesite' => 'On',
+    ];
+    if (strpos(get_base_url(), 'https://') !== false) {
+        $options['cookie_secure'] = 'On';
+    }
+    if (version_compare(PHP_VERSION, '7.0', '<')) { // LEGACY
+        foreach ($options as $key => $val) {
+            cms_ini_set('session.' . $key, $val);
+        }
+        session_start();
+    } else {
+        session_start($options);
+    }
+}
+
 function initiate_hybridauth()
 {
     $providers = enumerate_hybridauth_providers();
@@ -282,8 +305,7 @@ function hybridauth_handle_authenticated_account($provider, $userProfile)
     }
     hybridauth_set_cpfs($provider, $is_new_account, $member_id, $profile_url, $about, $gender, $firstname, $lastname, $website, $mobile_phone_number, $street_address, $city, $state, $post_code, $country);
 
-    // Set log in
-    hybridauth_log_in_authenticated_account($member_id);
+    return $member_id;
 }
 
 function hybridauth_create_authenticated_account($provider, $id, $email_address, $username, $photo_url, $language, $dob_day, $dob_month, $dob_year)
