@@ -35,6 +35,27 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS
 
         $keep = symbol_tempcode('KEEP');
 
+        // Where to redirect to
+        $page_after_login = get_option('page_after_login');
+        if ($page_after_login != '') {
+            if (strpos($page_after_login, ':') === false) {
+                $zone = get_page_zone($page_after_login, false);
+                if ($zone === null) {
+                    $zone = 'site';
+                }
+                $return_url = static_evaluate_tempcode(build_url(['page' => $page_after_login], $zone));
+            } else {
+                $return_url = page_link_to_url($page_after_login);
+            }
+        } else {
+            if (in_array(get_page_name(), ['login', 'join'])) {
+                $return_url = static_evaluate_tempcode(build_url(['page' => ''], ''));
+            } else {
+                $return_url = get_self_url(true, true);
+            }
+        }
+        $return_url_part = urlencode(static_evaluate_tempcode(protect_url_parameter($return_url)));
+
         $buttons = '';
         $i = 0;
         foreach ($providers as $provider => $info) {
@@ -46,7 +67,6 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS
                 break;
             }
 
-            $return_url_part = urlencode(static_evaluate_tempcode(protect_url_parameter(get_self_url(true, true))));
             $url = find_script('hybridauth') . '?provider=' . urlencode($provider) . '&composr_return_url=' . $return_url_part . $keep->evaluate();
 
             $button = do_template('HYBRIDAUTH_BUTTON', [
