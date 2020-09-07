@@ -974,16 +974,19 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                         $tag_output->attach($continuation);
                                         $continuation = '';
                                         if ($comcode[$pos] === '+') {
-                                            $p_end = $pos + 1;
+                                            $p_end = strpos($comcode, '{+END}', $pos); // For the end position of the whole enclosed area excluding the closing directive tag
                                             $matches = array();
                                             while ($p_end < $len) {
                                                 $p_portion = substr($comcode, $pos - 1, strpos($comcode, '}', $p_end) - ($pos - 1) + 1);
                                                 if (preg_match_all('#\{\+\s*START\s*,#', $p_portion, $matches) == preg_match_all('#\{\+\s*END\s*\}#', $p_portion, $matches)) {
                                                     break;
                                                 }
-                                                $p_end++;
+                                                $p_end = strpos($comcode, '{+END}', $p_end);
+                                                if ($p_end === false) {
+                                                    $p_end = $len;
+                                                }
                                             }
-                                            $p_len = 1;
+                                            $p_len = 1; // For the length of the opening directive
                                             while ($pos + $p_len < $len) {
                                                 $p_portion = substr($comcode, $pos - 1, $p_len);
                                                 if (substr_count(str_replace('{', ' { ', $p_portion), '{') === substr_count(str_replace('}', ' } ', $p_portion), '}')) { // str_replace is to workaround a Quercus bug #4494
@@ -993,9 +996,9 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                             }
                                             $p_len--;
 
-                                            $p_opener = substr($comcode, $pos - 1, $p_len + 1);
-                                            $p_portion = substr($comcode, $pos + $p_len, $p_end - ($pos + $p_len));
-                                            $p_closer = substr($comcode, $p_end, strpos($comcode, '}', $p_end) - $p_end + 1);
+                                            $p_opener = substr($comcode, $pos - 1, $p_len + 1); // Opening part of directive
+                                            $p_portion = substr($comcode, $pos + $p_len, $p_end - ($pos + $p_len)); // Contents of directive
+                                            $p_closer = substr($comcode, $p_end, strpos($comcode, '}', $p_end) - $p_end + 1); // Closing part of directive
 
                                             if ($semiparse_mode) {
                                                 $ret = new Tempcode();
