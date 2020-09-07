@@ -31,13 +31,19 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS
         $providers = enumerate_hybridauth_providers();
 
         $only_prominent = !empty($param[1]);
+        $max = !empty($param[2]) ? intval($param[2]) : null;
 
         $keep = symbol_tempcode('KEEP');
 
         $buttons = '';
+        $i = 0;
         foreach ($providers as $provider => $info) {
             if (($only_prominent) && (!$info['prominent_button'])) {
                 continue;
+            }
+
+            if (($max !== null) && ($i == $max)) {
+                break;
             }
 
             $return_url_part = urlencode(static_evaluate_tempcode(protect_url_parameter(get_self_url(true, true))));
@@ -52,6 +58,8 @@ class Hook_symbol_HYBRIDAUTH_BUTTONS
                 'URL' => $url,
             ]);
             $buttons .= $button->evaluate();
+
+            $i++;
         }
 
         return $buttons;

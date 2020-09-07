@@ -7,12 +7,21 @@
 	margin: 10px 0 30px 0;
 }
 
+.hybridauth-block-top-login {
+	margin-left: 10px;
+	display: inline-block;
+}
+
 .form-hybridauth-login {
+	margin-top: 5px;
 	display: inline-block;
 }
 
 .btn-hybridauth-login {
-	margin-left: 10px;
+	margin-right: 10px;
+}
+.btn-hybridauth-login:last-child {
+	margin-right: 0;
 }
 
 {$HYBRIDAUTH_BUTTONS_CSS}

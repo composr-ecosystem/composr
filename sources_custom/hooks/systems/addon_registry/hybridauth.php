@@ -290,6 +290,7 @@ You can customise the button display for any provider via more hidden options:
             'data_custom/hybridauth.php',
             'themes/default/templates_custom/BLOCK_SIDE_PERSONAL_STATS_NO.tpl',
             'themes/default/templates_custom/LOGIN_SCREEN.tpl',
+            'themes/default/templates_custom/CNS_JOIN_STEP2_SCREEN.tpl',
             'themes/default/templates_custom/BLOCK_TOP_LOGIN.tpl',
             'sources_custom/users.php',
             'sources_custom/cns_members.php',

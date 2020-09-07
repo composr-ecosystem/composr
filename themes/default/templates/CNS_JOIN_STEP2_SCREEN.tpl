@@ -1,5 +1,7 @@
 {TITLE}
 
+{$GET,join_supplemental}
+
 <p>
 	{!ENTER_PROFILE_DETAILS}
 </p>

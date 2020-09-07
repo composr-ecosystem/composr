@@ -59,7 +59,7 @@ initiate_hybridauth_session_state();
 
 $composr_return_url = get_param_string('composr_return_url', null, INPUT_FILTER_URL_GENERAL);
 if ($composr_return_url !== null) {
-    //session_destroy(); session_start(); // Useful for debugging
+    session_destroy(); session_start(); // Useful for debugging
 
     // This is the first stage in the flow
     $provider = get_param_string('provider');
