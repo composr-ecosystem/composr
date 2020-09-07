@@ -604,16 +604,21 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
     /**
     * Check whether access token has expired
     *
+    * @param int|null $time
     * @return bool|null
     */
-    public function hasAccessTokenExpired()
+    public function hasAccessTokenExpired($time = null)
     {
         $expires_at = $this->getStoredData('expires_at');
         if (!$expires_at) {
             return null;
         }
 
-        return $expires_at <= time();
+        if ($time === null) {
+            $time = time();
+        }
+
+        return $expires_at <= $time;
     }
 
     /**
