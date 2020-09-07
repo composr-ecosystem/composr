@@ -14,7 +14,7 @@ Confluence,confluence,,Yes,No,Re-sync if broken,N/A,N/A,Latest stable of any bro
 cssmin,,https://code.google.com/archive/p/cssmin/,No,Yes,No action,N/A,1,PHP 5+,N/A,N/A,"Later versions are unreasonable complex, what we are using is just a few simple lines of code"
 cURL wrapper,sugarcrm,https://github.com/shano/curl,No,No,No action,N/A,0.4.0-dev,PHP 5.3.0+,curl_wrapper,N/A,"Used by ""SugarCRM REST API Wrapper Class"""
 Date polyfill,,https://github.com/jonstipe/date-polyfill,No,Yes,Remove when browsers don't need it,N/A,N/A,IE9+,N/A,N/A,Heavily forked. Safari does not support date inputs (https://caniuse.com/#search=date). Also can remove jQuery-UI at same time.
-Facebook,facebook,https://github.com/facebookarchive/php-graph-sdk,Yes,No,Re-sync regularly,29th Mar 2020,5.7.0,PHP 5.4+,TODO?,TODO?,cd sources_custom/facebook ; composer require facebook/graph-sdk. Search for lines marked ChrisG that have been added
+Facebook,facebook,https://github.com/facebookarchive/php-graph-sdk,Yes,No,Re-sync regularly,29th Mar 2020,5.7.0,PHP 5.4+,N/A,N/A,cd sources_custom/facebook ; composer require facebook/graph-sdk. Search for lines marked ChrisG that have been added
 FirePHP,,https://github.com/firephp/insight/tree/master/lib/FirePHPCore,No,Yes,Re-sync regularly,29th Mar 2020,0.3,N/A,N/A,N/A,"A small amount of custom code, followed by insight/lib/FirePHPCore/fb.php, followed by insight/lib/FirePHPCore/FirePHP.class.php.php"
 Flip,,https://github.com/nnattawat/flip,Yes,No,Re-sync regularly,29th Mar 2020,1.1.2,IE9+,N/A,N/A,dist folder. Keep custom code at top of jquery_flip.js
 GeSHI,,https://github.com/GeSHi/geshi-1.0,Yes,No,Re-sync regularly,21st Apr 2020,1.0.9.1,N/A,geshi,N/A,"Actual website is outdated, but GitHub is being updated"
