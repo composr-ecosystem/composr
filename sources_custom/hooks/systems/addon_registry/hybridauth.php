@@ -292,6 +292,7 @@ You can customise the button display for any provider via more hidden options:
             'themes/default/templates_custom/LOGIN_SCREEN.tpl',
             'themes/default/templates_custom/CNS_JOIN_STEP2_SCREEN.tpl',
             'themes/default/templates_custom/BLOCK_TOP_LOGIN.tpl',
+            'themes/default/templates_custom/CNS_GUEST_BAR.tpl',
             'sources_custom/users.php',
             'sources_custom/cns_members.php',
             'sources_custom/hybridauth.php',
