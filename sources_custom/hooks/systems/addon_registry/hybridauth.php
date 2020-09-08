@@ -285,6 +285,7 @@ You can customise the button display for any provider via more hidden options:
             'sources_custom/cns_field_editability.php',
             'themes/default/templates_custom/HYBRIDAUTH_BUTTON.tpl',
             'themes/default/css_custom/hybridauth.css',
+            'themes/default/css_custom/_hybridauth_button.css',
             'sources_custom/hooks/systems/symbols/HYBRIDAUTH_BUTTONS.php',
             'sources_custom/hooks/systems/symbols/HYBRIDAUTH_BUTTONS_CSS.php',
             'data_custom/hybridauth.php',
