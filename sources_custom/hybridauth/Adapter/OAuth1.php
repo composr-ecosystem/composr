@@ -288,7 +288,7 @@ abstract class OAuth1 extends AbstractAdapter implements AdapterInterface
 
         if ($oauth_problem) {
             throw new InvalidOauthTokenException(
-                'Provider returned an invalid oauth_token. oauth_problem: ' . htmlentities($oauth_problem)
+                'Provider returned an error. oauth_problem: ' . htmlentities($oauth_problem)
             );
         }
 
@@ -407,7 +407,7 @@ abstract class OAuth1 extends AbstractAdapter implements AdapterInterface
 
         if (! $collection->exists('oauth_token')) {
             throw new InvalidOauthTokenException(
-                'Provider returned an invalid access_token: ' . htmlentities($response)
+                'Provider returned no oauth_token: ' . htmlentities($response)
             );
         }
 
@@ -505,7 +505,7 @@ abstract class OAuth1 extends AbstractAdapter implements AdapterInterface
 
         if (! $collection->exists('oauth_token')) {
             throw new InvalidAccessTokenException(
-                'Provider returned an invalid access_token: ' . htmlentities($response)
+                'Provider returned no access_token: ' . htmlentities($response)
             );
         }
 
