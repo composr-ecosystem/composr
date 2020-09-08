@@ -60,7 +60,7 @@ class Hook_login_provider_hybridauth
 
                         $member_id = hybridauth_handle_authenticated_account($provider, $userProfile);
                     }
-                } catch (Hybridauth\Exception $e) {
+                } catch (Exception $e) {
                     $adapter->disconnect();
                     // Silent failure; user can always start to log in again. Maybe a revoked token for example
                 }
