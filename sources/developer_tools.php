@@ -61,6 +61,7 @@ function semi_dev_mode_startup()
             (strpos($_SERVER['HTTP_REFERER'], 'keep_devtest') !== false) &&
             (!running_script('attachment')) &&
             (!running_script('external_url_proxy')) &&
+            (!running_script('hybridauth')) &&
             (!running_script('upgrader')) &&
             (strpos($_SERVER['HTTP_REFERER'], 'login') === false) &&
             (get_page_name() != 'login') &&

@@ -59,7 +59,10 @@ initiate_hybridauth_session_state();
 
 $composr_return_url = get_param_string('composr_return_url', null, INPUT_FILTER_URL_GENERAL);
 if ($composr_return_url !== null) {
-    session_destroy(); session_start(); // Useful for debugging
+    if ((get_param_integer('keep_hybridauth_blank_state', 0) == 1) && ($GLOBALS['DEV_MODE'])) {
+        session_destroy();
+        session_start();
+    }
 
     // This is the first stage in the flow
     $provider = get_param_string('provider');
@@ -95,7 +98,7 @@ try {
     $message = do_lang_tempcode($success ? 'LOGGED_IN_WITH_SUCCESS' : 'LOGGED_IN_WITH_FAILURE', escape_html($provider));
 } catch (Hybridauth\AuthorizationDeniedException $e) {
     $message = do_lang_tempcode('LOGGED_IN_CANCELLED', escape_html($provider));
-} catch (Hybridauth\Exception $e) {
+} catch (Exception $e) {
     warn_exit($e->getMessage());
 }
 
