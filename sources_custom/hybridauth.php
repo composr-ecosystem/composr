@@ -21,7 +21,7 @@ function initiate_hybridauth_session_state()
         'gc_maxlifetime' => strval(60 * 60 * 24 * 365 * 2),  // 2 year server-side cookie lifetime
         'cookie_lifetime' => strval(60 * 60 * 24 * 365 * 2),  // 2 year client-side lifetime
         'cookie_httponly' => 'On',
-        'cookie_samesite' => 'On',
+        //'cookie_samesite' => 'Strict', // LEGACY Only works on PHP 7.3+ otherwise gives an error
     ];
     if (strpos(get_base_url(), 'https://') !== false) {
         $options['cookie_secure'] = 'On';
