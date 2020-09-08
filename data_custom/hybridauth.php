@@ -96,7 +96,7 @@ try {
     }
 
     $message = do_lang_tempcode($success ? 'LOGGED_IN_WITH_SUCCESS' : 'LOGGED_IN_WITH_FAILURE', escape_html($provider));
-} catch (Hybridauth\AuthorizationDeniedException $e) {
+} catch (Hybridauth\Exception\AuthorizationDeniedException $e) {
     $message = do_lang_tempcode('LOGGED_IN_CANCELLED', escape_html($provider));
 } catch (Exception $e) {
     warn_exit($e->getMessage());
