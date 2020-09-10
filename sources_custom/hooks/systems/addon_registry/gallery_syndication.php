@@ -92,9 +92,7 @@ For YouTube syndication you must first:
 1) Configure the Google API API Key in the configuration (Admin Zone > Configuration > Setup > Composr API options > Google API)
 2) Make sure that YouTube Data API is enabled on Google\'s end
 3) Connect YouTube oAuth from Admin Zone > Setup > API access
-4) [url="Increase your YouTube video length limit"]http://support.google.com/youtube/bin/answer.py?hl=en&answer=71673[/url].
-
-[b]Unfortunately YouTube support is [url="currently not functional"]https://compo.sr/tracker/view.php?id=3166[/url][/b].';
+4) [url="Increase your YouTube video length limit"]http://support.google.com/youtube/bin/answer.py?hl=en&answer=71673[/url].';
     }
 
     /**
