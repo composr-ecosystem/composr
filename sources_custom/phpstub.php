@@ -1001,9 +1001,9 @@ function header($string, $replace_last = true)
  *
  * @sets_output_state
  *
- * @param  string $name The header to send
+ * @param  ?string $name The header to send (null: all)
  */
-function header_remove($name)
+function header_remove($name = null)
 {
 }
 
