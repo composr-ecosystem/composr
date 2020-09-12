@@ -980,16 +980,20 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                                         $continuation = '';
                                         if ($comcode[$pos] === '+') { // Directive
                                             $p_end = strpos($comcode, '{+END}', $pos); // For the end position of the whole enclosed area excluding the closing directive tag
-                                            $matches = [];
-                                            while ($p_end < $len) {
-                                                $p_portion = substr($comcode, $pos - 1, strpos($comcode, '}', $p_end) - ($pos - 1) + 1);
-                                                if (preg_match_all('#\{\+\s*START\s*,#', $p_portion, $matches) == preg_match_all('#\{\+\s*END\s*\}#', $p_portion, $matches)) {
-                                                    break;
+                                            if ($p_end !== false) {
+                                                $matches = [];
+                                                while ($p_end < $len) {
+                                                    $p_portion = substr($comcode, $pos - 1, strpos($comcode, '}', $p_end) - ($pos - 1) + 1);
+                                                    if (preg_match_all('#\{\+\s*START\s*,#', $p_portion, $matches) == preg_match_all('#\{\+\s*END\s*\}#', $p_portion, $matches)) {
+                                                        break;
+                                                    }
+                                                    $p_end = strpos($comcode, '{+END}', $p_end + 1);
+                                                    if ($p_end === false) {
+                                                        $p_end = $len;
+                                                    }
                                                 }
-                                                $p_end = strpos($comcode, '{+END}', $p_end);
-                                                if ($p_end === false) {
-                                                    $p_end = $len;
-                                                }
+                                            } else {
+                                                $p_end = $len;
                                             }
                                             $p_len = 1; // For the length of the opening directive
                                             while ($pos + $p_len < $len) {
