@@ -1,7 +1,7 @@
 <div class="glide__slide slideshow-carousel-entry is-{TYPE*}{+START,IF,{IS_CURRENT}} is-current{+END}"
 	data-vw-id="{ID*}" data-vw-cat="{CAT*}" data-vw-full-url="{$ENSURE_PROTOCOL_SUITABILITY*,{FULL_URL}}"
 	{+START,IF_PASSED,COMMENTS_OPTIONS} data-vw-comments-options="{COMMENTS_OPTIONS*}" data-vw-comments-options-hash="{COMMENTS_OPTIONS_HASH*}"{+END}>
-	<a class="slideshow-carousel-entry-link" href="{VIEW_URL_2*}">{$TRIM,{THUMB}}</a>
+	<a class="slideshow-carousel-entry-link" href="{VIEW_URL_2*}"><img class="img-thumb" alt="{TITLE*}" src="{$THUMBNAIL*,{IMAGE_URL},200x100}" /></a>
 
 	<div class="slideshow-details-overlay" hidden="hidden">
 		{+START,IF_NON_EMPTY,{_TITLE}}

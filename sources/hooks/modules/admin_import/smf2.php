@@ -392,7 +392,6 @@ class Hook_import_smf2
                 // These are done in the members-files stage
                 $avatar_url = '';
                 $photo_url = '';
-                $photo_thumb_url = '';
 
                 $password = $row['passwd'];
                 $type = 'smf';
@@ -417,7 +416,6 @@ class Hook_import_smf2
                     '', // theme
                     $title, // title
                     $photo_url, // photo_url
-                    $photo_thumb_url, // photo_thumb_url
                     $avatar_url, // avatar_url
                     $signature, // signature
                     $preview_posts, // preview_posts

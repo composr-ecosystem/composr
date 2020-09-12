@@ -11,9 +11,9 @@
 		</h3>
 	{+END}{+END}
 
-	{+START,IF_PASSED,REP_IMAGE}
-		<div class="right float-separation"><a href="{URL*}">{REP_IMAGE}</a></div>
-	{+END}
+	{+START,IF_PASSED,REP_IMAGE_URL}{+START,IF_NON_EMPTY,{REP_IMAGE_URL}}
+		<div class="right float-separation"><a href="{URL*}"><img class="img-thumb" alt="{TITLE*}" src="{$THUMBNAIL*,{REP_IMAGE_URL}}" /></a></div>
+	{+END}{+END}
 
 	{+START,IF_NON_EMPTY,{SUMMARY}}
 		<div class="clearfix">

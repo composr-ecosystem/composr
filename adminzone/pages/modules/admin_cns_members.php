@@ -427,7 +427,6 @@ class Module_admin_cns_members
             $theme, // theme
             '', // title
             '', // photo_url
-            '', // photo_thumb_url
             null, // avatar_url
             '', // signature
             $preview_posts, // preview_posts

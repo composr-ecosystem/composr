@@ -62,8 +62,8 @@ class Hook_content_meta_aware_poll extends Hook_CMA
             'description_field' => null,
             'description_field_dereference' => null,
             'description_field_supports_comcode' => null,
-            'thumb_field' => null,
-            'thumb_field_is_theme_image' => false,
+            'image_field' => null,
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/social/polls',
 
             'view_page_link_pattern' => '_SEARCH:polls:view:_WILD',

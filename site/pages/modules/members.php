@@ -135,11 +135,6 @@ class Module_members
                 $privacy_ok = has_privacy_access('_photo', strval($member_id_of), get_member(), '', $member_id_of);
             }
 
-            $photo_url = $GLOBALS['FORUM_DRIVER']->get_member_photo_url($member_id_of, true);
-            $photo_thumb_url = $GLOBALS['FORUM_DRIVER']->get_member_photo_url($member_id_of);
-
-            $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id_of);
-
             $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id_of);
 
             set_extra_request_metadata([

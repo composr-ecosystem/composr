@@ -1113,7 +1113,7 @@ class Module_admin_setupwizard
             $installprofileblocks = [];
         }
 
-        $doing_logowizard = (function_exists('imagepng')) && (addon_installed('themewizard')) && (get_theme_option('enable_logowizard', null, $source_theme) == '1');
+        $doing_logowizard = (addon_installed('themewizard')) && (get_theme_option('enable_logowizard', null, $source_theme) == '1');
 
         if ((post_param_integer('skip_8', 0) == 0) && ($doing_themewizard || $doing_logowizard)) {
             require_code('themewizard');
@@ -1650,6 +1650,6 @@ class Module_admin_setupwizard
      */
     protected function has_themewizard_step()
     {
-        return (function_exists('imagepng')) && (addon_installed('themewizard')) && (get_theme_option('enable_themewizard', null, post_param_string('source_theme', 'default')) == '1');
+        return (addon_installed('themewizard')) && (get_theme_option('enable_themewizard', null, post_param_string('source_theme', 'default')) == '1');
     }
 }

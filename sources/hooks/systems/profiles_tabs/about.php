@@ -54,7 +54,6 @@ class Hook_profiles_tabs_about
             'custom_fields',
             'username',
             'photo',
-            'photo_thumb',
             'avatar',
             'most_active_forum',
             'time_for_them',
@@ -292,7 +291,7 @@ class Hook_profiles_tabs_about
         // Render
 
         $a = (isset($member_info['avatar'])) ? cns_get_member_best_group_property($member_id_of, 'max_avatar_width') : 0;
-        $b = (isset($member_info['photo_thumb'])) ? intval(get_option('thumb_width')) : 0;
+        $b = (isset($member_info['photo'])) ? intval(get_option('thumb_width')) : 0;
         $right_margin = (max($a, $b) == 0) ? 'auto' : (strval(max($a, $b) + 6) . 'px');
 
         $content = do_template('CNS_MEMBER_PROFILE_ABOUT', [
@@ -303,7 +302,6 @@ class Hook_profiles_tabs_about
             'AVATAR_WIDTH' => strval($a) . 'px',
             'PHOTO_WIDTH' => strval($b) . 'px',
             'PHOTO_URL' => isset($member_info['photo']) ? $member_info['photo'] : '',
-            'PHOTO_THUMB_URL' => isset($member_info['photo_thumb']) ? $member_info['photo_thumb'] : '',
             'AVATAR_URL' => isset($member_info['avatar']) ? $member_info['avatar'] : '',
             'CUSTOM_FIELDS_SECTIONS' => $custom_fields_sections,
             'CUSTOM_FIELDS' => $custom_fields,

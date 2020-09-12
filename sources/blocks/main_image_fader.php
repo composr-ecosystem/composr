@@ -112,7 +112,6 @@ PHP;
         }
 
         $images = [];
-        $images_full = [];
         $titles = [];
         $html = [];
 
@@ -152,17 +151,15 @@ PHP;
         $all_rows = array_merge($all_rows, $rows);
 
         foreach ($all_rows as $row) {
-            $url = $row['thumb_url'];
-            if (url_is_local($url)) {
-                $url = get_custom_base_url() . '/' . $url;
+            if ($row['content_type'] == 'video') {
+                $image_url = $row['thumb_url'];
+            } else {
+                $image_url = $row['url'];
             }
-            $images[] = $url;
-
-            $full_url = $row['url'];
-            if (url_is_local($full_url)) {
-                $full_url = get_custom_base_url() . '/' . $full_url;
+            if (url_is_local($image_url)) {
+                $image_url = get_custom_base_url() . '/' . $image_url;
             }
-            $images_full[] = $full_url;
+            $images[] = $image_url;
 
             $titles[] = get_translated_text($row['title']);
             $just_media_row = db_map_restrict($row, ['id', 'the_description']);
@@ -196,13 +193,9 @@ PHP;
             'BLOCK_ID' => $block_id,
             'GALLERY_URL' => $gallery_url,
             'PREVIOUS_URL' => $images[count($images) - 1],
-            'PREVIOUS_URL_FULL' => $images[count($images_full) - 1],
             'FIRST_URL' => $images[0],
-            'FIRST_URL_FULL' => $images_full[0],
             'NEXT_URL' => isset($images[1]) ? $images[1] : '',
-            'NEXT_URL_FULL' => isset($images_full[1]) ? $images_full[1] : '',
             'IMAGES' => $images,
-            'IMAGES_FULL' => $images_full,
             'TITLES' => $titles,
             'HTML' => $html,
             'MILL' => strval($mill),

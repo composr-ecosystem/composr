@@ -146,14 +146,13 @@ PHP;
 
         $images = [];
         foreach ($all_rows as $i => $row) {
-            $url = $row['thumb_url'];
-            if (url_is_local($url)) {
-                $url = get_custom_base_url() . '/' . $url;
+            if ($row['content_type'] == 'video') {
+                $image_url = $row['thumb_url'];
+            } else {
+                $image_url = $row['url'];
             }
-
-            $full_url = $row['url'];
-            if (url_is_local($full_url)) {
-                $full_url = get_custom_base_url() . '/' . $full_url;
+            if (url_is_local($image_url)) {
+                $image_url = get_custom_base_url() . '/' . $image_url;
             }
 
             $view_url = build_url(['page' => 'galleries', 'type' => $row['content_type'], 'id' => $row['id']], $zone);
@@ -164,8 +163,7 @@ PHP;
             $description = get_translated_tempcode($row['content_type'] . 's', $just_media_row, 'the_description');
 
             $images[] = [
-                'URL' => $url,
-                'FULL_URL' => $full_url,
+                'IMAGE_URL' => $image_url,
                 'VIEW_URL' => $view_url,
                 'TITLE' => $title,
                 'DESCRIPTION' => $description,

@@ -365,7 +365,6 @@ class Hook_import_vb3
                 // These are done in the members-files stage
                 $avatar_url = '';
                 $photo_url = '';
-                $photo_thumb_url = '';
 
                 $password = $row['password'];
                 $type = 'vb3';
@@ -391,7 +390,6 @@ class Hook_import_vb3
                     '', // theme
                     $title, // title
                     $photo_url, // photo_url
-                    $photo_thumb_url, // photo_thumb_url
                     $avatar_url, // avatar_url
                     $signature, // signature
                     $preview_posts, // preview_posts
@@ -470,14 +468,13 @@ class Hook_import_vb3
                 $member_id = import_id_remap_get('member', strval($row['userid']));
 
                 $photo_url = '';
-                $photo_thumb_url = '';
                 if ($row['profilepicdata'] !== null) {
-                    list($photo_url, $photo_thumb_url) = $this->data_to_disk($row['profilepicdata'], $row['p_filename'], 'cns_photos');
+                    list($photo_url) = $this->data_to_disk($row['profilepicdata'], $row['p_filename'], 'cns_photos');
                 }
 
                 $avatar_url = '';
                 if ($row['avatardata'] !== null) {
-                    list($avatar_url) = $this->data_to_disk($row['avatardata'], $row['a_filename'], 'cns_avatars', false);
+                    list($avatar_url) = $this->data_to_disk($row['avatardata'], $row['a_filename'], 'cns_avatars');
                 } else {
                     if (!empty($row['avatarid'])) {
                         $avatar_rows = $db->query_select('avatar', ['*'], ['avatarid' => $row['avatarid']]);
@@ -494,7 +491,7 @@ class Hook_import_vb3
                     }
                 }
 
-                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_avatar_url' => $avatar_url, 'm_photo_url' => $photo_url, 'm_photo_thumb_url' => $photo_thumb_url], ['id' => $member_id], '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_avatar_url' => $avatar_url, 'm_photo_url' => $photo_url], ['id' => $member_id], '', 1);
 
                 import_id_remap_put('member_files', strval($row['userid']), 1);
             }
@@ -924,7 +921,7 @@ class Hook_import_vb3
                 $post = get_translated_text($post_row[0]['p_post']);
                 $member_id = $post_row[0]['p_poster'];
 
-                list($url, $thumb_url) = $this->data_to_disk($row['filedata'], $row['filename'], 'attachments', false, $row['thumbnail'], true);
+                list($url, $thumb_url) = $this->data_to_disk($row['filedata'], $row['filename'], 'attachments', $row['thumbnail'], true);
                 $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', ['a_member_id' => $member_id, 'a_file_size' => $row['filesize'], 'a_url' => $url, 'a_thumb_url' => $thumb_url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['counter'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['dateline'], 'a_description' => ''], true);
 
                 $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id]);
@@ -948,12 +945,11 @@ class Hook_import_vb3
      * @param  string $data The file data
      * @param  string $filename The optimal filename
      * @param  ID_TEXT $sections The upload type (e.g. cns_photos)
-     * @param  boolean $generate_thumbnail Whether to create a thumbnail for it
      * @param  string $thumbnail_data Thumbnail data (blank: no thumbnail / generate one if asked)
      * @param  boolean $obfuscate Whether to obfuscate the file type
      * @return array A tuple containing the URL, and if requested, the thumbnail
      */
-    public function data_to_disk($data, $filename, $sections, $generate_thumbnail = true, $thumbnail_data = '', $obfuscate = false)
+    public function data_to_disk($data, $filename, $sections, $thumbnail_data = '', $obfuscate = false)
     {
         if ($filename == '') {
             $filetype = '';
@@ -978,15 +974,7 @@ class Hook_import_vb3
 
             // Save thumbnail
             if ($thumbnail_data == '') {
-                // Create from main file
-                if ($generate_thumbnail) {
-                    list($thumb_path) = find_unique_path('uploads/' . $sections . '_thumbs', $filename);
-                    require_code('images');
-                    $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), false, null, true);
-                    return [$url, $thumb_url];
-                } else {
-                    return [$url, ''];
-                }
+                return [$url, ''];
             } else {
                 // Given directly, so save
                 list($path, $thumb_url) = find_unique_path('uploads/' . $sections . '_thumbs', $filename);

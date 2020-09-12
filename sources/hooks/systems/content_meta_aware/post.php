@@ -70,8 +70,8 @@ class Hook_content_meta_aware_post extends Hook_CMA
             'description_field' => 'p_post',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => null,
-            'thumb_field_is_theme_image' => false,
+            'image_field' => null,
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/social/forum/forums',
 
             'view_page_link_pattern' => '_SEARCH:topicview:findpost:_WILD',

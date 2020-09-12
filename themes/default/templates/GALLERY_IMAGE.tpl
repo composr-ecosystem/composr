@@ -7,7 +7,7 @@
 			{+END}
 		{+END}
 
-		<a href="{VIEW_URL*}">{$TRIM,{THUMB}}</a>
+		<a href="{VIEW_URL*}"><img class="img-thumb" alt="{$STRIP_TAGS*,{TITLE}}" src="{$THUMBNAIL*,{IMAGE_URL}}" /></a>
 	</div>
 
 	{+START,IF_PASSED,RATING_DETAILS}

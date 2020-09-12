@@ -318,7 +318,6 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
 
         $description = $this->_default_property_str($properties, 'description');
         $url = $this->_default_property_urlpath($properties, 'url');
-        $thumb_url = $this->_default_property_urlpath($properties, 'thumb_url');
         $validated = $this->_default_property_int_null($properties, 'validated');
         if ($validated === null) {
             $validated = 1;
@@ -343,13 +342,15 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
                 return false;
             }
 
-            $id = add_image($label, $category, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter, $add_date, $edit_date, $views, null, $meta_keywords, $meta_description, $regions);
+            $id = add_image($label, $category, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter, $add_date, $edit_date, $views, null, $meta_keywords, $meta_description, $regions);
 
             $this->_resource_save_extend('image', strval($id), $filename, $label, $properties);
         } else {
             $allow_rating = $this->_default_property_int_modeavg($properties, 'allow_rating', 'videos', 1);
             $allow_comments = $this->_default_property_int_modeavg($properties, 'allow_comments', 'videos', 1);
             $allow_trackbacks = $this->_default_property_int_modeavg($properties, 'allow_trackbacks', 'videos', 1);
+
+            $thumb_url = $this->_default_property_urlpath($properties, 'thumb_url');
 
             $accept_videos = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_videos', ['name' => $category]);
             if ($accept_videos === 0) {
@@ -398,7 +399,6 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
             'label' => get_translated_text($row['title']),
             'description' => get_translated_text($row['the_description']),
             'url' => remap_urlpath_as_portable($row['url']),
-            'thumb_url' => remap_urlpath_as_portable($row['thumb_url']),
             'validated' => $row['validated'],
             'allow_rating' => $row['allow_rating'],
             'allow_comments' => $row['allow_comments'],
@@ -420,6 +420,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
                 'video_width' => $row['video_width'],
                 'video_height' => $row['video_height'],
                 'closed_captions_url' => remap_urlpath_as_portable($row['closed_captions_url']),
+                'thumb_url' => remap_urlpath_as_portable($row['thumb_url']),
             ];
         } else {
             $properties += [
@@ -455,7 +456,6 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         $label = $this->_default_property_str($properties, 'label');
         $description = $this->_default_property_str($properties, 'description');
         $url = $this->_default_property_urlpath($properties, 'url', true);
-        $thumb_url = $this->_default_property_urlpath($properties, 'thumb_url', true);
         $validated = $this->_default_property_int_null($properties, 'validated');
         if ($validated === null) {
             $validated = 1;
@@ -479,7 +479,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
                 return false;
             }
 
-            edit_image(intval($resource_id), $label, $category, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $meta_keywords, $meta_description, $edit_time, $add_time, $views, $submitter, $regions, true);
+            edit_image(intval($resource_id), $label, $category, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $meta_keywords, $meta_description, $edit_time, $add_time, $views, $submitter, $regions, true);
 
             $this->_resource_save_extend('image', $resource_id, $filename, $label, $properties);
         } else {
@@ -492,6 +492,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
                 return false;
             }
 
+            $thumb_url = $this->_default_property_urlpath($properties, 'thumb_url', true);
             $video_length = $this->_default_property_int($properties, 'video_length');
             $video_width = $this->_default_property_int_null($properties, 'video_width');
             if ($video_width === null) {

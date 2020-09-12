@@ -1,7 +1,7 @@
 <div class="gallery-box">
-	{+START,IF_NON_EMPTY,{THUMB}}
+	{+START,IF_NON_EMPTY,{REP_IMAGE_URL}}
 		<div class="gallery-box-thumb">
-			<a href="{URL*}">{$TRIM,{THUMB}}</a>
+			<a href="{URL*}"><img class="img-thumb" alt="{TITLE*}" src="{$THUMBNAIL*,{REP_IMAGE_URL}}" /></a>
 		</div>
 	{+END}
 

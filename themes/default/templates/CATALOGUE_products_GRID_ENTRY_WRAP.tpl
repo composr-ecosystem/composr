@@ -1,9 +1,9 @@
 <section class="box box---catalogue-products-grid-entry-wrap"><div class="box-inner">
 	<h3><span class="name">{FIELD_0}</span></h3>
 
-	{+START,IF_NON_EMPTY,{FIELD_7_THUMB}}
+	{+START,IF_NON_EMPTY,{FIELD_7}}
 		<div class="catalogue-entry-box-thumbnail">
-			<a href="{VIEW_URL*}">{FIELD_7_THUMB}</a>
+			<a href="{VIEW_URL*}"><img class="img-thumb" alt="{$STRIP_TAGS,{FIELD_0}}" src="{$THUMBNAIL*,{FIELD_7_PLAIN}}" /></a>
 		</div>
 	{+END}
 

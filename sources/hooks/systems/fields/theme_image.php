@@ -152,7 +152,7 @@ class Hook_fields_theme_image
             'I' => ($only_fields === null) ? '-1' : strval($i),
             'CATALOGUE' => $field['c_name'],
             'URL' => $img_url,
-            'THUMB_URL' => $img_url,
+            'IMAGE_URL' => $img_url,
             'WIDTH' => $width,
             'HEIGHT' => $height,
         ], null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE');

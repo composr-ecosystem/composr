@@ -15,7 +15,7 @@
 	{+END}
 
 	<div>
-		<a href="{URL*}">{THUMB}</a>
+		<a href="{URL*}"><img class="img-thumb" alt="{TITLE*}" src="{$THUMBNAIL*,{IMAGE_URL}}" /></a>
 	</div>
 
 	{+START,IF_NON_EMPTY,{BREADCRUMBS}}

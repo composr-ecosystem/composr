@@ -1437,7 +1437,7 @@ class Hook_import_cms_merge
             $regions = collapse_1d_complexity('region', $db->query_select('content_regions', ['region'], ['content_type' => 'image', 'content_id' => strval($row['id'])]));
 
             $title = $this->get_lang_string($db, $row['title']);
-            $id_new = add_image($title, $row['cat'], $this->get_lang_string($db, $row['the_description']), $row['url'], $row['thumb_url'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $submitter, $row['add_date'], $row['edit_date'], $row['image_views'], $id, '', '', $regions);
+            $id_new = add_image($title, $row['cat'], $this->get_lang_string($db, $row['the_description']), $row['url'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $submitter, $row['add_date'], $row['edit_date'], $row['image_views'], $id, '', '', $regions);
 
             $this->_import_content_privacy($db, 'image', strval($row['id']), strval($id_new));
 
@@ -2922,7 +2922,6 @@ class Hook_import_cms_merge
                         $row['m_theme'], // theme
                         $row['m_title'], // title
                         $row['m_photo_url'], // photo_url
-                        $row['m_photo_thumb_url'], // photo_thumb_url
                         $row['m_avatar_url'], // avatar_url
                         $this->get_lang_string($db, $row['m_signature']), // signature
                         $row['m_preview_posts'], // preview_posts

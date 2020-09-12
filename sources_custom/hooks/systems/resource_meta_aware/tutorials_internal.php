@@ -57,8 +57,8 @@ class Hook_resource_meta_aware_tutorials_internal
             'description_field' => 'CALL: generate_tutorials_entry_description',
             'description_field_dereference' => false,
             'description_field_supports_comcode' => false,
-            'thumb_field' => 'CALL: generate_tutorials_entry_thumb_url',
-            'thumb_field_is_theme_image' => true,
+            'image_field' => 'CALL: generate_tutorials_entry_image_url',
+            'image_field_is_theme_image' => true,
             'alternate_icon_theme_image' => 'icons/help',
 
             'view_page_link_pattern' => '_SEARCH:tutorials:view:_SEARCH',
@@ -165,13 +165,12 @@ function generate_tutorials_entry_description($row, $render_type = 1, $resource_
 }
 
 /**
- * Find an entry thumbnail.
+ * Find an entry image.
  *
  * @param  array $row Database row of entry
- * @param  boolean $prefer_large_image Whether we prefer a larger image
- * @return string The thumbnail URL (blank: none)
+ * @return string The image URL (blank: none)
  */
-function generate_tutorials_entry_thumb_url($row, $prefer_large_image = false)
+function generate_tutorials_entry_image_url($row)
 {
     require_code('tutorials');
     $data = get_tutorial_metadata($row['t_page_name']);

@@ -1,7 +1,6 @@
 /caches/*
 /data/ace/*
 /data/ckeditor/*
-/data_custom/upload-crop/*
 /data/polyfills/*
 /docs/composr-api-template/*
 /exports/*

@@ -64,8 +64,8 @@ class Hook_content_meta_aware_quiz extends Hook_CMA
             'description_field' => 'q_start_text',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => null,
-            'thumb_field_is_theme_image' => false,
+            'image_field' => null,
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/rich_content/quiz',
 
             'view_page_link_pattern' => '_SEARCH:quiz:do:_WILD',

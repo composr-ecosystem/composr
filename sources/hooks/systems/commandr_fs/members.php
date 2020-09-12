@@ -35,7 +35,6 @@ class Hook_commandr_fs_members
         'theme' => 'm_theme',
         'title' => 'm_title',
         'photo' => 'm_photo_url',
-        'photo_thumb' => 'm_photo_thumb_url',
         'avatar' => 'm_avatar_url',
         'signature' => 'm_signature',
         'preview_posts' => 'm_preview_posts',
@@ -216,7 +215,6 @@ class Hook_commandr_fs_members
                 '', // theme
                 '', // title
                 '', // photo_url
-                '', // photo_thumb_url
                 null, // avatar_url
                 '', // signature
                 null, // preview_posts

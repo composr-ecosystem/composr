@@ -184,64 +184,62 @@ function _handle_data_url_attachments(&$comcode, $type, $id, $db)
         return; // The whole thing is probably [html]. Probably came from WYSIWYG. We can't do the "data:" conversion during semihtml_to_comcode as that doesn't know $type and $id. And would be a bad idea to re-parse [html] context here.
     }
 
-    if (function_exists('imagepng')) {
-        $matches = [];
-        $matches2 = [];
-        $num_matches = preg_match_all('#<img[^<>]*src="data:image/\w+;base64,([^"]*)"[^<>]*>#', $comcode, $matches);
-        $num_matches2 = preg_match_all('#\[img[^\[\]]*\]data:image/\w+;base64,([^"]*)\[/img\]#', $comcode, $matches2);
-        for ($i = 0; $i < $num_matches2; $i++) {
-            $matches[0][$num_matches] = $matches2[0][$i];
-            $matches[1][$num_matches] = $matches2[1][$i];
-            $num_matches++;
-        }
-        for ($i = 0; $i < $num_matches; $i++) {
-            if (strpos($comcode, $matches[0][$i]) !== false) { // Check still here (if we have same image in multiple places, may have already been attachment-ified)
-                $data = @base64_decode($matches[1][$i]);
-                if (($data !== false) && (function_exists('imagepng'))) {
-                    require_code('images');
-                    $image = cms_imagecreatefromstring($data, null);
-                    if ($image !== false) {
-                        require_code('urls2');
-                        list($new_path, $new_url, $new_filename) = find_unique_path('uploads/attachments', null, true);
-                        cms_imagesave($image, $new_path) or intelligent_write_error($new_path);
-                        imagedestroy($image);
+    $matches = [];
+    $matches2 = [];
+    $num_matches = preg_match_all('#<img[^<>]*src="data:image/\w+;base64,([^"]*)"[^<>]*>#', $comcode, $matches);
+    $num_matches2 = preg_match_all('#\[img[^\[\]]*\]data:image/\w+;base64,([^"]*)\[/img\]#', $comcode, $matches2);
+    for ($i = 0; $i < $num_matches2; $i++) {
+        $matches[0][$num_matches] = $matches2[0][$i];
+        $matches[1][$num_matches] = $matches2[1][$i];
+        $num_matches++;
+    }
+    for ($i = 0; $i < $num_matches; $i++) {
+        if (strpos($comcode, $matches[0][$i]) !== false) { // Check still here (if we have same image in multiple places, may have already been attachment-ified)
+            $data = @base64_decode($matches[1][$i]);
+            if ($data !== false) {
+                require_code('images');
+                $image = cms_imagecreatefromstring($data, null);
+                if ($image !== false) {
+                    require_code('urls2');
+                    list($new_path, $new_url, $new_filename) = find_unique_path('uploads/attachments', null, true);
+                    cms_imagesave($image, $new_path) or intelligent_write_error($new_path);
+                    imagedestroy($image);
 
-                        fix_permissions($new_path);
+                    fix_permissions($new_path);
+                    sync_file($new_path);
+
+                    require_code('uploads');
+                    $test = handle_upload_post_processing(CMS_UPLOAD_IMAGE, $new_path, 'uploads/attachments', $new_filename, 0);
+                    if ($test !== null) {
+                        unlink($new_path);
                         sync_file($new_path);
 
-                        require_code('uploads');
-                        $test = handle_upload_post_processing(CMS_UPLOAD_IMAGE, $new_path, 'uploads/attachments', $new_filename, 0);
-                        if ($test !== null) {
-                            unlink($new_path);
-                            sync_file($new_path);
-
-                            $new_url = $test;
-                        }
-
-                        $member = get_member();
-
-                        global $OVERRIDE_MEMBER_ID_COMCODE;
-                        if ($OVERRIDE_MEMBER_ID_COMCODE !== null) {
-                            $member = $OVERRIDE_MEMBER_ID_COMCODE;
-                            $insert_as_admin = false;
-                        }
-
-                        $db = $GLOBALS[((substr($type, 0, 4) == 'cns_') && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
-                        $attachment_id = $db->query_insert('attachments', [
-                            'a_member_id' => $member,
-                            'a_file_size' => strlen($data),
-                            'a_url' => $new_url,
-                            'a_thumb_url' => '',
-                            'a_original_filename' => basename($new_filename),
-                            'a_num_downloads' => 0,
-                            'a_last_downloaded_time' => time(),
-                            'a_description' => '',
-                            'a_add_time' => time(),
-                        ], true);
-                        $db->query_insert('attachment_refs', ['r_referer_type' => $type, 'r_referer_id' => $id, 'a_id' => $attachment_id]);
-
-                        $comcode = str_replace($matches[0][$i], '[attachment framed="0" thumb="0"]' . strval($attachment_id) . '[/attachment]', $comcode);
+                        $new_url = $test;
                     }
+
+                    $member = get_member();
+
+                    global $OVERRIDE_MEMBER_ID_COMCODE;
+                    if ($OVERRIDE_MEMBER_ID_COMCODE !== null) {
+                        $member = $OVERRIDE_MEMBER_ID_COMCODE;
+                        $insert_as_admin = false;
+                    }
+
+                    $db = $GLOBALS[((substr($type, 0, 4) == 'cns_') && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
+                    $attachment_id = $db->query_insert('attachments', [
+                        'a_member_id' => $member,
+                        'a_file_size' => strlen($data),
+                        'a_url' => $new_url,
+                        'a_thumb_url' => '',
+                        'a_original_filename' => basename($new_filename),
+                        'a_num_downloads' => 0,
+                        'a_last_downloaded_time' => time(),
+                        'a_description' => '',
+                        'a_add_time' => time(),
+                    ], true);
+                    $db->query_insert('attachment_refs', ['r_referer_type' => $type, 'r_referer_id' => $id, 'a_id' => $attachment_id]);
+
+                    $comcode = str_replace($matches[0][$i], '[attachment framed="0" thumb="0"]' . strval($attachment_id) . '[/attachment]', $comcode);
                 }
             }
         }

@@ -90,7 +90,6 @@ function member_field_is_required($member_id, $field_class, $current_value = nul
  * @param  ID_TEXT $theme The member's default theme (blank: default)
  * @param  SHORT_TEXT $title The member's title (blank: get from primary)
  * @param  URLPATH $photo_url The URL to the member's photo (blank: none)
- * @param  URLPATH $photo_thumb_url The URL to the member's photo thumbnail (blank: none)
  * @param  ?URLPATH $avatar_url The URL to the member's avatar (blank: none) (null: choose one automatically)
  * @param  LONG_TEXT $signature The member's signature (blank: none)
  * @param  ?BINARY $preview_posts Whether posts are previewed before they are made (null: global configured default)
@@ -122,7 +121,7 @@ function member_field_is_required($member_id, $field_class, $current_value = nul
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @return AUTO_LINK The ID of the new member
  */
-function cns_make_member($username, $password, $email_address = '', $primary_group = null, $secondary_groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = [], $timezone = null, $language = null, $theme = '', $title = '', $photo_url = '', $photo_thumb_url = '', $avatar_url = null, $signature = '', $preview_posts = null, $reveal_age = 0, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $validated_email_confirm_code = '', $on_probation_until = null, $is_perm_banned = '0', $check_correctness = true, $ip_address = null, $password_compatibility_scheme = null, $salt = '', $join_time = null, $last_visit_time = null, $last_submit_time = null, $profile_views = 0, $total_sessions = 0, $id = null)
+function cns_make_member($username, $password, $email_address = '', $primary_group = null, $secondary_groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = [], $timezone = null, $language = null, $theme = '', $title = '', $photo_url = '', $avatar_url = null, $signature = '', $preview_posts = null, $reveal_age = 0, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $validated_email_confirm_code = '', $on_probation_until = null, $is_perm_banned = '0', $check_correctness = true, $ip_address = null, $password_compatibility_scheme = null, $salt = '', $join_time = null, $last_visit_time = null, $last_submit_time = null, $profile_views = 0, $total_sessions = 0, $id = null)
 {
     require_code('form_templates');
     require_code('cns_members');
@@ -288,7 +287,6 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
         'm_theme' => $theme,
         'm_title' => $title,
         'm_photo_url' => $photo_url,
-        'm_photo_thumb_url' => $photo_thumb_url,
         'm_avatar_url' => $avatar_url,
         'm_preview_posts' => $preview_posts,
         'm_reveal_age' => $reveal_age,

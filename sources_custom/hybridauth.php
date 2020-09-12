@@ -347,7 +347,7 @@ function hybridauth_create_authenticated_account($provider, $id, $email_address,
     if (!empty($_custom_fields)) { // Was not auto-generated, so needs to be checked
         cns_check_name_valid($username);
     }
-    $member_id = cns_member_external_linker($provider, $username, $id, false, $email_address, $dob_day, $dob_month, $dob_year, null, $language, $photo_url, $photo_url, '');
+    $member_id = cns_member_external_linker($provider, $username, $id, false, $email_address, $dob_day, $dob_month, $dob_year, null, $language, $photo_url, '');
 
     return $member_id;
 }
@@ -384,7 +384,6 @@ function hybridauth_update_authenticated_account($provider, $id, $member_row, $e
             $test = $member_row['m_photo_url'];
             if (($test == '') || (!url_is_local($test)) || (substr($test, 0, strlen(get_custom_base_url()) + 1) != get_custom_base_url() . '/')) {
                 $update_map['m_photo_url'] = $photo_url;
-                $update_map['m_photo_thumb_url'] = '';
             }
         }
     }

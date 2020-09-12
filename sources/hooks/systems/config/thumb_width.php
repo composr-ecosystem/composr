@@ -55,21 +55,4 @@ class Hook_config_thumb_width
     {
         return '500';
     }
-
-    /**
-     * Code to run before the option is saved.
-     * If there is some kind of problem with the new value then we could attach an error message.
-     *
-     * @param  string $new_value The new value
-     * @param  string $old_value The old value
-     * @return boolean Whether to allow the save
-     */
-    public function presave_handler($new_value, $old_value)
-    {
-        if (function_exists('imagetypes')) {
-            erase_thumb_cache();
-        }
-
-        return true;
-    }
 }

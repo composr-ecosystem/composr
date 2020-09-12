@@ -26,7 +26,6 @@ class addon_dependency_naming_test_set extends cms_test_case
             //'CNS', We want people to write conversr
             'Conversr',
             'SSL',
-            'PHP gd extension',
             'PHP curl extension',
             'PHP simplexml extension',
             'PHP openssl extension',

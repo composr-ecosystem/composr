@@ -137,7 +137,7 @@ If you want to make any media links within the newsletter point to the content r
 [code="Comcode"]
 [title="3"]{NAME@}[/title]
 
-[surround]{+START,IF_PASSED,THUMBNAIL}[img float="right"]{$THUMBNAIL,{THUMBNAIL},170,,,,,,,1}[/img]{+END}{+START,IF_PASSED,DESCRIPTION}{+START,IF_NON_EMPTY,{DESCRIPTION}}\{$SET,comcode__current_linking_context,{URL}\}{DESCRIPTION}\{$SET,comcode__current_linking_context,\}
+[surround]{+START,IF_PASSED,IMAGE_URL}[img float="right"]{$THUMBNAIL,{IMAGE_URL},170,,,,,,,1}[/img]{+END}{+START,IF_PASSED,DESCRIPTION}{+START,IF_NON_EMPTY,{DESCRIPTION}}\{$SET,comcode__current_linking_context,{URL}\}{DESCRIPTION}\{$SET,comcode__current_linking_context,\}
 
 {+END}{+END}[url="{!VIEW#}"]{URL@}[/url][/surround]
 [/code]

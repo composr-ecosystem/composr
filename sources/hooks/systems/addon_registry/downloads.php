@@ -294,12 +294,10 @@ class Hook_addon_registry_downloads
                 'URL' => placeholder_url(),
                 'NAME' => lorem_phrase(),
                 'BREADCRUMBS' => placeholder_breadcrumbs(),
-                'IMGCODE' => '',
                 'GIVE_CONTEXT' => false,
                 'MAY_DOWNLOAD' => true,
                 'DOWNLOAD_URL' => placeholder_url(),
-                'IMG_URL' => placeholder_image_url(),
-                'FULL_IMG_URL' => placeholder_image_url(),
+                'REP_IMAGE_URL' => placeholder_image_url(),
                 'LICENCE_TITLE' => lorem_phrase(),
                 'LICENCE_HYPERLINK' => placeholder_link(),
             ]), null, '', true)
@@ -362,7 +360,7 @@ class Hook_addon_registry_downloads
                 'URL' => placeholder_url(),
                 'NAME' => lorem_phrase(),
                 'BREADCRUMBS' => placeholder_breadcrumbs(),
-                'IMGCODE' => '',
+                'REP_IMAGE_URL' => placeholder_image_url(),
                 'GIVE_CONTEXT' => false,
                 'MAY_DOWNLOAD' => true,
                 'DOWNLOAD_URL' => placeholder_url(),
@@ -402,9 +400,9 @@ class Hook_addon_registry_downloads
             foreach (placeholder_array() as $row) {
                 $image = do_lorem_template('DOWNLOAD_SCREEN_IMAGE', [
                     'ID' => placeholder_id(),
-                    'VIEW_URL' => placeholder_url(),
+                    'TITLE' => lorem_phrase(),
                     'EDIT_URL' => placeholder_url(),
-                    'THUMB' => placeholder_image(),
+                    'IMAGE_URL' => placeholder_image_url(),
                     'DESCRIPTION' => lorem_phrase(),
                 ]);
 
@@ -437,7 +435,7 @@ class Hook_addon_registry_downloads
                 'OUTMODE_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
                 'EDIT_URL' => placeholder_url(),
-                'ADD_IMG_URL' => placeholder_url(),
+                'ADD_IMAGE_URL' => placeholder_url(),
                 'DESCRIPTION' => lorem_paragraph_html(),
                 'ADDITIONAL_DETAILS' => lorem_sentence_html(),
                 'IMAGES_DETAILS' => $images_details,
@@ -519,7 +517,7 @@ class Hook_addon_registry_downloads
 
         if (addon_installed('galleries')) {
             require_code('galleries2');
-            add_image(lorem_phrase(), 'download_' . strval($download_id), lorem_sentence(), placeholder_image_url(), '', 1, 1, 1, 1, '', null, null, null, 0, null, lorem_word() . ',' . lorem_phrase());
+            add_image(lorem_phrase(), 'download_' . strval($download_id), lorem_sentence(), placeholder_image_url(), 1, 1, 1, 1, '', null, null, null, 0, null, lorem_word() . ',' . lorem_phrase());
         }
 
         if (addon_installed('awards')) {

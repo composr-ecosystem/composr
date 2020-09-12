@@ -5,7 +5,7 @@
 		<div class="buildr-avatar">
 			<img alt="{!AVATAR}" src="{AVATAR*}" />
 			{+START,IF_NON_EMPTY,{PHOTO}}
-				[<a title="{!W_PHOTO} {!LINK_NEW_WINDOW}" target="_blank" href="{PHOTO*}">{!W_PHOTO}</a>]
+				[<a title="{!W_PHOTO} {!LINK_NEW_WINDOW}" target="_blank" href="{$THUMBNAIL*,{PHOTO}}">{!W_PHOTO}</a>]
 			{+END}
 		</div>
 	{+END}

@@ -217,7 +217,6 @@ class Hook_profiles_tabs_edit_settings
                 $theme, // theme
                 null, // title
                 null, // photo_url
-                null, // photo_thumb_url
                 null, // avatar_url
                 null, // signature
                 $preview_posts, // preview_posts

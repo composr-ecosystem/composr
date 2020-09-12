@@ -25,15 +25,15 @@
 		<h3>{+START,IF_NON_EMPTY,{FULL_URL}}<a class="subtle-link" href="{FULL_URL*}">{+END}{$TRIM,{$GET,content_box_title}}{+START,IF_NON_EMPTY,{FULL_URL}}</a>{+END}</h3>
 	{+END}
 
-	{+START,IF,{$AND,{$NOT,{BLOG}},{$IS_NON_EMPTY,IMG}}}{+START,IF,{$DESKTOP}}
+	{+START,IF,{$AND,{$NOT,{BLOG}},{$IS_NON_EMPTY,{REP_IMAGE_URL}}}}{+START,IF,{$DESKTOP}}
 		<div class="newscat-img newscat-img-author block-desktop">
 			{+START,IF_NON_EMPTY,{CATEGORY}}
-				<a href="{FULL_URL*}"><img width="100" height="100" src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG}}" alt="" /></a>
+				<a href="{FULL_URL*}"><img width="100" height="100" src="{$THUMBNAIL*,{REP_IMAGE_URL},100x100}" alt="" /></a>
 			{+END}
 		</div>
 	{+END}{+END}
 
-	{+START,IF,{$NAND,{$NOT,{BLOG}},{$IS_NON_EMPTY,{IMG}}}}{+START,IF,{$DESKTOP}}
+	{+START,IF,{$NAND,{$NOT,{BLOG}},{$IS_NON_EMPTY,{REP_IMAGE_URL}}}}{+START,IF,{$DESKTOP}}
 		<div class="newscat-img newscat-img-member block-desktop">
 			{+START,IF_NON_EMPTY,{$AVATAR,{SUBMITTER}}}
 				<a href="{FULL_URL*}"><img src="{$ENSURE_PROTOCOL_SUITABILITY*,{$AVATAR,{SUBMITTER}}}" title="{!AVATAR}" alt="{!AVATAR}" /></a>

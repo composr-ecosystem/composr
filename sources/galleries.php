@@ -90,8 +90,6 @@ function render_image_box($row, $zone = '_SEARCH', $give_context = true, $includ
     $description = get_translated_tempcode('images', $just_image_row, 'the_description');
 
     // Images
-    $thumb_url = ensure_thumbnail($row['url'], $row['thumb_url'], 'galleries', 'images', $row['id']);
-    $thumb = do_image_thumb($thumb_url, $description, true);
     $image_url = $row['url'];
     if (url_is_local($image_url)) {
         $image_url = get_custom_base_url() . '/' . $image_url;
@@ -112,8 +110,6 @@ function render_image_box($row, $zone = '_SEARCH', $give_context = true, $includ
         'URL' => $url,
         'IMAGE_URL' => $image_url,
         'DESCRIPTION' => $description,
-        'THUMB' => $thumb,
-        'THUMB_URL' => $thumb_url,
     ]);
 }
 
@@ -165,8 +161,10 @@ function render_video_box($row, $zone = '_SEARCH', $give_context = true, $includ
     $description = get_translated_tempcode('videos', $just_video_row, 'the_description');
 
     // Images
-    $thumb_url = ensure_thumbnail($row['url'], $row['thumb_url'], 'galleries', 'videos', $row['id']);
-    $thumb = do_image_thumb($thumb_url, $description, true);
+    $thumb_url = $row['thumb_url'];
+    if (url_is_local($thumb_url)) {
+        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+    }
     $video_url = $row['url'];
     if (url_is_local($video_url)) {
         $video_url = get_custom_base_url() . '/' . $video_url;
@@ -187,7 +185,6 @@ function render_video_box($row, $zone = '_SEARCH', $give_context = true, $includ
         'URL' => $url,
         'VIDEO_URL' => $video_url,
         'DESCRIPTION' => $description,
-        'THUMB' => $thumb,
         'THUMB_URL' => $thumb_url,
         'VIDEO_WIDTH' => strval($row['video_width']),
         'VIDEO_HEIGHT' => strval($row['video_height']),
@@ -279,34 +276,31 @@ function render_gallery_box($myrow, $root = 'root', $show_member_stats_if_approp
     }
 
     // Image
-    $pic = $myrow['rep_image'];
-    if (($pic == '') && ($is_member)) {
-        $pic = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);
+    $rep_image_url = $myrow['rep_image'];
+    if (($rep_image_url == '') && ($is_member)) {
+        $rep_image_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);
     }
     $thumb_order = 'ORDER BY add_date ASC,id ASC';
     if (get_option('reverse_thumb_order') == '1') {
         $thumb_order = 'ORDER BY add_date DESC,id DESC';
     }
 
-    if ($pic == '') {
+    if ($rep_image_url == '') {
         require_code('images');
-        $temp = $GLOBALS['SITE_DB']->query_select('images', ['id', 'url', 'thumb_url'], ['cat' => $myrow['name'], 'validated' => 1], $thumb_order, 1);
+        $temp = $GLOBALS['SITE_DB']->query_select('images', ['id', 'url'], ['cat' => $myrow['name'], 'validated' => 1], $thumb_order, 1);
         if (isset($temp[0])) {
-            $pic = ensure_thumbnail($temp[0]['url'], $temp[0]['thumb_url'], 'galleries', 'images', $temp[0]['id']);
+            $rep_image_url = $temp[0]['url'];
         }
     }
-    if ($pic == '') {
-        $pic = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => $myrow['name'], 'validated' => 1], $thumb_order);
+    if ($rep_image_url == '') {
+        $rep_image_url = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => $myrow['name'], 'validated' => 1], $thumb_order);
     }
-    if ($pic == '') {
-        $pic = find_theme_image('icons/no_image');
+    if ($rep_image_url == '') {
+        $rep_image_url = find_theme_image('icons/no_image');
     }
-    if (($pic != '') && (url_is_local($pic))) {
-        $pic = get_custom_base_url() . '/' . $pic;
+    if (($rep_image_url != '') && (url_is_local($rep_image_url))) {
+        $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
     }
-
-    require_code('images');
-    $thumb = do_image_thumb($pic, '');
 
     // Breadcrumbs
     $breadcrumbs = null;
@@ -353,8 +347,7 @@ function render_gallery_box($myrow, $root = 'root', $show_member_stats_if_approp
         'ADD_DATE_RAW' => strval($myrow['add_date']),
         'MEMBER_INFO' => $member_info,
         'URL' => $url,
-        'THUMB' => $thumb,
-        'PIC' => $pic,
+        'REP_IMAGE_URL' => $rep_image_url,
         'TITLE' => $_title,
         'DESCRIPTION' => $description,
         'BREADCRUMBS' => $breadcrumbs,
@@ -1071,9 +1064,9 @@ function get_gallery_content_tree($table, $submitter = null, $gallery = null, $b
     if ($submitter !== null) {
         $where['submitter'] = $submitter;
     }
-    $erows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'url', 'submitter', 'title', 'thumb_url', 'add_date'], $where, 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('title'), intval(get_option('general_safety_listing_limit')));
+    $erows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'url', 'submitter', 'title', 'add_date'], $where, 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('title'), intval(get_option('general_safety_listing_limit')));
     if (count($erows) == intval(get_option('general_safety_listing_limit'))) {
-        $erows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'url', 'submitter', 'title', 'thumb_url', 'add_date'], $where, 'ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $erows = $GLOBALS['SITE_DB']->query_select($table, ['id', 'url', 'submitter', 'title', 'add_date'], $where, 'ORDER BY add_date DESC', intval(get_option('general_safety_listing_limit')));
     }
     $children[0]['entries'] = [];
     $children[0]['entries_rows'] = [];

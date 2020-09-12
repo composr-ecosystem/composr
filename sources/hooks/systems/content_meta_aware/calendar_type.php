@@ -63,8 +63,8 @@ class Hook_content_meta_aware_calendar_type extends Hook_CMA
             'description_field' => null,
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => 't_logo',
-            'thumb_field_is_theme_image' => true,
+            'image_field' => 't_logo',
+            'image_field_is_theme_image' => true,
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => '_SEARCH:calendar:browse:_WILD',

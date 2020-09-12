@@ -218,7 +218,7 @@ class Hook_addon_registry_core_fields
         return [
             lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_PICTURE', [
                 'URL' => placeholder_url(),
-                'THUMB_URL' => placeholder_image_url(),
+                'IMAGE_URL' => placeholder_image_url(),
                 'I' => '0',
                 'WIDTH' => '',
                 'HEIGHT' => '',

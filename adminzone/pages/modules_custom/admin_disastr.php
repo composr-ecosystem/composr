@@ -343,7 +343,7 @@ class Module_admin_disastr extends Standard_crud_module
         $points_per_spread = post_param_integer('points_per_spread', 10);
         $enabled = post_param_integer('enabled', 0);
 
-        require_code('themes2');
+        require_code('images2');
         $url = post_param_image('image', 'uploads/disastr_addon', null, true);
 
         $id = $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => $name, 'image' => $url, 'cure' => $cure, 'cure_price' => $cure_price, 'immunisation' => $immunisation, 'immunisation_price' => $immunisation_price, 'spread_rate' => $spread_rate, 'points_per_spread' => $points_per_spread, 'last_spread_time' => 0, 'enabled' => $enabled], true);
@@ -374,7 +374,7 @@ class Module_admin_disastr extends Standard_crud_module
         $points_per_spread = post_param_integer('points_per_spread', 10);
         $enabled = post_param_integer('enabled', 0);
 
-        require_code('themes2');
+        require_code('images2');
         $url = post_param_image('image', 'uploads/disastr_addon', null, true, true);
 
         require_code('files2');

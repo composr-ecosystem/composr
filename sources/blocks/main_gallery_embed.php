@@ -178,15 +178,10 @@ PHP;
                     // Display image
                     $entry_title = get_translated_text($row['title']);
                     $view_url = build_url(['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'galleries', 'type' => 'image', 'id' => $row['id'], 'root' => $root, 'sort' => $sort], $zone);
-                    $full_url = $row['url'];
-                    $file_size = url_is_local($full_url) ? (file_exists(get_custom_file_base() . '/' . rawurldecode($full_url)) ? strval(filesize(get_custom_file_base() . '/' . rawurldecode($full_url))) : '') : '';
-                    if (url_is_local($full_url)) {
-                        $full_url = get_custom_base_url() . '/' . $full_url;
-                    }
-                    $thumb = do_image_thumb($full_url, '', false, false, 500, 500, true);
-                    $thumb_url = $row['thumb_url'];
-                    if (url_is_local($thumb_url)) {
-                        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+                    $image_url = $row['url'];
+                    $file_size = url_is_local($image_url) ? (file_exists(get_custom_file_base() . '/' . rawurldecode($image_url)) ? strval(filesize(get_custom_file_base() . '/' . rawurldecode($image_url))) : '') : '';
+                    if (url_is_local($image_url)) {
+                        $image_url = get_custom_base_url() . '/' . $image_url;
                     }
 
                     $entry_rating_details = ($row['allow_rating'] == 1) ? display_rating($view_url, get_translated_text($row['title']), 'images', strval($row['id']), 'RATING_INLINE_STATIC', $row['submitter']) : null;
@@ -208,10 +203,8 @@ PHP;
                         'MEDIA_TYPE' => 'image',
                         'FILE_SIZE' => $file_size,
                         'SUBMITTER' => strval($row['submitter']),
-                        'FULL_URL' => $full_url,
-                        'THUMB_URL' => $thumb_url,
+                        'IMAGE_URL' => $image_url,
                         'CAT' => $row['cat'],
-                        'THUMB' => $thumb,
                         'VIEW_URL' => $view_url,
                         'VIEWS' => strval($row['image_views']),
                         'ADD_DATE_RAW' => strval($row['add_date']),
@@ -232,20 +225,15 @@ PHP;
                     $entry_title = get_translated_text($row['title']);
                     $view_url = build_url(['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'galleries', 'type' => 'video', 'id' => $row['id'], 'root' => $root, 'sort' => $sort], $zone);
                     $thumb_url = $row['thumb_url'];
-                    if (($thumb_url != '') && (url_is_local($thumb_url))) {
-                        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
-                    }
                     if ($thumb_url == '') {
                         $thumb_url = find_theme_image('na');
                     }
-                    $thumb = do_image_thumb($thumb_url);
+                    if (url_is_local($thumb_url)) {
+                        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+                    }
                     $full_url = $row['url'];
                     if (url_is_local($full_url)) {
                         $full_url = get_custom_base_url() . '/' . $full_url;
-                    }
-                    $thumb_url = $row['thumb_url'];
-                    if (($thumb_url != '') && (url_is_local($thumb_url))) {
-                        $thumb_url = get_custom_base_url() . '/' . $thumb_url;
                     }
 
                     $entry_rating_details = ($row['allow_rating'] == 1) ? display_rating($view_url, get_translated_text($row['title']), 'videos', strval($row['id']), 'RATING_INLINE_STATIC', $row['submitter']) : null;
@@ -266,7 +254,6 @@ PHP;
                         'ID' => strval($row['id']),
                         'MEDIA_TYPE' => 'video',
                         'CAT' => $row['cat'],
-                        'THUMB' => $thumb,
                         'VIEW_URL' => $view_url,
                         'SUBMITTER' => strval($row['submitter']),
                         'FULL_URL' => $full_url,

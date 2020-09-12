@@ -156,15 +156,12 @@ function render_catalogue_category_box($row, $zone = '_SEARCH', $give_context = 
     }
 
     // Image
-    $rep_image = null;
-    $_rep_image = null;
+    $rep_image_url = '';
     if ($row['rep_image'] != '') {
-        $_rep_image = $row['rep_image'];
-        if (url_is_local($_rep_image)) {
-            $_rep_image = get_custom_base_url() . '/' . $_rep_image;
+        $rep_image_url = $row['rep_image'];
+        if (url_is_local($rep_image_url)) {
+            $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
         }
-        require_code('images');
-        $rep_image = do_image_thumb($row['rep_image'], $_title, false);
     }
 
     // Metadata
@@ -179,8 +176,7 @@ function render_catalogue_category_box($row, $zone = '_SEARCH', $give_context = 
         'ID' => strval($row['id']),
         'TITLE' => $title,
         'TITLE_PLAIN' => $_title,
-        '_REP_IMAGE' => $_rep_image,
-        'REP_IMAGE' => $rep_image,
+        'REP_IMAGE_URL' => $rep_image_url,
         'BREADCRUMBS' => $breadcrumbs,
         'SUMMARY' => $content,
         'ENTRY_DETAILS' => $entry_details,
@@ -937,17 +933,6 @@ function get_catalogue_entry_map($entry, $catalogue = null, $view_type = 'PAGE',
             $use_ev = $ev;
         } else {
             $use_ev = $ob->render_field_value($field, $ev, $i, $only_fields, 'catalogue_efv_' . $storage_type, $id, 'ce_id', 'cf_id', 'cv_value', $entry['ce_submitter'], $ev_pure);
-        }
-
-        // Special case for access to raw thumbnail
-        if ($field['cf_type'] == 'picture') {
-            if (($ev !== null) && ($ev_pure != '')) {
-                require_code('images');
-                $map['FIELD_' . $str_i . '_THUMB'] = do_image_thumb($ev_pure, ($i == 0) ? new Tempcode() : (is_object($map['FIELD_0']) ? $map['FIELD_0'] : protect_from_escaping(escape_html($map['FIELD_0']))), false, false);
-            } else {
-                $map['FIELD_' . $str_i . '_THUMB'] = new Tempcode();
-            }
-            $map['_FIELD_' . $str_id . '_THUMB'] = $map['FIELD_' . $str_i . '_THUMB'];
         }
 
         // Different ways of accessing the main field value, and pure version of it

@@ -290,17 +290,6 @@ class Hook_task_import_members
                 }
             }
             $photo_url = array_key_exists('Photo', $line) ? $line['Photo'] : '';
-            if ($photo_url != '') {
-                if ((!$new_member) && ($photo_url == $GLOBALS['FORUM_DRIVER']->get_member_row_field($linked_id, 'm_photo_url'))) {
-                    $photo_thumb_url = $GLOBALS['FORUM_DRIVER']->get_member_row_field($linked_id, 'm_photo_url');
-                } else {
-                    require_code('images');
-                    list($photo_thumb_path) = find_unique_path('uploads/cns_photos_thumbs');
-                    $photo_thumb_url = convert_image($photo_url, $photo_thumb_path, null, null, intval(get_option('thumb_width')), false);
-                }
-            } else {
-                $photo_thumb_url = '';
-            }
             $custom_fields = [];
             foreach ($all_cpfs as $cpf) {
                 $custom_fields[$cpf['id']] = array_key_exists($cpf['_cf_name'], $line) ? $line[$cpf['_cf_name']] : $cpf['cf_default'];
@@ -389,7 +378,6 @@ class Hook_task_import_members
                     '', // theme
                     '', // title
                     $photo_url, // photo_url
-                    $photo_thumb_url, // photo_thumb_url
                     $avatar_url, // avatar_url
                     $signature, // signature
                     null, // preview_posts
@@ -444,7 +432,6 @@ class Hook_task_import_members
                     null, // theme
                     null, // title
                     $photo_url, // photo_url
-                    $photo_thumb_url, // photo_thumb_url
                     $avatar_url, // avatar_url
                     $signature, // signature
                     null, // preview_posts

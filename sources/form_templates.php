@@ -446,7 +446,7 @@ function get_comcode_editor($field_name = 'post', $cut_down = false, $is_posting
 
     // Non-wrappers
     if (!$cut_down) {
-        $_buttons[] = (function_exists('imagetypes') ? 'thumb' : 'img');
+        $_buttons[] = 'thumb';
     }
     if (has_privilege(get_member(), 'comcode_dangerous')) {
         $_buttons[] = 'block';

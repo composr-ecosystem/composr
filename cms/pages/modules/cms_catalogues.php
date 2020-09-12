@@ -1464,8 +1464,8 @@ class Module_cms_catalogues_cat extends Standard_crud_module
         $description = post_param_string('description');
         $notes = post_param_string('notes', '');
         $parent_id = post_param_integer('parent_id', null);
-        require_code('themes2');
-        $rep_image = resize_rep_image(post_param_image('image', 'uploads/repimages', null, false));
+        require_code('images2');
+        $rep_image = post_param_image('image', 'uploads/repimages', null, false);
 
         $move_days_lower = post_param_integer('move_days_lower', 30);
         $move_days_higher = post_param_integer('move_days_higher', 60);
@@ -1532,8 +1532,8 @@ class Module_cms_catalogues_cat extends Standard_crud_module
         }
 
         if (!fractional_edit()) {
-            require_code('themes2');
-            $rep_image = resize_rep_image(post_param_image('image', 'uploads/repimages', null, false, true));
+            require_code('images2');
+            $rep_image = post_param_image('image', 'uploads/repimages', null, false, true);
         } else {
             $rep_image = STRING_MAGIC_NULL;
         }

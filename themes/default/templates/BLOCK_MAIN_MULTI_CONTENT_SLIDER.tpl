@@ -10,7 +10,7 @@
 		<ul>
 			{+START,LOOP,CONTENT_DATA}
 				<li>
-					<a href="#slider_{_loop_key*}"><img src="{$THUMBNAIL*,{CONTENT_THUMB_URL},,,,,pad,both}" alt="" class="horizontal" /></a>
+					<a href="#slider_{_loop_key*}"><img src="{$THUMBNAIL*,{CONTENT_IMAGE_URL},,,,,pad,both}" alt="" class="horizontal" /></a>
 					<div class="label_text"><p>{CONTENT_TITLE_HTML}</p></div>
 				</li>
 			{+END}

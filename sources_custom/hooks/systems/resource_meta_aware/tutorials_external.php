@@ -57,8 +57,8 @@ class Hook_resource_meta_aware_tutorials_external
             'description_field' => 't_summary',
             'description_field_dereference' => false,
             'description_field_supports_comcode' => false,
-            'thumb_field' => 't_icon',
-            'thumb_field_is_theme_image' => true,
+            'image_field' => 't_icon',
+            'image_field_is_theme_image' => true,
             'alternate_icon_theme_image' => 'icons/help',
 
             'view_page_link_pattern' => 'docs:_WILD',

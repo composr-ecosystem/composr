@@ -607,8 +607,8 @@ class Module_cms_news extends Standard_crud_module
         $allow_trackbacks = post_param_integer('allow_trackbacks', 0);
         $notes = post_param_string('notes', '');
 
-        require_code('themes2');
-        $image = resize_rep_image(post_param_image('image', 'uploads/repimages', 'icons/news', false));
+        require_code('images2');
+        $image = post_param_image('image', 'uploads/repimages', 'icons/news', false);
 
         $schedule = post_param_date('schedule');
         if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times')) && ($schedule !== null) && ($schedule > time())) {
@@ -717,8 +717,8 @@ class Module_cms_news extends Standard_crud_module
         $this->donext_type = $main_news_category;
 
         if (!fractional_edit()) {
-            require_code('themes2');
-            $image = resize_rep_image(post_param_image('image', 'uploads/repimages', 'icons/news', false));
+            require_code('images2');
+            $image = post_param_image('image', 'uploads/repimages', 'icons/news', false);
         } else {
             $image = STRING_MAGIC_NULL;
         }
@@ -1086,8 +1086,8 @@ class Module_cms_news_cat extends Standard_crud_module
     {
         $title = post_param_string('title');
 
-        require_code('themes2');
-        $img = resize_rep_image(post_param_image('image', 'uploads/repimages', 'icons/news', false));
+        require_code('images2');
+        $img = post_param_image('image', 'uploads/repimages', 'icons/news', false);
 
         $notes = post_param_string('notes', '');
 
@@ -1121,8 +1121,8 @@ class Module_cms_news_cat extends Standard_crud_module
         $title = post_param_string('title');
 
         if (!fractional_edit()) {
-            require_code('themes2');
-            $img = resize_rep_image(post_param_image('image', 'uploads/repimages', 'icons/news', false, true));
+            require_code('images2');
+            $img = post_param_image('image', 'uploads/repimages', 'icons/news', false, true);
         } else {
             $img = STRING_MAGIC_NULL;
         }

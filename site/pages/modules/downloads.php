@@ -369,16 +369,11 @@ class Module_downloads
                 while (array_key_exists($counter, $rows)) {
                     $row = $rows[$counter];
 
-                    $view_url = $row['url'];
-                    if ($image_url == '') {
-                        $image_url = $row['url'];
+                    $image_url = $row['url'];
+                    if (url_is_local($image_url)) {
+                        $image_url = get_custom_base_url() . '/' . $image_url;
                     }
-                    if (url_is_local($view_url)) {
-                        $view_url = get_custom_base_url() . '/' . $view_url;
-                    }
-                    $thumb_url = ensure_thumbnail($row['url'], $row['thumb_url'], 'galleries', 'images', $row['id']);
                     $image_description = get_translated_tempcode('images', $row, 'the_description');
-                    $thumb = do_image_thumb($thumb_url, '');
                     if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_edit_permission('mid', get_member(), $row['submitter'], 'cms_galleries', ['galleries', 'download_' . strval($id)]))) {
                         $iedit_url = build_url(['page' => 'cms_galleries', 'type' => '_edit', 'id' => $row['id']], get_module_zone('cms_galleries'));
                     } else {
@@ -387,9 +382,9 @@ class Module_downloads
                     $_content = do_template('DOWNLOAD_SCREEN_IMAGE', [
                         '_GUID' => 'fba0e309aa0ae04891e32c65a625b177',
                         'ID' => strval($row['id']),
-                        'VIEW_URL' => $view_url,
+                        'TITLE' => get_translated_text($row['title']),
                         'EDIT_URL' => $iedit_url,
-                        'THUMB' => $thumb,
+                        'IMAGE_URL' => $image_url,
                         'DESCRIPTION' => $image_description,
                     ]);
 
@@ -731,14 +726,14 @@ class Module_downloads
 
         // Management links
         $edit_url = new Tempcode();
-        $add_img_url = new Tempcode();
+        $add_image_url = new Tempcode();
         if ((has_actual_page_access(null, 'cms_downloads', null, null)) && (has_edit_permission('mid', get_member(), $myrow['submitter'], 'cms_downloads', ['downloads', $myrow['category_id']]))) {
             $edit_url = build_url(['page' => 'cms_downloads', 'type' => '_edit', 'id' => $id], get_module_zone('cms_downloads'));
         }
         if (addon_installed('galleries')) {
             if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_edit_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', ['galleries', 'download_' . strval($id)]))) {
                 require_lang('galleries');
-                $add_img_url = build_url(['page' => 'cms_galleries', 'type' => 'add', 'cat' => 'download_' . strval($id)], get_module_zone('cms_galleries'));
+                $add_image_url = build_url(['page' => 'cms_galleries', 'type' => 'add', 'cat' => 'download_' . strval($id)], get_module_zone('cms_galleries'));
             }
         }
 
@@ -817,7 +812,7 @@ class Module_downloads
             'OUTMODE_URL' => $outmode_url,
             'WARNING_DETAILS' => $warning_details,
             'EDIT_URL' => $edit_url,
-            'ADD_IMG_URL' => $add_img_url,
+            'ADD_IMAGE_URL' => $add_image_url,
             'DESCRIPTION' => get_translated_tempcode('download_downloads', $myrow, 'the_description'),
             'ADDITIONAL_DETAILS' => $additional_details,
             'IMAGES_DETAILS' => $images_details,

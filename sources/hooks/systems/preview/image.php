@@ -46,7 +46,6 @@ class Hook_preview_image
 
         list(
             $url,
-            $thumb_url,
             $filename,
             $title,
             $cat,
@@ -54,18 +53,17 @@ class Hook_preview_image
 
         if ($url == '') {
             if (post_param_integer('id', null) !== null) {
-                $rows = $GLOBALS['SITE_DB']->query_select('images', ['url', 'thumb_url'], ['id' => post_param_integer('id')], '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('images', ['url'], ['id' => post_param_integer('id')], '', 1);
                 $urls = $rows[0];
 
                 $url = $urls['url'];
-                $thumb_url = $urls['thumb_url'];
             } else {
                 warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
             }
         }
 
         require_code('images');
-        $thumb = do_image_thumb(url_is_local($thumb_url) ? (get_custom_base_url() . '/' . $thumb_url) : $thumb_url, protect_from_escaping(comcode_to_tempcode(post_param_string('description'))), true);
+        $thumb = do_image_thumb(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url, protect_from_escaping(comcode_to_tempcode(post_param_string('description'))), true);
         $preview = hyperlink(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url, $thumb, false, true);
 
         return [$preview, null];

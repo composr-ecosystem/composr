@@ -240,7 +240,6 @@ function user_sync__inbound($since = null)
                     '', // theme
                     '', // title
                     $photo_url, // photo_url
-                    '', // photo_thumb_url
                     null, // avatar_url
                     '', // signature
                     null, // preview_posts
@@ -297,7 +296,6 @@ function user_sync__inbound($since = null)
                     '', // theme
                     '', // title
                     $photo_url, // photo_url
-                    '', // photo_thumb_url
                     null, // avatar_url
                     '', // signature
                     null, // preview_posts

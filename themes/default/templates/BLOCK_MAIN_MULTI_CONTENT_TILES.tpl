@@ -9,10 +9,10 @@
 				<!-- TODO: This needs making looking good -->
 				{+START,LOOP,CONTENT_DATA}
 					<div style="float: left; position: relative">
-						{+START,IF_NON_EMPTY,{CONTENT_URL}}<a href="{CONTENT_URL*}">{+END}<img width="200" height="200" alt="" src="{$THUMBNAIL*,{CONTENT_THUMB_URL},200x200,,,,crop}" />{+START,IF_NON_EMPTY,{CONTENT_URL}}</a>{+END}
+						{+START,IF_NON_EMPTY,{CONTENT_URL}}<a href="{CONTENT_URL*}">{+END}<img width="200" height="200" alt="" src="{$THUMBNAIL*,{CONTENT_IMAGE_URL},200x200,,,,crop}" />{+START,IF_NON_EMPTY,{CONTENT_URL}}</a>{+END}
 
 						<ul style="position: absolute; bottom: 0; background: rgba(255,255,255,0.6); margin-bottom: 0; padding-bottom: 0;">
-							<li>{+START,IF_PASSED,CONTENT_TYPE_ICON}{+START,IF,{$NEQ,{CONTENT_THUMB_URL},{CONTENT_TYPE_ICON}}}<img src="{CONTENT_TYPE_ICON*}" alt="{CONTENT_TYPE_LABEL}" /> {+END}{+END}{CONTENT_TITLE_HTML}</li>
+							<li>{+START,IF_PASSED,CONTENT_TYPE_ICON}{+START,IF,{$NEQ,{CONTENT_IMAGE_URL},{CONTENT_TYPE_ICON}}}<img src="{CONTENT_TYPE_ICON*}" alt="{CONTENT_TYPE_LABEL}" /> {+END}{+END}{CONTENT_TITLE_HTML}</li>
 
 							{+START,IF_PASSED,CONTENT_TIME}
 								<li>{CONTENT_TIME_LABEL}: {CONTENT_TIME*}</li>

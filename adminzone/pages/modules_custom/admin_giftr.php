@@ -359,7 +359,7 @@ class Module_admin_giftr extends Standard_crud_module
         $price = post_param_integer('price');
         $enabled = post_param_integer('enabled', 0);
 
-        require_code('themes2');
+        require_code('images2');
         $url = post_param_image('image', 'uploads/giftr_addon', null, true);
 
         $id = $GLOBALS['SITE_DB']->query_insert('giftr', ['name' => $name, 'image' => $url, 'price' => $price, 'enabled' => $enabled, 'category' => $category], true);
@@ -384,7 +384,7 @@ class Module_admin_giftr extends Standard_crud_module
         $price = post_param_integer('price');
         $enabled = post_param_integer('enabled', 0);
 
-        require_code('themes2');
+        require_code('images2');
         $url = post_param_image('image', 'uploads/giftr_addon', null, true, true);
 
         require_code('files2');

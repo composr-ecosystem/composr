@@ -306,7 +306,6 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         $title = $this->_default_property_str($properties, 'title');
 
         $photo_url = $this->_default_property_urlpath($properties, 'photo_url', $edit);
-        $photo_thumb_url = $this->_default_property_urlpath($properties, 'photo_thumb_url', $edit);
         $avatar_url = $this->_default_property_urlpath($properties, 'avatar_url', $edit);
         $signature = $this->_default_property_str($properties, 'signature');
 
@@ -365,7 +364,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $actual_custom_fields[$custom_field['id']] = $value;
         }
 
-        return [$password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, $language, $theme, $title, $photo_url, $photo_thumb_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time];
+        return [$password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time];
     }
 
     /**
@@ -388,7 +387,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
 
         require_code('cns_members_action');
 
-        list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $photo_thumb_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, false);
+        list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, false);
 
         $id = cns_make_member(
             $label, // username
@@ -405,7 +404,6 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $theme, // theme
             $title, // title
             $photo_url, // photo_url
-            $photo_thumb_url, // photo_thumb_url
             $avatar_url, // avatar_url
             $signature, // signature
             $preview_posts, // preview_posts
@@ -482,7 +480,6 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             'theme' => $row['m_theme'],
             'title' => $row['m_title'],
             'photo_url' => remap_urlpath_as_portable($row['m_photo_url']),
-            'photo_thumb_url' => remap_urlpath_as_portable($row['m_photo_thumb_url']),
             'avatar_url' => remap_urlpath_as_portable($row['m_avatar_url']),
             'signature' => get_translated_text($row['m_signature'], $GLOBALS['FORUM_DB']),
             'preview_posts' => $row['m_preview_posts'],
@@ -551,7 +548,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         require_code('cns_members_action2');
 
         $label = $this->_default_property_str($properties, 'label');
-        list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $photo_thumb_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, true);
+        list($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $custom_fields, $timezone, $language, $theme, $title, $photo_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time) = $this->__file_read_in_properties($path, $properties, true);
 
         cns_edit_member(
             intval($resource_id), // member_id
@@ -568,7 +565,6 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $theme, // theme
             $title, // title
             $photo_url, // photo_url
-            $photo_thumb_url, // photo_thumb_url
             $avatar_url, // avatar_url
             $signature, // signature
             $preview_posts, // preview_posts

@@ -63,10 +63,9 @@ class Hook_content_meta_aware_image extends Hook_CMA
             'description_field' => 'the_description',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => 'thumb_url',
-            'thumb_field_is_theme_image' => false,
+            'image_field' => 'url',
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
-            'full_image_field' => 'url',
 
             'view_page_link_pattern' => '_SEARCH:galleries:image:_WILD',
             'edit_page_link_pattern' => '_SEARCH:cms_galleries:_edit:_WILD',

@@ -63,8 +63,8 @@ class Hook_content_meta_aware_video extends Hook_CMA
             'description_field' => 'the_description',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => 'thumb_url',
-            'thumb_field_is_theme_image' => false,
+            'image_field' => 'thumb_url',
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
             'video_field' => ['url', 'video_width', 'video_height', 'submitter'],

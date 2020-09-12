@@ -1188,7 +1188,6 @@ class Module_cms_booking_bookings extends Standard_crud_module
                     '', // theme
                     '', // title
                     '', // photo_url
-                    '', // photo_thumb_url
                     null, // avatar_url
                     '', // signature
                     null, // preview_posts

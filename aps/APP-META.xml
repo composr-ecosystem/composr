@@ -455,9 +455,6 @@
           <mapping url="uploads/cns_photos">
             <php:permissions writable="true"/>
           </mapping>
-          <mapping url="uploads/cns_photos_thumbs">
-            <php:permissions writable="true"/>
-          </mapping>
           <mapping url="uploads/downloads">
             <php:permissions writable="true"/>
           </mapping>

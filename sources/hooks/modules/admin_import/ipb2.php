@@ -680,7 +680,6 @@ class Hook_import_ipb2
                     '', // theme
                     $row['title'], // title
                     '', // photo_url
-                    '', // photo_thumb_url
                     null, // avatar_url
                     $signature, // signature
                     1, // preview_posts
@@ -743,7 +742,6 @@ class Hook_import_ipb2
                 $member_id = import_id_remap_get('member', strval($row['id']));
 
                 $photo_url = '';
-                $photo_thumb_url = '';
 
                 $rows2 = $db->query_select('member_extra', ['*'], ['id' => $row['id']]);
                 if (array_key_exists(0, $rows2)) {
@@ -764,13 +762,6 @@ class Hook_import_ipb2
                         $photo_url = $row2['photo_location'];
                         $rrpos = strrpos($photo_url, '/');
                         $filename = (($rrpos === false) ? $photo_url : substr($photo_url, $rrpos));
-                    }
-
-                    if ($photo_url != '') {
-                        list($photo_thumb_path) = find_unique_path('uploads/cns_photos_thumbs', $filename);
-
-                        require_code('images');
-                        $photo_thumb_url = convert_image($photo_url, $photo_thumb_path, null, null, intval(get_option('thumb_width')), false, null, true);
                     }
 
                     $row['avatar'] = $row2['avatar_location'];
@@ -822,7 +813,7 @@ class Hook_import_ipb2
                         }
                 }
 
-                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_avatar_url' => $avatar_url, 'm_photo_url' => $photo_url, 'm_photo_thumb_url' => $photo_thumb_url], ['id' => $member_id], '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_avatar_url' => $avatar_url, 'm_photo_url' => $photo_url], ['id' => $member_id], '', 1);
 
                 import_id_remap_put('member_files', strval($row['id']), 1);
             }

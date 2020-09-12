@@ -800,7 +800,7 @@ class Hook_addon_registry_core_cns
                 'USERNAME' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'AVATAR_URL' => placeholder_image_url(),
-                'PHOTO_THUMB_URL' => placeholder_image_url(),
+                'PHOTO_URL' => placeholder_image_url(),
                 'VALIDATED' => true,
                 'CONFIRMED' => true,
             ]), null, '', true)
@@ -990,7 +990,6 @@ class Hook_addon_registry_core_cns
             'PRIMARY_GROUP' => lorem_phrase(),
             'PRIMARY_GROUP_ID' => placeholder_id(),
             'PHOTO_URL' => placeholder_image_url(),
-            'PHOTO_THUMB_URL' => placeholder_image_url(),
             'EMAIL_ADDRESS' => lorem_word() . '@example.com',
             'AVATAR_URL' => placeholder_avatar(),
             'SIGNATURE' => lorem_phrase(),

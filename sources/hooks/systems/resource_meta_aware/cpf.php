@@ -62,8 +62,8 @@ class Hook_resource_meta_aware_cpf extends Hook_CMA
             'description_field' => null,
             'description_field_dereference' => null,
             'description_field_supports_comcode' => null,
-            'thumb_field' => null,
-            'thumb_field_is_theme_image' => false,
+            'image_field' => null,
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => null,

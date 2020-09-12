@@ -416,14 +416,10 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
     }
 
     // Find photo
-    if (($need === null) || (in_array('photo', $need)) || (in_array('photo_thumb', $need))) {
+    if (($need === null) || (in_array('photo', $need))) {
         $photo = $GLOBALS['CNS_DRIVER']->get_member_photo_url($member_id, true);
         if ($photo != '') {
             $member_info['photo'] = $photo;
-        }
-        $photo_thumb = $GLOBALS['CNS_DRIVER']->get_member_photo_url($member_id);
-        if ($photo != '') {
-            $member_info['photo_thumb'] = $photo_thumb;
         }
     }
 

@@ -11,7 +11,7 @@
 			<a class="gallery-nav-prev-btn" rel="prev" accesskey="j" href="{BACK_URL*}">{+START,TRIM}
 				{+START,INCLUDE,ICON}NAME=buttons/previous{+END}
 				<span>{!PREVIOUS}</span>
-				{BACK_THUMB}
+				<img class="img-thumb" alt="{BACK_ENTRY_TITLE*}" src="{$THUMBNAIL*,{BACK_IMAGE_URL}}" />
 			{+END}</a>
 		{+END}
 
@@ -28,7 +28,11 @@
 
 		{$,Next}
 		{+START,IF_NON_EMPTY,{NEXT_URL}}
-			<a class="gallery-nav-next-btn" rel="next" accesskey="k" href="{NEXT_URL*}">{NEXT_THUMB}<span>{!NEXT}</span>{+START,INCLUDE,ICON}NAME=buttons/next{+END}</a>
+			<a class="gallery-nav-next-btn" rel="next" accesskey="k" href="{NEXT_URL*}">{+START,TRIM}
+				<img class="img-thumb" alt="{NEXT_ENTRY_TITLE*}" src="{$THUMBNAIL*,{NEXT_IMAGE_URL}}" />
+				<span>{!NEXT}</span>
+				{+START,INCLUDE,ICON}NAME=buttons/next{+END}
+			{+END}</a>
 		{+END}
 	</div>
 

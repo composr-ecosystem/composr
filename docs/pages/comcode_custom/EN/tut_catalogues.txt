@@ -125,7 +125,7 @@ The default template ([tt]CATALOGUE_DEFAULT_GRID_ENTRY_WRAP.tpl[/tt]) assumes th
 You therefore need to either:
 [list="a"]
 [*] Follow this convention
-[*] Create [tt]CATALOGUE_yournewcatalogue_GRID_ENTRY_WRAP.tpl[/tt] such that it references a different field sequence number (replace [tt]FIELD_1_THUMB[/tt], noting that we're counting field sequence numbers starting from zero)
+[*] Create [tt]CATALOGUE_yournewcatalogue_GRID_ENTRY_WRAP.tpl[/tt] such that it references a different field sequence number (replace [tt]FIELD_1[/tt], noting that we're counting field sequence numbers starting from zero)
 [/list]
 
 However there is an important exception to the above. The shopping catalogue already is bundled with a custom template set which is already referencing a different picture field. You also are not supposed to rearrange the first few fields in the shopping catalogue because they have a hard-coded meaning.
@@ -324,7 +324,6 @@ Field values are available in three forms:
 1) Standard (e.g. [tt]{FIELD_0}[/tt]) --  Parsed for Comcode (if applicable), and rendered by the field code
 2) Plain (e.g. [tt]{FIELD_0_PLAIN}[/tt]) -- Parsed for Comcode (if applicable), and not rendered by the field code
 3) Pure (e.g. [tt]{FIELD_0_PURE}[/tt]) -- Not parsed for Comcode, and not rendered by the field code
-4) Thumbnail (e.g. [tt]{FIELD_0_THUMB}[/tt]) -- Thumbnail version of a picture (i.e. using standardised thumbnail display, rather than a display rendered by the field code); applies to [tt]picture[/tt] fields only
 They are also provided in sequence order (e.g. [tt]{FIELD_0}[/tt]) and by field ID (e.g. [tt]{_FIELD_44}[/tt]). Field ID is more robust, should you reorder fields later it won't affect the naming.
 
 [title="3"]Custom template sets[/title]

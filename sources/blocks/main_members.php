@@ -448,8 +448,8 @@ PHP;
                     'ID' => strval($row['id']),
                     'USERNAME' => $row['m_username'],
                     'URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($row['id'], true),
-                    'AVATAR_URL' => addon_installed('cns_member_avatars') ? $row['m_avatar_url'] : $row['m_photo_thumb_url'],
-                    'PHOTO_THUMB_URL' => $row['m_photo_thumb_url'],
+                    'AVATAR_URL' => addon_installed('cns_member_avatars') ? $row['m_avatar_url'] : $row['m_photo_url'],
+                    'PHOTO_URL' => $row['m_photo_url'],
                     'VALIDATED' => ($row['m_validated'] == 1),
                     'CONFIRMED' => ($row['m_validated_email_confirm_code'] == ''),
                 ]);

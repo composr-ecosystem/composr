@@ -9,7 +9,6 @@
 	<exclude-pattern>_tests/libs/mf_parse.php</exclude-pattern>
 	<exclude-pattern>_tests/simpletest</exclude-pattern>
 	<exclude-pattern>data/ace</exclude-pattern>
-	<exclude-pattern>data_custom/upload-crop</exclude-pattern>
 	<exclude-pattern>exports</exclude-pattern>
 	<exclude-pattern>mobiquo/lib</exclude-pattern>
 	<exclude-pattern>mobiquo/smartbanner</exclude-pattern>

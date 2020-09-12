@@ -56,13 +56,13 @@ class Hook_profiles_tabs_edit_photo
         if (post_param_integer('delete_photo', 0) == 1) { // Special delete actualiser
             require_code('cns_members_action');
             require_code('cns_members_action2');
-            cns_member_choose_photo_concrete('', '', $member_id_of);
+            cns_member_choose_photo_concrete('', $member_id_of);
 
             attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
         } elseif (post_param_integer('submitting_photo_tab', 0) == 1) { // Actualiser
             require_code('cns_members_action');
             require_code('cns_members_action2');
-            cns_member_choose_photo('photo_url', 'photo_file', 'photo_thumb_url', 'photo_thumb_file', $member_id_of);
+            cns_member_choose_photo('photo_url', 'photo_file', $member_id_of);
 
             attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
         }
@@ -72,7 +72,6 @@ class Hook_profiles_tabs_edit_photo
         }
 
         $photo_url = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_photo_url');
-        $thumb_url = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_photo_thumb_url');
 
         // UI fields
         $fields = new Tempcode();
@@ -95,29 +94,7 @@ class Hook_profiles_tabs_edit_photo
 
             $field_set->attach(form_input_url(do_lang_tempcode('URL'), '', 'photo_url', $photo_url, false));
 
-            $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required, null, function_exists('imagetypes')));
-        }
-
-        if (!function_exists('imagetypes')) {
-            $thumb_width = get_option('thumb_width');
-
-            $set_name = 'thumbnail';
-            $required = false;
-            $set_title = do_lang_tempcode('THUMBNAIL');
-
-            if (get_value('disable_multi_homed_upload__cns_photo') === '1') {
-                $fields->attach(form_input_upload(do_lang_tempcode('THUMBNAIL'), '', 'photo_thumb_file', false, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
-
-                $hidden->attach(form_input_hidden('photo_thumb_url', $thumb_url));
-            } else {
-                $field_set = alternate_fields_set__start($set_name);
-
-                $field_set->attach(form_input_upload(do_lang_tempcode('THUMBNAIL'), '', 'photo_thumb_file', false, null, null, true, get_allowed_image_file_types(IMAGE_CRITERIA_WEBSAFE)));
-
-                $field_set->attach(form_input_url(do_lang_tempcode('URL'), '', 'photo_thumb_url', $thumb_url, false));
-
-                $fields->attach(alternate_fields_set__end($set_name, $set_title, do_lang_tempcode('DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $field_set, $required));
-            }
+            $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required, null, true));
         }
 
         handle_max_file_size($hidden, 'image');
@@ -139,6 +116,6 @@ class Hook_profiles_tabs_edit_photo
             'PHOTO' => $GLOBALS['FORUM_DRIVER']->get_member_photo_url($member_id_of),
         ]);
 
-        return [$title, $fields, $text, null, $order, $hidden, 'tabs/member_account/edit/photo', function_exists('imagetypes')];
+        return [$title, $fields, $text, null, $order, $hidden, 'tabs/member_account/edit/photo', true];
     }
 }

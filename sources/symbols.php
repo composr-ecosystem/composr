@@ -3544,7 +3544,7 @@ function ecv_PHOTO($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    $value = $GLOBALS['FORUM_DRIVER']->get_member_photo_url(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member(), !empty($param[1]));
+    $value = $GLOBALS['FORUM_DRIVER']->get_member_photo_url(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member());
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);

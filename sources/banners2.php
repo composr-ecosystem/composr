@@ -329,28 +329,27 @@ function check_banner($title_text = '', $direct_code = '', $b_type = '', $b_type
                 }
                 warn_exit(do_lang_tempcode('BANNER_TOO_LARGE', escape_html(integer_format(intval(ceil(strlen($data) / 1024)))), escape_html(integer_format($banner_type_row['t_max_file_size']))));
             }
-            if (function_exists('imagetypes')) {
-                require_code('images');
-                if (is_image($test_url, IMAGE_CRITERIA_GD_READ)) {
-                    $test = cms_getimagesize_url($test_url);
 
-                    if ($test === false) {
-                        if (url_is_local($url)) {
-                            @unlink(get_custom_file_base() . '/' . rawurldecode($url));
-                            sync_file(rawurldecode($url));
-                        }
-                        warn_exit(do_lang_tempcode('CORRUPT_FILE', escape_html($url)));
+            require_code('images');
+            if (is_image($test_url, IMAGE_CRITERIA_GD_READ)) {
+                $test = cms_getimagesize_url($test_url);
+
+                if ($test === false) {
+                    if (url_is_local($url)) {
+                        @unlink(get_custom_file_base() . '/' . rawurldecode($url));
+                        sync_file(rawurldecode($url));
                     }
+                    warn_exit(do_lang_tempcode('CORRUPT_FILE', escape_html($url)));
+                }
 
-                    list($sx, $sy) = $test;
+                list($sx, $sy) = $test;
 
-                    if ((get_option('banner_autosize') != '1') && ((($sx !== null) && ($sx != $banner_type_row['t_image_width'])) || (($sy !== null) && ($sy != $banner_type_row['t_image_height'])))) {
-                        if (url_is_local($test_url)) {
-                            @unlink(get_custom_file_base() . '/' . rawurldecode($test_url));
-                            sync_file(rawurldecode($test_url));
-                        }
-                        warn_exit(do_lang_tempcode('BANNER_RES_BAD', escape_html(integer_format($banner_type_row['t_image_width'])), escape_html(integer_format($banner_type_row['t_image_height']))));
+                if ((get_option('banner_autosize') != '1') && ((($sx !== null) && ($sx != $banner_type_row['t_image_width'])) || (($sy !== null) && ($sy != $banner_type_row['t_image_height'])))) {
+                    if (url_is_local($test_url)) {
+                        @unlink(get_custom_file_base() . '/' . rawurldecode($test_url));
+                        sync_file(rawurldecode($test_url));
                     }
+                    warn_exit(do_lang_tempcode('BANNER_RES_BAD', escape_html(integer_format($banner_type_row['t_image_width'])), escape_html(integer_format($banner_type_row['t_image_height']))));
                 }
             }
         } else {

@@ -124,17 +124,12 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
 
     if ($row['news_image'] != '') {
         require_code('images');
-        $img_raw = $row['news_image'];
-        if (url_is_local($img_raw)) {
-            $img_raw = get_custom_base_url() . '/' . $img_raw;
+        $rep_image_url = $row['news_image'];
+        if (url_is_local($rep_image_url)) {
+            $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
         }
-        $img = $img_raw;
     } else {
-        $img_raw = get_news_category_image_url($news_cat_row['nc_img']);
-        if ($img_raw === null) {
-            $img_raw = '';
-        }
-        $img = $img_raw;
+        $rep_image_url = get_news_category_image_url($news_cat_row['nc_img']);
     }
 
     $news = get_translated_tempcode('news', $just_news_row, 'news');
@@ -161,8 +156,7 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
         'CATEGORY' => $category,
         '_CATEGORY' => strval($row['news_category']),
         'CATEGORY_URL' => $category_url,
-        'IMG' => $img,
-        '_IMG' => $img_raw,
+        'REP_IMAGE_URL' => $rep_image_url,
         'NEWS' => $news,
         'ID' => strval($row['id']),
         'SUBMITTER' => strval($row['submitter']),
@@ -222,19 +216,12 @@ function render_news_category_box($row, $zone = '_SEARCH', $give_context = true,
     $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries)));
 
     // Image
-    $img = get_news_category_image_url($row['nc_img']);
+    $rep_image_url = get_news_category_image_url($row['nc_img']);
     if ($blogs === 1) {
         $_img = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($row['nc_owner']);
         if ($_img != '') {
-            $img = $_img;
+            $rep_image_url = $_img;
         }
-    }
-    $rep_image = null;
-    $_rep_image = null;
-    if ($img != '') {
-        require_code('images');
-        $_rep_image = $img;
-        $rep_image = do_image_thumb($img, $_title, false);
     }
 
     // Render
@@ -243,8 +230,7 @@ function render_news_category_box($row, $zone = '_SEARCH', $give_context = true,
         'ID' => strval($row['id']),
         'TITLE' => $title,
         'TITLE_PLAIN' => $_title,
-        '_REP_IMAGE' => $_rep_image,
-        'REP_IMAGE' => $rep_image,
+        'REP_IMAGE_URL' => $rep_image_url,
         'OWNER' => ($row['nc_owner'] === null) ? '' : strval($row['nc_owner']),
         'SUMMARY' => '',
         'ENTRY_DETAILS' => $entry_details,

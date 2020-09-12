@@ -68,8 +68,8 @@ class Hook_content_meta_aware_gallery extends Hook_CMA
             'description_field' => 'the_description',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => ['rep_image', 'CALL: generate_gallery_entry_thumb_url'],
-            'thumb_field_is_theme_image' => false,
+            'image_field' => ['rep_image', 'CALL: generate_gallery_entry_image_url'],
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => '_SEARCH:galleries:browse:_WILD',
@@ -196,37 +196,36 @@ class Hook_content_meta_aware_gallery extends Hook_CMA
 }
 
 /**
- * Find an entry thumbnail.
+ * Find an entry image.
  *
  * @param  array $row Database row of entry
- * @param  boolean $prefer_large_image Whether we prefer a larger image
- * @return URLPATH The thumbnail URL (blank: none)
+ * @return URLPATH The image URL (blank: none)
  */
-function generate_gallery_entry_thumb_url($row, $prefer_large_image = false)
+function generate_gallery_entry_image_url($row)
 {
     if ($row['rep_image'] != '') {
-        $thumb_url = $row['rep_image'];
-        if (url_is_local($thumb_url)) {
-            $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+        $image_url = $row['rep_image'];
+        if (url_is_local($image_url)) {
+            $image_url = get_custom_base_url() . '/' . $image_url;
         }
-        return $thumb_url;
+        return $image_url;
     }
 
     if (addon_installed('galleries')) {
-        $thumb_url = $GLOBALS['SITE_DB']->query_select_value_if_there('images', $prefer_large_image ? 'url' : 'thumb_url', ['cat' => $row['name']]);
-        if (!cms_empty_safe($thumb_url)) {
-            if (url_is_local($thumb_url)) {
-                $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+        $image_url = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'url', ['cat' => $row['name']]);
+        if (!cms_empty_safe($image_url)) {
+            if (url_is_local($image_url)) {
+                $image_url = get_custom_base_url() . '/' . $image_url;
             }
-            return $thumb_url;
+            return $image_url;
         }
 
-        $thumb_url = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => $row['name']]);
-        if (!cms_empty_safe($thumb_url)) {
-            if (url_is_local($thumb_url)) {
-                $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+        $image_url = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'thumb_url', ['cat' => $row['name']]);
+        if (!cms_empty_safe($image_url)) {
+            if (url_is_local($image_url)) {
+                $image_url = get_custom_base_url() . '/' . $image_url;
             }
-            return $thumb_url;
+            return $image_url;
         }
     }
 

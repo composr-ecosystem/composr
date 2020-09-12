@@ -67,8 +67,8 @@ class Hook_content_meta_aware_catalogue_entry extends Hook_CMA
             'description_field' => null,
             'description_field_dereference' => null,
             'description_field_supports_comcode' => null,
-            'thumb_field' => ['id', 'c_name', 'CALL: generate_catalogue_entry_thumb_url'],
-            'thumb_field_is_theme_image' => false,
+            'image_field' => ['id', 'c_name', 'CALL: generate_catalogue_entry_image_url'],
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => '_SEARCH:catalogues:entry:_WILD',
@@ -244,13 +244,12 @@ function generate_catalogue_entry_title($row, $render_type = 1, $resource_fs_sty
 }
 
 /**
- * Find an entry thumbnail.
+ * Find an entry image.
  *
  * @param  array $row Database row of entry
- * @param  boolean $prefer_large_image Whether we prefer a larger image
- * @return URLPATH The thumbnail URL (blank: none)
+ * @return URLPATH The image URL (blank: none)
  */
-function generate_catalogue_entry_thumb_url($row, $prefer_large_image = false)
+function generate_catalogue_entry_image_url($row)
 {
     require_code('catalogues');
 

@@ -4541,7 +4541,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_HTML_ONLY
         DESCRIPTION_ICAL
         DESCRIPTION_IMAGE
-        DESCRIPTION_IMAGE_THUMBS
         DESCRIPTION_IMMEDIATE_USE
         DESCRIPTION_IMMEDIATE_USE_ADD
         DESCRIPTION_DISPLAY_LIKELIHOOD
@@ -5595,8 +5594,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GALLERY_VIDEO_LIMIT_HIGH
         GALLERY_VIDEO_LIMIT_LOW
         GALLERY_WATERMARKS
-        GD_NEEDED
-        GD_THUMB_ERROR
         GENERAL_HELP
         GENERAL_SAFETY_LISTING_LIMIT
         GENERAL_SETTINGS
@@ -5696,7 +5693,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HTTP_REDIRECT_PROBLEM
         IDE_LINKAGE
         ID_ASSISTANCE_TOOL
-        IMAGE_THUMBS
         IMAGE_TYPES
         IMAGE_URL
         IMAP
@@ -8086,7 +8082,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         _DESCRIPTION_REPRESENTATIVE_IMAGE
         _DESCRIPTION_THEME
         _DESCRIPTION_THEME_CNS
-        _DESCRIPTION_THUMBNAIL
         _DESCRIPTION_WATERMARK
         _EDIT_CUSTOM_PRODUCT
         _EDIT_FORWARDING_DOMAIN

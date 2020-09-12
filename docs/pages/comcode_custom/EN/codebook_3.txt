@@ -620,7 +620,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]filtercode_protected_fields[/tt] -- a comma-separated list of fields Filtercode cannot work on (above the ones hard-coded as forbidden)
   - [tt]memory_limit[/tt] -- set this to a memory limit to override Composr's built-in one (e.g. "128M"). This will make memory bugs on your server more dangerous, so use at your own risk (a memory usage problem can take down a whole server) -- although memory bugs are unlikely given that Composr users report if they ever see this error
   - [tt]canonical_keep_params[/tt] -- set this to a comma-separated list of keep_ parameters that should be allowed to propagate within search engines
-  - [tt]disable_resize_rep_images[/tt] -- set this to '1' if you do not want uploaded rep-images to be sized down automatically to the standard thumbnail size
   - [tt]default_event_type[/tt] -- set this to the ID of the default event type to select for new events
   - [tt]edit_with_my_comcode_perms[/tt] -- set this to '1' if content you edit should display with your Comcode permissions. Only enable this if you trust yourself to spot XSS attacks.
   - [tt]site_location[/tt] -- a real-world address for where your website is, sometimes used in metadata.

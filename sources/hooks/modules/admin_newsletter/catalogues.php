@@ -129,16 +129,15 @@ class Hook_whatsnew_catalogues
             }
 
             // Work out thumbnail
-            $thumbnail = null;
+            $image_url = null;
             foreach ($fields as $field) {
                 if ($field['cf_type'] == 'picture') {
                     $thumbnail = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_short', 'cv_value', ['ce_id' => $row['id'], 'cf_id' => $field['id']]);
-                    if ($thumbnail != '') {
-                        if (url_is_local($thumbnail)) {
-                            $thumbnail = get_custom_base_url() . '/' . $thumbnail;
+                    if ($image_url != '') {
+                        if (url_is_local($image_url)) {
+                            $image_url = get_custom_base_url() . '/' . $image_url;
                         }
-                    } else {
-                        $thumbnail = null;
+                        break;
                     }
                 }
             }
@@ -150,7 +149,7 @@ class Hook_whatsnew_catalogues
 
             $member_id = (is_guest($row['ce_submitter'])) ? null : strval($row['ce_submitter']);
 
-            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '4ae604e5d0e9cf4d28e7d811dc4558e5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'CATALOGUE' => $catalogue, 'NAME' => $name, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'catalogue_entry', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
+            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '4ae604e5d0e9cf4d28e7d811dc4558e5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'CATALOGUE' => $catalogue, 'NAME' => $name, 'IMAGE_URL' => $image_url, 'CONTENT_TYPE' => 'catalogue_entry', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
             require_code('urls2');
             mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode

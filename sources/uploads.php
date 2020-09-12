@@ -622,20 +622,11 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
             $_thumb = _get_specify_url($member_id, $thumb_specify_name, $thumb_folder, CMS_UPLOAD_IMAGE, $accept_errors);
             $thumb = $_thumb[0];
         } else {
-            if (function_exists('imagetypes')) {
-                $thumb_filename = basename(preg_replace('#[^' . URL_CONTENT_REGEXP . '\.]#', 'x', basename($url[0])));
-                list($place, , $thumb_filename) = find_unique_path($thumb_folder, $thumb_filename);
-                $url_full = url_is_local($url[0]) ? (get_custom_base_url() . '/' . $url[0]) : $url[0];
+            $thumb_filename = basename(preg_replace('#[^' . URL_CONTENT_REGEXP . '\.]#', 'x', basename($url[0])));
+            list($place, , $thumb_filename) = find_unique_path($thumb_folder, $thumb_filename);
+            $url_full = url_is_local($url[0]) ? (get_custom_base_url() . '/' . $url[0]) : $url[0];
 
-                $thumb = convert_image($url_full, $place, null, null, intval(get_option('thumb_width')), true, null, false, $only_make_smaller);
-            } else {
-                if ($accept_errors) {
-                    attach_message(do_lang_tempcode('GD_THUMB_ERROR'), 'warn');
-                    return ['', '', '', ''];
-                } else {
-                    warn_exit(do_lang_tempcode('GD_THUMB_ERROR'));
-                }
-            }
+            $thumb = convert_image($url_full, $place, null, null, intval(get_option('thumb_width')), true, null, false, $only_make_smaller);
         }
 
         $out[1] = $thumb;

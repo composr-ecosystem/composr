@@ -192,7 +192,7 @@ PHP;
             $content_types = [];
             foreach ($_content_types as $_content_type => $object) {
                 $info = $object->info();
-                if (($info !== null) && (!$render_mode_requires_image) || ($info['thumb_field'] !== null)) {
+                if (($info !== null) && (!$render_mode_requires_image) || ($info['image_field'] !== null)) {
                     $content_types[] = $_content_type;
                 }
             }
@@ -242,12 +242,12 @@ PHP;
                 $extra_where[$content_type] .= ' AND (m.run_period IS NULL OR m.run_period<' . strval($lifetime * 60 * 60 * 24) . ')';
             }
 
-            $thumb_field = $info['thumb_field'];
-            if (is_array($thumb_field)) {
-                $thumb_field = array_pop($thumb_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
+            $image_field = $info['image_field'];
+            if (is_array($image_field)) {
+                $image_field = array_pop($image_field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
             }
-            if (($render_mode_requires_image) && (strpos($thumb_field, 'CALL:') === false)) {
-                $extra_where[$content_type] .= ' AND ' . db_string_not_equal_to($info['thumb_field'], '');
+            if (($render_mode_requires_image) && (strpos($image_field, 'CALL:') === false)) {
+                $extra_where[$content_type] .= ' AND ' . db_string_not_equal_to($info['image_field'], '');
             }
         }
 
@@ -352,19 +352,20 @@ PHP;
 
             // Render
             if ($render_mode_requires_image) {
-                $thumb_url = $object->get_image_thumb_url($row);
-                if ($thumb_url == '') {
+                $image_url = $object->get_image_url($row);
+                if ($image_url == '') {
                     continue;
                 }
             }
             switch ($render_mode) {
                 case 'boxes':
-                    $thumb_url = $object->get_image_thumb_url($row);
+                    $image_url = $object->get_image_url($row);
                     $content[] = $object->render_box($row, $zone, $give_context, $include_breadcrumbs, $root, $attach_to_url_filter, $guid);
                     break;
 
                 case 'carousel':
-                    $content[] = $object->render_hyperlink_thumbnail($row);
+                    $image_url = $object->get_image_url($row);
+                    $content[] = ''; // Uniform. Render using $content_data
                     break;
 
                 case 'grid':
@@ -372,7 +373,7 @@ PHP;
                     break;
 
                 case 'list':
-                    $thumb_url = $object->get_image_thumb_url($row);
+                    $image_url = $object->get_image_url($row);
                     $content[] = $object->render_hyperlink($row);
                     break;
 
@@ -385,12 +386,12 @@ PHP;
                     break;
 
                 case 'table':
-                    $thumb_url = $object->get_image_thumb_url($row);
+                    $image_url = $object->get_image_url($row);
                     $content[] = ['KEYMAP' => array_change_key_case($keymap, CASE_UPPER)];
                     break;
 
                 case 'tiles':
-                    $thumb_url = $object->get_image_thumb_url($row, THUMB_URL_FALLBACK_HARD);
+                    $image_url = $object->get_image_url($row, IMAGE_URL_FALLBACK_HARD);
                     $content[] = ''; // Uniform. Render using $content_data
                     break;
             }
@@ -406,9 +407,7 @@ PHP;
                 'CONTENT_TITLE_PLAIN' => $object->get_title($row, FIELD_RENDER_PLAIN),
                 'CONTENT_TITLE_HTML' => protect_from_escaping($object->get_title($row, FIELD_RENDER_HTML)),
                 'CONTENT_DESCRIPTION' => protect_from_escaping($object->get_description($row, FIELD_RENDER_HTML)),
-                'CONTENT_THUMB_URL' => $thumb_url,
-                'CONTENT_THUMB' => $object->render_thumbnail($row, true),
-                'CONTENT_THUMB_LINKED' => $object->render_hyperlink_thumbnail($row, true),
+                'CONTENT_IMAGE_URL' => $image_url,
                 'CONTENT_USERNAME' => $object->get_username($row),
                 'CONTENT_AUTHOR' => $object->get_author($row),
                 'CONTENT_TIME_LABEL' => $object->get_most_relevant_time_label(),

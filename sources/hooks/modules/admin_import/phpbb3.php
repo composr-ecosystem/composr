@@ -404,7 +404,6 @@ class Hook_import_phpbb3
                 // These are done in the members-files stage
                 $avatar_url = '';
                 $photo_url = '';
-                $photo_thumb_url = '';
 
                 $password = $row['user_password'];
                 $type = 'phpbb3';
@@ -425,7 +424,6 @@ class Hook_import_phpbb3
                     '', // theme
                     $title, // title
                     $photo_url, // photo_url
-                    $photo_thumb_url, // photo_thumb_url
                     $avatar_url, // avatar_url
                     $signature, // signature
                     $preview_posts, // preview_posts

@@ -108,15 +108,15 @@ class Hook_whatsnew_galleries
             }
             $description = get_translated_text($row['the_description'], null, $lang);
             $member_id = (is_guest($row['submitter'])) ? null : strval($row['submitter']);
-            $thumbnail = $row['thumb_url'];
-            if ($thumbnail != '') {
-                if (url_is_local($thumbnail)) {
-                    $thumbnail = get_custom_base_url() . '/' . $thumbnail;
+            $image_url = $row['thumb_url'];
+            if ($image_url != '') {
+                if (url_is_local($image_url)) {
+                    $image_url = get_custom_base_url() . '/' . $image_url;
                 }
             } else {
-                $thumbnail = null;
+                $image_url = null;
             }
-            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => 'dfe5850aa67c0cd00ff7d465248b87a5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'video', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
+            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => 'dfe5850aa67c0cd00ff7d465248b87a5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'IMAGE_URL' => $image_url, 'CONTENT_TYPE' => 'video', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
             require_code('urls2');
             mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode

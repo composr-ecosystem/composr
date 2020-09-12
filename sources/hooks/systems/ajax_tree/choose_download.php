@@ -109,20 +109,18 @@ class Hook_ajax_tree_choose_download
                         while (array_key_exists($counter, $rows)) {
                             $row = $rows[$counter];
 
-                            $view_url = $row['url'];
-                            if (url_is_local($view_url)) {
-                                $view_url = get_custom_base_url() . '/' . $view_url;
+                            $image_url = $row['url'];
+                            if (url_is_local($image_url)) {
+                                $image_url = get_custom_base_url() . '/' . $image_url;
                             }
-                            $thumb_url = ensure_thumbnail($row['url'], $row['thumb_url'], 'galleries', 'images', $row['id']);
                             $description_image = get_translated_tempcode('images', $row, 'the_description');
-                            $thumb = do_image_thumb($thumb_url, '');
                             $iedit_url = new Tempcode();
                             $_content = do_template('DOWNLOAD_SCREEN_IMAGE', [
                                 '_GUID' => '45905cd5823af4b066ccbc18a39edd74',
                                 'ID' => strval($row['id']),
-                                'VIEW_URL' => $view_url,
+                                'TITLE' => get_translated_text($row['title']),
                                 'EDIT_URL' => $iedit_url,
-                                'THUMB' => $thumb,
+                                'IMAGE_URL' => $image_url,
                                 'DESCRIPTION' => $description_image,
                             ]);
 

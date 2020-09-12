@@ -1033,13 +1033,12 @@ class Forum_driver_cns extends Forum_driver_base
     }
 
     /**
-     * Get the photo thumbnail URL for the specified member ID.
+     * Get the photo URL for the specified member ID.
      *
      * @param  MEMBER $member The member ID
-     * @param  boolean $full Get full photo
      * @return URLPATH The URL (blank: none)
      */
-    public function get_member_photo_url($member, $full = false)
+    public function get_member_photo_url($member)
     {
         if ($member == db_get_first_id()) {
             return '';
@@ -1058,19 +1057,7 @@ class Forum_driver_cns extends Forum_driver_base
             return $this->get_member_avatar_url($member);
         }
 
-        if ($full) {
-            $pic = $this->get_member_row_field($member, 'm_photo_url');
-        } else {
-            $pic = $this->get_member_row_field($member, 'm_photo_thumb_url');
-
-            if ($pic == '') {
-                $photo_url = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member, 'm_photo_url');
-                if ($photo_url != '') {
-                    require_code('images');
-                    $pic = ensure_thumbnail($photo_url, $pic, 'cns_photos', 'f_members', $member, 'm_photo_thumb_url');
-                }
-            }
-        }
+        $pic = $this->get_member_row_field($member, 'm_photo_url');
 
         if ($pic === null) {
             $pic = '';

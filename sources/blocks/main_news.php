@@ -562,14 +562,12 @@ PHP;
         $category_url = build_url(['page' => 'news', 'type' => 'browse', 'id' => $news_cat_row['id']], $zone);
 
         if ($myrow['news_image'] != '') {
-            $img_raw = $myrow['news_image'];
-            if (url_is_local($img_raw)) {
-                $img_raw = $base_url . '/' . $img_raw;
+            $rep_image_url = $myrow['news_image'];
+            if (url_is_local($rep_image_url)) {
+                $rep_image_url = $base_url . '/' . $rep_image_url;
             }
-            $img = $img_raw;
         } else {
-            $img_raw = get_news_category_image_url($news_cat_row['nc_img']);
-            $img = $img_raw;
+            $rep_image_url = get_news_category_image_url($news_cat_row['nc_img']);
         }
 
         // SEO
@@ -586,8 +584,7 @@ PHP;
             'CATEGORY' => $category,
             'CATEGORY_URL' => $category_url,
             '_CATEGORY' => strval($myrow['news_category']),
-            'IMG' => $img,
-            '_IMG' => $img_raw,
+            'REP_IMAGE_URL' => $rep_image_url,
             'DATE' => $date,
             'DATE_RAW' => strval($myrow['date_and_time']),
             'NEWS_TITLE' => $news_title,

@@ -227,7 +227,7 @@ class Hook_addon_registry_newsletter
                 'URL' => placeholder_url(),
                 'NAME' => lorem_word(),
                 'DESCRIPTION' => lorem_paragraph(),
-                'THUMBNAIL' => placeholder_image_url(),
+                'IMAGE_URL' => placeholder_image_url(),
                 'CONTENT_TYPE' => lorem_word(),
                 'CONTENT_ID' => placeholder_id(),
                 'CATALOGUE' => lorem_word(),
@@ -237,7 +237,7 @@ class Hook_addon_registry_newsletter
                 'I' => '1',
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => $_content,
-                'THUMBNAIL' => placeholder_image_url(),
+                'IMAGE_URL' => placeholder_image_url(),
             ], null, false, null, '.txt', 'text');
             $automatic[] = $tmp->evaluate();
         }

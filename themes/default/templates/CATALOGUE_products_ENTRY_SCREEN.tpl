@@ -19,7 +19,7 @@
 	<div class="box box---catalogue-products-entry-screen"><div class="box-inner">
 		<div class="hproduct"{$?,{$MATCH_KEY_MATCH,_WILD:_WILD:browse}, itemscope="itemscope" itemtype="http://schema.org/Offer"}>
 			<div class="clearfix">
-				{+START,IF_NON_EMPTY,{FIELD_7_THUMB}}
+				{+START,IF_NON_EMPTY,{FIELD_7}}
 					<p class="catalogue-entry-box-thumbnail">
 						{$REPLACE, rel="lightbox", rel="lightbox" itemprop="image",{FIELD_7}}
 					</p>

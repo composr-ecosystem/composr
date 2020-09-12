@@ -495,11 +495,10 @@ class Module_filedump
                 }
 
                 // Thumbnail
-                $thumbnail = do_image_thumb($image_url, $file['description_2'], false, false, null, null, true);
                 $thumbnails[] = [
                     'FILENAME' => $filename,
                     'SUBPATH' => $_subpath,
-                    'THUMBNAIL' => $thumbnail,
+                    'IMAGE_URL' => $image_url,
                     'IS_IMAGE' => $is_image,
                     'URL' => $url,
                     'DESCRIPTION' => $file['description_2'],

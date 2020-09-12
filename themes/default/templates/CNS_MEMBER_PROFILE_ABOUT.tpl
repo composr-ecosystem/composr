@@ -270,7 +270,7 @@
 				<h2>{!PHOTO}</h2>
 
 				<div class="cns-member-profile-photo">
-					<a rel="lightbox" href="{$ENSURE_PROTOCOL_SUITABILITY*,{PHOTO_URL}}"><img src="{PHOTO_THUMB_URL*}" alt="{!PHOTO}" class="photo" itemprop="primaryImageOfPage" /></a>
+					<a rel="lightbox" href="{$ENSURE_PROTOCOL_SUITABILITY*,{PHOTO_URL}}"><img src="{$THUMBNAIL*,{PHOTO_URL}}" alt="{!PHOTO}" class="photo" itemprop="primaryImageOfPage" /></a>
 				</div>
 			{+END}
 		{+END}

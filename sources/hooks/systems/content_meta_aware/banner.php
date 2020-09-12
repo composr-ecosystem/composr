@@ -62,8 +62,8 @@ class Hook_content_meta_aware_banner extends Hook_CMA
             'description_field' => 'caption',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => 'img_url',
-            'thumb_field_is_theme_image' => false,
+            'image_field' => 'img_url',
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/cms/banners',
 
             'view_page_link_pattern' => '_SEARCH:banners:view:source=_WILD',

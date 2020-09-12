@@ -4,7 +4,7 @@
 	<ul>
 		{+START,LOOP,IMAGES}
 			<li>
-				<a href="#slider_{_loop_key*}"><img alt="" src="{$?*,{$PREG_MATCH,^\d+px$,{WIDTH}},{$THUMBNAIL,{FULL_URL},{$REPLACE,px,,{WIDTH}}x{$REPLACE,px,,{HEIGHT}},,,,pad,both},{FULL_URL}}" class="{TRANSITION_TYPE*}" /></a>
+				<a href="#slider_{_loop_key*}"><img alt="" src="{$?*,{$PREG_MATCH,^\d+px$,{WIDTH}},{$THUMBNAIL,{IMAGE_URL},{$REPLACE,px,,{WIDTH}}x{$REPLACE,px,,{HEIGHT}},,,,pad,both},{IMAGE_URL}}" class="{TRANSITION_TYPE*}" /></a>
 				<div class="label_text">{$PARAGRAPH,{TITLE*}}</div>
 			</li>
 		{+END}

@@ -96,7 +96,6 @@ class Hook_task_import_wordpress
                                 '', // theme
                                 '', // title
                                 '', // photo_url
-                                '', // photo_thumb_url
                                 null, // avatar_url
                                 '', // signature
                                 null, // preview_posts

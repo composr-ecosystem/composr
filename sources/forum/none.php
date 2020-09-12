@@ -361,7 +361,7 @@ class Forum_driver_none extends Forum_driver_base
     }
 
     /**
-     * Get the photo thumbnail URL for the specified member ID.
+     * Get the photo URL for the specified member ID.
      *
      * @param  MEMBER $member The member ID
      * @param  boolean $full Get full photo

@@ -30,7 +30,7 @@ class phpdoc_test_set extends cms_test_case
             'Strip system code from an e-mail component.',
             'Send out an e-mail about us not recognising an e-mail address for an incoming e-mail.',
             'Output a login page.',
-            'Find an entry thumbnail.',
+            'Find an entry image.',
             'Standard code module initialisation function.',
             'Provides a hook for file synchronisation between mirrored servers.',
             'Check the given master password is valid.',

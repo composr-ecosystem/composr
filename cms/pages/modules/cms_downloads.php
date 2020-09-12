@@ -462,7 +462,7 @@ class Module_cms_downloads extends Standard_crud_module
         $fields->attach(form_input_text_comcode(do_lang_tempcode('ADDITIONAL_INFO'), do_lang_tempcode('DESCRIPTION_ADDITIONAL_INFO'), 'additional_details', $additional_details, false));
         if ($id !== null) {
             if (addon_installed('galleries')) {
-                $images = $GLOBALS['SITE_DB']->query_select('images', ['thumb_url', 'the_description', 'add_date'], ['cat' => 'download_' . strval($id)], 'ORDER BY add_date,id', 200);
+                $images = $GLOBALS['SITE_DB']->query_select('images', ['url', 'the_description', 'add_date'], ['cat' => 'download_' . strval($id)], 'ORDER BY add_date,id', 200);
                 if (empty($images)) {
                     $fields->attach($image_upload_field);
                 } else {
@@ -472,9 +472,9 @@ class Module_cms_downloads extends Standard_crud_module
                     foreach ($images as $i => $image) {
                         $selected = ($i + 1) == $default_pic;
                         if ($selected) {
-                            $selected_path = $image['thumb_url'];
+                            $selected_path = $image['url'];
                         }
-                        $radios->attach(form_input_radio_entry('default_pic', strval($i + 1), $selected, do_image_thumb($image['thumb_url'], get_translated_tempcode('images', $image, 'the_description'), false, false, 50, 50)));
+                        $radios->attach(form_input_radio_entry('default_pic', strval($i + 1), $selected, do_image_thumb($image['url'], get_translated_tempcode('images', $image, 'the_description'), false, false, 50, 50)));
                     }
 
                     $fields->attach(form_input_radio(do_lang_tempcode('DEFAULT_IMAGE'), do_lang_tempcode('DESCRIPTION_DEFAULT_IMAGE'), 'default_pic', $radios, false, true, $selected_path));
@@ -636,10 +636,10 @@ class Module_cms_downloads extends Standard_crud_module
             require_code('permissions2');
             set_category_permissions_from_environment('galleries', 'download_' . strval($id));
 
-            $img_urls = get_url('', 'img_file', 'uploads/galleries', 0, CMS_UPLOAD_IMAGE, true);
+            $img_urls = get_url('', 'img_file', 'uploads/galleries', 0, CMS_UPLOAD_IMAGE);
             if ($img_urls[0] != '') {
                 require_code('galleries2');
-                add_image('', 'download_' . strval($id), '', $img_urls[0], $img_urls[1], 1, 0, 0, 0, '');
+                add_image('', 'download_' . strval($id), '', $img_urls[0], 1, 0, 0, 0, '');
             }
         }
 
@@ -713,10 +713,10 @@ class Module_cms_downloads extends Standard_crud_module
         $additional_details = post_param_string('additional_details', STRING_MAGIC_NULL);
         $default_pic = post_param_integer('default_pic', fractional_edit() ? INTEGER_MAGIC_NULL : 1);
         if (addon_installed('galleries')) {
-            $img_urls = get_url('', 'img_file', 'uploads/galleries', 0, CMS_UPLOAD_IMAGE, true);
+            $img_urls = get_url('', 'img_file', 'uploads/galleries', 0, CMS_UPLOAD_IMAGE);
             if ($img_urls[0] != '') {
                 require_code('galleries2');
-                add_image('', 'download_' . strval($id), '', $img_urls[0], $img_urls[1], 1, 0, 0, 0, '');
+                add_image('', 'download_' . strval($id), '', $img_urls[0], 1, 0, 0, 0, '');
                 $default_pic = 1;
             }
         }
@@ -1054,8 +1054,8 @@ class Module_cms_downloads_cat extends Standard_crud_module
 
         $notes = post_param_string('notes', '');
 
-        require_code('themes2');
-        $rep_image = resize_rep_image(post_param_image('image', 'uploads/repimages', null, false));
+        require_code('images2');
+        $rep_image = post_param_image('image', 'uploads/repimages', null, false);
 
         $metadata = actual_metadata_get_fields('download_category', null);
 
@@ -1095,8 +1095,8 @@ class Module_cms_downloads_cat extends Standard_crud_module
         $notes = post_param_string('notes', STRING_MAGIC_NULL);
 
         if (!fractional_edit()) {
-            require_code('themes2');
-            $rep_image = resize_rep_image(post_param_image('image', 'uploads/repimages', null, false, true));
+            require_code('images2');
+            $rep_image = post_param_image('image', 'uploads/repimages', null, false, true);
         } else {
             $rep_image = STRING_MAGIC_NULL;
         }

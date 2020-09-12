@@ -619,11 +619,6 @@
   </parameter>
 
   <parameter
-    name="SetAclParameter54" description="Sets the ACL on the right file" defaultValue="{Application Path}/uploads/cns_photos_thumbs" tags="Hidden">
-    <parameterEntry type="ProviderPath" scope="setAcl" match="composr/uploads/cns_photos_thumbs" />
-  </parameter>
-
-  <parameter
     name="SetAclParameter55" description="Sets the ACL on the right file" defaultValue="{Application Path}/uploads/cns_avatars" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="composr/uploads/cns_avatars" />
   </parameter>

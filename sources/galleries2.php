@@ -38,13 +38,12 @@ function init__galleries2()
  *
  * @param  boolean $is_edit Whether this is for an edit operation
  * @param  URLPATH $url URL to the image (blank: not known yet, calculate here if possible)
- * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet, calculate here if possible)
  * @param  ?string $filename Filename of image (null: not known yet, calculate here if possible)
  * @param  string $title Title of image (blank: not known yet, calculate here if possible)
  * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
  * @return array Tuple of image details
  */
-function image_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', $filename = null, $title = '', $cat = '')
+function image_get_defaults__post($is_edit = false, $url = '', $filename = null, $title = '', $cat = '')
 {
     if (($is_edit) && (fractional_edit())) {
         if ($title == '') {
@@ -65,11 +64,10 @@ function image_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', 
 
     require_code('uploads');
 
-    if (($url == '') || ($thumb_url == '')) {
+    if ($url == '') {
         $_filename = '';
-        $_thumb_url = '';
-        require_code('themes2');
-        $_url = post_param_image('image', 'uploads/galleries', null, true, $is_edit, $_filename, $_thumb_url);
+        require_code('images2');
+        $_url = post_param_image('image', 'uploads/galleries', null, true, $is_edit, $_filename);
         if ($url == '') {
             if ($_url != '') {
                 $url = $_url;
@@ -78,21 +76,11 @@ function image_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', 
         if ($url == '') {
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
-        if ($thumb_url == '') {
-            if ($_thumb_url != '') {
-                $thumb_url = $_thumb_url;
-            }
-        }
         if ($filename === null) {
             if ($_filename != '') {
                 $filename = $_filename;
             }
         }
-    }
-
-    $thumb_url = image_get_default_thumb_url($url, $thumb_url, $filename);
-    if ($thumb_url == '') {
-        warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
     }
 
     if ($title == '') {
@@ -102,7 +90,7 @@ function image_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', 
     list(
         $title,
         $cat,
-    ) = image_get_default_metadata($url, $thumb_url, $filename, $title, $cat);
+    ) = image_get_default_metadata($url, $filename, $title, $cat);
     if (($title == '') && (get_option('gallery_media_title_required') != '0')) {
         warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'title'));
     }
@@ -112,7 +100,6 @@ function image_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', 
 
     return [
         $url,
-        $thumb_url,
         $filename,
         $title,
         $cat,
@@ -123,13 +110,12 @@ function image_get_defaults__post($is_edit = false, $url = '', $thumb_url = '', 
  * Get image details from metadata.
  *
  * @param  URLPATH $url URL to the image (blank: not known yet)
- * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet)
  * @param  ?string $filename Filename of image (null: not known yet)
  * @param  string $title Title of image (blank: not known yet, calculate here if possible)
  * @param  string $cat Gallery (blank: not known yet, calculate here if possible)
  * @return array Tuple of image details
  */
-function image_get_default_metadata($url = '', $thumb_url = '', $filename = null, $title = '', $cat = '')
+function image_get_default_metadata($url = '', $filename = null, $title = '', $cat = '')
 {
     if ($title == '') {
         if ($url != '') {
@@ -152,33 +138,6 @@ function image_get_default_metadata($url = '', $thumb_url = '', $filename = null
         $title,
         $cat,
     ];
-}
-
-/**
- * Create an image thumbnail.
- *
- * @param  URLPATH $url URL to the image (blank: not known yet)
- * @param  URLPATH $thumb_url URL to the thumbnail image (blank: not known yet, calculate here if possible)
- * @param  ?string $filename Filename of image (null: not known yet, calculate here if possible)
- * @return URLPATH Thumbnail URL (blank: could not generate)
- */
-function image_get_default_thumb_url($url = '', $thumb_url = '', $filename = null)
-{
-    if ($thumb_url == '') {
-        if ($url != '') {
-            if ($filename === null) {
-                $filename = rawurldecode(basename($url));
-            }
-            if (empty($filename)) {
-                $filename = get_secure_random_string() . '.png';
-            }
-
-            list($thumb_path, $thumb_url) = find_unique_path('uploads/galleries_thumbs', filter_naughty($filename), true);
-            $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), true);
-        }
-    }
-
-    return $thumb_url;
 }
 
 /**
@@ -809,7 +768,6 @@ function decache_gallery_blocks()
  * @param  ID_TEXT $cat The gallery name
  * @param  mixed $description The image description (either language string map or string)
  * @param  URLPATH $url The URL to the actual image
- * @param  URLPATH $thumb_url The URL to the thumbnail of the actual image
  * @param  BINARY $validated Whether the image has been validated for display on the site
  * @param  BINARY $allow_rating Whether the image may be rated
  * @param  SHORT_INTEGER $allow_comments Whether the image may be commented upon
@@ -825,7 +783,7 @@ function decache_gallery_blocks()
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the new entry
  */
-function add_image($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
+function add_image($title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
 {
     if ((get_param_string('type', null) !== '__import') && (is_string($title))) {
         require_code('global4');
@@ -852,7 +810,6 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
         'notes' => $notes,
         'submitter' => $submitter,
         'url' => $url,
-        'thumb_url' => $thumb_url,
         'cat' => $cat,
         'validated' => $validated,
     ];
@@ -937,7 +894,6 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
  * @param  ID_TEXT $cat The gallery name
  * @param  LONG_TEXT $description The image description
  * @param  URLPATH $url The URL to the actual image
- * @param  URLPATH $thumb_url The URL to the thumbnail of the actual image
  * @param  BINARY $validated Whether the image has been validated for display on the site
  * @param  BINARY $allow_rating Whether the image may be rated
  * @param  SHORT_INTEGER $allow_comments Whether the image may be commented upon
@@ -952,7 +908,7 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
+function edit_image($id, $title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
@@ -974,7 +930,6 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
 
     require_code('files2');
     delete_upload('uploads/galleries', 'images', 'url', 'id', $id, $url);
-    delete_upload('uploads/galleries_thumbs', 'images', 'thumb_url', 'id', $id, $thumb_url);
 
     if (!addon_installed('unvalidated')) {
         $validated = 1;
@@ -994,7 +949,6 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
         'validated' => $validated,
         'cat' => $cat,
         'url' => $url,
-        'thumb_url' => $thumb_url,
     ];
     $update_map += lang_remap('title', $_title, $title);
     $update_map += lang_remap_comcode('the_description', $_description, $description);
@@ -1091,7 +1045,6 @@ function delete_image($id, $delete_full = true)
     if ($delete_full) {
         require_code('files2');
         delete_upload('uploads/galleries', 'images', 'url', 'id', $id);
-        delete_upload('uploads/galleries_thumbs', 'images', 'thumb_url', 'id', $id);
     }
 
     // Delete from database
@@ -1111,7 +1064,6 @@ function delete_image($id, $delete_full = true)
 
     require_code('uploads2');
     clean_empty_upload_directories('uploads/galleries');
-    clean_empty_upload_directories('uploads/galleries_thumbs');
 
     log_it('DELETE_IMAGE', strval($id), get_translated_text($title));
 
@@ -2009,7 +1961,6 @@ function reorganise_uploads__gallery_images($where = [], $tolerate_errors = fals
 {
     require_code('uploads2');
     reorganise_uploads('image', 'uploads/galleries', 'url', $where, false, $tolerate_errors);
-    reorganise_uploads('image', 'uploads/galleries_thumbs', 'thumb_url', $where, false, $tolerate_errors);
 }
 /**
  * Reorganise the gallery video uploads.
@@ -2105,8 +2056,6 @@ function add_gallery_media_wrap($url, $cat, $member_id, $allow_rating, $allow_co
     } else {
         // Image...
 
-        $thumb_url = image_get_default_thumb_url($url, '', $filename);
-
         // Images cleanup pipeline
         $maximum_dimension = intval(get_option('maximum_image_size'));
         $watermark = (post_param_integer('watermark', 0) == 1);
@@ -2118,9 +2067,9 @@ function add_gallery_media_wrap($url, $cat, $member_id, $allow_rating, $allow_co
         list(
             $title,
             $cat,
-        ) = image_get_default_metadata($url, $thumb_url, $filename);
+        ) = image_get_default_metadata($url, $filename);
 
-        $id = add_image($title, $cat, '', $url, $thumb_url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time);
+        $id = add_image($title, $cat, '', $url, 1, $allow_rating, $allow_comments_reviews, $allow_trackbacks, $notes, null, $time);
         $path = convert_url_to_path($url);
         if ($path !== null) {
             $exif = get_exif_data($path, $filename);

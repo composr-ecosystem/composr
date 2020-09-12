@@ -130,23 +130,16 @@ function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zo
     $breadcrumbs = $include_breadcrumbs ? breadcrumb_segments_to_tempcode(download_breadcrumbs($row['category_id'], ($root === null) ? get_param_integer('keep_download_root', null) : $root, true, $zone)) : new Tempcode();
 
     // Download has image?
-    $pic_suffix = '';
-    $thumb_url = '';
-    $full_img_url = '';
+    $rep_image_url = '';
     if ((addon_installed('galleries')) && ($pic) && (array_key_exists('id', $row))) {
         // Images
-        $rows = $GLOBALS['SITE_DB']->query_select('images', ['url', 'thumb_url', 'id'], ['cat' => 'download_' . strval($row['id'])], '', 1, $row['default_pic'] - 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('images', ['url', 'id'], ['cat' => 'download_' . strval($row['id'])], '', 1, $row['default_pic'] - 1);
         if (array_key_exists(0, $rows)) {
-            $pic_suffix = '_pic';
-            require_code('images');
-            $full_img_url = $rows[0]['url'];
-            $thumb_url = ensure_thumbnail($rows[0]['url'], $rows[0]['thumb_url'], 'galleries', 'images', $rows[0]['id']);
-            $imgcode = do_image_thumb($thumb_url, do_lang('THUMBNAIL'));
-        } else {
-            $imgcode = new Tempcode();
+            $rep_image_url = $rows[0]['url'];
+            if (url_is_local($rep_image_url)) {
+                $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
+            }
         }
-    } else {
-        $imgcode = new Tempcode();
     }
 
     // Rating
@@ -191,9 +184,6 @@ function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zo
     }
 
     // Final template
-    if (($full_img_url != '') && (url_is_local($full_img_url))) {
-        $full_img_url = get_custom_base_url() . '/' . $full_img_url;
-    }
     return do_template('DOWNLOAD_BOX', [
         '_GUID' => ($guid != '') ? $guid : '7a4737e21bdb4bd15ac5fe8570915d08',
         'ORIGINAL_FILENAME' => $row['original_filename'],
@@ -213,9 +203,7 @@ function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zo
         'URL' => $view_url,
         'NAME' => is_string($row['name']) ? $row['name'] : get_translated_text($row['name']),
         'BREADCRUMBS' => $breadcrumbs,
-        'IMG_URL' => $thumb_url,
-        'FULL_IMG_URL' => $full_img_url,
-        'IMGCODE' => $imgcode,
+        'REP_IMAGE_URL' => $rep_image_url,
         'LICENCE' => ($licence === null) ? null : strval($licence),
         'LICENCE_TITLE' => $licence_title,
         'LICENCE_HYPERLINK' => $licence_hyperlink,
@@ -271,13 +259,12 @@ function render_download_category_box($row, $zone = '_SEARCH', $give_context = t
     $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE', escape_html(integer_format($num_entries)), escape_html(integer_format($num_children)));
 
     // Image
-    $img = $row['rep_image'];
-    $rep_image = null;
-    $_rep_image = null;
-    if ($img != '') {
-        require_code('images');
-        $_rep_image = $img;
-        $rep_image = do_image_thumb($img, $_title, false);
+    $rep_image_url = '';
+    if ($row['rep_image'] != '') {
+        $rep_image_url = $row['rep_image'];
+        if (url_is_local($rep_image_url)) {
+            $rep_image_url = get_custom_base_url() . '/' . $rep_image_url;
+        }
     }
 
     return do_template('SIMPLE_PREVIEW_BOX', [
@@ -287,8 +274,7 @@ function render_download_category_box($row, $zone = '_SEARCH', $give_context = t
         'TITLE' => $title,
         'TITLE_PLAIN' => $_title,
         'SUMMARY' => $summary,
-        '_REP_IMAGE' => $_rep_image,
-        'REP_IMAGE' => $rep_image,
+        'REP_IMAGE_URL' => $rep_image_url,
         'ENTRY_DETAILS' => $entry_details,
         'URL' => $url,
         'FRACTIONAL_EDIT_FIELD_NAME' => $give_context ? null : 'category',

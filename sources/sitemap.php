@@ -908,11 +908,11 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
         }
         */
 
-        if ((($meta_gather & SITEMAP_GATHER_IMAGE) != 0) && ($cma_info['thumb_field'] !== null)) {
+        if ((($meta_gather & SITEMAP_GATHER_IMAGE) != 0) && ($cma_info['image_field'] !== null)) {
             if (method_exists($this, '_find_theme_image')) {
                 $this->_find_theme_image($row, $struct);
             } else {
-                $struct['extra_meta']['image'] = $cma_ob->get_image_thumb_url($row);
+                $struct['extra_meta']['image'] = $cma_ob->get_image_url($row);
                 if ($struct['extra_meta']['image'] == '') {
                     $struct['extra_meta']['image'] = null;
                 }
@@ -987,7 +987,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             'id',
             'title',
             'category',
-            'thumb',
+            'image',
             'add_time',
             'edit_time',
             'submitter',

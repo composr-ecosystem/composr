@@ -54,7 +54,6 @@ class members_test_set extends cms_test_case
             '', // theme
             '', // title
             '', // photo_url
-            '', // photo_thumb_url
             null, // avatar_url
             '', // signature
             null, // preview_posts

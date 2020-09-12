@@ -8,7 +8,7 @@
 			<div class="clearfix cguid-{_GUID|*} raw-ajax-grow-spot">
 				<!-- TODO: This needs making looking good -->
 				{+START,LOOP,CONTENT_DATA}
-					{+START,IF_NON_EMPTY,{CONTENT_URL}}<a href="{CONTENT_URL*}">{+END}<img src="{CONTENT_THUMB_URL*}" alt="{CONTENT_TYPE_LABEL}" />{+START,IF_NON_EMPTY,{CONTENT_URL}}</a>{+END}
+					{+START,IF_NON_EMPTY,{CONTENT_URL}}<a href="{CONTENT_URL*}">{+END}<img src="{CONTENT_IMAGE_URL*}" alt="{CONTENT_TYPE_LABEL}" />{+START,IF_NON_EMPTY,{CONTENT_URL}}</a>{+END}
 				{+END}
 			</div>
 		</div>

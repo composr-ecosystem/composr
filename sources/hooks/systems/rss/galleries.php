@@ -114,6 +114,12 @@ class Hook_rss_galleries
                 $category = $galleries[$row['cat']];
                 $category_raw = $row['cat'];
 
+                if ($row['type'] == 'video') {
+                    $thumb_url = $row['thumb_url'];
+                } else {
+                    $thumb_url = $row['url'];
+                }
+
                 $view_url = build_url(['page' => 'galleries', 'type' => $row['type'], 'id' => $row['id']], get_module_zone('galleries'), [], false, false, true);
 
                 if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1') && ($row['allow_comments'] >= 1)) {
@@ -122,8 +128,6 @@ class Hook_rss_galleries
                     $if_comments = new Tempcode();
                 }
 
-                require_code('images');
-                $thumb_url = ensure_thumbnail($row['url'], $row['thumb_url'], 'galleries', $row['type'] . 's', $row['id']);
                 $enclosure_url = $row['url'];
                 if ((url_is_local($enclosure_url)) || ($row['type'] == 'image')) {
                     if (url_is_local($enclosure_url)) {
@@ -154,6 +158,7 @@ class Hook_rss_galleries
                     'AUTHOR' => $author,
                     'ID' => $id,
                     'NEWS' => $news,
+                    'THUMB_URL' => $thumb_url,
                     'DATE' => $news_date,
                     'DURATION' => array_key_exists('video_length', $row) ? (strval(intval(floor(floatval($row['video_length'])) / 60.0)) . ':' . strval($row['video_length'] % 60)) : null,
                     'KEYWORDS' => $keywords,

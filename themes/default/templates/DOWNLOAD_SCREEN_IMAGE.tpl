@@ -2,7 +2,7 @@
 
 <figure>
 	<div>
-		<a rel="lightbox" href="{VIEW_URL*}">{$TRIM,{THUMB}}</a>
+		<a rel="lightbox" href="{IMAGE_URL*}"><img class="img-thumb" alt="{TITLE*}" src="{$THUMBNAIL*,{IMAGE_URL}}" /></a>
 	</div>
 
 	{+START,IF_NON_EMPTY,{DESCRIPTION}}

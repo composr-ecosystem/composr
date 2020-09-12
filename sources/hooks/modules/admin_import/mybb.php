@@ -375,7 +375,6 @@ class Hook_import_mybb
                 // These are done in the members-files stage
                 $avatar_url = '';
                 $photo_url = '';
-                $photo_thumb_url = '';
 
                 $password = $row['password'];
                 $type = 'md5';
@@ -396,7 +395,6 @@ class Hook_import_mybb
                     '', // theme
                     $title, // title
                     $photo_url, // photo_url
-                    $photo_thumb_url, // photo_thumb_url
                     $avatar_url, // avatar_url
                     $signature, // signature
                     $preview_posts, // preview_posts

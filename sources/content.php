@@ -54,9 +54,9 @@ function init__content()
         define('PROMINENCE_FLAG_ACTIVE_ONLY', 1);
         define('PROMINENCE_FLAG_PINNED', 2);
 
-        define('THUMB_URL_FALLBACK_NONE', 0);
-        define('THUMB_URL_FALLBACK_SOFT', 1);
-        define('THUMB_URL_FALLBACK_HARD', 2);
+        define('IMAGE_URL_FALLBACK_NONE', 0);
+        define('IMAGE_URL_FALLBACK_SOFT', 1);
+        define('IMAGE_URL_FALLBACK_HARD', 2);
     }
 }
 
@@ -363,12 +363,12 @@ function extract_content_str_id_from_data($data, $cma_info)
  * @param  array $select The ID
  * @param  array $cma_info The info array for the content type
  * @param  array $fields The list of the standardised field names from hooks
- * @set id parent_category category title description thumb views order submitter author add_time edit_time date validated video
+ * @set id parent_category category title description image views order submitter author add_time edit_time date validated video
  * @param  ?string $table_alias The table alias (null: none)
  */
 function append_content_select_for_fields(&$select, $cma_info, $fields, $table_alias = null)
 {
-    if (in_array('thumb', $fields)) { // We may actually query against full_image too
+    if (in_array('image', $fields)) { // We may actually query against full_image too
         $fields[] = 'full_image';
     }
     if (in_array('title', $fields)) { // We may need a fall-back
@@ -1199,34 +1199,29 @@ abstract class Hook_CMA
      * Get content image URL for a content row.
      *
      * @param  array $row The database row for the content
-     * @param  integer $fallback_method Whether to provide a default image if there is no real image, a THUMB_URL_FALLBACK_* constant
-     * @param  boolean $prefer_large_image Whether we prefer a larger image
+     * @param  integer $fallback_method Whether to provide a default image if there is no real image, a IMAGE_URL_FALLBACK_* constant
      * @param  boolean $has_fallen_back Returned by reference, set if the image returned is a fallback image
      * @return URLPATH Image URL (blank: none)
      */
-    public function get_image_thumb_url($row, $fallback_method = 0, $prefer_large_image = false, &$has_fallen_back = false)
+    public function get_image_url($row, $fallback_method = 0, &$has_fallen_back = false)
     {
         $info = $this->info_basic_cached();
 
         switch ($fallback_method) {
-            case THUMB_URL_FALLBACK_NONE:
+            case IMAGE_URL_FALLBACK_NONE:
                 $fallback_theme_image = null;
                 break;
 
-            case THUMB_URL_FALLBACK_SOFT:
+            case IMAGE_URL_FALLBACK_SOFT:
                 $fallback_theme_image = isset($info['alternate_icon_theme_image']) ? $info['alternate_icon_theme_image'] : null;
                 break;
 
-            case THUMB_URL_FALLBACK_HARD:
+            case IMAGE_URL_FALLBACK_HARD:
                 $fallback_theme_image = isset($info['alternate_icon_theme_image']) ? $info['alternate_icon_theme_image'] : 'icons/no_image';
                 break;
         }
 
-        if (($prefer_large_image) && (isset($info['full_image_field']))) {
-            $field = $info['full_image_field'];
-        } else {
-            $field = $info['thumb_field'];
-        }
+        $field = $info['image_field'];
         if (is_array($field)) {
             $field = array_pop($field); // Anything ahead is just stuff we need to preload for the "CALL:" to work
         }
@@ -1234,7 +1229,7 @@ abstract class Hook_CMA
         if (($field === null) && ($info['support_custom_fields']) && (addon_installed('catalogues'))) {
             require_code('fields');
             require_code('hooks/systems/content_meta_aware/catalogue_entry');
-            $field = 'CALL: generate_catalogue_entry_thumb_url';
+            $field = 'CALL: generate_catalogue_entry_image_url';
             $content_type = $this->get_content_type();
             $catalogue_entry_id = get_bound_content_entry($content_type, $this->get_id($row));
             $row = ['id' => $catalogue_entry_id, 'c_name' => '_' . $content_type];
@@ -1250,7 +1245,7 @@ abstract class Hook_CMA
         }
 
         if (strpos($field, 'CALL:') !== false) {
-            $ret = call_user_func(trim(substr($field, 5)), $row, $prefer_large_image);
+            $ret = call_user_func(trim(substr($field, 5)), $row);
 
             if (($ret == '') && ($fallback_theme_image !== null)) {
                 $has_fallen_back = true;
@@ -1270,7 +1265,7 @@ abstract class Hook_CMA
             return '';
         }
 
-        if ($info['thumb_field_is_theme_image']) {
+        if ($info['image_field_is_theme_image']) {
             return find_theme_image($ret);
         }
 
@@ -1472,19 +1467,13 @@ abstract class Hook_CMA
     {
         $info = $this->info_basic_cached();
 
-        $img = $this->get_image_thumb_url($row);
-        if ($img != '') {
-            require_code('images');
-            $rep_image = do_image_thumb($img, $this->get_title($row), false);
-        } else {
-            $rep_image = new Tempcode();
-        }
+        $rep_image_url = $this->get_image_url($row);
 
         return do_template('SIMPLE_PREVIEW_BOX', [
             '_GUID' => ($guid == '') ? $this->get_content_type_universal_label($row) : $guid,
             'TITLE' => protect_from_escaping($this->get_title($row, FIELD_RENDER_HTML)),
             'SUMMARY' => protect_from_escaping($this->get_description($row, FIELD_RENDER_HTML)),
-            'REP_IMAGE' => $rep_image,
+            'REP_IMAGE_URL' => $rep_image_url,
             'URL' => $this->get_view_url($row),
         ]);
     }
@@ -1519,7 +1508,7 @@ abstract class Hook_CMA
     {
         require_code('images');
 
-        $img = $this->get_image_thumb_url($row, THUMB_URL_FALLBACK_HARD);
+        $img = $this->get_image_url($row, IMAGE_URL_FALLBACK_HARD);
 
         return do_image_thumb($img, $this->get_title($row), false);
     }
@@ -1535,7 +1524,7 @@ abstract class Hook_CMA
         require_code('images');
         require_code('templates');
 
-        $img = $this->get_image_thumb_url($row, THUMB_URL_FALLBACK_HARD);
+        $img = $this->get_image_url($row, IMAGE_URL_FALLBACK_HARD);
 
         $url = $this->get_view_url($row);
         $rep_image = do_image_thumb($img, $this->get_title($row), false);
@@ -1546,7 +1535,6 @@ abstract class Hook_CMA
 
         return hyperlink($url, $rep_image, false, false);
     }
-
 
     /**
      * Get headings of special relevant data this content type supports.

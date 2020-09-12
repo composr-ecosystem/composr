@@ -64,8 +64,8 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
             'description_field' => 'cc_description',
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => 'rep_image',
-            'thumb_field_is_theme_image' => false,
+            'image_field' => 'rep_image',
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => '_SEARCH:catalogues:category:_WILD',

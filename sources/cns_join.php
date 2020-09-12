@@ -343,7 +343,6 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
             '', // theme
             '', // title
             '', // photo_url
-            '', // photo_thumb_url
             null, // avatar_url
             '', // signature
             null, // preview_posts

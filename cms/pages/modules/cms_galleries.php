@@ -381,11 +381,11 @@ class Module_cms_galleries extends Standard_crud_module
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_GALLERY_IMPORT_TITLE'), 'set_title', '', get_option('gallery_media_title_required') == '2'));
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
-        if (function_exists('imagetypes')) {
-            if ($this->has_at_least_one_watermark($cat)) {
-                $fields->attach(form_input_tick(do_lang_tempcode('WATERMARK'), do_lang_tempcode('DESCRIPTION_WATERMARK'), 'watermark', true));
-            }
+
+        if ($this->has_at_least_one_watermark($cat)) {
+            $fields->attach(form_input_tick(do_lang_tempcode('WATERMARK'), do_lang_tempcode('DESCRIPTION_WATERMARK'), 'watermark', true));
         }
+
         // Feedback
         require_code('feedback2');
         $fields->attach(feedback_fields($this->content_type, true, true, true, false, ''));
@@ -747,7 +747,6 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ID_TEXT $cat The gallery
      * @param  LONG_TEXT $description The image description
      * @param  URLPATH $url URL to the image
-     * @param  URLPATH $thumb_url URL to the image thumbnail
      * @param  BINARY $validated Image validation status
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
@@ -756,7 +755,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $regions = [])
+    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $regions = [])
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -818,10 +817,6 @@ class Module_cms_galleries extends Standard_crud_module
 
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $url, false, null, IMAGE_CRITERIA_WEBSAFE));
 
-        if (!function_exists('imagetypes')) {
-            $thumb_width = get_option('thumb_width');
-            $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'image__thumb', null, true, $thumb_url, false, null, IMAGE_CRITERIA_WEBSAFE));
-        }
         $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION_ACCESSIBILITY'), 'description', $description, false));
         if ($validated == 0) {
             $validated = get_param_integer('validated', 0);
@@ -829,11 +824,13 @@ class Module_cms_galleries extends Standard_crud_module
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
         }
+        $validated_field = new Tempcode();
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
-            $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'image'), 'validated', $validated == 1));
+            $validated_field = form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'image'), 'validated', $validated == 1);
         }
+        $fields->attach($validated_field);
 
-        $do_watermark = ($this->has_at_least_one_watermark($cat)) && (function_exists('imagetypes'));
+        $do_watermark = ($this->has_at_least_one_watermark($cat));
         $do_rep_image = ((get_option('gallery_rep_image') == '1') && (($cat == '') || (has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', ['galleries', $cat]))));
         if (($do_watermark) || ($do_rep_image)) {
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '971e7db21c3b9d2c8cfbd6a910711514', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
@@ -949,7 +946,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'image', 'content_id' => strval($id)]));
 
-        $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $myrow['url'], $myrow['thumb_url'], $validated, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $regions);
+        $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $myrow['url'], $validated, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $regions);
 
         $ret[2] = $delete_fields;
         $ret[3] = '';
@@ -966,7 +963,6 @@ class Module_cms_galleries extends Standard_crud_module
     {
         list(
             $url,
-            $thumb_url,
             $filename,
             $title,
             $cat,
@@ -1003,7 +999,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
-        $id = add_image($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
+        $id = add_image($title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
 
         set_url_moniker('image', strval($id));
 
@@ -1029,7 +1025,7 @@ class Module_cms_galleries extends Standard_crud_module
         }
 
         if ((has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', ['galleries', $cat])) && (post_param_integer('rep_image', 0) == 1)) {
-            $GLOBALS['SITE_DB']->query_update('galleries', ['rep_image' => $thumb_url], ['name' => $cat], '', 1);
+            $GLOBALS['SITE_DB']->query_update('galleries', ['rep_image' => $url], ['name' => $cat], '', 1);
         }
 
         if (addon_installed('content_reviews')) {
@@ -1051,7 +1047,6 @@ class Module_cms_galleries extends Standard_crud_module
 
         list(
             $url,
-            $thumb_url,
             $filename,
             $title,
             $cat,
@@ -1117,10 +1112,10 @@ class Module_cms_galleries extends Standard_crud_module
 
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
-        edit_image($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
+        edit_image($id, $title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
 
         if ((!fractional_edit()) && (has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', ['galleries', $cat])) && (post_param_integer('rep_image', 0) == 1)) {
-            $GLOBALS['SITE_DB']->query_update('galleries', ['rep_image' => $thumb_url], ['name' => $cat], '', 1);
+            $GLOBALS['SITE_DB']->query_update('galleries', ['rep_image' => $url], ['name' => $cat], '', 1);
         }
 
         if (addon_installed('content_reviews')) {
@@ -1396,7 +1391,6 @@ class Module_cms_galleries_alt extends Standard_crud_module
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'));
             }
         }
-        $thumb_width = get_option('thumb_width');
         $validated_field = new Tempcode();
         if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_cat_require)) {
             if (addon_installed('unvalidated')) {
@@ -1412,8 +1406,9 @@ class Module_cms_galleries_alt extends Standard_crud_module
             $fields->attach($temp);
         }
 
+        $thumb_width = get_option('thumb_width');
         $thumbnail_required = false;//(!$no_thumb_needed) && (get_option('allow_audio_videos') == '0') && (find_theme_image('video_thumb', true) == ''); Vimeo won't require one for example
-        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('_DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'video__thumb', null, $thumbnail_required, $thumb_url, false, null, IMAGE_CRITERIA_WEBSAFE));
+        $fields->attach(form_input_upload_multi_source(do_lang_tempcode('THUMBNAIL'), do_lang_tempcode('DESCRIPTION_THUMBNAIL', escape_html($thumb_width)), $hidden, 'video__thumb', null, $thumbnail_required, $thumb_url, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         if (!$no_thumb_needed) {
             $fields->attach($description_field);
@@ -1967,8 +1962,8 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $is_member_synched = post_param_integer('is_member_synched', 0);
         $layout_mode = post_param_string('layout_mode', null);
 
-        require_code('themes2');
-        $url = resize_rep_image(post_param_image('image', 'uploads/repimages', null, false));
+        require_code('images2');
+        $url = post_param_image('image', 'uploads/repimages', null, false);
 
         $watermark_top_left = get_url('', 'watermark_top_left', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
         $watermark_top_right = get_url('', 'watermark_top_right', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
@@ -2017,8 +2012,8 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $layout_mode = post_param_string('layout_mode', null);
 
         if (!fractional_edit()) {
-            require_code('themes2');
-            $url = resize_rep_image(post_param_image('image', 'uploads/repimages', null, false, true));
+            require_code('images2');
+            $url = post_param_image('image', 'uploads/repimages', null, false, true);
 
             $watermark_top_left = get_url('', 'watermark_top_left', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
             if (($watermark_top_left[0] == '') && (post_param_integer('watermark_top_left_unlink', 0) != 1)) {

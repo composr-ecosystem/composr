@@ -182,7 +182,7 @@
 		1_REL=edit
 		1_ICON=admin/edit_this
 		{+START,IF,{$ADDON_INSTALLED,galleries}}
-			2_URL={ADD_IMG_URL*}
+			2_URL={ADD_IMAGE_URL*}
 			2_TITLE={!ADD_IMAGE}
 			2_ICON=admin/add
 		{+END}

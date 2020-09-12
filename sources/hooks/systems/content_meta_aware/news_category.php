@@ -62,8 +62,8 @@ class Hook_content_meta_aware_news_category extends Hook_CMA
             'description_field' => null,
             'description_field_dereference' => true,
             'description_field_supports_comcode' => true,
-            'thumb_field' => ['nc_img', 'CALL: generate_news_category_thumb_url'],
-            'thumb_field_is_theme_image' => false,
+            'image_field' => ['nc_img', 'CALL: generate_news_category_image_url'],
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => '_SEARCH:news:browse:_WILD',
@@ -185,12 +185,12 @@ class Hook_content_meta_aware_news_category extends Hook_CMA
 }
 
 /**
- * Find an entry thumbnail.
+ * Find an entry image.
  *
  * @param  array $row Database row of entry
- * @return string The thumbnail URL
+ * @return string The image URL
  */
-function generate_news_category_thumb_url($row)
+function generate_news_category_image_url($row)
 {
     require_code('news');
     return get_news_category_image_url($row['nc_img']);

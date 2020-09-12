@@ -27,16 +27,16 @@ class gallery_images_test_set extends cms_test_case
         require_code('galleries');
         require_code('galleries2');
 
-        $this->image_id = add_image('', '', '', 'http://www.msn.com/', 'images/test.jpg', 0, 0, 0, 0, '', null, null, null, 0, null);
+        $this->image_id = add_image('', '', '', 'images/test.jpg', 0, 0, 0, 0, '', null, null, null, 0, null);
 
-        $this->assertTrue('http://www.msn.com/' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]));
+        $this->assertTrue('images/test.jpg' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]));
     }
 
     public function testEditGalleryImage()
     {
-        edit_image($this->image_id, '', '', '', 'https://duckduckgo.com/', 'images/sample.jpg', 0, 0, 0, 0, '', '', '');
+        edit_image($this->image_id, '', '', '', 'images/sample.jpg', 0, 0, 0, 0, '', '', '');
 
-        $this->assertTrue('https://duckduckgo.com/' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]));
+        $this->assertTrue('images/sample.jpg' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]));
     }
 
     public function tearDown()

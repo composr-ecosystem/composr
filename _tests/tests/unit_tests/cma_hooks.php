@@ -68,7 +68,6 @@ class cma_hooks_test_set extends cms_test_case
             'content_type_universal_label_override',
             'video_field',
             'video_generator',
-            'full_image_field',
             'validation_is_minor',
             'uses_workflow',
         ];

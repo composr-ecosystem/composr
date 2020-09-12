@@ -99,7 +99,7 @@ class Hook_ecommerce_custom
      */
     public function save_config()
     {
-        require_code('themes2');
+        require_code('images2');
 
         $i = 0;
         $rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', ['*']));

@@ -267,7 +267,6 @@ The self-learning cache is most relevant when it comes to language strings. To a
 [surround]
 [media width="150" description="The cleanup tools screen" float="right"]data_custom/images/docs/tut_website_health/cleanup_1.png[/media]
 There are a number of optimisers:
- - [b]Regenerate image thumbnails[/b] -- this will regenerate all thumbnails (slow and probably not useful).
  - [b]Find orphaned uploads[/b] -- find on-disk uploads that seem to no longer be referenced.
  - [b]Delete page access statistics[/b] -- remove old page statistics to reduce database usage.
 

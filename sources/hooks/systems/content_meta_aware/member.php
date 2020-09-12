@@ -64,8 +64,8 @@ class Hook_content_meta_aware_member extends Hook_CMA
             'description_field' => 'm_title',
             'description_field_dereference' => false,
             'description_field_supports_comcode' => false,
-            'thumb_field' => ['m_avatar_url', 'm_photo_url', 'm_photo_thumb_url', 'CALL: generate_member_entry_thumb_url'],
-            'thumb_field_is_theme_image' => false,
+            'image_field' => ['m_avatar_url', 'm_photo_url', 'CALL: generate_member_entry_image_url'],
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => '_SEARCH:members:view:_WILD',
@@ -159,13 +159,12 @@ class Hook_content_meta_aware_member extends Hook_CMA
 }
 
 /**
- * Find an entry thumbnail.
+ * Find an entry image.
  *
  * @param  array $row Database row of entry
- * @param  boolean $prefer_large_image Whether we prefer a larger image
- * @return URLPATH The thumbnail URL (blank: none)
+ * @return URLPATH The image URL (blank: none)
  */
-function generate_member_entry_thumb_url($row, $prefer_large_image = false)
+function generate_member_entry_image_url($row)
 {
     if (!has_privilege(get_member(), 'view_member_photos')) {
         if (addon_installed('cns_member_avatars')) {
@@ -174,11 +173,7 @@ function generate_member_entry_thumb_url($row, $prefer_large_image = false)
             return '';
         }
     } else {
-        if ($prefer_large_image) {
-            $field = 'm_photo_url';
-        } else {
-            $field = 'm_photo_thumb_url';
-        }
+        $field = 'm_photo_url';
     }
 
     return $row[$field];

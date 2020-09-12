@@ -1,6 +1,6 @@
 <div class="gallery-carousel-mode-entry is-image" itemscope="itemscope" itemtype="http://schema.org/ImageObject">
 	<div class="media-box">
-		<img src="{THUMB_URL*}" {+START,IF_EMPTY,{_TITLE}}alt="{!IMAGE}"{+END} {+START,IF_NON_EMPTY,{_TITLE}}alt="{_TITLE*}"{+END} itemprop="contentURL" />
+		<img src="{$THUMBNAIL*,{IMAGE_URL}}" {+START,IF_EMPTY,{_TITLE}}alt="{!IMAGE}"{+END} {+START,IF_NON_EMPTY,{_TITLE}}alt="{_TITLE*}"{+END} itemprop="contentURL" />
 	</div>
 
 	{+START,IF_NON_EMPTY,{_TITLE}}
@@ -48,7 +48,7 @@
 					{$,{+START,IF,{$ADDON_INSTALLED,recommend}}
 					<li>
 						{+START,INCLUDE,ICON}NAME=file_types/email_link{+END}
-						<a href="{$PAGE_LINK*,:recommend:browse:subject={!ECARD_FOR_YOU_SUBJECT}:page_title={!SEND_AS_ECARD}:s_message={!ECARD_FOR_YOU,{$SELF_URL},{FULL_URL},{$SITE_NAME}}}">{!SEND_AS_ECARD}</a>
+						<a href="{$PAGE_LINK*,:recommend:browse:subject={!ECARD_FOR_YOU_SUBJECT}:page_title={!SEND_AS_ECARD}:s_message={!ECARD_FOR_YOU,{$SELF_URL},{IMAGE_URL},{$SITE_NAME}}}">{!SEND_AS_ECARD}</a>
 					</li>
 					{+END}}
 

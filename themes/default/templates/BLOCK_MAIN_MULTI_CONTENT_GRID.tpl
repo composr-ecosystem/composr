@@ -8,7 +8,7 @@
 			<div class="clearfix cguid-{_GUID|*} raw-ajax-grow-spot">
 				<!-- TODO: This needs making looking good -->
 				{+START,LOOP,CONTENT_DATA}
-					{CONTENT_THUMB_LINKED}
+					<a href="{CONTENT_URL*}"><img alt="{CONTENT_TITLE*}" src="{$THUMBNAIL*,{CONTENT_IMAGE_URL}}" /></a>
 				{+END}
 			</div>
 		</div>

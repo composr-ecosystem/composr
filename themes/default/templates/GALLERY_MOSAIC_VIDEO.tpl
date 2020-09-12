@@ -7,7 +7,7 @@
 	{+END}
 
 	<a class="gallery-mosaic-item-inner img-thumb-opaque" href="{VIEW_URL*}">{+START,TRIM}
-		{$TRIM,{THUMB}}
+		<img class="img-thumb" alt="{TITLE*}" src="{$THUMBNAIL*,{THUMB_URL}}" />
 		<div class="gallery-mosaic-item-overlay">
 			<div class="gallery-mosaic-item-overlay-top">
 				{+START,IF_PASSED,RATING_DETAILS}{+START,IF_NON_EMPTY,{$TRIM,{RATING_DETAILS}}}

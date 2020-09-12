@@ -182,10 +182,6 @@ class Module_admin_themewizard
      */
     public function step1()
     {
-        if (!function_exists('imagepng')) {
-            warn_exit(do_lang_tempcode('GD_NEEDED'));
-        }
-
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true], false, true);
         $text = do_lang_tempcode('THEMEWIZARD_1_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
@@ -412,10 +408,6 @@ class Module_admin_themewizard
      */
     public function make_logo()
     {
-        if (!function_exists('imagepng')) {
-            warn_exit(do_lang_tempcode('GD_NEEDED'));
-        }
-
         $post_url = build_url(['page' => '_SELF', 'type' => '_make_logo'], '_SELF');
 
         $root_theme = $GLOBALS['FORUM_DRIVER']->get_theme('');

@@ -28,12 +28,12 @@
  * @param  ID_TEXT $thumb_dir The directory, relative to the Composr install's uploads directory, where the thumbnails are stored. MINUS "_thumbs"
  * @param  ID_TEXT $table The name of the table that is storing what we are doing the thumbnail for
  * @param  AUTO_LINK $id The ID of the table record that is storing what we are doing the thumbnail for
- * @param  ID_TEXT $thumb_field_name The name of the table field where thumbnails are saved
+ * @param  ID_TEXT $image_field_name The name of the table field where thumbnails are saved
  * @param  ?integer $thumb_width The thumbnail width to use (null: default)
  * @param  boolean $only_make_smaller Whether to apply a 'never make the image bigger' rule for thumbnail creation (would affect very small images)
  * @return URLPATH The URL to the thumbnail
  */
-function _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thumb_field_name = 'thumb_url', $thumb_width = null, $only_make_smaller = false)
+function _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image_field_name = 'thumb_url', $thumb_width = null, $only_make_smaller = false)
 {
     if ($thumb_width === null) {
         $thumb_width = intval(get_option('thumb_width'));
@@ -50,7 +50,7 @@ function _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thum
 
     // Update database
     $db = get_db_for($table);
-    $db->query_update($table, [$thumb_field_name => $thumb_url], ['id' => $id], '', 1);
+    $db->query_update($table, [$image_field_name => $thumb_url], ['id' => $id], '', 1);
 
     if (!$is_vector) {
         // Do thumbnail conversion
@@ -137,12 +137,6 @@ function convert_image_plus($orig_url, $dimensions = null, $output_dir = 'upload
     if (is_file($save_path)) {
         cms_profile_end_for('convert_image_plus', $orig_url);
         return $thumbnail_url;
-    }
-
-    // Can't operate without GD
-    if (!function_exists('imagetypes')) {
-        cms_profile_end_for('convert_image_plus', $orig_url);
-        return $fallback_image;
     }
 
     disable_php_memory_limit();
@@ -850,4 +844,304 @@ function remove_white_edges($source)
     }
 
     return $source;
+}
+
+/**
+ * An image has been passed through by POST, either as a file (a new upload), a URL, a reference to an existing theme image, or as a filedump reference.
+ * Used with form_input_upload_multi_source.
+ * Get the image URL from the POST data.
+ *
+ * @param  ID_TEXT $name Form field prefix (input type suffixes will be added automatically)
+ * @param  ?PATH $upload_to Where to upload to (null: the correct place for $theme_image_type)
+ * @param  ?ID_TEXT $theme_image_type The directory of theme images to store under (null: do not support theme images)
+ * @param  boolean $required Whether an image is required
+ * @param  boolean $is_edit Whether this is an edit operation
+ * @param  ?string $filename Pass the filename back by reference (null: do not pass)
+ * @param  ?string $thumb_url Pass the thumbnail back by reference (null: do not pass & do not collect a thumbnail)
+ * @return ?URLPATH The URL (either to an independent upload, or the theme image, or a filedump URL) (null: leave alone, when doing an edit operation)
+ */
+function post_param_image($name = 'image', $upload_to = null, $theme_image_type = null, $required = true, $is_edit = false, &$filename = null, &$thumb_url = null)
+{
+    require_code('uploads');
+
+    $thumb_specify_name = $name . '__thumb__url';
+    $test = post_param_string($thumb_specify_name, '');
+    if ($test == '') {
+        $thumb_specify_name = $name . '__thumb__filedump';
+    }
+
+    // Upload
+    // ------
+
+    if ($upload_to === null) {
+        $upload_to = 'themes/default/images_custom/' . $theme_image_type;
+        @mkdir(get_custom_file_base() . '/' . $upload_to, 0777);
+        if (file_exists(get_custom_file_base() . '/' . $upload_to)) {
+            fix_permissions(get_custom_file_base() . '/' . $upload_to);
+            cms_file_put_contents_safe(get_custom_file_base() . '/' . $upload_to . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        } else {
+            $upload_to = 'themes/default/images_custom';
+        }
+    }
+
+    $field_file = $name . '__upload';
+    $thumb_attach_name = $name . '__thumb__upload';
+    is_plupload(true);
+    if (((array_key_exists($field_file, $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES[$field_file]['tmp_name']))))) {
+        $urls = get_url('', $field_file, $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+
+        if (substr($urls[0], 0, 8) != 'uploads/') {
+            $http_result = cms_http_request($urls[0], ['trigger_error' => false, 'byte_limit' => 0]);
+            if (($http_result->data === null) && ($http_result->message_b !== null)) {
+                attach_message($http_result->message_b, 'warn');
+            }
+        }
+
+        if ($thumb_url !== null) {
+            $thumb_url = $urls[1];
+        }
+        $filename = $urls[2];
+
+        return check_form_field_image($field_file, cms_rawurlrecode($urls[0]), get_custom_file_base() . '/' . rawurldecode($urls[0]));
+    }
+
+    // URL
+    // ---
+
+    $field_url = $name . '__url';
+    $url = post_param_string($field_url, '');
+    if ($url != '') {
+        $filename = urldecode(preg_replace('#\?.*#', '', basename($url)));
+
+        // Get thumbnail
+        $urls = get_url($field_url, '', $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+        if ($thumb_url !== null) {
+            $thumb_url = $urls[1];
+        }
+
+        return check_form_field_image($field_url, cms_rawurlrecode($url));
+    }
+
+    // Filedump
+    // --------
+
+    if (addon_installed('filedump')) {
+        $field_filedump = $name . '__filedump';
+        $url = post_param_string($field_filedump, '');
+        if ($url != '') {
+            $filename = urldecode(basename($url));
+
+            // Get thumbnail
+            $urls = get_url($field_filedump, '', $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+            if ($thumb_url !== null) {
+                $thumb_url = $urls[1];
+            }
+
+            return check_form_field_image($field_filedump, cms_rawurlrecode($url));
+        }
+    }
+
+    // Theme image
+    // -----------
+
+    $field_choose = $name . '__theme_image';
+    $theme_img_code = post_param_string($field_choose, '');
+    if ($theme_img_code != '') {
+        $url = find_theme_image($theme_img_code, false, true);
+
+        $filename = urldecode(preg_replace('#\?.*#', '', basename($url)));
+
+        // Get thumbnail
+        $_POST[$field_url] = $url; // FUDGE
+        $urls = get_url($field_url, '', $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+        if ($thumb_url !== null) {
+            $thumb_url = $urls[1];
+        }
+
+        return check_form_field_image($field_choose, cms_rawurlrecode($url));
+    }
+
+    // ---
+
+    if (!$required) {
+        if (($is_edit) && (post_param_integer($field_file . '_unlink', 0) != 1)) {
+            return null;
+        }
+
+        return '';
+    }
+
+    warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+    return null;
+}
+
+/**
+ * Check form images based on fields.xml. Usually a no-op.
+ *
+ * @param  string $name The name of the parameter
+ * @param  URLPATH $val The current value of the parameter (if blank, no-op)
+ * @param  ?PATH $delete_on_error File path to delete if there's an error (null: none)
+ * @return string Altered $val
+ */
+function check_form_field_image($name, $val, $delete_on_error = null)
+{
+    if ($val == '') {
+        return '';
+    }
+
+    require_code('input_filter');
+    require_code('images');
+
+    $restrictions = load_field_restrictions();
+
+    static $image_size_cache = [];
+
+    foreach ($restrictions as $_r => $_restrictions) {
+        $_r_exp = explode(',', $_r);
+        foreach ($_r_exp as $__r) {
+            if ((trim($__r) == '') || (simulated_wildcard_match($name, trim($__r), true))) {
+                foreach ($_restrictions as $bits) {
+                    list($restriction, $attributes) = $bits;
+
+                    if ((isset($attributes['error'])) && (substr($attributes['error'], 0, 1) == '!')) {
+                        $attributes['error'] = do_lang(substr($attributes['error'], 1));
+                    }
+
+                    // Pre-work
+                    if (!isset($image_size_cache[$val])) {
+                        $image_size = cms_getimagesize_url($val);
+                        $image_size_cache[$val] = $image_size;
+                        if ($image_size === false) {
+                            warn_exit(do_lang_tempcode('CORRUPT_FILE', escape_html($val)));
+                        }
+                    } else {
+                        $image_size = $image_size_cache[$val];
+                    }
+                    if (in_array(cms_strtolower_ascii($restriction), ['minaspectratio', 'maxaspectratio'])) {
+                        $matches = [];
+                        if (preg_match('#^([\d\.]+):([\d\.]+)$#', $attributes['embed'], $matches) != 0) {
+                            $_embed = float_to_raw_string(floatval($matches[1]) / floatval($matches[2]), 10, true);
+                        } else {
+                            $_embed = $attributes['embed'];
+                        }
+                    }
+                    if (in_array(cms_strtolower_ascii($restriction), ['maxfilesize'])) {
+                        $matches = [];
+                        if (preg_match('#^([\d\.]+)\s*B?$#i', $attributes['embed'], $matches) != 0) {
+                            $_embed = strval(intval(round(floatval($matches[1]))));
+                        } elseif (preg_match('#^([\d\.]+)\s*KB?$#i', $attributes['embed'], $matches) != 0) {
+                            $_embed = strval(intval(round(floatval($matches[1]) * 1024.0)));
+                        } elseif (preg_match('#^([\d\.]+)\s*MB?$#i', $attributes['embed'], $matches) != 0) {
+                            $_embed = strval(intval(round(floatval($matches[1]) * 1024.0 * 1024.0)));
+                        } else {
+                            $_embed = $attributes['embed'];
+                        }
+                    }
+
+                    switch (cms_strtolower_ascii($restriction)) {
+                        case 'minwidth':
+                            if (($image_size[0] !== null) && ($image_size[0] < intval($attributes['embed']))) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_TOO_NARROW', escape_html($val), strval(intval($attributes['embed']))));
+                            }
+                            break;
+
+                        case 'maxwidth':
+                            if (($image_size[0] !== null) && ($image_size[0] > intval($attributes['embed']))) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_TOO_WIDE', escape_html($val), strval(intval($attributes['embed']))));
+                            }
+                            break;
+
+                        case 'minheight':
+                            if (($image_size[1] !== null) && ($image_size[1] < intval($attributes['embed']))) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_TOO_SHORT', escape_html($val), strval(intval($attributes['embed']))));
+                            }
+                            break;
+
+                        case 'maxheight':
+                            if (($image_size[1] !== null) && ($image_size[1] > intval($attributes['embed']))) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_TOO_TALL', escape_html($val), strval(intval($attributes['embed']))));
+                            }
+                            break;
+
+                        case 'minaspectratio':
+                            if (($image_size[0] !== null) && ($image_size[1] !== null) && ($image_size[0] / $image_size[1] < floatval($_embed))) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_ASPECT_RATIO_TOO_LOW', escape_html($val), escape_html($attributes['embed'])));
+                            }
+                            break;
+
+                        case 'maxaspectratio':
+                            if (($image_size[0] !== null) && ($image_size[1] !== null) && ($image_size[0] / $image_size[1] > floatval($_embed))) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_ASPECT_RATIO_TOO_HIGH', escape_html($val), escape_html($attributes['embed'])));
+                            }
+                            break;
+
+                        case 'maxfilesize':
+                            if ($image_size[2] > intval($_embed)) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_FILESIZE_TOO_HIGH', escape_html($val), escape_html($attributes['embed'])));
+                            }
+                            break;
+
+                        case 'forcelossless':
+                            if (!is_image('unknown.' . $image_size[3], IMAGE_CRITERIA_LOSSLESS, true)) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_NOT_LOSSLESS', escape_html($val)));
+                            }
+                            break;
+
+                        case 'forceraster':
+                            if (!is_image('unknown.' . $image_size[3], IMAGE_CRITERIA_RASTER, true)) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_NOT_RASTER', escape_html($val)));
+                            }
+                            break;
+
+                        case 'forcevector':
+                            if (!is_image('unknown.' . $image_size[3], IMAGE_CRITERIA_VECTOR, true)) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_NOT_VECTOR', escape_html($val)));
+                            }
+                            break;
+
+                        case 'forcefileextension':
+                            if (!in_array($image_size[3], array_map('cms_strtolower_ascii', array_map('trim', explode(',', str_replace('.', '', $attributes['embed'])))))) {
+                                if ($delete_on_error !== null) {
+                                    unlink($delete_on_error);
+                                }
+                                warn_exit(array_key_exists('error', $attributes) ? make_string_tempcode($attributes['error']) : do_lang_tempcode('FXML_IMAGE_INVALID_FILE_EXTENSION', escape_html($val), escape_html($attributes['embed'])));
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    return $val;
 }

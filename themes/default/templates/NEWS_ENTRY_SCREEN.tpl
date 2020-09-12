@@ -35,7 +35,7 @@
 	</div>
 
 	<div class="news-entry-image">
-		<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG}}" alt="" />
+		<img width="100" height="100" src="{$THUMBNAIL*,{REP_IMAGE_URL},100x100}" alt="" />
 	</div>
 
 	<div itemprop="articleBody" class="clearfix">

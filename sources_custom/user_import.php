@@ -132,7 +132,6 @@ function do_user_import()
                     '', // theme
                     '', // title
                     $photo_url, // photo_url
-                    '', // photo_thumb_url
                     null, // avatar_url
                     '', // signature
                     null, // preview_posts
@@ -176,7 +175,6 @@ function do_user_import()
                 null, // theme
                 null, // title
                 $photo_url, // photo_url
-                null, // photo_thumb_url
                 null, // avatar_url
                 null, // signature
                 null, // preview_posts

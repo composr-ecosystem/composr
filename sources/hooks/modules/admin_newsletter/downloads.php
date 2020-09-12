@@ -86,21 +86,20 @@ class Hook_whatsnew_downloads
             $name = get_translated_text($row['name'], null, $lang);
             $description = get_translated_text($row['the_description'], null, $lang);
             $member_id = (is_guest($row['submitter'])) ? null : strval($row['submitter']);
-            $thumb_url = null;
+            $image_url = null;
             if (addon_installed('galleries')) {
-                $_thumbnail = $GLOBALS['SITE_DB']->query_select('images', ['thumb_url', 'add_date'], ['cat' => 'download_' . strval($row['id'])], 'ORDER BY add_date ASC', 1);
-                if (array_key_exists(0, $_thumbnail)) {
-                    $thumbnail = $_thumbnail[0]['thumb_url'];
-                    if ($thumbnail != '') {
-                        if (url_is_local($thumbnail)) {
-                            $thumbnail = get_custom_base_url() . '/' . $thumbnail;
+                $gallery_images = $GLOBALS['SITE_DB']->query_select('images', ['url', 'add_date'], ['cat' => 'download_' . strval($row['id'])], 'ORDER BY add_date ASC', 1);
+                if (array_key_exists(0, $gallery_images)) {
+                    $image_url = $gallery_images[0]['url'];
+                    if ($image_url != '') {
+                        if (url_is_local($image_url)) {
+                            $image_url = get_custom_base_url() . '/' . $image_url;
                         }
-                    } else {
-                        $thumbnail = null;
+                        break;
                     }
                 }
             }
-            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => 'bbd85ed54500b9d6df998e3c835b45e9', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'download', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
+            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => 'bbd85ed54500b9d6df998e3c835b45e9', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'IMAGE_URL' => $image_url, 'CONTENT_TYPE' => 'download', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
             require_code('urls2');
             mark_if_url_exists($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode

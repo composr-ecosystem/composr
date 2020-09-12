@@ -276,14 +276,9 @@ class Hook_addon_registry_galleries
             'sources/blocks/main_hero_slider.php',
             'themes/default/templates/BLOCK_MAIN_HERO_SLIDER.tpl',
             'data/images/homepage_hero_slider/index.html',
-            'data/images/homepage_hero_slider/full/index.html',
-            'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
-            'data/images/homepage_hero_slider/full/rustic.jpg',
-            'data/images/homepage_hero_slider/full/waterfall.jpg',
-            'data/images/homepage_hero_slider/thumbs/index.html',
-            'data/images/homepage_hero_slider/thumbs/bastei_bridge.png',
-            'data/images/homepage_hero_slider/thumbs/rustic.png',
-            'data/images/homepage_hero_slider/thumbs/waterfall.png',
+           'data/images/homepage_hero_slider/bastei_bridge.jpg',
+            'data/images/homepage_hero_slider/rustic.jpg',
+            'data/images/homepage_hero_slider/waterfall.jpg',
             'themes/default/templates/GALLERY_HOMEPAGE_HERO_SLIDE.tpl',
         ];
     }
@@ -343,7 +338,6 @@ class Hook_addon_registry_galleries
     {
         $tab_content = do_lorem_template('GALLERY_IMAGE_BOX', [
             'TITLE' => lorem_phrase(),
-            'THUMB' => placeholder_image(),
             'BREADCRUMBS' => lorem_phrase(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
             'ID' => placeholder_id(),
@@ -354,7 +348,6 @@ class Hook_addon_registry_galleries
             'URL' => placeholder_url(),
             'IMAGE_URL' => placeholder_image_url(),
             'DESCRIPTION' => lorem_paragraph(),
-            'THUMB_URL' => placeholder_image_url(),
             'GIVE_CONTEXT' => true,
         ]);
         return [
@@ -373,7 +366,6 @@ class Hook_addon_registry_galleries
     {
         $tab_content = do_lorem_template('GALLERY_VIDEO_BOX', [
             'TITLE' => lorem_phrase(),
-            'THUMB' => placeholder_image(),
             'BREADCRUMBS' => lorem_phrase(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
             'ID' => placeholder_id(),
@@ -447,12 +439,8 @@ class Hook_addon_registry_galleries
                 'FIRST_URL' => placeholder_image_url(),
                 'PREVIOUS_URL' => placeholder_image_url(),
                 'NEXT_URL' => placeholder_image_url(),
-                'FIRST_URL_FULL' => placeholder_image_url(),
-                'PREVIOUS_URL_FULL' => placeholder_image_url(),
-                'NEXT_URL_FULL' => placeholder_image_url(),
                 'TITLES' => [],
                 'IMAGES' => [],
-                'IMAGES_FULL' => [],
                 'HTML' => [],
                 'MILL' => '3000',
             ]), null, '', true),
@@ -565,10 +553,8 @@ class Hook_addon_registry_galleries
                 'ID' => strval($k),
                 'FILE_SIZE' => lorem_word(),
                 'SUBMITTER' => placeholder_id(),
-                'FULL_URL' => placeholder_url(),
-                'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),
-                'THUMB' => placeholder_image(),
+                'IMAGE_URL' => placeholder_image_url(),
                 'VIEW_URL' => placeholder_url(),
                 'ADD_DATE_RAW' => placeholder_date_raw(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
@@ -707,7 +693,7 @@ class Hook_addon_registry_galleries
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'SUBMITTER' => placeholder_id(),
                 'CLASS' => lorem_word(),
-                'THUMB' => placeholder_image(),
+                'IMAGE_URL' => placeholder_image_url(),
                 'VIEW_URL' => placeholder_url(),
                 'VIEW_URL_2' => placeholder_url(),
                 'TYPE' => lorem_word(),
@@ -800,14 +786,12 @@ class Hook_addon_registry_galleries
             'FILE_SIZE' => placeholder_filesize(),
             'RATING_DETAILS' => '',
             'CAT' => placeholder_id(),
-            'THUMB_URL' => placeholder_image_url(),
-            'FULL_URL' => placeholder_url(),
+            'IMAGE_URL' => placeholder_image_url(),
             'ID' => placeholder_id(),
             'VIEWS' => lorem_phrase(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
             'EDIT_DATE_RAW' => placeholder_date_raw(),
             'SUBMITTER' => placeholder_id(),
-            'THUMB' => placeholder_url(),
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
@@ -824,7 +808,7 @@ class Hook_addon_registry_galleries
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
                 'SUBMITTER' => placeholder_id(),
                 'CLASS' => lorem_word(),
-                'THUMB' => placeholder_image(),
+                'IMAGE_URL' => placeholder_image_url(),
                 'VIEW_URL' => placeholder_url(),
                 'VIEW_URL_2' => placeholder_url(),
                 'TYPE' => lorem_word(),
@@ -913,7 +897,7 @@ class Hook_addon_registry_galleries
         return [
             lorem_globalise(do_lorem_template('GALLERY_BOX', [
                 'GIVE_CONTEXT' => false,
-                'THUMB' => '',
+                'REP_IMAGE_URL' => placeholder_image_url(),
                 'NUM_VIDEOS' => placeholder_number(),
                 'NUM_IMAGES' => placeholder_number(),
                 'NUM_CHILDREN' => placeholder_number(),
@@ -923,7 +907,6 @@ class Hook_addon_registry_galleries
                 'ADD_DATE' => placeholder_date(),
                 'MEMBER_INFO' => lorem_paragraph(),
                 'URL' => placeholder_url(),
-                'PIC' => placeholder_image_url(),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph(),
                 'COMMENT_COUNT' => placeholder_number(),
@@ -948,9 +931,7 @@ class Hook_addon_registry_galleries
             'ID' => placeholder_id(),
             'FILE_SIZE' => lorem_word(),
             'SUBMITTER' => placeholder_id(),
-            'FULL_URL' => placeholder_url(),
-            'THUMB_URL' => placeholder_url(),
-            'THUMB' => placeholder_image(),
+            'IMAGE_URL' => placeholder_image_url(),
             'CAT' => lorem_word(),
             'VIEW_URL' => placeholder_url(),
             'ADD_DATE_RAW' => placeholder_date_raw(),
@@ -979,8 +960,7 @@ class Hook_addon_registry_galleries
             'FILE_SIZE' => lorem_word(),
             'SUBMITTER' => placeholder_id(),
             'FULL_URL' => placeholder_url(),
-            'THUMB_URL' => placeholder_url(),
-            'THUMB' => placeholder_image(),
+            'THUMB_URL' => placeholder_image_url(),
             'CAT' => lorem_word(),
             'VIEW_URL' => placeholder_url(),
             'VIDEO_DETAILS' => $video_details,
@@ -1074,8 +1054,10 @@ class Hook_addon_registry_galleries
         $nav = do_lorem_template('GALLERY_NAV', [
             'BACK_URL' => placeholder_url(),
             'NEXT_URL' => placeholder_url(),
-            'BACK_THUMB' => placeholder_image(),
-            'NEXT_THUMB' => placeholder_image(),
+            'BACK_IMAGE_URL' => placeholder_image_url(),
+            'BACK_ENTRY_TITLE' => lorem_phrase(),
+            'NEXT_IMAGE_URL' => placeholder_image_url(),
+            'NEXT_ENTRY_TITLE' => lorem_phrase(),
             '_X' => placeholder_number(),
             '_N' => placeholder_number(),
             'X' => placeholder_number(),
@@ -1139,7 +1121,7 @@ class Hook_addon_registry_galleries
                 'TRACKBACK_DETAILS' => lorem_sentence_html(),
                 'COMMENT_DETAILS' => $comment_details,
                 'EDIT_URL' => placeholder_url(),
-                'THUMB_URL' => placeholder_image_url(),
+                'IMAGE_URL' => placeholder_image_url(),
                 'NAV' => $nav,
                 'DESCRIPTION' => lorem_phrase(),
                 'VIDEO' => $video,
@@ -1171,7 +1153,7 @@ class Hook_addon_registry_galleries
                 'BACKGROUND_ID' => placeholder_id(),
                 'BACKGROUND_TYPE' => lorem_word(),
                 'BACKGROUND_URL' => placeholder_url(),
-                'BACKGROUND_THUMB_URL' => placeholder_image_url(),
+                'BACKGROUND_IMAGE_URL' => placeholder_image_url(),
                 'CONTENT_HTML' => $content_html,
                 'EDIT_URL' => placeholder_url(),
             ],
@@ -1211,10 +1193,8 @@ class Hook_addon_registry_galleries
                 'MEDIA_TYPE' => 'image',
                 'FILE_SIZE' => lorem_word(),
                 'SUBMITTER' => placeholder_id(),
-                'FULL_URL' => placeholder_url(),
-                'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),
-                'THUMB' => placeholder_image(),
+                'IMAGE_URL' => placeholder_image_url(),
                 'VIEW_URL' => placeholder_url(),
                 'VIEWS' => placeholder_id(),
                 'ADD_DATE_RAW' => placeholder_date_raw(),
@@ -1244,9 +1224,8 @@ class Hook_addon_registry_galleries
                 'FILE_SIZE' => lorem_word(),
                 'SUBMITTER' => placeholder_id(),
                 'FULL_URL' => placeholder_url(),
-                'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),
-                'THUMB' => placeholder_image(),
+                'THUMB_URL' => placeholder_image_url(),
                 'VIEW_URL' => placeholder_url(),
                 'VIDEO_DETAILS' => $video_details,
                 'VIEWS' => placeholder_id(),
@@ -1337,7 +1316,7 @@ class Hook_addon_registry_galleries
             'EDIT_DATE_RAW' => '',
             'SUBMITTER' => placeholder_id(),
             'IS_CURRENT' => true,
-            'THUMB' => placeholder_image(),
+            'IMAGE_URL' => placeholder_image_url(),
             'FULL_URL' => placeholder_url(),
             'VIEW_URL' => placeholder_url(),
             'VIEW_URL_2' => placeholder_url(),
@@ -1405,13 +1384,13 @@ class Hook_addon_registry_galleries
             set_global_category_access('gallery', 'lorem_2');
         }
 
-        add_image(lorem_phrase(), 'lorem_1', lorem_chunk(), placeholder_image_url(), '', 1, 1, 1, 1, '');
+        add_image(lorem_phrase(), 'lorem_1', lorem_chunk(), placeholder_image_url(), 1, 1, 1, 1, '');
 
         add_video(lorem_phrase(), 'lorem_1', lorem_chunk(), placeholder_image_url(), placeholder_image_url(), 1, 1, 1, 1, '', 5, 100, 100);
 
-        add_image(lorem_phrase(), 'lorem_2', lorem_chunk(), placeholder_image_url(), '', 1, 1, 1, 1, '');
+        add_image(lorem_phrase(), 'lorem_2', lorem_chunk(), placeholder_image_url(), 1, 1, 1, 1, '');
 
-        add_image(lorem_phrase(), 'member_' . strval(get_member()) . '_lorem_2', lorem_chunk(), placeholder_image_url(), '', 1, 1, 1, 1, '');
+        add_image(lorem_phrase(), 'member_' . strval(get_member()) . '_lorem_2', lorem_chunk(), placeholder_image_url(), 1, 1, 1, 1, '');
     }
 
     /**
@@ -1426,9 +1405,9 @@ class Hook_addon_registry_galleries
         $default_homepage_hero_slider_category = 'homepage_hero_slider';
 
         $default_homepage_hero_slides_urls = [
-            'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
-            'data/images/homepage_hero_slider/full/rustic.jpg',
-            'data/images/homepage_hero_slider/full/waterfall.jpg',
+            'data/images/homepage_hero_slider/bastei_bridge.jpg',
+            'data/images/homepage_hero_slider/rustic.jpg',
+            'data/images/homepage_hero_slider/waterfall.jpg',
         ];
 
         $where = [];
@@ -1492,8 +1471,7 @@ class Hook_addon_registry_galleries
                     lang_code_to_default_content('title', 'DEFAULT_SLIDE_X', false, 2, null, integer_format($i + 1)),
                     'homepage_hero_slider',
                     $slider_insert_map,
-                    'data/images/homepage_hero_slider/full/' . $img . '.jpg',
-                    'data/images/homepage_hero_slider/thumbs/' . $img . '.png',
+                    'data/images/homepage_hero_slider/' . $img . '.jpg',
                     1,
                     0,
                     0,
@@ -1522,9 +1500,9 @@ class Hook_addon_registry_galleries
 
             // Delete default slide images
             $default_homepage_hero_slides_urls = [
-                'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
-                'data/images/homepage_hero_slider/full/rustic.jpg',
-                'data/images/homepage_hero_slider/full/waterfall.jpg',
+                'data/images/homepage_hero_slider/bastei_bridge.jpg',
+                'data/images/homepage_hero_slider/rustic.jpg',
+                'data/images/homepage_hero_slider/waterfall.jpg',
             ];
             $where = [];
             foreach ($default_homepage_hero_slides_urls as $url) {

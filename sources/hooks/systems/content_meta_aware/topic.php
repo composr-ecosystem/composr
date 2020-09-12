@@ -75,8 +75,8 @@ class Hook_content_meta_aware_topic extends Hook_CMA
             'description_field' => 't_description',
             'description_field_dereference' => false,
             'description_field_supports_comcode' => null,
-            'thumb_field' => 't_emoticon',
-            'thumb_field_is_theme_image' => true,
+            'image_field' => 't_emoticon',
+            'image_field_is_theme_image' => true,
             'alternate_icon_theme_image' => 'icons/menu/social/forum/forums',
 
             'view_page_link_pattern' => '_SEARCH:topicview:browse:_WILD',

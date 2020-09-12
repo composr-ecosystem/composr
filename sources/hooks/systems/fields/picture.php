@@ -124,18 +124,9 @@ class Hook_fields_picture
             return ''; // LEGACY: Fix to bad data that got in
         }
 
-        $img_url = $ev;
-        if (url_is_local($img_url)) {
-            $img_url = get_custom_base_url() . '/' . $img_url;
-        }
-
-        $new_name = url_to_filename($ev);
-        require_code('images');
-        $file_thumb = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
-        if (!file_exists($file_thumb)) {
-            $img_thumb_url = convert_image($img_url, $file_thumb, null, null, intval(get_option('thumb_width')), false);
-        } else {
-            $img_thumb_url = get_custom_base_url() . '/uploads/auto_thumbs/' . rawurlencode($new_name);
+        $image_url = $ev;
+        if (url_is_local($image_url)) {
+            $image_url = get_custom_base_url() . '/' . $image_url;
         }
 
         if (!array_key_exists('c_name', $field)) {
@@ -145,7 +136,7 @@ class Hook_fields_picture
 
         if (url_is_local($ev)) {
             $keep = symbol_tempcode('KEEP');
-            $download_url = find_script('catalogue_file') . '?file=' . urlencode($img_url) . '&table=' . urlencode($table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode($id_field) . '&url_field=' . urlencode($url_field);
+            $download_url = find_script('catalogue_file') . '?file=' . urlencode($image_url) . '&table=' . urlencode($table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode($id_field) . '&url_field=' . urlencode($url_field);
             $download_url .= '&inline=1';
             if ($field_id_field !== null) {
                 $download_url .= '&field_id_field=' . urlencode($field_id_field) . '&field_id=' . urlencode(strval($field['id']));
@@ -168,7 +159,7 @@ class Hook_fields_picture
                 }
             }
         } else {
-            $download_url = $img_url;
+            $download_url = $image_url;
         }
 
         $width = option_value_from_field_array($field, 'width', '');
@@ -178,7 +169,7 @@ class Hook_fields_picture
             'I' => ($only_fields === null) ? '-1' : strval($i),
             'CATALOGUE' => $field['c_name'],
             'URL' => $download_url,
-            'THUMB_URL' => $img_thumb_url,
+            'IMAGE_URL' => $image_url,
             'WIDTH' => $width,
             'HEIGHT' => $height,
         ], null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE');

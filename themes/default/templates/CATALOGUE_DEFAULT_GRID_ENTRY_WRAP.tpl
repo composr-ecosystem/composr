@@ -15,15 +15,15 @@
 
 	{$SET,view_url,{$?,{$AND,{$MOBILE},{$IS_NON_EMPTY,{FIELDS_GRID}}},{$PAGE_LINK,_SELF:catalogues:entry:{ID}},{VIEW_URL}}}
 
-	{+START,IF_PASSED,FIELD_1_THUMB}
-		{+START,IF_NON_EMPTY,{FIELD_1_THUMB}}
+	{+START,IF_PASSED,FIELD_1}
+		{+START,IF_NON_EMPTY,{FIELD_1}}
 			<div class="catalogue-entry-box-thumbnail">
 				{+START,IF_NON_EMPTY,{$GET,view_url}}
-					<a data-cms-tooltip="{ contents: '{$TRIM*;^,{$GET,TOOLTIP}}', width: '500px' }" href="{$GET*,view_url}">{FIELD_1_THUMB}</a>
+					<a data-cms-tooltip="{ contents: '{$TRIM*;^,{$GET,TOOLTIP}}', width: '500px' }" href="{$GET*,view_url}"><img class="img-thumb" alt="{$STRIP_TAGS,{FIELD_0}}" src="{$THUMBNAIL*,{FIELD_1_PLAIN}}" /></a>
 				{+END}
 
 				{+START,IF_EMPTY,{$GET,view_url}}
-					<span data-cms-tooltip="{ contents: '{$TRIM*;^,{$GET,TOOLTIP}}', width: '500px' }">{FIELD_1_THUMB}</span>
+					<span data-cms-tooltip="{ contents: '{$TRIM*;^,{$GET,TOOLTIP}}', width: '500px' }"><img class="img-thumb" alt="{$STRIP_TAGS,{FIELD_0}}" src="{$THUMBNAIL*,{FIELD_1_PLAIN}}" /></span>
 				{+END}
 			</div>
 

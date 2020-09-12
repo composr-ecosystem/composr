@@ -139,15 +139,6 @@ class Hook_fields_picture_multi
                 $img_url = get_custom_base_url() . '/' . $img_url;
             }
 
-            $new_name = url_to_filename($ev);
-            require_code('images');
-            $file_thumb = get_custom_file_base() . '/uploads/auto_thumbs/' . $new_name;
-            if (!file_exists($file_thumb)) {
-                $img_thumb_url = convert_image($img_url, $file_thumb, null, null, intval(get_option('thumb_width')), false);
-            } else {
-                $img_thumb_url = get_custom_base_url() . '/uploads/auto_thumbs/' . rawurlencode($new_name);
-            }
-
             if (!array_key_exists('c_name', $field)) {
                 $field['c_name'] = 'other';
             }
@@ -186,7 +177,7 @@ class Hook_fields_picture_multi
                 'I' => ($only_fields === null) ? '-1' : strval($j),
                 'CATALOGUE' => $field['c_name'],
                 'URL' => $download_url,
-                'THUMB_URL' => $img_thumb_url,
+                'IMAGE_URL' => $img_url,
                 'WIDTH' => $width,
                 'HEIGHT' => $height,
             ], null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE'));

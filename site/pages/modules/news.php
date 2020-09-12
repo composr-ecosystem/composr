@@ -699,7 +699,7 @@ class Module_news
             $show_comment_count = '1';
         }
 
-        $img = get_news_category_image_url($news_cat_row['nc_img']);
+        $rep_image_url = get_news_category_image_url($news_cat_row['nc_img']);
 
         $prev_article_url   = null;
         $prev_article_title = null;
@@ -734,7 +734,7 @@ class Module_news
             'EDIT_DATE_RAW' => ($myrow['edit_date'] === null) ? '' : strval($myrow['edit_date']),
             'SUBMITTER' => strval($myrow['submitter']),
             'CATEGORY' => $category,
-            'IMG' => $img,
+            'REP_IMAGE_URL' => $rep_image_url,
             'VIEWS' => integer_format($myrow['news_views']),
             'COMMENT_DETAILS' => $comment_details,
             'RATING_DETAILS' => $rating_details,

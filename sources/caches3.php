@@ -192,45 +192,6 @@ function erase_comcode_cache()
 }
 
 /**
- * Erase the thumbnail cache.
- */
-function erase_thumb_cache()
-{
-    $thumb_fields = $GLOBALS['SITE_DB']->query('SELECT m_name,m_table FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_name LIKE \'' . db_encode_like('%thumb\_url') . '\'');
-    foreach ($thumb_fields as $field) {
-        if ($field['m_table'] == 'videos') {
-            continue;
-        }
-
-        $start = 0;
-        $max = 500;
-        do {
-            $rows = $GLOBALS['SITE_DB']->query_select($field['m_table'], [$field['m_name']], [], '', $max, $start);
-            foreach ($rows as $row) {
-                $thumb_url = $row[$field['m_name']];
-                if (($thumb_url != '') && (url_is_local($thumb_url))) {
-                    @unlink(get_custom_file_base() . '/' . rawurldecode($thumb_url));
-                }
-            }
-            $start += $max;
-        } while (!empty($rows));
-
-        $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => '']);
-    }
-
-    $full = get_custom_file_base() . '/uploads/auto_thumbs';
-    $dh = @opendir($full);
-    if ($dh !== false) {
-        while (($file = readdir($dh)) !== false) {
-            if (!in_array($file, ['index.html', '.htaccess'])) {
-                @unlink($full . '/' . $file);
-            }
-        }
-        closedir($dh);
-    }
-}
-
-/**
  * Erase the language cache.
  */
 function erase_cached_language()

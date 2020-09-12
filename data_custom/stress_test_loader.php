@@ -126,7 +126,6 @@ function do_work()
             '', // theme
             '', // title
             '', // photo_url
-            '', // photo_thumb_url
             null, // avatar_url
             '', // signature
             null, // preview_posts
@@ -366,7 +365,7 @@ function do_work()
     // images
     require_code('galleries2');
     for ($i = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)'); $i < $num_wanted; $i++) {
-        add_image('', 'root', random_text(), get_logo_url(), get_logo_url(), 1, 1, 1, 1, '');
+        add_image('', 'root', random_text(), get_logo_url(), 1, 1, 1, 1, '');
     }
     // videos / validation queue
     require_code('galleries2');

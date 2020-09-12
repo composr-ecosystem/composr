@@ -108,10 +108,6 @@ function uninstall_cns()
     if (!$GLOBALS['DEV_MODE']) {
         deldir_contents(get_custom_file_base() . '/uploads/cns_avatars', true);
         deldir_contents(get_custom_file_base() . '/uploads/cns_photos', true);
-        deldir_contents(get_custom_file_base() . '/uploads/cns_photos_thumbs', true);
-        deldir_contents(get_custom_file_base() . '/uploads/avatars', true);
-        deldir_contents(get_custom_file_base() . '/uploads/photos', true);
-        deldir_contents(get_custom_file_base() . '/uploads/photos_thumbs', true);
     }
 
     delete_attachments('cns_post');
@@ -337,7 +333,6 @@ function install_cns($upgrade_from = null)
         require_code('upgrade_lib');
         $fields = [
             'm_photo_url' => 'uploads/ocf_photos',
-            'm_photo_thumb_url' => 'uploads/ocf_photos_thumbs',
             'm_avatar_url' => 'uploads/ocf_avatars',
         ];
         foreach ($fields as $field => $dir) {
@@ -408,6 +403,17 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_is_perm_banned', 'ID_TEXT');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'p_changed_usergroup_to', '?GROUP');
+
+        $max = 100;
+        $start = 0;
+        do {
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_photo_thumb_url'], [], ' AND m_photo_thumb_url LIKE \'' . db_encode_like('uploads/cns_photos_thumbs/%') . '\' ORDER BY id', $max, $start);
+            foreach ($rows as $row) {
+                @unlink(get_custom_file_base() . '/' . urldecode($row['m_photo_thumb_url']));
+            }
+            $start += $max;
+        } while (!empty($rows));
+        $GLOBALS['FORUM_DB']->delete_table_field('f_members', 'm_photo_thumb_url');
     }
 
     // If we have the forum installed to this db already, leave
@@ -503,7 +509,6 @@ function install_cns($upgrade_from = null)
             // Rich data
             'm_title' => 'SHORT_TEXT', // Blank means use title
             'm_photo_url' => 'URLPATH', // Blank means no photo
-            'm_photo_thumb_url' => 'URLPATH', // Blank means no photo
             'm_avatar_url' => 'URLPATH', // Blank means no avatar
             'm_signature' => 'LONG_TRANS__COMCODE',
 
@@ -892,7 +897,6 @@ function install_cns($upgrade_from = null)
             '', // theme
             '', // title
             '', // photo_url
-            '', // photo_thumb_url
             null, // avatar_url
             '', // signature
             null, // preview_posts
@@ -930,7 +934,6 @@ function install_cns($upgrade_from = null)
             '', // theme
             '', // title
             '', // photo_url
-            '', // photo_thumb_url
             'themes/default/images/cns_default_avatars/default_set/cool_flare.png', // avatar_url
             '', // signature
             null, // preview_posts
@@ -968,7 +971,6 @@ function install_cns($upgrade_from = null)
             '', // theme
             '', // title
             '', // photo_url
-            '', // photo_thumb_url
             null, // avatar_url
             '', // signature
             null, // preview_posts

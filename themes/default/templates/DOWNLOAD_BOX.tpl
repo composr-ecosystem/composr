@@ -31,11 +31,11 @@
 	</div>
 
 	<div class="hide-if-in-panel">
-		{+START,IF_NON_EMPTY,{IMGCODE}}
-			<div class="download-box-pic"><a href="{URL*}">{$TRIM,{IMGCODE}}</a></div>
+		{+START,IF_NON_EMPTY,{REP_IMAGE_URL}}
+			<div class="download-box-pic"><a href="{URL*}"><img class="img-thumb" alt="{NAME*}" src="{$THUMBNAIL*,{REP_IMAGE_URL}}" /></a></div>
 		{+END}
 
-		<div class="download-box-description{+START,IF_NON_EMPTY,{IMGCODE}} pic{+END}">
+		<div class="download-box-description{+START,IF_NON_EMPTY,{REP_IMAGE_URL}} pic{+END}">
 			{+START,IF_PASSED,TEXT_SUMMARY}
 				{$PARAGRAPH,{TEXT_SUMMARY*}}
 			{+END}

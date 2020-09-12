@@ -43,10 +43,6 @@ function captcha_script()
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    if (!function_exists('imagepng')) {
-        warn_exit(do_lang_tempcode('GD_NEEDED'));
-    }
-
     header('X-Robots-Tag: noindex');
 
     $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
@@ -294,12 +290,6 @@ function use_captcha()
 {
     if (get_option('use_captchas') == '0') {
         return false;
-    }
-
-    if (get_option('recaptcha_site_key') == '') {
-        if (!function_exists('imagetypes')) {
-            return false;
-        }
     }
 
     if (running_script('captcha')) {

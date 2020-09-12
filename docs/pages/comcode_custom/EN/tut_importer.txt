@@ -67,7 +67,7 @@ Importers define a list of features they can import, along with a dependency sys
 
 [title="4"]Cache-rebuild[/title]
 
-Composr is designed so that forms of redundancy, such as thumbnails, parsed Comcode, and various forms of tally, can be recalculated dynamically as Composr runs. Knowing this, and in order to remove load from the importer itself, these tasks are therefore usually omitted by the importer.
+Composr is designed so that forms of redundancy, such as parsed Comcode, and various forms of tally, can be recalculated dynamically as Composr runs. Knowing this, and in order to remove load from the importer itself, these tasks are therefore usually omitted by the importer.
 
 [title="2"]Converting to Conversr[/title]
 

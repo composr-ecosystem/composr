@@ -305,7 +305,7 @@ class Hook_search_cns_members extends FieldsSearchHook
             }
             if (either_param_integer('option__photo_thumb_url', 0) == 1) {
                 $where_clause .= ' AND ';
-                $where_clause .= db_string_not_equal_to('m_photo_thumb_url', '');
+                $where_clause .= db_string_not_equal_to('m_photo_url', '');
             }
         }
         $user_group = get_param_string('option__user_group', '');

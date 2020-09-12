@@ -300,12 +300,12 @@ function do_image_thumb($url, $caption = '', $js_tooltip = false, $is_thumbnail_
  * @param  ID_TEXT $thumb_dir The directory, relative to the Composr install's uploads directory, where the thumbnails are stored. MINUS "_thumbs"
  * @param  ID_TEXT $table The name of the table that is storing what we are doing the thumbnail for
  * @param  AUTO_LINK $id The ID of the table record that is storing what we are doing the thumbnail for
- * @param  ID_TEXT $thumb_field_name The name of the table field where thumbnails are saved
+ * @param  ID_TEXT $image_field_name The name of the table field where thumbnails are saved
  * @param  ?integer $thumb_width The thumbnail width to use (null: default)
  * @param  boolean $only_make_smaller Whether to apply a 'never make the image bigger' rule for thumbnail creation (would affect very small images)
  * @return URLPATH The URL to the thumbnail
  */
-function ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thumb_field_name = 'thumb_url', $thumb_width = null, $only_make_smaller = false)
+function ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image_field_name = 'thumb_url', $thumb_width = null, $only_make_smaller = false)
 {
     if ($full_url == $thumb_url) {
         // Special case
@@ -316,7 +316,7 @@ function ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thumb
         $thumb_width = intval(get_option('thumb_width'));
     }
 
-    if ((!function_exists('imagetypes')) || ($full_url == '')) {
+    if ($full_url == '') {
         if ((url_is_local($thumb_url)) && ($thumb_url != '')) {
             return get_custom_base_url() . '/' . $thumb_url;
         }
@@ -338,7 +338,7 @@ function ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thumb
                     if ($_thumb_url != $thumb_url) {
                         // Failed somehow, so do a full regeneration and resave
                         require_code('images2');
-                        return _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thumb_field_name, $thumb_width, $only_make_smaller);
+                        return _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image_field_name, $thumb_width, $only_make_smaller);
                     }
                 } else {
                     if (addon_installed('galleries')) {
@@ -354,7 +354,7 @@ function ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thumb
 
     // Do a full regeneration and resave
     require_code('images2');
-    return _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thumb_field_name, $thumb_width, $only_make_smaller);
+    return _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $image_field_name, $thumb_width, $only_make_smaller);
 }
 
 /**
@@ -421,26 +421,24 @@ function is_image($name, $criteria, $as_admin = false, $mime_too = false)
     // GD-read check
     if (($criteria & IMAGE_CRITERIA_GD_READ) != 0) {
         $found = false;
-        if (function_exists('imagetypes')) {
-            $gd = imagetypes();
-            if (($ext == 'png') && (($gd & IMG_PNG) != 0)) {
-                $found = true;
-            }
-            if ((($ext == 'jpg') || ($ext == 'jpeg') || ($ext == 'jpe')) && (($gd & IMG_JPEG) != 0)) {
-                $found = true;
-            }
-            if (($ext == 'gif') && (($gd & IMG_GIF) != 0) && (function_exists('imagecreatefromgif'))) {
-                $found = true;
-            }
-            if (($ext == 'webp') && (function_exists('imagecreatefromwebp')/* https://bugs.php.net/bug.php?id=72596 */)) {
-                $found = true;
-            }
-            if (($ext == 'bmp') && (defined('IMG_BMP')) && (($gd & IMG_BMP) != 0)) {
-                $found = true;
-            }
-        } else {
-            $found = (($ext == 'jpg') || ($ext == 'jpeg') || ($ext == 'png'));
+        $gd = imagetypes();
+
+        if (($ext == 'png') && (($gd & IMG_PNG) != 0)) {
+            $found = true;
         }
+        if ((($ext == 'jpg') || ($ext == 'jpeg') || ($ext == 'jpe')) && (($gd & IMG_JPEG) != 0)) {
+            $found = true;
+        }
+        if (($ext == 'gif') && (($gd & IMG_GIF) != 0) && (function_exists('imagecreatefromgif'))) {
+            $found = true;
+        }
+        if (($ext == 'webp') && (function_exists('imagecreatefromwebp')/* https://bugs.php.net/bug.php?id=72596 */)) {
+            $found = true;
+        }
+        if (($ext == 'bmp') && (defined('IMG_BMP')) && (($gd & IMG_BMP) != 0)) {
+            $found = true;
+        }
+
         if (!$found) {
             return false;
         }
@@ -449,26 +447,25 @@ function is_image($name, $criteria, $as_admin = false, $mime_too = false)
     // GD-write check
     if (($criteria & IMAGE_CRITERIA_GD_WRITE) != 0) {
         $found = false;
-        if (function_exists('imagetypes')) {
-            $gd = imagetypes();
-            if (($ext == 'png') && (($gd & IMG_PNG) != 0)) {
-                $found = true;
-            }
-            if ((($ext == 'jpg') || ($ext == 'jpeg') || ($ext == 'jpe')) && (($gd & IMG_JPEG) != 0)) {
-                $found = true;
-            }
-            if (($ext == 'gif') && (($gd & IMG_GIF) != 0) && (function_exists('imagegif'))) {
-                $found = true;
-            }
-            if (($ext == 'webp') && (function_exists('imagewebp')/* https://bugs.php.net/bug.php?id=72596 */)) {
-                $found = true;
-            }
-            if (($ext == 'bmp') && (defined('IMG_BMP')) && (($gd & IMG_BMP) != 0)) {
-                $found = true;
-            }
-        } else {
-            $found = (($ext == 'jpg') || ($ext == 'jpeg') || ($ext == 'png'));
+
+        $gd = imagetypes();
+
+        if (($ext == 'png') && (($gd & IMG_PNG) != 0)) {
+            $found = true;
         }
+        if ((($ext == 'jpg') || ($ext == 'jpeg') || ($ext == 'jpe')) && (($gd & IMG_JPEG) != 0)) {
+            $found = true;
+        }
+        if (($ext == 'gif') && (($gd & IMG_GIF) != 0) && (function_exists('imagegif'))) {
+            $found = true;
+        }
+        if (($ext == 'webp') && (function_exists('imagewebp')/* https://bugs.php.net/bug.php?id=72596 */)) {
+            $found = true;
+        }
+        if (($ext == 'bmp') && (defined('IMG_BMP')) && (($gd & IMG_BMP) != 0)) {
+            $found = true;
+        }
+
         if (!$found) {
             return false;
         }

@@ -70,8 +70,8 @@ class __filtering_test_set extends cms_test_case
                         'description_field' => null,
                         'description_field_dereference' => false,
                         'description_field_supports_comcode' => false,
-                        'thumb_field' => null,
-                        'thumb_field_is_theme_image' => false,
+                        'image_field' => null,
+                        'image_field_is_theme_image' => false,
                         'alternate_icon_theme_image' => null,
 
                         'view_page_link_pattern' => null,

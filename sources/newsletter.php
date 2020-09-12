@@ -207,7 +207,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                             'I' => strval($i + 1),
                             'TITLE' => $temp[1],
                             'CONTENT' => $temp[0],
-                            'THUMBNAIL' => array_key_exists(2, $temp) ? $temp[2] : '',
+                            'IMAGE_URL' => array_key_exists(2, $temp) ? $temp[2] : '',
                         ], null, false, null, '.txt', 'text');
                         $automatic[$last_find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                         $i++;
@@ -246,7 +246,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                     'I' => strval($i + 1),
                     'TITLE' => $temp[1],
                     'CONTENT' => $temp[0],
-                    'THUMBNAIL' => '',
+                    'IMAGE_URL' => '',
                 ], null, false, null, '.txt', 'text');
                 $automatic[$find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                 $i++;
@@ -262,7 +262,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                     'I' => strval($i + 1),
                     'TITLE' => $temp[1],
                     'CONTENT' => $temp[0],
-                    'THUMBNAIL' => '',
+                    'IMAGE_URL' => '',
                 ], null, false, null, '.txt', 'text');
                 $automatic[$last_find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                 $i++;

@@ -334,8 +334,6 @@ sites/www/uploads/cns_avatars
 sites/www/uploads/cns_avatars/index.html
 sites/www/uploads/cns_photos
 sites/www/uploads/cns_photos/index.html
-sites/www/uploads/cns_photos_thumbs
-sites/www/uploads/cns_photos_thumbs/index.html
 sites/www/uploads/downloads
 sites/www/uploads/downloads/.htaccess
 sites/www/uploads/downloads/index.html

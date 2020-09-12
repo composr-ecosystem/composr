@@ -234,18 +234,18 @@ PHP;
 
             $category = get_translated_text($news_cat_row['nc_title']);
             if ($myrow['news_image'] != '') {
-                $img_raw = $myrow['news_image'];
-                if (url_is_local($img_raw)) {
-                    $img_raw = $base_url . '/' . $img_raw;
+                $rep_image_url = $myrow['news_image'];
+                if (url_is_local($rep_image_url)) {
+                    $rep_image_url = $base_url . '/' . $rep_image_url;
                 }
             } else {
-                $img_raw = get_news_category_image_url($news_cat_row['nc_img']);
+                $rep_image_url = get_news_category_image_url($news_cat_row['nc_img']);
             }
 
             $content->attach(do_template('BLOCK_SIDE_NEWS_SUMMARY', [
                 '_GUID' => 'f7bc5288680e68641ca94ca4a3111d4a',
                 'BLOCK_ID' => $block_id,
-                'IMG_URL' => $img_raw,
+                'REP_IMAGE_URL' => $rep_image_url,
                 'AUTHOR' => $myrow['author'],
                 'ID' => strval($myrow['id']),
                 'SUBMITTER' => strval($myrow['submitter']),

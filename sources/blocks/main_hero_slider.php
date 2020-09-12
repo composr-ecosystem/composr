@@ -169,9 +169,9 @@ PHP;
                 $full_url = get_custom_base_url() . '/' . $full_url;
             }
 
-            $thumb_url = $row['thumb_url'];
-            if (url_is_local($thumb_url)) {
-                $thumb_url = get_custom_base_url() . '/' . $thumb_url;
+            $image_url = $row[($row['content_type'] == 'image') ? 'url' : 'thumb_url'];
+            if (url_is_local($image_url)) {
+                $image_url = get_custom_base_url() . '/' . $image_url;
             }
 
             $just_media_row = db_map_restrict($row, ['id', 'the_description']);
@@ -191,7 +191,7 @@ PHP;
                 'BACKGROUND_ID' => strval($row['id']),
                 'BACKGROUND_TYPE' => $row['content_type'],
                 'BACKGROUND_URL' => $full_url,
-                'BACKGROUND_THUMB_URL' => $thumb_url,
+                'BACKGROUND_IMAGE_URL' => $image_url,
                 'CONTENT_HTML' => $description,
                 'EDIT_URL' => $edit_url,
             ];

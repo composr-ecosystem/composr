@@ -218,10 +218,9 @@ function cns_member_external_linker_ask($type, $username, $email_address = '', $
  * @param  ?ID_TEXT $language Auto-detected Language (null: unknown)
  * @param  ?URLPATH $avatar_url The URL to the member's avatar (blank: none) (null: choose one automatically)
  * @param  URLPATH $photo_url The URL to the member's photo (blank: none)
- * @param  URLPATH $photo_thumb_url The URL to the member's photo thumbnail (blank: none)
  * @return MEMBER The member ID for the finished off profile
  */
-function cns_member_external_linker($type, $username, $password, $email_check = true, $email_address = '', $dob_day = null, $dob_month = null, $dob_year = null, $timezone = null, $language = null, $avatar_url = null, $photo_url = '', $photo_thumb_url = '')
+function cns_member_external_linker($type, $username, $password, $email_check = true, $email_address = '', $dob_day = null, $dob_month = null, $dob_year = null, $timezone = null, $language = null, $avatar_url = null, $photo_url = '')
 {
     // Read in data...
 
@@ -312,7 +311,6 @@ function cns_member_external_linker($type, $username, $password, $email_check = 
         '', // theme
         '', // title
         $photo_url, // photo_url
-        $photo_thumb_url, // photo_thumb_url
         $avatar_url, // avatar_url
         '', // signature
         1, // preview_posts
@@ -926,7 +924,6 @@ function cns_get_member_fields_profile($mini_mode = true, $member_id = null, $gr
  * @param  ?ID_TEXT $theme The member's default theme (null: don't change)
  * @param  ?SHORT_TEXT $title The member's title (blank: get from primary) (null: don't change)
  * @param  ?URLPATH $photo_url Photo URL (null: don't change)
- * @param  ?URLPATH $photo_thumb_url URL of thumbnail of photo (null: don't change)
  * @param  ?URLPATH $avatar_url Avatar (null: don't change)
  * @param  ?LONG_TEXT $signature Signature (null: don't change)
  * @param  ?BINARY $preview_posts Whether posts are previewed before they are made (null: don't change)
@@ -950,7 +947,7 @@ function cns_get_member_fields_profile($mini_mode = true, $member_id = null, $gr
  * @param  ?SHORT_TEXT $salt Password salt (null: don't change)
  * @param  ?TIME $join_time When the member joined (null: don't change)
  */
-function cns_edit_member($member_id, $username = null, $password = null, $email_address = null, $primary_group = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = null, $timezone = null, $language = null, $theme = null, $title = null, $photo_url = null, $photo_thumb_url = null, $avatar_url = null, $signature = null, $preview_posts = null, $reveal_age = null, $views_signatures = null, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = null, $sound_enabled = null, $allow_emails = null, $allow_emails_from_staff = null, $highlighted_name = null, $pt_allow = '*', $pt_rules_text = '', $validated = null, $on_probation_until = null, $is_perm_banned = null, $check_correctness = true, $password_compatibility_scheme = null, $salt = null, $join_time = null)
+function cns_edit_member($member_id, $username = null, $password = null, $email_address = null, $primary_group = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = null, $timezone = null, $language = null, $theme = null, $title = null, $photo_url = null, $avatar_url = null, $signature = null, $preview_posts = null, $reveal_age = null, $views_signatures = null, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = null, $sound_enabled = null, $allow_emails = null, $allow_emails_from_staff = null, $highlighted_name = null, $pt_allow = '*', $pt_rules_text = '', $validated = null, $on_probation_until = null, $is_perm_banned = null, $check_correctness = true, $password_compatibility_scheme = null, $salt = null, $join_time = null)
 {
     require_code('type_sanitisation');
     require_code('cns_members_action');
@@ -1081,9 +1078,6 @@ function cns_edit_member($member_id, $username = null, $password = null, $email_
     }
     if ($photo_url !== null) {
         $update['m_photo_url'] = $photo_url;
-    }
-    if ($photo_thumb_url !== null) {
-        $update['m_photo_thumb_url'] = $photo_thumb_url;
     }
     if ($title !== null) {
         $update['m_title'] = $title;
@@ -1999,11 +1993,9 @@ function cns_member_choose_avatar($avatar_url, $member_id = null)
  *
  * @param  ID_TEXT $param_name The identifier for the name of the posted URL field
  * @param  ID_TEXT $upload_name The identifier for the name of the posted upload
- * @param  ID_TEXT $thumb_name The identifier for the name of the posted thumbnail field
- * @param  ID_TEXT $thumb_upload_name The identifier for the name of the thumbnail upload
  * @param  ?MEMBER $member_id The member (null: the current member)
  */
-function cns_member_choose_photo($param_name, $upload_name, $thumb_name, $thumb_upload_name, $member_id = null)
+function cns_member_choose_photo($param_name, $upload_name, $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -2022,40 +2014,17 @@ function cns_member_choose_photo($param_name, $upload_name, $thumb_name, $thumb_
             }
         }
         if ($old == $x) {
-            return; // Not changed, bomb out as we don't want to generate a thumbnail
+            return; // Not changed, bomb out as we don't need to do anything more
         }
     }
 
     // Find photo URL
-    $urls = get_url($param_name, $upload_name, file_exists(get_custom_file_base() . '/uploads/photos') ? 'uploads/photos' : 'uploads/cns_photos', 0, CMS_UPLOAD_IMAGE, true, $thumb_name, $thumb_upload_name, false, true);
-    if (!(strlen($urls[0]) > 1)) {
-        $urls[1] = '';
-    }
+    $urls = get_url($param_name, $upload_name, file_exists(get_custom_file_base() . '/uploads/photos') ? 'uploads/photos' : 'uploads/cns_photos', 0, CMS_UPLOAD_IMAGE, true, '', '', false, true);
     if (((get_base_url() != get_forum_base_url()) || (!empty($GLOBALS['SITE_INFO']['on_msn']))) && ($urls[0] != '') && (url_is_local($urls[0]))) {
         $urls[0] = get_base_url() . '/' . $urls[0];
     }
-    if (((get_base_url() != get_forum_base_url()) || (!empty($GLOBALS['SITE_INFO']['on_msn']))) && ($urls[1] != '') && (url_is_local($urls[1]))) {
-        $urls[1] = get_base_url() . '/' . $urls[1];
-    }
 
-    // At this point in the code, we know a photo was uploaded or changed to blank.
-    //  If we don't have GD, we need them to have uploaded a thumbnail too.
-    if (!function_exists('imagetypes')) {
-        if (((!array_key_exists($thumb_upload_name, $_FILES)) || ((!is_plupload()) && (!is_uploaded_file($_FILES[$thumb_upload_name]['tmp_name']))))) {
-            $field = post_param_string($thumb_name, '');
-            if (($field == '') && ($urls[0] != '')) {
-                warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
-            }
-            if (($field != '') && (url_is_local($field)) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
-                $old = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_photo_thumb_url', ['id' => $member_id]);
-                if ($old != $field) {
-                    access_denied('ASSOCIATE_EXISTING_FILE');
-                }
-            }
-        }
-    }
-
-    cns_member_choose_photo_concrete($urls[0], $urls[1], $member_id);
+    cns_member_choose_photo_concrete($urls[0], $member_id);
 
     delete_cache_entry('main_members');
 }
@@ -2064,10 +2033,9 @@ function cns_member_choose_photo($param_name, $upload_name, $thumb_name, $thumb_
  * Edit a member's photo.
  *
  * @param  URLPATH $url URL to photo
- * @param  URLPATH $thumb_url URL to thumbnail photo
  * @param  ?MEMBER $member_id The member (null: the current member)
  */
-function cns_member_choose_photo_concrete($url, $thumb_url, $member_id = null)
+function cns_member_choose_photo_concrete($url, $member_id = null)
 {
     if ($member_id === null) {
         $member_id = get_member();
@@ -2083,28 +2051,27 @@ function cns_member_choose_photo_concrete($url, $thumb_url, $member_id = null)
         @unlink(get_custom_file_base() . '/' . rawurldecode($old));
     }
 
-    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_photo_url' => $url, 'm_photo_thumb_url' => $thumb_url], ['id' => $member_id], '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_photo_url' => $url], ['id' => $member_id], '', 1);
 
     require_code('notifications');
     $subject = do_lang('CHOOSE_PHOTO_SUBJECT', $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), $GLOBALS['FORUM_DRIVER']->get_username($member_id), null, get_lang($member_id));
-    $body = do_notification_lang('CHOOSE_PHOTO_BODY', $url, $thumb_url, [$GLOBALS['FORUM_DRIVER']->get_username($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id, true)], get_lang($member_id));
+    $body = do_notification_lang('CHOOSE_PHOTO_BODY', $url, [$GLOBALS['FORUM_DRIVER']->get_username($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id, true)], get_lang($member_id));
     dispatch_notification('cns_choose_photo', null, $subject, $body, null, get_member(), ['use_real_from' => true]);
 
     // If Avatars addon not installed, use photo for it
     if (!addon_installed('cns_avatars')) {
         $avatar_url = $url;
-        if (function_exists('imagetypes')) {
-            $stub = url_is_local($avatar_url) ? (get_complex_base_url($avatar_url) . '/') : '';
-            $file_path = convert_url_to_path($stub . $avatar_url);
-            if ($file_path !== null) {
-                $new_file_path = str_replace('/cns_photos/', '/cns_avatars/', $file_path);
-                if (!file_exists($new_file_path)) {
-                    copy($file_path, $new_file_path);
-                    fix_permissions($new_file_path);
-                    sync_file($new_file_path);
-                }
-                $avatar_url = str_replace('/cns_photos/', '/cns_avatars/', $avatar_url);
+
+        $stub = url_is_local($avatar_url) ? (get_complex_base_url($avatar_url) . '/') : '';
+        $file_path = convert_url_to_path($stub . $avatar_url);
+        if ($file_path !== null) {
+            $new_file_path = str_replace('/cns_photos/', '/cns_avatars/', $file_path);
+            if (!file_exists($new_file_path)) {
+                copy($file_path, $new_file_path);
+                fix_permissions($new_file_path);
+                sync_file($new_file_path);
             }
+            $avatar_url = str_replace('/cns_photos/', '/cns_avatars/', $avatar_url);
         }
 
         cns_member_choose_avatar($avatar_url, $member_id);

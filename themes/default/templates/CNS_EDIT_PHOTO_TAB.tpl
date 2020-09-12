@@ -1,7 +1,7 @@
 <div class="clearfix">
 	<div class="cns-avatar-page-old-avatar">
 		{+START,IF_NON_EMPTY,{PHOTO}}
-			<img class="cns-topic-post-avatar" alt="{!PHOTO}" src="{$ENSURE_PROTOCOL_SUITABILITY*,{PHOTO}}" />
+			<img class="cns-topic-post-avatar" alt="{!PHOTO}" src="{$THUMBNAIL*,{PHOTO}}" />
 		{+END}
 		{+START,IF_EMPTY,{PHOTO}}
 			{!NONE_EM}

@@ -38,9 +38,8 @@ function init__cms__pages__modules_custom__cms_galleries($code)
     // NOTE: There are many classes defined in the cms_galleries file. We need to make all work.
 
     // Replace the validation field for images and videos with a workflow field.
-    // We start a comment to disable the regular validation steps.
     $code = override_str_replace_exactly(
-        "\$thumb_width = get_option('thumb_width');",
+        "\$validated_field = new Tempcode();",
         "
         <ditto>
         require_code('workflows');
@@ -51,25 +50,18 @@ function init__cms__pages__modules_custom__cms_galleries($code)
             \$fields->attach(workflow_choose_ui(false, !\$adding)); // Set the first argument to true to show 'inherit from parent'
         } else {
             if (\$adding) {
-                \$fields->attach(form_input_hidden('workflow', 'wf_-1'));
+                \$hidden->attach(form_input_hidden('workflow', 'wf_-1'));
             }
         }
         ",
         $code,
         2
     );
-
-    // Here we end the comment we started above, both for images...
     $code = override_str_replace_exactly(
-        "\$fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode(\$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'image'), 'validated', \$validated == 1));",
+        "\$fields->attach(\$validated_field);",
         "require_code('workflows'); if (empty(get_all_workflows())) { <ditto> }",
-        $code
-    );
-    // ...and videos.
-    $code = override_str_replace_exactly(
-        "\$validated_field = form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode(\$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'video'), 'validated', \$validated == 1);",
-        "require_code('workflows'); if (empty(get_all_workflows())) { <ditto> } else { \$validated_field = new Tempcode(); }",
-        $code
+        $code,
+        3
     );
 
     // Now we add a workflow selection to the gallery creation form. This is a

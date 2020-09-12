@@ -69,6 +69,10 @@ function compile_all_templates()
                 if ((count($parts) == 2) && ($parts[1] == $suffix)) {
                     $codename = $parts[0];
 
+                    if (substr($codename, 0, 1) == '_') {
+                        continue;
+                    }
+
                     $tcp_path = $base_path . '/' . $theme . '/templates_cached/' . $lang . '/' . $codename . '.' . $suffix . '.tcp';
 
                     if (!is_file($tcp_path)) {

@@ -35,6 +35,7 @@ class Hook_ajax_tree_choose_image
     {
         require_code('galleries');
         require_code('images');
+        require_code('images2');
 
         $only_owned = array_key_exists('only_owned', $options) ? (($options['only_owned'] === null) ? null : intval($options['only_owned'])) : null;
         $editable_filter = array_key_exists('editable_filter', $options) ? ($options['editable_filter']) : false;
@@ -66,7 +67,7 @@ class Hook_ajax_tree_choose_image
                         $etitle = strip_html($etitle->evaluate());
                     }
 
-                    $thumb_url = ensure_thumbnail($t['entries_rows'][$eid]['url'], $t['entries_rows'][$eid]['thumb_url'], 'galleries', 'images', $eid);
+                    $thumb_url = convert_image_plus($t['entries_rows'][$eid]['url']);
                     $description = do_image_thumb($thumb_url, $etitle, false);
 
                     $out .= '<entry id="' . xmlentities(strval($eid)) . '" description_html="' . xmlentities($description->evaluate()) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>' . "\n";

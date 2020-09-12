@@ -46,7 +46,7 @@
 										<p class="filedump-embed"><a id="embed-link-{FILENAME|*}" href="{EMBED_URL*}" data-open-as-overlay='{"width": 950, "height": 680}' class="link-exempt">{!_FILEDUMP_EMBED}</a></p>
 									{+END}
 
-									<p><a {+START,IF,{IS_IMAGE}} rel="lightbox"{+END} href="{URL*}">{THUMBNAIL}</a></p>
+									<p><a {+START,IF,{IS_IMAGE}} rel="lightbox"{+END} href="{URL*}"><img class="img-thumb" alt="{DESCRIPTION*}" src="{$THUMBNAIL*,{IMAGE_URL}}" /></a></p>
 
 									<p class="meta associated-details">
 										<strong>{FILENAME*}</strong><br />

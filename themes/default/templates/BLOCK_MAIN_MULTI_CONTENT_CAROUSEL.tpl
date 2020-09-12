@@ -14,8 +14,8 @@
 		</div>
 
 		<div class="carousel-temp" id="carousel-ns-{$GET*,carousel_id}">
-			{+START,LOOP,CONTENT}
-				{_loop_var}
+			{+START,LOOP,CONTENT_DATA}
+				<a href="{CONTENT_URL*}"><img class="img-thumb" alt="{CONTENT_TITLE_PLAIN*}" src="{$THUMBNAIL*,{CONTENT_IMAGE_URL}}" /></a>
 			{+END}
 		</div>
 	{+END}

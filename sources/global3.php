@@ -952,7 +952,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
         }
 
         if (!isset($METADATA['image'])) {
-            $image_url = $cma_ob->get_image_thumb_url($row, (($content_type == 'comcode_page') && ($content_id === ':' . DEFAULT_ZONE_PAGE_NAME)) ? THUMB_URL_FALLBACK_NONE : THUMB_URL_FALLBACK_SOFT, true);
+            $image_url = $cma_ob->get_image_url($row, (($content_type == 'comcode_page') && ($content_id === ':' . DEFAULT_ZONE_PAGE_NAME)) ? IMAGE_URL_FALLBACK_NONE : IMAGE_URL_FALLBACK_SOFT);
 
             if (($image_url != '') && (is_valid_opengraph_image($image_url))) {
                 $METADATA['image'] = $image_url;

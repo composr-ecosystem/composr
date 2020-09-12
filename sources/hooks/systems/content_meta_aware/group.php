@@ -62,10 +62,10 @@ class Hook_content_meta_aware_group extends Hook_CMA
             'description_field' => null,
             'description_field_dereference' => null,
             'description_field_supports_comcode' => null,
-            //'thumb_field' => 'g_rank_image',  Looks ugly, often missing and random sizes
-            //'thumb_field_is_theme_image' => true,
-            'thumb_field' => null,
-            'thumb_field_is_theme_image' => false,
+            //'image_field' => 'g_rank_image',  Looks ugly, often missing and random sizes
+            //'image_field_is_theme_image' => true,
+            'image_field' => null,
+            'image_field_is_theme_image' => false,
             'alternate_icon_theme_image' => 'icons/menu/social/groups',
 
             'view_page_link_pattern' => '_SEARCH:groups:view:_WILD',
