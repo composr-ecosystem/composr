@@ -544,6 +544,8 @@ function should_ignore_file($path, $bitmask = 0)
         'php.ini' => '.*',
         '.htpasswd' => '.*',
         'robots.txt' => '',
+        'manifest.json' => '',
+        'browserconfig.xml' => '',
         'favicon.ico' => '', // Not used for Composr, but default path for other scripts on server
         '400.shtml' => '',
         '500.shtml' => '',
@@ -662,6 +664,7 @@ function should_ignore_file($path, $bitmask = 0)
     if (($bitmask & IGNORE_ACCESS_CONTROLLERS) != 0) {
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
             '.htaccess' => '.*',
+            'web.config' => '.*',
             'index.html' => '.*',
         ]);
     }
