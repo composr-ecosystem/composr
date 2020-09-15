@@ -3,7 +3,7 @@
 # NB: This script is not needed if you have suexec
 
 # Git hooks should be writable, and linked in correctly
-if [ -e ".git" ]; then
+if [ -e "git-hooks" ] && [ -e ".git" ]; then
 	echo "0/4 Setting up git hooks to run correctly"
 	git config core.hooksPath git-hooks
 	chmod a+x git-hooks/*
