@@ -1512,7 +1512,7 @@ function check_alien($addon_files, $old_files, $files, $dir, $rela = '', $raw = 
         }
         sort($dir_files);
         foreach ($dir_files as $file) {
-            if (should_ignore_file($rela . $file, IGNORE_USER_CUSTOMISE | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES |  IGNORE_NONBUNDLED_SCATTERED | IGNORE_BUNDLED_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES)) {
+            if (should_ignore_file($rela . $file, IGNORE_ACCESS_CONTROLLERS | IGNORE_USER_CUSTOMISE | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES |  IGNORE_NONBUNDLED_SCATTERED | IGNORE_BUNDLED_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES)) {
                 continue;
             }
 
@@ -1709,6 +1709,8 @@ function version_specific()
                 'admin_ocf_welcome_emails' => 'admin_cns_welcome_emails',
                 'cms_cedi' => 'cms_wiki',
                 'cms_ocf_groups' => 'cms_cns_groups',
+                'lostpassword' => 'lost_password',
+                'admin_ipban' => 'admin_ip_ban',
             );
             foreach ($remap as $from => $to) {
                 $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $to));
@@ -1750,6 +1752,7 @@ function version_specific()
             }
 
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'ocf_\',\'cns_\')');
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'misc\',\'browse\')');
 
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values WHERE the_name LIKE \'' . db_encode_like('%cns_%') . '\'');
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_name=REPLACE(the_name,\'ocf_\',\'cns_\')');
@@ -1863,6 +1866,7 @@ function version_specific()
                 '# type=&quot;curved&quot;#' => '',
                 '#side_root_galleries#' => 'side_galleries',
                 '#\[block\]main_sitemap\[/block\]#' => '{$BLOCK,block=menu,param={$_GET,under},use_page_groupings=1,type=sitemap,quick_cache=1}',
+                '#\{\$BLOCK,main_sitemap\}#' => '{$BLOCK,block=menu,param={$_GET,under},use_page_groupings=1,type=sitemap,quick_cache=1}',
                 '#\[attachment([^\[\]]*)\]url_([^\[\]]*)\[/attachment[^\[\]]*\]#' => '[media$1]$2[/media]',
                 '#\{\$OCF#' => '{$CNS',
                 '#:misc#' => ':browse',
