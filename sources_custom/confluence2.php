@@ -28,7 +28,14 @@ function confluence_proxy_script()
 
     $url = qualify_url($_SERVER['QUERY_STRING'], get_confluence_base_url());
 
-    list($output, $mime_type) = confluence_call_url($url);
+    list($output, $mime_type, , , $http_message, $http_message_b) = confluence_call_url($url, false);
+
+    if ($output == '') {
+        if ($http_message == '404') {
+            warn_exit('URL not found on Confluence, ' . $url, false, false, 404);
+        }
+        warn_exit($http_message_b);
+    }
 
     cms_ini_set('ocproducts.xss_detect', '0');
 
