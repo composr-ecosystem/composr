@@ -329,12 +329,13 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
-     *
-     * Checking access_token only works for oauth1 and oauth2, openid will overwrite this method.
      */
     public function isConnected()
     {
-        return (bool)$this->getStoredData('access_token') && (!$this->hasAccessTokenExpired() || $this->isRefreshTokenAvailable());
+        if ((bool)$this->getStoredData('access_token')) {
+            return (!$this->hasAccessTokenExpired() || $this->isRefreshTokenAvailable());
+        }
+        return false;
     }
 
     /**
@@ -644,13 +645,13 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
     */
     public function hasAccessTokenExpired($time = null)
     {
+        if ($time === null) {
+            $time = time();
+        }
+
         $expires_at = $this->getStoredData('expires_at');
         if (!$expires_at) {
             return null;
-        }
-
-        if ($time === null) {
-            $time = time();
         }
 
         return $expires_at <= $time;

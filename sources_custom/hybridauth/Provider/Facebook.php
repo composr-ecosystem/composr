@@ -96,12 +96,10 @@ class Facebook extends OAuth2
     public function apiRequest($url, $method = 'GET', $parameters = [], $headers = [], $multipart = false)
     {
         // Handle token exchange prior to the standard handler for an API request
-        $exchange_by_expiry_days = $this->config->get('exchange_by_expiry_days') ?? 45;
+        $exchange_by_expiry_days = $this->config->get('exchange_by_expiry_days') ?: 45;
         if ($exchange_by_expiry_days !== null) {
             $projected_timestamp = time() + 60 * 60 * 24 * $exchange_by_expiry_days;
-            if (
-                ($this->hasAccessTokenExpired() === false) && // Not expired yet
-                ($this->hasAccessTokenExpired($projected_timestamp) === true)) { // But will within projection
+            if (!$this->hasAccessTokenExpired() && $this->hasAccessTokenExpired($projected_timestamp)) {
                 $this->exchangeAccessToken();
             }
         }
@@ -158,7 +156,13 @@ class Facebook extends OAuth2
             'hometown',
             'birthday',
         ];
-        $response = $this->apiRequest('me', 'GET', [ 'fields' => implode(',', $fields), 'locale' => 'en_US' ]);
+
+        // Note that en_US is needed for gender fields to match convention.
+        $locale = $this->config->get('locale') ?: 'en_US';
+        $response = $this->apiRequest('me', 'GET', [
+            'fields' => implode(',', $fields),
+            'locale' => $locale,
+        ]);
 
         $data = new Data\Collection($response);
 

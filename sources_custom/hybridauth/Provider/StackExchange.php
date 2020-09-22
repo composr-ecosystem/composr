@@ -26,9 +26,15 @@ use Hybridauth\User;
  *
  *   $adapter = new Hybridauth\Provider\StackExchange( $config );
  *
- *   $adapter->authenticate();
+ *   try {
+ *       $adapter->authenticate();
  *
- *   $userProfile = $adapter->getUserProfile();
+ *       $userProfile = $adapter->getUserProfile();
+ *       $tokens = $adapter->getAccessToken();
+ *   }
+ *   catch( \Exception $e ){
+ *       echo $e->getMessage() ;
+ *   }
  */
 class StackExchange extends OAuth2
 {
@@ -76,7 +82,10 @@ class StackExchange extends OAuth2
     {
         $site = $this->config->get('site');
 
-        $response = $this->apiRequest('me', 'GET', [ 'site' => $site, 'access_token' => $this->getStoredData('access_token') ]);
+        $response = $this->apiRequest('me', 'GET', [
+            'site' => $site,
+            'access_token' => $this->getStoredData('access_token'),
+        ]);
 
         if (! $response || !isset($response->items) || !isset($response->items[0])) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');

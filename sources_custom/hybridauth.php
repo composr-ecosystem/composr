@@ -40,10 +40,13 @@ function initiate_hybridauth()
 {
     $providers = enumerate_hybridauth_providers();
 
+    global $CSP_NONCE;
+
     $_providers = [];
     foreach ($providers as $provider => $info) {
         $_providers[$provider] = [
             'enabled' => true,
+            'nonce' => $CSP_NONCE,
             'keys' => $info['keys'],
         ] + $info['other_parameters'];
     }
