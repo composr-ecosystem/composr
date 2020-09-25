@@ -899,12 +899,12 @@ function notifications_enabled($notification_code, $notification_category, $memb
  * Find whether a notification is locked-down (i.e. cannot be set).
  *
  * @param  ID_TEXT $notification_code The notification code to check
- * @return boolean Whether it is
+ * @return ?BINARY Lock-down status (null: not locked down)
  */
 function notification_locked_down($notification_code)
 {
     static $notifications_available = array();
-    if (isset($notifications_available[$notification_code])) {
+    if (array_key_exists($notification_code, $notifications_available)) {
         return $notifications_available[$notification_code];
     }
 
@@ -912,9 +912,9 @@ function notification_locked_down($notification_code)
         'l_notification_code' => substr($notification_code, 0, 80),
     ));
 
-    $notifications_available[$notification_code] = !is_null($test);
+    $notifications_available[$notification_code] = $test;
 
-    return $notifications_available[$notification_code];
+    return $test;
 }
 
 /**
@@ -944,9 +944,7 @@ function notifications_setting($notification_code, $notification_category, $memb
 
     $db = (substr($notification_code, 0, 4) == 'cns_') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('notification_lockdown', 'l_setting', array(
-        'l_notification_code' => substr($notification_code, 0, 80),
-    ));
+    $test = notification_locked_down($notification_code);
     if ($test === null) {
         $test = $db->query_select_value_if_there('notifications_enabled', 'l_setting', $specific_where);
 
@@ -1308,9 +1306,7 @@ class Hook_Notification
         }
 
         // Test lock-down status
-        $lockdown_value = $GLOBALS['SITE_DB']->query_select_value_if_there('notification_lockdown', 'l_setting', array(
-            'l_notification_code' => substr($only_if_enabled_on__notification_code, 0, 80),
-        ));
+        $lockdown_value = notification_locked_down($only_if_enabled_on__notification_code);
         if ($lockdown_value === 0) {
             // Locked down off, so we can bomb out now
             return array(array(), false);

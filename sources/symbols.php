@@ -2897,7 +2897,7 @@ function ecv_NOTIFICATIONS_AVAILABLE($lang, $escaped, $param)
 
         require_code('notifications');
 
-        if (notification_locked_down($notification_code)) {
+        if (notification_locked_down($notification_code) === 1) {
             $value = '0';
         }
     }
