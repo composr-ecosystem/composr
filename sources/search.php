@@ -517,7 +517,7 @@ function find_search_suggestions($request, $search_type = '')
                 if (strpos($cma_info['title_field'], ':') === false) {
                     if (($cma_info['title_field_dereference']) && (multi_lang_content())) {
                         $q = 'SELECT text_original AS search FROM ' . get_table_prefix() . $cma_info['table'] . 'r';
-                        $q = ' JOIN ' . get_table_prefix() . 'translate t ON t.id=r.' . $cma_info['title_field'];
+                        $q .= ' JOIN ' . get_table_prefix() . 'translate t ON t.id=r.' . $cma_info['title_field'];
                         if (db_has_full_text($GLOBALS['SITE_DB']->connection_read)) {
                             $q .= ' WHERE ' . preg_replace('#\?#', 'text_original', db_full_text_assemble(str_replace('?', '', $request), false));
                         } else {
