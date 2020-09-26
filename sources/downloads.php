@@ -142,7 +142,7 @@ function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zo
         }
     }
 
-    $may_download = has_privilege(get_member(), 'download', 'downloads', array(strval($row['category_id'])));
+    $may_download = has_privilege(get_member(), 'download', 'downloads', array('downloads', strval($row['category_id'])));
 
     if (array_key_exists('id', $row)) {
         $download_url = generate_dload_url($row['id'], $row['url_redirect'] != '');

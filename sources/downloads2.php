@@ -109,7 +109,7 @@ function dload_script()
     if (!has_category_access(get_member(), 'downloads', strval($myrow['category_id']))) {
         access_denied('CATEGORY_ACCESS');
     }
-    $may_download = has_privilege(get_member(), 'download', 'downloads', array(strval($myrow['category_id'])));
+    $may_download = has_privilege(get_member(), 'download', 'downloads', array('downloads', strval($myrow['category_id'])));
     if (!$may_download) {
         access_denied('PRIVILEGE', 'download');
     }
