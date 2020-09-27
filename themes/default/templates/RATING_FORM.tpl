@@ -4,7 +4,7 @@
 		{$REQUIRE_JAVASCRIPT,ajax}
 
 		{+START,LOOP,ALL_RATING_CRITERIA}
-			{$SET,identifier,{CONTENT_TYPE*}__{TYPE*}__{ID*}}
+			{$SET-,identifier,{CONTENT_TYPE*}__{TYPE*}__{ID*}}
 
 			<div class="rating_outer">
 				<div class="rating_type_title">
@@ -38,7 +38,7 @@
 				{$INSERT_SPAMMER_BLACKHOLE}
 
 				{+START,LOOP,ALL_RATING_CRITERIA}
-					{$SET,identifier,{CONTENT_TYPE*}__{TYPE*}__{ID*}}
+					{$SET-,identifier,{CONTENT_TYPE*}__{TYPE*}__{ID*}}
 
 					<div class="rating_outer">
 						<div class="rating_type_title">

@@ -164,7 +164,7 @@ function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zo
         'RATING' => $rating,
         'VIEWS' => integer_format($row['download_views']),
         'SUBMITTER' => strval($row['submitter']),
-        'DESCRIPTION' => $description,
+        'DESCRIPTION' => reasonable_html_reduce($description),
         'FILE_SIZE' => $file_size,
         'DOWNLOADS' => integer_format($row['num_downloads']),
         'DATE_RAW' => strval($date_raw),
