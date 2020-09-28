@@ -160,7 +160,7 @@ We require:
  - MySQL database software (if you want it to be fully supported).
  - MySQL version 5.5.3 (&dagger;) or higher.
  - At least 10MB of database storage space (which should be available on any reputable webhost).
- - The [tt]max_allowed_packet[/tt] server system setting must be at least [tt]16M[/tt].
+ - The [tt]max_allowed_packet[/tt] server system setting must be at least [tt]4M[/tt] (this became the default in MySQL 5.4).
 
 (&dagger;) MySQL 5.5.3 introduces the utf8mb4 character set, which is required to store emojis. The installer assumes you will install with this support available, but upgrades from older versions may work in anything from MySQL 4.1+ if the database is kept in [tt]latin1[/tt] via having [tt]$SITE_INFO['database_charset'] = 'latin1';[/tt] in [tt]_config.php[/tt]. This compatibility will not be guaranteed, but as webhosts have been very slow to upgrade MySQL installations we will informally try and maintain it.
 
