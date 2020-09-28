@@ -257,7 +257,7 @@ class Block_main_multi_content
                 }
             }
             if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($info['category_type'] !== '<page>') && ($info['category_type'] !== '<zone>')) {
-                $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_category_access a2 ON (' . db_string_equal_to('a.module_the_name', $category_type_select) . ' AND r.' . $category_field_select . '=a2.category_name)';
+                $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_category_access a2 ON (' . db_string_equal_to('a2.module_the_name', $category_type_select) . ' AND r.' . $category_field_select . '=a2.category_name)';
                 $query .= ' LEFT JOIN ' . get_table_prefix() . 'member_category_access ma2 ON (' . db_string_equal_to('ma2.module_the_name', $category_type_select) . ' AND r.' . $category_field_select . '=ma2.category_name)';
             }
             if ($category_field_access !== null) {
