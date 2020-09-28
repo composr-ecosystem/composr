@@ -279,7 +279,7 @@ class Block_main_multi_content
             }
         }
 
-        if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (has_privilege(get_member(), 'see_unvalidated'))) {
+        if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (!has_privilege(get_member(), 'see_unvalidated'))) {
             $where .= ' AND ';
             $where .= 'r.' . $info['validated_field'] . '=1';
         }
