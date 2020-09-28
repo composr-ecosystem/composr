@@ -1169,6 +1169,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
                         $_table_clause = $orig_table_clause . $tc_add;
 
+                        if (preg_match('#^f\d+\.cv_value$#', $field) != 0) {
+                            // Needed to make the where condition indexed
+                            $_table_clause = str_replace(' LEFT JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', $_table_clause);
+                        }
+
                         $where_alternative_matches[] = array($where_clause_2, $where_clause_3, $_select, $_table_clause, 't' . strval($i));
                     } else {
                         $_table_clause = $orig_table_clause . $tc_add;
@@ -1195,6 +1200,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                         }
 
                         $_table_clause = $orig_table_clause;
+
+                        if (preg_match('#^f\d+\.cv_value$#', $field) != 0) {
+                            // Needed to make the where condition indexed
+                            $_table_clause = str_replace(' LEFT JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', $_table_clause);
+                        }
 
                         $where_alternative_matches[] = array($where_clause_2, $where_clause_3, $_select, $_table_clause, null);
                     }
