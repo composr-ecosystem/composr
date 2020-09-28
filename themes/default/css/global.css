@@ -45,7 +45,7 @@ When editing theme CSS we recommend you comment out code you're removing and hea
 {$THEME_WIZARD_COLOR,#ffffff,native_ui_alertfield_foreground,100% FFFFFF}
 {$THEME_WIZARD_COLOR,#545454,unfilled_input_text,100% 545454}
 {$THEME_WIZARD_COLOR,#888888,locked_input_field,100% 888888}
-{$THEME_WIZARD_COLOR,#0a1019,comfortable_input_field_text,85% BW + 15% seed}
+{$THEME_WIZARD_COLOR,#0a1019,comfortable_input_field_text,85% 000000 + 15% seed}
 {$THEME_WIZARD_COLOR,#b5b5b5,tab_border,100% b5b5b5}
 {$THEME_WIZARD_COLOR,#008000,adwords_style_text,100% 008000} /* Google adwords style */
 {$THEME_WIZARD_COLOR,#ffffff,floating_section_background,100% WB}
