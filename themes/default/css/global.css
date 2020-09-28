@@ -4773,17 +4773,6 @@ span:not(:empty)+#lightbox_position_in_set:before, span:not(:empty)+#lightbox_fu
 
 /*
 =========================
-======E-mail rules=======
-=========================
-*/
-
-.email_logo img {
-	max-width: 100%;
-	height: auto;
-}
-
-/*
-=========================
 =======Print rules=======
 =========================
 */
