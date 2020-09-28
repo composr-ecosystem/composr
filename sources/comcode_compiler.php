@@ -677,33 +677,9 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                             }
                         }
 
-                        if (!$comcode_dangerous_html) {
-                            // Special filtering required
-                            $close = strpos($comcode, '>', $pos - 1);
-                            $portion = substr($comcode, $pos - 1, $close - $pos + 2);
-                            $seq_ok = false;
-                            foreach ($allowed_html_seqs as $allowed_html_seq) {
-                                if (preg_match('#^' . $allowed_html_seq . '$#', $portion) != 0) {
-                                    $seq_ok = true;
-                                }
-                            }
-                            if (!$seq_ok) {
-                                $unstrippable_tags = array(
-                                    'table', 'tr', 'th', 'td', 'ul', 'ol', 'dl', 'dir', 'li', // Stop big structural problems causing out-of-scope corruptions (e.g. orphaned tr making preceding text move away completely when there's a wider surrounding table)
-                                    'div', 'p', // Stop disallowed opening tags paired with allowed closing tags causing mess up of surrounding layout
-                                );
-                                foreach ($unstrippable_tags as $unstrippable_tag) {
-                                    if (preg_match('#^<' . $unstrippable_tag . '(\s[^<>]*|)>$#i', $portion) != 0) {
-                                        $continuation .= '<' . $unstrippable_tag . '>';
-                                        break;
-                                    }
-                                }
-
-                                if ($close !== false) {
-                                    $pos = $close + 1;
-                                }
-                                continue 2;
-                            }
+                        $was_filtered = filter_html_inclusion_list_at_tag_start($comcode, $pos, $continuation, $comcode_dangerous_html, $allowed_html_seqs);
+                        if ($was_filtered) {
+                            continue 2;
                         }
                     }
 
@@ -713,9 +689,9 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                     } else {
                         $continuation .= $next;
                     }
-                } else { // Not in HTML or in a code tag ($formatting_allowed will be false, so ok)
+                } else { // Not in HTML or in a code tag [or semihtml code tag] ($formatting_allowed will be false, so ok)
                     // Text-format possibilities
-                    if ((($just_new_line) || ($just_ended)) && ($formatting_allowed)) {
+                    if ((($just_new_line) || ($just_ended)) && ($formatting_allowed) && (!$in_code_tag)) {
                         if ($continuation != '') {
                             if ($GLOBALS['XSS_DETECT']) {
                                 ocp_mark_as_escaped($continuation);
@@ -976,7 +952,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                         if ($comcode[$pos] === '+') {
                                             $p_end = strpos($comcode, '{+END}', $pos); // For the end position of the whole enclosed area excluding the closing directive tag
                                             if ($p_end !== false) {
-                                                $matches = [];
+                                                $matches = array();
                                                 while ($p_end < $len) {
                                                     $p_portion = substr($comcode, $pos - 1, strpos($comcode, '}', $p_end) - ($pos - 1) + 1);
                                                     if (preg_match_all('#\{\+\s*START\s*,#', $p_portion, $matches) == preg_match_all('#\{\+\s*END\s*\}#', $p_portion, $matches)) {
@@ -1741,10 +1717,24 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                             $continuation .= ($in_code_tag && $in_semihtml/*Will be filtered later so don't apply security now*/) ? $next : '&amp;';
                                         }
                                     } else {
+                                        if ($next == '<') {
+                                            $was_filtered = filter_html_inclusion_list_at_tag_start($comcode, $pos, $continuation, $comcode_dangerous_html, $allowed_html_seqs);
+                                            if ($was_filtered) {
+                                                continue 2;
+                                            }
+                                        }
+
                                         // Escaping only for character preservation
                                         $continuation .= (isset($html_escape_1_strrep_inv[$next]) && !($in_code_tag && $in_semihtml)) ? escape_html($next) : $next;
                                     }
                                 } else {
+                                    if ($next == '<') {
+                                        $was_filtered = filter_html_inclusion_list_at_tag_start($comcode, $pos, $continuation, $comcode_dangerous_html, $allowed_html_seqs);
+                                        if ($was_filtered) {
+                                            continue 2;
+                                        }
+                                    }
+
                                     // Simple flow through
                                     $continuation .= $next;
                                 }
@@ -2243,6 +2233,51 @@ function _opened_tag($as_admin, $source_member, $attribute_map, $current_tag, $p
     }
 
     return array($tag_output, $comcode_dangerous, $comcode_dangerous_html, $white_space_area, $formatting_allowed, $in_separate_parse_section, $textual_area, $attribute_map, $status, $in_html, $in_semihtml, $pos, $in_code_tag);
+}
+
+/**
+ * Filter HTML harshly from an inclusion-list for safety.
+ *
+ * @param  LONG_TEXT $comcode The Comcode being parsed
+ * @param  integer $pos The offset of the tag in the Comcode
+ * @param  string $continuation The current text buffer for the parser
+ * @param  boolean $comcode_dangerous_html Whether the parser allows dangerous HTML
+ * @param  array $allowed_html_seqs List of allowed HTML sequences
+ * @return boolean Whether filtering happened (with jump-ahead in parser)
+ */
+function filter_html_inclusion_list_at_tag_start($comcode, &$pos, &$continuation, $comcode_dangerous_html, $allowed_html_seqs)
+{
+    if (!$comcode_dangerous_html) {
+        // Special filtering required
+        $close = strpos($comcode, '>', $pos - 1);
+        $portion = substr($comcode, $pos - 1, $close - $pos + 2);
+        $seq_ok = false;
+        foreach ($allowed_html_seqs as $allowed_html_seq) {
+            if (preg_match('#^' . $allowed_html_seq . '$#', $portion) != 0) {
+                $seq_ok = true;
+            }
+        }
+        if (!$seq_ok) {
+            $unstrippable_tags = array(
+                'table', 'tr', 'th', 'td', 'ul', 'ol', 'dl', 'dir', 'li', // Stop big structural problems causing out-of-scope corruptions (e.g. orphaned tr making preceding text move away completely when there's a wider surrounding table)
+                'div', 'p', // Stop disallowed opening tags paired with allowed closing tags causing mess up of surrounding layout
+            );
+            foreach ($unstrippable_tags as $unstrippable_tag) {
+                if (preg_match('#^<' . $unstrippable_tag . '(\s[^<>]*|)>$#i', $portion) != 0) {
+                    $continuation .= '<' . $unstrippable_tag . '>';
+                    break;
+                }
+            }
+
+            if ($close !== false) {
+                $pos = $close + 1;
+            }
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
