@@ -1711,6 +1711,7 @@ function version_specific()
                 'cms_ocf_groups' => 'cms_cns_groups',
                 'lostpassword' => 'lost_password',
                 'admin_ipban' => 'admin_ip_ban',
+                'admin_emaillog' => 'admin_email_log',
             );
             foreach ($remap as $from => $to) {
                 $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $to));

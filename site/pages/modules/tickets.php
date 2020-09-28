@@ -94,6 +94,11 @@ class Module_tickets
             $GLOBALS['SITE_DB']->alter_table_field('ticket_types', 'ticket_type', '*AUTO', 'id');
             $GLOBALS['SITE_DB']->add_table_field('ticket_types', 'ticket_type_name', 'SHORT_TRANS', 0);
             $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ticket_types SET ticket_type_name=id');
+
+            $ticket_types = $GLOBALS['SITE_DB']->query_select('ticket_types', array('id', 'ticket_type_name'));
+            foreach ($ticket_types as $ticket_type) {
+                $GLOBALS['SITE_DB']->query_update('group_category_access', array('category_name' => strval($ticket_type['id'])), array('category_name' => get_translated_text($ticket_type['ticket_type_name']), 'module_the_name' => 'tickets'));
+            }
         }
 
         if ((!is_null($upgrade_from)) && ($upgrade_from < 5)) {
