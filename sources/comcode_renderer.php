@@ -803,8 +803,6 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             break;
 
         case 'snapback':
-            require_lang('cns');
-
             $post_id = intval($embed->evaluate());
 
             $_date = mixed();
@@ -825,7 +823,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
 
                 if ($s_title === null) {
-                    $s_title = do_lang_tempcode('FORUM_POST_NUMBERED', escape_html(integer_format($post_id)));
+                    $s_title = do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(integer_format($post_id)));
                 }
             } else {
                 $s_title = make_string_tempcode($attributes['param']);
@@ -844,17 +842,15 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             break;
 
         case 'post':
-            require_lang('cns');
             $post_id = intval($embed->evaluate());
-            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('FORUM_POST_NUMBERED', escape_html(integer_format($post_id))) : escape_html($attributes['param']);
+            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(integer_format($post_id))) : escape_html($attributes['param']);
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
             $temp_tpl->attach(hyperlink($GLOBALS['FORUM_DRIVER']->post_url($post_id, $forum, true), $s_title, false, false));
             break;
 
         case 'topic':
-            require_lang('cns');
             $topic_id = intval($embed->evaluate());
-            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('FORUM_TOPIC_NUMBERED', escape_html(integer_format($topic_id))) : escape_html($attributes['param']);
+            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_TOPIC_NUMBERED', escape_html(integer_format($topic_id))) : escape_html($attributes['param']);
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
             $temp_tpl->attach(hyperlink($GLOBALS['FORUM_DRIVER']->topic_url($topic_id, $forum, true), $s_title, false, false));
             break;
