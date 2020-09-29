@@ -107,7 +107,7 @@ class Block_main_leader_board
         foreach (array_merge($admin_groups, $moderator_groups) as $group_id) {
             $or_list .= ' AND id<>' . strval($group_id);
         }
-        $has_rank_images = (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE ' . $or_list . ' AND ' . db_string_not_equal_to('g_rank_image', '')) != 0);
+        $has_rank_images = (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND ' . db_string_not_equal_to('g_rank_image', '')) != 0);
 
         foreach ($rows as $member => $points) {
             $points_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $member), get_module_zone('points'));
