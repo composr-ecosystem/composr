@@ -226,7 +226,7 @@ class Module_lost_password
         if (!is_null($username)) {
             $username = trim($username);
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-            if (is_null($member_id)) {
+            if (($member_id === null) || (is_guest($member_id))) {
                 warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_2'));
             }
         } else {

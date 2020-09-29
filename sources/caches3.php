@@ -577,13 +577,38 @@ function erase_theme_images_cache()
 
     Self_learning_cache::erase_smart_cache();
 
-    $paths = $GLOBALS['SITE_DB']->query_select('theme_images', array('path', 'id'));
+    require_code('themes2');
+    $all_themes = find_all_themes();
+
+    $_paths = $GLOBALS['SITE_DB']->query_select('theme_images', array('theme', 'id', 'path', 'lang'));
+    $paths = array();
+    foreach ($_paths as $path) {
+        $paths[serialize($path)] = $path;
+    }
+
     foreach ($paths as $path) {
-        if ($path['path'] == '') {
+        if (!file_exists(get_file_base() . '/themes/' . $path['theme'])) {
+            // Delete: a non-existent theme
+            $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
+        } elseif ($path['path'] == '') {
+            // Delete: A blank path, should not be there
             $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
         } elseif (preg_match('#^themes/[^/]+/images_custom/#', $path['path']) != 0) {
             if ((!file_exists(get_custom_file_base() . '/' . rawurldecode($path['path']))) && (!file_exists(get_file_base() . '/' . rawurldecode($path['path'])))) {
+                // Delete: Custom disk file does not actually exist
                 $GLOBALS['SITE_DB']->query_delete('theme_images', $path, '', 1);
+            } else {
+                if ($path['theme'] == 'default') {
+                    // Add: Custom images in default theme should be in all themes
+                    foreach (array_keys($all_themes) as $theme) {
+                        if ($theme != 'default') {
+                            $insert_map = array('theme' => $theme, 'id' => $path['id'], 'path' => $path['path'], 'lang' => $path['lang']);
+                            if (!isset($paths[serialize($insert_map)])) {
+                                $GLOBALS['SITE_DB']->query_insert('theme_images', $insert_map);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

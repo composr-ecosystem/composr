@@ -197,19 +197,19 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 switch (isset($next_token[0]) ? $next_token[0] : '') {
                     case '$':
                         $current_level_mode = PARSE_SYMBOL;
-                        $current_level_data[] = '"' . php_addslashes(($next_token === '$') ? '' : substr($next_token, 1)) . '"';
+                        $current_level_data[] = '"' . php_addslashes(($next_token === '$') ? '' : trim(substr($next_token, 1))) . '"';
                         break;
                     case '+':
                         $current_level_mode = PARSE_DIRECTIVE;
-                        $current_level_data[] = '"' . php_addslashes(($next_token === '+') ? '' : substr($next_token, 1)) . '"';
+                        $current_level_data[] = '"' . php_addslashes(($next_token === '+') ? '' : trim(substr($next_token, 1))) . '"';
                         break;
                     case '!':
                         $current_level_mode = PARSE_LANGUAGE_REFERENCE;
-                        $current_level_data[] = '"' . php_addslashes(($next_token === '!') ? '' : substr($next_token, 1)) . '"';
+                        $current_level_data[] = '"' . php_addslashes(($next_token === '!') ? '' : trim(substr($next_token, 1))) . '"';
                         break;
                     default:
                         $current_level_mode = PARSE_PARAMETER;
-                        $current_level_data[] = '"' . php_addslashes($next_token) . '"';
+                        $current_level_data[] = '"' . php_addslashes(trim($next_token)) . '"';
                         break;
                 }
                 $current_level_params = array();
@@ -495,7 +495,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 // Handle directive nesting
                 if ($past_level_mode === PARSE_DIRECTIVE) {
                     $tpl_funcs = array();
-                    $eval = debug_eval('return ' . $first_param . ';', $tpl_funcs, array(), $cl);
+                    $eval = trim(debug_eval('return ' . $first_param . ';', $tpl_funcs, array(), $cl));
                     if (!is_string($eval)) {
                         $eval = '';
                     }
@@ -565,7 +565,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             }
                         }
                         $tpl_funcs = array();
-                        $eval = debug_eval('return ' . implode('.', $directive_opener_params[1]) . ';', $tpl_funcs, array(), $cl);
+                        $eval = trim(debug_eval('return ' . implode('.', $directive_opener_params[1]) . ';', $tpl_funcs, array(), $cl));
                         if (!is_string($eval)) {
                             $eval = '';
                         }

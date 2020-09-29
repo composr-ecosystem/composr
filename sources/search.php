@@ -244,14 +244,14 @@ abstract class FieldsSearchHook
             }
         }
 
-        $where_clause .= ' AND ';
+        $where_clause_2 = ' AND ';
         if ($catalogue_name[0] == '_') {
-            $where_clause .= '(' . db_string_equal_to($table_alias . '.c_name', $catalogue_name) . ' OR ' . $table_alias . '.c_name IS NULL' . ')';
+            $where_clause_2 .= '(' . db_string_equal_to($table_alias . '.c_name', $catalogue_name) . ' OR ' . $table_alias . '.c_name IS NULL' . ')';
         } else {
-            $where_clause .= db_string_equal_to($table_alias . '.c_name', $catalogue_name);
+            $where_clause_2 .= db_string_equal_to($table_alias . '.c_name', $catalogue_name);
         }
 
-        return array($table, $where_clause, $trans_fields, $nontrans_fields, $title_field);
+        return array($table, $where_clause, $where_clause_2, $trans_fields, $nontrans_fields, $title_field);
     }
 
     /**
@@ -275,10 +275,11 @@ abstract class FieldsSearchHook
             $content_id_field = db_cast('r.id', 'CHAR');
         }
 
+        list($sup_table, $sup_where_clause, , $sup_trans_fields, $sup_nontrans_fields) = $advanced;
+
         $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entry_linkage l ON l.content_id=' . $content_id_field . ' AND ' . db_string_equal_to('content_type', substr($catalogue_name, 1));
         $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries ce ON ce.id=l.catalogue_entry_id';
 
-        list($sup_table, $sup_where_clause, $sup_trans_fields, $sup_nontrans_fields) = $advanced;
         $table .= $sup_table;
         $where_clause .= $sup_where_clause;
         $trans_fields = array_merge($trans_fields, $sup_trans_fields);
@@ -517,7 +518,7 @@ function find_search_suggestions($request, $search_type = '')
                 if (strpos($cma_info['title_field'], ':') === false) {
                     if (($cma_info['title_field_dereference']) && (multi_lang_content())) {
                         $q = 'SELECT text_original AS search FROM ' . get_table_prefix() . $cma_info['table'] . 'r';
-                        $q = ' JOIN ' . get_table_prefix() . 'translate t ON t.id=r.' . $cma_info['title_field'];
+                        $q .= ' JOIN ' . get_table_prefix() . 'translate t ON t.id=r.' . $cma_info['title_field'];
                         if (db_has_full_text($GLOBALS['SITE_DB']->connection_read)) {
                             $q .= ' WHERE ' . preg_replace('#\?#', 'text_original', db_full_text_assemble(str_replace('?', '', $request), false));
                         } else {

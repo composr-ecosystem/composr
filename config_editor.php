@@ -226,7 +226,8 @@ function do_access($given_password)
         */
         'no_keep_params' => '<em>Development:</em> Whether to disable support for \'keep_\' params in Composr. You probably don\'t want to disable them!',
         'safe_mode' => '<em>Development:</em> Whether Composr is to be forced into Safe Mode, meaning no custom files will load and most caching will be disabled.',
-        'no_email_output' => '<em>Development:</em> Whether emails should never be sent.',
+        'no_email_output' => '<em>Development:</em> Whether e-mails should never be sent.',
+        'redirect_email_output' => '<em>Development:</em> Alternate e-mail address to route all e-mails.',
         'email_to' => '<em>Development:</em> If you have set up a customised critical error screen (via a <kbd>_critical_error.html</kbd> file and empty <kbd>critical_errors</kbd> directory), and a background e-mailing process, this defines where error e-mails will be sent.',
         'no_ssl' => '<em>Development:</em> Whether to disable SSL (useful for conditionally disabling on development sites without SSL, when running a database with SSL configured)',
         'nodejs_binary_path' => '<em>Development:</em> Provide the path to your installed Node.js binary to use it for compiling .less stylesheets. You will also need to run `npm install less` in your Composr directory to install the NPM module.',

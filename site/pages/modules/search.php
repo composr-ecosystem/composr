@@ -563,7 +563,7 @@ class Module_search
      * @set    ASC DESC
      * @param  boolean $only_titles Whether to only search titles
      * @param  string $search_under Comma-separated list of categories to search under
-     * @return array A triple: The results, results browser, the number of results
+     * @return array A triple: The results, pagination, the number of results
      */
     public function results($id, $author, $author_id, $cutoff, $sort, $direction, $only_titles, $search_under)
     {

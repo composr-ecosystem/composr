@@ -731,14 +731,6 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $_embed = '';
             }
             if ($temp_tpl->is_empty()) {
-                if (($in_semihtml) || ($is_all_semihtml)) { // HACKHACK. Yuck. We've allowed unfiltered HTML through (as code tags have no internal filtering and the whole thing is HTML so no escaping was done): we need to pass it through proper HTML security.
-                    require_code('comcode_from_html');
-                    $_embed = $embed->evaluate();
-                    $back_to_comcode = html_to_comcode($_embed);
-                    $_is_all_semihtml = false;
-                    $embed = __comcode_to_tempcode($back_to_comcode, $source_member, $as_admin, 80, $pass_id, $connection, false, false, $_is_all_semihtml, false, false, null, null, false); // Re-parse (with full security)
-                }
-
                 $_embed = $embed->evaluate();
 
                 if ((!array_key_exists('scroll', $attributes)) && (cms_mb_strlen($_embed) > 1000)) {
@@ -803,8 +795,6 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             break;
 
         case 'snapback':
-            require_lang('cns');
-
             $post_id = intval($embed->evaluate());
 
             $_date = mixed();
@@ -825,7 +815,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
 
                 if ($s_title === null) {
-                    $s_title = do_lang_tempcode('FORUM_POST_NUMBERED', escape_html(integer_format($post_id)));
+                    $s_title = do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(integer_format($post_id)));
                 }
             } else {
                 $s_title = make_string_tempcode($attributes['param']);
@@ -844,17 +834,15 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             break;
 
         case 'post':
-            require_lang('cns');
             $post_id = intval($embed->evaluate());
-            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('FORUM_POST_NUMBERED', escape_html(integer_format($post_id))) : escape_html($attributes['param']);
+            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_POST_NUMBERED', escape_html(integer_format($post_id))) : escape_html($attributes['param']);
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
             $temp_tpl->attach(hyperlink($GLOBALS['FORUM_DRIVER']->post_url($post_id, $forum, true), $s_title, false, false));
             break;
 
         case 'topic':
-            require_lang('cns');
             $topic_id = intval($embed->evaluate());
-            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('FORUM_TOPIC_NUMBERED', escape_html(integer_format($topic_id))) : escape_html($attributes['param']);
+            $s_title = ($attributes['param'] == '') ? do_lang_tempcode('cns:FORUM_TOPIC_NUMBERED', escape_html(integer_format($topic_id))) : escape_html($attributes['param']);
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
             $temp_tpl->attach(hyperlink($GLOBALS['FORUM_DRIVER']->topic_url($topic_id, $forum, true), $s_title, false, false));
             break;
@@ -1416,6 +1404,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 if (is_integer($key)) {
                     $key = strval($key);
                 }
+
                 $_attributes[] = $key . '=' . $val;
             }
             $temp_tpl = symbol_tempcode('BLOCK', $_attributes);

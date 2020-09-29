@@ -1042,11 +1042,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
     // Defined-keywords/tags search
     if ((get_param_integer('keep_just_show_query', 0) == 0) && (!is_null($meta_type)) && ($content != '') && (!$only_titles)) {
-        if (strpos($content, '"') !== false || strpos($content, '+') !== false || strpos($content, '-') !== false || strpos($content, ' ') !== false) {
+        if (strpos($content, '"') !== false || preg_match('#(^|\s)-#', $content) != 0 || strpos($content, ' ') !== false) {
             list($meta_content_where) = build_content_where($content, $boolean_search, $boolean_operator, true);
-            $meta_content_where = '(' . $meta_content_where . ' OR ' . db_string_equal_to('?', $content) . ')';
+            $meta_content_where = $meta_content_where; // A full-text search on keywords
         } else {
-            $meta_content_where = db_string_equal_to('?', $content);
+            $meta_content_where = db_string_equal_to('?', $content); // Consider it a simple keyword search
         }
         if (multi_lang_content()) {
             $keywords_where = preg_replace('#\?#', 'tm.text_original', $meta_content_where);
@@ -1070,11 +1070,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                     $extra_join .= ' JOIN ' . $db->get_table_prefix() . 'translate t' . strval($i) . ' ON t' . strval($i) . '.id=' . $field . ' AND ' . db_string_equal_to('t' . strval($i) . '.language', user_lang());
                 }
             }
-            $_keywords_query = $table_clause . ' JOIN ' . $db->get_table_prefix() . 'seo_meta_keywords m ON (' . db_string_equal_to('m.meta_for_type', $meta_type) . ' AND ' . $meta_join . ')';
+            $keywords_join = ' JOIN ' . $db->get_table_prefix() . 'seo_meta_keywords m ON (' . db_string_equal_to('m.meta_for_type', $meta_type) . ' AND ' . $meta_join . ')';
             if (multi_lang_content()) {
-                $_keywords_query .= ' JOIN ' . $db->get_table_prefix() . 'translate tm ON tm.id=m.meta_keyword AND ' . db_string_equal_to('tm.language', user_lang());
+                $keywords_join .= ' JOIN ' . $db->get_table_prefix() . 'translate tm ON tm.id=m.meta_keyword AND ' . db_string_equal_to('tm.language', user_lang());
             }
-            $_keywords_query .= $extra_join;
+            $_keywords_query = $table_clause . $keywords_join . $extra_join;
             $_keywords_query .= ' WHERE ' . $keywords_where;
             $_keywords_query .= (($where_clause != '') ? (' AND ' . $where_clause) : '');
 
@@ -1169,6 +1169,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
                         $_table_clause = $orig_table_clause . $tc_add;
 
+                        if (preg_match('#^f\d+\.cv_value$#', $field) != 0) {
+                            // Needed to make the where condition indexed
+                            $_table_clause = str_replace(' LEFT JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', $_table_clause);
+                        }
+
                         $where_alternative_matches[] = array($where_clause_2, $where_clause_3, $_select, $_table_clause, 't' . strval($i));
                     } else {
                         $_table_clause = $orig_table_clause . $tc_add;
@@ -1195,6 +1200,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                         }
 
                         $_table_clause = $orig_table_clause;
+
+                        if (preg_match('#^f\d+\.cv_value$#', $field) != 0) {
+                            // Needed to make the where condition indexed
+                            $_table_clause = str_replace(' LEFT JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', $_table_clause);
+                        }
 
                         $where_alternative_matches[] = array($where_clause_2, $where_clause_3, $_select, $_table_clause, null);
                     }

@@ -51,6 +51,9 @@ class Hook_commandr_command_passwd
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($options['u']);
             } elseif (array_key_exists('username', $options)) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($options['username']);
+                if (($member_id === null) || (is_guest($member_id))) {
+                    return array('', '', '', do_lang('MEMBER_NO_EXIST'));
+                }
             } else {
                 $member_id = get_member();
             }

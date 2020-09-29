@@ -33,7 +33,7 @@
 					</tr>
 				{+END}
 
-				{$SET,rating,{$RATING,images,{ID},1,{SUBMITTER}}}
+				{$SET-,rating,{$RATING,images,{ID},1,{SUBMITTER}}}
 				{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
 					<tr>
 						<th class="de_th metadata_title">{!RATING}</th>
@@ -67,7 +67,7 @@
 		</p>
 
 		{+START,IF_PASSED,RATING_DETAILS}
-			{$SET,rating,{$RATING,images,{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
+			{$SET-,rating,{$RATING,images,{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
 			{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
 				<div class="grating">{$GET,rating}</div>
 			{+END}

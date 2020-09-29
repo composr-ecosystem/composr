@@ -183,6 +183,13 @@ function _build_sitemap_menu($menu)
         $title = mixed();
         $icon = mixed();
 
+        // Stitching on a stored menu?
+        if (preg_match('#^\w+$#', $_node) != 0) {
+            $stored_menu = _build_stored_menu($_node);
+            $root['children'] = array_merge($root['children'], $stored_menu['children']);
+            continue;
+        }
+
         // Parse options
         if ($menu != '') {
             $bits = explode(',', $_node);
@@ -193,7 +200,11 @@ function _build_sitemap_menu($menu)
                     $setting = $bit_parts[1];
                     switch ($bit_parts[0]) {
                         case 'valid_node_types':
-                            $valid_node_types = explode('|', $setting);
+                            if (substr($setting, 0, 1) == '-') {
+                                $valid_node_types = array_diff(array_keys(find_all_hooks('systems', 'sitemap')), explode('|', substr($setting, 1)));
+                            } else {
+                                $valid_node_types = explode('|', $setting);
+                            }
                             break;
 
                         case 'child_cutoff':
@@ -712,7 +723,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             ), null, false, 'MENU_BRANCH_tree'));
         }
     }
-    if (($page_link == '') && ($children->is_empty())) {
+    if (($page_link == '') && ($url->is_empty()) && ($children->is_empty())) {
         return array(null, false); // Nothing here!
     }
 

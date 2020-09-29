@@ -2281,8 +2281,11 @@ class Module_topics
             $member_username = post_param_string('to_member_id_0', '');
             if ($member_username != '') {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member_username);
-                if (is_null($member_id)) {
+                if (($member_id === null) || (is_guest($member_id))) {
                     warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($member_username)));
+                }
+                if ($member_id == get_member()) {
+                    warn_exit(do_lang_tempcode('NO_PRIVATE_SELF'));
                 }
             }
             foreach ($_POST as $key => $_invited_member) {
@@ -2301,7 +2304,7 @@ class Module_topics
                 }
 
                 $invited_member = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_invited_member);
-                if (is_null($invited_member)) {
+                if (($invited_member === null) || (is_guest($invited_member))) {
                     attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_invited_member)), 'warn');
                 } else {
                     $invited_members[] = intval($invited_member);
@@ -2339,8 +2342,11 @@ class Module_topics
                 $intended_solely_for = null;
             } else {
                 $intended_solely_for = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_intended_solely_for);
-                if (is_null($intended_solely_for)) {
+                if (($intended_solely_for === null) || (is_guest($intended_solely_for))) {
                     warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_intended_solely_for)));
+                }
+                if ($intended_solely_for == get_member()) {
+                    warn_exit(do_lang_tempcode('NO_PRIVATE_SELF'));
                 }
             }
         } else {
@@ -3710,7 +3716,7 @@ END;
     {
         $username = trim(post_param_string('username'));
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-        if (is_null($member_id)) {
+        if (($member_id === null) || (is_guest($member_id))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
         }
         $topic_id = get_param_integer('topic_id');
@@ -4256,11 +4262,11 @@ END;
         $_a = post_param_string('a');
         $_b = post_param_string('b');
         $a = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_a);
-        if (is_null($a)) {
+        if (($a === null) || (is_guest($a))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_a)));
         }
         $b = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_b);
-        if (is_null($b)) {
+        if (($b === null) || (is_guest($b))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_b)));
         }
 

@@ -19,7 +19,7 @@
 
 	<div class="meta_details" role="note">
 		<dl class="meta_details_list">
-			{+START,IF_NON_EMPTY,{AUTHOR}}
+			{+START,IF,{$ADDON_INSTALLED,authors}}
 				<dt class="field_name">{!BY}:</dt> <dd>{AUTHOR*}</dd>
 			{+END}
 			{+START,IF,{$INLINE_STATS}}
@@ -27,7 +27,7 @@
 			{+END}
 			<dt class="field_name">{!ADDED}:</dt> <dd>{DATE*}</dd>
 			{+START,IF_PASSED,RATING}
-				{$SET,rating,{$RATING,downloads,{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
+				{$SET-,rating,{$RATING,downloads,{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
 				{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
 					<dt class="field_name">{!RATING}:</dt> <dd>{$GET,rating}</dd>
 				{+END}

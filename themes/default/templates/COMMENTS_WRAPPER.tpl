@@ -1,4 +1,4 @@
-{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{REVIEW_RATING_CRITERIA},1}}}
+{$SET-,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{REVIEW_RATING_CRITERIA},1}}}
 
 <div id="comments_wrapper" class="comments_wrapper" role="complementary">
 	{+START,SET,REVIEWS_TITLE}
