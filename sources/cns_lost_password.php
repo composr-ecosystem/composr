@@ -36,7 +36,7 @@ function lost_password_emailer_step($username, $email_address)
     } else {
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email_address);
     }
-    if (is_null($member_id)) {
+    if (($member_id === null) || (is_guest($member_id))) {
         warn_exit(do_lang_tempcode('PASSWORD_RESET_ERROR_2'));
     }
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);

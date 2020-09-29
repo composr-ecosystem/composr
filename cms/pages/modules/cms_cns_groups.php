@@ -264,7 +264,7 @@ class Module_cms_cns_groups extends Standard_crud_module
         $_group_leader = post_param_string('group_leader');
         if ($_group_leader != '') {
             $group_leader = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_group_leader);
-            if (is_null($group_leader)) {
+            if (($group_leader === null) || (is_guest($group_leader))) {
                 warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_group_leader)));
             }
         } else {
@@ -364,7 +364,7 @@ class Module_cms_cns_groups extends Standard_crud_module
         $_group_leader = post_param_string('group_leader');
         if ($_group_leader != '') {
             $group_leader = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_group_leader);
-            if (is_null($group_leader)) {
+            if (($group_leader === null) || (is_guest($group_leader))) {
                 warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_group_leader)));
             }
         } else {

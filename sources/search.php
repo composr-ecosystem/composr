@@ -244,14 +244,14 @@ abstract class FieldsSearchHook
             }
         }
 
-        $where_clause .= ' AND ';
+        $where_clause_2 = ' AND ';
         if ($catalogue_name[0] == '_') {
-            $where_clause .= '(' . db_string_equal_to($table_alias . '.c_name', $catalogue_name) . ' OR ' . $table_alias . '.c_name IS NULL' . ')';
+            $where_clause_2 .= '(' . db_string_equal_to($table_alias . '.c_name', $catalogue_name) . ' OR ' . $table_alias . '.c_name IS NULL' . ')';
         } else {
-            $where_clause .= db_string_equal_to($table_alias . '.c_name', $catalogue_name);
+            $where_clause_2 .= db_string_equal_to($table_alias . '.c_name', $catalogue_name);
         }
 
-        return array($table, $where_clause, $trans_fields, $nontrans_fields, $title_field);
+        return array($table, $where_clause, $where_clause_2, $trans_fields, $nontrans_fields, $title_field);
     }
 
     /**
@@ -275,10 +275,11 @@ abstract class FieldsSearchHook
             $content_id_field = db_cast('r.id', 'CHAR');
         }
 
+        list($sup_table, $sup_where_clause, , $sup_trans_fields, $sup_nontrans_fields) = $advanced;
+
         $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entry_linkage l ON l.content_id=' . $content_id_field . ' AND ' . db_string_equal_to('content_type', substr($catalogue_name, 1));
         $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries ce ON ce.id=l.catalogue_entry_id';
 
-        list($sup_table, $sup_where_clause, $sup_trans_fields, $sup_nontrans_fields) = $advanced;
         $table .= $sup_table;
         $where_clause .= $sup_where_clause;
         $trans_fields = array_merge($trans_fields, $sup_trans_fields);
@@ -350,6 +351,112 @@ function is_under_radar($test)
 }
 
 /**
+ * Find data about most popular keyword usage, with optional constraints.
+ *
+ * @param  ?array $limit_to List of SEO type codes to limit to (null: no limit)
+ * @param  ?string $keyword_prefix Keyword prefix to limit to (null: no limit)
+ * @param  integer $max Maximum number of results to return
+ * @param  boolean $apply_permissions Whether to apply permissions
+ * @return array Map between keyword and count, in commonality order.
+ */
+function perform_keyword_search($limit_to = null, $keyword_prefix = null, $max = 300, $apply_permissions = true)
+{
+    $where = '1=1';
+
+    if ($apply_permissions) {
+        require_code('content');
+
+        $g_or = _get_where_clause_groups(get_member());
+
+        $cma_hooks = find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware');
+        foreach (array_keys($cma_hooks) as $content_type) {
+            $cma_ob = get_content_object($content_type);
+            $cma_info = $cma_ob->info();
+
+            if (($cma_info !== null) && ($cma_info['seo_type_code'] !== null)) {
+                $seo_type_code = $cma_info['seo_type_code'];
+                if (($limit_to === null) || (in_array($seo_type_code, $limit_to))) {
+                    $db = $cma_info['connection']; // TODO: Fix in v11
+                    $table = $cma_info['table'];
+                    $validated_field = $cma_info['validated_field'];
+                    $id_field = $cma_info['id_field'];
+                    if (is_array($id_field)) {
+                        $id_field = $id_field[0];
+                    }
+                    $category_field = $cma_info['category_field'];
+                    $category_type = $cma_info['category_type'];
+                    if (!is_array($category_field)) {
+                        $category_field = array($category_field);
+                        $category_type = array($category_type);
+                    }
+                    $permissions_type_code = $cma_info['permissions_type_code'];
+
+                    if (db_has_subqueries($db->connection_read)) {
+                        if ($table !== null) {
+                            $_table = $db->get_table_prefix() . $table;
+
+                            if (($validated_field !== null) && (!has_privilege(get_member(), 'bypass_validation_highrange_content'))) {
+                                $validated_subquery = 'SELECT ' . $validated_field . ' FROM ' . $_table . ' r WHERE m.meta_for_id=' . db_cast('r.' . $id_field, 'CHAR');
+                                $validated_where = ' AND (' . db_string_not_equal_to('meta_for_type', $seo_type_code) . ' OR (' . $validated_subquery . ')=1)';
+                                $where .= $validated_where;
+                            }
+
+                            if (($permissions_type_code !== null) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+                                $_perms_table = $db->get_table_prefix() . 'group_category_access';
+
+                                foreach ($category_field as $i => $_category_field) {
+                                    $_category_type = $category_type[$i];
+
+                                    if ($_category_field == $id_field) {
+                                        $_meta_for_id = 'm.meta_for_id';
+                                    } else {
+                                        $category_subquery = 'SELECT ' . $_category_field . ' FROM ' . $_table . ' r WHERE m.meta_for_id=' . db_cast('r.' . $id_field, 'CHAR');
+                                        $_meta_for_id = '(' . $category_subquery . ')';
+                                    }
+                                    $permissions_subquery = 'SELECT group_id FROM ' . $_perms_table . ' p WHERE p.category_name=' . $_meta_for_id . ' AND ' . db_string_equal_to('module_the_name', $_category_type) . ' AND ' . $g_or;
+                                    $permissions_where = ' AND (' . db_string_not_equal_to('meta_for_type', $seo_type_code) . ' OR EXISTS(' . $permissions_subquery . '))';
+                                    $where .= $permissions_where;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if ($limit_to !== null) {
+        $where .= ' AND (1=0';
+        foreach (array_values($limit_to) as $i => $l) {
+            if ($i == 0) {
+                $where .= ' OR ';
+            }
+            $where .= db_string_equal_to('meta_for_type', $l);
+        }
+        $where .= ')';
+    }
+
+    $field = $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword');
+
+    if ($keyword_prefix !== null) {
+        $where .= ' AND ' . $field . ' LIKE \'' . db_encode_like($keyword_prefix . '%') . '\'';
+    }
+
+    $sql = '
+        SELECT
+            ' . $field . ' AS meta_keyword,
+            COUNT(*) AS cnt
+        FROM ' . get_table_prefix() . 'seo_meta_keywords m
+        WHERE ' . $where . '
+        GROUP BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . '
+        ORDER BY COUNT(*) DESC';
+
+    $meta_rows = $GLOBALS['SITE_DB']->query($sql, $max, null, false, false, array('meta_keyword' => 'SHORT_TRANS'));
+
+    return collapse_2d_complexity('meta_keyword', 'cnt', $meta_rows);
+}
+
+/**
  * Find autocomplete suggestions to complete a partially-typed search request.
  *
  * @param  string $request Search request
@@ -388,29 +495,17 @@ function find_search_suggestions($request, $search_type = '')
 
     if ($search_type != '') {
         require_code('content');
-        $feedback_type = convert_composr_type_codes('search_hook', $search_type, 'feedback_type_code');
+        $seo_type = convert_composr_type_codes('search_hook', $search_type, 'seo_type_code');
 
-        if ($feedback_type != '') {
+        if ($seo_type != '') {
             $content_type = convert_composr_type_codes('search_hook', $search_type, 'content_type');
 
             // Based on keywords
             if ((has_privilege(get_member(), 'autocomplete_keyword_' . $content_type)) && (count($suggestions) < MAXIMUM_AUTOCOMPLETE_SUGGESTIONS)) {
-                if (multi_lang_content()) {
-                    $q = 'SELECT text_original AS search FROM ' . get_table_prefix() . 'seo_meta_keywords m JOIN ' . get_table_prefix() . 'translate t ON t.id=m.meta_keyword';
-                    $q .= ' WHERE meta_keyword LIKE \'' . db_encode_like($request . '%') . '\'';
-                    $q .= ' AND ' . db_string_equal_to('meta_for_type', $feedback_type);
-                    $q .= ' GROUP BY text_original';
-                } else {
-                    $q = 'SELECT meta_keyword AS search FROM ' . get_table_prefix() . 'seo_meta_keywords';
-                    $q .= ' WHERE meta_keyword LIKE \'' . db_encode_like($request . '%') . '\'';
-                    $q .= ' AND ' . db_string_equal_to('meta_for_type', $feedback_type);
-                    $q .= ' GROUP BY meta_keyword';
-                }
-                $q .= ' ORDER BY COUNT(*) DESC';
-                $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS);
-                foreach ($rows as $search) {
+                $keywords = perform_keyword_search(array($seo_type), $request, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS);
+                foreach (array_keys($keywords) as $keyword) {
                     if (count($suggestions) < MAXIMUM_AUTOCOMPLETE_SUGGESTIONS) {
-                        $suggestions[$search['search']] = true;
+                        $suggestions[$keyword] = true;
                     }
                 }
             }
@@ -423,7 +518,7 @@ function find_search_suggestions($request, $search_type = '')
                 if (strpos($cma_info['title_field'], ':') === false) {
                     if (($cma_info['title_field_dereference']) && (multi_lang_content())) {
                         $q = 'SELECT text_original AS search FROM ' . get_table_prefix() . $cma_info['table'] . 'r';
-                        $q = ' JOIN ' . get_table_prefix() . 'translate t ON t.id=r.' . $cma_info['title_field'];
+                        $q .= ' JOIN ' . get_table_prefix() . 'translate t ON t.id=r.' . $cma_info['title_field'];
                         if (db_has_full_text($GLOBALS['SITE_DB']->connection_read)) {
                             $q .= ' WHERE ' . preg_replace('#\?#', 'text_original', db_full_text_assemble(str_replace('?', '', $request), false));
                         } else {

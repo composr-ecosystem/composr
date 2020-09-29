@@ -215,9 +215,10 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         $catalogue_name = get_param_string('catalogue_name', '');
         if ($catalogue_name != '') {
             $table = 'catalogue_entries r';
-            list($sup_table, $where_clause, $trans_fields, $nontrans_fields, $title_field) = $this->_get_search_parameterisation_advanced($catalogue_name);
+            list($sup_table, $where_clause, $where_clause_2, $trans_fields, $nontrans_fields, $title_field) = $this->_get_search_parameterisation_advanced($catalogue_name);
             $table .= $sup_table;
             $table .= $privacy_join;
+            $where_clause .= $where_clause_2;
 
             $extra_select = '';
 

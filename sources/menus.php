@@ -49,7 +49,7 @@ function build_menu($type, $menu, $silent_failure = false, $apply_highlighting =
         $root = _build_sitemap_menu($menu);
 
         if ($root === null) {
-            return array(new Tempcode(), array());
+            return array(new Tempcode(), array(), false);
         }
     } else {
         $root = _build_stored_menu($menu);
@@ -57,7 +57,7 @@ function build_menu($type, $menu, $silent_failure = false, $apply_highlighting =
         // Empty?
         if (count($root['children']) == 0) {
             if ($silent_failure) {
-                return array(new Tempcode(), array());
+                return array(new Tempcode(), array(), false);
             }
 
             $redirect = get_self_url(true, true);
@@ -65,7 +65,7 @@ function build_menu($type, $menu, $silent_failure = false, $apply_highlighting =
             $add_url = $_add_url->evaluate();
 
             $content = do_template('INLINE_WIP_MESSAGE', array('_GUID' => '276e6600571b8b4717ca742b6e9da17a', 'MESSAGE' => do_lang_tempcode('MISSING_MENU', escape_html($menu), escape_html($add_url))));
-            return array($content, array());
+            return array($content, array(), false);
         }
     }
 
@@ -183,6 +183,13 @@ function _build_sitemap_menu($menu)
         $title = mixed();
         $icon = mixed();
 
+        // Stitching on a stored menu?
+        if (preg_match('#^\w+$#', $_node) != 0) {
+            $stored_menu = _build_stored_menu($_node);
+            $root['children'] = array_merge($root['children'], $stored_menu['children']);
+            continue;
+        }
+
         // Parse options
         if ($menu != '') {
             $bits = explode(',', $_node);
@@ -193,7 +200,11 @@ function _build_sitemap_menu($menu)
                     $setting = $bit_parts[1];
                     switch ($bit_parts[0]) {
                         case 'valid_node_types':
-                            $valid_node_types = explode('|', $setting);
+                            if (substr($setting, 0, 1) == '-') {
+                                $valid_node_types = array_diff(array_keys(find_all_hooks('systems', 'sitemap')), explode('|', substr($setting, 1)));
+                            } else {
+                                $valid_node_types = explode('|', $setting);
+                            }
                             break;
 
                         case 'child_cutoff':
@@ -712,7 +723,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             ), null, false, 'MENU_BRANCH_tree'));
         }
     }
-    if (($page_link == '') && ($children->is_empty())) {
+    if (($page_link == '') && ($url->is_empty()) && ($children->is_empty())) {
         return array(null, false); // Nothing here!
     }
 

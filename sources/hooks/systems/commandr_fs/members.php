@@ -228,7 +228,7 @@ class Hook_commandr_fs_members
             require_code('cns_members_action');
             require_code('cns_members_action2');
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($dir_name);
-            if ($member_id === null) {
+            if (($member_id === null) || (is_guest($member_id))) {
                 return false; // Directory doesn't exist
             }
             cns_delete_member($member_id);

@@ -218,15 +218,31 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__mail()
     {
+        $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), array(lorem_phrase(), lorem_paragraph(), placeholder_url(), lorem_phrase(), placeholder_id(), lorem_phrase())));
+
+        require_css('email');
+
+        $map = array(
+            'LOGOURL' => placeholder_image_url(),
+            'LOGOMAP' => '',
+            'LANG' => fallback_lang(),
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => $message_raw,
+        );
+
+        $tpl = do_lorem_template('MAIL', $map);
+
+        $css = css_tempcode(true, false, $tpl->evaluate());
+        $_css = $css->evaluate();
+
+        $map += array(
+            'CSS' => $_css,
+        );
+
+        $tpl2 = $tpl->bind($map, 'MAIL');
+
         return array(
-            lorem_globalise(do_lorem_template('MAIL', array(
-                'CSS' => '',
-                'LOGOURL' => placeholder_image_url(),
-                'LOGOMAP' => '',
-                'LANG' => fallback_lang(),
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => lorem_paragraph(),
-            )), null, '', true)
+            lorem_globalise($tpl2, null, '', true)
         );
     }
 

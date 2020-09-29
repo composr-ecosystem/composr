@@ -50,7 +50,7 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
      */
     public function handles_page_link($page_link)
     {
-        if (preg_match('#^\w+:calendar:browse$#', $page_link) != 0) {
+        if (preg_match('#^\w+:calendar:browse$#', $page_link) != 0) { // We don't actually support taking no-category in here, entry_point can handle that case
             return SITEMAP_NODE_NOT_HANDLED;
         }
         return parent::handles_page_link($page_link);

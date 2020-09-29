@@ -560,7 +560,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     if (($ip2 == $ip) || ($ip2 == '') || (cms_srv('SERVER_ADDR') == $ip2)) {
         $ip2 = null;
     }
-    if (function_exists('get_member')) {
+    if ((function_exists('get_member')) && (!$GLOBALS['BOOTSTRAPPING'])) {
         $id = get_member();
         $username = $GLOBALS['FORUM_DRIVER']->get_username($id);
         if (is_null($username)) {
@@ -568,7 +568,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
         }
     } else {
         $id = db_get_first_id();
-        $username = function_exists('do_lang') ? do_lang('UNKNOWN') : 'Unknown';
+        $username = ((function_exists('do_lang')) && (!$GLOBALS['BOOTSTRAPPING'])) ? do_lang('UNKNOWN') : 'Unknown';
     }
 
     $url = cms_srv('REQUEST_URI');
@@ -689,7 +689,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
         $GLOBALS['SITE_DB']->query_insert('hackattack', $new_row);
     }
 
-    if (function_exists('do_lang')) {
+    if ((function_exists('do_lang')) && (!$GLOBALS['BOOTSTRAPPING'])) {
         require_code('notifications');
 
         $reason_full = do_lang($reason, $reason_param_a, $reason_param_b, null, get_site_default_lang());
@@ -734,10 +734,16 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     if ($silent) {
         return;
     }
-    if ($GLOBALS['DEV_MODE']) {
-        fatal_exit(do_lang('HACK_ATTACK'));
+
+    if ((function_exists('do_lang')) && (!$GLOBALS['BOOTSTRAPPING'])) {
+        if ($GLOBALS['DEV_MODE']) {
+            fatal_exit(do_lang('HACK_ATTACK'));
+        }
+        warn_exit(do_lang_tempcode('HACK_ATTACK_USER'));
     }
-    warn_exit(do_lang_tempcode('HACK_ATTACK_USER'));
+
+    require_code('critical_errors');
+    critical_error('EMERGENCY', 'Suspected hack attempt averted');
 }
 
 /**
@@ -755,7 +761,7 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
         return false;
     }
     require_code('type_sanitisation');
-    if (!is_ip_address($ip)) {
+    if (!is_valid_ip($ip, true)) {
         return false;
     }
 
@@ -769,10 +775,8 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     persistent_cache_delete('IP_BANS');
     if ((is_writable_wrap(get_file_base() . '/.htaccess')) && (is_null($ban_until))) {
         $contents = unixify_line_format(cms_file_get_contents_safe(get_file_base() . '/.htaccess'));
-        $ip_cleaned = str_replace('*', '', $ip);
-        $ip_cleaned = str_replace('..', '.', $ip_cleaned);
-        $ip_cleaned = str_replace('..', '.', $ip_cleaned);
-        if ((stripos($contents, "\n" . 'deny from ' . $ip_cleaned) === false) && (stripos($contents, "\n" . 'require not ip ' . $ip_cleaned) === false)) {
+        $ip_cleaned = ip_wild_to_apache($ip);
+        if (($ip_cleaned != '') && (stripos($contents, "\n" . 'deny from ' . $ip_cleaned) === false) && (stripos($contents, "\n" . 'require not ip ' . $ip_cleaned) === false)) {
             require_code('files');
 
             // < Apache 2.4
@@ -786,6 +790,54 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     }
 
     return true;
+}
+
+/**
+ * Convert simple Composr wildcard syntax in IP addresses to Apache netmask syntax.
+ *
+ * @param  IP $ip The IP address (potentially encoded with *'s)
+ * @return string The Apache-style IP
+ */
+function ip_wild_to_apache($ip)
+{
+    $ip = normalise_ip_address($ip, 4);
+    if ($ip == '') {
+        return '';
+    }
+
+    if (strpos($ip, '*') === false) {
+        return $ip;
+    }
+
+    $ipv6 = (strpos($ip, ':') !== false);
+    if ($ipv6) {
+        $delimiter = ':';
+    } else {
+        $delimiter = '.';
+    }
+    $parts = explode($delimiter, $ip);
+    $ip_section = '';
+    $range_bits = 0;
+    foreach ($parts as $i => $part) {
+        if ($i > 0) {
+            $ip_section .= $delimiter;
+        }
+        if ($part == '*') {
+            if ($ipv6) {
+                $ip_section .= '0000';
+            } else {
+                $ip_section .= '0';
+            }
+        } else {
+            $ip_section .= $part;
+            if ($ipv6) {
+                $range_bits += 16;
+            } else {
+                $range_bits += 8;
+            }
+        }
+    }
+    return $ip_section . '/' . strval($range_bits);
 }
 
 /**
@@ -803,10 +855,8 @@ function remove_ip_ban($ip)
     persistent_cache_delete('IP_BANS');
     if (is_writable_wrap(get_file_base() . '/.htaccess')) {
         $contents = unixify_line_format(cms_file_get_contents_safe(get_file_base() . '/.htaccess'));
-        $ip_cleaned = str_replace('*', '', $ip);
-        $ip_cleaned = str_replace('..', '.', $ip_cleaned);
-        $ip_cleaned = str_replace('..', '.', $ip_cleaned);
-        if (trim($ip_cleaned) != '') {
+        $ip_cleaned = ip_wild_to_apache($ip);
+        if ($ip_cleaned != '') {
             require_code('files');
 
             // < Apache 2.4

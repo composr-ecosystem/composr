@@ -242,9 +242,7 @@ function notifications_ui_advanced($notification_code, $enable_message = null, $
     require_javascript('notifications');
     require_all_lang();
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('notification_lockdown', 'l_setting', array(
-        'l_notification_code' => substr($notification_code, 0, 80),
-    ));
+    $test = notification_locked_down($notification_code);
     if (!is_null($test)) {
         warn_exit(do_lang_tempcode('NOTIFICATION_CODE_LOCKED_DOWN'));
     }

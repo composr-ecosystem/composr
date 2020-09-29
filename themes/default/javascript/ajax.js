@@ -102,18 +102,7 @@ function internalise_infinite_scrolling(url_stem,wrapper,recursive)
 	for (var _i=0;_i<_pagination.length;_i++)
 	{
 		var pagination=_pagination[_i];
-		if (found_new_links!=null) // Cleanup old pagination
-		{
-			if (_i!=found_new_links)
-			{
-				var _more_links=pagination.getElementsByTagName('a');
-				var num_links=_more_links.length;
-				for (var i=num_links-1;i>=0;i--)
-				{
-					_more_links[i].parentNode.removeChild(_more_links[i]);
-				}
-			}
-		} else // Find links from an already-hidden pagination
+		if (found_new_links===null) // Find links from an already-hidden pagination
 		{
 			more_links=pagination.getElementsByTagName('a');
 			if (more_links.length!=0) break;
@@ -136,7 +125,7 @@ function internalise_infinite_scrolling(url_stem,wrapper,recursive)
 		var pagination_load_more=get_elements_by_class_name(wrapper,'pagination_load_more');
 		if (pagination_load_more.length>0) pagination_load_more[0].parentNode.removeChild(pagination_load_more[0]);
 
-		return;
+		return false;
 	}
 
 	// Used for calculating if we need to scroll down
@@ -158,6 +147,20 @@ function internalise_infinite_scrolling(url_stem,wrapper,recursive)
 
 	return false;
 }
+function remove_previous_paginations(wrapper)
+{
+	var _pagination=get_elements_by_class_name(wrapper,'pagination');
+	for (var _i=0;_i<_pagination.length;_i++)
+	{
+		var pagination=_pagination[_i];
+		var _more_links=pagination.getElementsByTagName('a');
+		var num_links=_more_links.length;
+		for (var i=num_links-1;i>=0;i--)
+		{
+			_more_links[i].parentNode.removeChild(_more_links[i]);
+		}
+	}
+}
 function internalise_infinite_scrolling_go(url_stem,wrapper,more_links)
 {
 	if (window.infinite_scroll_pending) return false;
@@ -174,15 +177,20 @@ function internalise_infinite_scrolling_go(url_stem,wrapper,more_links)
 			var next_link=more_links[i];
 			var url_stub='';
 
-			var matches=next_link.href.match(new RegExp('[&?](start|[^_]*_start|start_[^_]*)=([^&]*)'));
+			var matches=next_link.href.match(new RegExp('[&?](start|[^_&]*_start|start_[^_&]*)=([^&]*)'));
 			if (matches)
 			{
 				url_stub+=(url_stem.indexOf('?')==-1)?'?':'&';
 				url_stub+=matches[1]+'='+matches[2];
 				url_stub+='&raw=1';
-				window.infinite_scroll_pending=true;
 
-				return call_block(url_stem+url_stub,'',wrapper_inner,true,function() { window.infinite_scroll_pending=false; internalise_infinite_scrolling(url_stem,wrapper,true); });
+				window.infinite_scroll_pending=true;
+				remove_previous_paginations(wrapper);
+
+				return call_block(url_stem+url_stub,'',wrapper_inner,true,function() {
+					window.infinite_scroll_pending=false;
+					internalise_infinite_scrolling(url_stem,wrapper,true);
+				});
 			}
 		}
 	}

@@ -229,7 +229,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
 
         if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth) || (!isset($row[1]))) {
             // Look for entry points to put under this
-            if (($details[0] == 'MODULES' || $details[0] == 'MODULES_CUSTOM') && (!$require_permission_support)) {
+            if (($details[0] == 'MODULES' || $details[0] == 'MODULES_CUSTOM') && (!$require_permission_support) && (!has_low_memory())) {
                 $simplified = (strpos($extra, ':catalogue_name=') !== false);
 
                 $use_page_groupings = (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0) && (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS) != 0);
@@ -369,37 +369,39 @@ class Hook_sitemap_page extends Hook_sitemap_base
             }
 
             // Look for virtual nodes to put under this
-            $hooks = find_all_hooks('systems', 'sitemap');
-            foreach (array_keys($hooks) as $_hook) {
-                require_code('hooks/systems/sitemap/' . $_hook);
-                $ob = object_factory('Hook_sitemap_' . $_hook);
-                if ($ob->is_active()) {
-                    $is_handled = $ob->handles_page_link($page_link);
-                    if ($is_handled == SITEMAP_NODE_HANDLED_VIRTUALLY) {
-                        $struct['privilege_page'] = $ob->get_privilege_page($page_link);
-                        $struct['has_possible_children'] = true;
+            if (!has_low_memory()) {
+                $hooks = find_all_hooks('systems', 'sitemap');
+                foreach (array_keys($hooks) as $_hook) {
+                    require_code('hooks/systems/sitemap/' . $_hook);
+                    $ob = object_factory('Hook_sitemap_' . $_hook);
+                    if ($ob->is_active()) {
+                        $is_handled = $ob->handles_page_link($page_link);
+                        if ($is_handled == SITEMAP_NODE_HANDLED_VIRTUALLY) {
+                            $struct['privilege_page'] = $ob->get_privilege_page($page_link);
+                            $struct['has_possible_children'] = true;
 
-                        $virtual_child_nodes = $ob->get_virtual_nodes($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, true);
-                        if (is_null($virtual_child_nodes)) {
-                            $virtual_child_nodes = array();
-                        }
-                        foreach ($virtual_child_nodes as $child_node) {
-                            if ((count($virtual_child_nodes) == 1) && (preg_match('#^' . preg_quote($page_link, '#') . ':browse(:[^:=]*$|$)#', $child_node['page_link']) != 0) && (!$require_permission_support) && (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0) && (empty($child_node['extra_meta']['is_a_category_tree_root']))) {
-                                // Put as container instead
-                                if ($child_node['extra_meta']['image'] == '') {
-                                    $child_node['extra_meta']['image'] = $struct['extra_meta']['image'];
-                                    $child_node['extra_meta']['image_2x'] = $struct['extra_meta']['image_2x'];
-                                }
-                                $struct = $child_node;
-                                if (!empty($struct['children'])) {
-                                    $children = array_merge($children, $struct['children']);
-                                }
-                                $struct['children'] = null;
-                                $call_struct = false; // Already been called in get_virtual_nodes
-                            } else {
-                                if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
-                                    if ($callback === null) {
-                                        $children[$child_node['page_link']] = $child_node;
+                            $virtual_child_nodes = $ob->get_virtual_nodes($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, true);
+                            if (is_null($virtual_child_nodes)) {
+                                $virtual_child_nodes = array();
+                            }
+                            foreach ($virtual_child_nodes as $child_node) {
+                                if ((count($virtual_child_nodes) == 1) && (preg_match('#^' . preg_quote($page_link, '#') . ':browse(:[^:=]*$|$)#', $child_node['page_link']) != 0) && (!$require_permission_support) && (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0) && (empty($child_node['extra_meta']['is_a_category_tree_root']))) {
+                                    // Put as container instead
+                                    if ($child_node['extra_meta']['image'] == '') {
+                                        $child_node['extra_meta']['image'] = $struct['extra_meta']['image'];
+                                        $child_node['extra_meta']['image_2x'] = $struct['extra_meta']['image_2x'];
+                                    }
+                                    $struct = $child_node;
+                                    if (!empty($struct['children'])) {
+                                        $children = array_merge($children, $struct['children']);
+                                    }
+                                    $struct['children'] = null;
+                                    $call_struct = false; // Already been called in get_virtual_nodes
+                                } else {
+                                    if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
+                                        if ($callback === null) {
+                                            $children[$child_node['page_link']] = $child_node;
+                                        }
                                     }
                                 }
                             }

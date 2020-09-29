@@ -307,7 +307,7 @@ class Block_main_members
         }
 
         $sql = 'SELECT r.*' . $extra_select_sql . ' FROM ';
-        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r';
+        $main_sql = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members r LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=r.id';
         $main_sql .= $extra_join_sql;
         if ((!$has_exists) && ($usergroup != '')) {
             $main_sql .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON (r.id=g.gm_member_id AND gm_validated=1)';
@@ -370,7 +370,14 @@ class Block_main_members
         $member_boxes = array();
         foreach ($rows as $row) {
             $member_id = $row['id'];
-            $box = render_member_box($member_id, true, $hooks, $hook_objects, $show_avatar, null, false);
+
+            $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id] = $row;
+
+            if ($display_mode != 'listing') {
+                $box = render_member_box($member_id, true, $hooks, $hook_objects, $show_avatar, null, false);
+            } else {
+                $box = null;
+            }
 
             if ($display_mode == 'media') {
                 $gallery_sql = 'SELECT name,fullname FROM ' . get_table_prefix() . 'galleries WHERE';
@@ -401,7 +408,7 @@ class Block_main_members
                 $member_boxes[$member_id] = array(
                     'I' => strval($cnt + 1),
                     'BREAK' => (!is_null($per_row)) && (($cnt + 1) % $per_row == 0),
-                    'BOX' => $box,
+                    'BOX' => ($display_mode != 'listing') ? $box : null,
                     'MEMBER_ID' => strval($member_id),
                     'GALLERY_NAME' => '',
                     'GALLERY_TITLE' => '',
@@ -448,7 +455,6 @@ class Block_main_members
                     'PHOTO_THUMB_URL' => $row['m_photo_thumb_url'],
                     'VALIDATED' => ($row['m_validated'] == 1),
                     'CONFIRMED' => ($row['m_validated_email_confirm_code'] == ''),
-                    'BOX' => $member_boxes[$row['id']]['BOX'],
                 ));
 
                 $member_primary_group = cns_get_member_primary_group($row['id']);

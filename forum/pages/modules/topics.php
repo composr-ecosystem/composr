@@ -1522,11 +1522,11 @@ class Module_topics
                 if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated')) && ($_postdetails[0]['p_validated'] == 0) && (($_postdetails[0]['p_poster'] != get_member()) || ((is_guest($_postdetails[0]['p_poster'])) && ($_postdetails[0]['p_ip_address'] != get_ip_address())))) {
                     access_denied('I_ERROR');
                 }
+            }
 
-                $_topic = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_cache_first_title'), array('id' => $_postdetails[0]['p_topic_id']), '', 1);
-                if (!array_key_exists(0, $_topic)) {
-                    warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
-                }
+            $_topic = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_cache_first_title'), array('id' => $_postdetails[0]['p_topic_id']), '', 1);
+            if (!array_key_exists(0, $_topic)) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
             }
 
             if (!cns_may_access_topic($_postdetails[0]['p_topic_id'])) {
@@ -2281,8 +2281,11 @@ class Module_topics
             $member_username = post_param_string('to_member_id_0', '');
             if ($member_username != '') {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member_username);
-                if (is_null($member_id)) {
+                if (($member_id === null) || (is_guest($member_id))) {
                     warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($member_username)));
+                }
+                if ($member_id == get_member()) {
+                    warn_exit(do_lang_tempcode('NO_PRIVATE_SELF'));
                 }
             }
             foreach ($_POST as $key => $_invited_member) {
@@ -2301,7 +2304,7 @@ class Module_topics
                 }
 
                 $invited_member = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_invited_member);
-                if (is_null($invited_member)) {
+                if (($invited_member === null) || (is_guest($invited_member))) {
                     attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_invited_member)), 'warn');
                 } else {
                     $invited_members[] = intval($invited_member);
@@ -2339,8 +2342,11 @@ class Module_topics
                 $intended_solely_for = null;
             } else {
                 $intended_solely_for = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_intended_solely_for);
-                if (is_null($intended_solely_for)) {
+                if (($intended_solely_for === null) || (is_guest($intended_solely_for))) {
                     warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_intended_solely_for)));
+                }
+                if ($intended_solely_for == get_member()) {
+                    warn_exit(do_lang_tempcode('NO_PRIVATE_SELF'));
                 }
             }
         } else {
@@ -3468,8 +3474,11 @@ END;
         $forum_id = $topic_info[0]['t_forum_id'];
         $private_topic = is_null($forum_id);
 
-        if (($topic_info[0]['t_validated'] == 1) && ($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_validated', array('id' => $topic_info[0]['t_cache_first_post_id'])) == 0)) {
-            attach_message(do_lang_tempcode('FIRST_POST_IS_UNVALIDATED'), 'notice');
+        $validated = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_validated', array('id' => $topic_info[0]['t_cache_first_post_id']));
+        if ($validated !== null) {
+            if (($topic_info[0]['t_validated'] == 1) && ($validated == 0)) {
+                attach_message(do_lang_tempcode('FIRST_POST_IS_UNVALIDATED'), 'notice');
+            }
         }
 
         $this->handle_topic_breadcrumbs($forum_id, $topic_id, $topic_info[0]['t_cache_first_title'], do_lang_tempcode('EDIT_TOPIC'));
@@ -3707,7 +3716,7 @@ END;
     {
         $username = trim(post_param_string('username'));
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-        if (is_null($member_id)) {
+        if (($member_id === null) || (is_guest($member_id))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
         }
         $topic_id = get_param_integer('topic_id');
@@ -4253,15 +4262,17 @@ END;
         $_a = post_param_string('a');
         $_b = post_param_string('b');
         $a = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_a);
-        if (is_null($a)) {
+        if (($a === null) || (is_guest($a))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_a)));
         }
         $b = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_b);
-        if (is_null($b)) {
+        if (($b === null) || (is_guest($b))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_b)));
         }
 
         $GLOBALS['FORUM_DB']->query_update('f_topics', array('t_pt_from' => $a, 't_pt_to' => $b, 't_forum_id' => null), array('id' => $topic_id), '', 1);
+        require_code('sitemap_xml');
+        notify_sitemap_node_delete('_SEARCH:topicview:id=' . strval($topic_id));
 
         require_code('notifications');
         enable_notifications('cns_topic', strval($topic_id), $a); // from

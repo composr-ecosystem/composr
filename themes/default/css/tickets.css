@@ -20,6 +20,7 @@
 
 body table.results_table tbody tr.unclosed_ticket td {
 	background-color: {$GET,yellow_highlight_background} !important;
+	color: {$GET,green_highlight_text} !important;
 }
 
 .ticket_title {

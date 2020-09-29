@@ -608,17 +608,12 @@ class Module_groups
         // Secondary members
         $s_start = get_param_integer('s_start', 0);
         $s_max = get_param_integer('s_max', intval(get_option('secondary_members_per_page')));
-        $_secondary_members = cns_get_group_members_raw($id, false, false, true, false, $s_max, $s_start);
+        $_secondary_members = cns_get_group_members_raw($id, false, true, true, false, $s_max, $s_start);
         $secondary_members = new Tempcode();
         $prospective_members = new Tempcode();
         $s_max_rows = cns_get_group_members_raw_count($id, false, false, true, false);
         $d_max_rows = $may_control_group ? cns_get_group_members_raw_count($id, false, true, true) : 0;
         foreach ($_secondary_members as $secondary_member) {
-            if (!$may_control_group) {
-                // Update to consistent map format, as we use it here
-                $secondary_member = array('gm_member_id' => $secondary_member, 'gm_validated' => 1, 'implicit' => false);
-            }
-
             if ($this->filter_out($GLOBALS['FORUM_DRIVER']->get_member_row($secondary_member['gm_member_id']))) {
                 continue;
             }
@@ -663,17 +658,10 @@ class Module_groups
         }
 
         $edit_url = new Tempcode();
-        if (has_actual_page_access(get_member(), 'admin_cns_groups', get_module_zone('admin_cns_groups'))) {
+        if ((!$club) && (has_actual_page_access(get_member(), 'admin_cns_groups', get_module_zone('admin_cns_groups')))) {
             $edit_url = build_url(array('page' => 'admin_cns_groups', 'type' => '_edit', 'id' => $id), get_module_zone('admin_cns_groups'));
-        } elseif (has_actual_page_access(get_member(), 'cms_cns_groups', get_module_zone('cms_cns_groups'))) {
-            if (cns_may_control_group($id, get_member(), $group)) {
-                $edit_url = build_url(array('page' => 'cms_cns_groups', 'type' => '_edit', 'id' => $id), get_module_zone('cms_cns_groups'));
-            }
-        }
-
-        $club_forum = null;
-        if ($group['g_is_private_club'] == 1) {
-            $club_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('f_description') => do_lang('FORUM_FOR_CLUB', $group_name)));
+        } elseif (($club) && (has_actual_page_access(get_member(), 'cms_cns_groups', get_module_zone('cms_cns_groups'))) && (cns_may_control_group($id, get_member(), $group))) {
+            $edit_url = build_url(array('page' => 'cms_cns_groups', 'type' => '_edit', 'id' => $id), get_module_zone('cms_cns_groups'));
         }
 
         require_javascript('ajax');
@@ -681,7 +669,8 @@ class Module_groups
 
         $forum_id = null;
         if ($club) {
-            $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))));
+            $forum_where = array('f_name' => $group_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum')));
+            $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', $forum_where);
         }
 
         $tpl = do_template('CNS_VIEW_GROUP_SCREEN', array(
@@ -772,7 +761,7 @@ class Module_groups
         }
 
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-        if (is_null($member_id)) {
+        if (($member_id === null) || (is_guest($member_id))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
         }
 
