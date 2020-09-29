@@ -55,6 +55,9 @@ function init__notifications()
     global $NOTIFICATION_SETTING_CACHE;
     $NOTIFICATION_SETTING_CACHE = array();
 
+    global $NOTIFICATION_LOCKDOWN_CACHE;
+    $NOTIFICATION_LOCKDOWN_CACHE = array();
+
     global $NOTIFICATIONS_ON;
     $NOTIFICATIONS_ON = true;
 
@@ -903,16 +906,17 @@ function notifications_enabled($notification_code, $notification_category, $memb
  */
 function notification_locked_down($notification_code)
 {
-    static $notifications_available = array();
-    if (array_key_exists($notification_code, $notifications_available)) {
-        return $notifications_available[$notification_code];
+    global $NOTIFICATION_LOCKDOWN_CACHE;
+
+    if (array_key_exists($notification_code, $NOTIFICATION_LOCKDOWN_CACHE)) {
+        return $NOTIFICATION_LOCKDOWN_CACHE[$notification_code];
     }
 
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('notification_lockdown', 'l_setting', array(
         'l_notification_code' => substr($notification_code, 0, 80),
     ));
 
-    $notifications_available[$notification_code] = $test;
+    $NOTIFICATION_LOCKDOWN_CACHE[$notification_code] = $test;
 
     return $test;
 }
