@@ -1099,6 +1099,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 
 comcode-{$REPLACE,\,,\,comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}}, tempcode {
 	background-color: {$GET,native_ui_active_background};
+	color: {$GET,native_ui_foreground};
 }
 
 #wysiwyg-editor kbd.cms-keep, #wysiwyg-editor kbd.cms-keep-block {

@@ -1213,14 +1213,14 @@ abstract class FieldsSearchHook
             }
         }
 
-        $where_clause .= ' AND ';
+        $where_clause_2 = ' AND ';
         if ($catalogue_name[0] == '_') {
-            $where_clause .= '(' . db_string_equal_to($table_alias . '.c_name', $catalogue_name) . ' OR ' . $table_alias . '.c_name IS NULL' . ')';
+            $where_clause_2 .= '(' . db_string_equal_to($table_alias . '.c_name', $catalogue_name) . ' OR ' . $table_alias . '.c_name IS NULL' . ')';
         } else {
-            $where_clause .= db_string_equal_to($table_alias . '.c_name', $catalogue_name);
+            $where_clause_2 .= db_string_equal_to($table_alias . '.c_name', $catalogue_name);
         }
 
-        return [$table, $where_clause, $trans_fields, $nontrans_fields, $title_field];
+        return [$table, $where_clause, $where_clause_2, $trans_fields, $nontrans_fields, $title_field];
     }
 
     /**
@@ -1244,10 +1244,11 @@ abstract class FieldsSearchHook
             $content_id_field = db_cast('r.id', 'CHAR');
         }
 
+        list($sup_table, $sup_where_clause, , $sup_trans_fields, $sup_nontrans_fields) = $advanced;
+
         $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entry_linkage l ON l.content_id=' . $content_id_field . ' AND ' . db_string_equal_to('content_type', substr($catalogue_name, 1));
         $table .= ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries ce ON ce.id=l.catalogue_entry_id';
 
-        list($sup_table, $sup_where_clause, $sup_trans_fields, $sup_nontrans_fields) = $advanced;
         $table .= $sup_table;
         $where_clause .= $sup_where_clause;
         $trans_fields = array_merge($trans_fields, $sup_trans_fields);
@@ -2007,11 +2008,10 @@ function get_search_rows($meta_type, $id_field, $search_query, $content_where, $
 
     // Defined-keywords/tags search
     if ((get_param_integer('keep_just_show_query', 0) == 0) && ($meta_type !== null) && ($search_query != '') && (!$only_titles)) {
-        if (strpos($search_query, '"') !== false || strpos($search_query, '+') !== false || strpos($search_query, '-') !== false || strpos($search_query, ' ') !== false) {
-            list($meta_content_where) = build_content_where($search_query, true);
-            $meta_content_where = '(' . $meta_content_where . ' OR ' . db_string_equal_to('?', $search_query) . ')';
+        if (strpos($search_query, '"') !== false || preg_match('#(^|\s)-#', $search_query) != 0 || strpos($search_query, ' ') !== false) {
+            list($meta_content_where) = build_content_where($search_query, true); // A full-text search on keywords
         } else {
-            $meta_content_where = db_string_equal_to('?', $search_query);
+            $meta_content_where = db_string_equal_to('?', $search_query); // Consider it a simple keyword search
         }
 
         if (count($id_fields) > 1) { // Special case
@@ -2114,7 +2114,7 @@ function get_search_rows($meta_type, $id_field, $search_query, $content_where, $
                         $_table_clause .= $translate_table_joins_stock[$field];
                     }
 
-                    $where_alternative_matches[] = [$_where_clause, $_select, $_table_clause, 't' . strval($i)];
+                    $where_alternative_matches[] = [$_where_clause, $_select, $_table_clause, 't' . strval($i), $field];
                 }
                 if ($content_where != '') { // Non-translatable fields
                     foreach ($raw_fields as $i => $field) {
@@ -2130,13 +2130,13 @@ function get_search_rows($meta_type, $id_field, $search_query, $content_where, $
                             $_select = null;
                         }
 
-                        $where_alternative_matches[] = [$_where_clause, $_select, '', null];
+                        $where_alternative_matches[] = [$_where_clause, $_select, '', null, $field];
                     }
                 }
             }
 
             if (empty($where_alternative_matches)) {
-                $where_alternative_matches[] = [$where_clause, null, $table_clause, null];
+                $where_alternative_matches[] = [$where_clause, null, $table_clause, null, null];
             } else {
                 if (($order == '') && ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) && ($content_where != '')) {
                     $order = 'contextual_relevance DESC';
@@ -2147,9 +2147,14 @@ function get_search_rows($meta_type, $id_field, $search_query, $content_where, $
             $main_query_parts = [];
             $count_query_parts = [];
             foreach ($where_alternative_matches as $parts) { // We UNION them, because doing OR's on MATCH's is insanely slow in MySQL (sometimes I hate SQL...)
-                list($_where_clause, $_select, $_table_clause, $tid) = $parts;
+                list($_where_clause, $_select, $_table_clause, $tid, $field) = $parts;
 
                 $__table_clause = $table_clause . $_table_clause;
+
+                if (($field !== null) && (preg_match('#^f\d+\.cv_value$#', $field) != 0)) {
+                    // Needed to make the where condition indexed
+                    $__table_clause = str_replace(' LEFT JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', $__table_clause);
+                }
 
                 $__select = $select;
                 if ($_select !== null) {

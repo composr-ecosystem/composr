@@ -1,6 +1,6 @@
 {$,This is not a usual template to use, as it's for read-only ratings only. Usually we use RATING_INLINE_DYNAMIC}
 
-{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{HAS_RATINGS}}}
+{$SET-,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{HAS_RATINGS}}}
 
 {$,Show the current result (nothing shows if nobody voted yet)}
 {+START,IF,{HAS_RATINGS}}

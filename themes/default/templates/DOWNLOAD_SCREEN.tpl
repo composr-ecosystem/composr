@@ -154,7 +154,7 @@
 			{$REQUIRE_JAVASCRIPT,core_rich_media}
 			{$REQUIRE_CSS,carousels}
 
-			{$SET,carousel_id,{$RAND}}
+			{$SET-,carousel_id,{$RAND}}
 
 			<div id="carousel-{$GET*,carousel_id}" class="carousel" style="display: none" data-view="Carousel" data-view-params="{+START,PARAMS_JSON,carousel_id}{_*}{+END}">
 				<div class="move-left js-btn-car-move" data-move-amount="-100">{+START,INCLUDE,ICON}NAME=carousel/button_left{+END}</div>

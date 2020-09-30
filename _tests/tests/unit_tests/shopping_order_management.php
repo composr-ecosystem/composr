@@ -103,7 +103,7 @@ class shopping_order_management_test_set extends cms_test_case
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
         $_GET['id'] = strval($order_id);
         $this->admin_shopping->order_details();
-        header_remove();
+        @header_remove();
     }
 
     public function testAddNoteToOrderUI()
@@ -111,7 +111,7 @@ class shopping_order_management_test_set extends cms_test_case
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
         $_GET['id'] = strval($order_id);
         $this->admin_shopping->add_note();
-        header_remove();
+        @header_remove();
     }
 
     public function testAddNoteToOrderActualiser()
@@ -120,7 +120,7 @@ class shopping_order_management_test_set extends cms_test_case
         $_POST['order_id'] = $order_id;
         $_POST['note'] = 'Test note';
         $this->admin_shopping->_add_note();
-        header_remove();
+        @header_remove();
     }
 
     public function testOrderDispatch()
@@ -129,7 +129,7 @@ class shopping_order_management_test_set extends cms_test_case
         if ($order_id !== null) {
             $_GET['id'] = $order_id;
             $this->admin_shopping->dispatch();
-            header_remove();
+            @header_remove();
         }
     }
 
@@ -137,7 +137,7 @@ class shopping_order_management_test_set extends cms_test_case
     {
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
         $this->admin_shopping->send_dispatch_notification($order_id);
-        header_remove();
+        @header_remove();
     }
 
     public function testDeleteOrder()
@@ -145,7 +145,7 @@ class shopping_order_management_test_set extends cms_test_case
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
         $_GET['id'] = strval($order_id);
         $this->admin_shopping->delete_order();
-        header_remove();
+        @header_remove();
     }
 
     public function testReturnOrder()
@@ -153,7 +153,7 @@ class shopping_order_management_test_set extends cms_test_case
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
         $_GET['id'] = strval($order_id);
         $this->admin_shopping->return_order();
-        header_remove();
+        @header_remove();
     }
 
     public function testHoldOrder()
@@ -161,13 +161,13 @@ class shopping_order_management_test_set extends cms_test_case
         $order_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'MAX(id)');
         $_GET['id'] = strval($order_id);
         $this->admin_shopping->hold_order();
-        header_remove();
+        @header_remove();
     }
 
     public function testOrderExportUI()
     {
         $this->admin_shopping->export_orders();
-        header_remove();
+        @header_remove();
     }
 
     public function tearDown()

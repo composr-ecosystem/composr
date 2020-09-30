@@ -172,7 +172,7 @@ class comcode_test_set extends cms_test_case
         ];
         foreach ($expects_no_parse as $comcode) {
             $actual = comcode_to_tempcode($comcode);
-            $this->assertTrue(strpos($actual->evaluate(), '{$IMG') !== false, 'Tempcode was parsed when it should not have been, in (1): ' . $comcode);
+            $this->assertTrue(strpos($actual->evaluate(), '{$IMG') !== false, 'Tempcode was parsed when it should not have been, in (1): ' . $comcode . '; produced: ' . $actual->evaluate());
         }
 
         $expects_no_parse = [

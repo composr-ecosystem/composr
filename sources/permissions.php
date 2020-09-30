@@ -792,6 +792,12 @@ function has_privilege($member_id, $privilege, $page = null, $cats = null)
 
     if (isset($PRIVILEGE_CACHE[$member_id])) {
         if ($cats !== null) {
+            if ($GLOBALS['DEV_MODE']) {
+                if (count($cats) % 2 != 0) {
+                    fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+                }
+            }
+
             $okay = false;
             if (is_array($cats)) { // Specific overrides for cats allowed
                 for ($i = 0; $i < @intval(floor(floatval(count($cats)) / 2.0)); $i++) {

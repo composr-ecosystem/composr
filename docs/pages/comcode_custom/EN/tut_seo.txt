@@ -223,7 +223,7 @@ If you are going to go down the SEO route, make sure that you have someone who w
  - Webmaster tools:
   - [url="Google webmaster tools"]https://www.google.com/webmasters/tools/home[/url]
   - [url="Bing webmaster tools"]https://www.bing.com/toolbox/webmaster/[/url]
-  - [url="Yandex webmaster tools"]https://webmaster.yandex.com/[/url]
+  - [url="Yandex webmaster tools"]https://webmaster.yandex.com/welcome/[/url]
  - [url="Comparison of SEO tools"]https://www.werockyourweb.com/spyfu-vs-semrush-vs-moz-vs-raven-vs-majestic/[/url]
  - SEO tools:
   - [url="moz.com"]https://moz.com/[/url]

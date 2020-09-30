@@ -21,8 +21,8 @@ class form_to_email_test_set extends cms_test_case
     public function testFormToEmail()
     {
         global $SITE_INFO;
-        if ((isset($SITE_INFO['no_email_output'])) && ($SITE_INFO['no_email_output'] == '1')) {
-            $this->assertTrue(false, 'Test will not work if no_email_output is set');
+        if ((isset($SITE_INFO['no_email_output'])) && (($SITE_INFO['no_email_output'] == '1') || (!empty($SITE_INFO['redirect_email_output'])))) {
+            $this->assertTrue(false, 'Test will not work if no_email_output or redirect_email_output is set');
             return;
         }
 

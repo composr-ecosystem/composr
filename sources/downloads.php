@@ -175,7 +175,7 @@ function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zo
         }
     }
 
-    $may_download = has_privilege(get_member(), 'download', 'downloads', [strval($row['category_id'])]);
+    $may_download = has_privilege(get_member(), 'download', 'downloads', ['downloads', strval($row['category_id'])]);
 
     if (array_key_exists('id', $row)) {
         $download_url = generate_dload_url($row['id'], $row['url_redirect'] != '');
@@ -194,7 +194,7 @@ function render_download_box($row, $pic = true, $include_breadcrumbs = true, $zo
         'RATING' => $rating,
         'VIEWS' => integer_format($row['download_views']),
         'SUBMITTER' => strval($row['submitter']),
-        'DESCRIPTION' => $description,
+        'DESCRIPTION' => reasonable_html_reduce($description),
         'FILE_SIZE' => $file_size,
         'DOWNLOADS' => integer_format($row['num_downloads']),
         'DATE_RAW' => strval($date_raw),

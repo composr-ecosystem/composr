@@ -1,4 +1,4 @@
-{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{HAS_RATINGS}}}
+{$SET-,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{HAS_RATINGS}}}
 
 {+START,IF,{$OR,{HAS_RATINGS},{$IS_NON_EMPTY,{$TRIM,{RATING_FORM}}}}}
 	<div class="rating-inline rating-inline-dynamic"{+START,IF,{$GET,has_schema_reviews}} itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating"{+END}>

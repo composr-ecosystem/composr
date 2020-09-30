@@ -1,4 +1,4 @@
-{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{INDIVIDUAL_REVIEW_RATINGS},1}}}
+{$SET-,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{INDIVIDUAL_REVIEW_RATINGS},1}}}
 
 {+START,IF,{IS_SPACER_POST}}
 	{+START,IF,{$NOT,{$IN_STR,{POST},<div}}}

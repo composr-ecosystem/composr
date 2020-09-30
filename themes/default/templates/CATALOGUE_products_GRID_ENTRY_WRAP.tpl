@@ -8,7 +8,7 @@
 	{+END}
 
 	{+START,IF,{ALLOW_RATING}}
-		{$SET,rating,{$RATING,catalogues__{CATALOGUE},{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
+		{$SET-,rating,{$RATING,catalogues__{CATALOGUE},{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
 		{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
 			<div class="ratings">{$GET,rating}</div>
 		{+END}

@@ -152,6 +152,11 @@ function dispatch_mail($subject_line, $message_raw, $to_emails = null, $to_names
         }
     }
 
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['redirect_email_output'])) {
+        $to_emails = [$SITE_INFO['redirect_email_output']];
+    }
+
     list($worked, $error) = $dispatcher->dispatch($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name);
 
     $dispatcher->worked = $worked;

@@ -11,7 +11,7 @@
 	</div>
 
 	{+START,IF_PASSED,RATING_DETAILS}
-		{$SET,rating,{$RATING,images,{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
+		{$SET-,rating,{$RATING,images,{ID},{SUBMITTER},,,RATING_INLINE_STATIC}}
 		{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
 			<div class="grating">{$GET,rating}</div>
 		{+END}

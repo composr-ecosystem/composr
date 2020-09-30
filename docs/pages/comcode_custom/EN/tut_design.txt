@@ -214,7 +214,6 @@ If in doubt, you could survey what is important, but chances are you won't get a
  - http://findicons.com/
  - http://www.freeimages.com/
  - http://www.welie.com/patterns/
- - http://patterntap.com/patterntap
  - http://www.designyourway.net/drb/web-designers-should-focus-more-on-typography/
  - https://www.creativebloq.com/netmag/6-questions-every-homepage-should-answer-101413151
  - http://www.userfocus.co.uk/resources/guidelines.html

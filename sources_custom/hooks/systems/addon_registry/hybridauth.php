@@ -299,6 +299,7 @@ You can customise the button display for any provider via more hidden options:
             'sources_custom/hybridauth.php',
             'sources_custom/hooks/systems/login_providers/hybridauth.php',
             'sources_custom/users_active_actions.php',
+            'sources_custom/hooks/systems/startup/hybridauth.php',
 
             'sources_custom/hybridauth/autoload.php',
             'sources_custom/hybridauth/User/Contact.php',

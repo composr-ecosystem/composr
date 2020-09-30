@@ -72,7 +72,7 @@ class _special_links_test_set extends cms_test_case
             'https://seositecheckup.com/' => true,
             //'https://www.google.com/webmasters/tools/home?pli=1' => false,        Only works if logged in
             'https://www.bing.com/toolbox/webmaster/' => false,
-            'https://webmaster.yandex.com/' => false,
+            'https://webmaster.yandex.com/welcome/' => false,
             'https://www.thehoth.com/' => true,
             //'https://serps.com/tools/' => true,   Unreliable
             'https://validator.w3.org/' => true,

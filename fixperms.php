@@ -123,7 +123,7 @@ if ($trial) {
     }
 } else {
     // Git hooks should be writable, and linked in correctly
-    if (file_exists(__DIR__ . '/.git')) {
+    if ((file_exists(__DIR__ . '/git-hooks')) && (file_exists(__DIR__ . '/.git'))) {
         echo "0/2 Setting up Git hooks to run correctly\n";
 
         echo execute_nicely('git config core.hooksPath git-hooks');

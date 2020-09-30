@@ -648,7 +648,7 @@ function content_rows_for_type($content_type, $days, $extra_where, $extra_join, 
     }
 
     // Validation check
-    if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (has_privilege($member_id, 'see_unvalidated'))) {
+    if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (!has_privilege($member_id, 'see_unvalidated'))) {
         $extra_where .= ' AND r.' . $info['validated_field'] . '=1';
     }
 

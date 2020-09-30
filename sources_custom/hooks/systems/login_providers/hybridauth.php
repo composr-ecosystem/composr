@@ -48,8 +48,6 @@ class Hook_login_provider_hybridauth
             $before_xss_detect = ini_get('ocproducts.xss_detect');
             cms_ini_set('ocproducts.xss_detect', '0');
 
-            initiate_hybridauth_session_state();
-
             $hybridauth = initiate_hybridauth();
 
             // Log back in whatever is still connected

@@ -4,15 +4,15 @@
 
 [contents]decimal,lower-alpha[/contents]
 
-[title="2"]Defining an Author[/title]
+[title="2"]Setting up an Author[/title]
 
 [surround]
 [media width="150" description="Defining an (my) author profile" float="right"]data_custom/images/docs/tut_authors/authors_define.png[/media]
 Manage author(s) from Admin Zone > Content > Authors.
 
-There is a permission to allow members to define author profiles that bind to their own member profile. If the 'define an author' page was not entered from a link to define/edit a referenced author, it will default to defining/editing the author of the username of the current user: it is through this that a member defines their own author profile.
+There is a permission to allow members to setup author profiles that bind to their own member profile. If the 'setup author' page was not entered from a link to setup/edit a referenced author, it will default to defining/editing the author of the username of the current user: it is through this that a member sets up their own author profile.
 
-To define a profile for another author, it is first necessary to add some author supporting content, and then to choose to define the author from the Admin Zone author management page.
+To set up a profile for another author, it is first necessary to add some author supporting content, and then to choose to set up the author from the Admin Zone author management page.
 
 [title="2"]View a Author[/title]
 
@@ -22,12 +22,17 @@ Links are placed on author-supporting content view pages to view details of the 
 The 'view an author' screen will display the author profile, as well as downloads that they are set as the author of.
 [/surround]
 
-[title="2"]Merging authors[/title]
+[title="2"]Merging Authors[/title]
 
 [surround]
 [media width="150" description="Managing/Merging authors" float="right"]data_custom/images/docs/tut_authors/authors_manage.png[/media]
 The Admin Zone provides a module for merging authors. This feature is provided as it is likely that different users will refer to authors with slightly different names at the point of submission.
 [/surround]
+
+[title="2"]Deleting an Author[/title]
+
+You can delete any author that has been set up by going to set it up, similar to how editing any other content in Composr.
+Authors that have not been set up can not be deleted as they only exist due to references by other content.
 
 [title="2"]A note about security[/title]
 

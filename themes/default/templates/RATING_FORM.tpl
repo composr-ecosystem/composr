@@ -3,7 +3,7 @@
 {+START,IF,{ALLOW_RATING}}
 	<div data-tpl="ratingForm" data-tpl-params="{+START,PARAMS_JSON,ERROR,ALL_RATING_CRITERIA,CONTENT_TYPE,ID}{_*}{+END}">
 		{+START,LOOP,ALL_RATING_CRITERIA}
-			{$SET,identifier,{CONTENT_TYPE*}--{TYPE*}--{ID*}}
+			{$SET-,identifier,{CONTENT_TYPE*}--{TYPE*}--{ID*}}
 
 			<div class="rating-outer">
 				<div class="rating-type-title">

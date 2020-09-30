@@ -213,6 +213,7 @@ function do_access($given_password)
         'no_keep_params' => '<em>Development:</em> Whether to disable support for \'keep_\' params in Composr. You probably don\'t want to disable them!',
         'safe_mode' => '<em>Development:</em> Whether Composr is to be forced into safe mode, meaning no custom files will load and most caching will be disabled.',
         'no_email_output' => '<em>Development:</em> Whether emails should never be sent.',
+        'redirect_email_output' => '<em>Development:</em> Alternate e-mail address to route all e-mails.',
         'email_to' => '<em>Development:</em> If you have set up a customised critical error screen (via a <kbd>_critical_error.html</kbd> file and empty <kbd>critical_errors</kbd> directory), and a background e-mailing process, this defines where error e-mails will be sent.',
 
         'failover_mode' => '<em>Failover:</em> The failover mode. Either <kbd>off</kbd> or <kbd>on</kbd> or <kbd>auto_off</kbd> or <kbd>auto_on</kbd>. Usually it will be left to <kbd>off</kbd>, meaning there is no active failover mode. The next most common setting will be <kbd>auto_off</kbd>, which means the failover_script.php script is allowed to set it to <kbd>auto_on</kbd> if it detects the site is failing (and back to <kbd>auto_off</kbd> again when things are okay again). Setting it to <kbd>on</kbd> is manually declaring the site has failed and you want to keep it in failover mode.',

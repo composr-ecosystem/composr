@@ -590,14 +590,15 @@
 
                 $dom.smoothScroll(0);
 
+                bi = document.getElementById('main-website-inner');
+
                 element = document.getElementById(params.randIdOverlay);
                 element.style.display = 'block';
                 element.parentNode.removeChild(element);
                 document.body.appendChild(element);
 
-                bi = document.getElementById('main-website-inner');
-
                 if (bi) {
+                    bi.style.left = (Number(params.x) + $dom.findPosX(bi, true)) + 'px';
                     bi.style.opacity = 0.4;
                 }
 

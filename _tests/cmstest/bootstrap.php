@@ -189,7 +189,6 @@ END;
     <body class="website-body"><div class="global-middle container-fluid">
         <h1 class="screen-title">{$title}</h1>
 END;
-    cms_flush_safe();
 }
 
 function testset_do_footer()

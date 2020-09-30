@@ -147,18 +147,18 @@ class shopping_test_set extends cms_test_case
 
         $shopping_module = new Module_shopping();
         $shopping_module->empty_cart();
-        header_remove();
+        @header_remove();
 
         $_POST['type_code'] = strval($entry_id);
         $shopping_module->add_item();
-        header_remove();
+        @header_remove();
     }
 
     public function testViewCart()
     {
         $shopping_module = new Module_shopping();
         $shopping_module->view_shopping_cart();
-        header_remove();
+        @header_remove();
     }
 
     public function testHandleTransaction()

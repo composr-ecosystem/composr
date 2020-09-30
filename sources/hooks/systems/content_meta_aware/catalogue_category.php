@@ -52,12 +52,12 @@ class Hook_content_meta_aware_catalogue_category extends Hook_CMA
             'parent_category_meta_aware_type' => 'catalogue_category',
             'is_category' => true,
             'is_entry' => false,
-            'category_field' => ['c_name', 'id'], // For category permissions
-            'category_type' => ['catalogues_catalogue', 'cc_parent_id'], // For category permissions
+            'category_field' => ['cc_parent_id', 'c_name'], // For category permissions
+            'category_type' => ['catalogues_category', 'catalogues_catalogue'], // For category permissions
             'parent_spec__table_name' => 'catalogue_categories',
             'parent_spec__parent_name' => 'cc_parent_id',
             'parent_spec__field_name' => 'id',
-            'category_is_string' => false,
+            'category_is_string' => [false, true],
 
             'title_field' => 'cc_title',
             'title_field_dereference' => true,

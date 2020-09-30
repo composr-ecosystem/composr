@@ -1,4 +1,4 @@
-{$SET,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{REVIEW_RATING_CRITERIA},1}}}
+{$SET-,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{REVIEW_RATING_CRITERIA},1}}}
 
 <div id="comments-wrapper" class="comments-wrapper" role="complementary" data-tpl="commentsWrapper" data-tpl-params="{+START,PARAMS_JSON,SERIALIZED_OPTIONS,HASH}{_*}{+END}">
 	{+START,SET,REVIEWS_TITLE}

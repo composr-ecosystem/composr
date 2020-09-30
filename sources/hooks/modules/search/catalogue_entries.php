@@ -313,9 +313,9 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 if ($catalogue_name != '') {
                     $trans_fields = [];
                     $nontrans_fields = [];
-                    list($sup_table, $_where_clause, $trans_fields, $nontrans_fields) = $this->_get_search_parameterisation_advanced($catalogue_name);
+                    list($sup_table, $_where_clause, $where_clause_2, $trans_fields, $nontrans_fields) = $this->_get_search_parameterisation_advanced($catalogue_name);
                     $table .= $sup_table;
-                    $where_clause .= $_where_clause;
+                    $where_clause .= $_where_clause . $where_clause_2;
                     // ^ Nothing done with trans_fields and nontrans_fields
                 }
             }

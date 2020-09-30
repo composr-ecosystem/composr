@@ -103,11 +103,7 @@ class Module_cms_authors
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE')]]);
 
             $author = get_param_string('id', $GLOBALS['FORUM_DRIVER']->get_username(get_member()));
-            if (get_param_string('id', null) === null) {
-                $this->title = get_screen_title('DEFINE_AUTHOR');
-            } else {
-                $this->title = get_screen_title('_DEFINE_AUTHOR', true, [escape_html($author)]);
-            }
+            $this->title = get_screen_title('_DEFINE_AUTHOR', true, [escape_html($author)]);
 
             $this->author = $author;
         }

@@ -30,8 +30,6 @@ function handle_active_logout()
         $before_xss_detect = ini_get('ocproducts.xss_detect');
         cms_ini_set('ocproducts.xss_detect', '0');
 
-        initiate_hybridauth_session_state();
-
         $hybridauth = initiate_hybridauth();
 
         if (isset($_SESSION['provider'])) {

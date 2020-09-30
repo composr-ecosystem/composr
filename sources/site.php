@@ -364,7 +364,7 @@ function breadcrumbs_get_default_stub($link_to_self_entrypoint = true)
 
     // Self-link
     if ($link_to_self_entrypoint) {
-        $label = ($BREADCRUMB_SET_SELF === null) ? $DISPLAYED_TITLE : $BREADCRUMB_SET_SELF;
+        $label = ($BREADCRUMB_SET_SELF === null) ? protect_from_escaping($DISPLAYED_TITLE) : $BREADCRUMB_SET_SELF;
         if ($label !== null) {
             $label_eval = is_object($label) ? $label->evaluate() : $label;
             $last_breadcrumb_label_eval = mixed();

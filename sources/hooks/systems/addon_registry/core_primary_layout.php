@@ -233,15 +233,7 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__mail()
     {
-        return [
-            lorem_globalise(do_lorem_template('MAIL', [
-                'CSS' => '',
-                'LOGOURL' => placeholder_image_url(),
-                'LANG' => fallback_lang(),
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => lorem_paragraph(),
-            ]), null, '', true)
-        ];
+        return $this->do_mail_template_preview('MAIL');
     }
 
     /**
@@ -253,15 +245,42 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__mail_raw()
     {
+        return $this->do_mail_template_preview('MAIL_RAW');
+    }
+
+    /**
+     * Get an e-mail template preview.
+     *
+     * @param  ID_TEXT $tpl Template name
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    protected function do_mail_template_preview($tpl)
+    {
+        $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), [lorem_phrase(), lorem_paragraph(), placeholder_url(), lorem_phrase(), placeholder_id(), lorem_phrase()]));
+
+        require_css('email');
+
+        $map = [
+            'LOGOURL' => placeholder_image_url(),
+            'LOGOMAP' => '',
+            'LANG' => fallback_lang(),
+            'TITLE' => lorem_phrase(),
+            'CONTENT' => $message_raw,
+        ];
+
+        $_tpl = do_lorem_template($tpl, $map);
+
+        $css = css_tempcode(true, false, $_tpl->evaluate());
+        $_css = $css->evaluate();
+
+        $map += [
+            'CSS' => $_css,
+        ];
+
+        $tpl2 = $tpl->bind($map, 'MAIL');
+
         return [
-            lorem_globalise(do_lorem_template('MAIL_RAW', [
-                'CSS' => '',
-                'LOGOURL' => placeholder_image_url(),
-                'LOGOMAP' => '',
-                'LANG' => fallback_lang(),
-                'TITLE' => lorem_phrase(),
-                'CONTENT' => lorem_paragraph(),
-            ]), null, '', true)
+            lorem_globalise($tpl2, null, '', true)
         ];
     }
 
