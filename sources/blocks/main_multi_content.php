@@ -307,7 +307,7 @@ class Block_main_multi_content
         }
         if ($lifetime !== null) {
             $block_cache_id = md5(serialize($map));
-            $query .= ' LEFT JOIN ' . $info['connection']->get_table_prefix() . 'feature_lifetime_monitor m ON m.content_id=r.' . db_cast($first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('m.block_cache_id', $block_cache_id);
+            $query .= ' LEFT JOIN ' . $info['connection']->get_table_prefix() . 'feature_lifetime_monitor m ON m.content_id=' . db_cast('r.' . $first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('m.block_cache_id', $block_cache_id);
             $where .= ' AND ';
             $where .= '(m.run_period IS NULL OR m.run_period<' . strval($lifetime * 60 * 60 * 24) . ')';
         }

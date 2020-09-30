@@ -1717,7 +1717,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                             $continuation .= ($in_code_tag && $in_semihtml/*Will be filtered later so don't apply security now*/) ? $next : '&amp;';
                                         }
                                     } else {
-                                        if ($next == '<') {
+                                        if (($next == '<') && (!$in_separate_parse_section) && ($in_semihtml)) {
                                             $was_filtered = filter_html_inclusion_list_at_tag_start($comcode, $pos, $continuation, $comcode_dangerous_html, $allowed_html_seqs);
                                             if ($was_filtered) {
                                                 continue 2;
@@ -1728,7 +1728,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                                         $continuation .= (isset($html_escape_1_strrep_inv[$next]) && !($in_code_tag && $in_semihtml)) ? escape_html($next) : $next;
                                     }
                                 } else {
-                                    if ($next == '<') {
+                                    if (($next == '<') && (!$in_separate_parse_section) && ($in_semihtml)) {
                                         $was_filtered = filter_html_inclusion_list_at_tag_start($comcode, $pos, $continuation, $comcode_dangerous_html, $allowed_html_seqs);
                                         if ($was_filtered) {
                                             continue 2;
