@@ -1017,23 +1017,23 @@ function get_default_ecommerce_fields($member_id = null, &$shipping_email = '', 
 
         $shipping_firstname = 'John';
         $shipping_lastname = 'Doe';
-        $shipping_street_address = '3 Example Road';
-        $shipping_city = 'Coolborough';
-        $shipping_county = 'West testsome';
-        $shipping_state = 'England';
-        $shipping_post_code = 'L3 3T';
-        $shipping_country = 'GB';
+        $shipping_street_address = '114 W 3rd St';
+        $shipping_city = 'Prophetstown';
+        $shipping_county = '';
+        $shipping_state = 'IL';
+        $shipping_post_code = '61277';
+        $shipping_country = 'US';
         if ($shipping_email == '') {
             $shipping_email = 'test@example.com';
         }
         $shipping_phone = '01234 56789';
 
-        $billing_street_address = '3 Example Road';
-        $billing_city = 'Coolborough';
-        $billing_county = 'West testsome';
-        $billing_state = 'England';
-        $billing_post_code = 'L3 3T';
-        $billing_country = 'GB';
+        $billing_street_address = '114 W 3rd St';
+        $billing_city = 'Prophetstown';
+        $billing_county = '';
+        $billing_state = 'IL';
+        $billing_post_code = '61277';
+        $billing_country = 'US';
     } else {
         $_cardholder_name = get_cms_cpf('payment_cardholder_name');
         $cardholder_name = empty($_cardholder_name) ? '' : $_cardholder_name;

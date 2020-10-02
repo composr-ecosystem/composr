@@ -35,12 +35,12 @@ class ecommerce_shipping_test_set extends cms_test_case
         set_option('shipping_shippo_api_test', '');
         set_option('shipping_shippo_api_live', '');
 
-        set_option('business_street_address', '1234 Scope');
-        set_option('business_city', 'Hope');
+        set_option('business_street_address', '34661 Lyndon B Johnson Fwy');
+        set_option('business_city', 'Dallas');
         set_option('business_county', '');
-        set_option('business_state', '');
-        set_option('business_post_code', 'HO1 234');
-        set_option('business_country', 'GB');
+        set_option('business_state', 'TX');
+        set_option('business_post_code', '75241');
+        set_option('business_country', 'US');
     }
 
     public function testShippingSplitAddress()
@@ -112,6 +112,6 @@ class ecommerce_shipping_test_set extends cms_test_case
         $product_width = 36.84;
         $product_height = 36.84;
         $cost = calculate_shipping_cost(null, null, $product_weight, $product_length, $product_width, $product_height);
-        //$this->assertTrue(($cost > 10.00) && ($cost < 50.00));
+        $this->assertTrue(($cost > 10.00) && ($cost < 200.00));
     }
 }

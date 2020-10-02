@@ -192,6 +192,9 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
         )),
         'async' => false,
     );
+    if (ecommerce_test_mode()) {
+        $request['test'] = true;
+    }
     $post_params = array(json_encode($request));
     $url = 'https://api.goshippo.com/shipments/';
     $_response = http_download_file($url, null, true, false, 'Composr', $post_params, null, null, null, null, null, null, null, 10.0, true, null, array('Authorization' => 'ShippoToken ' . $shippo_token, 'Shippo-API-Version' => '2018-02-08'), null, 'application/json', true); // TODO: Fix in v11
