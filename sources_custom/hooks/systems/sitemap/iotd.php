@@ -72,9 +72,13 @@ class Hook_sitemap_iotd extends Hook_sitemap_content
 
         $consider_validation = (($options & SITEMAP_GEN_CONSIDER_VALIDATION) != 0);
 
+        $select = $this->select_fields();
+
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), $consider_validation ? array('used' => 1) : array(), 'ORDER BY date_and_time', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('iotd', $select, $consider_validation ? array('used' => 1) : array(), 'ORDER BY date_and_time', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $return_anyway);
@@ -83,8 +87,8 @@ class Hook_sitemap_iotd extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) > 0);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         return $nodes;
     }

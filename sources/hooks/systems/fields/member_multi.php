@@ -109,7 +109,7 @@ class Hook_fields_member_multi
 
         $auto_sort = option_value_from_field_array($field, 'auto_sort', 'off');
         if ($auto_sort == 'on') {
-            @uasort($out, 'strnatcmp');
+            uasort($out, 'strnatcmp');
         }
 
         $ret = new Tempcode();

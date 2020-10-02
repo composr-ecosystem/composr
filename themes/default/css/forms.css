@@ -35,7 +35,7 @@
 }
 
 .required_star {
-	{$BETA_CSS_PROPERTY,opacity: 0.4;}
+	{$BETA_CSS_PROPERTY,opacity: 0.6;}
 	color: {$GET,red_highlight_text};
 	{$BETA_CSS_PROPERTY,user-select: none;} {$,To stop accidental touching when touching inputs}
 }
@@ -272,12 +272,11 @@ th.form_table_field_name a, /* Extra specificity to take precedence over th.de_t
 
 .input_colour, .input_list, .input_line, .input_integer,
 .input_author, .input_username, .input_email, .input_codename,
-.input_tick, .input_float, .input_text, .input_upload, .input_radio {
-}
-
+.input_tick, .input_float, .input_text, .input_upload, .input_radio,
 .input_colour_required, .input_list_required, .input_line_required, .input_integer_required,
 .input_author_required, .input_username_required, .input_email_required, .input_codename_required,
 .input_tick_required, .input_float_required, .input_text_required, .input_upload_required {
+	max-width: 100%;
 }
 
 .input_dimensions {
@@ -558,7 +557,7 @@ span.validated_checkbox+input[name="validated"].input_tick {
 	}
 	.mobile .preview_box_inner {
 		overflow: hidden;
-		width: 320px;
+		width: 314px;
 		height: 355px;
 	}
 /*{+END}*/
@@ -874,6 +873,7 @@ span.validated_checkbox+input[name="validated"].input_tick {
 
 comcode-{$REPLACE,\,,\,comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_BLOCK}}\,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__XML_INLINE}}}, tempcode {
 	background-color: {$GET,native_ui_active_background};
+	color: {$GET,native_ui_foreground};
 }
 
 #wysiwyg_editor kbd.cms_keep, #wysiwyg_editor kbd.cms_keep_block {

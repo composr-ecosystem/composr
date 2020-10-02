@@ -98,6 +98,9 @@ class notifications_test_set extends cms_test_case
             'l_setting' => A_INSTANT_EMAIL,
         ));
 
+        global $NOTIFICATION_LOCKDOWN_CACHE;
+        $NOTIFICATION_LOCKDOWN_CACHE = array();
+
         $ob = new Hook_notification_comment_posted();
         $results = $ob->list_members_who_have_enabled('comment_posted');
         $this->assertTrue(count($results[0]) == 0);

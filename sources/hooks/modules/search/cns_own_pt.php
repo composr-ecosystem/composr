@@ -138,7 +138,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
             $where_clause .= $sq;
         }
         $this->_handle_date_check($cutoff, 'p_time', $where_clause);
-        if (get_param_integer('option_cns_posts_starter', 0) == 1) {
+        if (get_param_integer('option_cns_own_pt_starter', 0) == 1) {
             $where_clause .= ' AND ';
             $where_clause .= 's.t_cache_first_post_id=r.id';
         }

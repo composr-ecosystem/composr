@@ -82,8 +82,10 @@ function activities_addon_syndicate_described_activity($a_language_string_code =
             foreach (array_keys($dests) as $hook) {
                 require_code('hooks/systems/syndication/' . $hook);
                 $ob = object_factory('Hook_syndication_' . $hook);
-                if ($ob->is_available()) {
+                if ($ob->is_available($a_member_id)) {
                     $ob->syndicate_user_activity($a_member_id, $row);
+                }
+                if ($ob->is_available()) {
                     if (($sitewide_too) && (has_privilege(get_member(), 'syndicate_site_activity')) && (post_param_integer('syndicate_this', 0) == 1)) {
                         $ob->syndicate_site_activity($row);
                     }
@@ -174,14 +176,7 @@ function activities_ajax_submit_handler()
  */
 function activities_ajax_update_list_handler()
 {
-    $map = array();
-
-    $map['max'] = $GLOBALS['SITE_DB']->query_select_value_if_there('values', 'the_value', array('the_name' => get_zone_name() . '_' . get_page_name() . '_update_max'));
-
-    if (is_null($map['max'])) {
-        $map['max'] = '10';
-    }
-
+    $max = post_param_integer('max', 10);
     $last_id = post_param_string('last_id', '-1');
     $mode = post_param_string('mode', 'all');
 
@@ -210,7 +205,7 @@ function activities_ajax_update_list_handler()
     $can_remove_others = (has_zone_access($viewer_id, 'adminzone'));
 
     if ($proceed_selection === true) {
-        $activities = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'activities WHERE ((' . $where_clause . ') AND id>' . (($last_id == '') ? '-1' : $last_id) . ') ORDER BY a_time DESC', intval($map['max']));
+        $activities = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'activities WHERE ((' . $where_clause . ') AND id>' . (($last_id == '') ? '-1' : $last_id) . ') ORDER BY a_time DESC', intval($max));
 
         if (count($activities) > 0) {
             $list_items = '';
@@ -247,7 +242,7 @@ function activities_ajax_update_list_handler()
                 // tag so that the JavaScript knows what it's received
                 $list_items .= '<listitem id="' . strval($row['id']) . '"><![CDATA[' . base64_encode($list_item->evaluate()) . ']]></listitem>';
             }
-            $response .= '<response><success>1</success><feedlen>' . $map['max'] . '</feedlen><content>' . $list_items . '</content><supp>' . escape_html($where_clause) . '</supp></response>';
+            $response .= '<response><success>1</success><feedlen>' . strval($max) . '</feedlen><content>' . $list_items . '</content><supp>' . escape_html($where_clause) . '</supp></response>';
         } else {
             $response .= '<response><success>2</success><content>NU - Nothing new.</content></response>';
         }

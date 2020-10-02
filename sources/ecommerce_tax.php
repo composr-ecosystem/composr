@@ -325,7 +325,7 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
         // Europe
         if ($tax_code == 'EU') {
             require_code('files2');
-            list($__rates) = cache_and_carry('http_download_file', array('http://euvat.ga/rates.json'));
+            list($__rates) = cache_and_carry('http_download_file', array('https://euvatrates.com/rates.json'));
             $_rates = json_decode($__rates, true); // TODO: Fix in v11
 
             if (isset($_rates['rates'][$country])) {

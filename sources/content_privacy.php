@@ -230,7 +230,7 @@ function privacy_limits_for($content_type, $content_id, $strict_all = false)
     if (($friend_view == 1) && (addon_installed('chat'))) {
         $cnt = $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', array('member_likes' => $content_submitter));
         if (($strict_all) || ($cnt <= 1000/*safety limit*/)) {
-            $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_likes'), array('member_likes' => $content_submitter));
+            $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_liked'), array('member_likes' => $content_submitter));
             $members = array_merge($members, collapse_1d_complexity('member_liked', $friends));
         }
     }

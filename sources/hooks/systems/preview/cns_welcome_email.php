@@ -33,19 +33,26 @@ class Hook_preview_cns_welcome_email
         $member_id = get_param_integer('id', get_member());
 
         $applies = (get_page_name() == 'admin_cns_welcome_emails');
+
         if ($applies) {
-            require_lang('cns');
-            require_code('mail');
+            $mail = $this->get_mail_row();
 
-            $subject_line = post_param_string('subject');
-            $message_raw = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => 'e065391099b1c7273ca1de940a1acb66', 'CONTENT' => post_param_string('text'), 'LANG' => get_site_default_lang()), null, false, null, '.txt', 'text');
+            require_code('cns_welcome_emails');
+            list($subject, $message, $is_html, $name) = cns_prepare_welcome_email($mail);
+            if ($is_html) {
+                $applies = false;
 
-            $to = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
-            if ($to == '') {
-                $to = get_option('staff_address');
+                // Send e-mail instead, as we cannot display raw HTML in the preview...
+
+                require_code('mail');
+                $to = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
+                if ($to == '') {
+                    $to = get_option('staff_address');
+                }
+                mail_wrap($subject, $message, array($to), $name, '', '', 3, null, false, get_member(), true);
             }
-            mail_wrap($subject_line, $message_raw->evaluate(get_site_default_lang()), array($to), $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true), '', '', 3, null, false, get_member(), true);
         }
+
         return array($applies, null);
     }
 
@@ -56,9 +63,39 @@ class Hook_preview_cns_welcome_email
      */
     public function run()
     {
-        $preview = new Tempcode();
-        $preview->attach(comcode_to_tempcode(post_param_string('text'), get_member()));
+        $mail = $this->get_mail_row();
+
+        require_code('cns_welcome_emails');
+        list($subject, $message, $is_html, $name) = cns_prepare_welcome_email($mail);
+
+        $preview = comcode_to_tempcode($message);
 
         return array($preview, null);
+    }
+
+    /**
+     * Get a simulated row for the welcome e-mail being previewed.
+     *
+     * @return array Row
+     */
+    protected function get_mail_row()
+    {
+        $name = post_param_string('name');
+        $subject = post_param_string('subject');
+        $text = post_param_string('text');
+        $send_time = post_param_integer('send_time');
+        $newsletter = post_param_integer('newsletter', null);
+        $usergroup = post_param_integer('usergroup', null);
+        $usergroup_type = post_param_string('usergroup_type', '');
+
+        return array(
+            'w_name' => $name,
+            'w_subject' => $subject,
+            'w_text' => $text,
+            'w_send_time' => $send_time,
+            'w_newsletter' => $newsletter,
+            'w_usergroup' => $usergroup,
+            'w_usergroup_type' => $usergroup_type,
+        );
     }
 }

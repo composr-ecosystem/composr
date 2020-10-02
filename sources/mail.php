@@ -601,7 +601,13 @@ function mail_wrap($subject_line, $message_raw, $to_email = null, $to_name = nul
         return false;
     }
 
-    if (@$GLOBALS['SITE_INFO']['no_email_output'] === '1') {
+    global $SITE_INFO;
+
+    if (!empty($SITE_INFO['redirect_email_output'])) {
+        $to_email = array($SITE_INFO['redirect_email_output']);
+    }
+
+    if (@$SITE_INFO['no_email_output'] === '1') {
         require_code('files2');
         clean_temporary_mail_attachments($attachments);
 

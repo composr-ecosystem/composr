@@ -101,7 +101,7 @@ class Module_forumview
 
         inform_non_canonical_parameter('#^kfs_.*$#');
 
-        if ($type == 'browse') {
+        if ($type != 'pt') {
             $id = get_param_integer('id', db_get_first_id());
 
             $_forum_info = $GLOBALS['FORUM_DB']->query_select('f_forums', array('*'), array('id' => $id), '', 1, null, false);

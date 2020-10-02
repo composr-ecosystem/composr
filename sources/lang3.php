@@ -223,13 +223,13 @@ function _create_selection_list_langs($select_lang = null, $show_unset = false)
  */
 function lang_code_to_default_content($field_name, $code, $comcode = false, $level = 2, $connection = null)
 {
-    $insert_map = insert_lang($field_name, do_lang($code), $level, null, $comcode);
+    $insert_map = insert_lang($field_name, do_lang($code), $level, $connection, $comcode);
     if (multi_lang_content()) {
         $langs = find_all_langs();
         foreach ($langs as $lang => $lang_type) {
             if ($lang != user_lang()) {
-                if (is_file(get_file_base() . '/' . $lang_type . '/' . $lang . '/critical_error.ini')) { // Make sure it's a reasonable looking pack, not just a stub (Google Translate addon can be made to go nuts otherwise)
-                    insert_lang($field_name, do_lang($code, '', '', '', $lang), $level, $connection, true, $insert_map[$field_name], $lang);
+                if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub (Google Translate addon can be made to go nuts otherwise)
+                    insert_lang($field_name, do_lang($code, '', '', '', $lang), $level, $connection, $comcode, $insert_map[$field_name], $lang);
                 }
             }
         }
@@ -254,7 +254,7 @@ function lang_code_to_static_content($field_name, $str, $comcode = false, $level
         $langs = find_all_langs();
         foreach ($langs as $lang => $lang_type) {
             if ($lang != user_lang()) {
-                if (is_file(get_file_base() . '/' . $lang_type . '/' . $lang . '/critical_error.ini')) { // Make sure it's a reasonable looking pack, not just a stub
+                if ((is_file(get_file_base() . '/lang/' . $lang . '/critical_error.ini')) || (is_file(get_file_base() . '/lang_custom/' . $lang . '/critical_error.ini'))) { // Make sure it's a reasonable looking pack, not just a stub (Google Translate addon can be made to go nuts otherwise)
                     insert_lang($field_name, $str, $level, $connection, $comcode, $insert_map[$field_name], $lang);
                 }
             }
@@ -519,7 +519,7 @@ function parse_translated_text($table, &$row, $field_name, $connection, $lang, $
 
                 $temp = $LAX_COMCODE;
                 $LAX_COMCODE = true;
-                _lang_remap($field_name, $entry, ($result === null) ? '' : $result['text_original'], $connection, true, null, $result['source_user'], $as_admin, true);
+                _lang_remap($field_name, $entry, ($result === null) ? '' : $result['text_original'], $connection, true, null, ($result === null) ? null : $result['source_user'], $as_admin, true);
                 if ($SEARCH__CONTENT_BITS !== null) {
                     $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, null, $connection, false, false, false, false, false, $SEARCH__CONTENT_BITS);
                     $LAX_COMCODE = $temp;

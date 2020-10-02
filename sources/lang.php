@@ -536,12 +536,7 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
     $REQUIRE_LANG_LOOP++;
 
     if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] == '1')) {
-        if (function_exists('attach_message')) {
-            attach_message('require_lang: ' . $codename . ' (' . integer_format(memory_get_usage()) . ' before)', 'inform');
-        } else {
-            print('<!-- require_lang: ' . htmlentities($codename) . ' (' . htmlentities(integer_format(memory_get_usage())) . ' before) -->' . "\n");
-            flush();
-        }
+        $before = memory_get_usage();
     }
 
     $bad = false;
@@ -603,6 +598,16 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
     $LANG_LOADED_LANG[$lang][$codename] = true;
 
     $REQUIRE_LANG_LOOP--;
+
+    if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] == '1')) {
+        $msg = function_exists('clean_file_size') ? clean_file_size(memory_get_usage() - $before) : integer_format(memory_get_usage() - $before);
+        if (function_exists('attach_message')) {
+            attach_message('require_lang: ' . $codename . ' (' . $msg . ' used)', 'inform');
+        } else {
+            print('<!-- require_lang: ' . htmlentities($codename) . ' (' . htmlentities($msg) . ' used) -->' . "\n");
+            flush();
+        }
+    }
 }
 
 /**

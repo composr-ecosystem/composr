@@ -55,6 +55,16 @@ class Module_tickets
         delete_privilege('support_operator');
 
         $GLOBALS['SITE_DB']->query_delete('group_category_access', array('module_the_name' => 'tickets'));
+
+        if (get_forum_type() == 'cns') {
+            require_lang('tickets');
+            $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_parent_forum' => db_get_first_id(), 'f_name' => do_lang('TICKET_FORUM_NAME', null, null, null, get_site_default_lang())));
+            if ($forum_id !== null) {
+                require_code('cns_forums_action');
+                require_code('cns_forums_action2');
+                cns_delete_forum($forum_id);
+            }
+        }
     }
 
     /**
@@ -84,6 +94,11 @@ class Module_tickets
             $GLOBALS['SITE_DB']->alter_table_field('ticket_types', 'ticket_type', '*AUTO', 'id');
             $GLOBALS['SITE_DB']->add_table_field('ticket_types', 'ticket_type_name', 'SHORT_TRANS', 0);
             $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ticket_types SET ticket_type_name=id');
+
+            $ticket_types = $GLOBALS['SITE_DB']->query_select('ticket_types', array('id', 'ticket_type_name'));
+            foreach ($ticket_types as $ticket_type) {
+                $GLOBALS['SITE_DB']->query_update('group_category_access', array('category_name' => strval($ticket_type['id'])), array('category_name' => get_translated_text($ticket_type['ticket_type_name']), 'module_the_name' => 'tickets'));
+            }
         }
 
         if ((!is_null($upgrade_from)) && ($upgrade_from < 5)) {
@@ -125,6 +140,19 @@ class Module_tickets
 
             add_privilege('SUPPORT_TICKETS', 'view_others_tickets', false);
             add_privilege('SUPPORT_TICKETS', 'support_operator', false);
+
+            if (get_forum_type() == 'cns') {
+                $moderator_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
+                $staff_access = array();
+                foreach ($moderator_groups as $id) {
+                    $staff_access[$id] = 5;
+                }
+                cns_require_all_forum_stuff();
+                require_code('cns_forums_action');
+                require_code('cns_forums_action2');
+                $GLOBALS['CNS_DRIVER'] = $GLOBALS['FORUM_DRIVER'];
+                cns_make_forum(do_lang('TICKET_FORUM_NAME', null, null, null, get_site_default_lang()), '', db_get_first_id() + 1, $staff_access, db_get_first_id());
+            }
         }
     }
 

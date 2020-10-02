@@ -34,7 +34,7 @@ class image_compression_test_set extends cms_test_case
                 $files = get_directory_contents($base);
                 foreach ($files as $file) {
                     if ((is_image($file)) && (substr($file, -4) != '.ico')) {
-                        $filesize = filesize($base . '/' . $file);
+                        $filesize = filesize($base . '/' . $file) - 100/*overhead*/;
 
                         // Approximate base size
                         if (substr($file, -4) == '.gif') {
@@ -45,7 +45,7 @@ class image_compression_test_set extends cms_test_case
                             }
                         } else {
                             $filesize -= 73;
-                            $min_ratio = 0.28;
+                            $min_ratio = 0.31;
                         }
                         if ($filesize < 1) {
                             $filesize = 1;

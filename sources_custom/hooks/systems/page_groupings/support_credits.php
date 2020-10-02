@@ -28,7 +28,7 @@ class Hook_page_groupings_support_credits
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('audit', 'menu/_generic_admin/tool', array('outstanding_credits', array(), get_page_zone('outstanding_credits')), do_lang_tempcode('customers:UNSPENT_SUPPORT_CREDITS')),
+            array('audit', 'menu/_generic_admin/tool', array('outstanding_credits', array(), get_page_zone('outstanding_credits', false, 'adminzone', 'minimodules')), do_lang_tempcode('customers:UNSPENT_SUPPORT_CREDITS')),
             array('tools', 'menu/_generic_admin/tool', array('admin_customers', array(), get_module_zone('admin_customers')), do_lang_tempcode('customers:CHARGE_CUSTOMER')),
         );
     }

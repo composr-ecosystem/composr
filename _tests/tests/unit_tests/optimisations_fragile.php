@@ -20,11 +20,13 @@ class optimisations_fragile_test_set extends cms_test_case
 {
     public function testSymbols2Optimisation()
     {
+        global $SYMBOLS2_CAUSE;
+
         require_code('site');
         $_GET['id'] = strval(db_get_first_id());
         $out = load_module_page('forum/pages/modules/forumview.php', 'forumview');
         $this->assertTrue(strpos($out->evaluate(), do_lang('DEFAULT_FORUM_TITLE')) !== false);
-        $this->assertTrue(!function_exists('ecv2_MAKE_URL_ABSOLUTE'), 'symbols2.php used on forumview');
+        $this->assertTrue(empty($SYMBOLS2_CAUSE), 'symbols2.php used on forumview (' . implode(', ', $SYMBOLS2_CAUSE) . ')');
 
         require_code('failure');
         set_throw_errors(true);
@@ -36,7 +38,7 @@ class optimisations_fragile_test_set extends cms_test_case
             }
             catch (Exception $e) {
             }
-            $this->assertTrue(!function_exists('ecv2_MAKE_URL_ABSOLUTE'), 'symbols2.php used on ' . $module . ' module');
+            $this->assertTrue(empty($SYMBOLS2_CAUSE), 'symbols2.php used on ' . $module . ' module (' . implode(', ', $SYMBOLS2_CAUSE) . ')');
         }
     }
 }

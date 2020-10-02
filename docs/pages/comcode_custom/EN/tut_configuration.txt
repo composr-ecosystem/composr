@@ -145,15 +145,11 @@ A good test is to try running the command you end up choosing manually in a comm
 
 You should schedule Composr's [tt]cron_bridge.php[/tt] script to be loaded at least every 10 minutes.
 
-[title="4"]Sandboxed CRON[/title]
+[title="4"]Sandboxed Cron[/title]
 
-Some webhosts only allow you to execute CRON commands directly under your home directory. This means you cannot call up the PHP command directory like above.
-A workaround is to make a [tt]data/cron_bridge.sh[/tt] file (with execute permissions) containing:
-[code="Bash"]
-#!/bin/sh
-php cron_bridge.php
-[/code]
-and tell CRON to execute [tt]/home/examplesite/htdocs/data/cron_bridge.sh[/tt].
+Some webhosts only allow you to execute Cron commands directly under your home directory. This means you cannot call up the PHP command directory like above.
+A workaround is to use [tt]data/cron_bridge.sh[/tt] instead, which just asks as a wrapper around the regular [tt]cron_bridge.php[/tt]. Tell CRON to execute [tt]/home/examplesite/htdocs/data/cron_bridge.sh[/tt].
+[tt]u+x[/tt] permissions should be set on [tt]data/cron_bridge.sh[/tt] ([tt]744[/tt] permissions).
 
 [title="3"]Specific advice for Windows[/title]
 

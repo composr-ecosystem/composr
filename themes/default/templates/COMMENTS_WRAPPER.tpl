@@ -1,3 +1,5 @@
+{$SET-,has_schema_reviews,{$AND,{$GET,supports_schema_ratings_and_reviews},{$EQ,{REVIEW_RATING_CRITERIA},1}}}
+
 <div id="comments_wrapper" class="comments_wrapper" role="complementary">
 	{+START,SET,REVIEWS_TITLE}
 		<span class="field_title">{!_REVIEWS,{$METADATA*,numcomments}}:</span>
@@ -5,9 +7,18 @@
 		{$SET,rating_loop,0}
 		{+START,LOOP,REVIEW_RATING_CRITERIA}
 			{+START,IF_NON_EMPTY,{REVIEW_RATING}}
+				{+START,IF,{$GET,has_schema_reviews}}
+					<span itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+						<meta itemprop="worstRating" content="1" />
+						<meta itemprop="bestRating" content="5" />
+						<meta itemprop="ratingValue" content="{$DIV_FLOAT*,{REVIEW_RATING},2}" />
+						<meta itemprop="reviewCount" content="{$METADATA*,numcomments}" />
+					</span>
+				{+END}
+
 				{+START,IF_EMPTY,{REVIEW_TITLE}}
 					{+START,WHILE,{$LT,{$GET,rating_loop},{$ROUND,{$DIV_FLOAT,{REVIEW_RATING},2}}}}
-						<img src="{$IMG*,icons/14x14/rating}" srcset="{$IMG*,icons/28x28/rating} 2x" alt="{$ROUND,{$DIV_FLOAT,{REVIEW_RATING},2}}" />
+						<img src="{$IMG*,icons/14x14/rating}" srcset="{$IMG*,icons/28x28/rating} 2x" alt="{$ROUND*,{$DIV_FLOAT,{REVIEW_RATING},2}}" />
 						{$INC,rating_loop}
 					{+END}
 				{+END}

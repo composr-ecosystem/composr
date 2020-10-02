@@ -57,6 +57,9 @@ class Hook_config_unzip_cmd
         if (is_file('/usr/local/bin/unzip')) {
             return '/usr/local/bin/unzip' . $params;
         }
-        return '/usr/bin/unzip' . $params;
+        if (is_file('/usr/bin/unzip')) {
+            return '/usr/bin/unzip' . $params;
+        }
+        return 'unzip' . $params;
     }
 }

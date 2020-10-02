@@ -693,10 +693,18 @@ function is_video($name, $as_admin, $must_be_true_video = false)
  *
  * @param  string $name A URL or file path to the video
  * @param  boolean $as_admin Whether there are admin privileges, to render dangerous media types (client-side risk only)
+ * @param  boolean $definitive_over_video Whether to favour "no" if it could also be a format with video in it
  * @return boolean Whether the string pointed to a file appeared to be an audio file
  */
-function is_audio($name, $as_admin)
+function is_audio($name, $as_admin, $definitive_over_video = false)
 {
+    require_code('files');
+    require_code('mime_types');
+    $mime_type = get_mime_type(get_file_extension($name), $as_admin);
+    if (substr($mime_type, 0, 6) == 'video/') {
+        return false;
+    }
+
     require_code('media_renderer');
     $acceptable_media = MEDIA_TYPE_AUDIO;
     $hooks = find_media_renderers($name, array(), $as_admin, null, $acceptable_media);
@@ -846,8 +854,8 @@ function _fix_corrupt_png_alpha(&$image, $path)
 {
     if (_will_fix_corrupt_png_alpha($image)) {
         require_code('images2');
-        $imagemagick = find_imagemagick();
-        if ($imagemagick !== null) {
+        $imagemagick = get_option('imagemagick_path');
+        if ($imagemagick != '') {
             if ((php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
                 $tempnam = cms_tempnam();
                 shell_exec($imagemagick . ' -depth 32 ' . escapeshellarg($path) . ' PNG32:' . $tempnam);

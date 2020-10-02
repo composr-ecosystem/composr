@@ -18,12 +18,12 @@
 		</outline>
 		<outline text="Atom">
 			{+START,LOOP,FEEDS}
-				<outline type="rss" language="{$LANG*}" version="Atom1.0" title="{$STRIP_TAGS`,{TITLE}}" text="{$STRIP_TAGS`,{TITLE}}" xmlUrl="{$FIND_SCRIPT*,backend}?type=atom&amp;mode={MODE*}&amp;days=30&amp;max=100{$KEEP*,0,1}" />
+				<outline type="rss" language="{$LANG*}" version="Atom1.0" title="{$STRIP_TAGS`,{TITLE}}" text="{$STRIP_TAGS`,{TITLE}}" xmlUrl="{$FIND_SCRIPT*,backend}?type=atom&amp;mode={MODE*}{$KEEP*,0,{$NOT,{$IS_GUEST}}}" />
 			{+END}
 		</outline>
 		<outline text="RSS">
 			{+START,LOOP,FEEDS}
-				<outline type="rss" language="{$LANG*}" version="RSS2" title="{$STRIP_TAGS`,{TITLE}}" text="{$STRIP_TAGS`,{TITLE}}" xmlUrl="{$FIND_SCRIPT*,backend}?type=RSS2&amp;mode={MODE*}&amp;days=30&amp;max=100{$KEEP*,0,1}" />
+				<outline type="rss" language="{$LANG*}" version="RSS2" title="{$STRIP_TAGS`,{TITLE}}" text="{$STRIP_TAGS`,{TITLE}}" xmlUrl="{$FIND_SCRIPT*,backend}?type=RSS2&amp;mode={MODE*}{$KEEP*,0,{$NOT,{$IS_GUEST}}}" />
 			{+END}
 		</outline>
 	</body>

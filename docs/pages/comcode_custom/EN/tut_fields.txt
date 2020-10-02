@@ -334,11 +334,15 @@ NB: When adding there is no UI if 'AUTO_INCREMENT' was used.
 
 [i]Or:[/i]
 A pathname relative to a [tt].csv[/tt] file (relative to base directory), if the non-bundled Nested CPF CSV Lists addon is installed.
+
+You can also do like "a=This|b=That|c=Other" if you need the saved values to be different from the values displayed for selection, and optionally also displayed on the site. This is called "key-val format".
 |-
 ! Supported field options
 | [tt]custom_values=on|off[/tt] (whether to allow a custom typed value; if enabled then inline list widgets will not be available; default is off)
 
 [tt]dynamic_choices[/tt] (whether to feed custom values back in as possible selections for others; default is off)
+
+[tt]display_val=on|off[/tt] (when key-val format is used this sets whether it also influences display not just input)
 
 [tt]value_remap=none|country[/tt] (if set to country then the full country names are shown for ISO country codes in the list options; default is none)
 

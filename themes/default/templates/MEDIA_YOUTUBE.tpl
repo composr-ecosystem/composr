@@ -13,10 +13,17 @@
 
 	{$,Tie into callback event to see when finished, for our slideshows}
 	{$,API: https://developers.google.com/youtube/iframe_api_reference}
-	var {$GET%,player_id};
+	var {$GET%,player_id},{$GET%,player_id}_attempts=0;
 	var youtube_callback_{$GET%,player_id}=function()
 	{
-		if ((!slideshow_mode) && (typeof window.YT=='undefined')) return; {$,Should not be needed but in case the YouTube API somehow failed to load fully}
+		if ((!slideshow_mode) && (typeof window.YT=='undefined')) { {$,Should not be needed but in case the YouTube API somehow failed to load fully - may happen if multiple videos exist on page}
+			if ({$GET%,player_id},{$GET%,player_id}_attempts<10)
+			{
+				{$GET%,player_id},{$GET%,player_id}_attempts++;
+				window.setTimeout(youtube_callback_{$GET%,player_id},1000);
+			}
+			return;
+		}
 
 		{$GET%,player_id}=new YT.Player('{$GET%,player_id}', {
 			width: '{WIDTH;/}',

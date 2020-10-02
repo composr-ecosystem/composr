@@ -415,10 +415,16 @@ function init__global2()
     safe_ini_set('zlib.output_compression_level', '2'); // Compression doesn't get much better after this, but performance drop
 
     if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
-        // Before anything gets outputted
         handle_logins();
 
         require_code('site'); // This powers the site (top level page generation)
+    }
+
+    // Okay, we've loaded everything critical. Don't need to tell Composr to be paranoid now.
+    $BOOTSTRAPPING = false;
+
+    // Before anything gets outputted
+    if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
         check_has_page_access(); // Make sure we're authorised
     }
 
@@ -465,9 +471,6 @@ function init__global2()
         modsecurity_workaround_enable();
     }
 
-    // Okay, we've loaded everything critical. Don't need to tell Composr to be paranoid now.
-    $BOOTSTRAPPING = false;
-
     if (($SEMI_DEV_MODE) && (!$MICRO_AJAX_BOOTUP)) { // Lots of code that only runs if you're a programmer. It tries to make sure coding standards are met.
         semi_dev_mode_startup();
     }
@@ -489,7 +492,7 @@ function init__global2()
     }
     safe_ini_set('memory_limit', $default_memory_limit);
     memory_limit_for_max_param('max');
-    if ((isset($GLOBALS['FORUM_DRIVER'])) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+    if (((isset($GLOBALS['FORUM_DRIVER'])) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) || ($GLOBALS['DEV_MODE'])) {
         if (get_param_integer('keep_avoid_memory_limit', 0) == 1) {
             disable_php_memory_limit();
         } else {
@@ -693,10 +696,25 @@ function memory_limit_for_max_param($max_param)
 }
 
 /**
+ * Find if running on lower memory than we'd like.
+ *
+ * @return boolean Whether we are
+ */
+function has_low_memory()
+{
+    $ml = ini_get('memory_limit');
+    return ((substr($ml, -1) == 'M') && (intval(substr($ml, 0, strlen($ml) - 1)) < 64));
+}
+
+/**
  * Disable the PHP memory limit. Do not use this carelessly, use it if a screen is a bit fat or in an importer, don't use it assuming memory is infinite.
  */
 function disable_php_memory_limit()
 {
+    if (get_value('memory_limit_simulate_hard') === '1') {
+        return;
+    }
+
     $shl = @ini_get('suhosin.memory_limit');
     if (($shl === false) || ($shl == '') || ($shl == '0')) {
         // Progressively relax more and more (some PHP installs may block at some point)
@@ -805,7 +823,9 @@ function load_user_stuff()
          */
         $FORUM_DB = mixed();
         $GLOBALS['FORUM_DB'] = &$FORUM_DRIVER->connection; // Done like this to workaround that PHP can't put a reference in a global'd variable
-        reload_lang_fields(false, 'f_member_custom_fields');
+        if (is_on_multi_site_network()) {
+            reload_lang_fields(false, 'f_member_custom_fields');
+        }
     }
 }
 
@@ -1846,6 +1866,10 @@ function unixify_line_format($in, $desired_charset = null, $html = false, $from_
     }
     if (substr($in, 0, 3) == $bom) {
         $in = substr($in, 3);
+    }
+
+    if (strpos($in, "\r") === false) {
+        return $in;
     }
 
     static $from = null;

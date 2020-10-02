@@ -26,12 +26,12 @@ Members of staff have the ability to give any number of points they like to peop
 Please have fun with the system and use your gift-points well.{+END}
 {+START,IF,{$AND,{$ADDON_INSTALLED,news},{$HAS_ACTUAL_PAGE_ACCESS,cms_news}}}[title="2"]News/Blogs[/title]
 
-{$ANCHOR,ADD_NEWS}[page="_SEARCH:cms_news:add"]The add news page[/page] allows you to add your news to {$SITE_NAME*}. For most members, this will put the news into a validation queue and inform the staff of the submission.
+{$ANCHOR,ADD_NEWS}[page="_SEARCH:cms_news:add" ignore_if_hidden="1"]The add news page[/page] allows you to add your news to {$SITE_NAME*}. For most members, this will put the news into a validation queue and inform the staff of the submission.
 {+START,IF,{$HAS_PRIVILEGE,have_personal_category,cms_news}}You also have the opportunity to submit to your own personal news category; this is your own blog on the website.{+END}
 {+END}
 {+START,IF,{$AND,{$ADDON_INSTALLED,galleries},{$HAS_ACTUAL_PAGE_ACCESS,cms_galleries}}}[title="2"]Galleries[/title]
 
-{$ANCHOR,ADD_MEDIA}The [page="_SEARCH:cms_galleries:add"]add image[/page]/[page="_SEARCH:cms_galleries:add_other"]add video[/page] pages allow you to add your media to {$SITE_NAME*}. For most members, this will put the media into a validation queue and inform the staff of the submission.
+{$ANCHOR,ADD_MEDIA}The [page="_SEARCH:cms_galleries:add" ignore_if_hidden="1"]add image[/page]/[page="_SEARCH:cms_galleries:add_other" ignore_if_hidden="1"]add video[/page] pages allow you to add your media to {$SITE_NAME*}. For most members, this will put the media into a validation queue and inform the staff of the submission.
 {+END}{+END}{+START,IF,{$ADDON_INSTALLED,wiki}}[title="2"]Wiki+[/title]
 
 Wiki+ is a system that allows users to post content into a database of posts. This system is similar to that of a forum, however rather than having a structure of forums and user created topics, it has a staff-managed hierarchical structure of pages.

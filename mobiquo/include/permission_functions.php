@@ -87,57 +87,9 @@ function has_post_access($post_id, $member_id = null, $post_details = null)
         }
     }
 
-    if (!has_topic_access($post_details['topic_id'], $member_id, $post_details/*Contains topic details too*/)) {
+    require_code('cns_topics');
+    if (!cns_may_access_topic($post_details['topic_id'], $member_id, $post_details/*Contains topic details too*/)) {
         return false;
-    }
-
-    return true;
-}
-
-/**
- * Find whether a member can access a particular post.
- *
- * @param  AUTO_LINK $topic_id Topic ID
- * @param  ?MEMBER $member_id Member involved (null: current member)
- * @param  ?array $topic_details Topic row (null: lookup)
- * @return boolean Whether they can
- */
-function has_topic_access($topic_id, $member_id = null, $topic_details = null)
-{
-    if (is_null($member_id)) {
-        $member_id = get_member();
-    }
-
-    if (!has_actual_page_access($member_id, 'topicview')) {
-        return false;
-    }
-
-    if (is_null($topic_details)) {
-        $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $_topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id', array('*', 't.id AS topic_id', 'p.id AS post_id'), array('t.id' => $topic_id), '', 1);
-        if (!isset($_topic_details[0])) {
-            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
-        }
-        $topic_details = $_topic_details[0];
-    }
-
-    if (is_null($topic_details['t_forum_id'])) {
-        require_code('cns_topics');
-        if ((!has_privilege($member_id, 'view_other_pt')) && (!cns_has_special_pt_access($topic_id, $member_id))) {
-            if (($topic_details['t_pt_from'] != $member_id) && ($topic_details['t_pt_to'] != $member_id)) {
-                return false;
-            }
-        }
-    } else {
-        if (!has_category_access($member_id, 'forums', strval($topic_details['t_forum_id']))) {
-            return false;
-        }
-    }
-
-    if (addon_installed('unvalidated')) {
-        if (($topic_details['t_validated'] == 0) && (!has_privilege($member_id, 'jump_to_unvalidated'))) {
-            return false;
-        }
     }
 
     return true;
@@ -501,7 +453,8 @@ function can_rename_topic($topic_id, $member_id = null, $topic_details = null)
  */
 function can_merge_posts($topic_id, $member_id = null)
 {
-    $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p', array('*', 'p.id AS post_id'), array('p_topic_id' => $topic_id, 'p_poster' => $member_id), '', 2);
+    $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
+    $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', array('*', 'p.id AS post_id'), array('p_topic_id' => $topic_id, 'p_poster' => $member_id), '', 2);
     return (count($posts) >= 2) && (can_edit('post', $posts[0]['post_id'], $member_id, $posts[0]));
 }
 

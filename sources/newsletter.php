@@ -356,18 +356,28 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw
  * @param  EMAIL $email_address Subscribers email address
  * @param  ID_TEXT $sendid Specially encoded ID of subscriber (begins either 'n' for newsletter subscriber, or 'm' for member - then has normal subscriber/member ID following)
  * @param  SHORT_TEXT $hash Double encoded password hash of subscriber (blank: can not unsubscribe by URL)
+ * @param  ?array $extra_mappings Extra substitution mappings (null: none)
  * @return string The new newsletter message
  */
-function newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $email_address, $sendid, $hash)
+function newsletter_variable_substitution($message, &$subject, $forename, $surname, $name, $email_address, $sendid, $hash, $extra_mappings = null)
 {
+    if ($extra_mappings === null) { // TODO: Change in v11
+        $extra_mappings = array();
+    }
+
     if ($hash == '') {
-        $unsub_url = build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'), null, false, false, true, 'tab__edit');
+        if (get_option('allow_email_from_staff_disable') == '1') {
+            $unsub_url = build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'), null, false, false, true, 'tab__edit');
+        } else {
+            $unsub_url = new Tempcode();
+        }
     } else {
         $unsub_url = build_url(array('page' => 'newsletter', 'type' => 'unsub', 'id' => substr($sendid, 1), 'hash' => $hash), get_module_zone('newsletter'), null, false, false, true);
     }
 
     $member_id = mixed();
-    if (substr($sendid, 0, 1) == 'm') {
+    $prefix = substr($sendid, 0, 1);
+    if (($prefix == 'm') || ($prefix == 'w')) {
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($name);
         $name = $GLOBALS['FORUM_DRIVER']->get_displayname($name);
     }
@@ -381,11 +391,18 @@ function newsletter_variable_substitution($message, $subject, $forename, $surnam
         'email_address' => $email_address,
         'sendid' => $sendid,
         'unsub_url' => $unsub_url,
-    );
+    ) + $extra_mappings;
 
     foreach ($vars as $var => $sub) {
         $message = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $message);
         $message = str_replace('{' . $var . '*}', escape_html(is_object($sub) ? $sub->evaluate() : $sub), $message);
+    }
+
+    foreach ($vars as $var => $sub) {
+        if ($var != 'subject') {
+            $subject = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $subject);
+            $subject = str_replace('{' . $var . '*}', escape_html(is_object($sub) ? $sub->evaluate() : $sub), $subject);
+        }
     }
 
     return $message;

@@ -555,7 +555,7 @@ We have the following which are either unlikely to be useful, or potentially uns
  - Unsupported functionality
   - [tt]unofficial_ecommerce[/tt] -- set to '1' if your forum driver contains usergroup manipulation functions (we don't support this, but wanted to be able to allow those willing to extend forum drivers to use our full eCommerce framework)
  - Workarounds for difficult server configurations
-  - [tt]disable_iconv[/tt] -- set this to '1' if your iconv extension causes PHP to crash
+  - [tt]disable_iconv[/tt] -- set this to '1' if your iconv extension causes PHP to crash, or if it is very slow
   - [tt]disable_mbstring[/tt] -- set this to '1' if your mbstring extension causes PHP to crash
   - [tt]prefer_curl[/tt] -- set this to '1' if the server requires you to not use network sockets directly from PHP and instead use the CuRL extension (although if you need this it is likely you actually need to just configure the proxy server options instead)
   - [tt]real_memory_available_mb[/tt] -- set this to the number of MB GD should consider available for image generation, if PHP is lying about its memory limit
@@ -623,6 +623,8 @@ We have the following which are either unlikely to be useful, or potentially uns
   - [tt]skip_fulltext_sqlserver[/tt] -- set this to '1' if you are using Microsoft SQL Server and want to disable full-text search support. You may do this if you don't like the limitations of SQL Server full-text search (per-table searching, not per-field searching).
   - [tt]mail_theme[/tt] -- set this to the name of a theme to force that theme to be used for all outbound e-mails. This is useful because otherwise the theme of the user triggering the e-mail to be sent will be used.
   - [tt]force_memory_sort__<catalogue-name>[/tt] -- set this to '1' to force an in-memory sort on a particular catalogue (this is slower, but it will sort more accurately by resolving language string fallback and Comcode fully before sorting)
+  - [tt]search_do_days_fallback[/tt] -- set this to '0' if you don't want to re-search without a recency filter if no results were found
+  - [tt]sitemap_orphans_to_pages[/tt] -- set this to '0' if you don't want orphaned pages to be put under the default Pages page grouping of the Sitemap 
  - Performance tuning (positive) [not official options as will break normal expectations of how the system will behave / complicate things]
   - [tt]slow_php_dns[/tt] -- set this to '1' if the server has very slow DNS resolution on the web server's main network interface, and therefore to do DNS resolution via the command line instead
   - [tt]lots_of_data_in_*[/tt] -- set this to '1', with '*' replaced with a database table name, if you want the Selectcode mechanism to work with recursive DB lookups rather than one huge flat lookup
@@ -658,6 +660,7 @@ We have the following which are either unlikely to be useful, or potentially uns
  - Performance tuning (negative)
   - [tt]flush_cache_on_action[/tt] -- set this to '1' to automatically flush the static cache when actions are performed
   - [tt]allow_admin_in_other_zones[/tt] -- set this to '1' if you want to allow admin and CMS modules to run in other zones (small performance cost)
+  - [tt]memory_limit_simulate_hard[/tt] -- set this to '1' if you do not want the memory limit to be disableable; useful for testing compatibility with hosts that have low limits
  - Easter eggs
   - [tt]stupidity_mode[/tt] -- set to [tt]leet[/tt] or [tt]bork[/tt], for a fun April Fools-style Comcode joke (clear the Comcode cache after you're done though)
  - Experimental functionality

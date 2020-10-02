@@ -87,7 +87,7 @@ function find_first_unread_url($id)
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE id<' . strval($first_unread_id) . ' AND ' . cns_get_topic_where($id), false, true);
         $start = intval(floor(floatval($before) / floatval($max))) * $max;
     } else {
-        $first_unread_id = -2;
+        $first_unread_id = null;
 
         // What page is it on?
         $before = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . cns_get_topic_where($id), false, true);
@@ -106,7 +106,7 @@ function find_first_unread_url($id)
     }
     $_redirect = build_url($map, '_SELF', null, true);
     $redirect = $_redirect->evaluate();
-    if ($first_unread_id > 0) {
+    if ($first_unread_id !== null) {
         $redirect .= '#post_' . strval($first_unread_id);
     } else {
         $redirect .= '#first_unread';
@@ -299,16 +299,13 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
         $forum_id = $topic_info['t_forum_id'];
         if (!is_null($forum_id)) {
             if ($check_perms) {
-                if (!has_category_access(get_member(), 'forums', strval($forum_id))) {
+                if (!cns_may_access_topic($topic_id, get_member(), $topic_info, false)) {
                     access_denied('CATEGORY_ACCESS_LEVEL');
                 }
             }
         } else {
             // It must be a private topic. Do we have access?
-            $from = $topic_info['t_pt_from'];
-            $to = $topic_info['t_pt_to'];
-
-            if (($from != get_member()) && ($to != get_member()) && (!cns_has_special_pt_access($topic_id)) && (!has_privilege(get_member(), 'view_other_pt'))) {
+            if (!cns_may_access_topic($topic_id, get_member(), $topic_info, false)) {
                 access_denied('PRIVILEGE', 'view_other_pt');
             }
 
@@ -469,19 +466,21 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
                     $p = $_postdetailss[$_postdetails['p_parent_id']];
 
                     // Load post
-                    $_p = db_map_restrict($p, array('id', 'p_post'));
+                    $_p = db_map_restrict($p, array('id', 'p_post', 'p_poster_name_if_guest'));
                     $p['message'] = get_translated_tempcode('f_posts', $_p, 'p_post', $GLOBALS['FORUM_DB']);
                 } else { // Drat, we need to load it
                     $_p = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*'), array('id' => $_postdetails['p_parent_id']), '', 1);
                     if (array_key_exists(0, $_p)) {
-                        $p = db_map_restrict($_p[0], array('id', 'p_post'));
+                        $p = db_map_restrict($_p[0], array('id', 'p_post', 'p_poster_name_if_guest'));
                         $p['message'] = get_translated_tempcode('f_posts', $p, 'p_post', $GLOBALS['FORUM_DB']);
                     }
                 }
-                $temp = $_postdetails['message'];
-                $_postdetails['message'] = new Tempcode();
-                $_postdetails['message'] = do_template('COMCODE_QUOTE_BY', array('_GUID' => '4521bfe295b1834460f498df488ee7cb', 'SAIDLESS' => false, 'BY' => $p['p_poster_name_if_guest'], 'CONTENT' => $p['message']));
-                $_postdetails['message']->attach($temp);
+                if ($p !== null) {
+                    $temp = $_postdetails['message'];
+                    $_postdetails['message'] = new Tempcode();
+                    $_postdetails['message'] = do_template('COMCODE_QUOTE_BY', array('_GUID' => '4521bfe295b1834460f498df488ee7cb', 'SAIDLESS' => false, 'BY' => $p['p_poster_name_if_guest'], 'CONTENT' => $p['message']));
+                    $_postdetails['message']->attach($temp);
+                }
             }
 
             // Spacer posts may have a better first post put in place
@@ -773,8 +772,26 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         }
     }
 
-    if ((array_key_exists('may_pt_members', $topic_info)) && ($may_reply_private_post) && ($_postdetails['poster'] != get_member()) && ($_postdetails['poster'] != $GLOBALS['CNS_DRIVER']->get_guest_id()) && (cns_may_whisper($_postdetails['poster'])) && (get_option('overt_whisper_suggestion') == '1')) {
+    $may_pt_members = array_key_exists('may_pt_members', $topic_info);
+    $may_inline_pp = $may_reply_private_post;
+    if (get_option('inline_pp_advertise') == '0') {
         $whisper_type = (get_option('inline_pp_advertise') == '0') ? 'new_pt' : 'whisper';
+    } elseif (($may_inline_pp) && ($may_pt_members)) {
+        $whisper_type = 'whisper';
+    } elseif ($may_inline_pp) {
+        $whisper_type = 'new_post';
+    } elseif ($may_pt_members) {
+        $whisper_type = 'new_pt';
+    } else {
+        $whisper_type = null;
+    }
+    if (
+        ($whisper_type !== null) &&
+        ($_postdetails['poster'] != get_member()) &&
+        ($_postdetails['poster'] != $GLOBALS['CNS_DRIVER']->get_guest_id()) &&
+        (cns_may_whisper($_postdetails['poster'])) &&
+        (get_option('overt_whisper_suggestion') == '1')
+    ) {
         $action_url = build_url(array('page' => 'topics', 'type' => $whisper_type, 'id' => $_postdetails['topic_id'], 'quote' => $_postdetails['id'], 'intended_solely_for' => $_postdetails['poster']), get_module_zone('topics'));
         $_title = do_lang_tempcode('WHISPER');
         $_title_full = new Tempcode();
@@ -811,7 +828,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         if ($rendering_context == 'tickets') {
             $map['redirect'] = static_evaluate_tempcode(build_url(array('page' => 'tickets', 'type' => 'ticket', 'id' => get_param_string('id')), get_module_zone('tickets'), null, false, false, false, '_top'));
         } else {
-            $map['redirect'] = get_self_url(true);
+            $map['redirect'] = $GLOBALS['FORUM_DRIVER']->topic_url($_postdetails['topic_id'], '', true);
         }
         $test = get_param_string('kfs' . (is_null($topic_info['forum_id']) ? '' : strval($topic_info['forum_id'])), null, true);
         if (($test !== null) && ($test !== '0')) {
@@ -860,7 +877,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
     }
 
     if ($rendering_context != 'tickets') {
-        if ((addon_installed('points')) && (!is_guest()) && (!is_guest($_postdetails['poster'])) && (has_privilege($_postdetails['poster'], 'use_points'))) {
+        if ((addon_installed('points')) && (!is_guest()) && (!is_guest($_postdetails['poster'])) && ($_postdetails['poster'] != get_member()) && (has_privilege($_postdetails['poster'], 'use_points'))) {
             require_css('points');
             $action_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $_postdetails['poster']), get_module_zone('points'));
             $_title = do_lang_tempcode('__POINTS_THANKS');

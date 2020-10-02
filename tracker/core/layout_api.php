@@ -764,11 +764,9 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 		}
 
 		# Changelog Page
-		/* Composr - disabled for simplicity
 		if( access_has_project_level( config_get( 'view_changelog_threshold', $t_current_project ) ) ) {
-			layout_sidebar_menu( 'changelog_page.php', 'changelog_link', 'fa-retweet', $p_active_sidebar_page );
+			layout_sidebar_menu( 'changelog_page.php', 'changelog_link', 'fa-retweet', $p_active_sidebar_page, /*Composr - provide some link structure*/'issues' );
 		}
-		*/
 
 		# Roadmap Page
 		/* Composr - disabled for simplicity

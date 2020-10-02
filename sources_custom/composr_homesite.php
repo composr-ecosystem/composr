@@ -103,6 +103,40 @@ function is_release_discontinued($version)
     return (preg_match('#^(' . implode('|', array_map('preg_quote', $discontinued)) . ')($|\.)#', $version) != 0);
 }
 
+function find_version_download_fast($version_pretty, $type_wanted = 'manual', $version_must_be_newer_than = null)
+{
+    if ($GLOBALS['DEV_MODE']) {
+        $t = 'Composr version 1337';
+
+        $myrow = array(
+            'd_id' => 123,
+            'num_downloads' => 321,
+            'name' => $t . '(' . $type_wanted . ')',
+            'file_size' => 12345,
+        );
+    } else {
+        $sql = 'SELECT d.num_downloads,d.name,d.file_size,d.id AS d_id FROM ' . get_table_prefix() . 'download_downloads d';
+        if (strpos(get_db_type(), 'mysql') !== false) {
+            $sql .= ' FORCE INDEX (downloadauthor)';
+        }
+        $sql .= ' WHERE ' . db_string_equal_to('author', 'ocProducts') . ' AND validated=1';
+        $like = 'Composr Version ';
+        $like .= (($version_pretty === null) ? '%' : $version_pretty);
+        if ($type_wanted != '') {
+            $like .= ' (' . $type_wanted . ')';
+        }
+        $sql .= ' AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like($like) . '\'';
+        $sql .= ' ORDER BY add_date DESC';
+        $rows = $GLOBALS['SITE_DB']->query($sql, 1, null, false, false, array('name' => 'SHORT_TRANS'));
+        if (!array_key_exists(0, $rows)) {
+            return null; // Shouldn't happen, but let's avoid transitional errors
+        }
+
+        $myrow = $rows[0];
+    }
+    return $myrow;
+}
+
 function find_version_download($version_pretty, $type_wanted = 'manual')
 {
     global $DOWNLOAD_ROWS;
@@ -278,7 +312,7 @@ function server__public__get_tracker_issue_titles($ids, $version = null)
 
 function server__public__get_tracker_categories()
 {
-    $categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0'));
+    $categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0 ORDER BY name'));
     $categories = array_unique($categories);
     echo json_encode($categories);
 }
@@ -291,9 +325,9 @@ function server__create_tracker_issue($version_dotted, $tracker_title, $tracker_
 
 function server__create_tracker_post($tracker_id, $tracker_comment_message, $version_dotted = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
 {
-    // If the last 3 parameters are passed, this will update the issue along with making the post
+    // If the last 4 parameters are passed, this will update the issue along with making the post
     require_code('mantis');
-    if (($version_dotted === null) && ($tracker_severity === null) && ($tracker_category === null) && ($tracker_project === null)) {
+    if (($version_dotted !== null) && ($tracker_severity !== null) && ($tracker_category !== null) && ($tracker_project !== null)) {
         update_tracker_issue(intval($tracker_id), $version_dotted, $tracker_severity, $tracker_category, $tracker_project);
     }
     echo strval(create_tracker_post(intval($tracker_id), $tracker_comment_message));

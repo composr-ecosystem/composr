@@ -22,6 +22,8 @@ class css_and_js_test_set extends cms_test_case
 {
     public function setUp()
     {
+        parent::setUp();
+
         if (php_function_allowed('set_time_limit')) {
             @set_time_limit(0);
         }
@@ -43,8 +45,6 @@ class css_and_js_test_set extends cms_test_case
         $WEBSTANDARDS_EXT_FILES = true;
         $WEBSTANDARDS_MANUAL = false;
         $MAIL_MODE = false;
-
-        parent::setUp();
     }
 
     public function testJavaScript()

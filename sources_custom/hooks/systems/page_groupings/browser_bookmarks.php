@@ -28,7 +28,7 @@ class Hook_page_groupings_browser_bookmarks
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('tools', 'menu/_generic_admin/tool', array('admin_generate_bookmarks', array(), get_page_zone('admin_generate_bookmarks')), make_string_tempcode('Generate bookmarks.html for browser')),
+            array('tools', 'menu/_generic_admin/tool', array('admin_generate_bookmarks', array(), get_page_zone('admin_generate_bookmarks', false, 'adminzone', 'minimodules')), make_string_tempcode('Generate bookmarks.html for browser')),
         );
     }
 }

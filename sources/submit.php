@@ -147,6 +147,11 @@ function give_submit_points($type, $member_id = null)
         $member_id = get_member();
     }
     if ((!is_guest($member_id)) && (addon_installed('points'))) {
+        // FUDGE
+        if ($type == 'ADD_NEWS_BLOG') {
+            $type = 'ADD_NEWS';
+        }
+
         $points = get_option('points_' . $type, true);
         if (is_null($points)) {
             return '';

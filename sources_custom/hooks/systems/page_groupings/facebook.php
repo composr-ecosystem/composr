@@ -28,7 +28,7 @@ class Hook_page_groupings_facebook
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('setup', 'menu/facebook', array('facebook_oauth', array(), get_page_zone('facebook_oauth')), do_lang_tempcode('facebook:FACEBOOK_SYNDICATION'), 'facebook:DOC_FACEBOOK_SYNDICATION'),
+            array('setup', 'menu/facebook', array('facebook_oauth', array(), get_page_zone('facebook_oauth', false, 'adminzone', 'minimodules')), do_lang_tempcode('facebook:FACEBOOK_SYNDICATION'), 'facebook:DOC_FACEBOOK_SYNDICATION'),
         );
     }
 }

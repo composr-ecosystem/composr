@@ -488,11 +488,11 @@ function sitemap_script_saving()
     // Build a map of every page link we are setting permissions for
     $map = array();
     foreach (array_merge($_GET, $_POST) as $i => $page_link) {
-        if (@get_magic_quotes_gpc()) {
-            $page_link = stripslashes($page_link);
-        }
-
         if (substr($i, 0, 4) == 'map_') {
+            if (@get_magic_quotes_gpc()) {
+                $page_link = stripslashes($page_link);
+            }
+
             $map[intval(substr($i, 4))] = $page_link;
         }
     }
@@ -562,12 +562,13 @@ function sitemap_script_saving()
                 $zone = $matches[1];
                 $page = $matches[2];
 
-                $node = retrieve_sitemap_node($page_link);
-                if (!is_null($node)) {
-                    $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
-                } else {
-                    $privilege_page = $page;
+                $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS);
+
+                if ($node === null) {
+                    fatal_exit('Could not lookup node for ' . $page_link);
                 }
+
+                $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
                 $overridable_privileges = ($node['content_type'] == 'comcode_page') ? array() : _get_overridable_privileges_for_privilege_page($privilege_page);
 
                 // Insertion
@@ -605,12 +606,8 @@ function sitemap_script_saving()
                 $zone = $matches[1];
                 $page = $matches[2];
 
-                $node = retrieve_sitemap_node($page_link);
-                if (!is_null($node)) {
-                    $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
-                } else {
-                    $privilege_page = $page;
-                }
+                $node = retrieve_sitemap_node($page_link, null, null, null, null, SITEMAP_GEN_NO_EMPTY_PAGE_LINKS);
+                $privilege_page = isset($node['privilege_page']) ? $node['privilege_page'] : $page;
 
                 $overridable_privileges = _get_overridable_privileges_for_privilege_page($privilege_page);
 

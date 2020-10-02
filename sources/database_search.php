@@ -955,7 +955,7 @@ function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_a
  * @param  ?ID_TEXT $meta_type The META type used by our content (null: Cannot support META search)
  * @param  ?ID_TEXT $meta_id_field The name of the field that retrieved META IDs will relate to (null: Cannot support META search)
  * @param  string $content Search string
- * @param  boolean $boolean_search Whether to do a boolean search.
+ * @param  boolean $boolean_search Whether to do a boolean search
  * @param  ID_TEXT $boolean_operator Boolean operator
  * @set OR AND
  * @param  boolean $only_search_meta Whether to only do a META (tags) search
@@ -1041,12 +1041,12 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
     }
 
     // Defined-keywords/tags search
-    if ((get_param_integer('keep_just_show_query', 0) == 0) && (!is_null($meta_type)) && ($content != '')) {
-        if (strpos($content, '"') !== false || strpos($content, '+') !== false || strpos($content, '-') !== false || strpos($content, ' ') !== false) {
+    if ((get_param_integer('keep_just_show_query', 0) == 0) && (!is_null($meta_type)) && ($content != '') && (!$only_titles)) {
+        if (strpos($content, '"') !== false || preg_match('#(^|\s)-#', $content) != 0 || strpos($content, ' ') !== false) {
             list($meta_content_where) = build_content_where($content, $boolean_search, $boolean_operator, true);
-            $meta_content_where = '(' . $meta_content_where . ' OR ' . db_string_equal_to('?', $content) . ')';
+            $meta_content_where = $meta_content_where; // A full-text search on keywords
         } else {
-            $meta_content_where = db_string_equal_to('?', $content);
+            $meta_content_where = db_string_equal_to('?', $content); // Consider it a simple keyword search
         }
         if (multi_lang_content()) {
             $keywords_where = preg_replace('#\?#', 'tm.text_original', $meta_content_where);
@@ -1070,11 +1070,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                     $extra_join .= ' JOIN ' . $db->get_table_prefix() . 'translate t' . strval($i) . ' ON t' . strval($i) . '.id=' . $field . ' AND ' . db_string_equal_to('t' . strval($i) . '.language', user_lang());
                 }
             }
-            $_keywords_query = $table_clause . ' JOIN ' . $db->get_table_prefix() . 'seo_meta_keywords m ON (' . db_string_equal_to('m.meta_for_type', $meta_type) . ' AND ' . $meta_join . ')';
+            $keywords_join = ' JOIN ' . $db->get_table_prefix() . 'seo_meta_keywords m ON (' . db_string_equal_to('m.meta_for_type', $meta_type) . ' AND ' . $meta_join . ')';
             if (multi_lang_content()) {
-                $_keywords_query .= ' JOIN ' . $db->get_table_prefix() . 'translate tm ON tm.id=m.meta_keyword AND ' . db_string_equal_to('tm.language', user_lang());
+                $keywords_join .= ' JOIN ' . $db->get_table_prefix() . 'translate tm ON tm.id=m.meta_keyword AND ' . db_string_equal_to('tm.language', user_lang());
             }
-            $_keywords_query .= $extra_join;
+            $_keywords_query = $table_clause . $keywords_join . $extra_join;
             $_keywords_query .= ' WHERE ' . $keywords_where;
             $_keywords_query .= (($where_clause != '') ? (' AND ' . $where_clause) : '');
 
@@ -1157,7 +1157,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                     if ((!$only_titles) || ($i == 0)) {
                         $where_clause_2 = preg_replace('#\?#', 't' . strval($i) . '.text_original', $content_where);
                         $where_clause_3 = $where_clause;
-                        if (($table == 'f_members') && (substr($field, 0, 6) == 'field_') && (db_has_subqueries($db->connection_read))) {
+                        if (($table == 'f_members') && (substr($field, 0, 6) == 'field_') && (db_has_subqueries($db->connection_read))) { // HACKHACK
                             $where_clause_3 .= (($where_clause == '') ? '' : ' AND ') . 'NOT EXISTS (SELECT * FROM ' . $db->get_table_prefix() . 'f_cpf_perms cpfp WHERE cpfp.member_id=r.id AND cpfp.field_id=' . substr($field, 6) . ' AND cpfp.guest_view=0)';
                         }
 
@@ -1168,6 +1168,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                         }
 
                         $_table_clause = $orig_table_clause . $tc_add;
+
+                        if (preg_match('#^f\d+\.cv_value$#', $field) != 0) {
+                            // Needed to make the where condition indexed
+                            $_table_clause = str_replace(' LEFT JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', $_table_clause);
+                        }
 
                         $where_alternative_matches[] = array($where_clause_2, $where_clause_3, $_select, $_table_clause, 't' . strval($i));
                     } else {
@@ -1195,6 +1200,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                         }
 
                         $_table_clause = $orig_table_clause;
+
+                        if (preg_match('#^f\d+\.cv_value$#', $field) != 0) {
+                            // Needed to make the where condition indexed
+                            $_table_clause = str_replace(' LEFT JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage l', $_table_clause);
+                        }
 
                         $where_alternative_matches[] = array($where_clause_2, $where_clause_3, $_select, $_table_clause, null);
                     }
@@ -1451,7 +1461,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             }
             if (get_param_integer('keep_just_show_query', 0) == 1) {
                 safe_ini_set('ocproducts.xss_detect', '0');
-                header('Content-type: text/plain; charset=' . get_charset());
+                @header('Content-type: text/plain; charset=' . get_charset());
                 exit($query);
             }
 
@@ -1499,9 +1509,12 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             }
         } else {
             foreach ($t_rows as $t_row) {
-                unset($t_row['contextual_relevance']);
+                $t_row_copy = $t_row;
+                unset($t_row_copy['contextual_relevance']);
                 foreach ($t_rows_new as $_t_row) {
-                    if (($_t_row == $t_row) || ((array_key_exists('id', $t_row)) && (array_key_exists('id', $_t_row)) && (!array_key_exists('_primary_id', $t_row)) && (!array_key_exists('_primary_id', $_t_row)) && ($t_row['id'] == $_t_row['id'])) || ((array_key_exists('_primary_id', $t_row)) && (array_key_exists('_primary_id', $_t_row)) && ($t_row['_primary_id'] == $_t_row['_primary_id']))) {
+                    $_t_row_copy = $_t_row;
+                    unset($_t_row_copy['contextual_relevance']);
+                    if ($_t_row_copy == $t_row_copy) {
                         continue 2;
                     }
                 }

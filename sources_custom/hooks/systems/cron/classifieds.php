@@ -79,6 +79,8 @@ class Hook_cron_classifieds
                     dispatch_notification('classifieds__' . $entry['c_name'], '', $subject_line, $mail, array($member_id), A_FROM_SYSTEM_PRIVILEGED);
                 }
             }
+
+            $start += 1000;
         } while (count($entries) == 1000);
 
         set_value('last_classified_refresh', strval($time));

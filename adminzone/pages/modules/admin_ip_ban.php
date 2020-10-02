@@ -261,13 +261,14 @@ class Module_admin_ip_ban
     public function actual()
     {
         require_code('failure');
+        require_code('type_sanitisation');
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT ip,i_descrip FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_until IS NULL'/*.' OR i_ban_until>'.strval(time())*/, null, null, false, true);
         $old_bans = collapse_1d_complexity('ip', $rows);
         $bans = post_param_string('bans');
         $_bans = explode("\n", $bans);
         foreach ($old_bans as $ban) {
-            if (preg_match('#^' . preg_quote($ban, '#') . '(\s|$)#m', $bans) == 0) {
+            if (preg_match('#^\s*' . preg_quote($ban, '#') . '(\s|$)#m', $bans) == 0) {
                 remove_ip_ban($ban);
             }
         }
@@ -276,9 +277,12 @@ class Module_admin_ip_ban
             if (trim($ban) == '') {
                 continue;
             }
-            preg_match('#^([^\s]+)(.*)$#', $ban, $matches);
-            $ip = $matches[1];
-            if (preg_match('#^[a-f0-9\.\*:]+$#U', $ip) == 0) {
+            if (preg_match('#^\s*([\d\.:A-F\*]+)(.*)$#i', $ban, $matches) == 0) {
+                $ip = $ban; // Will fail
+            } else {
+                $ip = $matches[1];
+            }
+            if (!is_valid_ip($ip, true)) {
                 attach_message(do_lang_tempcode('IP_ADDRESS_NOT_VALID', escape_html($ip)), 'warn');
             } else {
                 if (!in_array($ip, $old_bans)) {
@@ -292,7 +296,7 @@ class Module_admin_ip_ban
                     }
                 } else {
                     $GLOBALS['SITE_DB']->query_update('banned_ip', array(
-                        'i_descrip' => isset($matches[2]) ? $matches[2] : '',
+                        'i_descrip' => isset($matches[2]) ? trim($matches[2]) : '',
                     ), array('ip' => $ip), '', 1);
                 }
             }
@@ -302,7 +306,7 @@ class Module_admin_ip_ban
         $unbannable_already = collapse_1d_complexity('ip', $rows);
         $unbannable = post_param_string('unbannable');
         foreach ($unbannable_already as $ip) {
-            if (preg_match('#^' . preg_quote($ip, '#') . '(\s|$)#m', $unbannable) == 0) {
+            if (preg_match('#^\s*' . preg_quote($ip, '#') . '(\s|$)#m', $unbannable) == 0) {
                 $GLOBALS['SITE_DB']->query_delete('unbannable_ip', array('ip' => $ip), '', 1);
                 log_it('MADE_IP_BANNABLE', $ip);
             }
@@ -312,21 +316,24 @@ class Module_admin_ip_ban
             if (trim($str) == '') {
                 continue;
             }
-            preg_match('#^([^\s]+)(.*)$#', $str, $matches);
-            $ip = $matches[1];
-            if (preg_match('#^[a-f0-9\.]+$#U', $ip) == 0) {
-                attach_message(do_lang_tempcode('IP_ADDRESS_NOT_VALID_MAKE_UNBANNABLE', escape_html($str)), 'warn');
+            if (preg_match('#^\s*([\d\.:A-F\*]+)(.*)$#i', $str, $matches) == 0) {
+                $ip = $str; // Will fail
+            } else {
+                $ip = $matches[1];
+            }
+            if (!is_valid_ip($ip, true)) {
+                attach_message(do_lang_tempcode('IP_ADDRESS_NOT_VALID_MAKE_UNBANNABLE', escape_html($ip)), 'warn');
             } else {
                 if (!in_array($ip, $unbannable_already)) {
                     $GLOBALS['SITE_DB']->query_insert('unbannable_ip', array(
                         'ip' => $ip,
-                        'note' => isset($matches[2]) ? $matches[2] : '',
+                        'note' => isset($matches[2]) ? trim($matches[2]) : '',
                     ));
                     log_it('MADE_IP_UNBANNABLE', $matches[1]);
                     $unbannable_already[] = $ip;
                 } else {
                     $GLOBALS['SITE_DB']->query_update('unbannable_ip', array(
-                        'note' => isset($matches[2]) ? $matches[2] : '',
+                        'note' => isset($matches[2]) ? trim($matches[2]) : '',
                     ), array('ip' => $ip), '', 1);
                 }
             }

@@ -45,6 +45,15 @@ class Module_admin_messaging
      */
     public function uninstall()
     {
+        if (get_forum_type() == 'cns') {
+            require_lang('messaging');
+            $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_parent_forum' => db_get_first_id(), 'f_name' => do_lang('MESSAGING_FORUM_NAME', null, null, null, get_site_default_lang())));
+            if ($forum_id !== null) {
+                require_code('cns_forums_action');
+                require_code('cns_forums_action2');
+                cns_delete_forum($forum_id);
+            }
+        }
     }
 
     /**
@@ -55,7 +64,7 @@ class Module_admin_messaging
      */
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
-        if ((get_forum_type() == 'cns') && (!running_script('upgrader'))) {
+        if (get_forum_type() == 'cns') {
             $moderator_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
             $staff_access = array();
             foreach ($moderator_groups as $id) {
@@ -66,7 +75,7 @@ class Module_admin_messaging
             require_code('cns_forums_action2');
             $GLOBALS['CNS_DRIVER'] = $GLOBALS['FORUM_DRIVER'];
             require_lang('messaging');
-            cns_make_forum(do_lang('MESSAGING_FORUM_NAME'), '', db_get_first_id() + 1, $staff_access, db_get_first_id());
+            cns_make_forum(do_lang('MESSAGING_FORUM_NAME', null, null, null, get_site_default_lang()), '', db_get_first_id() + 1, $staff_access, db_get_first_id());
         }
     }
 

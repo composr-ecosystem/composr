@@ -10,7 +10,7 @@
 {$THEME_WIZARD_COLOR,#ffa500,commandr_notification_border,100% FFA500}
 {$THEME_WIZARD_COLOR,#444400,commandr_notification_background,100% 444400}
 {$THEME_WIZARD_COLOR,#ffffaa,commandr_notification_color,100% FFFFAA}
-{$THEME_WIZARD_COLOR,#39669f,commandr_directory_listing,100% 39669F}
+{$THEME_WIZARD_COLOR,#628dc6,commandr_directory_listing,100% 628DC6}
 {$THEME_WIZARD_COLOR,#39ff9f,commandr_file_listing,100% 39FF9F}
 
 #command_line { /* This wraps the Commandr module/window as a whole */

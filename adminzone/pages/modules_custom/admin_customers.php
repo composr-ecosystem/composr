@@ -730,6 +730,9 @@ class Module_admin_customers
     {
         $username = post_param_string('member_username');
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
+        if (($member_id === null) || (is_guest($member_id))) {
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
+        }
         $amount = post_param_integer('amount');
 
         require_code('mantis');

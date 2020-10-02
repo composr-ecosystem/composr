@@ -27,7 +27,7 @@
  */
 function init__symbols()
 {
-    global $BLOCKS_CACHE, $PAGES_CACHE, $PANELS_CACHE, $EXTRA_SYMBOLS, $PREPROCESSABLE_SYMBOLS, $CANONICAL_URL, $STATIC_TEMPLATE_TEST_MODE;
+    global $BLOCKS_CACHE, $PAGES_CACHE, $PANELS_CACHE, $EXTRA_SYMBOLS, $PREPROCESSABLE_SYMBOLS, $CANONICAL_URL, $STATIC_TEMPLATE_TEST_MODE, $SYMBOLS2_CAUSE;
     $BLOCKS_CACHE = array();
     $PAGES_CACHE = array();
     $PANELS_CACHE = array();
@@ -48,6 +48,7 @@ function init__symbols()
     $EXTRA_SYMBOLS = null;
     $CANONICAL_URL = null;
     $STATIC_TEMPLATE_TEST_MODE = false;
+    $SYMBOLS2_CAUSE = array();
 }
 
 /**
@@ -63,6 +64,8 @@ function init__symbols()
  */
 function ecv($lang, $escaped, $type, $name, $param)
 {
+    $name = trim($name);
+
     // SYMBOLS...
     if ($type === TC_SYMBOL) {
         // Built-in
@@ -114,6 +117,9 @@ function ecv($lang, $escaped, $type, $name, $param)
                 } else {
                     require_code('symbols2');
                     if (function_exists('ecv2_' . $name)) {
+                        global $SYMBOLS2_CAUSE;
+                        $SYMBOLS2_CAUSE[] = $name;
+
                         $value = call_user_func('ecv2_' . $name, $lang, $escaped, $param); // A constant?
                     }
                     // Error :-(
@@ -1748,7 +1754,7 @@ function ecv_HEADER_TEXT($lang, $escaped, $param)
         $comcodeless = strip_comcode($SHORT_TITLE); // This is not HTML
 
         // Strip 'Welcome to' off if it's there
-        $value = cms_preg_replace_safe('#' . preg_quote(do_lang('WELCOME_TO_STRIPPABLE') . ' ' . get_site_name(), '#') . '([^-]+\s*-\s*)?#', '', $comcodeless);
+        $value = cms_preg_replace_safe('#' . preg_quote(do_lang('WELCOME_TO_STRIPPABLE') . ' ' . get_site_name(), '#') . '([^\-]+\s*-\s*)?#', '', $comcodeless);
 
         // Strip site name off it it's there (it'll be put on in the templates, so we don't want it twice)
         $stub = get_site_name() . ' - ';
@@ -2264,7 +2270,7 @@ function ecv_CPF_VALUE($lang, $escaped, $param)
             $custom_fields = cns_get_all_custom_fields_match_member(isset($param[1]) ? intval($param[1]) : get_member());
             foreach ($custom_fields as $custom_field) {
                 if ($custom_field['FIELD_ID'] == $param[0]) {
-                    $_value = $custom_field['RAW'];
+                    $_value = $custom_field[empty($param[2]) ? 'RAW' : 'RENDERED'];
                 }
             }
         } elseif ((substr($param[0], 0, 2) == 'm_') && (stripos($param[0], 'hash') === false) && (stripos($param[0], 'salt') === false)) {
@@ -2280,7 +2286,7 @@ function ecv_CPF_VALUE($lang, $escaped, $param)
                     $custom_fields = cns_get_all_custom_fields_match_member(isset($param[1]) ? intval($param[1]) : get_member());
                     foreach ($custom_fields as $custom_field) {
                         if ($custom_field['FIELD_ID'] == strval($cpf_id)) {
-                            $_value = $custom_field['RAW'];
+                            $_value = $custom_field[empty($param[2]) ? 'RAW' : 'RENDERED'];
                         }
                     }
                 }
@@ -2891,7 +2897,7 @@ function ecv_NOTIFICATIONS_AVAILABLE($lang, $escaped, $param)
 
         require_code('notifications');
 
-        if (notification_locked_down($notification_code)) {
+        if (notification_locked_down($notification_code) === 0) {
             $value = '0';
         }
     }
@@ -3045,6 +3051,10 @@ function ecv_BLOCK($lang, $escaped, $param)
             $param_2 = block_params_str_to_arr($param[0], true);
         } else {
             $param_2 = $param;
+        }
+
+        foreach ($param_2 as &$_param) {
+            $_param = preg_replace('#^\s*([^\s]+)\s*=#', '$1=', $_param);
         }
 
         if (in_array('defer=1', $param_2)) {
@@ -4763,7 +4773,7 @@ function ecv_ADDON_INSTALLED($lang, $escaped, $param)
     $value = '';
 
     if ((isset($param[0])) && (!running_script('install'))) {
-        $value = (addon_installed($param[0], (isset($param[1])) && ($param[1] == '1'))) ? '1' : '0';
+        $value = (addon_installed(trim($param[0]), (isset($param[1])) && ($param[1] == '1'))) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -5093,6 +5103,26 @@ function ecv_RATING($lang, $escaped, $param)
             $cache_rating[$cache_key] = $value;
         }
     }
+
+    if ($escaped !== array()) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements).
+ * @param  array $escaped Array of escaping operations.
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result.
+ */
+function ecv_TAPATALK($lang, $escaped, $param)
+{
+    $value = (defined('IN_MOBIQUO') ? '1' : '0');
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);

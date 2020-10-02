@@ -272,7 +272,7 @@ class CMSAccountWrite
         }
 
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-        if (!is_null($member_id)) {
+        if (($member_id !== null) && (!is_guest($member_id))) {
             // Has to go through full process...
 
             $result = $this->lost_password($member_id);
@@ -350,7 +350,7 @@ class CMSAccountWrite
         // Start the reset process by generating a reset code
         $code = mt_rand(0, mt_getrandmax());
         $GLOBALS['FORUM_DB']->query_update('f_members', array('m_password_change_code' => strval($code)), array('id' => $member_id), '', 1);
-        log_it('LOST_PASSWORD', strval($member), strval($code));
+        log_it('LOST_PASSWORD', strval($member_id), strval($code));
 
         // Send confirm mail
         $zone = get_module_zone('lost_password');

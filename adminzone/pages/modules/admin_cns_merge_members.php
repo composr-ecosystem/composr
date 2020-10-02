@@ -164,10 +164,6 @@ class Module_admin_cns_merge_members
         $from_username = post_param_string('from');
         $from_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($from_username);
 
-        if (is_guest($from_id)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-
         if ((is_null($from_id)) || (is_guest($from_id))) {
             warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($from_username)));
         }

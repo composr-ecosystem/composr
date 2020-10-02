@@ -63,11 +63,14 @@ class Block_main_unslider
         require_css('unslider');
 
         $pages = explode(',', isset($map['pages']) ? $map['pages'] : 'slide1,slide2,slide3,slide4,slide5,slide6');
-        $width = isset($map['width']) ? $map['width'] : '100%';
-        if ($width == '100%') {
+        $width = isset($map['width']) ? $map['width'] : '';
+        if (($width == '100%') || ($width == 'auto')) {
             $width = '';
         }
         $height = isset($map['height']) ? $map['height'] : '';
+        if ($height == 'auto') {
+            $height = '';
+        }
         if (is_numeric($width)) {
             $width .= 'px';
         }
@@ -101,7 +104,7 @@ class Block_main_unslider
             'PAGES' => $pages,
             'WIDTH' => $width,
             'HEIGHT' => $height,
-            'FLUID' => (substr($width, -1) == '%'),
+            'FLUID' => (substr($width, -1) == '%') || ($width == ''),
             'BUTTONS' => $buttons,
             'DELAY' => $delay,
             'SPEED' => $speed,

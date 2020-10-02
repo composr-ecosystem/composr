@@ -439,7 +439,7 @@ class Module_admin_ecommerce_logs
                 $username = post_param_string('username', '');
                 if ($username != '') {
                     $_member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-                    if ($_member_id !== null) {
+                    if (($_member_id !== null) && (!is_guest($_member_id))) {
                         $member_id = $_member_id;
                     }
                 }
@@ -484,7 +484,7 @@ class Module_admin_ecommerce_logs
                 $username = post_param_string('username', '');
                 if ($username != '') {
                     $_member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-                    if ($_member_id !== null) {
+                    if (($_member_id !== null) && (!is_guest($_member_id))) {
                         $member_id = $_member_id;
                     }
                 }

@@ -767,7 +767,7 @@ class Module_downloads
             }
         }
 
-        $may_download = has_privilege(get_member(), 'download', 'downloads', array(strval($myrow['category_id'])));
+        $may_download = has_privilege(get_member(), 'download', 'downloads', array('downloads', strval($myrow['category_id'])));
 
         $download_url = generate_dload_url($id, $myrow['url_redirect'] != '');
 

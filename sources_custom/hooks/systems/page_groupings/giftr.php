@@ -28,7 +28,7 @@ class Hook_page_groupings_giftr
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('setup', 'menu/giftr', array('admin_giftr', array(), get_page_zone('admin_giftr')), do_lang_tempcode('giftr:GIFTR_TITLE'), 'giftr:DOC_GIFTR'),
+            array('setup', 'menu/giftr', array('admin_giftr', array(), get_page_zone('admin_giftr', false, 'adminzone')), do_lang_tempcode('giftr:GIFTR_TITLE'), 'giftr:DOC_GIFTR'),
         );
     }
 }

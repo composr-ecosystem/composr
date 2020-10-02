@@ -107,6 +107,7 @@ class Hook_addon_registry_welcome_emails
             'sources/hooks/systems/preview/cns_welcome_email.php',
             'sources/hooks/systems/commandr_fs/welcome_emails.php',
             'sources/hooks/systems/resource_meta_aware/welcome_email.php',
+            'sources/cns_welcome_emails.php',
         );
     }
 }

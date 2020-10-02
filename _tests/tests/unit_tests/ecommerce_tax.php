@@ -56,7 +56,7 @@ class ecommerce_tax_test_set extends cms_test_case
         $this->assertTrue($tax == 19.0);
     }
 
-    public function testUSTax()
+    /*public function testUSTax()
     {
         set_option('currency', 'USD');
 
@@ -86,7 +86,7 @@ class ecommerce_tax_test_set extends cms_test_case
         $_POST['shipping_country'] = 'GB';
         list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due(null, 'TIC:00000', 100.00);
         $this->assertTrue($tax == 0.0);
-    }
+    }*/
 
     public function testFlatTax()
     {

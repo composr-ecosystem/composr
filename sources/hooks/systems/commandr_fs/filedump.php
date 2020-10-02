@@ -73,7 +73,7 @@ class Hook_commandr_fs_filedump
                     $listing[] = array(
                         $file,
                         is_dir($path . '/' . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
-                        is_dir($path . '/' . $file) ? null : filesize($path . '/' . $file),
+                        null/*don't calculate a filesize*/,
                         filemtime($path . '/' . $file),
                     );
                 }

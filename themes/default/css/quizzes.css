@@ -54,9 +54,10 @@
 	content: counter(quiz_num);
 	counter-increment: quiz_num;
 	z-index: 5;
-	font-size: 3.5em;
+	font-size: 2.2em;
 	position: absolute;
-	left: 30px;
+	left: 15px;
+	padding-top: 10px;
 	color: {$GET,th_secondary_text};
 	line-height: 0.8em;
 }

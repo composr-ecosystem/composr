@@ -93,6 +93,10 @@ function init__caches()
         }
     } else {
         $bucket_name = 'script__' . current_script();
+
+        if ($RELATIVE_PATH == '_tests') {
+            $bucket_name .= '__' . get_param_string('id', '');
+        }
     }
     $SMART_CACHE = new Self_learning_cache($bucket_name);
 
@@ -191,19 +195,13 @@ class Self_learning_cache
         if ($data !== null) {
             $this->data = $data;
         } elseif (is_file($this->path)) {
-            $_data = cms_file_get_contents_safe($this->path);
+            $_data = @cms_file_get_contents_safe($this->path);
             if ($_data !== false) {
                 $this->data = @unserialize($_data);
                 if ($this->data === false) {
                     $this->invalidate(); // Corrupt
                 }
             } else {
-                $dir = get_custom_file_base() . '/caches/self_learning';
-                if (!is_dir($dir)) {
-                    require_code('files2');
-                    make_missing_directory($dir);
-                }
-
                 $this->data = null;
             }
         }
@@ -324,6 +322,12 @@ class Self_learning_cache
      */
     public function _page_cache_resave()
     {
+        $dir = get_custom_file_base() . '/caches/self_learning';
+        if (!is_dir($dir)) {
+            require_code('files2');
+            make_missing_directory($dir);
+        }
+
         if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
             persistent_cache_set(array('SELF_LEARNING_CACHE', $this->bucket_name), $this->data);
             return;
@@ -670,6 +674,10 @@ function permissive_groups_cache_signature()
             $groups_cache = implode(',', array_map('strval', $actual_groups));
         } else {
             $groups_cache = json_encode(array($actual_groups, $m_zone, $m_page, $m_privileges, $m_categories));
+        }
+
+        if (strlen($groups_cache) > 255) {
+            $groups_cache = md5($groups_cache);
         }
     }
 

@@ -72,7 +72,7 @@ class CMSPmWrite
         $member_ids = array();
         foreach ($user_name_list as $username) {
             $to_member = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-            if ($to_member === null) {
+            if (($to_member === null) || (is_guest($to_member))) {
                 warn_exit(do_lang_tempcode('RECIPIENT_NOT_FOUND', escape_html($username)));
             }
 

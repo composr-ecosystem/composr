@@ -202,7 +202,7 @@ It consists of:
   - [tt]include[/tt] -- either [tt]children[/tt] or [tt]wrapper[/tt] ([i]this only applies to calls directly made to the menu block[/i]). [tt]children[/tt] says to include the children of the page-link, while [tt]wrapper[/tt] says to include the whole branch including the wrapper node.
   - [tt]max_recurse_depth[/tt] -- if set, this is a number specifying how deep the menu should go
   - [tt]use_page_groupings[/tt] -- if set to 1, page-groupings (i.e. the hard-coded page organisation, separate to zone structure) will be used
-  - [tt]valid_node_types[/tt] -- a "|" separated list of Sitemap node-types to include (advanced)
+  - [tt]valid_node_types[/tt] -- a "|" separated list of Sitemap node-types to include (advanced); you can put a minus in front for it to be inverted into a list of invalid node-types
   - [tt]child_cutoff[/tt] -- the maximum number of children a node may have (if this limit is exceeded [i]no[/i] children will be shown for that node)
   - [tt]consider_secondary_categories[/tt] -- if set to 1, secondary categorisations will be considered, meaning nodes may be duplicated
   - [tt]consider_validation[/tt] -- if set to 1, non-validated resources will not be shown

@@ -21,8 +21,8 @@
 	<ul>
 		{+START,LOOP,IMAGES}
 			<li>
-				<a href="#slider_{_loop_key*}"><img src="{$?,{$PREG_MATCH,^\d+px$,{WIDTH}},{$THUMBNAIL*,{FULL_URL},{$REPLACE,px,,{WIDTH}}x{$REPLACE,px,,{HEIGHT}},,,,pad,both},{FULL_URL}}" class="{TRANSITION_TYPE*}" /></a>
-				<div class="label_text">{$PARAGRAPH,{TITLE}}</div>
+				<a href="#slider_{_loop_key*}"><img src="{$?*,{$PREG_MATCH,^\d+px$,{WIDTH}},{$THUMBNAIL,{FULL_URL},{$REPLACE,px,,{WIDTH}}x{$REPLACE,px,,{HEIGHT}},,,,pad,both},{FULL_URL}}" class="{TRANSITION_TYPE*}" /></a>
+				<div class="label_text">{$PARAGRAPH,{TITLE*}}</div>
 			</li>
 		{+END}
 	</ul>

@@ -62,6 +62,10 @@ class Hook_page_groupings_catalogues
                         continue;
                     }
 
+                    if (!has_category_access(get_member(), 'catalogues_catalogue', $row['c_name'])) {
+                        continue;
+                    }
+
                     if (($row['c_ecommerce'] == 0) || (addon_installed('shopping'))) {
                         $menu_icon = 'menu/rich_content/catalogues/' . $row['c_name'];
                         if (find_theme_image('icons/24x24/' . $menu_icon, true) == '') {

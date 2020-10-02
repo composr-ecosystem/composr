@@ -580,6 +580,9 @@ class Module_cms_calendar extends Standard_crud_module
 
         // Type
         $type_list = create_selection_list_event_types($type);
+        if ($type_list->is_empty()) {
+            warn_exit(do_lang_tempcode('NO_CATEGORIES', 'calendar_type'));
+        }
         $fields->attach(form_input_list(do_lang_tempcode('TYPE'), do_lang_tempcode('DESCRIPTION_EVENT_TYPE'), 'type', $type_list));
 
         // Priority
@@ -765,6 +768,9 @@ class Module_cms_calendar extends Standard_crud_module
         if ((has_privilege(get_member(), 'calendar_add_to_others')) || ($_member_calendar == $GLOBALS['FORUM_DRIVER']->get_username(get_member()))) {
             if ($_member_calendar != '') {
                 $member_calendar = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_member_calendar);
+                if (($member_calendar === null) || (is_guest($member_calendar))) {
+                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_member_calendar)));
+                }
             } else {
                 $member_calendar = mixed();
             }

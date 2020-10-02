@@ -43,6 +43,20 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
     }
 
     /**
+     * Find if a page-link will be covered by this node.
+     *
+     * @param  ID_TEXT $page_link The page-link.
+     * @return integer A SITEMAP_NODE_* constant.
+     */
+    public function handles_page_link($page_link)
+    {
+        if (preg_match('#^\w+:calendar:browse$#', $page_link) != 0) { // We don't actually support taking no-category in here, entry_point can handle that case
+            return SITEMAP_NODE_NOT_HANDLED;
+        }
+        return parent::handles_page_link($page_link);
+    }
+
+    /**
      * Find details of a virtual position in the sitemap. Virtual positions have no structure of their own, but can find child structures to be absorbed down the tree. We do this for modularity reasons.
      *
      * @param  ID_TEXT $page_link The page-link we are finding.
@@ -74,9 +88,11 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
             }
         }
 
+        $max_rows_per_loop = ($child_cutoff === null) ? SITEMAP_MAX_ROWS_PER_LOOP : min($child_cutoff + 1, SITEMAP_MAX_ROWS_PER_LOOP);
+
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', array('*'), null, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', array('*'), null, '', $max_rows_per_loop, $start);
             foreach ($rows as $row) {
                 if (($row['id'] != db_get_first_id()) || (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (cron_installed()))) { // Filters system commands
                     $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':int_' . strval($row['id']) . '=1';
@@ -87,8 +103,8 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
                 }
             }
 
-            $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) == SITEMAP_MAX_ROWS_PER_LOOP);
+            $start += $max_rows_per_loop;
+        } while (count($rows) == $max_rows_per_loop);
 
         if (is_array($nodes)) {
             sort_maps_by($nodes, 'title');

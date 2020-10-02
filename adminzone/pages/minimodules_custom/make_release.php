@@ -313,7 +313,7 @@ function phase_2()
     } elseif (strpos(PHP_OS, 'WIN') !== false) {
         $command_to_try = 'start';
     } else {
-        $command_to_try = 'gnome-open';
+        $command_to_try = 'nautilus';
     }
     $command_to_try .= ' ' . get_custom_file_base() . '/exports/builds/' . $version_dotted . '/';
     echo '

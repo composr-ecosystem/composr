@@ -209,6 +209,7 @@ class Hook_addon_registry_cns_warnings
         $spam_urls = array(
             array(
                 'DOMAIN' => 'example.com',
+                'IP' => lorem_word(),
                 'URLS' => array(
                     array('I' => 0, 'URL' => 'http://example.com/'),
                     array('I' => 1, 'URL' => 'http://example.com/test'),

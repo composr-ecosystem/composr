@@ -582,13 +582,13 @@ class Forum_driver_cns extends Forum_driver_base
             if ($username === null) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($id);
             }
-            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : (($username === null) ? strval($id) : $username));
+            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : (($username === null) ? strval($id) : $username));
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
             $_url = build_url($map, get_module_zone('members'), null, false, false, !$tempcode_okay);
         } else {
-            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id);
+            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member() && $tempcode_okay) ? null : $id);
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
@@ -906,7 +906,7 @@ class Forum_driver_cns extends Forum_driver_base
                 $group_ids = $ob->get_bound_group_ids();
                 foreach ($group_ids as $group_id) {
                     if (in_array($group_id, $groups)) {
-                        $c = $ob->get_member_list($group_id);
+                        $c = $ob->get_member_list($group_id, $max, $start);
                         if (!is_null($c)) {
                             foreach ($c as $member_id => $x) {
                                 $out[$member_id] = $x;
@@ -1525,8 +1525,14 @@ class Forum_driver_cns extends Forum_driver_base
                 }
             }
         }
+
         $out = array();
-        $members_groups = function_exists('get_member') ? $GLOBALS['CNS_DRIVER']->get_members_groups(get_member()) : array();
+        foreach ($rows as $row) {
+            if (($hide_hidden) && ($row['g_hidden'] == 1)) {
+                $members_groups = function_exists('get_member') ? $GLOBALS['CNS_DRIVER']->get_members_groups(get_member()) : array();
+                break;
+            }
+        }
         foreach ($rows as $row) {
             $name = get_translated_text($row['g_name'], $this->connection);
 

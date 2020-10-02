@@ -140,7 +140,7 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
 }
 
 /**
- * Get the Tempcode for a results browser.
+ * Get the Tempcode for pagination.
  *
  * @param  Tempcode $title The title/name of the resource we are browsing through
  * @param  integer $start The current position in the browser
@@ -153,20 +153,13 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
  * @param  ?array $_selectors List of per-page selectors to show (null: show hard-coded ones)
  * @param  ID_TEXT $hash Hash component to URL
  * @param  ?string $keyset_value Keyset-pagination reference value for the 'next' page of results (null: no keyset pagination)
- * @return Tempcode The results browser
+ * @return Tempcode The pagination
  */
 function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $keep_post = false, $max_page_links = 5, $_selectors = null, $hash = '', $keyset_value = null)
 {
     inform_non_canonical_parameter($max_name);
     inform_non_canonical_parameter($start_name);
     inform_non_canonical_parameter($start_name . '__keyed');
-
-    if (get_page_name() == 'members') {
-        // Don't allow guest bots to probe too deep into the forum index, it gets very slow; the XML Sitemap is for guiding to topics like this
-        if (($start > $max * 5) && (is_guest()) && (!is_null(get_bot_type()))) {
-            access_denied('NOT_AS_GUEST');
-        }
-    }
 
     $post_array = array();
     if ($keep_post) {
@@ -387,7 +380,7 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
 }
 
 /**
- * Helper function to work out a results browser URL.
+ * Helper function to work out a pagination URL.
  *
  * @param  array $url_array Map of GET array segments to use (others will be added by this function)
  * @param  array $post_array Map of POST array segments (relayed as GET) to use

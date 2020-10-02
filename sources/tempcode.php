@@ -1059,6 +1059,10 @@ function handle_symbol_preprocessing($seq_part, &$children)
                 $param = block_params_str_to_arr($param[0], true);
             }
 
+            foreach ($param as &$_param) {
+                $_param = preg_replace('#^\s*([^\s]+)\s*=#', '$1=', $_param);
+            }
+
             if (in_array('defer=1', $param)) {
                 // Nothing has to be done here, except preparing for AJAX
                 require_javascript('ajax');
@@ -1080,7 +1084,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                 }
 
                 $block_parms = array();
-                foreach ($param as $_param) {
+                foreach ($param as &$_param) {
                     $block_parts = explode('=', $_param, 2);
                     if (!isset($block_parts[1])) {
                         $BLOCKS_CACHE[serialize($param)] = make_string_tempcode(do_lang('INTERNAL_ERROR') . ' (bad block parameter: ' . escape_html($_param) . ')');
@@ -1095,15 +1099,15 @@ function handle_symbol_preprocessing($seq_part, &$children)
                     $before = memory_get_usage();
                 }
                 if (isset($block_parms['block'])) {
-                    $b_value = do_block($block_parms['block'], $block_parms);
+                    $b_value = do_block(trim($block_parms['block']), $block_parms);
                     if ((isset($_GET['keep_show_loading'])) && ($_GET['keep_show_loading'] == '1')) {
                         if (function_exists('attach_message')) {
-                            attach_message('block: ' . $block_parms['block'] . ' (' . clean_file_size(memory_get_usage() - $before) . ' bytes used, now at ' . integer_format(memory_get_usage()) . ')', 'inform');
+                            attach_message('block: ' . $block_parms['block'] . ' (' . clean_file_size(memory_get_usage() - $before) . ' used, now at ' . integer_format(memory_get_usage()) . ')', 'inform');
                         } else {
                             @ob_end_flush();
                             @ob_end_flush();
                             @ob_end_flush();
-                            print('<!-- block: ' . htmlentities($block_parms['block']) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(integer_format(memory_get_usage())) . ') -->' . "\n");
+                            print('<!-- block: ' . htmlentities($block_parms['block']) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' used, now at ' . htmlentities(integer_format(memory_get_usage())) . ') -->' . "\n");
                             flush();
                         }
                     }
@@ -2199,4 +2203,20 @@ function debug_eval($code, &$tpl_funcs = null, $parameters = null, $cl = null)
 function debug_call_user_func($function, $a, $b = null, $c = null)
 {
     return call_user_func($function, $a, $b, $c);
+}
+
+/**
+ * Reduce down a template parameter to a maximum reasonable length, to avoid too much data being stuck in Tempcode trees.
+ *
+ * @param  Tempcode $text Text
+ * @param  integer $max_length Maximum length
+ * @return Tempcode Reduced length version of $text if required
+ */
+function reasonable_html_reduce($text, $max_length = 1000)
+{
+    $text_flat = $text->evaluate();
+    if (strlen($text_flat) > $max_length) {
+        $text = make_string_tempcode(symbol_truncator(array($text_flat, strval($max_length), '0', '1'), 'left'));
+    }
+    return $text;
 }

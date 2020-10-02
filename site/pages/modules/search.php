@@ -147,10 +147,11 @@ class Module_search
 
                 if (($info !== null) && ($info !== false)) {
                     $this->title = get_screen_title('_SEARCH_TITLE', true, array($info['lang']));
+
+                    breadcrumb_set_self($info['lang']);
                 }
 
                 breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('SEARCH'))));
-                breadcrumb_set_self($info['lang']);
 
                 $this->ob = $ob;
                 $this->info = $info;
@@ -562,7 +563,7 @@ class Module_search
      * @set    ASC DESC
      * @param  boolean $only_titles Whether to only search titles
      * @param  string $search_under Comma-separated list of categories to search under
-     * @return array A triple: The results, results browser, the number of results
+     * @return array A triple: The results, pagination, the number of results
      */
     public function results($id, $author, $author_id, $cutoff, $sort, $direction, $only_titles, $search_under)
     {
@@ -697,10 +698,10 @@ class Module_search
         // Now glue our templates together
         $out = build_search_results_interface($results, $start, $max, $direction, $id == '');
         if ($out->is_empty()) {
-            if ((is_integer($cutoff)) && ($GLOBALS['TOTAL_SEARCH_RESULTS'] == 0)) {
+            if ((is_integer($cutoff)) && ($GLOBALS['TOTAL_SEARCH_RESULTS'] == 0) && (get_value('search_do_days_fallback', '1') == '1')) {
                 $ret_maybe = $this->results($id, $author, $author_id, null, $sort, $direction, $only_titles, $search_under);
                 if (!$ret_maybe[0]->is_empty()) {
-                    attach_message(do_lang_tempcode('NO_RESULTS_DAYS', escape_html(integer_format(intval((time() - $cutoff) / 24.0 * 60.0 * 60.0)))), 'notice');
+                    attach_message(do_lang_tempcode('NO_RESULTS_DAYS', escape_html(integer_format(intval((time() - $cutoff) / (24.0 * 60.0 * 60.0))))), 'notice');
                     return $ret_maybe;
                 }
             }

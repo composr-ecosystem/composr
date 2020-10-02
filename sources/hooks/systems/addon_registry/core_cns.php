@@ -423,6 +423,9 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/config/username_profile_links.php',
             'sources/hooks/systems/config/valid_email_domains.php',
             'sources/hooks/systems/config/enable_birthdays.php',
+            'sources/hooks/systems/config/new_member_default_email_message.php',
+            'sources/hooks/systems/config/new_member_default_email_subject.php',
+            'sources/hooks/systems/config/new_member_default_temporary_password.php',
             'sources/cns_field_editability.php',
             'sources/hooks/systems/tasks/export_member_csv.php',
             'sources/hooks/systems/tasks/cns_members_recache.php',
@@ -788,7 +791,6 @@ class Hook_addon_registry_core_cns
                 'PHOTO_THUMB_URL' => placeholder_image_url(),
                 'VALIDATED' => true,
                 'CONFIRMED' => true,
-                'BOX' => lorem_paragraph_html(),
             )), null, '', true)
         );
     }

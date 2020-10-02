@@ -81,9 +81,13 @@ function execute_task_background($task_row)
     }
     require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
     $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
+    $mim_before = get_mass_import_mode();
     $result = call_user_func_array(array($ob, 'run'), $args);
-    set_mass_import_mode(false);
+    if (!$mim_before) {
+        set_mass_import_mode(false);
+    }
 
+    // Send notification
     if ($task_row['t_send_notification'] == 1) {
         $attachments = array();
 
@@ -193,8 +197,11 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = nu
         // Run task
         require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
         $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
+        $mim_before = get_mass_import_mode();
         $result = call_user_func_array(array($ob, 'run'), $args);
-        set_mass_import_mode(false);
+        if (!$mim_before) {
+            set_mass_import_mode(false);
+        }
         if ($result === false) {
             $result = array(null, do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -232,21 +239,15 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = nu
         }
 
         // HTML result
-        if ($mime_type == 'text/html') {
-            if (is_array($content_result)) {
-                $path = $content_result[1];
-                $content_result = file_get_contents($path);
-                @unlink($path);
-                sync_file($path);
-            }
-
+        if (($mime_type == 'text/html') && (!is_array($content_result)/*Not a standalone file because that would have its own conflicting HTML wrapper*/)) {
+            $_content_result = is_object($content_result) ? protect_from_escaping($content_result) : protect_from_escaping(make_string_tempcode($content_result));
             if (is_null($title)) {
-                return is_object($content_result) ? protect_from_escaping($content_result) : make_string_tempcode($content_result);
+                return $_content_result;
             }
             return do_template('FULL_MESSAGE_SCREEN', array(
                 '_GUID' => '20e67ceb86e3bbd1e889c6ca116d7a77',
                 'TITLE' => $title,
-                'TEXT' => is_object($content_result) ? protect_from_escaping($content_result) : make_string_tempcode($content_result),
+                'TEXT' => $_content_result,
             ));
         }
 

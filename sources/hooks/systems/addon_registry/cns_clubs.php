@@ -74,7 +74,7 @@ class Hook_addon_registry_cns_clubs
     public function get_dependencies()
     {
         return array(
-            'requires' => array(),
+            'requires' => array('cns_forum'),
             'recommends' => array(),
             'conflicts_with' => array(),
         );

@@ -56,6 +56,11 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
         return $current_logged_in_member;
     }
 
+    // Cookie signal to have logged out
+    if ((isset($_COOKIE['fblo_' . get_option('facebook_appid')])) && ($_COOKIE['fblo_' . get_option('facebook_appid')] == 'y')) {
+        return $current_logged_in_member;
+    }
+
     // Who is this user, from Facebook's point of view?
     global $FACEBOOK_CONNECT;
     $facebook_uid = $FACEBOOK_CONNECT->getUser();
@@ -63,54 +68,22 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
         return $current_logged_in_member;
     }
     try {
-        $details = $FACEBOOK_CONNECT->api('/me', array('fields' => 'id,name,email,about,website,currency,first_name,last_name,gender,location,hometown,picture,timezone,locale,birthday'));
+        $details = $FACEBOOK_CONNECT->api('/me', array('fields' => 'id,name,email,first_name,last_name,gender,location,picture,birthday'));
     } catch (Exception $e) {
         header('Facebook-Error: ' . escape_header($e->getMessage()));
 
         return $current_logged_in_member;
     }
-    if (!is_array($details)) {
-        return $current_logged_in_member;
-    }
-    $details2 = $FACEBOOK_CONNECT->api('/me', array('fields' => 'picture', 'type' => 'normal'));
-    if (!is_array($details2)) { // NB: This can happen even if there is a Facebook session, if the session ID in the cookie has expired. In this case Guest will be the user until the frontend does a refresh
-        return $current_logged_in_member;
-    }
-    $details = array_merge($details, $details2);
-    if (!isset($details['name'])) {
+    if ((!is_array($details)) || (!isset($details['name']))) { // Should not happen
         return $current_logged_in_member;
     }
     $username = $details['name'];
-    $photo_url = array_key_exists('picture', $details) ? $details['picture'] : '';
-    if (is_array($photo_url)) {
-        $photo_url = $photo_url['data']['url'];
-    }
-    if ($photo_url != '') {
-        $photo_url = 'https://graph.facebook.com/' . strval($facebook_uid) . '/picture?type=large'; // In case URL changes
-    }
-    $avatar_url = ($photo_url == '') ? mixed() : $photo_url;
-    $photo_thumb_url = '';
-    if ($photo_url != '') {
-        $photo_thumb_url = $photo_url;
-    }
+    $photo_url = 'https://graph.facebook.com/' . strval($facebook_uid) . '/picture?type=large'; // In case URL changes (API returns a temporary one only)
+    $avatar_url = $photo_url;
+    $photo_thumb_url = $photo_url;
     $email_address = array_key_exists('email', $details) ? $details['email'] : '';
     $timezone = mixed();
-    if (isset($details['timezone'])) {
-        require_code('temporal');
-        $timezone = convert_timezone_offset_to_formal_timezone($details['timezone']);
-    }
     $language = mixed();
-    if (isset($details['locale'])) {
-        $language = strtoupper($details['locale']);
-    }
-    if ($language !== null) {
-        if (!does_lang_exist($language)) {
-            $language = preg_replace('#\_.*$#', '', $language);
-            if (!does_lang_exist($language)) {
-                $language = '';
-            }
-        }
-    }
     $dob = array_key_exists('birthday', $details) ? $details['birthday'] : '';
     $dob_day = mixed();
     $dob_month = mixed();
@@ -143,12 +116,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
 
     // If logged in before using Facebook, do some synching
     if (!is_null($member_id)) {
-        $last_visit_time = $member_id[0]['m_last_visit_time'];
-        if ($timezone !== null) {
-            if ((!is_numeric($member_row[0]['m_timezone_offset'])) && (tz_time(time(), $timezone) == tz_time(time(), $member_row[0]['m_timezone_offset']))) {
-                $timezone = $member_row[0]['m_timezone_offset']; // If equivalent, don't change
-            }
-        }
+        $last_visit_time = $member_row[0]['m_last_visit_time'];
 
         $update_map = array();
 
@@ -176,9 +144,6 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
         if (get_option('facebook_sync_avatar') == '1') {
             $test = $member_row[0]['m_avatar_url'];
             if (($avatar_url !== null) && (($test == '') || (strpos($test, 'facebook') !== false) || (strpos($test, 'fbcdn') !== false))) {
-                if ($timezone !== null) {
-                    $update_map['m_timezone_offset'] = $timezone;
-                }
                 $update_map['m_avatar_url'] = $avatar_url;
                 $update_map['m_photo_url'] = $photo_url;
                 $update_map['m_photo_thumb_url'] = $photo_thumb_url;
@@ -276,9 +241,6 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
             $changes = array();
             require_lang('cns_special_cpf');
             $mappings = array(
-                'about' => do_lang('DEFAULT_CPF_about_NAME'),
-                'website' => do_lang('DEFAULT_CPF_website_NAME'),
-                'currency' => 'cms_currency',
                 'first_name' => 'cms_firstname',
                 'last_name' => 'cms_lastname',
                 'gender' => do_lang('DEFAULT_CPF_gender_NAME'),
@@ -286,18 +248,8 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
             foreach ($mappings as $facebook_field => $composr_field_title) {
                 if (!empty($details[$facebook_field])) {
                     $composr_field_id = find_cms_cpf_field_id($composr_field_title);
-                    if (!is_null($composr_field_id)) {
-                        switch ($facebook_field) {
-                            case 'user_currency':
-                                $changes['field_' . strval($composr_field_id)] = $details[$facebook_field]['user_currency'];
-                                break;
-
-                            default:
-                                if (!is_array($details[$facebook_field])) {
-                                    $changes['field_' . strval($composr_field_id)] = $details[$facebook_field];
-                                }
-                                break;
-                        }
+                    if (($composr_field_id !== null) && (!is_array($details[$facebook_field]))) {
+                        $changes['field_' . strval($composr_field_id)] = $details[$facebook_field];
                     }
                 }
             }
@@ -335,17 +287,6 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
     if ((!is_null($member_id)) && (!$quick_only)) {
         require_code('users_inactive_occasionals');
         create_session($member_id, 1, (isset($_COOKIE[get_member_cookie() . '_invisible'])) && ($_COOKIE[get_member_cookie() . '_invisible'] == '1')); // This will mark it as confirmed
-    }
-
-    // Store oAuth for syndication
-    if (get_option('facebook_auto_syndicate') == '1') {
-        if (!is_null($member_id)) {
-            set_value('facebook_oauth_token__' . strval($member_id), $FACEBOOK_CONNECT->getAccessToken(), true);
-
-            if (get_option('facebook_member_syndicate_to_page') == '1') {
-                set_value('facebook_syndicate_to_page__' . strval($member_id), '1', true);
-            }
-        }
     }
 
     return $member_id;

@@ -20,7 +20,7 @@
 		{$REQUIRE_JAVASCRIPT,dyn_comcode}
 		{$REQUIRE_CSS,carousels}
 
-		{$SET,carousel_id,{$RAND}}
+		{$SET-,carousel_id,{$RAND}}
 
 		{+START,IF_NON_EMPTY,{CONTENT}}
 			<div id="carousel_{$GET*,carousel_id}" class="carousel" style="display: none">
@@ -72,12 +72,12 @@
 	{$,Normal sequential box layout}
 	{$,With some very basic CSS you could also achieve grid layouts}
 	{+START,IF,{$NEQ,{_GUID},carousel}}
-		{+START,IF_NON_EMPTY,{TITLE}}
-			<h2>{TITLE*}</h2>
-		{+END}
-
-		{$SET,ajax_block_main_multi_content_wrapper,ajax_block_main_multi_content_wrapper_{$RAND%}}
+		{$SET-,ajax_block_main_multi_content_wrapper,ajax_block_main_multi_content_wrapper_{$RAND%}}
 		<div id="{$GET*,ajax_block_main_multi_content_wrapper}" class="box_wrapper">
+			{+START,IF_NON_EMPTY,{TITLE}}
+				<h2>{TITLE*}</h2>
+			{+END}
+
 			<div class="float_surrounder cguid_{_GUID|*} raw_ajax_grow_spot">
 				{+START,IF_NON_EMPTY,{CONTENT}}
 					{+START,LOOP,CONTENT}

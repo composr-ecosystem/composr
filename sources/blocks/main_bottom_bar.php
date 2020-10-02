@@ -102,7 +102,7 @@ class Block_main_bottom_bar
                     $col = null;
                     $groups_seen = array();
                 }
-                $users_online->attach(do_template('CNS_USER_MEMBER', array('_GUID' => 'a9cb1af2a04b14edd70749c944495bff', 'FIRST' => $users_online->is_empty(), 'COLOUR' => $col, 'PROFILE_URL' => $url, 'USERNAME' => $username, 'USERGROUP' => $usergroup)));
+                $users_online->attach(do_template('CNS_USER_MEMBER', array('_GUID' => 'a9cb1af2a04b14edd70749c944495bff', 'FIRST' => $num_members == 0, 'COLOUR' => $col, 'PROFILE_URL' => $url, 'USERNAME' => $username, 'USERGROUP' => $usergroup)));
                 $num_members++;
             }
             if ($num_guests != 0) {

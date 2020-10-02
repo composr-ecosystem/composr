@@ -80,10 +80,10 @@ class Hook_preview_comments
             $poster_details = new Tempcode();
         }
         if (addon_installed('cns_forum')) {
-            if (is_guest()) {
+            if (!is_guest()) {
                 $poster = do_template('CNS_POSTER_MEMBER', array('_GUID' => 'adbfe268015ca904c3f61020a7b0adde', 'ONLINE' => true, 'ID' => strval(get_member()), 'POSTER_DETAILS' => $poster_details, 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url(get_member(), false, true), 'POSTER_USERNAME' => $poster_name));
             } else {
-                $poster = do_template('CNS_POSTER_GUEST', array('_GUID' => '3992f4e69ac72a5b57289e5e802f5f48', 'IP_LINK' => '', 'POSTER_DETAILS' => $poster_details, 'POSTER_USERNAME' => $poster_name));
+                $poster = do_template('CNS_POSTER_GUEST', array('_GUID' => '3992f4e69ac72a5b57289e5e802f5f48', 'LOOKUP_IP_URL' => '', 'POSTER_DETAILS' => $poster_details, 'POSTER_USERNAME' => $poster_name));
             }
         } else {
             $poster = make_string_tempcode(escape_html($poster_name)); // Should never happen actually, as applies discounts hook from even running

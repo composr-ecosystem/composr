@@ -416,5 +416,5 @@ function mass_delete_lang($table, $attrs, $connection)
             }
         }
         $start += 1000;
-    } while ((!is_null($rows)) && (count($rows) > 0));
+    } while ((!is_null($rows)) && (count($rows) == 1000));
 }

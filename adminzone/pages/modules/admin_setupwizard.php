@@ -602,7 +602,7 @@ class Module_admin_setupwizard
         $side_blocks = array();
         $hooks = find_all_hooks('modules', 'admin_setupwizard');
         foreach (array_keys($hooks) as $hook) {
-            if (post_param_integer('addon_' . $hook, 0) == 1) {
+            if ((post_param_integer('addon_' . $hook, 0) == 1) || (substr($hook, 0, 5) == 'core_') || ($hook == 'core')) {
                 require_code('hooks/modules/admin_setupwizard/' . filter_naughty_harsh($hook));
                 $ob = object_factory('Hook_sw_' . filter_naughty_harsh($hook), true);
                 if (is_null($ob)) {

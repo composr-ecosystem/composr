@@ -28,7 +28,7 @@ class Hook_page_groupings_comcode_whitelist
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('setup', 'menu/adminzone/setup/custom_comcode', array('comcode_whitelist', array(), get_page_zone('comcode_whitelist')), make_string_tempcode('Edit Comcode whitelist')),
+            array('setup', 'menu/adminzone/setup/custom_comcode', array('comcode_whitelist', array(), get_comcode_zone('comcode_whitelist', false, 'adminzone')), make_string_tempcode('Edit Comcode whitelist')),
         );
     }
 }

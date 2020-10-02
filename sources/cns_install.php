@@ -313,24 +313,22 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts', 'posts_since');
         $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_since', array('p_time', 'p_cache_forum_id')); // p_cache_forum_id is used to not count PT posts
 
-        // Fix up legacy issues with CPFs that we can no longer tolerate
+        // Fix DB storage types
         $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_type'));
+        require_code('cns_members_action');
         foreach ($fields as $field) {
+            $id = $field['id'];
             $type = $field['cf_type'];
             list($_type, $index) = get_cpf_storage_for($type);
 
-            $id = $field['id'];
-
-            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
-            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
-
-            if (substr(get_db_type(), 0, 5) == 'mysql') {
+            if (strpos(get_db_type(), 'mysql') !== false) {
                 $GLOBALS['SITE_DB']->query('SET sql_mode=\'\'', null, null, true); // Turn off strict mode
             }
             $GLOBALS['FORUM_DB']->alter_table_field('f_member_custom_fields', 'field_' . strval($id), $_type);
-
-            build_cpf_indices($id, $index, $type, $_type);
         }
+
+        require_code('cns_members_action2');
+        rebuild_all_cpf_indices();
     }
 
     // If we have the forum installed to this db already, leave
@@ -661,10 +659,6 @@ function install_cns($upgrade_from = null)
         cns_make_forum(do_lang('REPORTED_POSTS_FORUM'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
         $trash_forum_id = cns_make_forum(do_lang('TRASH'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
         cns_make_forum(do_lang('COMMENT_FORUM_NAME'), '', $forum_grouping_id, $typical_access, $root_forum, 1, 1, 0, '', '', '', 'last_post', 1);
-        if (addon_installed('tickets')) {
-            require_lang('tickets');
-            cns_make_forum(do_lang('TICKET_FORUM_NAME'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
-        }
         $staff_forum_id = cns_make_forum(do_lang('STAFF'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
 
         $GLOBALS['FORUM_DB']->create_table('f_topics', array(

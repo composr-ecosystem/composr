@@ -28,7 +28,7 @@ class Hook_page_groupings_installprofile_generator
     public function run($member_id = null, $extensive_docs = false)
     {
         return array(
-            array('setup', 'menu/_generic_admin/tool', array('installprofile_generator', array(), get_page_zone('installprofile_generator')), make_string_tempcode('Export installprofile')),
+            array('setup', 'menu/_generic_admin/tool', array('installprofile_generator', array(), get_page_zone('installprofile_generator', false, 'adminzone', 'minimodules')), make_string_tempcode('Export installprofile')),
         );
     }
 }

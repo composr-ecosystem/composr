@@ -3243,7 +3243,7 @@ function set_inner_html(element,target_html,append,force_dom)
 	// Parser hint: .innerHTML okay
 	if (typeof target_html=='number') target_html=target_html+'';
 
-	if (((typeof force_dom=='undefined') || (!force_dom)) && (document.write) && (typeof element.innerHTML!='undefined') && (!document.xmlVersion) && (target_html.toLowerCase().indexOf('<script src="')==-1) && (target_html.toLowerCase().indexOf('<link')==-1))
+	if (((typeof force_dom=='undefined') || (!force_dom)) && (document.write) && (typeof element.innerHTML!='undefined') && (!document.xmlVersion) && (target_html.toLowerCase().indexOf('<script')==-1) && (target_html.toLowerCase().indexOf('<link')==-1))
 	{
 		try
 		{

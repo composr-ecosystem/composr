@@ -362,7 +362,7 @@ class Module_admin
         }
 
         // Stemming, if available (needs Stemmer class like http://www.chuggnutt.com/stemmer-source.php which we can't redistribute due to it being GPL not LGPL)
-        if (((is_file(get_file_base() . '/sources/lang_stemmer_' . user_lang() . '.php')) || (is_file(get_file_base() . '/sources_custom/stemmer_' . user_lang() . '.php'))) && (!in_safe_mode())) {
+        if (((is_file(get_file_base() . '/sources/lang_stemmer_' . user_lang() . '.php')) || (is_file(get_file_base() . '/sources_custom/lang_stemmer_' . user_lang() . '.php'))) && (!in_safe_mode())) {
             require_code('lang_stemmer_' . user_lang());
             $stemmer = object_factory('Stemmer_' . user_lang());
             foreach ($keywords as $i => $keyword_group) {
@@ -438,7 +438,7 @@ class Module_admin
                     if (($i[0] != '') && ($this->_keyword_match(is_object($n) ? $n->evaluate() : $n)) && (has_actual_page_access(get_member(), $i[2][0], $i[2][2]))) {
                         $_url = build_url(array('page' => $i[2][0]) + $i[2][1], $i[2][2]);
                         $breadcrumbs = new Tempcode();
-                        $breadcrumbs->attach(hyperlink(build_url(array('page' => 'admin', 'type' => $i[0]), 'adminzone'), do_lang_tempcode(strtoupper($i[0])), false, false));
+                        $breadcrumbs->attach(hyperlink(build_url(array('page' => 'admin', 'type' => $i[0]), 'adminzone'), do_lang_tempcode(($i[0] == 'social') ? 'SECTION_SOCIAL' : strtoupper($i[0])), false, false));
                         $sup = do_lang_tempcode('LOCATED_IN', $breadcrumbs);
                         $content[$current_results_type]->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array('_GUID' => 'ec53a1d45fe6a80308bf509b896d2763', 'NAME' => $n, 'URL' => $_url, 'TITLE' => '', 'DESCRIPTION' => '', 'SUP' => $sup)));
                     }
@@ -529,7 +529,7 @@ class Module_admin
                                                     require_lang('menus');
 
                                                     $breadcrumbs->attach(do_template('BREADCRUMB_SEPARATOR'));
-                                                    $breadcrumbs->attach(hyperlink($_url, do_lang_tempcode(strtoupper($i[0])), false, false));
+                                                    $breadcrumbs->attach(hyperlink($_url, do_lang_tempcode(($i[0] == 'social') ? 'SECTION_SOCIAL' : strtoupper($i[0])), false, false));
                                                     if ($type != 'browse') {
                                                         $breadcrumbs->attach(do_template('BREADCRUMB_SEPARATOR'));
                                                         $breadcrumbs->attach(hyperlink(build_url(array('page' => $page, 'type' => 'browse'), $zone), $i[3], false, false));

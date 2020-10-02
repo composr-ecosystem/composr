@@ -257,7 +257,7 @@ class Block_main_multi_content
                 }
             }
             if (($category_field_select !== null) && ($category_field_select != $category_field_access) && ($info['category_type'] !== '<page>') && ($info['category_type'] !== '<zone>')) {
-                $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_category_access a2 ON (' . db_string_equal_to('a.module_the_name', $category_type_select) . ' AND r.' . $category_field_select . '=a2.category_name)';
+                $query .= ' LEFT JOIN ' . get_table_prefix() . 'group_category_access a2 ON (' . db_string_equal_to('a2.module_the_name', $category_type_select) . ' AND r.' . $category_field_select . '=a2.category_name)';
                 $query .= ' LEFT JOIN ' . get_table_prefix() . 'member_category_access ma2 ON (' . db_string_equal_to('ma2.module_the_name', $category_type_select) . ' AND r.' . $category_field_select . '=ma2.category_name)';
             }
             if ($category_field_access !== null) {
@@ -279,7 +279,7 @@ class Block_main_multi_content
             }
         }
 
-        if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (has_privilege(get_member(), 'see_unvalidated'))) {
+        if ((array_key_exists('validated_field', $info)) && (addon_installed('unvalidated')) && ($info['validated_field'] != '') && (!has_privilege(get_member(), 'see_unvalidated'))) {
             $where .= ' AND ';
             $where .= 'r.' . $info['validated_field'] . '=1';
         }
@@ -307,7 +307,7 @@ class Block_main_multi_content
         }
         if ($lifetime !== null) {
             $block_cache_id = md5(serialize($map));
-            $query .= ' LEFT JOIN ' . $info['connection']->get_table_prefix() . 'feature_lifetime_monitor m ON m.content_id=r.' . db_cast($first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('m.block_cache_id', $block_cache_id);
+            $query .= ' LEFT JOIN ' . $info['connection']->get_table_prefix() . 'feature_lifetime_monitor m ON m.content_id=' . db_cast('r.' . $first_id_field, 'CHAR') . ' AND ' . db_string_equal_to('m.block_cache_id', $block_cache_id);
             $where .= ' AND ';
             $where .= '(m.run_period IS NULL OR m.run_period<' . strval($lifetime * 60 * 60 * 24) . ')';
         }
@@ -748,7 +748,7 @@ class Block_main_multi_content
 
         require_code('selectcode');
 
-        $sql = selectcode_to_sqlfragment($select, 'r.' . (is_array($info['id_field']) ? implode(',', $info['id_field']) : $info['id_field']), $parent_spec__table_name, $parent_spec__parent_name, 'r.' . $parent_field_name, $parent_spec__field_name, $id_field_numeric, !$category_is_string);
+        $sql = selectcode_to_sqlfragment($select, 'r.' . (is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field']), $parent_spec__table_name, $parent_spec__parent_name, 'r.' . $parent_field_name, $parent_spec__field_name, $id_field_numeric, !$category_is_string);
         return $sql;
     }
 }

@@ -1959,9 +1959,18 @@ function ecv2_LAST_VISIT_TIME($lang, $escaped, $param)
  */
 function ecv2_MEMBER_OVERRIDE($lang, $escaped, $param)
 {
-    $value = get_param_string('id', '');
-    if ((!is_numeric($value)) || ($value == '')) {
-        $value = strval(get_member());
+    $value = strval(get_member());
+
+    if ((get_page_name() == 'members') && (get_param_string('type', 'browse') == 'view')) {
+        $user = get_param_string('id', '');
+        if (is_string($user)) {
+            $member_id_of = $GLOBALS['FORUM_DRIVER']->get_member_from_username($user);
+            if ($member_id_of !== null) {
+                $value = strval($member_id_of);
+            }
+        } else {
+            $value = $user;
+        }
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -3504,26 +3513,6 @@ function ecv2_LOOP(&$value, $lang, $escaped, $param)
             $value .= $row_terminator;
         }
     }
-}
-
-/**
- * Evaluate a particular Tempcode symbol.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements).
- * @param  array $escaped Array of escaping operations.
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string The result.
- */
-function ecv2_TAPATALK($lang, $escaped, $param)
-{
-    $value = (defined('IN_MOBIQUO') ? '1' : '0');
-
-    if ($escaped !== array()) {
-        apply_tempcode_escaping($escaped, $value);
-    }
-    return $value;
 }
 
 /**

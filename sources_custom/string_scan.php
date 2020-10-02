@@ -126,6 +126,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         TAX_STATE_REGEXP
         VIEW_CART
         _DESCRIPTION_MAIL_TAX_CODE
+        IMAGEMAGICK_PATH
+        CONFIG_OPTION_imagemagick_path
+        ADD_MEMBER_EMAIL_HELP
+        CONFIG_OPTION_new_member_default_email_message
+        CONFIG_OPTION_new_member_default_email_subject
+        CONFIG_OPTION_new_member_default_temporary_password
+        NEW_MEMBER_DEFAULT_EMAIL_MESSAGE
+        NEW_MEMBER_DEFAULT_EMAIL_SUBJECT
+        NEW_MEMBER_DEFAULT_TEMPORARY_PASSWORD
         IF_UNCHANGED_CURRENT_FILE_REMAINS
         MONIKER_TRANSLITERATION
         CONFIG_OPTION_moniker_transliteration
@@ -1233,6 +1242,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_newsletter_signup_PARAM_subject_TITLE
         BLOCK_main_newsletter_signup_PARAM_to
         BLOCK_main_newsletter_signup_PARAM_to_TITLE
+        BLOCK_main_newsletter_signup_PARAM_button_only
+        BLOCK_main_newsletter_signup_PARAM_button_only_TITLE
         BLOCK_main_newsletter_signup_USE
         BLOCK_main_notes_DESCRIPTION
         BLOCK_main_notes_PARAM_lang_none
@@ -1373,6 +1384,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_menu_USE
         INDEX_DOWNLOAD
         SPAM_URLS
+        BLOCK_side_tag_cloud_PARAM_apply_permissions_TITLE
+        BLOCK_side_tag_cloud_PARAM_apply_permissions
         BLOCK_side_calendar_DESCRIPTION
         BLOCK_side_calendar_PARAM_as_guest
         BLOCK_side_calendar_PARAM_as_guest_TITLE
@@ -1740,6 +1753,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CLOSING_BALANCE
         CLUB_FORUM_PARENT_FORUM
         CLUB_FORUM_PARENT_FORUM_GROUPING
+        CMD_SEND_CHATMESSAGE_HELP
+        CMD_SEND_CHATMESSAGE_HELP_PARAM_0
+        CMD_SEND_CHATMESSAGE_HELP_PARAM_1
+        CMD_FIND_COMMANDR_FS_FILENAME_VIA_ID_HELP
+        CMD_FIND_COMMANDR_FS_FILENAME_VIA_ID_HELP_PARAM_0
+        CMD_FIND_COMMANDR_FS_FILENAME_VIA_ID_HELP_PARAM_1
+        CMD_FIND_ID_VIA_COMMANDR_FS_FILENAME_HELP
+        CMD_FIND_ID_VIA_COMMANDR_FS_FILENAME_HELP_PARAM_0
+        CMD_FIND_ID_VIA_COMMANDR_FS_FILENAME_HELP_PARAM_1
         CMD_ALIEN_CHECK_HELP
         CMD_ANTISPAM_CHECK_HELP
         CMD_ANTISPAM_CHECK_HELP_PARAM_0
@@ -7371,6 +7393,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVOICING_ADDRESS
         PAYMENT_DETAILS
         ADD
+        NO_PRIVATE_SELF
         ADDED
         ADDED_COMCODE_ONLY
         ADDED_COMCODE_ONLY_ATTACHMENT
@@ -8375,6 +8398,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INTRO_NOTICE
         INTRO_POST_DEFAULT
         INTRO_QUESTION
+        MODERATED_AS_SPAM
         INVALID_EMAIL_ADDRESS
         INVALID_EMAIL_PREFIX
         INVALID_FILE_TYPE

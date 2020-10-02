@@ -76,7 +76,7 @@ function facebook_init(app_id,channel_url,just_logged_out,serverside_fbuid,home_
 		var js, fjs = d.getElementsByTagName(s)[0];
 		if (d.getElementById(id)) return;
 		js = d.createElement(s); js.id = id;
-		js.src = '//connect.facebook.net/en_US/all.js#xfbml=1&appId={$CONFIG_OPTION;,facebook_appid}';
+		js.src = 'https://connect.facebook.net/en_US/all.js#xfbml=1&appId={$CONFIG_OPTION;,facebook_appid}';
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
 }

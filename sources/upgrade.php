@@ -1057,7 +1057,7 @@ function move_modules()
                         continue; // This has moved between versions
                     }
 
-                    $out .= '<li><input type="checkbox" name="' . uniqid('', true) . '" value="move:' . escape_html($_path_a . ':' . $_path_b) . '" /> ' . do_lang('FILE_MOVED', '<kbd>' . escape_html($page) . '</kbd>', '<kbd>' . escape_html($zone2) . '</kbd>', '<kbd>' . escape_html($zone) . '</kbd>') . '</li>';
+                    $out .= '<li><input type="checkbox" name="' . uniqid('', true) . '" value="move:' . escape_html(base64_encode($_path_a) . ':' . base64_encode($_path_b)) . '" /> ' . do_lang('FILE_MOVED', '<kbd>' . escape_html($page) . '</kbd>', '<kbd>' . escape_html($zone2) . '</kbd>', '<kbd>' . escape_html($zone) . '</kbd>') . '</li>';
                     $outr[] = $path_b;
                 }
             }
@@ -1500,7 +1500,7 @@ function check_alien($addon_files, $old_files, $files, $dir, $rela = '', $raw = 
                 if (file_exists(get_file_base() . '/' . $x)) {
                     $alien .= '<li>';
                     if (!$raw) {
-                        $alien .= '<input checked="checked" type="checkbox" name="' . uniqid('', true) . '" value="delete:' . escape_html($x) . '" /> ';
+                        $alien .= '<input checked="checked" type="checkbox" name="' . uniqid('', true) . '" value="delete:' . escape_html(base64_encode($x)) . '" /> ';
                     }
                     $alien .= '<kbd>' . escape_html($x) . '</kbd></li>';
                 }
@@ -1512,7 +1512,7 @@ function check_alien($addon_files, $old_files, $files, $dir, $rela = '', $raw = 
         }
         sort($dir_files);
         foreach ($dir_files as $file) {
-            if (should_ignore_file($rela . $file, IGNORE_USER_CUSTOMISE | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES |  IGNORE_NONBUNDLED_SCATTERED | IGNORE_BUNDLED_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES)) {
+            if (should_ignore_file($rela . $file, IGNORE_ACCESS_CONTROLLERS | IGNORE_USER_CUSTOMISE | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES |  IGNORE_NONBUNDLED_SCATTERED | IGNORE_BUNDLED_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES)) {
                 continue;
             }
 
@@ -1573,7 +1573,7 @@ function check_alien($addon_files, $old_files, $files, $dir, $rela = '', $raw = 
                     $file_html = '';
                     $file_html .= '<li>';
                     if (!$raw) {
-                        $file_html .= '<input ' . $disabled . $checked . 'type="checkbox" name="' . uniqid('', true) . '" value="delete:' . escape_html($rela . $file) . '" /> ';
+                        $file_html .= '<input ' . $disabled . $checked . 'type="checkbox" name="' . uniqid('', true) . '" value="delete:' . escape_html(base64_encode($rela . $file)) . '" /> ';
                     }
                     $file_html .= '<kbd>' . escape_html($rela . $file) . '</kbd></li>' . "\n";
                     if (array_key_exists($rela . $file, $addon_files)) {
@@ -1612,14 +1612,14 @@ function _integrity_scan()
             $bits = explode(':', $val);
 
             if ($bits[0] == 'delete') {
-                afm_delete_file($bits[1]);
+                afm_delete_file(base64_decode($bits[1]));
             } elseif ($bits[0] == 'move') {
-                afm_delete_file($bits[2]);
-                afm_move($bits[1], $bits[2]);
+                afm_delete_file(base64_decode($bits[2]));
+                afm_move(base64_decode($bits[1]), base64_decode($bits[2]));
             }
 
             // Now delete empty directories
-            $_subdirs = explode('/', dirname($bits[1]));
+            $_subdirs = explode('/', dirname(base64_decode($bits[1])));
             $subdirs = array();
             $buildup = '';
             foreach ($_subdirs as $subdir) {
@@ -1709,6 +1709,9 @@ function version_specific()
                 'admin_ocf_welcome_emails' => 'admin_cns_welcome_emails',
                 'cms_cedi' => 'cms_wiki',
                 'cms_ocf_groups' => 'cms_cns_groups',
+                'lostpassword' => 'lost_password',
+                'admin_ipban' => 'admin_ip_ban',
+                'admin_emaillog' => 'admin_email_log',
             );
             foreach ($remap as $from => $to) {
                 $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $to));
@@ -1750,6 +1753,7 @@ function version_specific()
             }
 
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'ocf_\',\'cns_\')');
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'misc\',\'browse\')');
 
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values WHERE the_name LIKE \'' . db_encode_like('%cns_%') . '\'');
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_name=REPLACE(the_name,\'ocf_\',\'cns_\')');
@@ -1863,6 +1867,7 @@ function version_specific()
                 '# type=&quot;curved&quot;#' => '',
                 '#side_root_galleries#' => 'side_galleries',
                 '#\[block\]main_sitemap\[/block\]#' => '{$BLOCK,block=menu,param={$_GET,under},use_page_groupings=1,type=sitemap,quick_cache=1}',
+                '#\{\$BLOCK,main_sitemap\}#' => '{$BLOCK,block=menu,param={$_GET,under},use_page_groupings=1,type=sitemap,quick_cache=1}',
                 '#\[attachment([^\[\]]*)\]url_([^\[\]]*)\[/attachment[^\[\]]*\]#' => '[media$1]$2[/media]',
                 '#\{\$OCF#' => '{$CNS',
                 '#:misc#' => ':browse',

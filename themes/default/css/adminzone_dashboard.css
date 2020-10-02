@@ -6,7 +6,7 @@
 /* Checklist */
 
 a.top_left_toggleicon {
-	color: {$GET,inverted_text};
+	color: {$GET,slightly_seeded_pale_text};
 	padding: 1px 0 5px 28px !important;
 	font-size: 0.8em;
 	float: left;

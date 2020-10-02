@@ -50,7 +50,7 @@ class Hook_content_meta_aware_news_category
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
             'parent_spec__field_name' => null,
-            'category_field' => null, // For category permissions
+            'category_field' => 'id', // For category permissions
             'category_is_string' => false,
 
             'title_field' => 'nc_title',

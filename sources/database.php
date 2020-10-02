@@ -465,7 +465,7 @@ function db_escape_string($string)
  * Basic arithmetic and inequality operators are assumed supported without needing a function.
  *
  * @param string $function Function name
- * @set CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD GROUP_CONCAT X_ORDER_BY_BOOLEAN
+ * @set IFF CONCAT REPLACE SUBSTR LENGTH RAND COALESCE LEAST GREATEST MOD GROUP_CONCAT X_ORDER_BY_BOOLEAN
  * @param ?array $args List of string arguments, assumed already quoted/escaped correctly for the particular database (null: none)
  * @return string SQL fragment
  */
@@ -482,6 +482,33 @@ function db_function($function, $args = null)
     }
 
     switch ($function) {
+        case 'IFF':
+            /*
+                         CASE construct   IF func   IIF func   IF construct
+
+            mysql        Yes              Yes       No         IF...THEN...ELSEIF...ELSE...END IF
+            postgresql   Yes              No        No         IF...THEN...ELSIF...ELSE...END IF
+            sqlite       Yes              No        No         No
+            oracle       Yes              No        Yes        IF...THEN...ELSIF...ELSE...END IF
+            db2          Yes              No        No         IF...THEN...ELSEIF...ELSE...END IF
+            access       No               No        Yes        No
+            SQL server   Yes              No        Yes        IF...ELSE...
+
+            Anything supporting CASE supports both simple and complex forms, as both are standardised.
+            */
+            switch (get_db_type()) {
+                case 'mysql':
+                case 'mysqli':
+                case 'mysql_pdo':
+                case 'mysql_dbx':
+                    return 'IF(' . implode(',', $args) . ')';
+
+                case 'postgresql':
+                case 'sqlite':
+                case 'db2':
+                    return 'CASE WHEN ' . $args[0] . ' THEN ' . $args[1] . ' ELSE ' . $args[2] . ' END';
+            }
+
         case 'CONCAT':
             switch (get_db_type()) {
                 // Supported on most
@@ -1136,7 +1163,7 @@ class DatabaseConnector
                     if (is_integer($v)) {
                         $values .= strval($v);
                     } elseif (is_float($v)) {
-                        $values .= float_to_raw_string($v, 10);
+                        $values .= number_format($v, 10, '.', '');
                     } elseif (($key === 'begin_num') || ($key === 'end_num')) {
                         $values .= $v; // FUDGE: for all our known large unsigned integers
                     } else {
@@ -1216,7 +1243,7 @@ class DatabaseConnector
                 }
 
                 if (is_float($value)) {
-                    $where .= $key . '=' . float_to_raw_string($value, 10);
+                    $where .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $where .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -1452,7 +1479,7 @@ class DatabaseConnector
      * Lots of programmers like to do queries like this as it reduces the chance of accidentally forgetting to escape a parameter inserted directly/manually within a longer query.
      * Usually in Composr we use APIs like query_select, which avoids the need for SQL all-together, but this doesn't work for all patterns of query.
      *
-     * @param  string $query The complete SQL query
+     * @param  string $query The complete parameter-ready SQL query
      * @param  array $parameters The query parameters (a map)
      * @param  ?integer $max The maximum number of rows to affect (null: no limit)
      * @param  ?integer $start The start row to affect (null: no specification)
@@ -1464,29 +1491,98 @@ class DatabaseConnector
      */
     public function query_parameterised($query, $parameters, $max = null, $start = null, $fail_ok = false, $skip_safety_check = false, $lang_fields = null, $field_prefix = '')
     {
+        $query = $this->_query_parameterised($query, $parameters);
+        return $this->query($query, $max, $start, $fail_ok, $skip_safety_check, $lang_fields, $field_prefix);
+    }
+
+    /**
+     * Helper for query_parameterised.
+     *
+     * @param  string $query The complete parameter-ready SQL query
+     * @param  array $parameters The query parameters (a map)
+     * @return string Parameterised query
+     */
+    public function _query_parameterised($query, $parameters)
+    {
         if (isset($parameters['prefix'])) {
             warn_exit('prefix is a reserved parameter, you should not set it.');
         }
 
-        $parameters += array('prefix' => $this->get_table_prefix());
-        foreach ($parameters as $key => $val) {
-            if (!is_string($val)) {
-                $val = strval($val);
-            }
+        $val = mixed();
 
-            if ($key === 'prefix') {
-                // Special case, not within quotes.
-                $search = '#{' . preg_quote($key, '#') . '}#';
-                $replace = $val;
+        $len = strlen($query);
+        $current_parameter = null;
+        $query_new = '';
+        for ($i = 0; $i < $len; $i++) {
+            $c = $query[$i];
+            if ($current_parameter === null) {
+                if ($c == '{') {
+                    $current_parameter = '';
+                    $in_quotes_start = (($i > 0) && ($query[$i - 1] == "'"));
+                } else {
+                    $query_new .= $c;
+                }
             } else {
-                // NB: It will always add quotes around in the query (if not already there), as that is needed for escaping to be valid.
-                $search = '#\'?\{' . preg_quote($key, '#') . '\}\'?#';
-                $replace = '\'' . db_escape_string($val) . '\'';
+                if ($c == '}') {
+                    if ($current_parameter == 'prefix') {
+                        $query_new .= $this->get_table_prefix();
+                    } elseif (array_key_exists($current_parameter, $parameters)) {
+                        $in_quotes_end = (($i < $len - 1) && ($query[$i + 1] == "'"));
+
+                        $val = $parameters[$current_parameter];
+                        if (is_integer($val)) {
+                            $val = strval($val);
+
+                            if ($in_quotes_start || $in_quotes_end) {
+                                $val = db_escape_string($val);
+                            }
+                        } elseif (is_float($val)) {
+                            $val = number_format($val, 10, '.', '');
+
+                            if ($in_quotes_start || $in_quotes_end) {
+                                $val = db_escape_string($val);
+                            }
+                        } elseif (is_bool($val)) {
+                            $val = ($val ? '1' : '0');
+
+                            if ($in_quotes_start || $in_quotes_end) {
+                                $val = db_escape_string($val);
+                            }
+                        } elseif ($val === null) {
+                            $val = 'NULL';
+
+                            if ($in_quotes_start) {
+                                $query_new = substr($query_new, 0, strlen($query_new) - 1);
+                            }
+                            if ($in_quotes_end) {
+                                $i++;
+                            }
+                        } else {
+                            if (!is_string($val)) {
+                                $val = strval($val);
+                            }
+
+                            $val = db_escape_string($val);
+                            if (!$in_quotes_start) {
+                                $val = "'" . $val;
+                            }
+                            if (!$in_quotes_end) {
+                                $val .= "'";
+                            }
+                        }
+
+                        $query_new .= $val;
+                    } else {
+                        $query_new .= '{' . $current_parameter . '}'; // No match so leave alone
+                    }
+                    $current_parameter = null;
+                } else {
+                    $current_parameter .= $c;
+                }
             }
-            $query = preg_replace($search, $replace, $query);
         }
 
-        return $this->query($query, $max, $start, $fail_ok, $skip_safety_check, $lang_fields, $field_prefix);
+        return $query_new;
     }
 
     /**
@@ -1614,7 +1710,7 @@ class DatabaseConnector
 
         // Optimisation: Load language fields in advance so we don't need to do additional details when calling get_translated_* functions
         $lang_strings_expecting = array();
-        if ($lang_fields !== null) {
+        if (!empty($lang_fields)) {
             if (multi_lang_content()) {
                 if ((strpos($query, 'text_original') !== false) || (function_exists('user_lang')) && ((is_null($start)) || ($start < 200))) {
                     $lang = function_exists('user_lang') ? user_lang() : get_site_default_lang(); // We can we assume this, as we will cache against it -- if subsequently code wants something else it'd be a cache miss which is fine
@@ -1839,7 +1935,7 @@ class DatabaseConnector
                 }
 
                 if (is_float($value)) {
-                    $where .= $key . '=' . float_to_raw_string($value, 10);
+                    $where .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $where .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -1869,7 +1965,7 @@ class DatabaseConnector
                 $update .= $key . '=NULL';
             } else {
                 if (is_float($value)) {
-                    $update .= $key . '=' . float_to_raw_string($value, 10);
+                    $update .= $key . '=' . number_format($value, 10, '.', '');
                 } elseif (is_integer($value)) {
                     $update .= $key . '=' . strval($value);
                 } elseif (($key === 'begin_num') || ($key === 'end_num')) {
@@ -1919,7 +2015,7 @@ class DatabaseConnector
             }
 
             if (is_float($value)) {
-                $where .= $key . '=' . float_to_raw_string($value, 10);
+                $where .= $key . '=' . number_format($value, 10, '.', '');
             } elseif (is_integer($value)) {
                 $where .= $key . '=' . strval($value);
             } elseif (($key === 'begin_num') || ($key === 'end_num')) {
