@@ -240,13 +240,17 @@ class cms_test_case extends WebTestCase
             $GLOBALS['UNIT_TEST_WITH_DEBUG'] = true;
         }
 
+        $sections_run = 0;
+
         $sections_to_run = [];
         $sections_to_run[] = $category_label . ' \\ ' . $section_label;
 
         require_code('health_check');
         $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
         foreach ($hook_obs as $ob) {
-            list($category_label, $sections) = $ob->run($sections_to_run, $check_context, false, false, $use_test_data_for_pass);
+            list($category_label, $sections) = $ob->run($sections_to_run, $check_context | CHECK_CONTEXT__UNIT_TESTING, false, false, $use_test_data_for_pass);
+
+            $sections_run += count($sections);
 
             $_sections = [];
             foreach ($sections as $section_label => $results) {
@@ -254,6 +258,10 @@ class cms_test_case extends WebTestCase
                     $this->assertTrue($_result[0] == 'PASS', $_result[1]);
                 }
             }
+        }
+
+        if (($sections_to_run !== null) && ($sections_run < count($sections_to_run))) {
+            fatal_exit('Missing Health Check; possibly something needs configuring still for it to run');
         }
     }
 }

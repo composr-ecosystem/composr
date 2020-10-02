@@ -206,6 +206,9 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
         ],
         'async' => false,
     ];
+    if (ecommerce_test_mode()) {
+        $request['test'] = true;
+    }
     $_request = json_encode($request);
     require_code('character_sets');
     $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');

@@ -31,6 +31,7 @@ function init__health_check()
         define('CHECK_CONTEXT__LIVE_SITE', 2);
         define('CHECK_CONTEXT__PROBING_FOR_SECTIONS', 3);
         define('CHECK_CONTEXT__SPECIFIC_PAGE_LINKS', 4);
+        define('CHECK_CONTEXT__UNIT_TESTING', 8);
 
         define('HEALTH_CHECK__FAIL', 'FAIL');
         define('HEALTH_CHECK__PASS', 'PASS');
