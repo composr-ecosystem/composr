@@ -3470,7 +3470,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_fixed_width
         CONFIG_OPTION_force_guest_names
         CONFIG_OPTION_force_local_temp_dir
-        CONFIG_OPTION_force_meta_refresh
         CONFIG_OPTION_forced_preview_option
         CONFIG_OPTION_forum_in_portal
         CONFIG_OPTION_forum_in_portal__cns
@@ -5414,7 +5413,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FORCED_PREVIEW_OPTION
         FORCE_GUEST_NAMES
         FORCE_LOCAL_TEMP_DIR
-        FORCE_META_REFRESH
         FORCE_TEMPORARY_PASSWORD
         FORMATTING_SYMBOL__AT
         FORMATTING_SYMBOL__LCASE

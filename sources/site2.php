@@ -191,7 +191,7 @@ function assign_refresh($url, $multiplier = 0.0)
 
     global $FORCE_META_REFRESH;
 
-    if (($must_show_message) || (get_option('force_meta_refresh') == '1')) {
+    if ($must_show_message) {
         $FORCE_META_REFRESH = true;
     }
 

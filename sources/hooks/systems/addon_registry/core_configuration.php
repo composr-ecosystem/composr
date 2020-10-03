@@ -308,7 +308,6 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/enable_previews.php',
             'sources/hooks/systems/config/enable_spell_check.php',
             'sources/hooks/systems/config/enveloper_override.php',
-            'sources/hooks/systems/config/force_meta_refresh.php',
             'sources/hooks/systems/config/forum_in_portal.php',
             'sources/hooks/systems/config/forum_show_personal_stats_posts.php',
             'sources/hooks/systems/config/forum_show_personal_stats_topics.php',
