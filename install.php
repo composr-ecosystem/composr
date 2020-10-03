@@ -3299,7 +3299,7 @@ END;
 
         foreach ($clauses as $i => $clause) {
             cms_file_put_contents_safe(get_file_base() . '/exports/addons/index.php', "<" . "?php
-            header('Cache-Control: no-cache');
+            header('Cache-Control: no-store');
             ");
 
             cms_file_put_contents_safe(get_file_base() . '/exports/addons/.htaccess', $clause);

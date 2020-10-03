@@ -28,8 +28,6 @@ $test = setcookie(get_session_cookie(), $session_id, $timeout, get_cookie_path()
 header('X-Robots-Tag: noindex');
 @header_remove('x-powered-by'); // Security
 
-header('Cache-Control: no-cache');
-
 header('Content-Type: image/png');
 $img = imagecreatetruecolor(1, 1);
 imagesavealpha($img, true);

@@ -937,10 +937,12 @@ function get_domain()
 function set_http_caching($last_modified, $public = false, $expiry_seconds = 604800/*1 week*/)
 {
     if ($last_modified === null) {
-        @header('Cache-Control: no-cache');
+        @header('Cache-Control: no-store');
     } else {
         @header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $last_modified) . ' GMT');
-        @header('Cache-Control: ' . ($public ? 'public' : 'private') . 'max-age=' . strval($expiry_seconds));
+        @header('Cache-Control: ' . ($public ? 'public' : 'private') . '; max-age=' . strval($expiry_seconds));
+
+        // Default from PHP
         @header_remove('Pragma');
         @header_remove('Expires');
     }

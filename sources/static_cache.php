@@ -341,7 +341,7 @@ function static_cache($mode)
                     }
                 }
             } else {
-                @header('Cache-Control: no-cache');
+                @header('Cache-Control: no-store');
             }
 
             // Output
