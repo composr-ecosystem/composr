@@ -2146,6 +2146,13 @@ Do not omit semicolons
 | Product development only
 | Automated test ([tt]js_standards.php[/tt])
 | Use of [tt]{$PAGE_LINK}[/tt] will encode [tt]keep_[/tt] parameters, including potential session IDs. It must therefore be passed into JavaScript via an HTML [tt]data-[/tt] attribute, or you must generate with the [tt]{$PAGE_LINK}[/tt] parameter to avoid [tt]keep_[/tt] parameters and manually attach them using [tt]$cms.keep()[/tt] (being very careful on whether the existing URL does or doesn't have a [tt]?[/tt] in already, which may vary by URL scheme).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not break bfcache[/color]
+| Performance
+| Composr development +
+| Manually
+| Do not use JavaScript [tt]beforeunload[/tt] and [tt]unload[/tt] events, as it will turn off the bfcache in browsers that support it (particularly Firefox).
 |}
 
 [title="4"]Images[/title]
