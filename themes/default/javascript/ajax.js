@@ -632,7 +632,7 @@ function process_request_changes()
 				{
 					if (result_status==0) // 0 implies site down, or network down
 					{
-						if ((!window.network_down) && (!window.unloaded))
+						if (!window.network_down)
 						{
 							//window.fauxmodal_alert('{!NETWORK_DOWN;^}');	Annoying because it happens when unsleeping a laptop (for example)
 							window.network_down=true;
