@@ -1098,7 +1098,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             $db->dedupe_mode = true;
 
             cms_profile_start_for('SEARCH:t_keyword_search_rows_count');
-            $t_keyword_search_rows_count = $db->query_value_if_there($_count_query_keywords_search, true);
+            $t_keyword_search_rows_count = $db->query_value_if_there(remove_unneeded_joins_rough($_count_query_keywords_search), true);
             cms_profile_end_for('SEARCH:t_keyword_search_rows_count', $_count_query_keywords_search);
             if (is_null($t_keyword_search_rows_count)) {
                 $t_keyword_search_rows_count = MAXIMUM_RESULT_COUNT_POINT; // Too slow, so just put in a maximum
@@ -1106,7 +1106,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             $t_count += $t_keyword_search_rows_count;
 
             cms_profile_start_for('SEARCH:t_keyword_search_rows');
-            $t_keyword_search_rows = $db->query($keywords_query, $max + $start);
+            $t_keyword_search_rows = $db->query(remove_unneeded_joins_rough($keywords_query), $max + $start);
             cms_profile_end_for('SEARCH:t_keyword_search_rows', $keywords_query);
             if (is_null($t_keyword_search_rows)) {
                 warn_exit(do_lang_tempcode('SEARCH_QUERY_TOO_SLOW'));
@@ -1242,7 +1242,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
                 $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($main_query_part, $max + $start);
 
-                $main_query_parts[] = $main_query_part;
+                $main_query_parts[] = remove_unneeded_joins_rough($main_query_part);
             }
             foreach ($main_query_parts as $part_i => $main_query_part) {
                 if ($part_i != 0) {
@@ -1272,12 +1272,12 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                     $where_clause_3 = $where_clause_2 . (($where_clause_3 == '') ? '' : ((($where_clause_2 == '') ? '' : ' AND ') . $where_clause_3));
 
                     if (!db_has_subqueries($db->connection_read)) {
-                        $_query .= '(SELECT COUNT(*) FROM ' . $_table_clause . (($where_clause_3 == '') ? '' : (' WHERE ' . $where_clause_3)) . ')';
+                        $_query .= remove_unneeded_joins_rough('(SELECT COUNT(*) FROM ' . $_table_clause . (($where_clause_3 == '') ? '' : (' WHERE ' . $where_clause_3)) . ')');
                     } else { // Has to do a nested subquery to reduce scope of COUNT(*), because the unbounded full-text's binary tree descendance can be extremely slow on physical disks if common words exist that aren't defined as MySQL stop words
                         $tmp_subquery = 'SELECT 1 AS x FROM ' . $_table_clause . (($where_clause_3 == '') ? '' : (' WHERE ' . $where_clause_3));
                         $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($tmp_subquery, MAXIMUM_RESULT_COUNT_POINT);
 
-                        $_query .= '(SELECT COUNT(*) FROM (' . $tmp_subquery . ') counter)';
+                        $_query .= remove_unneeded_joins_rough('(SELECT COUNT(*) FROM (' . $tmp_subquery . ') counter)');
                     }
                 }
                 $_count_query_main_search = 'SELECT (' . $_query . ')';
@@ -1304,7 +1304,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             $db->dedupe_mode = true;
 
             cms_profile_start_for('SEARCH:t_main_search_rows_count');
-            $t_main_search_rows_count = $db->query_value_if_there($_count_query_main_search);
+            $t_main_search_rows_count = $db->query_value_if_there(remove_unneeded_joins_rough($_count_query_main_search));
             if (is_null($t_main_search_rows_count)) {
                 $t_main_search_rows_count = MAXIMUM_RESULT_COUNT_POINT; // Too slow, so just put in a maximum
             }
@@ -1312,7 +1312,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             $t_count += $t_main_search_rows_count;
 
             cms_profile_start_for('SEARCH:t_main_search_rows');
-            $t_main_search_rows = $db->query($query, $max + $start, null, false, true);
+            $t_main_search_rows = $db->query(remove_unneeded_joins_rough($query), $max + $start, null, false, true);
             cms_profile_end_for('SEARCH:t_main_search_rows', $query);
             if (is_null($t_main_search_rows)) {
                 warn_exit(do_lang_tempcode('SEARCH_QUERY_TOO_SLOW'));
@@ -1468,12 +1468,12 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             $db->dedupe_mode = true;
 
             cms_profile_start_for('SEARCH:t_main_search_rows_count');
-            $t_main_search_rows_count = $db->query_value_if_there($_count_query_main_search);
+            $t_main_search_rows_count = $db->query_value_if_there(remove_unneeded_joins_rough($_count_query_main_search));
             cms_profile_end_for('SEARCH:t_main_search_rows_count', $_count_query_main_search);
             $t_count += $t_main_search_rows_count;
 
             cms_profile_start_for('SEARCH:t_main_search_rows');
-            $t_main_search_rows = $db->query($query, $max + $start, null, false, true/*, $fields Actually will hurt performance - we usually won't show text_parsed fields as we re-parse Comcode with syntax highlighting*/);
+            $t_main_search_rows = $db->query(remove_unneeded_joins_rough($query), $max + $start, null, false, true/*, $fields Actually will hurt performance - we usually won't show text_parsed fields as we re-parse Comcode with syntax highlighting*/);
             cms_profile_end_for('SEARCH:t_main_search_rows', $query);
             if ($t_main_search_rows === null) {
                 $t_main_search_rows = array(); // In case of a failed search query
@@ -1549,6 +1549,54 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
     }
 
     return $final_result_rows;
+}
+
+/**
+ * Optimise out JOIN queries we don't need, using a fairly simple MySQL-centric algorithm.
+ * We do this as apparently on at least some MySQL versions unused LEFT JOINs are not optimised out.
+ * Assumes that any fields from a join are referenced using the JOINs alias.
+ *
+ * @param  string $query The SQL query
+ * @return string Optimised query
+ */
+function remove_unneeded_joins_rough($query)
+{
+    $left_joins = array();
+
+    $max = 0;
+    $matches = array();
+    $matches2 = array();
+    do {
+        $l_pos = strpos($query, ' LEFT JOIN ', $max);
+        if ($l_pos !== false) {
+            $match_attempt = preg_match('#^( LEFT JOIN \w+( AS)? (\w+) ON )(.*)#', substr($query, $l_pos), $matches);
+            if ($match_attempt != 0) {
+                $join_length = strlen($matches[1]); // Will be incremented
+                $alias = $matches[3];
+                $equate_term_1 = '[\w\.]+=[\w\.]+';
+                $equate_term_2 = '[\w\.]+=\'[^\']+\'';
+                $equate_term_3 = '[\w\.]+=CAST\([\w\.]+ AS \w+(\(\d+\))?\)';
+                $equate_terms = '(' . implode('|', array($equate_term_1, $equate_term_2, $equate_term_3)) . ')';
+                $multiplied_equate_terms = $equate_terms . '( AND ' . $equate_terms . ')*';
+                $components = preg_match('#^(\(' . $multiplied_equate_terms . '\)|' . $multiplied_equate_terms . ')(?= (LEFT|JOIN|WHERE))#', $matches[4], $matches2);
+                if ($components != 0) {
+                    $join_length += strlen($matches2[0]);
+                    $left_joins[$alias] = substr($query, $l_pos, $join_length);
+                }
+            }
+            $max = $l_pos + 1;
+        }
+    } while ($l_pos !== false);
+
+    $left_joins = array_reverse($left_joins, true);
+    foreach ($left_joins as $alias => $join) {
+        if (preg_match('#[\(\s=]' . $alias . '\.#', str_replace($join, '', $query)) == 0) {
+            // Alias not used
+            $query = str_replace($join, '', $query);
+        }
+    }
+
+    return $query;
 }
 
 /**
