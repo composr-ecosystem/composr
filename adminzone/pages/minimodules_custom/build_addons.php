@@ -45,7 +45,7 @@ if (strpos(PHP_OS, 'Darwin') !== false) {
 } elseif (strpos(PHP_OS, 'WIN') !== false) {
     $command_to_try = 'start';
 } else {
-    $command_to_try = 'gnome-open';
+    $command_to_try = 'nautilus';
 }
 $command_to_try .= ' ' . get_custom_file_base() . '/exports/addons/';
 
@@ -62,6 +62,8 @@ require_code('tar');
 require_code('addon_publish');
 
 cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+
+disable_php_memory_limit();
 
 $only = get_param_string('only', null);
 

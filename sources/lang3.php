@@ -582,12 +582,22 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
                 }
                 $result = array_key_exists(0, $result) ? $result[0] : null;
 
+<<<<<<< HEAD
                 push_lax_comcode(true);
                 _lang_remap($field_name, $entry, ($result === null) ? '' : $result['text_original'], $db, true, null, $result['source_user'], $as_admin, true);
                 if ($SEARCH_QUERY_TERMS !== null) {
                     $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, $db, COMCODE_NORMAL, $SEARCH_QUERY_TERMS);
                     pop_lax_comcode();
                     pop_query_limiting();
+=======
+                $temp = $LAX_COMCODE;
+                $LAX_COMCODE = true;
+                _lang_remap($field_name, $entry, ($result === null) ? '' : $result['text_original'], $connection, true, null, ($result === null) ? null : $result['source_user'], $as_admin, true);
+                if ($SEARCH__CONTENT_BITS !== null) {
+                    $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, null, $connection, false, false, false, false, false, $SEARCH__CONTENT_BITS);
+                    $LAX_COMCODE = $temp;
+                    $GLOBALS['NO_QUERY_LIMIT'] = $nql_backup;
+>>>>>>> master
                     return $ret;
                 }
                 pop_lax_comcode();
