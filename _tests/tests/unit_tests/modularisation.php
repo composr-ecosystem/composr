@@ -133,7 +133,7 @@ class modularisation_test_set extends cms_test_case
                 continue;
             }
 
-            if (preg_match('#^tracker/uploads/#', $dir . $file) == 0) {
+            if (preg_match('#^tracker/uploads/#', $dir . $file) != 0) {
                 continue;
             }
 

@@ -448,11 +448,13 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
                                              'persistant_cache' => '', // Old misspelling
                                              'mods' => 'imports|exports',
 
-                                             // Prep for v11
+                                             // Prep for v11 (TODO: Fix in v11)
                                              '_meta_tree' => '.*',
                                              'temp' => '',
                                              'captcha' => 'uploads',
                                              'http' => 'caches',
+                                             'static' => 'caches',
+                                             'latest_activity.bin' => 'data_custom',
     );
 
     $ignore_extensions = array( // Case insensitive, define in lower case
@@ -494,6 +496,9 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
                                 'clpprj' => '', // Code Lobster
                                 'csprj' => '', // Code Lobster
                                 'geany' => '', // Geany
+
+                                 // Prep for v11 (TODO: Fix in v11)
+                                 'br' => '.*',
     );
 
     $ignore_filename_and_dir_name_patterns = array( // Case insensitive
@@ -639,6 +644,7 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
         }
 
         $ignore_extensions['xml'] = 'data_custom/sitemaps';
+        $ignore_extensions['gz'] .= '|data_custom/sitemaps';
     }
 
     $filename_lower = strtolower($filename);
