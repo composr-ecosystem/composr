@@ -55,7 +55,7 @@ class _tutorial_quality_test_set extends cms_test_case
                 }
 
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
-                check_comcode($c); // This is quite slow
+                check_comcode($c, null, true); // This is quite slow
             }
         }
         closedir($dh);

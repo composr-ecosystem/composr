@@ -3982,11 +3982,6 @@ div.wysiwyg-toolbar-color-finder {
 	display: inline-block;
 }
 
-.loading-box {
-	width: 10em;
-	display: inline-block;
-}
-
 .ajax-loading-block {
 	padding: 2em 6em;
 	margin-top: -2em;

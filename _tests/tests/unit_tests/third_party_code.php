@@ -59,6 +59,7 @@ class third_party_code_test_set extends cms_test_case
                 '_old',
                 'themes/_unnamed_/templates_cached/EN',
                 'vendor',
+                'uploads/website_specific/test',
             ])) {
                 continue;
             }

@@ -127,7 +127,7 @@ abstract class Database_super_mysql extends DatabaseDriver
     {
         switch ($type) {
             case 'CHAR':
-                $_type = $type . '(65535)';
+                $_type = $type . '(20)';
                 break;
 
             case 'INT':

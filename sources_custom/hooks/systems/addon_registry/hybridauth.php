@@ -106,7 +106,7 @@ Hybridauth supports many providers (around 50), and likely will support more in 
 * These do not support avatars/photos, which you might care about when deciding what login options to feature.
 
 For the full list of login options and integration notes refer to the list of providers on the [url="Hybridauth website"]https://hybridauth.github.io/hybridauth/[/url], and the code comments in the [tt]sources_custom/hybridauth/Provider[/tt] files.
-We expect any Hybridauth provider will work with Composr, but we have not tested or optimized any not listed in this documentation.
+We expect any Hybridauth provider will work with Composr, but we have not tested or optimised any not listed in this documentation.
 
 [title="2"]Setting up providers[/title]
 

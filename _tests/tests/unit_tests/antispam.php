@@ -69,11 +69,11 @@ class antispam_test_set extends cms_test_case
 
     public function testTornevallSubmit()
     {
-        $this->assertTrue(is_string(http_get_contents('https://www.tornevall.net/', ['timeout' => 20.0]))); // Very rough, at least tells us URL still exists
+        $this->assertTrue(is_string(http_get_contents('https://www.tornevall.net/', ['timeout' => 20.0, 'trigger_error' => false]))); // Very rough, at least tells us URL still exists
     }
 
     public function testStopForumSpamSubmit()
     {
-        $this->assertTrue(is_string(http_get_contents('https://www.stopforumspam.com/add.php', ['timeout' => 20.0]))); // Very rough, at least tells us URL still exists
+        $this->assertTrue(is_string(http_get_contents('https://www.stopforumspam.com/add.php', ['timeout' => 20.0, 'trigger_error' => false]))); // Very rough, at least tells us URL still exists
     }
 }
