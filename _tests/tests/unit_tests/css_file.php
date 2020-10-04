@@ -517,7 +517,6 @@ class css_file_test_set extends cms_test_case
             'scroll_thumbs',
             'selected',
             'site-special-message-alt-inner',
-            'site-unloading',
             'sitewide-im-popup-body',
             'skip-step-button-wrap-with-req-note',
             'sku',

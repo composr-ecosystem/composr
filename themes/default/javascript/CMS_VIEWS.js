@@ -1350,14 +1350,6 @@
 
         loadStuffStaff: function () {
             var loc = window.location.href;
-            // Navigation loading screen
-            if ($cms.configOption('enable_animations')) {
-                if ((window.parent === window) && ($cms.pageUrl().searchParams.get('js_cache') !== '1') && (loc.includes('/cms/') || loc.includes('/adminzone/'))) {
-                    window.addEventListener('beforeunload', function () {
-                        staffUnloadAction();
-                    });
-                }
-            }
 
             // Theme image editing hovers
             var els = $dom.$$('*:not(.no-theme-img-click)'), i, el, isImage;
@@ -1393,50 +1385,6 @@
                         }
                     });
                 }
-            }
-
-            /* Screen transition, for staff */
-            function staffUnloadAction() {
-                $cms.undoStaffUnloadAction();
-
-                // If clicking a download link then don't show the animation
-                if (document.activeElement && (document.activeElement.href != null)) {
-                    var url = document.activeElement.href.replace(/.*:\/\/[^\/:]+/, '');
-                    if (url.includes('download') || url.includes('export')) {
-                        return;
-                    }
-                }
-
-                // If doing a meta refresh then don't show the animation
-                if (document.querySelector('meta[http-equiv="Refresh"]')) {
-                    return;
-                }
-
-                // Show the animation
-                var bi = $dom.$id('main-website-inner');
-                if (bi) {
-                    bi.classList.add('site-unloading');
-                    $dom.fadeTo(bi, null, 0.2);
-                }
-                var div = document.createElement('div');
-                div.className = 'unload_action';
-                div.style.width = '100%';
-                div.style.top = ($dom.getWindowHeight() / 2 - 160) + 'px';
-                div.style.position = 'fixed';
-                div.style.zIndex = 10000;
-                div.style.textAlign = 'center';
-                // Intentionally using $IMG instead of $IMG_INLINE as data URIs trigger a CSP warning when used during a 'beforeunload' event handler for some reason.
-                $dom.html(div, '<div aria-busy="true" class="loading-box box"><div class="box-inner"><h2>{!LOADING;^}</h2><img id="loading-image" alt="" width="20" height="20" src="' + $util.srl('{$IMG*;,loading}') + '" /></div></div>');
-                setTimeout(function () {
-                    // Stupid workaround for Google Chrome not loading an image on unload even if in cache
-                    if ($dom.$('#loading-image')) {
-                        $dom.$('#loading-image').src = String($dom.$('#loading-image').src);
-                    }
-                }, 100);
-                document.body.appendChild(div);
-
-                // Allow unloading of the animation
-                $dom.on(window, 'pageshow keydown click', $cms.undoStaffUnloadAction);
             }
 
             /*
@@ -1627,10 +1575,6 @@
                 }
                 return false;
             };
-
-            window.addEventListener('beforeunload', function () {
-                window.onerror = null;
-            });
         }
     });
 
@@ -2001,10 +1945,6 @@
 
         this.$('.menu-dropdown-items-main').addEventListener('scroll', function () {
             that.el.classList.toggle('is-items-main-scrolled-inside', (this.scrollTop > 0));
-        });
-
-        window.addEventListener('beforeunload', function () {
-            that.unsetActiveMenuInstantly();
         });
     }
 

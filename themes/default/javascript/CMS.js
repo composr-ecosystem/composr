@@ -939,27 +939,6 @@
         });
     };
 
-    // Serves as a flag to indicate any new errors are probably due to us transitioning
-    window.unloaded = Boolean(window.unloaded);
-    window.addEventListener('beforeunload', function () {
-        window.unloaded = true;
-    });
-
-    /**
-     * @memberof $cms
-     */
-    $cms.undoStaffUnloadAction = function undoStaffUnloadAction() {
-        var pre = document.body.querySelectorAll('.unload_action');
-        for (var i = 0; i < pre.length; i++) {
-            pre[i].parentNode.removeChild(pre[i]);
-        }
-        var bi = $dom.$id('main-website-inner');
-        if (bi) {
-            bi.classList.remove('site-unloading');
-            $dom.fadeTo(bi, null, 1.0);
-        }
-    };
-
     /**
      * Making the height of a textarea match its contents
      * @memberof $cms
@@ -1293,7 +1272,7 @@
 
                 try {
                     if ((xhr.status === 0) || (xhr.status > 10000)) { // implies site down, or network down
-                        if (!networkDownAlerted && !window.unloaded) {
+                        if (!networkDownAlerted) {
                             //$cms.ui.alert('{!NETWORK_DOWN;^}');   Annoying because it happens when unsleeping a laptop (for example)
                             networkDownAlerted = true;
                         }

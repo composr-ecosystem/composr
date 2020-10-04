@@ -761,9 +761,6 @@
         function templateEditorAssignUnloadEvent() {
             window.addEventListener('beforeunload', function (event) {
                 if (document.querySelector('.file-changed')) {
-                    $cms.undoStaffUnloadAction();
-                    window.unloaded = false;
-
                     var ret = '{!themes:UNSAVED_TEMPLATE_CHANGES;^}';
                     event.returnValue = ret; // Workaround Chrome issue (explained on https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload)
                     return ret;
