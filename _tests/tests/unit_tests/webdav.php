@@ -20,6 +20,8 @@ class webdav_test_set extends cms_test_case
 {
     public function testWebdav()
     {
+        $this->assertTrue(empty($GLOBALS['SITE_INFO']['backdoor_ip']), 'Backdoor to IP address present, may break other tests');
+
         if (!addon_installed('webdav')) {
             $this->assertTrue(false, 'The webdav addon must be installed for this test to run');
             return;

@@ -435,6 +435,10 @@ namespace webdav_commandr_fs {
          */
         public function validateUserPass($username, $password)
         {
+            if (empty($username)) {
+                return false;
+            }
+
             $password_hashed = $GLOBALS['FORUM_DRIVER']->forum_md5($password, $username);
             $result = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, $password_hashed, $password);
             if ($result['id'] === null) { // Failure, try blank password (as some clients don't let us input a blank password, so the real password could be blank)
