@@ -49,7 +49,7 @@ The upgrade process involves a number of stages (the upgrader will step you thro
 
 Pre-steps:
 [list="1"]
-[*] get to the upgrader, either via the upgrade link from the top-right of the Admin Zone dashboard, or going to [tt]http://yourbaseurl/upgrader.php[/tt]
+[*] get to the upgrader, either via the upgrade link from the top-right of the Admin Zone dashboard (which may take up to 3 hours to update), or going to [tt]http://yourbaseurl/upgrader.php[/tt]
 [*] log in to the upgrader using your master password (the one you set when you installed, different to your admin login)
 [/list]
 
