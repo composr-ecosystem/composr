@@ -2450,10 +2450,6 @@ div.wysiwyg_toolbar_color_finder {
 	display: inline-block;
 }
 
-.loading_box {
-	width: 10em;
-	display: inline-block;
-}
 .site_unloading {
 	{$BETA_CSS_PROPERTY,opacity: 0.2;}
 }
