@@ -76,6 +76,10 @@ class Database_Static_mysql_dbx extends Database_super_mysql
             $SITE_INFO['database_charset'] = (get_charset() == 'utf-8') ? 'utf8mb4' : 'latin1';
         }
         @dbx_query($db, 'SET NAMES "' . addslashes($SITE_INFO['database_charset']) . '"');
+        if (!empty($SITE_INFO['database_collation'])) {
+            @dbx_query($db, 'SET collation_connection=' . $SITE_INFO['database_collation']);
+        }
+
         @dbx_query($db, 'SET wait_timeout=28800');
         @dbx_query($db, 'SET sql_big_selects=1');
         if ((get_forum_type() == 'cns') && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {
