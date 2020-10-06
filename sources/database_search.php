@@ -1241,7 +1241,6 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                 }
 
                 $GLOBALS['SITE_DB']->static_ob->apply_sql_limit_clause($main_query_part, $max + $start);
-
                 $main_query_parts[] = remove_unneeded_joins_rough($main_query_part);
             }
             foreach ($main_query_parts as $part_i => $main_query_part) {
@@ -1590,7 +1589,7 @@ function remove_unneeded_joins_rough($query)
 
     $left_joins = array_reverse($left_joins, true);
     foreach ($left_joins as $alias => $join) {
-        if (preg_match('#[\(\s=]' . $alias . '\.#', str_replace($join, '', $query)) == 0) {
+        if (preg_match('#[\(\s=,]' . $alias . '\.#', str_replace($join, '', $query)) == 0) {
             // Alias not used
             $query = str_replace($join, '', $query);
         }
