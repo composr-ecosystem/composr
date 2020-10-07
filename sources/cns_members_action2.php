@@ -2554,7 +2554,7 @@ function rebuild_all_cpf_indices($leave_existing = false)
         $type = $field['cf_type'];
         list($_type) = get_cpf_storage_for($type);
 
-        $okay = build_cpf_indices($id, $field['cf_include_in_main_search'] == 1, $type, $_type);
+        $okay = build_cpf_indices($id, $field['cf_include_in_main_search'] == 1, $type, $_type, true);
         if (!$okay) { // Limit was hit
             break;
         }

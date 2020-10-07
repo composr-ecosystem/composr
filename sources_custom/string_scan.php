@@ -113,6 +113,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        CREATE_INDEX
         COMPOSR_FAST_CUSTOM_INDEX__COUNT_ESTIMATE
         JAVASCRIPT_ERROR_ALERTS
         CONFIG_OPTION_javascript_error_alerts

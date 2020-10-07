@@ -1310,6 +1310,7 @@ class Hook_addon_registry_core
             'sources/sitemap_ajax.php',
             'sources/sitemap_xml.php',
             'sources/hooks/systems/tasks/sitemap.php',
+            'sources/hooks/systems/tasks/create_index.php',
             'sources/hooks/systems/cron/sitemap.php',
             'themes/default/templates/IP_BAN_SCREEN.tpl',
             'themes/default/templates/LOOKUP_IP_LIST_GROUP.tpl',

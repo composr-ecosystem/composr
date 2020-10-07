@@ -638,11 +638,13 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
  * @param  boolean $index Whether an index is needed for search purposes (there may be other reasons though)
  * @param  ID_TEXT $type CPF type
  * @param  ID_TEXT $db_type Underlying field type
+ * @param  boolean $immediate Whether to create the indexes immediately (as opposed to doing it in a task)
  * @return boolean If the operation could succeed (false means limit hit)
  */
-function build_cpf_indices($id, $index, $type, $db_type)
+function build_cpf_indices($id, $index, $type, $db_type, $immediate = false)
 {
     $indices_count = $GLOBALS['FORUM_DB']->query_select_value('db_meta_indices', 'COUNT(*)', ['i_table' => 'f_member_custom_fields']);
+    $indices_count += $GLOBALS['FORUM_DB']->query_select_value('task_queue', 'COUNT(*)', ['t_hook' => 'create_index']);
     if ($indices_count >= 60) { // Could be 64 but trying to be careful here (at least one is reserved for primary key, and we may create 2 indexes here)...
         return false;
     }
@@ -650,13 +652,15 @@ function build_cpf_indices($id, $index, $type, $db_type)
     $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'field_' . strval($id)); // LEGACY
 
     if ($index) {
+        require_code('tasks');
+
         if ((strpos($db_type, 'LONG_') === false) && ((strpos($db_type, '_TRANS') === false) || (!multi_lang_content()))) {
-            $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id');
+            call_user_func_array__long_task(do_lang('CREATE_INDEX'), null, 'create_index', ['FORUM_DB', ['f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id']], false, $immediate);
         } else {
             $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
         }
         if ((strpos($db_type, '_TEXT') !== false) || ((strpos($db_type, '_TRANS') !== false) && (!multi_lang_content()/*already would have due to translate table*/))) {
-            $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', '#mcf_ft_' . strval($id), ['field_' . strval($id)], 'mf_member_id');
+            call_user_func_array__long_task(do_lang('CREATE_INDEX'), null, 'create_index', ['FORUM_DB', ['f_member_custom_fields', '#mcf_ft_' . strval($id), ['field_' . strval($id)], 'mf_member_id']], false, $immediate);
         } else {
             $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
         }

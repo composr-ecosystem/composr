@@ -463,6 +463,8 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/config/new_member_default_temporary_password.php',
             'sources/cns_field_editability.php',
             'sources/hooks/systems/tasks/export_members.php',
+            'sources/hooks/systems/tasks/rebuild_all_cpf_indices.php',
+            'sources/hooks/systems/cleanup/rebuild_all_cpf_indices.php',
             'sources/hooks/systems/tasks/cns_members_recache.php',
             'sources/hooks/systems/tasks/import_members.php',
             'sources/blocks/main_members.php',
