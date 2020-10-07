@@ -324,7 +324,7 @@ function phase_2()
             Tag the release with <kbd>git commit -a -m "New build"; git push; git tag ' . escape_html(str_replace(' ', '-', $version_dotted)) . ' ; git push origin ' . escape_html(str_replace(' ', '-', $version_dotted)) . '</kbd>
         </li>
         <li>
-            <strong>Add to compo.sr</strong>: Run the <form target="_blank" onclick="window.setTimeout($cms.undoStaffUnloadAction,1000);" style="display: inline" action="' . escape_html($push_url) . '" method="post">' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '<input type="hidden" name="changes" value="' . escape_html($changes) . '" /><button class="hyperlink-button" type="submit">compo.sr setup script</button></form>. Note if you are re-releasing, this will still work &ndash; it will update existing entries appropriately.
+            <strong>Add to compo.sr</strong>: Run the <form target="_blank" style="display: inline" action="' . escape_html($push_url) . '" method="post">' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '<input type="hidden" name="changes" value="' . escape_html($changes) . '" /><button class="hyperlink-button" type="submit">compo.sr setup script</button></form>. Note if you are re-releasing, this will still work &ndash; it will update existing entries appropriately.
         </li>
         <li>
             <strong>Test</strong>: Go to <a target="_blank" href="https://compo.sr/download.htm">Composr download page</a> to ensure the right packages are there and no error messages display.

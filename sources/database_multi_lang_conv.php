@@ -27,6 +27,11 @@ function rebuild_indices($only_trans = false)
 {
     global $TABLE_LANG_FIELDS_CACHE;
 
+    if (get_forum_type() == 'cns') {
+        require_code('cns_members_action2');
+        rebuild_all_cpf_indices();
+    }
+
     push_db_scope_check(false);
 
     $indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['*']);
@@ -86,7 +91,7 @@ function disable_content_translation()
             if ($sub_name == $field['m_name'] . '__' . 'text_parsed') {
                 //$query .= ' DEFAULT \'\''; Gives "BLOB, TEXT, GEOMETRY or JSON column 'xxx__text_parsed' can't have a default value"
             } elseif ($sub_name == $field['m_name'] . '__' . 'new') {
-                $query .= ' DEFAULT \'\''; // Has a default of '' for now, will be removed further down
+                //Actually this causes issues in at least MySQL 5.6 and MySQL 8.0 (defaults not allowed for blobby fields) $query .= ' DEFAULT \'\''; // Has a default of '' for now, will be removed further down
             } elseif ($sub_name == $field['m_name'] . '__' . 'source_user') {
                 $query .= ' DEFAULT ' . strval(db_get_first_id());
             }

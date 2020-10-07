@@ -1491,10 +1491,7 @@ function cns_edit_custom_field($id, $name, $description, $default, $public_view,
 
     require_code('cns_members_action');
 
-    list($_type, $index) = get_cpf_storage_for($type);
-
-    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
-    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
+    list($_type) = get_cpf_storage_for($type);
 
     if (is_object($GLOBALS['FORUM_DB']->connection_read)) {
         $smq = $GLOBALS['FORUM_DB']->strict_mode_query(false);
@@ -1504,7 +1501,7 @@ function cns_edit_custom_field($id, $name, $description, $default, $public_view,
     }
     $GLOBALS['FORUM_DB']->alter_table_field('f_member_custom_fields', 'field_' . strval($id), $_type); // LEGACY: Field type should not have changed, but bugs can happen, especially between CMS versions, so we allow a CPF edit as a "fixup" op
 
-    build_cpf_indices($id, $index, $type, $_type);
+    build_cpf_indices($id, $include_in_main_search == 1, $type, $_type);
 
     log_it('EDIT_CUSTOM_PROFILE_FIELD', strval($id), $name);
 
@@ -1537,7 +1534,8 @@ function cns_delete_custom_field($id)
 
     delete_lang($_name, $GLOBALS['FORUM_DB']);
     delete_lang($_description, $GLOBALS['FORUM_DB']);
-    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf' . strval($id));
+    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
+    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
     $GLOBALS['FORUM_DB']->delete_table_field('f_member_custom_fields', 'field_' . strval($id));
     $GLOBALS['FORUM_DB']->query_delete('f_custom_fields', ['id' => $id], '', 1);
 
@@ -2520,28 +2518,32 @@ function cns_make_predefined_content_field($type)
 
 /**
  * Rebuild custom profile field indices.
- * It is possible for these to get in a mess, especially when upgrading from old versions, or tweaking which of the maximum of 60 to have.
+ *
+ * @param  boolean $leave_existing Whether to leave existing indexes alone (may be useful as deleting then recreating indexes can be very slow).
  */
-function rebuild_all_cpf_indices()
+function rebuild_all_cpf_indices($leave_existing = false)
 {
     push_query_limiting(false);
 
     $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['*'], [], 'ORDER BY cf_include_in_main_search DESC,cf_required+cf_show_on_join_form DESC,cf_public_view+cf_owner_set DESC,cf_order DESC');
 
-    // Delete existing indexes
-    foreach ($fields as $field) {
-        $id = $field['id'];
+    if (!$leave_existing) {
+        // Delete existing indexes
+        foreach ($fields as $field) {
+            $id = $field['id'];
 
-        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
-        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
-    }
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'field_' . strval($id)); // LEGACY
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
+        }
 
-    // Delete any stragglers (already deleted fields or inconsistent naming)
-    $GLOBALS['FORUM_DB']->query_delete('db_meta_indices', ['i_table' => 'f_member_custom_fields']);
-    if (strpos(get_db_type(), 'mysql') !== false) {
-        $indexes = $GLOBALS['FORUM_DB']->query('SHOW INDEXES FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields WHERE Column_name<>\'mf_member_id\'');
-        foreach ($indexes as $index) {
-            $GLOBALS['FORUM_DB']->query('DROP INDEX ' . $index['Key_name'] . ' ON ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields');
+        // Delete any stragglers (already deleted fields or inconsistent naming)
+        $GLOBALS['FORUM_DB']->query_delete('db_meta_indices', ['i_table' => 'f_member_custom_fields']);
+        if (strpos(get_db_type(), 'mysql') !== false) {
+            $indexes = $GLOBALS['FORUM_DB']->query('SHOW INDEXES FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields WHERE Column_name<>\'mf_member_id\'');
+            foreach ($indexes as $index) {
+                $GLOBALS['FORUM_DB']->query('DROP INDEX ' . $index['Key_name'] . ' ON ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields');
+            }
         }
     }
 
@@ -2550,9 +2552,9 @@ function rebuild_all_cpf_indices()
     foreach ($fields as $field) {
         $id = $field['id'];
         $type = $field['cf_type'];
-        list($_type, $index) = get_cpf_storage_for($type);
+        list($_type) = get_cpf_storage_for($type);
 
-        $okay = build_cpf_indices($id, $index, $type, $_type);
+        $okay = build_cpf_indices($id, $field['cf_include_in_main_search'] == 1, $type, $_type);
         if (!$okay) { // Limit was hit
             break;
         }

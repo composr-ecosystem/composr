@@ -366,7 +366,7 @@ function install_cns($upgrade_from = null)
         foreach ($fields as $field) {
             $id = $field['id'];
             $type = $field['cf_type'];
-            list($_type, $index) = get_cpf_storage_for($type);
+            list($_type) = get_cpf_storage_for($type);
 
             $id = $field['id'];
 

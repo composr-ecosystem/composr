@@ -2458,7 +2458,7 @@ function remove_unneeded_joins_rough($query)
 
     $left_joins = array_reverse($left_joins, true);
     foreach ($left_joins as $alias => $join) {
-        if (preg_match('#[\(\s=]' . $alias . '\.#', str_replace($join, '', $query)) == 0) {
+        if (preg_match('#[\(\s=,]' . $alias . '\.#', str_replace($join, '', $query)) == 0) {
             // Alias not used
             $query = str_replace($join, '', $query);
         }

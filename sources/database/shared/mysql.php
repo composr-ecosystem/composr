@@ -277,13 +277,52 @@ abstract class Database_super_mysql extends DatabaseDriver
 
         $queries = [];
 
-        $queries[] = 'SET wait_timeout=28800';
-        $queries[] = 'SET sql_big_selects=1';
-        $queries[] = 'SET max_allowed_packet=104857600';
+        // We'll do all the SETs in a single query
+        //  This is good for performance
+        //  However, if any option doesn't exist it will give an error
+        //  So it is possible in the future ones might need to be done individually
 
-        $queries[] = $this->strict_mode_query(true);
+        if (!empty($SITE_INFO['database_collation'])) {
+            $set['collation_connection'] = $SITE_INFO['database_collation'];
+        }
+
+        $set['wait_timeout'] = 28800;
+        $set['sql_big_selects'] = 1;
+        //$set['max_allowed_packet'] = 104857600;   Can not be set for a session, only globally
+
+        $set['sql_mode'] = $this->_strict_mode_query(true);
+
+        $set_query = '';
+        foreach ($set as $key => $value) {
+            if ($set_query != '') {
+                $set_query .= ', ';
+            }
+            if (is_string($value)) {
+                $set_query .= $key . '=\'' . $value . '\'';
+            } else {
+                $set_query .= $key . '=' . $value;
+            }
+        }
+        $queries[] = 'SET ' . $set_query;
 
         return $queries;
+    }
+
+    /**
+     * Get a strict mode set value. Takes into account configuration also.
+     *
+     * @param  boolean $setting Whether it is on (may be overridden be configuration)
+     * @return string The value
+     */
+    protected function _strict_mode_query($setting)
+    {
+        if (($setting) && (get_forum_type() == 'cns') && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {
+            $value = 'STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY';
+        } else {
+            $value = 'MYSQL40';
+        }
+
+        return $value;
     }
 
     /**
@@ -294,11 +333,8 @@ abstract class Database_super_mysql extends DatabaseDriver
      */
     public function strict_mode_query($setting)
     {
-        if ((get_forum_type() == 'cns') && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {
-            $query = 'SET sql_mode=\'STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY\'';
-        } else {
-            $query = 'SET sql_mode=\'MYSQL40\'';
-        }
+        $value = $this->_strict_mode_query($setting);
+        $query = 'SET sql_mode=\'' . $value . '\'';
 
         return $query;
     }

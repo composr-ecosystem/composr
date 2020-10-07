@@ -465,7 +465,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
  * @param  ID_TEXT $type The field type
  * @param  BINARY $encrypted Whether the field is encrypted
  * @param  string $__default The default value to use
- * @return array A tuple: the DB field type, whether to index, the default (in correct data type)
+ * @return array A tuple: the DB field type, the default (in correct data type)
  */
 function get_cpf_storage_for($type, $encrypted = 0, $__default = '')
 {
@@ -474,26 +474,26 @@ function get_cpf_storage_for($type, $encrypted = 0, $__default = '')
     require_code('fields');
     $ob = get_fields_hook($type);
     list(, $_default, $storage_type) = $ob->get_field_value_row_bits(['id' => null, 'cf_type' => $type, 'cf_default' => $__default], false, $__default);
-    $_type = ($encrypted == 1) ? 'LONG_TEXT' : 'SHORT_TEXT';
+    $db_type = ($encrypted == 1) ? 'LONG_TEXT' : 'SHORT_TEXT';
     switch ($storage_type) {
         case 'short_trans':
-            $_type = 'SHORT_TRANS__COMCODE';
+            $db_type = 'SHORT_TRANS__COMCODE';
             $default = $_default;
             break;
         case 'long_trans':
-            $_type = 'LONG_TRANS__COMCODE';
+            $db_type = 'LONG_TRANS__COMCODE';
             $default = $_default;
             break;
         case 'long':
-            $_type = 'LONG_TEXT';
+            $db_type = 'LONG_TEXT';
             $default = $_default;
             break;
         case 'integer':
-            $_type = '?INTEGER';
+            $db_type = '?INTEGER';
             $default = ($_default == '') ? null : intval($_default);
             break;
         case 'float':
-            $_type = '?REAL';
+            $db_type = '?REAL';
             $default = ($_default == '') ? null : floatval($_default);
             break;
         default:
@@ -501,28 +501,7 @@ function get_cpf_storage_for($type, $encrypted = 0, $__default = '')
             break;
     }
 
-    $index = true;
-    switch ($type) {
-        case 'short_trans':
-        case 'short_trans_multi':
-        case 'long_trans':
-        case 'posting_field':
-        case 'tick':
-        case 'float':
-        case 'color':
-        case 'content_link':
-        case 'date_time':
-        case 'date':
-        case 'time':
-        case 'picture':
-        case 'password':
-        case 'page_link':
-        case 'upload':
-            $index = false;
-            break;
-    }
-
-    return [$_type, $index, $default];
+    return [$db_type, $default];
 }
 
 /**
@@ -627,11 +606,9 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
     $map += insert_lang('cf_description', $description, 2, $GLOBALS['FORUM_DB']);
     $id = $GLOBALS['FORUM_DB']->query_insert('f_custom_fields', $map + ['cf_encrypted' => $encrypted], true);
 
-    list($_type, $index, $_default) = get_cpf_storage_for($type, $encrypted, $default);
+    list($db_type, $_default) = get_cpf_storage_for($type, $encrypted, $default);
 
-    $GLOBALS['FORUM_DB']->add_table_field('f_member_custom_fields', 'field_' . strval($id), $_type, $_default);
-
-    build_cpf_indices($id, $index, $type, $_type);
+    $GLOBALS['FORUM_DB']->add_table_field('f_member_custom_fields', 'field_' . strval($id), $db_type, $_default);
 
     log_it('ADD_CUSTOM_PROFILE_FIELD', strval($id), $name);
 
@@ -649,6 +626,8 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
         persistent_cache_delete('LIST_CPFS');
     }
 
+    build_cpf_indices($id, $include_in_main_search == 1, $type, $db_type); // Should be done last, in case of timeout
+
     return $id;
 }
 
@@ -658,25 +637,32 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
  * @param  AUTO_LINK $id CPF ID
  * @param  boolean $index Whether an index is needed for search purposes (there may be other reasons though)
  * @param  ID_TEXT $type CPF type
- * @param  ID_TEXT $_type Underlying field type
+ * @param  ID_TEXT $db_type Underlying field type
  * @return boolean If the operation could succeed (false means limit hit)
  */
-function build_cpf_indices($id, $index, $type, $_type)
+function build_cpf_indices($id, $index, $type, $db_type)
 {
     $indices_count = $GLOBALS['FORUM_DB']->query_select_value('db_meta_indices', 'COUNT(*)', ['i_table' => 'f_member_custom_fields']);
-    if ($indices_count >= 60) { // Could be 64 but trying to be careful here...
+    if ($indices_count >= 60) { // Could be 64 but trying to be careful here (at least one is reserved for primary key, and we may create 2 indexes here)...
         return false;
     }
 
+    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'field_' . strval($id)); // LEGACY
+
     if ($index) {
-        if ($_type != 'LONG_TEXT') {
+        if ((strpos($db_type, 'LONG_') === false) && ((strpos($db_type, '_TRANS') === false) || (!multi_lang_content()))) {
             $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id');
+        } else {
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
         }
-        if (strpos($_type, '_TEXT') !== false) {
+        if ((strpos($db_type, '_TEXT') !== false) || ((strpos($db_type, '_TRANS') !== false) && (!multi_lang_content()/*already would have due to translate table*/))) {
             $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', '#mcf_ft_' . strval($id), ['field_' . strval($id)], 'mf_member_id');
+        } else {
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
         }
-    } elseif ((strpos($type, 'trans') !== false) || ($type == 'posting_field')) { // for efficient joins
-        $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id');
+    } else {
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
     }
     return true;
 }
