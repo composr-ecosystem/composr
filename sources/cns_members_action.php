@@ -697,6 +697,7 @@ function build_cpf_indices($id, $index, $type, $_type)
         } else {
             $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
         }
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
     }
     return true;
 }
