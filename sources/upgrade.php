@@ -1840,6 +1840,22 @@ function version_specific()
                 rename_config_option('bank_divident', 'bank_dividend');
             }
 
+            // grepimages is now repimages
+            move_folder_contents('uploads/grepimages', 'uploads/repimages');
+            if (addon_installed('galleries')) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'galleries SET rep_image=REPLACE(rep_image,\'/grepimages\',\'/repimages\')');
+            }
+            if (addon_installed('downloads')) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'download_categories SET rep_image=REPLACE(rep_image,\'/grepimages\',\'/repimages\')');
+            }
+            if (addon_installed('news')) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news_categories SET nc_img=REPLACE(nc_img,\'/grepimages\',\'/repimages\')');
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news SET news_image=REPLACE(news_image,\'/grepimages\',\'/repimages\')');
+            }
+            if (addon_installed('catalogues')) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'catalogue_categories SET rep_image=REPLACE(rep_image,\'/grepimages\',\'/repimages\')');
+            }
+
             // Delete old files
             @unlink(get_file_base() . '/pages/html_custom/EN/cedi_tree_made.htm');
             @unlink(get_file_base() . '/site/pages/html_custom/EN/cedi_tree_made.htm');
