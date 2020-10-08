@@ -109,7 +109,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 break;
         }
 
-        $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
+        $sq = build_search_submitter_clauses('q.p_submitter', $author_id, $author);
         if (is_null($sq)) {
             return array();
         } else {
@@ -131,7 +131,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
             $where_clause .= ' AND ';
-            $where_clause .= 'p_validated=1';
+            $where_clause .= 'q.p_validated=1';
         }
 
         require_lang('zones');
