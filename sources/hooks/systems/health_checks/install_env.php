@@ -248,9 +248,9 @@ class Hook_health_check_install_env extends Hook_Health_Check
         $php_too_old = (substr($phpv, 0, 2) == '3.') || (substr($phpv, 0, 2) == '4.') || (substr($phpv, 0, 4) == '5.0.') || (substr($phpv, 0, 4) == '5.1.') || (substr($phpv, 0, 4) == '5.2.') || (substr($phpv, 0, 4) == '5.3.') || (substr($phpv, 0, 4) == '5.4.') || (substr($phpv, 0, 4) == '5.5.'); // LEGACY also maintain in tut_webhosting.txt
         $this->assertTrue(!$php_too_old, do_lang('PHP_TOO_OLD'));
 
-        $max_tested_php_version = '7.2'; // LEGACY: This needs to keep raising (also it is in tut_webhosting.txt)
+        $max_tested_php_version = '7.4'; // LEGACY: This needs to keep raising (also it is in tut_webhosting.txt)
         if (!is_maintained('php')) {
-            $php_too_new = version_compare(PHP_VERSION, $max_tested_php_version . '.1000', '>'); // LEGACY needs maintaining
+            $php_too_new = version_compare($phpv, $max_tested_php_version . '.1000', '>'); // LEGACY needs maintaining
             $this->assertTrue(
                 !$php_too_new,
                 '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('PHP_TOO_NEW', escape_html($max_tested_php_version)), escape_html(get_brand_base_url()), escape_html('php')) . '[/html]'
