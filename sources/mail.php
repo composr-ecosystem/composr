@@ -965,6 +965,7 @@ function mail_wrap($subject_line, $message_raw, $to_email = null, $to_name = nul
     }
     $headers .= 'Date: ' . date('r', time()) . $line_term;
     $headers .= 'Message-ID: <' . $_boundary . '@' . get_domain() . '>' . $line_term;
+    $headers .= 'References: <' . uniqid('Composr', true) . '@' . get_domain() . '>' . $line_term; // Intentionally reference something random to force threading views off (causes purple text in gmail, and generally undesirable for our e-mails)
     $headers .= 'X-Priority: ' . strval($priority) . $line_term;
     $brand_name = get_value('rebrand_name');
     if (is_null($brand_name)) {

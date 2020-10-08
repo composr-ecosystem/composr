@@ -478,7 +478,7 @@ function _css_tempcode($c, &$css, &$css_need_inline, $inline = false, $context =
         $css->attach(do_template('CSS_NEED_FULL', array('_GUID' => 'f2d7f0303a08b9aa9e92f8b0208ee9a7', 'URL' => find_script('themewizard') . '?type=css&show=' . urlencode($c) . '.css' . $keep->evaluate()), user_lang(), false, null, '.tpl', 'templates', $theme));
     } elseif (($c == 'no_cache') || ($inline)) {
         if (!$text_only) {
-            if (($context !== null) && ($c != 'email')/*we won't filter email in case there are special rules, e.g. to override gmail's own styles*/) {
+            if ($context !== null) {
                 require_code('mail');
                 $__css = filter_css($c, $theme, $context);
             } else {
