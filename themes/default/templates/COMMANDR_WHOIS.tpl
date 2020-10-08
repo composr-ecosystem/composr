@@ -23,6 +23,10 @@
 			</td>
 		</tr>
 		<tr>
+			<th>{!EMAIL_ADDRESS}</th>
+			<td>{EMAIL_ADDRESS*}</td>
+		</tr>
+		<tr>
 			<th>{!ACTIONS}</th>
 			<td>
 				<ul class="actions-list">

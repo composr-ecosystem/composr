@@ -290,6 +290,7 @@ class Hook_addon_registry_securitylogging
                 'MEMBER_BANNED' => lorem_phrase(),
                 'MEMBER_ID' => placeholder_id(),
                 'IP' => placeholder_ip(),
+                'EMAIL_ADDRESS' => lorem_phrase(),
                 'USERNAME' => lorem_word(),
                 'SEARCH_URL' => placeholder_url(),
                 'AUTHOR_URL' => placeholder_url(),

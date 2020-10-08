@@ -39,6 +39,15 @@
 		</tr>
 	{+END}
 
+	{+START,IF_NON_EMPTY,{EMAIL_ADDRESS}}
+		<tr>
+			<th>{!EMAIL_ADDRESS}</th>
+			<td>
+				<strong>{EMAIL_ADDRESS*}</strong>
+			</td>
+		</tr>
+	{+END}
+
 	{+START,SET,related_screens}
 		{+START,IF_PASSED,PROFILE_URL}
 			<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a href="{PROFILE_URL*}">{!VIEW_PROFILE}</a></li>

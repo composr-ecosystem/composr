@@ -54,7 +54,8 @@ class Hook_commandr_command_whois
             $username = null;
             $member_id = null;
             $ip = null;
-            $known_ip_addresses = lookup_user($parameters[0], $username, $member_id, $ip);
+            $email_address = null;
+            $known_ip_addresses = lookup_user($parameters[0], $username, $member_id, $ip, $email_address);
             if ($username === null) {
                 $username = do_lang('UNKNOWN');
             }
@@ -63,6 +64,9 @@ class Hook_commandr_command_whois
             }
             if ($ip === null) {
                 $ip = '';
+            }
+            if ($email_address === null) {
+                $email_address = '';
             }
 
             if (addon_installed('securitylogging')) {
@@ -87,7 +91,17 @@ class Hook_commandr_command_whois
 
             $stats = find_page_stats_for($member_id, $ip, $start, $max, $sortable, $sort_order);
 
-            return ['', commandr_make_normal_html_visible(do_template('COMMANDR_WHOIS', ['_GUID' => 'f315a705e9a2a2fb50b78ae3a8fc6a05', 'STATS' => $stats, 'IP_LIST' => $ip_list, 'MEMBER_ID' => strval($member_id), 'IP' => $ip, 'USERNAME' => $username])), '', ''];
+            $tpl = do_template('COMMANDR_WHOIS', [
+                '_GUID' => 'f315a705e9a2a2fb50b78ae3a8fc6a05',
+                'STATS' => $stats,
+                'IP_LIST' => $ip_list,
+                'MEMBER_ID' => strval($member_id),
+                'IP' => $ip,
+                'USERNAME' => $username,
+                'EMAIL_ADDRESS' => $email_address,
+            ]);
+
+            return ['', commandr_make_normal_html_visible($tpl), '', ''];
         }
     }
 }

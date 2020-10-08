@@ -35,9 +35,10 @@ function init__lookup()
  * @param  ?string $username The member's username (by reference) (null: unknown)
  * @param  ?AUTO_LINK $member_id The member's ID (by reference) (null: unknown)
  * @param  ?string $ip The member's IP (by reference) (null: unknown)
+ * @param  ?string $email_address The member's e-mail address (by reference) (null: unknown)
  * @return array The member's IP addresses (IP address and most recent time of hit)
  */
-function lookup_user($param, &$username, &$member_id, &$ip)
+function lookup_user($param, &$username, &$member_id, &$ip, &$email_address)
 {
     if (!addon_installed('stats')) {
         return [];
@@ -57,6 +58,7 @@ function lookup_user($param, &$username, &$member_id, &$ip)
         if ($ip === null) {
             $ip = '127.0.0.1';
         }
+        $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
     } elseif (is_valid_email_address($param)) {
         // From e-mail address
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($param);
@@ -68,6 +70,7 @@ function lookup_user($param, &$username, &$member_id, &$ip)
         if ($ip === null) {
             $ip = '127.0.0.1';
         }
+        $email_address = $param;
     } elseif ((strpos($param, '.') !== false) || (strpos($param, ':') !== false)) {
         // From IP
         $member_ids = wrap_probe_ip($param);
@@ -93,6 +96,7 @@ function lookup_user($param, &$username, &$member_id, &$ip)
             attach_message(do_lang_tempcode('MEMBERS_ALSO_ON_IP', $also), 'inform');
         }
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+        $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
     } elseif ($param != '') {
         // From name
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($param);
@@ -104,6 +108,7 @@ function lookup_user($param, &$username, &$member_id, &$ip)
         if ($ip === null) {
             $ip = '127.0.0.1';
         }
+        $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
     }
 
     return $GLOBALS['SITE_DB']->query_select('stats', ['ip', 'MAX(date_and_time) AS date_and_time'], ['member_id' => $member_id], 'GROUP BY ip ORDER BY date_and_time DESC', 100);

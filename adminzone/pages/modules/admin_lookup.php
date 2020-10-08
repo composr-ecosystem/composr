@@ -196,7 +196,8 @@ class Module_admin_lookup
         $username = null;
         $member_id = null;
         $ip = null;
-        $known_ip_addresses = lookup_user($param, $username, $member_id, $ip);
+        $email_address = null;
+        $known_ip_addresses = lookup_user($param, $username, $member_id, $ip, $email_address);
         if ($username === null) {
             $username = do_lang('UNKNOWN');
         }
@@ -207,6 +208,9 @@ class Module_admin_lookup
         }
         if ($ip === null) {
             $ip = '';
+        }
+        if ($email_address === null) {
+            $email_address = '';
         }
 
         // Load up IP bans and see what applies to the user's IPs...
@@ -379,6 +383,7 @@ class Module_admin_lookup
             'MEMBER_ID' => strval($member_id),
             'IP' => $ip,
             'USERNAME' => $username,
+            'EMAIL_ADDRESS' => $email_address,
 
             'SEARCH_URL' => $search_url,
             'AUTHOR_URL' => $author_url,
