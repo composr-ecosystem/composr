@@ -3,6 +3,11 @@
  Copyright (c) ocProducts, 2004-2016
 */
 
+/* Override a gmail rule which assumes a white background, and is designed really for human conversations */
+.im {
+	color: {$GET,slightly_seeded_text} !important;
+}
+
 .email_body {
 	font-size: 13px;
 
