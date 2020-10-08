@@ -145,78 +145,13 @@ function js_compile($j, $js_cache_path, $minify = true, $theme = null)
     $success_status = cms_file_put_contents_safe($js_cache_path, $contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
     if (!$success_status) {
         @touch($js_cache_path, time() - 60 * 60 * 24); // Fudge it so it's going to auto expire. We do have to write the file as it's referenced, but we want it to expire instantly so that any errors will reshow.
-    } else {
+    } elseif (get_value('disable_web_resources_static_compression') !== '1') {
         compress_cms_stub_file($js_cache_path);
     }
 
     cms_profile_end_for('js_compile', $j);
 
     cms_set_time_limit($old_limit);
-}
-
-/**
- * Compress a file to Gzip, and save with a stem of .gz.
- *
- * @param  PATH $stub_file Full path to the file to compress
- * @return boolean Success status
- */
-function compress_cms_stub_file($stub_file)
-{
-    $a = compress_cms_stub_file_br($stub_file);
-    $b = compress_cms_stub_file_gz($stub_file);
-    return $a || $b;
-}
-
-/**
- * Compress a file to Brotli, and save with a stem of .br.
- *
- * @param  PATH $stub_file Full path to the file to compress
- * @return boolean Success status
- */
-function compress_cms_stub_file_br($stub_file)
-{
-    if (!supports_brotli(false)) {
-        return false;
-    }
-
-    $data = @cms_file_get_contents_safe($stub_file, FILE_READ_LOCK | FILE_READ_BOM);
-    if ($data === false) {
-        return false;
-    }
-
-    require_code('files');
-    $compressed = cms_brotli_compress($data, 11 /*max*/);
-    if ($compressed === false) {
-        return false;
-    }
-    cms_file_put_contents_safe($stub_file . '.br', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-    return true;
-}
-
-/**
- * Compress a file, and save with a stem of .gz.
- *
- * @param  PATH $stub_file Full path to the file to compress
- * @return boolean Success status
- */
-function compress_cms_stub_file_gz($stub_file)
-{
-    if (!supports_gzip(false)) {
-        return false;
-    }
-
-    $data = @cms_file_get_contents_safe($stub_file, FILE_READ_LOCK | FILE_READ_BOM);
-    if ($data === false) {
-        return false;
-    }
-
-    require_code('files');
-    $compressed = cms_gzencode($data, 9 /*max*/);
-    if ($compressed === false) {
-        return false;
-    }
-    cms_file_put_contents_safe($stub_file . '.gz', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-    return true;
 }
 
 /**
@@ -249,7 +184,7 @@ function css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $mi
     $success_status = cms_file_put_contents_safe($css_cache_path, $out, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
     if (!$success_status) {
         @touch($css_cache_path, time() - 60 * 60 * 24); // Fudge it so it's going to auto expire. We do have to write the file as it's referenced, but we want it to expire instantly so that any errors will reshow.
-    } else {
+    } elseif (get_value('disable_web_resources_static_compression') !== '1') {
         compress_cms_stub_file($css_cache_path);
     }
 
@@ -351,6 +286,71 @@ function _css_compile($active_theme, $theme, $c, $full_path, $minify = true)
         return [false, $out];
     }
     return [true, $out];
+}
+
+/**
+ * Compress a file to Gzip, and save with a stem of .gz.
+ *
+ * @param  PATH $stub_file Full path to the file to compress
+ * @return boolean Success status
+ */
+function compress_cms_stub_file($stub_file)
+{
+    $a = compress_cms_stub_file_br($stub_file);
+    $b = compress_cms_stub_file_gz($stub_file);
+    return $a || $b;
+}
+
+/**
+ * Compress a file to Brotli, and save with a stem of .br.
+ *
+ * @param  PATH $stub_file Full path to the file to compress
+ * @return boolean Success status
+ */
+function compress_cms_stub_file_br($stub_file)
+{
+    if (!supports_brotli(false)) {
+        return false;
+    }
+
+    $data = @cms_file_get_contents_safe($stub_file, FILE_READ_LOCK | FILE_READ_BOM);
+    if ($data === false) {
+        return false;
+    }
+
+    require_code('files');
+    $compressed = cms_brotli_compress($data, 11 /*max*/);
+    if ($compressed === false) {
+        return false;
+    }
+    cms_file_put_contents_safe($stub_file . '.br', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    return true;
+}
+
+/**
+ * Compress a file, and save with a stem of .gz.
+ *
+ * @param  PATH $stub_file Full path to the file to compress
+ * @return boolean Success status
+ */
+function compress_cms_stub_file_gz($stub_file)
+{
+    if (!supports_gzip(false)) {
+        return false;
+    }
+
+    $data = @cms_file_get_contents_safe($stub_file, FILE_READ_LOCK | FILE_READ_BOM);
+    if ($data === false) {
+        return false;
+    }
+
+    require_code('files');
+    $compressed = cms_gzencode($data, 9 /*max*/);
+    if ($compressed === false) {
+        return false;
+    }
+    cms_file_put_contents_safe($stub_file . '.gz', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    return true;
 }
 
 /**

@@ -200,7 +200,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
 
     // Compress
     require_code('web_resources2');
-    compress_cms_stub_file($sitemaps_out_path);
+    compress_cms_stub_file_gz($sitemaps_out_path);
 }
 
 /**

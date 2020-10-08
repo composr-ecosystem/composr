@@ -127,63 +127,6 @@ function attach_message_su(&$messages_bottom)
 }
 
 /**
- * Save a file of merged web resources.
- *
- * @param  array $resources Resources (map of keys to 1), passed by reference as we alter it
- * @param  ID_TEXT $type Resource type
- * @set .css .js
- * @param  PATH $write_path Write path
- * @return boolean If the merge happened
- *
- * @ignore
- */
-function _save_web_resource_merging($resources, $type, $write_path)
-{
-    // Create merged resource...
-
-    $data = '';
-    $good_to_go = true;
-    $all_strict = true;
-    foreach ($resources as $resource) {
-        if ($resource == 'no_cache') {
-            continue;
-        }
-
-        if ($type == '.js') {
-            $merge_from = javascript_enforce($resource);
-        } else { // .css
-            $merge_from = css_enforce($resource);
-        }
-        if ($merge_from != '') {
-            if (is_file($merge_from)) {
-                $extra_data = cms_file_get_contents_safe($merge_from, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM) . "\n\n";
-                $data .= $extra_data;
-                if ((strpos($extra_data, '"use strict";') === false) && (strpos($extra_data, "'use strict';") === false)) {
-                    $all_strict = false;
-                }
-            } else { // race condition
-                $good_to_go = false;
-                break;
-            }
-        }
-    }
-
-    if ($good_to_go) {
-        if (!$all_strict) {
-            $data = str_replace('"use strict";', '', str_replace("'use strict';", '', $data));
-        }
-
-        require_code('files');
-        cms_file_put_contents_safe($write_path, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
-
-        require_code('web_resources2');
-        compress_cms_stub_file($write_path);
-    }
-
-    return $good_to_go;
-}
-
-/**
  * Take a Tempcode object and run some hackerish code to make it XHTML-strict.
  *
  * @param  object $global Tempcode object
