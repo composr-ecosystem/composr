@@ -1272,7 +1272,7 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
             $only_fields_sql .= ')';
         }
 
-        $tables = array('catalogue_efv_float' => true, 'catalogue_efv_integer' => true, 'catalogue_efv_long' => false, 'catalogue_efv_long_trans' => !multi_lang_content(), 'catalogue_efv_short' => false, 'catalogue_efv_short_trans' => !multi_lang_content(),);
+        $tables = array('catalogue_efv_float' => true, 'catalogue_efv_integer' => true, 'catalogue_efv_long' => false, 'catalogue_efv_long_trans' => multi_lang_content(), 'catalogue_efv_short' => false, 'catalogue_efv_short_trans' => multi_lang_content(),);
         if (strpos(get_db_type(), 'mysql') !== false) { // Optimised for MySQL
             $query = '';
             foreach ($tables as $table => $needs_casting) {
