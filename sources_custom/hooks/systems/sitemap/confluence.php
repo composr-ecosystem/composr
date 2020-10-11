@@ -91,7 +91,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
 
         foreach ($mappings as $mapping) {
             if ($mapping['parent_id'] === null) {
-                $child_page_link = $zone . ':' . $page . ':' . urlencode($mapping['slug']);
+                $child_page_link = $zone . ':' . $page . ':' . $mapping['slug'];
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather);
                 if (($callback === null || $return_anyway) && ($node !== null)) {
                     $nodes[] = $node;
@@ -200,7 +200,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
             $struct['children'] = [];
             foreach ($mapping['children'] as $child_id) {
                 $_mapping = $mappings[$child_id];
-                $child_page_link = $zone . ':' . $page . ':' . urlencode($_mapping['slug']);
+                $child_page_link = $zone . ':' . $page . ':' . $_mapping['slug'];
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth + 1, $recurse_level, $options, $zone, $meta_gather, $row);
                 if (($callback === null || $return_anyway) && ($node !== null)) {
                     $struct['children'][] = $node;
