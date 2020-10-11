@@ -53,6 +53,7 @@ $PTOKENS['BOR_EQUAL'] = '|=';
 // General structural
 $PTOKENS['SUPPRESS_ERROR'] = '@';
 $PTOKENS['COLON'] = ':';
+$PTOKENS['QUESTION_COALESCE'] = '??';
 $PTOKENS['QUESTION'] = '?';
 $PTOKENS['COMMA'] = ',';
 $PTOKENS['CURLY_CLOSE'] = '}';
@@ -86,6 +87,7 @@ $PTOKENS['DEC'] = '--';
 $PTOKENS['INC'] = '++';
 $PTOKENS['REFERENCE'] = '&';
 // Binary operators
+$PTOKENS['SPACESHIP'] = '<=>';
 $PTOKENS['BW_XOR'] = '^';
 $PTOKENS['BW_OR'] = '|';
 $PTOKENS['BW_NOT'] = '~';
@@ -361,21 +363,24 @@ function lex($text = null)
                             log_warning('PSR-12 says not to have extra blank lines around opening braces', $i, true);
                         }
                     } elseif ($char == '}') {
-                        if (!$new_line) {
-                            log_warning('Bracing error (closing brace not on new line)', $i, true);
-                        }
-                        $past_indentation = array_pop($brace_stack);
-                        if ($past_indentation != $indentation) {
-                            log_warning('Bracing error (' . $past_indentation . ' vs ' . strval($indentation) . ')', $i, true);
-                        }
+                        $line = substr($TEXT, 0, $i);
+                        if (substr(ltrim($line), 0, 4) != 'use ') {
+                            if (!$new_line) {
+                                log_warning('Bracing error (closing brace not on new line)', $i, true);
+                            }
+                            $past_indentation = array_pop($brace_stack);
+                            if ($past_indentation != $indentation) {
+                                log_warning('Bracing error (' . $past_indentation . ' vs ' . strval($indentation) . ')', $i, true);
+                            }
 
-                        $backtrack_i = max(0, $i - 103);
-                        if (substr(rtrim(substr($TEXT, $backtrack_i, $i - $backtrack_i - 1), "\t "), -2, 2) == "\n\n") {
-                            log_warning('PSR-12 says not to have extra blank lines around closing braces', $i, true);
-                        }
+                            $backtrack_i = max(0, $i - 103);
+                            if (substr(rtrim(substr($TEXT, $backtrack_i, $i - $backtrack_i - 1), "\t "), -2, 2) == "\n\n") {
+                                log_warning('PSR-12 says not to have extra blank lines around closing braces', $i, true);
+                            }
 
-                        if ((substr($TEXT, $i, 1) == '/') || (substr($TEXT, $i, 2) == ' /')) {
-                            log_warning('PSR-12 says not to put a comment after a closing brace', $i, true);
+                            if ((substr($TEXT, $i, 1) == '/') || (substr($TEXT, $i, 2) == ' /')) {
+                                log_warning('PSR-12 says not to put a comment after a closing brace', $i, true);
+                            }
                         }
                     }
                 }
@@ -515,7 +520,7 @@ function lex($text = null)
                     }
                     if (in_array($token_found, ['IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH', 'INTERFACE', 'CLASS', 'FUNCTION'])) {
                         $line_end = strpos($TEXT, "\n", $i);
-                        if ($line_end !== false) {
+                        if (($line_end !== false) && ((empty($tokens)) || ($tokens[count($tokens) - 1][0] != 'NEW'))) {
                             $remaining_line = str_replace("\r", '', substr($TEXT, $i, $line_end - $i + 1));
 
                             $next_line_end = strpos($TEXT, "\n", $line_end + 1);

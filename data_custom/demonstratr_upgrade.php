@@ -121,7 +121,7 @@ if ($u === null) {
 upgrade_sharedinstall_sites(get_param_integer('from', 1) - 1);
 
 // Save new SQL dump
-$out_path = dirname(dirname(get_file_base())) . '/uploads/website_specific/compo.sr/demonstratr/template.sql';
+$out_path = dirname(get_file_base(), 2) . '/uploads/website_specific/compo.sr/demonstratr/template.sql';
 if (!file_exists($out_path . '.tmp')) {
     $cmd = '/usr/local/bin/mysqldump';
     if (!is_file($cmd)) {

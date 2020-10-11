@@ -601,9 +601,10 @@ function defined($name)
  * Returns directory name component of path.
  *
  * @param  PATH $name The path
+ * @param  integer $levels Levels up from filename
  * @return PATH The directory name component
  */
-function dirname($name)
+function dirname($name, $levels = 1)
 {
     return '';
 }
@@ -2323,9 +2324,10 @@ function preg_grep($pattern, $subject, $flags = 0)
  * @param  mixed $replacement The replacement string (string or array)
  * @param  mixed $subject The subject string (string or array)
  * @param  integer $limit The limit of replacements (-1: no limit)
- * @return ~mixed The string with replacements made (false: error)
+ * @param  integer $count Number of replacements made
+ * @return ?mixed The string with replacements made (null: error)
  */
-function preg_replace($pattern, $replacement, $subject, $limit = -1)
+function preg_replace($pattern, $replacement, $subject, $limit = -1, &$count = 0)
 {
     return '';
 }
@@ -2337,9 +2339,24 @@ function preg_replace($pattern, $replacement, $subject, $limit = -1)
  * @param  mixed $callback The callback
  * @param  string $subject The subject string
  * @param  integer $limit The limit of replacements (-1: no limit)
- * @return ~string The string with replacements made (false: error)
+ * @param  integer $count Number of replacements made
+ * @return ?string The string with replacements made (null: error)
  */
-function preg_replace_callback($pattern, $callback, $subject, $limit = -1)
+function preg_replace_callback($pattern, $callback, $subject, $limit = -1, &$count = 0)
+{
+    return '';
+}
+
+/**
+ * Perform a regular expression search and replace using callbacks.
+ *
+ * @param  array $patterns_and_callbacks An associative array mapping patterns (keys) to callables (values)
+ * @param  string $subject The subject string
+ * @param  integer $limit The limit of replacements (-1: no limit)
+ * @param  integer $count Number of replacements made
+ * @return ?string The string with replacements made (null: error)
+ */
+function preg_replace_callback_array($patterns_and_callbacks, $subject, $limit = -1, &$count = 0)
 {
     return '';
 }
@@ -3082,7 +3099,7 @@ function asin($arg)
  * Checks if assertion is FALSE.
  *
  * @param  string $assertion The expression to assert on
- * @param  string $description message
+ * @param  mixed $description message / exception
  */
 function assert($assertion, $description = '')
 {
@@ -3449,6 +3466,26 @@ function json_encode($value, $options = 0)
 function json_decode($json, $assoc = false, $depth = 512)
 {
     return [];
+}
+
+/**
+ * Returns the last error occurred.
+ *
+ * @return integer Last error, a JSON_* constant
+ */
+function json_last_error()
+{
+    return 0;
+}
+
+/**
+ * Returns the last error occurred.
+ *
+ * @return string Last error message
+ */
+function json_last_error_msg()
+{
+    return '';
 }
 
 /**
@@ -4544,6 +4581,13 @@ function error_get_last()
 }
 
 /**
+ * Clear the most recent error.
+ */
+function error_clear_last()
+{
+}
+
+/**
  * Find pathnames matching a pattern.
  *
  * @param  string $pattern Pattern according to the rules used by the libc glob
@@ -4839,6 +4883,52 @@ function getopt($options, $longopts = [], &$optind = 0)
     return [];
 }
 
+/**
+ * Gets the current resource usages.
+ *
+ * @param  integer $who If who is 1, getrusage will be called with RUSAGE_CHILDREN
+ * @return array Map of usage data
+ */
+function getrusage($who)
+{
+    return array();
+}
+
+/**
+ * Generates cryptographically secure pseudo-random bytes.
+ *
+ * @param  integer $length The length of the random string that should be returned in bytes
+ * @return string A string containing the requested number of cryptographically secure random bytes
+ */
+function random_bytes()
+{
+    return '';
+}
+
+/**
+ * Generates cryptographically secure pseudo-random integers.
+ *
+ * @param  integer $min The lowest value to be returned, which must be PHP_INT_MIN or higher
+ * @param  integer $max The highest value to be returned, which must be less than or equal to PHP_INT_MAX
+ * @return integer A cryptographically secure random integer in the range min to max, inclusive
+ */
+function random_int($min, $max)
+{
+    return 0;
+}
+
+/**
+ * Integer division.
+ *
+ * @param  integer $dividend Number to be divided
+ * @param  integer $divisor Number which divides the dividend
+ * @return integer The integer quotient of the division
+ */
+function intdiv()
+{
+    return 0;
+}
+
 /*
 
 Various things are disabled for various reasons. You may use them, if you use php_function_allowed
@@ -4912,7 +5002,6 @@ lchgrp
 lstat
 sys_getloadavg
 getmyuid
-getrusage (on PHP 7.0+ it is available on Windows)
 getmyinode
 getmygid
 get_current_user
@@ -4921,6 +5010,7 @@ mime_content_type
 posix_*
 fileowner
 filegroup
+getmypid
 
 Disabled various legacy synonyms (aliases), such as...
 
@@ -5036,7 +5126,6 @@ restore_include_path
 
 Disabled simply as we don't feel a need to use them (can enable if we find a use)...
 
-getmypid
 idate
 get_called_class
 property_exists
@@ -5047,7 +5136,6 @@ restore_exception_handler
 get_declared_traits
 get_declared_interfaces
 get_defined_constants
-strptime
 htmlspecialchars_decode
 sha1_file
 nl_langinfo
@@ -5067,6 +5155,7 @@ array_intersect_uassoc
 forward_static_call
 forward_static_call_array
 gc_enabled
+strptime
 date_create
 date_create_immutable
 date_create_from_format
@@ -5087,6 +5176,11 @@ date_date_set
 date_isodate_set
 date_timestamp_set
 date_timestamp_get
+date_interval_create_from_date_string
+date_interval_format
+date_sunrise
+date_sunset
+date_sun_info
 timezone_open
 timezone_name_get
 timezone_name_from_abbr
@@ -5096,11 +5190,6 @@ timezone_location_get
 timezone_identifiers_list
 timezone_abbreviations_list
 timezone_version_get
-date_interval_create_from_date_string
-date_interval_format
-date_sunrise
-date_sunset
-date_sun_info
 preg_filter
 imagecreatefromwbmp
 imagecreatefromxbm
@@ -5135,6 +5224,27 @@ imagesetthickness
 imagesettile
 imagecharup
 imagecolorclosesthwb
+image_type_to_mime_type
+imagefilter
+image_type_to_extension
+imagerotate
+imageflip
+imageantialias
+imagecrop
+imagecropauto
+imagescale
+imageaffine
+imageaffinematrixconcat
+imageaffinematrixget
+imagesetinterpolation
+imagelayereffect
+imagexbm
+imagecolormatch
+imageconvolution
+imagesetclip
+imagegetclip
+imageopenpolygon
+imageresolution
 fileinode
 soundex
 quotemeta
@@ -5159,25 +5269,6 @@ array_uintersect
 array_intersect_ukey
 array_diff_ukey
 array_product
-image_type_to_mime_type
-imagefilter
-image_type_to_extension
-imagerotate
-imageflip
-imageantialias
-imagecrop
-imagecropauto
-imagescale
-imageaffine
-imageaffinematrixconcat
-imageaffinematrixget
-imagesetinterpolation
-imagelayereffect
-imagexbm
-imagecolormatch
-imageconvolution
-json_last_error
-json_last_error_msg
 class_parents
 class_implements
 class_uses
@@ -5268,10 +5359,6 @@ deflate_init
 deflate_add
 inflate_init
 inflate_add
-imagesetclip
-imagegetclip
-imageopenpolygon
-imageresolution
 socket_addrinfo_lookup
 socket_addrinfo_connect
 socket_addrinfo_bind
@@ -5281,15 +5368,6 @@ GD stuff that's not on by default...
 
 imagecreatefromwebp
 imagewebp
-
-PHP7, so cannot use yet...
-
-preg_replace_callback_array
-random_bytes
-random_int
-intdiv
-error_clear_last
-gethostname
 
 PHP7.2, so cannot use yet...
 

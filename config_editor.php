@@ -421,11 +421,7 @@ function do_set()
     global $FILE_BASE;
     $config_file = '_config.php';
     $backup_path = $FILE_BASE . '/exports/file_backups/' . $config_file . '.' . strval(time()) . '_';
-    if (function_exists('random_bytes')) {
-        $backup_path .= substr(md5(random_bytes(13)), 0, 13);
-    } else {
-        $backup_path .= strval(mt_rand(0, mt_getrandmax()));
-    }
+    $backup_path .= substr(md5(random_bytes(13)), 0, 13);
     $copied_ok = @copy($FILE_BASE . '/' . $config_file, $backup_path);
     @chmod($backup_path, 0600);
     if ($copied_ok !== false) {

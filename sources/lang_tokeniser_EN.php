@@ -233,10 +233,10 @@ class LangTokeniser_EN
             $phrase_separation_characters = ['.', ';', ':', '"', '!', '?', '(', ')', '[', ']', '{', '}', '<', '>'];
             if ($utf) {
                 // Smart quote characters
-                $phrase_separation_characters[] = hex2bin('e2809c');
-                $phrase_separation_characters[] = hex2bin('e2809d');
-                $phrase_separation_characters[] = hex2bin('e28098');
-                $phrase_separation_characters[] = hex2bin('e28099');
+                $phrase_separation_characters[] = "\u{201C}";
+                $phrase_separation_characters[] = "\u{201D}";
+                $phrase_separation_characters[] = "\u{2018}";
+                $phrase_separation_characters[] = "\u{2019}";
             }
             $phrase_separation_characters = array_flip($phrase_separation_characters);
         }

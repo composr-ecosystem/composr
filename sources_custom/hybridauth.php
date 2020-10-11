@@ -26,14 +26,7 @@ function initiate_hybridauth_session_state()
     if (strpos(get_base_url(), 'https://') !== false) {
         $options['cookie_secure'] = 'On';
     }
-    if (version_compare(PHP_VERSION, '7.0', '<')) { // LEGACY
-        foreach ($options as $key => $val) {
-            cms_ini_set('session.' . $key, $val);
-        }
-        session_start();
-    } else {
-        session_start($options);
-    }
+    session_start($options);
 }
 
 function initiate_hybridauth()

@@ -347,7 +347,7 @@ function remove_wysiwyg_comcode_markup(&$semihtml)
     $semihtml = str_replace('&#8203;', '', $semihtml);
     $array_html_preg_replace = [];
     if (get_charset() == 'utf-8') {
-        $semihtml = str_replace(hex2bin('e2808b'), '', $semihtml);
+        $semihtml = str_replace("\u{200B}", '', $semihtml);
     }
 
     if (stripos($semihtml, '<button') !== false) {

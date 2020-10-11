@@ -27,9 +27,9 @@ class transliteration_test_set extends cms_test_case
 
         $expect = [
             ['foo', 'foo'],
-            [hex2bin('676cc3bc636b6c69636865'), 'gluckliche'],
-            [hex2bin('636166c3a9'), 'cafe'],
-            [hex2bin('e59296e595a1e5ba97'), 'ka fei dian'],
+            ["gl\u{00FC}cklich'", 'gluckliche'],
+            ["caf\u{00E9}", 'cafe'],
+            ["\u{6E90}\u{660C}\u{9686}\u{5496}\u{5561}\u{5E97}", 'ka fei dian'],
         ];
 
         foreach ($expect as $_) {

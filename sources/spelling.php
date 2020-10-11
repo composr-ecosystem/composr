@@ -470,7 +470,7 @@ function sl_get_custom_file_base()
         return get_custom_file_base();
     }
 
-    return dirname(dirname(__FILE));
+    return dirname(__FILE__, 2);
 }
 
 /**

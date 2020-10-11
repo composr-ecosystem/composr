@@ -387,8 +387,8 @@ class Hook_import_html_site
                 }
             }
             // Strip bits
-            $regexp_1 = '#^[\|\-' . ((get_charset() == 'utf-8') ? (hex2bin('e28093') . hex2bin('e28094')) : '') . ',]#';
-            $regexp_2 = '#[\|\-' . ((get_charset() == 'utf-8') ? (hex2bin('e28093') . hex2bin('e28094')) : '') . '] )?' . preg_quote($site_name) . ',]$#';
+            $regexp_1 = '#^[\|\-' . ((get_charset() == 'utf-8') ? "\u{2013}\u{2014}" : '') . ',]#';
+            $regexp_2 = '#[\|\-' . ((get_charset() == 'utf-8') ? "\u{2013}\u{2014}" : '') . '] )?' . preg_quote($site_name) . ',]$#';
             $site_name = trim(preg_replace($regexp_1, '', preg_replace($regexp_2, '', trim($lcs))));
             // Save as site name
             set_option('site_name', $site_name);
@@ -427,7 +427,7 @@ class Hook_import_html_site
                 $matches = [];
                 $page_title = null;
                 if (preg_match('#<title>(.*)</title>#', $filtered, $matches) != 0) {
-                    $regexp = '#( [\|\-' . ((get_charset() == 'utf-8') ? (hex2bin('e28093') . hex2bin('e28094')) : '') . '] )?' . preg_quote($site_name) . '( [\|\-' . ((get_charset() == 'utf-8') ? (hex2bin('e28093') . hex2bin('e28094')) : '') . '] )?' . preg_quote($site_name) . '] )?#';
+                    $regexp = '#( [\|\-' . ((get_charset() == 'utf-8') ? "\u{2013}\u{2014}" : '') . '] )?' . preg_quote($site_name) . '( [\|\-' . ((get_charset() == 'utf-8') ? (hex2bin('e28093') . hex2bin('e28094')) : '') . '] )?' . preg_quote($site_name) . '] )?#';
                     $page_title = preg_replace($regexp, '', $matches[1]);
                 }
                 $page_keywords = null;

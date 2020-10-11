@@ -30,7 +30,7 @@ if (!isset($GLOBALS['FILE_BASE'])) {
     // Find Composr base directory, and chdir into it
     global $FILE_BASE;
     $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
-    $FILE_BASE = dirname(dirname($FILE_BASE));
+    $FILE_BASE = dirname($FILE_BASE, 2);
 
     chdir($FILE_BASE);
 

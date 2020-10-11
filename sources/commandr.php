@@ -1450,16 +1450,16 @@ function has_smart_quotes($str)
     if (get_charset() != 'utf-8') {
         return false;
     }
-    if (strpos($str, hex2bin('e28098')) !== false) {
+    if (strpos($str, "\u{2018}") !== false) {
         return true;
     }
-    if (strpos($str, hex2bin('e28099')) !== false) {
+    if (strpos($str, "\u{2019}") !== false) {
         return true;
     }
-    if (strpos($str, hex2bin('e2809c')) !== false) {
+    if (strpos($str, "\u{201C}") !== false) {
         return true;
     }
-    if (strpos($str, hex2bin('e2809d')) !== false) {
+    if (strpos($str, "\u{201D}") !== false) {
         return true;
     }
     return false;

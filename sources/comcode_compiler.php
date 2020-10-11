@@ -460,7 +460,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
 
     $link_terminator_strs = [' ', "\n", ']', '[', ')', '"', '>', '<', '}', '{', ".\n", ', ', '. ', "'", '&nbsp;', '&quot;', '&rdquo;', '&ldquo;', "\0"];
     if (get_charset() == 'utf-8') {
-        $nbsp = hex2bin('c2a0');
+        $nbsp = "\u{00A0}";
         $link_terminator_strs[] = $nbsp;
     }
 

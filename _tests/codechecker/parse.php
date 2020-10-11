@@ -132,21 +132,8 @@ function _parse_php($inside_namespace = false)
 
             case 'USE':
                 pparse__parser_next();
-                $next = pparse__parser_peek();
-                if (in_array($next, ['FUNCTION', 'CONST'])) {
-                    pparse__parser_next();
-                    $type = $next;
-                } else {
-                    $type = 'namespace';
-                }
-                $key = pparse__parser_expect('IDENTIFIER', true);
-                if (pparse__parser_peek() == 'AS' && $next == 'FUNCTION') {
-                    pparse__parser_next();
-                    $key_new = pparse__parser_expect('IDENTIFIER');
-                } else {
-                    $key_new = null;
-                }
-                $program['uses'][] = [$type, $key, $key_new];
+                $uses = _parse_namespace_use_list();
+                $program['uses'] = $uses;
                 pparse__parser_expect('COMMAND_TERMINATE');
                 break;
 
@@ -226,6 +213,47 @@ function _parse_php($inside_namespace = false)
         $next = pparse__parser_peek();
     }
     return $program;
+}
+
+function _parse_namespace_use_list($is_generalised = true)
+{
+    $uses = [];
+    do {
+        $next = pparse__parser_peek();
+        if (in_array($next, ['FUNCTION', 'CONST'])) {
+            pparse__parser_next();
+            $type = $next;
+        } else {
+            $type = 'namespace';
+        }
+        $key = pparse__parser_expect('IDENTIFIER');
+        if (substr($key, -1) == '\\') {
+            pparse__parser_expect('CURLY_OPEN');
+
+            $subuses = _parse_namespace_use_list($type == 'namespace');
+            foreach ($subuses as $subuse) {
+                $subuse[1] = $key . $subuse[1];
+                $uses[] = $subuse;
+            }
+
+            pparse__parser_expect('CURLY_CLOSE');
+        } else {
+            if (pparse__parser_peek() == 'AS') {
+                pparse__parser_next();
+                $key_new = pparse__parser_expect('IDENTIFIER');
+            } else {
+                $key_new = null;
+            }
+            $uses[] = [$type, $key, $key_new];
+        }
+
+        if (pparse__parser_peek() == 'COMMA') {
+            pparse__parser_next();
+        } else {
+            break;
+        }
+    } while (true);
+    return $uses;
 }
 
 function _parse_class_def($modifiers = [])
@@ -1028,21 +1056,27 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
 
         case 'YIELD':
             pparse__parser_next();
-            $next_2 = pparse__parser_peek();
-            switch ($next_2) {
-                case 'COMMAND_TERMINATE':
-                    $command = ['YIELD_0', $GLOBALS['I']];
-                    break;
+            $next_2 = pparse__parser_peek(true);
+            if (($next_2[0] == 'IDENTIFIER') && ($next_2[1] == 'from')) {
+                pparse__parser_next();
+                $expr = _parse_expression();
+                $command = ['YIELD_FROM', $expr, $GLOBALS['I']];
+            } else {
+                switch ($next_2[0]) {
+                    case 'COMMAND_TERMINATE':
+                        $command = ['YIELD_0', $GLOBALS['I']];
+                        break;
 
-                default:
-                    $expr = _parse_expression();
-                    if (pparse__parser_peek() == 'DOUBLE_ARROW') {
-                        pparse__parser_next();
-                        $expr2 = _parse_expression();
-                        $command = ['YIELD_2', $expr, $expr2, $GLOBALS['I']];
-                    } else {
-                        $command = ['YIELD_1', $expr, $GLOBALS['I']];
-                    }
+                    default:
+                        $expr = _parse_expression();
+                        if (pparse__parser_peek() == 'DOUBLE_ARROW') {
+                            pparse__parser_next();
+                            $expr2 = _parse_expression();
+                            $command = ['YIELD_2', $expr, $expr2, $GLOBALS['I']];
+                        } else {
+                            $command = ['YIELD_1', $expr, $GLOBALS['I']];
+                        }
+                }
             }
             if (!$no_term_needed) {
                 _test_command_end();
@@ -1263,7 +1297,7 @@ function _parse_cases()
 
 // In precedence order. Note REFERENCE==BW_AND (it gets converted, for clarity). Ditto QUESTION==TERNARY_IF
 global $OPS;
-$OPS = ['QUESTION', 'TERNARY_IF', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_AND', 'REFERENCE', 'BW_OR', 'BW_XOR', 'BW_AND', 'IS_EQUAL', 'IS_NOT_EQUAL', 'IS_IDENTICAL', 'INSTANCEOF', 'IS_NOT_IDENTICAL', 'IS_SMALLER', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_GREATER_OR_EQUAL', 'SL', 'SR', 'ADD', 'SUBTRACT', 'CONC', 'MULTIPLY', 'DIVIDE', 'REMAINDER', 'EXPONENTIATION'];
+$OPS = ['SPACESHIP', 'QUESTION_COALESCE', 'QUESTION', 'TERNARY_IF', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_AND', 'REFERENCE', 'BW_OR', 'BW_XOR', 'BW_AND', 'IS_EQUAL', 'IS_NOT_EQUAL', 'IS_IDENTICAL', 'INSTANCEOF', 'IS_NOT_IDENTICAL', 'IS_SMALLER', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_GREATER_OR_EQUAL', 'SL', 'SR', 'ADD', 'SUBTRACT', 'CONC', 'MULTIPLY', 'DIVIDE', 'REMAINDER', 'EXPONENTIATION'];
 
 function _parse_expression()
 {
@@ -1434,19 +1468,30 @@ function _parse_expression_inner()
         case 'NEW':
             pparse__parser_next();
             $identifier = pparse__parser_next(true);
-            if (($identifier[0] != 'IDENTIFIER') && ($identifier[0] != 'variable')) {
-                parser_error('Expected IDENTIFIER or variable but got ' . $identifier[0]);
+            if (($identifier[0] != 'IDENTIFIER') && ($identifier[0] != 'variable') && ($identifier[0] != 'CLASS')) {
+                parser_error('Expected IDENTIFIER or variable or CLASS but got ' . $identifier[0]);
             }
-            $next_2 = pparse__parser_peek();
-            if ($next_2 == 'PARENTHESIS_OPEN') {
-                pparse__parser_next();
-                $expressions = _parse_function_call();
-                pparse__parser_expect('PARENTHESIS_CLOSE');
-                $expression = ['NEW_OBJECT', ($identifier[0] == 'IDENTIFIER') ? $identifier[1] : null, $expressions, $GLOBALS['I']];
-            } else {
-                parser_error('PSR-12: Expects parentheses for all new object instantiations');
+            if ($identifier[0] == 'CLASS') {
+                // Anonymous class
+                $class = ['type' => 'class', 'superclass' => null, 'interfaces' => [], 'name' => null];
+                pparse__parser_expect('CURLY_OPEN');
+                $_class = _parse_class_contents([], 'class');
+                $class = array_merge($class, $_class);
+                pparse__parser_expect('CURLY_CLOSE');
 
-                $expression = ['NEW_OBJECT', ($identifier[0] == 'IDENTIFIER') ? $identifier[1] : null, [], $GLOBALS['I']];
+                $expression = ['NEW_ANONYMOUS_OBJECT', $class, $GLOBALS['I']];
+            } else {
+                $next_2 = pparse__parser_peek();
+                if ($next_2 == 'PARENTHESIS_OPEN') {
+                    pparse__parser_next();
+                    $expressions = _parse_function_call();
+                    pparse__parser_expect('PARENTHESIS_CLOSE');
+                    $expression = ['NEW_OBJECT', ($identifier[0] == 'IDENTIFIER') ? $identifier[1] : null, $expressions, $GLOBALS['I']];
+                } else {
+                    parser_error('PSR-12: Expects parentheses for all new object instantiations');
+
+                    $expression = ['NEW_OBJECT', ($identifier[0] == 'IDENTIFIER') ? $identifier[1] : null, [], $GLOBALS['I']];
+                }
             }
             break;
 

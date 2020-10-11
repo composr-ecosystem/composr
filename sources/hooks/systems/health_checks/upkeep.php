@@ -205,13 +205,13 @@ class Hook_health_check_upkeep extends Hook_Health_Check
 
         $year = null;
         $matches = [];
-        if (preg_match('#(Copyright|&copy;' . ((get_charset() == 'utf-8') ? ('|' . hex2bin('c2a9')) : '') . ').*(\d{4})[^\d]{1,10}(\d{4})#', $data, $matches) != 0) {
+        if (preg_match('#(Copyright|&copy;' . ((get_charset() == 'utf-8') ? "|\u{00A9}" : '') . ').*(\d{4})[^\d]{1,10}(\d{4})#', $data, $matches) != 0) {
             $_year_first = intval($matches[2]);
             $_year = intval($matches[3]);
             if (($_year - $_year_first > 0) && ($_year - $_year_first < 100) && ($_year > $current_year - 10) && ($_year <= $current_year)) {
                 $year = $_year;
             }
-        } elseif (preg_match('#(Copyright|&copy;' . ((get_charset() == 'utf-8') ? ('|' . hex2bin('c2a9')) : '') . ').*(\d{4})#', $data, $matches) != 0) {
+        } elseif (preg_match('#(Copyright|&copy;' . ((get_charset() == 'utf-8') ? "|\u{00A9}" : '') . ').*(\d{4})#', $data, $matches) != 0) {
             $_year = intval($matches[2]);
             if (($_year > $current_year - 10) && ($_year <= $current_year)) {
                 $year = $_year;

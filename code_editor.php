@@ -460,11 +460,7 @@ END;
         // Make backup
         if (file_exists($save_path)) {
             $backup_path = $save_path . '.' . strval(time()) . '_';
-            if (function_exists('random_bytes')) {
-                $backup_path .= substr(md5(random_bytes(13)), 0, 13);
-            } else {
-                $backup_path .= strval(mt_rand(0, mt_getrandmax()));
-            }
+            $backup_path .= substr(md5(random_bytes(13)), 0, 13);
             $c_success = @copy($save_path, $backup_path);
             if ($c_success !== false) {
                 ce_sync_file($backup_path);

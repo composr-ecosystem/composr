@@ -241,7 +241,7 @@ class database_misc_test_set extends cms_test_case
 
     public function testEmoji()
     {
-        $emoji = hex2bin('f09f9881');
+        $emoji = "\u{1F601}";
         set_value('emoji_test', $emoji);
         $this->assertTrue($emoji == get_value('emoji_test'));
         delete_value('emoji_test');
@@ -266,7 +266,7 @@ class database_misc_test_set extends cms_test_case
             'test_data_2' => 'SHORT_TEXT',
         ]);
 
-        $data = hex2bin('e280be');
+        $data = "\u{203E}";
 
         $GLOBALS['SITE_DB']->query_insert('testy_test_test_2', [
             'test_data_1' => $data,

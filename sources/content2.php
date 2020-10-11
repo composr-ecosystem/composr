@@ -970,7 +970,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
     if (cms_mb_strlen($description) > 160) {
         if (get_charset() == 'utf-8') {
             $description = cms_mb_substr($description, 0, 159);
-            $description .= hex2bin('e280a6');
+            $description .= "\u{2026}";
         } else {
             $description = cms_mb_substr($description, 0, 157);
             $description .= '...';

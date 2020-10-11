@@ -1849,7 +1849,7 @@ function fix_id($param, $simplified = false)
 
     if ($simplified) {
         if (get_charset() == 'utf-8') {
-            $param = str_replace(hex2bin('ce94'), 'delta', $param);
+            $param = str_replace("\u{0394}", 'delta', $param);
         }
     }
 

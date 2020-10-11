@@ -41,7 +41,7 @@ function transliterate_string($str)
             }
         } else {
             // German has inbuilt transliteration
-            $str = str_replace([hex2bin('c3a4'), hex2bin('c3b6'), hex2bin('c3bc'), hex2bin('c39f')], ['ae', 'oe', 'ue', 'ss'], $str);
+            $str = str_replace(["\u{00E4}", "\u{00F6}", "\u{00FC}", "\u{00DF}"], ['ae', 'oe', 'ue', 'ss'], $str);
         }
     }
     return $str;

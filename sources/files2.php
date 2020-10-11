@@ -83,7 +83,7 @@ function _intelligent_write_error($path)
         }
         warn_exit(do_lang_tempcode('WRITE_ERROR_CREATE', escape_html($path), escape_html(dirname($path))), false, true);
     } else {
-        warn_exit(do_lang_tempcode('WRITE_ERROR_MISSING_DIRECTORY', escape_html(dirname($path)), escape_html(dirname(dirname($path)))), false, true);
+        warn_exit(do_lang_tempcode('WRITE_ERROR_MISSING_DIRECTORY', escape_html(dirname($path)), escape_html(dirname($path, 2))), false, true);
     }
 }
 
@@ -108,7 +108,7 @@ function _intelligent_write_error_inline($path)
     } elseif (file_exists(dirname($path))) {
         $ret = do_lang_tempcode('WRITE_ERROR_CREATE', escape_html($path), escape_html(dirname($path)));
     } else {
-        $ret = do_lang_tempcode('WRITE_ERROR_MISSING_DIRECTORY', escape_html(dirname($path)), escape_html(dirname(dirname($path))));
+        $ret = do_lang_tempcode('WRITE_ERROR_MISSING_DIRECTORY', escape_html(dirname($path)), escape_html(dirname($path, 2)));
     }
 
     $looping = false;

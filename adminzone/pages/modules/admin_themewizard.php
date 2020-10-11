@@ -259,7 +259,7 @@ class Module_admin_themewizard
         $inherit_css = get_param_integer('inherit_css', 0);
         $themename = get_param_string('themename');
 
-        if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) {
+        if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY
             // Older versions of PHP on Windows cannot handle utf-8 filenames
             require_code('character_sets');
             $themename = transliterate_string($themename);

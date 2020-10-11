@@ -245,7 +245,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         }
 
         $phpv = PHP_VERSION;
-        $php_too_old = (substr($phpv, 0, 2) == '3.') || (substr($phpv, 0, 2) == '4.') || (substr($phpv, 0, 4) == '5.0.') || (substr($phpv, 0, 4) == '5.1.') || (substr($phpv, 0, 4) == '5.2.') || (substr($phpv, 0, 4) == '5.3.') || (substr($phpv, 0, 4) == '5.4.') || (substr($phpv, 0, 4) == '5.5.'); // LEGACY also maintain in tut_webhosting.txt
+        $php_too_old = (substr($phpv, 0, 2) == '3.') || (substr($phpv, 0, 2) == '4.') || (substr($phpv, 0, 2) == '5.'); // LEGACY also maintain in tut_webhosting.txt
         $this->assertTrue(!$php_too_old, do_lang('PHP_TOO_OLD'));
 
         $max_tested_php_version = '7.4'; // LEGACY: This needs to keep raising (also it is in tut_webhosting.txt)
@@ -460,10 +460,10 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ' . db_function('LENGTH', ['\'' . db_escape_string(hex2bin('c2a3')) . '\'']));
+        $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ' . db_function('LENGTH', ['\'' . db_escape_string("\u{00A3}") . '\'']));
         $this->assertTrue($cnt == 1, 'Database connection is not encoding Unicode properly (non-latin characters, utf8)');
 
-        $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ' . db_function('LENGTH', ['\'' . db_escape_string(hex2bin('f09f988e')) . '\'']));
+        $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ' . db_function('LENGTH', ['\'' . db_escape_string("\u{1F60E}") . '\'']));
         $this->assertTrue($cnt == 1, 'Database connection is not encoding Unicode properly (emojis, utf8mb4)');
     }
 

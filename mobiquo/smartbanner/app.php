@@ -7,7 +7,7 @@ defined('IN_MOBIQUO') or exit;
 error_reporting(0);
 
 if (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['SCRIPT_NAME']))
-    $default_board_url = (tt_is_https() ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . str_replace(DIRECTORY_SEPARATOR, '/', dirname(dirname($_SERVER['SCRIPT_NAME'])));
+    $default_board_url = (tt_is_https() ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['SCRIPT_NAME'], 2));
 else
     $default_board_url = '';
 

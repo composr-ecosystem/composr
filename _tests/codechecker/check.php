@@ -65,20 +65,24 @@ function check_class($class)
     global $CURRENT_CLASS, $FUNCTION_SIGNATURES;
 
     if (!empty($GLOBALS['FLAG__API'])) {
-        if (substr($class['name'], 0, 1) == strtolower(substr($class['name'], 0, 1))) {
+        if (($class['name'] !== null) && (substr($class['name'], 0, 1) == strtolower(substr($class['name'], 0, 1)))) {
             log_warning('Class names should start with an upper case letter, \'' . $class['name'] . '\'');
         }
     }
 
-    /*if (substr($class['name'], 1) != strtolower(substr($class['name'], 1))) {     Too Composr-specific
+    /*if (($class['name'] !== null) && (substr($class['name'], 1) != strtolower(substr($class['name'], 1)))) {     Too Composr-specific
         log_warning('Class names should be lower case apart from the first letter, \'' . $class['name'] . '\'');
     }*/
 
-    $inherits_from = find_inherits_from($CURRENT_CLASS);
+    if ($CURRENT_CLASS !== null) {
+        $inherits_from = find_inherits_from($CURRENT_CLASS);
+    } else {
+        $inherits_from = [];
+    }
 
     $CURRENT_CLASS = $class['name'];
     foreach ($class['functions'] as $function) {
-        if (strtolower($function['name']) == strtolower($class['name'])) {
+        if (($class['name'] !== null) && (strtolower($function['name']) == strtolower($class['name']))) {
             log_warning('Use __construct for construct name, not \'' . $function['name'] . '\'', $function['offset']);
         }
 
@@ -142,11 +146,13 @@ function check_class($class)
     }
 
     // Check all all abstract/interface functions from parents are implemented (only works when function signatures are known, and no real-time parsing)
-    list($functions_responsible_for_implementing) = functions_responsible_for_implementing($CURRENT_CLASS);
-    foreach ($functions_responsible_for_implementing as $inherited_abstract_function) {
-        $found_it = isset($FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$inherited_abstract_function]);
-        if ((!$found_it) && (!$FUNCTION_SIGNATURES[$CURRENT_CLASS]['is_abstract'])) {
-            log_warning('Abstract function \'' . $inherited_abstract_function . '\' from parent is not implemented', $function['offset']);
+    if ($CURRENT_CLASS !== null) {
+        list($functions_responsible_for_implementing) = functions_responsible_for_implementing($CURRENT_CLASS);
+        foreach ($functions_responsible_for_implementing as $inherited_abstract_function) {
+            $found_it = isset($FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$inherited_abstract_function]);
+            if ((!$found_it) && (!$FUNCTION_SIGNATURES[$CURRENT_CLASS]['is_abstract'])) {
+                log_warning('Abstract function \'' . $inherited_abstract_function . '\' from parent is not implemented', $function['offset']);
+            }
         }
     }
 }
@@ -470,6 +476,10 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
             case 'YIELD_2':
                 check_expression($c[1], false, false, $function_guard);
                 check_expression($c[2], false, false, $function_guard);
+                break;
+
+            case 'YIELD_FROM':
+                check_expression($c[1], false, false, $function_guard);
                 break;
 
             case 'RETURN':
@@ -950,6 +960,24 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         }
     }
 
+    if ($e[0] == 'SPACESHIP') {
+        $type_a = check_expression($e[1], false, false, $function_guard);
+        $type_b = check_expression($e[2], false, false, $function_guard);
+        if (($type_a != 'null') && ($type_b != 'null')) {
+            $passes = ensure_type([$type_a], $type_b, $c_pos, 'Type symmetry error in spaceship operator');
+        }
+        return 'integer';
+    }
+
+    if ($e[0] == 'QUESTION_COALESCE') {
+        $type_a = check_expression($e[1], false, false, $function_guard);
+        $type_b = check_expression($e[2], false, false, $function_guard);
+        if (($type_a != 'null') && ($type_b != 'null')) {
+            $passes = ensure_type([$type_a], $type_b, $c_pos, 'Type symmetry error in null-coalesce operator');
+        }
+        return $type_b;
+    }
+
     if ($e[0] == 'TERNARY_IF') {
         if (($e[1][0] == 'CALL_DIRECT') && ($e[1][1] == 'php_function_allowed' || strpos($e[1][1], '_exists') !== false/*function_exists or method_exists or class_exists*/) && ($e[1][2][0][0][0] == 'LITERAL') && ($e[1][2][0][0][1][0] == 'STRING')) {
             $function_guard .= ',' . $e[1][2][0][0][1][1] . ',';
@@ -962,7 +990,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         $type_b = check_expression($e[2][1], false, false, $function_guard);
         check_for_equivalent_operands($e[2][0], $e[2][1]);
         if (($type_a != 'null') && ($type_b != 'null')) {
-            $passes = ensure_type([$type_a, 'mixed'/*imperfect, but useful for performance*/], $type_b, $c_pos, 'Type symettry error in ternary operator');
+            $passes = ensure_type([$type_a, 'mixed'/*imperfect, but useful for performance*/], $type_b, $c_pos, 'Type symmetry error in ternary operator');
             if ($passes) {
                 infer_expression_type_to_variable_type($type_a, $e[2][1]);
             }
@@ -1210,6 +1238,10 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             $type = check_literal($inner[1]);
             return $type;
 
+        case 'NEW_ANONYMOUS_OBJECT':
+            check_class($inner[1]);
+            return 'object';
+
         case 'NEW_OBJECT':
             $class = preg_replace('#^.*\\\\#', '', $inner[1]); // We strip out namespaces from the name, and just look at the actual class name
             global $FUNCTION_SIGNATURES;
@@ -1443,7 +1475,7 @@ function check_method_call($c, $c_pos, $function_guard = '')
                             log_warning('Calling ' . $method . ' as static on a ' . $FUNCTION_SIGNATURES[$class]['type'], $c_pos);
                         }
 
-                        if (($FUNCTION_SIGNATURES[$class]['is_abstract']) && ($CURRENT_CLASS != $class)) {
+                        if (($FUNCTION_SIGNATURES[$class]['is_abstract']) && ($CURRENT_CLASS !== $class)) {
                             log_warning('Calling ' . $method . ' as static on an abstract class', $c_pos);
                         }
 
@@ -1461,7 +1493,7 @@ function check_method_call($c, $c_pos, $function_guard = '')
                     return actual_check_method($class, $method, $params, $c_pos, $function_guard);
                 }
             } elseif (($variable[0] == 'IDENTIFIER') && (in_array($variable[1], ['self', 'static']))) {
-                if ($CURRENT_CLASS != '__global') {
+                if ($CURRENT_CLASS !== '__global') {
                     $class = $CURRENT_CLASS;
                 } else {
                     log_warning('Cannot reference the ' . $variable[1] . ' class pseudonym from outside a class', $c_pos);
@@ -1544,15 +1576,19 @@ function check_method_call_scope($class, $method, $c_pos)
             return;
         }
 
-        if ($CURRENT_CLASS == '__global') {
+        if ($CURRENT_CLASS === '__global') {
             log_warning('Calling a non-public method, ' . $method . ', from global scope', $c_pos);
-        } elseif ($class != $CURRENT_CLASS) {
+        } elseif ($class !== $CURRENT_CLASS) {
             if ($visibility == 'private') {
                 log_warning('Calling a private method, ' . $method . ', from a different class', $c_pos);
             }
 
             if ($visibility == 'protected') {
-                $inherits_from = find_inherits_from($CURRENT_CLASS);
+                if ($CURRENT_CLASS !== null) {
+                    $inherits_from = find_inherits_from($CURRENT_CLASS);
+                } else {
+                    $inherits_from = [];
+                }
 
                 if (!in_array($class, $inherits_from)) {
                     log_warning('Calling a protected method, ' . $method . ', from a different class that is not inheriting', $c_pos);
@@ -2084,7 +2120,11 @@ function reinitialise_local_variables($inside_class = false)
     ];
     if ($inside_class) {
         global $CURRENT_CLASS;
-        $ret['this'] = ['is_global' => false, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['object-' . $CURRENT_CLASS], 'references' => 0, 'object_type' => $CURRENT_CLASS, 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false];
+        if ($CURRENT_CLASS === null) {
+            $ret['this'] = ['is_global' => false, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['object'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false];
+        } else {
+            $ret['this'] = ['is_global' => false, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['object-' . $CURRENT_CLASS], 'references' => 0, 'object_type' => $CURRENT_CLASS, 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false];
+        }
     }
     return $ret;
 }
