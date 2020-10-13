@@ -620,9 +620,10 @@ function get_stopwords_list()
  *
  * @param  string $_temp_summary What was searched
  * @param  array $words_searched List of words searched
+ * @param  ?integer $cnt Number of matches found (null: not set yet)
  * @return string Highlighted portion
  */
-function generate_text_summary($_temp_summary, $words_searched)
+function generate_text_summary($_temp_summary, $words_searched, &$cnt = null)
 {
     require_code('xhtml');
 
@@ -639,11 +640,13 @@ function generate_text_summary($_temp_summary, $words_searched)
             continue;
         }
 
+        $all_upper = (strtoupper($content_bit) == $content_bit);
+
         $last_pos = 0;
         $content_bit_pos = 0;
         do {
             $content_bit_matched = $content_bit;
-            if (strtoupper($content_bit) == $content_bit) { // all upper case so don't want case sensitive
+            if ($all_upper) { // all upper case so don't want case sensitive
                 $content_bit_pos = strpos($_temp_summary, $content_bit, $last_pos);
             } else {
                 $content_bit_pos = stripos($_temp_summary_lower, $content_bit, $last_pos);
@@ -745,6 +748,8 @@ function generate_text_summary($_temp_summary, $words_searched)
             }
         }
     }
+
+    $cnt = count($all_occurrences);
 
     return $summary;
 }

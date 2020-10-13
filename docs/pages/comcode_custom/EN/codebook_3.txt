@@ -671,6 +671,7 @@ We have the following which are either unlikely to be useful, or potentially uns
   - [tt]reorganise_uploads[/tt] -- set this to '2' for various upload directories to have a hierarchical structure of subdirectories to organise your files based on category; set this to '1' for a flat structure; set this to '0' to disable it completely; to retroactively move things run the "Organise uploads" cleanup tool that will then appear.
   - [tt]urls_simplifier[/tt] -- set this to '1' to have simplified (not-RFC-compliant) URLs shown in URL inputs on edit forms. This makes them a lot easier to use, and we convert them back to compliant URLs on the server. It is a safe process where it is not possible to cause any corruption by double encoding or double decoding.
   - [tt]download_associated_media[/tt] -- set this to '1' to add an option on posting forms to have any referenced media automatically downloading locally, to protect against the risk of future broken links
+  - [tt]highlight_extracted_file_data[/tt] -- set this to '1' if downloads searches should show highlighted data from extracted keywords, if there's no match on the body text of the download
 
 [title="4"]Hidden 'keep' parameters[/title]
 
