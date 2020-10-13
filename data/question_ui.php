@@ -43,8 +43,6 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 @chdir($FILE_BASE);
 
-global $FORCE_INVISIBLE_GUEST;
-$FORCE_INVISIBLE_GUEST = true;
 global $EXTERNAL_CALL;
 $EXTERNAL_CALL = false;
 if (!is_file($FILE_BASE . '/sources/global.php')) {
