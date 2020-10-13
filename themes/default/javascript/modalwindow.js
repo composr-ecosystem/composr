@@ -545,7 +545,7 @@ function ModalWindow()
 		reset_dimensions: function(width,height,init,force_height) {
 			if (typeof force_height=='undefined') force_height=false;
 
-			if (window.top.document.documentElement.style.overflowY=='hidden') force_height=true;
+			if (window_scrolling_blocked()) force_height=true;
 
 			if (!this.box_wrapper) return;
 
@@ -842,7 +842,7 @@ function ModalWindow()
 
 					var iframe=this.element('iframe',{
 						'frameBorder': '0',
-						'scrolling': (document.documentElement.style.overflowY=='hidden')?'yes':'no',
+						'scrolling': window_scrolling_blocked()?'yes':'no',
 						'title': '',
 						'name': 'overlay_iframe',
 						'id': 'overlay_iframe',
@@ -1182,3 +1182,8 @@ function ModalWindow()
 	};
 }
 /*{+END}*/
+
+function window_scrolling_blocked()
+{
+	return (document.documentElement.style.overflowY=='hidden') || (document.documentElement.style.position=='fixed');
+}
