@@ -1533,7 +1533,7 @@ function animate_frame_load(pf,frame,leave_gap_top,leave_height)
 }
 function illustrate_frame_load(pf,frame)
 {
-	pf.style.height='80px';
+	pf.style.minHeight='80px';
 
 	/*{+START,IF,{$CONFIG_OPTION,enable_animations}}*/
 		var head='<style>',cssText='';

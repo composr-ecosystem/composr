@@ -355,7 +355,8 @@ function do_input_block(field_name)
 	if ((typeof window.event!='undefined') && (window.event)) window.event.returnValue=false;
 	var url='{$FIND_SCRIPT;,block_helper}?field_name='+field_name+keep_stub();
 	url=url+'&block_type='+(((field_name.indexOf('edit_panel_')==-1) && (window.location.href.indexOf(':panel_')==-1))?'main':'side');
-	window.faux_open(maintain_theme_in_link(url),'','width=750,height=auto,status=no,resizable=yes,scrollbars=yes',null,'{!INPUTSYSTEM_CANCEL;^}');
+	var height=(document.documentElement.style.overflowY=='hidden')?'100%':'auto';
+	window.faux_open(maintain_theme_in_link(url),'','width=750,height='+height+',status=no,resizable=yes,scrollbars=yes',null,'{!INPUTSYSTEM_CANCEL;^}');
 }
 
 function do_input_comcode(field_name,tag)
