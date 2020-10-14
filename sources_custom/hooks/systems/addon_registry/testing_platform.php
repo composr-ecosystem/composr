@@ -413,7 +413,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/env_vars.php',
             '_tests/tests/unit_tests/_health_check.php',
             '_tests/tests/unit_tests/catalogues.php',
-            '_tests/tests/unit_tests/catalogues_category.php',
+            '_tests/tests/unit_tests/catalogues_module.php',
             '_tests/tests/unit_tests/wiki.php',
             '_tests/tests/unit_tests/web_platform.php',
             '_tests/tests/unit_tests/cma_hooks.php',
