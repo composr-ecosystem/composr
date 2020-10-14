@@ -143,7 +143,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', array('r.the_zone', 'r.the_page')));
 
         // Calculate and perform query
-        if ($g_or == '') {
+        if ($g_or === null) {
             $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.the_zone,r.the_page', $nontrans_fields);
         } else {
             $rows = get_search_rows('comcode_page', 'the_zone:the_page', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table . ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z ON (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . '))', $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields);

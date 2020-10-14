@@ -246,7 +246,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
             $table = 'comcode_pages r';
             $g_or = _get_where_clause_groups(get_member(), false);
-            if ($g_or != '') {
+            if ($g_or !== null) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
@@ -287,7 +287,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             }
 
             $g_or = _get_where_clause_groups(get_member(), false);
-            if ($g_or != '') {
+            if ($g_or !== null) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }

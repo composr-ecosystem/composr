@@ -321,7 +321,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             }
 
             $g_or = _get_where_clause_groups(get_member());
-            if ($g_or != '') {
+            if ($g_or !== null) {
                 if (get_value('disable_cat_cat_perms') !== '1') {
                     $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z WHERE ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=i_category_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')';
                 }
@@ -363,8 +363,10 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             }
             $this->_handle_date_check($cutoff, 'r.ce_add_date', $where_clause);
             if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
-                $where_clause .= ' AND ';
-                $where_clause .= 'z.category_name IS NOT NULL';
+                if (get_value('disable_cat_cat_perms') !== '1') {
+                    $where_clause .= ' AND ';
+                    $where_clause .= 'z.category_name IS NOT NULL';
+                }
                 $where_clause .= ' AND ';
                 $where_clause .= 'p.category_name IS NOT NULL';
             }
@@ -374,9 +376,6 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             }
 
             $g_or = _get_where_clause_groups(get_member());
-            if ($g_or != '') {
-                $table .= ((get_value('disable_cat_cat_perms') === '1') ? '' : (' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.cc_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')')) . ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON (' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
-            }
 
             $privacy_join = '';
             if (addon_installed('content_privacy')) {
@@ -388,6 +387,11 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             $catalogue_name = get_param_string('catalogue_name', '');
             if ($catalogue_name != '') {
                 $table = 'catalogue_entries r';
+
+                if ($g_or !== null) {
+                    $table .= ((get_value('disable_cat_cat_perms') === '1') ? '' : (' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.cc_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')')) . ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON (' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
+                }
+
                 list($sup_table, $where_clause, $trans_fields, $nontrans_fields, $title_field) = $this->_get_search_parameterisation_advanced($catalogue_name);
                 $table .= $sup_table;
                 $table .= $privacy_join;
@@ -400,6 +404,12 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
                 $rows = get_search_rows('catalogue_entry', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,' . $title_field . ' AS b_cv_value' . $extra_select, $nontrans_fields);
             } else {
+                $table = 'catalogue_fields f LEFT JOIN ' . get_table_prefix() . 'catalogue_entries r ON (r.c_name=f.c_name)';
+
+                if ($g_or !== null) {
+                    $table .= ((get_value('disable_cat_cat_perms') === '1') ? '' : (' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.cc_id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')')) . ' LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON (' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
+                }
+
                 if (multi_lang_content() && $GLOBALS['SITE_DB']->query_select_value('translate', 'COUNT(*)') > 10000) { // Big sites can't do indiscriminate catalogue translatable searches for performance reasons
                     $trans_fields = array();
                     $join = ' JOIN ' . get_table_prefix() . 'catalogue_efv_short c ON (r.id=c.ce_id AND f.id=c.cf_id) LEFT JOIN ' . get_table_prefix() . 'catalogue_efv_long d ON (r.id=d.ce_id AND f.id=d.cf_id)';
@@ -418,7 +428,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
                 $join .= $privacy_join;
 
-                $rows = get_search_rows('catalogue_entry', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_fields f LEFT JOIN ' . get_table_prefix() . 'catalogue_entries r ON (r.c_name=f.c_name)' . $join, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*' . $extra_select, $non_trans_fields);
+                $rows = get_search_rows('catalogue_entry', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table . $join, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*' . $extra_select, $non_trans_fields);
             }
         }
 
