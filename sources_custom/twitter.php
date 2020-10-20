@@ -1363,7 +1363,7 @@ class Twitter
      * @return array
      */
     public function directMessagesNew(
-        $userId = null, $screenName = null, $text
+        $userId, $screenName, $text
     )
     {
         // validate

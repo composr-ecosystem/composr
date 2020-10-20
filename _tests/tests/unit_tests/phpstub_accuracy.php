@@ -52,7 +52,7 @@ class phpstub_accuracy_test_set extends cms_test_case
         if (get_param_integer('dev_check', 0) == 1) { // This extra switch let's us automatically find new functions in PHP we aren't coding for
             $will_never_define = [
                 // Extensions, inconsistent prefix
-                'read_exif_data',
+                'read_exif_data', // LEGACY
                 'hash',
 
                 // FreeType needed

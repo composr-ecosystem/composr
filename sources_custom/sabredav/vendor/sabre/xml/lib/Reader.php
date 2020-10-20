@@ -55,7 +55,7 @@ class Reader extends XMLReader
      */
     public function parse(): array
     {
-        $previousEntityState = libxml_disable_entity_loader(true);
+        $previousEntityState = @libxml_disable_entity_loader(true);
         $previousSetting = libxml_use_internal_errors(true);
 
         try {
@@ -78,7 +78,7 @@ class Reader extends XMLReader
             }
         } finally {
             libxml_use_internal_errors($previousSetting);
-            libxml_disable_entity_loader($previousEntityState);
+            @libxml_disable_entity_loader($previousEntityState);
         }
 
         return $result;

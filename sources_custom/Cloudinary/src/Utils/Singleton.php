@@ -37,18 +37,4 @@ class Singleton
     {
     }
 
-    /**
-     * Make sleep magic method private, so nobody can serialize instance.
-     */
-    private function __sleep()
-    {
-    }
-
-    /**
-     * Make wakeup magic method private, so nobody can unserialize instance.
-     */
-    private function __wakeup()
-    {
-    }
-
 }

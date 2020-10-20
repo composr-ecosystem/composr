@@ -754,7 +754,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			'url' => 'changelog_page.php',
 			'title' => 'changelog_link',
 			'icon' => 'fa-retweet',
-			'access_level' => config_get( 'view_changelog_threshold' )
+			'access_level' => config_get( 'view_changelog_threshold' ),
 			'category' => 'issues', /*Composr - provide some link structure*/
 		);
 

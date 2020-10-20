@@ -664,7 +664,7 @@ class Field_restriction_loader
 
         // Create and setup our parser
         if (function_exists('libxml_disable_entity_loader')) {
-            libxml_disable_entity_loader();
+            @libxml_disable_entity_loader();
         }
         $xml_parser = @xml_parser_create(get_charset());
         if ($xml_parser === false) {
@@ -904,7 +904,7 @@ class Advanced_banning_loader
 
         // Create and setup our parser
         if (function_exists('libxml_disable_entity_loader')) {
-            libxml_disable_entity_loader();
+            @libxml_disable_entity_loader();
         }
         $xml_parser = @xml_parser_create(get_charset());
         if ($xml_parser === false) {
