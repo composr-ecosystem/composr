@@ -3108,60 +3108,6 @@ SecRuleRemoveById 300018 340147 340014 950119 950120 973331
 </IfModule>
 END;
 
-    $php_version = PHP_MAJOR_VERSION;
-    $clauses[] = <<<END
-<IfModule mod_php{$php_version}.c>
-# Composr needs uploads; many hosts leave these low
-php_value post_max_size "500M"
-php_value upload_max_filesize "500M"
-
-# Put some limits up. Composr is stable enough not to cause problems- it'll only use higher limits when it really needs them
-php_value memory_limit "128M"
-php_value max_execution_time "30"
-php_value max_input_vars "2000"
-
-# General security strengthening that Composr can tolerate
-php_value expose_php "off"
-php_value allow_url_include "off"
-
-# This causes unstability (and is known/documented to) but some hosts turn it on
-php_value mbstring.func_overload "0"
-
-# SpamAssassin does not like this
-php_flag mail.add_x_header off
-
-# Some free hosts prepend/append junk, which is not legitimate (breaks binary and AJAX scripts, potentially more)
-php_value auto_prepend_file none
-php_value auto_append_file none
-
-# Suhosin can cause problems on configuration, language editing, and Catalogue forms, which use a lot of fields
-php_value suhosin.post.max_vars "2000"
-php_value suhosin.get.max_vars "100"
-php_value suhosin.request.max_vars "2000"
-php_value suhosin.cookie.max_vars "100"
-php_value suhosin.post.max_value_length "100000000"
-php_value suhosin.get.max_value_length "512"
-php_value suhosin.request.max_value_length "100000000"
-php_value suhosin.cookie.max_value_length "10000"
-php_value suhosin.post.max_name_length "64"
-php_value suhosin.get.max_name_length "64"
-php_value suhosin.request.max_name_length "64"
-php_value suhosin.cookie.max_name_length "64"
-php_value suhosin.post.max_totalname_length "256"
-php_value suhosin.get.max_totalname_length "256"
-php_value suhosin.request.max_totalname_length "256"
-php_value suhosin.cookie.max_totalname_length "256"
-php_flag suhosin.cookie.encrypt off
-php_flag suhosin.sql.union off
-php_flag suhosin.sql.comment off
-php_flag suhosin.sql.multiselect off
-php_flag suhosin.upload.remove_binary off
-
-# Sandbox Composr to its own directory
-# php_value open_basedir "/tmp:/home/blah/public_html/composr/" # But needs customising for your server and only works outside php.ini in PHP6+
-</IfModule>
-END;
-
     $base = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
     $clauses[] = <<<END
 
