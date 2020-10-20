@@ -399,7 +399,7 @@ class Database_super_mysql
     {
         switch ($type) {
             case 'CHAR':
-                $_type = $type . '(65535)';
+                $_type = $type . '(20)';
                 break;
 
             case 'INT':

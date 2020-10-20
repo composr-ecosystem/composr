@@ -313,10 +313,12 @@ function actual_edit_catalogue($old_name, $name, $title, $description, $display_
         'c_ecommerce' => $ecommerce,
         'c_name' => $name,
         'c_notes' => $notes,
-        'c_add_date' => $add_time,
         'c_submit_points' => $submit_points,
         'c_default_review_freq' => $default_review_freq,
     );
+    if ($add_time !== null) {
+        $update_map['c_add_date'] = $add_time;
+    }
     $update_map += lang_remap('c_title', $_title, $title);
     $update_map += lang_remap_comcode('c_description', $_description, $description);
     if (!is_null($add_time)) {

@@ -894,6 +894,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                             }
                             $tag_output->attach($temp_tpl);
                         }
+                        $just_ended = false;
                     } else {
                         $just_new_line = ($just_ended && $next === "\n"); // Only propagate new line signal if it was a real but non-hard-new-line (i.e. the above if clause did not fire)
                         if (($next === ' ') && ($white_space_area) && (!$in_semihtml)) {
@@ -2142,6 +2143,11 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
     /*if ($html_element_stack !== array()) {    Not actually needed
         $html_errors = true;
     }*/
+
+    // CkEditor trims finally <br>'s making editing hard, so do a FUDGE
+    if (($semiparse_mode) && (substr(rtrim($comcode), -8) == '[/quote]')) {
+        $tag_output->attach('&nbsp;');
+    }
 
     return $tag_output;
 }

@@ -246,7 +246,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
             $table = 'comcode_pages r';
             $g_or = _get_where_clause_groups(get_member(), false);
-            if ($g_or != '') {
+            if ($g_or !== null) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
@@ -265,7 +265,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $key_transfer_map = array('the_zone' => 'i_zone_name', 'the_page' => 'i_page_name');
             $rows = $engine->get_search_rows($db, $index_table, $db->get_table_prefix() . $table, $key_transfer_map, $where_clause, $extra_join_clause, $content, $boolean_search, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction);
         } else {
-            $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
+            $sq = build_search_submitter_clauses('q.p_submitter', $author_id, $author);
             if (is_null($sq)) {
                 return array();
             } else {
@@ -283,11 +283,11 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
             if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
                 $where_clause .= ' AND ';
-                $where_clause .= 'p_validated=1';
+                $where_clause .= 'q.p_validated=1';
             }
 
             $g_or = _get_where_clause_groups(get_member(), false);
-            if ($g_or != '') {
+            if ($g_or !== null) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }

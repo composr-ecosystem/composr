@@ -99,6 +99,14 @@ class Module_tickets
             foreach ($ticket_types as $ticket_type) {
                 $GLOBALS['SITE_DB']->query_update('group_category_access', array('category_name' => strval($ticket_type['id'])), array('category_name' => get_translated_text($ticket_type['ticket_type_name']), 'module_the_name' => 'tickets'));
             }
+
+            if (get_forum_type() == 'cns') {
+                require_code('tickets');
+                $forum_id = get_ticket_forum_id(null, null, false, true);
+                if ($forum_id !== null) {
+                    $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_description=' . db_function('REPLACE', array('t_description', '\'Support ticket:\'', '\'Ticket:\'')) . ' WHERE t_forum_id=' . strval($forum_id));
+                }
+            }
         }
 
         if ((!is_null($upgrade_from)) && ($upgrade_from < 5)) {

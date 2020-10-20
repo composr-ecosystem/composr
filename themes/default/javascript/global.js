@@ -462,78 +462,8 @@ function initialise_error_mechanism()
 			}
 			return false;
 		};
-	add_event_listener_abstract(window,'beforeunload',function() { window.onerror=null; });
 }
 if ((typeof window.take_errors!='undefined') && (window.take_errors)) initialise_error_mechanism();
-if (typeof window.unloaded=='undefined')
-{
-	window.unloaded=false; // Serves as a flag to indicate any new errors are probably due to us transitioning
-}
-add_event_listener_abstract(window,'beforeunload',function() { window.unloaded=true; });
-
-/* Screen transition, for staff */
-function staff_unload_action()
-{
-	undo_staff_unload_action();
-
-	// If clicking a download link then don't show the animation
-	if (document.activeElement && typeof document.activeElement.href!='undefined' && document.activeElement.href!=null)
-	{
-		var url=document.activeElement.href.replace(/.*:\/\/[^\/:]+/,'');
-		if (url.indexOf('download')!=-1 || url.indexOf('export')!=-1)
-			return;
-	}
-
-	// If doing a meta refresh then don't show the animation
-	if ((typeof document.querySelector!='undefined') && document.querySelector('meta[http-equiv="Refresh"]'))
-	{
-		return;
-	}
-
-	// Show the animation
-	var bi=document.getElementById('main_website_inner');
-	if (bi)
-	{
-		bi.className+=' site_unloading';
-		if (typeof window.fade_transition!='undefined')
-		{
-			fade_transition(bi,20,30,-4);
-		}
-	}
-	var div=document.createElement('div');
-	div.className='unload_action';
-	div.style.width='100%';
-	div.style.top=(get_window_height()/2-160)+'px';
-	div.style.position='fixed';
-	div.style.zIndex=10000;
-	div.style.textAlign='center';
-	set_inner_html(div,'<div aria-busy="true" class="loading_box box"><h2>{!LOADING;^}</h2><img id="loading_image" alt="" src="'+'{$IMG_INLINE*;,loading}'.replace(/^https?:/,window.location.protocol)+'" /></div>');
-	window.setTimeout( function() { if (document.getElementById('loading_image')) document.getElementById('loading_image').src+=''; } , 100); // Stupid workaround for Google Chrome not loading an image on unload even if in cache
-	document.body.appendChild(div);
-
-	// Allow unloading of the animation
-	add_event_listener_abstract(window,'pageshow',undo_staff_unload_action);
-	add_event_listener_abstract(window,'keydown',undo_staff_unload_action);
-	add_event_listener_abstract(window,'click',undo_staff_unload_action);
-}
-function undo_staff_unload_action()
-{
-	var pre=get_elements_by_class_name(document.body,'unload_action');
-	for (var i=0;i<pre.length;i++)
-	{
-		pre[i].parentNode.removeChild(pre[i]);
-	}
-	var bi=document.getElementById('main_website_inner');
-	if (bi)
-	{
-		if ((typeof window.fade_transition_timers!='undefined') && (window.fade_transition_timers[bi.fader_key]))
-		{
-			window.clearTimeout(window.fade_transition_timers[bi.fader_key]);
-			window.fade_transition_timers[bi.fader_key]=null;
-		}
-		bi.className=bi.className.replace(/ site_unloading/g,'');
-	}
-}
 
 function placeholder_focus(ob,def)
 {
@@ -1603,7 +1533,7 @@ function animate_frame_load(pf,frame,leave_gap_top,leave_height)
 }
 function illustrate_frame_load(pf,frame)
 {
-	pf.style.height='80px';
+	pf.style.minHeight='80px';
 
 	/*{+START,IF,{$CONFIG_OPTION,enable_animations}}*/
 		var head='<style>',cssText='';

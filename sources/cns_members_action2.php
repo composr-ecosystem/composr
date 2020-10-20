@@ -1406,9 +1406,6 @@ function cns_edit_custom_field($id, $name, $description, $default, $public_view,
 
     require_code('database_action');
 
-    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
-    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
-
     if (substr(get_db_type(), 0, 5) == 'mysql') {
         $GLOBALS['SITE_DB']->query('SET sql_mode=\'\'', null, null, true); // Turn off strict mode
     }
@@ -1453,7 +1450,8 @@ function cns_delete_custom_field($id)
     require_code('database_action');
     delete_lang($_name, $GLOBALS['FORUM_DB']);
     delete_lang($_description, $GLOBALS['FORUM_DB']);
-    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf' . strval($id));
+    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
+    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
     $GLOBALS['FORUM_DB']->delete_table_field('f_member_custom_fields', 'field_' . strval($id));
     $GLOBALS['FORUM_DB']->query_delete('f_custom_fields', array('id' => $id), '', 1);
 
@@ -2070,28 +2068,32 @@ function cns_delete_boiler_custom_field($field)
 
 /**
  * Rebuild custom profile field indices.
- * It is possible for these to get in a mess, especially when upgrading from old versions, or tweaking which of the maximum of 60 to have.
+ *
+ * @param  boolean $leave_existing Whether to leave existing indexes alone (may be useful as deleting then recreating indexes can be very slow).
  */
-function rebuild_all_cpf_indices()
+function rebuild_all_cpf_indices($leave_existing = false)
 {
     $GLOBALS['NO_QUERY_LIMIT'] = true; // TODO: Change in v11
 
     $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_type'), array(), 'ORDER BY cf_required+cf_show_on_join_form DESC,cf_public_view+cf_owner_set DESC,cf_order DESC'); // TODO: Respect searchable setting in v11
 
-    // Delete existing indexes
-    foreach ($fields as $field) {
-        $id = $field['id'];
+    if (!$leave_existing) {
+        // Delete existing indexes
+        foreach ($fields as $field) {
+            $id = $field['id'];
 
-        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
-        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
-    }
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'field_' . strval($id)); // LEGACY
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
+        }
 
-    // Delete any stragglers (already deleted fields or inconsistent naming)
-    $GLOBALS['FORUM_DB']->query_delete('db_meta_indices', array('i_table' => 'f_member_custom_fields'));
-    if (strpos(get_db_type(), 'mysql') !== false) {
-        $indexes = $GLOBALS['FORUM_DB']->query('SHOW INDEXES FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields WHERE Column_name<>\'mf_member_id\'');
-        foreach ($indexes as $index) {
-            $GLOBALS['FORUM_DB']->query('DROP INDEX ' . $index['Key_name'] . ' ON ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields');
+        // Delete any stragglers (already deleted fields or inconsistent naming)
+        $GLOBALS['FORUM_DB']->query_delete('db_meta_indices', array('i_table' => 'f_member_custom_fields'));
+        if (strpos(get_db_type(), 'mysql') !== false) {
+            $indexes = $GLOBALS['FORUM_DB']->query('SHOW INDEXES FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields WHERE Column_name<>\'mf_member_id\'');
+            foreach ($indexes as $index) {
+                $GLOBALS['FORUM_DB']->query('DROP INDEX ' . $index['Key_name'] . ' ON ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields');
+            }
         }
     }
 

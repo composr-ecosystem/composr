@@ -557,7 +557,7 @@ function git_find_uncommitted_files()
     $git_found = array();
     foreach ($lines as $line) {
         $matches = array();
-        if (preg_match('#\t(both modified|modified|new file):\s+(.*)$#', $line, $matches) != 0) {
+        if (preg_match('#\t(both modified|modified|new file|deleted):\s+(.*)$#', $line, $matches) != 0) {
             if (($matches[2] != 'data/files.bin') && ((basename($matches[2]) != 'push_bugfix.php') || (get_param_integer('include_push_bugfix', 0) == 1))) {
                 $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', array('filename' => $matches[2]));
                 if (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $file_addon . '.php')) {
@@ -700,7 +700,9 @@ function create_hotfix_tar($tracker_id, $files)
     $tar_file = tar_open($tar_path, 'wb');
     foreach ($files as $file) {
         $file_fullpath = get_file_base() . '/' . $file;
-        tar_add_file($tar_file, $file, $file_fullpath, 0644, filemtime($file_fullpath), true);
+        if (is_file($file_fullpath)) { // If it's a deletion, obviously we cannot put it into a hotfix
+            tar_add_file($tar_file, $file, $file_fullpath, 0644, filemtime($file_fullpath), true);
+        }
     }
     tar_close($tar_file);
 

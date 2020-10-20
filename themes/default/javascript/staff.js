@@ -2,12 +2,6 @@
 
 function script_load_stuff_staff()
 {
-	// Navigation loading screen
-	/*{+START,IF,{$CONFIG_OPTION,enable_animations}}*/
-		if ((window.parent==window) && ((window.location+'').indexOf('js_cache=1')==-1) && (((window.location+'').indexOf('/cms/')!=-1) || ((window.location+'').indexOf('/adminzone/')!=-1)))
-			add_event_listener_abstract(window,'beforeunload',function() { staff_unload_action(); });
-	/*{+END}*/
-
 	// Theme image editing hovers
 	var map,elements,i,j;
 	for (i=0;i<document.images.length;i++)

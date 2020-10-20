@@ -519,7 +519,7 @@ function parse_translated_text($table, &$row, $field_name, $connection, $lang, $
 
                 $temp = $LAX_COMCODE;
                 $LAX_COMCODE = true;
-                _lang_remap($field_name, $entry, ($result === null) ? '' : $result['text_original'], $connection, true, null, $result['source_user'], $as_admin, true);
+                _lang_remap($field_name, $entry, ($result === null) ? '' : $result['text_original'], $connection, true, null, ($result === null) ? null : $result['source_user'], $as_admin, true);
                 if ($SEARCH__CONTENT_BITS !== null) {
                     $ret = comcode_to_tempcode($result['text_original'], $result['source_user'], $as_admin, null, null, $connection, false, false, false, false, false, $SEARCH__CONTENT_BITS);
                     $LAX_COMCODE = $temp;
