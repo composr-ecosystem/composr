@@ -253,7 +253,7 @@ function init__locations()
             'SU' => 'Union of Soviet Socialist Republics',
             'GB' => 'United Kingdom',
             'VA' => 'Vatican City',
-            'AX' => "\u{00C5}land Islands" : 'Aland Islands',
+            'AX' => "\u{00C5}land Islands",
             'XK' => 'Kosovo', // Unofficial, http://geonames.wordpress.com/2010/03/08/xk-country-code-for-kosovo/. Currently not fully UN recognised, UN-controlled ex-part of Serbia
         ],
         'Oceania' => [
