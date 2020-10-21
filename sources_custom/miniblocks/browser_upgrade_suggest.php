@@ -34,7 +34,7 @@ $message = '';
 
 $browser = new Browser();
 if (($browser->getBrowser() == Browser::BROWSER_IE) && (floatval($browser->getVersion()) < $ie_needed)) {
-    switch ($browser->getVersion()) {
+    switch (floatval($browser->getVersion())) {
         case 11.0:
             $year = '2013';
             break;

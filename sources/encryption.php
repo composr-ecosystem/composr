@@ -96,7 +96,7 @@ function encrypt_data($data)
         $output .= $encrypted;
     }
 
-    openssl_free_key($key);
+    @openssl_free_key($key); // LEGACY
 
     return '(Encrypted!)' . base64_encode($output);
 }
@@ -191,7 +191,7 @@ function decrypt_data($data, $passphrase)
         $output .= $decrypted;
     }
 
-    openssl_free_key($key);
+    @openssl_free_key($key); // LEGACY
 
     return $output;
 }

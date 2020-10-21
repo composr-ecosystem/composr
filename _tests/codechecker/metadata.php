@@ -262,7 +262,6 @@ function load_php_metadetails()
         'fgetc' => true,
         'fread' => true,
         'fgets' => true,
-        'fgetss' => true,
         'ftruncate' => true,
         'pfsockopen' => true,
         'ob_get_length' => true,

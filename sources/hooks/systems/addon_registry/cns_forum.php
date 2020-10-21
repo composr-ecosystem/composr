@@ -1332,6 +1332,8 @@ class Hook_addon_registry_cns_forum
     {
         require_css('cns');
 
+        require_lang('cns');
+
         $topics = new Tempcode();
         if (addon_installed('cns_forum')) {
             foreach (placeholder_array() as $k => $v) {

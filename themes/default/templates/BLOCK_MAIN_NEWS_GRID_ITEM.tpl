@@ -1,8 +1,8 @@
 {$SET,has_image,0}
-{+START,IF,{$AND,{$NOT,{BLOG}},{$IS_NON_EMPTY,{IMG}}}}
+{+START,IF,{$AND,{$NOT,{BLOG}},{$IS_NON_EMPTY,{REP_IMAGE_URL}}}}
 	{$SET,has_image,1}
 {+END}
-{+START,IF,{$AND,{BLOG},{$IS_EMPTY,{IMG}}}}{+START,IF_NON_EMPTY,{$AVATAR,{SUBMITTER}}}
+{+START,IF,{$AND,{BLOG},{$IS_EMPTY,{REP_IMAGE_URL}}}}{+START,IF_NON_EMPTY,{$AVATAR,{SUBMITTER}}}
 	{$SET,has_image,1}
 {+END}{+END}
 
@@ -17,10 +17,10 @@
 	{+END}
 
 	{+START,IF,{$NOT,{BLOG}}}
-		<a class="news-grid-item-image is-associated" href="{FULL_URL*}"><img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG}}" alt="" /></a>
+		<a class="news-grid-item-image is-associated" href="{FULL_URL*}"><img src="{$ENSURE_PROTOCOL_SUITABILITY*,{REP_IMAGE_URL}}" alt="" /></a>
 	{+END}
 
-	{+START,IF,{$AND,{BLOG},{$IS_EMPTY,{IMG}}}}{+START,IF_NON_EMPTY,{$AVATAR,{SUBMITTER}}}
+	{+START,IF,{$AND,{BLOG},{$IS_EMPTY,{REP_IMAGE_URL}}}}{+START,IF_NON_EMPTY,{$AVATAR,{SUBMITTER}}}
 		<a class="news-grid-item-image is-avatar" href="{FULL_URL*}"><img src="{$ENSURE_PROTOCOL_SUITABILITY*,{$AVATAR,{SUBMITTER}}}" title="{!AVATAR}" alt="{!AVATAR}" /></a>
 	{+END}{+END}
 

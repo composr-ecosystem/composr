@@ -258,7 +258,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             gettype var_dump vprintf vsprintf touch tanh sinh stripcslashes
             restore_error_handler rewind rewinddir exp lcg_value localtime addcslashes
             array_filter array_map array_merge_recursive array_multisort array_pad array_reduce array_walk
-            atan2 fgetc fgetss filetype fscanf fstat array_change_key_case
+            atan2 fgetc filetype fscanf fstat array_change_key_case
             date_default_timezone_get ftruncate func_get_arg func_get_args func_num_args
             parse_ini_file parse_ini_string parse_str is_executable memory_get_usage
             is_scalar nl2br ob_get_length ob_implicit_flush getopt
@@ -277,32 +277,24 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             array_column array_fill_keys getimagesizefromstring hash_equals preg_last_error
             http_response_code memory_get_peak_usage password_get_info password_hash hex2bin
             password_needs_rehash password_verify strripos spl_autoload_register
+            error_clear_last getrusage intdiv json_last_error json_last_error_msg preg_replace_callback_array random_bytes random_int
+            imagecreatefromgif imagegif
+            imagepalettetotruecolor iptcembed iptcparse
+            imagecolorallocatealpha imageistruecolor imagealphablending imagecolorallocate imagecolortransparent imagecopy
+            imagecopyresampled imagecopyresized imagecreate imagecreatefrompng
+            imagecreatefromjpeg imagecreatetruecolor imagecolorat imagecolorsforindex
+            imagedestroy imagefill imagefontheight imagefontwidth imagesavealpha
+            imagesetpixel imagestring imagesx imagesy imagestringup imagettftext imagetypes
+            imagearc imagefilledarc imagecopymergegray imageline imageellipse imagefilledellipse
+            imagechar imagefilledpolygon imagepolygon imagefilledrectangle imagerectangle imagefilltoborder
+            imagegammacorrect imageinterlace imageloadfont imagepalettecopy imagesetbrush
+            imagesetstyle imagesetthickness imagesettile imagetruecolortopalette
+            imagecharup imagecolorclosest imagecolorclosestalpha imagecolorclosesthwb
+            imagecolordeallocate imagecolorexact imagecolorexactalpha imagecolorresolve image_type_to_mime_type
+            imagecolorresolvealpha imagecolorset imagecolorstotal imagecopymerge getimagesize image_type_to_extension imagefilter
+            gd_info
+            imagecreatefromstring imagejpeg imagepng imagettfbbox
 END;
-
-        if (function_exists('imagecreatefromstring')) {
-            $baseline_functions .= <<<END
-                imagecreatefromgif imagegif
-                imagepalettetotruecolor iptcembed iptcparse
-                imagecolorallocatealpha imageistruecolor imagealphablending imagecolorallocate imagecolortransparent imagecopy
-                imagecopyresampled imagecopyresized imagecreate imagecreatefrompng
-                imagecreatefromjpeg imagecreatetruecolor imagecolorat imagecolorsforindex
-                imagedestroy imagefill imagefontheight imagefontwidth imagesavealpha
-                imagesetpixel imagestring imagesx imagesy imagestringup imagettftext imagetypes
-                imagearc imagefilledarc imagecopymergegray imageline imageellipse imagefilledellipse
-                imagechar imagefilledpolygon imagepolygon imagefilledrectangle imagerectangle imagefilltoborder
-                imagegammacorrect imageinterlace imageloadfont imagepalettecopy imagesetbrush
-                imagesetstyle imagesetthickness imagesettile imagetruecolortopalette
-                imagecharup imagecolorclosest imagecolorclosestalpha imagecolorclosesthwb
-                imagecolordeallocate imagecolorexact imagecolorexactalpha imagecolorresolve image_type_to_mime_type
-                imagecolorresolvealpha imagecolorset imagecolorstotal imagecopymerge getimagesize image_type_to_extension imagefilter
-                gd_info
-END;
-
-            // These ones are separately checked as extension checks
-            $notused = <<<END
-                imagecreatefromstring imagejpeg imagepng imagettfbbox
-END;
-        }
 
         foreach (preg_split('#\s+#', $baseline_functions) as $function) {
             if (trim($function) == '') {

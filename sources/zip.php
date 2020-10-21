@@ -100,7 +100,7 @@ function create_zip_file($outfile_path, $file_array)
     // Support compression via PHP
     if (class_exists('ZipArchive')) {
         $z = new ZipArchive();
-        $z->open($outfile_path, ZIPARCHIVE::CREATE);
+        $z->open($outfile_path, ZipArchive::OVERWRITE);
         foreach ($file_array as $i => $file) {
             if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
                 $z->addFile($file['full_path'], $file['name']);

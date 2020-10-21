@@ -2519,7 +2519,7 @@ function cns_make_predefined_content_field($type)
 /**
  * Rebuild custom profile field indices.
  *
- * @param  boolean $leave_existing Whether to leave existing indexes alone (may be useful as deleting then recreating indexes can be very slow).
+ * @param  boolean $leave_existing Whether to leave existing indexes alone (may be useful as deleting then recreating indexes can be very slow)
  */
 function rebuild_all_cpf_indices($leave_existing = false)
 {

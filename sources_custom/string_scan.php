@@ -131,6 +131,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BILLING
         FULLSCREEN
         MATCH_TYPE
+        DESCRIPTION_REBUILD_ALL_CPF_INDICES
+        REBUILD_ALL_CPF_INDICES
         PASSWORD_RESET_MINUTES
         CONFIG_OPTION_password_reset_minutes
         CONFIG_OPTION_password_reset_privacy

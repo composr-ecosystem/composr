@@ -27,7 +27,7 @@ foreach ($functions as $function) {
     }
 }
 
-if ((!array_key_exists('type', $_GET)) && ($_GET['type'] != 'finish') && (file_exists('install_locked'))) {
+if ((array_key_exists('type', $_GET)) && ($_GET['type'] != 'finish') && (file_exists('install_locked'))) {
     header('Content-Type: text/plain; charset=utf-8');
     exit('Installer is locked for security reasons (delete the \'install_locked\' file to return to the installer)');
 }
@@ -74,20 +74,6 @@ define('GOOGLE_APPENGINE', isset($_SERVER['APPLICATION_ID']));
 define('URL_CONTENT_REGEXP', '\w\-\x80-\xFF'); // PHP is done using ASCII (don't use the 'u' modifier). Note this doesn't include dots, this is intentional as they can cause problems in filenames
 define('URL_CONTENT_REGEXP_JS', '\w\-\u0080-\uFFFF'); // JavaScript is done using Unicode
 
-if (!array_key_exists('type', $_GET)) {
-    if (empty($_GET)) {
-        header('Content-Type: text/html; charset=utf-8');
-    }
-
-    echo '<' . '!' . 'DOCTYPE html' . '>' . "\n";
-    if (empty($_GET)) { // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
-        echo '<' . 'script' . '>
-            window.setTimeout(function () { if (!document.getElementsByTagName("div")[0]) window.location+="?skip_slow_checks=1"; }, 30000);
-            window.setInterval(function () { if ((!document.getElementsByTagName("div")[0]) && (document.body) && (document.body.innerHTML) && (document.body.innerHTML.indexOf("Maximum execution time")!=-1)) window.location+="?skip_slow_checks=1"; }, 500);
-        </' . 'script' . '>';
-    }
-}
-
 $shl = @ini_get('suhosin.memory_limit');
 if (($shl === false) || ($shl == '') || ($shl == '0')) {
     cms_ini_set('memory_limit', '-1');
@@ -117,6 +103,20 @@ require_code('urls');
 require_code('zones');
 require_code('comcode');
 require_code('themes');
+
+if (!array_key_exists('type', $_GET)) {
+    if (empty($_GET)) {
+        header('Content-Type: text/html; charset=utf-8');
+    }
+
+    echo '<' . '!' . 'DOCTYPE html' . '>' . "\n";
+    if (empty($_GET)) { // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
+        echo '<' . 'script' . '>
+            window.setTimeout(function () { if (!document.getElementsByTagName("div")[0]) window.location+="?skip_slow_checks=1"; }, 30000);
+            window.setInterval(function () { if ((!document.getElementsByTagName("div")[0]) && (document.body) && (document.body.innerHTML) && (document.body.innerHTML.indexOf("Maximum execution time")!=-1)) window.location+="?skip_slow_checks=1"; }, 500);
+        </' . 'script' . '>';
+    }
+}
 
 if (!array_key_exists('type', $_GET)) {
     send_http_output_ping();
@@ -2619,7 +2619,7 @@ function require_code($codename)
         $prior = memory_get_usage();
         //echo '<' . '!-- Memory: ' . number_format($prior) . ' --' . '>' . "\n"; Can break JS validity if we inject this
         //echo '<' . '!-- Loading code file: ' . $codename . ' --' . '>' . "\n";
-        cms_flush_safe();
+        //cms_flush_safe();
     }
 
     global $FILE_BASE;

@@ -3479,7 +3479,7 @@ function json_last_error()
 }
 
 /**
- * Returns the last error occurred.
+ * Returns the last JSON error occurred.
  *
  * @return string Last error message
  */
@@ -4122,19 +4122,6 @@ function atan2($x, $y)
  * @return ~string Character (false: error)
  */
 function fgetc($handle)
-{
-    return '';
-}
-
-/**
- * Gets line from file pointer and strip HTML tags.
- *
- * @param  resource $handle File handle
- * @param  ?integer $length The maximum length of the line (null: no limit)
- * @param  string $allowable_tags Allowable HTML tags separated by spaces
- * @return ~string Line (false: error)
- */
-function fgetss($handle, $length = null, $allowable_tags = '')
 {
     return '';
 }
@@ -4900,7 +4887,7 @@ function getrusage($who)
  * @param  integer $length The length of the random string that should be returned in bytes
  * @return string A string containing the requested number of cryptographically secure random bytes
  */
-function random_bytes()
+function random_bytes($length)
 {
     return '';
 }
@@ -4924,7 +4911,7 @@ function random_int($min, $max)
  * @param  integer $divisor Number which divides the dividend
  * @return integer The integer quotient of the division
  */
-function intdiv()
+function intdiv($dividend, $divisor)
 {
     return 0;
 }

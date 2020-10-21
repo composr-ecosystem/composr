@@ -3015,7 +3015,16 @@ class Hook_addon_registry_core
     {
         return [
             do_lorem_template('TRANSLATION_LINKS', [
-                'ALT_LANGS' => ['FR', 'DE'],
+                'ALT_LANGS' => [
+                    [
+                        'LANG' => 'FR',
+                        'CONSISTENT_DEFAULT' => false,
+                    ],
+                    [
+                        'LANG' => 'DE',
+                        'CONSISTENT_DEFAULT' => false,
+                    ],
+                ],
             ])
         ];
     }

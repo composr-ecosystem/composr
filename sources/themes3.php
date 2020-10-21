@@ -56,6 +56,8 @@ function compile_all_templates()
 
     global $USER_THEME_CACHE;
 
+    $max_memory = 28 * 1024 * 1024;
+
     @ignore_user_abort(false);
 
     foreach ($themes as $theme) {
@@ -88,6 +90,12 @@ function compile_all_templates()
                             case 'css_custom':
                                 css_enforce($codename, $theme);
                                 break;
+                        }
+
+                        if (memory_get_usage() > $max_memory) {
+                            closedir($dh);
+                            unset($USER_THEME_CACHE);
+                            return;
                         }
                     }
                 }

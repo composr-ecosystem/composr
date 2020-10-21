@@ -651,7 +651,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $set_locale = setlocale(LC_ALL, '0');
             setlocale(LC_ALL, $current_locale);
 
-            $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Non-threaded mode of PHP on a server with Turkish locale');
+            $this->assertTrue((php_sapi_name() != 'apache2handler') || (strpos($set_locale, 'tr_TR') === false), 'Threaded mode of PHP on a server with Turkish locale installed on server');
         }
     }
 }

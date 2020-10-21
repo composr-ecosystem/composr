@@ -492,6 +492,7 @@ class Hook_addon_registry_commandr
                 'MEMBER_ID' => placeholder_id(),
                 'IP' => placeholder_ip(),
                 'USERNAME' => lorem_word(),
+                'EMAIL_ADDRESS' => lorem_phrase(),
             ]), null, '', true)
         ];
     }

@@ -169,7 +169,7 @@ class Hook_addon_registry_filedump
         $thumbnails[] = [
             'FILENAME' => lorem_word(),
             'SUBPATH' => placeholder_id(),
-            'THUMBNAIL' => placeholder_image(),
+            'IMAGE_URL' => placeholder_image_url(),
             'IS_IMAGE' => true,
             'URL' => placeholder_url(),
             'DESCRIPTION' => lorem_paragraph(),

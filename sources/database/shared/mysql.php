@@ -282,6 +282,8 @@ abstract class Database_super_mysql extends DatabaseDriver
         //  However, if any option doesn't exist it will give an error
         //  So it is possible in the future ones might need to be done individually
 
+        $set = [];
+
         if (!empty($SITE_INFO['database_collation'])) {
             $set['collation_connection'] = $SITE_INFO['database_collation'];
         }

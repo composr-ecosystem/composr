@@ -501,7 +501,7 @@ class Hook_addon_registry_news
                 'BLOCK_ID' => lorem_word(),
                 'BLOG' => true,
                 'TITLE' => lorem_phrase(),
-                'SLIDES' => $slides,
+                'SLIDER' => $slider,
                 'SUMMARY_CONTENT' => $brief_contents,
                 'BRIEF_CONTENT' => lorem_phrase(),
                 'RSS_URL' => placeholder_url(),

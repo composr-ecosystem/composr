@@ -35,12 +35,16 @@ class polls_test_set extends cms_test_case
 
     public function testPollVote()
     {
-        vote_in_poll($this->poll_id, 2);
+        $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username('admin'); // In case of low permissions
+        if ($member_id === null) {
+            $member_id = get_member(); // Probably would work anyway
+        }
+        vote_in_poll($this->poll_id, 2, null, $member_id);
 
         $poll_details = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $this->poll_id], '', 1);
         $this->assertTrue(array_key_exists(0, $poll_details));
 
-        $this->assertTrue($poll_details[0]['votes2'] == 1);
+        $this->assertTrue($poll_details[0]['votes2'] == 1, 'Got ' . strval($poll_details[0]['votes2']));
     }
 
     public function testEditPoll()

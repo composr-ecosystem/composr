@@ -266,6 +266,7 @@ class Hook_addon_registry_core_primary_layout
             'LANG' => fallback_lang(),
             'TITLE' => lorem_phrase(),
             'CONTENT' => $message_raw,
+            'CSS' => '{CSS}',
         ];
 
         $_tpl = do_lorem_template($tpl, $map);
@@ -273,14 +274,10 @@ class Hook_addon_registry_core_primary_layout
         $css = css_tempcode(true, false, $_tpl->evaluate());
         $_css = $css->evaluate();
 
-        $map += [
-            'CSS' => $_css,
-        ];
-
-        $tpl2 = $tpl->bind($map, 'MAIL');
+        $_tpl = make_string_tempcode(str_replace('{CSS}', $_css, $_tpl->evaluate()));
 
         return [
-            lorem_globalise($tpl2, null, '', true)
+            lorem_globalise($_tpl, null, '', true)
         ];
     }
 

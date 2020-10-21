@@ -378,6 +378,7 @@ class Hook_addon_registry_shopping
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
                 'TAGS' => '',
+                'ENTRIES' => $entries,
                 'CATALOGUE' => lorem_word_2(),
                 'ADD_ENTRY_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),

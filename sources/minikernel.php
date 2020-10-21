@@ -532,7 +532,7 @@ function fatal_exit($text)
 {
     //if (is_object($text)) $text = $text->evaluate();
 
-    set_http_status_code(500);
+    http_response_code(500);
 
     // To break any looping of errors
     global $EXITING;
@@ -638,7 +638,7 @@ function catch_fatal_errors()
  */
 function composr_error_handler($errno, $errstr, $errfile, $errline)
 {
-    if (error_reporting() == 0) {
+    if ((error_reporting() & $errno) === 0) {
         return false; // This actually tells if @ was used oddly enough. You wouldn't figure from the PHP docs.
     }
 

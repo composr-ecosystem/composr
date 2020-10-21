@@ -1735,7 +1735,7 @@ class Module_galleries
     protected function get_sort_order()
     {
         $sort = get_param_string('sort', get_option('gallery_media_default_sort_order'), INPUT_FILTER_GET_COMPLEX);
-        return read_abstract_sorting_params($sort, array_keys($this->get_allowed_sorts()));
+        return read_abstract_sorting_params($sort, $this->get_allowed_sorts());
     }
 
     /**
@@ -1770,7 +1770,7 @@ class Module_galleries
     {
         $allowed_sorts = [];
         $_selectors = $this->get_sort_selectors();
-        foreach ($_selectors as $selector) {
+        foreach (array_keys($_selectors) as $selector) {
             list($sort, ) = explode(' ', $selector, 2);
             $allowed_sorts[$sort] = true;
         }
