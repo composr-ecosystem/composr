@@ -1691,7 +1691,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         return $type;
     }
     if ((in_array($e[0], array('DIVIDE', 'REMAINDER', 'DIV_EQUAL'))) && ($e[2][0] != 'LITERAL')) {
-        if (($assignment) && (@count($e[2][1][2]) == 0)) {
+        if (($assignment) && (@is_array($e[2][1][2])) && (empty($e[2][1][2]))) {
             $GLOBALS['LOCAL_VARIABLES'][$e[2][1][1]]['conditioner'][] = '_divide_';
         } elseif (isset($GLOBALS['PEDANTIC'])) {
             log_warning('Divide by zero un-handled', $c_pos);
@@ -1811,7 +1811,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         if ($x[1][0] == 'EMBEDDED_ASSIGNMENT') {
             $x = $e[1];
         }
-        if (($x[1][0] == 'VARIABLE') && (@count($x[1][1][2]) == 0) && ($e[2][0] == 'LITERAL')) {
+        if (($x[1][0] == 'VARIABLE') && (@is_array($x[1][1][2])) && (empty($x[1][1][2])) && ($e[2][0] == 'LITERAL')) {
             if (in_array($e[0], array('IS_IDENTICAL', 'IS_NOT_IDENTICAL'))) {
                 if (($e[2][1][0] == 'BOOLEAN') && (!$e[2][1][1])) {
                     $GLOBALS['LOCAL_VARIABLES'][$x[1][1][1]]['conditioned_false'] = true;
@@ -1863,7 +1863,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             }
             if ($assignment) {
                 $GLOBALS['MADE_CALL'] = $inner[1];
-                if ((@$e[2][0][0] == 'VARIABLE') && (@count($e[2][0][1][2]) == 0) && ($e[1] == 'is_null')) {
+                if ((@$e[2][0][0] == 'VARIABLE') && (@is_array($e[2][0][1][2])) && (empty($e[2][0][1][2])) && ($e[1] == 'is_null')) {
                     $GLOBALS['LOCAL_VARIABLES'][$e[2][0][1][1]]['conditioned_null'] = true;
                 }
             } else {

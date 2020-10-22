@@ -465,7 +465,11 @@ function _read_php_function_line($_line)
                     } elseif ($arg_default === 'false') {
                         $default = 'boolean-false';
                     } else {
-                        $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                        if ((preg_match('#^\s*[A-Z_]+\s*$#', $arg_default) != 0) && (!defined(trim($arg_default)))) {
+                            $default = 0; // Cannot look it up, not currently defined
+                        } else {
+                            $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                        }
                     }
                     if (!isset($default)) {
                         $default = null; // Fix for HHVM, #1161
@@ -482,7 +486,11 @@ function _read_php_function_line($_line)
                     } elseif ($arg_default === 'false') {
                         $default = 'boolean-false';
                     } else {
-                        $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                        if ((preg_match('#^\s*[A-Z_]+\s*$#', $arg_default) != 0) && (!defined(trim($arg_default)))) {
+                            $default = 0; // Cannot look it up, not currently defined
+                        } else {
+                            $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                        }
                     }
                     if (!isset($default)) {
                         $default = null; // Fix for HHVM, #1161

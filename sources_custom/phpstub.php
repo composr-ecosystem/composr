@@ -950,16 +950,6 @@ function get_html_translation_table($table, $quote_style = ENT_COMPAT, $charset 
 }
 
 /**
- * Gets the current active configuration setting of magic quotes gpc (Note: it actually returns a BINARY, but lets make it cleaner, it won't hurt)
- *
- * @return boolean Whether magic quotes gpc is on.
- */
-function get_magic_quotes_gpc()
-{
-    return false;
-}
-
-/**
  * Gets the current working directory.
  *
  * @return PATH The cwd.

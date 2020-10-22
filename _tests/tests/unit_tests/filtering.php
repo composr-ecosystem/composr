@@ -400,7 +400,7 @@ class filtering_test_set extends cms_test_case
             list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filter), 'temp_test');
             $sql = 'SELECT r.id' . implode('', $extra_select) . ' FROM ' . get_table_prefix() . 'temp_test r' . implode('', $extra_join) . ' WHERE 1=1' . $extra_where;
             $results = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query($sql));
-            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . $filter . ', got: ' . implode(',', array_map('strval', $results)) . '; query: ' . $sql);
+            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . str_replace('%', '%%', $filter) . ', got: ' . implode(',', array_map('strval', $results)) . '; query: ' . str_replace('%', '%%', $sql));
         }
 
         // Test using POST environment
@@ -434,7 +434,7 @@ class filtering_test_set extends cms_test_case
             list($extra_select, $extra_join, $extra_where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filter), 'temp_test');
             $sql = 'SELECT r.id' . implode('', $extra_select) . ' FROM ' . get_table_prefix() . 'temp_test r' . implode('', $extra_join) . ' WHERE 1=1' . $extra_where;
             $results = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query($sql));
-            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . $filter . ', got: ' . implode(',', array_map('strval', $results)) . ', expected: ' . implode(',', array_map('strval', $filter_expected)) . ', with: ' . $sql);
+            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . str_replace('%', '%%', $filter) . ', got: ' . implode(',', array_map('strval', $results)) . ', expected: ' . implode(',', array_map('strval', $filter_expected)) . ', with: ' . str_replace('%', '%%', $sql));
         }
 
         // Test automatic filter form seems okay

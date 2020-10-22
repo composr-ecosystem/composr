@@ -621,12 +621,12 @@ class Plugin extends DAV\ServerPlugin {
      */
     protected function parseLockRequest($body) {
 
-        $previous = libxml_disable_entity_loader(true);
+        $previous = @libxml_disable_entity_loader(true);
         $xml = simplexml_load_string(
             DAV\XMLUtil::convertDAVNamespace($body),
             null,
             LIBXML_NOWARNING);
-        libxml_disable_entity_loader($previous);
+        @libxml_disable_entity_loader($previous);
         $xml->registerXPathNamespace('d','urn:DAV');
         $lockInfo = new LockInfo();
 

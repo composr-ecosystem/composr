@@ -5,7 +5,7 @@
  * Author: M. Uli Kusterer (witness.of.teachtext@gmx.net)
  * Contributors: Quinn Taylor (quinntaylor@mac.com)
  * Copyright: (c) 2008 Quinn Taylor, 2004 M. Uli Kusterer, Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.8.12
+ * Release Version: 1.0.9.1
  * Date Started: 2004/06/04
  *
  * Objective-C language file for GeSHi.
@@ -337,7 +337,7 @@ $language_data = array (
         2 => '',
         3 => 'http://www.opengroup.org/onlinepubs/009695399/functions/{FNAME}.html',
         4 => '',
-        5 => 'http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/{FNAME}_Class/',
+        5 => 'https://developer.apple.com/documentation/foundation/{FNAME}/',
         6 => 'http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Protocols/{FNAME}_Protocol/',
         7 => 'http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/{FNAME}_Class/',
         8 => 'http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Protocols/{FNAME}_Protocol/',

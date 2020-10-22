@@ -440,7 +440,7 @@ class Plugin extends DAV\ServerPlugin {
      * @param array $flat
      * @return void
      */
-    final private function getFPSTraverse($priv, $concrete, &$flat) {
+    private function getFPSTraverse($priv, $concrete, &$flat) {
 
         $myPriv = array(
             'privilege' => $priv['privilege'],

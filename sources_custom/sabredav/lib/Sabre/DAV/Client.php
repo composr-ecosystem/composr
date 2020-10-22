@@ -526,12 +526,12 @@ class Client {
 
         $body = XMLUtil::convertDAVNamespace($body);
 
-        $previous = libxml_disable_entity_loader(true);
+        $previous = @libxml_disable_entity_loader(true);
         $responseXML = simplexml_load_string($body, null, LIBXML_NOBLANKS | LIBXML_NOCDATA);
         if ($responseXML===false) {
             throw new \InvalidArgumentException('The passed data is not valid XML');
         }
-        libxml_disable_entity_loader($previous);
+        @libxml_disable_entity_loader($previous);
 
         $responseXML->registerXPathNamespace('d', 'urn:DAV');
 

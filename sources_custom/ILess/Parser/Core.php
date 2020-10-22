@@ -281,24 +281,24 @@ class ILess_Parser_Core
             switch ($cc) {
                 case 40: // (
                     $parenLevel++;
-                    continue;
+                    break;
                 case 41: // )
                     $parenLevel--;
-                    continue;
+                    break;
                 case 59:
-                    continue;
+                    break;
                 case 123: // {
                     $level++;
                     $lastOpening = $parserCurrentIndex;
-                    continue;
+                    break;
                 case 125: // }
                     $level--;
                     $lastClosing = $parserCurrentIndex;
-                    continue;
+                    break;
                 case 92: // \
                     if ($parserCurrentIndex < $length - 1) {
                         $parserCurrentIndex++;
-                        continue;
+                        break;
                     }
                     throw new ILess_Exception_Parser('Unescaped `\\`.', $parserCurrentIndex, $this->env->currentFileInfo);
                 case 34:
@@ -324,13 +324,13 @@ class ILess_Parser_Core
                         }
                     }
                     if ($matched) {
-                        continue;
+                        break;
                     }
 
                     throw new ILess_Exception_Parser(sprintf('Unmatched `%s`.', chr($cc)), $currentChunkStartIndex, $this->env->currentFileInfo);
                 case 47: // /, check for comment
                     if ($parenLevel || ($parserCurrentIndex == $length - 1)) {
-                        continue;
+                        break;
                     }
                     $cc2 = ord($this->input[$parserCurrentIndex + 1]);
                     if ($cc2 == 47) {
@@ -360,13 +360,13 @@ class ILess_Parser_Core
                             throw new ILess_Exception_Parser('Missing closing `*/`.', $currentChunkStartIndex, $this->env->currentFileInfo);
                         }
                     }
-                    continue;
+                    break;
 
                 case 42: // *, check for unmatched */
                     if (($parserCurrentIndex < $length - 1) && (ord($this->input[$parserCurrentIndex + 1]) == 47)) {
                         throw new ILess_Exception_Parser('Unmatched `/*`', $parserCurrentIndex, $this->env->currentFileInfo);
                     }
-                    continue;
+                    break;
             }
         }
 

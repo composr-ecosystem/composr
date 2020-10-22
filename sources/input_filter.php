@@ -505,8 +505,7 @@ function filter_form_field_default($name, $val, $live = false)
 
                         case 'sentencecase':
                             if (strlen($val) != 0) {
-                                $val = cms_mb_strtolower($val);
-                                $val[0] = cms_mb_strtoupper($val); // assumes no leading whitespace
+                                $val = cms_mb_substr(cms_mb_strtoupper($val), 0, 1) . cms_mb_substr(cms_mb_strtolower($val), 1); // assumes no leading whitespace
                                 $val = cms_preg_replace_callback_safe('#[\.\!\?]\s+\w#m', 'make_sentence_case_callback', $val);
                             }
                             break;
@@ -618,7 +617,7 @@ class Field_restriction_loader
 
         // Create and setup our parser
         if (function_exists('libxml_disable_entity_loader')) {
-            libxml_disable_entity_loader();
+            @libxml_disable_entity_loader(); // LEGACY
         }
         $xml_parser = @xml_parser_create(get_charset());
         if ($xml_parser === false) {

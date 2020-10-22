@@ -241,7 +241,7 @@ class classTTConnection
      * @param string  $is_test
      * @return string push slug if fail , else return true;
      */
-    public function push($data,$push_slug=0,$board_url,$api_key,$is_test)
+    public function push($data,$push_slug,$board_url,$api_key,$is_test)
     {
         $push_url='http://push.tapatalk.com/push.php';
 
@@ -946,7 +946,7 @@ class classTTConnection
         return false;
     }
 
-    public function verify_connection($type='both',$code)
+    public function verify_connection($type,$code)
     {
         if ($GLOBALS['DEV_MODE'] && $GLOBALS['IS_ACTUALLY_ADMIN']) return true;
 

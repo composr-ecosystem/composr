@@ -681,7 +681,7 @@ $raw = (isset($map['raw'])) && ($map['raw'] == '1');
 if (!$raw) {
     echo '<div class="feature_columns float_surrounder_hidden">' . "\n";
 }
-foreach (($map['param'] == '') ? array_keys($collapsed_tree) : explode(',', $map['param']) as $i => $column) {
+foreach (empty($map['param']) ? array_keys($collapsed_tree) : explode(',', $map['param']) as $i => $column) {
     if (!$raw) {
         echo '<div class="column column' . strval($i) . '">';
     }
