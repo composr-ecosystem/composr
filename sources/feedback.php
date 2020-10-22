@@ -833,7 +833,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
         require_code('cns_posts_action2');
         $poster_name_if_guest = cns_get_safe_specified_poster_name(false);
     } else {
-        $poster_name_if_guest = post_param_string('poster_name_if_guest', '');
+        $poster_name_if_guest = substr(post_param_string('poster_name_if_guest', ''), 0, 80);
     }
     list($topic_id, $is_hidden) = $GLOBALS['FORUM_DRIVER']->make_post_forum_topic(
         // Define scope
