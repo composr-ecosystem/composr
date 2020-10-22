@@ -101,4 +101,11 @@ class search_test_set extends cms_test_case
         global $HTTP_DOWNLOAD_MIME_TYPE;
         $this->assertTrue(strpos($HTTP_DOWNLOAD_MIME_TYPE, 'application/x-suggestions+json') !== false);
     }
+
+    public function testKeywordSummary()
+    {
+        require_code('search');
+        $results = perform_keyword_search(['downloads', 'news']);
+        $this->assertTrue(is_array($results));
+    }
 }
