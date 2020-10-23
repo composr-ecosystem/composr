@@ -557,11 +557,7 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
     }
 
     // Save into sitemap
-    $GLOBALS['SITE_DB']->query_delete('sitemap_cache', [
-        'page_link' => $page_link,
-    ], '', 1);
-    $GLOBALS['SITE_DB']->query_insert('sitemap_cache', [
-        'page_link' => $page_link,
+    $GLOBALS['SITE_DB']->query_insert_or_replace('sitemap_cache', [
         'set_number' => $set_number,
         'add_date' => ($add_date === null) ? null : $add_date,
         'edit_date' => ($edit_date === null) ? $add_date : $edit_date,
@@ -570,6 +566,8 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
         'priority' => $priority,
         'refreshfreq' => $refreshfreq,
         'guest_access' => $guest_access ? 1 : 0,
+    ], [
+        'page_link' => $page_link,
     ]);
 
     // First population into the table? Do a full build too
