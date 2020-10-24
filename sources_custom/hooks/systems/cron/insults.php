@@ -79,7 +79,7 @@ class Hook_cron_insults
                 $subject = do_lang('INSULT_PT_TOPIC', $displayname2, $displayname1, array($username2, $username1));
 
                 require_code('cns_topics_action');
-                $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, 0, $selected_member2, $selected_member1, true, 0, null, '');
+                $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, 0, $selected_member2, $selected_member1, false, 0, null, '');
 
                 require_code('cns_posts_action');
                 $post_id = cns_make_post($topic_id, $subject, $insult_pt_topic_post, 0, true, 1, 0, do_lang('SYSTEM'), null, null, $GLOBALS['FORUM_DRIVER']->get_guest_id(), null, null, null, false, true, null, true, $subject, 0, null, true, true, true);
