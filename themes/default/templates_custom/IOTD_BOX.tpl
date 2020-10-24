@@ -31,7 +31,7 @@
 
 	{+START,IF_PASSED,CHOOSE_URL}{+START,IF_PASSED,EDIT_URL}{+START,IF_PASSED,IS_CURRENT}
 		<div style="margin-right: {$CONFIG_OPTION,thumb_width}px" class="buttons_group">
-			{+START,IF,{$NOT,{IS_CURRENT}}}<form title="{!CHOOSE} {!IOTD} #{ID*}" class="inline" action="{CHOOSE_URL*}" method="post" autocomplete="off"><input type="hidden" name="id" value="{ID*}" /><input class="button_screen_item buttons__choose" type="submit" value="{!CHOOSE}" title="{!CHOOSE} {!IOTD} #{ID*}" /></form>{+END}
+			{+START,IF,{$NOT,{IS_CURRENT}}}<form title="{!CHOOSE} {!IOTD} #{ID*}" class="inline" action="{CHOOSE_URL*}" method="post" autocomplete="off">{$INSERT_SPAMMER_BLACKHOLE}<input type="hidden" name="id" value="{ID*}" /><input class="button_screen_item buttons__choose" type="submit" value="{!CHOOSE}" title="{!CHOOSE} {!IOTD} #{ID*}" /></form>{+END}
 			<a class="button_screen_item buttons__edit" rel="edit" href="{EDIT_URL*}"><span>{!EDIT}: {!IOTD} #{ID*}</span></a>
 			<form title="{!DELETE} {!IOTD} #{ID*}" onsubmit="var t=this; window.fauxmodal_confirm('{!ARE_YOU_SURE_DELETE=;}',function(answer) { if (answer) t.submit(); }); return false;" class="inline" action="{DELETE_URL*}" method="post" autocomplete="off">{$INSERT_SPAMMER_BLACKHOLE}<input type="hidden" name="id" value="{ID*}" /><input class="button_screen_item menu___generic_admin__delete" type="submit" value="{!DELETE}" title="{!DELETE} {!IOTD} #{ID*}" /></form>
 		</div>
