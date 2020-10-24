@@ -464,6 +464,9 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated, $parent_p
         $parent_page = '';
     }
 
+    require_code('site2');
+    declare_if_member_has_historic_comcode_admin_privileges($submitter);
+
     // Check page name
     require_code('type_sanitisation');
     if ((!is_alphanumeric($new_file)) || (strpos($new_file, '-') !== false && strpos($new_file, '_') !== false)/*can't have both*/) {
