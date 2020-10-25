@@ -40,3 +40,7 @@
 <p class="vertical_alignment">
 	<img src="{$IMG*,icons/16x16/help}" srcset="{$IMG*,icons/32x32/help} 2x" alt="" /> <span>{!MANY_PANEL_TYPES,{$PAGE_LINK*,cms:cms_comcode_pages:_edit:lang={LANG}:page_link={ID}%3Apanel_top},{$PAGE_LINK*,cms:cms_comcode_pages:_edit:lang={LANG}:page_link={ID}%3Apanel_bottom}}</span>
 </p>
+
+<script>// <![CDATA[
+	window.form_preview_url='{$PREVIEW_URL;/}{$KEEP;/}';
+//]]></script>
