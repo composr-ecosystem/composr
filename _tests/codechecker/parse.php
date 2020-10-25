@@ -379,7 +379,7 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
     $next = pparse__parser_peek();
     $class = ['functions' => [], 'vars' => [], 'constants' => [], 'traits' => [], 'traits_details_insteadof' => [], 'traits_details_as' => [], 'i' => $GLOBALS['I']];
     $modifiers = [];
-    while (($next == 'CONST') || ($next == 'USE') || ($next == 'VAR') || ($next == 'FUNCTION') || ($next == 'PUBLIC') || ($next == 'PRIVATE') || ($next == 'PROTECTED') || ($next == 'ABSTRACT') || ($next == 'STATIC')) {
+    while (($next == 'CONST') || ($next == 'USE') || ($next == 'VAR') || ($next == 'FUNCTION') || ($next == 'PUBLIC') || ($next == 'PRIVATE') || ($next == 'PROTECTED') || ($next == 'ABSTRACT') || ($next == 'FINAL') || ($next == 'STATIC')) {
         switch ($next) {
             case 'USE':
                 if ($type == 'interface') {
@@ -450,15 +450,12 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                     log_warning('Multiple visibility levels defined: ' . implode(', ', $modifiers) . ', ' . $next);
                 }
                 $modifiers[] = strtolower($next);
-                if (($type == 'interface') && (in_array('abstract', $modifiers))) {
-                    log_warning('Everything in an interface is inherently abstract. Do not use the abstract keyword.');
-                }
-                if ((pparse__parser_peek_dist(1) == 'FUNCTION') || (pparse__parser_peek_dist(1) == 'STATIC') || (pparse__parser_peek_dist(1) == 'ABSTRACT')) {
+                if ((pparse__parser_peek_dist(1) == 'FUNCTION') || (pparse__parser_peek_dist(1) == 'STATIC') || (pparse__parser_peek_dist(1) == 'ABSTRACT') || (pparse__parser_peek_dist(1) == 'FINAL')) {
                     if (pparse__parser_peek_dist(1) == 'ABSTRACT') {
                         log_warning('Abstract keyword must appear first: ' . implode(', ', $modifiers) . ', abstract');
                     }
 
-                    // Variables fall through to VAR, function's don't
+                    // Variables fall through to VAR, functions don't
                     pparse__parser_next(); // VAR does this in its do-while loop
                     break;
                 }
@@ -520,7 +517,10 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                     log_warning('All methods in an interface must be public or protected');
                 }
                 if (($type == 'interface') && (in_array('abstract', $modifiers))) {
-                    log_warning('Everything in an interface is inherently abstract. Do not use the abstract keyword');
+                    log_warning('Everything in an interface is inherently abstract. Do not use the abstract keyword.');
+                }
+                if (($type == 'interface') && (in_array('final', $modifiers))) {
+                    log_warning('Do not use the final keyword on an interface.');
                 }
                 $_function = _parse_function_def(array_merge($modifiers, ($type == 'interface') ? ['abstract'] : [])); // Interface methods are inherently abstract
                 foreach ($class['functions'] as $_) {
@@ -533,12 +533,19 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                 if ((in_array('static', $modifiers)) && (in_array('abstract', $modifiers))) {
                     log_warning('Cannot mix static and abstract');
                 }
+                if ((in_array('final', $modifiers)) && (in_array('abstract', $modifiers))) {
+                    log_warning('Cannot mix final and abstract');
+                }
+                if ((in_array('final', $modifiers)) && (in_array('private', $modifiers))) {
+                    log_warning('Cannot mix final and private (as it would be meaningless)');
+                }
 
                 $modifiers = [];
                 break;
 
             case 'STATIC':
             case 'ABSTRACT':
+            case 'FINAL':
                 if ($next == 'ABSTRACT') {
                     if ($type == 'interface') {
                         log_warning('Everything in an interface is inherently abstract. Do not use the abstract keyword');
@@ -551,11 +558,13 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                     if (!in_array('abstract', $class_modifiers)) {
                         log_warning('Abstract keyword found in a non-abstract class');
                     }
-                } else {
+                } elseif ($next == 'STATIC') {
                     if (empty($modifiers)) {
                         log_warning('Static keyword must not appear before visibility');
                     }
                     $modifiers[] = 'static';
+                } else {
+                    $modifiers[] = 'final';
                 }
                 pparse__parser_next(); // Consume the abstract keyword
                 // Peek ahead to make sure the next token can be abstract
@@ -587,12 +596,16 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                         break;
                     case 'variable':
                     case 'VAR':
-                        log_warning('Abstract keyword applied to member variable');
+                        log_warning($next . ' keyword applied to member variable');
                         break;
                     case 'STATIC':
                         break;
+                    case 'ABSTRACT':
+                        break;
+                    case 'FINAL':
+                        break;
                     default:
-                        log_warning('The abstract keyword only applies to classes and methods, not ' . pparse__parser_peek());
+                        log_warning('The ' . $next . ' keyword only applies to classes and methods, not ' . pparse__parser_peek());
                         break;
                 }
                 break;

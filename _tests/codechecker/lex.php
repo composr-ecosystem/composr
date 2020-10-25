@@ -118,6 +118,7 @@ $PTOKENS['PUBLIC'] = 'public';
 $PTOKENS['PRIVATE'] = 'private';
 $PTOKENS['PROTECTED'] = 'protected';
 $PTOKENS['ABSTRACT'] = 'abstract';
+$PTOKENS['FINAL'] = 'final';
 $PTOKENS['INTERFACE'] = 'interface';
 $PTOKENS['IMPLEMENTS'] = 'implements';
 // Functions
