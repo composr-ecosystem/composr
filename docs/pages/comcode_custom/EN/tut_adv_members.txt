@@ -130,9 +130,9 @@ If you prefix CPF names like "Example: Field A" and "Example: Field B", Composr 
 
 [title="3"]Special CPFs[/title]
 
-Composr may install a number of special CPFs used for keeping hold of standardised user data. Composr's core set of profile settings is intentionally kept very narrow, and the special CPFs extend it, even for some core data. This both keeps our system lightweight, and also serves as a mechanism for us to store core data in third party forums.
+Composr may install a number of special CPFs used for keeping hold of standardised user data. Composr's core set of profile settings is intentionally kept very narrow, and the special CPFs extend it, even for some core data. This both keeps our system lightweight, and also serves as a mechanism for us to store core data in third party forums (for non-Conversr users).
 
-To avoid user-interface-bloat, we automatically hide some of the special fields, if they are not currently in use. Typically this is when no addon needing them is installed.
+To avoid user-interface-bloat, we automatically disable some of the special fields, if they are not currently in use. Disabled fields will show when browsing CPFs, but they'll have no edit link. Typically this is when no addon needing them is installed. In some cases there are then config options to force them to be enabled. For example, the First/Last-name fields are only enabled if the [tt]shopping_cart[/tt] addon is installed or if the "Enable first/last name fields" option is ticked (checked).
 
 Special CPFs include:
  - CPFs for tracking different sources of points (for example, how many ratings the member has made)
@@ -142,7 +142,7 @@ Special CPFs include:
 
 All these CPFs may be edited just like any other CPF -- as long as they are currently active (see above). One exception is the CPF title, which has to be edited via language string editing rather than on the CPF editing form.
 
-By default the values of the CPFs are not publicly viewable.
+By default, and in most cases, the values of the CPFs are not publicly viewable.
 
 [title="3"]Why some CPFs are locked[/title]
 
