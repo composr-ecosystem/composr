@@ -49,6 +49,8 @@ class Hook_cron_composr_fulltext_indexer
             disable_php_memory_limit();
         }
 
+        $GLOBALS['NO_QUERY_LIMIT'] = true; // TODO: Change in v11
+
         $GLOBALS['NO_DB_SCOPE_CHECK'] = true; // For small performance gain
 
         $total_singular_ngram_tokens = 0;
