@@ -15,7 +15,7 @@
 
 function initiate_hybridauth_session_state()
 {
-    @session_destroy();
+    @session_write_close();
     $options = [
         'name' => 'hybridauth',
         'gc_maxlifetime' => strval(60 * 60 * 24 * 365 * 2),  // 2 year server-side cookie lifetime
@@ -61,11 +61,11 @@ function is_hybridauth_special_type($special_type)
     return array_key_exists($special_type, enumerate_hybridauth_providers());
 }
 
-function enumerate_hybridauth_providers()
+function enumerate_hybridauth_providers($for_admin = false)
 {
-    static $providers = null;
-    if ($providers !== null) {
-        return $providers;
+    static $providers_cache = array();
+    if (isset($providers_cache[$for_admin])) {
+        return $providers_cache[$for_admin];
     }
 
     $providers = [];
@@ -135,9 +135,13 @@ function enumerate_hybridauth_providers()
             }
         }
 
-        $enabled = $info['enabled'];
-        if ($enabled === null) {
+        if ($for_admin) {
             $enabled = !empty($info['keys']);
+        } else {
+            $enabled = $info['enabled'];
+            if ($enabled === null) {
+                $enabled = (!empty($info['keys'])) && (get_value('hybridauth_' . $provider . '_allow_signups') == '1');
+            }
         }
         if ($enabled === false) {
             unset($providers[$provider]);
@@ -194,6 +198,8 @@ function enumerate_hybridauth_providers()
     }
 
     sort_maps_by($providers, 'button_precedence');
+
+    $providers_cache[$for_admin] = $providers;
 
     return $providers;
 }

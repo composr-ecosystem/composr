@@ -185,6 +185,8 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/oauth/google_analytics.php',
             'sources/hooks/systems/oauth/google_search_console.php',
             'sources/hooks/systems/oauth/index.html',
+            'sources/hooks/systems/oauth_screen_sup/.htaccess',
+            'sources/hooks/systems/oauth_screen_sup/index.html',
             'lang/EN/oauth.ini',
             'themes/default/templates/OAUTH_SCREEN.tpl',
             'sources/hooks/systems/config/fonts.php',

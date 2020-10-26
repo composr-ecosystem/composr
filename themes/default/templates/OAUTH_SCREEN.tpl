@@ -29,7 +29,12 @@
 						{$?,{AVAILABLE},{!YES},{!NO}}
 					</td>
 					<td>
-						<a href="{CONFIG_URL*}">{$?,{CONFIGURED},{!YES},{!NO}}</a>
+						{+START,IF_PASSED,CONFIG_URL}
+							<a href="{CONFIG_URL*}">{$?,{CONFIGURED},{!YES},{!NO}}</a>
+						{+END}
+						{+START,IF_NON_PASSED,CONFIG_URL}
+							{$?,{CONFIGURED},{!YES},{!NO}}
+						{+END}
 					</td>
 					<td>
 						{+START,IF_PASSED,CONNECT_URL}

@@ -169,6 +169,11 @@ class Module_admin_oauth
             ];
         }
 
+        $hooks = find_all_hook_obs('systems', 'oauth_screen_sup', 'Hook_oauth_screen_sup_');
+        foreach ($hooks as $service_name => $ob) {
+            $services = array_merge($services, $ob->get_services());
+        }
+
         sort_maps_by($services, 'LABEL', false, true);
 
         return do_template('OAUTH_SCREEN', ['_GUID' => '100541492cfe6713c022c60ff71cb478', 'TITLE' => $this->title, 'SERVICES' => $services]);

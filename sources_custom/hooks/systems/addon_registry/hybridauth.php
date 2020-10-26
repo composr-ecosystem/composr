@@ -86,7 +86,7 @@ class Hook_addon_registry_hybridauth
      */
     public function get_description()
     {
-        return 'This addon integrates Hybridauth, to add many social network (etc) login options to your site (Facebook, Google, Apple, etc).
+        return 'This addon integrates Hybridauth, to add many social network (etc) login options to your site (Facebook, Google, Apple, etc). It also may be used as an admin backend to configuring content integration with such services, for other addons.
 
 Hybridauth essentially implements the OAuth1, OAuth2, OpenID Connect, and OpenID standards, and proprietary APIs, necessary to unify all the different login integrations of different services.
 
@@ -123,12 +123,14 @@ You configure a provider by setting hidden options using Commandr, which are map
 
 Set hidden options in Commandr like:
 [code="Commandr"]
+:set_value(\'hybridauth_<Provider>_allow_signups\', \'1\');
 :set_value(\'hybridauth_<Provider>_key_id\', \'abcdef\');
 :set_value(\'hybridauth_<Provider>_key_secret\', \'abcdef\');
 [/code]
 
 E.g.:
 [code="Commandr"]
+:set_value(\'hybridauth_Facebook_allow_signups\', \'1\');
 :set_value(\'hybridauth_Facebook_key_id\', \'abcdef\');
 :set_value(\'hybridauth_Facebook_key_secret\', \'abcdef\');
 [/code]
@@ -143,6 +145,7 @@ You may wonder why Apple is not on the list. This is supported by Hybridauth but
 
 The [url="Apple provider actually takes different values"]https://hybridauth.github.io/providers/apple.html[/url]:
 [code="Commandr"]
+:set_value(\'hybridauth_Apple_allow_signups\', \'1\');
 :set_value(\'hybridauth_Apple_key_id\', \'abcdef\');
 :set_value(\'hybridauth_Apple_key_team_id\', \'abcdef\');
 :set_value(\'hybridauth_Apple_key_key_id\', \'abcdef\');
@@ -170,6 +173,7 @@ If you have the [tt]twitter_support[/tt] addon installed then there are friendly
 
 Twitter is using OAuth1 instead of OAuth2. Set hidden options in Commandr like:
 [code="Commandr"]
+:set_value(\'hybridauth_Yahoo_allow_signups\', \'1\');
 :set_value(\'hybridauth_Yahoo_key_key\', \'abcdef\');
 :set_value(\'hybridauth_Yahoo_key_secret\', \'abcdef\');
 [/code]
@@ -400,6 +404,11 @@ You can customise the button display for any provider via more hidden options:
             'sources_custom/hybridauth/Data/Collection.php',
             'sources_custom/hybridauth/Data/Parser.php',
             'sources_custom/hybridauth/index.html',
+            'sources_custom/hooks/systems/cron/hybridauth_admin.php',
+            'sources_custom/hybridauth_admin.php',
+            'sources_custom/hybridauth_admin_storage.php',
+            'data_custom/hybridauth_admin.php',
+            'sources_custom/hooks/systems/oauth_screen_sup/hybridauth_admin.php',
         ];
     }
     /**
