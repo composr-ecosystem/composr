@@ -2029,8 +2029,17 @@ function _parse_comma_parameters($for_function_definition = false)
         return $parameters;
     }
 
+    $defaults_started = false;
+
     do {
         $parameter = _parse_parameter($for_function_definition);
+
+        if ($parameter[2] !== null) {
+            $defaults_started = true;
+        } elseif ($defaults_started) {
+            log_warning('Default parameter before non-default parameter');
+        }
+
         $parameters[] = $parameter;
 
         $next_2 = pparse__parser_peek();
