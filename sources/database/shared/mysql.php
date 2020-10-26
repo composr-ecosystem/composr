@@ -302,7 +302,7 @@ abstract class Database_super_mysql extends DatabaseDriver
             if (is_string($value)) {
                 $set_query .= $key . '=\'' . $value . '\'';
             } else {
-                $set_query .= $key . '=' . $value;
+                $set_query .= $key . '=' . strval($value);
             }
         }
         $queries[] = 'SET ' . $set_query;
