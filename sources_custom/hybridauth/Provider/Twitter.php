@@ -8,9 +8,17 @@
 namespace Hybridauth\Provider;
 
 use Hybridauth\Adapter\OAuth1;
+use Hybridauth\Adapter\AtomInterface;
 use Hybridauth\Exception\UnexpectedApiResponseException;
-use Hybridauth\Data;
+use Hybridauth\Data\Collection;
 use Hybridauth\User;
+use Hybridauth\Atom\Atom;
+use Hybridauth\Atom\Enclosure;
+use Hybridauth\Atom\Category;
+use Hybridauth\Atom\Author;
+use Hybridauth\Atom\AtomFeedBuilder;
+use Hybridauth\Atom\AtomHelper;
+use Hybridauth\Atom\Filter;
 
 /**
  * Twitter OAuth1 provider adapter.
@@ -39,7 +47,7 @@ use Hybridauth\User;
  *       echo $e->getMessage() ;
  *   }
  */
-class Twitter extends OAuth1
+class Twitter extends OAuth1 implements AtomInterface
 {
     /**
      * {@inheritdoc}
@@ -87,7 +95,7 @@ class Twitter extends OAuth1
             'include_email' => $this->config->get('include_email') === false ? 'false' : 'true',
         ]);
 
-        $data = new Data\Collection($response);
+        $data = new Collection($response);
 
         if (!$data->exists('id_str')) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -131,7 +139,7 @@ class Twitter extends OAuth1
 
         $response = $this->apiRequest('friends/ids.json', 'GET', $parameters);
 
-        $data = new Data\Collection($response);
+        $data = new Collection($response);
 
         if (! $data->exists('ids')) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -172,7 +180,7 @@ class Twitter extends OAuth1
      */
     protected function fetchUserContact($item)
     {
-        $item = new Data\Collection($item);
+        $item = new Collection($item);
 
         $userContact = new User\Contact();
 
@@ -244,7 +252,7 @@ class Twitter extends OAuth1
      */
     protected function fetchUserActivity($item)
     {
-        $item = new Data\Collection($item);
+        $item = new Collection($item);
 
         $userActivity = new User\Activity();
 
@@ -261,5 +269,147 @@ class Twitter extends OAuth1
                                                 : '';
 
         return $userActivity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildAtomFeed($limit = 12, $filter = null)
+    {
+        $userProfile = $this->getUserProfile();
+        list($atoms) = $this->getAtoms($limit, $filter);
+
+        $utility = new AtomFeedBuilder();
+        $title = 'Twitter feed of ' . $userProfile->displayName;
+        $feedId = 'urn:hybridauth:twitter:' . $userProfile->identifier . ':' . md5(serialize(func_get_args()));
+        $urnStub = 'urn:hybridauth:twitter:';
+        $url = $userProfile->profileURL;
+        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtoms($limit = 12, $filter = null)
+    {
+        if ($filter === null) {
+            $filter = new Filter();
+        }
+
+        $apiUrl = 'statuses/user_timeline.json';
+
+        $response = $this->apiRequest($apiUrl);
+
+        if (!$response) {
+            return [];
+        }
+
+        $atoms = [];
+
+        foreach ($response as $item) {
+            $atom = $this->parseTweet($item);
+
+            if ($filter->passesEnclosureTest($atom->enclosures)) {
+                $atoms[] = $atom;
+            }
+        }
+
+        return [$atoms, !empty($response)];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtomFull($identifier)
+    {
+        $apiUrl = 'statuses/show/' . $identifier . '.json';
+
+        $item = $this->apiRequest($apiUrl);
+
+        return $this->parseTweet($item);
+    }
+
+    /**
+     * Convert a Tweet into an atom.
+     *
+     * @param object $item
+     *
+     * @return \Hybridauth\Atom\Atom
+     */
+    protected function parseTweet($item)
+    {
+        $atom = new Atom();
+
+        $atom->identifier = $item->id_str;
+        $atom->isIncomplete = false;
+        $atom->published = new \DateTime($item->created_at);
+        $atom->content = $item->text;
+        $atom->url = "https://twitter.com/{$item->user->screen_name}/status/{$item->id_str}";
+
+        $atom->author = new Author();
+        $atom->author->identifier = strval($item->user->id);
+        $atom->author->displayName = $item->user->screen_name;
+        $atom->author->profileURL = $item->user->url;
+        if (!empty($data->profile_image_url_https)) {
+            $atom->author->photoURL = str_replace('_normal', '_original', $data->profile_image_url_https);
+        }
+
+        return $atom;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtomFullFromURL($url)
+    {
+        $matches = [];
+        if (preg_match('#^https://twitter\.com/[^/]+/status/(\d+)/?$#', $url, $matches) != 0) {
+            $identifier = $matches[1];
+            return $this->getAtomFull($identifier);
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveAtom($atom)
+    {
+        // TODO
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteAtom($identifier)
+    {
+        // TODO
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCategories()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveCategory($category)
+    {
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteCategory($identifier)
+    {
+        throw new NotImplementedException('Provider does not support this feature.');
     }
 }

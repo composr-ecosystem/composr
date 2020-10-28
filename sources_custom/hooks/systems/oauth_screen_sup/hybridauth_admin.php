@@ -39,7 +39,11 @@ class Hook_oauth_screen_sup_hybridauth_admin
                 $connected = false;
             }
 
-            $url = find_script('hybridauth_admin') . '?provider=' . urlencode($provider) . $keep->evaluate();
+            if ($configured) {
+                $url = find_script('hybridauth_admin') . '?provider=' . urlencode($provider) . $keep->evaluate();
+            } else {
+                $url = null;
+            }
 
             $services[] = [
                 'LABEL' => $info['label'] . ' (Hybridauth-driven)',

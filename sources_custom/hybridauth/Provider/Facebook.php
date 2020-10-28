@@ -10,8 +10,17 @@ namespace Hybridauth\Provider;
 use Hybridauth\Exception\InvalidArgumentException;
 use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\Adapter\OAuth2;
-use Hybridauth\Data;
+use Hybridauth\Adapter\AtomInterface;
+use Hybridauth\Data\Collection;
+use Hybridauth\Data\Parser;
 use Hybridauth\User;
+use Hybridauth\Atom\Atom;
+use Hybridauth\Atom\Enclosure;
+use Hybridauth\Atom\Category;
+use Hybridauth\Atom\Author;
+use Hybridauth\Atom\AtomFeedBuilder;
+use Hybridauth\Atom\AtomHelper;
+use Hybridauth\Atom\Filter;
 
 /**
  * Facebook OAuth2 provider adapter.
@@ -44,7 +53,7 @@ use Hybridauth\User;
  *       echo $e->getMessage() ;
  *   }
  */
-class Facebook extends OAuth2
+class Facebook extends OAuth2 implements AtomInterface
 {
     /**
      * {@inheritdoc}
@@ -176,7 +185,7 @@ class Facebook extends OAuth2
             'locale' => $locale,
         ]);
 
-        $data = new Data\Collection($response);
+        $data = new Collection($response);
 
         if (!$data->exists('id')) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -202,10 +211,7 @@ class Facebook extends OAuth2
 
         $userProfile->region = $data->filter('hometown')->get('name');
 
-        $photoSize = $this->config->get('photo_size') ?: '150';
-
-        $userProfile->photoURL = $this->apiBaseUrl . $userProfile->identifier;
-        $userProfile->photoURL .= '/picture?width=' . $photoSize . '&height=' . $photoSize;
+        $userProfile->photoURL = $this->generatePhotoURL($userProfile->identifier);
 
         $userProfile->emailVerified = $userProfile->email;
 
@@ -214,6 +220,25 @@ class Facebook extends OAuth2
         $userProfile = $this->fetchBirthday($userProfile, $data->get('birthday'));
 
         return $userProfile;
+    }
+
+    /**
+     * Generate a photo URL for a user.
+     *
+     * @param string $identifier
+     * @param ?int $photoSize
+     *
+     * @return string
+     */
+    protected function generatePhotoURL($identifier, $photoSize = null)
+    {
+        if ($photoSize === null) {
+            $photoSize = intval($this->config->get('photo_size')) ?: 150;
+        }
+
+        $photoURL = $this->apiBaseUrl . $identifier . '/picture';
+        $photoURL .= '?width=' . strval($photoSize) . '&height=' . strval($photoSize);
+        return $photoURL;
     }
 
     /**
@@ -247,7 +272,7 @@ class Facebook extends OAuth2
      */
     protected function fetchBirthday(User\Profile $userProfile, $birthday)
     {
-        $result = (new Data\Parser())->parseBirthday($birthday, '/');
+        $result = (new Parser())->parseBirthday($birthday, '/');
 
         $userProfile->birthYear = (int)$result[0];
         $userProfile->birthMonth = (int)$result[1];
@@ -272,7 +297,7 @@ class Facebook extends OAuth2
         do {
             $response = $this->apiRequest($apiUrl);
 
-            $data = new Data\Collection($response);
+            $data = new Collection($response);
 
             if (!$data->exists('data')) {
                 throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -307,7 +332,7 @@ class Facebook extends OAuth2
     {
         $userContact = new User\Contact();
 
-        $item = new Data\Collection($item);
+        $item = new Collection($item);
 
         $userContact->identifier = $item->get('id');
         $userContact->displayName = $item->get('name');
@@ -315,7 +340,7 @@ class Facebook extends OAuth2
         $userContact->profileURL = $item->exists('link')
             ?: $this->getProfileUrl($userContact->identifier);
 
-        $userContact->photoURL = $this->apiBaseUrl . $userContact->identifier . '/picture?width=150&height=150';
+        $userContact->photoURL = $this->generatePhotoURL($userContact->identifier, 150);
 
         return $userContact;
     }
@@ -385,7 +410,7 @@ class Facebook extends OAuth2
 
         $response = $this->apiRequest($apiUrl);
 
-        $data = new Data\Collection($response);
+        $data = new Collection($response);
 
         if (!$data->exists('data')) {
             throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
@@ -409,7 +434,7 @@ class Facebook extends OAuth2
     {
         $userActivity = new User\Activity();
 
-        $item = new Data\Collection($item);
+        $item = new Collection($item);
 
         $userActivity->id = $item->get('id');
         $userActivity->date = $item->get('created_time');
@@ -432,8 +457,7 @@ class Facebook extends OAuth2
 
             $userActivity->user->profileURL = $this->getProfileUrl($userActivity->user->identifier);
 
-            $userActivity->user->photoURL = $this->apiBaseUrl . $userActivity->user->identifier;
-            $userActivity->user->photoURL .= '/picture?width=150&height=150';
+            $userActivity->user->photoURL = $this->generatePhotoURL($userActivity->user->identifier, 150);
         }
 
         return $userActivity;
@@ -452,5 +476,361 @@ class Facebook extends OAuth2
         }
 
         return sprintf($this->profileUrlTemplate, $identity);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildAtomFeed($limit = 12, $filter = null)
+    {
+        $userProfile = $this->getUserProfile();
+        list($atoms) = $this->getAtoms($limit, $filter);
+
+        $utility = new AtomFeedBuilder();
+        $title = 'Facebook feed of ' . $userProfile->displayName;
+        $feedId = 'urn:hybridauth:facebook:' . $userProfile->identifier . ':' . md5(serialize(func_get_args()));
+        $urnStub = 'urn:hybridauth:facebook:';
+        $url = $userProfile->profileURL;
+        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtoms($limit = 12, $filter = null)
+    {
+        if ($filter === null) {
+            $filter = new Filter();
+        }
+
+        $fieldsShared = [
+            'id',
+            'created_time',
+            'from',
+            'is_hidden',
+            'is_published',
+            'message',
+            'permalink_url',
+            'privacy',
+
+            // Edges
+            'attachments',
+        ];
+
+        $atoms = [];
+        $hasResults = false;
+
+        $categories = $this->getCategories();
+        if ($filter->categoryFilter !== null) {
+            $categories = [$categories[$filter->categoryFilter]];
+        }
+
+        foreach ($categories as $category) {
+            $isPersonal = ($category->identifier == '');
+
+            if ($isPersonal) {
+                $path = 'me';
+            } else {
+                $path = $category->identifier;
+            }
+            if ($filter->includeContributedContent) {
+                $path .= '/feed';
+            } else {
+                $path .= '/posts';
+            }
+
+            $fields = $fieldsShared;
+            if ($isPersonal) {
+                // Links done like this for personal feed
+                $fields[] = 'type';
+                $fields[] = 'link';
+                $fields[] = 'name';
+                $fields[] = 'description';
+            }
+            $params = [
+                'fields' => implode(',', $fields),
+                'limit' => $limit,
+            ];
+
+            $response = $this->apiRequest($path, 'GET', $params);
+
+            $data = new Collection($response);
+            if (!$data->exists('data')) {
+                throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
+            }
+
+            $dataArray = $data->get('data');
+            foreach ($dataArray as $item) {
+                $hasResults = true;
+
+                // Don't show private stuff
+                if (!in_array($item->privacy->value, ['ALL_FRIENDS', 'EVERYONE'])) {
+                    continue;
+                }
+                if (!$item->is_published) {
+                    continue;
+                }
+                if ($item->is_hidden) {
+                    continue;
+                }
+
+                $atom = $this->parseFacebookPost($item, $category, $isPersonal);
+
+                if ($filter->passesEnclosureTest($atom->enclosures)) {
+                    $atoms[] = $atom;
+                }
+            }
+        }
+
+        return [$atoms, $hasResults];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtomFull($identifier)
+    {
+        $fieldsShared = [
+            'id',
+            'created_time',
+            'from',
+            'is_hidden',
+            'is_published',
+            'message',
+            'permalink_url',
+            'privacy',
+
+            // Edges
+            'attachments',
+        ];
+
+        $atoms = [];
+        $hasResults = false;
+
+        $categories = $this->getCategories();
+
+        $identifier_parts = explode('_', $identifier);
+
+        $isPersonal = !isset($categories[$identifier_parts[0]]);
+
+        $path = $identifier;
+
+        $fields = $fieldsShared;
+        if ($isPersonal) {
+            // Links done like this for personal feed
+            $fields[] = 'type';
+            $fields[] = 'link';
+            $fields[] = 'name';
+            $fields[] = 'description';
+        }
+        $params = [
+            'fields' => implode(',', $fields),
+        ];
+
+        $item = $this->apiRequest($path, 'GET', $params);
+
+        $atom = $this->parseFacebookPost($item, $categories[$isPersonal ? '' : $identifier_parts[0]], $isPersonal);
+
+        return $atom;
+    }
+
+    /**
+     * Convert a Facebook post into an atom.
+     *
+     * @param object $item Data from Facebook
+     * @param \Hybridauth\Atom\Category $category Category we're currently operating in
+     * @param boolean $isPersonal Whether it is from a personal feed
+     *
+     * @return \Hybridauth\Atom\Atom
+     */
+    protected function parseFacebookPost($item, $category, $isPersonal)
+    {
+        $atom = new Atom();
+
+        // Facebook API varies based on whether it is a personal feed or a page
+        if ($isPersonal) {
+            $isLink = ($item->type == 'link');
+            if ($isLink) {
+                $linkURL = $item->link;
+                $linkText = isset($item->name) ? $item->name : $linkURL;
+                $linkDescription = isset($item->description) ? $item->description : '';
+            }
+        } else {
+            $isLink = (isset($item->attachments->data[0]->type)) && ($item->attachments->data[0]->type == 'share');
+            if ($isLink) {
+                $linkURL = $item->attachments->data[0]->target->url;
+                $linkText = isset($item->attachments->data[0]->title) ? $item->attachments->data[0]->title : $linkURL;
+                if (isset($item->attachments->data[0]->description)) {
+                    $linkDescription = $item->attachments->data[0]->description;
+                } else {
+                    $linkDescription = '';
+                }
+            }
+        }
+
+        $atom->identifier = $item->id;
+        $atom->isIncomplete = false;
+        $atom->author = new Author();
+        $atom->author->identifier = $item->from->id;
+        $atom->author->displayName = $item->from->name;
+        $atom->author->profileURL = "https://instagram.com/{$item->from->name}";
+        $atom->author->photoURL = $this->generatePhotoURL($item->from->id, 150);
+        $atom->published = new \DateTime($item->created_time);
+        if ((!empty($item->message)) && (!$isLink) && (strlen($item->message) < 256)) {
+            $atom->title = trim($item->message);
+        } elseif ((!empty($item->name)) && (!$isLink)) {
+            $atom->title = trim($item->name);
+        } else {
+            if (!empty($item->message)) {
+                $atom->content = AtomHelper::plainTextToHtml($item->message);
+            }
+            if ($isLink) {
+                if (($atom->content === null) && (!empty($linkDescription))) {
+                    $atom->content = AtomHelper::plainTextToHtml($linkDescription);
+                }
+                if ($atom->content === null) {
+                    $atom->content = '';
+                } else {
+                    $atom->content .= '<br />';
+                }
+                $atom->content .= '<a href="' . htmlentities($linkURL) . '">' . htmlentities($linkText) . '</a>';
+            }
+        }
+        $atom->url = $item->permalink_url;
+
+        $atom->categories = [];
+        $atom->categories[] = $category;
+
+        $atom->enclosures = [];
+        if (isset($item->attachments)) {
+            foreach ($item->attachments->data as $attachment) {
+                $atom->enclosures[] = $this->processEnclosure($attachment);
+
+                if (isset($attachment->subattachments)) {
+                    foreach ($attachment->subattachments->data as $subattachment) {
+                        $atom->enclosures[] = $this->processEnclosure($subattachment);
+                    }
+                }
+            }
+        }
+
+        return $atom;
+    }
+
+    /**
+     * Process an enclosure into an atom attachment.
+     *
+     * @param object $attachment Data from Facebook
+     *
+     * @return \Hybridauth\Atom\Enclosure
+     */
+    protected function processEnclosure($attachment)
+    {
+        $enclosure = new Enclosure();
+        $enclosure->url = $attachment->url;
+        switch ($attachment->type) {
+            case 'photo':
+            case 'photo_inline':
+                $enclosure->type = AtomHelper::ENCLOSURE_IMAGE;
+                break;
+
+            case 'video':
+            case 'video_inline':
+                $enclosure->type = AtomHelper::ENCLOSURE_VIDEO;
+                if (isset($attachment->media->image->src)) {
+                    $enclosure->thumbnailUrl = $attachment->media->image->src;
+                }
+                break;
+
+            default:
+                $enclosure->type = AtomHelper::ENCLOSURE_BINARY; // We don't recognize this
+                break;
+        }
+        return $enclosure;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtomFullFromURL($url)
+    {
+        $matches = [];
+        if (preg_match('#^https://www\.facebook\.com/[^/]+/posts/([^/]+)/?$#', $url, $matches) != 0) {
+            $identifier = $matches[1];
+            return $this->getAtomFull($identifier);
+        }
+        if (preg_match('#^https://www\.facebook\.com/.*[&\?]id=(\d+)#', $url, $matches) != 0) {
+            $identifier = $matches[1];
+            return $this->getAtomFull($identifier);
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveAtom($atom)
+    {
+        // TODO
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteAtom($identifier)
+    {
+        // TODO
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCategories()
+    {
+        $response = $this->apiRequest('me/accounts');
+
+        $data = new Collection($response);
+        if (!$data->exists('data')) {
+            throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
+        }
+
+        $dataArray = $data->get('data');
+
+        $categories = [];
+
+        $category = new Category();
+        $category->identifier = '';
+        $category->label = 'Personal feed';
+        $categories[''] = $category;
+
+        foreach ($dataArray as $item) {
+            $category = new Category();
+            $category->identifier = $item->id;
+            $category->label = $item->name;
+            $categories[$category->identifier] = $category;
+        }
+
+        return $categories;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveCategory($category)
+    {
+        // TODO
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteCategory($identifier)
+    {
+        // TODO
+        throw new NotImplementedException('Provider does not support this feature.');
     }
 }

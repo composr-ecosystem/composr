@@ -8,14 +8,22 @@
 namespace Hybridauth\Provider;
 
 use Hybridauth\Adapter\OAuth2;
+use Hybridauth\Adapter\AtomInterface;
 use Hybridauth\Data\Collection;
 use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\User;
+use Hybridauth\Atom\Atom;
+use Hybridauth\Atom\Enclosure;
+use Hybridauth\Atom\Category;
+use Hybridauth\Atom\Author;
+use Hybridauth\Atom\AtomFeedBuilder;
+use Hybridauth\Atom\AtomHelper;
+use Hybridauth\Atom\Filter;
 
 /**
  * Instagram OAuth2 provider adapter via Instagram Basic Display API.
  */
-class Instagram extends OAuth2
+class Instagram extends OAuth2 implements AtomInterface
 {
     /**
      * {@inheritdoc}
@@ -245,5 +253,201 @@ class Instagram extends OAuth2
         }
 
         return $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildAtomFeed($limit = 12, $filter = null)
+    {
+        $userProfile = $this->getUserProfile();
+        list($atoms) = $this->getAtoms($limit, $filter);
+
+        $utility = new AtomFeedBuilder();
+        $title = 'Instagram feed of ' . $userProfile->displayName;
+        $feedId = 'urn:hybridauth:instagram:' . $userProfile->identifier . ':' . md5(serialize(func_get_args()));
+        $urnStub = 'urn:hybridauth:instagram:';
+        $url = $userProfile->profileURL;
+        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtoms($limit = 12, $filter = null)
+    {
+        if ($filter === null) {
+            $filter = new Filter();
+        }
+
+        $fields = [
+            'caption',
+            'id',
+            'media_type',
+            'media_url',
+            'permalink',
+            'thumbnail_url',
+            'timestamp',
+            'username',
+        ];
+
+        $params = [
+            'fields' => implode(',', $fields),
+            'limit' => $limit,
+        ];
+
+        $response = $this->apiRequest('me/media', 'GET', $params);
+
+        $data = new Collection($response);
+        if (!$data->exists('data')) {
+            throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
+        }
+
+        $dataArray = $data->get('data');
+
+        $atoms = [];
+
+        foreach ($dataArray as $item) {
+            $atom = $this->parseInstagramMediaItem($item);
+
+            if ($filter->passesEnclosureTest($atom->enclosures)) {
+                $atoms[] = $atom;
+            }
+        }
+
+        return [$atoms, !empty($dataArray)];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtomFull($identifier)
+    {
+        $fields = [
+            'caption',
+            'id',
+            'media_type',
+            'media_url',
+            'permalink',
+            'thumbnail_url',
+            'timestamp',
+            'username',
+        ];
+
+        $params = [
+            'fields' => implode(',', $fields),
+        ];
+
+        if (strpos($identifier, '/') !== false) {
+            throw new BadMethodCallException('$identifier cannot include a slash.');
+        }
+
+        $data = $this->apiRequest($identifier, 'GET', $params);
+
+        return $this->parseInstagramMediaItem($data);
+    }
+
+    /**
+     * Convert an Instagram media item into an atom.
+     *
+     * @param object $item
+     *
+     * @return \Hybridauth\Atom\Atom
+     */
+    protected function parseInstagramMediaItem($item)
+    {
+        $atom = new Atom();
+
+        $atom->identifier = $item->id;
+        $atom->isIncomplete = false;
+        $atom->author = new Author();
+        $atom->author->identifier = $item->username;
+        $atom->author->displayName = $item->username;
+        $atom->author->profileURL = "https://instagram.com/{$item->username}";
+        $atom->categories = [];
+        $atom->published = new \DateTime($item->timestamp);
+        if (!empty($item->caption)) {
+            if (strlen($item->caption) < 256) {
+                $atom->title = $item->caption;
+            } else {
+                $atom->content = AtomHelper::plainTextToHtml($item->caption);
+            }
+        }
+        $atom->url = $item->permalink;
+
+        $atom->enclosures = [];
+        $enclosure = new Enclosure();
+        $enclosure->url = $item->media_url;
+        switch ($item->media_type) {
+            case 'IMAGE':
+                $enclosure->type = AtomHelper::ENCLOSURE_IMAGE;
+                break;
+
+            case 'VIDEO':
+                $enclosure->type = AtomHelper::ENCLOSURE_VIDEO;
+                $enclosure->thumbnailUrl = $item->thumbnail_url;
+                break;
+
+            default:
+                $enclosure->type = AtomHelper::ENCLOSURE_BINARY; // We don't recognize this
+                break;
+        }
+        $atom->enclosures[] = $enclosure;
+
+        return $atom;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAtomFullFromURL($url)
+    {
+        $matches = [];
+        if (preg_match('#^https://www\.instagram\.com/p/([^/]+)/?$#', $url, $matches) != 0) {
+            $identifier = $matches[1];
+            return $this->getAtomFull($identifier);
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveAtom($atom)
+    {
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteAtom($identifier)
+    {
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCategories()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveCategory($category)
+    {
+        throw new NotImplementedException('Provider does not support this feature.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteCategory($identifier)
+    {
+        throw new NotImplementedException('Provider does not support this feature.');
     }
 }

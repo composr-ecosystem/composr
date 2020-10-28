@@ -59,42 +59,28 @@ require_code('hybridauth/autoload');
 
 list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
 
-$provider = get_param_string('provider', null);
-if ($provider !== null) {
-    if ((get_param_integer('keep_hybridauth_blank_state', 0) == 1) && ($GLOBALS['DEV_MODE'])) {
-        $admin_storage->clear();
-    }
-
-    // This is the first stage in the flow
-    $admin_storage->set('provider', $provider);
-} else {
-    // This is the final stage in the flow
-    if ($admin_storage->get('provider') === null) {
-        warn_exit(do_lang_tempcode('HYBRIDAUTH_SESSION_TIMEOUT'));
-    }
-    $provider = $admin_storage->get('provider');
-}
+$provider = get_param_string('provider');
 
 $adapter = $hybridauth->getAdapter($provider);
 
+if (!$adapter instanceof Hybridauth\Adapter\AtomInterface) {
+    warn_exit('Atom interface not implemented by ' . $provider);
+}
+
+$limit = get_param_integer('limit', 30);
+$filter = new \Hybridauth\Atom\Filter();
+$filter->categoryFilter = get_param_string('categoryFilter', null);
+$filter->enclosureTypeFilter = get_param_integer('enclosureTypeFilter', null);
+$filter->includeContributedContent = (get_param_integer('includeContributedContent', 0) == 1);
+
 try {
-    $adapter->authenticate($provider); // Will either push the flow off-site, complete the authentication started previously, or just bring the user's authentication credentials out from a previous authentication
-
-    $success = $adapter->isConnected();
-
-    $message = do_lang_tempcode($success ? 'HYBRIDAUTH_ADMIN_SUCCESS' : 'HYBRIDAUTH_ADMIN_FAILURE', escape_html($provider));
-} catch (Hybridauth\Exception\AuthorizationDeniedException $e) {
-    $message = do_lang_tempcode('HYBRIDAUTH_ADMIN_CANCELLED');
+    $feed = $adapter->buildAtomFeed($limit, $filter);
 } catch (Exception $e) {
     warn_exit($e->getMessage());
 }
 
+header('Content-Type: text/xml; charset=utf-8');
+echo $feed;
+
 cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
 cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
-
-$title = get_screen_title('HYBRIDAUTH');
-$composr_return_url = build_url(['page' => 'admin_oauth'], get_module_zone('admin_oauth'));
-
-require_code('templates_redirect_screen');
-$tpl = redirect_screen($title, $composr_return_url, $message);
-$tpl->evaluate_echo();

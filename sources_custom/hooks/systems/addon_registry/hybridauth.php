@@ -409,6 +409,17 @@ You can customise the button display for any provider via more hidden options:
             'sources_custom/hybridauth_admin_storage.php',
             'data_custom/hybridauth_admin.php',
             'sources_custom/hooks/systems/oauth_screen_sup/hybridauth_admin.php',
+            'data_custom/hybridauth_admin_atom.php',
+            'sources_custom/hybridauth/Adapter/AtomInterface.php',
+            'sources_custom/hybridauth/Atom/.htaccess',
+            'sources_custom/hybridauth/Atom/Atom.php',
+            'sources_custom/hybridauth/Atom/AtomFeedBuilder.php',
+            'sources_custom/hybridauth/Atom/AtomHelper.php',
+            'sources_custom/hybridauth/Atom/Category.php',
+            'sources_custom/hybridauth/Atom/Enclosure.php',
+            'sources_custom/hybridauth/Atom/Author.php',
+            'sources_custom/hybridauth/Atom/Filter.php',
+            'sources_custom/hybridauth/Atom/index.html',
         ];
     }
     /**
