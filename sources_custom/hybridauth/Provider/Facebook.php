@@ -670,33 +670,45 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $atom->identifier = $item->id;
         $atom->isIncomplete = false;
+        $atom->published = new \DateTime($item->created_time);
+        $atom->url = $item->permalink_url;
+
+        $urlUsernames = null;
+        $urlHashtags = '<a href="https://facebook.com/hashtag/$1">#$1</a>';
+        $detectUrls = true;
+        if (!empty($this->message)) {
+            $text = $this->message;
+        } elseif (!empty($this->name)) {
+            $text = $this->name;
+        } else {
+            $text = '';
+        }
+        $textPlain = $text;
+        $text = AtomHelper::plainTextToHtml($text);
+        list($text, $repped) = AtomHelper::processCodes($text, $urlUsernames, $urlHashtags, $detectUrls);
+
+        if ((!$repped) && (!$isLink) && (strlen($text) < 256)) {
+            $atom->title = trim($textPlain);
+        } else {
+            $atom->content = $text;
+            if ($isLink) {
+                if (($text == '') && (!empty($linkDescription))) {
+                    $text = AtomHelper::plainTextToHtml($linkDescription);
+                    // NB: ^ Intentionally not passed through processCodes
+                }
+                if ($text != '') {
+                    $text .= '<br />';
+                }
+                $text .= '<a href="' . htmlentities($linkURL) . '">' . htmlentities($linkText) . '</a>';
+                $atom->content = $text;
+            }
+        }
+
         $atom->author = new Author();
         $atom->author->identifier = $item->from->id;
         $atom->author->displayName = $item->from->name;
         $atom->author->profileURL = "https://instagram.com/{$item->from->name}";
         $atom->author->photoURL = $this->generatePhotoURL($item->from->id, 150);
-        $atom->published = new \DateTime($item->created_time);
-        if ((!empty($item->message)) && (!$isLink) && (strlen($item->message) < 256)) {
-            $atom->title = trim($item->message);
-        } elseif ((!empty($item->name)) && (!$isLink)) {
-            $atom->title = trim($item->name);
-        } else {
-            if (!empty($item->message)) {
-                $atom->content = AtomHelper::plainTextToHtml($item->message);
-            }
-            if ($isLink) {
-                if (($atom->content === null) && (!empty($linkDescription))) {
-                    $atom->content = AtomHelper::plainTextToHtml($linkDescription);
-                }
-                if ($atom->content === null) {
-                    $atom->content = '';
-                } else {
-                    $atom->content .= '<br />';
-                }
-                $atom->content .= '<a href="' . htmlentities($linkURL) . '">' . htmlentities($linkText) . '</a>';
-            }
-        }
-        $atom->url = $item->permalink_url;
 
         $atom->categories = [];
         $atom->categories[] = $category;
@@ -731,19 +743,19 @@ class Facebook extends OAuth2 implements AtomInterface
         switch ($attachment->type) {
             case 'photo':
             case 'photo_inline':
-                $enclosure->type = AtomHelper::ENCLOSURE_IMAGE;
+                $enclosure->type = Enclosure::ENCLOSURE_IMAGE;
                 break;
 
             case 'video':
             case 'video_inline':
-                $enclosure->type = AtomHelper::ENCLOSURE_VIDEO;
+                $enclosure->type = Enclosure::ENCLOSURE_VIDEO;
                 if (isset($attachment->media->image->src)) {
                     $enclosure->thumbnailUrl = $attachment->media->image->src;
                 }
                 break;
 
             default:
-                $enclosure->type = AtomHelper::ENCLOSURE_BINARY; // We don't recognize this
+                $enclosure->type = Enclosure::ENCLOSURE_BINARY; // We don't recognize this
                 break;
         }
         return $enclosure;

@@ -20,7 +20,7 @@ class Filter
     public $categoryFilter = null;
 
     /**
-     * A bitmask of ENCLOSURE_* constants from AtomTrait.
+     * A bitmask of Enclosure::ENCLOSURE_* constants.
      *
      * @var int
      */

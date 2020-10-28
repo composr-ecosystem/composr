@@ -343,8 +343,17 @@ class Twitter extends OAuth1 implements AtomInterface
         $atom->identifier = $item->id_str;
         $atom->isIncomplete = false;
         $atom->published = new \DateTime($item->created_at);
-        $atom->content = $item->text;
         $atom->url = "https://twitter.com/{$item->user->screen_name}/status/{$item->id_str}";
+
+        $urlUsernames = '<a href="http://twitter.com/$1">@$1</a>';
+        $urlHashtags = '<a href="https://twitter.com/hashtag/$1?src=hash">#$1</a>';
+        $detectUrls = true;
+        list($text, $repped) = AtomHelper::processCodes($item->text, $urlUsernames, $urlHashtags, $detectUrls);
+        if ((!$repped) && (AtomHelper::plainTextToHtml(AtomHelper::htmlToPlainText($text)) == $text)) {
+            $atom->title = $text;
+        } else {
+            $atom->content = $text;
+        }
 
         $atom->author = new Author();
         $atom->author->identifier = strval($item->user->id);
@@ -353,6 +362,38 @@ class Twitter extends OAuth1 implements AtomInterface
         if (!empty($data->profile_image_url_https)) {
             $atom->author->photoURL = str_replace('_normal', '_original', $data->profile_image_url_https);
         }
+
+        $enclosures = [];
+        if (isset($item->extended_entities)) {
+            foreach ($item->extended_entities->media as $entity) {
+                $enclosure = new Enclosure();
+
+                switch ($entity->type) {
+                    case 'photo':
+                        $enclosure->type = Enclosure::ENCLOSURE_IMAGE;
+                        $enclosure->url = $entity->media_url_https;
+                        $enclosure->mimeType = Enclosure::guessMimeType($enclosure->url);
+                        $enclosure->thumbnailUrl = $entity->media_url_https . '?name=thumb';
+                        break;
+
+                    case 'video':
+                    case 'animated_gif':
+                        $enclosure->type = Enclosure::ENCLOSURE_VIDEO;
+                        $enclosure->url = $entity->video_info->variants[0]->url;
+                        $enclosure->mimeType = $entity->video_info->variants[0]->content_type;
+                        $enclosure->thumbnailUrl = $entity->media_url_https;
+                        break;
+
+                    default:
+                        $enclosure->type = Enclosure::ENCLOSURE_BINARY;
+                        $enclosure->url = $entity->media_url_https;
+                        break;
+                }
+
+                $enclosures[] = $enclosure;
+            }
+        }
+        $atom->enclosures = $enclosures;
 
         return $atom;
     }

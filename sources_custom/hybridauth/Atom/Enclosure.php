@@ -12,8 +12,12 @@ namespace Hybridauth\Atom;
  */
 class Enclosure
 {
+    const ENCLOSURE_IMAGE = 1;
+    const ENCLOSURE_VIDEO = 2;
+    const ENCLOSURE_BINARY = 4;
+
     /**
-     * An ENCLOSURE_* constant from AtomHelper.
+     * An ENCLOSURE_* constant.
      *
      * @var int
      */
@@ -46,4 +50,21 @@ class Enclosure
      * @var ?string
      */
     public $thumbnailUrl;
+
+    /**
+     * Guess a mime-type based on file extension.
+     *
+     * @param string $url URL
+     *
+     * @return ?string Mime type or null
+     */
+    public static function guessMimeType($url)
+    {
+        if (preg_match('#\.(jpg|jpeg)($|\?)#', $url) != 0) {
+            return 'image/jpeg';
+        } elseif (preg_match('#\.(png)($|\?)#', $url) != 0) {
+            return 'image/png';
+        }
+        return null;
+    }
 }

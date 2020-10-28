@@ -360,36 +360,42 @@ class Instagram extends OAuth2 implements AtomInterface
 
         $atom->identifier = $item->id;
         $atom->isIncomplete = false;
+        $atom->categories = [];
+        $atom->published = new \DateTime($item->timestamp);
+        $atom->url = $item->permalink;
+
+        if (!empty($item->caption)) {
+            $urlUsernames = '<a href="http://instagram.com/$1">@$1</a>';
+            $urlHashtags = '<a href="https://instagram.com/explore/tags/$1/">#$1</a>';
+            $detectUrls = true;
+            list($text, $repped) = AtomHelper::processCodes($item->caption, $urlUsernames, $urlHashtags, $detectUrls);
+            if ((!$repped) && (strlen($text) < 256)) {
+                $atom->title = $text;
+            } else {
+                $atom->content = AtomHelper::plainTextToHtml($text);
+            }
+        }
+
         $atom->author = new Author();
         $atom->author->identifier = $item->username;
         $atom->author->displayName = $item->username;
         $atom->author->profileURL = "https://instagram.com/{$item->username}";
-        $atom->categories = [];
-        $atom->published = new \DateTime($item->timestamp);
-        if (!empty($item->caption)) {
-            if (strlen($item->caption) < 256) {
-                $atom->title = $item->caption;
-            } else {
-                $atom->content = AtomHelper::plainTextToHtml($item->caption);
-            }
-        }
-        $atom->url = $item->permalink;
 
         $atom->enclosures = [];
         $enclosure = new Enclosure();
         $enclosure->url = $item->media_url;
         switch ($item->media_type) {
             case 'IMAGE':
-                $enclosure->type = AtomHelper::ENCLOSURE_IMAGE;
+                $enclosure->type = Enclosure::ENCLOSURE_IMAGE;
                 break;
 
             case 'VIDEO':
-                $enclosure->type = AtomHelper::ENCLOSURE_VIDEO;
+                $enclosure->type = Enclosure::ENCLOSURE_VIDEO;
                 $enclosure->thumbnailUrl = $item->thumbnail_url;
                 break;
 
             default:
-                $enclosure->type = AtomHelper::ENCLOSURE_BINARY; // We don't recognize this
+                $enclosure->type = Enclosure::ENCLOSURE_BINARY; // We don't recognize this
                 break;
         }
         $atom->enclosures[] = $enclosure;

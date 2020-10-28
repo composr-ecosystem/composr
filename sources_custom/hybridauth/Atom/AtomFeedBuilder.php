@@ -111,15 +111,26 @@ class AtomFeedBuilder
                 if ($enclosure->url !== null) {
                     $hrefAttribute = ' href="' . htmlentities($enclosure->url, ENT_XML1) . '"';
                 }
-                if ($enclosure->mimeType !== null) {
+                $mimeType = $enclosure->mimeType;
+                if ($mimeType === null) {
+                    $mimeType = Enclosure::guessMimeType($enclosure->url);
+                }
+                if ($mimeType !== null) {
                     $typeAttribute = ' type="' . htmlentities($enclosure->mimeType, ENT_XML1) . '"';
                 }
                 $xml .= '
         <link' . $lengthAttribute . $hrefAttribute . $typeAttribute . ' rel="enclosure" />
                 ';
-                if ($enclosure->thumbnailUrl !== null) {
+                if (($enclosure->thumbnailUrl !== null) && ($enclosure->type != Enclosure::ENCLOSURE_IMAGE)) {
+                    $thumbHrefAttribute = ' href="' . htmlentities($enclosure->thumbnailUrl, ENT_XML1) . '"';
+                    $thumbMimeType = Enclosure::guessMimeType($enclosure->thumbnailUrl);
+                    if ($thumbMimeType != null) {
+                        $thumbTypeAttribute = ' type="' . htmlentities($thumbMimeType, ENT_XML1) . '"';
+                    } else {
+                        $thumbTypeAttribute = '';
+                    }
                     $xml .= '
-        <link href="' . htmlentities($enclosure->thumbnailUrl, ENT_XML1) . '" rel="enclosure" />
+        <link' . $thumbHrefAttribute . $thumbTypeAttribute . ' rel="enclosure" />
                     ';
                 }
             }

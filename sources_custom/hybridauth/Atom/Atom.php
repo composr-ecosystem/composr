@@ -60,6 +60,7 @@ class Atom
     /**
      * Title.
      * In plain text.
+     * Assumed less that 256 characters long (if we are choosing whether to make a single text result title or content).
      *
      * @var ?string
      */
