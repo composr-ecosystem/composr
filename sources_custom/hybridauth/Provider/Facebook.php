@@ -707,7 +707,7 @@ class Facebook extends OAuth2 implements AtomInterface
         $atom->author = new Author();
         $atom->author->identifier = $item->from->id;
         $atom->author->displayName = $item->from->name;
-        $atom->author->profileURL = "https://instagram.com/{$item->from->name}";
+        $atom->author->profileURL = $this->getProfileUrl($item->from->id);
         $atom->author->photoURL = $this->generatePhotoURL($item->from->id, 150);
 
         $atom->categories = [];
