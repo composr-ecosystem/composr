@@ -124,18 +124,16 @@ You configure a provider by setting hidden options using Commandr, which are map
 Set hidden options in Commandr like:
 [code="Commandr"]
 :set_value(\'hybridauth_<Provider>_allow_signups\', \'1\');
-:set_value(\'hybridauth_<Provider>_key_id\', \'abcdef\');
-:set_value(\'hybridauth_<Provider>_key_secret\', \'abcdef\');
+:set_value(\'hybridauth_<Provider>\', \'{"key_id": "abcdef", "key_secret": "abcdef"}\');
 [/code]
 
 E.g.:
 [code="Commandr"]
 :set_value(\'hybridauth_Facebook_allow_signups\', \'1\');
-:set_value(\'hybridauth_Facebook_key_id\', \'abcdef\');
-:set_value(\'hybridauth_Facebook_key_secret\', \'abcdef\');
+:set_value(\'hybridauth_Facebook\', \'{"key_id": "abcdef", "key_secret": "abcdef"}\');
 [/code]
 
-The [tt]id[/tt] and [tt]secret[/tt] values here are standard OAuth2 key parameters. This is of course assuming the provider works via OAuth2, but most do.
+The [tt]key_id[/tt] and [tt]key_secret[/tt] values here are standard OAuth2 key parameters. This is of course assuming the provider works via OAuth2, but most do.
 
 [title="2"]Provider-specific notes[/title]
 
@@ -146,11 +144,7 @@ You may wonder why Apple is not on the list. This is supported by Hybridauth but
 The [url="Apple provider actually takes different values"]https://hybridauth.github.io/providers/apple.html[/url]:
 [code="Commandr"]
 :set_value(\'hybridauth_Apple_allow_signups\', \'1\');
-:set_value(\'hybridauth_Apple_key_id\', \'abcdef\');
-:set_value(\'hybridauth_Apple_key_team_id\', \'abcdef\');
-:set_value(\'hybridauth_Apple_key_key_id\', \'abcdef\');
-:set_value(\'hybridauth_Apple_key_key_content\', \'abcdef\');
-:set_value(\'hybridauth_Apple_key_key_file\', \'abcdef\');
+:set_value(\'hybridauth_Apple\', \'{"key_id": "abcdef", "key_team_id": "abcdef", "key_content": "abcdef", "key_file": "abcdef"}\');
 [/code]
 See the code comments in [tt]sources_custom/hybridauth/Provider/Apple.php[/tt] for clearer details on these config settings.
 
@@ -160,7 +154,7 @@ If you have the [tt]facebook_support[/tt] addon installed then there are friendl
 
 Facebook has a wide variety of extra fields, but only if you go through a special approval process and extend the configured scope, e.g.:
 [code="Commandr"]
-:set_value(\'hybridauth_Facebook_scope\', \'email,user_gender,user_birthday,user_location\');
+:set_value(\'hybridauth_Facebook\', \'{"scope": "email,user_gender,user_birthday,user_location"}\');
 [/code]
 
 [title="3"]Google[/title]
@@ -174,8 +168,7 @@ If you have the [tt]twitter_support[/tt] addon installed then there are friendly
 Twitter is using OAuth1 instead of OAuth2. Set hidden options in Commandr like:
 [code="Commandr"]
 :set_value(\'hybridauth_Yahoo_allow_signups\', \'1\');
-:set_value(\'hybridauth_Yahoo_key_key\', \'abcdef\');
-:set_value(\'hybridauth_Yahoo_key_secret\', \'abcdef\');
+:set_value(\'hybridauth_Yahoo\', \'{"key_key": "abcdef", "key_secret": "abcdef"}\');
 [/code]
 
 Twitter apps need to go through an approval process.
@@ -189,7 +182,7 @@ You may wonder why LinkedIn is not on the list. LinkedIn apps need to go through
 Setting up of [tt]MicrosoftGraph[/tt] on Microsoft\'s end is a bit complicated. You need to create and configure an "Azure Active Directory" resource on the [url="Azure Portal"]https://portal.azure.com/[/url].
 There is an extra [tt]tenant[/tt] value option that relates to the "Supported account types" choice you made. You probably will need:
 [code="Commandr"]
-:set_value(\'hybridauth_MicrosoftGraph_tenant\', \'consumers\');
+:set_value(\'hybridauth_MicrosoftGraph\', \'{..., "tenant": "consumers"}\');
 [/code]
 
 [title="3"]Pinterest (untested)[/title]
@@ -202,7 +195,7 @@ You may wonder why StackExchange is not on the list. StackExchange does not allo
 
 There is an extra [tt]site[/tt] value option that relates to the particular StackExchange site you want to use. It must be set. For example:
 [code="Commandr"]
-:set_value(\'hybridauth_StackExchange_site\', \'stackoverflow.com\');
+:set_value(\'hybridauth_StackExchange\', \'{..., "site": "stackoverflow.com"}\');
 [/code]
 
 [title="3"]Vkontakte[/title]

@@ -40,7 +40,7 @@ class Hook_oauth_screen_sup_hybridauth_admin
             }
 
             if ($configured) {
-                $url = find_script('hybridauth_admin') . '?provider=' . urlencode($provider) . $keep->evaluate();
+                $url = find_script('hybridauth_admin') . '?provider=' . urlencode($provider) . '&hybridauth_blank_state=1' . $keep->evaluate();
             } else {
                 $url = null;
             }

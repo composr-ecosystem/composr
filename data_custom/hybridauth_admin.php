@@ -61,7 +61,7 @@ list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
 
 $provider = get_param_string('provider', null);
 if ($provider !== null) {
-    if ((get_param_integer('keep_hybridauth_blank_state', 0) == 1) && ($GLOBALS['DEV_MODE'])) {
+    if (get_param_integer('hybridauth_blank_state', 0) == 1) {
         $admin_storage->clear();
     }
 

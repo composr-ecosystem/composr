@@ -63,4 +63,44 @@ class AtomHelper
         }
         return [$text, $text != $textIn];
     }
+
+    /**
+     * Get string length, with utf-8 awareness.
+     *
+     * @param string $in The string to get the length of
+     * @return integer The string length
+     */
+    public static function mbStrlen($in)
+    {
+        if (function_exists('mb_strlen')) {
+            return mb_strlen($in, 'utf-8');
+        }
+        if (function_exists('iconv_strlen')) {
+            return iconv_strlen($in, 'utf-8');
+        }
+        return strlen($in);
+    }
+
+    /**
+     * Return part of a string, with utf-8 awareness.
+     *
+     * @param  string $in The subject
+     * @param  integer $from The start position
+     * @param  ?integer $amount The length to extract (null: all remaining)
+     * @return ~string String part (false: $start was over the end of the string)
+     */
+    public static function mbSubstr($in, $from, $amount = null)
+    {
+        if ($amount === null) {
+            $amount = self::mbStrlen($in, $force) - $from;
+        }
+
+        if (function_exists('mb_substr')) {
+            return mb_substr($in, $from, $amount, 'utf-8');
+        }
+        if (function_exists('iconv_substr')) {
+            return iconv_substr($in, $from, $amount, 'utf-8');
+        }
+        return substr($in, $from, $amount);
+    }
 }

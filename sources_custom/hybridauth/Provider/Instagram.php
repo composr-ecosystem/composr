@@ -289,6 +289,9 @@ class Instagram extends OAuth2 implements AtomInterface
             'thumbnail_url',
             'timestamp',
             'username',
+
+            // Edges
+            'children',
         ];
 
         $params = [
@@ -332,6 +335,9 @@ class Instagram extends OAuth2 implements AtomInterface
             'thumbnail_url',
             'timestamp',
             'username',
+
+            // Edges
+            'children',
         ];
 
         $params = [
@@ -381,26 +387,62 @@ class Instagram extends OAuth2 implements AtomInterface
         $atom->author->displayName = $item->username;
         $atom->author->profileURL = "https://instagram.com/{$item->username}";
 
-        $atom->enclosures = [];
-        $enclosure = new Enclosure();
-        $enclosure->url = $item->media_url;
+        $atom->enclosures = $this->parseInstagramMediaItemEnclosure($item);
+
+        return $atom;
+    }
+
+    /**
+     * Convert Instagram file media to an enclosure.
+     *
+     * @param object $item
+     *
+     * @return \Hybridauth\Atom\Atom
+     */
+    protected function parseInstagramMediaItemEnclosure($item)
+    {
+        $enclosures = [];
+
         switch ($item->media_type) {
             case 'IMAGE':
+                $enclosure = new Enclosure();
+                $enclosure->url = $item->media_url;
                 $enclosure->type = Enclosure::ENCLOSURE_IMAGE;
+                $enclosures[] = $enclosure;
                 break;
 
             case 'VIDEO':
+                $enclosure = new Enclosure();
+                $enclosure->url = $item->media_url;
                 $enclosure->type = Enclosure::ENCLOSURE_VIDEO;
                 $enclosure->thumbnailUrl = $item->thumbnail_url;
+                $enclosures[] = $enclosure;
+                break;
+
+            case 'CAROUSEL_ALBUM':
+                foreach ($item->children->data as $child) {
+                    $fields = [
+                        'media_type',
+                        'media_url',
+                        'thumbnail_url',
+                    ];
+
+                    $params = [
+                        'fields' => implode(',', $fields),
+                    ];
+
+
+                    $data = $this->apiRequest($child->id, 'GET', $params);
+                    $enclosures = array_merge($enclosures, $this->parseInstagramMediaItemEnclosure($data));
+                }
                 break;
 
             default:
                 $enclosure->type = Enclosure::ENCLOSURE_BINARY; // We don't recognize this
                 break;
         }
-        $atom->enclosures[] = $enclosure;
 
-        return $atom;
+        return $enclosures;
     }
 
     /**
@@ -422,7 +464,8 @@ class Instagram extends OAuth2 implements AtomInterface
      */
     public function saveAtom($atom)
     {
-        throw new NotImplementedException('Provider does not support this feature.');
+        // TODO: Consider implementing Instagram Graph API, however "The API cannot access Instagram consumer accounts"
+        throw new NotImplementedException('There is no write access on the Instagram Basic Display API.');
     }
 
     /**
@@ -430,7 +473,8 @@ class Instagram extends OAuth2 implements AtomInterface
      */
     public function deleteAtom($identifier)
     {
-        throw new NotImplementedException('Provider does not support this feature.');
+        // TODO: Consider implementing Instagram Graph API, however "The API cannot access Instagram consumer accounts"
+        throw new NotImplementedException('There is no write access on the Instagram Basic Display API.');
     }
 
     /**
@@ -446,7 +490,7 @@ class Instagram extends OAuth2 implements AtomInterface
      */
     public function saveCategory($category)
     {
-        throw new NotImplementedException('Provider does not support this feature.');
+        throw new NotImplementedException('There are no categories on Instagram.');
     }
 
     /**
@@ -454,6 +498,6 @@ class Instagram extends OAuth2 implements AtomInterface
      */
     public function deleteCategory($identifier)
     {
-        throw new NotImplementedException('Provider does not support this feature.');
+        throw new NotImplementedException('There are no categories on Instagram.');
     }
 }

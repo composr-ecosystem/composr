@@ -10,6 +10,7 @@ namespace Hybridauth\Atom;
 /**
  * An atom, which represents a content entry on a provider.
  * Roughly follows the conventions of the Atom data format (https://tools.ietf.org/html/rfc4287).
+ * When saved, code will do its best with what is has, typically reducing to what a provider can support.
  */
 class Atom
 {
@@ -23,6 +24,7 @@ class Atom
 
     /**
      * Whether this is an incomplete object.
+     * For use when reading, not writing.
      * False means getAtomFull must be called to get full content.
      *
      * @var bool
@@ -32,7 +34,7 @@ class Atom
     /**
      * Author.
      *
-     * @var ?Author
+     * @var ?\Hybridauth\Atom\Author
      */
     public $author;
 
@@ -44,16 +46,16 @@ class Atom
     public $categories = [];
 
     /**
-     * Publish date.
+     * Published date.
      *
-     * @var DateTime
+     * @var \DateTime
      */
     public $published;
 
     /**
      * Modification date.
      *
-     * @var ?DateTime
+     * @var ?\DateTime
      */
     public $updated;
 
@@ -67,7 +69,7 @@ class Atom
     public $title;
 
     /**
-     * Summary.
+     * Summary. Defined as a reduced version of the full content.
      * In HTML.
      *
      * @var ?string
@@ -84,13 +86,14 @@ class Atom
 
     /**
      * List of Enclosure objects.
+     * Should be in precedence priority.
      *
      * @var array
      */
     public $enclosures = [];
 
     /**
-     * Perma-link URL.
+     * Permalink URL.
      *
      * @var string
      */

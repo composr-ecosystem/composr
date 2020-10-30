@@ -417,8 +417,195 @@ class Twitter extends OAuth1 implements AtomInterface
      */
     public function saveAtom($atom)
     {
-        // TODO
-        throw new NotImplementedException('Provider does not support this feature.');
+        if ($atom->identifier !== null) {
+            throw new NotImplementedException('Twitter does not allow edits or identifier-specifying.');
+        }
+
+        // Lots of work to stay within the Twitter limits!
+
+        $maxLength = intval($this->config->get('max_length')) ?: 240;
+        $segmentSize = intval($this->config->get('segment_size')) ?: (512 * 1024);
+
+        $ellipsis = hex2bin('E280A6'); // Can be made cleaner in PHP-8
+
+        $parts = []; // Will be maximum of 2
+        if (!empty($atom->title)) {
+            $parts[] = $atom->title;
+            if (!empty($atom->url)) {
+                $parts[] = $atom->url;
+            }
+        } elseif (!empty($atom->summary)) {
+            $parts[] = $atom->summary;
+            if (!empty($atom->url)) {
+                $parts[] = $atom->url;
+            }
+        } elseif (!empty($atom->content)) {
+            $parts[] = $atom->content;
+            if ((AtomHelper::mbStrlen($atom->content) > $maxLength) && (!empty($atom->url))) {
+                $parts[] = $atom->url;
+            }
+        } else {
+            $parts[] = '';
+        }
+        if ((count($parts) == 2) && (AtomHelper::mbStrlen($parts[1]) > $maxLength)) {
+            // URL too long to include
+            unset($parts[1]);
+        }
+        if ((count($parts) == 2) && (AtomHelper::mbStrlen($parts[1]) >= $maxLength - 2)) {
+            // Only space for URL (considering joining space also and the ellipsis)
+            unset($parts[0]);
+            $parts = array_values($parts);
+        }
+        if (count($parts) == 2) {
+            if (AtomHelper::mbStrlen($parts[0] . ' ' . $parts[1]) <= $maxLength) {
+                $status = $parts[0] . ' ' . $parts[1];
+            } else {
+                $maxLength -= AtomHelper::mbStrlen($parts[1]);
+                $maxLength -= 2; // considering joining space also and the ellipsis
+                $status = AtomHelper::mbSubstr($parts[0], 0, $maxLength) . $ellipsis . ' ' . $parts[1];
+            }
+        } else {
+            if (AtomHelper::mbStrlen($parts[0]) <= $maxLength) {
+                $status = $parts[0];
+            } else {
+                $maxLength--; // for the ellipsis
+                $status = AtomHelper::mbSubstr($parts[0], 0, $maxLength) . $ellipsis;
+            }
+        }
+
+        $allow_url_fopen = @ini_get('allow_url_fopen');
+        @ini_set('allow_url_fopen', 'On');
+
+        $mediaIds = [];
+        $numImagesDone = 0;
+        $numVideosDone = 0;
+        foreach ($atom->enclosures as $enclosure) {
+            $mediaType = $enclosure->mimeType;
+            $totalBytes = $enclosure->contentLength;
+
+            if (($mediaType === null) || ($totalBytes === null)) {
+                // We need to look this up by calling HTTP early
+                $myfile = @fopen($enclosure->url, 'rb');
+                if ($myfile === false) {
+                    continue;
+                }
+                if (isset($http_response_header)) {
+                    $matches = [];
+                    foreach ($http_response_header as $header) {
+                        if (preg_match('#^Content-Type: ([^/\s]*/[^/\s]*)(\s|;|$)#i', $header, $matches) != 0) {
+                            if ($mediaType === null) {
+                                $mediaType = $matches[1];
+                            }
+                        } elseif (preg_match('#^Content-Length: (\d+)*(;|$)#i', $header, $matches) != 0) {
+                            $totalBytes = intval($matches[1]);
+                        }
+                    }
+                }
+                if (($mediaType === null) || ($totalBytes === null)) {
+                    fclose($myfile);
+                    continue;
+                }
+            } else {
+                $myfile = null;
+            }
+
+            switch ($enclosure->type) {
+                case Enclosure::ENCLOSURE_IMAGE:
+                    $gif = ($mediaType == 'image/gif');
+
+                    if (!$gif) {
+                        if (($numImagesDone > 4) || ($numVideosDone > 0)) {
+                            continue 2;
+                        }
+
+                        $numImagesDone++;
+
+                        if (!in_array($mediaType, ['image/jpeg', 'image/png', 'image/webp'])) {
+                            continue 2;
+                        }
+
+                        if ($totalBytes > 5000000) {
+                            continue 2;
+                        }
+
+                        break;
+                    }
+                    // no break
+
+                case Enclosure::ENCLOSURE_VIDEO:
+                    if (($numImagesDone > 0) || ($numVideosDone > 0)) {
+                        continue 2;
+                    }
+
+                    $numVideosDone++;
+
+                    if (!in_array($mediaType, ['video/mp4', 'image/gif'])) {
+                        continue 2;
+                    }
+
+                    if ($totalBytes > 15000000) {
+                        continue 2;
+                    }
+
+                    break;
+
+                default:
+                    continue 2;
+            }
+
+            if ($myfile === null) {
+                $myfile = @fopen($enclosure->url, 'rb');
+                if ($myfile === false) {
+                    continue;
+                }
+            }
+
+            $apiUrl = 'https://upload.twitter.com/1.1/media/upload.json';
+            $parameters = [
+                'command' =>'INIT',
+                'media_type' => $mediaType,
+                'total_bytes' => strval($totalBytes),
+            ];
+            $mediaResult = $this->apiRequest($apiUrl, 'POST', $parameters, [], true);
+            $mediaId = $mediaResult->media_id_string;
+
+            $segmentIndex = 0;
+            do {
+                $bytes = fread($myfile, $segmentSize);
+
+                $apiUrl = 'https://upload.twitter.com/1.1/media/upload.json';
+                $parameters = [
+                    'command' => 'APPEND',
+                    'media' => $bytes,
+                    'media_id' => $mediaId,
+                    'segment_index' => $segmentIndex,
+                ];
+                $mediaResult = $this->apiRequest($apiUrl, 'POST', $parameters, [], true);
+
+                $segmentIndex++;
+            } while (!feof($myfile));
+
+            fclose($myfile);
+
+            $parameters = [
+                'command' => 'FINALIZE',
+                'media_id' => $mediaId,
+            ];
+            $mediaResult = $this->apiRequest($apiUrl, 'POST', $parameters);
+
+            $mediaIds[] = $mediaId;
+        }
+
+        @ini_set('allow_url_fopen', $allow_url_fopen);
+
+        $apiUrl = 'statuses/update.json';
+        $parameters = [
+            'status' => $status,
+        ];
+        if (!empty($mediaIds)) {
+            $parameters['media_ids'] = implode(',', $mediaIds);
+        }
+        $this->apiRequest($apiUrl, 'POST', $parameters);
     }
 
     /**
@@ -426,8 +613,9 @@ class Twitter extends OAuth1 implements AtomInterface
      */
     public function deleteAtom($identifier)
     {
-        // TODO
-        throw new NotImplementedException('Provider does not support this feature.');
+        $apiUrl = 'statuses/destroy/' . $identifier . '.json';
+
+        $this->apiRequest($apiUrl, 'POST');
     }
 
     /**
@@ -443,7 +631,7 @@ class Twitter extends OAuth1 implements AtomInterface
      */
     public function saveCategory($category)
     {
-        throw new NotImplementedException('Provider does not support this feature.');
+        throw new NotImplementedException('There are no categories on Twitter.');
     }
 
     /**
@@ -451,6 +639,6 @@ class Twitter extends OAuth1 implements AtomInterface
      */
     public function deleteCategory($identifier)
     {
-        throw new NotImplementedException('Provider does not support this feature.');
+        throw new NotImplementedException('There are no categories on Twitter.');
     }
 }

@@ -107,31 +107,19 @@ function enumerate_hybridauth_providers($for_admin = false)
         }
     }
 
-    // This is a bit of a FUDGE, but we need to know a list of all possible parameters APIs may need, to load from hidden options
-    $possible_key_parameters = [
-        'id',
-        'secret',
-        'key',
-        'team_id',
-        'id',
-        'content',
-        'key_file',
-    ];
-    $possible_other_parameters = [
-        'site',
-        'api_key',
-        'tenant',
-        'scope',
-    ];
-
     // Expand any holes in the skeleton structure with defaults
     foreach ($providers as $provider => &$info) {
-        foreach ($possible_key_parameters as $i => $parameter) {
-            $value = get_value('hybridauth_' . $provider . '_key_' . $parameter, empty($info['keys'][$parameter]) ? '' : $info['keys'][$parameter]);
-            if (!empty($value)) {
-                $info['keys'][$parameter] = $value;
-            } else {
-                unset($info['keys'][$i]);
+        if ($for_admin) {
+            $values = @json_decode(get_value('hybridauth_admin_' . $provider, get_value('hybridauth_' . $provider)), true);
+        } else {
+            $values = @json_decode(get_value('hybridauth_' . $provider), true);
+        }
+        if (!is_array($values)) {
+            $values = [];
+        }
+        foreach ($values as $parameter => $value) {
+            if (substr($parameter, 0, 4) == 'key_') {
+                $info['keys'][substr($parameter, 4)] = $value;
             }
         }
 
@@ -149,12 +137,9 @@ function enumerate_hybridauth_providers($for_admin = false)
         }
         unset($info['enabled']);
 
-        foreach ($possible_other_parameters as $i => $parameter) {
-            $value = get_value('hybridauth_' . $provider . '_' . $parameter, empty($info['other_parameters'][$parameter]) ? '' : $info['other_parameters'][$parameter]);
-            if (!empty($value)) {
+        foreach ($values as $parameter => $value) {
+            if (substr($parameter, 0, 4) != 'key_') {
                 $info['other_parameters'][$parameter] = $value;
-            } else {
-                unset($info['other_parameters'][$i]);
             }
         }
 

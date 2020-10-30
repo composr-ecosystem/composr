@@ -39,6 +39,7 @@ class Enclosure
 
     /**
      * URL. Ideally to the raw file, but if necessary to the web page that views it.
+     * Should be an absolute URL, not protocol relative.
      *
      * @var string
      */
@@ -46,6 +47,7 @@ class Enclosure
 
     /**
      * Thumbnail URL, to a raw image file.
+     * Should be an absolute URL, not protocol relative.
      *
      * @var ?string
      */
@@ -60,11 +62,39 @@ class Enclosure
      */
     public static function guessMimeType($url)
     {
-        if (preg_match('#\.(jpg|jpeg)($|\?)#', $url) != 0) {
+        if (preg_match('#\.(jpg|jpe|jpeg)($|\?)#', $url) != 0) {
             return 'image/jpeg';
-        } elseif (preg_match('#\.(png)($|\?)#', $url) != 0) {
+        }
+        if (preg_match('#\.(png)($|\?)#', $url) != 0) {
             return 'image/png';
         }
+        if (preg_match('#\.(gif)($|\?)#', $url) != 0) {
+            return 'image/gif';
+        }
+        if (preg_match('#\.(svg)($|\?)#', $url) != 0) {
+            return 'image/svg+xml';
+        }
+        if (preg_match('#\.(webp)($|\?)#', $url) != 0) {
+            return 'image/webp';
+        }
+
+        if (preg_match('#\.(mp4|m4v)($|\?)#', $url) != 0) {
+            return 'video/mp4';
+        }
+        if (preg_match('#\.(webm)($|\?)#', $url) != 0) {
+            return 'image/webm';
+        }
+
+        if (preg_match('#\.(mp3)($|\?)#', $url) != 0) {
+            return 'video/mpeg';
+        }
+        if (preg_match('#\.(aac)($|\?)#', $url) != 0) {
+            return 'image/aac';
+        }
+        if (preg_match('#\.(weba)($|\?)#', $url) != 0) {
+            return 'image/webm';
+        }
+
         return null;
     }
 }
