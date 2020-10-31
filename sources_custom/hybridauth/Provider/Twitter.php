@@ -9,6 +9,7 @@ namespace Hybridauth\Provider;
 
 use Hybridauth\Adapter\OAuth1;
 use Hybridauth\Adapter\AtomInterface;
+use Hybridauth\Exception\NotImplementedException;
 use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\Data\Collection;
 use Hybridauth\User;

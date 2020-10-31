@@ -36,7 +36,7 @@ class Category
     /**
      * Date last modified.
      *
-     * @var ?DateTime
+     * @var ?\DateTime
      */
     public $modified;
 }

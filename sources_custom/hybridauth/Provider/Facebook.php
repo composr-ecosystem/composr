@@ -10,6 +10,8 @@ namespace Hybridauth\Provider;
 use Hybridauth\Exception\InvalidArgumentException;
 use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\Exception\HttpRequestFailedException;
+use Hybridauth\Exception\NotImplementedException;
+use Hybridauth\Exception\BadMethodCallException;
 use Hybridauth\Adapter\OAuth2;
 use Hybridauth\Adapter\AtomInterface;
 use Hybridauth\Data\Collection;
@@ -795,7 +797,7 @@ class Facebook extends OAuth2 implements AtomInterface
             $identifier = $matches[1];
             return $this->getAtomFull($identifier);
         }
-        if (preg_match('#^https://www\.facebook\.com/.*[&\?]id=(\d+)#', $url, $matches) != 0) {
+        if (preg_match('#^https://www\.facebook\.com/.*[&?]id=(\d+)#', $url, $matches) != 0) {
             $identifier = $matches[1];
             return $this->getAtomFull($identifier);
         }
@@ -902,7 +904,7 @@ class Facebook extends OAuth2 implements AtomInterface
                                 return $mediaId;
                             }
                         }
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         // FB could give all kinds of issues, should not stop our post
                     }
                 }

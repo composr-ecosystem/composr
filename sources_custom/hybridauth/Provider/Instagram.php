@@ -11,6 +11,8 @@ use Hybridauth\Adapter\OAuth2;
 use Hybridauth\Adapter\AtomInterface;
 use Hybridauth\Data\Collection;
 use Hybridauth\Exception\UnexpectedApiResponseException;
+use Hybridauth\Exception\BadMethodCallException;
+use Hybridauth\Exception\NotImplementedException;
 use Hybridauth\User;
 use Hybridauth\Atom\Atom;
 use Hybridauth\Atom\Enclosure;
@@ -118,7 +120,6 @@ class Instagram extends OAuth2 implements AtomInterface
      * @return string Raw Provider API response
      * @throws \Hybridauth\Exception\HttpClientFailureException
      * @throws \Hybridauth\Exception\HttpRequestFailedException
-     * @throws InvalidAccessTokenException
      * @throws \Hybridauth\Exception\InvalidAccessTokenException
      */
     public function exchangeAccessToken()
