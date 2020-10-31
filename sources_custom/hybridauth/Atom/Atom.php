@@ -11,6 +11,8 @@ namespace Hybridauth\Atom;
  * An atom, which represents a content entry on a provider.
  * Roughly follows the conventions of the Atom data format (https://tools.ietf.org/html/rfc4287).
  * When saved, code will do its best with what is has, typically reducing to what a provider can support.
+ * It is not designed to be round-trip safe - retrieval and saving are optimized independently.
+ * We are optimizing for user-experience, not trying to cram things in.
  */
 class Atom
 {
@@ -95,7 +97,7 @@ class Atom
     /**
      * Permalink URL.
      *
-     * @var string
+     * @var ?string
      */
     public $url;
 }

@@ -8,7 +8,8 @@
 namespace Hybridauth\Atom;
 
 /**
- * An enclosure (a file)
+ * An enclosure (a file).
+ * It is advisable for web media to be only image/gif, image/png, image/jpeg, or video/mp4.
  */
 class Enclosure
 {
@@ -40,6 +41,8 @@ class Enclosure
     /**
      * URL. Ideally to the raw file, but if necessary to the web page that views it.
      * Should be an absolute URL, not protocol relative.
+     * Should be accessible to your own web server and the world.
+     * Can be dynamic.
      *
      * @var string
      */
@@ -48,6 +51,8 @@ class Enclosure
     /**
      * Thumbnail URL, to a raw image file.
      * Should be an absolute URL, not protocol relative.
+     * Should be accessible to your own web server and the world.
+     * Can be dynamic.
      *
      * @var ?string
      */

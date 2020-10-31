@@ -421,6 +421,8 @@ class Twitter extends OAuth1 implements AtomInterface
             throw new NotImplementedException('Twitter does not allow edits or identifier-specifying.');
         }
 
+        // Work out status...
+
         // Lots of work to stay within the Twitter limits!
 
         $maxLength = intval($this->config->get('max_length')) ?: 240;
@@ -435,12 +437,12 @@ class Twitter extends OAuth1 implements AtomInterface
                 $parts[] = $atom->url;
             }
         } elseif (!empty($atom->summary)) {
-            $parts[] = $atom->summary;
+            $parts[] = AtomHelper::htmlToPlainText($atom->summary);
             if (!empty($atom->url)) {
                 $parts[] = $atom->url;
             }
         } elseif (!empty($atom->content)) {
-            $parts[] = $atom->content;
+            $parts[] = AtomHelper::htmlToPlainText($atom->content);
             if ((AtomHelper::mbStrlen($atom->content) > $maxLength) && (!empty($atom->url))) {
                 $parts[] = $atom->url;
             }
@@ -472,6 +474,8 @@ class Twitter extends OAuth1 implements AtomInterface
                 $status = AtomHelper::mbSubstr($parts[0], 0, $maxLength) . $ellipsis;
             }
         }
+
+        // Uploading as required...
 
         $allow_url_fopen = @ini_get('allow_url_fopen');
         @ini_set('allow_url_fopen', 'On');
@@ -573,7 +577,6 @@ class Twitter extends OAuth1 implements AtomInterface
             do {
                 $bytes = fread($myfile, $segmentSize);
 
-                $apiUrl = 'https://upload.twitter.com/1.1/media/upload.json';
                 $parameters = [
                     'command' => 'APPEND',
                     'media' => $bytes,
@@ -598,6 +601,8 @@ class Twitter extends OAuth1 implements AtomInterface
 
         @ini_set('allow_url_fopen', $allow_url_fopen);
 
+        // Make request...
+
         $apiUrl = 'statuses/update.json';
         $parameters = [
             'status' => $status,
@@ -605,7 +610,9 @@ class Twitter extends OAuth1 implements AtomInterface
         if (!empty($mediaIds)) {
             $parameters['media_ids'] = implode(',', $mediaIds);
         }
-        $this->apiRequest($apiUrl, 'POST', $parameters);
+        $result = $this->apiRequest($apiUrl, 'POST', $parameters);
+
+        return $result->id_str;
     }
 
     /**

@@ -9,6 +9,7 @@ namespace Hybridauth\Provider;
 
 use Hybridauth\Exception\InvalidArgumentException;
 use Hybridauth\Exception\UnexpectedApiResponseException;
+use Hybridauth\Exception\HttpRequestFailedException;
 use Hybridauth\Adapter\OAuth2;
 use Hybridauth\Adapter\AtomInterface;
 use Hybridauth\Data\Collection;
@@ -36,7 +37,8 @@ use Hybridauth\Atom\Filter;
  *   $config = [
  *       'callback'                => Hybridauth\HttpClient\Util::getCurrentUrl(),
  *       'keys'                    => [ 'id' => '', 'secret' => '' ],
- *       'scope'                   => 'email, user_status, user_posts',
+ *       'scope'                   => 'email, user_posts, pages_manage_posts, pages_read_engagement,
+ *                                     pages_show_list, manage_pages, publish_pages, user_videos',
  *       'exchange_by_expiry_days' => 45, // null for no token exchange
  *   ];
  *
@@ -58,7 +60,7 @@ class Facebook extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    protected $scope = 'email, public_profile';
+    protected $scope = 'email';
 
     /**
      * {@inheritdoc}
@@ -357,6 +359,26 @@ class Facebook extends OAuth2 implements AtomInterface
             return $this->setUserStatus($status);
         }
 
+        $pageAccessToken = $this->getPageAccessToken($pageId);
+
+        list($pageAccessToken, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
+
+        $parameters = $tokenParameters + $status;
+
+        $response = $this->apiRequest("{$pageId}/feed", 'POST', $parameters, $tokenHeaders);
+
+        return $response;
+    }
+
+    /**
+     * Get a page access token.
+     *
+     * @param string $pageId Page we need to work with
+     *
+     * @return string Access toklen
+     */
+    protected function getPageAccessTokenDetails($pageId)
+    {
         // Retrieve writable user pages and filter by given one.
         $pages = $this->getUserPages(true);
         $pages = array_filter($pages, function ($page) use ($pageId) {
@@ -364,24 +386,23 @@ class Facebook extends OAuth2 implements AtomInterface
         });
 
         if (!$pages) {
-            throw new InvalidArgumentException('Could not find a page with given id.');
+            throw new InvalidArgumentException('Could not find a writable page with given id.');
         }
 
         $page = reset($pages);
+        $pageAccessToken = $page->access_token;
 
         // Use page access token instead of user access token.
-        $headers = [
-            'Authorization' => 'Bearer ' . $page->access_token,
+        $tokenHeaders = [
+            'Authorization' => 'Bearer ' . $pageAccessToken,
         ];
 
         // Refresh proof for API call.
-        $parameters = $status + [
-            'appsecret_proof' => hash_hmac('sha256', $page->access_token, $this->clientSecret),
+        $tokenParameters = [
+            'appsecret_proof' => hash_hmac('sha256', $pageAccessToken, $this->clientSecret),
         ];
 
-        $response = $this->apiRequest("{$pageId}/feed", 'POST', $parameters, $headers);
-
-        return $response;
+        return [$pageAccessToken, $tokenHeaders, $tokenParameters];
     }
 
     /**
@@ -389,6 +410,11 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     public function getUserPages($writable = false)
     {
+        static $cache = [];
+        if (isset($cache[$writable])) {
+            return $cache[$writable];
+        }
+
         $pages = $this->apiRequest('me/accounts');
 
         if (!$writable) {
@@ -396,9 +422,11 @@ class Facebook extends OAuth2 implements AtomInterface
         }
 
         // Filter user pages by CREATE_CONTENT permission.
-        return array_filter($pages->data, function ($page) {
+        $cache[$writable] = array_filter($pages->data, function ($page) {
             return in_array('CREATE_CONTENT', $page->tasks);
         });
+
+        return $cache[$writable];
     }
 
     /**
@@ -784,8 +812,263 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     public function saveAtom($atom)
     {
-        // TODO
-        throw new NotImplementedException('Provider does not support this feature.');
+        $allCategories = $this->getCategories();
+
+        unset($allCategories['']);
+        if (empty($atom->categories)) {
+            throw new NotImplementedException('No access to any Facebook page to post to.');
+        }
+
+        // Find what Facebook page to post to
+        $pageId = null;
+        foreach ($atom->categories as $categoryId) {
+            foreach ($allCategories as $_pageId => $category) {
+                if (($_pageId == $categoryId) || ($category->label == $categoryId)) {
+                    $pageId = $_pageId;
+                    break 2;
+                }
+            }
+        }
+        if ($pageId === null) {
+            $pageId = $this->config->get('default_page_id') ?: null;
+        }
+        if ($pageId === null) {
+            $category = array_shift($allCategories);
+            $pageId = $category->identifier;
+        }
+
+        $path = $pageId . '/feed';
+
+        // Work out message...
+
+        if ($atom->url !== null) {
+            $precedence = [[$atom->summary, true], [$atom->title, false], [$atom->content, true]];
+        } else {
+            $precedence = [[$atom->content, true], [$atom->summary, true], [$atom->title, false]];
+        }
+        foreach ($precedence as $_field) {
+            list($field, $isHtml) = $_field;
+            if (!empty($field)) {
+                $message = $isHtml ? AtomHelper::htmlToPlainText($field) : $field;
+                break;
+            }
+        }
+
+        $params = [];
+
+        $params['message'] = $message;
+
+        // Misc...
+
+        if ($atom->published !== null) {
+            $timestamp = $atom->published->getTimestamp();
+        } else {
+            $timestamp = null;
+        }
+        if ($timestamp !== null) {
+            $params['backdated_time'] = $timestamp;
+        }
+
+        if ($atom->url !== null) {
+            $params['link'] = $atom->url;
+        }
+
+        // Media...
+
+        if (empty($atom->url)) {
+            $allow_url_fopen = @ini_get('allow_url_fopen');
+            @ini_set('allow_url_fopen', 'On');
+
+            // Start with images, we can have any number
+            $mediaIds = [];
+            foreach ($atom->enclosures as $enclosure) {
+                try {
+                    if ($enclosure->type == Enclosure::ENCLOSURE_IMAGE) {
+                        $mediaId = $this->uploadPhoto($pageId, $enclosure);
+                        if ($mediaId !== null) {
+                            $mediaIds[] = $mediaId;
+                        }
+                    }
+                } catch (HttpRequestFailedException $e) {
+                    // FB could give all kinds of issues, should not stop our post
+                }
+            }
+
+            // FB doesn't document this, but we can only post one lone video, unattached
+            //  So we do this in a weird way
+            if (empty($mediaIds)) {
+                foreach ($atom->enclosures as $enclosure) {
+                    try {
+                        if ($enclosure->type == Enclosure::ENCLOSURE_VIDEO) {
+                            $mediaId = $this->uploadVideo($pageId, $enclosure, $message, $timestamp);
+                            if ($mediaId !== null) {
+                                return $mediaId;
+                            }
+                        }
+                    } catch (HttpRequestFailedException $e) {
+                        // FB could give all kinds of issues, should not stop our post
+                    }
+                }
+            }
+
+            if (!empty($mediaIds)) {
+                $params['attached_media'] = [];
+                foreach ($mediaIds as $i => $mediaId) {
+                    $params['attached_media'][] = ['media_fbid' => $mediaId];
+                }
+            }
+
+            @ini_set('allow_url_fopen', $allow_url_fopen);
+        }
+
+        // Go ahead...
+
+        list($pageAccessToken, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
+
+        $params += $tokenParameters;
+
+        $headers = ['Content-Type' => 'application/json'];
+        $headers += $tokenHeaders;
+
+        $result = $this->apiRequest($path, 'POST', $params, $headers, true);
+        return $result->id;
+    }
+
+    /**
+     * Upload a photo.
+     *
+     * @param string $pageId Page to post to
+     * @param \Hybridauth\Atom\Enclosure $enclosure
+     *
+     * @return ?string Photo ID
+     */
+    protected function uploadPhoto($pageId, $enclosure)
+    {
+        $mediaType = $enclosure->mimeType;
+        $totalBytes = $enclosure->contentLength;
+
+        if (($mediaType === null) || ($totalBytes === null)) {
+            // We need to look this up by calling HTTP early
+            $myfile = @fopen($enclosure->url, 'rb');
+            if ($myfile === false) {
+                return null;
+            }
+            if (isset($http_response_header)) {
+                $matches = [];
+                foreach ($http_response_header as $header) {
+                    if (preg_match('#^Content-Type: ([^/\s]*/[^/\s]*)(\s|;|$)#i', $header, $matches) != 0) {
+                        if ($mediaType === null) {
+                            $mediaType = $matches[1];
+                        }
+                    } elseif (preg_match('#^Content-Length: (\d+)*(;|$)#i', $header, $matches) != 0) {
+                        $totalBytes = intval($matches[1]);
+                    }
+                }
+            }
+            fclose($myfile);
+            if (($mediaType === null) || ($totalBytes === null)) {
+                return null;
+            }
+        }
+
+        if (!in_array($mediaType, ['image/gif', 'image/png', 'image/jpeg', 'image/tiff', 'image/bmp'])) {
+            return null;
+        }
+
+        $maxSize = 4 * 1000 * 1000; // An FB limit
+
+        if ($totalBytes > $maxSize) {
+            return null;
+        }
+
+        $path = $pageId . '/photos';
+
+        $params = [
+            'url' => $enclosure->url,
+            'no_story' => true,
+            'published' => false,
+        ];
+
+        list($pageAccessToken, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
+
+        $params += $tokenParameters;
+
+        $result = $this->apiRequest($path, 'POST', $params, $tokenHeaders);
+
+        return $result->id;
+    }
+
+    /**
+     * Upload a video.
+     *
+     * @param string $pageId Page to post to
+     * @param \Hybridauth\Atom\Enclosure $enclosure
+     * @param string $message
+     * @param integer $timestamp
+     *
+     * @return ?string Video ID
+     */
+    protected function uploadVideo($pageId, $enclosure, $message, $timestamp)
+    {
+        $mediaType = $enclosure->mimeType;
+        $totalBytes = $enclosure->contentLength;
+
+        list($pageAccessToken, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
+
+        if (($mediaType === null) || ($totalBytes === null)) {
+            // We need to look this up by calling HTTP early
+            $myfile = @fopen($enclosure->url, 'rb');
+            if ($myfile === false) {
+                return null;
+            }
+            if (isset($http_response_header)) {
+                $matches = [];
+                foreach ($http_response_header as $header) {
+                    if (preg_match('#^Content-Type: ([^/\s]*/[^/\s]*)(\s|;|$)#i', $header, $matches) != 0) {
+                        if ($mediaType === null) {
+                            $mediaType = $matches[1];
+                        }
+                    } elseif (preg_match('#^Content-Length: (\d+)*(;|$)#i', $header, $matches) != 0) {
+                        $totalBytes = intval($matches[1]);
+                    }
+                }
+            }
+            fclose($myfile);
+            if (($mediaType === null) || ($totalBytes === null)) {
+                return null;
+            }
+        } else {
+            $myfile = null;
+        }
+
+        $apiUrl = 'https://graph-video.facebook.com/' . $pageId . '/videos';
+
+        $params = [
+            'file_url' => $enclosure->url,
+            'description' => $message,
+        ];
+
+        if ($timestamp !== null) {
+            $params['backdated_post'] = [
+                'backdated_time' => $timestamp,
+            ];
+        }
+
+        if ($enclosure->thumbnailUrl !== null) {
+            $thumbData = @file_get_contents($enclosure->thumbnailUrl);
+            if (!empty($thumbData)) {
+                $params['thumb'] = $thumbData;
+            }
+        }
+
+        $params += $tokenParameters;
+
+        $headers = ['Content-Type' => 'application/json'];
+        $headers += $tokenHeaders;
+
+        $result = $this->apiRequest($apiUrl, 'POST', $params, $headers, true);
+
+        return $result->id;
     }
 
     /**
@@ -793,8 +1076,11 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     public function deleteAtom($identifier)
     {
-        // TODO
-        throw new NotImplementedException('Provider does not support this feature.');
+        if (strpos($identifier, '/') !== false) {
+            throw new BadMethodCallException('$identifier cannot include a slash.');
+        }
+
+        $this->apiRequest($identifier, 'DELETE');
     }
 
     /**
@@ -802,14 +1088,7 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     public function getCategories()
     {
-        $response = $this->apiRequest('me/accounts');
-
-        $data = new Collection($response);
-        if (!$data->exists('data')) {
-            throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
-        }
-
-        $dataArray = $data->get('data');
+        $dataArray = $this->getUserPages(true);
 
         $categories = [];
 
@@ -833,7 +1112,7 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     public function saveCategory($category)
     {
-        // TODO
+        // Could in theory implement, but nobody would want their Pages being manipulated by this API
         throw new NotImplementedException('Provider does not support this feature.');
     }
 
@@ -842,7 +1121,7 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     public function deleteCategory($identifier)
     {
-        // TODO
+        // Could in theory implement, but nobody would want their Pages being manipulated by this API
         throw new NotImplementedException('Provider does not support this feature.');
     }
 }

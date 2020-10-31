@@ -21,8 +21,13 @@ class AtomHelper
      */
     public static function htmlToPlainText($html)
     {
+        $decoded = $html;
+        $decoded = preg_replace('#\s+#', ' ', $decoded);
+        $decoded = str_replace('<br />', "\n", $decoded);
+        $decoded = preg_replace('#<a[^<>]*\shref="([^<>]*)">([^<>]*)</a>#', '$1 ($2)', $decoded);
+        $decoded = strip_tags($decoded);
         $decoded = html_entity_decode($html, ENT_QUOTES | ENT_XML1, 'utf-8');
-        return str_replace('<br />', "\n", preg_replace('#\s+#', ' ', $decoded));
+        return $decoded;
     }
 
     /**
@@ -34,7 +39,10 @@ class AtomHelper
      */
     public static function plainTextToHtml($text)
     {
-        return nl2br(htmlentities($text, ENT_QUOTES | ENT_XML1, 'utf-8'));
+        $encoded = $text;
+        $encoded = htmlentities($encoded, ENT_QUOTES | ENT_XML1, 'utf-8');
+        $encoded = nl2br($encoded);
+        return $encoded;
     }
 
     /**

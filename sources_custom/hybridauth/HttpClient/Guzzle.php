@@ -149,12 +149,24 @@ class Guzzle implements HttpClientInterface
                         foreach ($parameters as $key => $val) {
                             if ($val instanceof \CURLFile) {
                                 $val = fopen($val->getFilename(), 'r');
+                                $filename = basename($val->getFilename());
+                                $content_type = $val->getMimeType();
+                            } else {
+                                $filename = null;
+                                $content_type = null;
                             }
 
-                            $body_content[] = [
+                            $post_field = [
                                 'name' => $key,
                                 'contents' => $val,
                             ];
+                            if ($filename !== null) {
+                                $post_field['filename'] = $filename;
+                            }
+                            if ($content_type !== null) {
+                                $post_field['headers'] = ['Content-Type' => $content_type];
+                            }
+                            $body_content[] = $post_field;
                         }
                     }
 
