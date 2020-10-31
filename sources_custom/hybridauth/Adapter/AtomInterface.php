@@ -7,7 +7,6 @@
 
 namespace Hybridauth\Adapter;
 
-use Hybridauth\Atom\Atom;
 use Hybridauth\Atom\Category;
 
 /**

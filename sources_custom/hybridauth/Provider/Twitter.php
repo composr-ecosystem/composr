@@ -14,7 +14,6 @@ use Hybridauth\Data\Collection;
 use Hybridauth\User;
 use Hybridauth\Atom\Atom;
 use Hybridauth\Atom\Enclosure;
-use Hybridauth\Atom\Category;
 use Hybridauth\Atom\Author;
 use Hybridauth\Atom\AtomFeedBuilder;
 use Hybridauth\Atom\AtomHelper;
@@ -217,9 +216,7 @@ class Twitter extends OAuth1 implements AtomInterface
             $params['media_ids'] = $media->media_id;
         }
 
-        $response = $this->apiRequest('statuses/update.json', 'POST', $params);
-
-        return $response;
+        return $this->apiRequest('statuses/update.json', 'POST', $params);
     }
 
     /**
@@ -335,6 +332,7 @@ class Twitter extends OAuth1 implements AtomInterface
      * @param object $item
      *
      * @return \Hybridauth\Atom\Atom
+     * @throws \Exception
      */
     protected function parseTweet($item)
     {
@@ -583,7 +581,7 @@ class Twitter extends OAuth1 implements AtomInterface
                     'media_id' => $mediaId,
                     'segment_index' => $segmentIndex,
                 ];
-                $mediaResult = $this->apiRequest($apiUrl, 'POST', $parameters, [], true);
+                $this->apiRequest($apiUrl, 'POST', $parameters, [], true);
 
                 $segmentIndex++;
             } while (!feof($myfile));
@@ -594,7 +592,7 @@ class Twitter extends OAuth1 implements AtomInterface
                 'command' => 'FINALIZE',
                 'media_id' => $mediaId,
             ];
-            $mediaResult = $this->apiRequest($apiUrl, 'POST', $parameters);
+            $this->apiRequest($apiUrl, 'POST', $parameters);
 
             $mediaIds[] = $mediaId;
         }

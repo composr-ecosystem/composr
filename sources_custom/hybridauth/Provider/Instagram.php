@@ -14,7 +14,6 @@ use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\User;
 use Hybridauth\Atom\Atom;
 use Hybridauth\Atom\Enclosure;
-use Hybridauth\Atom\Category;
 use Hybridauth\Atom\Author;
 use Hybridauth\Atom\AtomFeedBuilder;
 use Hybridauth\Atom\AtomHelper;
@@ -120,6 +119,7 @@ class Instagram extends OAuth2 implements AtomInterface
      * @throws \Hybridauth\Exception\HttpClientFailureException
      * @throws \Hybridauth\Exception\HttpRequestFailedException
      * @throws InvalidAccessTokenException
+     * @throws \Hybridauth\Exception\InvalidAccessTokenException
      */
     public function exchangeAccessToken()
     {
@@ -359,6 +359,10 @@ class Instagram extends OAuth2 implements AtomInterface
      * @param object $item
      *
      * @return \Hybridauth\Atom\Atom
+     * @throws \Hybridauth\Exception\HttpClientFailureException
+     * @throws \Hybridauth\Exception\HttpRequestFailedException
+     * @throws \Hybridauth\Exception\InvalidAccessTokenException
+     * @throws \Exception
      */
     protected function parseInstagramMediaItem($item)
     {
@@ -393,11 +397,14 @@ class Instagram extends OAuth2 implements AtomInterface
     }
 
     /**
-     * Convert Instagram file media to an enclosure.
+     * Convert Instagram file media to an enclosure(s).
      *
      * @param object $item
      *
-     * @return \Hybridauth\Atom\Atom
+     * @return array List of enclosures
+     * @throws \Hybridauth\Exception\HttpClientFailureException
+     * @throws \Hybridauth\Exception\HttpRequestFailedException
+     * @throws \Hybridauth\Exception\InvalidAccessTokenException
      */
     protected function parseInstagramMediaItemEnclosure($item)
     {
@@ -438,7 +445,10 @@ class Instagram extends OAuth2 implements AtomInterface
                 break;
 
             default:
+                $enclosure = new Enclosure();
+                $enclosure->url = $item->media_url;
                 $enclosure->type = Enclosure::ENCLOSURE_BINARY; // We don't recognize this
+                $enclosures[] = $enclosure;
                 break;
         }
 

@@ -26,7 +26,7 @@ class AtomHelper
         $decoded = str_replace('<br />', "\n", $decoded);
         $decoded = preg_replace('#<a[^<>]*\shref="([^<>]*)">([^<>]*)</a>#', '$1 ($2)', $decoded);
         $decoded = strip_tags($decoded);
-        $decoded = html_entity_decode($html, ENT_QUOTES | ENT_XML1, 'utf-8');
+        $decoded = html_entity_decode($decoded, ENT_QUOTES | ENT_XML1, 'utf-8');
         return $decoded;
     }
 
@@ -100,7 +100,7 @@ class AtomHelper
     public static function mbSubstr($in, $from, $amount = null)
     {
         if ($amount === null) {
-            $amount = self::mbStrlen($in, $force) - $from;
+            $amount = self::mbStrlen($in) - $from;
         }
 
         if (function_exists('mb_substr')) {

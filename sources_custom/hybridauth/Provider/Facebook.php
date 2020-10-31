@@ -136,7 +136,7 @@ class Facebook extends OAuth2 implements AtomInterface
      * @return string Raw Provider API response
      * @throws \Hybridauth\Exception\HttpClientFailureException
      * @throws \Hybridauth\Exception\HttpRequestFailedException
-     * @throws InvalidAccessTokenException
+     * @throws \Hybridauth\Exception\InvalidAccessTokenException
      */
     public function exchangeAccessToken()
     {
@@ -359,15 +359,11 @@ class Facebook extends OAuth2 implements AtomInterface
             return $this->setUserStatus($status);
         }
 
-        $pageAccessToken = $this->getPageAccessToken($pageId);
-
-        list($pageAccessToken, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
+        list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
 
         $parameters = $tokenParameters + $status;
 
-        $response = $this->apiRequest("{$pageId}/feed", 'POST', $parameters, $tokenHeaders);
-
-        return $response;
+        return $this->apiRequest("{$pageId}/feed", 'POST', $parameters, $tokenHeaders);
     }
 
     /**
@@ -375,7 +371,8 @@ class Facebook extends OAuth2 implements AtomInterface
      *
      * @param string $pageId Page we need to work with
      *
-     * @return string Access toklen
+     * @return array A list: Access token, extra headers for auth, extra parameters for auth
+     * @throws InvalidArgumentException
      */
     protected function getPageAccessTokenDetails($pageId)
     {
@@ -632,9 +629,6 @@ class Facebook extends OAuth2 implements AtomInterface
             'attachments',
         ];
 
-        $atoms = [];
-        $hasResults = false;
-
         $categories = $this->getCategories();
 
         $identifier_parts = explode('_', $identifier);
@@ -657,9 +651,7 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $item = $this->apiRequest($path, 'GET', $params);
 
-        $atom = $this->parseFacebookPost($item, $categories[$isPersonal ? '' : $identifier_parts[0]], $isPersonal);
-
-        return $atom;
+        return $this->parseFacebookPost($item, $categories[$isPersonal ? '' : $identifier_parts[0]], $isPersonal);
     }
 
     /**
@@ -670,12 +662,16 @@ class Facebook extends OAuth2 implements AtomInterface
      * @param boolean $isPersonal Whether it is from a personal feed
      *
      * @return \Hybridauth\Atom\Atom
+     * @throws \Exception
      */
     protected function parseFacebookPost($item, $category, $isPersonal)
     {
         $atom = new Atom();
 
         // Facebook API varies based on whether it is a personal feed or a page
+        $linkURL = null;
+        $linkText = null;
+        $linkDescription = null;
         if ($isPersonal) {
             $isLink = ($item->type == 'link');
             if ($isLink) {
@@ -846,6 +842,7 @@ class Facebook extends OAuth2 implements AtomInterface
         } else {
             $precedence = [[$atom->content, true], [$atom->summary, true], [$atom->title, false]];
         }
+        $message = '';
         foreach ($precedence as $_field) {
             list($field, $isHtml) = $_field;
             if (!empty($field)) {
@@ -905,7 +902,7 @@ class Facebook extends OAuth2 implements AtomInterface
                                 return $mediaId;
                             }
                         }
-                    } catch (HttpRequestFailedException $e) {
+                    } catch (Exception $e) {
                         // FB could give all kinds of issues, should not stop our post
                     }
                 }
@@ -923,7 +920,7 @@ class Facebook extends OAuth2 implements AtomInterface
 
         // Go ahead...
 
-        list($pageAccessToken, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
+        list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
 
         $params += $tokenParameters;
 
@@ -941,6 +938,10 @@ class Facebook extends OAuth2 implements AtomInterface
      * @param \Hybridauth\Atom\Enclosure $enclosure
      *
      * @return ?string Photo ID
+     * @throws HttpRequestFailedException
+     * @throws InvalidArgumentException
+     * @throws \Hybridauth\Exception\HttpClientFailureException
+     * @throws \Hybridauth\Exception\InvalidAccessTokenException
      */
     protected function uploadPhoto($pageId, $enclosure)
     {
@@ -989,7 +990,7 @@ class Facebook extends OAuth2 implements AtomInterface
             'published' => false,
         ];
 
-        list($pageAccessToken, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
+        list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
 
         $params += $tokenParameters;
 
@@ -1007,13 +1008,17 @@ class Facebook extends OAuth2 implements AtomInterface
      * @param integer $timestamp
      *
      * @return ?string Video ID
+     * @throws HttpRequestFailedException
+     * @throws InvalidArgumentException
+     * @throws \Hybridauth\Exception\HttpClientFailureException
+     * @throws \Hybridauth\Exception\InvalidAccessTokenException
      */
     protected function uploadVideo($pageId, $enclosure, $message, $timestamp)
     {
         $mediaType = $enclosure->mimeType;
         $totalBytes = $enclosure->contentLength;
 
-        list($pageAccessToken, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
+        list(, $tokenHeaders, $tokenParameters) = $this->getPageAccessTokenDetails($pageId);
 
         if (($mediaType === null) || ($totalBytes === null)) {
             // We need to look this up by calling HTTP early
