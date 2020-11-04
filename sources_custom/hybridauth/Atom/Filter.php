@@ -21,6 +21,7 @@ class Filter
 
     /**
      * A bitmask of Enclosure::ENCLOSURE_* constants.
+     * Returned atoms must have at least one enclosure type referenced in the bitmask.
      *
      * @var int
      */
@@ -33,9 +34,23 @@ class Filter
      */
     public $includeContributedContent = false;
 
+    /**
+     * Include private content, if applicable.
+     *
+     * @var boolean
+     */
+    public $includePrivate = false;
+
+    /**
+     * Whether the filter's enclosure passes.
+     *
+     * @param array $enclosures
+     *
+     * @return boolean
+     */
     public function passesEnclosureTest($enclosures)
     {
-        if ($this->enclosureTypeFilter === null) {
+        if (($this->enclosureTypeFilter === null) || ($this->enclosureTypeFilter == 0)) {
             return true;
         }
         foreach ($enclosures as $enclosure) {

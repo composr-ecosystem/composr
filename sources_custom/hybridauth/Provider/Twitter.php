@@ -357,7 +357,7 @@ class Twitter extends OAuth1 implements AtomInterface
         $atom->author = new Author();
         $atom->author->identifier = strval($item->user->id);
         $atom->author->displayName = $item->user->screen_name;
-        $atom->author->profileURL = $item->user->url;
+        $atom->author->profileURL = 'https://twitter.com/' . $item->user->screen_name;
         if (!empty($data->profile_image_url_https)) {
             $atom->author->photoURL = str_replace('_normal', '_original', $data->profile_image_url_https);
         }

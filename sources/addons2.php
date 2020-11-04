@@ -737,6 +737,9 @@ function has_feature($dependency)
     if ((($dependency == 'cns') || ($dependency == 'conversr')) && (get_forum_type() == 'cns')) {
         return true;
     }
+    if ((cms_strtolower_ascii($dependency) == 'utf-8') && (get_charset() == 'utf-8')) {
+        return true;
+    }
     if ((cms_strtolower_ascii($dependency) == 'php curl extension') && (function_exists('curl_init'))) {
         return true;
     }

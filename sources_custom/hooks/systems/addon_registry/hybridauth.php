@@ -86,7 +86,7 @@ class Hook_addon_registry_hybridauth
      */
     public function get_description()
     {
-        return 'This addon integrates Hybridauth, to add many social network (etc) login options to your site (Facebook, Google, Apple, etc). It also may be used as an admin backend to configuring content integration with such services, for other addons.
+        return 'This addon integrates Hybridauth, to add many social network (etc) login options to your site (Facebook, Google, Apple, etc). It also may be used as an admin backend to configuring content integration with such services, with included support for Atom feed generation and content display.
 
 Hybridauth essentially implements the OAuth1, OAuth2, OpenID Connect, and OpenID standards, and proprietary APIs, necessary to unify all the different login integrations of different services.
 
@@ -217,6 +217,35 @@ You can customise the button display for any provider via more hidden options:
 :set_value(\'hybridauth_<Provider>_text_colour\', \'FFFFFF\'); // a hex colour code
 :set_value(\'hybridauth_<Provider>_icon\', \'links/microsoft\'); // a theme image path under \'icons/\'
 [/code]
+
+[title="2"]Admin integration[/title]
+
+As well as member login, there is also the ability for the admin to establish a log in for other integrations.
+
+The settings are configured in the same way as member login. However, if you need them different to member logins (maybe setting an extended scope, for example), you can set them using the [tt]_admin[/tt] suffix on the hidden option:
+[code="Commandr"]
+:set_value(\'hybridauth_<Provider>_admin\', \'{...}\');
+[/code]
+
+You establish a log in from Admin Zone > Setup > Setup API access.
+
+Out of the box the following integrations exist, for providers supporting the Hybridauth Atom API. At the time of writing:
+ - Facebook
+ - Instagram
+ - Twitter
+
+[title="3"]Atom feed display[/title]
+
+[tt]https://yourbaseurl/data_custom/hybridauth_admin_atom.php?provider=<Provider>[/tt] will generate an Atom feed for a provider.
+
+There are a couple of extra GET parameters to filter the feed:
+ - [tt]includeContributedContent=0|1[/tt] -- whether to include 3rd party content posted on the provider feed (if relevant)
+ - [tt]categoryFilter=<categoryFilter>[/tt] -- pass a category ID to filter to a specific category (what categories are depends on the provider; for Facebook blank is the personal feed and a numeric value is for a Facebook page you administer)
+
+[title="3"]Content display[/title]
+
+The [tt]main_hybridauth_admin_atoms[/tt] block allows you to display content from a provider in a way similar to the [tt]main_rss[/tt] or [tt]main_news[/tt] blocks.
+A lot of data is passed into the templates for a high degree of flexibility.
 ';
     }
 
@@ -397,6 +426,7 @@ You can customise the button display for any provider via more hidden options:
             'sources_custom/hybridauth/Data/Collection.php',
             'sources_custom/hybridauth/Data/Parser.php',
             'sources_custom/hybridauth/index.html',
+
             'sources_custom/hooks/systems/cron/hybridauth_admin.php',
             'sources_custom/hybridauth_admin.php',
             'sources_custom/hybridauth_admin_storage.php',
@@ -413,6 +443,8 @@ You can customise the button display for any provider via more hidden options:
             'sources_custom/hybridauth/Atom/Author.php',
             'sources_custom/hybridauth/Atom/Filter.php',
             'sources_custom/hybridauth/Atom/index.html',
+            'sources_custom/blocks/main_hybridauth_admin_atoms.php',
+            'themes/default/templates_custom/BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS.tpl',
         ];
     }
     /**

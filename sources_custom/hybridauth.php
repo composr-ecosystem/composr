@@ -197,6 +197,7 @@ function hybridauth_handle_authenticated_account($provider, $userProfile)
     require_code('cns_members2');
     require_code('cns_members_action');
     require_code('cns_members_action2');
+    require_code('character_sets');
 
     // Get basic details from Hybridauth's $userProfile...
 
@@ -227,6 +228,7 @@ function hybridauth_handle_authenticated_account($provider, $userProfile)
     if (empty($username)) {
         warn_exit(do_lang_tempcode('HYBRIDAUTH_NO_USERNAME', escape_html($provider)));
     }
+    $username = convert_to_internal_encoding($username, 'utf-8');
 
     $photo_url = ($userProfile->photoURL === null) ? '' : $userProfile->photoURL;
 
@@ -243,22 +245,22 @@ function hybridauth_handle_authenticated_account($provider, $userProfile)
 
     $profile_url = $userProfile->profileURL;
 
-    $about = $userProfile->description;
+    $about = convert_to_internal_encoding($userProfile->description, 'utf-8');;
 
-    $gender = cms_ucfirst_ascii($userProfile->gender);
+    $gender = convert_to_internal_encoding(cms_ucfirst_ascii($userProfile->gender), 'utf-8');
 
-    $firstname = $userProfile->firstName;
-    $lastname = $userProfile->lastName;
+    $firstname = convert_to_internal_encoding($userProfile->firstName, 'utf-8');
+    $lastname = convert_to_internal_encoding($userProfile->lastName, 'utf-8');
 
     $website = $userProfile->webSiteURL;
 
     $mobile_phone_number = $userProfile->phone;
 
-    $street_address = $userProfile->address;
-    $city = $userProfile->city;
-    $state = $userProfile->region;
-    $post_code = $userProfile->zip;
-    $country = $userProfile->country;
+    $street_address = convert_to_internal_encoding($userProfile->address, 'utf-8');
+    $city = convert_to_internal_encoding($userProfile->city, 'utf-8');
+    $state = convert_to_internal_encoding($userProfile->region, 'utf-8');
+    $post_code = convert_to_internal_encoding($userProfile->zip, 'utf-8');
+    $country = convert_to_internal_encoding($userProfile->country, 'utf-8');
 
     // We need to undo any kind of existing session, as we will be starting from a clean slate now
     require_code('users_inactive_occasionals');
@@ -439,7 +441,7 @@ function hybridauth_set_cpfs($provider, $is_new_account, $member_id, $profile_ur
 
         if ($composr_field_id !== null) {
             if ((!empty($value)) && (($is_new_account) || ($current['field_' . strval($composr_field_id)] == ''))) {
-                $changes['field_' . strval($composr_field_id)] = $value;
+                $changes['field_' . strval($composr_field_id)] = convert_to_internal_encoding($value, 'utf-8');
             }
         }
     }

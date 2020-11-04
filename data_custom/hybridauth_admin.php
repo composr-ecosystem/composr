@@ -62,7 +62,7 @@ list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
 $provider = get_param_string('provider', null);
 if ($provider !== null) {
     if (get_param_integer('hybridauth_blank_state', 0) == 1) {
-        $admin_storage->clear();
+        $admin_storage->deleteMatch($provider);
     }
 
     // This is the first stage in the flow

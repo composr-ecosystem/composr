@@ -553,7 +553,7 @@ class Facebook extends OAuth2 implements AtomInterface
         }
 
         foreach ($categories as $category) {
-            $isPersonal = ($category->identifier == '');
+            $isPersonal = ($category->identifier == '-');
 
             if ($isPersonal) {
                 $path = 'me';
@@ -591,13 +591,15 @@ class Facebook extends OAuth2 implements AtomInterface
                 $hasResults = true;
 
                 // Don't show private stuff
-                if (!in_array($item->privacy->value, ['ALL_FRIENDS', 'EVERYONE'])) {
-                    continue;
+                if (!$filter->includePrivate) {
+                    if (!in_array($item->privacy->value, ['ALL_FRIENDS', 'EVERYONE'])) {
+                        continue;
+                    }
+                    if ($item->is_hidden) {
+                        continue;
+                    }
                 }
                 if (!$item->is_published) {
-                    continue;
-                }
-                if ($item->is_hidden) {
                     continue;
                 }
 
@@ -653,7 +655,7 @@ class Facebook extends OAuth2 implements AtomInterface
 
         $item = $this->apiRequest($path, 'GET', $params);
 
-        return $this->parseFacebookPost($item, $categories[$isPersonal ? '' : $identifier_parts[0]], $isPersonal);
+        return $this->parseFacebookPost($item, $categories[$isPersonal ? '-' : $identifier_parts[0]], $isPersonal);
     }
 
     /**
@@ -675,7 +677,7 @@ class Facebook extends OAuth2 implements AtomInterface
         $linkText = null;
         $linkDescription = null;
         if ($isPersonal) {
-            $isLink = ($item->type == 'link');
+            $isLink = ($item->type == 'link') || (isset($item->attachments->data[0]->type)) && ($item->attachments->data[0]->type == 'share');
             if ($isLink) {
                 $linkURL = $item->link;
                 $linkText = isset($item->name) ? $item->name : $linkURL;
@@ -702,32 +704,27 @@ class Facebook extends OAuth2 implements AtomInterface
         $urlUsernames = null;
         $urlHashtags = '<a href="https://facebook.com/hashtag/$1">#$1</a>';
         $detectUrls = true;
-        if (!empty($this->message)) {
-            $text = $this->message;
-        } elseif (!empty($this->name)) {
-            $text = $this->name;
+        if (!empty($item->message)) {
+            $text = $item->message;
+        } elseif (!empty($item->name)) {
+            $text = $item->name;
         } else {
             $text = '';
         }
         $textPlain = $text;
         $text = AtomHelper::plainTextToHtml($text);
         list($text, $repped) = AtomHelper::processCodes($text, $urlUsernames, $urlHashtags, $detectUrls);
-
-        if ((!$repped) && (!$isLink) && (strlen($text) < 256)) {
-            $atom->title = trim($textPlain);
-        } else {
-            $atom->content = $text;
-            if ($isLink) {
-                if (($text == '') && (!empty($linkDescription))) {
-                    $text = AtomHelper::plainTextToHtml($linkDescription);
-                    // NB: ^ Intentionally not passed through processCodes
-                }
-                if ($text != '') {
-                    $text .= '<br />';
-                }
-                $text .= '<a href="' . htmlentities($linkURL) . '">' . htmlentities($linkText) . '</a>';
-                $atom->content = $text;
+        $atom->content = $text;
+        if ($isLink) {
+            if (($text == '') && (!empty($linkDescription))) {
+                $text = AtomHelper::plainTextToHtml($linkDescription);
+                // NB: ^ Intentionally not passed through processCodes
             }
+            if ($text != '') {
+                $text .= '<br />';
+            }
+            $text .= '<a href="' . htmlentities($linkURL) . '">' . htmlentities($linkText) . '</a>';
+            $atom->content = $text;
         }
 
         $atom->author = new Author();
@@ -742,11 +739,17 @@ class Facebook extends OAuth2 implements AtomInterface
         $atom->enclosures = [];
         if (isset($item->attachments)) {
             foreach ($item->attachments->data as $attachment) {
-                $atom->enclosures[] = $this->processEnclosure($attachment);
+                $enclosure = $this->processEnclosure($item, $attachment);
+                if ($enclosure !== null) {
+                    $atom->enclosures[] = $enclosure;
 
-                if (isset($attachment->subattachments)) {
-                    foreach ($attachment->subattachments->data as $subattachment) {
-                        $atom->enclosures[] = $this->processEnclosure($subattachment);
+                    if (isset($attachment->subattachments)) {
+                        foreach ($attachment->subattachments->data as $subattachment) {
+                            $subenclosure = $this->processEnclosure($item, $subattachment);
+                            if ($subenclosure !== null) {
+                                $atom->enclosures[] = $subenclosure;
+                            }
+                        }
                     }
                 }
             }
@@ -758,11 +761,12 @@ class Facebook extends OAuth2 implements AtomInterface
     /**
      * Process an enclosure into an atom attachment.
      *
-     * @param object $attachment Data from Facebook
+     * @param object $item Main data from Facebook
+     * @param object $attachment Attachment data from Facebook
      *
-     * @return \Hybridauth\Atom\Enclosure
+     * @return ?\Hybridauth\Atom\Enclosure
      */
-    protected function processEnclosure($attachment)
+    protected function processEnclosure($item, $attachment)
     {
         $enclosure = new Enclosure();
         $enclosure->url = $attachment->url;
@@ -778,6 +782,10 @@ class Facebook extends OAuth2 implements AtomInterface
                 if (isset($attachment->media->image->src)) {
                     $enclosure->thumbnailUrl = $attachment->media->image->src;
                 }
+                break;
+
+            case 'share':
+                $enclosure = null; // This is done as a link
                 break;
 
             default:
@@ -812,7 +820,7 @@ class Facebook extends OAuth2 implements AtomInterface
     {
         $allCategories = $this->getCategories();
 
-        unset($allCategories['']);
+        unset($allCategories['-']);
         if (empty($atom->categories)) {
             throw new NotImplementedException('No access to any Facebook page to post to.');
         }
@@ -1100,9 +1108,9 @@ class Facebook extends OAuth2 implements AtomInterface
         $categories = [];
 
         $category = new Category();
-        $category->identifier = '';
+        $category->identifier = '-';
         $category->label = 'Personal feed';
-        $categories[''] = $category;
+        $categories['-'] = $category;
 
         foreach ($dataArray as $item) {
             $category = new Category();

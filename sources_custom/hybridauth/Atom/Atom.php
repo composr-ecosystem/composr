@@ -41,7 +41,7 @@ class Atom
     public $author;
 
     /**
-     * List of category identifiers.
+     * List of category objects.
      *
      * @var array
      */

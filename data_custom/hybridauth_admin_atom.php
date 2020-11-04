@@ -70,8 +70,12 @@ if (!$adapter instanceof Hybridauth\Adapter\AtomInterface) {
 $limit = get_param_integer('limit', 30);
 $filter = new \Hybridauth\Atom\Filter();
 $filter->categoryFilter = get_param_string('categoryFilter', null);
+if ($filter->categoryFilter === '') {
+    $filter->categoryFilter = null;
+}
 $filter->enclosureTypeFilter = get_param_integer('enclosureTypeFilter', null);
 $filter->includeContributedContent = (get_param_integer('includeContributedContent', 0) == 1);
+$filter->includePrivate = (get_param_integer('includePrivate', 0) == 1);
 
 try {
     $feed = $adapter->buildAtomFeed($limit, $filter);

@@ -380,11 +380,7 @@ class Instagram extends OAuth2 implements AtomInterface
             $urlHashtags = '<a href="https://instagram.com/explore/tags/$1/">#$1</a>';
             $detectUrls = true;
             list($text, $repped) = AtomHelper::processCodes($item->caption, $urlUsernames, $urlHashtags, $detectUrls);
-            if ((!$repped) && (strlen($text) < 256)) {
-                $atom->title = $text;
-            } else {
-                $atom->content = AtomHelper::plainTextToHtml($text);
-            }
+            $atom->content = AtomHelper::plainTextToHtml($text);
         }
 
         $atom->author = new Author();
