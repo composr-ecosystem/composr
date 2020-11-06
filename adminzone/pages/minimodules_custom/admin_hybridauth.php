@@ -1,0 +1,61 @@
+<?php /*
+
+ Composr
+ Copyright (c) ocProducts, 2004-2020
+
+ See docs/LICENSE.md for full licensing information.
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  ocProducts Ltd
+ * @package    hybridauth
+ */
+
+require_lang('hybridauth');
+
+require_javascript('core_form_interfaces');
+
+$title = get_screen_title('HYBRIDAUTH_CONFIG');
+
+$type = get_param_string('type', 'browse');
+
+$full_path = get_custom_file_base() . '/data_custom/xml_config/hybridauth.xml';
+
+$post_url = build_url(['page' => '_SELF', 'type' => 'save'], '_SELF');
+
+if ($type == 'save') {
+    require_code('input_filter_2');
+    if (get_value('disable_modsecurity_workaround') !== '1') {
+        modsecurity_workaround_enable();
+    }
+
+    require_code('files');
+    $xml = post_param_string('xml');
+    cms_file_put_contents_safe($full_path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+
+    log_it('HYBRIDAUTH_CONFIG');
+} else {
+    $default_xml = '
+<hybridauth>
+    <!--
+    <SomeProvider>
+        <composr-config allow-signups="true" />
+        <keys-config id="ExampleOAuthId" secret="ExampleOAuthSecret" />
+    </SomeProvider>
+    -->
+</hybridauth>
+    ';
+
+    $xml = file_exists($full_path) ? cms_file_get_contents_safe($full_path) : '';
+    if (empty(trim($xml))) {
+        $xml = $default_xml;
+    }
+}
+
+return do_template('XML_CONFIG_SCREEN', [
+    'TITLE' => $title,
+    'POST_URL' => $post_url,
+    'XML' => $xml,
+]);

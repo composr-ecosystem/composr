@@ -30,7 +30,7 @@ class Hook_oauth_screen_sup_hybridauth_admin
         $services = [];
 
         foreach ($providers as $provider => $info) {
-            $configured = !empty($info['keys']);
+            $configured = $info['enabled'];
             try {
                 $adapter = $hybridauth->getAdapter($provider);
                 $connected = $adapter->isConnected();
@@ -45,13 +45,15 @@ class Hook_oauth_screen_sup_hybridauth_admin
                 $url = null;
             }
 
+            $config_url = build_url(['page' => 'admin_hybridauth'], get_page_zone('admin_hybridauth', false, 'adminzone', 'minimodules'));
+
             $services[] = [
                 'LABEL' => $info['label'] . ' (Hybridauth-driven)',
                 'PROTOCOL' => '',
                 'AVAILABLE' => true,
 
                 'CONFIGURED' => $configured,
-                'CONFIG_URL' => null,
+                'CONFIG_URL' => $config_url,
                 'CONNECTED' => $connected,
                 'CONNECT_URL' => $url,
                 'CLIENT_ID' => isset($info['keys']['id']) ? $info['keys']['id'] : '',

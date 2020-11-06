@@ -13,6 +13,8 @@
  * @package    hybridauth
  */
 
+/*EXTRA FUNCTIONS: session_.+*/
+
 function initiate_hybridauth_session_state()
 {
     @session_write_close();
@@ -63,9 +65,63 @@ function is_hybridauth_special_type($special_type)
 
 function enumerate_hybridauth_providers($for_admin = false)
 {
-    static $providers_cache = array();
+    static $providers_cache = [];
     if (isset($providers_cache[$for_admin])) {
         return $providers_cache[$for_admin];
+    }
+
+    // Load up XML
+    require_code('xml');
+    $xml_path = get_custom_file_base() . '/data_custom/xml_config/hybridauth.xml';
+    if (is_file($xml_path)) {
+        $xml_contents = cms_file_get_contents_safe($xml_path, FILE_READ_LOCK | FILE_READ_BOM);
+    } else {
+        $xml_contents = '<hybridauth></hybridauth>';
+    }
+    $parsed = new CMS_simple_xml_reader($xml_contents);
+    $config_structure = [];
+    list(, , , $root_children) = $parsed->gleamed;
+    foreach ($root_children as $root_child) {
+        list($provider, , , $children) = $root_child;
+
+        if ((!isset($config_structure[$provider])) && (!empty($children))) {
+            $config_structure[$provider] = [
+                'composr-config' => [],
+                'keys-config' => [],
+                'hybridauth-config' => [],
+                'admin' => [
+                    'composr-config' => [],
+                    'keys-config' => [],
+                    'hybridauth-config' => [],
+                ],
+            ];
+        }
+
+        if ($children !== null) {
+            foreach ($children as $child) {
+                list($subtag, $subattributes, , $subchildren) = $child;
+                switch ($subtag) {
+                    case 'composr-config':
+                    case 'keys-config':
+                    case 'hybridauth-config':
+                        $config_structure[$provider][$subtag] = $subattributes;
+                        break;
+
+                    case 'admin':
+                        foreach ($subchildren as $subchildren_child) {
+                            list($subsubtag, $subsubattributes, , ) = $subchildren_child;
+                            switch ($subsubtag) {
+                                case 'composr-config':
+                                case 'keys-config':
+                                case 'hybridauth-config':
+                                    $config_structure[$provider]['admin'][$subsubtag] = $subsubattributes;
+                                    break;
+                            }
+                        }
+                        break;
+                }
+            }
+        }
     }
 
     $providers = [];
@@ -109,76 +165,63 @@ function enumerate_hybridauth_providers($for_admin = false)
 
     // Expand any holes in the skeleton structure with defaults
     foreach ($providers as $provider => &$info) {
-        if ($for_admin) {
-            $values = @json_decode(get_value('hybridauth_admin_' . $provider, get_value('hybridauth_' . $provider)), true);
-        } else {
-            $values = @json_decode(get_value('hybridauth_' . $provider), true);
-        }
-        if (!is_array($values)) {
-            $values = [];
-        }
-        foreach ($values as $parameter => $value) {
-            if (substr($parameter, 0, 4) == 'key_') {
-                $info['keys'][substr($parameter, 4)] = $value;
+        $config = ['composr-config' => [], 'keys-config' => [], 'hybridauth-config' => []];
+        if (isset($config_structure[$provider])) {
+            if (($for_admin) && (isset($config_structure[$provider]['admin']))) {
+                $config = $config_structure[$provider]['admin'];
+            }
+            foreach (['composr-config', 'keys-config', 'hybridauth-config'] as $config_section) {
+                $config[$config_section] += $config_structure[$provider][$config_section];
             }
         }
+
+        $info['keys'] += $config['keys-config'];
+        $info['other_parameters'] += $config['hybridauth-config'];
 
         if ($for_admin) {
             $enabled = !empty($info['keys']);
         } else {
             $enabled = $info['enabled'];
             if ($enabled === null) {
-                $enabled = (!empty($info['keys'])) && (get_value('hybridauth_' . $provider . '_allow_signups') == '1');
+                $enabled = (!empty($info['keys'])) && (isset($config['composr-config']['allow_signups'])) && ($config['composr-config']['allow_signups'] == 'true');
             }
         }
-        if ($enabled === false) {
-            unset($providers[$provider]);
-            continue;
-        }
-        unset($info['enabled']);
+        $info['enabled'] = $enabled;
 
-        foreach ($values as $parameter => $value) {
-            if (substr($parameter, 0, 4) != 'key_') {
-                $info['other_parameters'][$parameter] = $value;
-            }
+        if (!empty($config['composr-config']['label'])) {
+            $info['label'] = $config['composr-config']['label'];
         }
 
-        $value = get_value('hybridauth_' . $provider . '_' . 'label', null);
-        if ($value !== null) {
-            $info['label'] = $value;
+        if (!empty($config['composr-config']['prominent_button'])) {
+            $info['prominent_button'] = ($config['composr-config']['prominent_button'] == 'true');
+        }
+        if (!empty($config['composr-config']['button_precedence'])) {
+            $info['button_precedence'] = intval($config['composr-config']['button_precedence']);
         }
 
-        $value = get_value('hybridauth_' . $provider . '_' . 'prominent_button', null);
-        if ($value !== null) {
-            $info['prominent_button'] = ($value == '1');
+        if (!empty($config['composr-config']['background_colour'])) {
+            $info['background_colour'] = ltrim($config['composr-config']['background_colour'], '#');
         }
-        $value = get_value('hybridauth_' . $provider . '_' . 'button_precedence', null);
-        if ($value !== null) {
-            $info['button_precedence'] = intval($value);
+        if (!empty($config['composr-config']['text_colour'])) {
+            $info['text_colour'] = ltrim($config['composr-config']['text_colour'], '#');
         }
-
-        $value = get_value('hybridauth_' . $provider . '_' . 'background_colour', null);
-        if ($value !== null) {
-            $info['background_colour'] = ltrim($value, '#');
-        }
-        $value = get_value('hybridauth_' . $provider . '_' . 'text_colour', null);
-        if ($value !== null) {
-            $info['text_colour'] = ltrim($value, '#');
-        }
-        $value = get_value('hybridauth_' . $provider . '_' . 'icon', null);
-        if ($value === null) {
+        if (empty($config['composr-config']['icon'])) {
             if ($info['icon'] === null) {
                 if (is_file(get_file_base() . '/themes/default/images/icons/links/' . cms_strtolower_ascii($provider) . '.svg')) {
-                    $value = 'links/' . cms_strtolower_ascii($provider);
+                    $icon = 'links/' . cms_strtolower_ascii($provider);
                 } elseif (is_file(get_file_base() . '/themes/default/images_custom/icons/links/' . cms_strtolower_ascii($provider) . '.svg')) {
-                    $value = 'links/' . cms_strtolower_ascii($provider);
+                    $icon = 'links/' . cms_strtolower_ascii($provider);
                 } else {
-                    $value = 'menu/site_meta/user_actions/login';
+                    $icon = 'menu/site_meta/user_actions/login';
                 }
-                $info['icon'] = $value;
+                $info['icon'] = $icon;
             }
         } else {
-            $info['icon'] = $value;
+            $icon = $config['composr-config']['icon'];
+            if (substr($icon, 0, 6) == 'icons/') {
+                $icon = substr($icon, 6);
+            }
+            $info['icon'] = $icon;
         }
     }
 
@@ -189,7 +232,7 @@ function enumerate_hybridauth_providers($for_admin = false)
     return $providers;
 }
 
-function hybridauth_handle_authenticated_account($provider, $userProfile)
+function hybridauth_handle_authenticated_account($provider, $user_profile)
 {
     require_lang('cns');
     require_code('cns_members');
@@ -199,13 +242,13 @@ function hybridauth_handle_authenticated_account($provider, $userProfile)
     require_code('cns_members_action2');
     require_code('character_sets');
 
-    // Get basic details from Hybridauth's $userProfile...
+    // Get basic details from Hybridauth's $user_profile...
 
-    $id = $userProfile->identifier;
+    $id = $user_profile->identifier;
 
-    $email_address = $userProfile->email;
+    $email_address = $user_profile->email;
     if (empty($email_address)) {
-        $email_address = $userProfile->emailVerified;
+        $email_address = $user_profile->emailVerified;
     }
     if (get_option('one_per_email_address') == '1') {
         if (empty($email_address)) {
@@ -221,46 +264,46 @@ function hybridauth_handle_authenticated_account($provider, $userProfile)
         }
     }
 
-    $username = preg_replace('/#.*$/', '', $userProfile->displayName);
+    $username = preg_replace('/#.*$/', '', $user_profile->displayName);
     if (empty($username)) {
-        $username = trim($userProfile->firstName . ' ' . $userProfile->lastName);
+        $username = trim($user_profile->firstName . ' ' . $user_profile->lastName);
     }
     if (empty($username)) {
         warn_exit(do_lang_tempcode('HYBRIDAUTH_NO_USERNAME', escape_html($provider)));
     }
     $username = convert_to_internal_encoding($username, 'utf-8');
 
-    $photo_url = ($userProfile->photoURL === null) ? '' : $userProfile->photoURL;
+    $photo_url = ($user_profile->photoURL === null) ? '' : $user_profile->photoURL;
 
-    $language = cms_strtoupper_ascii(preg_replace('#^([^_\-]*).*$#', '\1', $userProfile->language));
+    $language = cms_strtoupper_ascii(preg_replace('#^([^_\-]*).*$#', '\1', $user_profile->language));
     if (empty($language)) {
         $language = null;
     }
 
-    $dob_day = $userProfile->birthDay;
-    $dob_month = $userProfile->birthMonth;
-    $dob_year = $userProfile->birthYear;
+    $dob_day = $user_profile->birthDay;
+    $dob_month = $user_profile->birthMonth;
+    $dob_year = $user_profile->birthYear;
 
     // And some things that may go into CPFs...
 
-    $profile_url = $userProfile->profileURL;
+    $profile_url = $user_profile->profileURL;
 
-    $about = convert_to_internal_encoding($userProfile->description, 'utf-8');;
+    $about = convert_to_internal_encoding($user_profile->description, 'utf-8');
 
-    $gender = convert_to_internal_encoding(cms_ucfirst_ascii($userProfile->gender), 'utf-8');
+    $gender = convert_to_internal_encoding(cms_ucfirst_ascii($user_profile->gender), 'utf-8');
 
-    $firstname = convert_to_internal_encoding($userProfile->firstName, 'utf-8');
-    $lastname = convert_to_internal_encoding($userProfile->lastName, 'utf-8');
+    $firstname = convert_to_internal_encoding($user_profile->firstName, 'utf-8');
+    $lastname = convert_to_internal_encoding($user_profile->lastName, 'utf-8');
 
-    $website = $userProfile->webSiteURL;
+    $website = $user_profile->webSiteURL;
 
-    $mobile_phone_number = $userProfile->phone;
+    $mobile_phone_number = $user_profile->phone;
 
-    $street_address = convert_to_internal_encoding($userProfile->address, 'utf-8');
-    $city = convert_to_internal_encoding($userProfile->city, 'utf-8');
-    $state = convert_to_internal_encoding($userProfile->region, 'utf-8');
-    $post_code = convert_to_internal_encoding($userProfile->zip, 'utf-8');
-    $country = convert_to_internal_encoding($userProfile->country, 'utf-8');
+    $street_address = convert_to_internal_encoding($user_profile->address, 'utf-8');
+    $city = convert_to_internal_encoding($user_profile->city, 'utf-8');
+    $state = convert_to_internal_encoding($user_profile->region, 'utf-8');
+    $post_code = convert_to_internal_encoding($user_profile->zip, 'utf-8');
+    $country = convert_to_internal_encoding($user_profile->country, 'utf-8');
 
     // We need to undo any kind of existing session, as we will be starting from a clean slate now
     require_code('users_inactive_occasionals');

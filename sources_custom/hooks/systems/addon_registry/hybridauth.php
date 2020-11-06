@@ -91,18 +91,18 @@ class Hook_addon_registry_hybridauth
 Hybridauth essentially implements the OAuth1, OAuth2, OpenID Connect, and OpenID standards, and proprietary APIs, necessary to unify all the different login integrations of different services.
 
 Hybridauth supports many providers (around 50), and likely will support more in the future. For the purposes of this addon we can confirm the following common ones work well:
- - BitBucket (*)
- - Discord
- - Dropbox
- - Facebook
- - GitHub
- - GitLab
- - Google
- - MicrosoftGraph (*) (this is Microsoft login, either of your account with Microsoft, or of a private Active Directory installation)
- - Reddit
- - Twitter
- - Vkontakte
- - Yahoo
+ - [tt]BitBucket[/tt] (*)
+ - [tt]Discord[/tt]
+ - [tt]Dropbox[/tt]
+ - [tt]Facebook[/tt]
+ - [tt]GitHub[/tt]
+ - [tt]GitLab[/tt]
+ - [tt]Google[/tt]
+ - [tt]MicrosoftGraph[/tt] (*) (this is Microsoft login, either of your account with Microsoft, or of a private Active Directory installation)
+ - [tt]Reddit[/tt]
+ - [tt]Twitter[/tt]
+ - [tt]Vkontakte[/tt]
+ - [tt]Yahoo[/tt]
 * These do not support avatars/photos, which you might care about when deciding what login options to feature.
 
 For the full list of login options and integration notes refer to the list of providers on the [url="Hybridauth website"]https://hybridauth.github.io/hybridauth/[/url], and the code comments in the [tt]sources_custom/hybridauth/Provider[/tt] files.
@@ -119,56 +119,94 @@ The OAuth Redirect URI used will be [tt]http://yourbaseurl/data_custom/hybridaut
 
 [title="3"]On the Composr end[/title]
 
-You configure a provider by setting hidden options using Commandr, which are mapped automatically to Hybridauth configuration settings. These options are based on some naming conventions, and the Hybridauth filenames of providers (listed above).
+You configure a provider by editing XML in Admin Zone > Setup > Hybridauth Configuration. The XML defined here is mapped automatically to Hybridauth configuration settings as well as whatever settings Composr requires for integration. The XML structure is based on some naming conventions, including the Hybridauth filenames of providers (listed above).
 
-Set hidden options in Commandr like:
-[code="Commandr"]
-:set_value(\'hybridauth_<Provider>_allow_signups\', \'1\');
-:set_value(\'hybridauth_<Provider>\', \'{"key_id": "abcdef", "key_secret": "abcdef"}\');
+Here is the structure of the basic configuration:
+[code="XML"]
+<hybridauth>
+    <SomeProvider>
+        <composr-config allow_signups="true" />
+        <keys-config id="ExampleOAuthId" secret="ExampleOAuthSecret" />
+    </SomeProvider>
+
+    <AnotherProvider>
+        <composr-config allow_signups="true" />
+        <keys-config id="ExampleOAuthId" secret="ExampleOAuthSecret" />
+    </AnotherProvider>
+
+    ...
+</hybridauth>
 [/code]
 
 E.g.:
-[code="Commandr"]
-:set_value(\'hybridauth_Facebook_allow_signups\', \'1\');
-:set_value(\'hybridauth_Facebook\', \'{"key_id": "abcdef", "key_secret": "abcdef"}\');
+[code="XML"]
+<hybridauth>
+    <Facebook>
+        <composr-config allow_signups="true" />
+        <keys-config id="abc" secret="def" />
+    </Facebook>
+
+    <Twitter>
+        <composr-config allow_signups="true" />
+        <keys-config id="abc" secret="def" />
+    </Twitter>
+</hybridauth>
 [/code]
 
-The [tt]key_id[/tt] and [tt]key_secret[/tt] values here are standard OAuth2 key parameters. This is of course assuming the provider works via OAuth2, but most do.
+The [tt]id[/tt] and [tt]secret[/tt] values here are standard OAuth2 key parameters. This is of course assuming the provider works via OAuth2, but most do.
 
 [title="2"]Provider-specific notes[/title]
 
 [title="3"]Apple (untested)[/title]
 
-You may wonder why Apple is not on the list. This is supported by Hybridauth but you will need to set up and upload special key files, along with extra PHP software dependencies for Firebase. It likely is not worth the extra effort for you given Apple users likely also have Facebook accounts.
+You may wonder why Apple is not on the list of tested providers. This is supported by Hybridauth but you will need to set up and upload special key files, along with extra PHP software dependencies for Firebase. It likely is not worth the extra effort for you given Apple users likely also have Facebook accounts.
 
 The [url="Apple provider actually takes different values"]https://hybridauth.github.io/providers/apple.html[/url]:
-[code="Commandr"]
-:set_value(\'hybridauth_Apple_allow_signups\', \'1\');
-:set_value(\'hybridauth_Apple\', \'{"key_id": "abcdef", "key_team_id": "abcdef", "key_content": "abcdef", "key_file": "abcdef"}\');
+[code="XML"]
+<hybridauth>
+    ...
+    <Apple>
+        <composr-config allow_signups="true" />
+        <keys-config id="abc" team-id="def" key-id="ghi" key-file="jkl" key-content="mno" />
+    </Apple>
+    ...
+</hybridauth>
 [/code]
 See the code comments in [tt]sources_custom/hybridauth/Provider/Apple.php[/tt] for clearer details on these config settings.
 
 [title="3"]Facebook[/title]
 
-If you have the [tt]facebook_support[/tt] addon installed then there are friendly configuration options for setting up OAuth2 and enabling login. No hidden options need setting.
+If you have the [tt]facebook_support[/tt] addon installed then there are friendly configuration options for setting up OAuth2 and enabling login. No XML attributes need setting (but you can do that instead if you prefer, and they take precedence).
 
 Facebook has a wide variety of extra fields, but only if you go through a special approval process and extend the configured scope, e.g.:
-[code="Commandr"]
-:set_value(\'hybridauth_Facebook\', \'{"scope": "email,user_gender,user_birthday,user_location"}\');
+[code="XML"]
+<hybridauth>
+    ...
+    <Facebook>
+        <hybridauth-config scope="email,user_gender,user_birthday,user_location" />
+    </Facebook>
+    ...
+</hybridauth>
 [/code]
 
 [title="3"]Google[/title]
 
-There are friendly configuration options for setting up OAuth2 and enabling login. No hidden options need setting.
+There are friendly configuration options for setting up OAuth2 and enabling login. No XML attributes need setting.
 
 [title="3"]Twitter[/title]
 
-If you have the [tt]twitter_support[/tt] addon installed then there are friendly configuration options for setting up OAuth2 and enabling login. No hidden options need setting.
+If you have the [tt]twitter_support[/tt] addon installed then there are friendly configuration options for setting up OAuth2 and enabling login. No XML attributes need setting.
 
-Twitter is using OAuth1 instead of OAuth2. Set hidden options in Commandr like:
-[code="Commandr"]
-:set_value(\'hybridauth_Yahoo_allow_signups\', \'1\');
-:set_value(\'hybridauth_Yahoo\', \'{"key_key": "abcdef", "key_secret": "abcdef"}\');
+Twitter is using OAuth1 instead of OAuth2. Set XML like:
+[code="XML"]
+<hybridauth>
+    ...
+    <Twitter>
+        <composr-config allow_signups="true" />
+        <keys-config key="abc" secret="def" />
+    </Twitter>
+    ...
+</hybridauth>
 [/code]
 
 Twitter apps need to go through an approval process.
@@ -180,9 +218,17 @@ You may wonder why LinkedIn is not on the list. LinkedIn apps need to go through
 [title="3"]MicrosoftGraph[/title]
 
 Setting up of [tt]MicrosoftGraph[/tt] on Microsoft\'s end is a bit complicated. You need to create and configure an "Azure Active Directory" resource on the [url="Azure Portal"]https://portal.azure.com/[/url].
-There is an extra [tt]tenant[/tt] value option that relates to the "Supported account types" choice you made. You probably will need:
-[code="Commandr"]
-:set_value(\'hybridauth_MicrosoftGraph\', \'{..., "tenant": "consumers"}\');
+There is an extra [tt]tenant[/tt] option that relates to the "Supported account types" choice you made. You probably will need:
+[code="XML"]
+<hybridauth>
+    ...
+    <MicrosoftGraph>
+        <composr-config allow_signups="true" />
+        <keys-config id="abc" secret="def" />
+        <hybridauth-config tenant="consumers" />
+    </MicrosoftGraph>
+    ...
+</hybridauth>
 [/code]
 
 [title="3"]Pinterest (untested)[/title]
@@ -193,9 +239,17 @@ You may wonder why Pinterest is not on the list. Pinterest is not currently acce
 
 You may wonder why StackExchange is not on the list. StackExchange does not allow transfer of e-mail address, which is important for most sites. Hybridauth does support it.
 
-There is an extra [tt]site[/tt] value option that relates to the particular StackExchange site you want to use. It must be set. For example:
-[code="Commandr"]
-:set_value(\'hybridauth_StackExchange\', \'{..., "site": "stackoverflow.com"}\');
+There is an extra [tt]site[/tt] option that relates to the particular StackExchange site you want to use. It must be set. For example:
+[code="XML"]
+<hybridauth>
+    ...
+    <MicrosoftGraph>
+        <composr-config allow_signups="true" />
+        <keys-config id="abc" secret="def" />
+        <hybridauth-config site="stackoverflow.com" />
+    </MicrosoftGraph>
+    ...
+</hybridauth>
 [/code]
 
 [title="3"]Vkontakte[/title]
@@ -208,26 +262,41 @@ The terminology displayed on Vkontakte\'s end is a little different:
 
 All the providers mentioned in this documentation are guaranteed to have a nice button icon bundled with Composr, and a human-friendly label. Others may or may not.
 
-You can customise the button display for any provider via more hidden options:
-[code="Commandr"]
-:set_value(\'hybridauth_<Provider>_label\', \'Some label\');
-:set_value(\'hybridauth_<Provider>_prominent_button\', \'1\'); // 0 for only showing on the main login screen
-:set_value(\'hybridauth_<Provider>_button_precedence\', \'5\'); // for manual sorting
-:set_value(\'hybridauth_<Provider>_background_colour\', \'FF0000\'); // a hex colour code
-:set_value(\'hybridauth_<Provider>_text_colour\', \'FFFFFF\'); // a hex colour code
-:set_value(\'hybridauth_<Provider>_icon\', \'links/microsoft\'); // a theme image path under \'icons/\'
+You can customise the button display for any provider via more options:
+[code="XML"]
+<hybridauth>
+    ...
+    <SomeProvider>
+        <composr-config allow_signups="true" label="Some label" prominent_button="true" button_precedence="5" background_color="FF0000" text_color="FFFFFF" icon="links/microsoft" />
+        <keys-config id="ExampleOAuthId" secret="ExampleOAuthSecret" />
+    </SomeProvider>
+    ...
+</hybridauth>
 [/code]
+
+Some notes:
+ - The [tt]button-precedence[/tt] allows manual sorting (lower numbers are higher precedence)
+ - The icon is any theme image path under [tt]icons/[/tt]
 
 [title="2"]Admin integration[/title]
 
 As well as member login, there is also the ability for the admin to establish a log in for other integrations.
 
-The settings are configured in the same way as member login. However, if you need them different to member logins (maybe setting an extended scope, for example), you can set them using the [tt]_admin[/tt] suffix on the hidden option:
+The settings are configured in the same way as member login. However, if you need them different to member logins (maybe setting an extended scope, for example), you can set them under an [tt]<admin>[/tt] node in the XML:
 [code="Commandr"]
-:set_value(\'hybridauth_<Provider>_admin\', \'{...}\');
+<hybridauth>
+    ...
+    <Facebook>
+        <hybridauth-config scope="email,user_gender,user_birthday,user_location" />
+        <admin>
+            <hybridauth-config scope="email,user_posts,pages_manage_posts,pages_show_list,manage_pages,publish_pages,user_videos,pages_read_engagement" default_page_id="111785054060070" />
+        </admin>
+    </Facebook>
+    ...
+</hybridauth>
 [/code]
 
-You establish a log in from Admin Zone > Setup > Setup API access.
+After configuring XML you establish a log in from Admin Zone > Setup > Setup API access.
 
 Out of the box the following integrations exist, for providers supporting the Hybridauth Atom API. At the time of writing:
  - Facebook
@@ -272,6 +341,7 @@ A lot of data is passed into the templates for a high degree of flexibility.
                 'commandr',
                 'PHP curl extension',
                 'PHP sessions extension',
+                'PHP XML extension',
             ],
             'recommends' => [],
             'conflicts_with' => [],
@@ -326,6 +396,27 @@ A lot of data is passed into the templates for a high degree of flexibility.
             'sources_custom/hooks/systems/login_providers/hybridauth.php',
             'sources_custom/users_active_actions.php',
             'sources_custom/hooks/systems/startup/hybridauth.php',
+            'adminzone/modules/minimodules_custom/admin_hybridauth.php',
+            'sources_custom/hooks/systems/page_groupings/hybridauth.php',
+
+            'sources_custom/hooks/systems/cron/hybridauth_admin.php',
+            'sources_custom/hybridauth_admin.php',
+            'sources_custom/hybridauth_admin_storage.php',
+            'data_custom/hybridauth_admin.php',
+            'sources_custom/hooks/systems/oauth_screen_sup/hybridauth_admin.php',
+            'data_custom/hybridauth_admin_atom.php',
+            'sources_custom/hybridauth/Adapter/AtomInterface.php',
+            'sources_custom/hybridauth/Atom/.htaccess',
+            'sources_custom/hybridauth/Atom/Atom.php',
+            'sources_custom/hybridauth/Atom/AtomFeedBuilder.php',
+            'sources_custom/hybridauth/Atom/AtomHelper.php',
+            'sources_custom/hybridauth/Atom/Category.php',
+            'sources_custom/hybridauth/Atom/Enclosure.php',
+            'sources_custom/hybridauth/Atom/Author.php',
+            'sources_custom/hybridauth/Atom/Filter.php',
+            'sources_custom/hybridauth/Atom/index.html',
+            'sources_custom/blocks/main_hybridauth_admin_atoms.php',
+            'themes/default/templates_custom/BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS.tpl',
 
             'sources_custom/hybridauth/autoload.php',
             'sources_custom/hybridauth/User/Contact.php',
@@ -426,25 +517,6 @@ A lot of data is passed into the templates for a high degree of flexibility.
             'sources_custom/hybridauth/Data/Collection.php',
             'sources_custom/hybridauth/Data/Parser.php',
             'sources_custom/hybridauth/index.html',
-
-            'sources_custom/hooks/systems/cron/hybridauth_admin.php',
-            'sources_custom/hybridauth_admin.php',
-            'sources_custom/hybridauth_admin_storage.php',
-            'data_custom/hybridauth_admin.php',
-            'sources_custom/hooks/systems/oauth_screen_sup/hybridauth_admin.php',
-            'data_custom/hybridauth_admin_atom.php',
-            'sources_custom/hybridauth/Adapter/AtomInterface.php',
-            'sources_custom/hybridauth/Atom/.htaccess',
-            'sources_custom/hybridauth/Atom/Atom.php',
-            'sources_custom/hybridauth/Atom/AtomFeedBuilder.php',
-            'sources_custom/hybridauth/Atom/AtomHelper.php',
-            'sources_custom/hybridauth/Atom/Category.php',
-            'sources_custom/hybridauth/Atom/Enclosure.php',
-            'sources_custom/hybridauth/Atom/Author.php',
-            'sources_custom/hybridauth/Atom/Filter.php',
-            'sources_custom/hybridauth/Atom/index.html',
-            'sources_custom/blocks/main_hybridauth_admin_atoms.php',
-            'themes/default/templates_custom/BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS.tpl',
         ];
     }
     /**
