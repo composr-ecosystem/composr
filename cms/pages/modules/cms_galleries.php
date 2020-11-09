@@ -478,6 +478,9 @@ class Module_cms_galleries extends Standard_crud_module
                     $fields_2->attach(get_privacy_form_fields(null, null, true, 'ss_'));
                 }
 
+                require_code('syndication');
+                $fields_2->attach(get_syndication_option_fields('image'));
+
                 $form2 = do_template('FORM', [
                     '_GUID' => '79c9fd4f29197460f08443bf2ffdf8b2',
                     'SECONDARY_FORM' => true,
@@ -847,6 +850,9 @@ class Module_cms_galleries extends Standard_crud_module
             $fields->attach(form_input_regions($regions));
         }
 
+        require_code('syndication');
+        $fields->attach(get_syndication_option_fields('image', !$adding));
+
         // Metadata
         require_code('content2');
         $seo_fields = seo_get_fields($this->seo_type, ($id === null) ? null : strval($id), false);
@@ -1018,8 +1024,8 @@ class Module_cms_galleries extends Standard_crud_module
                     $privacy_ok = has_privacy_access('image', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity('galleries:ACTIVITY_ADD_IMAGE', ($title == '') ? $filename : $title, '', '', '_SEARCH:galleries:image:' . strval($id), '', '', 'galleries');
+                    require_code('syndication');
+                    syndicate_content('image', strval($id), [['galleries:ACTIVITY_ADD_IMAGE', get_member(), ($title == '') ? $filename : $title]]);
                 }
             }
         }
@@ -1091,9 +1097,7 @@ class Module_cms_galleries extends Standard_crud_module
             save_privacy_form_fields('image', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('images', 'validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('images', 'submitter', ['id' => $id]);
-
+        if (($validated == 1) || (!addon_installed('unvalidated'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
                 $privacy_ok = true;
@@ -1102,8 +1106,19 @@ class Module_cms_galleries extends Standard_crud_module
                     $privacy_ok = has_privacy_access('image', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity(($submitter != get_member()) ? 'galleries:ACTIVITY_VALIDATE_IMAGE' : 'galleries:ACTIVITY_ADD_IMAGE', ($title == '') ? $filename : $title, '', '', '_SEARCH:galleries:image:' . strval($id), '', '', 'galleries', 1, null/*$submitter*/);
+                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('images', 'validated', ['id' => $id]) == 0);
+                    $submitter = $GLOBALS['SITE_DB']->query_select_value('images', 'submitter', ['id' => $id]);
+
+                    $activities = [];
+                    if ($just_validated) {
+                        if ($submitter != get_member()) {
+                            $activities[] = ['galleries:ACTIVITY_VALIDATE_IMAGE', get_member()];
+                        }
+                        $activities[] = ['galleries:ACTIVITY_ADD_IMAGE', $submitter];
+                    }
+
+                    require_code('syndication');
+                    syndicate_content('image', strval($id), $activities);
                 }
             }
         }
@@ -1147,6 +1162,9 @@ class Module_cms_galleries extends Standard_crud_module
             require_code('content_privacy2');
             delete_privacy_form_fields('image', strval($id));
         }
+
+        require_code('syndication');
+        unsyndicate_content('image', strval($id));
     }
 
     /**
@@ -1427,6 +1445,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         }
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('CLOSED_CAPTIONS'), do_lang_tempcode('DESCRIPTION_CLOSED_CAPTIONS'), $hidden, 'closed_captions_url', null, false, $closed_captions_url, false, 'vtt'));
 
+        require_code('syndication');
+        $fields->attach(get_syndication_option_fields('video', $id !== null));
 
         // Metadata
         require_code('content2');
@@ -1594,8 +1614,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
                     $privacy_ok = has_privacy_access('video', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity('galleries:ACTIVITY_ADD_VIDEO', ($title == '') ? $filename : $title, '', '', '_SEARCH:galleries:video:' . strval($id), '', '', 'galleries');
+                    require_code('syndication');
+                    syndicate_content('video', strval($id), [['galleries:ACTIVITY_ADD_VIDEO', get_member(), ($title == '') ? $filename : $title]]);
                 }
             }
         }
@@ -1654,9 +1674,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             save_privacy_form_fields('video', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('videos', 'submitter', ['id' => $id]);
-
+        if (($validated == 1) || (!addon_installed('unvalidated'))) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
                 $privacy_ok = true;
@@ -1665,8 +1683,19 @@ class Module_cms_galleries_alt extends Standard_crud_module
                     $privacy_ok = has_privacy_access('video', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity(($submitter != get_member()) ? 'galleries:ACTIVITY_VALIDATE_VIDEO' : 'galleries:ACTIVITY_ADD_VIDEO', ($title == '') ? $filename : $title, '', '', '_SEARCH:galleries:video:' . strval($id), '', '', 'galleries', 1, null/*$submitter*/);
+                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('videos', 'validated', ['id' => $id]) == 0);
+                    $submitter = $GLOBALS['SITE_DB']->query_select_value('videos', 'submitter', ['id' => $id]);
+
+                    $activities = [];
+                    if ($just_validated) {
+                        if ($submitter != get_member()) {
+                            $activities[] = ['galleries:ACTIVITY_VALIDATE_VIDEO', get_member()];
+                        }
+                        $activities[] = ['galleries:ACTIVITY_ADD_VIDEO', $submitter];
+                    }
+
+                    require_code('syndication');
+                    syndicate_content('video', strval($id), $activities);
                 }
             }
         }
@@ -1706,6 +1735,9 @@ class Module_cms_galleries_alt extends Standard_crud_module
             require_code('content_privacy2');
             delete_privacy_form_fields('video', strval($id));
         }
+
+        require_code('syndication');
+        unsyndicate_content('video', strval($id));
     }
 
     /**

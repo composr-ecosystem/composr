@@ -29,7 +29,7 @@ class Hook_config_facebook_allow_signups
             'human_name' => 'FACEBOOK_ALLOW_SIGNUPS',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
-            'group' => 'FACEBOOK_SYNDICATION',
+            'group' => 'FACEBOOK',
             'explanation' => 'CONFIG_OPTION_facebook_allow_signups',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

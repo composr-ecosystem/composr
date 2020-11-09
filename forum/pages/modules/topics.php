@@ -2230,7 +2230,8 @@ class Module_topics
 
     /**
      * The actualiser to add a reply (shared for adding topics, adding posts, and new topics with polls).
-     * @return array
+     *
+     * @return array Map of info
      */
     public function _add_reply_and_return_info()
     {
@@ -2435,8 +2436,13 @@ class Module_topics
                 $to = post_param_integer('to', null);
                 $schedule = post_param_date('schedule');
 
+                cns_edit_topic($topic_id, null, null, $topic_validated, $open, $pinned, $cascading, '', ($new_title == '') ? null : $new_title);
+                if (($to != $forum_id) && ($to !== null)) {
+                    cns_move_topics($forum_id, $to, [$topic_id]);
+                }
+
                 if (($schedule !== null) && (addon_installed('calendar'))) {
-                    $parameters = [$topic_id, $validated, $open, $pinned, $cascading, $new_title, $to, $forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous];
+                    $parameters = [$topic_id, $forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, get_member(), get_ip_address()];
                     require_code('calendar');
                     $start_year = intval(date('Y', $schedule));
                     $start_month = intval(date('m', $schedule));
@@ -2469,11 +2475,6 @@ class Module_topics
                     ];
 
                     return $info;
-                }
-
-                cns_edit_topic($topic_id, null, null, $topic_validated, $open, $pinned, $cascading, '', ($new_title == '') ? null : $new_title);
-                if (($to != $forum_id) && ($to !== null)) {
-                    cns_move_topics($forum_id, $to, [$topic_id]);
                 }
             }
         }
@@ -2508,7 +2509,7 @@ class Module_topics
         if (($forum_id !== null) && ($anonymous == 0) && ($intended_solely_for === null)) {
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'forumview')) && (has_category_access(get_modal_user(), 'forums', strval($forum_id)))) {
-                require_code('activities');
+                require_code('syndication');
                 syndicate_described_activity($first_post ? 'cns:ACTIVITY_ADD_TOPIC' : 'cns:ACTIVITY_ADD_POST_IN', $first_post ? $title : $topic_title, '', '', '_SEARCH:topicview:browse:' . strval($topic_id) . '#post_' . strval($post_id), '', '', 'cns_forum');
             }
         }

@@ -3,7 +3,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Jason L Verhagen (jlverhagen@tfo.net)
- * @package    twitter_feed_integration_block
+ * @package    twitter_support
  */
 
 /**
@@ -58,7 +58,7 @@ class Block_twitter_feed
         i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
         $error_msg = new Tempcode();
-        if (!addon_installed__messaged('twitter_feed_integration_block', $error_msg)) {
+        if (!addon_installed__messaged('twitter_support', $error_msg)) {
             return $error_msg;
         }
 

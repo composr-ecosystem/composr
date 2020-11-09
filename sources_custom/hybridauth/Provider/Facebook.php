@@ -821,7 +821,7 @@ class Facebook extends OAuth2 implements AtomInterface
         $allCategories = $this->getCategories();
 
         unset($allCategories['-']);
-        if (empty($atom->categories)) {
+        if (empty($allCategories)) {
             throw new NotImplementedException('No access to any Facebook page to post to.');
         }
 
@@ -859,6 +859,10 @@ class Facebook extends OAuth2 implements AtomInterface
                 $message = $isHtml ? AtomHelper::htmlToPlainText($field) : $field;
                 break;
             }
+        }
+
+        foreach ($atom->hashTags as $hashTag) {
+            $message .= ' #' . $hashTag;
         }
 
         $params = [];

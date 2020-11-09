@@ -250,7 +250,7 @@ class cms_test_case extends WebTestCase
         require_code('health_check');
         $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
         foreach ($hook_obs as $ob) {
-            list($category_label, $sections) = $ob->run($sections_to_run, $check_context | CHECK_CONTEXT__UNIT_TESTING, false, false, $use_test_data_for_pass);
+            list($category_label, $sections) = $ob->run($sections_to_run, $check_context, false, false, $use_test_data_for_pass);
 
             $sections_run += count($sections);
 

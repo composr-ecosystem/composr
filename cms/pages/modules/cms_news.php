@@ -470,8 +470,8 @@ class Module_cms_news extends Standard_crud_module
             $fields2->attach(form_input_date__cron(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, ($scheduled === null), true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
         }
 
-        require_code('activities');
-        $fields2->attach(get_syndication_option_fields('news'));
+        require_code('syndication');
+        $fields2->attach(get_syndication_option_fields('news', $id !== null));
 
         // Metadata
         require_code('content2');
@@ -647,15 +647,16 @@ class Module_cms_news extends Standard_crud_module
         if (($validated == 1) || (!addon_installed('unvalidated'))) {
             $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => $main_news_category]) !== null);
 
+            require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'news')) { // NB: no category permission check, as syndication choice was explicit, and news categorisation is a bit more complex
                 $privacy_ok = true;
                 if (addon_installed('content_privacy')) {
                     require_code('content_privacy');
-                    $privacy_ok = has_privacy_access('news', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
+                    $privacy_ok = has_privacy_access('news', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id(), $title);
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity($is_blog ? 'news:ACTIVITY_ADD_NEWS_BLOG' : 'news:ACTIVITY_ADD_NEWS', $title, '', '', '_SEARCH:news:view:' . strval($id), '', '', 'news', 1, null, true);
+                    require_code('syndication');
+                    syndicate_content('news', strval($id), [[$is_blog ? 'news:ACTIVITY_ADD_NEWS_BLOG' : 'news:ACTIVITY_ADD_NEWS', get_member()]]);
                 }
             }
         }
@@ -755,13 +756,8 @@ class Module_cms_news extends Standard_crud_module
             save_privacy_form_fields('news', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value('news', 'validated', ['id' => intval($id)]) == 0)) { // Just became validated, syndicate as just added
-            $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => $main_news_category]) !== null);
-
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('news', 'submitter', ['id' => $id]);
-            $activity_title = ($is_blog ? 'news:ACTIVITY_ADD_NEWS_BLOG' : 'news:ACTIVITY_ADD_NEWS');
-            $activity_title_validate = ($is_blog ? 'news:ACTIVITY_VALIDATE_NEWS_BLOG' : 'news:ACTIVITY_VALIDATE_NEWS');
-
+        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'news')) {
                 $privacy_ok = true;
                 if (addon_installed('content_privacy')) {
@@ -769,8 +765,20 @@ class Module_cms_news extends Standard_crud_module
                     $privacy_ok = has_privacy_access('news', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity(($submitter != get_member()) ? $activity_title_validate : $activity_title, $title, '', '', '_SEARCH:news:view:' . strval($id), '', '', 'news', 1, null/*$submitter*/, true);
+                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('news', 'validated', ['id' => $id]) == 0);
+                    $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => $main_news_category]) !== null);
+                    $submitter = $GLOBALS['SITE_DB']->query_select_value('news', 'submitter', ['id' => $id]);
+
+                    $activities = [];
+                    if ($just_validated) {
+                        if ($submitter != get_member()) {
+                            $activities[] = [($is_blog ? 'news:ACTIVITY_VALIDATE_NEWS_BLOG' : 'news:ACTIVITY_VALIDATE_NEWS'), get_member(), $title];
+                        }
+                        $activities[] = [($is_blog ? 'news:ACTIVITY_ADD_NEWS_BLOG' : 'news:ACTIVITY_ADD_NEWS'), $submitter, $title];
+                    }
+
+                    require_code('syndication');
+                    syndicate_content('news', strval($id), $activities);
                 }
             }
         }
@@ -803,6 +811,9 @@ class Module_cms_news extends Standard_crud_module
             require_code('content_privacy2');
             delete_privacy_form_fields('news', strval($id));
         }
+
+        require_code('syndication');
+        unsyndicate_content('news', strval($id));
     }
 
     /**

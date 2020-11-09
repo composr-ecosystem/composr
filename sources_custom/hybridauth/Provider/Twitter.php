@@ -432,17 +432,17 @@ class Twitter extends OAuth1 implements AtomInterface
         $parts = []; // Will be maximum of 2
         if (!empty($atom->title)) {
             $parts[] = $atom->title;
-            if (!empty($atom->url)) {
+            if ((!empty($atom->url)) && (strpos($parts[0], $atom->url) === false)) {
                 $parts[] = $atom->url;
             }
         } elseif (!empty($atom->summary)) {
             $parts[] = AtomHelper::htmlToPlainText($atom->summary);
-            if (!empty($atom->url)) {
+            if ((!empty($atom->url)) && (strpos($parts[0], $atom->url) === false)) {
                 $parts[] = $atom->url;
             }
         } elseif (!empty($atom->content)) {
             $parts[] = AtomHelper::htmlToPlainText($atom->content);
-            if ((AtomHelper::mbStrlen($atom->content) > $maxLength) && (!empty($atom->url))) {
+            if ((!empty($atom->url)) && (strpos($parts[0], $atom->url) === false)) {
                 $parts[] = $atom->url;
             }
         } else {
@@ -471,6 +471,12 @@ class Twitter extends OAuth1 implements AtomInterface
             } else {
                 $maxLength--; // for the ellipsis
                 $status = AtomHelper::mbSubstr($parts[0], 0, $maxLength) . $ellipsis;
+            }
+        }
+
+        foreach ($atom->hashTags as $hashTag) {
+            if (AtomHelper::mbStrlen($status . ' #' . $hashTag) < $maxLength) {
+                $status .= ' #' . $hashTag;
             }
         }
 

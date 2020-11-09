@@ -43,14 +43,36 @@ class Hook_commandr_scheduled_publish_topic
      * Run Commandr hook.
      *
      * @param  array $options The options with which the command was called
-     * @param  string $id Unspecified identifier for the resource behind this scheduled event
+     * @param  string $_id Unspecified identifier for the resource behind this scheduled event
      * @param  array $parameters The json_decoded parameters passed with run_scheduled_action
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return array Array of stdcommand, stdhtml, stdout, and stderr responses
      */
-    public function run($options, $id, $parameters, &$commandr_fs)
+    public function run($options, $_id, $parameters, &$commandr_fs)
     {
+        $id = intval($_id);
+
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN f_posts p ON t.id=p.p_cache_first_post_id', ['t.*', 'p.p_poster'], ['id' => $id], '', 1);
+        if (!array_key_exists(0, $topic_rows)) {
+            return ['', '', do_lang('MISSING_RESOURCE'), ''];
+        }
+
         $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_cache_first_time' => time(), 't_validated' => 1], ['id' => $id], '', 1);
+
+        $topic_row = $topic_rows[0];
+
+        $forum_id = $topic_row['t_forum_id'];
+        $title = $topic_row['t_cache_first_title'];
+        $poster = $topic_row['p_poster'];
+
+        if ($forum_id !== null) {
+            require_code('users2');
+            if ((has_actual_page_access(get_modal_user(), 'forumview')) && (has_category_access(get_modal_user(), 'forums', strval($forum_id)))) {
+                require_code('syndication');
+                syndicate_described_activity('cns:ACTIVITY_ADD_TOPIC', $title, '', '', '_SEARCH:topicview:browse:' . strval($id), '', '', 'cns_forum', 1, $poster);
+            }
+        }
+
         return ['', '', do_lang('SUCCESS'), ''];
     }
 }

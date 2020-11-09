@@ -297,7 +297,7 @@ function _convert_request_data_encodings($known_utf8 = false)
  * @param  ?string $data Data to convert (null: none)
  * @param  string $input_charset Charset to convert from
  * @param  ?string $internal_charset Charset to convert to (null: current encoding)
- * @return string Converted data
+ * @return ?string Converted data (null: $data was null)
  */
 function convert_to_internal_encoding($data, $input_charset, $internal_charset = null)
 {

@@ -1,0 +1,359 @@
+<?php /*
+
+ Composr
+ Copyright (c) ocProducts, 2004-2020
+
+ See docs/LICENSE.md for full licensing information.
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  ocProducts Ltd
+ * @package    activity_feed
+ */
+
+/**
+ * Syndicate human-intended descriptions of activities performed to the internal feed, and external listeners.
+ *
+ * @param  string $language_string_code Language string codename
+ * @param  string $label_1 Label 1 (given as a parameter to the language string codename)
+ * @param  string $label_2 Label 2 (given as a parameter to the language string codename)
+ * @param  string $label_3 Label 3 (given as a parameter to the language string codename)
+ * @param  string $page_link_1 Page-link 1
+ * @param  string $page_link_2 Page-link 2
+ * @param  string $page_link_3 Page-link 3
+ * @param  string $addon Addon that caused the event
+ * @param  BINARY $is_public Whether this post should be public or friends-only
+ * @param  ?MEMBER $member_id Member being written for (null: current member)
+ * @param  boolean $sitewide_too Whether to push this out as a site event if user requested
+ * @param  ?MEMBER $also_involving Member also 'intimately' involved, such as a content submitter who is a friend (null: none)
+ * @return ?AUTO_LINK The activity ID
+ */
+function activity_feed_syndicate_described_activity($language_string_code = '', $label_1 = '', $label_2 = '', $label_3 = '', $page_link_1 = '', $page_link_2 = '', $page_link_3 = '', $addon = '', $is_public = 1, $member_id = null, $sitewide_too = false, $also_involving = null)
+{
+    require_code('activity_feed');
+    require_lang('activity_feed');
+
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+    if (is_guest($member_id)) {
+        return null;
+    }
+
+    $go = [
+        'a_language_string_code' => $language_string_code,
+        'a_label_1' => $label_1,
+        'a_label_2' => $label_2,
+        'a_label_3' => $label_3,
+        'a_is_public' => $is_public,
+    ];
+
+    $stored_id = null;
+
+    // Check if this has been posted previously (within the last 10 minutes) to stop spamming but allow generalised repeat status messages.
+    $test = $GLOBALS['SITE_DB']->query('SELECT a_language_string_code,a_label_1,a_label_2,a_label_3,a_is_public FROM ' . get_table_prefix() . 'activities WHERE a_member_id=' . strval($member_id) . ' AND a_time>' . strval(time() - 600) . ' AND a_time<=' . strval(time()), 1);
+    if ((!array_key_exists(0, $test)) || ($test[0] != $go) || (running_script('execute_temp')) || ($GLOBALS['SEMI_DEV_MODE'])) {
+        // Log the activity
+        $row = $go + [
+            'a_member_id' => $member_id,
+            'a_also_involving' => $also_involving,
+            'a_page_link_1' => $page_link_1,
+            'a_page_link_2' => $page_link_2,
+            'a_page_link_3' => $page_link_3,
+            'a_time' => time(),
+            'a_addon' => $addon,
+        ];
+        if ((get_db_type() != 'xml') || (get_param_integer('keep_testing_logging', 0) == 1)) {
+            $stored_id = $GLOBALS['SITE_DB']->query_insert('activities', $row, true);
+
+            // Update the latest activity file
+            log_newest_activity($stored_id, 1000, true/*We do want to force it, IDs can get out of sync on dev sites*/);
+        }
+
+        // External places, which is built on top of the hybridauth addon
+        if (($is_public == 1) && ($sitewide_too) && (($language_string_code == 'RAW_DUMP') || (!$GLOBALS['IS_ACTUALLY_ADMIN']/*SU means oauth'd user is not intended user*/))) {
+            if (addon_installed('hybridauth')) {
+                require_code('hybridauth_admin');
+                require_lang('hybridauth');
+
+                list($message) = render_activity($row, false);
+
+                $atom = new \Hybridauth\Atom\Atom();
+                $atom->author = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
+                $atom->published = new \DateTime('@' . strval(time()));
+                $atom->updated = new \DateTime('@' . strval(time()));
+                $atom->summary = $message->evaluate();
+                if ($page_link_1 != '') {
+                    $atom->url = page_link_to_url($page_link_1, true);
+                }
+
+                $before_type_strictness = ini_get('ocproducts.type_strictness');
+                cms_ini_set('ocproducts.type_strictness', '0');
+                $before_xss_detect = ini_get('ocproducts.xss_detect');
+                cms_ini_set('ocproducts.xss_detect', '0');
+
+                list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
+
+                $providers = find_all_hybridauth_admin_providers_matching(HYBRIDAUTH__ADVANCEDAPI_INSERT_ATOMS);
+                foreach ($providers as $provider => $info) {
+                    $syndicate_from = explode(',', $info['syndicate_from']);
+                    if (!in_array('activity_feed', $syndicate_from)) {
+                        continue;
+                    }
+
+                    try {
+                        $adapter = $hybridauth->getAdapter($provider);
+                        if (!$adapter->isConnected()) {
+                            continue;
+                        }
+
+                        $adapter->saveAtom($atom);
+                    } catch (Exception $e) {
+                        require_code('failure');
+                        cms_error_log($e->getMessage(), 'error_occurred_api');
+                    }
+                }
+
+                cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
+                cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+            }
+        }
+
+        list($message) = render_activity($row, false);
+        require_code('notifications');
+        $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
+        $displayname = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
+        $subject = do_lang('ACTIVITY_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $username, strip_html($message->evaluate()));
+        $mail = do_notification_lang('ACTIVITY_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($username), ['[semihtml]' . $message->evaluate() . '[/semihtml]', $displayname]);
+        dispatch_notification('activity_feed', strval($member_id), $subject, $mail);
+    }
+
+    return $stored_id;
+}
+
+/**
+ * AJAX script for submitting posts.
+ */
+function activity_feed_handler_script()
+{
+    if (!addon_installed('activity_feed')) {
+        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('activity_feed')));
+    }
+
+    prepare_for_known_ajax_response();
+
+    header('Content-Type: text/xml; charset=' . get_charset());
+
+    $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
+    $response .= '<response><content>';
+
+    $map = [];
+
+    $guest_id = intval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+
+    if (!is_guest(get_member())) {
+        $map['STATUS'] = trim(post_param_string('status', ''));
+
+        if ((post_param_string('zone', '') != '') && ($map['STATUS'] != '') && ($map['STATUS'] != do_lang('activity_feed:TYPE_HERE'))) {
+            comcode_to_tempcode($map['STATUS'], $guest_id, false);
+
+            $map['PRIVACY'] = post_param_string('privacy', 'private');
+
+            if (strlen(strip_tags($map['STATUS'])) < strlen($map['STATUS'])) {
+                $help_zone = get_comcode_zone('userguide_comcode', false);
+                if ($help_zone === null) {
+                    $response .= '<success>0</success><feedback><![CDATA[No HTML allowed. Use Comcode.]]></feedback>';
+                } else {
+                    $cc_guide = build_url(['page' => 'userguide_comcode'], $help_zone);
+                    $response .= '<success>0</success><feedback><![CDATA[No HTML allowed. See <a href="' . escape_html($cc_guide->evaluate()) . '">Comcode Help</a> for info on the alternative.]]></feedback>';
+                }
+            } else {
+                if (strlen($map['STATUS']) > 255) {
+                    $response .= '<success>0</success><feedback>Message is ' . strval(strlen($map['STATUS']) - 255) . ' characters too long</feedback>';
+                } else {
+                    $stored_id = activity_feed_syndicate_described_activity(
+                        'RAW_DUMP',
+                        $map['STATUS'],
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ($map['PRIVACY'] == 'public') ? 1 : 0
+                    );
+
+                    if ($stored_id !== null) {
+                        $response .= '<success>1</success><feedback>Message received.</feedback>';
+                    } else {
+                        $response .= '<success>0</success><feedback>Message already received.</feedback>';
+                    }
+                }
+            }
+        }
+    } else {
+        $response .= '<success>0</success><feedback>' . do_lang('LOGIN_EXPIRED_POST') . '</feedback>';
+    }
+
+    $response .= '</content></response>';
+
+    echo $response;
+
+    exit(); // So auto_append_file cannot run and corrupt our output
+}
+
+/**
+ * AJAX script for refreshing the post list.
+ */
+function activity_feed_updater_script()
+{
+    if (!addon_installed('activity_feed')) {
+        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('activity_feed')));
+    }
+
+    $map = [];
+
+    $max = post_param_integer('max', 10);
+
+    $last_id = post_param_string('last_id', '-1');
+    $mode = post_param_string('mode', 'all');
+
+    require_lang('activity_feed');
+    require_code('activity_feed');
+    require_code('addons');
+
+    $proceed_selection = true; //There are some cases in which even glancing at the database is a waste of precious time.
+
+    $guest_id = intval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+    $viewer_id = intval(get_member()); //We'll need this later anyway.
+
+    $can_remove_others = (has_zone_access($viewer_id, 'adminzone'));
+
+    //Getting the member viewed IDs if available, member viewing if not
+    $member_ids = array_map('intval', explode(',', post_param_string('member_ids', strval($viewer_id))));
+
+    list($proceed_selection, $where_clause) = get_activity_querying_sql($viewer_id, $mode, $member_ids);
+
+    prepare_for_known_ajax_response();
+
+    header('Content-Type: text/xml; charset=' . get_charset());
+
+    $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
+
+    $can_remove_others = (has_zone_access($viewer_id, 'adminzone'));
+
+    if ($proceed_selection === true) {
+        $activities = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'activities WHERE ((' . $where_clause . ') AND id>' . (($last_id == '') ? '-1' : $last_id) . ') ORDER BY a_time DESC', intval($max));
+
+        if (!empty($activities)) {
+            $list_items = '';
+            foreach ($activities as $row) {
+                list($message, $member_avatar, $timestamp, $member_url, $is_public) = render_activity($row);
+
+                $username = $GLOBALS['FORUM_DRIVER']->get_username($row['a_member_id']);
+
+                $list_item = do_template('BLOCK_MAIN_ACTIVITY_FEED_XML', [
+                    '_GUID' => '02dfa8b02040f56d76b783ddb8fb382f',
+                    'LANG_STRING' => 'RAW_DUMP',
+                    'ADDON' => $row['a_addon'],
+                    'ADDON_ICON' => ($row['a_addon'] == '') ? '' : find_addon_icon($row['a_addon']),
+                    'MESSAGE' => $message,
+                    'AVATAR' => $member_avatar,
+                    'MEMBER_ID' => strval($row['a_member_id']),
+                    'USERNAME' => $username,
+                    'TIMESTAMP' => strval($timestamp),
+                    'MEMBER_URL' => $member_url,
+                    'LIID' => strval($row['id']),
+                    'ALLOW_REMOVE' => (($row['a_member_id'] == $viewer_id) || $can_remove_others),
+                    'IS_PUBLIC' => $is_public,
+                ]);
+
+                // We dump our response in CDATA, since that lets us work around the fact that our list elements aren't actually in a list, etc.
+                // However, we allow Comcode but some tags make use of CDATA. Since CDATA can't be nested (as it's a form of comment), we take this
+                // into account by base64 encoding the whole template and decoding it in the browser. We wrap it in some arbitrary XML and a
+                // CDATA tag so that the JavaScript knows what it's received
+                $list_items .= '<listitem id="' . strval($row['id']) . '"><![CDATA[' . base64_encode($list_item->evaluate()) . ']]></listitem>';
+            }
+            $response .= '<response><success>1</success><feedlen>' . strval($max) . '</feedlen><content>' . $list_items . '</content><supp>' . escape_html($where_clause) . '</supp></response>';
+        } else {
+            $response .= '<response><success>2</success><content>NU - Nothing new.</content></response>';
+        }
+    } else {
+        $response .= '<response><success>2</success><content>NU - No feeds to select from.</content></response>';
+    }
+
+    echo $response;
+
+    exit(); // So auto_append_file cannot run and corrupt our output
+}
+
+/**
+ * AJAX script for removing posts.
+ */
+function activity_feed_removal_script()
+{
+    if (!addon_installed('activity_feed')) {
+        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('activity_feed')));
+    }
+
+    $is_guest = false; // Can't be doing with over-complicated SQL breakages. Weed it out.
+    $guest_id = intval($GLOBALS['FORUM_DRIVER']->get_guest_id());
+    $viewer_id = intval(get_member()); //We'll need this later anyway.
+    if ($guest_id == $viewer_id) {
+        $is_guest = true;
+    }
+
+    $can_remove_others = (has_zone_access($viewer_id, 'adminzone'));
+
+    prepare_for_known_ajax_response();
+
+    header('Content-Type: text/xml; charset=' . get_charset());
+
+    $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
+    $response .= '<response>';
+
+    $stat_id = post_param_integer('removal_id');
+    $stat_owner = $GLOBALS['SITE_DB']->query_select_value_if_there('activities', 'a_member_id', ['id' => $stat_id]);
+
+    if (($is_guest !== true) && ($stat_owner !== null)) {
+        if (($stat_owner != $viewer_id) && ($can_remove_others !== true)) {
+            $response .= '<success>0</success><err>perms</err>';
+            $response .= '<feedback>You do not have permission to remove this status message.</feedback><status_id>' . strval($stat_id) . '</status_id>';
+        } else { // I suppose we can proceed now.
+            $GLOBALS['SITE_DB']->query_delete('activities', ['id' => $stat_id], '', 1);
+
+            $response .= '<success>1</success><feedback>Message deleted.</feedback><status_id>' . strval($stat_id) . '</status_id>';
+        }
+    } elseif ($stat_owner === null) {
+        $response .= '<success>0</success><err>missing</err><feedback>Missing ID for status removal or ID does not exist.</feedback>';
+    } else {
+        $response .= '<success>0</success><feedback>Login expired, you must log in again to post</feedback>';
+    }
+
+    $response .= '</response>';
+
+    echo $response;
+
+    exit(); // So auto_append_file cannot run and corrupt our output
+}
+
+/**
+ * Maintains a text file in data_custom. This contains the latest activity's ID.
+ * Since the JavaScript polls for updates, it can check against this before running any PHP.
+ *
+ * @param  integer $id The ID we are going to write to the file
+ * @param  integer $timeout Our timeout in milliseconds (how long we should keep trying). Default: 1000
+ * @param  boolean $force Whether to force this ID to be the newest, even if it's less than the current value
+ */
+function log_newest_activity($id, $timeout = 1000, $force = false)
+{
+    $file_path = get_custom_file_base() . '/data_custom/latest_activity.bin';
+
+    $old_id = @cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
+    if (($force) || ($old_id === false) || (intval($old_id) < $id)) {
+        require_code('files');
+        cms_file_put_contents_safe($file_path, strval($id), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    }
+}

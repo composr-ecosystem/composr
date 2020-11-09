@@ -163,7 +163,7 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
     if (!$anonymous) {
         require_code('users2');
         if (has_actual_page_access(get_modal_user(), 'points')) {
-            require_code('activities');
+            require_code('syndication');
             syndicate_described_activity((($recipient_id === null) || (is_guest($recipient_id))) ? 'points:_ACTIVITY_GIVE_POINTS' : 'points:ACTIVITY_GIVE_POINTS', $reason, integer_format($amount), '', '_SEARCH:points:member:' . strval($recipient_id), '', '', 'points', 1, null, false, $recipient_id);
         }
     }

@@ -86,7 +86,11 @@ class Hook_addon_registry_hybridauth
      */
     public function get_description()
     {
-        return 'This addon integrates Hybridauth, to add many social network (etc) login options to your site (Facebook, Google, Apple, etc). It also may be used as an admin backend to configuring content integration with such services, with included support for Atom feed generation and content display.
+        return 'This addon integrates Hybridauth, providing a number of features:
+1) Adds many social network (etc) login options to your site (Facebook, Google, Apple, etc)
+2) Allows pulling in content from some services, with included support for Atom feed generation and content display using a block
+3) Allows syndicating (pushing) content to some services
+4) Allows syndicating (pushing) activities to some services (see the activity_feed addon)
 
 Hybridauth essentially implements the OAuth1, OAuth2, OpenID Connect, and OpenID standards, and proprietary APIs, necessary to unify all the different login integrations of different services.
 
@@ -298,10 +302,12 @@ The settings are configured in the same way as member login. However, if you nee
 
 After configuring XML you establish a log in from Admin Zone > Setup > Setup API access.
 
-Out of the box the following integrations exist, for providers supporting the Hybridauth Atom API. At the time of writing:
+Out of the box the following integrations exist, for providers supporting Hybridauth Atom API read operations. At the time of writing:
  - Facebook
  - Instagram
  - Twitter
+
+Many providers have an app review process for certain features that broadly overlap with the admin integration here. However, as you are authorising against your own account (which added the app), usually app reviews will not actually be required.
 
 [title="3"]Atom feed display[/title]
 
@@ -311,10 +317,48 @@ There are a couple of extra GET parameters to filter the feed:
  - [tt]includeContributedContent=0|1[/tt] -- whether to include 3rd party content posted on the provider feed (if relevant)
  - [tt]categoryFilter=<categoryFilter>[/tt] -- pass a category ID to filter to a specific category (what categories are depends on the provider; for Facebook blank is the personal feed and a numeric value is for a Facebook page you administer)
 
-[title="3"]Content display[/title]
+[title="3"]Content display (pull)[/title]
 
 The [tt]main_hybridauth_admin_atoms[/tt] block allows you to display content from a provider in a way similar to the [tt]main_rss[/tt] or [tt]main_news[/tt] blocks.
 A lot of data is passed into the templates for a high degree of flexibility.
+
+[title="3"]Syndication (push)[/title]
+
+You can syndicate content (as much of the full content as the provider can handle, combined with a link back to the original content), as well as activities (logs of site actions with a link back to what the action happened on).
+
+Out of the box the following integrations exist, for providers supporting Hybridauth Atom API write operations. At the time of writing:
+ - Facebook
+ - Twitter
+
+It needs to be enabled in the XML, each provider needs to specifies what addons/content-types it can syndicate from:
+[code="XML"]
+<hybridauth>
+    ...
+    <Twitter>
+        <composr-config syndicate_from="news,image,video,activity_feed" syndicate_from_by_default="news" />
+    </Twitter>
+    ...
+</hybridauth>
+[/code]
+
+In this example we are configuring Twitter to syndicate from:
+ - The [tt]news[/tt] addon (content syndication)
+ - The [tt]image[/tt] content-type (content syndication)
+ - The [tt]video[/tt] content-type (content syndication)
+ - The [tt]activity_feed[/tt] addon (this is how you enable activities syndication, which requires the non-bundled [tt]activity_feed[/tt] addon)
+
+And we are saying that by default [tt]news[/tt] will be pre-selected for content syndication (others will need manually selecting on the content add/edit form).
+
+At the time of writing, content syndication is supported for the following content-types:
+ - [tt]catalogue_entry[/tt]
+ - [tt]download[/tt]
+ - [tt]event[/tt]
+ - [tt]image[/tt] (from the [tt]galleries[/tt] addon)
+ - [tt]news[/tt]
+ - [tt]quiz[/tt]
+ - [tt]video[/tt] (from the [tt]galleries[/tt] addon)
+
+Note that if content syndication is supported for a content-type, activity syndication will be un-selected by default, to avoid unnecessary noise.
 ';
     }
 
@@ -341,9 +385,11 @@ A lot of data is passed into the templates for a high degree of flexibility.
                 'commandr',
                 'PHP curl extension',
                 'PHP sessions extension',
-                'PHP XML extension',
+                'PHP xml extension',
             ],
-            'recommends' => [],
+            'recommends' => [
+                'activity_feed',
+            ],
             'conflicts_with' => [],
         ];
     }
@@ -396,15 +442,20 @@ A lot of data is passed into the templates for a high degree of flexibility.
             'sources_custom/hooks/systems/login_providers/hybridauth.php',
             'sources_custom/users_active_actions.php',
             'sources_custom/hooks/systems/startup/hybridauth.php',
-            'adminzone/modules/minimodules_custom/admin_hybridauth.php',
+            'adminzone/pages/minimodules_custom/admin_hybridauth.php',
             'sources_custom/hooks/systems/page_groupings/hybridauth.php',
+            'sources_custom/hooks/systems/actionlog/hybridauth.php',
 
-            'sources_custom/hooks/systems/cron/hybridauth_admin.php',
+            'data_custom/hybridauth_admin.php',
+            'data_custom/hybridauth_admin_atom.php',
             'sources_custom/hybridauth_admin.php',
             'sources_custom/hybridauth_admin_storage.php',
-            'data_custom/hybridauth_admin.php',
+            'sources_custom/blocks/main_hybridauth_admin_atoms.php',
+            'sources_custom/hooks/systems/cron/hybridauth_admin.php',
             'sources_custom/hooks/systems/oauth_screen_sup/hybridauth_admin.php',
-            'data_custom/hybridauth_admin_atom.php',
+            'sources_custom/hooks/systems/syndication/hybridauth_admin.php',
+            'themes/default/templates_custom/BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS.tpl',
+
             'sources_custom/hybridauth/Adapter/AtomInterface.php',
             'sources_custom/hybridauth/Atom/.htaccess',
             'sources_custom/hybridauth/Atom/Atom.php',
@@ -415,9 +466,6 @@ A lot of data is passed into the templates for a high degree of flexibility.
             'sources_custom/hybridauth/Atom/Author.php',
             'sources_custom/hybridauth/Atom/Filter.php',
             'sources_custom/hybridauth/Atom/index.html',
-            'sources_custom/blocks/main_hybridauth_admin_atoms.php',
-            'themes/default/templates_custom/BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS.tpl',
-
             'sources_custom/hybridauth/autoload.php',
             'sources_custom/hybridauth/User/Contact.php',
             'sources_custom/hybridauth/User/Activity.php',
@@ -519,6 +567,15 @@ A lot of data is passed into the templates for a high degree of flexibility.
             'sources_custom/hybridauth/index.html',
         ];
     }
+
+    /**
+     * Uninstall the addon.
+     */
+    public function uninstall()
+    {
+        $GLOBALS['SITE_DB']->drop_table_if_exists('hybridauth_content_map');
+    }
+
     /**
      * Install the addon.
      *
@@ -526,7 +583,17 @@ A lot of data is passed into the templates for a high degree of flexibility.
      */
     public function install($upgrade_from = null)
     {
-        // LEGACY: Transfer old facebook scheme to a Hybridauth provider
-        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'Facebook'], ['m_password_compat_scheme' => 'facebook']);
+        if ($upgrade_from === null) {
+            // LEGACY: Transfer old facebook scheme to a Hybridauth provider
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'Facebook'], ['m_password_compat_scheme' => 'facebook']);
+
+            $GLOBALS['SITE_DB']->create_table('hybridauth_content_map', [
+                'h_content_type' => '*ID_TEXT',
+                'h_content_id' => '*ID_TEXT',
+                'h_provider' => '*ID_TEXT',
+                'h_provider_id' => 'SHORT_TEXT',
+                'h_sync_time' => 'TIME',
+            ]);
+        }
     }
 }

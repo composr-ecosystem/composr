@@ -612,8 +612,8 @@ class Module_cms_calendar extends Standard_crud_module
             $fields2->attach(form_input_float(do_lang_tempcode('REMINDER_TIME'), do_lang_tempcode('DESCRIPTION_REMINDER_TIME'), 'hours_before', 1.0, true));
         }
 
-        require_code('activities');
-        $fields2->attach(get_syndication_option_fields('event'));
+        require_code('syndication');
+        $fields2->attach(get_syndication_option_fields('event', $id !== null));
 
         // Metadata
         require_code('content2');
@@ -997,6 +997,7 @@ class Module_cms_calendar extends Standard_crud_module
         }
 
         if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'calendar')) && (has_category_access(get_modal_user(), 'calendar', strval($type)))) {
                 $privacy_ok = true;
                 if (addon_installed('content_privacy')) {
@@ -1009,8 +1010,8 @@ class Module_cms_calendar extends Standard_crud_module
                         $date_range = do_lang('DOES_RECUR', $date_range);
                     }
 
-                    require_code('activities');
-                    syndicate_described_activity('calendar:ACTIVITY_CALENDAR_EVENT', $title, $date_range, '', '_SEARCH:calendar:view:' . strval($id), '', '', 'calendar', 1, null, true);
+                    require_code('syndication');
+                    syndicate_content('event', strval($id), [['calendar:ACTIVITY_CALENDAR_EVENT', get_member(), $title, $date_range]]);
                 }
             }
         }
@@ -1140,7 +1141,8 @@ class Module_cms_calendar extends Standard_crud_module
             save_privacy_form_fields('event', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
+        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'calendar')) && (has_category_access(get_modal_user(), 'calendar', strval($type)))) {
                 $privacy_ok = true;
                 if (addon_installed('content_privacy')) {
@@ -1148,15 +1150,24 @@ class Module_cms_calendar extends Standard_crud_module
                     $privacy_ok = has_privacy_access('event', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    list($date_range) = get_calendar_event_first_date($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences);
-                    if ($recurrence != '') {
-                        $date_range = do_lang('DOES_RECUR', $date_range);
-                    }
-
+                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'validated', ['id' => $id]) == 0);
                     $submitter = $GLOBALS['SITE_DB']->query_select_value('calendar_events', 'e_submitter', ['id' => $id]);
 
-                    require_code('activities');
-                    syndicate_described_activity(($submitter != get_member()) ? 'calendar:ACTIVITY_VALIDATE_CALENDAR_EVENT' : 'calendar:ACTIVITY_CALENDAR_EVENT', $title, $date_range, '', '_SEARCH:calendar:view:' . strval($id), '', '', 'calendar', 1, null/*$submitter*/, true);
+                    $activities = [];
+                    if ($just_validated) {
+                        list($date_range) = get_calendar_event_first_date($timezone, $do_timezone_conv, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences);
+                        if ($recurrence != '') {
+                            $date_range = do_lang('DOES_RECUR', $date_range);
+                        }
+
+                        if ($submitter != get_member()) {
+                            $activities[] = ['calendar:ACTIVITY_VALIDATE_CALENDAR_EVENT', get_member(), $title, $date_range];
+                        }
+                        $activities[] = ['calendar:ACTIVITY_CALENDAR_EVENT', $submitter, $title, $date_range];
+                    }
+
+                    require_code('syndication');
+                    syndicate_content('event', strval($id), $activities);
                 }
             }
         }
@@ -1213,6 +1224,9 @@ class Module_cms_calendar extends Standard_crud_module
             require_code('content_privacy2');
             delete_privacy_form_fields('event', strval($id));
         }
+
+        require_code('syndication');
+        unsyndicate_content('event', strval($id));
     }
 
     /**

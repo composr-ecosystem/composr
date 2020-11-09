@@ -29,7 +29,7 @@ class Hook_config_twitter_allow_signups
             'human_name' => 'TWITTER_ALLOW_SIGNUPS',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
-            'group' => 'TWITTER_SYNDICATION',
+            'group' => 'TWITTER_OAUTH',
             'explanation' => 'CONFIG_OPTION_twitter_allow_signups',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

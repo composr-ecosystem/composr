@@ -342,8 +342,8 @@ function set_poll($id)
 
     require_code('users2');
     if (has_actual_page_access(get_modal_user(), 'polls')) {
-        require_code('activities');
-        syndicate_described_activity('polls:ACTIVITY_CHOOSE_POLL', get_translated_text($question), '', '', '_SEARCH:polls:view:' . strval($id), '', '', 'polls');
+        require_code('syndication');
+        syndicate_described_activity('polls:ACTIVITY_CHOOSE_POLL', get_translated_text($question), '', '', '_SEARCH:polls:view:' . strval($id), '', '', 'polls', 1, null, true);
     }
 
     if ((!is_guest($submitter)) && (addon_installed('points'))) {

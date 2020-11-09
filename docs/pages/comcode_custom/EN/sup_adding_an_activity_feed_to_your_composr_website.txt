@@ -7,7 +7,7 @@ There are a range of core and additional features in Composr which social media 
 
 The activity feed addon for Composr is designed for you to be able to display a list of all the activities which are happening on your site.
 
-The addon comes as two main blocks. One of which displays the site activities ([tt]main_activities[/tt]) and one which allows you to post new activities ([tt]main_activities_state[/tt]). There are a number of configurable options for the [tt]main_activities[/tt] block and it can be used to display a range of activities configured and limited to all activities or those from specific members. These blocks will be added to member profiles by default but can also be added to other pages.
+The addon comes as two main blocks. One of which displays the site activities ([tt]main_activity_feed[/tt]) and one which allows you to post new activities ([tt]main_activity_feed_state[/tt]). There are a number of configurable options for the [tt]main_activity_feed[/tt] block and it can be used to display a range of activities configured and limited to all activities or those from specific members. These blocks will be added to member profiles by default but can also be added to other pages.
 
 If the chat feature is installed onto your site, &ldquo;status" posts can be restricted to show only for friends.
 
@@ -32,7 +32,7 @@ The two blocks are now added to the Block construction assistant.
 [title="2"]Setting up the main activities block[/title]
 
 [surround]
-[media width="150" description="The [tt]main_activities[/tt] block in the Block construction assistant" float="right"]data_custom/images/docs/sup_adding_an_activity_feed_to_your_composr_website/ec3f75e25894405dc063cedbb45badfe.png[/media]
+[media width="150" description="The [tt]main_activity_feed[/tt] block in the Block construction assistant" float="right"]data_custom/images/docs/sup_adding_an_activity_feed_to_your_composr_website/ec3f75e25894405dc063cedbb45badfe.png[/media]
 There are six main fields you can fill in when adding this block to a page. These are:
 [list]
 [*] [b]Max[/b] -- The maximum number of activities which will be displayed. This defaults to 10
@@ -54,7 +54,7 @@ That said, you probably won't want to bother as by default it already is added o
 
 You can of course use the Block construction assistant but if you wish to add the block manually for any reason an example of the code can be found below:
 [code="Comcode"]
-[block="Activities" max="10" grow="0" mode="all"]main_activities[/block]
+[block="Activities" max="10" grow="0" mode="all"]main_activity_feed[/block]
 [/code]
 
 This will display a block with the title Activities and will contain the last 10 activities. Any old activities will fall off the bottom of the block once more are added beyond the original 10 (grow="0") and there is no filtering on what is shown. (mode="all").
@@ -64,7 +64,7 @@ This will display a block with the title Activities and will contain the last 10
 To manually add the status update block you can use the following code or the Block construction assistant
 
 [code="Comcode"]
-[block="Update your status"]main_activities_state[/block]
+[block="Update your status"]main_activity_feed_state[/block]
 [/code]
 
 This will add a status update block with the title "Update your status".

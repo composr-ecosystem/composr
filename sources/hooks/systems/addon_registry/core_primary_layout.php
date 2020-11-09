@@ -256,7 +256,7 @@ class Hook_addon_registry_core_primary_layout
      */
     protected function do_mail_template_preview($tpl)
     {
-        $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), [lorem_phrase(), lorem_paragraph(), placeholder_url(), lorem_phrase(), placeholder_id(), lorem_phrase()]));
+        $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), [lorem_phrase(), lorem_paragraph(), static_evaluate_tempcode(placeholder_url()), lorem_phrase(), placeholder_id(), lorem_phrase()]));
 
         require_css('email');
 

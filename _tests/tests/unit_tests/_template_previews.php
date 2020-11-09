@@ -38,6 +38,7 @@ class _template_previews_test_set extends cms_test_case
         }
 
         cms_disable_time_limit();
+        disable_php_memory_limit();
 
         $_GET['keep_has_js'] = '0';
         push_query_limiting(false);

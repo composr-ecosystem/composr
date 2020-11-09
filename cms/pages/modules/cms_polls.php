@@ -296,6 +296,9 @@ class Module_cms_polls extends Standard_crud_module
             $fields->attach(form_input_tick(do_lang_tempcode('IMMEDIATE_USE'), do_lang_tempcode(($question == '') ? 'DESCRIPTION_IMMEDIATE_USE_ADD' : 'DESCRIPTION_IMMEDIATE_USE'), 'validated', $current));
         }
 
+        require_code('syndication');
+        $fields->attach(get_syndication_option_fields('poll', $id !== null));
+
         // Metadata
         require_code('feedback2');
         $feedback_fields = feedback_fields($this->content_type, $allow_rating == 1, $allow_comments == 1, $allow_trackbacks == 1, false, $notes, $allow_comments == 2, false, true, false);
@@ -407,8 +410,9 @@ class Module_cms_polls extends Standard_crud_module
         }
 
         if ($current == 1) {
+            require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'polls')) {
-                require_code('activities');
+                require_code('syndication');
                 syndicate_described_activity('polls:ACTIVITY_ADD_POLL', $question, '', '', '_SEARCH:polls:view:' . strval($id), '', '', 'polls');
             }
         }
@@ -490,8 +494,9 @@ class Module_cms_polls extends Standard_crud_module
         if (($current == 1) && ($GLOBALS['SITE_DB']->query_select_value('poll', 'is_current', ['id' => $id]) == 0)) { // Just became validated, syndicate as just added
             $submitter = $GLOBALS['SITE_DB']->query_select_value('poll', 'submitter', ['id' => $id]);
 
+            require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'polls')) {
-                require_code('activities');
+                require_code('syndication');
                 syndicate_described_activity('polls:ACTIVITY_ADD_POLL', $question, '', '', '_SEARCH:polls:view:' . strval($id), '', '', 'polls', 1, null/*$submitter*/);
             }
         }

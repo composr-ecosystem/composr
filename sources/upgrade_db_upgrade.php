@@ -353,6 +353,21 @@ function version_specific()
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_name=\'cms_payment_card_type\' WHERE cf_name=\'cms_payment_type\'');
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields SET cf_type=\'year_month\' WHERE (cf_name=\'cms_payment_card_start_date\' OR cf_name=\'cms_payment_card_expiry_date\')');
             }
+
+            $remap = [
+                'main_activities' => 'main_activity_feed',
+                'main_activities_state' => 'main_activity_feed_state',
+            ];
+            foreach ($remap as $from => $to) {
+                $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $to]);
+                $GLOBALS['SITE_DB']->query_update('blocks', ['block_name' => $to], ['block_name' => $from], '', 1);
+            }
+
+            // File replacements
+            $reps = [
+                '#main_activities#' => 'main_activity_feed',
+            ];
+            perform_search_replace($reps);
         }
 
         set_value('version', float_to_raw_string($version_files, intval($version_database), true));

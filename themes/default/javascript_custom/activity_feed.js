@@ -42,7 +42,7 @@
         },
 
         textareaFocus: function (e, textarea) {
-            if (textarea.value.trim() === '{!activities:TYPE_HERE;^}') {
+            if (textarea.value.trim() === '{!activity_feed:TYPE_HERE;^}') {
                 textarea.value = '';
                 textarea.classList.add('field-input-filled');
                 textarea.classList.remove('field-input-non-filled');
@@ -51,7 +51,7 @@
         },
         textareaBlur: function (e, textarea) {
             if (textarea.value.trim() === '') {
-                textarea.value = '{!activities:TYPE_HERE;^}';
+                textarea.value = '{!activity_feed:TYPE_HERE;^}';
                 textarea.classList.remove('field-input-filled');
                 textarea.classList.add('field-input-non-filled');
             }
@@ -78,13 +78,13 @@
                 e.preventDefault();
             }
 
-            if ((subjectText === '') || (subjectText === '{!activities:TYPE_HERE;^}')) {
+            if ((subjectText === '') || (subjectText === '{!activity_feed:TYPE_HERE;^}')) {
                 this.notificationEl.className = 'update_error';
-                this.notificationEl.textContent = '{!activities:PLEASE_ENTER_STATUS;^}';
+                this.notificationEl.textContent = '{!activity_feed:PLEASE_ENTER_STATUS;^}';
             } else {
                 var view = this;
                 jQuery.ajax({
-                    url: '{$FIND_SCRIPT_NOHTTP;,activities_handler}' + $cms.keep(true),
+                    url: '{$FIND_SCRIPT_NOHTTP;,activity_feed_handler}' + $cms.keep(true),
                     type: 'POST',
                     data: $dom.serialize(form),
                     cache: false,
@@ -95,7 +95,7 @@
 
                         if ((textStatus !== 'success') || !jqXHR.responseXML) {
                             view.notificationEl.className = 'update_error';
-                            view.notificationEl.textContent = '{!activities:WENT_WRONG;^}';
+                            view.notificationEl.textContent = '{!activity_feed:WENT_WRONG;^}';
                             $dom.hide(view.notificationEl);
 
                             $dom.fadeIn(view.notificationEl, 1200).then(function () {
@@ -131,14 +131,14 @@
                             $dom.fadeIn(view.notificationEl, 1200).then(function () {
                                 $dom.fadeOut(view.notificationEl, 1200).then(function () {
                                     view.notificationEl.className = 'update_success';
-                                    view.notificationEl.textContent = '254 {!activities:CHARACTERS_LEFT;^}';
+                                    view.notificationEl.textContent = '254 {!activity_feed:CHARACTERS_LEFT;^}';
                                     $dom.fadeIn(view.notificationEl, 1200);
 
                                     var textareaParentEl = view.textarea.parentElement;
 
                                     $dom.height(textareaParentEl, $dom.height(textareaParentEl));
 
-                                    view.textarea.value = '{!activities:TYPE_HERE;^}';
+                                    view.textarea.value = '{!activity_feed:TYPE_HERE;^}';
                                     view.textarea.classList.remove('field-input-filled');
                                     view.textarea.classList.add('field-input-non-filled');
 
@@ -159,10 +159,10 @@
 
             if (charCount < 255) {
                 this.notificationEl.className = 'update_success';
-                this.notificationEl.textContent = (254 - charCount) + ' {!activities:CHARACTERS_LEFT;^}';
+                this.notificationEl.textContent = (254 - charCount) + ' {!activity_feed:CHARACTERS_LEFT;^}';
             } else {
                 this.notificationEl.className = 'update_error';
-                this.notificationEl.textContent = (charCount - 254) + ' {!activities:CHARACTERS_TOO_MANY;^}';
+                this.notificationEl.textContent = (charCount - 254) + ' {!activity_feed:CHARACTERS_TOO_MANY;^}';
 
             }
         }
@@ -221,7 +221,7 @@
                         window.latestActivity = parseInt(data);
 
                         // Now grab whatever updates are available (this is NOT pagination, it's checking for updates and doesn't use the block code)
-                        var url = '{$FIND_SCRIPT_NOHTTP;,activities_updater}' + $cms.keep(true),
+                        var url = '{$FIND_SCRIPT_NOHTTP;,activity_feed_updater}' + $cms.keep(true),
                             listElements = jQuery('li', '#activities-feed'),
                             lastId = ((listElements.attr('id') == null) ? '-1' : listElements.attr('id').replace(/^activity-/, '')),
                             postVal = 'last_id=' + lastId + '&mode=' + window.activitiesMode + '&max=' + window.activitiesFeedMax;
@@ -311,10 +311,10 @@
 
     function sUpdateRemove(event, id) {
         $cms.ui.confirm(
-            '{!activities:DELETE_CONFIRM;^}',
+            '{!activity_feed:DELETE_CONFIRM;^}',
             function (result) {
                 if (result) {
-                    var url = '{$FIND_SCRIPT_NOHTTP;,activities_removal}' + $cms.keep(true);
+                    var url = '{$FIND_SCRIPT_NOHTTP;,activity_feed_removal}' + $cms.keep(true);
 
                     var postVal = 'removal_id=' + id;
                     postVal += '&csrf_token=' + encodeURIComponent($cms.getCsrfToken()); // For CSRF prevention

@@ -367,7 +367,7 @@ function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $
     log_it('FILEDUMP_UPLOAD', $filename, $subpath);
     require_code('users2');
     if (has_actual_page_access(get_modal_user(), 'filedump', get_module_zone('filedump'))) {
-        require_code('activities');
+        require_code('syndication');
         syndicate_described_activity('filedump:ACTIVITY_FILEDUMP_UPLOAD', $subpath . '/' . $filename, '', '', '', '', '', 'filedump');
     }
 

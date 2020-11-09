@@ -289,7 +289,7 @@ class ForumEmailIntegration extends EmailIntegration
 
         require_code('users2');
         if ((has_actual_page_access(get_modal_user(), 'forumview')) && (has_category_access(get_modal_user(), 'forums', strval($this->forum_id)))) {
-            require_code('activities');
+            require_code('syndication');
             syndicate_described_activity($is_starter ? 'cns:ACTIVITY_ADD_TOPIC' : 'cns:ACTIVITY_ADD_POST_IN', $title, '', '', '_SEARCH:topicview:browse:' . strval($topic_id) . '#post_' . strval($post_id), '', '', 'cns_forum', 1, $member_id);
         }
 

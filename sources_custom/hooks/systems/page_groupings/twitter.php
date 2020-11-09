@@ -32,7 +32,7 @@ class Hook_page_groupings_twitter
         }
 
         return [
-            ['setup', 'links/twitter', ['twitter_oauth', [], get_page_zone('twitter_oauth', false, 'adminzone', 'minimodules')], do_lang_tempcode('twitter:TWITTER_SYNDICATION'), 'twitter:DOC_TWITTER_SYNDICATION'],
+            ['setup', 'links/twitter', ['twitter_oauth', [], get_page_zone('twitter_oauth', false, 'adminzone', 'minimodules')], do_lang_tempcode('twitter:TWITTER_OAUTH'), 'twitter:DOC_TWITTER_OAUTH'],
         ];
     }
 }

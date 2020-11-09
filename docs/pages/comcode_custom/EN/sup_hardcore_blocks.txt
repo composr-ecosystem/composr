@@ -35,7 +35,7 @@ This section is a short example-driven tutorial on creating a new Composr block 
   - [url="http://en.wikipedia.org/wiki/Kate_%28text_editor%29" target="_blank"]Kate[/url] (Linux, Windows, Mac OSX)
   - [url="http://en.wikipedia.org/wiki/Metapad" target="_blank"]MetaPad[/url] (Windows)
   - [url="http://en.wikipedia.org/wiki/Notepad%2B%2B" target="_blank"]Notepad++[/url] (Windows)
-  - [url="http://en.wikipedia.org/wiki/Notepad2" target="_blank"]Notepad2[/url] (Windows)
+  - [url="https://notepad2.com/" target="_blank"]Notepad2[/url] (Windows)
  - A working Composr installation (see the [page="docs:tutorials"]Composr documentation[/page] on how to get up and running). This doesn't necessarily have to be a live website, for example it could be installed on your home computer and only accessible to your home network.
  - Some HTML you would like to reference from inside Composr. Usually you can find lots of examples of this kind of thing under names like "embed code", "blog widget" and that kind of thing. It should be in the [url="http://en.wikipedia.org/wiki/HTML" target="_blank"]HTML[/url] format. For this example I'm using some code from the [url="http://www.osm.org" target="_blank"]OpenStreetMap project[/url], which I'll describe below.
 

@@ -55,8 +55,6 @@ if ((empty($get)) && (empty($_POST))) {
     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
 }
 
-require_code('hybridauth/autoload');
-
 list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
 
 $provider = get_param_string('provider');

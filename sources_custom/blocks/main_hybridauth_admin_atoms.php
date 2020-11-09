@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    google_search
+ * @package    hybridauth
  */
 
 /**
@@ -90,8 +90,6 @@ PHP;
         $before_xss_detect = ini_get('ocproducts.xss_detect');
         cms_ini_set('ocproducts.xss_detect', '0');
 
-        require_code('hybridauth/autoload');
-
         list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
 
         if (empty($map['provider'])) {
@@ -112,20 +110,20 @@ PHP;
 
         $filter = new Hybridauth\Atom\Filter();
         $filter->categoryFilter = $category_filter;
-        $enclosureTypeFilter = null;
+        $enclosure_type_filter = null;
         if (($require_images) || ($require_videos) || ($require_binaries)) {
-            $enclosureTypeFilter = 0;
+            $enclosure_type_filter = 0;
             if ($require_images) {
-                $enclosureTypeFilter += Hybridauth\Atom\Enclosure::ENCLOSURE_IMAGE;
+                $enclosure_type_filter += Hybridauth\Atom\Enclosure::ENCLOSURE_IMAGE;
             }
             if ($require_videos) {
-                $enclosureTypeFilter += Hybridauth\Atom\Enclosure::ENCLOSURE_VIDEO;
+                $enclosure_type_filter += Hybridauth\Atom\Enclosure::ENCLOSURE_VIDEO;
             }
             if ($require_binaries) {
-                $enclosureTypeFilter += Hybridauth\Atom\Enclosure::ENCLOSURE_BINARY;
+                $enclosure_type_filter += Hybridauth\Atom\Enclosure::ENCLOSURE_BINARY;
             }
         }
-        $filter->enclosureTypeFilter = $enclosureTypeFilter;
+        $filter->enclosureTypeFilter = $enclosure_type_filter;
         $filter->includeContributedContent = $include_contributed_content;
         $filter->includePrivate = $include_private;
 
@@ -272,7 +270,7 @@ PHP;
         ]);
     }
 
-    function convert_charset($str)
+    protected function convert_charset($str)
     {
         return convert_to_internal_encoding($str, 'utf-8');
     }

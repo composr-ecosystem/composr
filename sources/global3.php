@@ -3745,7 +3745,7 @@ function mixed()
  *
  * @param  ID_TEXT $type The type of resource (e.g. download)
  * @param  ID_TEXT $id The ID of the resource
- * @return array A pair: The first element is the meta keyword string for the specified resource, and the other is the meta description string
+ * @return array A tuple: The first element is the meta keyword string for the specified resource, the second is the meta description string, the third is meta keywords that are for syndication only
  */
 function seo_meta_get_for($type, $id)
 {
@@ -3756,14 +3756,19 @@ function seo_meta_get_for($type, $id)
 
     $where = ['meta_for_type' => $type, 'meta_for_id' => $id];
 
-    $cache = ['', ''];
+    $cache = ['', '', ''];
 
     $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword', 'id'], $where, (get_db_type() == 'xml') ? ('ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword')) : 'ORDER BY id');
     foreach ($rows as $row) {
         if ($cache[0] != '') {
             $cache[0] .= ',';
         }
-        $cache[0] .= get_translated_text($row['meta_keyword']);
+        $keyword = get_translated_text($row['meta_keyword']);
+        if (substr($keyword, 0, 1) == '#') {
+            $keyword = substr($keyword, 1);
+            $cache[2] .= $keyword;
+        }
+        $cache[0] .= $keyword;
     }
 
     $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', ['meta_description'], $where, '', 1);

@@ -2047,8 +2047,8 @@ function add_gallery_media_wrap($url, $cat, $member_id, $allow_rating, $allow_co
                 $privacy_ok = has_privacy_access('video', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
             }
             if ($privacy_ok) {
-                require_code('activities');
-                syndicate_described_activity('galleries:ACTIVITY_ADD_VIDEO', ($title == '') ? basename($url) : $title, '', '', '_SEARCH:galleries:video:' . strval($id), '', '', 'galleries');
+                require_code('syndication');
+                syndicate_content('video', strval($id), [['galleries:ACTIVITY_ADD_VIDEO', get_member(), ($title == '') ? basename($url) : $title]]);
             }
         }
 
@@ -2088,8 +2088,8 @@ function add_gallery_media_wrap($url, $cat, $member_id, $allow_rating, $allow_co
                 $privacy_ok = has_privacy_access('image', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
             }
             if ($privacy_ok) {
-                require_code('activities');
-                syndicate_described_activity('galleries:ACTIVITY_ADD_IMAGE', ($title == '') ? basename($url) : $title, '', '', '_SEARCH:galleries:image:' . strval($id), '', '', 'galleries');
+                require_code('syndication');
+                syndicate_content('image', strval($id), [['galleries:ACTIVITY_ADD_IMAGE', get_member(), ($title == '') ? basename($url) : $title]]);
             }
         }
 

@@ -100,4 +100,12 @@ class Atom
      * @var ?string
      */
     public $url;
+
+    /**
+     * Standalone hashtags, in precedence order. No leading "#".
+     * Likely to only work for saving, as detecting standalone vs in-sentence is usually not possible.
+     *
+     * @var array
+     */
+    public $hashTags = [];
 }

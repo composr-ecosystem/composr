@@ -1372,19 +1372,18 @@ abstract class Hook_CMA
     }
 
     /**
-     * Get a view URL for content.
+     * Get a view page-link for content.
      *
      * @param  ?array $row The database row for the content (null: no ID, assume passed in some other way)
-     * @param  boolean $skip_keep Whether to avoid keep_* parameters as it's going in an e-mail
-     * @param  string $append What to append to the edit page-link
-     * @return Tempcode The URL
+     * @param  string $append What to append to the view page-link
+     * @return string The page-link (blank: none)
      */
-    public function get_view_url($row, $skip_keep = false, $append = '')
+    public function get_view_page_link($row, $append = '')
     {
         $info = $this->info_basic_cached();
         $pattern = $info['view_page_link_pattern'];
         if ($pattern === null) {
-            return new Tempcode();
+            return '';
         }
         $pattern .= $append;
         if ($row === null) {
@@ -1393,6 +1392,20 @@ abstract class Hook_CMA
         } else {
             $page_link = str_replace('_WILD', $this->get_id($row), $pattern);
         }
+        return $page_link;
+    }
+
+    /**
+     * Get a view URL for content.
+     *
+     * @param  ?array $row The database row for the content (null: no ID, assume passed in some other way)
+     * @param  boolean $skip_keep Whether to avoid keep_* parameters as it's going in an e-mail
+     * @param  string $append What to append to the view page-link
+     * @return Tempcode The URL (blank: none)
+     */
+    public function get_view_url($row, $skip_keep = false, $append = '')
+    {
+        $page_link = $this->get_view_page_link($row, $append);
         return page_link_to_tempcode_url($page_link, $skip_keep);
     }
 

@@ -182,7 +182,7 @@ class CMSSocialRead
     {
         cms_verify_parameters_phpdoc();
 
-        require_code('activities');
+        require_code('activity_feed');
 
         // Right now Tapatalk only supports topic and post activity
 

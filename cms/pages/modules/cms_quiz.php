@@ -364,6 +364,9 @@ class Module_cms_quiz extends Standard_crud_module
         // Permissions
         $fields->attach($this->get_permission_fields(($id === null) ? null : strval($id), null, ($id === null)));
 
+        require_code('syndication');
+        $fields->attach(get_syndication_option_fields('quiz', $id !== null));
+
         return [$fields, new Tempcode()];
     }
 
@@ -471,9 +474,10 @@ class Module_cms_quiz extends Standard_crud_module
         $this->set_permissions(strval($id));
 
         if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'quiz')) {
-                require_code('activities');
-                syndicate_described_activity('quiz:ACTIVITY_ADD_QUIZ', $name, '', '', '_SEARCH:quiz:do:' . strval($id), '', '', 'quizzes');
+                require_code('syndication');
+                syndicate_content('quiz', strval($id), [['quiz:ACTIVITY_ADD_QUIZ', get_member(), $name]]);
             }
         }
 
@@ -506,12 +510,22 @@ class Module_cms_quiz extends Standard_crud_module
         $name = post_param_string('quiz_name', STRING_MAGIC_NULL);
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_submitter', ['id' => $id]);
-
+        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
             if (has_actual_page_access(get_modal_user(), 'quiz')) {
-                require_code('activities');
-                syndicate_described_activity(($submitter != get_member()) ? 'quiz:ACTIVITY_VALIDATE_QUIZ' : 'quiz:ACTIVITY_ADD_QUIZ', $name, '', '', '_SEARCH:quiz:do:' . strval($id), '', '', 'quizzes', 1, null/*$submitter*/);
+                $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_validated', ['id' => $id]) === 0);
+                $submitter = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_submitter', ['id' => $id]);
+
+                $activities = [];
+                if ($just_validated) {
+                    if ($submitter != get_member()) {
+                        $activities[] = ['quiz:ACTIVITY_VALIDATE_QUIZ', get_member(), $name];
+                    }
+                    $activities[] = ['quiz:ACTIVITY_ADD_QUIZ', $submitter, $name];
+                }
+
+                require_code('syndication');
+                syndicate_content('quiz', strval($id), $activities);
             }
         }
 
@@ -566,5 +580,8 @@ class Module_cms_quiz extends Standard_crud_module
         $id = intval($_id);
 
         delete_quiz($id);
+
+        require_code('syndication');
+        unsyndicate_content('quiz', strval($id));
     }
 }

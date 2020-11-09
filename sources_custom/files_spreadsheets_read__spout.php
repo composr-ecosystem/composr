@@ -53,11 +53,11 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        $this->reader->open($path);
-
         if (function_exists('libxml_disable_entity_loader')) {
             @libxml_disable_entity_loader(false);
         }
+
+        $this->reader->open($path);
 
         $sheet_iterator = $this->reader->getSheetIterator(); // We will only look at the first sheet
         $sheet_iterator->rewind();

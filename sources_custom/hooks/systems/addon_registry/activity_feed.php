@@ -92,14 +92,14 @@ These blocks are put on the member profile tabs by default, but may also be call
 
 If the chat addon is installed, "status" posts can be restricted to only show for buddies.
 
-If the Facebook of Twitter addons are installed then the system can syndicate out activities to the user\'s Twitter and Facebook followers.
+If the Hybridauth addon is installed then the system can syndicate out activities to configured social media destinations.
 
-The blocks provided are [tt]main_activities[/tt] and the status entry box is called [tt]main_activities_state[/tt].
+The blocks provided are [tt]main_activity_feed[/tt] and the status entry box is called [tt]main_activity_feed_state[/tt].
 
-[code="Comcode"][block="Goings On" max="20" grow="0" mode="all"]main_activities[/block][/code]
+[code="Comcode"][block="Goings On" max="20" grow="0" mode="all"]main_activity_feed[/block][/code]
 ...will show a feed with a title "Goings On" containing the last 20 activities, old activities will "fall off the bottom" (grow="0") as new ones are loaded via AJAX and there is no filtering on what is shown. (mode="all").
 
-[code="Comcode"][block="Say Something"]main_activities_state[/block][/code]
+[code="Comcode"][block="Say Something"]main_activity_feed_state[/block][/code]
 ...will show a status update box with the title "Say Something".';
     }
 
@@ -126,7 +126,9 @@ The blocks provided are [tt]main_activities[/tt] and the status entry box is cal
             'requires' => [
                 'all_icons',
             ],
-            'recommends' => [],
+            'recommends' => [
+                'hybridauth',
+            ],
             'conflicts_with' => [],
         ];
     }
@@ -151,29 +153,27 @@ The blocks provided are [tt]main_activities[/tt] and the status entry box is cal
         return [
             'sources_custom/hooks/systems/privacy/activity_feed.php',
             'sources_custom/hooks/systems/addon_registry/activity_feed.php',
-            'sources_custom/hooks/systems/notifications/activity.php',
-            'sources_custom/hooks/systems/rss/activities.php',
-            'data_custom/activities_updater.php',
-            'data_custom/activities_removal.php',
-            'data_custom/activities_handler.php',
-            'lang_custom/EN/activities.ini',
-            'sources_custom/blocks/main_activities_state.php',
-            'sources_custom/blocks/main_activities.php',
-            'sources_custom/activities_submission.php',
-            'sources_custom/hooks/systems/activities/activities.php',
-            'themes/default/templates_custom/BLOCK_MAIN_ACTIVITIES_STATE.tpl',
-            'themes/default/templates_custom/BLOCK_MAIN_ACTIVITIES.tpl',
-            'themes/default/templates_custom/BLOCK_MAIN_ACTIVITIES_XML.tpl',
-            'themes/default/templates_custom/ACTIVITY.tpl',
-            'themes/default/templates_custom/CNS_MEMBER_PROFILE_ACTIVITIES.tpl',
-            'themes/default/css_custom/activities.css',
-            'sources_custom/hooks/systems/profiles_tabs/activities.php',
+            'sources_custom/hooks/systems/notifications/activity_feed.php',
+            'sources_custom/hooks/systems/rss/activity_feed.php',
+            'data_custom/activity_feed_updater.php',
+            'data_custom/activity_feed_removal.php',
+            'data_custom/activity_feed_handler.php',
+            'lang_custom/EN/activity_feed.ini',
+            'sources_custom/blocks/main_activity_feed_state.php',
+            'sources_custom/blocks/main_activity_feed.php',
+            'sources_custom/activity_feed_submission.php',
+            'sources_custom/hooks/systems/syndication/activity_feed.php',
+            'themes/default/templates_custom/BLOCK_MAIN_ACTIVITY_FEED_STATE.tpl',
+            'themes/default/templates_custom/BLOCK_MAIN_ACTIVITY_FEED.tpl',
+            'themes/default/templates_custom/BLOCK_MAIN_ACTIVITY_FEED_XML.tpl',
+            'themes/default/templates_custom/ACTIVITY_FEED_ACTIVITY.tpl',
+            'themes/default/templates_custom/CNS_MEMBER_PROFILE_ACTIVITY_FEED.tpl',
+            'themes/default/css_custom/activity_feed.css',
+            'sources_custom/hooks/systems/profiles_tabs/activity_feed.php',
             'sources_custom/hooks/systems/profiles_tabs/posts.php',
             'sources_custom/hooks/systems/config/syndicate_site_activity_default.php',
-            'sources_custom/activities.php',
+            'sources_custom/activity_feed.php',
             'themes/default/javascript_custom/activity_feed.js',
-            'sources_custom/hooks/systems/syndication/.htaccess',
-            'sources_custom/hooks/systems/syndication/index.html',
         ];
     }
 }

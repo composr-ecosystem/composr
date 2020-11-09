@@ -35,7 +35,7 @@ class Hook_commandr_scheduled_publish_post
         }
 
         return [
-            'required_parameters' => 17,
+            'required_parameters' => 13,
         ];
     }
 
@@ -51,36 +51,25 @@ class Hook_commandr_scheduled_publish_post
     public function run($options, $id, $parameters, &$commandr_fs)
     {
         // Map out parameters to make them easier to understand since there are many of them
-        $topic_id = $parameters[0];
-        $validated = $parameters[1];
-        $open = $parameters[2];
-        $pinned = $parameters[3];
-        $cascading = $parameters[4];
-        $new_title = $parameters[5];
-        $to = $parameters[6];
-        $forum_id = $parameters[7];
-        $title = $parameters[8];
-        $post = $parameters[9];
-        $skip_sig = $parameters[10];
-        $first_post = $parameters[11];
-        $is_emphasised = $parameters[12];
-        $poster_name_if_guest = $parameters[13];
-        $intended_solely_for = $parameters[14];
-        $topic_title = $parameters[15];
-        $anonymous = $parameters[16];
+        //  This action is for a moderator reply, so there are a lot of parameters involved
+        list($topic_id, $forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, $poster, $ip_address) = $parameters;
+
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', ['id' => $topic_id]);
+        if ($test === null) {
+            return ['', '', do_lang('MISSING_RESOURCE'), ''];
+        }
 
         require_code('cns_topics_action2');
         require_code('cns_topics_action');
 
-        cns_edit_topic($topic_id, null, null, $validated, $open, $pinned, $cascading, '', $new_title);
-        if (($to != $forum_id) && ($to !== null)) {
-            cns_move_topics($forum_id, $to, [$topic_id]);
-        }
+        $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, 1, $is_emphasised, $poster_name_if_guest, $ip_address, null, $poster, $intended_solely_for, null, null, false, true, null, true, $topic_title, null, $anonymous == 1);
 
-        $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, $validated, $is_emphasised, $poster_name_if_guest, null, null, null, $intended_solely_for, null, null, false, true, null, true, $topic_title, null, $anonymous == 1);
-        if (addon_installed('awards')) {
-            require_code('awards');
-            handle_award_setting('post', strval($post_id));
+        if (($forum_id !== null) && ($anonymous == 0) && ($intended_solely_for === null)) {
+            require_code('users2');
+            if ((has_actual_page_access(get_modal_user(), 'forumview')) && (has_category_access(get_modal_user(), 'forums', strval($forum_id)))) {
+                require_code('syndication');
+                syndicate_described_activity($first_post ? 'cns:ACTIVITY_ADD_TOPIC' : 'cns:ACTIVITY_ADD_POST_IN', $first_post ? $title : $topic_title, '', '', '_SEARCH:topicview:browse:' . strval($topic_id) . '#post_' . strval($post_id), '', '', 'cns_forum', 1, $poster);
+            }
         }
 
         return ['', '', do_lang('SUCCESS'), ''];

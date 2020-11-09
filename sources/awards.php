@@ -99,8 +99,9 @@ function give_award($award_id, $content_id, $time = null)
                 $privacy_ok = has_privacy_access($awards[0]['a_content_type'], $content_id, $GLOBALS['FORUM_DRIVER']->get_guest_id());
             }
             if ($privacy_ok) {
-                require_code('activities');
-                syndicate_described_activity((($member_id === null) || (is_guest($member_id))) ? 'awards:_ACTIVITY_GIVE_AWARD' : 'awards:ACTIVITY_GIVE_AWARD', $award_title, $content_title, '', '_SEARCH:awards:award:' . strval($award_id), '', '', 'awards', 1, null, false, $member_id);
+                require_code('syndication');
+                $activity_label = (($member_id === null) || (is_guest($member_id))) ? 'awards:_ACTIVITY_GIVE_AWARD' : 'awards:ACTIVITY_GIVE_AWARD';
+                syndicate_described_activity($activity_label, $award_title, $content_title, '', '_SEARCH:awards:award:' . strval($award_id), '', '', 'awards', 1, null, $awards[0]['a_points'] != 0, $member_id);
             }
         }
     } else {
@@ -110,7 +111,7 @@ function give_award($award_id, $content_id, $time = null)
         $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
     }
 
-    if ((!is_guest($member_id)) && (addon_installed('points'))) {
+    if ((!is_guest($member_id)) && (addon_installed('points')) && ($awards[0]['a_points'] != 0)) {
         require_code('points2');
         system_gift_transfer(do_lang('_AWARD', get_translated_text($awards[0]['a_title'])), $awards[0]['a_points'], $member_id);
     }

@@ -26,6 +26,8 @@ function compile_all_templates()
     require_code('web_resources2');
     require_code('web_resources');
 
+    require_all_lang();
+
     cms_disable_time_limit();
 
     $themes = [

@@ -46,42 +46,8 @@ function init__hybridauth_admin()
     //define('HYBRIDAUTH__IDS_TO_PROFILE_URLS', 1 << 28);
     //define('HYBRIDAUTH__OVERVIEW_STATS', 1 << 29);
 
-    require_code('hybridauth');
-}
-
-function initiate_hybridauth_admin($mask = 0)
-{
-    $providers = find_all_hybridauth_admin_providers_matching($mask);
-
-    global $CSP_NONCE;
-
-    $_providers = [];
-    foreach ($providers as $provider => $info) {
-        $_providers[$provider] = [
-            'enabled' => true,
-            'nonce' => $CSP_NONCE,
-            'keys' => $info['keys'],
-        ] + $info['other_parameters'];
-    }
-
-    $config = [
-        'providers' => $_providers,
-        'callback' => find_script('hybridauth_admin'),
-    ];
-
-    require_code('hybridauth/autoload');
-
-    require_code('hybridauth_admin_storage');
-    $admin_storage = new ComposrHybridauthValuesStorage();
-
-    $hybridauth = new Hybridauth\Hybridauth($config, null, $admin_storage);
-
-    return [$hybridauth, $admin_storage, $providers];
-}
-
-function find_all_hybridauth_admin_providers_matching($mask)
-{
-    $provider_metadata = [
+    global $HYBRIDAUTH_PROVIDER_METADATA;
+    $HYBRIDAUTH_PROVIDER_METADATA = [
         'Amazon' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL,
         'AOLOpenID' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL,
         'Apple' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL,
@@ -95,7 +61,7 @@ function find_all_hybridauth_admin_providers_matching($mask)
         'Disqus' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL,
         'Dribbble' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE,
         'Dropbox' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL,
-        'Facebook' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL | HYBRIDAUTH__GET_CONTACTS | HYBRIDAUTH__SIMPLEAPI_GET_ACTIVITIES | HYBRIDAUTH__SIMPLEAPI_UPDATE_STATUS | HYBRIDAUTH__SIMPLEAPI_GET_PAGES | HYBRIDAUTH__SIMPLEAPI_UPDATE_STATUS_ON_PAGES | HYBRIDAUTH__REQUIRES_TOKEN_MAINTENANCE | HYBRIDAUTH__ADVANCEDAPI_READ_ATOMS_FROM_URL | HYBRIDAUTH__ADVANCEDAPI_READ_CATEGORIES | HYBRIDAUTH__ADVANCEDAPI_IMAGE_ENCLOSURES | HYBRIDAUTH__ADVANCEDAPI_VIDEO_ENCLOSURES | HYBRIDAUTH__ADVANCEDAPI_ATOMS_HAVE_CONTENT | HYBRIDAUTH__ADVANCEDAPI_MULTIPLE_ENCLOSURES,
+        'Facebook' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL | HYBRIDAUTH__GET_CONTACTS | HYBRIDAUTH__SIMPLEAPI_GET_ACTIVITIES | HYBRIDAUTH__SIMPLEAPI_UPDATE_STATUS | HYBRIDAUTH__SIMPLEAPI_GET_PAGES | HYBRIDAUTH__SIMPLEAPI_UPDATE_STATUS_ON_PAGES | HYBRIDAUTH__REQUIRES_TOKEN_MAINTENANCE | HYBRIDAUTH__ADVANCEDAPI_READ_ATOMS_FROM_URL | HYBRIDAUTH__ADVANCEDAPI_READ_CATEGORIES | HYBRIDAUTH__ADVANCEDAPI_INSERT_ATOMS | HYBRIDAUTH__ADVANCEDAPI_UPDATE_ATOMS | HYBRIDAUTH__ADVANCEDAPI_DELETE_ATOMS | HYBRIDAUTH__ADVANCEDAPI_IMAGE_ENCLOSURES | HYBRIDAUTH__ADVANCEDAPI_VIDEO_ENCLOSURES | HYBRIDAUTH__ADVANCEDAPI_ATOMS_HAVE_CONTENT | HYBRIDAUTH__ADVANCEDAPI_MULTIPLE_ENCLOSURES,
         'Foursquare' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL | HYBRIDAUTH__GET_CONTACTS,
         'GitHub' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL,
         'GitLab' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL,
@@ -132,11 +98,46 @@ function find_all_hybridauth_admin_providers_matching($mask)
         'Yahoo' => HYBRIDAUTH__AUTHENTICATION_FLOW | HYBRIDAUTH__GET_PROFILE | HYBRIDAUTH__PROFILE_EMAIL,
     ];
 
+    require_code('hybridauth');
+}
+
+function initiate_hybridauth_admin($mask = 0)
+{
+    $providers = find_all_hybridauth_admin_providers_matching($mask);
+
+    global $CSP_NONCE;
+
+    $_providers = [];
+    foreach ($providers as $provider => $info) {
+        $_providers[$provider] = [
+            'enabled' => true,
+            'nonce' => $CSP_NONCE,
+            'keys' => $info['keys'],
+        ] + $info['other_parameters'];
+    }
+
+    $config = [
+        'providers' => $_providers,
+        'callback' => find_script('hybridauth_admin'),
+    ];
+
+    require_code('hybridauth_admin_storage');
+    $admin_storage = new ComposrHybridauthValuesStorage();
+
+    $hybridauth = new Hybridauth\Hybridauth($config, null, $admin_storage);
+
+    return [$hybridauth, $admin_storage, $providers];
+}
+
+function find_all_hybridauth_admin_providers_matching($mask)
+{
     $providers = enumerate_hybridauth_providers(true);
+
+    global $HYBRIDAUTH_PROVIDER_METADATA;
 
     $relevant_providers = [];
     foreach ($providers as $provider => $info) {
-        $features = isset($provider_metadata[$provider]) ? $provider_metadata[$provider] : 0;
+        $features = isset($HYBRIDAUTH_PROVIDER_METADATA[$provider]) ? $HYBRIDAUTH_PROVIDER_METADATA[$provider] : 0;
 
         if (($features & $mask) == $mask) {
             $relevant_providers[$provider] = $info;
@@ -144,4 +145,13 @@ function find_all_hybridauth_admin_providers_matching($mask)
     }
 
     return $relevant_providers;
+}
+
+function hybridauth_provider_matches($provider, $mask)
+{
+    global $HYBRIDAUTH_PROVIDER_METADATA;
+
+    $features = isset($HYBRIDAUTH_PROVIDER_METADATA[$provider]) ? $HYBRIDAUTH_PROVIDER_METADATA[$provider] : 0;
+
+    return (($features & $mask) == $mask);
 }

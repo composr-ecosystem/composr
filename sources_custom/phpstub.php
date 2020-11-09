@@ -4878,7 +4878,7 @@ function getopt($options, $longopts = [], &$optind = 0)
  */
 function getrusage($who)
 {
-    return array();
+    return [];
 }
 
 /**

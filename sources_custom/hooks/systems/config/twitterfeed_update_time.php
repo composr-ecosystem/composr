@@ -3,7 +3,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Jason L Verhagen (jlverhagen@tfo.net)
- * @package    twitter_feed_integration_block
+ * @package    twitter_support
  */
 
 /**
@@ -29,7 +29,7 @@ class Hook_config_twitterfeed_update_time
             'required' => true,
             'public' => false,
 
-            'addon' => 'twitter_feed_integration_block',
+            'addon' => 'twitter_support',
         ];
     }
 
@@ -40,7 +40,7 @@ class Hook_config_twitterfeed_update_time
      */
     public function get_default()
     {
-        if (!addon_installed('twitter_feed_integration_block')) {
+        if (!addon_installed('twitter_support')) {
             return null;
         }
 

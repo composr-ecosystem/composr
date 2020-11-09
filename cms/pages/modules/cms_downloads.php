@@ -498,6 +498,9 @@ class Module_cms_downloads extends Standard_crud_module
             $fields->attach(form_input_list(do_lang_tempcode('LICENCE'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_LICENCE'), 'licence', $licences));
         }
 
+        require_code('syndication');
+        $fields->attach(get_syndication_option_fields('download', $id !== null));
+
         // Metadata
         require_code('content2');
         $seo_fields = seo_get_fields($this->seo_type, ($id === null) ? null : strval($id), false);
@@ -658,6 +661,7 @@ class Module_cms_downloads extends Standard_crud_module
         }
 
         if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'downloads')) && (may_enter_download_category(get_modal_user(), $category_id))) {
                 $privacy_ok = true;
                 if (addon_installed('content_privacy')) {
@@ -665,8 +669,8 @@ class Module_cms_downloads extends Standard_crud_module
                     $privacy_ok = has_privacy_access('download', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity('downloads:ACTIVITY_ADD_DOWNLOAD', $name, '', '', '_SEARCH:downloads:entry:' . strval($id), '', '', 'downloads');
+                    require_code('syndication');
+                    syndicate_content('download', strval($id), [['downloads:ACTIVITY_ADD_DOWNLOAD', get_member(), $name]]);
                 }
             }
         }
@@ -740,9 +744,8 @@ class Module_cms_downloads extends Standard_crud_module
             save_privacy_form_fields('download', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'submitter', ['id' => $id]);
-
+        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'downloads')) && (may_enter_download_category(get_modal_user(), $category_id))) {
                 $privacy_ok = true;
                 if (addon_installed('content_privacy')) {
@@ -750,8 +753,19 @@ class Module_cms_downloads extends Standard_crud_module
                     $privacy_ok = has_privacy_access('download', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
-                    syndicate_described_activity(($submitter != get_member()) ? 'downloads:ACTIVITY_VALIDATE_DOWNLOAD' : 'downloads:ACTIVITY_ADD_DOWNLOAD', $name, '', '', '_SEARCH:downloads:entry:' . strval($id), '', '', 'downloads', 1, null/*$submitter*/);
+                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('download_downloads', 'validated', ['id' => $id]) == 0);
+                    $submitter = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'submitter', ['id' => $id]);
+
+                    $activities = [];
+                    if ($just_validated) {
+                        if ($submitter != get_member()) {
+                            $activities[] = ['downloads:ACTIVITY_VALIDATE_DOWNLOAD', get_member(), $name];
+                        }
+                        $activities[] = ['downloads:ACTIVITY_ADD_DOWNLOAD', $submitter, $name];
+                    }
+
+                    require_code('syndication');
+                    syndicate_content('download', strval($id), $activities);
                 }
             }
         }
@@ -789,6 +803,9 @@ class Module_cms_downloads extends Standard_crud_module
             require_code('content_privacy2');
             delete_privacy_form_fields('download', strval($id));
         }
+
+        require_code('syndication');
+        unsyndicate_content('download', strval($id));
     }
 
     /**

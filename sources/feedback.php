@@ -681,7 +681,7 @@ function actualise_specific_rating($rating, $page_name, $member_id, $content_typ
                         $_safe_content_url = is_object($content_url) ? $content_url->evaluate() : $content_url;
                     }
                     $content_page_link = url_to_page_link($_safe_content_url);
-                    require_code('activities');
+                    require_code('syndication');
                     if ($content_title == '') {
                         syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                     } else {
@@ -981,7 +981,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
                     $_safe_content_url = is_object($content_url) ? $content_url->evaluate() : $content_url;
                 }
                 $content_page_link = url_to_page_link($_safe_content_url);
-                require_code('activities');
+                require_code('syndication');
                 if ($content_title == '') {
                     syndicate_described_activity($activity_type . '_UNTITLED', cms_mb_strtolower($content_type_title), $content_type_title, '', $content_page_link, '', '', convert_composr_type_codes('feedback_type_code', $real_feedback_type, 'addon_name'), 1, null, false, $submitter);
                 } else {

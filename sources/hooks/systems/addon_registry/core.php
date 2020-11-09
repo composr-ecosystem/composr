@@ -1165,10 +1165,10 @@ class Hook_addon_registry_core
             'sources_custom/hooks/modules/video_syndication/.htaccess',
             'sources/hooks/modules/video_syndication/index.html',
             'sources_custom/hooks/modules/video_syndication/index.html',
-            'sources/hooks/systems/activities/.htaccess',
-            'sources_custom/hooks/systems/activities/.htaccess',
-            'sources/hooks/systems/activities/index.html',
-            'sources_custom/hooks/systems/activities/index.html',
+            'sources/hooks/systems/syndication/.htaccess',
+            'sources_custom/hooks/systems/syndication/.htaccess',
+            'sources/hooks/systems/syndication/index.html',
+            'sources_custom/hooks/systems/syndication/index.html',
             'sources/hooks/systems/cdn_transfer/.htaccess',
             'sources_custom/hooks/systems/cdn_transfer/.htaccess',
             'sources/hooks/systems/cdn_transfer/index.html',
@@ -1214,7 +1214,7 @@ class Hook_addon_registry_core
             'sources/url_remappings.php',
             'sources/hooks/systems/addon_registry/.htaccess',
             'sources_custom/hooks/systems/addon_registry/.htaccess',
-            'sources/activities.php',
+            'sources/syndication.php',
             'sources/crypt.php',
             'sources/crypt_master.php',
             'data_custom/sitemaps/index.html',
@@ -3013,18 +3013,20 @@ class Hook_addon_registry_core
      */
     public function tpl_preview__translation_links()
     {
+        $alt_langs = [
+            [
+                'LANG' => 'FR',
+                'CONSISTENT_DEFAULT' => false,
+            ],
+            [
+                'LANG' => 'DE',
+                'CONSISTENT_DEFAULT' => false,
+            ],
+        ];
+
         return [
             do_lorem_template('TRANSLATION_LINKS', [
-                'ALT_LANGS' => [
-                    [
-                        'LANG' => 'FR',
-                        'CONSISTENT_DEFAULT' => false,
-                    ],
-                    [
-                        'LANG' => 'DE',
-                        'CONSISTENT_DEFAULT' => false,
-                    ],
-                ],
+                'ALT_LANGS' => $alt_langs,
             ])
         ];
     }

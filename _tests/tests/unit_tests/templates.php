@@ -33,7 +33,7 @@ class templates_test_set extends cms_test_case
 
     public function testTemplateParameterDetectionViaScan()
     {
-        $parameters = find_template_parameters('templates/ACTIVITY.tpl'); // Has no preview, so will have to do a template scan
+        $parameters = find_template_parameters('templates/ACTIVITY_FEED_ACTIVITY.tpl'); // Has no preview, so will have to do a template scan
         $this->assertTrue(in_array('TIMESTAMP', $parameters));
     }
 

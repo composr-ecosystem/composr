@@ -764,8 +764,9 @@ class Module_admin_cns_forums extends Standard_crud_module
             content_review_set('forum', $id);
         }
 
+        require_code('users2');
         if ((has_actual_page_access(get_modal_user(), 'forumview')) && (has_category_access(get_modal_user(), 'forums', $id))) {
-            require_code('activities');
+            require_code('syndication');
             syndicate_described_activity('cns:ACTIVITY_ADD_FORUM', $name, '', '', '_SEARCH:forumview:browse:' . $id, '', '', 'cns_forum');
         }
 

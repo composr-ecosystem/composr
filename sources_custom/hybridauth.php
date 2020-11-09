@@ -15,6 +15,11 @@
 
 /*EXTRA FUNCTIONS: session_.+*/
 
+function init__hybridauth()
+{
+    require_code('hybridauth/autoload');
+}
+
 function initiate_hybridauth_session_state()
 {
     @session_write_close();
@@ -52,8 +57,6 @@ function initiate_hybridauth()
         'providers' => $_providers,
         'callback' => find_script('hybridauth'),
     ];
-
-    require_code('hybridauth/autoload');
 
     return new Hybridauth\Hybridauth($config);
 }
@@ -152,6 +155,9 @@ function enumerate_hybridauth_providers($for_admin = false)
             'text_colour' => 'FFFFFF',
             'icon' => null,
 
+            'syndicate_from' => '',
+            'syndicate_from_by_default' => '',
+
             'keys' => [
             ],
 
@@ -223,6 +229,9 @@ function enumerate_hybridauth_providers($for_admin = false)
             }
             $info['icon'] = $icon;
         }
+
+        $info['syndicate_from'] = isset($config['composr-config']['syndicate_from']) ? $config['composr-config']['syndicate_from'] : '';
+        $info['syndicate_from_by_default'] = isset($config['composr-config']['syndicate_from_by_default']) ? $config['composr-config']['syndicate_from_by_default'] : '';
     }
 
     sort_maps_by($providers, 'button_precedence');

@@ -17,6 +17,10 @@ class Hook_oauth_screen_sup_hybridauth_admin
 {
     public function get_services()
     {
+        if (!addon_installed('hybridauth')) {
+            return [];
+        }
+
         $before_type_strictness = ini_get('ocproducts.type_strictness');
         cms_ini_set('ocproducts.type_strictness', '0');
         $before_xss_detect = ini_get('ocproducts.xss_detect');

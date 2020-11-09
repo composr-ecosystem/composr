@@ -171,7 +171,7 @@ class template_no_unused_test_set extends cms_test_case
             'WEBSTANDARDS_CHECK_ERROR',
             'WEBSTANDARDS_CHECK_SCREEN',
             'WIKI_RATING_FORM',
-            'ACTIVITY',
+            'ACTIVITY_FEED_ACTIVITY',
             'BLOCK_MAIN_CHOOSE_TO_BOOK',
             'BLOCK_SIDE_BOOK_DATE_RANGE',
             'BLOCK_TWITTER_FEED',

@@ -56,7 +56,7 @@ class __installer_test_set extends cms_test_case
             make_installers();
         }
 
-        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'timeout' => 40.0]);
 
         $this->assertTrue($http_result->message == '200');
     }

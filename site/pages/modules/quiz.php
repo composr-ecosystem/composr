@@ -658,7 +658,7 @@ class Module_quiz
                     $result_to_staff = do_lang('MAIL_TEST_PASS', comcode_escape($marks_range), comcode_escape(integer_format($out_of)), comcode_escape($percentage_range));
 
                     // Syndicate because passed
-                    require_code('activities');
+                    require_code('syndication');
                     syndicate_described_activity('quiz:ACTIVITY_PASSED_TEST', $quiz_name, '', '', '_SEARCH:quiz:do:' . strval($quiz_id), '', '', 'quizzes');
                 } elseif ($passed === false) { // Failed
                     $result_to_member = do_lang_tempcode('TEST_FAIL', escape_html($marks_range), escape_html(integer_format($out_of)), escape_html($percentage_range));
@@ -691,7 +691,7 @@ class Module_quiz
                 // No notification to staff for competitions, as we expect lots of entries to happen; it should all be reviewed when the competition closes
 
                 // Syndicate
-                require_code('activities');
+                require_code('syndication');
                 syndicate_described_activity('quiz:ACTIVITY_ENTERED_COMPETITION', $quiz_name, '', '', '_SEARCH:quiz:do:' . strval($quiz_id), '', '', 'quizzes');
 
                 break;
@@ -714,7 +714,7 @@ class Module_quiz
                 dispatch_notification('quiz_results', strval($quiz_id), $notification_title, $given_answers_to_staff->evaluate(get_site_default_lang()));
 
                 // Syndicate
-                require_code('activities');
+                require_code('syndication');
                 syndicate_described_activity('quiz:ACTIVITY_FILLED_SURVEY', $quiz_name, '', '', '_SEARCH:quiz:do:' . strval($quiz_id), '', '', 'quizzes');
 
                 break;

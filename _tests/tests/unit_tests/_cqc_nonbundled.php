@@ -80,6 +80,9 @@ class _cqc_nonbundled_test_set extends cms_test_case
                 if (strpos($line, 'Could not find class') !== false) {
                     continue;
                 }
+                if (strpos($line, 'Could not find interface') !== false) {
+                    continue;
+                }
                 if (strpos($line, 'Sources files should not contain loose code') !== false) {
                     continue;
                 }

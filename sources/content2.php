@@ -718,9 +718,7 @@ function seo_meta_set_for_explicit($type, $id, $keywords, $description)
 
     $_keywords = [];
     foreach (array_unique(explode(',', $keywords)) as $keyword) {
-        if (trim($keyword) == '') {
-            continue;
-        }
+        $keyword = trim($keyword, " \t");
         $_keywords[] = $keyword;
     }
 

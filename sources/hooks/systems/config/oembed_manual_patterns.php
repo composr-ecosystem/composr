@@ -63,7 +63,7 @@ class Hook_config_oembed_manual_patterns
         $default .= "(https?://(www\.)?dailymotion\.com/video/.*|https?://dai\.ly/.*) = http://www.dailymotion.com/services/oembed\n";
         $default .= "(https?://www\.slideshare\.net/.*/.*) = http://www.slideshare.net/api/oembed/2\n";
         $default .= "(https?://.*\.flickr\.com/photos/.*|https?://flic\.kr/p/.*) = http://www.flickr.com/services/oembed?format={format}\n";
-        $default .= "(https?://(www\.)?instagram\.com/p/.*) = http://api.instagram.com/oembed\n";
+        //$default .= "(https?://(www\.)?instagram\.com/p/.*) = http://api.instagram.com/oembed\n"; Requires API key now :(
         $default .= "(https?://soundcloud\.com/.*/.*) = http://soundcloud.com/oembed?format={format}\n";
         $default .= "(https?://twitter\.com/.*/status/\d+) = https://api.twitter.com/1/statuses/oembed.{format}\n";
         $default .= "(https?://(www\.)?facebook\.com/.*) = https://www.facebook.com/plugins/page/oembed.{format}/\n"; // Facebook may give "Security Check Required" when trying to auto-detect, so hard-code

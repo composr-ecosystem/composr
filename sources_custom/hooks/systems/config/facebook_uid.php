@@ -29,7 +29,7 @@ class Hook_config_facebook_uid
             'human_name' => 'FACEBOOK_UID',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
-            'group' => 'FACEBOOK_SYNDICATION',
+            'group' => 'FACEBOOK',
             'explanation' => 'CONFIG_OPTION_facebook_uid',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

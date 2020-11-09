@@ -1,4 +1,4 @@
-{$REQUIRE_JAVASCRIPT,twitter_feed_integration_block}
+{$REQUIRE_JAVASCRIPT,twitter_feed}
 
 {$SET,reply_id,{$RAND}}
 {$SET,retweet_id,{$RAND}}

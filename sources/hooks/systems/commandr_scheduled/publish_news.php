@@ -43,14 +43,41 @@ class Hook_commandr_scheduled_publish_news
      * Run Commandr hook.
      *
      * @param  array $options The options with which the command was called
-     * @param  string $id Unspecified identifier for the resource behind this scheduled event
+     * @param  string $_id Unspecified identifier for the resource behind this scheduled event
      * @param  array $parameters The json_decoded parameters passed with run_scheduled_action
      * @param  object $commandr_fs A reference to the Commandr filesystem object
      * @return array Array of stdcommand, stdhtml, stdout, and stderr responses
      */
-    public function run($options, $id, $parameters, &$commandr_fs)
+    public function run($options, $_id, $parameters, &$commandr_fs)
     {
+        $id = intval($_id);
+
+        $news_rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => $id], '', 1);
+        if (!array_key_exists(0, $news_rows)) {
+            return ['', '', do_lang('MISSING_RESOURCE'), ''];
+        }
+
         $GLOBALS['SITE_DB']->query_update('news', ['date_and_time' => array_key_exists('_EVENT_TIMESTAMP', $GLOBALS) ? $GLOBALS['_EVENT_TIMESTAMP'] : time(), 'validated' => 1], ['id' => $id], '', 1);
+
+        $news_row = $news_rows[0];
+
+        $main_news_category = $news_row['news_category'];
+        $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => $main_news_category]) !== null);
+        $title = get_translated_text($news_row['title']);
+        $submitter = $news_row['submitter'];
+
+        require_code('users2');
+        if (has_actual_page_access(get_modal_user(), 'news')) { // NB: no category permission check, as syndication choice was explicit, and news categorisation is a bit more complex
+            $privacy_ok = true;
+            if (addon_installed('content_privacy')) {
+                require_code('content_privacy');
+                $privacy_ok = has_privacy_access('news', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id(), $title);
+            }
+            if ($privacy_ok) {
+                require_code('syndication');
+                syndicate_content('news', strval($id), [[$is_blog ? 'news:ACTIVITY_ADD_NEWS_BLOG' : 'news:ACTIVITY_ADD_NEWS', $submitter]]);
+            }
+        }
 
         return ['', '', do_lang('SUCCESS'), ''];
     }

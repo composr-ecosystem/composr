@@ -46,8 +46,6 @@ class Hook_addon_registry_twitter_support
      */
     public function get_category()
     {
-        // Best to just categorise properly as it's not bundled
-        //return is_maintained('twitter') ? 'Third Party Integration' : 'Development';
         return 'Third Party Integration';
     }
 
@@ -58,7 +56,7 @@ class Hook_addon_registry_twitter_support
      */
     public function get_author()
     {
-        return 'Chris Graham';
+        return 'Jason Verhagen & Chris Graham';
     }
 
     /**
@@ -90,18 +88,17 @@ class Hook_addon_registry_twitter_support
      */
     public function get_description()
     {
-        return '{$IS_MAINTAINED,twitter,Syndicate site activities to Twitter}.
+        return 'Integrate your Twitter feed into your web site, via a block.
 
-Activity can be syndicated:
-1) On a site level, for any news or calendar events added by the staff
-2) By individual users to their own Twitter accounts (if they have authorised this via the activity tab in their profile)
-
-Set up is a little tricky:
-1) you need to set up an application on Twitter, with callback URLs of https://yourbaseurl/adminzone/twitter-oauth.htm and https://yourbaseurl/members/view.htm (or whatever the correct URLs are in your current URL Scheme)
-2) you need to configure Composr to use the Twitter API via Admin Zone > Setup > Configuration > Composr APIs > Twitter syndication
-3) you need to authorise the site via Admin Zone > Setup > Twitter syndication
-
-Once configured then syndication will be an option when adding news posts or calendar events, and will happen automatically for any users who have set up their own authorisation.';
+[list]
+[*] Set up an app on Twitter
+[*] Configure the Twitter settings in Composr (Admin Zone > Setup > Configuration > Composr API options > Twitter)
+[*] Set up oAuth for Twitter (Admin Zone > Setup > Twitter authorisation)
+[*] Use Comcode like:
+[code="Comcode"]
+[block screen_name="yourname"]twitter_feed[/block]
+[/code]
+[/list]';
     }
 
     /**
@@ -153,15 +150,39 @@ Once configured then syndication will be an option when adding news posts or cal
         return [
             'sources_custom/hooks/systems/addon_registry/twitter_support.php',
             'sources_custom/twitter.php',
-            'adminzone/pages/minimodules_custom/twitter_oauth.php',
             'lang_custom/EN/twitter.ini',
-            'sources_custom/hooks/systems/syndication/twitter.php',
-            'sources_custom/hooks/systems/page_groupings/twitter.php',
             'sources_custom/hooks/systems/config/twitter_api_key.php',
             'sources_custom/hooks/systems/config/twitter_api_secret.php',
             'sources_custom/hooks/systems/config/twitter_allow_signups.php',
             'sources_custom/hooks/systems/health_checks/twitter.php',
             'sources_custom/hooks/systems/hybridauth/twitter.php',
+            'adminzone/pages/minimodules_custom/twitter_oauth.php',
+            'sources_custom/hooks/systems/page_groupings/twitter.php',
+
+            'sources_custom/blocks/twitter_feed.php',
+            'themes/default/templates_custom/BLOCK_TWITTER_FEED.tpl',
+            'themes/default/templates_custom/BLOCK_TWITTER_FEED_TWEET.tpl',
+            'themes/default/images_custom/twitter_feed/bird_black_16.png',
+            'themes/default/images_custom/twitter_feed/bird_black_32.png',
+            'themes/default/images_custom/twitter_feed/bird_black_48.png',
+            'themes/default/images_custom/twitter_feed/bird_blue_16.png',
+            'themes/default/images_custom/twitter_feed/bird_blue_32.png',
+            'themes/default/images_custom/twitter_feed/bird_blue_48.png',
+            'themes/default/images_custom/twitter_feed/bird_gray_16.png',
+            'themes/default/images_custom/twitter_feed/bird_gray_32.png',
+            'themes/default/images_custom/twitter_feed/bird_gray_48.png',
+            'themes/default/images_custom/twitter_feed/favorite.png',
+            'themes/default/images_custom/twitter_feed/favorite_hover.png',
+            'themes/default/images_custom/twitter_feed/favorite_on.png',
+            'themes/default/images_custom/twitter_feed/twitter_feed_icon.png',
+            'themes/default/images_custom/twitter_feed/index.html',
+            'themes/default/images_custom/twitter_feed/reply.png',
+            'themes/default/images_custom/twitter_feed/reply_hover.png',
+            'themes/default/images_custom/twitter_feed/retweet.png',
+            'themes/default/images_custom/twitter_feed/retweet_hover.png',
+            'themes/default/images_custom/twitter_feed/retweet_on.png',
+            'sources_custom/hooks/systems/config/twitterfeed_update_time.php',
+            'themes/default/javascript_custom/twitter_feed.js',
         ];
     }
 }

@@ -102,7 +102,7 @@ The templates involved from the [tt]hybridauth[/tt] addon are:
 
 [surround]
 [media width="150" description="Configuration options" float="right"]data_custom/images/docs/sup_facebook/facebook_config.png[/media]
-1) Go to Admin Zone > Setup > Configuration > Composr API options > Facebook syndication / login.
+1) Go to Admin Zone > Setup > Configuration > Composr API options > Facebook.
 2) Configure the "Facebook app ID" configuration option and "Facebook app secret" configuration option. You noted down the values earlier.
 3) Also configure the "Facebook page ID" configuration option. This is a useful helper tool: https://lookup-id.com/.
 
@@ -111,9 +111,9 @@ Make sure your site is not closed (you can change the settings in Admin Zone > S
 
 [title="3"]Step 4) Authorisation[/title]
 
-1) Go to Admin Zone > Setup > Facebook syndication / login
-2) Follow the instructions given
-3) When on Facebook make sure to tick (check) the page you want to syndicate to, the one you configured as "Facebook page ID"" (if any)
+1) Go to Admin Zone > Setup > Setup API access
+2) Follow the instructions given for "Facebook (Hybridauth)"
+3) When authorising on Facebook make sure to tick (check) any pages you want to syndicate to, the one you configured as "Facebook page ID" (if any)
 
 [title="2"]Integration blocks[/title]
 
@@ -314,7 +314,7 @@ Be aware that this is a trade-off: allowing quick log in, but limiting your abil
  - There is only one step, unless there are required Custom Profile Fields configured in Composr (in which case a profile completion step is required)
  - E-mail address confirmation is not required
 
-This functionality is enabled via a configuration option at Admin Zone > Setup > Configuration > Composr API options > Facebook syndication / login.
+This functionality is enabled via a configuration option at Admin Zone > Setup > Configuration > Composr API options > Facebook.
 
 Enabling the option turns on some template changes that incorporate the Facebook login button into the site design.
 (See the "Special case: Theme integration" section)
@@ -331,56 +331,21 @@ There are a number of configuration options you can set regarding active synchro
 
 When a user logs in using Facebook, Composr never is given the Facebook username and password of that user. Composr stores the Facebook account ID into the member account, and communicates securely with Facebook to ask Facebook if that member is logged in. So in effect (from Composr's point of view) it is a passwordless login.
 
-[title="3"]Technical details regarding sessions (advanced)[/title]
-
-Facebook login is achieved via JavaScript and Facebook cookies, which is the standard integration Facebook provide. There are alternate mechanisms available in Facebook's API (server-side driven authentication) but we don't implement them at this time (see "Ongoing work").
-
-Because the login happens in JavaScript rather than using Composr login cookies, if there is no active Composr session anymore, the page will be served as Guest until Facebook's JavaScript code sets a new Facebook session. When that happens we immediately/automatically refresh, so Composr can use the Facebook session to start a Composr session (i.e. the refreshed page will then be logged in).
-
-You could increase the Composr session length to prevent these regular refreshes, but it's not really advisable, as it lowers security (longer sessions = greater risk of attack by someone trying to steal session IDs). A lot of popular non-Composr sites do do that, so take that as you will.
-
 [title="3"]Account de-binding[/title]
 
 If you joined using Facebook, or bound an existing account using Facebook (as above), you may want to convert it (back) to a normal account.
 This is very simple. Just do a "reset password" on your account and it will be turned into a normal account you log in with.
 
-[title="2"]Activity syndication[/title]
+[title="2"]Content/Activity syndication[/title]
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/sup_facebook/twitter.png[/media]
-[i]Most of this advice applies to the Composr non-bundled Twitter Support addon too[/i]
-
-You can (in theory) have content automatically syndicate to Facebook in 2 ways:
-1) Site level: All News & Calendar events, to the configured Facebook page/group/user
-2) Personal: Activity, to the wall of individual members -- [i]no longer applies for Facebook, as Facebook dropped support[/i]
-
-This only applies if the 'Facebook activity syndication' option is enabled (it's not by default). Note that nowadays setting this up is onerous to say the least, as Facebook require you to apply along with screencasts of how your syndication will work (App Review) -- which you need to produce yourself.
-
-[title="3"]Site level[/title]
-
-You will get syndication options on the news add/edit and calendar event add/edit forms. These will syndicate the news/event to the Facebook page/group/user associated with the site.
-
-There are some important caveats:
-1) This does not work for scheduled publishing, only live actions.
-2) You will need to reauthorise your site's Facebook connection (see Configuration and Authorisation) every 60 days, due to Facebook authorisation tokens having a limited life-span (Facebook documentation: "Facebook's SDKs will get long-lived access tokens, good for about 60 days."). Once upon a time this was not an issue, but Facebook decided to tighten their API policies, presumably to stop spam and increase security.
-3) It is only for News and Calendar events (but that's usually fine, most people don't like too much getting spammed over to Facebook).
-4) It is only for guest-accessible content. Composr maintains this security rule because syndication would otherwise be automatically announcing and linking to content that was intended as private. That means, the zone, page, and category, for the content must all be guest accessible. Whether the site is closed is not a consideration.
-
-People often wonder why you can syndicate everything personally, but not everything on a site level. Essentially we think of these things differently. A site syndicates headline things, while a person syndicates more personal things. If something is a headline thing, it's going to have an associated news post, or calendar event, regardless of what other kinds of content may be involved. So, site syndication is focused on those news posts and calendar events. You can always manually post to Facebook if there is something else you want to draw attention to.
+Content and Activities can be syndicated out to Facebook, if the Hybridauth and Activity Feed non-bundled addons are installed. Most of this advice applies also to the Composr non-bundled Twitter Support addon, and other Hybridauth providers that support the Hybridauth Atom API for writing. The Hybridauth addon contains additional documentation in the addon description.
 
 [title="4"]Maybe just keep it simple / separate-out responsibilities?[/title]
 
-You may prefer to use a dedicated service such as [url="dlvr.it"]https://dlvr.it/[/url] to tie in any of the Composr RSS feeds. This is a more flexible and automated solution. dlvr.it may be subject to the same [url="60 day issue"]https://support.dlvrit.com/hc/en-us/articles/200402304-How-do-I-get-alerted-when-there-are-problems-with-my-feeds-or-social-network-accounts-[/url] Composr is though (it's not really clear, these things keep changing).
+You may prefer to use a dedicated service such as [url="dlvr.it"]https://dlvr.it/[/url] to tie in any of the Composr RSS feeds. This is sometimes a simpler, and more flexible, solution.
 
-Also, don't discount the idea of simply manually sharing things. It really doesn't take long and gives you more control and quality assurance (i.e. you'll get to see how the sharing actually looks). You can find third-party tools to do cross-posting across multiple social media sites in one go.
-
-[title="3"]Personal[/title]
-
-[i]No longer applies for Facebook, as Facebook dropped support -- does apply to Twitter[/i]
-
-Personal syndication requires the non-bundled Activity Feed addon to be installed.
-
-If "Activity Feed" is installed then members have a choice whether to automatically syndicate all their activities.
-The member's set this choice (i.e. enable/disable syndication) via their activity feed settings (on the activity tab of their account).
+Also, don't discount the idea of simply manually sharing things. It gives you more control and quality assurance (i.e. you'll get to see how the sharing actually looks). You can also find third-party tools to do cross-posting across multiple social media sites in one go.
 
 [title="2"]Ongoing work[/title]
 
@@ -388,7 +353,7 @@ Composr integrations with services such as Facebook are ongoing projects. Facebo
 
 Facebook will e-mail out notices about changes in functionality and has a phased 'opt in' system before it forces everyone to update; we try and track these but usually they only affect a minority of Facebook apps and not Composr.
 
-If Facebook does change something to stop the addon working, the developers aren't necessarily going to guarantee to jump on changing our addon too; if Facebook integration is important to you be ready to help sponsor ongoing maintenance of the addon to ensure it is funded.
+If Facebook does change something to stop the addon working, the developers aren't necessarily going to guarantee to jump on changing our addon too; if Facebook integration is important to you be ready to help sponsor ongoing maintenance of the addon and/or [url="Hybridauth"]https://hybridauth.github.io/[/url] to ensure it is funded.
 
 We may add additional functionality to the addon in the future, again mainly if it is sponsored. There is plenty of scope to push further integration.
 

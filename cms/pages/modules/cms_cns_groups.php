@@ -325,8 +325,9 @@ class Module_cms_cns_groups extends Standard_crud_module
         require_code('cns_groups_action2');
         cns_add_member_to_group(get_member(), $id);
 
+        require_code('users2');
         if (has_actual_page_access(get_modal_user(), 'groups')) {
-            require_code('activities');
+            require_code('syndication');
             syndicate_described_activity('cns:ACTIVITY_ADD_CLUB', $name, '', '', '_SEARCH:groups:view:' . strval($id), '', '', 'cns_clubs');
         }
 

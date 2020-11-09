@@ -63,7 +63,7 @@ class phpdoc_test_set extends cms_test_case
             'Do the inner call using a particular downloader method.',
             'XHTML-aware helper function',
             'Get a well formed URL equivalent to the current URL.',
-            'Syndicate human-intended descriptions of activities performed to the internal wall, and external listeners.',
+            'Syndicate human-intended descriptions of activities performed to the internal feed, and external listeners.',
             'Execute the module.',
             'Execute the block.',
             'Find caching details for the block.',

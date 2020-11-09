@@ -43,7 +43,6 @@ class addon_guards_test_set extends cms_test_case
         'systems/payment_gateway' => 'ecommerce',
         'systems/realtime_rain' => 'realtime_rain',
         'systems/referrals' => 'referrals',
-        'systems/syndication' => 'activity_feed',
         'systems/points' => 'points',
     ];
 

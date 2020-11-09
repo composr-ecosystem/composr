@@ -615,14 +615,14 @@ class CMSPermissionsScannerLinux extends CMSPermissionsScanner
 
         if ($top_level) {
             if ($this->php_function_allowed('shell_exec')) {
-                if (strpos(shell_exec('sestatus'), 'enabled') !== false) {
-                    if (strpos(shell_exec('ps -eZ'), 'httpd_t') !== false) {
+                if (@strpos(shell_exec('sestatus'), 'enabled') !== false) {
+                    if (@strpos(shell_exec('ps -eZ'), 'httpd_t') !== false) {
                         $found_selinux_rule = false;
 
                         $path_up = $path;
                         do {
                             $cmd = 'ls -Zld ' . escapeshellarg($path_up);
-                            if (strpos(shell_exec($cmd), 'httpd_sys_rw_content_t') !== false) {
+                            if (@strpos(shell_exec($cmd), 'httpd_sys_rw_content_t') !== false) {
                                 $found_selinux_rule = true;
                             }
 

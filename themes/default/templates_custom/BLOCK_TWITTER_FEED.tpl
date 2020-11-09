@@ -1,4 +1,4 @@
-{$REQUIRE_JAVASCRIPT,twitter_feed_integration_block}
+{$REQUIRE_JAVASCRIPT,twitter_feed}
 
 <section class="box box---block-main-twitter-feed" data-tpl="blockTwitterFeed"><div class="box-inner">
 	{+START,IF_NON_EMPTY,{TWITTER_TITLE}}<h3>{TWITTER_TITLE*}</h3>{+END}

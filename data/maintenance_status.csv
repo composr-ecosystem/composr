@@ -126,11 +126,11 @@ cors,Running across multiple domains and Cross-Origin Resource Sharing (CORS),oc
 inline_editing,Inline Editing,ocProducts,,"Not regularly Tested, and themes are not typically expected to support it out-of-the-box.",No,
 download_pdf_indexing,Download PDF search indexing,ocProducts,,Not regularly Tested.,No,download_indexing automated test.
 oembed,Default oEmbed configuration,ocProducts,,Not regularly Tested.,No,_oembed automated test.
-facebook,Facebook login integration and syndication,ocProducts,ocProducts,Could potentially break due to third-party changes.,Yes,
+facebook,Facebook integration,ocProducts,ocProducts,Could potentially break due to third-party changes.,Yes,
 facebook_media,Facebook media (video embed),ocProducts,,Could potentially break due to third-party changes.,Yes,
 tapatalk,Tapatalk,ocProducts,,Could potentially break due to third-party changes.,Yes,
 google_maps,"Google maps (DataMappr, UserMappr)",ocProducts,,Could potentially break due to third-party changes.,Yes,
-twitter,Twitter syndication,ocProducts,,Could potentially break due to third-party changes.,Yes,_api_twitter automated test.
+hybridauth,Hybridauth login and syndication,ocProducts,,"Could potentially break due to third-party changes, but we rely on the Hybridauth project to fix any issues and are involved in that project".,Yes,
 webdav,WebDav access for The Repository,ocProducts,,Could potentially break due to third-party changes.,Yes,webdav automated test.
 os_windows,Windows servers,ocProducts,ocProducts,,No,
 os_linux,Linux servers,ocProducts,ocProducts,,No,

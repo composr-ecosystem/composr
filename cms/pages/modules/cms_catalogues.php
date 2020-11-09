@@ -631,6 +631,9 @@ class Module_cms_catalogues extends Standard_crud_module
             }
         }
 
+        require_code('syndication');
+        $fields->attach(get_syndication_option_fields('download', $id !== null));
+
         // Metadata
         require_code('content2');
         $seo_fields = seo_get_fields($this->seo_type, ($id === null) ? null : strval($id), false);
@@ -815,6 +818,7 @@ class Module_cms_catalogues extends Standard_crud_module
         }
 
         if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'catalogues')) && ((get_value('disable_cat_cat_perms') === '1') || (has_category_access(get_modal_user(), 'catalogues_category', strval($category_id))) && (has_category_access(get_modal_user(), 'catalogues_catalogue', $catalogue_name)))) {
                 $privacy_ok = true;
                 if (addon_installed('content_privacy')) {
@@ -822,7 +826,8 @@ class Module_cms_catalogues extends Standard_crud_module
                     $privacy_ok = has_privacy_access('catalogue_entry', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
                 }
                 if ($privacy_ok) {
-                    require_code('activities');
+                    require_code('syndication');
+
                     $map_copy = $map;
                     $title = array_shift($map_copy);
                     $catalogue_title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $catalogue_name]));
@@ -830,7 +835,8 @@ class Module_cms_catalogues extends Standard_crud_module
                     if (do_lang($lang_string, null, null, null, null, false) === null) {
                         $lang_string = 'catalogues:ACTIVITY_CATALOGUE_GENERIC_ADD';
                     }
-                    syndicate_described_activity($lang_string, $catalogue_title, $title, '', '_SEARCH:catalogues:entry:' . strval($id), '', '', 'catalogues');
+
+                    syndicate_content('catalogue_entry', strval($id), [[$lang_string, get_member(), $catalogue_title, $title]]);
                 }
             }
         }
@@ -878,30 +884,40 @@ class Module_cms_catalogues extends Standard_crud_module
             save_privacy_form_fields('catalogue_entry', strval($id), $privacy_level, $additional_access);
         }
 
-        if ((has_actual_page_access(get_modal_user(), 'catalogues')) && ((get_value('disable_cat_cat_perms') === '1') || (has_category_access(get_modal_user(), 'catalogues_category', strval($category_id))) && (has_category_access(get_modal_user(), 'catalogues_catalogue', $catalogue_name)))) {
-            $privacy_ok = true;
-            if (addon_installed('content_privacy')) {
-                require_code('content_privacy');
-                $privacy_ok = has_privacy_access('catalogue_entry', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
-            }
-            if ($privacy_ok) {
-                require_code('activities');
+        if (($validated == 1) || (!addon_installed('unvalidated'))) {
+            require_code('users2');
+            if ((has_actual_page_access(get_modal_user(), 'catalogues')) && ((get_value('disable_cat_cat_perms') === '1') || (has_category_access(get_modal_user(), 'catalogues_category', strval($category_id))) && (has_category_access(get_modal_user(), 'catalogues_catalogue', $catalogue_name)))) {
+                $privacy_ok = true;
+                if (addon_installed('content_privacy')) {
+                    require_code('content_privacy');
+                    $privacy_ok = has_privacy_access('catalogue_entry', strval($id), $GLOBALS['FORUM_DRIVER']->get_guest_id());
+                }
+                if ($privacy_ok) {
+                    $just_validated = (addon_installed('unvalidated')) && ($GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'ce_validated', ['id' => $id]) == 0);
 
-                $map_copy = $map;
-                $title = array_shift($map_copy);
-                $catalogue_title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $catalogue_name]));
+                    $map_copy = $map;
+                    $title = array_shift($map_copy);
+                    $catalogue_title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $catalogue_name]));
 
-                if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
-                    $lang_string = ($submitter != get_member()) ? ('calendar:ACTIVITY_VALIDATE_CATALOGUE_' . $catalogue_name) : ('catalogues:ACTIVITY_CATALOGUE_' . $catalogue_name . '_ADD');
-                    if (do_lang($lang_string, null, null, null, null, false) === null) {
-                        $lang_string = ($submitter != get_member()) ? 'calendar:ACTIVITY_VALIDATE_CATALOGUE_GENERIC' : 'catalogues:ACTIVITY_CATALOGUE_GENERIC_ADD';
+                    $activities = [];
+                    if ($just_validated) {
+                        if ($submitter != get_member()) {
+                            $lang_string = 'ACTIVITY_VALIDATE_CATALOGUE_' . $catalogue_name;
+                            if (do_lang($lang_string, null, null, null, null, false) === null) {
+                                $lang_string = 'ACTIVITY_VALIDATE_CATALOGUE_GENERIC';
+                            }
+                            $activities[] = [$lang_string, get_member(), $catalogue_title, $title];
+                        }
+
+                        $lang_string = 'ACTIVITY_CATALOGUE_' . $catalogue_name;
+                        if (do_lang($lang_string, null, null, null, null, false) === null) {
+                            $lang_string = 'ACTIVITY_CATALOGUE_GENERIC_ADD';
+                        }
+                        $activities[] = [$lang_string, $submitter, $catalogue_title, $title];
                     }
-                    syndicate_described_activity($lang_string, $catalogue_title, $title, '', '_SEARCH:catalogues:entry:' . strval($id), '', '', 'catalogues', 1, $submitter);
-                } elseif ($validated == 1) {
-                    $lang_string = 'catalogues:ACTIVITY_CATALOGUE_' . $catalogue_name . '_EDIT';
-                    if (do_lang($lang_string, null, null, null, null, false) !== null) {
-                        syndicate_described_activity($lang_string, $catalogue_title, $title, '', '_SEARCH:catalogues:entry:' . strval($id), '', '', 'catalogues', 1, null/*$submitter*/);
-                    }
+
+                    require_code('syndication');
+                    syndicate_content('catalogue_entry', strval($id), $activities);
                 }
             }
         }
@@ -964,6 +980,9 @@ class Module_cms_catalogues extends Standard_crud_module
             require_code('content_privacy2');
             delete_privacy_form_fields('catalogue_entry', strval($id));
         }
+
+        require_code('syndication');
+        unsyndicate_content('catalogue_entry', strval($id));
 
         $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $category_id]);
         $this->donext_category_id = $category_id;
