@@ -851,9 +851,9 @@ class Module_cms_catalogues extends Standard_crud_module
                 $catalogue_title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', array('c_name' => $catalogue_name)));
 
                 if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_validated', array('id' => $id)) === 0)) { // Just became validated, syndicate as just added
-                    $lang_string = ($submitter != get_member()) ? ('calendar:ACTIVITY_VALIDATE_CATALOGUE_' . $catalogue_name) : ('catalogues:ACTIVITY_CATALOGUE_' . $catalogue_name . '_ADD');
+                    $lang_string = ($submitter != get_member()) ? ('catalogues:ACTIVITY_VALIDATE_CATALOGUE_' . $catalogue_name) : ('catalogues:ACTIVITY_CATALOGUE_' . $catalogue_name . '_ADD');
                     if (is_null(do_lang($lang_string, null, null, null, null, false))) {
-                        $lang_string = ($submitter != get_member()) ? 'calendar:ACTIVITY_VALIDATE_CATALOGUE_GENERIC' : 'catalogues:ACTIVITY_CATALOGUE_GENERIC_ADD';
+                        $lang_string = ($submitter != get_member()) ? 'catalogues:ACTIVITY_VALIDATE_CATALOGUE_GENERIC' : 'catalogues:ACTIVITY_CATALOGUE_GENERIC_ADD';
                     }
                     syndicate_described_activity($lang_string, $catalogue_title, $title, '', '_SEARCH:catalogues:entry:' . strval($id), '', '', 'catalogues', 1, $submitter);
                 } elseif ($validated == 1) {
