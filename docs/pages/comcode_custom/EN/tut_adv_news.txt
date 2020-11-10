@@ -8,7 +8,7 @@ This tutorial describes some of the more complex features available for news, in
 
 See the [page="_SEARCH:tut_configuration"]basic configuration[/page] tutorial for information on setting up the the system scheduler.
 
-You will see an advance scheduling option once the system scheduler is enabled (requires the Composr [tt]calendar[/tt] addon to be installed also).
+You will see an advance scheduling option once the system scheduler is enabled (requires the Composr [tt]calendar[/tt] and [tt]commandr[/tt] addons to be installed also).
 
 Scheduling posts work by having the entry initially non-validated, then it will be auto-validated at the chosen time.
 

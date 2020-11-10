@@ -52,7 +52,7 @@ class Hook_commandr_scheduled_publish_topic
     {
         $id = intval($_id);
 
-        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN f_posts p ON t.id=p.p_cache_first_post_id', ['t.*', 'p.p_poster'], ['id' => $id], '', 1);
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id', ['t.*', 'p.p_poster'], ['t.id' => $id], '', 1);
         if (!array_key_exists(0, $topic_rows)) {
             return ['', '', do_lang('MISSING_RESOURCE'), ''];
         }

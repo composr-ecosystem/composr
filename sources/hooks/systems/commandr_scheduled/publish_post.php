@@ -35,7 +35,7 @@ class Hook_commandr_scheduled_publish_post
         }
 
         return [
-            'required_parameters' => 13,
+            'required_parameters' => 12,
         ];
     }
 
@@ -50,17 +50,19 @@ class Hook_commandr_scheduled_publish_post
      */
     public function run($options, $id, $parameters, &$commandr_fs)
     {
+        $topic_id = intval($id);
+
         // Map out parameters to make them easier to understand since there are many of them
         //  This action is for a moderator reply, so there are a lot of parameters involved
-        list($topic_id, $forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, $poster, $ip_address) = $parameters;
+        list($forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, $poster, $ip_address) = $parameters;
 
         $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', ['id' => $topic_id]);
         if ($test === null) {
             return ['', '', do_lang('MISSING_RESOURCE'), ''];
         }
 
-        require_code('cns_topics_action2');
-        require_code('cns_topics_action');
+        require_code('cns_posts_action2');
+        require_code('cns_posts_action');
 
         $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, 1, $is_emphasised, $poster_name_if_guest, $ip_address, null, $poster, $intended_solely_for, null, null, false, true, null, true, $topic_title, null, $anonymous == 1);
 

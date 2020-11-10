@@ -59,13 +59,16 @@ class Hook_syndication_hybridauth_admin
 
             $prefix = get_custom_base_url() . '/uploads/';
             if (substr($image_url, 0, strlen($prefix)) == $prefix) {
-                $image_path = get_custom_file_base() . '/' . rawurldecode(substr($image_url, strlen($prefix)));
+                $image_path = get_custom_file_base() . '/uploads/' . rawurldecode(substr($image_url, strlen($prefix)));
 
                 require_code('mime_types');
                 $mime_type = get_mime_type(get_file_extension($image_url), true);
                 if ($mime_type != 'application/octet-stream') {
                     $enclosure->mimeType = $mime_type;
-                    $enclosure->contentLength = @filesize($image_path);
+                    $file_size = @filesize($image_path);
+                    if ($file_size !== false) {
+                        $enclosure->contentLength = $file_size;
+                    }
                 }
             }
         }

@@ -466,7 +466,7 @@ class Module_cms_news extends Standard_crud_module
             $fields2->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_NEWS_IMAGE_OVERRIDE'), $hidden, 'image', 'icons/news', true, $image, false, null, IMAGE_CRITERIA_WEBSAFE));
         }
 
-        if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
+        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
             $fields2->attach(form_input_date__cron(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, ($scheduled === null), true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
         }
 
@@ -611,7 +611,7 @@ class Module_cms_news extends Standard_crud_module
         $image = post_param_image('image', 'uploads/repimages', 'icons/news', false);
 
         $schedule = post_param_date('schedule');
-        if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times')) && ($schedule !== null) && ($schedule > time())) {
+        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (has_privilege(get_member(), 'scheduled_publication_times')) && ($schedule !== null) && ($schedule > time())) {
             $validated = 0;
         } else {
             $schedule = null;
@@ -731,7 +731,7 @@ class Module_cms_news extends Standard_crud_module
 
         $schedule = post_param_date('schedule');
 
-        if ((addon_installed('calendar')) && (!fractional_edit()) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
+        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (!fractional_edit()) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
             require_code('calendar2');
             unschedule_code('publish_news', strval($id));
 

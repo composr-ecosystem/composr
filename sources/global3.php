@@ -5056,10 +5056,10 @@ function cms_extend_time_limit($secs)
  * @param  ?mixed $param_l Parameter (null: not used)
  * @return boolean Whether it scheduled for later (as normally expected)
  */
-function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null)
+function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null, $param_m = null)
 {
     if (get_value('avoid_register_shutdown_function') === '1') {
-        $args = [$param_a, $param_b, $param_c, $param_d];
+        $args = [$param_a, $param_b, $param_c, $param_d, $param_e, $param_f, $param_g, $param_h, $param_i, $param_j, $param_k, $param_l, $param_m];
         while ((!empty($args)) && (end($args) === null)) {
             array_pop($args);
         }
@@ -5068,7 +5068,7 @@ function cms_register_shutdown_function_safe($callback, $param_a = null, $param_
         return false;
     }
 
-    $args = [$callback, $param_a, $param_b, $param_c, $param_d];
+    $args = [$callback, $param_a, $param_b, $param_c, $param_d, $param_e, $param_f, $param_g, $param_h, $param_i, $param_j, $param_k, $param_l, $param_m];
     while ((!empty($args)) && (end($args) === null)) {
         array_pop($args);
     }

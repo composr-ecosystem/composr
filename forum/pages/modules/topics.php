@@ -2442,7 +2442,7 @@ class Module_topics
                 }
 
                 if (($schedule !== null) && (addon_installed('calendar'))) {
-                    $parameters = [$topic_id, $forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, get_member(), get_ip_address()];
+                    $parameters = [$forum_id, $title, $post, $skip_sig, $first_post, $is_emphasised, $poster_name_if_guest, $intended_solely_for, $topic_title, $anonymous, get_member(), get_ip_address()];
                     require_code('calendar');
                     $start_year = intval(date('Y', $schedule));
                     $start_month = intval(date('m', $schedule));
@@ -2450,7 +2450,7 @@ class Module_topics
                     $start_hour = intval(date('H', $schedule));
                     $start_minute = intval(date('i', $schedule));
                     require_code('calendar2');
-                    schedule_code('publish_post', '', $parameters, do_lang('ADD_POST'), $start_year, $start_month, $start_day, $start_hour, $start_minute);
+                    schedule_code('publish_post', strval($topic_id), $parameters, do_lang('ADD_POST'), $start_year, $start_month, $start_day, $start_hour, $start_minute);
 
                     $text = do_lang_tempcode('SUCCESS');
                     $map = ['page' => 'topicview', 'type' => 'first_unread', 'id' => $topic_id];

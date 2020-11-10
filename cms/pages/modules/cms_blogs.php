@@ -349,7 +349,7 @@ class Module_cms_blogs extends Standard_crud_module
             $fields2->attach(form_input_multi_list(do_lang_tempcode('SECONDARY_CATEGORIES'), do_lang_tempcode('DESCRIPTION_SECONDARY_CATEGORIES', 'news'), 'news_category', $cats2));
         }
 
-        if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
+        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
             $fields2->attach(form_input_date__cron(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, ($scheduled === null), true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
         }
 
@@ -471,7 +471,7 @@ class Module_cms_blogs extends Standard_crud_module
         $notes = post_param_string('notes', '');
 
         $schedule = post_param_date('schedule');
-        if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times')) && ($schedule !== null) && ($schedule > time())) {
+        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (has_privilege(get_member(), 'scheduled_publication_times')) && ($schedule !== null) && ($schedule > time())) {
             $validated = 0;
         } else {
             $schedule = null;
@@ -568,7 +568,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         $schedule = post_param_date('schedule');
 
-        if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
+        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
             require_code('calendar2');
             unschedule_code('publish_news', strval($id));
 

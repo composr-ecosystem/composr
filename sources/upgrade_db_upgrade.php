@@ -366,6 +366,7 @@ function version_specific()
             // File replacements
             $reps = [
                 '#main_activities#' => 'main_activity_feed',
+                '#main_activities_state#' => 'main_activity_feed_state',
             ];
             perform_search_replace($reps);
         }

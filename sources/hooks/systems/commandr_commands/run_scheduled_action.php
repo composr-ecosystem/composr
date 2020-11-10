@@ -61,11 +61,6 @@ class Hook_commandr_command_run_scheduled_action
 
             $id = $parameters[1];
 
-            // Error if parameter 3 (json parameters) does not exist
-            if (!array_key_exists(2, $parameters)) {
-                return ['', '', '', do_lang('MISSING_PARAM', '3', 'run_scheduled_action')];
-            }
-
             // Get the required number of parameters for this hook
             $hook_info = $hook_obs[$parameters[0]]->info();
             if ($hook_info === null) {
@@ -74,13 +69,13 @@ class Hook_commandr_command_run_scheduled_action
             $required_parameters = $hook_info['required_parameters'];
 
             // Parameter 3 is json_encoded as an array to account for variable types and lengths. Decode it.
-            $_parameters = json_decode($parameters[2], true);
+            $_parameters = isset($parameters[2]) ? json_decode($parameters[2], true) : [];
 
             // Parameters check
             if ($required_parameters > 0) {
                 for ($i = 0; $i < $required_parameters; $i++) {
                     if (!array_key_exists($i, $_parameters)) {
-                        return ['', '', '', do_lang('MISSING_PARAM_JSON', strval($i), '2', 'run_scheduled_action')];
+                        return ['', '', '', do_lang('MISSING_PARAM_JSON', strval($i), strval($i + 1), 'run_scheduled_action')];
                     }
                 }
             }
