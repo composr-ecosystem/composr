@@ -422,9 +422,10 @@ function css_tempcode($inline = false, $only_global = false, $context = null, $t
     $css = new Tempcode();
     $css_need_inline = new Tempcode();
     if ($only_global) {
-        $css_to_do = array('global' => true, 'no_cache' => true);
         if (isset($CSSS['email'])) {
-            $css_to_do['email'] = true;
+            $css_to_do = array('global' => true, 'no_cache' => true, 'email' => true);
+        } else {
+            $css_to_do = array('global' => true, 'no_cache' => true);
         }
     } else {
         $css_to_do = $CSSS;

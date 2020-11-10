@@ -218,7 +218,7 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__mail()
     {
-        $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), array(lorem_phrase(), lorem_paragraph(), placeholder_url(), lorem_phrase(), placeholder_id(), lorem_phrase())));
+        $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), array(lorem_phrase(), lorem_paragraph(), static_evaluate_tempcode(placeholder_url()), lorem_phrase(), placeholder_id(), lorem_phrase())));
 
         require_css('email');
 
