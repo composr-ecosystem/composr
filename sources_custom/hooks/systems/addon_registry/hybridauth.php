@@ -119,7 +119,7 @@ We expect any Hybridauth provider will work with Composr, but we have not tested
 The first thing you do is create an \'app\' on the developers section of the provider\'s website.
 The vast majority of providers work via OAuth2.
 The actual steps vary from provider-to-provider, but for most you will end up with an OAuth ID and an OAuth secret.
-The OAuth Redirect URI used will be [tt]http://yourbaseurl/data_custom/hybridauth.php[/tt]. You will probably need to set it up on the app for security reasons.
+The OAuth Redirect URI used will be both [tt]https://yourbaseurl/data_custom/hybridauth.php[/tt] and [tt]https://yourbaseurl/data_custom/hybridauth_admin.php[/tt]. You will probably need to set it up on the app for security reasons.
 
 [title="3"]On the Composr end[/title]
 

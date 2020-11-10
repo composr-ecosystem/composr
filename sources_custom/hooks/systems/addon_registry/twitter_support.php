@@ -91,9 +91,9 @@ class Hook_addon_registry_twitter_support
         return 'Integrate your Twitter feed into your web site, via a block.
 
 [list]
-[*] Set up an app on Twitter
-[*] Configure the Twitter settings in Composr (Admin Zone > Setup > Configuration > Composr API options > Twitter)
-[*] Set up oAuth for Twitter (Admin Zone > Setup > Twitter authorisation)
+[*] Set up an app on Twitter; the callback URL should be [tt]https://yourbaseurl/adminzone/index.php[/tt]
+[*] Configure the Twitter settings in Composr (Admin Zone > Setup > Configuration > Composr API options > Twitter authorisation)
+[*] Set up oAuth for Twitter from under Admin Zone > Setup > Setup API access
 [*] Use Comcode like:
 [code="Comcode"]
 [block screen_name="yourname"]twitter_feed[/block]
@@ -156,8 +156,7 @@ class Hook_addon_registry_twitter_support
             'sources_custom/hooks/systems/config/twitter_allow_signups.php',
             'sources_custom/hooks/systems/health_checks/twitter.php',
             'sources_custom/hooks/systems/hybridauth/twitter.php',
-            'adminzone/pages/minimodules_custom/twitter_oauth.php',
-            'sources_custom/hooks/systems/page_groupings/twitter.php',
+            'sources_custom/hooks/systems/oauth_screen_sup/twitter.php',
 
             'sources_custom/blocks/twitter_feed.php',
             'themes/default/templates_custom/BLOCK_TWITTER_FEED.tpl',
