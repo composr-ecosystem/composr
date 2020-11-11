@@ -31,15 +31,15 @@
 
 			var uses_plupload = false;
 
-			var aub = document.getElementById('attachment_upload_button');
+			var aub = document.getElementById('attachment_upload_button__' + editor.element.$.id);
 			var doing_attachment_uploads = (aub) && (aub.className.indexOf('for_field_' + editor.element.$.id + ' ')!=-1);
 
-			if ((typeof window.rebuild_attachment_button_for_next != 'undefined') && (doing_attachment_uploads)) {
+			if ((typeof window['rebuild_attachment_button_for_next__' + editor.element.$.id] != 'undefined') && (doing_attachment_uploads)) {
 				if ((!aub) || (aub.parentNode.parentNode.style.display == 'none')) // If attachment button was not placed elsewhere
 				{
 					window.setTimeout(function () {
-						rebuild_attachment_button_for_next(editor.element.$.id, document.getElementById('cke_' + editor.element.$.id).getElementsByClassName('cke_button__composr_image')[0].id);
-					}, 0);
+						window['rebuild_attachment_button_for_next__' + editor.element.$.id](document.getElementById('cke_' + editor.element.$.id).getElementsByClassName('cke_button__composr_image')[0].id);
+					}, 1000);
 
 					uses_plupload = true;
 				}

@@ -13,7 +13,7 @@ function add_attachment(start_num,posting_field_name)
 	if (typeof window.num_attachments=='undefined') return;
 	if (typeof window.max_attachments=='undefined') return;
 
-	var add_to=document.getElementById('attachment_store');
+	var add_to=document.getElementById('attachment_store__'+posting_field_name);
 
 	window.num_attachments++;
 
@@ -26,10 +26,10 @@ function add_attachment(start_num,posting_field_name)
 	}
 
 	// Rebuild uploader button, if we have a singular button
-	if (typeof window.rebuild_attachment_button_for_next!='undefined')
+	if (typeof window['rebuild_attachment_button_for_next__'+posting_field_name]!='undefined')
 	{
-		rebuild_attachment_button_for_next(posting_field_name);
-	}
+		window['rebuild_attachment_button_for_next__'+posting_field_name]();
+	} else
 
 	// Previous file input cannot be used anymore, if it exists
 	var element=document.getElementById('file'+window.num_attachments);
