@@ -471,9 +471,7 @@ class Instagram extends OAuth2 implements AtomInterface
      */
     public function saveAtom($atom)
     {
-        // TODO: Consider implementing Instagram Graph API, however "The API cannot access Instagram consumer accounts"
-        //  ; should give error if no image
-        throw new NotImplementedException('There is no write access on the Instagram Basic Display API.');
+        throw new NotImplementedException('There is no write access on the Instagram APIs.');
     }
 
     /**
@@ -481,8 +479,7 @@ class Instagram extends OAuth2 implements AtomInterface
      */
     public function deleteAtom($identifier)
     {
-        // TODO: Consider implementing Instagram Graph API, however "The API cannot access Instagram consumer accounts"
-        throw new NotImplementedException('There is no write access on the Instagram Basic Display API.');
+        throw new NotImplementedException('There is no write access on the Instagram APIs.');
     }
 
     /**
