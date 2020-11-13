@@ -46,6 +46,15 @@ class Hook_hybridauth_google
                     'secret' => get_option('google_apis_client_secret'),
                 ],
             ],
+
+            'YouTube' => [
+                'enabled' => (get_option('google_allow_signups') == '1') && (get_option('google_apis_client_id') != ''),
+
+                'keys' => [
+                    'id' => get_option('google_apis_client_id'),
+                    'secret' => get_option('google_apis_client_secret'),
+                ],
+            ],
         ];
     }
 }

@@ -94,7 +94,7 @@ At the end of the day it may be best just to use the galleries on your site as a
 
 Composr does not have inbuilt transcoding support, so you either need to:
 1) just use Vimeo or YouTube. You can post videos on Vimeo/YouTube, then add a video in Composr using the normal Vimeo/YouTube URL as the video URL. Composr will then automatically embed the Vimeo/YouTube player.
-2) install the [tt]gallery_syndication[/tt] addon, to automatically use YouTube as a transcoder.
+2) install the [tt]hybridauth[/tt] addon, configure for YouTube provider syndication -- to automatically use YouTube as a transcoder.
 3) just post in h.264 [tt].mp4[/tt] to start with. It has become the standard and is supported in all browsers. The only down-side is having to learn how to set your codec settings right when you make the video file.
 
 We did previously have native inbuilt transcoding support, but due to the bugginess of transcoders, the server overhead, and because the world has standardised on h.264, it's been removed.

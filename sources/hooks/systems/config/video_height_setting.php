@@ -34,7 +34,7 @@ class Hook_config_video_height_setting
             'human_name' => 'VIDEO_HEIGHT_SETTING',
             'type' => 'integer',
             'category' => 'GALLERY',
-            'group' => 'TRANSCODING',
+            'group' => 'VIDEOS',
             'explanation' => 'CONFIG_OPTION_video_height_setting',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

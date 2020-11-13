@@ -1062,7 +1062,6 @@ class Module_admin_version
                 'last_classified_refresh' => 'classifieds',
                 'last_disastr_time' => 'disastr',
                 'last_downloads_followup_email_send' => 'downloads_followup_email',
-                'last_gallery_syndication' => 'gallery_syndication',
                 'last_group_points' => 'group_points',
                 'last_insult_time' => 'insults',
                 'last_password_censor_time' => 'password_censor',

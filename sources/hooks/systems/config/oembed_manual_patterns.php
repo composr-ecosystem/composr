@@ -66,7 +66,7 @@ class Hook_config_oembed_manual_patterns
         //$default .= "(https?://(www\.)?instagram\.com/p/.*) = http://api.instagram.com/oembed\n"; Requires API key now :(
         $default .= "(https?://soundcloud\.com/.*/.*) = http://soundcloud.com/oembed?format={format}\n";
         $default .= "(https?://twitter\.com/.*/status/\d+) = https://api.twitter.com/1/statuses/oembed.{format}\n";
-        $default .= "(https?://(www\.)?facebook\.com/.*) = https://www.facebook.com/plugins/page/oembed.{format}/\n"; // Facebook may give "Security Check Required" when trying to auto-detect, so hard-code
+        //$default .= "(https?://(www\.)?facebook\.com/.*) = https://www.facebook.com/plugins/page/oembed.{format}/\n"; // Facebook may give "Security Check Required" when trying to auto-detect, so hard-code - Requires API key now :(
 
         $default .= "(https?://.*\.tumblr\.com/post/.*) = http://api.embed.ly/1/oembed?key=123456\n";
         $default .= "(https?://edition\.cnn\.com/.*) = http://api.embed.ly/1/oembed?key=123456\n";

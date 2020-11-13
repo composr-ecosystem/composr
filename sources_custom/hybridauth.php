@@ -157,6 +157,7 @@ function enumerate_hybridauth_providers($for_admin = false)
 
             'syndicate_from' => '',
             'syndicate_from_by_default' => '',
+            'remote_hosting' => false,
 
             'keys' => [
             ],
@@ -177,12 +178,12 @@ function enumerate_hybridauth_providers($for_admin = false)
                 $config = $config_structure[$provider]['admin'];
             }
             foreach (['composr-config', 'keys-config', 'hybridauth-config'] as $config_section) {
-                $config[$config_section] += $config_structure[$provider][$config_section];
+                $config[$config_section] = $config_structure[$provider][$config_section] + $config[$config_section];
             }
         }
 
-        $info['keys'] += $config['keys-config'];
-        $info['other_parameters'] += $config['hybridauth-config'];
+        $info['keys'] = $config['keys-config'] + $info['keys'];
+        $info['other_parameters'] = $config['hybridauth-config'] + $info['other_parameters'];
 
         if ($for_admin) {
             $enabled = !empty($info['keys']);
@@ -232,6 +233,8 @@ function enumerate_hybridauth_providers($for_admin = false)
 
         $info['syndicate_from'] = isset($config['composr-config']['syndicate_from']) ? $config['composr-config']['syndicate_from'] : '';
         $info['syndicate_from_by_default'] = isset($config['composr-config']['syndicate_from_by_default']) ? $config['composr-config']['syndicate_from_by_default'] : '';
+
+        $info['remote_hosting'] = isset($config['composr-config']['remote_hosting']) ? ($config['composr-config']['remote_hosting'] == 'true') : false;
     }
 
     sort_maps_by($providers, 'button_precedence');

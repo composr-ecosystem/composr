@@ -32,6 +32,8 @@ function syndicate_content($content_type, $content_id, $activities, $syndication
         return;
     }
 
+    cms_disable_time_limit();
+
     if ($syndication_context === null) {
         $syndication_context = read_get_syndication_option_fields($content_type);
     }

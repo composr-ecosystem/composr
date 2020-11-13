@@ -32,7 +32,7 @@ class Block_main_hybridauth_admin_atoms
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = ['provider', 'max', 'category_filter', 'require_images', 'require_videos', 'require_binaries', 'include_contributed_content', 'include_private'];
+        $info['parameters'] = ['provider', 'max', 'category_filter', 'require_images', 'require_videos', 'require_audios', 'require_binaries', 'include_contributed_content', 'include_private'];
         return $info;
     }
 
@@ -52,6 +52,7 @@ class Block_main_hybridauth_admin_atoms
             array_key_exists('category_filter', $map) ? $map['category_filter'] : '',
             array_key_exists('require_images', $map) ? ($map['require_images'] == '1') : false,
             array_key_exists('require_videos', $map) ? ($map['require_videos'] == '1') : false,
+            array_key_exists('require_audios', $map) ? ($map['require_audios'] == '1') : false,
             array_key_exists('require_binaries', $map) ? ($map['require_binaries'] == '1') : false,
             array_key_exists('include_contributed_content', $map) ? ($map['include_contributed_content'] == '1') : false,
             array_key_exists('include_private', $map) ? ($map['include_private'] == '1') : false,
@@ -104,6 +105,7 @@ PHP;
         }
         $require_images = array_key_exists('require_images', $map) ? ($map['require_images'] == '1') : false;
         $require_videos = array_key_exists('require_videos', $map) ? ($map['require_videos'] == '1') : false;
+        $require_audios = array_key_exists('require_audios', $map) ? ($map['require_audios'] == '1') : false;
         $require_binaries = array_key_exists('require_binaries', $map) ? ($map['require_binaries'] == '1') : false;
         $include_contributed_content = array_key_exists('include_contributed_content', $map) ? ($map['include_contributed_content'] == '1') : false;
         $include_private = array_key_exists('include_private', $map) ? ($map['include_private'] == '1') : false;
@@ -111,13 +113,16 @@ PHP;
         $filter = new Hybridauth\Atom\Filter();
         $filter->categoryFilter = $category_filter;
         $enclosure_type_filter = null;
-        if (($require_images) || ($require_videos) || ($require_binaries)) {
+        if (($require_images) || ($require_videos) || ($require_audios) || ($require_binaries)) {
             $enclosure_type_filter = 0;
             if ($require_images) {
                 $enclosure_type_filter += Hybridauth\Atom\Enclosure::ENCLOSURE_IMAGE;
             }
             if ($require_videos) {
                 $enclosure_type_filter += Hybridauth\Atom\Enclosure::ENCLOSURE_VIDEO;
+            }
+            if ($require_audios) {
+                $enclosure_type_filter += Hybridauth\Atom\Enclosure::ENCLOSURE_AUDIO;
             }
             if ($require_binaries) {
                 $enclosure_type_filter += Hybridauth\Atom\Enclosure::ENCLOSURE_BINARY;
@@ -126,6 +131,7 @@ PHP;
         $filter->enclosureTypeFilter = $enclosure_type_filter;
         $filter->includeContributedContent = $include_contributed_content;
         $filter->includePrivate = $include_private;
+        $filter->limit = $max;
 
         $adapter = $hybridauth->getAdapter($provider);
 
@@ -140,7 +146,7 @@ PHP;
         $all_categories = $adapter->getCategories();
 
         try {
-            list($atoms, $has_results) = $adapter->getAtoms($max, $filter);
+            list($atoms, $has_results) = $adapter->getAtoms($filter);
 
             foreach ($atoms as $atom) {
                 if (count($feed) >= $max) {
@@ -179,6 +185,9 @@ PHP;
                             break;
                         case Hybridauth\Atom\Enclosure::ENCLOSURE_VIDEO:
                             $type = 'video';
+                            break;
+                        case Hybridauth\Atom\Enclosure::ENCLOSURE_AUDIO:
+                            $type = 'audio';
                             break;
                         case Hybridauth\Atom\Enclosure::ENCLOSURE_BINARY:
                             $type = 'binary';
@@ -246,7 +255,7 @@ PHP;
                 ];
             }
         } catch (Exception $e) {
-            warn_exit($e->getMessage());
+            return paragraph($e->getMessage(), 'red-alert');
         }
 
         cms_ini_set('ocproducts.type_strictness', $before_type_strictness);

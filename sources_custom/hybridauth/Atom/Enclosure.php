@@ -15,14 +15,15 @@ class Enclosure
 {
     const ENCLOSURE_IMAGE = 1;
     const ENCLOSURE_VIDEO = 2;
-    const ENCLOSURE_BINARY = 4;
+    const ENCLOSURE_AUDIO = 4;
+    const ENCLOSURE_BINARY = 8;
 
     /**
      * An ENCLOSURE_* constant.
      *
      * @var int
      */
-    public $type;
+    public $type = 8;
 
     /**
      * Mime-type.

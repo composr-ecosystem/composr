@@ -13,6 +13,22 @@ namespace Hybridauth\Atom;
 class Filter
 {
     /**
+     * Maximum number of results to return.
+     *
+     * @var integer
+     */
+    public $limit = 12;
+
+    /**
+     * Whether to dip into pagination to get as close to $limit as possible.
+     * This only has an effect if filtering isn't happening API-side,
+     * or if $limit is too large for what the API supports in a single request.
+     *
+     * @var bool
+     */
+    public $deepProbe = true;
+
+    /**
      * The ID of a category.
      *
      * @var string

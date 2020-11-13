@@ -51,34 +51,28 @@ class Hook_syndication_hybridauth_admin
         $atom->updated = new \DateTime('@' . strval(time()));
         $atom->title = $title;
         $atom->summary = $content_ob->get_description($content_row, FIELD_RENDER_HTML);
-        $image_url = $content_ob->get_image_url($content_row);
-        if ($image_url != '') {
-            $enclosure = new \Hybridauth\Atom\Enclosure();
-            $enclosure->type = \Hybridauth\Atom\Enclosure::ENCLOSURE_IMAGE;
-            $enclosure->url = $image_url;
-
-            $prefix = get_custom_base_url() . '/uploads/';
-            if (substr($image_url, 0, strlen($prefix)) == $prefix) {
-                $image_path = get_custom_file_base() . '/uploads/' . rawurldecode(substr($image_url, strlen($prefix)));
-
-                require_code('mime_types');
-                $mime_type = get_mime_type(get_file_extension($image_url), true);
-                if ($mime_type != 'application/octet-stream') {
-                    $enclosure->mimeType = $mime_type;
-                    $file_size = @filesize($image_path);
-                    if ($file_size !== false) {
-                        $enclosure->contentLength = $file_size;
-                    }
-                }
-            }
-        }
-        $atom->enclosures[] = $enclosure;
         $atom->url = $url_safe->evaluate();
         if ($cma_info['seo_type_code'] !== null) {
             list(, , $hash_tags) = seo_meta_get_for($cma_info['seo_type_code'], $content_id);
             if ($hash_tags != '') {
                 $atom->hashTags = explode(',', $hash_tags);
             }
+        }
+
+        $image_url = $content_ob->get_image_url($content_row);
+        if ($image_url != '') {
+            $enclosure = $this->create_enclosure($image_url, \Hybridauth\Atom\Enclosure::ENCLOSURE_IMAGE);
+            $atom->enclosures[] = $enclosure;
+        }
+
+        // FUDGE: We don't have a proper API to pull out videos, so we'll hard-code for gallery videos
+        if ($content_type == 'video') {
+            $video_url = $GLOBALS['SITE_DB']->query_select_value('videos', 'url', ['id' => intval($content_id)]);
+            if (url_is_local($video_url)) {
+                $video_url = get_custom_base_url() . '/' . $video_url;
+            }
+            $enclosure = $this->create_enclosure($video_url, \Hybridauth\Atom\Enclosure::ENCLOSURE_VIDEO);
+            $atom->enclosures[] = $enclosure;
         }
 
         $before_type_strictness = ini_get('ocproducts.type_strictness');
@@ -128,7 +122,19 @@ class Hook_syndication_hybridauth_admin
                     }
                 }
 
-                $provider_id = $adapter->saveAtom($atom);
+                $messages = [];
+                $provider_id = $adapter->saveAtom($atom, $messages);
+
+                foreach ($messages as $message) {
+                    attach_message($message, 'notice', false, true);
+                }
+
+                // FUDGE: Honour remote_hosting for 'video' content type only
+                if (($content_type == 'video') && ($info['remote_hosting'])) {
+                    $remote_atom = $adapter->getAtomFull($provider_id);
+
+                    $GLOBALS['SITE_DB']->query_update('videos', ['url' => $remote_atom->url], ['id' => intval($content_id)], '', 1);
+                }
 
                 if (!$is_update) {
                     $GLOBALS['SITE_DB']->query_insert('hybridauth_content_map', [
@@ -148,6 +154,37 @@ class Hook_syndication_hybridauth_admin
 
         cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
         cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
+    }
+
+    /**
+     * Create a Hybridauth enclosure.
+     *
+     * @param  string $url URL
+     * @param  integer $type Enclosure type
+     * @return object Enclosure
+     */
+    protected function create_enclosure($url, $type)
+    {
+        $enclosure = new \Hybridauth\Atom\Enclosure();
+        $enclosure->type = $type;
+        $enclosure->url = $url;
+
+        $prefix = get_custom_base_url() . '/uploads/';
+        if (substr($url, 0, strlen($prefix)) == $prefix) {
+            $path = get_custom_file_base() . '/uploads/' . rawurldecode(substr($url, strlen($prefix)));
+
+            require_code('mime_types');
+            $mime_type = get_mime_type(get_file_extension($url), true);
+            if ($mime_type != 'application/octet-stream') {
+                $enclosure->mimeType = $mime_type;
+                $file_size = @filesize($path);
+                if ($file_size !== false) {
+                    $enclosure->contentLength = $file_size;
+                }
+            }
+        }
+
+        return $enclosure;
     }
 
     /**

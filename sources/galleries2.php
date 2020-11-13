@@ -1185,13 +1185,6 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
 
     decache_gallery_blocks();
 
-    if ((is_file(get_file_base() . '/sources_custom/gallery_syndication.php')) && (!in_safe_mode())) {
-        require_code('gallery_syndication');
-        if (function_exists('sync_video_syndication')) {
-            sync_video_syndication($id, true, false, $consider_deferring);
-        }
-    }
-
     require_code('member_mentions');
     dispatch_member_mention_notifications('video', strval($id), $submitter);
 
@@ -1342,13 +1335,6 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
         process_overridden_comment_forum('videos', strval($id), $cat, $old_cat)
     );
 
-    if ((is_file(get_file_base() . '/sources_custom/gallery_syndication.php')) && (!in_safe_mode()) && ($url != STRING_MAGIC_NULL)) {
-        require_code('gallery_syndication');
-        if (function_exists('sync_video_syndication')) {
-            sync_video_syndication($id, false, $orig_url != $url, $orig_url != $url && $consider_deferring);
-        }
-    }
-
     require_code('sitemap_xml');
     notify_sitemap_node_edit('_SEARCH:galleries:video:' . strval($id), has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'galleries', $cat));
 }
@@ -1395,13 +1381,6 @@ function delete_video($id, $delete_full = true)
     seo_meta_erase_storage('video', strval($id));
 
     decache_gallery_blocks();
-
-    if ((is_file(get_file_base() . '/sources_custom/gallery_syndication.php')) && (!in_safe_mode())) {
-        require_code('gallery_syndication');
-        if (function_exists('sync_video_syndication')) {
-            sync_video_syndication($id, false, false);
-        }
-    }
 
     $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'galleries', 'm_resource_type' => 'video', 'm_resource_id' => strval($id)]);
 

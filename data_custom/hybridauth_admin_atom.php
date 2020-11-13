@@ -65,7 +65,7 @@ if (!$adapter instanceof Hybridauth\Adapter\AtomInterface) {
     warn_exit('Atom interface not implemented by ' . $provider);
 }
 
-$limit = get_param_integer('limit', 30);
+$max = get_param_integer('max', 30);
 $filter = new \Hybridauth\Atom\Filter();
 $filter->categoryFilter = get_param_string('categoryFilter', null);
 if ($filter->categoryFilter === '') {
@@ -74,9 +74,10 @@ if ($filter->categoryFilter === '') {
 $filter->enclosureTypeFilter = get_param_integer('enclosureTypeFilter', null);
 $filter->includeContributedContent = (get_param_integer('includeContributedContent', 0) == 1);
 $filter->includePrivate = (get_param_integer('includePrivate', 0) == 1);
+$filter->limit = $max;
 
 try {
-    $feed = $adapter->buildAtomFeed($limit, $filter);
+    $feed = $adapter->buildAtomFeed($filter);
 } catch (Exception $e) {
     warn_exit($e->getMessage());
 }

@@ -107,6 +107,7 @@ Hybridauth supports many providers (around 50), and likely will support more in 
  - [tt]Twitter[/tt]
  - [tt]Vkontakte[/tt]
  - [tt]Yahoo[/tt]
+ - [tt]YouTube[/tt]
 * These do not support avatars/photos, which you might care about when deciding what login options to feature.
 
 For the full list of login options and integration notes refer to the list of providers on the [url="Hybridauth website"]https://hybridauth.github.io/hybridauth/[/url], and the code comments in the [tt]sources_custom/hybridauth/Provider[/tt] files.
@@ -262,6 +263,12 @@ The terminology displayed on Vkontakte\'s end is a little different:
  - App ID is the OAuth2 ID.
  - Secure key is OAuth2 secret.
 
+[title="3"]YouTube[/title]
+
+The Google configuration options will also be used for YouTube, so don\'t need configuring in the XML.
+E-mail login is not supported.
+Video transcoding is supported, and documented further down.
+
 [title="2"]Button display[/title]
 
 All the providers mentioned in this documentation are guaranteed to have a nice button icon bundled with Composr, and a human-friendly label. Others may or may not.
@@ -359,6 +366,22 @@ At the time of writing, content syndication is supported for the following conte
  - [tt]video[/tt] (from the [tt]galleries[/tt] addon)
 
 Note that if content syndication is supported for a content-type, activity syndication will be un-selected by default, to avoid unnecessary noise.
+
+[title="4"]Remote hosting / Transcoding[/title]
+
+For YouTube combined with gallery videos (only), you can choose to use YouTube as a host after syndication happens.
+The video is uploaded to YouTube then the local video is altered to point to it, discarding the uploaded file.
+
+This is done using the [tt]remote_hosting[/tt] configuration property, like:
+[code="XML"]
+<hybridauth>
+    ...
+    <YouTube>
+        <composr-config remote_hosting="true" syndicate_from="video" syndicate_from_by_default="video" />
+    </YouTube>
+    ...
+</hybridauth>
+[/code]
 ';
     }
 
@@ -528,6 +551,7 @@ Note that if content syndication is supported for a content-type, activity syndi
             'sources_custom/hybridauth/Provider/Pinterest.php',
             'sources_custom/hybridauth/Provider/Tumblr.php',
             'sources_custom/hybridauth/Provider/WeChatChina.php',
+            'sources_custom/hybridauth/Provider/YouTube.php',
             'sources_custom/hybridauth/Provider/Yahoo.php',
             'sources_custom/hybridauth/Provider/LinkedIn.php',
             'sources_custom/hybridauth/Provider/Disqus.php',

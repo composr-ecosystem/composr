@@ -1519,10 +1519,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             }
             if ($level == 1) {
                 if ($COMCODE_PARSE_TITLE === null) {
-                    $COMCODE_PARSE_TITLE = $embed->evaluate();
-                    if (is_object($COMCODE_PARSE_TITLE)) {
-                        $COMCODE_PARSE_TITLE = $COMCODE_PARSE_TITLE->evaluate();
-                    }
+                    $COMCODE_PARSE_TITLE = trim($embed->evaluate());
                 }
             }
 

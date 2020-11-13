@@ -22,7 +22,6 @@ interface AtomInterface
     /**
      * Build an Atom feed.
      *
-     * @param int $limit Number of elements per page (fewer if the $*Filter parameters are implemented on our end)
      * @param \Hybridauth\Atom\Filter $filter Filters
      *
      * @return string Atom feed
@@ -33,12 +32,11 @@ interface AtomInterface
      * @throws \Hybridauth\Exception\InvalidAccessTokenException
      * @throws \Hybridauth\Exception\UnexpectedApiResponseException
      */
-    public function buildAtomFeed($limit = 12, $filters = null);
+    public function buildAtomFeed($filters = null);
 
     /**
      * Get a list of atoms matching the filters (if given), in recency order.
      *
-     * @param int $limit Number of elements per page (fewer if the $*Filter parameters are implemented on our end)
      * @param \Hybridauth\Atom\Filter $filter Filters
      *
      * @return array A pair: Array of atoms, Whether there were results [needed in case all were filtered out]
@@ -49,7 +47,7 @@ interface AtomInterface
      * @throws \Hybridauth\Exception\InvalidAccessTokenException
      * @throws \Hybridauth\Exception\UnexpectedApiResponseException
      */
-    public function getAtoms($limit = 12, $filters = null);
+    public function getAtoms($filter = null);
 
     /**
      * Get all details of an individual atom.
@@ -88,6 +86,7 @@ interface AtomInterface
      * otherwise it will depend if an existing ID exists.
      *
      * @param \Hybridauth\Atom\Atom $atom Atom
+     * @param array $messages List of non-fatal error messages returned by reference
      *
      * @return string Atom ID
      *
@@ -95,9 +94,10 @@ interface AtomInterface
      * @throws \Hybridauth\Exception\HttpClientFailureException
      * @throws \Hybridauth\Exception\HttpRequestFailedException
      * @throws \Hybridauth\Exception\InvalidAccessTokenException
+     * @throws \Hybridauth\Exception\InvalidArgumentException
      * @throws \Hybridauth\Exception\UnexpectedApiResponseException
      */
-    public function saveAtom($atom);
+    public function saveAtom($atom, &$messages = []);
 
     /**
      * Delete an atom.

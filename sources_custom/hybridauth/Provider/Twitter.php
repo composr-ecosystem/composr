@@ -272,10 +272,10 @@ class Twitter extends OAuth1 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function buildAtomFeed($limit = 12, $filter = null)
+    public function buildAtomFeed($filter = null)
     {
         $userProfile = $this->getUserProfile();
-        list($atoms) = $this->getAtoms($limit, $filter);
+        list($atoms) = $this->getAtoms($filter);
 
         $utility = new AtomFeedBuilder();
         $title = 'Twitter feed of ' . $userProfile->displayName;
@@ -288,7 +288,7 @@ class Twitter extends OAuth1 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function getAtoms($limit = 12, $filter = null)
+    public function getAtoms($filter = null)
     {
         if ($filter === null) {
             $filter = new Filter();
@@ -296,23 +296,38 @@ class Twitter extends OAuth1 implements AtomInterface
 
         $apiUrl = 'statuses/user_timeline.json';
 
-        $response = $this->apiRequest($apiUrl);
-
-        if (!$response) {
-            return [];
-        }
-
         $atoms = [];
+        $hasResults = false;
 
-        foreach ($response as $item) {
-            $atom = $this->parseTweet($item);
+        $params = [
+            'count' => min(200, $filter->limit),
+        ];
 
-            if ($filter->passesEnclosureTest($atom->enclosures)) {
+        do {
+            $response = $this->apiRequest($apiUrl, 'GET', $params);
+
+            $data = new Collection($response);
+            $dataArray = $data->toArray();
+
+            foreach ($dataArray as $item) {
+                $hasResults = true;
+
+                $params['max_id'] = $item->id_str;
+
+                $atom = $this->parseTweet($item);
+
+                if (!$filter->passesEnclosureTest($atom->enclosures)) {
+                    continue;
+                }
+
                 $atoms[] = $atom;
+                if (count($atoms) == $filter->limit) {
+                    break 2;
+                }
             }
-        }
+        } while (($filter->deepProbe) && (!empty($dataArray)) && (isset($params['max_id'])));
 
-        return [$atoms, !empty($response)];
+        return [$atoms, $hasResults];
     }
 
     /**
@@ -358,8 +373,8 @@ class Twitter extends OAuth1 implements AtomInterface
         $atom->author->identifier = strval($item->user->id);
         $atom->author->displayName = $item->user->screen_name;
         $atom->author->profileURL = 'https://twitter.com/' . $item->user->screen_name;
-        if (!empty($data->profile_image_url_https)) {
-            $atom->author->photoURL = str_replace('_normal', '_original', $data->profile_image_url_https);
+        if (!empty($item->user->profile_image_url_https)) {
+            $atom->author->photoURL = str_replace('_normal', '_original', $item->user->profile_image_url_https);
         }
 
         $enclosures = [];
@@ -414,7 +429,7 @@ class Twitter extends OAuth1 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function saveAtom($atom)
+    public function saveAtom($atom, &$messages = [])
     {
         if ($atom->identifier !== null) {
             throw new NotImplementedException('Twitter does not allow edits or identifier-specifying.');
@@ -475,9 +490,7 @@ class Twitter extends OAuth1 implements AtomInterface
         }
 
         foreach ($atom->hashTags as $hashTag) {
-            if (AtomHelper::mbStrlen($status . ' #' . $hashTag) < $maxLength) {
-                $status .= ' #' . $hashTag;
-            }
+            AtomHelper::appendIfWithinLimit($status, ' #' . $hashTag, $maxLength);
         }
 
         // Uploading as required...
@@ -542,6 +555,7 @@ class Twitter extends OAuth1 implements AtomInterface
                     // no break
 
                 case Enclosure::ENCLOSURE_VIDEO:
+                case Enclosure::ENCLOSURE_AUDIO:
                     if (($numImagesDone > 0) || ($numVideosDone > 0)) {
                         continue 2;
                     }

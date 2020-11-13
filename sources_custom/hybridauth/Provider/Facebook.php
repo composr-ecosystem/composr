@@ -508,13 +508,23 @@ class Facebook extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function buildAtomFeed($limit = 12, $filter = null)
+    public function buildAtomFeed($filter = null)
     {
+        if ($filter === null) {
+            $filter = new Filter();
+        }
+
+        $category = $this->getDefaultCategory($filter);
+
         $userProfile = $this->getUserProfile();
-        list($atoms) = $this->getAtoms($limit, $filter);
+        list($atoms) = $this->getAtoms($filter);
 
         $utility = new AtomFeedBuilder();
-        $title = 'Facebook feed of ' . $userProfile->displayName;
+        if ($category->identifier == '-') {
+            $title = 'Facebook feed of ' . $userProfile->displayName;
+        } else {
+            $title = 'Facebook feed of ' . $category->label;
+        }
         $feedId = 'urn:hybridauth:facebook:' . $userProfile->identifier . ':' . md5(serialize(func_get_args()));
         $urnStub = 'urn:hybridauth:facebook:';
         $url = $userProfile->profileURL;
@@ -522,9 +532,28 @@ class Facebook extends OAuth2 implements AtomInterface
     }
 
     /**
+     * Get default category for reading from.
+     *
+     * @param \Hybridauth\Atom\Filter $filter Filter
+     *
+     * @return \Hybridauth\Atom\Category
+     */
+    protected function getDefaultCategory($filter)
+    {
+        $categories = $this->getCategories();
+        if ($filter->categoryFilter !== null) {
+            $category = $categories[$filter->categoryFilter];
+        } else {
+            $pageId = $this->config->get('default_page_id') ?: null;
+            $category = $categories[$pageId];
+        }
+        return $category;
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function getAtoms($limit = 12, $filter = null)
+    public function getAtoms($filter = null)
     {
         if ($filter === null) {
             $filter = new Filter();
@@ -547,38 +576,36 @@ class Facebook extends OAuth2 implements AtomInterface
         $atoms = [];
         $hasResults = false;
 
-        $categories = $this->getCategories();
-        if ($filter->categoryFilter !== null) {
-            $categories = [$categories[$filter->categoryFilter]];
+        $category = $this->getDefaultCategory($filter);
+
+        $isPersonal = ($category->identifier == '-');
+
+        if ($isPersonal) {
+            $path = 'me';
+        } else {
+            $path = $category->identifier;
+        }
+        if ($filter->includeContributedContent) {
+            $path .= '/feed';
+        } else {
+            $path .= '/posts';
         }
 
-        foreach ($categories as $category) {
-            $isPersonal = ($category->identifier == '-');
+        $fields = $fieldsShared;
+        if ($isPersonal) {
+            // Links done like this for personal feed
+            $fields[] = 'type';
+            $fields[] = 'link';
+            $fields[] = 'name';
+            $fields[] = 'description';
+        }
 
-            if ($isPersonal) {
-                $path = 'me';
-            } else {
-                $path = $category->identifier;
-            }
-            if ($filter->includeContributedContent) {
-                $path .= '/feed';
-            } else {
-                $path .= '/posts';
-            }
+        $params = [
+            'fields' => implode(',', $fields),
+            'limit' => min(100, $filter->limit),
+        ];
 
-            $fields = $fieldsShared;
-            if ($isPersonal) {
-                // Links done like this for personal feed
-                $fields[] = 'type';
-                $fields[] = 'link';
-                $fields[] = 'name';
-                $fields[] = 'description';
-            }
-            $params = [
-                'fields' => implode(',', $fields),
-                'limit' => $limit,
-            ];
-
+        do {
             $response = $this->apiRequest($path, 'GET', $params);
 
             $data = new Collection($response);
@@ -605,11 +632,21 @@ class Facebook extends OAuth2 implements AtomInterface
 
                 $atom = $this->parseFacebookPost($item, $category, $isPersonal);
 
-                if ($filter->passesEnclosureTest($atom->enclosures)) {
-                    $atoms[] = $atom;
+                if (!$filter->passesEnclosureTest($atom->enclosures)) {
+                    continue;
+                }
+
+                $atoms[] = $atom;
+                if (count($atoms) == $filter->limit) {
+                    break 2;
                 }
             }
-        }
+
+            if (!empty($data->get('paging')->next)) {
+                $queryString = parse_url($data->get('paging')->next, PHP_URL_QUERY);
+                parse_str($queryString, $params);
+            }
+        } while (($filter->deepProbe) && (!empty($dataArray)) && (!empty($data->get('paging')->next)));
 
         return [$atoms, $hasResults];
     }
@@ -677,7 +714,13 @@ class Facebook extends OAuth2 implements AtomInterface
         $linkText = null;
         $linkDescription = null;
         if ($isPersonal) {
-            $isLink = ($item->type == 'link') || (isset($item->attachments->data[0]->type)) && ($item->attachments->data[0]->type == 'share');
+            $isLink = false;
+            if ($item->type == 'link') {
+                $isLink = true;
+            }
+            if ((isset($item->attachments->data[0]->type)) && ($item->attachments->data[0]->type == 'share')) {
+                $isLink = true;
+            }
             if ($isLink) {
                 $linkURL = $item->link;
                 $linkText = isset($item->name) ? $item->name : $linkURL;
@@ -768,6 +811,10 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     protected function processEnclosure($item, $attachment)
     {
+        if (!isset($attachment->url)) {
+            return null;
+        }
+
         $enclosure = new Enclosure();
         $enclosure->url = $attachment->url;
         switch ($attachment->type) {
@@ -816,7 +863,7 @@ class Facebook extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function saveAtom($atom)
+    public function saveAtom($atom, &$messages = [])
     {
         $allCategories = $this->getCategories();
 
@@ -861,8 +908,12 @@ class Facebook extends OAuth2 implements AtomInterface
             }
         }
 
+        $maximumPostLength = 63206;
+
+        AtomHelper::limitLengthTo($message, $maximumPostLength);
+
         foreach ($atom->hashTags as $hashTag) {
-            $message .= ' #' . $hashTag;
+            AtomHelper::appendIfWithinLimit($message, ' #' . $hashTag, $maximumPostLength);
         }
 
         $params = [];
@@ -910,7 +961,7 @@ class Facebook extends OAuth2 implements AtomInterface
             if (empty($mediaIds)) {
                 foreach ($atom->enclosures as $enclosure) {
                     try {
-                        if ($enclosure->type == Enclosure::ENCLOSURE_VIDEO) {
+                        if (in_array($enclosure->type, [Enclosure::ENCLOSURE_VIDEO, Enclosure::ENCLOSURE_AUDIO])) {
                             $mediaId = $this->uploadVideo($pageId, $enclosure, $message, $timestamp);
                             if ($mediaId !== null) {
                                 return $mediaId;
@@ -1109,7 +1160,10 @@ class Facebook extends OAuth2 implements AtomInterface
     {
         $dataArray = $this->getUserPages(true);
 
-        $categories = [];
+        static $categories = [];
+        if (!empty($categories)) {
+            return $categories;
+        }
 
         $category = new Category();
         $category->identifier = '-';

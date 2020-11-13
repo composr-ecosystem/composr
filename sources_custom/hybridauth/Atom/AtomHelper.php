@@ -95,7 +95,7 @@ class AtomHelper
      * @param  string $in The subject
      * @param  integer $from The start position
      * @param  ?integer $amount The length to extract (null: all remaining)
-     * @return ~string String part (false: $start was over the end of the string)
+     * @return string|false String part (false: $start was over the end of the string)
      */
     public static function mbSubstr($in, $from, $amount = null)
     {
@@ -110,5 +110,39 @@ class AtomHelper
             return iconv_substr($in, $from, $amount, 'utf-8');
         }
         return substr($in, $from, $amount);
+    }
+
+    /**
+     * Limit the length of some text, using an ellipsis as required.
+     *
+     * @param  string $text The text
+     * @param  integer $limit Maximum length
+     * @return boolean Whether truncation happened
+     */
+    public static function limitLengthTo(&$text, $limit)
+    {
+        if (AtomHelper::mbStrlen($text) <= $limit) {
+            return false;
+        }
+
+        $ellipsis = hex2bin('E280A6'); // Can be made cleaner in PHP-8
+
+        $text = AtomHelper::mbSubstr($text, 0, 63205) . $ellipsis;
+
+        return true;
+    }
+
+    /**
+     * Append some text, but only if it will not break a character limit.
+     *
+     * @param  string $text The text
+     * @param  string $append What to append
+     * @param  integer $limit Maximum length
+     */
+    public static function appendIfWithinLimit(&$text, $append, $limit)
+    {
+        if (AtomHelper::mbStrlen($text) + AtomHelper::mbStrlen($append) <= $limit) {
+            $text .= $append;
+        }
     }
 }

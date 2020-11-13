@@ -852,7 +852,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MEMBER_UNBLOCKED
         BACKUP_WITH_TYPE
         DEEPER_CONFIGURATION
-        TRANSCODING
         ADVANCED_EMAIL_SEND_SETTINGS
         BLOCK_bottom_forum_news_PARAM_check
         BLOCK_bottom_forum_news_PARAM_check_TITLE
@@ -1543,7 +1542,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_PARAM_ttl
         BLOCK_TAG
         BLOCK_THEM
-        TRANSCODING_IN_PROGRESS
         MODULE_TRANS_NAME_admin_aggregate_types
         MODULE_TRANS_NAME_admin_banners
         MODULE_TRANS_NAME_admin_broken_urls

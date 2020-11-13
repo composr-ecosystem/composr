@@ -34,7 +34,7 @@ class Hook_config_video_width_setting
             'human_name' => 'VIDEO_WIDTH_SETTING',
             'type' => 'integer',
             'category' => 'GALLERY',
-            'group' => 'TRANSCODING',
+            'group' => 'VIDEOS',
             'explanation' => 'CONFIG_OPTION_video_width_setting',
             'shared_hosting_restricted' => '0',
             'list_options' => '',

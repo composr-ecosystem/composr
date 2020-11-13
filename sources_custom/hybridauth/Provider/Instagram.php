@@ -259,10 +259,10 @@ class Instagram extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function buildAtomFeed($limit = 12, $filter = null)
+    public function buildAtomFeed($filter = null)
     {
         $userProfile = $this->getUserProfile();
-        list($atoms) = $this->getAtoms($limit, $filter);
+        list($atoms) = $this->getAtoms($filter);
 
         $utility = new AtomFeedBuilder();
         $title = 'Instagram feed of ' . $userProfile->displayName;
@@ -275,11 +275,15 @@ class Instagram extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function getAtoms($limit = 12, $filter = null)
+    public function getAtoms($filter = null)
     {
         if ($filter === null) {
             $filter = new Filter();
         }
+
+        $atoms = [];
+        $hasResults = false;
+        $pagination = null;
 
         $fields = [
             'caption',
@@ -297,29 +301,40 @@ class Instagram extends OAuth2 implements AtomInterface
 
         $params = [
             'fields' => implode(',', $fields),
-            'limit' => $limit,
         ];
 
-        $response = $this->apiRequest('me/media', 'GET', $params);
+        do {
+            $response = $this->apiRequest('me/media', 'GET', $params);
 
-        $data = new Collection($response);
-        if (!$data->exists('data')) {
-            throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
-        }
-
-        $dataArray = $data->get('data');
-
-        $atoms = [];
-
-        foreach ($dataArray as $item) {
-            $atom = $this->parseInstagramMediaItem($item);
-
-            if ($filter->passesEnclosureTest($atom->enclosures)) {
-                $atoms[] = $atom;
+            $data = new Collection($response);
+            if (!$data->exists('data')) {
+                throw new UnexpectedApiResponseException('Provider API returned an unexpected response.');
             }
-        }
 
-        return [$atoms, !empty($dataArray)];
+            $dataArray = $data->get('data');
+
+            foreach ($dataArray as $item) {
+                $hasResults = true;
+
+                $atom = $this->parseInstagramMediaItem($item);
+
+                if (!$filter->passesEnclosureTest($atom->enclosures)) {
+                    continue;
+                }
+
+                $atoms[] = $atom;
+                if (count($atoms) == $filter->limit) {
+                    break 2;
+                }
+            }
+
+            if (!empty($data->get('paging')->next)) {
+                $queryString = parse_url($data->get('paging')->next, PHP_URL_QUERY);
+                parse_str($queryString, $params);
+            }
+        } while (($filter->deepProbe) && (!empty($dataArray)) && (!empty($data->get('paging')->next)));
+
+        return [$atoms, $hasResults];
     }
 
     /**
@@ -469,7 +484,7 @@ class Instagram extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function saveAtom($atom)
+    public function saveAtom($atom, &$messages = [])
     {
         throw new NotImplementedException('There is no write access on the Instagram APIs.');
     }

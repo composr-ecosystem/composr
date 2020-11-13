@@ -24,6 +24,10 @@ class Hook_startup_param_restrict
             return;
         }
 
+        if (running_script('hybridauth_admin_atom')) {
+            return;
+        }
+
         $max = 100;
 
         foreach ($_GET as $key => $val) {

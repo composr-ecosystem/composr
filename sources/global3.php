@@ -5054,6 +5054,7 @@ function cms_extend_time_limit($secs)
  * @param  ?mixed $param_j Parameter (null: not used)
  * @param  ?mixed $param_k Parameter (null: not used)
  * @param  ?mixed $param_l Parameter (null: not used)
+ * @param  ?mixed $param_m Parameter (null: not used)
  * @return boolean Whether it scheduled for later (as normally expected)
  */
 function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null, $param_m = null)
