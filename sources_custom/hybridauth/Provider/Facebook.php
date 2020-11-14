@@ -848,7 +848,7 @@ class Facebook extends OAuth2 implements AtomInterface
     public function getAtomFullFromURL($url)
     {
         $matches = [];
-        if (preg_match('#^https://www\.facebook\.com/[^/]+/posts/([^/]+)/?$#', $url, $matches) != 0) {
+        if (preg_match('#^https://www\.facebook\.com/[^/]+/posts/([^/?]+)#', $url, $matches) != 0) {
             $identifier = $matches[1];
             return $this->getAtomFull($identifier);
         }

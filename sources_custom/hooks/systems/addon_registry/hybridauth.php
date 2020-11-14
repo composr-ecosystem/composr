@@ -91,6 +91,8 @@ class Hook_addon_registry_hybridauth
 2) Allows pulling in content from some services, with included support for Atom feed generation and content display using a block
 3) Allows syndicating (pushing) content to some services
 4) Allows syndicating (pushing) activities to some services (see the activity_feed addon)
+5) Allows using YouTube as a video host (effectively, a transcoder)
+6) Works as a media renderer (oEmbed-like)
 
 Hybridauth essentially implements the OAuth1, OAuth2, OpenID Connect, and OpenID standards, and proprietary APIs, necessary to unify all the different login integrations of different services.
 
@@ -309,10 +311,11 @@ The settings are configured in the same way as member login. However, if you nee
 
 After configuring XML you establish a log in from Admin Zone > Setup > Setup API access.
 
-Out of the box the following integrations exist, for providers supporting Hybridauth Atom API read operations. At the time of writing:
+Out of the box the following integrations exist, for providers supporting Hybridauth Atom API operations. At the time of writing:
  - Facebook
  - Instagram
  - Twitter
+ - YouTube
 
 Many providers have an app review process for certain features that broadly overlap with the admin integration here. However, as you are authorising against your own account (which added the app), usually app reviews will not actually be required.
 
@@ -336,6 +339,7 @@ You can syndicate content (as much of the full content as the provider can handl
 Out of the box the following integrations exist, for providers supporting Hybridauth Atom API write operations. At the time of writing:
  - Facebook
  - Twitter
+ - YouTube
 
 It needs to be enabled in the XML, each provider needs to specifies what addons/content-types it can syndicate from:
 [code="XML"]
@@ -382,6 +386,12 @@ This is done using the [tt]remote_hosting[/tt] configuration property, like:
     ...
 </hybridauth>
 [/code]
+
+[title="3"]Media renderer[/title]
+
+URLs to content owned by a connected provider (e.g. a Facebook post) can be used with the media rendering system. For example, posting a link within Comcode will provide an embed box.
+
+As Facebook and Instagram now longer support oEmbed as of late-2020, this is a good workaround for people wanting to post links to their post content.
 ';
     }
 
@@ -477,6 +487,7 @@ This is done using the [tt]remote_hosting[/tt] configuration property, like:
             'sources_custom/hooks/systems/cron/hybridauth_admin.php',
             'sources_custom/hooks/systems/oauth_screen_sup/hybridauth_admin.php',
             'sources_custom/hooks/systems/syndication/hybridauth_admin.php',
+            'sources_custom/hooks/systems/media_rendering/hybridauth_admin.php',
             'themes/default/templates_custom/BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS.tpl',
 
             'sources_custom/hybridauth/Adapter/AtomInterface.php',

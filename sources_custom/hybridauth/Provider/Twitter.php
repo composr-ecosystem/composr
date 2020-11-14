@@ -418,7 +418,7 @@ class Twitter extends OAuth1 implements AtomInterface
     public function getAtomFullFromURL($url)
     {
         $matches = [];
-        if (preg_match('#^https://twitter\.com/[^/]+/status/(\d+)/?$#', $url, $matches) != 0) {
+        if (preg_match('#^https://twitter\.com/[^/]+/status/(\d+)#', $url, $matches) != 0) {
             $identifier = $matches[1];
             return $this->getAtomFull($identifier);
         }

@@ -434,8 +434,11 @@ class YouTube extends OAuth2 implements AtomInterface
         }
         $atom->published = new \DateTime($snippet->publishedAt);
         $atom->title = $snippet->title;
-        $atom->content = AtomHelper::plainTextToHtml($snippet->description);
         $atom->url = 'https://www.youtube.com/watch?v=' . $atom->identifier;
+
+        $text = AtomHelper::plainTextToHtml($snippet->description);
+        list($text, $repped) = AtomHelper::processCodes($text, null, null, true);
+        $atom->content = $text;
 
         $atom->enclosures = [];
         $enclosure = new Enclosure();
@@ -464,7 +467,7 @@ class YouTube extends OAuth2 implements AtomInterface
             $identifier = $matches[1];
             return $this->getAtomFull($identifier);
         }
-        if (preg_match('#^https?://www\.youtube\.com/watch?v=([\w\-]+)#', $url, $matches) != 0) {
+        if (preg_match('#^https?://www\.youtube\.com/watch\?v=([\w\-]+)#', $url, $matches) != 0) {
             $identifier = $matches[1];
             return $this->getAtomFull($identifier);
         }

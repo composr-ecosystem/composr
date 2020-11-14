@@ -131,7 +131,7 @@ function convert_image_plus($orig_url, $dimensions = null, $output_dir = 'upload
         $file_prefix .= '__' . str_replace('#', '', $background);
     }
     $save_path = get_custom_file_base() . '/' . $file_prefix . '__' . $filename;
-    $thumbnail_url = $file_prefix . '__' . rawurlencode($filename);
+    $thumbnail_url = get_custom_base_url() . '/' . $file_prefix . '__' . rawurlencode($filename);
 
     // Only bother calculating the image if we've not already made one with these options
     if (is_file($save_path)) {

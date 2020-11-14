@@ -11,7 +11,7 @@
 
 	{+START,IF_NON_EMPTY,{DESCRIPTION}}
 		<div class="clearfix">
-			{$PARAGRAPH,{DESCRIPTION`}}
+			{$PARAGRAPH,{$TRUNCATE_LEFT,{DESCRIPTION`},600,0,1}}
 		</div>
 	{+END}
 

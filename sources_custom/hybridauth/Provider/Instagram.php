@@ -472,13 +472,76 @@ class Instagram extends OAuth2 implements AtomInterface
      */
     public function getAtomFullFromURL($url)
     {
+        if ((PHP_INT_SIZE == 4) && (!function_exists('bcmul'))) {
+            return null;
+        }
+
         $matches = [];
-        if (preg_match('#^https://www\.instagram\.com/p/([^/]+)/?$#', $url, $matches) != 0) {
-            $identifier = $matches[1];
-            return $this->getAtomFull($identifier);
+        if (preg_match('#^https://www\.instagram\.com/p/([^/]+)#', $url, $matches) != 0) {
+            $shortcode = $matches[1];
+            if (function_exists('bcmul')) {
+                $identifier_a = $this->shortcodeToMediaIdBcmath($shortcode);
+            } else {
+                $identifier_a = $this->shortcodeToMediaId64Bit($shortcode);
+            }
+
+            $allow_url_fopen = @ini_get('allow_url_fopen');
+            @ini_set('allow_url_fopen', 'On');
+            $scrappedContents = file_get_contents($url);
+            @ini_set('allow_url_fopen', $allow_url_fopen);
+            $matches = [];
+            if (preg_match('#<meta property="instapp:owner_user_id" content="(\d+)"#', $scrappedContents, $matches) == 0) {
+                return null;
+            }
+            $identifier_b = $matches[1];
+
+            return $this->getAtomFull($identifier_a . '_' . $identifier_b);
         }
 
         return null;
+    }
+
+    /**
+     * Convert a URL shortcode to an object ID.
+     * Requires PHP bcmath extension.
+     *
+     * @param string $shortcode
+     * @return string
+     */
+    protected function shortcodeToMediaIdBcmath($shortcode)
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+        $objectId = '0';
+
+        foreach (str_split($shortcode) as $letter) {
+            $mult = bcmul($objectId, '64');
+            $objectId = bcadd($mult, strval(strpos($alphabet, $letter)));
+        }
+
+        return $objectId;
+    }
+
+    /**
+     * Convert a URL shortcode to an object ID.
+     * Credit:
+     *  https://stackoverflow.com/questions/16758316/where-do-i-find-the-instagram-media-id-of-a-image/37246231#37246231
+     * Only works on 64-bit(+) machines.
+     *
+     * @param string $shortcode
+     * @return string
+     */
+    protected function shortcodeToMediaId64Bit($shortcode)
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+        $objectId = 0;
+
+        foreach (str_split($shortcode) as $letter) {
+            $objectId = ($objectId * 64) + strpos($alphabet, $letter);
+        }
+
+        return strval($objectId);
     }
 
     /**

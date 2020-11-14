@@ -26,7 +26,7 @@ class AtomHelper
         $decoded = str_replace('<br />', "\n", $decoded);
         $decoded = preg_replace('#<a[^<>]*\shref="([^<>]*)">([^<>]*)</a>#', '$1 ($2)', $decoded);
         $decoded = strip_tags($decoded);
-        $decoded = html_entity_decode($decoded, ENT_QUOTES | ENT_XML1, 'utf-8');
+        $decoded = html_entity_decode($decoded, ENT_QUOTES | ENT_HTML401, 'utf-8');
         return $decoded;
     }
 
@@ -40,7 +40,7 @@ class AtomHelper
     public static function plainTextToHtml($text)
     {
         $encoded = $text;
-        $encoded = htmlentities($encoded, ENT_QUOTES | ENT_XML1, 'utf-8');
+        $encoded = htmlentities($encoded, ENT_QUOTES | ENT_HTML401, 'utf-8');
         $encoded = nl2br($encoded);
         return $encoded;
     }
@@ -66,7 +66,7 @@ class AtomHelper
             $text = preg_replace('/\s#(\w+)/', ' ' . $urlHashtags, $text); // hashtags
         }
         if ($detectUrls) {
-            $urlRegexp = '#([^"\'])(https?://([\w\-\.]+)+(/([\w/_\.]*(\?\S+)?(\#\S+)?)?)?)#';
+            $urlRegexp = '#([^"\'])(https?://([\w\-\.]+)+(/([\w/\-_\.]*(\?\S+)?(\#\S+)?)?)?)#';
             $text = preg_replace($urlRegexp, '$1<a href="$2">$2</a>', $text); // links
         }
         return [$text, $text != $textIn];
