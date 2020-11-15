@@ -285,7 +285,7 @@ class YouTube extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function buildAtomFeed($filter = null)
+    public function buildAtomFeed($filter = null, $trulyValid = false)
     {
         $userProfile = $this->getUserProfile();
         list($atoms) = $this->getAtoms($filter);
@@ -295,7 +295,7 @@ class YouTube extends OAuth2 implements AtomInterface
         $feedId = 'urn:hybridauth:youtube:' . $userProfile->identifier . ':' . md5(serialize(func_get_args()));
         $urnStub = 'urn:hybridauth:youtube:';
         $url = $userProfile->profileURL;
-        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms);
+        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms, $trulyValid);
     }
 
     /**
@@ -478,6 +478,14 @@ class YouTube extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
+    public function getOEmbedFromURL($url, $params = [])
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function saveAtom($atom, &$messages = [])
     {
         $title = $atom->title;
@@ -558,6 +566,7 @@ class YouTube extends OAuth2 implements AtomInterface
      *
      * @param array $request Request structure
      * @param Enclosure $enclosure Video enclosure
+     *
      * @return object The metadata response object
      * @throws InvalidArgumentException
      * @throws UnexpectedApiResponseException
@@ -701,6 +710,7 @@ class YouTube extends OAuth2 implements AtomInterface
      *
      * @param string $id Video ID
      * @param Enclosure $enclosure Video enclosure
+     *
      * @return ?object Thumbnail upload response object (null: no thumbnail uploaded)
      * @throws InvalidArgumentException
      * @throws \Hybridauth\Exception\HttpClientFailureException

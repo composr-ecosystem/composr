@@ -259,7 +259,7 @@ class Instagram extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function buildAtomFeed($filter = null)
+    public function buildAtomFeed($filter = null, $trulyValid = false)
     {
         $userProfile = $this->getUserProfile();
         list($atoms) = $this->getAtoms($filter);
@@ -269,7 +269,7 @@ class Instagram extends OAuth2 implements AtomInterface
         $feedId = 'urn:hybridauth:instagram:' . $userProfile->identifier . ':' . md5(serialize(func_get_args()));
         $urnStub = 'urn:hybridauth:instagram:';
         $url = $userProfile->profileURL;
-        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms);
+        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms, $trulyValid);
     }
 
     /**
@@ -472,76 +472,40 @@ class Instagram extends OAuth2 implements AtomInterface
      */
     public function getAtomFullFromURL($url)
     {
-        if ((PHP_INT_SIZE == 4) && (!function_exists('bcmul'))) {
-            return null;
-        }
-
-        $matches = [];
-        if (preg_match('#^https://www\.instagram\.com/p/([^/]+)#', $url, $matches) != 0) {
-            $shortcode = $matches[1];
-            if (function_exists('bcmul')) {
-                $identifier_a = $this->shortcodeToMediaIdBcmath($shortcode);
-            } else {
-                $identifier_a = $this->shortcodeToMediaId64Bit($shortcode);
-            }
-
-            $allow_url_fopen = @ini_get('allow_url_fopen');
-            @ini_set('allow_url_fopen', 'On');
-            $scrappedContents = file_get_contents($url);
-            @ini_set('allow_url_fopen', $allow_url_fopen);
-            $matches = [];
-            if (preg_match('#<meta property="instapp:owner_user_id" content="(\d+)"#', $scrappedContents, $matches) == 0) {
-                return null;
-            }
-            $identifier_b = $matches[1];
-
-            return $this->getAtomFull($identifier_a . '_' . $identifier_b);
-        }
-
+        // Can't work, the permalink tokens are not media IDs, and even when converted they're old style ones
+        //  Indications suggest FB management doesn't want us pulling out individual posts for some reason
         return null;
     }
 
     /**
-     * Convert a URL shortcode to an object ID.
-     * Requires PHP bcmath extension.
-     *
-     * @param string $shortcode
-     * @return string
+     * {@inheritdoc}
      */
-    protected function shortcodeToMediaIdBcmath($shortcode)
+    public function getOEmbedFromURL($url, $params = [])
     {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+        // Note that oEmbed must be enabled on the Facebook App you are using for Instagram
 
-        $objectId = '0';
-
-        foreach (str_split($shortcode) as $letter) {
-            $mult = bcmul($objectId, '64');
-            $objectId = bcadd($mult, strval(strpos($alphabet, $letter)));
+        if (preg_match('#^https://www\.instagram\.com/p/[^/]+#', $url) == 0) {
+            return null;
         }
 
-        return $objectId;
-    }
-
-    /**
-     * Convert a URL shortcode to an object ID.
-     * Credit:
-     *  https://stackoverflow.com/questions/16758316/where-do-i-find-the-instagram-media-id-of-a-image/37246231#37246231
-     * Only works on 64-bit(+) machines.
-     *
-     * @param string $shortcode
-     * @return string
-     */
-    protected function shortcodeToMediaId64Bit($shortcode)
-    {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-
-        $objectId = 0;
-
-        foreach (str_split($shortcode) as $letter) {
-            $objectId = ($objectId * 64) + strpos($alphabet, $letter);
+        $appId = $this->config->filter('keys')->get('app_id') ?: null;
+        $clientToken = $this->config->filter('keys')->get('client_token') ?: null;
+        if (($appId === null) || ($clientToken === null)) {
+            return;
+        }
+        $comboToken = $appId . '|' . $clientToken;
+        $endpoint = 'https://graph.facebook.com/instagram_oembed?url=' . urlencode($url);
+        $endpoint .= '&access_token=' . urlencode($comboToken);
+        foreach ($params as $key => $val) {
+            $endpoint .= '&' . $key . '=' . urlencode($val);
         }
 
-        return strval($objectId);
+        $allow_url_fopen = @ini_get('allow_url_fopen');
+        @ini_set('allow_url_fopen', 'On');
+        $oembed = file_get_contents($endpoint);
+        @ini_set('allow_url_fopen', $allow_url_fopen);
+
+        return json_decode($oembed);
     }
 
     /**

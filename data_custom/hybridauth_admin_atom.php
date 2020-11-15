@@ -76,8 +76,10 @@ $filter->includeContributedContent = (get_param_integer('includeContributedConte
 $filter->includePrivate = (get_param_integer('includePrivate', 0) == 1);
 $filter->limit = $max;
 
+$truly_valid = (get_param_integer('truly_valid', 0) == 1);
+
 try {
-    $feed = $adapter->buildAtomFeed($filter);
+    $feed = $adapter->buildAtomFeed($filter, $truly_valid);
 } catch (Exception $e) {
     warn_exit($e->getMessage());
 }

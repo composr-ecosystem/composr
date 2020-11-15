@@ -391,7 +391,33 @@ This is done using the [tt]remote_hosting[/tt] configuration property, like:
 
 URLs to content owned by a connected provider (e.g. a Facebook post) can be used with the media rendering system. For example, posting a link within Comcode will provide an embed box.
 
-As Facebook and Instagram now longer support oEmbed as of late-2020, this is a good workaround for people wanting to post links to their post content.
+This works in two possible ways:
+ - Loading atoms via URLs, and displaying in a media box
+ - Doing oEmbed through the authenticated API (supported for Instagram and Facebook, as oEmbed needs API keys on these providers)
+
+For Facebook oEmbed, some extra setting are needed, from some values that will be available from the main app...
+[code="XML]
+<hybridauth>
+    ...
+    <Facebook>
+        <keys-config app_id="..." client_token="..." />
+    </Facebook>
+    ...
+</hybridauth>
+[/code]
+The main oAuth keys are not shown here as usually this will be done in the Composr configuration UI for Facebook.
+The app ID is clearly advertised on the Facebook developer site. The client token is under Settings > Advanced.
+
+And also Instagram...
+[code="XML]
+<hybridauth>
+    ...
+    <Instagram>
+        <keys-config id="..." secret="..." app_id="..." client_token="..." />
+    </Instagram>
+    ...
+</hybridauth>
+[/code]
 ';
     }
 
@@ -489,6 +515,7 @@ As Facebook and Instagram now longer support oEmbed as of late-2020, this is a g
             'sources_custom/hooks/systems/syndication/hybridauth_admin.php',
             'sources_custom/hooks/systems/media_rendering/hybridauth_admin.php',
             'themes/default/templates_custom/BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS.tpl',
+            'sources_custom/hooks/systems/oembed/hybridauth_admin.php',
 
             'sources_custom/hybridauth/Adapter/AtomInterface.php',
             'sources_custom/hybridauth/Atom/.htaccess',

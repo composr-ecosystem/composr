@@ -246,6 +246,7 @@ class Twitter extends OAuth1 implements AtomInterface
 
     /**
      * @param $item
+     *
      * @return User\Activity
      */
     protected function fetchUserActivity($item)
@@ -272,7 +273,7 @@ class Twitter extends OAuth1 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function buildAtomFeed($filter = null)
+    public function buildAtomFeed($filter = null, $trulyValid = false)
     {
         $userProfile = $this->getUserProfile();
         list($atoms) = $this->getAtoms($filter);
@@ -282,7 +283,7 @@ class Twitter extends OAuth1 implements AtomInterface
         $feedId = 'urn:hybridauth:twitter:' . $userProfile->identifier . ':' . md5(serialize(func_get_args()));
         $urnStub = 'urn:hybridauth:twitter:';
         $url = $userProfile->profileURL;
-        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms);
+        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms, $trulyValid);
     }
 
     /**
@@ -374,7 +375,7 @@ class Twitter extends OAuth1 implements AtomInterface
         $atom->author->displayName = $item->user->screen_name;
         $atom->author->profileURL = 'https://twitter.com/' . $item->user->screen_name;
         if (!empty($item->user->profile_image_url_https)) {
-            $atom->author->photoURL = str_replace('_normal', '_original', $item->user->profile_image_url_https);
+            $atom->author->photoURL = str_replace('_normal', '', $item->user->profile_image_url_https);
         }
 
         $enclosures = [];
@@ -417,12 +418,22 @@ class Twitter extends OAuth1 implements AtomInterface
      */
     public function getAtomFullFromURL($url)
     {
+        $ret = null;
+
         $matches = [];
         if (preg_match('#^https://twitter\.com/[^/]+/status/(\d+)#', $url, $matches) != 0) {
             $identifier = $matches[1];
-            return $this->getAtomFull($identifier);
+            $ret = $this->getAtomFull($identifier);
         }
 
+        return $ret;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOEmbedFromURL($url, $params = [])
+    {
         return null;
     }
 

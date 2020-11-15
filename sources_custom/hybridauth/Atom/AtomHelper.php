@@ -66,7 +66,7 @@ class AtomHelper
             $text = preg_replace('/\s#(\w+)/', ' ' . $urlHashtags, $text); // hashtags
         }
         if ($detectUrls) {
-            $urlRegexp = '#([^"\'])(https?://([\w\-\.]+)+(/([\w/\-_\.]*(\?\S+)?(\#\S+)?)?)?)#';
+            $urlRegexp = '#([^"\'])(https?://([\w\-\.]+)+(/([\w/\-_\.]*(\?[^\s<>.;!?,]+)?(\#\S+)?)?)?)#';
             $text = preg_replace($urlRegexp, '$1<a href="$2">$2</a>', $text); // links
         }
         return [$text, $text != $textIn];
@@ -76,6 +76,7 @@ class AtomHelper
      * Get string length, with utf-8 awareness.
      *
      * @param string $in The string to get the length of
+     *
      * @return integer The string length
      */
     public static function mbStrlen($in)
@@ -95,6 +96,7 @@ class AtomHelper
      * @param  string $in The subject
      * @param  integer $from The start position
      * @param  ?integer $amount The length to extract (null: all remaining)
+     *
      * @return string|false String part (false: $start was over the end of the string)
      */
     public static function mbSubstr($in, $from, $amount = null)
@@ -117,6 +119,7 @@ class AtomHelper
      *
      * @param  string $text The text
      * @param  integer $limit Maximum length
+     *
      * @return boolean Whether truncation happened
      */
     public static function limitLengthTo(&$text, $limit)
@@ -127,7 +130,7 @@ class AtomHelper
 
         $ellipsis = hex2bin('E280A6'); // Can be made cleaner in PHP-8
 
-        $text = AtomHelper::mbSubstr($text, 0, 63205) . $ellipsis;
+        $text = AtomHelper::mbSubstr($text, 0, $limit) . $ellipsis;
 
         return true;
     }

@@ -78,7 +78,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
     public function recognises_url($url)
     {
         if (looks_like_url($url) && $this->_find_oembed_endpoint($url) !== null) {
-            return MEDIA_RECOG_PRECEDENCE_MEDIUM;
+            return MEDIA_RECOG_PRECEDENCE_HIGH;
         }
         return MEDIA_RECOG_PRECEDENCE_NONE;
     }
@@ -107,6 +107,25 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      */
     public function get_oembed_data_result($url, $attributes)
     {
+        // Work out oEmbed parameters
+        $params = [];
+        if ((!array_key_exists('width', $attributes)) || ($attributes['width'] != '')) {
+            $params['maxwidth'] = array_key_exists('width', $attributes) ? $attributes['width'] : get_option('oembed_max_size');
+        }
+        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] != '')) {
+            $params['maxheight'] = array_key_exists('height', $attributes) ? $attributes['height'] : get_option('oembed_max_size');
+        }
+        $preferred_format = 'json';
+        $params['format'] = $preferred_format;
+
+        $hooks = find_all_hook_obs('systems', 'oembed', 'Hook_oembed_');
+        foreach ($hooks as $hook_ob) {
+            $data = $hook_ob->get_oembed_from_url($url, $params);
+            if ($data !== null) {
+                return $this->render_oembed_data($url, $data, null);
+            }
+        }
+
         $endpoint = $this->_find_oembed_endpoint($url);
         if ($endpoint === null) {
             return null;
@@ -114,26 +133,24 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
 
         // Work out the full endpoint URL to call
         if (strpos($endpoint, '?') === false) {
-            $endpoint .= '?url=' . urlencode($url);
+            $params['url'] = $url;
         } else {
             if ((strpos($endpoint, '?url=') === false) && (strpos($endpoint, '&url=') === false)) {
-                $endpoint .= '&url=' . urlencode($url);
+                $params['url'] = $url;
             }
-        }
-        if ((!array_key_exists('width', $attributes)) || ($attributes['width'] != '')) {
-            $endpoint .= '&maxwidth=' . urlencode(array_key_exists('width', $attributes) ? $attributes['width'] : get_option('oembed_max_size'));
-        }
-        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] != '')) {
-            $endpoint .= '&maxheight=' . urlencode(array_key_exists('height', $attributes) ? $attributes['height'] : get_option('oembed_max_size'));
         }
         $format_in_path = (strpos($endpoint, '{format}') !== false);
-        $preferred_format = 'json';
         if ($format_in_path) {
             $endpoint = str_replace('{format}', $preferred_format, $endpoint);
+            unset($params['format']);
         } else {
-            if (strpos($endpoint, '&format=') === false) {
-                $endpoint .= '&format=' . urlencode($preferred_format);
+            if (strpos($endpoint, 'format=') !== false) {
+                unset($params['format']);
             }
+        }
+        foreach ($params as $key => $val) {
+            $endpoint .= (strpos($endpoint, '?') === false) ? '?' : '&';
+            $endpoint .= $key . '=' . urlencode($val);
         }
 
         // Call endpoint
@@ -182,6 +199,19 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 return null;
         }
 
+        return $this->render_oembed_data($url, $data, $endpoint);
+    }
+
+    /**
+     * Render some oAuth data.
+     *
+     * @param  URLPATH $url URL to render
+     * @param  array $data Map of oAuth data
+     * @param  ?URLPATH $endpoint Endpoint that was used (null: from a hook and implicitly trust HTML from it)
+     * @return Tempcode Rendered version
+     */
+    protected function render_oembed_data($url, $data, $endpoint)
+    {
         // Cleanup for CSP
         if ((!empty($data['html'])) && (function_exists('csp_nonce_html')) && (stripos($data['html'], '<script') !== false)) {
             $data['html'] = str_ireplace('<script', '<script ' . csp_nonce_html(), $data['html']);
@@ -219,16 +249,18 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 }
 
                 // Check security
-                $url_details = parse_url(normalise_idn_url($url));
-                $url_details2 = parse_url(normalise_idn_url($endpoint));
-                $safelist = explode("\n", get_option('oembed_html_safelist'));
-                if ((!in_array($url_details['host'], $safelist)) && (!in_array($url_details2['host'], $safelist)) && (!in_array(preg_replace('#^www\.#', '', $url_details['host']), $safelist))) {
-                    /* We could do this but it's not perfect, it still has some level of trust
-                    require_code('comcode_compiler');
-                    $len = strlen($data['html']);
-                    filter_html(false, $GLOBALS['FORUM_DRIVER']->get_guest_id(), 0, $len, $data['html'], true, false);
-                    */
-                    $data['html'] = strip_tags($data['html']);
+                if ($endpoint !== null) {
+                    $url_details = parse_url(normalise_idn_url($url));
+                    $url_details2 = parse_url(normalise_idn_url($endpoint));
+                    $safelist = explode("\n", get_option('oembed_html_safelist'));
+                    if ((!in_array($url_details['host'], $safelist)) && (!in_array($url_details2['host'], $safelist)) && (!in_array(preg_replace('#^www\.#', '', $url_details['host']), $safelist))) {
+                        /* We could do this but it's not perfect, it still has some level of trust
+                        require_code('comcode_compiler');
+                        $len = strlen($data['html']);
+                        filter_html(false, $GLOBALS['FORUM_DRIVER']->get_guest_id(), 0, $len, $data['html'], true, false);
+                        */
+                        $data['html'] = strip_tags($data['html']);
+                    }
                 }
 
                 break;
@@ -348,8 +380,8 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 return do_template('MEDIA_WEBPAGE_OEMBED_' . cms_strtoupper_ascii($data['type']), [
                     'TITLE' => array_key_exists('title', $data) ? $data['title'] : '',
                     'HTML' => $data['html'],
-                    'WIDTH' => array_key_exists('width', $data) ? $data['width'] : '',
-                    'HEIGHT' => array_key_exists('height', $data) ? $data['height'] : '',
+                    'WIDTH' => array_key_exists('width', $data) ? @strval($data['width']) : '',
+                    'HEIGHT' => array_key_exists('height', $data) ? @strval($data['height']) : '',
                     'URL' => $url,
                     'REL' => $rel,
                 ]);
@@ -367,8 +399,8 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                     'DESCRIPTION' => array_key_exists('description', $data) ? $data['description'] : '',
                     'IMAGE_URL' => $data['thumbnail_url'],
                     'URL' => $url,
-                    'WIDTH' => ((array_key_exists('thumbnail_width', $attributes)) && ($attributes['thumbnail_width'] != '')) ? $attributes['thumbnail_width'] : get_option('thumb_width'),
-                    'HEIGHT' => ((array_key_exists('thumbnail_height', $attributes)) && ($attributes['thumbnail_height'] != '')) ? $attributes['thumbnail_height'] : get_option('thumb_width'),
+                    'WIDTH' => ((array_key_exists('thumbnail_width', $attributes)) && ($attributes['thumbnail_width'] != '')) ? $attributes['thumbnail_width'] : get_option('oembed_max_size'),
+                    'HEIGHT' => ((array_key_exists('thumbnail_height', $attributes)) && ($attributes['thumbnail_height'] != '')) ? $attributes['thumbnail_height'] : get_option('oembed_max_size'),
                     'REL' => $rel,
                 ]);
         }

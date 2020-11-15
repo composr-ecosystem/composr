@@ -1361,9 +1361,6 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     }
 
     global $WEBSTANDARDS_CHECKER_OFF, $WELL_FORMED_ONLY, $WEBSTANDARDS_JAVASCRIPT, $WEBSTANDARDS_CSS, $WEBSTANDARDS_WCAG, $WEBSTANDARDS_COMPAT, $WEBSTANDARDS_EXT_FILES, $WEBSTANDARDS_MANUAL, $WEBSTANDARDS_CSP, $UNDER_XMLNS;
-    if (function_exists('mixed')) {
-        $WEBSTANDARDS_CHECKER_OFF = null;
-    }
     $WEBSTANDARDS_CHECKER_OFF = null;
     $WELL_FORMED_ONLY = $well_formed_only;
     if (!$WELL_FORMED_ONLY) {
@@ -1459,7 +1456,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
 
         // Open, close, or monitonic?
         $term = strpos($token, '/');
-        if (!($WEBSTANDARDS_CHECKER_OFF === null)) {
+        if ($WEBSTANDARDS_CHECKER_OFF !== null) {
             if ($term === false) {
                 $WEBSTANDARDS_CHECKER_OFF++;
             } elseif ($term == 1) {
@@ -2288,10 +2285,12 @@ function _check_tag($tag, $attributes, $self_close, $close, $errors)
     }
 
     if (((isset($attributes['class'])) && (strpos($attributes['class'], 'webstandards-checker-off') !== false)) || ((isset($attributes['xmlns'])) && (strpos($attributes['xmlns'], 'xhtml') === false))) {
-        $WEBSTANDARDS_CHECKER_OFF = 0;
+        if ($WEBSTANDARDS_CHECKER_OFF === null) {
+            $WEBSTANDARDS_CHECKER_OFF = 0;
+        }
     }
 
-    if (!$WELL_FORMED_ONLY) {
+    if ((!$WELL_FORMED_ONLY) && ($WEBSTANDARDS_CHECKER_OFF === null)) {
         $errors = __check_tag($tag, $attributes, $self_close, $close, $errors);
     }
 

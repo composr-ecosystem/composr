@@ -54,6 +54,6 @@ class Hook_config_oembed_max_size
      */
     public function get_default()
     {
-        return '550'; // A good example of a wide thing is an embedded Tweet
+        return '200'; // A good example of a wide thing is an embedded Tweet
     }
 }

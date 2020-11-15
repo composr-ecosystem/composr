@@ -95,7 +95,7 @@ function convert_image_plus($orig_url, $dimensions = null, $output_dir = 'upload
 {
     cms_profile_start_for('convert_image_plus');
 
-    if (($dimensions === null) || (strpos($dimensions, 'x') === false) || ($dimensions == 'x')) {
+    if (($dimensions === null) || ($dimensions == 'x')) {
         $dimensions = get_option('thumb_width');
     }
 

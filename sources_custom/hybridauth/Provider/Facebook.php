@@ -494,6 +494,7 @@ class Facebook extends OAuth2 implements AtomInterface
      * Get profile URL.
      *
      * @param int $identity User ID.
+     *
      * @return string|null NULL when identity is not provided.
      */
     protected function getProfileUrl($identity)
@@ -508,7 +509,7 @@ class Facebook extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function buildAtomFeed($filter = null)
+    public function buildAtomFeed($filter = null, $trulyValid = false)
     {
         if ($filter === null) {
             $filter = new Filter();
@@ -528,7 +529,7 @@ class Facebook extends OAuth2 implements AtomInterface
         $feedId = 'urn:hybridauth:facebook:' . $userProfile->identifier . ':' . md5(serialize(func_get_args()));
         $urnStub = 'urn:hybridauth:facebook:';
         $url = $userProfile->profileURL;
-        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms);
+        return $utility->buildAtomFeed($title, $url, $feedId, $urnStub, $atoms, $trulyValid);
     }
 
     /**
@@ -847,17 +848,40 @@ class Facebook extends OAuth2 implements AtomInterface
      */
     public function getAtomFullFromURL($url)
     {
-        $matches = [];
-        if (preg_match('#^https://www\.facebook\.com/[^/]+/posts/([^/?]+)#', $url, $matches) != 0) {
-            $identifier = $matches[1];
-            return $this->getAtomFull($identifier);
-        }
-        if (preg_match('#^https://www\.facebook\.com/.*[&?]id=(\d+)#', $url, $matches) != 0) {
-            $identifier = $matches[1];
-            return $this->getAtomFull($identifier);
+        // Can't work now, see https://stackoverflow.com/questions/31353591/how-should-we-retrieve-an-individual-post-now-that-post-id-is-deprecated-in-v
+        //  Indications suggest FB management doesn't want us pulling out individual posts for some reason
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOEmbedFromURL($url, $params = [])
+    {
+        // Note that oEmbed must be enabled on the Facebook App you are using for Instagram
+
+        if (preg_match('#^https://www\.facebook\.com/([^/]+/posts/[^/?]+|.*[&?]id=\d+)#', $url) == 0) {
+            return null;
         }
 
-        return null;
+        $appId = $this->config->filter('keys')->get('app_id') ?: null;
+        $clientToken = $this->config->filter('keys')->get('client_token') ?: null;
+        if (($appId === null) || ($clientToken === null)) {
+            return;
+        }
+        $comboToken = $appId . '|' . $clientToken;
+        $endpoint = 'https://graph.facebook.com/oembed_post?url=' . urlencode($url);
+        $endpoint .= '&access_token=' . urlencode($comboToken);
+        foreach ($params as $key => $val) {
+            $endpoint .= '&' . $key . '=' . urlencode($val);
+        }
+
+        $allow_url_fopen = @ini_get('allow_url_fopen');
+        @ini_set('allow_url_fopen', 'On');
+        $oembed = file_get_contents($endpoint);
+        @ini_set('allow_url_fopen', $allow_url_fopen);
+
+        return json_decode($oembed);
     }
 
     /**

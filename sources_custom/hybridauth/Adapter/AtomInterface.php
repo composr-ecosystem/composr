@@ -23,6 +23,7 @@ interface AtomInterface
      * Build an Atom feed.
      *
      * @param \Hybridauth\Atom\Filter $filter Filters
+     * @param bool $trulyValid Try extra hard to be valid, even if it makes things clunky
      *
      * @return string Atom feed
      *
@@ -32,7 +33,7 @@ interface AtomInterface
      * @throws \Hybridauth\Exception\InvalidAccessTokenException
      * @throws \Hybridauth\Exception\UnexpectedApiResponseException
      */
-    public function buildAtomFeed($filters = null);
+    public function buildAtomFeed($filters = null, $trulyValid = false);
 
     /**
      * Get a list of atoms matching the filters (if given), in recency order.
@@ -79,6 +80,18 @@ interface AtomInterface
      * @throws \Hybridauth\Exception\UnexpectedApiResponseException
      */
     public function getAtomFullFromURL($url);
+
+    /**
+     * Get oEmbed from a URL.
+     * Only bother implementing for providers that have OAuth behind a a key.
+     * Often useful as a fallback for providers whose APIs don't allow getAtomFullFromURL.
+     *
+     * @param string $url URL
+     * @param array $params Map of extra oEmbed parameters to include
+     *
+     * @return ?object oEmbed data (or null if not supported)
+     */
+    public function getOEmbedFromURL($url, $params = []);
 
     /**
      * Save an atom.

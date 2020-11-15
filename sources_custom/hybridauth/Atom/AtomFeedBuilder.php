@@ -20,10 +20,11 @@ class AtomFeedBuilder
      * @param string $feedId ID for the feed
      * @param string $urnStub Stub to put before each entry's permalink
      * @param array $atoms List of atoms
+     * @param bool $trulyValid Try extra hard to be valid, even if it makes things clunky
      *
      * @return string The feed
      */
-    public function buildAtomFeed($title, $url, $feedId, $urnStub, $atoms)
+    public function buildAtomFeed($title, $url, $feedId, $urnStub, $atoms, $trulyValid)
     {
         $xml = '';
 
@@ -43,8 +44,17 @@ class AtomFeedBuilder
     <entry>
             ';
 
+            $title = $atom->title;
+            if (($title == '') && ($trulyValid)) {
+                if ($atom->summary !== null) {
+                    $title = AtomHelper::htmlToPlainText($atom->summary);
+                } elseif ($atom->content !== null) {
+                    $title = AtomHelper::htmlToPlainText($atom->content);
+                }
+                AtomHelper::limitLengthTo($title, 50);
+            }
             $xml .= '
-        <title>' . htmlentities($atom->title, ENT_XML1) . '</title>
+        <title>' . htmlentities($title, ENT_XML1) . '</title>
             ';
 
             if ($atom->url !== null) {

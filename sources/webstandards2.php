@@ -492,7 +492,7 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
  */
 function _check_attributes($tag, $attributes, $self_close, $close)
 {
-    global $PSPELL_LINK, $THE_LANGUAGE, $XML_CONSTRAIN, $TAGS_DEPRECATE_ALLOW, $THE_DOCTYPE, $HYPERLINK_URLS, $CRAWLED_URLS, $EMBED_URLS, $TAGS_INLINE, $TAGS_BLOCK, $TAGS_NORMAL, $TAGS_INLINE_DEPRECATED, $TAGS_BLOCK_DEPRECATED, $TAGS_NORMAL_DEPRECATED, $TAG_ATTRIBUTES, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $TAG_ATTRIBUTES_REQUIRED;
+    global $PSPELL_LINK, $THE_LANGUAGE, $XML_CONSTRAIN, $TAGS_DEPRECATE_ALLOW, $THE_DOCTYPE, $HYPERLINK_URLS, $CRAWLED_URLS, $EMBED_URLS, $TAGS_INLINE, $TAGS_BLOCK, $TAGS_NORMAL, $TAGS_INLINE_DEPRECATED, $TAGS_BLOCK_DEPRECATED, $TAGS_NORMAL_DEPRECATED, $TAG_ATTRIBUTES, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $TAG_ATTRIBUTES_REQUIRED, $WEBSTANDARDS_CHECKER_OFF;
 
     $errors = [];
 
@@ -574,7 +574,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
             $errors[] = ['XHTML_BAD_ATTRIBUTE_VALUE', $attribute, $value, $reg_exp];
         }
 
-        if (($attribute == 'style') && ($GLOBALS['WEBSTANDARDS_CSS'])) { // Validate CSS
+        if (($attribute == 'style') && ($WEBSTANDARDS_CHECKER_OFF === null) && ($GLOBALS['WEBSTANDARDS_CSS'])) { // Validate CSS
             if ((!function_exists('do_template')) && (strpos($value, '{') === false) && (strpos($value, 'float:') === false) && (strpos($value, ': none') === false) && (strpos($value, ': inline') === false) && (strpos($value, ': block') === false)) {
                 $errors[] = ['CSS_INLINE_STYLES'];
             }

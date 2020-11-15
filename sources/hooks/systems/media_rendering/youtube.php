@@ -64,7 +64,7 @@ class Hook_media_rendering_youtube extends Media_renderer_with_fallback
     public function recognises_url($url)
     {
         if ((preg_match('#^https?://(www|m)\.youtube\.com/watch\?v=([\w\-]+)#', $url) != 0) || (preg_match('#^https?://youtu\.be/([\w\-]+)#', $url) != 0)) {
-            return MEDIA_RECOG_PRECEDENCE_HIGH;
+            return MEDIA_RECOG_PRECEDENCE_SUPER;
         }
         return MEDIA_RECOG_PRECEDENCE_NONE;
     }

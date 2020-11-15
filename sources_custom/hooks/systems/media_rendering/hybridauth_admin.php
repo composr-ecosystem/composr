@@ -92,7 +92,7 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
 
         global $ATOM_URL_RENDERING_CACHE;
         if (isset($ATOM_URL_RENDERING_CACHE[$url])) {
-            return MEDIA_RECOG_PRECEDENCE_SUPER;
+            return MEDIA_RECOG_PRECEDENCE_MEDIUM;
         }
 
         return MEDIA_RECOG_PRECEDENCE_NONE;
@@ -154,6 +154,8 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
      */
     public function render($url, $url_safe, $attributes, $as_admin = false, $source_member = null)
     {
+        $this->hybridauth_scan($url);
+
         global $ATOM_URL_RENDERING_CACHE;
         if (!isset($ATOM_URL_RENDERING_CACHE[$url])) {
             require_code('comcode_renderer');
@@ -191,8 +193,8 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
             'META_TITLE' => empty($atom->title) ? '' : $atom->title,
             'DESCRIPTION' => $description,
             'URL' => $url,
-            'WIDTH' => ((array_key_exists('thumbnail_width', $attributes)) && ($attributes['thumbnail_width'] != '')) ? $attributes['thumbnail_width'] : get_option('thumb_width'),
-            'HEIGHT' => ((array_key_exists('thumbnail_height', $attributes)) && ($attributes['thumbnail_height'] != '')) ? $attributes['thumbnail_height'] : get_option('thumb_width'),
+            'WIDTH' => ((array_key_exists('thumbnail_width', $attributes)) && ($attributes['thumbnail_width'] != '')) ? $attributes['thumbnail_width'] : get_option('oembed_max_size'),
+            'HEIGHT' => ((array_key_exists('thumbnail_height', $attributes)) && ($attributes['thumbnail_height'] != '')) ? $attributes['thumbnail_height'] : get_option('oembed_max_size'),
             'REL' => $rel,
         ];
 
@@ -208,6 +210,10 @@ class Hook_media_rendering_hybridauth_admin extends Media_renderer_with_fallback
                     'IMAGE_URL' => $atom->enclosures[0]->thumbnailUrl,
                 ]);
             }
+        } elseif (!empty($atom->author->photoURL)) {
+            return do_template('MEDIA_WEBPAGE_SEMANTIC', $map + [
+                'IMAGE_URL' => $atom->author->photoURL,
+            ]);
         }
 
         return do_template('MEDIA_WEBPAGE_SEMANTIC', $map + [
