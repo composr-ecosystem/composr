@@ -1919,7 +1919,7 @@ class DatabaseConnector
      * @param  ?integer $start The starting row to update (null: no specific start)
      * @param  boolean $num_touched Whether to get the number of touched rows. WARNING: Do not use in core Composr code as it does not work on all database drivers
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @return ?integer The number of touched records (null: hasn't been asked / error)
+     * @return ?integer The number of touched records (null: hasn't been asked / error / not supported)
      */
     public function query_update($table, $update_map, $where_map = null, $end = '', $max = null, $start = null, $num_touched = false, $fail_ok = false)
     {
