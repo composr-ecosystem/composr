@@ -209,7 +209,7 @@ function _handle_data_url_attachments(&$comcode, $type, $id, $db)
                     sync_file($new_path);
 
                     require_code('uploads');
-                    $test = handle_upload_post_processing(CMS_UPLOAD_IMAGE, $new_path, 'uploads/attachments', $new_filename, 0);
+                    $test = handle_upload_post_processing(CMS_UPLOAD_IMAGE, $new_path, 'uploads/attachments', $new_filename, OBFUSCATE_NEVER);
                     if ($test !== null) {
                         unlink($new_path);
                         sync_file($new_path);

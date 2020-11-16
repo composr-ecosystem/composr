@@ -60,7 +60,7 @@ class Hook_profiles_tabs_edit_avatar
                 is_plupload(true);
                 if (((array_key_exists('avatar_file', $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES['avatar_file']['tmp_name']))))) { // Upload
                     // We have chosen an upload. Note that we will not be looking at alt_url at this point, even though it is specified below for canonical reasons
-                    $urls = get_url('avatar_alt_url', 'avatar_file', file_exists(get_custom_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', 0, CMS_UPLOAD_IMAGE, false, '', '', false, true);
+                    $urls = get_url('avatar_alt_url', 'avatar_file', file_exists(get_custom_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, false, '', '', false, true);
                     if (((get_base_url() != get_forum_base_url()) || (!empty($GLOBALS['SITE_INFO']['on_msn']))) && ($urls[0] != '') && (url_is_local($urls[0]))) {
                         $urls[0] = get_custom_base_url() . '/' . $urls[0];
                     }

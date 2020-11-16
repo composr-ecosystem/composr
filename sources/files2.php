@@ -38,7 +38,7 @@ function init__files2()
 function make_missing_directory($dir, $make_index_file = true)
 {
     if (@mkdir($dir, 0777, true) === false) {
-        if (error_reporting() == 0) {
+        if ((error_reporting() & E_WARNING) === 0) { // Errors disabled via @ most likely
             return false;
         }
         if (function_exists('do_lang_tempcode')) {

@@ -41,7 +41,7 @@ class _api_cloudinary_test_set extends cms_test_case
         require_code('hooks/systems/cdn_transfer/cloudinary');
         $ob = new Hook_cdn_transfer_cloudinary();
         $id = null;
-        $url = $ob->transfer_upload(get_file_base() . '/_tests/assets/images/exifrotated.jpg', '_tests/assets/images', 'exifrotated.jpg', 0, false, $id);
+        $url = $ob->transfer_upload(get_file_base() . '/_tests/assets/images/exifrotated.jpg', '_tests/assets/images', 'exifrotated.jpg', OBFUSCATE_NEVER, false, $id);
         $this->assertTrue(strpos($url, 'res.cloudinary.com') !== false);
         $ob->delete_image_upload($id);
     }

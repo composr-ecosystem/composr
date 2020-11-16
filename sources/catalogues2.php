@@ -379,7 +379,6 @@ function actual_edit_catalogue($old_name, $name, $title, $description, $display_
         'c_categories_sort_order' => $categories_sort_order,
         'c_name' => $name,
         'c_notes' => $notes,
-        'c_add_date' => $add_time,
         'c_submit_points' => $submit_points,
         'c_default_review_freq' => $default_review_freq,
     ];

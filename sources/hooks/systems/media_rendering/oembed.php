@@ -99,209 +99,6 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
     }
 
     /**
-     * Do an oEmbed lookup.
-     *
-     * @param  URLPATH $url URL to render
-     * @param  array $attributes Attributes (e.g. width, height)
-     * @return ?array Fully parsed/validated oEmbed result (null: fail)
-     */
-    public function get_oembed_data_result($url, $attributes)
-    {
-        // Work out oEmbed parameters
-        $params = [];
-        if ((!array_key_exists('width', $attributes)) || ($attributes['width'] != '')) {
-            $params['maxwidth'] = array_key_exists('width', $attributes) ? $attributes['width'] : get_option('oembed_max_size');
-        }
-        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] != '')) {
-            $params['maxheight'] = array_key_exists('height', $attributes) ? $attributes['height'] : get_option('oembed_max_size');
-        }
-        $preferred_format = 'json';
-        $params['format'] = $preferred_format;
-
-        $hooks = find_all_hook_obs('systems', 'oembed', 'Hook_oembed_');
-        foreach ($hooks as $hook_ob) {
-            $data = $hook_ob->get_oembed_from_url($url, $params);
-            if ($data !== null) {
-                return $this->render_oembed_data($url, $data, null);
-            }
-        }
-
-        $endpoint = $this->_find_oembed_endpoint($url);
-        if ($endpoint === null) {
-            return null;
-        }
-
-        // Work out the full endpoint URL to call
-        if (strpos($endpoint, '?') === false) {
-            $params['url'] = $url;
-        } else {
-            if ((strpos($endpoint, '?url=') === false) && (strpos($endpoint, '&url=') === false)) {
-                $params['url'] = $url;
-            }
-        }
-        $format_in_path = (strpos($endpoint, '{format}') !== false);
-        if ($format_in_path) {
-            $endpoint = str_replace('{format}', $preferred_format, $endpoint);
-            unset($params['format']);
-        } else {
-            if (strpos($endpoint, 'format=') !== false) {
-                unset($params['format']);
-            }
-        }
-        foreach ($params as $key => $val) {
-            $endpoint .= (strpos($endpoint, '?') === false) ? '?' : '&';
-            $endpoint .= $key . '=' . urlencode($val);
-        }
-
-        // Call endpoint
-        require_code('http');
-        $result = cache_and_carry('cms_http_request', [$endpoint, ['trigger_error' => false, 'timeout' => 2.0]]);
-        if ($result === false || $result[4] != '200') {
-            return null;
-        }
-
-        // Handle
-        require_code('character_sets');
-        $data = [];
-        switch ($result[1]) {
-            case 'text/xml':
-            case 'text/xml+oembed':
-                require_code('xml');
-                $parsed = new CMS_simple_xml_reader($result[0]);
-                list($root_tag, $root_attributes, , $this_children) = $parsed->gleamed;
-                if ($root_tag == 'oembed') {
-                    foreach ($this_children as $child) {
-                        list($key, , $val) = $child;
-                        $data[$key] = convert_to_internal_encoding($val, $result[8]);
-                    }
-                }
-                break;
-            case 'application/json':
-            case 'application/json+oembed':
-            case 'application/javascript':
-            case 'text/javascript': // noembed uses this, naughty
-                $_data = json_decode($result[0], true);
-                if ($_data === null) {
-                    return null;
-                }
-                $data = [];
-                foreach ($_data as $key => $val) { // It's currently an object, we want an array
-                    if ($val === null) {
-                        continue;
-                    }
-                    if ((is_array($val)) || (is_object($val))) {
-                        continue;
-                    }
-                    $data[$key] = is_string($val) ? convert_to_internal_encoding($val, $result[8]) : strval($val);
-                }
-                break;
-            default:
-                return null;
-        }
-
-        return $this->render_oembed_data($url, $data, $endpoint);
-    }
-
-    /**
-     * Render some oAuth data.
-     *
-     * @param  URLPATH $url URL to render
-     * @param  array $data Map of oAuth data
-     * @param  ?URLPATH $endpoint Endpoint that was used (null: from a hook and implicitly trust HTML from it)
-     * @return Tempcode Rendered version
-     */
-    protected function render_oembed_data($url, $data, $endpoint)
-    {
-        // Cleanup for CSP
-        if ((!empty($data['html'])) && (function_exists('csp_nonce_html')) && (stripos($data['html'], '<script') !== false)) {
-            $data['html'] = str_ireplace('<script', '<script ' . csp_nonce_html(), $data['html']);
-        }
-
-        // Validation
-        if ((!array_key_exists('type', $data)) && (array_key_exists('thumbnail_url', $data))) { // Fix possible error
-            $data['type'] = 'link';
-        }
-        if (!array_key_exists('type', $data)) {
-            return null; // E.g. an error result, with an "error" value - but we don't show errors as we just fall back instead
-        }
-        if ((!array_key_exists('thumbnail_url', $data)) && (array_key_exists('media_url', $data))) {
-            $data['thumbnail_url'] = $data['media_url']; // noembed uses this, naughty
-            unset($data['media_url']);
-        }
-        if ((array_key_exists('thumbnail_url', $data)) && (array_key_exists('url', $data)) && (strpos($data['thumbnail_url'], 'https://noembed.com/') !== false)) {
-            $data['url'] = $data['thumbnail_url']; // noembed uses 'url' incorrectly, naughty
-        }
-        switch ($data['type']) {
-            case 'photo':
-                if ((!array_key_exists('url', $data)) || (!array_key_exists('width', $data)) || (!array_key_exists('height', $data))) {
-                    return null;
-                }
-                break;
-
-            case 'video':
-                if ((!array_key_exists('width', $data)) || (!array_key_exists('height', $data))) {
-                    return null;
-                }
-                // no break
-            case 'rich':
-                if (!array_key_exists('html', $data)) {
-                    return null;
-                }
-
-                // Check security
-                if ($endpoint !== null) {
-                    $url_details = parse_url(normalise_idn_url($url));
-                    $url_details2 = parse_url(normalise_idn_url($endpoint));
-                    $safelist = explode("\n", get_option('oembed_html_safelist'));
-                    if ((!in_array($url_details['host'], $safelist)) && (!in_array($url_details2['host'], $safelist)) && (!in_array(preg_replace('#^www\.#', '', $url_details['host']), $safelist))) {
-                        /* We could do this but it's not perfect, it still has some level of trust
-                        require_code('comcode_compiler');
-                        $len = strlen($data['html']);
-                        filter_html(false, $GLOBALS['FORUM_DRIVER']->get_guest_id(), 0, $len, $data['html'], true, false);
-                        */
-                        $data['html'] = strip_tags($data['html']);
-                    }
-                }
-
-                break;
-
-            case 'link':
-                break;
-
-            default:
-                return null;
-        }
-
-        // See if we can improve things
-        if ($data['type'] == 'photo') {
-            $matches = [];
-
-            if (preg_match('#^(https?://[^/]+\.staticflickr\.com/.*_)[nm](\.jpg)$#', $data['url'], $matches) != 0) { // Flickr
-                unset($data['thumb_url']);
-                $data['url'] = $matches[1] . 'b' . $matches[2];
-                $w = $data['width'];
-                $h = $data['height'];
-                $data['width'] = '1024';
-                $data['height'] = strval(intval(1024.0 * floatval($h) / floatval($w)));
-            } elseif (preg_match('#^(https?://[^/]+\.instagram\.com/.*_)[as](\.jpg)$#', $data['url'], $matches) != 0) { // Instagram
-                unset($data['thumb_url']);
-                $data['url'] = $matches[1] . 'n' . $matches[2];
-                $w = $data['width'];
-                $h = $data['height'];
-                $data['width'] = '640';
-                $data['height'] = strval(intval(640.0 * floatval($h) / floatval($w)));
-            }
-        } elseif ($data['type'] == 'video') {
-            // Instagram
-            if ((preg_match('#^(https?://([^/]+\.)?instagram\.com/.*/)$#', $url, $matches) != 0) && ($data['html'] == '')) {
-                $data['html'] = '<iframe src="' . escape_html($url) . 'embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>';
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * Provide code to display what is at the URL, in the most appropriate way.
      *
      * @param  mixed $url URL to render
@@ -410,33 +207,193 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
     }
 
     /**
-     * Provide code to display what is at the URL, when we fail to render with oEmbed.
+     * Do an oEmbed lookup.
      *
-     * @param  mixed $url URL to render
-     * @param  array $attributes Attributes (e.g. width, height, length)
-     * @param  ?MEMBER $source_member Member to run as (null: current member)
-     * @param  string $link_captions_title Text to show the link with
-     * @return Tempcode Rendered version
+     * @param  URLPATH $url URL to render
+     * @param  array $attributes Attributes (e.g. width, height)
+     * @return ?array Fully parsed/validated oEmbed result (null: fail)
      */
-    public function _fallback_render($url, $attributes, $source_member, $link_captions_title = '')
+    public function get_oembed_data_result($url, $attributes)
     {
-        if ($link_captions_title == '') {
-            require_code('http');
-            $meta_details = get_webpage_meta_details($url);
-            $link_captions_title = $meta_details['t_title'];
-            if ($link_captions_title == '') {
-                $link_captions_title = $url;
+        // Work out oEmbed parameters
+        $params = [];
+        if ((!array_key_exists('width', $attributes)) || ($attributes['width'] != '')) {
+            $params['maxwidth'] = array_key_exists('width', $attributes) ? $attributes['width'] : get_option('oembed_max_size');
+        }
+        if ((!array_key_exists('height', $attributes)) || ($attributes['height'] != '')) {
+            $params['maxheight'] = array_key_exists('height', $attributes) ? $attributes['height'] : get_option('oembed_max_size');
+        }
+        $preferred_format = 'json';
+        $params['format'] = $preferred_format;
+
+        $hooks = find_all_hook_obs('systems', 'oembed', 'Hook_oembed_');
+        foreach ($hooks as $hook_ob) {
+            $data = $hook_ob->get_oembed_from_url($url, $params);
+            if ($data !== null) {
+                return $data;
             }
         }
 
-        require_code('comcode_renderer');
-        if ($source_member === null) {
-            $source_member = get_member();
+        $endpoint = $this->_find_oembed_endpoint($url);
+        if ($endpoint === null) {
+            return null;
         }
-        $comcode = '';
-        $url_tempcode = new Tempcode();
-        $url_tempcode->attach($url);
-        return _do_tags_comcode('url', ['param' => $link_captions_title], $url_tempcode, false, '', 0, $source_member, false, $GLOBALS['SITE_DB'], $comcode, false, false);
+
+        // Work out the full endpoint URL to call
+        if (strpos($endpoint, '?') === false) {
+            $params['url'] = $url;
+        } else {
+            if ((strpos($endpoint, '?url=') === false) && (strpos($endpoint, '&url=') === false)) {
+                $params['url'] = $url;
+            }
+        }
+        $format_in_path = (strpos($endpoint, '{format}') !== false);
+        if ($format_in_path) {
+            $endpoint = str_replace('{format}', $preferred_format, $endpoint);
+            unset($params['format']);
+        } else {
+            if (strpos($endpoint, 'format=') !== false) {
+                unset($params['format']);
+            }
+        }
+        foreach ($params as $key => $val) {
+            $endpoint .= (strpos($endpoint, '?') === false) ? '?' : '&';
+            $endpoint .= $key . '=' . urlencode($val);
+        }
+
+        // Call endpoint
+        require_code('http');
+        $result = cache_and_carry('cms_http_request', [$endpoint, ['trigger_error' => false, 'timeout' => 2.0]]);
+        if ($result === false || $result[4] != '200') {
+            return null;
+        }
+
+        // Handle
+        require_code('character_sets');
+        $data = [];
+        switch ($result[1]) {
+            case 'text/xml':
+            case 'text/xml+oembed':
+                require_code('xml');
+                $parsed = new CMS_simple_xml_reader($result[0]);
+                list($root_tag, $root_attributes, , $this_children) = $parsed->gleamed;
+                if ($root_tag == 'oembed') {
+                    foreach ($this_children as $child) {
+                        list($key, , $val) = $child;
+                        $data[$key] = convert_to_internal_encoding($val, $result[8]);
+                    }
+                }
+                break;
+            case 'application/json':
+            case 'application/json+oembed':
+            case 'application/javascript':
+            case 'text/javascript': // noembed uses this, naughty
+                $_data = json_decode($result[0], true);
+                if ($_data === null) {
+                    return null;
+                }
+                $data = [];
+                foreach ($_data as $key => $val) { // It's currently an object, we want an array
+                    if ($val === null) {
+                        continue;
+                    }
+                    if ((is_array($val)) || (is_object($val))) {
+                        continue;
+                    }
+                    $data[$key] = is_string($val) ? convert_to_internal_encoding($val, $result[8]) : strval($val);
+                }
+                break;
+            default:
+                return null;
+        }
+
+        // Cleanup for CSP
+        if ((!empty($data['html'])) && (function_exists('csp_nonce_html')) && (stripos($data['html'], '<script') !== false)) {
+            $data['html'] = str_ireplace('<script', '<script ' . csp_nonce_html(), $data['html']);
+        }
+
+        // Validation
+        if ((!array_key_exists('type', $data)) && (array_key_exists('thumbnail_url', $data))) { // Fix possible error
+            $data['type'] = 'link';
+        }
+        if (!array_key_exists('type', $data)) {
+            return null; // E.g. an error result, with an "error" value - but we don't show errors as we just fall back instead
+        }
+        if ((!array_key_exists('thumbnail_url', $data)) && (array_key_exists('media_url', $data))) {
+            $data['thumbnail_url'] = $data['media_url']; // noembed uses this, naughty
+            unset($data['media_url']);
+        }
+        if ((array_key_exists('thumbnail_url', $data)) && (array_key_exists('url', $data)) && (strpos($data['thumbnail_url'], 'https://noembed.com/') !== false)) {
+            $data['url'] = $data['thumbnail_url']; // noembed uses 'url' incorrectly, naughty
+        }
+        switch ($data['type']) {
+            case 'photo':
+                if ((!array_key_exists('url', $data)) || (!array_key_exists('width', $data)) || (!array_key_exists('height', $data))) {
+                    return null;
+                }
+                break;
+
+            case 'video':
+                if ((!array_key_exists('width', $data)) || (!array_key_exists('height', $data))) {
+                    return null;
+                }
+                // no break
+            case 'rich':
+                if (!array_key_exists('html', $data)) {
+                    return null;
+                }
+
+                // Check security
+                if ($endpoint !== null) {
+                    $url_details = parse_url(normalise_idn_url($url));
+                    $url_details2 = parse_url(normalise_idn_url($endpoint));
+                    $safelist = explode("\n", get_option('oembed_html_safelist'));
+                    if ((!in_array($url_details['host'], $safelist)) && (!in_array($url_details2['host'], $safelist)) && (!in_array(preg_replace('#^www\.#', '', $url_details['host']), $safelist))) {
+                        /* We could do this but it's not perfect, it still has some level of trust
+                        require_code('comcode_compiler');
+                        $len = strlen($data['html']);
+                        filter_html(false, $GLOBALS['FORUM_DRIVER']->get_guest_id(), 0, $len, $data['html'], true, false);
+                        */
+                        $data['html'] = strip_tags($data['html']);
+                    }
+                }
+
+                break;
+
+            case 'link':
+                break;
+
+            default:
+                return null;
+        }
+
+        // See if we can improve things
+        if ($data['type'] == 'photo') {
+            $matches = [];
+
+            if (preg_match('#^(https?://[^/]+\.staticflickr\.com/.*_)[nm](\.jpg)$#', $data['url'], $matches) != 0) { // Flickr
+                unset($data['thumb_url']);
+                $data['url'] = $matches[1] . 'b' . $matches[2];
+                $w = $data['width'];
+                $h = $data['height'];
+                $data['width'] = '1024';
+                $data['height'] = strval(intval(1024.0 * floatval($h) / floatval($w)));
+            } elseif (preg_match('#^(https?://[^/]+\.instagram\.com/.*_)[as](\.jpg)$#', $data['url'], $matches) != 0) { // Instagram
+                unset($data['thumb_url']);
+                $data['url'] = $matches[1] . 'n' . $matches[2];
+                $w = $data['width'];
+                $h = $data['height'];
+                $data['width'] = '640';
+                $data['height'] = strval(intval(640.0 * floatval($h) / floatval($w)));
+            }
+        } elseif ($data['type'] == 'video') {
+            // Instagram
+            if ((preg_match('#^(https?://([^/]+\.)?instagram\.com/.*/)$#', $url, $matches) != 0) && ($data['html'] == '')) {
+                $data['html'] = '<iframe src="' . escape_html($url) . 'embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe>';
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -478,5 +435,35 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
         }
 
         return null;
+    }
+
+    /**
+     * Provide code to display what is at the URL, when we fail to render with oEmbed.
+     *
+     * @param  mixed $url URL to render
+     * @param  array $attributes Attributes (e.g. width, height, length)
+     * @param  ?MEMBER $source_member Member to run as (null: current member)
+     * @param  string $link_captions_title Text to show the link with
+     * @return Tempcode Rendered version
+     */
+    public function _fallback_render($url, $attributes, $source_member, $link_captions_title = '')
+    {
+        if ($link_captions_title == '') {
+            require_code('http');
+            $meta_details = get_webpage_meta_details($url);
+            $link_captions_title = $meta_details['t_title'];
+            if ($link_captions_title == '') {
+                $link_captions_title = $url;
+            }
+        }
+
+        require_code('comcode_renderer');
+        if ($source_member === null) {
+            $source_member = get_member();
+        }
+        $comcode = '';
+        $url_tempcode = new Tempcode();
+        $url_tempcode->attach($url);
+        return _do_tags_comcode('url', ['param' => $link_captions_title], $url_tempcode, false, '', 0, $source_member, false, $GLOBALS['SITE_DB'], $comcode, false, false);
     }
 }

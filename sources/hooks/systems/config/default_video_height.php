@@ -38,7 +38,7 @@ class Hook_config_default_video_height
             'explanation' => 'CONFIG_OPTION_default_video_height',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 2,
+            'order_in_category_group' => 4,
             'required' => true,
 
             'public' => false,

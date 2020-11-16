@@ -4141,13 +4141,14 @@ div.ajax-loading, p.ajax-loading {
 	display: inline-block;
 }
 
+.rating-star, .rating-star-highlight {
+	padding-right: 3px;
+}
 .rating-star {
 	opacity: 0.2;
-	padding-right: 3px;
 }
 .rating-star-highlight {
 	opacity: 1.0;
-	padding-right: 3px;
 	color: {$GET,seed};
 }
 .email-body .rating-star {

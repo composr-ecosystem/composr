@@ -396,7 +396,7 @@ This works in two possible ways:
  - Doing oEmbed through the authenticated API (supported for Instagram and Facebook, as oEmbed needs API keys on these providers)
 
 For Facebook oEmbed, some extra setting are needed, from some values that will be available from the main app...
-[code="XML]
+[code="XML"]
 <hybridauth>
     ...
     <Facebook>
@@ -409,7 +409,7 @@ The main oAuth keys are not shown here as usually this will be done in the Compo
 The app ID is clearly advertised on the Facebook developer site. The client token is under Settings > Advanced.
 
 And also Instagram...
-[code="XML]
+[code="XML"]
 <hybridauth>
     ...
     <Instagram>

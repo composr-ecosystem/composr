@@ -56,7 +56,8 @@ class Hook_cron_composr_fast_custom_index
             disable_php_memory_limit();
         }
 
-        $GLOBALS['NO_DB_SCOPE_CHECK'] = true; // For small performance gain
+        push_query_limiting(false);
+        push_db_scope_check(false);
 
         $total_singular_ngram_tokens = 0;
         $statistics_map = [];
@@ -101,5 +102,8 @@ class Hook_cron_composr_fast_custom_index
                 }
             }
         }
+
+        pop_query_limiting();
+        pop_db_scope_check();
     }
 }

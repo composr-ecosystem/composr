@@ -434,7 +434,7 @@ function post_param_theme_img_code($type, $required = false, $field_file = 'file
     require_code('uploads');
     is_plupload(true);
     if (((array_key_exists($field_file, $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES[$field_file]['tmp_name']))))) {
-        $urls = get_url('', $field_file, $upload_to, 0, CMS_UPLOAD_IMAGE, false);
+        $urls = get_url('', $field_file, $upload_to, OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, false);
 
         $theme_img_code = $type . '/' . basename($urls[2], '.' . get_file_extension($urls[2]));
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['id' => $theme_img_code]) !== null) {

@@ -177,7 +177,7 @@ class Hook_fields_upload
             $tmp_name = 'field_' . strval($id);
 
             require_code('uploads');
-            $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 1, CMS_UPLOAD_ANYTHING);
+            $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, OBFUSCATE_LEAVE_SUFFIX, CMS_UPLOAD_ANYTHING);
 
             if (($filetype_filter != '') && (!in_array(get_file_extension($temp[2]), explode(',', $filetype_filter)))) {
                 warn_exit(do_lang_tempcode('INVALID_FILE_TYPE_GENERAL', str_replace(',', ', ', $filetype_filter)));

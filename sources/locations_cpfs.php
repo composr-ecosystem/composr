@@ -123,10 +123,31 @@ function _autofill_geo_cpfs($row)
     // Address from GPS (or IP)
     if (!$has_city || !$has_county || !$has_state || !$has_country) {
         if ($has_gps) {
-            $latitude = $row['field_' . strval($latitude_field)];
-            $longitude = $row['field_' . strval($longitude_field)];
+            $_latitude = mixed();
+            $_latitude = $row['field_' . strval($latitude_field)];
+            if (is_float($_latitude)) {
+                $latitude = $_latitude;
+            } elseif ((is_string($_latitude)) && (is_numeric($_latitude))) {
+                $latitude = floatval($_latitude);
+            } else {
+                $latitude = null;
+            }
 
-            $address_parts = reverse_geocode($latitude, $longitude);
+            $_longitude = mixed();
+            $_longitude = $row['field_' . strval($longitude_field)];
+            if (is_float($_longitude)) {
+                $longitude = $_longitude;
+            } elseif ((is_string($_longitude)) && (is_numeric($_longitude))) {
+                $longitude = floatval($_longitude);
+            } else {
+                $longitude = null;
+            }
+
+            if (($latitude !== null) && ($longitude !== null)) {
+                $address_parts = reverse_geocode($latitude, $longitude);
+            } else {
+                $address_parts = null;
+            }
             if ($address_parts !== null) {
                 list(, , $city, $county, $state, , $country) = $address_parts;
                 if (($city_field !== null) && (!$has_city) && (!empty($city))) {

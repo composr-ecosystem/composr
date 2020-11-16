@@ -257,7 +257,7 @@ class Hook_fields_picture_multi
             $i = 1;
             do {
                 $tmp_name = 'field_' . strval($id) . '_' . strval($i);
-                $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 1, CMS_UPLOAD_IMAGE);
+                $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, OBFUSCATE_LEAVE_SUFFIX, CMS_UPLOAD_IMAGE);
                 $_value = $temp[0];
                 if ($_value != '') {
                     if ($value != '') {

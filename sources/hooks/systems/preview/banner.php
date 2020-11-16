@@ -59,7 +59,7 @@ class Hook_preview_banner
         $banner_type_row = $_banner_type_rows[0];
         if ($banner_type_row['t_is_textual'] == 0) {
             if ($direct_code == '') {
-                $urls = get_url($url_param_name, $file_param_name, 'uploads/auto_thumbs', 0, $is_upload ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_ANYTHING);
+                $urls = get_url($url_param_name, $file_param_name, 'uploads/auto_thumbs', OBFUSCATE_NEVER, $is_upload ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_ANYTHING);
                 $img_url = fixup_protocolless_urls($urls[0]);
                 if ($img_url == '') {
                     warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD_BANNERS'));

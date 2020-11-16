@@ -39,7 +39,7 @@ function cns_get_safe_specified_poster_name($is_required_good_value = null)
         $poster_name_if_guest = null;
     }
     if ($poster_name_if_guest !== null) {
-        $poster_name_if_guest = trim($poster_name_if_guest);
+        $poster_name_if_guest = substr(trim($poster_name_if_guest), 0, 80);
 
         if ($is_required_good_value) {
             if ($poster_name_if_guest == do_lang('GUEST')) {

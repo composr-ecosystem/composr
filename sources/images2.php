@@ -888,7 +888,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
     $thumb_attach_name = $name . '__thumb__upload';
     is_plupload(true);
     if (((array_key_exists($field_file, $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES[$field_file]['tmp_name']))))) {
-        $urls = get_url('', $field_file, $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+        $urls = get_url('', $field_file, $upload_to, OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
 
         if (substr($urls[0], 0, 8) != 'uploads/') {
             $http_result = cms_http_request($urls[0], ['trigger_error' => false, 'byte_limit' => 0]);
@@ -914,7 +914,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
         $filename = urldecode(preg_replace('#\?.*#', '', basename($url)));
 
         // Get thumbnail
-        $urls = get_url($field_url, '', $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+        $urls = get_url($field_url, '', $upload_to, OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
         if ($thumb_url !== null) {
             $thumb_url = $urls[1];
         }
@@ -932,7 +932,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
             $filename = urldecode(basename($url));
 
             // Get thumbnail
-            $urls = get_url($field_filedump, '', $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+            $urls = get_url($field_filedump, '', $upload_to, OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
             if ($thumb_url !== null) {
                 $thumb_url = $urls[1];
             }
@@ -953,7 +953,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
 
         // Get thumbnail
         $_POST[$field_url] = $url; // FUDGE
-        $urls = get_url($field_url, '', $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+        $urls = get_url($field_url, '', $upload_to, OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
         if ($thumb_url !== null) {
             $thumb_url = $urls[1];
         }

@@ -95,7 +95,7 @@ PHP;
         $extra_join_sql = '';
         $where_sup = '';
         if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-            $where_sup .= get_category_permission_where_clause('gallery', 'name', get_member(), get_permission_where_clause_groups(get_member()));
+            $where_sup .= get_category_permission_where_clause('gallery', 'name', get_member(), get_permission_where_clause_groups(get_member()), 'r');
         }
 
         // For all galleries off the root gallery

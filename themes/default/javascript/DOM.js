@@ -2352,7 +2352,7 @@
             return;
         }
 
-        iframe.style.height = '80px';
+        iframe.style.minHeight = '80px';
 
         try {
             doc = iframe.contentDocument;

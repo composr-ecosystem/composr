@@ -689,6 +689,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]stupidity_mode[/tt] -- set to [tt]leet[/tt] or [tt]bork[/tt], for a fun April Fools-style Comcode joke (clear the Comcode cache after you're done though)
  - Experimental functionality
   - [tt]download_associated_media[/tt] -- set this to '1' to add an option on posting forms to have any referenced media automatically downloading locally, to protect against the risk of future broken links
+  - [tt]highlight_extracted_file_data[/tt] -- set this to '1' if downloads searches should show highlighted data from extracted keywords, if there's no match on the body text of the download
 
 [title="4"]Hidden 'keep' parameters[/title]
 

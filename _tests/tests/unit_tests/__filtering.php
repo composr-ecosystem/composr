@@ -428,7 +428,7 @@ class __filtering_test_set extends cms_test_case
             sort($results);
             sort($filter_expected);
 
-            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . $filter . ', got: ' . implode(',', array_map('strval', $results)) . ', expected: ' . implode(',', array_map('strval', $filter_expected)) . '; query: ' . $sql);
+            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . str_replace('%', '%%', $filter) . ', got: ' . implode(',', array_map('strval', $results)) . ', expected: ' . implode(',', array_map('strval', $filter_expected)) . '; query: ' . str_replace('%', '%%', $sql));
         }
 
         // Test using POST environment
@@ -466,7 +466,7 @@ class __filtering_test_set extends cms_test_case
             sort($results);
             sort($filter_expected);
 
-            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . $filter . ', got: ' . implode(',', array_map('strval', $results)) . ', expected: ' . implode(',', array_map('strval', $filter_expected)) . ', with: ' . $sql);
+            $this->assertTrue($results == $filter_expected, 'Failed Filtercode check for: ' . str_replace('%', '%%', $filter) . ', got: ' . implode(',', array_map('strval', $results)) . ', expected: ' . implode(',', array_map('strval', $filter_expected)) . ', with: ' . str_replace('%', '%%', $sql));
         }
 
         // Test automatic filter form seems okay

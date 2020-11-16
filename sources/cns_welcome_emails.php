@@ -77,11 +77,11 @@ function cns_prepare_welcome_email($mail, $member = null)
     // Do newsletter-style variable substitution
     if (addon_installed('newsletter')) {
         if ($newsletter_style) {
-            $sendid = 'n' . strval($member['id']);
+            $send_id = 'n' . strval($member['id']);
             require_code('crypt');
             $hash = ratchet_hash($member['the_password'], 'xunsub');
         } else {
-            $sendid = 'w' . strval($member['id']);
+            $send_id = 'w' . strval($member['id']);
             $hash = '';
         }
 
@@ -91,7 +91,7 @@ function cns_prepare_welcome_email($mail, $member = null)
             require_code('cns_members');
             $extra_mappings += cns_get_custom_field_mappings($member['id']);
         }
-        $message = newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $member['m_email_address'], $sendid, $hash, @array_map('strval', $extra_mappings));
+        $message = newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $member['m_email_address'], $send_id, $hash, @array_map('strval', $extra_mappings));
     }
 
     // Process for Tempcode, if in HTML format (as Comcode processing will NOT happen in mail_wrap for HTML, and since do_template we substituted in our final variable values for Tempcode logic to do its work on)

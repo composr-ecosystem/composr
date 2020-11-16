@@ -3,7 +3,7 @@
  Composr
  Copyright (c) ocProducts, 2004-2020
 
- See docs/LICENSE.md for full licensing information.
+ See text/EN/licence.txt for full licencing information.
 
 */
 
@@ -18,415 +18,84 @@
  */
 class catalogues_test_set extends cms_test_case
 {
-    protected $cms_catalogues;
-    protected $cms_catalogues_cat;
-    protected $cms_catalogues_alt;
+    protected $field_ids;
+    protected $category_id;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->establish_admin_session();
+        require_code('catalogues');
+        require_code('catalogues2');
 
-        require_code('content_reviews2');
-        require_code('permissions2');
-        require_code('form_templates');
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'test_catalogue']) !== null) { // In case test didn't clean up before
+            actual_delete_catalogue('test_catalogue');
+        }
 
-        global $PAGE_NAME_CACHE;
-        $PAGE_NAME_CACHE = 'cms_catalogues';
+        actual_add_catalogue('test_catalogue', 'Catalogue Title', 'Catalogue Description', C_DT_FIELDMAPS, 0, '', 0);
 
-        // Creating cms catalogues object
-        require_code('cms/pages/modules/cms_catalogues.php');
-        $this->cms_catalogues = new Module_cms_catalogues();
-        $this->cms_catalogues_cat = new Module_cms_catalogues_cat();
-        $this->cms_catalogues_alt = new Module_cms_catalogues_alt();
-        $this->cms_catalogues->pre_run();
-        $this->cms_catalogues->run_start('browse');
+        $this->field_ids = [];
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'short_text Title', 'short_text Description', 'short_text');
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'short_trans Title', 'short_trans Description', 'short_trans');
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'long_text Title', 'long_text Description', 'long_text');
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'long_trans Title', 'long_trans Description', 'long_trans');
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'integer Title', 'integer Description', 'integer');
+        $this->field_ids[] = actual_add_catalogue_field('test_catalogue', 'float Title', 'float Description', 'float');
+
+        actual_edit_catalogue_field($this->field_ids[0], 'test_catalogue', 'short_text Title', 'short_text Description', 1, 1, 1, '', 1, 0, 0, 0);
+
+        actual_edit_catalogue('test_catalogue', 'test_catalogue', 'Catalogue Title', 'Catalogue Description', C_DT_FIELDMAPS, '', 0, 0, 'title ASC', 'never', null);
+
+        $this->category_id = actual_add_catalogue_category('test_catalogue', 'Title', 'Description', '', null, '', 30, 60, null, null, null);
+        $this->assertTrue('test_catalogue' == $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $this->category_id]));
+
+        actual_edit_catalogue_category($this->category_id, 'Title', 'Description', '', null, '', '', '', 30, 60, null, 0);
+        $this->assertTrue('test_catalogue' == $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $this->category_id]));
     }
 
-    public function testAddCatalogueUI()
+    public function testCatalogueEntryCycle()
     {
-        require_code('content2');
-        $_GET['type'] = 'add';
-        $this->cms_catalogues_alt->pre_run();
-        $this->cms_catalogues_alt->add();
-    }
-
-    public function testAddCatalogueActualiser()
-    {
-        $_POST = [
-            'new_field_0_visible' => '1',
-            'new_field_0_required' => '1',
-            'title' => 'Biodata',
-            'require__title' => '1',
-            'catalogue_name' => 'biodata',
-            'require__catalogue_name' => '1',
-            'comcode__description' => '1',
-            'description' => 'Test-cat',
-            'description_parsed' => '',
-            'display_type' => '1',
-            'require__display_type' => '1',
-            'tick_on_form__ecommerce' => '0',
-            'require__ecommerce' => '0',
-            'is_tree' => '1',
-            'tick_on_form__is_tree' => '0',
-            'require__is_tree' => '0',
-            'auto_fill' => '',
-            'require__auto_fill' => '0',
-            'catalogue_owner' => '',
-            'require__catalogue_owner' => '0',
-            'notes' => 'test',
-            'pre_f_notes' => '1',
-            'require__notes' => '0',
-            'send_view_reports' => 'never',
-            'require__send_view_reports' => '1',
-            'access_1_presets' => '-1',
-            'access_1' => '1',
-            'access_9_presets' => '-1',
-            'access_9' => '1',
-            'access_12_presets' => '-1',
-            'access_12' => '1',
-            'access_11_presets' => '-1',
-            'access_11' => '1',
-            'access_13_presets' => '-1',
-            'access_13' => '1',
-            'access_15_presets' => '-1',
-            'access_15' => '1',
-            'access_14_presets' => '-1',
-            'access_14' => '1',
-            'access_10_presets' => '-1',
-            'access_10' => '1',
-            'access_16_presets' => '-1',
-            'access_16' => '1',
-            'new_field_0_name' => 'Name',
-            'require__new_field_0_name' => '1',
-            'new_field_0_description' => 'Enter name',
-            'require__new_field_0_description' => '0',
-            'new_field_0_default' => '',
-            'require__new_field_0_default' => '0',
-            'new_field_0_type' => 'short_text',
-            'require__new_field_0_type' => '1',
-            'new_field_0_order' => '0',
-            'require__new_field_0_order' => '1',
-            'new_field_0_defines_order' => '0',
-            'require__' => '0',
-            'new_field_0_is_sortable' => '1',
-            'tick_on_form__new_field_0_is_sortable' => '0',
-            'require__new_field_0_is_sortable' => '0',
-            'new_field_0_include_in_main_search' => '1',
-            'tick_on_form__new_field_0_include_in_main_search' => '0',
-            'require__new_field_0_include_in_main_search' => '0',
-            'new_field_0_allow_template_search' => '0',
-            'tick_on_form__new_field_0_allow_template_search' => '0',
-            'require__new_field_0_allow_template_search' => '0',
-            'new_field_0_put_in_category' => '1',
-            'tick_on_form__new_field_0_put_in_category' => '0',
-            'require__new_field_0_put_in_category' => '0',
-            'new_field_0_put_in_search' => '1',
-            'tick_on_form__new_field_0_put_in_search' => '0',
-            'require__new_field_0_put_in_search' => '0',
-            'new_field_1_name' => 'Address',
-            'require__new_field_1_name' => '0',
-            'new_field_1_description' => 'Your address',
-            'require__new_field_1_description' => '0',
-            'new_field_1_default' => '',
-            'require__new_field_1_default' => '0',
-            'new_field_1_type' => 'short_text',
-            'require__new_field_1_type' => '1',
-            'new_field_1_order' => '1',
-            'require__new_field_1_order' => '1',
-            'new_field_1_defines_order' => '0',
-            'new_field_1_visible' => '1',
-            'tick_on_form__new_field_1_visible' => '0',
-            'require__new_field_1_visible' => '0',
-            'new_field_1_required' => '1',
-            'tick_on_form__new_field_1_required' => '0',
-            'require__new_field_1_required' => '0',
-            'new_field_1_is_sortable' => '1',
-            'tick_on_form__new_field_1_is_sortable' => '0',
-            'require__new_field_1_is_sortable' => '0',
-            'new_field_1_include_in_main_search' => '1',
-            'tick_on_form__new_field_1_include_in_main_search' => '0',
-            'require__new_field_1_include_in_main_search' => '0',
-            'new_field_1_allow_template_search' => '0',
-            'tick_on_form__new_field_1_allow_template_search' => '0',
-            'require__new_field_1_allow_template_search' => '0',
-            'new_field_1_put_in_category' => '1',
-            'tick_on_form__new_field_1_put_in_category' => '0',
-            'require__new_field_1_put_in_category' => '0',
-            'new_field_1_put_in_search' => '1',
-            'tick_on_form__new_field_1_put_in_search' => '0',
-            'require__new_field_1_put_in_search' => '0',
-            'new_field_2_name' => 'Qualification',
-            'require__new_field_2_name' => '0',
-            'new_field_2_description' => 'Qualification',
-            'require__new_field_2_description' => '0',
-            'new_field_2_default' => '',
-            'require__new_field_2_default' => '0',
-            'new_field_2_type' => 'short_text',
-            'require__new_field_2_type' => '1',
-            'new_field_2_order' => 2,
-            'require__new_field_2_order' => '1',
-            'new_field_2_defines_order' => '0',
-            'new_field_2_visible' => '1',
-            'tick_on_form__new_field_2_visible' => '0',
-            'require__new_field_2_visible' => '0',
-            'new_field_2_required' => '1',
-            'tick_on_form__new_field_2_required' => '0',
-            'require__new_field_2_required' => '0',
-            'new_field_2_is_sortable' => '1',
-            'tick_on_form__new_field_2_is_sortable' => '0',
-            'require__new_field_2_is_sortable' => '0',
-            'new_field_2_include_in_main_search' => '1',
-            'tick_on_form__new_field_2_include_in_main_search' => '0',
-            'require__new_field_2_include_in_main_search' => '0',
-            'new_field_2_allow_template_search' => '0',
-            'tick_on_form__new_field_2_allow_template_search' => '0',
-            'require__new_field_2_allow_template_search' => '0',
-            'new_field_2_put_in_category' => '1',
-            'tick_on_form__new_field_2_put_in_category' => '0',
-            'require__new_field_2_put_in_category' => '0',
-            'new_field_2_put_in_search' => '1',
-            'tick_on_form__new_field_2_put_in_search' => '0',
-            'require__new_field_2_put_in_search' => '0',
-            'new_field_3_name' => '',
-            'require__new_field_3_name' => '0',
-            'new_field_3_description' => '',
-            'require__new_field_3_description' => '0',
-            'new_field_3_default' => '',
-            'require__new_field_3_default' => '0',
-            'new_field_3_type' => 'short_text',
-            'require__new_field_3_type' => '1',
-            'new_field_3_order' => 3,
-            'require__new_field_3_order' => '1',
-            'new_field_3_defines_order' => '0',
-            'new_field_3_visible' => '1',
-            'tick_on_form__new_field_3_visible' => '0',
-            'require__new_field_3_visible' => '0',
-            'new_field_3_required' => '1',
-            'tick_on_form__new_field_3_required' => '0',
-            'require__new_field_3_required' => '0',
-            'new_field_3_is_sortable' => '1',
-            'tick_on_form__new_field_3_is_sortable' => '0',
-            'require__new_field_3_is_sortable' => '0',
-            'new_field_3_include_in_main_search' => '1',
-            'tick_on_form__new_field_3_include_in_main_search' => '0',
-            'require__new_field_3_include_in_main_search' => '0',
-            'new_field_3_allow_template_search' => '0',
-            'tick_on_form__new_field_3_allow_template_search' => '0',
-            'require__new_field_3_allow_template_search' => '0',
-            'new_field_3_put_in_category' => '1',
-            'tick_on_form__new_field_3_put_in_category' => '0',
-            'require__new_field_3_put_in_category' => '0',
-            'new_field_3_put_in_search' => '1',
-            'tick_on_form__new_field_3_put_in_search' => '0',
-            'require__new_field_3_put_in_search' => '0',
-            'new_field_4_name' => '',
-            'require__new_field_4_name' => '0',
-            'new_field_4_description' => '',
-            'require__new_field_4_description' => '0',
-            'new_field_4_default' => '',
-            'require__new_field_4_default' => '0',
-            'new_field_4_type' => 'short_text',
-            'require__new_field_4_type' => '1',
-            'new_field_4_order' => 4,
-            'require__new_field_4_order' => '1',
-            'new_field_4_defines_order' => '0',
-            'new_field_4_visible' => '1',
-            'tick_on_form__new_field_4_visible' => '0',
-            'require__new_field_4_visible' => '0',
-            'new_field_4_required' => '1',
-            'tick_on_form__new_field_4_required' => '0',
-            'require__new_field_4_required' => '0',
-            'new_field_4_is_sortable' => '1',
-            'tick_on_form__new_field_4_is_sortable' => '0',
-            'require__new_field_4_is_sortable' => '0',
-            'new_field_4_include_in_main_search' => '1',
-            'tick_on_form__new_field_4_include_in_main_search' => '0',
-            'require__new_field_4_include_in_main_search' => '0',
-            'new_field_4_allow_template_search' => '0',
-            'tick_on_form__new_field_4_allow_template_search' => '0',
-            'require__new_field_4_allow_template_search' => '0',
-            'new_field_4_put_in_category' => '1',
-            'tick_on_form__new_field_4_put_in_category' => '0',
-            'require__new_field_4_put_in_category' => '0',
-            'new_field_4_put_in_search' => '1',
-            'tick_on_form__new_field_4_put_in_search' => '0',
-            'require__new_field_4_put_in_search' => '0',
-            'new_field_5_name' => '',
-            'require__new_field_5_name' => '0',
-            'new_field_5_description' => '',
-            'require__new_field_5_description' => '0',
-            'new_field_5_default' => '',
-            'require__new_field_5_default' => '0',
-            'new_field_5_type' => 'short_text',
-            'require__new_field_5_type' => '1',
-            'new_field_5_order' => 5,
-            'require__new_field_5_order' => '1',
-            'new_field_5_defines_order' => '0',
-            'new_field_5_visible' => '1',
-            'tick_on_form__new_field_5_visible' => '0',
-            'require__new_field_5_visible' => '0',
-            'new_field_5_required' => '1',
-            'tick_on_form__new_field_5_required' => '0',
-            'require__new_field_5_required' => '0',
-            'new_field_5_is_sortable' => '1',
-            'tick_on_form__new_field_5_is_sortable' => '0',
-            'require__new_field_5_is_sortable' => '0',
-            'new_field_5_include_in_main_search' => '1',
-            'tick_on_form__new_field_5_include_in_main_search' => '0',
-            'require__new_field_5_include_in_main_search' => '0',
-            'new_field_5_allow_template_search' => '0',
-            'tick_on_form__new_field_5_allow_template_search' => '0',
-            'require__new_field_5_allow_template_search' => '0',
-            'new_field_5_put_in_category' => '1',
-            'tick_on_form__new_field_5_put_in_category' => '0',
-            'require__new_field_5_put_in_category' => '0',
-            'new_field_5_put_in_search' => '1',
-            'tick_on_form__new_field_5_put_in_search' => '0',
-            'require__new_field_5_put_in_search' => '0',
-            'new_field_6_name' => '',
-            'require__new_field_6_name' => '0',
-            'new_field_6_description' => '',
-            'require__new_field_6_description' => '0',
-            'new_field_6_default' => '',
-            'require__new_field_6_default' => '0',
-            'new_field_6_type' => 'short_text',
-            'require__new_field_6_type' => '1',
-            'new_field_6_order' => 6,
-            'require__new_field_6_order' => '1',
-            'new_field_6_defines_order' => '0',
-            'new_field_6_visible' => '1',
-            'tick_on_form__new_field_6_visible' => '0',
-            'require__new_field_6_visible' => '0',
-            'new_field_6_required' => '1',
-            'tick_on_form__new_field_6_required' => '0',
-            'require__new_field_6_required' => '0',
-            'new_field_6_is_sortable' => '1',
-            'tick_on_form__new_field_6_is_sortable' => '0',
-            'require__new_field_6_is_sortable' => '0',
-            'new_field_6_include_in_main_search' => '1',
-            'tick_on_form__new_field_6_include_in_main_search' => '0',
-            'require__new_field_6_include_in_main_search' => '0',
-            'new_field_6_allow_template_search' => '0',
-            'tick_on_form__new_field_6_allow_template_search' => '0',
-            'require__new_field_6_allow_template_search' => '0',
-            'new_field_6_put_in_category' => '1',
-            'tick_on_form__new_field_6_put_in_category' => '0',
-            'require__new_field_6_put_in_category' => '0',
-            'new_field_6_put_in_search' => '1',
-            'tick_on_form__new_field_6_put_in_search' => '0',
-            'require__new_field_6_put_in_search' => '0',
-            'new_field_7_name' => '',
-            'require__new_field_7_name' => '0',
-            'new_field_7_description' => '',
-            'require__new_field_7_description' => '0',
-            'new_field_7_default' => '',
-            'require__new_field_7_default' => '0',
-            'new_field_7_type' => 'short_text',
-            'require__new_field_7_type' => '1',
-            'new_field_7_order' => 7,
-            'require__new_field_7_order' => '1',
-            'new_field_7_defines_order' => '0',
-            'new_field_7_visible' => '1',
-            'tick_on_form__new_field_7_visible' => '0',
-            'require__new_field_7_visible' => '0',
-            'new_field_7_required' => '1',
-            'tick_on_form__new_field_7_required' => '0',
-            'require__new_field_7_required' => '0',
-            'new_field_7_is_sortable' => '1',
-            'tick_on_form__new_field_7_is_sortable' => '0',
-            'require__new_field_7_is_sortable' => '0',
-            'new_field_7_include_in_main_search' => '1',
-            'tick_on_form__new_field_7_include_in_main_search' => '0',
-            'require__new_field_7_include_in_main_search' => '0',
-            'new_field_7_allow_template_search' => '0',
-            'tick_on_form__new_field_7_allow_template_search' => '0',
-            'require__new_field_7_allow_template_search' => '0',
-            'new_field_7_put_in_category' => '1',
-            'tick_on_form__new_field_7_put_in_category' => '0',
-            'require__new_field_7_put_in_category' => '0',
-            'new_field_7_put_in_search' => '1',
-            'tick_on_form__new_field_7_put_in_search' => '0',
-            'require__new_field_7_put_in_search' => '0',
-            'new_field_8_name' => '',
-            'require__new_field_8_name' => '0',
-            'new_field_8_description' => '',
-            'require__new_field_8_description' => '0',
-            'new_field_8_default' => '',
-            'require__new_field_8_default' => '0',
-            'new_field_8_type' => 'short_text',
-            'require__new_field_8_type' => '1',
-            'new_field_8_order' => 8,
-            'require__new_field_8_order' => '1',
-            'new_field_8_defines_order' => '0',
-            'new_field_8_visible' => '1',
-            'tick_on_form__new_field_8_visible' => '0',
-            'require__new_field_8_visible' => '0',
-            'new_field_8_required' => '1',
-            'tick_on_form__new_field_8_required' => '0',
-            'require__new_field_8_required' => '0',
-            'new_field_8_is_sortable' => '1',
-            'tick_on_form__new_field_8_is_sortable' => '0',
-            'require__new_field_8_is_sortable' => '0',
-            'new_field_8_include_in_main_search' => '1',
-            'tick_on_form__new_field_8_include_in_main_search' => '0',
-            'require__new_field_8_include_in_main_search' => '0',
-            'new_field_8_allow_template_search' => '0',
-            'tick_on_form__new_field_8_allow_template_search' => '0',
-            'require__new_field_8_allow_template_search' => '0',
-            'new_field_8_put_in_category' => '1',
-            'tick_on_form__new_field_8_put_in_category' => '0',
-            'require__new_field_8_put_in_category' => '0',
-            'new_field_8_put_in_search' => '1',
-            'tick_on_form__new_field_8_put_in_search' => '0',
-            'require__new_field_8_put_in_search' => '0',
-            'new_field_9_name' => '',
-            'require__new_field_9_name' => '0',
-            'new_field_9_description' => '',
-            'require__new_field_9_description' => '0',
-            'new_field_9_default' => '',
-            'require__new_field_9_default' => '0',
-            'new_field_9_type' => 'short_text',
-            'require__new_field_9_type' => '1',
-            'new_field_9_order' => 9,
-            'require__new_field_9_order' => '1',
-            'new_field_9_defines_order' => '0',
-            'new_field_9_visible' => '1',
-            'tick_on_form__new_field_9_visible' => '0',
-            'require__new_field_9_visible' => '0',
-            'new_field_9_required' => '1',
-            'tick_on_form__new_field_9_required' => '0',
-            'require__new_field_9_required' => '0',
-            'new_field_9_is_sortable' => '1',
-            'tick_on_form__new_field_9_is_sortable' => '0',
-            'require__new_field_9_is_sortable' => '0',
-            'new_field_9_include_in_main_search' => '1',
-            'tick_on_form__new_field_9_include_in_main_search' => '0',
-            'require__new_field_9_include_in_main_search' => '0',
-            'new_field_9_allow_template_search' => '0',
-            'tick_on_form__new_field_9_allow_template_search' => '0',
-            'require__new_field_9_allow_template_search' => '0',
-            'new_field_9_put_in_category' => '1',
-            'tick_on_form__new_field_9_put_in_category' => '0',
-            'require__new_field_9_put_in_category' => '0',
-            'new_field_9_put_in_search' => '1',
-            'tick_on_form__new_field_9_put_in_search' => '0',
-            'require__new_field_9_put_in_search' => '0',
-            'description__is_wysiwyg' => '1',
-            'categories_sort_order' => 'recent ASC',
+        $map = [
+            $this->field_ids[0] => 'Test Value 1',
+            $this->field_ids[1] => 'Test Value 2',
+            $this->field_ids[2] => 'Test Value 3',
+            $this->field_ids[3] => 'Test Value 4',
+            $this->field_ids[4] => '1',
+            $this->field_ids[5] => '1.23',
         ];
-        $_POST = @array_map('strval', $_POST);
+        $id = actual_add_catalogue_entry($this->category_id, 0/*We do not want a notification*/, '', 1, 1, 1, $map);
 
-        require_code('autosave');
-        $_GET['type'] = '_add';
-        $this->cms_catalogues_alt->pre_run();
-        $this->cms_catalogues_alt->_add();
+        $map = [
+            $this->field_ids[0] => 'Test Value 1b',
+            $this->field_ids[1] => 'Test Value 2b',
+            $this->field_ids[2] => 'Test Value 3b',
+            $this->field_ids[3] => 'Test Value 4b',
+            $this->field_ids[4] => '2',
+            $this->field_ids[5] => '2.34',
+        ];
+        actual_edit_catalogue_entry($id, $this->category_id, 0/*We do not want a notification*/, '', 1, 1, 1, $map);
+
+        $entry_rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => $id], '', 1);
+
+        $tpl_map = get_catalogue_entry_map($entry_rows[0], null, 'PAGE', 'DEFAULT');
+
+        foreach (array_values($map) as $i => $expected) {
+            $value = $tpl_map['FIELD_' . strval($i)];
+            if (is_object($value)) {
+                $value = $value->evaluate();
+            }
+            $this->assertTrue($value == $expected, 'Got ' . $value);
+        }
+
+        actual_delete_catalogue_entry($id);
     }
 
-    public function testDeleteCatalogue()
+    public function tearDown()
     {
-        require_code('autosave');
-        $this->cms_catalogues_alt->delete_actualisation('biodata');
+        actual_delete_catalogue_category($this->category_id, false);
+
+        actual_delete_catalogue('test_catalogue');
+
+        parent::tearDown();
     }
 }

@@ -35,6 +35,9 @@ function is_httpauth_login()
     if (is_guest()) {
         return false;
     }
+    if (!isset($GLOBALS['CNS_DRIVER'])) {
+        return false;
+    }
 
     $ret = non_overridden__is_httpauth_login();
 

@@ -192,7 +192,14 @@ class Hook_search_downloads extends FieldsSearchHook
         global $SEARCH_QUERY_TERMS;
         $highlight_bits = ($SEARCH_QUERY_TERMS === null) ? [] : $SEARCH_QUERY_TERMS;
 
-        if ((array_key_exists(0, $highlight_bits)) && ($row['download_data_mash'] != '')) {
+        $_text_summary = get_translated_text($row['description']);
+        $LAX_COMCODE = true;
+        $text_summary_h = comcode_to_tempcode($_text_summary, null, false, null, null, $highlight_bits);
+        $LAX_COMCODE = false;
+        $cnt = 0;
+        $text_summary = generate_text_summary($text_summary_h->evaluate(), $highlight_bits, $cnt);
+
+        if ((get_value('highlight_extracted_file_data') === '1') && ($cnt == 0) && (array_key_exists(0, $highlight_bits)) && ($row['download_data_mash'] != '')) {
             $pos = strpos($row['download_data_mash'], $highlight_bits[0]) - 1000;
             $mash_portion = substr($row['download_data_mash'], $pos, 10000);
             $_text_summary = trim(cms_preg_replace_safe('#\s+#', ' ', $mash_portion));

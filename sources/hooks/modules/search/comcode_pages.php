@@ -96,6 +96,10 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             foreach (array_keys($langs) as $lang) {
                 $pages = find_all_pages($zone, 'comcode_custom/' . $lang, 'txt', false, $clean_scan ? null : $since, FIND_ALL_PAGES__ALL);
                 foreach ($pages as $page => $page_type) {
+                    if (is_integer($page)) {
+                        $page = strval($page);
+                    }
+
                     if (preg_match('#(^panel_|_)#', $page) == 0) {
                         require_code('global4');
                         if (!comcode_page_include_on_sitemap($zone, $page)) {
@@ -229,7 +233,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $table = 'comcode_pages r';
 
             $g_or = get_permission_where_clause_groups(get_member(), false);
-            if ($g_or != '') {
+            if ($g_or !== null) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }
@@ -272,7 +276,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', ['r.the_zone', 'r.the_page']));
 
             $g_or = get_permission_where_clause_groups(get_member(), false);
-            if ($g_or != '') {
+            if ($g_or !== null) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_zone_access z WHERE (z.zone_name=r.the_zone AND (' . str_replace('group_id', 'z.group_id', $g_or) . ')))';
             }

@@ -106,9 +106,9 @@ function perform_keyword_search($limit_to = null, $keyword_prefix = null, $max =
     }
 
     if ($limit_to !== null) {
-        $where .= ' AND (1=0';
+        $where .= ' AND (';
         foreach (array_values($limit_to) as $i => $l) {
-            if ($i == 0) {
+            if ($i != 0) {
                 $where .= ' OR ';
             }
             $where .= db_string_equal_to('meta_for_type', $l);

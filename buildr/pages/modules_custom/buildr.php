@@ -684,7 +684,7 @@ class Module_buildr
                 return $tpl;
             }
 
-            $urls = get_url('url', 'pic', 'uploads/buildr_addon', 0, CMS_UPLOAD_IMAGE);
+            $urls = get_url('url', 'pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             add_item_wrap($member_id, $name, post_param_integer('price', 0), post_param_integer('not_infinite', 0), post_param_integer('bribable', 0), post_param_integer('healthy', 0), $urls[0], post_param_integer('max_per_player', -1), post_param_integer('replicateable', 0), post_param_string('description'));
         }
 
@@ -748,7 +748,7 @@ class Module_buildr
                 ]);
                 return $tpl;
             }
-            $urls = get_url('url', 'pic', 'uploads/buildr_addon', 0, CMS_UPLOAD_IMAGE);
+            $urls = get_url('url', 'pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             add_room_wrap($member_id, post_param_integer('position'), $name, post_param_string('text'), post_param_string('password_question'), post_param_string('password_answer'), post_param_string('password_fail_message'), post_param_string('required_item'), post_param_integer('locked_up', 0), post_param_integer('locked_down', 0), post_param_integer('locked_right', 0), post_param_integer('locked_left', 0), $urls[0], post_param_integer('allow_portal', 0));
         }
 
@@ -789,9 +789,9 @@ class Module_buildr
                 $qa[$i]['a'] = post_param_string('answer' . strval($i));
                 $i++;
             }
-            $urls1 = get_url('jail_pic_url', 'jail_pic', 'uploads/buildr_addon', 0, CMS_UPLOAD_IMAGE);
-            $urls2 = get_url('jail_house_pic_url', 'jail_house_pic', 'uploads/buildr_addon', 0, CMS_UPLOAD_IMAGE);
-            $urls3 = get_url('lobby_pic_url', 'lobby_pic', 'uploads/buildr_addon', 0, CMS_UPLOAD_IMAGE);
+            $urls1 = get_url('jail_pic_url', 'jail_pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
+            $urls2 = get_url('jail_house_pic_url', 'jail_house_pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
+            $urls3 = get_url('lobby_pic_url', 'lobby_pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             add_realm_wrap($member_id, $name, post_param_string('troll_name'), post_param_string('jail_name'), post_param_string('jail_text'), $urls1[0], post_param_string('jail_house_name'), post_param_string('jail_house_text'), $urls2[0], post_param_string('lobby_name'), post_param_string('lobby_text'), $urls3[0], $qa, post_param_integer('private', 0));
         }
 
@@ -905,7 +905,7 @@ class Module_buildr
                 return $tpl;
             }
 
-            $urls = get_url('url', 'pic', 'uploads/buildr_addon', 0, CMS_UPLOAD_IMAGE);
+            $urls = get_url('url', 'pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             edit_item_wrap($member_id, $item, $name, post_param_integer('bribable', 0), post_param_integer('healthy', 0), $urls[0], grab_new_owner('new_owner'), post_param_integer('max_per_player', -1), post_param_integer('replicateable', 0), post_param_string('description'));
         }
 
@@ -977,7 +977,7 @@ class Module_buildr
                 return $tpl;
             }
 
-            $urls = get_url('url', 'pic', 'uploads/buildr_addon', 0, CMS_UPLOAD_IMAGE);
+            $urls = get_url('url', 'pic', 'uploads/buildr_addon', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             edit_room_wrap($member_id, $name, post_param_string('text'), post_param_string('password_question'), post_param_string('password_answer', false, INPUT_FILTER_NONE), post_param_string('password_fail_message'), post_param_string('required_item'), post_param_integer('locked_up', 0), post_param_integer('locked_down', 0), post_param_integer('locked_right', 0), post_param_integer('locked_left', 0), $urls[0], post_param_integer('allow_portal', 0), grab_new_owner('new_owner'), post_param_integer('new_x'), post_param_integer('new_y'), post_param_integer('new_realm'));
         }
 

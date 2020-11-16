@@ -21,6 +21,12 @@ class comcode_to_text_test_set extends cms_test_case
     public function testComcodeToText()
     {
         $text = '
+[list]
+[*]A
+[*]B
+[*]C
+[/list]
+
 [title]header 1[/title]
 
 under header 1
@@ -48,11 +54,21 @@ blah[/indent]
 [random a="Want"]1233[/random]
 
 [abbr="Cascading Style Sheets"]CSS[/abbr]
+
+{+START,IF_NON_EMPTY,foo}bar{+END}
+
+{+START,IF_EMPTY,foo}bar{+END}
+
+{$SITE_NAME}
 ';
 
         $got = strip_comcode($text);
 
         $expected = '
+ - A
+ - B
+ - C
+
 header 1
 ========
 
@@ -81,7 +97,10 @@ box contents
 Want
 
 CSS (Cascading Style Sheets)
-';
+
+bar
+
+' . get_site_name();
 
         $ok = trim($got) == trim($expected);
         $this->assertTrue($ok);

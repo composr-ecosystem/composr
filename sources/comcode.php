@@ -242,7 +242,7 @@ function comcode_to_tempcode($comcode, $source_member = null, $as_admin = false,
  * @param  boolean $include_urls Whether to include URLs in the text version
  * @return string Purified plain-text
  */
-function strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $include_urls = true)
+function strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $include_urls = false)
 {
     $text = $in;
 

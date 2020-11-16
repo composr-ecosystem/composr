@@ -79,14 +79,6 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $incl
         $text = str_replace('{$BASE_URL}', get_base_url(), $text);
         $text = str_replace('{$BASE_URL*}', get_base_url(), $text);
 
-        if (stripos($text, '{') !== false) {
-            // Remove directives etc
-            do {
-                $before = $text;
-                $text = preg_replace('#\{([^\|\}\{]*)\}#', '', $text);
-            } while ($text != $before);
-        }
-
         if (strpos($text, '{') !== false) {
             $text = static_evaluate_tempcode(template_to_tempcode($text, 0, false, '', null, null, true));
         }
@@ -148,7 +140,7 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $incl
             $text = preg_replace("#\[url( param)?=\"([^\"]*)\"[^\[\]]*\]\\2\[/url\]#", '\2', $text);
             $text = preg_replace("#\(\[url( param)?=\"(https?://[^\"]*)\"([^\]]*)\]([^\[\]]*)\[/url\]\)#", '\2', $text);
             $text = preg_replace("#\[url( param)?=\"(https?://[^\"]*)\"([^\]]*)\]([^\[\]]*)\[/url\]#", $for_extract ? '\4' : '\4 (\2)', $text);
-            $text = preg_replace("#\[url( param)?=\"([^\"]*)\"[^\[\]]*\]([^\[\]]*)\[/url\]#", '\2 (\4)', $text);
+            $text = preg_replace("#\[url( param)?=\"([^\"]*)\"[^\[\]]*\]([^\[\]]*)\[/url\]#", '\2 (\3)', $text);
             $text = preg_replace("#\[url( param)?=\"([^\"]*)\"([^\]]*)\]([^\[\]]*)\[/url\]#", $for_extract ? '\2' : '\2 (\4)', $text);
             $text = preg_replace("#(.*) \(\\1\)#", '\1', $text);
         }

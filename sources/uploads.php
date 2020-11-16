@@ -30,6 +30,10 @@ function init__uploads()
         define('CMS_UPLOAD_VIDEO', 2);
         define('CMS_UPLOAD_AUDIO', 4);
         define('CMS_UPLOAD_ANYTHING', 15);
+
+        define('OBFUSCATE_NEVER', 0);
+        define('OBFUSCATE_LEAVE_SUFFIX', 1);
+        define('OBFUSCATE_BIN_SUFFIX', 2);
     }
 
     require_code('urls2');
@@ -79,9 +83,10 @@ function set_images_cleanup_pipeline_settings($recompress_mode = 0, $maximum_dim
  * @param  ?string $thumb_url Pass the thumbnail back by reference (null: do not pass & do not collect a thumbnail)
  * @param  integer $upload_type A CMS_UPLOAD_* constant
  * @param  boolean $copy_to_server Whether to copy a URL (if a URL) to the server, and return a local reference
+ * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (a OBFUSCATE_* constant)
  * @return ?URLPATH The URL (either to an independent upload, or the theme image, or a filedump URL) (null: leave alone, when doing an edit operation)
  */
-function post_param_multi_source_upload($name, $upload_to, $required = true, $is_edit = false, &$filename = null, &$thumb_url = null, $upload_type = 15, $copy_to_server = false)
+function post_param_multi_source_upload($name, $upload_to, $required = true, $is_edit = false, &$filename = null, &$thumb_url = null, $upload_type = 15, $copy_to_server = false, $obfuscate = 0)
 {
     $thumb_specify_name = $name . '__thumb__url';
     $test = post_param_string($thumb_specify_name, '');
@@ -97,7 +102,7 @@ function post_param_multi_source_upload($name, $upload_to, $required = true, $is
     $thumb_attach_name = $name . '__thumb__upload';
     is_plupload(true);
     if (((array_key_exists($field_file, $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES[$field_file]['tmp_name']))))) {
-        $urls = get_url('', $field_file, $upload_to, 0, $upload_type, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+        $urls = get_url('', $field_file, $upload_to, $obfuscate, $upload_type, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
 
         if (substr($urls[0], 0, 8) != 'uploads/') {
             $http_result = cms_http_request($urls[0], ['trigger_error' => false, 'byte_limit' => 0]);
@@ -123,7 +128,7 @@ function post_param_multi_source_upload($name, $upload_to, $required = true, $is
         $filename = urldecode(preg_replace('#\?.*#', '', basename($url)));
 
         // Get thumbnail
-        $urls = get_url($field_url, '', $upload_to, 0, $upload_type, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name, $copy_to_server);
+        $urls = get_url($field_url, '', $upload_to, OBFUSCATE_NEVER, $upload_type, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name, $copy_to_server);
         if ($thumb_url !== null) {
             $thumb_url = $urls[1];
         }
@@ -141,7 +146,7 @@ function post_param_multi_source_upload($name, $upload_to, $required = true, $is
             $filename = urldecode(basename($url));
 
             // Get thumbnail
-            $urls = get_url($field_filedump, '', $upload_to, 0, $upload_type, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
+            $urls = get_url($field_filedump, '', $upload_to, OBFUSCATE_NEVER, $upload_type, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
             if ($thumb_url !== null) {
                 $thumb_url = $urls[1];
             }
@@ -184,12 +189,8 @@ function is_plupload($fake_prepopulation = false)
             $key = strval($key);
         }
 
-        if (is_integer($key)) {
-            $key = strval($key);
-        }
-
         if ((preg_match('#^hid_file_id_#i', $key) != 0) && ($value != '-1')) {
-            // Get the incoming uploads appropiate database table row
+            // Get the incoming uploads appropriate database table row
             if (substr($value, -4) == '.bin') { // By .bin name
                 $filename = post_param_string(str_replace('hidFileID', 'hidFileName', $key), '');
                 if ($filename == '') {
@@ -354,8 +355,7 @@ function get_upload_error_message($file_upload, $should_get_something = true, $m
  * @param  ID_TEXT $specify_name The name of the POST parameter storing the URL (if '', then no POST parameter). Parameter value may be blank.
  * @param  ID_TEXT $attach_name The name of the HTTP file parameter storing the upload (if '', then no HTTP file parameter). No file necessarily is uploaded under this.
  * @param  ID_TEXT $upload_folder The folder name where we will put this upload
- * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (0=do not, 1=do, 2=make extension .bin as well, 3=only obfuscate if we need to)
- * @set 0 1 2 3
+ * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (a OBFUSCATE_* constant)
  * @param  integer $enforce_type The type of upload it is (bitmask, from CMS_UPLOAD_* constants)
  * @param  boolean $make_thumbnail Make a thumbnail (this only makes sense, if it is an image)
  * @param  ID_TEXT $thumb_specify_name The name of the POST parameter storing the thumb URL. As before
@@ -447,10 +447,6 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
         cms_profile_start_for('get_url');
     }
 
-    if ($obfuscate == 3) {
-        $accept_errors = true;
-    }
-
     if (!file_exists($upload_folder_full)) {
         require_code('files2');
         make_missing_directory($upload_folder_full);
@@ -518,15 +514,8 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
                 $http_result->filename = $url[1];
             }
 
-            if (!check_extension($http_result->filename, $obfuscate == 2, $path2, $accept_errors)) {
-                if ($obfuscate == 3) { // We'll try again, with obfuscation to see if this would get through
-                    $obfuscate = 2;
-                    if (!check_extension($http_result->filename, $obfuscate == 2, $path2, $accept_errors)) {
-                        return ['', '', '', ''];
-                    }
-                } else {
-                    return ['', '', '', ''];
-                }
+            if (!check_extension($http_result->filename, $obfuscate == OBFUSCATE_BIN_SUFFIX, $path2, $accept_errors)) {
+                return ['', '', '', ''];
             }
 
             if (url_is_local($url[0])) {
@@ -539,8 +528,8 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
                 }
             }
             if ($filename === null) {
-                if (($obfuscate != 0) && ($obfuscate != 3)) {
-                    $ext = (($obfuscate == 2) && (!is_image($http_result->filename, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($http_result->filename, $http_result->download_mime_type);
+                if ($obfuscate != OBFUSCATE_NEVER) {
+                    $ext = (($obfuscate == OBFUSCATE_BIN_SUFFIX) && (!is_image($http_result->filename, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($http_result->filename, $http_result->download_mime_type);
                     list($place, , $filename) = find_unique_path($upload_folder, $filename);
                 } else {
                     $filename = shorten_urlencoded_filename($http_result->filename);
@@ -616,7 +605,7 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
                 }
             }
 
-            $_thumb = _get_upload_url($member_id, $thumb_attach_name, $thumb_folder, $thumb_folder_full, CMS_UPLOAD_IMAGE, 0, $accept_errors);
+            $_thumb = _get_upload_url($member_id, $thumb_attach_name, $thumb_folder, $thumb_folder_full, CMS_UPLOAD_IMAGE, OBFUSCATE_NEVER, $accept_errors);
             $thumb = $_thumb[0];
         } elseif (array_key_exists($thumb_specify_name, $_POST)) { // If we specified
             $_thumb = _get_specify_url($member_id, $thumb_specify_name, $thumb_folder, CMS_UPLOAD_IMAGE, $accept_errors);
@@ -641,7 +630,7 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
                 }
             }
 
-            $_thumb = _get_upload_url($member_id, $thumb_attach_name, $thumb_folder, $thumb_folder_full, CMS_UPLOAD_IMAGE, 0, $accept_errors);
+            $_thumb = _get_upload_url($member_id, $thumb_attach_name, $thumb_folder, $thumb_folder_full, CMS_UPLOAD_IMAGE, OBFUSCATE_NEVER, $accept_errors);
             $thumb = $_thumb[0];
         } elseif (array_key_exists($thumb_specify_name, $_POST)) {
             $_thumb = _get_specify_url($member_id, $thumb_specify_name, $thumb_folder, CMS_UPLOAD_IMAGE, $accept_errors);
@@ -857,8 +846,7 @@ function _check_enforcement_of_type($member_id, $file, $enforce_type, $accept_er
  * @param  ID_TEXT $upload_folder The folder name where we will put this upload
  * @param  PATH $upload_folder_full Full folder path
  * @param  integer $enforce_type The type of upload it is (bitmask, from CMS_UPLOAD_* constants)
- * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (0=do not, 1=do, 2=make extension .bin as well)
- * @set 0 1 2
+ * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (a OBFUSCATE_* constant)
  * @param  boolean $accept_errors Whether to accept upload errors
  * @param  ?string $filename Filename to use (null: choose one)
  * @return array A pair: the URL and the filename
@@ -872,15 +860,8 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
 
     $file = shorten_urlencoded_filename($filearrays[$attach_name]['name']);
 
-    if (!check_extension($file, $obfuscate == 2, null, $accept_errors)) {
-        if ($obfuscate == 3) { // We'll try again, with obfuscation to see if this would get through
-            $obfuscate = 2;
-            if (!check_extension($file, $obfuscate == 2, null, $accept_errors)) {
-                return ['', '', '', ''];
-            }
-        } else {
-            return ['', '', '', ''];
-        }
+    if (!check_extension($file, $obfuscate == OBFUSCATE_BIN_SUFFIX, null, $accept_errors)) {
+        return ['', '', '', ''];
     }
 
     if (!_check_enforcement_of_type($member_id, $file, $enforce_type, $accept_errors)) {
@@ -889,12 +870,12 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
 
     if ($filename === null) {
         // If we are not obfuscating then we will need to search for an available filename
-        if (($obfuscate == 0) || ($obfuscate == 3) || (strlen($file) > 150)) {
+        if (($obfuscate == OBFUSCATE_NEVER) || (strlen($file) > 150)) {
             $filename = preg_replace('#\..*\.#', '.', $file);
             list($place, , $filename) = find_unique_path($upload_folder, $filename);
         } else { // A result of some randomness
             $ext = get_file_extension($file);
-            $ext = (($obfuscate == 2) && (!is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($file);
+            $ext = (($obfuscate == OBFUSCATE_BIN_SUFFIX) && (!is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')))) ? 'bin' : get_file_extension($file);
 
             require_code('crypt');
             $filename = get_secure_random_string() . '.' . $ext;
@@ -943,8 +924,7 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
  * @param  PATH $path The disk path of the upload. Should be a temporary path that is deleted by the calling code
  * @param  ID_TEXT $upload_folder The folder name in uploads/ where we would normally put this upload, if we weren't transferring it to the CDN
  * @param  string $filename Filename to upload with. May not be respected, depending on service implementation
- * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (0=do not, 1=do, 2=make extension .bin as well)
- * @set 0 1 2
+ * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (a OBFUSCATE_* constant)
  * @param  boolean $accept_errors Whether to accept upload errors
  * @return ?URLPATH URL on syndicated server (null: did not syndicate)
  */

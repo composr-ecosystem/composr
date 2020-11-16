@@ -288,7 +288,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
         switch ($next_token) {
             case '{':
                 // Open a new level
-                $stack[] = [$current_level_mode, $current_level_data, $current_level_params, null, null, null, count($preprocessable_bits)];
+                $stack[] = [$current_level_mode, $current_level_data, $current_level_params, null, null, null, count($preprocessable_bits), null, null, null];
                 ++$i;
                 $next_token = isset($bits[$i]) ? $bits[$i] : null;
                 if ($next_token === null) {
@@ -353,12 +353,13 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                         warn_exit(do_lang_tempcode('TEMPCODE_TOO_MANY_CLOSES', escape_html($template_name), escape_html(integer_format(1 + _length_so_far($bits, $i)))), false, true);
                     }
                 } else {
-                    list($current_level_mode, $current_level_data, $current_level_params, , , , $num_preprocessable_bits) = array_pop($stack);
+                    list($current_level_mode, $current_level_data, $current_level_params, , , , $num_preprocessable_bits, $opening_tag, $escaped, $no_preprocess) = array_pop($stack);
                 }
 
                 // Handle the level we just closed
                 $_escaped = str_split(preg_replace('#[^:\.`%\*=\;\#\-~\^\|\'&/@+]:?#', '', $_first_param)); // :? is so that the ":" in language string codenames does not get considered an escape
                 $escaped = [];
+                $no_preprocess = false;
                 foreach ($_escaped as $e) {
                     switch ($e) {
                         case '`':
@@ -410,8 +411,10 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
 
                         // This is used as a hint to not preprocess
                         case '-':
+                            $no_preprocess = true;
                             // NB: we're out of ASCII symbols now. We want to avoid []()<>" brackets, whitespace characters, and control codes, and others are used for Tempcode grammar or are valid identifier characters.
                             //  Actually +/$/! can be used at the end (+ and ! is already taken, and $ messes with Tempcode compilation)
+                            break;
                     }
                 }
                 $_opener_params = '';
@@ -433,8 +436,6 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 $first_param = preg_replace('#[`%*=;\#\-~\^|\'!&./@+]+(")?$#', '$1', $_first_param);
                 switch ($past_level_mode) {
                     case PARSE_SYMBOL:
-                        // Pre-processing
-                        $no_preprocess = in_array('-', $_escaped);
                         if (!$no_preprocess) {
                             switch ($first_param) { // These need preprocessing
                                 case '""':
@@ -589,14 +590,14 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                     }
                     if ($eval === 'START') { // START
                         // Open a new directive level
-                        $stack[] = [$current_level_mode, $current_level_data, $current_level_params, $past_level_mode, $past_level_data, $past_level_params, count($preprocessable_bits)];
+                        $stack[] = [$current_level_mode, $current_level_data, $current_level_params, $past_level_mode, $past_level_data, $past_level_params, count($preprocessable_bits), $first_param, $escaped, $no_preprocess];
                         $current_level_data = [];
                         $current_level_params = [];
                         $current_level_mode = PARSE_DIRECTIVE_INNER;
                         if ($opener_params === [['"NO_PREPROCESSING"']]) {
                             array_push($preprocessable_bits_stack, $preprocessable_bits); // So anything inside will end up being thrown away when we pop back to what we had before in $preprocessable_bits
                         }
-                    } elseif ($eval === 'END') { // END
+                    } elseif ($first_param === '"END"') { // END
                         // Test that the top stack does represent a started directive, and close directive level
                         $past_level_data = $current_level_data;
                         if (empty($past_level_data)) {
@@ -610,7 +611,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             }
                             warn_exit(do_lang_tempcode('TEMPCODE_TOO_MANY_CLOSES', escape_html($template_name), escape_html(integer_format(1 + substr_count(substr($data, 0, _length_so_far($bits, $i)), "\n")))), false, true);
                         }
-                        list($current_level_mode, $current_level_data, $current_level_params, $directive_level_mode, $directive_level_data, $directive_level_params, $num_preprocessable_bits) = array_pop($stack);
+                        list($current_level_mode, $current_level_data, $current_level_params, $directive_level_mode, $directive_level_data, $directive_level_params, $num_preprocessable_bits, $opening_tag, $escaped, $no_preprocess) = array_pop($stack);
                         if (!is_array($directive_level_params)) {
                             if ($tolerate_errors) {
                                 continue 2;
@@ -618,7 +619,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             warn_exit(do_lang_tempcode('UNCLOSED_DIRECTIVE_OR_BRACE', escape_html($template_name), escape_html(integer_format(1 + substr_count(substr($data, 0, _length_so_far($bits, $i)), "\n")))), false, true);
                         }
                         $directive_opener_params = array_merge($directive_level_params, [$directive_level_data]);
-                        if (($directive_level_mode !== PARSE_DIRECTIVE) || ($directive_opener_params[0][0] !== '"START"')) {
+                        if (($directive_level_mode !== PARSE_DIRECTIVE) || ($opening_tag !== '"START"')) {
                             if ($tolerate_errors) {
                                 continue 2;
                             }
@@ -834,7 +835,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                 if (!is_string($eval)) {
                                     $eval = '';
                                 }
-                                if (($template_name === $eval) || ($past_level_data === ['""']) && (!isset($FILE_ARRAY))) { // Simple case where no separate binding context of variables needed
+                                if (((!$no_preprocess) && ($template_name === $eval)) || ($past_level_data === ['""']) && (!isset($FILE_ARRAY))) { // Simple case where no separate binding context of variables needed
                                     $_ex = isset($directive_opener_params[1 + 1 + 2]) ? tempcode_compiler_eval('return ' . implode('.', $directive_opener_params[1 + 2]) . ';', $tpl_funcs, [], $cl) : '';
                                     if (!is_string($_ex)) {
                                         $_ex = '';

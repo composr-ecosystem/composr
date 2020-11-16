@@ -668,7 +668,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
     $where_clause .= $privacy_where;
 
     if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-        $where_clause .= get_category_permission_where_clause('catalogue_category', 'cc_id', get_member(), get_permission_where_clause_groups(get_member()));
+        $where_clause .= get_category_permission_where_clause('catalogue_category', 'cc_id', get_member(), get_permission_where_clause_groups(get_member()), 'r');
     }
 
     // If we're listing what IDs to look at, work out SQL for this
@@ -1273,12 +1273,12 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
         }
 
         $all_tables_to_scan = [
-            'catalogue_efv_float' => false,
-            'catalogue_efv_integer' => false,
-            'catalogue_efv_short' => false,
-            'catalogue_efv_short_trans' => multi_lang_content(),
-            'catalogue_efv_long' => true,
-            'catalogue_efv_long_trans' => true,
+            'catalogue_efv_float' => ['must_be_standalone' => false, 'needs_casting' => true],
+            'catalogue_efv_integer' => ['must_be_standalone' => false, 'needs_casting' => true],
+            'catalogue_efv_short' => ['must_be_standalone' => false, 'needs_casting' => false],
+            'catalogue_efv_short_trans' => ['must_be_standalone' => multi_lang_content(), 'needs_casting' => multi_lang_content()],
+            'catalogue_efv_long' => ['must_be_standalone' => true, 'needs_casting' => false],
+            'catalogue_efv_long_trans' => ['must_be_standalone' => true, 'needs_casting' => multi_lang_content()],
         ];
         if ($tables_to_scan === null) {
             $tables_to_scan = array_keys($all_tables_to_scan);
@@ -1286,10 +1286,13 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
 
         if (strpos(get_db_type(), 'mysql') !== false) { // Optimised for MySQL
             $query = '';
-            foreach ($all_tables_to_scan as $table => $must_be_standalone) {
+            foreach ($all_tables_to_scan as $table => $table_details) {
                 if (!in_array($table, $tables_to_scan)) {
                     continue;
                 }
+
+                $must_be_standalone = $table_details['must_be_standalone'];
+                $needs_casting = $table_details['needs_casting'];
 
                 // Involves TEXT columns, which if UNIONised end up as on-disk temporary tables - terrible performance
                 //  So we force them to be queried separately
@@ -1304,7 +1307,8 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
                 if ($query != '') {
                     $query .= ' UNION ';
                 }
-                $query .= 'SELECT f.id AS f_id,' . db_cast('v.cv_value', 'CHAR') . ' AS cv_value';
+                $_cv_value = $needs_casting ? db_cast('v.cv_value', 'CHAR') : 'v.cv_value';
+                $query .= 'SELECT f.id AS f_id,' . $_cv_value . ' AS cv_value';
                 if (!multi_lang_content()) {
                     if (strpos($table, '_trans') !== false) {
                         $query .= ',v.cv_value__text_parsed,v.cv_value__source_user';

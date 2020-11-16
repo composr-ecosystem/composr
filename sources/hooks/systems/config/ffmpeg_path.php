@@ -38,7 +38,7 @@ class Hook_config_ffmpeg_path
             'explanation' => 'CONFIG_OPTION_ffmpeg_path',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 4,
+            'order_in_category_group' => 6,
             'required' => false,
 
             'public' => false,

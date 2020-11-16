@@ -1878,6 +1878,12 @@ function ecv_KEEP($lang, $escaped, $param)
 function keep_symbol($param)
 {
     $value = '';
+
+    global $HAS_NO_KEEP_CONTEXT;
+    if ($HAS_NO_KEEP_CONTEXT) {
+        return $value;
+    }
+
     $get_vars = $_GET;
     if ((!empty($param[1])) && (get_bot_type() === null) && (!isset($get_vars['keep_session']))) {
         $get_vars['keep_session'] = get_session_id();

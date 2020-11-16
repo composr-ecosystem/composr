@@ -1997,10 +1997,10 @@ class Module_cms_galleries_cat extends Standard_crud_module
         require_code('images2');
         $url = post_param_image('image', 'uploads/repimages', null, false);
 
-        $watermark_top_left = get_url('', 'watermark_top_left', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
-        $watermark_top_right = get_url('', 'watermark_top_right', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
-        $watermark_bottom_left = get_url('', 'watermark_bottom_left', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
-        $watermark_bottom_right = get_url('', 'watermark_bottom_right', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
+        $watermark_top_left = get_url('', 'watermark_top_left', 'uploads/watermarks', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
+        $watermark_top_right = get_url('', 'watermark_top_right', 'uploads/watermarks', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
+        $watermark_bottom_left = get_url('', 'watermark_bottom_left', 'uploads/watermarks', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
+        $watermark_bottom_right = get_url('', 'watermark_bottom_right', 'uploads/watermarks', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
 
         $allow_rating = post_param_integer('allow_rating', 0);
         $allow_comments = post_param_integer('allow_comments', 0);
@@ -2047,19 +2047,19 @@ class Module_cms_galleries_cat extends Standard_crud_module
             require_code('images2');
             $url = post_param_image('image', 'uploads/repimages', null, false, true);
 
-            $watermark_top_left = get_url('', 'watermark_top_left', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
+            $watermark_top_left = get_url('', 'watermark_top_left', 'uploads/watermarks', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             if (($watermark_top_left[0] == '') && (post_param_integer('watermark_top_left_unlink', 0) != 1)) {
                 $watermark_top_left[0] = null;
             }
-            $watermark_top_right = get_url('', 'watermark_top_right', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
+            $watermark_top_right = get_url('', 'watermark_top_right', 'uploads/watermarks', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             if (($watermark_top_right[0] == '') && (post_param_integer('watermark_top_right_unlink', 0) != 1)) {
                 $watermark_top_right[0] = null;
             }
-            $watermark_bottom_left = get_url('', 'watermark_bottom_left', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
+            $watermark_bottom_left = get_url('', 'watermark_bottom_left', 'uploads/watermarks', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             if (($watermark_bottom_left[0] == '') && (post_param_integer('watermark_bottom_left_unlink', 0) != 1)) {
                 $watermark_bottom_left[0] = null;
             }
-            $watermark_bottom_right = get_url('', 'watermark_bottom_right', 'uploads/watermarks', 0, CMS_UPLOAD_IMAGE);
+            $watermark_bottom_right = get_url('', 'watermark_bottom_right', 'uploads/watermarks', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             if (($watermark_bottom_right[0] == '') && (post_param_integer('watermark_bottom_right_unlink', 0) != 1)) {
                 $watermark_bottom_right[0] = null;
             }

@@ -894,13 +894,13 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
         $submitter
     );
 
-    if ($topic_id !== null) {
-        if (!is_integer($forum)) {
-            $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum);
-        } else {
-            $forum_id = intval($forum);
-        }
+    if (!is_integer($forum)) {
+        $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum);
+    } else {
+        $forum_id = intval($forum);
+    }
 
+    if ($topic_id !== null) {
         if ((get_forum_type() == 'cns') && ($GLOBALS['LAST_POST_ID'] !== null)) {
             $extra_review_ratings = [];
             global $REVIEWS_STRUCTURE;
@@ -994,7 +994,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
         }
     }
 
-    if (($post != '') && ($forum_tie) && ($show_success_message)) {
+    if (($post != '') && ($forum_tie) && ($show_success_message) && ((get_forum_type() != 'cns') || (has_category_access(get_member(), 'forums', strval($forum_id))))) {
         require_code('site2');
         $topic_url = $GLOBALS['FORUM_DRIVER']->topic_url($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum, $real_feedback_type . '_' . $content_id, do_lang('COMMENT')), $forum, true);
         assign_refresh($topic_url, 0.0); // redirect_screen not used because there is already a legitimate output screen happening

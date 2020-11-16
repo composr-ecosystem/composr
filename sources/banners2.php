@@ -308,7 +308,7 @@ function check_banner($title_text = '', $direct_code = '', $b_type = '', $b_type
     // Check according to banner type
     if ($banner_type_row['t_is_textual'] == 0) {
         if ($direct_code == '') {
-            $urls = get_url($url_param_name, $file_param_name, 'uploads/banners', 0, $is_upload ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_ANYTHING);
+            $urls = get_url($url_param_name, $file_param_name, 'uploads/banners', OBFUSCATE_NEVER, $is_upload ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_ANYTHING);
             $url = fixup_protocolless_urls($urls[0]);
             if ($url == '') {
                 warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD_BANNERS'));

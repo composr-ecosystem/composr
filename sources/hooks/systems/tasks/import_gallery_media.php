@@ -71,7 +71,7 @@ class Hook_task_import_gallery_media
 
                 // Post-process
                 require_code('uploads');
-                $test = handle_upload_post_processing(is_image($path, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous')) ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_VIDEO, $new_path, 'uploads/galleries', $filename, 0);
+                $test = handle_upload_post_processing(is_image($path, IMAGE_CRITERIA_WEBSAFE, has_privilege($member_id, 'comcode_dangerous')) ? CMS_UPLOAD_IMAGE : CMS_UPLOAD_VIDEO, $new_path, 'uploads/galleries', $filename, OBFUSCATE_NEVER);
                 if ($test !== null) {
                     unlink($new_path);
                     sync_file($new_path);

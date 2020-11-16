@@ -127,7 +127,7 @@ class Hook_search_download_categories extends FieldsSearchHook
         $this->_get_search_parameterisation_advanced_for_content_type('_download_category', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
-        $rows = get_search_rows('downloads_category', 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*', $trans_fields, $nontrans_fields, 'downloads', 'id');
+        $rows = get_search_rows('downloads_category', 'id', $search_query, $content_where, $where_clause, $only_search_meta, $only_titles, $max, $start, $remapped_orderer, $direction, $table, 'r.*', $trans_fields, $nontrans_fields, 'downloads', 'r.id');
 
         $out = [];
         foreach ($rows as $i => $row) {

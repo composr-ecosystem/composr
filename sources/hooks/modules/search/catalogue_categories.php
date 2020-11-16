@@ -113,11 +113,11 @@ class Hook_search_catalogue_categories extends FieldsSearchHook
 
         // Calculate and perform query
         $g_or = get_permission_where_clause_groups(get_member());
-        if ($g_or != '') {
+        if ($g_or !== null) {
             if (get_value('disable_cat_cat_perms') !== '1') {
-                $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')';
+                $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z WHERE ' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')';
             }
-            $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON ' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
+            $where_clause .= ' AND EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p WHERE ' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')';
         }
 
         $trans_fields = ['r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'];

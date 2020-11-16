@@ -43,7 +43,7 @@ class Hook_preview_calendar_type
     {
         require_code('uploads');
 
-        $urls = get_url('', 'image', 'uploads/auto_thumbs', 0, CMS_UPLOAD_IMAGE, false);
+        $urls = get_url('', 'image', 'uploads/auto_thumbs', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE, false);
         if ($urls[0] == '') {
             if (post_param_integer('id', null) !== null) {
                 $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', ['t_logo'], ['id' => post_param_integer('id')], '', 1);

@@ -626,7 +626,7 @@ class Module_cms_downloads extends Standard_crud_module
 
         $original_filename = '';
         $thumb_url = null;
-        $url = post_param_multi_source_upload('file', 'uploads/downloads', true, false, $original_filename, $thumb_url, CMS_UPLOAD_ANYTHING, $copy_to_server == 1);
+        $url = post_param_multi_source_upload('file', 'uploads/downloads', true, false, $original_filename, $thumb_url, CMS_UPLOAD_ANYTHING, $copy_to_server == 1, OBFUSCATE_BIN_SUFFIX);
 
         $metadata = actual_metadata_get_fields('download', null);
         actual_metadata_get_fields__special($metadata, 'num_downloads', 0);
@@ -639,7 +639,7 @@ class Module_cms_downloads extends Standard_crud_module
             require_code('permissions2');
             set_category_permissions_from_environment('galleries', 'download_' . strval($id));
 
-            $img_urls = get_url('', 'img_file', 'uploads/galleries', 0, CMS_UPLOAD_IMAGE);
+            $img_urls = get_url('', 'img_file', 'uploads/galleries', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             if ($img_urls[0] != '') {
                 require_code('galleries2');
                 add_image('', 'download_' . strval($id), '', $img_urls[0], 1, 0, 0, 0, '');
@@ -706,7 +706,7 @@ class Module_cms_downloads extends Standard_crud_module
             }
             $filename = '';
             $thumb_url = null;
-            $url = post_param_multi_source_upload('file', 'uploads/downloads', true, true, $filename, $thumb_url, CMS_UPLOAD_ANYTHING, $copy_to_server == 1);
+            $url = post_param_multi_source_upload('file', 'uploads/downloads', true, true, $filename, $thumb_url, CMS_UPLOAD_ANYTHING, $copy_to_server == 1, OBFUSCATE_BIN_SUFFIX);
         } else {
             $url = STRING_MAGIC_NULL;
         }
@@ -717,7 +717,7 @@ class Module_cms_downloads extends Standard_crud_module
         $additional_details = post_param_string('additional_details', STRING_MAGIC_NULL);
         $default_pic = post_param_integer('default_pic', fractional_edit() ? INTEGER_MAGIC_NULL : 1);
         if (addon_installed('galleries')) {
-            $img_urls = get_url('', 'img_file', 'uploads/galleries', 0, CMS_UPLOAD_IMAGE);
+            $img_urls = get_url('', 'img_file', 'uploads/galleries', OBFUSCATE_NEVER, CMS_UPLOAD_IMAGE);
             if ($img_urls[0] != '') {
                 require_code('galleries2');
                 add_image('', 'download_' . strval($id), '', $img_urls[0], 1, 0, 0, 0, '');

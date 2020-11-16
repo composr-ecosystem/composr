@@ -2784,9 +2784,10 @@ function sort_search_results($hook_results, $results, $direction)
  *
  * @param  string $_temp_summary What was searched
  * @param  array $words_searched List of words searched
+ * @param  ?integer $cnt Count of matched words (null: pass by reference)
  * @return string Highlighted portion
  */
-function generate_text_summary($_temp_summary, $words_searched)
+function generate_text_summary($_temp_summary, $words_searched, &$cnt = null)
 {
     require_code('xhtml');
 
@@ -2803,11 +2804,13 @@ function generate_text_summary($_temp_summary, $words_searched)
             continue;
         }
 
+        $all_upper = (cms_mb_strtoupper($content_bit) == $content_bit);
+
         $last_pos = 0;
         $content_bit_pos = 0;
         do {
             $content_bit_matched = $content_bit;
-            if (cms_mb_strtoupper($content_bit) == $content_bit) { // all upper case so don't want case insensitive
+            if ($all_upper) { // all upper case so don't want case insensitive
                 $content_bit_pos = strpos($_temp_summary, $content_bit, $last_pos);
             } else {
                 $content_bit_pos = stripos($_temp_summary_lower, $content_bit, $last_pos);
@@ -2909,6 +2912,8 @@ function generate_text_summary($_temp_summary, $words_searched)
             }
         }
     }
+
+    $cnt = count($all_occurrences);
 
     return $summary;
 }

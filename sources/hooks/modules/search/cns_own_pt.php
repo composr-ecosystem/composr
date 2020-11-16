@@ -233,6 +233,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
             if (!is_guest()) {
                 $where_clause .= ' OR r.p_intended_solely_for=' . strval(get_member()) . ' OR r.p_poster=' . strval(get_member());
             }
+            $where_clause .= ')';
             $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
             if ($sq === null) {
                 return [];

@@ -197,7 +197,7 @@ You have the following template variables available to you (beyond all the defau
  - [tt]name[/tt], The full name of the subscriber (either a combination of forename and surname, the members username, or the [tt]NEWSLETTER_SUBSCRIBER_DEFAULT_NAME[/tt] language string -- depending on what data is available on the reader)
  - [tt]member_id[/tt], The member ID of the subscriber, or blank if there is no discerned member ID
  - [tt]email_address[/tt], The e-mail address of the subscriber
- - [tt]sendid[/tt], A special code identifying the subscriber (starts with [tt]m[/tt] if it is a member, or [tt]n[/tt] if it is a newsletter subscriber)
+ - [tt]send_id[/tt], A special code identifying the subscriber (starts with [tt]m[/tt] if it is a member, or [tt]n[/tt] if it is a newsletter subscriber)
  - [tt]unsub_url[/tt], A URL to unsubscribe from (one-click unsubscribe for newsletter recipients, a link to account settings for other recipients). If you are using [tt]unsub_url[/tt] in a Comcode newsletter it is very important not to insert it plainly, as Composr will look at the link for a link caption and incidentally click that link for every user. Instead use a Comcode [tt]url[/tt] tag and hence tell Composr what caption to give the link.
 
 This bit may confuse you: [tt]{+START,IF_NON_EMPTY,{forename}}{forename}{+END}{+START,IF_EMPTY,{forename}}{name}{+END}[/tt]

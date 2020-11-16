@@ -143,7 +143,7 @@ PHP;
         }
 
         if ((!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ($check_perms)) {
-            $q_filter .= get_category_permission_where_clause('news', 'news_category', get_member(), get_permission_where_clause_groups(get_member()));
+            $q_filter .= get_category_permission_where_clause('news', 'news_category', get_member(), get_permission_where_clause_groups(get_member()), 'r');
         }
 
         $query = 'SELECT r.* FROM ' . get_table_prefix() . 'news r' . $join . ' WHERE ' . $select_sql . $q_filter . ' AND validated=1 ORDER BY date_and_time DESC';

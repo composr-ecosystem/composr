@@ -38,7 +38,7 @@ class Hook_config_default_video_width
             'explanation' => 'CONFIG_OPTION_default_video_width',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 1,
+            'order_in_category_group' => 3,
             'required' => true,
 
             'public' => false,

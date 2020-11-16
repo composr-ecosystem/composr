@@ -781,7 +781,7 @@ class Module_admin_cns_members
         foreach ($headings as $field_label => $field_name) {
             $fields_to_order_by->attach(form_input_list_entry($field_label, $field_name === 'id'));
         }
-        $fields->attach(form_input_multi_list(do_lang_tempcode('ORDER'), do_lang_tempcode('MEMBER_EXPORT_ORDER'), 'order_by', $fields_to_order_by, null, 10, true));
+        $fields->attach(form_input_list(do_lang_tempcode('ORDER'), do_lang_tempcode('MEMBER_EXPORT_ORDER'), 'order_by', $fields_to_order_by, null, false, true));
 
         // Usergroups
         $groups = cns_create_selection_list_usergroups();

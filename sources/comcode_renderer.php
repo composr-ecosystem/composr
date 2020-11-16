@@ -2193,7 +2193,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     if (((empty($attributes['type'])) || ($attributes['type'] == 'image_websafe')) && (array_key_exists('file' . $_id, $_FILES)) && (is_image($_FILES['file' . $_id]['name'], IMAGE_CRITERIA_GD_READ | IMAGE_CRITERIA_GD_WRITE))) {
                         $enforce_type = CMS_UPLOAD_IMAGE; // Images cleanup pipeline
                     }
-                    $urls = get_url('', 'file' . $_id, 'uploads/attachments', 2, $enforce_type, ((!array_key_exists('thumb', $attributes)) || ($attributes['thumb'] != '0')) && ($attributes['thumb_url'] == ''), '', '', true, true, true, true, $source_member);
+                    $urls = get_url('', 'file' . $_id, 'uploads/attachments', OBFUSCATE_BIN_SUFFIX, $enforce_type, ((!array_key_exists('thumb', $attributes)) || ($attributes['thumb'] != '0')) && ($attributes['thumb_url'] == ''), '', '', true, true, true, true, $source_member);
                     if ($urls[0] == '') {
                         //warn_exit(do_lang_tempcode('ERROR_UPLOADING'));  Can't do this, because this might not be post-calculated if something went wrong once
                         return new Tempcode();

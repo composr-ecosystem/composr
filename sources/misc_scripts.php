@@ -343,6 +343,20 @@ function cron_bridge_script($caller)
 
     // Hook details
     $cron_hooks = find_all_hook_obs('systems', 'cron', 'Hook_cron_');
+    ksort($cron_hooks);
+    if (array_key_exists('tasks', $cron_hooks)) {
+        $cron_hooks = ['tasks' => $cron_hooks['tasks']] + $cron_hooks;
+    }
+    if (array_key_exists('mail_queue', $cron_hooks)) {
+        $x = $cron_hooks['mail_queue'];
+        unset($cron_hooks['mail_queue']);
+        $cron_hooks = $cron_hooks + ['mail_queue' => $x];
+    }
+    if (array_key_exists('newsletter_drip_send', $cron_hooks)) {
+        $x = $cron_hooks['newsletter_drip_send'];
+        unset($cron_hooks['newsletter_drip_send']);
+        $cron_hooks = $cron_hooks + ['newsletter_drip_send' => $x];
+    }
     $cron_hooks_info = [];
 
     // Load progression data
