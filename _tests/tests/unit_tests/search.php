@@ -69,6 +69,8 @@ class search_test_set extends cms_test_case
 
     public function testHttpGuestFullSearch()
     {
+        $this->establish_admin_session();
+
         require_lang('search');
 
         $url_parts = array('page' => 'search', 'type' => 'results', 'content' => 'qwertyuiopxxx');
