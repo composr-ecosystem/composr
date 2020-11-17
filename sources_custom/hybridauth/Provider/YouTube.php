@@ -74,7 +74,7 @@ class YouTube extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    protected $apiDocumentation = 'https://developers.google.com/identity/protocols/OAuth2';
+    protected $apiDocumentation = 'https://developers.google.com/youtube/v3/docs';
 
     /**
      * {@inheritdoc}
