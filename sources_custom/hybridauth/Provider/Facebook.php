@@ -37,14 +37,14 @@ use Hybridauth\Atom\Filter;
  * Example:
  *
  *   $config = [
- *       'callback'                => Hybridauth\HttpClient\Util::getCurrentUrl(),
- *       'keys'                    => [ 'id' => '', 'secret' => '' ],
- *       'scope'                   => 'email, user_posts, pages_manage_posts, pages_read_engagement,
- *                                     pages_show_list, manage_pages, publish_pages, user_videos',
+ *       'callback' => Hybridauth\HttpClient\Util::getCurrentUrl(),
+ *       'keys' => [ 'id' => '', 'secret' => '' ],
+ *       'scope => 'email, user_posts, pages_manage_posts, pages_read_engagement,
+ *                  pages_show_list, manage_pages, publish_pages, user_videos',
  *       'exchange_by_expiry_days' => 45, // null for no token exchange
  *   ];
  *
- *   $adapter = new Hybridauth\Provider\Facebook( $config );
+ *   $adapter = new Hybridauth\Provider\Facebook($config);
  *
  *   try {
  *       $adapter->authenticate();
@@ -52,8 +52,7 @@ use Hybridauth\Atom\Filter;
  *       $userProfile = $adapter->getUserProfile();
  *       $tokens = $adapter->getAccessToken();
  *       $response = $adapter->setUserStatus("Hybridauth test message..");
- *   }
- *   catch( Exception $e ){
+ *   } catch (\Exception $e) {
  *       echo $e->getMessage() ;
  *   }
  */
@@ -143,9 +142,9 @@ class Facebook extends OAuth2 implements AtomInterface
     public function exchangeAccessToken()
     {
         $exchangeTokenParameters = [
-            'grant_type'        => 'fb_exchange_token',
-            'client_id'         => $this->clientId,
-            'client_secret'     => $this->clientSecret,
+            'grant_type' => 'fb_exchange_token',
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
             'fb_exchange_token' => $this->getStoredData('access_token'),
         ];
 
@@ -701,7 +700,7 @@ class Facebook extends OAuth2 implements AtomInterface
      *
      * @param object $item Data from Facebook
      * @param \Hybridauth\Atom\Category $category Category we're currently operating in
-     * @param boolean $isPersonal Whether it is from a personal feed
+     * @param bool $isPersonal Whether it is from a personal feed
      *
      * @return \Hybridauth\Atom\Atom
      * @throws \Exception

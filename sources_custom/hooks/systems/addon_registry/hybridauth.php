@@ -603,6 +603,7 @@ And also Instagram...
             'sources_custom/hybridauth/Provider/Vkontakte.php',
             'sources_custom/hybridauth/Provider/Blizzard.php',
             'sources_custom/hybridauth/Provider/Apple.php',
+            'sources_custom/hybridauth/Provider/Medium.php',
             'sources_custom/hybridauth/Thirdparty/OpenID/LightOpenID.php',
             'sources_custom/hybridauth/Thirdparty/OpenID/README.md',
             'sources_custom/hybridauth/Thirdparty/OAuth/OAuthSignatureMethodHMACSHA1.php',
