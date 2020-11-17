@@ -67,11 +67,11 @@ class Hook_commandr_command_obfuscate_directory
             require_code('files2');
             $files = get_directory_contents($root_path);
             foreach ($files as $path) {
-                $regexp_ext = 'bin|dat';
+                $regexp_ext = 'bin';
                 if ($ext_too) {
                     $regexp_ext .= '|\w+';
                 }
-                if (preg_match('#^[\da-f]{14}.\d{8}\.(' . $regexp_ext . ')$#', basename($path)) != 0) { // LEGACY: .dat
+                if (preg_match('#^[\da-f]{14}.\d{8}\.(' . $regexp_ext . ')$#', basename($path)) != 0) {
                     continue; // Already obfuscated
                 }
 
