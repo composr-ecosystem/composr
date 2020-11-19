@@ -66,7 +66,7 @@ class Facebook extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    protected $apiBaseUrl = 'https://graph.facebook.com/v6.0/';
+    protected $apiBaseUrl = 'https://graph.facebook.com/v8.0/';
 
     /**
      * {@inheritdoc}
@@ -161,15 +161,21 @@ class Facebook extends OAuth2 implements AtomInterface
             'name',
             'first_name',
             'last_name',
-            'link',
             'website',
-            'gender',
             'locale',
             'about',
             'email',
             'hometown',
             'birthday',
         ];
+
+        if (strpos($this->scope, 'user_link') !== false) {
+            $fields[] = 'link';
+        }
+
+        if (strpos($this->scope, 'user_gender') !== false) {
+            $fields[] = 'gender';
+        }
 
         // Note that en_US is needed for gender fields to match convention.
         $locale = $this->config->get('locale') ?: 'en_US';
