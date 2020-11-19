@@ -88,16 +88,6 @@ class Instagram extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function apiRequest($url, $method = 'GET', $parameters = [], $headers = [], $multipart = false)
-    {
-        $this->maintainToken();
-
-        return parent::apiRequest($url, $method, $parameters, $headers, $multipart);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function maintainToken()
     {
         if (!$this->isConnected()) {
@@ -394,8 +384,9 @@ class Instagram extends OAuth2 implements AtomInterface
             $urlUsernames = '<a href="http://instagram.com/$1">@$1</a>';
             $urlHashtags = '<a href="https://instagram.com/explore/tags/$1/">#$1</a>';
             $detectUrls = true;
+            $text = $item->caption;
             $text = AtomHelper::plainTextToHtml($text);
-            list($text, $repped) = AtomHelper::processCodes($item->caption, $urlUsernames, $urlHashtags, $detectUrls);
+            list($text, $repped) = AtomHelper::processCodes($text, $urlUsernames, $urlHashtags, $detectUrls);
             $atom->content = $text;
         }
 

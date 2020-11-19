@@ -66,7 +66,7 @@ class AtomHelper
             $text = preg_replace('/\s#(\w+)/', ' ' . $urlHashtags, $text); // hashtags
         }
         if ($detectUrls) {
-            $urlRegexp = '#([^"\'])(https?://([\w\-\.]+)+(/([\w/\-_\.]*(\?[^\s<>.;!?,]+)?(\#\S+)?)?)?)#';
+            $urlRegexp = '#([^"\'])(https?://([\w\-\.]+)+(/([\w/\-_\.]*(\?[^\s<>.!?,]+)?(\#\S+)?)?)?)#';
             $text = preg_replace($urlRegexp, '$1<a href="$2">$2</a>', $text); // links
         }
         return [$text, $text != $textIn];

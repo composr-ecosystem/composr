@@ -32,7 +32,7 @@ class Block_main_hybridauth_admin_atoms
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = ['param', 'max', 'category_filter', 'require_images', 'require_videos', 'require_audios', 'require_binaries', 'include_contributed_content', 'include_private'];
+        $info['parameters'] = ['param', 'max', 'category_filter', 'require_images', 'require_videos', 'require_audios', 'require_binaries', 'include_contributed_content', 'include_private', 'shuffle'];
         return $info;
     }
 
@@ -56,6 +56,7 @@ class Block_main_hybridauth_admin_atoms
             array_key_exists('require_binaries', $map) ? ($map['require_binaries'] == '1') : false,
             array_key_exists('include_contributed_content', $map) ? ($map['include_contributed_content'] == '1') : false,
             array_key_exists('include_private', $map) ? ($map['include_private'] == '1') : false,
+            array_key_exists('shuffle', $map) ? ($map['shuffle'] == '1') : false,
         ]
 PHP;
         $info['ttl'] = 30;
@@ -109,6 +110,7 @@ PHP;
         $require_binaries = array_key_exists('require_binaries', $map) ? ($map['require_binaries'] == '1') : false;
         $include_contributed_content = array_key_exists('include_contributed_content', $map) ? ($map['include_contributed_content'] == '1') : false;
         $include_private = array_key_exists('include_private', $map) ? ($map['include_private'] == '1') : false;
+        $shuffle = array_key_exists('shuffle', $map) ? ($map['shuffle'] == '1') : false;
 
         $filter = new Hybridauth\Atom\Filter();
         $filter->categoryFilter = $category_filter;
@@ -148,6 +150,10 @@ PHP;
 
         try {
             list($atoms, $has_results) = $adapter->getAtoms($filter);
+
+            if ($shuffle) {
+                shuffle($atoms);
+            }
 
             foreach ($atoms as $atom) {
                 if (count($feed) >= $max) {

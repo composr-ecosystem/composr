@@ -105,16 +105,6 @@ class Facebook extends OAuth2 implements AtomInterface
     /**
      * {@inheritdoc}
      */
-    public function apiRequest($url, $method = 'GET', $parameters = [], $headers = [], $multipart = false)
-    {
-        $this->maintainToken();
-
-        return parent::apiRequest($url, $method, $parameters, $headers, $multipart);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function maintainToken()
     {
         if (!$this->isConnected()) {
@@ -827,6 +817,9 @@ class Facebook extends OAuth2 implements AtomInterface
         switch ($attachment->type) {
             case 'photo':
             case 'photo_inline':
+                if (!empty($attachment->media->image->src)) {
+                    $enclosure->url = $attachment->media->image->src;
+                }
                 $enclosure->type = Enclosure::ENCLOSURE_IMAGE;
                 break;
 
