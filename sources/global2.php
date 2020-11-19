@@ -427,7 +427,9 @@ function init__global2()
         $locale_sections = explode(';', $locale_str);
         foreach ($locale_sections as $locale_section) {
             $parts = explode(':', $locale_section, 2);
-            setlocale(@constant($parts[0]), explode(',', $parts[1]));
+            if (count($parts) == 2) {
+                setlocale(@constant($parts[0]), explode(',', $parts[1]));
+            }
         }
     }
 
