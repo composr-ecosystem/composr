@@ -302,7 +302,7 @@ The settings are configured in the same way as member login. However, if you nee
     <Facebook>
         <hybridauth-config scope="email,user_gender,user_birthday,user_location" />
         <admin>
-            <hybridauth-config scope="email,user_posts,pages_manage_posts,pages_show_list,manage_pages,publish_pages,user_videos,pages_read_engagement" default_page_id="111785054060070" />
+            <hybridauth-config scope="email,user_posts,pages_show_list,pages_manage_posts,pages_read_user_content,user_videos,pages_read_engagement" default_page_id="111785054060070" />
         </admin>
     </Facebook>
     ...
@@ -395,25 +395,25 @@ This works in two possible ways:
  - Loading atoms via URLs, and displaying in a media box
  - Doing oEmbed through the authenticated API (supported for Instagram and Facebook, as oEmbed needs API keys on these providers)
 
-For Facebook oEmbed, some extra setting are needed, from some values that will be available from the main app...
+For Facebook oEmbed, an extra setting is needed, from some values that will be available from the main app...
 [code="XML"]
 <hybridauth>
     ...
     <Facebook>
-        <keys-config app_id="..." client_token="..." />
+        <keys-config client_token="..." />
     </Facebook>
     ...
 </hybridauth>
 [/code]
 The main oAuth keys are not shown here as usually this will be done in the Composr configuration UI for Facebook.
-The app ID is clearly advertised on the Facebook developer site. The client token is under Settings > Advanced.
+The client token is under Settings > Advanced.
 
 And also Instagram...
 [code="XML"]
 <hybridauth>
     ...
     <Instagram>
-        <keys-config id="..." secret="..." app_id="..." client_token="..." />
+        <keys-config id="..." secret="..." client_token="..." />
     </Instagram>
     ...
 </hybridauth>

@@ -32,7 +32,7 @@ class Block_main_hybridauth_admin_atoms
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = ['provider', 'max', 'category_filter', 'require_images', 'require_videos', 'require_audios', 'require_binaries', 'include_contributed_content', 'include_private'];
+        $info['parameters'] = ['param', 'max', 'category_filter', 'require_images', 'require_videos', 'require_audios', 'require_binaries', 'include_contributed_content', 'include_private'];
         return $info;
     }
 
@@ -46,7 +46,7 @@ class Block_main_hybridauth_admin_atoms
         $info = [];
         $info['cache_on'] = <<<'PHP'
         [
-            array_key_exists('provider', $map) ? $map['provider'] : '',
+            array_key_exists('param', $map) ? $map['param'] : '',
             array_key_exists('max', $map) ? intval($map['max']) : 5,
 
             array_key_exists('category_filter', $map) ? $map['category_filter'] : '',
@@ -93,11 +93,11 @@ PHP;
 
         list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
 
-        if (empty($map['provider'])) {
-            return do_template('RED_ALERT', ['TEXT' => '\'provider\' parameter is needed.']);
+        if (empty($map['param'])) {
+            return do_template('RED_ALERT', ['TEXT' => '\'param\' parameter is needed.']);
         }
 
-        $provider = $map['provider'];
+        $provider = $map['param'];
         $max = empty($map['max']) ? 5 : intval($map['max']);
         $category_filter = array_key_exists('category_filter', $map) ? $map['category_filter'] : '';
         if ($category_filter == '') {
@@ -132,6 +132,7 @@ PHP;
         $filter->includeContributedContent = $include_contributed_content;
         $filter->includePrivate = $include_private;
         $filter->limit = $max;
+        $filter->deepProbe = true;
 
         $adapter = $hybridauth->getAdapter($provider);
 

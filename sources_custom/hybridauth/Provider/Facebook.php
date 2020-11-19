@@ -544,8 +544,15 @@ class Facebook extends OAuth2 implements AtomInterface
         if ($filter->categoryFilter !== null) {
             $category = $categories[$filter->categoryFilter];
         } else {
-            $pageId = $this->config->get('default_page_id') ?: null;
-            $category = $categories[$pageId];
+            $pageId = $this->config->get('default_page_id') ?: '-';
+
+            if (isset($categories[$pageId])) {
+                $category = $categories[$pageId];
+            } else {
+                $category = new Category();
+                $category->identifier = $pageId;
+                $category->label = $pageId; // Don't know the correct one
+            }
         }
         return $category;
     }
@@ -863,7 +870,7 @@ class Facebook extends OAuth2 implements AtomInterface
             return null;
         }
 
-        $appId = $this->config->filter('keys')->get('app_id') ?: null;
+        $appId = $this->config->filter('keys')->get('id') ?: null;
         $clientToken = $this->config->filter('keys')->get('client_token') ?: null;
         if (($appId === null) || ($clientToken === null)) {
             return;

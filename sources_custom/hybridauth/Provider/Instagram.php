@@ -394,8 +394,9 @@ class Instagram extends OAuth2 implements AtomInterface
             $urlUsernames = '<a href="http://instagram.com/$1">@$1</a>';
             $urlHashtags = '<a href="https://instagram.com/explore/tags/$1/">#$1</a>';
             $detectUrls = true;
+            $text = AtomHelper::plainTextToHtml($text);
             list($text, $repped) = AtomHelper::processCodes($item->caption, $urlUsernames, $urlHashtags, $detectUrls);
-            $atom->content = AtomHelper::plainTextToHtml($text);
+            $atom->content = $text;
         }
 
         $atom->author = new Author();
@@ -488,7 +489,7 @@ class Instagram extends OAuth2 implements AtomInterface
             return null;
         }
 
-        $appId = $this->config->filter('keys')->get('app_id') ?: null;
+        $appId = $this->config->filter('keys')->get('id') ?: null;
         $clientToken = $this->config->filter('keys')->get('client_token') ?: null;
         if (($appId === null) || ($clientToken === null)) {
             return;

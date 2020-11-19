@@ -59,6 +59,10 @@ list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
 
 $provider = get_param_string('provider', null);
 if ($provider !== null) {
+    if (!has_page_access(get_member(), 'admin_oauth', 'adminzone')) {
+        access_denied('PAGE_ACCESS');
+    }
+
     if (get_param_integer('hybridauth_blank_state', 0) == 1) {
         $admin_storage->deleteMatch($provider);
     }
@@ -81,8 +85,10 @@ try {
     $success = $adapter->isConnected();
 
     $message = do_lang_tempcode($success ? 'HYBRIDAUTH_ADMIN_SUCCESS' : 'HYBRIDAUTH_ADMIN_FAILURE', escape_html($provider));
+
+    $admin_storage->delete($provider);
 } catch (Hybridauth\Exception\AuthorizationDeniedException $e) {
-    $message = do_lang_tempcode('HYBRIDAUTH_ADMIN_CANCELLED');
+    $message = do_lang_tempcode('HYBRIDAUTH_ADMIN_CANCELLED', escape_html($provider));
 } catch (Exception $e) {
     warn_exit($e->getMessage());
 }
