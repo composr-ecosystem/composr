@@ -527,7 +527,7 @@ function find_search_suggestions($request, $search_type = '')
                         $q .= ' GROUP BY text_original';
                     } else {
                         $q = 'SELECT ' . $cma_info['title_field'] . ' AS search FROM ' . get_table_prefix() . $cma_info['table'];
-                        if (db_has_full_text($GLOBALS['SITE_DB']->connection_read)) {
+                        if (db_has_full_text($GLOBALS['SITE_DB']->connection_read, $cma_info['table'], $cma_info['title_field'])) {
                             $q .= ' WHERE ' . preg_replace('#\?#', $cma_info['title_field'], db_full_text_assemble(str_replace('?', '', $request), false));
                         } else {
                             $q .= ' WHERE ' . $cma_info['title_field'] . ' LIKE \'' . db_encode_like($request . '%') . '\'';
