@@ -140,7 +140,7 @@ In the screenshots on the right I have shown a quirky example where I am embeddi
 [media width="150" description="Choosing an IOTD" float="right"]data_custom/images/docs/tut_featured/featured_iotd_choose.png[/media]
 [media width="150" description="Adding an IOTD" float="right"]data_custom/images/docs/tut_featured/featured_iotd_add.png[/media]
 [media width="150" description="The IOTD block displays like this" float="right"]data_custom/images/docs/tut_featured/featured_iotd_view.png[/media]
-{!iotds:DOC_IOTDS}
+Images of the day ('IOTD') are images which are routinely rotated on your site. These are not images from the gallery or attachment systems - they are stored and managed separately.\n\nIOTDs are not on your front page by default, you need to add the [tt]main_iotd[/tt] block yourself.
 
 IOTDs are added from:
 Content > Images of the day > Add image of the day
