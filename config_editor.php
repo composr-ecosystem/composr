@@ -28,7 +28,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 @chdir($FILE_BASE);
 
-if (@get_magic_quotes_gpc()) {
+if ((function_exists('get_magic_quotes_gpc')) && (@get_magic_quotes_gpc())) {
     foreach ($_POST as $key => $val) {
         if (is_array($val)) {
             $_POST[$key] = array_map('stripslashes', $val);

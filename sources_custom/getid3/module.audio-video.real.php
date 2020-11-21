@@ -1,10 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.audio-video.real.php                                 //
@@ -13,69 +14,76 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
+if (!defined('GETID3_INCLUDEPATH')) { // prevent path-exposing attacks that access modules directly on public webservers
+	exit;
+}
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, true);
 
-class getid3_real
+class getid3_real extends getid3_handler
 {
+	/**
+	 * @return bool
+	 */
+	public function Analyze() {
+		$info = &$this->getid3->info;
 
-	function __construct(&$fd, &$ThisFileInfo) {
-		$ThisFileInfo['fileformat']       = 'real';
-		$ThisFileInfo['bitrate']          = 0;
-		$ThisFileInfo['playtime_seconds'] = 0;
+		$info['fileformat']       = 'real';
+		$info['bitrate']          = 0;
+		$info['playtime_seconds'] = 0;
 
-		fseek($fd, $ThisFileInfo['avdataoffset'], SEEK_SET);
+		$this->fseek($info['avdataoffset']);
 		$ChunkCounter = 0;
-		while (ftell($fd) < $ThisFileInfo['avdataend']) {
-			$ChunkData  = fread($fd, 8);
+		while ($this->ftell() < $info['avdataend']) {
+			$ChunkData  = $this->fread(8);
 			$ChunkName  =                           substr($ChunkData, 0, 4);
 			$ChunkSize  = getid3_lib::BigEndian2Int(substr($ChunkData, 4, 4));
 
 			if ($ChunkName == '.ra'."\xFD") {
-				$ChunkData .= fread($fd, $ChunkSize - 8);
-				if ($this->ParseOldRAheader(substr($ChunkData, 0, 128), $ThisFileInfo['real']['old_ra_header'])) {
-					$ThisFileInfo['audio']['dataformat']      = 'real';
-					$ThisFileInfo['audio']['lossless']        = false;
-					$ThisFileInfo['audio']['sample_rate']     = $ThisFileInfo['real']['old_ra_header']['sample_rate'];
-					$ThisFileInfo['audio']['bits_per_sample'] = $ThisFileInfo['real']['old_ra_header']['bits_per_sample'];
-					$ThisFileInfo['audio']['channels']        = $ThisFileInfo['real']['old_ra_header']['channels'];
+				$ChunkData .= $this->fread($ChunkSize - 8);
+				if ($this->ParseOldRAheader(substr($ChunkData, 0, 128), $info['real']['old_ra_header'])) {
+					$info['audio']['dataformat']      = 'real';
+					$info['audio']['lossless']        = false;
+					$info['audio']['sample_rate']     = $info['real']['old_ra_header']['sample_rate'];
+					$info['audio']['bits_per_sample'] = $info['real']['old_ra_header']['bits_per_sample'];
+					$info['audio']['channels']        = $info['real']['old_ra_header']['channels'];
 
-					$ThisFileInfo['playtime_seconds']         = 60 * ($ThisFileInfo['real']['old_ra_header']['audio_bytes'] / $ThisFileInfo['real']['old_ra_header']['bytes_per_minute']);
-					$ThisFileInfo['audio']['bitrate']         =  8 * ($ThisFileInfo['real']['old_ra_header']['audio_bytes'] / $ThisFileInfo['playtime_seconds']);
-					$ThisFileInfo['audio']['codec']           = $this->RealAudioCodecFourCClookup($ThisFileInfo['real']['old_ra_header']['fourcc'], $ThisFileInfo['audio']['bitrate']);
+					$info['playtime_seconds']         = 60 * ($info['real']['old_ra_header']['audio_bytes'] / $info['real']['old_ra_header']['bytes_per_minute']);
+					$info['audio']['bitrate']         =  8 * ($info['real']['old_ra_header']['audio_bytes'] / $info['playtime_seconds']);
+					$info['audio']['codec']           = $this->RealAudioCodecFourCClookup($info['real']['old_ra_header']['fourcc'], $info['audio']['bitrate']);
 
-					foreach ($ThisFileInfo['real']['old_ra_header']['comments'] as $key => $valuearray) {
+					foreach ($info['real']['old_ra_header']['comments'] as $key => $valuearray) {
 						if (strlen(trim($valuearray[0])) > 0) {
-							$ThisFileInfo['real']['comments'][$key][] = trim($valuearray[0]);
+							$info['real']['comments'][$key][] = trim($valuearray[0]);
 						}
 					}
 					return true;
 				}
-				$ThisFileInfo['error'][] = 'There was a problem parsing this RealAudio file. Please submit it for analysis to http://www.getid3.org/upload/ or info@getid3.org';
-				unset($ThisFileInfo['bitrate']);
-				unset($ThisFileInfo['playtime_seconds']);
+				$this->error('There was a problem parsing this RealAudio file. Please submit it for analysis to info@getid3.org');
+				unset($info['bitrate']);
+				unset($info['playtime_seconds']);
 				return false;
 			}
 
 			// shortcut
-			$ThisFileInfo['real']['chunks'][$ChunkCounter] = array();
-			$thisfile_real_chunks_currentchunk = &$ThisFileInfo['real']['chunks'][$ChunkCounter];
+			$info['real']['chunks'][$ChunkCounter] = array();
+			$thisfile_real_chunks_currentchunk = &$info['real']['chunks'][$ChunkCounter];
 
 			$thisfile_real_chunks_currentchunk['name']   = $ChunkName;
-			$thisfile_real_chunks_currentchunk['offset'] = ftell($fd) - 8;
+			$thisfile_real_chunks_currentchunk['offset'] = $this->ftell() - 8;
 			$thisfile_real_chunks_currentchunk['length'] = $ChunkSize;
-			if (($thisfile_real_chunks_currentchunk['offset'] + $thisfile_real_chunks_currentchunk['length']) > $ThisFileInfo['avdataend']) {
-				$ThisFileInfo['warning'][] = 'Chunk "'.$thisfile_real_chunks_currentchunk['name'].'" at offset '.$thisfile_real_chunks_currentchunk['offset'].' claims to be '.$thisfile_real_chunks_currentchunk['length'].' bytes long, which is beyond end of file';
+			if (($thisfile_real_chunks_currentchunk['offset'] + $thisfile_real_chunks_currentchunk['length']) > $info['avdataend']) {
+				$this->warning('Chunk "'.$thisfile_real_chunks_currentchunk['name'].'" at offset '.$thisfile_real_chunks_currentchunk['offset'].' claims to be '.$thisfile_real_chunks_currentchunk['length'].' bytes long, which is beyond end of file');
 				return false;
 			}
 
-			if ($ChunkSize > (GETID3_FREAD_BUFFER_SIZE + 8)) {
+			if ($ChunkSize > ($this->getid3->fread_buffer_size() + 8)) {
 
-				$ChunkData .= fread($fd, GETID3_FREAD_BUFFER_SIZE - 8);
-				fseek($fd, $thisfile_real_chunks_currentchunk['offset'] + $ChunkSize, SEEK_SET);
+				$ChunkData .= $this->fread($this->getid3->fread_buffer_size() - 8);
+				$this->fseek($thisfile_real_chunks_currentchunk['offset'] + $ChunkSize);
 
 			} elseif(($ChunkSize - 8) > 0) {
-                
-				$ChunkData .= fread($fd, $ChunkSize - 8);
+
+				$ChunkData .= $this->fread($ChunkSize - 8);
 
 			}
 			$offset = 8;
@@ -95,7 +103,7 @@ class getid3_real
 							break;
 
 						default:
-							//$ThisFileInfo['warning'][] = 'Expected .RMF-object_version to be "0", actual value is "'.$thisfile_real_chunks_currentchunk['object_version'].'" (should not be a problem)';
+							//$this->warning('Expected .RMF-object_version to be "0", actual value is "'.$thisfile_real_chunks_currentchunk['object_version'].'" (should not be a problem)');
 							break;
 
 					}
@@ -128,9 +136,9 @@ class getid3_real
 						$offset += 2;
 						$thisfile_real_chunks_currentchunk['flags_raw']       = getid3_lib::BigEndian2Int(substr($ChunkData, $offset, 2));
 						$offset += 2;
-						$ThisFileInfo['playtime_seconds'] = $thisfile_real_chunks_currentchunk['duration'] / 1000;
+						$info['playtime_seconds'] = $thisfile_real_chunks_currentchunk['duration'] / 1000;
 						if ($thisfile_real_chunks_currentchunk['duration'] > 0) {
-							$ThisFileInfo['bitrate'] += $thisfile_real_chunks_currentchunk['avg_bit_rate'];
+							$info['bitrate'] += $thisfile_real_chunks_currentchunk['avg_bit_rate'];
 						}
 						$thisfile_real_chunks_currentchunk['flags']['save_enabled']   = (bool) ($thisfile_real_chunks_currentchunk['flags_raw'] & 0x0001);
 						$thisfile_real_chunks_currentchunk['flags']['perfect_play']   = (bool) ($thisfile_real_chunks_currentchunk['flags_raw'] & 0x0002);
@@ -200,26 +208,26 @@ class getid3_real
 								//$thisfile_real_chunks_currentchunk_videoinfo['unknown8']          = getid3_lib::BigEndian2Int(substr($thisfile_real_chunks_currentchunk_typespecificdata, 34, 2));
 								//$thisfile_real_chunks_currentchunk_videoinfo['unknown9']          = getid3_lib::BigEndian2Int(substr($thisfile_real_chunks_currentchunk_typespecificdata, 36, 2));
 
-								$thisfile_real_chunks_currentchunk_videoinfo['codec'] = getid3_riff::RIFFfourccLookup($thisfile_real_chunks_currentchunk_videoinfo['fourcc2']);
+								$thisfile_real_chunks_currentchunk_videoinfo['codec'] = getid3_riff::fourccLookup($thisfile_real_chunks_currentchunk_videoinfo['fourcc2']);
 
-								$ThisFileInfo['video']['resolution_x']    =         $thisfile_real_chunks_currentchunk_videoinfo['width'];
-								$ThisFileInfo['video']['resolution_y']    =         $thisfile_real_chunks_currentchunk_videoinfo['height'];
-								$ThisFileInfo['video']['frame_rate']      = (float) $thisfile_real_chunks_currentchunk_videoinfo['frames_per_second'];
-								$ThisFileInfo['video']['codec']           =         $thisfile_real_chunks_currentchunk_videoinfo['codec'];
-								$ThisFileInfo['video']['bits_per_sample'] =         $thisfile_real_chunks_currentchunk_videoinfo['bits_per_sample'];
+								$info['video']['resolution_x']    =         $thisfile_real_chunks_currentchunk_videoinfo['width'];
+								$info['video']['resolution_y']    =         $thisfile_real_chunks_currentchunk_videoinfo['height'];
+								$info['video']['frame_rate']      = (float) $thisfile_real_chunks_currentchunk_videoinfo['frames_per_second'];
+								$info['video']['codec']           =         $thisfile_real_chunks_currentchunk_videoinfo['codec'];
+								$info['video']['bits_per_sample'] =         $thisfile_real_chunks_currentchunk_videoinfo['bits_per_sample'];
 								break;
 
 							case 'audio/x-pn-realaudio':
 							case 'audio/x-pn-multirate-realaudio':
 								$this->ParseOldRAheader($thisfile_real_chunks_currentchunk_typespecificdata, $thisfile_real_chunks_currentchunk['parsed_audio_data']);
 
-								$ThisFileInfo['audio']['sample_rate']     = $thisfile_real_chunks_currentchunk['parsed_audio_data']['sample_rate'];
-								$ThisFileInfo['audio']['bits_per_sample'] = $thisfile_real_chunks_currentchunk['parsed_audio_data']['bits_per_sample'];
-								$ThisFileInfo['audio']['channels']        = $thisfile_real_chunks_currentchunk['parsed_audio_data']['channels'];
-								if (!empty($ThisFileInfo['audio']['dataformat'])) {
-									foreach ($ThisFileInfo['audio'] as $key => $value) {
+								$info['audio']['sample_rate']     = $thisfile_real_chunks_currentchunk['parsed_audio_data']['sample_rate'];
+								$info['audio']['bits_per_sample'] = $thisfile_real_chunks_currentchunk['parsed_audio_data']['bits_per_sample'];
+								$info['audio']['channels']        = $thisfile_real_chunks_currentchunk['parsed_audio_data']['channels'];
+								if (!empty($info['audio']['dataformat'])) {
+									foreach ($info['audio'] as $key => $value) {
 										if ($key != 'streams') {
-											$ThisFileInfo['audio']['streams'][$thisfile_real_chunks_currentchunk['stream_number']][$key] = $value;
+											$info['audio']['streams'][$thisfile_real_chunks_currentchunk['stream_number']][$key] = $value;
 										}
 									}
 								}
@@ -255,36 +263,36 @@ class getid3_real
 						}
 
 
-						if (empty($ThisFileInfo['playtime_seconds'])) {
-							$ThisFileInfo['playtime_seconds'] = max($ThisFileInfo['playtime_seconds'], ($thisfile_real_chunks_currentchunk['duration'] + $thisfile_real_chunks_currentchunk['start_time']) / 1000);
+						if (empty($info['playtime_seconds'])) {
+							$info['playtime_seconds'] = max($info['playtime_seconds'], ($thisfile_real_chunks_currentchunk['duration'] + $thisfile_real_chunks_currentchunk['start_time']) / 1000);
 						}
 						if ($thisfile_real_chunks_currentchunk['duration'] > 0) {
 							switch ($thisfile_real_chunks_currentchunk['mime_type']) {
 								case 'audio/x-pn-realaudio':
 								case 'audio/x-pn-multirate-realaudio':
-									$ThisFileInfo['audio']['bitrate']    = (isset($ThisFileInfo['audio']['bitrate']) ? $ThisFileInfo['audio']['bitrate'] : 0) + $thisfile_real_chunks_currentchunk['avg_bit_rate'];
-									$ThisFileInfo['audio']['codec']      = $this->RealAudioCodecFourCClookup($thisfile_real_chunks_currentchunk['parsed_audio_data']['fourcc'], $ThisFileInfo['audio']['bitrate']);
-									$ThisFileInfo['audio']['dataformat'] = 'real';
-									$ThisFileInfo['audio']['lossless']   = false;
+									$info['audio']['bitrate']    = (isset($info['audio']['bitrate']) ? $info['audio']['bitrate'] : 0) + $thisfile_real_chunks_currentchunk['avg_bit_rate'];
+									$info['audio']['codec']      = $this->RealAudioCodecFourCClookup($thisfile_real_chunks_currentchunk['parsed_audio_data']['fourcc'], $info['audio']['bitrate']);
+									$info['audio']['dataformat'] = 'real';
+									$info['audio']['lossless']   = false;
 									break;
 
 								case 'video/x-pn-realvideo':
 								case 'video/x-pn-multirate-realvideo':
-									$ThisFileInfo['video']['bitrate']            = (isset($ThisFileInfo['video']['bitrate']) ? $ThisFileInfo['video']['bitrate'] : 0) + $thisfile_real_chunks_currentchunk['avg_bit_rate'];
-									$ThisFileInfo['video']['bitrate_mode']       = 'cbr';
-									$ThisFileInfo['video']['dataformat']         = 'real';
-									$ThisFileInfo['video']['lossless']           = false;
-									$ThisFileInfo['video']['pixel_aspect_ratio'] = (float) 1;
+									$info['video']['bitrate']            = (isset($info['video']['bitrate']) ? $info['video']['bitrate'] : 0) + $thisfile_real_chunks_currentchunk['avg_bit_rate'];
+									$info['video']['bitrate_mode']       = 'cbr';
+									$info['video']['dataformat']         = 'real';
+									$info['video']['lossless']           = false;
+									$info['video']['pixel_aspect_ratio'] = (float) 1;
 									break;
 
 								case 'audio/x-ralf-mpeg4-generic':
-									$ThisFileInfo['audio']['bitrate']    = (isset($ThisFileInfo['audio']['bitrate']) ? $ThisFileInfo['audio']['bitrate'] : 0) + $thisfile_real_chunks_currentchunk['avg_bit_rate'];
-									$ThisFileInfo['audio']['codec']      = 'RealAudio Lossless';
-									$ThisFileInfo['audio']['dataformat'] = 'real';
-									$ThisFileInfo['audio']['lossless']   = true;
+									$info['audio']['bitrate']    = (isset($info['audio']['bitrate']) ? $info['audio']['bitrate'] : 0) + $thisfile_real_chunks_currentchunk['avg_bit_rate'];
+									$info['audio']['codec']      = 'RealAudio Lossless';
+									$info['audio']['dataformat'] = 'real';
+									$info['audio']['lossless']   = true;
 									break;
 							}
-							$ThisFileInfo['bitrate'] = (isset($ThisFileInfo['video']['bitrate']) ? $ThisFileInfo['video']['bitrate'] : 0) + (isset($ThisFileInfo['audio']['bitrate']) ? $ThisFileInfo['audio']['bitrate'] : 0);
+							$info['bitrate'] = (isset($info['video']['bitrate']) ? $info['video']['bitrate'] : 0) + (isset($info['audio']['bitrate']) ? $info['audio']['bitrate'] : 0);
 						}
 					}
 					break;
@@ -317,7 +325,7 @@ class getid3_real
 						$commentkeystocopy = array('title'=>'title', 'artist'=>'artist', 'copyright'=>'copyright', 'comment'=>'comment');
 						foreach ($commentkeystocopy as $key => $val) {
 							if ($thisfile_real_chunks_currentchunk[$key]) {
-								$ThisFileInfo['real']['comments'][$val][] = trim($thisfile_real_chunks_currentchunk[$key]);
+								$info['real']['comments'][$val][] = trim($thisfile_real_chunks_currentchunk[$key]);
 							}
 						}
 
@@ -345,30 +353,35 @@ class getid3_real
 							break 2;
 						} else {
 							// non-last index chunk, seek to next index chunk (skipping actual index data)
-							fseek($fd, $thisfile_real_chunks_currentchunk['next_index_header'], SEEK_SET);
+							$this->fseek($thisfile_real_chunks_currentchunk['next_index_header']);
 						}
 					}
 					break;
 
 				default:
-					$ThisFileInfo['warning'][] = 'Unhandled RealMedia chunk "'.$ChunkName.'" at offset '.$thisfile_real_chunks_currentchunk['offset'];
+					$this->warning('Unhandled RealMedia chunk "'.$ChunkName.'" at offset '.$thisfile_real_chunks_currentchunk['offset']);
 					break;
 			}
 			$ChunkCounter++;
 		}
 
-		if (!empty($ThisFileInfo['audio']['streams'])) {
-			$ThisFileInfo['audio']['bitrate'] = 0;
-			foreach ($ThisFileInfo['audio']['streams'] as $key => $valuearray) {
-				$ThisFileInfo['audio']['bitrate'] += $valuearray['bitrate'];
+		if (!empty($info['audio']['streams'])) {
+			$info['audio']['bitrate'] = 0;
+			foreach ($info['audio']['streams'] as $key => $valuearray) {
+				$info['audio']['bitrate'] += $valuearray['bitrate'];
 			}
 		}
 
 		return true;
 	}
 
-
-	function ParseOldRAheader($OldRAheaderData, &$ParsedArray) {
+	/**
+	 * @param string $OldRAheaderData
+	 * @param array  $ParsedArray
+	 *
+	 * @return bool
+	 */
+	public function ParseOldRAheader($OldRAheaderData, &$ParsedArray) {
 		// http://www.freelists.org/archives/matroska-devel/07-2003/msg00010.html
 
 		$ParsedArray = array();
@@ -473,8 +486,9 @@ class getid3_real
 			$ParsedArray['fourcc'] = $ParsedArray['fourcc3'];
 
 		}
+		/** @var string[]|false[] $value */
 		foreach ($ParsedArray['comments'] as $key => $value) {
-			if ($ParsedArray['comments'][$key][0] === false) {
+			if ($value[0] === false) {
 				$ParsedArray['comments'][$key][0] = '';
 			}
 		}
@@ -482,7 +496,13 @@ class getid3_real
 		return true;
 	}
 
-	function RealAudioCodecFourCClookup($fourcc, $bitrate) {
+	/**
+	 * @param string $fourcc
+	 * @param int    $bitrate
+	 *
+	 * @return string
+	 */
+	public function RealAudioCodecFourCClookup($fourcc, $bitrate) {
 		static $RealAudioCodecFourCClookup = array();
 		if (empty($RealAudioCodecFourCClookup)) {
 			// http://www.its.msstate.edu/net/real/reports/config/tags.stats
@@ -523,6 +543,3 @@ class getid3_real
 	}
 
 }
-
-
-?>

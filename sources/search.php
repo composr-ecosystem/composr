@@ -426,9 +426,9 @@ function perform_keyword_search($limit_to = null, $keyword_prefix = null, $max =
     }
 
     if ($limit_to !== null) {
-        $where .= ' AND (1=0';
+        $where .= ' AND (';
         foreach (array_values($limit_to) as $i => $l) {
-            if ($i == 0) {
+            if ($i != 0) {
                 $where .= ' OR ';
             }
             $where .= db_string_equal_to('meta_for_type', $l);
@@ -527,7 +527,7 @@ function find_search_suggestions($request, $search_type = '')
                         $q .= ' GROUP BY text_original';
                     } else {
                         $q = 'SELECT ' . $cma_info['title_field'] . ' AS search FROM ' . get_table_prefix() . $cma_info['table'];
-                        if (db_has_full_text($GLOBALS['SITE_DB']->connection_read)) {
+                        if (db_has_full_text($GLOBALS['SITE_DB']->connection_read, $cma_info['table'], $cma_info['title_field'])) {
                             $q .= ' WHERE ' . preg_replace('#\?#', $cma_info['title_field'], db_full_text_assemble(str_replace('?', '', $request), false));
                         } else {
                             $q .= ' WHERE ' . $cma_info['title_field'] . ' LIKE \'' . db_encode_like($request . '%') . '\'';

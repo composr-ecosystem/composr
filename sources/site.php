@@ -512,7 +512,9 @@ function breadcrumbs($show_self = true)
     // Substitutions
     if ((addon_installed('breadcrumbs')) && (function_exists('xml_parser_create'))) {
         require_code('breadcrumbs');
-        $BREADCRUMB_SET_PARENTS[] = array(null, $GLOBALS['BREADCRUMB_SET_SELF']);
+        if ($GLOBALS['BREADCRUMB_SET_SELF'] !== null) {
+            $BREADCRUMB_SET_PARENTS[] = array(null, $GLOBALS['BREADCRUMB_SET_SELF']);
+        }
         $BREADCRUMB_SET_PARENTS = load_breadcrumb_substitutions($BREADCRUMB_SET_PARENTS);
         array_pop($BREADCRUMB_SET_PARENTS);
     }

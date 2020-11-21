@@ -133,7 +133,7 @@ function graph_status_colors_to_colors() {
  * @param string  $p_color        The bar color.
  * @return void
  */
-function graph_bar( array $p_metrics, $p_title = '', $p_series_name, $p_color = '#fcbdbd' ) {
+function graph_bar( array $p_metrics, $p_title, $p_series_name, $p_color = '#fcbdbd' ) {
 	static $s_id = 0;
 
 	$s_id++;

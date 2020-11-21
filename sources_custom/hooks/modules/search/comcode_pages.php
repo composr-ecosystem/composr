@@ -115,6 +115,10 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             foreach (array_keys($langs) as $lang) {
                 $pages = find_all_pages($zone, 'comcode_custom/' . $lang, 'txt', false, $clean_scan ? null : $since, FIND_ALL_PAGES__ALL);
                 foreach ($pages as $page => $page_type) {
+                    if (is_integer($page)) {
+                        $page = strval($page);
+                    }
+
                     if (preg_match('#(^panel_|_)#', $page) == 0) {
                         list($file_base, $file_path) = find_comcode_page($lang, $page, $zone);
 

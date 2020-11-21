@@ -103,7 +103,7 @@ If you're PHP build is 64 bit, files over 2GB are supported but the file size wi
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_comcode"]Comcode and the attachment system[/page]
- - [page="_SEARCH:tut_featured"]Providing featured content[/page]
+ - [page="_SEARCH:tut_featured"]Featuring content[/page]
  - [page="_SEARCH:tut_adv_downloads"]Advanced provision of downloads[/page]
  - [page="_SEARCH:tut_news"]News[/page]
  - [page="_SEARCH:tut_information"]Choosing how to publish[/page]

@@ -41,7 +41,7 @@ if (!class_exists('TT_Cipher')) {
                     $result = '';
                     
                     while ($pos < strlen($hex_string)) {
-                        if (strpos(HEX2BIN_WS, $hex_string{$pos}) !== FALSE) {
+                        if (strpos(HEX2BIN_WS, $hex_string[$pos]) !== FALSE) {
                             $pos++;
                         } else {
                             $code = hexdec(substr($hex_string, $pos, 2));
@@ -443,7 +443,7 @@ if (!class_exists('TT_AES128')) {
             );
             for ($j = 0; $j < $this->Nk; $j++)
                 for ($i = 0; $i < 4; $i++)
-                    $tk[$i][$j] = @ord($hash{$j * 4 + $i}) > 256 ? @ord($hash{$j * 4 + $i}) % 256 : @ord($hash{$j * 4 + $i});
+                    $tk[$i][$j] = @ord($hash[$j * 4 + $i]) > 256 ? @ord($hash[$j * 4 + $i]) % 256 : @ord($hash[$j * 4 + $i]);
             $t = 0;
             
             for ($j = 0; ($j < $this->Nk) && ($t < ($this->Nr + 1) * $this->Nb); $j++, $t++)
@@ -478,7 +478,7 @@ if (!class_exists('TT_AES128')) {
             
             for ($i = 0; $i < 4; $i++) {
                 for ($j = 0; $j < $this->Nb; $j++) {
-                    $this->state[$j][$i] = ord($in{$i * 4 + $j});
+                    $this->state[$j][$i] = ord($in[$i * 4 + $j]);
                 }
             }
             $this->showInt("Encryption: \b State Inicial");
@@ -519,7 +519,7 @@ if (!class_exists('TT_AES128')) {
             
             for ($i = 0; $i < 4; $i++) {
                 for ($j = 0; $j < $this->Nb; $j++) {
-                    $this->state[$j][$i] = ord($in{$i * 4 + $j});
+                    $this->state[$j][$i] = ord($in[$i * 4 + $j]);
                 }
             }
             
@@ -620,7 +620,7 @@ if (!class_exists('TT_AES128')) {
         {
             $buf = "";
             for ($i = 0; $i < strlen($sa); $i++) {
-                $val = dechex(ord($sa{$i}));
+                $val = dechex(ord($sa[$i]));
                 if (strlen($val) < 2)
                     $val = "0" . $val;
                 $buf .= $val;

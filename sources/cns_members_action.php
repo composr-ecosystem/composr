@@ -383,11 +383,13 @@ function cns_make_member($username, $password, $email_address, $secondary_groups
         }
     }
 
-    $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', array(
-        'member_id' => $member_id,
-        'usergroup_id' => $primary_group,
-        'join_time' => time()
-    ));
+    if (!get_mass_import_mode()) {
+        $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', array(
+            'member_id' => $member_id,
+            'usergroup_id' => $primary_group,
+            'join_time' => time()
+        ));
+    }
 
     if ($check_correctness) {
         if (function_exists('decache')) {

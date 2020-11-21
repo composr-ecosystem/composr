@@ -13539,7 +13539,7 @@ function prepare_simplified_file_input(page_type,name,_btn_submit_id,posting_fie
 
 	_btn_submit_id=find_submit_button(_btn_submit_id,form);
 
-	var main_div=document.getElementById('attachment_store');
+	var main_div=document.getElementById('attachment_store__'+posting_field_name);
 
 	var filename_field=document.getElementById('txtFileName_'+name);
 	if (!filename_field)

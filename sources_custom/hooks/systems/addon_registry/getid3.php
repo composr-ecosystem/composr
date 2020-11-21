@@ -208,6 +208,20 @@ class Hook_addon_registry_getid3
             'sources_custom/getid3/write.php',
             'sources_custom/getid3/write.real.php',
             'sources_custom/getid3/write.vorbiscomment.php',
+            'sources_custom/getid3/extension.cache.mysqli.php',
+            'sources_custom/getid3/extension.cache.sqlite3.php',
+            'sources_custom/getid3/module.archive.hpk.php',
+            'sources_custom/getid3/module.archive.xz.php',
+            'sources_custom/getid3/module.audio-video.ivf.php',
+            'sources_custom/getid3/module.audio-video.ts.php',
+            'sources_custom/getid3/module.audio-video.wtv.php',
+            'sources_custom/getid3/module.audio.aa.php',
+            'sources_custom/getid3/module.audio.amr.php',
+            'sources_custom/getid3/module.audio.dsf.php',
+            'sources_custom/getid3/module.audio.tak.php',
+            'sources_custom/getid3/module.graphic.efax.php',
+            'sources_custom/getid3/module.misc.cue.php',
+            'sources_custom/getid3/module.tag.xmp.php',
         );
     }
 }

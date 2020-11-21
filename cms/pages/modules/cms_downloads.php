@@ -568,7 +568,7 @@ class Module_cms_downloads extends Standard_crud_module
 
         $original_filename = '';
         $thumb_url = null;
-        $url = post_param_multi_source_upload('file', 'uploads/downloads', true, false, $original_filename, $thumb_url, CMS_UPLOAD_ANYTHING, $copy_to_server == 1);
+        $url = post_param_multi_source_upload('file', 'uploads/downloads', true, false, $original_filename, $thumb_url, CMS_UPLOAD_ANYTHING, $copy_to_server == 1, OBFUSCATE_BIN_SUFFIX);
 
         $metadata = actual_metadata_get_fields('download', null);
         actual_metadata_get_fields__special($metadata, 'num_downloads', 0);
@@ -646,7 +646,7 @@ class Module_cms_downloads extends Standard_crud_module
             }
             $filename = '';
             $thumb_url = null;
-            $url = post_param_multi_source_upload('file', 'uploads/downloads', true, true, $filename, $thumb_url, CMS_UPLOAD_ANYTHING, $copy_to_server == 1);
+            $url = post_param_multi_source_upload('file', 'uploads/downloads', true, true, $filename, $thumb_url, CMS_UPLOAD_ANYTHING, $copy_to_server == 1, OBFUSCATE_BIN_SUFFIX);
         } else {
             $url = STRING_MAGIC_NULL;
         }

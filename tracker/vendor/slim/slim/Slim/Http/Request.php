@@ -210,10 +210,10 @@ class Request extends Message implements ServerRequestInterface
         });
 
         $this->registerMediaTypeParser('application/xml', function ($input) {
-            $backup = libxml_disable_entity_loader(true);
+            $backup = @libxml_disable_entity_loader(true);
             $backup_errors = libxml_use_internal_errors(true);
             $result = simplexml_load_string($input);
-            libxml_disable_entity_loader($backup);
+            @libxml_disable_entity_loader($backup);
             libxml_clear_errors();
             libxml_use_internal_errors($backup_errors);
             if ($result === false) {
@@ -223,10 +223,10 @@ class Request extends Message implements ServerRequestInterface
         });
 
         $this->registerMediaTypeParser('text/xml', function ($input) {
-            $backup = libxml_disable_entity_loader(true);
+            $backup = @libxml_disable_entity_loader(true);
             $backup_errors = libxml_use_internal_errors(true);
             $result = simplexml_load_string($input);
-            libxml_disable_entity_loader($backup);
+            @libxml_disable_entity_loader($backup);
             libxml_clear_errors();
             libxml_use_internal_errors($backup_errors);
             if ($result === false) {

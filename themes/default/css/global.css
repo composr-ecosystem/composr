@@ -2596,9 +2596,11 @@ div.ajax_loading, p.ajax_loading {
 	display: inline-block;
 }
 
+.rating_star, .rating_star_highlight {
+	padding-right: 3px;
+}
 .rating_star {
 	{$BETA_CSS_PROPERTY,opacity: 0.2;} display: inline-block;/*Needed for IE8*/
-	padding-right: 3px;
 }
 .rating_star_highlight {
 	{$BETA_CSS_PROPERTY,opacity: 1.0;} display: inline-block;/*Needed for IE8*/

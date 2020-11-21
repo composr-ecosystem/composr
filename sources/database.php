@@ -291,10 +291,30 @@ function db_supports_drop_table_if_exists($db)
  * Find whether full-text-search is present
  *
  * @param  array $db A DB connection
+ * @param  ?string $table Table to check we have an index on (null: no check)
+ * @param  ?string $field Field to check we have an index on (null: no check)
  * @return boolean Whether it is
  */
-function db_has_full_text($db)
+function db_has_full_text($db, $table = null, $field = null)
 {
+    if (($table !== null) && ($field !== null)) {
+        $field = preg_replace('#^.*\.(.*)#', '$1', $field);
+        $indexes = $GLOBALS['FORUM_DB']->query_select('db_meta_indices', array('i_fields', 'i_name'), array('i_table' => $table));
+        $okay = false;
+        foreach ($indexes as $index) {
+            if ($index['i_name'][0] == '#') {
+                $fields = explode(',', $index['i_fields']);
+                if (in_array($field, $fields)) {
+                    $okay = true;
+                    break;
+                }
+            }
+        }
+        if (!$okay) {
+            return false;
+        }
+    }
+
     if ((is_array($db)) && (count($db) > 4)) { // Okay, we can't be lazy anymore
         $db = call_user_func_array(array($GLOBALS['DB_STATIC_OBJECT'], 'db_get_connection'), $db);
         _general_db_init();
@@ -1919,7 +1939,7 @@ class DatabaseConnector
      * @param  ?integer $start The starting row to update (null: no specific start)
      * @param  boolean $num_touched Whether to get the number of touched rows. WARNING: Do not use in core Composr code as it does not work on all database drivers
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
-     * @return ?integer The number of touched records (null: hasn't been asked / error)
+     * @return ?integer The number of touched records (null: hasn't been asked / error / not supported)
      */
     public function query_update($table, $update_map, $where_map = null, $end = '', $max = null, $start = null, $num_touched = false, $fail_ok = false)
     {

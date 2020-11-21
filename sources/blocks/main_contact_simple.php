@@ -75,7 +75,7 @@ class Block_main_contact_simple
             require_code('mail');
 
             $email_from = trim(post_param_string('email', $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member())));
-            $from_name = trim(post_param_string('poster_name_if_guest', post_param_string('name', $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true))));
+            $from_name = substr(trim(post_param_string('poster_name_if_guest', post_param_string('name', $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true)))), 0, 80);
 
             if ($email_from != '') {
                 require_code('type_sanitisation');

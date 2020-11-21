@@ -134,7 +134,7 @@ It's not really feasible for us to allow the quiz system to build arbitrarily co
 
 [title="2"]See also[/title]
 
- - [page="_SEARCH:tut_featured"]Providing featured content[/page]
+ - [page="_SEARCH:tut_featured"]Featuring content[/page]
  - [page="_SEARCH:tut_sql"]Manually editing your database with phpMyAdmin[/page]
 
 {$SET,tutorial_tags,quizzes,Feedback features,Content,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,How to add competitions, surveys, and tests.}[block]main_tutorial_rating[/block]

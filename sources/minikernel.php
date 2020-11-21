@@ -35,6 +35,19 @@
  */
 function init__minikernel()
 {
+    if (!function_exists('get_magic_quotes_gpc')) {
+        /**
+         * TODO: Remove in v11 (LEGACY)
+         * Gets the current active configuration setting of magic quotes gpc (Note: it actually returns a BINARY, but lets make it cleaner, it won't hurt)
+         *
+         * @return boolean Whether magic quotes gpc is on.
+         */
+        function get_magic_quotes_gpc()
+        {
+            return false;
+        }
+    }
+
     fixup_bad_php_env_vars();
 
     global $EXITING;
@@ -377,7 +390,7 @@ function catch_fatal_errors()
  */
 function composr_error_handler($errno, $errstr, $errfile, $errline)
 {
-    if (error_reporting() == 0) {
+    if ((error_reporting() & $errno) === 0) {
         return false; // This actually tells if @ was used oddly enough. You wouldn't figure from the PHP docs.
     }
 

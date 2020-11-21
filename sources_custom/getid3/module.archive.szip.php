@@ -1,10 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.archive.szip.php                                     //
@@ -13,37 +14,43 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
+if (!defined('GETID3_INCLUDEPATH')) { // prevent path-exposing attacks that access modules directly on public webservers
+	exit;
+}
 
-class getid3_szip
+class getid3_szip extends getid3_handler
 {
+	/**
+	 * @return bool
+	 */
+	public function Analyze() {
+		$info = &$this->getid3->info;
 
-	function __construct(&$fd, &$ThisFileInfo) {
-
-		fseek($fd, $ThisFileInfo['avdataoffset'], SEEK_SET);
-		$SZIPHeader = fread($fd, 6);
-		if (substr($SZIPHeader, 0, 4) != 'SZ'."\x0A\x04") {
-			$ThisFileInfo['error'][] = 'Expecting "SZ[x0A][x04]" at offset '.$ThisFileInfo['avdataoffset'].', found "'.substr($SZIPHeader, 0, 4).'"';
+		$this->fseek($info['avdataoffset']);
+		$SZIPHeader = $this->fread(6);
+		if (substr($SZIPHeader, 0, 4) != "SZ\x0A\x04") {
+			$this->error('Expecting "53 5A 0A 04" at offset '.$info['avdataoffset'].', found "'.getid3_lib::PrintHexBytes(substr($SZIPHeader, 0, 4)).'"');
 			return false;
 		}
+		$info['fileformat']            = 'szip';
+		$info['szip']['major_version'] = getid3_lib::BigEndian2Int(substr($SZIPHeader, 4, 1));
+		$info['szip']['minor_version'] = getid3_lib::BigEndian2Int(substr($SZIPHeader, 5, 1));
+		$this->error('SZIP parsing not enabled in this version of getID3() ['.$this->getid3->version().']');
+		return false;
 
-		$ThisFileInfo['fileformat']            = 'szip';
-
-		$ThisFileInfo['szip']['major_version'] = getid3_lib::BigEndian2Int(substr($SZIPHeader, 4, 1));
-		$ThisFileInfo['szip']['minor_version'] = getid3_lib::BigEndian2Int(substr($SZIPHeader, 5, 1));
-
-		while (!feof($fd)) {
-			$NextBlockID = fread($fd, 2);
+		while (!$this->feof()) {
+			$NextBlockID = $this->fread(2);
 			switch ($NextBlockID) {
 				case 'SZ':
 					// Note that szip files can be concatenated, this has the same effect as
 					// concatenating the files. this also means that global header blocks
 					// might be present between directory/data blocks.
-					fseek($fd, 4, SEEK_CUR);
+					$this->fseek(4, SEEK_CUR);
 					break;
 
 				case 'BH':
-					$BHheaderbytes  = getid3_lib::BigEndian2Int(fread($fd, 3));
-					$BHheaderdata   = fread($fd, $BHheaderbytes);
+					$BHheaderbytes  = getid3_lib::BigEndian2Int($this->fread(3));
+					$BHheaderdata   = $this->fread($BHheaderbytes);
 					$BHheaderoffset = 0;
 					while (strpos($BHheaderdata, "\x00", $BHheaderoffset) > 0) {
 						//filename as \0 terminated string  (empty string indicates end)
@@ -79,7 +86,7 @@ class getid3_szip
 						$BHdataArray['access_time'] = getid3_lib::BigEndian2Int(substr($BHheaderdata, $BHheaderoffset, 4));
 						$BHheaderoffset += 4;
 
-						$ThisFileInfo['szip']['BH'][] = $BHdataArray;
+						$info['szip']['BH'][] = $BHdataArray;
 					}
 					break;
 
@@ -93,5 +100,3 @@ class getid3_szip
 	}
 
 }
-
-?>
