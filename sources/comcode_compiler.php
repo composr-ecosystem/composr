@@ -567,7 +567,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
         // State machine
         switch ($status) {
             case CCP_NO_MANS_LAND:
-                if ($next === '[') {
+                if (($next === '[') && (isset($comcode[$pos]))) {
                     // Look ahead to make sure it's a valid tag. If it's not then it's considered normal user input, not a tag at all
                     $next_2 = $comcode[$pos];
                     $dif = 0; // '0' if it's an opening tag
