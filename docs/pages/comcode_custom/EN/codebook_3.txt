@@ -567,6 +567,7 @@ We have the following which are either unlikely to be useful, or potentially uns
   - [tt]manualproc_mail[/tt] -- set this to '1' to debug problems with the PHP mail command (the PHP mail command won't relay error information from the sendmail process, this will replace it with something that does); it only works on servers that allow PHP process control
   - [tt]disable_cookie_checks[/tt] -- set this to '1' if you are somehow proxying traffic into your web server with an incorrect hostname header, so cookie checks must be skipped
   - [tt]disable_sitemap[/tt] -- set this to '1' if you need to disable Sitemap menus for any reason (perhaps it is too slow to generate or there is some kind of infinite loop bug that is not yet fixed). Set this to '2' to greatly reduce the depth of the Sitemap (this is probably what you want, as you don't want your admin menus disappearing).
+  - [tt]http2_post_fix[/tt] -- set to 1 to delay an AJAX POST request while a warmup request runs; used to fix issue with HTTP/2 connections where write-back is broken[/tt]
  - Used internally by Composr
   - [tt]cdn[/tt] -- this is used for storage of autodetected CDNs, prior to the config option for them being properly filled in
   - [tt]brand_base_url[/tt] -- the base URL to the brand site (by default this is {$BRAND_BASE_URL} but may be changed)
