@@ -192,7 +192,8 @@ function init__global2()
         $output = '<?xml version="1.0" ?' . '><response><result><time>' . strval(time()) . '</time></result></response>';
         echo $output;
 
-        exit(); // So auto_append_file cannot run and corrupt our output
+        cms_safe_exit_flow();
+        return;
     }
 
     // Initialise timezones

@@ -201,7 +201,7 @@ function activity_feed_handler_script()
 
     echo $response;
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -286,7 +286,7 @@ function activity_feed_updater_script()
 
     echo $response;
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -336,7 +336,7 @@ function activity_feed_removal_script()
 
     echo $response;
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**

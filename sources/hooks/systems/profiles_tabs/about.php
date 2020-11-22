@@ -288,6 +288,16 @@ class Hook_profiles_tabs_about
             }
         }
 
+        // Fnd probation information
+        if ($on_probation !== null) {
+            $probation_group = get_option('probation_usergroup');
+            if (is_numeric($probation_group)) {
+                $probation_group = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups g LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'translate t ON t.id=g.g_name', 'text_original', array('g.id' => intval($probation_group)));
+            }
+        } else {
+            $probation_group = null;
+        }
+
         // Render
 
         $a = (isset($member_info['avatar'])) ? cns_get_member_best_group_property($member_id_of, 'max_avatar_width') : 0;
@@ -340,6 +350,7 @@ class Hook_profiles_tabs_about
             'JOIN_DATE_RAW' => strval($member_info['join_time']),
             'SIGNATURE' => isset($member_info['signature']) ? $member_info['signature'] : new Tempcode(),
             'ON_PROBATION' => isset($member_info['on_probation_until']) ? strval($member_info['on_probation_until']) : null,
+            'PROBATION_GROUP' => $probation_group,
             'PRIMARY_GROUP' => cns_get_group_link($member_info['primary_group'], $member_id_of != $member_id_viewing),
             'PRIMARY_GROUP_ID' => strval($member_info['primary_group']),
             'SECONDARY_GROUPS' => $member_info['secondary_groups_named'],

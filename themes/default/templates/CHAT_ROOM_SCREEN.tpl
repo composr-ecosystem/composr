@@ -103,7 +103,7 @@
 							<label for="text_colour">{!CHAT_OPTIONS_COLOUR_NAME}:</label>
 						</p>
 						<p>
-							<input size="10" maxlength="7" class="input-line-required js-change-input-text-color" type="color" id="text_colour" name="text_colour" value="{+START,IF,{$NEQ,{TEXT_COLOUR_DEFAULT},inherit}}#{TEXT_COLOUR_DEFAULT*}{+END}" />
+							<input size="10" maxlength="7" class="input-line-required js-change-input-text-color" type="color" id="text_colour" name="text_colour" value="{+START,IF,{$NEQ,{TEXT_COLOUR_DEFAULT},inherit}}{TEXT_COLOUR_DEFAULT*}{+END}" />
 						</p>
 					</div>
 

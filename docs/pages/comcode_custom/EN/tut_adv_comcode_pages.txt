@@ -245,7 +245,7 @@ You can even give Comcode pages multi-part paths to simulate a directory structu
 
 [title="3"]Embedding entries[/title]
 
-To embed entries in a Comcode page you may use the [tt]main_content[/tt] block. This is described in more detail in the [page="_SEARCH:tut_featured"]Providing featured content[/page] tutorial.
+To embed entries in a Comcode page you may use the [tt]main_content[/tt] block. This is described in more detail in the [page="_SEARCH:tut_featured"]Featuring content[/page] tutorial.
 
 [title="3"]Embedding categories[/title]
 
@@ -253,7 +253,7 @@ The [tt]main_multi_content[/tt], [tt]main_cc_embed[/tt], [tt]main_gallery_embed[
 
 [title="3"]Embedding anything[/title]
 
-We provide a special module-->block feature to integrate any module screen into a Comcode page. This is done using the [tt]main_include_module[/tt] block. Further details in the [page="_SEARCH:tut_featured"]Providing featured content[/page] tutorial.
+We provide a special module-->block feature to integrate any module screen into a Comcode page. This is done using the [tt]main_include_module[/tt] block. Further details in the [page="_SEARCH:tut_featured"]Featuring content[/page] tutorial.
 
 [concepts
  1_key="Block"   1_value="Building blocks that can be inserted into a Comcode page, in order to add interactive and data-bound functionality"
@@ -262,7 +262,7 @@ We provide a special module-->block feature to integrate any module screen into 
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_comcode"]Comcode and the attachment system[/page]
- - [page="_SEARCH:tut_featured"]Providing featured content[/page]
+ - [page="_SEARCH:tut_featured"]Featuring content[/page]
  - [page="_SEARCH:tut_adv_comcode"]Advanced Comcode[/page]
  - [page="_SEARCH:tut_comcode_pages"]Adding standalone pages of content (via Comcode)[/page]
 

@@ -828,6 +828,8 @@ function should_ignore_file($path, $bitmask = 0)
     }
 
     if (($bitmask & IGNORE_SHIPPED_VOLATILE) != 0) {
+        $ignore_extensions['bin'] .= '|data_custom/modules/chat';
+
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
             '_config.php' => '',
             'map.ini' => 'themes',

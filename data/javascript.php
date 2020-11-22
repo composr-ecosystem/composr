@@ -1,9 +1,9 @@
 <?php /*
 
  Composr
- Copyright (c) ocProducts, 2004-2020
+ Copyright (c) ocProducts, 2004-2016
 
- See docs/LICENSE.md for full licensing information.
+ See text/EN/licence.txt for full licencing information.
 
 
  NOTE TO PROGRAMMERS:
@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    core_notifications
+ * @package    core
  */
 
 // Fixup SCRIPT_FILENAME potentially being missing
@@ -52,8 +52,16 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-global $BOOTSTRAPPING;
-if (!$BOOTSTRAPPING) {
-    require_code('notification_poller');
-    notification_script();
-} // else we intentionally terminated during global2.php and need to not continue
+prepare_for_known_ajax_response();
+
+header('Content-type: text/javascript; charset=' . get_charset());
+$script = get_param_string('script');
+safe_ini_set('ocproducts.xss_detect', '0');
+if ($script != '') {
+    $path = javascript_enforce(filter_naughty_harsh($script));
+    if ($path != '') {
+        echo @file_get_contents($path);
+    }
+}
+
+cms_safe_exit_flow();

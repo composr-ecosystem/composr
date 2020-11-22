@@ -62,14 +62,16 @@ class Hook_commandr_command_obfuscate_directory
                 }
             }
 
+            $out = '';
+
             require_code('files2');
             $files = get_directory_contents($root_path);
             foreach ($files as $path) {
-                $regexp_ext = 'bin|dat';
-                if ($ext_too) {
+                $regexp_ext = 'bin';
+                if (!$ext_too) {
                     $regexp_ext .= '|\w+';
                 }
-                if (preg_match('#^[\da-f]{14}.\d{8}\.(' . $regexp_ext . ')$#', basename($path)) != 0) { // LEGACY: .dat
+                if (preg_match('#^[\da-f]{14}.\d{8}\.(' . $regexp_ext . ')$#', basename($path)) != 0) {
                     continue; // Already obfuscated
                 }
 
@@ -101,16 +103,26 @@ class Hook_commandr_command_obfuscate_directory
                     }
                 }
                 if (!empty($upload_fields_for_file)) {
-                    $success = rename($full_path, $obfuscated_full_path);
+                    $success = @rename($full_path, $obfuscated_full_path);
                     if ($success) {
+                        $out .= $full_path . ' --> ' . $obfuscated_full_path . "\n";
+
                         foreach ($upload_fields_for_file as $field) {
                             $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => $obfuscated_url], [$field['m_name'] => $url]);
                         }
+                    } else {
+                        $out .= 'Failed to rename: ' . $full_path . "\n";
                     }
+                } else {
+                    $out .= 'Orphaned?' . $full_path . "\n";
                 }
             }
 
-            return ['', '', do_lang('SUCCESS'), ''];
+            if ($out == '') {
+                $out = '(' . do_lang('NONE') . ')';
+            }
+
+            return ['', '', $out, ''];
         }
     }
 }

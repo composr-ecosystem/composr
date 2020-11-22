@@ -11,9 +11,9 @@
 		<h2>{!USERGROUPS}</h2>
 
 		<ul class="cns-member-profile-usergroups">
-			<li><span class="role"{+START,IF_PASSED,ON_PROBATION} style="text-decoration: line-through"{+END}>{PRIMARY_GROUP}</span></li>
+			<li><span class="role">{PRIMARY_GROUP}</span>{+START,IF_PASSED,ON_PROBATION} <span class="red_alert"><sup>*</sup></span>{+END}</li>
 			{+START,LOOP,SECONDARY_GROUPS}
-				<li {+START,IF_PASSED,ON_PROBATION}{+START,IF,{$NEQ,{$CONFIG_OPTION,probation_usergroup},{_loop_key},{_loop_var}}} style="text-decoration: line-through"{+END}{+END}><a href="{$PAGE_LINK*,_SEARCH:groups:view:{_loop_key}}">{_loop_var*}</a></li>
+				<li><a href="{$PAGE_LINK*,_SEARCH:groups:view:{_loop_key}}">{_loop_var*}</a>{+START,IF_PASSED,ON_PROBATION} <span class="red_alert"><sup>*</sup></span>{+END}</li>
 			{+END}
 		</ul>
 
@@ -218,12 +218,12 @@
 							</tr>
 						{+END}
 
-						{+START,IF_PASSED,ON_PROBATION}
+						{+START,IF_PASSED,ON_PROBATION}{+START,IF_PASSED,PROBATION_GROUP}
 							<tr>
-								<th class="de-th">{!ON_PROBATION_UNTIL}:</th>
-								<td>{$DATE_TIME*,{ON_PROBATION}}</td>
+								<th class="de-th">{!_ON_PROBATION_UNTIL,{PROBATION_GROUP*},{USERNAME*},{$DATE_AND_TIME*,1,0,0,{ON_PROBATION}}}</td>
+								<td>{!_ON_PROBATION_UNTIL,{PROBATION_GROUP*},{USERNAME*},{$DATE_AND_TIME*,1,0,0,{ON_PROBATION}}}</td>
 							</tr>
-						{+END}
+						{+END}{+END}
 
 						<tr>
 							<th class="de-th">{!TIME_FOR_THEM}:</th>

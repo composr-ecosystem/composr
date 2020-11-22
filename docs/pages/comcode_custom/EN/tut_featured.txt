@@ -1,94 +1,118 @@
-[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Providing featured content[/title]
+[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Featuring content[/title]
 
 [media width="150" description="The Admin Zone provides a list of tasks, including rotation of featured content" float="right"]data_custom/images/docs/tut_featured/featured_checklist.png[/media]
-There are a number of Composr systems that provide featured content, rather than archives of content, or just content with recent activity. This is a short tutorial briefly covering these systems, and featured content in general.
+Regular Composr content modules will typically display all content, perhaps with categorisation, perhaps by date.
+There are a number of Composr systems that allow featuring individual items of content. This is a short tutorial briefly covering these systems, and featured content in general.
 
-Benefits of providing featured content include:
+Benefits of featuring content include:
  - Giving your site a 'fresh' feeling, and a feeling that it is an active site
  - Giving variety to your site, without much effort
  - Drawing users in, such that they regularly revisit to see what new content is featured
  - Putting content in a prime position to draw attention to it, perhaps as a reward for the content creator, perhaps for its relevancy, or perhaps to recommend it
 
+For example, a boating club might have a catalogue filled with different types of yacht, and want to be able to have them shown on the home page.
+
 Many of these systems work via blocks. The block construction assistant will help you add a block, accessible from the 'Add block' button on the Comcode page editing screen. This is covered in much more detail in the [page="_SEARCH:tut_adv_comcode_pages"]Using blocks[/page] tutorial.
 
 [contents]decimal,lower-alpha[/contents]
 
+[title="2"]Content types[/title]
+
+Every type of content in Composr is classified as a particular content type. Then individual items of a content type are classified by an ID. In other words, any item of content in Composr can be referenced by the combination of content type and content ID.
+
+This is a list of the content types in Composr:
+ - Authors ([tt]author[/tt])
+ - Calendar events ([tt]event[/tt])
+ - Catalogues ([tt]catalogue[/tt])
+ - Catalogue categories ([tt]catalogue_category[/tt])
+ - Catalogue entries ([tt]catalogue_entry[/tt])
+ - Comcode pages ([tt]comcode_page[/tt])
+ - Downloads ([tt]download[/tt])
+ - Download categories ([tt]download_category[/tt])
+ - Forum posts ([tt]post[/tt]) [Conversr-only]
+ - Forum topics ([tt]topic[/tt]) [Conversr-only]
+ - Forums ([tt]forum[/tt]) [Conversr-only]
+ - Galleries ([tt]gallery[/tt])
+ - Images ([tt]image[/tt])
+ - Members ([tt]member[/tt])
+ - News ([tt]news[/tt])
+ - Quizzes ([tt]quiz[/tt])
+ - Usergroups ([tt]group[/tt]) [Conversr-only]
+ - Videos ([tt]video[/tt])
+ - Wiki+ pages ([tt]wiki_page[/tt])
+ - Wiki+ posts ([tt]wiki_post[/tt])
+
+[title="3"]Display via blocks[/title]
+
+The [tt]main_content[/tt] block can display individual content items, by the content type and ID combination, or by randomisation.
+
+Randomised display is easy to set up: it's just a block parameter when you add that block. You get the choice of which categories you want to randomly display from by way of a [tt]select[/tt] block parameter (written in [page="_SEARCH:tut_selectcode"][concept]Selectcode support[/concept][/page] syntax).
+
+If you want to display a specific item of content as you require then you may use the [tt]main_content[/tt] block with parameters to specify exactly what item you wish to display. You will need to know how to work out your content IDs. Usually these can easily be found within the edit URLs for the content.
+
+The [tt]main_multi_content[/tt] block can display multiple content items, by content type and with various filtering capabilities.
+
 [title="2"]Awards[/title]
 
-The award/content systems allows you to select out content for featuring. It may be used in three ways:
-1) display of content assigned as the current holder of an award (via the [tt]main_awards[/tt] block, or by browsing the [tt]awards[/tt] page).
-2) random display of content in any arbitrary categories (via the [tt]main_content[/tt] block) with full [concept]Selectcode support[/concept]. No award needs to exist for this, as assignment is done via block parameters.
-3) display of any arbitrary item of content (via the [tt]main_content[/tt] block). No award needs to exist for this, as assignment is done via block parameters.
+You can configure any number of award types in Composr. Each award type is associated with one particular content type.
 
-The obvious disadvantage of non-randomised featured content is the effort that is taken to maintain it. The Admin Zone provides a tool on your front page to assist with this, but it will only be able to do so if you regularly check it.
+Awards are given to content items. It's up to you how you want to think of an award, as it can be interpreted in many ways:
+1) Marking a content item as to be featured (e.g. on the home page)
+2) Celebrating a content item as special (i.e. the classical understanding of the term 'award')
+3) Rewarding a member for a particular content submission in a structured way (either in terms of prestige, or by setting up award types to carry a reward in Composr points)
+What it means really depends on how you are using the awards.
 
-You may use the award system with any of the following types of content:
- - Authors
- - Calendar events
- - Catalogues
- - Catalogue categories
- - Catalogue entries
- - Comcode pages
- - Downloads
- - Download categories
- - Forum posts
- - Forum topics
- - Forums
- - Galleries
- - Images
- - Members
- - News
- - Quizzes
- - Usergroups
- - Videos
- - Wiki+ pages
- - Wiki+ posts
+Any content item that has been given an award is:
+a) displayed in the archive for that award type (under the [tt]awards[/tt] page)
+b) indicated as holding the award when accessing the content item's view screen (next to the title)
+The most recent item to receive the award has a special status. Whether this distinction of 'current award holder' means anything is really all about how you use awards. If you are showing the current award holder on your home page (demonstrated later in this tutorial), it is meaningful, but if awards are only accessed from the archive then it is fairly meaningless.
 
-So, why are are these awards so useful? Well, we find users often come to us wanting to be able to feature different entries of the same thing on their front page. For example, a boating club might have a catalogue filled with different types of yacht, and want to be able to have them shown on the front page.
+[title="3"]Using awards[/title]
 
-Keeping this yacht example, I will now explain each of the three ways that the award system may be used.
+[title="4"]Adding an award type[/title]
 
-[title="3"]Display of content assigned as the current holder of an award[/title]
-
-[media width="150" description="Making a download as holder of the default 'Download of the week' award" float="right"]data_custom/images/docs/tut_featured/featured_dotw.png[/media]
-[media width="150" description="A [tt]main_awards[/tt] block being viewed" float="right"]data_custom/images/docs/tut_featured/featured_award_block.png[/media]
-[media width="150" description="Adding a [tt]main_awards[/tt] block using the block construction assistant" float="right"]data_custom/images/docs/tut_featured/assistant.png[/media]
+[surround]
 [media width="150" description="Making an award type" float="right"]data_custom/images/docs/tut_featured/featured_award.png[/media]
 You can manage award types from:
 Admin Zone > Setup > Top content (Awards)
-You can delete an award type from the bottom of its edit form.
 
-When we add a new award type linked with a particular content type, adding or editing an item of that content type will have an option to assign award to it as current holder.
-
-If you wanted to choose a different yacht to display every week, for example, then you can just:
-[list="1"]
-[*] Create a catalogue award via:
-Admin Zone > Setup > Top content (Awards) > Add award type
-[*] Place the award block on the front page, setting it to refer to the award you just made (the block construction assistant makes it very easy, providing a drop-down of award types for you to select from)
-[*] Change the 'Yacht of the week' just by editing a yacht's catalogue entry (or when you add an entry, make it 'Yacht of the week' immediately)
-[/list]
-
-Composr has one award that is precreated for you as an example: Download Of The Week.
-
-Each award has its own archive, in the [tt]awards[/tt] module ([tt]site:awards[/tt] page-link, About > Top content (Awards) of the default menus). The archive is linked from the [tt]main_awards[/tt] block also.
+If, for example, you wanted to choose a different yacht to display every week (from a catalogue of yachts), then create a catalogue award via Admin Zone > Setup > Top content (Awards) > Add award type.
 
 [box="Assigning points"]
 Optionally awards are tied in with the point system. You can configure the awards (when you add or edit the award itself) to carry a number of points. If you do this, the submitter of content given that award will be given some points, and that'll show up on their points profile.
 [/box]
 
-[title="3"]Arbitrary randomisation display[/title]
+Composr has one award that is precreated for you as an example: Download Of The Week (assuming you have the bundled [tt]downloads[/tt] addon installed).
 
-If you do not want to go to the effort of creating an award and manually awarding content for it, then you can just use the [tt]main_content[/tt] block in randomisation mode . This is easy to setup, it's just a block parameter when you add that block. You get the choice of which categories you want to randomly display from by way of a [tt]select[/tt] block parameter (written in [page="_SEARCH:tut_selectcode"][concept]Selectcode support[/concept][/page] syntax).
+[box="Tip"]
+[media float="right" thumb="0" framed="0"]data_custom/images/docs/tip.png[/media]
+If you want to delete an award type, this is done by editing the award type and choosing the delete option on the form.
+[/box]
+[/surround]
 
-By doing this you use the award system without actually using an award.
+[title="4"]Awarding some content[/title]
 
-[title="3"]Arbitrary content display[/title]
+[media width="150" description="Making a download as holder of the default 'Download of the week' award" float="right"]data_custom/images/docs/tut_featured/featured_dotw.png[/media]
+Now we have added a new award type linked with a particular content type, adding or editing an item of that content type will have an option to assign award to it as current holder.
 
-If you want to display a specific item of content as you require, but without actually wrapping it up in an actual award, then you may use the [tt]main_content[/tt] block with parameters to specify exactly what item you wish to display.
+[title="4"]Display[/title]
 
-You will need to know how to work out your content IDs. Usually these can easily be found within the edit URLs for the content.
+[surround]
+[media width="150" description="A [tt]main_awards[/tt] block being viewed" float="left"]data_custom/images/docs/tut_featured/featured_award_block.png[/media]
+[media width="150" description="Adding a [tt]main_awards[/tt] block using the block construction assistant" float="left"]data_custom/images/docs/tut_featured/assistant.png[/media]
+The [tt]main_awards[/tt] block can display the current award holder of any particular award. The block construction assistant makes it very easy to add the block to a page, providing a drop-down of award types for you to select from.
 
-As with randomisation, this allows you to use the award system without actually using an award.
+Each award type has its own archive, in the [tt]awards[/tt] module ([tt]site:awards[/tt] page-link, About > Top content (Awards) of the default menus).
+The archive is linked from the [tt]main_awards[/tt] block also.
+[/surround]
+
+[title="2"]Awards vs direct content selection - which to use?[/title]
+
+The [tt]main_awards[/tt] block is a lot like the [tt]main_content[/tt] block, but the selection of content happens via the award setting UI rather than either by explicitly setting/changing the parameters to the block or randomisation.
+
+Having the awards UI definitely makes management efficient, and you also benefit from all the other features around awards (such as the archive and automatic rewarding of points to submitters). The downside is you have to explicitly make the effort to regularly award content (unnecessary if you just use the [tt]main_content[/tt] block with randomisation).
+
+The Admin Zone dashboard's checklist does remind you to regularly update awards, based on the regularity you configure in the award's settings.
 
 [title="2"]Using module screens as blocks (advanced)[/title]
 

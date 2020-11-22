@@ -215,7 +215,7 @@ function find_search_suggestions($request, $search_type = '')
                         $rows = $GLOBALS['SITE_DB']->query($q, MAXIMUM_AUTOCOMPLETE_SUGGESTIONS, 0, false, false, [$title_field => 'SHORT_TRANS']);
                     } else {
                         $q = 'SELECT ' . $title_field . ' AS search FROM ' . get_table_prefix() . $cma_info['table'];
-                        if ($GLOBALS['SITE_DB']->has_full_text()) {
+                        if ($GLOBALS['SITE_DB']->has_full_text($cma_info['table'], $cma_info['title_field'])) {
                             $q .= ' WHERE ' . preg_replace('#\?#', $title_field, $GLOBALS['SITE_DB']->full_text_assemble($request));
                         } else {
                             $q .= ' WHERE ' . $title_field . ' LIKE \'' . db_encode_like($request . '%') . '\'';

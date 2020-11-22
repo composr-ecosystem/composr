@@ -326,7 +326,7 @@ function comcode_helper_script()
     $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => 'c1f229be68a1137c5b418b0d5d8a7ccf', 'TITLE' => do_lang_tempcode('COMCODE_HELPER'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content]);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**

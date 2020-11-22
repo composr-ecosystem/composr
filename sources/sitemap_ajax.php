@@ -46,7 +46,7 @@ function sitemap_script()
         sitemap_script_loading();
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**

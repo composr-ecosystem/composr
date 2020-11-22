@@ -252,7 +252,7 @@ function post_comment_script()
     header('Content-Type: text/plain; charset=' . get_charset());
     $comment_details->evaluate_echo();
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**

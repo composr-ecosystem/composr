@@ -251,7 +251,7 @@ function messages_script()
         _chat_messages_script_ajax(either_param_integer('room_id'), false, either_param_integer('message_id'), either_param_integer('event_id'));
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**

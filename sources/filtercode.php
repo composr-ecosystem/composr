@@ -815,6 +815,8 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
             $db_fields = collapse_2d_complexity('m_name', 'm_type', $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]));
             $db_fields_for_table[$table] = $db_fields;
         }
+    } else {
+        $table = null;
     }
 
     foreach ($filters as $filter_i => $filter) {
@@ -941,7 +943,7 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
                     break;
 
                 case '~':
-                    if (($GLOBALS['SITE_DB']->has_full_text()) && (strlen($filter_val) > $GLOBALS['SITE_DB']->get_minimum_search_length())) {
+                    if (($GLOBALS['SITE_DB']->has_full_text($table, $filter_key)) && (strlen($filter_val) > $GLOBALS['SITE_DB']->get_minimum_search_length())) {
                         if ($filter_val != '') {
                             if ($alt != '') {
                                 $alt .= ' OR ';

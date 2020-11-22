@@ -80,7 +80,7 @@ function username_check_script()
         $error->evaluate_echo();
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -100,7 +100,7 @@ function username_exists_script()
         echo 'false';
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -213,7 +213,7 @@ function namelike_script()
 
     echo '</result></request>';
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -254,7 +254,7 @@ function find_permissions_script()
         echo has_privilege_group($group_id, $privilege, $privilege_page) ? do_lang('YES') : do_lang('NO');
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -305,7 +305,7 @@ function fractional_edit_script()
     cms_ini_set('ocproducts.xss_detect', '0');
     echo $edited;
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -328,7 +328,7 @@ function change_detection_script()
     $result = $object->run($refresh_if_changed);
     echo $result ? '1' : '0';
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -359,7 +359,7 @@ function edit_ping_script()
 
     echo '1';
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -412,7 +412,7 @@ function ajax_tree_script()
     echo str_replace('</body>', '<br id="ended" /></body>', $val);
     echo($html_mask ? '</html>' : '</request>');
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -432,7 +432,7 @@ function confirm_session_script()
         echo $GLOBALS['FORUM_DRIVER']->get_username(get_member());
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -469,7 +469,7 @@ function load_template_script()
         echo cms_file_get_contents_safe($x, FILE_READ_LOCK | FILE_READ_BOM);
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -492,7 +492,7 @@ function sheet_script()
         }
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -515,7 +515,7 @@ function script_script()
         }
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -555,5 +555,5 @@ function snippet_script()
 
     echo $out;
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }

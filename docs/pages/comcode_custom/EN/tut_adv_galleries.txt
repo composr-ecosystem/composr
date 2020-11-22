@@ -141,6 +141,6 @@ Note that the default advertised Atom feed will not work. Only RSS is supported 
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_galleries"]Providing galleries[/page]
- - [page="_SEARCH:tut_featured"]Providing featured content[/page]
+ - [page="_SEARCH:tut_featured"]Featuring content[/page]
 
 {$SET,tutorial_tags,Galleries,galleries,Content,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,We go through some of the advanced features in the gallery system, such as batch importing, and personal galleries.}[block]main_tutorial_rating[/block]

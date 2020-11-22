@@ -2126,10 +2126,30 @@ class DatabaseConnector
     /**
      * Find whether full-text-search is present.
      *
+     * @param  ?string $table Table to check we have an index on (null: no check)
+     * @param  ?string $field Field to check we have an index on (null: no check)
      * @return boolean Whether it is
      */
-    public function has_full_text()
+    public function has_full_text(, $table = null, $field = null)
     {
+        if (($table !== null) && ($field !== null)) {
+            $field = preg_replace('#^.*\.(.*)#', '$1', $field);
+            $indexes = $GLOBALS['FORUM_DB']->query_select('db_meta_indices', array('i_fields', 'i_name'), array('i_table' => $table));
+            $okay = false;
+            foreach ($indexes as $index) {
+                if ($index['i_name'][0] == '#') {
+                    $fields = explode(',', $index['i_fields']);
+                    if (in_array($field, $fields)) {
+                        $okay = true;
+                        break;
+                    }
+                }
+            }
+            if (!$okay) {
+                return false;
+            }
+        }
+
         return $this->static_ob->has_full_text($this->connection_read);
     }
 

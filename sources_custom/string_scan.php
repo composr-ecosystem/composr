@@ -758,6 +758,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         SECURITY_LEVEL_high
         MAINTENANCE_SCRIPT_ACCESS
         CONFIG_OPTION_maintenance_script_htaccess
+        CMD_OBFUSCATE_DIRECTORY_HELP
+        CMD_OBFUSCATE_DIRECTORY_HELP_PARAM_0
+        CMD_OBFUSCATE_DIRECTORY_HELP_PARAM_1
         IMAGEMAGICK_PATH
         CONFIG_OPTION_imagemagick_path
         ADD_MEMBER_EMAIL_HELP

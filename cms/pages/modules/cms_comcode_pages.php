@@ -251,7 +251,7 @@ class Module_cms_comcode_pages
                 }
 
                 $located = _request_page($page, $zone, null, $lang);
-                if (($located !== false) && ($located[0] != 'REDIRECT')) {
+                if (($located !== false) && (strpos($located[0], 'COMCODE') !== false)) {
                     $_full_path = $located[count($located) - 1];
                     $full_path = get_custom_file_base() . '/' . $_full_path;
                     if (!is_file($full_path)) {
@@ -833,7 +833,7 @@ class Module_cms_comcode_pages
 
         // Render...
 
-        $post_url = build_url(['page' => '_SELF'], '_SELF', [], true);
+        $post_url = build_url(['page' => '_SELF'], '_SELF');
         $hidden = build_keep_post_fields(['filter']);
 
         $tpl = do_template('COMCODE_PAGE_MANAGE_SCREEN', [

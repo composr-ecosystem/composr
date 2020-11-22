@@ -112,14 +112,14 @@ function captcha_script()
         </html>
         ';
         imagedestroy($img);
-        exit(); // So auto_append_file cannot run and corrupt our output
+        cms_safe_exit_flow();
     }
 
     // Output as a PNG
     header('Content-Type: image/png');
     imagepng($img);
     imagedestroy($img);
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**

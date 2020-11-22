@@ -160,7 +160,7 @@ If you don't want this feature you can remove it by editing the [tt]GALLERY_ENTR
 
 [title="2"]See also[/title]
 
- - [page="_SEARCH:tut_featured"]Providing featured content[/page]
+ - [page="_SEARCH:tut_featured"]Featuring content[/page]
  - [page="_SEARCH:tut_downloads"]Providing downloads[/page]
  - [page="_SEARCH:tut_adv_galleries"]Advanced galleries[/page]
  - [page="_SEARCH:tut_fringe"]Supplementary web technologies (media, social networking, etc)[/page]
