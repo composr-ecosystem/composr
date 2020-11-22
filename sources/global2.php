@@ -828,6 +828,10 @@ function handle_bad_access_context()
         return;
     }
 
+    if ((!empty($_SERVER['REQUEST_METHOD'])) && ($_SERVER['REQUEST_METHOD'] != 'GET')) {
+        return;
+    }
+
     $request_hostname = get_request_hostname();
 
     // Detect bad access domain
