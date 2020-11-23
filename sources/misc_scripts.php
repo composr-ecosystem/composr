@@ -295,11 +295,26 @@ function cron_bridge_script($caller)
         flock($log_file, LOCK_UN);
     }
 
+    // Sort the hooks into an order that makes most sense (e.g. if a Hook creates an e-mail, let it send in this same Cron request)
+    $cron_hooks = find_all_hooks('systems', 'cron');
+    ksort($cron_hooks);
+    if (array_key_exists('tasks', $cron_hooks)) {
+        $cron_hooks = array('tasks' => $cron_hooks['tasks']) + $cron_hooks;
+    }
+    if (array_key_exists('mail_queue', $cron_hooks)) {
+        $x = $cron_hooks['mail_queue'];
+        unset($cron_hooks['mail_queue']);
+        $cron_hooks = $cron_hooks + array('mail_queue' => $x);
+    }
+    if (array_key_exists('newsletter_drip_send', $cron_hooks)) {
+        $x = $cron_hooks['newsletter_drip_send'];
+        unset($cron_hooks['newsletter_drip_send']);
+        $cron_hooks = $cron_hooks + array('newsletter_drip_send' => $x);
+    }
+
     // Call the hooks which do the real work
     set_value('last_cron', strval(time()));
     set_value('last_cron_started', '-', true);
-    $cron_hooks = find_all_hooks('systems', 'cron');
-    ksort($cron_hooks);
     foreach (array_keys($cron_hooks) as $hook) {
         if (($limit_hook != '') && ($limit_hook != $hook)) {
             continue;

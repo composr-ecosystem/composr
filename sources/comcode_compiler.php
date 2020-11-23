@@ -567,7 +567,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
         // State machine
         switch ($status) {
             case CCP_NO_MANS_LAND:
-                if ($next === '[') {
+                if (($next === '[') && (isset($comcode[$pos]))) {
                     // Look ahead to make sure it's a valid tag. If it's not then it's considered normal user input, not a tag at all
                     $next_2 = $comcode[$pos];
                     $dif = 0; // '0' if it's an opening tag
@@ -894,6 +894,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
                             }
                             $tag_output->attach($temp_tpl);
                         }
+                        $just_ended = false;
                     } else {
                         $just_new_line = ($just_ended && $next === "\n"); // Only propagate new line signal if it was a real but non-hard-new-line (i.e. the above if clause did not fire)
                         if (($next === ' ') && ($white_space_area) && (!$in_semihtml)) {
@@ -2143,6 +2144,11 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $wrap_pos, $
         $html_errors = true;
     }*/
 
+    // CkEditor trims finally <br>'s making editing hard, so do a FUDGE
+    if (($semiparse_mode) && (substr(rtrim($comcode), -8) == '[/quote]')) {
+        $tag_output->attach('&nbsp;');
+    }
+
     return $tag_output;
 }
 
@@ -2255,18 +2261,38 @@ function filter_html_inclusion_list_at_tag_start($comcode, &$pos, &$continuation
         foreach ($allowed_html_seqs as $allowed_html_seq) {
             if (preg_match('#^' . $allowed_html_seq . '$#', $portion) != 0) {
                 $seq_ok = true;
+                break;
             }
         }
         if (!$seq_ok) {
-            $unstrippable_tags = array(
-                'table', 'tr', 'th', 'td', 'ul', 'ol', 'dl', 'dir', 'li', // Stop big structural problems causing out-of-scope corruptions (e.g. orphaned tr making preceding text move away completely when there's a wider surrounding table)
-                'div', 'p', // Stop disallowed opening tags paired with allowed closing tags causing mess up of surrounding layout
-            );
-            foreach ($unstrippable_tags as $unstrippable_tag) {
-                if (preg_match('#^<' . $unstrippable_tag . '(\s[^<>]*|)>$#i', $portion) != 0) {
-                    $continuation .= '<' . $unstrippable_tag . '>';
-                    break;
+            if ((substr($portion, -2) != '/>'/*not self closing*/) && (substr($portion, 0, 2) != '</'/*not closing*/)) {
+                // It's a regular opening tag.
+                // Maybe then we can strip it down to a raw tag? At least then we won't lose everything, esp tag balance.
+                $matches = array();
+                if (preg_match('#^<(\w+)(\s[^<>]*|)>$#i', $portion, $matches) != 0) {
+                    $tag = strtolower($matches[1]);
+                    if (($tag == 'img') && (preg_match('#^<img(\s[^<>]*|)\ssrc="([^<>\"]*)"(\s[^<>]*|)>$#i', $portion, $matches) != 0)) {
+                        $continuation .= '<img src="' . $matches[2] . '">';
+                        $seq_ok = true;
+                    } elseif (($tag == 'a') && (preg_match('#^<a(\s[^<>]*|)\shref="([^<>\"]*)"(\s[^<>]*|)>$#i', $portion, $matches) != 0)) {
+                        $continuation .= '<a href="' . $matches[2] . '">';
+                        $seq_ok = true;
+                    } else {
+                        foreach ($allowed_html_seqs as $allowed_html_seq) {
+                            if ($allowed_html_seq == '<' . $tag . '>') {
+                                $seq_ok = true;
+                                break;
+                            }
+                        }
+                        if ($seq_ok) {
+                            $continuation .= '<' . $tag . '>';
+                        }
+                    }
                 }
+            }
+
+            if (!$seq_ok) {
+                $continuation .= '<!--filtered; no ' . do_lang('permissions:PRIVILEGE_allow_html') . '-->';
             }
 
             if ($close !== false) {

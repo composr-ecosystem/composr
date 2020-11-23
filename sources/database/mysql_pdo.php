@@ -86,6 +86,9 @@ class Database_Static_mysql_pdo extends Database_super_mysql
             }
             critical_error('PASSON', $error); //warn_exit(do_lang_tempcode('CONNECT_DB_ERROR'));
         }
+        if (!empty($SITE_INFO['database_collation'])) {
+            $db->query('SET collation_connection=' . $SITE_INFO['database_collation']);
+        }
 
         $this->last_select_db = $db;
         $this->cache_db[$x] = $db;

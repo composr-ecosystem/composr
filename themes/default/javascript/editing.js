@@ -91,8 +91,8 @@ function _toggle_wysiwyg(name)
 	var is_wysiwyg_on=wysiwyg_on();
 
 	var forms=document.getElementsByTagName('form');
-	var so=document.getElementById('post_special_options');
-	var so2=document.getElementById('post_special_options2');
+	var so=document.getElementById('post_special_options__' + name);
+	var so2=document.getElementById('post_special_options2__' + name);
 
 	if (is_wysiwyg_on)
 	{
@@ -174,8 +174,8 @@ function disable_wysiwyg(forms,so,so2,discard)
 				textarea.disabled=false;
 				textarea.readOnly=false;
 
-				if (typeof window.rebuild_attachment_button_for_next!='undefined')
-					rebuild_attachment_button_for_next(id,'attachment_upload_button');
+				if (typeof window['rebuild_attachment_button_for_next__'+id]!='undefined')
+					window['rebuild_attachment_button_for_next__'+id]('attachment_upload_button__' + id);
 
 				// Unload editor
 				var wysiwyg_data=window.wysiwyg_editors[id].getData();
@@ -281,19 +281,19 @@ function load_html_edit(posting_form,ajax_copy)
 	if (!browser_matches('wysiwyg')) return;
 	if (!wysiwyg_on()) return;
 
-	var so=document.getElementById('post_special_options');
-	var so2=document.getElementById('post_special_options2');
-	if ((!posting_form.elements['post']) || (posting_form.elements['post'].className.indexOf('wysiwyg')!=-1))
-	{
-		if (so) so.style.display='none';
-		if (so2) so2.style.display='block';
-	}
-
 	var counter,count=0,e,indicator,those_done=[],id;
 	for (counter=0;counter<posting_form.elements.length;counter++)
 	{
 		e=posting_form.elements[counter];
 		id=e.id;
+
+		var so=document.getElementById('post_special_options__' + id);
+		var so2=document.getElementById('post_special_options2__' + id);
+		if ((!posting_form.elements['post']) || (posting_form.elements['post'].className.indexOf('wysiwyg')!=-1))
+		{
+			if (so) so.style.display='none';
+			if (so2) so2.style.display='block';
+		}
 
 		if ((e.type=='textarea') && (e.className.indexOf('wysiwyg')!=-1))
 		{
@@ -431,7 +431,7 @@ function wysiwyg_editor_init_for(element,id)
 			info.get('txtCellPad')['default']='0';
 		}
 	});
-	if (document.getElementById('attachment_store'))
+	if (document.getElementById('attachment_store__'+id))
 		window.lang_PREFER_CMS_ATTACHMENTS='{!javascript:PREFER_CMS_ATTACHMENTS;^}';
 	window.lang_SPELLCHECKER_ENABLED='{!javascript:SPELLCHECKER_ENABLED;^}';
 	window.lang_SPELLCHECKER_DISABLED='{!javascript:SPELLCHECKER_DISABLED;^}';

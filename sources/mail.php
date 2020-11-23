@@ -266,14 +266,6 @@ function comcode_to_clean_text($message_plain, $for_extract = false, $tags_to_pr
         $message_plain = str_replace('{$SITE_NAME}', get_site_name(), $message_plain);
         $message_plain = str_replace('{$SITE_NAME*}', get_site_name(), $message_plain);
 
-        if (stripos($message_plain, '{') !== false) {
-            // Remove directives etc
-            do {
-                $before = $message_plain;
-                $message_plain = preg_replace('#\{([^|\}\{]*)\}#', '', $message_plain);
-            } while ($message_plain != $before);
-        }
-
         if (strpos($message_plain, '{') !== false) {
             $message_plain = static_evaluate_tempcode(template_to_tempcode($message_plain, 0, false, '', null, null, true));
         }
@@ -965,6 +957,7 @@ function mail_wrap($subject_line, $message_raw, $to_email = null, $to_name = nul
     }
     $headers .= 'Date: ' . date('r', time()) . $line_term;
     $headers .= 'Message-ID: <' . $_boundary . '@' . get_domain() . '>' . $line_term;
+    $headers .= 'References: <' . uniqid('Composr', true) . '@' . get_domain() . '>' . $line_term; // Intentionally reference something random to force threading views off (causes purple text in gmail, and generally undesirable for our e-mails)
     $headers .= 'X-Priority: ' . strval($priority) . $line_term;
     $brand_name = get_value('rebrand_name');
     if (is_null($brand_name)) {

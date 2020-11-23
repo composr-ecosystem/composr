@@ -1272,14 +1272,15 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
             $only_fields_sql .= ')';
         }
 
-        $tables = array('catalogue_efv_float', 'catalogue_efv_integer', 'catalogue_efv_long', 'catalogue_efv_long_trans', 'catalogue_efv_short', 'catalogue_efv_short_trans',);
+        $tables = array('catalogue_efv_float' => true, 'catalogue_efv_integer' => true, 'catalogue_efv_long' => false, 'catalogue_efv_long_trans' => multi_lang_content(), 'catalogue_efv_short' => false, 'catalogue_efv_short_trans' => multi_lang_content(),);
         if (strpos(get_db_type(), 'mysql') !== false) { // Optimised for MySQL
             $query = '';
-            foreach ($tables as $table) {
+            foreach ($tables as $table => $needs_casting) {
                 if ($query != '') {
                     $query .= ' UNION ';
                 }
-                $query .= 'SELECT f.id AS f_id,' . db_cast('v.cv_value', 'CHAR') . ' AS cv_value';
+                $_cv_value = $needs_casting ? db_cast('v.cv_value', 'CHAR') : 'v.cv_value';
+                $query .= 'SELECT f.id AS f_id,' . $_cv_value . ' AS cv_value';
                 if (!multi_lang_content()) {
                     if (strpos($table, '_trans') !== false) {
                         $query .= ',v.cv_value__text_parsed,v.cv_value__source_user';

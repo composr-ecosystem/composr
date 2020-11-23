@@ -50,7 +50,7 @@ function sitemap_script()
         sitemap_script_loading();
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -500,9 +500,16 @@ function sitemap_script_saving()
     $changed_view_access = false;
     $changed_privileges = false;
 
+    $guest_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($GLOBALS['FORUM_DRIVER']->get_guest_id());
+
     // Read it all in
     foreach ($map as $i => $page_link) { // For everything we're setting at once
         $is_root = (($page_link == ((get_option('collapse_user_zones') == '0') ? ':' : '')));
+
+        $view = post_param_integer(strval($i) . 'g_view_' . $guest_groups[0], -1);
+        if ($view != -1) { // -1 means unchanged
+            $GLOBALS['SITE_DB']->query_update('sitemap_cache', array('guest_access' => $view), array('page_link' => $page_link), '', 1);
+        }
 
         // Decode page link
         $matches = array();

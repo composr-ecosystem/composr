@@ -70,4 +70,4 @@ if ($location !== null) {
     echo json_encode(reverse_geocode(floatval(get_param_string('latitude')), floatval(get_param_string('longitude'))));
 }
 
-exit(); // So auto_append_file cannot run and corrupt our output
+cms_safe_exit_flow();

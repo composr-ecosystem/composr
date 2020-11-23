@@ -365,7 +365,11 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
     if (is_null($comcode_page_row)) { // Default page. We need to find an admin to assign it to.
         $page_submitter = $new_comcode_page_row['p_submitter'];
     } else {
-        $as_admin = false; // Will only have admin privileges if $page_submitter has them
+        $max_date = $comcode_page_row['p_add_date'];
+        if ($comcode_page_row['p_edit_date'] !== null) {
+            $max_date = $comcode_page_row['p_edit_date'];
+        }
+        $as_admin = member_has_historic_comcode_admin_privileges($comcode_page_row['p_submitter'], $max_date); // Will only have admin privileges if $page_submitter has them
         $page_submitter = $comcode_page_row['p_submitter'];
     }
     if (is_null($page_submitter)) {
@@ -476,6 +480,32 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
     $GLOBALS['NO_QUERY_LIMIT'] = $nql_backup;
 
     return array($_text_parsed, $title_to_use, $comcode_page_row, $comcode);
+}
+
+/**
+ * Set a flag if a member has Comcode admin privileges at this point in time, for avoiding case of lost privileges causing a de-cached page to break.
+ *
+ * @param  MEMBER $member_id The member ID
+ */
+function declare_if_member_has_historic_comcode_admin_privileges($member_id)
+{
+    if ((has_privilege($member_id, 'allow_html')) && (has_privilege($member_id, 'comcode_dangerous'))) {
+        set_value('member_comcode_admin_' . strval($member_id), strval(time()), true);
+    }
+}
+
+/**
+ * Find if a member had Comcode admin privileges before a point in time, for avoiding case of lost privileges causing a de-cached page to break.
+ * Assumes it is okay to retroactively apply permissions to content from before they did, as you wouldn't have left dangerous content around or given a member privileges after they posted it.
+ *
+ * @param  MEMBER $member_id The member ID
+ * @param  TIME $timestamp_of_content Timestamp of content to check point in time for
+ * @return boolean Whether they did
+ */
+function member_has_historic_comcode_admin_privileges($member_id, $timestamp_of_content)
+{
+    $timestamp_known_admin = intval(get_value('member_comcode_admin_' . strval($member_id), '0', true));
+    return $timestamp_of_content <= $timestamp_known_admin;
 }
 
 /**

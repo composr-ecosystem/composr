@@ -590,7 +590,7 @@ class Module_admin_import
         // Get data from session
         $session_row = $GLOBALS['SITE_DB']->query_select('import_session', array('*'), array('imp_session' => get_session_id()), '', 1);
         if (!array_key_exists(0, $session_row)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+            warn_exit(do_lang_tempcode('MISSING_IMPORT_SESSION'));
         }
         $old_base_dir = $session_row[0]['imp_old_base_dir'];
         $db_host = $session_row[0]['imp_db_host'];

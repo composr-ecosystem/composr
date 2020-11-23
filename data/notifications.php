@@ -52,5 +52,8 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-require_code('notification_poller');
-notification_script();
+global $BOOTSTRAPPING;
+if (!$BOOTSTRAPPING) {
+    require_code('notification_poller');
+    notification_script();
+} // else we intentionally terminated during global2.php and need to not continue

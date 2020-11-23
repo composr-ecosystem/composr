@@ -665,7 +665,7 @@ class Hook_addon_registry_galleries
         foreach (placeholder_array(10) as $k => $v) {
             $entries->attach(do_lorem_template('GALLERY_FLOW_ENTRY', array(
                 'DESCRIPTION' => lorem_paragraph_html(),
-                '_TITLE' => lorem_title(),
+                '_TITLE' => lorem_phrase(),
                 'ID' => strval($k),
                 'VIEWS' => placeholder_number(),
                 'ADD_DATE_RAW' => placeholder_date(),
@@ -781,7 +781,7 @@ class Hook_addon_registry_galleries
         foreach (placeholder_array(10) as $k => $v) {
             $entries->attach(do_lorem_template('GALLERY_FLOW_ENTRY', array(
                 'DESCRIPTION' => lorem_paragraph_html(),
-                '_TITLE' => lorem_title(),
+                '_TITLE' => lorem_phrase(),
                 'ID' => strval($k),
                 'VIEWS' => placeholder_number(),
                 'ADD_DATE_RAW' => placeholder_date(),

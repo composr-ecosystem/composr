@@ -1101,6 +1101,12 @@ function ecv_KEEP($lang, $escaped, $param)
 function keep_symbol($param)
 {
     $value = '';
+
+    global $HAS_NO_KEEP_CONTEXT;
+    if ($HAS_NO_KEEP_CONTEXT) {
+        return $value;
+    }
+
     $get_vars = $_GET;
     if ((isset($param[1])) && ($param[1] === '1') && (is_null(get_bot_type())) && (!isset($get_vars['keep_session']))) {
         $get_vars['keep_session'] = get_session_id();
@@ -2904,6 +2910,37 @@ function ecv_NOTIFICATIONS_AVAILABLE($lang, $escaped, $param)
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements).
+ * @param  array $escaped Array of escaping operations.
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result.
+ */
+function ecv_AUTHOR_MEMBER($lang, $escaped, $param)
+{
+    $value = '';
+
+    if (isset($param[0])) {
+        if (addon_installed('authors')) {
+            require_code('authors');
+            $member_id = get_author_id_from_name($param[0]);
+            if ($member_id === null) {
+                $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+            }
+            $value = strval($member_id);
+        }
+    }
+
+    if ($escaped !== array()) {
+        apply_tempcode_escaping($escaped, $value);
     }
     return $value;
 }

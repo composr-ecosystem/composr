@@ -790,6 +790,13 @@ function _choose_moniker($page, $type, $id, $moniker_src, $no_exists_check_for =
 {
     $moniker = _generate_moniker($moniker_src);
 
+    $basic_sql = ' FROM ' . get_table_prefix() . 'url_id_monikers WHERE ' . db_string_equal_to('m_resource_page', $page);
+    if ($type == '') {
+        $basic_sql .= ' AND ' . db_string_equal_to('m_resource_id', $id);
+    } else {
+        $basic_sql .= ' AND ' . db_string_equal_to('m_resource_type', $type) . ' AND ' . db_string_not_equal_to('m_resource_id', $id);
+    }
+
     // Check it does not already exist
     $moniker_origin = $moniker;
     $next_num = 1;
@@ -804,14 +811,7 @@ function _choose_moniker($page, $type, $id, $moniker_src, $no_exists_check_for =
             }
         }
 
-        $dupe_sql = 'SELECT m_resource_id FROM ' . get_table_prefix() . 'url_id_monikers WHERE ';
-        $dupe_sql .= db_string_equal_to('m_resource_page', $page);
-        if ($type == '') {
-            $dupe_sql .= ' AND ' . db_string_equal_to('m_resource_id', $id);
-        } else {
-            $dupe_sql .= ' AND ' . db_string_equal_to('m_resource_type', $type) . ' AND ' . db_string_not_equal_to('m_resource_id', $id);
-        }
-        $dupe_sql .= ' AND (';
+        $dupe_sql = 'SELECT m_resource_id' . $basic_sql . ' AND (';
         if (!is_null($scope_context)) {
             $dupe_sql .= db_string_equal_to('m_moniker', $scope_context . $moniker);
         } else {
@@ -823,7 +823,16 @@ function _choose_moniker($page, $type, $id, $moniker_src, $no_exists_check_for =
         $dupe_sql .= ' AND m_deprecated=0';
         $test = $GLOBALS['SITE_DB']->query_value_if_there($dupe_sql, false, true);
         if (!is_null($test)) { // Oh dear, will pass to next iteration, but trying a new moniker
-            $next_num++;
+            if ($next_num == 1) {
+                // Individual checks get very slow with time, so do a jump ahead based on how much is already under a suffixed version of the  $moniker (as we can assume sequentiality)
+                $accelerate_sql = 'SELECT COUNT(*)' . $basic_sql . ' AND m_moniker LIKE \'' . db_encode_like($moniker . '%') . '\'';
+                $next_num += $GLOBALS['SITE_DB']->query_value_if_there($accelerate_sql);
+                if ($next_num == 1) {
+                    $next_num++;
+                }
+            } else {
+                $next_num++;
+            }
             $moniker = $moniker_origin . '-' . strval($next_num);
         }
     } while (!is_null($test));

@@ -1731,8 +1731,30 @@ class Module_admin_newsletter extends Standard_crud_module
         require_code('lang2');
         $language = lookup_language_full_name($rows[0]['language']);
 
+        $message = newsletter_variable_substitution($message, $subject, '', '', do_lang('EXAMPLE'), 'test@example.com', 'test', '');
+
+        require_code('mail');
+
+        // TODO: Change to use new function in v11
+        require_code('media_renderer');
+        push_media_mode(peek_media_mode() | MEDIA_LOWFI);
+        require_code('tempcode_compiler');
+        $in_html = false;
+        if (strpos($message, '<html') !== false) {
+            $_preview = template_to_tempcode($message);
+        } else {
+            $_preview = comcode_to_tempcode($message, get_member(), true);
+        }
+        pop_media_mode();
+
         require_code('templates_map_table');
-        return map_table_screen(get_screen_title('NEWSLETTER'), array('DATE_TIME' => $time, 'LANGUAGE' => $language, 'SUBSCRIPTION_LEVEL' => integer_format($level), 'SUBJECT' => $subject, 'MESSAGE' => comcode_to_tempcode($message)));
+        return map_table_screen(get_screen_title('NEWSLETTER'), array(
+            'DATE_TIME' => $time,
+            'LANGUAGE' => $language,
+            'SUBSCRIPTION_LEVEL' => integer_format($level),
+            'SUBJECT' => $subject,
+            'MESSAGE' => $_preview,
+        ));
     }
 
     /**

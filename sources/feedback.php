@@ -248,7 +248,7 @@ function post_comment_script()
     header('Content-Type: text/plain; charset=' . get_charset());
     $comment_details->evaluate_echo();
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**
@@ -833,7 +833,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
         require_code('cns_posts_action2');
         $poster_name_if_guest = cns_get_safe_specified_poster_name(false);
     } else {
-        $poster_name_if_guest = post_param_string('poster_name_if_guest', '');
+        $poster_name_if_guest = substr(post_param_string('poster_name_if_guest', ''), 0, 80);
     }
     list($topic_id, $is_hidden) = $GLOBALS['FORUM_DRIVER']->make_post_forum_topic(
         // Define scope
@@ -868,13 +868,13 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
         $submitter
     );
 
-    if (!is_null($topic_id)) {
-        if (!is_integer($forum)) {
-            $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum);
-        } else {
-            $forum_id = intval($forum);
-        }
+    if (!is_integer($forum)) {
+        $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum);
+    } else {
+        $forum_id = intval($forum);
+    }
 
+    if (!is_null($topic_id)) {
         if ((get_forum_type() == 'cns') && (!is_null($GLOBALS['LAST_POST_ID']))) {
             $extra_review_ratings = array();
             global $REVIEWS_STRUCTURE;
@@ -968,7 +968,7 @@ function actualise_post_comment($allow_comments, $content_type, $content_id, $co
         }
     }
 
-    if (($post != '') && ($forum_tie) && (!$no_success_message)) {
+    if (($post != '') && ($forum_tie) && (!$no_success_message) && ((get_forum_type() != 'cns') || (has_category_access(get_member(), 'forums', strval($forum_id))))) {
         require_code('site2');
         assign_refresh($GLOBALS['FORUM_DRIVER']->topic_url($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier($forum, $real_feedback_type . '_' . $content_id, do_lang('COMMENT')), $forum, true), 0.0);
     }

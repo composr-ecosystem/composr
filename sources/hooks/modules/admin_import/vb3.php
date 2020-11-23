@@ -725,10 +725,18 @@ class Hook_vb3
             $row_start += $max_per_cycle;
         } while (true);
 
+        $min_id = null;
+
         $rows = array();
         do {
-            $rows = $db->query('SELECT * FROM ' . $table_prefix . 'post ORDER BY postid', $max_per_cycle, $row_start);
+            if ($min_id !== null) { // Key-set pagination, much faster
+                $rows = $db->query('SELECT * FROM ' . $table_prefix . 'post WHERE postid>' . strval($min_id) . ' ORDER BY postid', $max_per_cycle);
+            } else {
+                $rows = $db->query('SELECT * FROM ' . $table_prefix . 'post ORDER BY postid', $max_per_cycle, $row_start);
+            }
             foreach ($rows as $row) {
+                $min_id = $row['postid'];
+
                 if ($row['visible'] == 0) { // We don't have in WHERE query as there's no index for it
                     import_id_remap_put('post', strval($row['postid']), -1);
                     continue;

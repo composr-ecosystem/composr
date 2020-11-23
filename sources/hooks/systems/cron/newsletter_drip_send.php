@@ -67,5 +67,10 @@ class Hook_cron_newsletter_drip_send
             }
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'newsletter_drip_send WHERE ' . $id_list, null, null, false, true);
         }
+
+        if (count($to_send) < $mails_per_send) {
+            // Don't make us wait if we aren't filling the buffer
+            set_value('last_newsletter_drip_send', strval($time - $minutes_between_sends * 60), true);
+        }
     }
 }

@@ -420,6 +420,20 @@ class Hook_profiles_tabs_about
             }
         }
 
+        if ($on_probation !== null) {
+            $probation_group = get_option('probation_usergroup');
+            if (is_numeric($probation_group)) {
+                $_probation_group = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => intval($probation_group)));
+                if ($_probation_group !== null) {
+                    $probation_group = get_translated_text($_probation_group);
+                } else {
+                    $probation_group = null;
+                }
+            }
+        } else {
+            $probation_group = null;
+        }
+
         $content = do_template('CNS_MEMBER_PROFILE_ABOUT', array(
             '_GUID' => 'fodfjdsfjsdljfdls',
             'CLUBS' => $clubs,
@@ -466,6 +480,7 @@ class Hook_profiles_tabs_about
             'SECONDARY_GROUPS' => $secondary_groups,
             'VIEW_PROFILES' => $member_id_viewing == $member_id_of || has_privilege($member_id_viewing, 'view_profiles'),
             'ON_PROBATION' => $on_probation,
+            'PROBATION_GROUP' => $probation_group,
             'EXTRA_INFO_DETAILS' => $extra_info_details,
             'EXTRA_TRACKING_DETAILS' => $extra_tracking_details,
             'EXTRA_SECTIONS' => $extra_sections,

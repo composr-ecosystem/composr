@@ -379,11 +379,13 @@ function cns_make_member($username, $password, $email_address, $secondary_groups
         }
     }
 
-    $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', array(
-        'member_id' => $member_id,
-        'usergroup_id' => $primary_group,
-        'join_time' => time()
-    ));
+    if (!get_mass_import_mode()) {
+        $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', array(
+            'member_id' => $member_id,
+            'usergroup_id' => $primary_group,
+            'join_time' => time()
+        ));
+    }
 
     if ($check_correctness) {
         if (function_exists('decache')) {
@@ -640,8 +642,6 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
 
     $GLOBALS['FORUM_DB']->add_table_field('f_member_custom_fields', 'field_' . strval($id), $_type, $_default);
 
-    build_cpf_indices($id, $index, $type, $_type);
-
     log_it('ADD_CUSTOM_PROFILE_FIELD', strval($id), $name);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
@@ -657,6 +657,8 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
         persistent_cache_delete('CUSTOM_FIELD_CACHE');
         persistent_cache_delete('LIST_CPFS');
     }
+
+    build_cpf_indices($id, $index, $type, $_type); // Should be done last, in case of timeout
 
     $GLOBALS['NO_DB_SCOPE_CHECK'] = $dbs_back;
     return $id;
@@ -674,19 +676,30 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
 function build_cpf_indices($id, $index, $type, $_type)
 {
     $indices_count = $GLOBALS['FORUM_DB']->query_select_value('db_meta_indices', 'COUNT(*)', array('i_table' => 'f_member_custom_fields'));
-    if ($indices_count >= 60) { // Could be 64 but trying to be careful here...
+    if ($indices_count >= 60) { // Could be 64 but trying to be careful here (at least one is reserved for primary key)...
         return false;
     }
+
+    $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'field_' . strval($id)); // LEGACY
 
     if ($index) {
         if ($_type != 'LONG_TEXT') {
             $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), array('field_' . strval($id)), 'mf_member_id');
+        } else {
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
         }
         if (strpos($_type, '_TEXT') !== false) {
             $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', '#mcf_ft_' . strval($id), array('field_' . strval($id)), 'mf_member_id');
+        } else {
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
         }
-    } elseif ((strpos($type, 'trans') !== false) || ($type == 'posting_field')) { // for efficient joins
-        $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), array('field_' . strval($id)), 'mf_member_id');
+    } else {
+        if ((strpos($type, 'trans') !== false) || ($type == 'posting_field')) { // for efficient joins
+            $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), array('field_' . strval($id)), 'mf_member_id');
+        } else {
+            $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf' . strval($id));
+        }
+        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', '#mcf_ft_' . strval($id));
     }
     return true;
 }

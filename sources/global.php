@@ -18,6 +18,19 @@
  * @package    core
  */
 
+if (!function_exists('get_magic_quotes_gpc')) {
+    /**
+     * TODO: Remove in v11 (LEGACY)
+     * Gets the current active configuration setting of magic quotes gpc (Note: it actually returns a BINARY, but lets make it cleaner, it won't hurt)
+     *
+     * @return boolean Whether magic quotes gpc is on.
+     */
+    function get_magic_quotes_gpc()
+    {
+        return false;
+    }
+}
+
 $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : (isset($_ENV['SCRIPT_NAME']) ? $_ENV['SCRIPT_NAME'] : '');
 if ((strpos($script_name, '/sources/') !== false) || (strpos($script_name, '/sources_custom/') !== false)) {
     header('Content-type: text/plain');
@@ -630,6 +643,19 @@ function hhvm_include($path)
         file_put_contents($path . '.hh', $new_code, LOCK_EX);
     }
     return include($path . '.hh');*/
+}
+
+/**
+ * Do what we need, if anything, to allow exiting without any extraneous output messing up a non-HTML request.
+ * It is a hard assumption that if this function returns, exit will happen via a natural flow.
+ */
+function cms_safe_exit_flow()
+{
+    $aaf = @ini_get('auto_append_file');
+    if (!empty($aaf)) {
+        // Necessary to stop it corrupting our XML if it contains ad-crap
+        exit();
+    }
 }
 
 // Useful for basic profiling

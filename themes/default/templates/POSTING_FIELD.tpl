@@ -57,10 +57,10 @@
 		<div class="float_surrounder">
 			{+START,IF,{$JS_ON}}
 				<div role="toolbar" class="float_surrounder post_options_wrap">
-					<div id="post_special_options2" style="display: none">
+					<div id="post_special_options2__{NAME*}" style="display: none">
 						{COMCODE_EDITOR_SMALL}
 					</div>
-					<div id="post_special_options">
+					<div id="post_special_options__{NAME*}">
 						{COMCODE_EDITOR}
 					</div>
 				</div>
@@ -149,10 +149,10 @@
 	<tr class="form_table_field_spacer">
 		<th{+START,IF,{$NOT,{$MOBILE}}} colspan="2"{+END} class="table_heading_cell">
 			{+START,IF,{$JS_ON}}
-				<a class="toggleable_tray_button" id="fes_attachments" onclick="toggle_subordinate_fields(this.getElementsByTagName('img')[0]); return false;" href="#"><img alt="{!EXPAND}: {!ATTACHMENTS}" title="{!EXPAND}" src="{$IMG*,1x/trays/expand}" srcset="{$IMG*,2x/trays/expand} 2x" /></a>
+				<a class="toggleable_tray_button" id="fes_attachments__{NAME*}" onclick="toggle_subordinate_fields(this.getElementsByTagName('img')[0]); return false;" href="#"><img alt="{!EXPAND}: {!ATTACHMENTS}" title="{!EXPAND}" src="{$IMG*,1x/trays/expand}" srcset="{$IMG*,2x/trays/expand} 2x" /></a>
 			{+END}
 
-			<span class="faux_h2{+START,IF,{$JS_ON}} toggleable_tray_button{+END}"{+START,IF,{$JS_ON}} onclick="/*Access-note: code has other activation*/ toggle_subordinate_fields(this.parentNode.getElementsByTagName('img')[0],'fes_attachments_help'); return false;"{+END}>
+			<span class="faux_h2{+START,IF,{$JS_ON}} toggleable_tray_button{+END}"{+START,IF,{$JS_ON}} onclick="/*Access-note: code has other activation*/ toggle_subordinate_fields(this.parentNode.getElementsByTagName('img')[0],'fes_attachments_help__{NAME;*}'); return false;"{+END}>
 				{!ATTACHMENTS}
 
 				{+START,IF,{$NOT,{$MOBILE}}}
@@ -161,7 +161,7 @@
 			</span>
 
 			{+START,IF_PASSED,HELP}
-				<p style="display: none" id="fes_attachments_help">
+				<p style="display: none" id="fes_attachments_help__{NAME*}">
 					{HELP*}
 				</p>
 			{+END}

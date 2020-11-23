@@ -113,7 +113,7 @@ class CMS_RSS
 
             // Create and setup our parser
             if (function_exists('libxml_disable_entity_loader')) {
-                libxml_disable_entity_loader();
+                @libxml_disable_entity_loader(); // LEGACY
             }
             $xml_parser =  @xml_parser_create_ns($GLOBALS['HTTP_CHARSET']);
             if ($xml_parser === false) {

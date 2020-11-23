@@ -112,6 +112,10 @@ class Database_Static_mysqli extends Database_super_mysql
         } else {
             @mysqli_query($db, 'SET NAMES "' . addslashes($SITE_INFO['database_charset']) . '"');
         }
+        if (!empty($SITE_INFO['database_collation'])) {
+            @mysqli_query($db, 'SET collation_connection=' . $SITE_INFO['database_collation']);
+        }
+
         @mysqli_query($db, 'SET wait_timeout=28800');
         @mysqli_query($db, 'SET sql_big_selects=1');
         if ((get_forum_type() == 'cns') && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {

@@ -1,7 +1,7 @@
 {$SET,IMAGE_TYPES,{IMAGE_TYPES}}
 
 {+START,IF,{$BROWSER_MATCHES,simplified_attachments_ui}}
-	<div id="attachment_store" class="accessibility_hidden">
+	<div id="attachment_store__{POSTING_FIELD_NAME%}" class="accessibility_hidden">
 		{$,plupload will attach upload code to here}
 	</div>
 
@@ -15,22 +15,19 @@
 		var max_attachments={MAX_ATTACHMENTS%};
 		var num_attachments=1;
 
-		function rebuild_attachment_button_for_next(posting_field_name,attachment_upload_button)
+		function rebuild_attachment_button_for_next__{POSTING_FIELD_NAME%}(attachment_upload_button)
 		{
-			if (posting_field_name!='{POSTING_FIELD_NAME;/}') return false;
+			if (typeof attachment_upload_button=='undefined') attachment_upload_button=document.getElementById('attachment_upload_button__{POSTING_FIELD_NAME%}');
 
-			if (typeof attachment_upload_button=='undefined') attachment_upload_button=window.attachment_upload_button; {$,Use what was used last time}
-			window.attachment_upload_button=attachment_upload_button;
-
-			prepare_simplified_file_input('attachment_multi','file'+window.num_attachments,null,'{POSTING_FIELD_NAME;/}',{+START,IF_PASSED,FILTER}'{FILTER;/}'{+END}{+START,IF_NON_PASSED,FILTER}null{+END},window.attachment_upload_button);
+			prepare_simplified_file_input('attachment_multi','file'+window.num_attachments,null,'{POSTING_FIELD_NAME;/}',{+START,IF_PASSED,FILTER}'{FILTER;/}'{+END}{+START,IF_NON_PASSED,FILTER}null{+END},attachment_upload_button);
 		}
 
 		add_event_listener_abstract(window,'real_load',function() {
-			aub=document.getElementById('attachment_upload_button');
+			aub=document.getElementById('attachment_upload_button__{POSTING_FIELD_NAME%}');
 			if ((aub) && (aub.className.indexOf('for_field_{POSTING_FIELD_NAME%} ')!=-1))
 			{
 				add_event_listener_abstract(window,'load',function () {
-					rebuild_attachment_button_for_next('{POSTING_FIELD_NAME;/}','attachment_upload_button');
+					window.rebuild_attachment_button_for_next__{POSTING_FIELD_NAME%}('attachment_upload_button__{POSTING_FIELD_NAME%}');
 				} );
 			}
 		});
@@ -48,7 +45,7 @@
 		var attachment_template='{ATTACHMENT_TEMPLATE;^/}';
 	//]]></script>
 
-	<div id="attachment_store">
+	<div id="attachment_store__{POSTING_FIELD_NAME%}">
 		{ATTACHMENTS}
 	</div>
 

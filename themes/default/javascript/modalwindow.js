@@ -367,7 +367,7 @@ function faux_showModalDialog(url,name,options,callback,target,cancel_text)
 					{
 						if (bits[1]=='100%')
 						{
-							height=''+(get_window_height()-200);
+							height=''+(get_window_height()-100);
 						} else
 						{
 							height=bits[1].replace(/px$/,'');
@@ -544,6 +544,8 @@ function ModalWindow()
 
 		reset_dimensions: function(width,height,init,force_height) {
 			if (typeof force_height=='undefined') force_height=false;
+
+			if (window_scrolling_blocked()) force_height=true;
 
 			if (!this.box_wrapper) return;
 
@@ -727,7 +729,6 @@ function ModalWindow()
 			var _this=this;
 			var width=this.width;
 			var height=this.height;
-
 			this.inject(this.box_wrapper);
 
 			var container=this.element('div',{
@@ -837,11 +838,11 @@ function ModalWindow()
 			{
 				case 'iframe':
 					var iframe_width=(this.width.match(/^[\d\.]+$/)!==null)?((this.width-14)+'px'):this.width;
-					var iframe_height=(this.height.match(/^[\d\.]+$/)!==null)?(this.height+'px'):((this.height=='auto')?(this.LOADING_SCREEN_HEIGHT+'px'):this.height);
+					var iframe_height=(this.height.match(/^[\d\.]+$/)!==null)?((this.height-14	)+'px'):((this.height=='auto')?(this.LOADING_SCREEN_HEIGHT+'px'):this.height);
 
 					var iframe=this.element('iframe',{
 						'frameBorder': '0',
-						'scrolling': 'no',
+						'scrolling': window_scrolling_blocked()?'yes':'no',
 						'title': '',
 						'name': 'overlay_iframe',
 						'id': 'overlay_iframe',
@@ -1181,3 +1182,8 @@ function ModalWindow()
 	};
 }
 /*{+END}*/
+
+function window_scrolling_blocked()
+{
+	return (document.documentElement.style.overflowY=='hidden') || (document.documentElement.style.position=='fixed');
+}

@@ -24,9 +24,11 @@
 						<img id="rating_bar_2__{$GET,identifier}" alt="" src="{$IMG*,icons/14x14/rating}" srcset="{$IMG*,icons/28x28/rating} 2x" /><img id="rating_bar_4__{$GET,identifier}" alt="" src="{$IMG*,icons/14x14/rating}" srcset="{$IMG*,icons/28x28/rating} 2x" /><img id="rating_bar_6__{$GET,identifier}" alt="" src="{$IMG*,icons/14x14/rating}" srcset="{$IMG*,icons/28x28/rating} 2x" /><img id="rating_bar_8__{$GET,identifier}" alt="" src="{$IMG*,icons/14x14/rating}" srcset="{$IMG*,icons/28x28/rating} 2x" /><img id="rating_bar_10__{$GET,identifier}" alt="" src="{$IMG*,icons/14x14/rating}" srcset="{$IMG*,icons/28x28/rating} 2x" />
 					{+END}
 
-					<script>// <![CDATA[
-						apply_rating_highlight_and_ajax_code({LIKES%}==1,{RATING%},'{CONTENT_TYPE;^/}','{ID;^/}','{TYPE;^/}',{RATING%},'{CONTENT_URL;/}','{CONTENT_TITLE;/}',true);
-					//]]></script>
+					{+START,IF,{$NOT,{$RUNNING_SCRIPT,snippet}}}
+						<script>// <![CDATA[
+							apply_rating_highlight_and_ajax_code({LIKES%}==1,{RATING%},'{CONTENT_TYPE;^/}','{ID;^/}','{TYPE;^/}',{RATING%},'{CONTENT_URL;/}','{CONTENT_TITLE;/}',true);
+						//]]></script>
+					{+END}
 				</div>
 			</div>
 		{+END}

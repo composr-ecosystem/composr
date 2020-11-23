@@ -56,6 +56,8 @@ function commandr_handle_history(element,key_code,e)
 // Submit an Commandr command
 function commandr_form_submission(command,form)
 {
+	window.current_command=null;
+
 	// Catch the data being submitted by the form, and send it through XMLHttpRequest if possible. Stop the form submission if this is achieved.
 	// var command=document.getElementById('commandr_command').value;
 
@@ -78,7 +80,9 @@ function commandr_form_submission(command,form)
 				window.disable_timeout=null;
 			}
 		} , 5000);
-		window.previous_commands.push(command);
+		if ((command.indexOf("\n")==-1) && ((window.previous_commands.length==0) || (window.previous_commands[window.previous_commands.length-1]!=command))) {
+			window.previous_commands.push(command);
+		}
 
 		return false;
 	} else if (typeof form!='undefined')

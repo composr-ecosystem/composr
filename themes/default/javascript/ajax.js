@@ -558,7 +558,17 @@ function do_ajax_request(url,callback__method,post,timeout) // Note: 'post' is n
 		window.AJAX_REQUESTS[index].open('POST',url,!synchronous);
 		window.AJAX_REQUESTS[index].setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 		if (!synchronous) window.AJAX_REQUESTS[index].timeout=timeout;
-		window.AJAX_REQUESTS[index].send(post);
+
+		{+START,IF,{$VALUE_OPTION,http2_post_fix}}
+			var img_tmp=new Image();
+			img_tmp.onload = function() {
+				window.AJAX_REQUESTS[index].send(post);
+			};
+			img_tmp.src=get_base_url()+'/themes/default/images/blank.gif?rand='+Math.random();
+		{+END}
+		{+START,IF,{$NOT,{$VALUE_OPTION,http2_post_fix}}}
+			window.AJAX_REQUESTS[index].send(post);
+		{+END}
 	} else
 	{
 		window.AJAX_REQUESTS[index].open('GET',url,!synchronous);
@@ -632,7 +642,7 @@ function process_request_changes()
 				{
 					if (result_status==0) // 0 implies site down, or network down
 					{
-						if ((!window.network_down) && (!window.unloaded))
+						if (!window.network_down)
 						{
 							//window.fauxmodal_alert('{!NETWORK_DOWN;^}');	Annoying because it happens when unsleeping a laptop (for example)
 							window.network_down=true;

@@ -218,7 +218,7 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__mail()
     {
-        $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), array(lorem_phrase(), lorem_paragraph(), placeholder_url(), lorem_phrase(), placeholder_id(), lorem_phrase())));
+        $message_raw = comcode_to_tempcode(do_lang('NEW_COMMENT_BODY', lorem_phrase(), lorem_phrase(), array(lorem_phrase(), lorem_paragraph(), static_evaluate_tempcode(placeholder_url()), lorem_phrase(), placeholder_id(), lorem_phrase())));
 
         require_css('email');
 
@@ -228,21 +228,18 @@ class Hook_addon_registry_core_primary_layout
             'LANG' => fallback_lang(),
             'TITLE' => lorem_phrase(),
             'CONTENT' => $message_raw,
+            'CSS' => '{CSS}',
         );
 
-        $tpl = do_lorem_template('MAIL', $map);
+        $_tpl = do_lorem_template('MAIL', $map);
 
-        $css = css_tempcode(true, false, $tpl->evaluate());
+        $css = css_tempcode(true, false, $_tpl->evaluate());
         $_css = $css->evaluate();
 
-        $map += array(
-            'CSS' => $_css,
-        );
-
-        $tpl2 = $tpl->bind($map, 'MAIL');
+        $_tpl = make_string_tempcode(str_replace('{CSS}', $_css, $_tpl->evaluate()));
 
         return array(
-            lorem_globalise($tpl2, null, '', true)
+            lorem_globalise($_tpl, null, '', true)
         );
     }
 

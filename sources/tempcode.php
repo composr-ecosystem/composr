@@ -189,6 +189,9 @@ function otp($var, $origin = '')
  */
 function missing_template_parameter($origin)
 {
+    if ((error_reporting() & E_WARNING) === 0) { // Errors disabled via @ most likely, probably we're doing a test in tempcode_compiler.php
+        return '';
+    }
     if (strpos($origin, ':') === false) {
         return '';
     }
@@ -1876,7 +1879,7 @@ class Tempcode
                 if (!isset($tpl_funcs[$seq_part_0])) {
                     eval($this->code_to_preexecute[$seq_part_0]);
                 }
-                if (($tpl_funcs[$seq_part_0][0] !== 'e'/*for echo*/) && (function_exists($tpl_funcs[$seq_part_0]))) {
+                if (is_callable($tpl_funcs[$seq_part_0])) {
                     call_user_func($tpl_funcs[$seq_part_0], $seq_part[1], $current_lang, $seq_part[4]);
                 } else {
                     $parameters = $seq_part[1];
@@ -1986,7 +1989,7 @@ class Tempcode
                 if (!isset($tpl_funcs[$seq_part_0])) {
                     eval($this->code_to_preexecute[$seq_part_0]);
                 }
-                if (($tpl_funcs[$seq_part_0][0] !== 'e'/*for echo*/) && (function_exists($tpl_funcs[$seq_part_0]))) {
+                if (is_callable($tpl_funcs[$seq_part_0])) {
                     call_user_func($tpl_funcs[$seq_part_0], $seq_part[1], $current_lang, $seq_part[4]);
                 } else {
                     $parameters = $seq_part[1];
@@ -2084,7 +2087,7 @@ class Tempcode
                 if (!isset($tpl_funcs[$seq_part_0])) {
                     eval($this->code_to_preexecute[$seq_part_0]);
                 }
-                if (($tpl_funcs[$seq_part_0][0] !== 'e'/*for echo*/) && (function_exists($tpl_funcs[$seq_part_0]))) {
+                if (is_callable($tpl_funcs[$seq_part_0])) {
                     call_user_func($tpl_funcs[$seq_part_0], $seq_part[1], $current_lang, $seq_part[4]);
                 } else {
                     $parameters = $seq_part[1];
@@ -2129,7 +2132,8 @@ function recall_named_function($id, $parameters, $code)
 {
     $k = 'TEMPCODE_FUNCTION__' . $id;
     if (!isset($GLOBALS[$k])) {
-        $GLOBALS[$k] = @create_function($parameters, $code);
+        $code = 'return function (' . $parameters . ') { ' . $code . ' };';
+        $GLOBALS[$k] = eval($code);
     }
     return $GLOBALS[$k];
 }
