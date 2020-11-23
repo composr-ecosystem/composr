@@ -10048,6 +10048,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ONLINE_NOW
         ONLY_TITLES
         ON_PROBATION_UNTIL
+        _ON_PROBATION_UNTIL
         OPEN
         OPEN_CHATROOMS_IN_TABS
         OPEN_IM_POPUP

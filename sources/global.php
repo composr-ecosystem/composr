@@ -757,7 +757,8 @@ function ip_cidr_check($ip, $cidr)
  */
 function cms_safe_exit_flow()
 {
-    if (!empty(ini_get('auto_append_file'))) {
+    $aaf = @ini_get('auto_append_file');
+    if (!empty($aaf)) {
         // Necessary to stop it corrupting our XML if it contains ad-crap
         exit();
     }

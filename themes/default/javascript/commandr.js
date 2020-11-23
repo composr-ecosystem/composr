@@ -215,6 +215,8 @@
 
     // Submit an Commandr command
     function commandrFormSubmission(command) {
+        window.currentCommand = null;
+
         // Catch the data being submitted by the form, and send it through XMLHttpRequest if possible. Stop the form submission if this is achieved.
         // var command=document.getElementById('commandr-command').value;
         // Send it through XMLHttpRequest, and append the results.
@@ -235,7 +237,9 @@
                 window.disableTimeout = null;
             }
         }, 5000);
-        window.previousCommands.push(command);
+        if ((command.indexOf("\n") == -1) && ((window.previousCommands.length == 0) || (window.previousCommands[window.previousCommands.length-1] != command))) {
+            window.previousCommands.push(command);
+        }
     }
 
 

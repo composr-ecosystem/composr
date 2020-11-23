@@ -292,7 +292,12 @@ class Hook_profiles_tabs_about
         if ($on_probation !== null) {
             $probation_group = get_option('probation_usergroup');
             if (is_numeric($probation_group)) {
-                $probation_group = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups g LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'translate t ON t.id=g.g_name', 'text_original', array('g.id' => intval($probation_group)));
+                $_probation_group = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => intval($probation_group)));
+                if ($_probation_group !== null) {
+                    $probation_group = get_translated_text($_probation_group);
+                } else {
+                    $probation_group = null;
+                }
             }
         } else {
             $probation_group = null;

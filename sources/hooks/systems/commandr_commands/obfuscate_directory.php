@@ -122,7 +122,7 @@ class Hook_commandr_command_obfuscate_directory
                 $out = '(' . do_lang('NONE') . ')';
             }
 
-            return ['', '', $out, ''];
+            return array('', '', $out, '');
         }
     }
 }

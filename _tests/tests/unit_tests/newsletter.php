@@ -60,14 +60,16 @@ class newsletter_test_set extends cms_test_case
 
         require_code('mail');
         $rendered = comcode_to_clean_text($newsletter_message_substituted);
+        $rendered = preg_replace('#' . preg_quote(get_base_url(), '#') . '[^" <>]*#', 'xxx', $rendered);
 
-        $expected = "abc ghi jkl mno pqr@example.com stu yz\n\n-------------------------\n\nYou can unsubscribe from this newsletter at: http://localhost/composr-copy/newsletter/unsub/tu.htm?hash=vwx";
+        $expected = "abc ghi jkl mno pqr@example.com stu yz\n\n-------------------------\n\nYou can unsubscribe from this newsletter at: xxx";
         $this->assertTrue($rendered == $expected);
 
         // Comcode to HTML...
 
         $rendered = static_evaluate_tempcode(comcode_to_tempcode($newsletter_message_substituted, null, true));
-        $expected = "abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can unsubscribe from this newsletter at: <a class=\"user_link\" href=\"http://localhost/composr-copy/newsletter/unsub/tu.htm?hash=vwx\" target=\"_top\">http://localhost/composr-copy/newsletter/unsub/tu.htm?hash=vwx</a></span><br /><br />";
+        $rendered = preg_replace('#' . preg_quote(get_base_url(), '#') . '[^" <>]*#', 'xxx', $rendered);
+        $expected = "abc ghi jkl mno pqr@example.com stu yz<br /><br /><br /><hr />\n<span style=\"  font-size: 0.8em;\">You can unsubscribe from this newsletter at: <a class=\"user_link\" href=\"xxx\" target=\"_top\">xxx</a></span><br /><br />";
         $this->assertTrue($rendered == $expected);
     }
 

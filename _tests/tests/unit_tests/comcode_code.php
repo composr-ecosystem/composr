@@ -160,7 +160,7 @@ class comcode_code_test_set extends cms_test_case
         // Security: Strict filtering working
         set_privilege(1, 'allow_html', false);
         $from = '[semihtml][code]<example>foo</example>[/code][/semihtml]';
-        $to = '<div class="comcode-code-wrap"><div class="comcode-code"><h4>Code</h4><div class="webstandards-checker-off"><code class="comcode-code-inner"><!--filtered; no Subject to a more liberal HTML filter-->foo<!--filtered; no Subject to a more liberal HTML filter--></code></div></div></div>';
+        $to = '<div class="comcode_code_wrap"><div class="comcode_code"><h4>Code</h4><div class="webstandards_checker_off"><code class="comcode_code_inner"><!--filtered; no Subject to a more liberal HTML filter-->foo<!--filtered; no Subject to a more liberal HTML filter--></code></div></div></div>';
         $forced_html_to_comcode = false;
         $do_for_admin_too = false;
         $cases[18] = [$from, $to, $forced_html_to_comcode, $do_for_admin_too];

@@ -1227,7 +1227,15 @@
                 if (!synchronous) {
                     xhr.timeout = timeout;
                 }
-                xhr.send(post);
+                if (boolVal('{$VALUE_OPTION;,http2_post_fix}')) {
+                    var imgTmp = new Image();
+                    imgTmp.onload = function() {
+                        xhr.send(post);
+                    };
+                    imgTmp.src = $cms.getBaseUrl() + '/themes/default/images/blank.gif?rand=' + Math.random();
+                } else {
+                    xhr.send(post);
+                }
             } else {
                 xhr.open('GET', url, true);
                 xhr.send(null);
