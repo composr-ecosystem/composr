@@ -41,6 +41,8 @@ class template_previews_test_set extends cms_test_case
             @set_time_limit(0);
         }
 
+        disable_php_memory_limit();
+
         $_GET['keep_has_js'] = '0';
         $GLOBALS['NO_QUERY_LIMIT'] = true;
         $_GET['keep_no_query_limit'] = '1';
