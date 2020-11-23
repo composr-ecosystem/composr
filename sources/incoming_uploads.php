@@ -146,7 +146,7 @@ function incoming_uploads_script()
         // Clear uploads records/files older then 2 days
         clear_old_uploads();
 
-        exit(); // So auto_append_file cannot run and corrupt our output
+        cms_safe_exit_flow();
     } else {
         //header('Content-type: text/plain; charset=' . get_charset()); @print('No file (' . serialize($_FILES) . ')');
         header('HTTP/1.1 500 File Upload Error');

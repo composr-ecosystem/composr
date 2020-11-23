@@ -48,7 +48,7 @@ function tempcode_tester_script()
         echo $out;
     }
 
-    exit(); // So auto_append_file cannot run and corrupt our output
+    cms_safe_exit_flow();
 }
 
 /**

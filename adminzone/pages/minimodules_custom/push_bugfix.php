@@ -358,24 +358,56 @@ END;
         function update_automatic_category()
         {
             // See if we can match all the selected files to a particular category
+            var fixed_files = [];
             var fixed_files_e = document.getElementById('fixed_files');
             var file_addons = {$_git_found};
-            var category_title = 'core';
+            var category_title = null;
             for (var i = 0; i < fixed_files_e.options.length; i++) {
                 if (fixed_files_e.options[i].selected) {
-                    var filename = fixed_files_e.options[i].value;
-                    if ((typeof file_addons[filename] != 'undefined') && (file_addons[filename] !== null)) {
-                        if (category_title.match(/^core(_.*)?$/)) {
-                            category_title = file_addons[filename];
-                        } else if ((file_addons[filename] != category_title) && (!file_addons[filename].match(/^core(_.*)?$/))) {
-                            category_title = 'core'; // Conflict, so bump it back to core
-                            break; // ... and stop trying
-                        }
-                    } else {
-                        category_title = 'General'; // Must be from non-bundled addon
+                    fixed_files.push(fixed_files_e.options[i].value);
+                }
+            }
+            for (var i = 0; i < fixed_files.length; i++) {
+                var filename = fixed_files[i];
+                if ((typeof file_addons[filename] != 'undefined') && (file_addons[filename] !== null)) {
+                    if (category_title === null) {
+                        category_title = file_addons[filename]; // Nice match to a bundled addon
+                    } else if ((file_addons[filename] != category_title) && (!file_addons[filename].match(/^core(_.*)?$/))) {
+                        category_title = 'core'; // Conflict with something other than core, so bump it back to core as a generalisation
                         break; // ... and stop trying
                     }
                 }
+            }
+            if (category_title === null) {
+                category_title = 'General'; // Must be from non-bundled addon
+            }
+
+            // Find some special general matches
+            var is_all_tests = true;
+            var is_all_documentation = true;
+            var is_all_build_tools = true;
+            for (var i = 0; i < fixed_files.length; i++) {
+                var filename = fixed_files[i];
+                if (!filename.match(/^_tests\//)) {
+                    is_all_tests = false;
+                }
+                if (!filename.match(/^docs\//)) {
+                    is_all_documentation = false;
+                }
+                if (!['sources_custom/make_release.php', 'adminzone/pages/minimodules_custom/make_release.php', 'adminzone/pages/minimodules_custom/push_bugfix.php'].includes(filename)) {
+                    is_all_build_tools = false;
+                }
+
+            }
+            var correct_general_project = '4';
+            if (is_all_tests) {
+                correct_general_project = '9';
+            }
+            if (is_all_documentation) {
+                correct_general_project = '7';
+            }
+            if (is_all_build_tools) {
+                correct_general_project = '8';
             }
 
             // Now select that category
@@ -390,16 +422,16 @@ END;
             // Now select the corresponding project
             var project_e = document.getElementById('project');
             for (var i = 0; i < project_e.options.length; i++) {
-                if (((project_e.options[i].value == '{$default_project_id}') && (category_title != 'General')) || ((project_e.options[i].value == '4') && (category_title == 'General'))) {
+                if (((project_e.options[i].value == '{$default_project_id}') && (category_title != 'General')) || ((project_e.options[i].value == correct_general_project) && (category_title == 'General'))) {
                     project_e.selectedIndex = i;
                     break;
                 }
             }
         }
 
-		add_event_listener_abstract(window,'load',function() {
+        add_event_listener_abstract(window,'load',function() {
             update_automatic_category();
-		});
+        });
 
         function security_hole_radio()
         {

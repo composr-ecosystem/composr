@@ -190,7 +190,7 @@ function otp($var, $origin = '')
 function missing_template_parameter($origin)
 {
     if ((error_reporting() & E_WARNING) === 0) { // Errors disabled via @ most likely, probably we're doing a test in tempcode_compiler.php
-        return false;
+        return '';
     }
     if (strpos($origin, ':') === false) {
         return '';

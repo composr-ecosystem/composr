@@ -645,6 +645,19 @@ function hhvm_include($path)
     return include($path . '.hh');*/
 }
 
+/**
+ * Do what we need, if anything, to allow exiting without any extraneous output messing up a non-HTML request.
+ * It is a hard assumption that if this function returns, exit will happen via a natural flow.
+ */
+function cms_safe_exit_flow()
+{
+    $aaf = @ini_get('auto_append_file');
+    if (!empty($aaf)) {
+        // Necessary to stop it corrupting our XML if it contains ad-crap
+        exit();
+    }
+}
+
 // Useful for basic profiling
 global $PAGE_START_TIME;
 $PAGE_START_TIME = microtime(true);
