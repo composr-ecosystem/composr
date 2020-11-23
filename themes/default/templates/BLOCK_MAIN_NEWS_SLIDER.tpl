@@ -12,8 +12,8 @@
 	<div class="cms-slider-inner">
 		{SLIDES}
 	</div>
-	<a href="#{$GET*,id}" class="btn btn-secondary btn-prev-slide" data-slide="prev"><i class="chevron chevron-left"></i></a>
-	<a href="#{$GET*,id}" class="btn btn-secondary btn-next-slide" data-slide="next"><i class="chevron chevron-right"></i></a>
+	<a href="#{$GET*,id}" class="btn btn-secondary btn-prev-slide" data-slide="prev"><span class="chevron chevron-left"></span></a>
+	<a href="#{$GET*,id}" class="btn btn-secondary btn-next-slide" data-slide="next"><span class="chevron chevron-right"></span></a>
 	<div class="cms-slider-progress-bar">
 		<div class="cms-slider-progress-bar-fill"></div>
 	</div>

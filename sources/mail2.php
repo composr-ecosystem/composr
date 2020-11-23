@@ -47,8 +47,10 @@ function email_spam_check($mime_email)
     if (($spam_report === null) && ($spam_score === null)) {
         if (!empty($spam_test['message'])) {
             $errormsg = $spam_test['message'];
-        } else {
+        } elseif (!empty($_spam_test->message)) {
             $errormsg = $_spam_test->message;
+        } else {
+            $errormsg = do_lang('UNKNOWN');
         }
         throw new Exception($errormsg);
     }

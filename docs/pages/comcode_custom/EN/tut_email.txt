@@ -79,7 +79,7 @@ When a website sends out e-mail there is always a risk that it could get blocked
 Specific issues can be:[list="1"]
 [*] Your server is [b][url="on a spamlist"]https://mxtoolbox.com/blacklists.aspx[/url][/b]. Also check to see if any bounce messages come back that talk about your server being blocked as a spammer.
 Possible reasons for getting onto a spamlist:[list="a"]
-[*] If you are on a shared server it is possible [b]other sites on the server may have gotten the server banned[/b]. There are [url="tools"]https://www.tcpiputils.com/domain-neighbors[/url] to see what other sites share your server's IP address.
+[*] If you are on a shared server it is possible [b]other sites on the server may have gotten the server banned[/b]. There are [url="tools"]https://dnslytics.com/reverse-ip[/url] to see what other sites share your server's IP address.
 [*] You do not have the "Confirmation of member e-mail addresses" option enabled, and as a consequence your server is serving too many bounced e-mails.
 [*] You have a stale newsletter producing [b]too many bounces[/b]. You should clean out addresses that are bouncing so that network infrastructure doesn't flag you for spammy bulk delivery. If you have some way of tracking which e-mails are read you can delete newsletter subscribers that are not reading your e-mails (Composr does not currently support a mechanism for this directly).
 [*] You have [b]bought mailing lists[/b]. Rarely if ever buy mailing lists, users will mark you as a spammer.

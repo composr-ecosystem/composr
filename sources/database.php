@@ -2130,11 +2130,11 @@ class DatabaseConnector
      * @param  ?string $field Field to check we have an index on (null: no check)
      * @return boolean Whether it is
      */
-    public function has_full_text(, $table = null, $field = null)
+    public function has_full_text($table = null, $field = null)
     {
         if (($table !== null) && ($field !== null)) {
             $field = preg_replace('#^.*\.(.*)#', '$1', $field);
-            $indexes = $GLOBALS['FORUM_DB']->query_select('db_meta_indices', array('i_fields', 'i_name'), array('i_table' => $table));
+            $indexes = $GLOBALS['FORUM_DB']->query_select('db_meta_indices', ['i_fields', 'i_name'], ['i_table' => $table]);
             $okay = false;
             foreach ($indexes as $index) {
                 if ($index['i_name'][0] == '#') {

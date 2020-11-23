@@ -54,8 +54,8 @@
 					</div>
 				</div>
 				<div class="glide__arrows">
-					<button class="btn btn-secondary btn-glide-go btn-glide-prev"><i class="chevron chevron-left"></i><span class="sr-only">{!PREVIOUS}</span></button>
-					<button class="btn btn-secondary btn-glide-go btn-glide-next"><i class="chevron chevron-right"></i><span class="sr-only">{!NEXT}</span></button>
+					<button class="btn btn-secondary btn-glide-go btn-glide-prev"><span class="chevron chevron-left"></span><span class="sr-only">{!PREVIOUS}</span></button>
+					<button class="btn btn-secondary btn-glide-go btn-glide-next"><span class="chevron chevron-right"></span><span class="sr-only">{!NEXT}</span></button>
 				</div>
 			</div>
 

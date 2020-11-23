@@ -111,8 +111,8 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $incl
     }
     if (stripos($text, '[media') !== false) {
         if (!in_array('media', $tags_to_preserve)) {
-            $text = preg_replace("#\[media=\"([^\"]*)\"[^\[\]]*\](.*)\[/media\]#Usi", '[url="\2"]\1[/url]', $text);
-            $text = preg_replace("#\[media[^\[\]]*\](.*)\[/media\]#Usi", '[url="\1"]' . do_lang('VIEW') . '[/url]', $text);
+            $text = preg_replace("#\[media=\"([^\"]*)\"[^\[\]]*\](.*)\[/media\]#Usi", $for_extract ? '\1' : '[url="\2"]\1[/url]', $text);
+            $text = preg_replace("#\[media[^\[\]]*\](.*)\[/media\]#Usi", $for_extract ? '' : ('[url="\1"]' . do_lang('VIEW') . '[/url]'), $text);
         }
     }
     $text = simplify_static_tempcode($text);

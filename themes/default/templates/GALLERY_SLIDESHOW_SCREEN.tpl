@@ -17,11 +17,11 @@
 			</div>
 
 			<button type="button" class="btn-slider-control btn-slider-control-prev">
-				<i class="chevron chevron-left"></i>
+				<span class="chevron chevron-left"></span>
 				<span class="sr-only">{!PREVIOUS}</span>
 			</button>
 			<button type="button" class="btn-slider-control btn-slider-control-next">
-				<i class="chevron chevron-right"></i>
+				<span class="chevron chevron-right"></span>
 				<span class="sr-only">{!NEXT}</span>
 			</button>
 		</div>

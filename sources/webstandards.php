@@ -646,7 +646,6 @@ function init__webstandards()
     ];
     $ONLY_CHILDREN += [
         'details' => ['summary'],
-        'datalist' => ['option'],
     ];
 
     // A can only occur underneath B's
@@ -1381,7 +1380,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
 
     $content_start_stack = [];
 
-    global $BLOCK_CONSTRAIN, $XML_CONSTRAIN, $LAST_TAG_ATTRIBUTES, $FOUND_DOCTYPE, $FOUND_DESCRIPTION, $FOUND_KEYWORDS, $FOUND_CONTENTTYPE, $THE_DOCTYPE, $TAGS_DEPRECATE_ALLOW, $URL_BASE, $PARENT_TAG, $TABS_SEEN, $KEYS_SEEN, $ANCHORS_SEEN, $ATT_STACK, $TAG_STACK, $POS, $LINENO, $LINESTART, $OUT, $T_POS, $PROHIBITIONS, $ONLY_PARENT, $ONLY_CHILDREN, $REQUIRE_ANCESTOR, $LEN, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $POSSIBLY_EMPTY_TAGS, $MUST_SELFCLOSE_TAGS, $FOR_LABEL_IDS, $FOR_LABEL_IDS_2, $INPUT_TAG_IDS;
+    global $BLOCK_CONSTRAIN, $XML_CONSTRAIN, $LAST_TAG_ATTRIBUTES, $FOUND_DOCTYPE, $FOUND_DESCRIPTION, $FOUND_KEYWORDS, $FOUND_CONTENTTYPE, $THE_DOCTYPE, $TAGS_DEPRECATE_ALLOW, $URL_BASE, $PARENT_TAG, $TABS_SEEN, $KEYS_SEEN, $ANCHORS_SEEN, $ATT_STACK, $TAG_STACK, $POS, $LINENO, $LINESTART, $OUT, $T_POS, $PROHIBITIONS, $ONLY_PARENT, $ONLY_CHILDREN, $REQUIRE_ANCESTOR, $LEN, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $POSSIBLY_EMPTY_TAGS, $MUST_SELFCLOSE_TAGS, $FOR_LABEL_IDS, $FOR_LABEL_IDS_2, $INPUT_TAG_IDS, $UNDER_XMLNS;
     global $TAG_RANGES, $VALUE_RANGES, $LAST_A_TAG, $A_LINKS, $XHTML_FORM_ENCODING;
     global $AREA_LINKS, $LAST_HEADING, $CRAWLED_URLS, $HYPERLINK_URLS, $EMBED_URLS, $THE_LANGUAGE, $PSPELL_LINK;
     global $TAGS_BLOCK, $TAGS_INLINE, $TAGS_NORMAL, $TAGS_BLOCK_DEPRECATED, $TAGS_INLINE_DEPRECATED, $TAGS_NORMAL_DEPRECATED, $NEVER_SELFCLOSE_TAGS;
@@ -1404,7 +1403,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     $CRAWLED_URLS = [];
     $PARENT_TAG = '';
     $XHTML_FORM_ENCODING = '';
-    $UNDER_XMLNS = false;
+    $UNDER_XMLNS = 0;
     $KEYS_SEEN = [];
     $TABS_SEEN = [];
     $TAG_RANGES = [];
@@ -1416,8 +1415,8 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     $INPUT_TAG_IDS = [];
     $TAG_STACK = [];
     $ATT_STACK = [];
-    $ANCESTOR_BLOCK = 0;
-    $ANCESTOR_INLINE = 0;
+    $ANCESTOR_BLOCK = [];
+    $ANCESTOR_INLINE = [];
     $POS = 0;
     $OUT = $out;
     unset($out);
@@ -1456,17 +1455,6 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
 
         // Open, close, or monitonic?
         $term = strpos($token, '/');
-        if ($WEBSTANDARDS_CHECKER_OFF !== null) {
-            if ($term === false) {
-                $WEBSTANDARDS_CHECKER_OFF++;
-            } elseif ($term == 1) {
-                if ($WEBSTANDARDS_CHECKER_OFF == 0) {
-                    $WEBSTANDARDS_CHECKER_OFF = null;
-                } else {
-                    $WEBSTANDARDS_CHECKER_OFF--;
-                }
-            }
-        }
 
         if ($term !== 1) {
             if (isset($only_one_of[$basis_token])) {
@@ -1532,6 +1520,9 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
                     array_push($ATT_STACK, $LAST_TAG_ATTRIBUTES);
                     array_push($content_start_stack, $POS);
                     array_push($only_one_of_stack, $only_one_of);
+                    if ((array_key_exists('xmlns', $LAST_TAG_ATTRIBUTES)) || ($UNDER_XMLNS != 0)) {
+                        $UNDER_XMLNS++;
+                    }
                     $only_one_of = $only_one_of_template;
                     ++$stack_size;
                 } else {
@@ -1557,6 +1548,9 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
                 $PARENT_TAG = empty($TAG_STACK) ? '' : $TAG_STACK[count($TAG_STACK) - 1];
                 $start_pos = array_pop($content_start_stack);
                 array_pop($ATT_STACK);
+                if ($UNDER_XMLNS != 0) {
+                    $UNDER_XMLNS--;
+                }
                 $only_one_of = array_pop($only_one_of_stack);
                 if ($previous === null) {
                     if ((($WEBSTANDARDS_CHECKER_OFF === null)) && ($XML_CONSTRAIN)) {
@@ -2287,6 +2281,20 @@ function _check_tag($tag, $attributes, $self_close, $close, $errors)
     if (((isset($attributes['class'])) && (strpos($attributes['class'], 'webstandards-checker-off') !== false)) || ((isset($attributes['xmlns'])) && (strpos($attributes['xmlns'], 'xhtml') === false))) {
         if ($WEBSTANDARDS_CHECKER_OFF === null) {
             $WEBSTANDARDS_CHECKER_OFF = 0;
+        } else {
+            $WEBSTANDARDS_CHECKER_OFF++;
+        }
+    } else {
+        if ($WEBSTANDARDS_CHECKER_OFF !== null) {
+            if ($close) {
+                if ($WEBSTANDARDS_CHECKER_OFF == 0) {
+                    $WEBSTANDARDS_CHECKER_OFF = null;
+                } else {
+                    $WEBSTANDARDS_CHECKER_OFF--;
+                }
+            } elseif (!$self_close) {
+                $WEBSTANDARDS_CHECKER_OFF++;
+            }
         }
     }
 

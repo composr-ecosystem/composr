@@ -56,4 +56,5 @@ global $BOOTSTRAPPING;
 if (!$BOOTSTRAPPING) {
     require_code('notification_poller');
     notification_script();
-} // else we intentionally terminated during global2.php and need to not continue
+}
+// else we intentionally terminated during global2.php and need to not continue

@@ -341,7 +341,7 @@ This is very simple. Just do a "reset password" on your account and it will be t
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/sup_facebook/twitter.png[/media]
 Content and Activities can be syndicated out to Facebook, if the Hybridauth and Activity Feed non-bundled addons are installed. Most of this advice applies also to the Composr non-bundled Twitter Support addon, and other Hybridauth providers that support the Hybridauth Atom API for writing. The Hybridauth addon contains additional documentation in the addon description.
 
-[title="4"]Maybe just keep it simple / separate-out responsibilities?[/title]
+[title="3"]Maybe just keep it simple / separate-out responsibilities?[/title]
 
 You may prefer to use a dedicated service such as [url="dlvr.it"]https://dlvr.it/[/url] to tie in any of the Composr RSS feeds. This is sometimes a simpler, and more flexible, solution.
 

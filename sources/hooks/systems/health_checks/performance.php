@@ -485,7 +485,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         }
 
         // LEGACY
-        $this->assertTrue(cms_ini_get('xdebug.profiler_enable') !== '1', 'Xdebug (v2) profiler was left enabled, use xdebug.profiler_enable_trigger and xdebug.profiler_enable_trigger_value to selectively enable profiling if you want it');
+        $this->assertTrue(ini_get('xdebug.profiler_enable') !== '1', 'Xdebug (v2) profiler was left enabled, use xdebug.profiler_enable_trigger and xdebug.profiler_enable_trigger_value to selectively enable profiling if you want it');
         $this->assertTrue((@strval(ini_get('xdebug.start_with_request')) != 'yes') || (strpos(@strval(ini_get('xdebug.mode')), 'profile') === false), 'Xdebug (v3) profiler was left enabled, use xdebug.start_with_request=trigger and xdebug.trigger_value to selectively enable profiling if you want it');
         $this->assertTrue((@strval(ini_get('xdebug.start_with_request')) != 'yes') || (strpos(@strval(ini_get('xdebug.mode')), 'coverage') === false), 'Xdebug (v3) coverage mode was left enabled');
     }

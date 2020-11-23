@@ -109,11 +109,6 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
         $errors = array_merge($errors, $tmp);
     }
 
-    if (array_key_exists('xmlns', $attributes)) {
-        global $UNDER_XMLNS;
-        $UNDER_XMLNS = true;
-    }
-
     // Look for unknown attributes, or bad values
     $tmp = _check_attributes($tag, $attributes, $self_close, $close);
     if ($tmp !== null) {
@@ -446,24 +441,36 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
         $dif = 0;
     }
     if ((isset($TAGS_BLOCK[$tag])) || (isset($TAGS_BLOCK_DEPRECATED[$tag]))) {
-        if (($ANCESTOR_INLINE != 0) && ($BLOCK_CONSTRAIN)) {
-            $errors[] = ['XHTML_ANCESTOR_BLOCK_INLINE', $tag];
+        if ((!empty($ANCESTOR_INLINE)) && ($BLOCK_CONSTRAIN) && (!$close)) {
+            $errors[] = ['XHTML_ANCESTOR_BLOCK_INLINE', $tag, array_peek($ANCESTOR_INLINE)];
         }
-        $ANCESTOR_BLOCK += $dif;
+        if ($dif == 1) {
+            array_push($ANCESTOR_BLOCK, $tag);
+        } elseif ($dif == -1) {
+            array_pop($ANCESTOR_BLOCK);
+        }
         if (isset($TAGS_BLOCK_DEPRECATED[$tag])) {
             $errors[] = [$TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag];
         }
     } elseif ((isset($TAGS_INLINE[$tag])) || (isset($TAGS_INLINE_DEPRECATED[$tag]))) {
         //if (($BLOCK_CONSTRAIN) && ($PARENT_TAG != 'span') && ((isset($TAGS_NORMAL[$PARENT_TAG])) || ((isset($TAGS_NORMAL_DEPRECATED[$PARENT_TAG]))))) $errors[] = ['XHTML_ANCESTOR_INLINE_NORMAL', $tag]; This restriction isn't really a proper one, some checkers seem to have it but it is not used anymore (XHTML5+) and pretty silly
         if (($tag !== 'label') && ($tag !== 'a')) { // We don't count <a> as an inline ancestor as although it's an inline element, its Content model is defined as "Transparent" in HTML5 - which means it inherits the Content model of its parent.
-            $ANCESTOR_INLINE += $dif;
+            if ($dif == 1) {
+                array_push($ANCESTOR_INLINE, $tag);
+            } elseif ($dif == -1) {
+                array_pop($ANCESTOR_INLINE);
+            }
         }
         if (isset($TAGS_INLINE_DEPRECATED[$tag])) {
             $errors[] = [$TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag];
         }
     } elseif ((isset($TAGS_NORMAL[$tag])) || (isset($TAGS_NORMAL_DEPRECATED[$tag]))) {
         if ($tag == 'title') {
-            $ANCESTOR_BLOCK += $dif;
+            if ($dif == 1) {
+                array_push($ANCESTOR_BLOCK, $tag);
+            } elseif ($dif == -1) {
+                array_pop($ANCESTOR_BLOCK);
+            }
         }
         if (($tag == 'iframe') && (($THE_DOCTYPE == DOCTYPE_XHTML_STRICT) || ($THE_DOCTYPE == DOCTYPE_XHTML_11))) {
             $errors[] = ['XHTML_UNKNOWN_TAG', $tag];
@@ -472,7 +479,7 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
             $errors[] = [$TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag];
         }
     } elseif (!$close) {
-        if (!$UNDER_XMLNS) {
+        if ($UNDER_XMLNS == 0) {
             $errors[] = ['XHTML_UNKNOWN_TAG', $tag];
         }
     }
