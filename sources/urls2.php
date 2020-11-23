@@ -827,6 +827,9 @@ function _choose_moniker($page, $type, $id, $moniker_src, $no_exists_check_for =
                 // Individual checks get very slow with time, so do a jump ahead based on how much is already under a suffixed version of the  $moniker (as we can assume sequentiality)
                 $accelerate_sql = 'SELECT COUNT(*)' . $basic_sql . ' AND m_moniker LIKE \'' . db_encode_like($moniker . '%') . '\'';
                 $next_num += $GLOBALS['SITE_DB']->query_value_if_there($accelerate_sql);
+                if ($next_num == 1) {
+                    $next_num++;
+                }
             } else {
                 $next_num++;
             }
