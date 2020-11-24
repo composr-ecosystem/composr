@@ -89,13 +89,7 @@ function personalise_paths(table) {
 ! {$INC,step_num}{$GET,step_num}
 | Check the remote server meets the Composr minimum requirements
 | If the requirements are not met you'll need to circle back to the website owner; they may have intentionally held back software on their hosting and have the capability to update it, or they may need to do a server upgrade or host switch.
-Composr's minimum requirements provide a lot of info, if you can't access that it's very easy to just get PHP's standard phpinfo:
-[code="PHP"]
-<?php
-
-phpinfo();
-[/code]
-Additionally you can upload and run the first two steps of Composr's installer and see if it complains about anything.
+Run the first two steps of Composr's installer and see if it complains about anything (almost all requirements are checked by it).
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Confirm the remote site is running a version of Composr that you can upgrade from
@@ -113,7 +107,7 @@ Require all denied
 [codebox="PHP"]
 <?php
 
-$filename = 'sql-backup-' . date('Y-m-d') . '.sql';
+$filename = 'initial.sql';
 
 $h = 'Content-Disposition: attachment;
 	filename="' . $filename . '"';
@@ -153,11 +147,7 @@ if (!empty($_GET['self_destruct'])) {
 [/codebox]
 |-
 ! {$INC,step_num}{$GET,step_num}
-| Replace [tt]data/upgrader2.php[/tt] from the latest patch release of the version being upgraded from
-| We've had some legacy bugs in this crucial upgrade file.
-|-
-! {$INC,step_num}{$GET,step_num}
-| Set recursive world write permissions
+| If your server is not suEXEC-style, set recursive world write permissions
 | [code="Bash"]
 cd <webroot>/<codename>
 sudo chmod -R 777 .
@@ -171,43 +161,37 @@ sudo chmod -R 777 .
 | Import the SQL dump into your local MySQL installation, in a database named [tt]client_<codename>[/tt], using the command line [tt]mysql[/tt] client
 | [code="Bash"]
 cd <webroot>/<codename>
-mysql client_<codename> < _temp/initial.sql
+mysql client_<codename> < _temp/stage1.sql
 [/code]
 |-
 ! {$INC,step_num}{$GET,step_num}
-| Reconfigure [tt]_config.php[/tt]/[tt]info.php[/tt] to have local details by putting local ones at the end of the file
+| Reconfigure [tt]_config.php[/tt] to have local details by putting local ones on your development hostname
 | [code="PHP"]
-unset($SITE_INFO['db_forums']);
-unset($SITE_INFO['db_forums_host']);
-unset($SITE_INFO['db_forums_user']);
-unset($SITE_INFO['db_forums_password']);
-unset($SITE_INFO['cns_table_prefix']);
-$SITE_INFO['base_url'] = 'http://localhost/<codename>';
-$SITE_INFO['db_site'] = 'client_<codename>';
-$SITE_INFO['db_site_host'] = 'localhost';
-$SITE_INFO['db_site_user'] = 'root';
-$SITE_INFO['db_site_password'] = '';
-$SITE_INFO['debug_mode'] = '0';
-$SITE_INFO['dev_mode'] = '0';
-$SITE_INFO['no_email_output'] = '1';
+$host = gethostname();
+switch ($host) {
+    case 'TODO': // dev machine
+        unset($SITE_INFO['db_forums']);
+        unset($SITE_INFO['db_forums_host']);
+        unset($SITE_INFO['db_forums_user']);
+        unset($SITE_INFO['db_forums_password']);
+        unset($SITE_INFO['cns_table_prefix']);
+        $SITE_INFO['base_url'] = 'http://localhost/<codename>';
+        $SITE_INFO['db_site'] = 'client_<codename>';
+        $SITE_INFO['db_site_host'] = 'localhost';
+        $SITE_INFO['db_site_user'] = 'root';
+        $SITE_INFO['db_site_password'] = '';
+        $SITE_INFO['debug_mode'] = '0';
+        $SITE_INFO['dev_mode'] = '0';
+        $SITE_INFO['no_email_output'] = '1';
 
-// These must not persist onto a live site,
-// they allow temporary unauthenticated
-// local admin access to make upgrading
-// easier a third-party developer
-$SITE_INFO['admin_password'] = '';
-$SITE_INFO['backdoor_ip'] = '127.0.0.1';
-[/code]
-|-
-! {$INC,step_num}{$GET,step_num}
-| Change [tt]mysql[/tt] to [tt]mysqli[/tt] in [tt]_config.php[/tt]/[tt]info.php[/tt] if upgrading a really old site
-|
-|-
-! &dagger; {$INC,step_num}{$GET,step_num}
-| Save a new SQL dump into the [tt]_temp[/tt] folder
-| [code="Bash"]
-cd <webroot>/<codename>
-mysqldump client_<codename> > _temp/stage1.sql
+        // These must not exist on any live site,
+        // they allow temporary unauthenticated
+        // local admin access to make upgrading
+        // easier a third-party developer
+        $SITE_INFO['admin_password'] = '';
+        $SITE_INFO['backdoor_ip'] = '127.0.0.1';
+        break;
+}
 [/code]
 |-
 ! {$INC,step_num}{$GET,step_num}
@@ -259,7 +243,7 @@ mysqldump client_<codename> > _temp/stage2.sql
 [/code]
 |-
 ! {$INC,step_num}{$GET,step_num}
-| Delete old page revisions, old config files, old backups, old [tt].latest_in_ocp_edit[/tt] files, etc
+| Delete old page revisions, old config files, old backups, old [tt].latest_in_cms_edit[/tt] files, etc
 |
 |-
 ! {$INC,step_num}{$GET,step_num}
@@ -273,18 +257,6 @@ mysqldump client_<codename> > _temp/stage2.sql
 ! {$INC,step_num}{$GET,step_num}
 | Run some cleanup tools
 | Go to Admin Zone > Tools > Cleanup tools, run "Sync for lost disk content"; if you're really enthusiastic also "Find orphaned uploads" and "Broken URLs"
-|-
-! {$INC,step_num}{$GET,step_num}
-| Delete some empty directories that may have been left over (Composr only tracks alien files, not directories)
-| This will find empty directories, only delete with care:
-[code="Bash"]
-find . -type d -empty
-[/code]
-On a Mac it is more tricky, as [tt].DS_Store[/tt] files may be littered around. You can use http://www.tempel.org/FindEmptyFolders or run this command first:
-[code="Bash"]
-find . -name .DS_Store -exec rm {} \;
-[/code]
-(The upgrader does delete empty directories caused by alien file removal.)
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Consider replacing all the TAR files in [tt]addons/imports[/tt] so you're sure they're fresh
@@ -348,12 +320,14 @@ git commit -a -m "Finished code rebuild"
 | If the site being upgraded has database content changing regularly (perhaps member activity), you need to update your local database so you have those changes. Skip this and the next step if you do not.
 |-
 ! {$INC,step_num}{$GET,step_num}
-| Do one of 3 things to get the database back in sync:[list="1"]
+| Get your database back in sync
+| Do one of 3 things:[list="1"]
 [*] Identify that nothing needs synching. If you are using MyISAM then Commandr can tell when tables were recently changed with [tt]ls /database[/tt].
 [*] Take a new database backup and use a diff against your very first database backup, then manually copy those changes through. This is only a good idea if you expect a tiny number of simple changes. Of course in most cases you can ignore changes to logging tables.
 [*] Install MySQL utilities and Connector/Python, put your [tt]_temp/stage1.sql[/tt] file into [tt]client_<codename>_old[/tt] then run something like:
 [code="Bash"]
-mysqldbcompare --server1=remote_user@remote_host \
+mysqldbcompare \
+ --server1=remote_user@remote_host \
  --server2=root@localhost \
  remote_database:client_<codename>_old \
  --run-all-tests \
@@ -444,16 +418,18 @@ function do_dir($dir)
     $dh = opendir($_dir);
     if ($dh) {
         while (($file = readdir($dh)) !== false) {
-            if ($file{0} != '.') {
-                if (is_file($_dir . '/' . $file)) {
-                    $out[] = $_dir . '/' . $file;
-                } elseif (is_dir($_dir . '/' . $file)) {
-                    $_under = $dir .
-                        (($dir != '') ? '/' : '') .
-                        $file;
-                    $_out = do_dir($_under);
-                    $out = array_merge($out, $_out);
-                }
+            if ($file[0] == '.') {
+                continue;
+            }
+
+            if (is_file($_dir . '/' . $file)) {
+                $out[] = $_dir . '/' . $file;
+            } elseif (is_dir($_dir . '/' . $file)) {
+                $_under = $dir .
+                    (($dir != '') ? '/' : '') .
+                    $file;
+                $_out = do_dir($_under);
+                $out = array_merge($out, $_out);
             }
         }
     }
@@ -487,7 +463,7 @@ For a further level of professionalism you may choose to deploy using your Git r
 */
 
 if (!isset($_GET['file'])) {
-    exit('Need \'file\' parameter (filename of the file to unzip)');
+    exit('Need \'file\' parameter (filename to unzip)');
 }
 
 $filename = $_GET['file'];
