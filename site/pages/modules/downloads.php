@@ -356,11 +356,11 @@ class Module_downloads
                     $row = $rows[$counter];
 
                     $view_url = $row['url'];
-                    if ($image_url == '') {
-                        $image_url = $row['url'];
-                    }
                     if (url_is_local($view_url)) {
                         $view_url = get_custom_base_url() . '/' . $view_url;
+                    }
+                    if ($image_url == '') {
+                        $image_url = $view_url;
                     }
                     $thumb_url = ensure_thumbnail($row['url'], $row['thumb_url'], 'galleries', 'images', $row['id']);
                     $image_description = get_translated_tempcode('images', $row, 'description');
