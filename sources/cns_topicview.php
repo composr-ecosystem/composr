@@ -147,7 +147,7 @@ function cns_get_details_to_show_post($_postdetails, $topic_info, $only_post = f
     );
 
     $post['has_revisions'] = false;
-    if (addon_installed('actionlog')) {
+    if ((addon_installed('actionlog')) && (has_actual_page_access(get_member(), 'admin_revisions'))) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase(true);
         if ($revision_engine->has_revisions(array('post'), strval($_postdetails['id']))) {
