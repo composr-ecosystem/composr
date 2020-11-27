@@ -16462,14 +16462,6 @@ expose(["plupload","plupload/core/Collection","plupload/core/ArrCollection","plu
 
         var placeholderField = document.getElementById(name);
 
-        // We need to clear out events on the upload button, attaching a new event for this upload
-        var button = document.getElementById(attachmentBrowseButton);
-        if (button) {
-            var newButton = button.cloneNode(true),
-                buttonParent = button.parentNode;
-            buttonParent.replaceChild(newButton, button);
-        }
-
         // Remove shiv code from old instances too
         var shivs = mainDiv.querySelectorAll('.moxie-shim-html5');
         for (var i = 0; i < shivs.length; i++) {
