@@ -236,11 +236,14 @@ function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $sta
     $_start_hour = ($start_hour === null) ? find_timezone_start_hour_in_utc($timezone, $start_year, $start_month, $start_day, $start_monthly_spec_type) : $start_hour;
     $_start_minute = ($start_minute === null) ? find_timezone_start_minute_in_utc($timezone, $start_year, $start_month, $start_day, $start_monthly_spec_type) : $start_minute;
     $day_of_month = find_concrete_day_of_month($start_year, $start_month, $start_day, $start_monthly_spec_type, $_start_hour, $_start_minute, $timezone, $do_timezone_conv == 1);
-    $_end_hour = ($end_hour === null) ? find_timezone_end_hour_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_hour;
-    $_end_minute = ($end_minute === null) ? find_timezone_end_minute_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_minute;
-    $end_day_of_month = find_concrete_day_of_month($end_year, $end_month, $end_day, $end_monthly_spec_type, $_end_hour, $_end_minute, $timezone, $do_timezone_conv == 1);
-    if ($end_monthly_spec_type != 'day_of_month') {
-        $dif_days = get_days_between($initial_start_month, $day_of_month, $initial_start_year, $initial_end_month, $end_day_of_month, $initial_end_year);
+    $dif_days = 0;
+    if ($end_day !== null) {
+        $_end_hour = ($end_hour === null) ? find_timezone_end_hour_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_hour;
+        $_end_minute = ($end_minute === null) ? find_timezone_end_minute_in_utc($timezone, $end_year, $end_month, $end_day, $end_monthly_spec_type) : $end_minute;
+        $end_day_of_month = find_concrete_day_of_month($end_year, $end_month, $end_day, $end_monthly_spec_type, $_end_hour, $_end_minute, $timezone, $do_timezone_conv == 1);
+        if ($end_monthly_spec_type != 'day_of_month') {
+            $dif_days = get_days_between($initial_start_month, $day_of_month, $initial_start_year, $initial_end_month, $end_day_of_month, $initial_end_year);
+        }
     }
 
     $start_timestamp = mktime($_start_hour, $_start_minute, 0, $start_month, $day_of_month, $start_year);
