@@ -175,6 +175,8 @@ switch ($host) {
         unset($SITE_INFO['db_forums_user']);
         unset($SITE_INFO['db_forums_password']);
         unset($SITE_INFO['cns_table_prefix']);
+        unset($SITE_INFO['cookie_domain']);
+        unset($SITE_INFO['cookie_path']);
         $SITE_INFO['base_url'] = 'http://localhost/<codename>';
         $SITE_INFO['db_site'] = 'client_<codename>';
         $SITE_INFO['db_site_host'] = 'localhost';
