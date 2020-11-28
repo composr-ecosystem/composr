@@ -834,10 +834,10 @@ function enable_notifications($notification_code, $notification_category, $membe
     }
 
     $db->query_delete('notifications_enabled', $map);
-    if ($setting != A_NA) {
-        $map['l_setting'] = $setting;
-        $db->query_insert('notifications_enabled', $map);
-    }
+
+    // Save new setting. Needs to do this even for A_NA, as otherwise Composr would call up the default upon a missing value
+    $map['l_setting'] = $setting;
+    $db->query_insert('notifications_enabled', $map);
 
     if (($notification_code == 'comment_posted') && (get_forum_type() == 'cns') && (!is_null($notification_category))) { // Sync comment_posted ones to also monitor the forum ones; no need for opposite way as comment ones already trigger forum ones
         $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $notification_category, do_lang('COMMENT'));
@@ -854,7 +854,7 @@ function enable_notifications($notification_code, $notification_category, $membe
  * Disable notifications for a member on a notification type+category. Chances are you don't want to call this, you want to call enable_notifications with $setting = A_NA. That'll stop the default coming back.
  *
  * @param  ID_TEXT $notification_code The notification code to use
- * @param  ?SHORT_TEXT $notification_category The category within the notification code (null: none)
+ * @param  SHORT_TEXT $notification_category The category within the notification code
  * @param  ?MEMBER $member_id The member being de-signed up (null: current member)
  */
 function disable_notifications($notification_code, $notification_category, $member_id = null)
@@ -871,7 +871,7 @@ function disable_notifications($notification_code, $notification_category, $memb
     $db->query_delete('notifications_enabled', array(
         'l_member_id' => $member_id,
         'l_notification_code' => substr($notification_code, 0, 80),
-        'l_code_category' => is_null($notification_category) ? '' : $notification_category,
+        'l_code_category' => $notification_category,
     ));
 
     if (($notification_code == 'comment_posted') && (get_forum_type() == 'cns')) { // Sync comment_posted ones to the forum ones
