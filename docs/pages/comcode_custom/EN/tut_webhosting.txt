@@ -57,9 +57,7 @@ If a random commercial [concept]PHP[/concept]/[concept]MySQL[/concept]-supportin
 The remainder of this section details Composr's requirements. If you have trouble ascertaining a webhosts compliance, you may wish to contact them with this information.
 
 [staff_note]Also update download.txt in composr_homesite branch[/staff_note]Composr requires:
- - A web server that runs PHP. PHP is software which provides the environment that Composr is written for. Composr requires PHP version 5.1 or higher. If a webhost has a PHP version older than this, it is not just out-dated, but also insecure: no competent webhosts still do (at the time of writing, anything less than PHP 5.5 is unsupported by the PHP developers)
-  - If you are using PHP 5.2.0 or lower then PHP must have been compiled with [tt]--enable-memory-limit[/tt]
-  - If you intend to use WebDAV, PHP 5.3 or higher is required
+ - A web server that runs PHP. PHP is software which provides the environment that Composr is written for. Composr requires PHP version 5.3 or higher. If a webhost has a PHP version older than this, it is not just out-dated, but also insecure: no competent webhosts still do (at the time of writing, anything less than PHP 7.3 is unsupported by the PHP developers)
   - Other non-bundled addons may have different dependencies
   - If you install with PHP 5.5 or newer, you may not then down-grade to anything older than PHP 5.5 (as Composr will have already made use of PHP 5.5's password security features for saved passwords)[media width="480" thumb="1" framed="1" description="Easy-reference summary of the key hosting recommendations." float="right"]data_custom/images/docs/tut_webhosting/image.png[/media]
  - A PHP environment with the following (a competent webhost geared towards running PHP web applications should be able to provide this):
