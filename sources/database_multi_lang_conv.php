@@ -25,6 +25,9 @@
  */
 function rebuild_indices($only_trans = false)
 {
+    push_db_scope_check(false);
+    push_query_limiting(false);
+
     global $TABLE_LANG_FIELDS_CACHE;
 
     if (get_forum_type() == 'cns') {
