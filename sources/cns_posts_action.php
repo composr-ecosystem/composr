@@ -375,8 +375,10 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
                 }
 
                 decache(array(
-                    array('side_cns_private_topics', array($with)),
-                    array('_new_pp', array($with)),
+                    array('side_cns_private_topics', null),
+                    array('_new_pp', null),
+                    array('_get_pts', null),
+                    $with
                 ));
             }
         }

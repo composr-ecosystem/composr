@@ -28,6 +28,11 @@ class Hook_cron_block_caching
      */
     public function run()
     {
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('cron_caching_requests', 'c_theme');
+        if ($test === null) {
+            return;
+        }
+
         if ((get_param_string('keep_lang', null) === null) || (get_param_string('keep_theme', null) === null)) {
             // We need to run this for each language and for each theme
             $langs = find_all_langs();

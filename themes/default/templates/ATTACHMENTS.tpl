@@ -17,7 +17,13 @@
 
 		function rebuild_attachment_button_for_next__{POSTING_FIELD_NAME%}(attachment_upload_button)
 		{
-			if (typeof attachment_upload_button=='undefined') attachment_upload_button=document.getElementById('attachment_upload_button__{POSTING_FIELD_NAME%}');
+			if (typeof attachment_upload_button=='undefined') {
+				if (document.getElementById('cke_{POSTING_FIELD_NAME%}')) {
+					attachment_upload_button=document.getElementById('cke_{POSTING_FIELD_NAME%}').getElementsByClassName('cke_button__composr_image')[0].id;
+				} else {
+					attachment_upload_button='attachment_upload_button__{POSTING_FIELD_NAME%}';
+				}
+			}
 
 			prepare_simplified_file_input('attachment_multi','file'+window.num_attachments,null,'{POSTING_FIELD_NAME;/}',{+START,IF_PASSED,FILTER}'{FILTER;/}'{+END}{+START,IF_NON_PASSED,FILTER}null{+END},attachment_upload_button);
 		}

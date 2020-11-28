@@ -127,7 +127,7 @@
 
 				<div class="niceBoxInner">
 					<ul class="liRcol">
-						<li>PHP 5.1 or higher, with the following supported:
+						<li>PHP 5.3 or higher, with the following supported:
 							<ul>
 								<li>GD2</li>
 								<li>Memory limit 64MB+</li>

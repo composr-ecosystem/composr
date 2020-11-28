@@ -136,20 +136,16 @@ $db_site_user = 'TODO';
 $db_site_password = 'TODO';
 
 if ($db_site == 'TODO') {
-    if (is_file('info.php')) { // LEGACY
-        require('info.php');
-        $db_site = $SITE_INFO['db_site'];
-        $db_site_host = $SITE_INFO['db_site_host'];
-        $db_site_user = $SITE_INFO['db_site_user'];
-        $db_site_password = $SITE_INFO['db_site_password'];
-    }
+    // LEGACY
     if (is_file('_config.php')) {
         require('_config.php');
-        $db_site = $SITE_INFO['db_site'];
-        $db_site_host = $SITE_INFO['db_site_host'];
-        $db_site_user = $SITE_INFO['db_site_user'];
-        $db_site_password = $SITE_INFO['db_site_password'];
+    } else {
+        require('info.php');
     }
+    $db_site = $SITE_INFO['db_site'];
+    $db_site_host = $SITE_INFO['db_site_host'];
+    $db_site_user = $SITE_INFO['db_site_user'];
+    $db_site_password = $SITE_INFO['db_site_password'];
 }
 
 $sql_cmd = 'mysqldump';
@@ -177,7 +173,7 @@ if (!empty($_GET['self_destruct'])) {
 | We've had some legacy bugs in this crucial upgrade file.
 |-
 ! {$INC,step_num}{$GET,step_num}
-| Set recursive world write permissions
+| If your server is not suEXEC-style, set recursive world write permissions
 | [code="Bash"]
 cd <webroot>/<codename>
 sudo chmod -R 777 .
@@ -199,10 +195,6 @@ sudo chmod -R 777 .
 | If you're updating from ocPortal then find all non-default files containing this regexp [tt][^\x00-\x7F][/tt] and re-save them as utf-8
 | The regexp finds non-ASCII files, so you don't have to re-save every single file
 |-
-! {$INC,step_num}{$GET,step_num}
-| If you're updating from ocPortal then do this regexp replace in the the [tt].sql[/tt] file: [tt]\[attachment([^\[\]]*)\]url_([^\[\]]*)\[/attachment[^\[\]]*\][/tt] --> [tt][media$1]$2[/media][/tt]
-| The regexp changes old URL attachments (which are now 100% non-supported in Composr) to new media tags
-|-
 ! &dagger; {$INC,step_num}{$GET,step_num}
 | Import the SQL dump into your local MySQL installation, in a database named [tt]client_<codename>[/tt], using the command line [tt]mysql[/tt] client
 | [code="Bash"]
@@ -214,32 +206,37 @@ mysql client_<codename> < _temp/initial.sql
 | If you're updating from ocPortal then add some settings to [tt]_config.php[/tt]/[tt]info.php[/tt]:
 | [code="PHP"]
 $SITE_INFO['self_learning_cache'] = '1';
-$SITE_INFO['session_cookie'] = 'cms_session__<something_random>';
+$SITE_INFO['session_cookie'] = 'cms_session__<whatever>';
 [/code]
 |-
 ! {$INC,step_num}{$GET,step_num}
-| Reconfigure [tt]_config.php[/tt]/[tt]info.php[/tt] to have local details by putting local ones at the end of the file
+| Reconfigure [tt]_config.php[/tt]/[tt]info.php[/tt] to have local details on your development hostname
 | [code="PHP"]
-unset($SITE_INFO['db_forums']);
-unset($SITE_INFO['db_forums_host']);
-unset($SITE_INFO['db_forums_user']);
-unset($SITE_INFO['db_forums_password']);
-unset($SITE_INFO['cns_table_prefix']);
-$SITE_INFO['base_url'] = 'http://localhost/<codename>';
-$SITE_INFO['db_site'] = 'client_<codename>';
-$SITE_INFO['db_site_host'] = 'localhost';
-$SITE_INFO['db_site_user'] = 'root';
-$SITE_INFO['db_site_password'] = '';
-$SITE_INFO['debug_mode'] = '0';
-$SITE_INFO['dev_mode'] = '0';
-$SITE_INFO['no_email_output'] = '1';
+$host = gethostname();
+switch ($host) {
+    case 'TODO': // dev machine
+        unset($SITE_INFO['db_forums']);
+        unset($SITE_INFO['db_forums_host']);
+        unset($SITE_INFO['db_forums_user']);
+        unset($SITE_INFO['db_forums_password']);
+        unset($SITE_INFO['cns_table_prefix']);
+        $SITE_INFO['base_url'] = 'http://localhost/<codename>';
+        $SITE_INFO['db_site'] = 'client_<codename>';
+        $SITE_INFO['db_site_host'] = 'localhost';
+        $SITE_INFO['db_site_user'] = 'root';
+        $SITE_INFO['db_site_password'] = '';
+        $SITE_INFO['debug_mode'] = '0';
+        $SITE_INFO['dev_mode'] = '0';
+        $SITE_INFO['no_email_output'] = '1';
 
-// These must not persist onto a live site,
-// they allow temporary unauthenticated
-// local admin access to make upgrading
-// easier a third-party developer
-$SITE_INFO['admin_password'] = '';
-$SITE_INFO['backdoor_ip'] = '127.0.0.1';
+        // These must not exist on any live site,
+        // they allow temporary unauthenticated
+        // local admin access to make upgrading
+        // easier a third-party developer
+        $SITE_INFO['admin_password'] = '';
+        $SITE_INFO['backdoor_ip'] = '127.0.0.1';
+        break;
+}
 [/code]
 |-
 ! {$INC,step_num}{$GET,step_num}
@@ -407,12 +404,14 @@ git commit -a -m "Finished code rebuild"
 | If the site being upgraded has database content changing regularly (perhaps member activity), you need to update your local database so you have those changes. Skip this and the next step if you do not.
 |-
 ! {$INC,step_num}{$GET,step_num}
-| Do one of 3 things to get the database back in sync:[list="1"]
+| Get your database back in sync
+| Do one of 3 things:[list="1"]
 [*] Identify that nothing needs synching. If you are using MyISAM then Commandr can tell when tables were recently changed with [tt]ls /database[/tt].
 [*] Take a new database backup and use a diff against your very first database backup, then manually copy those changes through. This is only a good idea if you expect a tiny number of simple changes. Of course in most cases you can ignore changes to logging tables.
 [*] Install MySQL utilities and Connector/Python, put your [tt]_temp/stage1.sql[/tt] file into [tt]client_<codename>_old[/tt] then run something like:
 [code="Bash"]
-mysqldbcompare --server1=remote_user@remote_host \
+mysqldbcompare \
+ --server1=remote_user@remote_host \
  --server2=root@localhost \
  remote_database:client_<codename>_old \
  --run-all-tests \
@@ -503,16 +502,18 @@ function do_dir($dir)
     $dh = opendir($_dir);
     if ($dh) {
         while (($file = readdir($dh)) !== false) {
-            if ($file{0} != '.') {
-                if (is_file($_dir . '/' . $file)) {
-                    $out[] = $_dir . '/' . $file;
-                } elseif (is_dir($_dir . '/' . $file)) {
-                    $_under = $dir .
-                        (($dir != '') ? '/' : '') .
-                        $file;
-                    $_out = do_dir($_under);
-                    $out = array_merge($out, $_out);
-                }
+            if ($file[0] == '.') {
+                continue;
+            }
+
+            if (is_file($_dir . '/' . $file)) {
+                $out[] = $_dir . '/' . $file;
+            } elseif (is_dir($_dir . '/' . $file)) {
+                $_under = $dir .
+                    (($dir != '') ? '/' : '') .
+                    $file;
+                $_out = do_dir($_under);
+                $out = array_merge($out, $_out);
             }
         }
     }
@@ -546,7 +547,7 @@ For a further level of professionalism you may choose to deploy using your git r
 */
 
 if (!isset($_GET['file'])) {
-    exit('Need \'file\' parameter (filename of the file to unzip)');
+    exit('Need \'file\' parameter (filename to unzip)');
 }
 
 $filename = $_GET['file'];

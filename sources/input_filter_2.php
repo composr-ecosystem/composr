@@ -82,6 +82,11 @@ function rescue_shortened_post_request()
             }
         }
     }
+    global $DEV_MODE;
+    if (($DEV_MODE) && (500 < $setting_value)) {
+        $setting_value = 500;
+        $setting_name = '(dev-mode)';
+    }
 
     if (($setting_value !== null) && ($setting_value > 1/*sanity check*/)) {
         if ((count($_POST) >= $setting_value - 5) || (array_count_recursive($_POST) >= $setting_value - 5)) {
