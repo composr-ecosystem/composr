@@ -98,7 +98,7 @@ class Block_main_activity_feed
      *
      * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
      */
-    /*function caching_environment()
+    /*public function caching_environment()
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
