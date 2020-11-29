@@ -721,8 +721,8 @@ function _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $def
     }
     $final_type = str_replace(array('*', '?'), array('', ''), $_final_type);
     $extra = '';
-    if ((($final_type != 'LONG_TEXT') || (strpos(get_db_type(), 'mysql') === false)) && (($_final_type[0] != '?') || ($default !== null))) {
-        $extra = is_null($default) ? 'DEFAULT NULL' : ('DEFAULT ' . (is_string($default) ? ('\'' . db_escape_string($default) . '\'') : strval($default)));
+    if ((($final_type != 'LONG_TEXT') || (strpos(get_db_type(), 'mysql') === false)) && ($default !== null)) {
+        $extra = 'DEFAULT ' . (is_string($default) ? ('\'' . db_escape_string($default) . '\'') : strval($default));
     }
     $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name;
     $query .= ' ADD ' . $name . ' ' . str_replace(' auto_increment', ' PRIMARY KEY auto_increment', $type_remap[$final_type]) . ' ' . $extra . ' ' . $tag;
