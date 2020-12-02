@@ -759,14 +759,13 @@ class Forum_driver_cns extends Forum_driver_base
 
         $query = 'SELECT t.id,f_is_threaded FROM ' . $this->connection->get_table_prefix() . 'f_topics t JOIN ' . $this->connection->get_table_prefix() . 'f_forums f ON f.id=t.t_forum_id WHERE t_forum_id=' . strval($forum_id) . ' AND ';
         $query .= '(';
+        $query .= db_string_equal_to('t_description', $topic_identifier);
         if ($topic_identifier_encapsulation_prefix === null) {
-            $query .= db_string_equal_to('t_description', $topic_identifier);
             $query .= ' OR t_description LIKE \'%: #' . db_encode_like($topic_identifier) . '\'';
-            $query .= ' OR t_cache_first_title LIKE \'% (#' . db_encode_like($topic_identifier) . ')\''; // LEGACY
         } else {
-            $query .= db_string_equal_to('t_description', $topic_identifier);
             $query .= ' OR ' . db_string_equal_to('t_description', $topic_identifier_encapsulation_prefix . ': #' . $topic_identifier);
         }
+        $query .= ' OR t_cache_first_title LIKE \'% (#' . db_encode_like($topic_identifier) . ')\''; // LEGACY
         $query .= ')';
 
         $_result = $this->connection->query($query, 1, null, false, true);
