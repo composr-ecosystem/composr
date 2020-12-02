@@ -9,7 +9,7 @@
 		</noscript>
 
 		<script>// <![CDATA[
-			window.setTimeout(function() {
+			document.getElementById('preview_frame').onload = function() {
 				var adjusted_preview='{PREVIEW;^/}'.replace(/<!DOCTYPE[^>]*>/i,'').replace(/<html[^>]*>/i,'').replace(/<\/html>/i,'');
 				var de=window.frames['preview_frame'].document.documentElement;
 				var body=de.getElementsByTagName('body');
@@ -30,7 +30,7 @@
 				}
 
 				resize_frame('preview_frame',300);
-			}, 500);
+			};
 		//]]></script>
 	</div></div>
 
