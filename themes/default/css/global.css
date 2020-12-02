@@ -2297,8 +2297,8 @@ div.zebra_0+div.zebra_1, div.zebra_1+div.zebra_0 {
 	padding: 3px;
 }
 
-.alphabetical_jumper.pagination a, .alphabetical_jumper.pagination a:hover {
-	padding: 0.5em 1em !important;
+.alphabetical_jumper.pagination a, .alphabetical_jumper.pagination a:hover, .alphabetical_jumper.pagination span {
+	padding: 0.5em 0.65em !important;
 }
 
 .results_continue, .results_page_num {
