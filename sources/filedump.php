@@ -119,11 +119,8 @@ function find_filedump_links($focus = '')
             if (strpos($field_type, 'LONG_TRANS__COMCODE') !== false) {
                 $query = 'SELECT r.* FROM ' . get_table_prefix() . $table . ' r WHERE 1=1';
                 $_field_name = $GLOBALS['SITE_DB']->translate_field_ref($field_name);
-                if ($GLOBALS['SITE_DB']->has_full_text()) { // For efficiency, pre-filter via full-text search
-                    $index_name = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta_indices', 'i_name', ['i_table' => $table, 'i_fields' => $field_name], ' AND i_name LIKE \'' . db_encode_like('#%') . '\'');
-                    if ($index_name !== null) {
-                        $query .= ' AND ' . preg_replace('#\?#', $_field_name, $GLOBALS['SITE_DB']->full_text_assemble('filedump'));
-                    }
+                if ($GLOBALS['SITE_DB']->has_full_text($GLOBALS['SITE_DB']->connection_read, $table, $field_name)) { // For efficiency, pre-filter via full-text search
+                    $query .= ' AND ' . preg_replace('#\?#', $_field_name, $GLOBALS['SITE_DB']->full_text_assemble('filedump'));
                 }
                 if ($focus == '') {
                     $query .= ' AND ' . $_field_name . ' LIKE \'' . db_encode_like('%uploads/filedump/%') . '\'';
