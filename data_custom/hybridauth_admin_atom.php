@@ -55,11 +55,19 @@ if ((empty($get)) && (empty($_POST))) {
     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
 }
 
-list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
+list($hybridauth, $admin_storage, $providers) = initiate_hybridauth_admin();
 
 $provider = get_param_string('provider');
 
+if (!isset($providers[$provider])) {
+    warn_exit($provider . ' is not configured.');
+}
+
 $adapter = $hybridauth->getAdapter($provider);
+
+if (!$adapter->isConnected()) {
+    warn_exit($provider . ' is not connected.');
+}
 
 if (!$adapter instanceof Hybridauth\Adapter\AtomInterface) {
     warn_exit('Atom interface not implemented by ' . $provider);
