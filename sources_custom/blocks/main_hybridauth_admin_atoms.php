@@ -92,7 +92,7 @@ PHP;
         $before_xss_detect = ini_get('ocproducts.xss_detect');
         cms_ini_set('ocproducts.xss_detect', '0');
 
-        list($hybridauth, $admin_storage) = initiate_hybridauth_admin();
+        list($hybridauth, $admin_storage, $providers) = initiate_hybridauth_admin();
 
         if (empty($map['param'])) {
             return do_template('RED_ALERT', ['TEXT' => '\'param\' parameter is needed.']);
@@ -111,6 +111,10 @@ PHP;
         $include_contributed_content = array_key_exists('include_contributed_content', $map) ? ($map['include_contributed_content'] == '1') : false;
         $include_private = array_key_exists('include_private', $map) ? ($map['include_private'] == '1') : false;
         $shuffle = array_key_exists('shuffle', $map) ? ($map['shuffle'] == '1') : false;
+
+        if (!isset($providers[$provider])) {
+            return paragraph($provider . ' is not configured.', 'red_alert');
+        }
 
         $filter = new Hybridauth\Atom\Filter();
         $filter->categoryFilter = $category_filter;
@@ -138,17 +142,21 @@ PHP;
 
         $adapter = $hybridauth->getAdapter($provider);
 
+        if (!$adapter->isConnected()) {
+            return do_template('RED_ALERT', ['TEXT' => 'Connection to ' . $provider . ' is lost.']);
+        }
+
         if (!$adapter instanceof Hybridauth\Adapter\AtomInterface) {
             return do_template('RED_ALERT', ['TEXT' => 'Atom interface not implemented by ' . $provider]);
         }
 
         $feed = [];
 
-        $user_profile = $adapter->getUserProfile();
-
-        $all_categories = $adapter->getCategories();
-
         try {
+            $user_profile = $adapter->getUserProfile();
+
+            $all_categories = $adapter->getCategories();
+
             list($atoms, $has_results) = $adapter->getAtoms($filter);
 
             if ($shuffle) {

@@ -11,6 +11,7 @@ use Hybridauth\Exception\NotImplementedException;
 use Hybridauth\Exception\InvalidArgumentException;
 use Hybridauth\Exception\HttpClientFailureException;
 use Hybridauth\Exception\HttpRequestFailedException;
+use Hybridauth\Exception\AccessDeniedException;
 use Hybridauth\Storage\StorageInterface;
 use Hybridauth\Storage\Session;
 use Hybridauth\Logger\LoggerInterface;
@@ -361,6 +362,13 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         $status = $this->httpClient->getResponseHttpCode();
+
+        if (in_array($status, [401, 403])) {
+            throw new AccessDeniedException(
+                $error . 'HTTP error ' . $this->httpClient->getResponseHttpCode() .
+                '. Raw Provider API response: ' . $this->httpClient->getResponseBody() . '.'
+            );
+        }
 
         if ($status < 200 || $status > 299) {
             throw new HttpRequestFailedException(

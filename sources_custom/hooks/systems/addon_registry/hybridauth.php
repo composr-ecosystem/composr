@@ -535,6 +535,7 @@ And also Instagram...
             'sources_custom/hybridauth/Exception/NotImplementedException.php',
             'sources_custom/hybridauth/Exception/InvalidAuthorizationCodeException.php',
             'sources_custom/hybridauth/Exception/AuthorizationDeniedException.php',
+            'sources_custom/hybridauth/Exception/AccessDeniedException.php',
             'sources_custom/hybridauth/Exception/RuntimeException.php',
             'sources_custom/hybridauth/Exception/HttpRequestFailedException.php',
             'sources_custom/hybridauth/Exception/InvalidAccessTokenException.php',

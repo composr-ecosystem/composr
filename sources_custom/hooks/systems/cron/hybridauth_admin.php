@@ -60,10 +60,13 @@ class Hook_cron_hybridauth_admin
 
                 try {
                     $adapter->maintainToken();
-                } catch (Exception $e) {
+                } catch (\Hybridauth\Exception\AccessDeniedException $e) {
                     require_code('failure');
                     cms_error_log($e->getMessage(), 'error_occurred_api');
                     $adapter->disconnect();
+                } catch (Exception $e) {
+                    require_code('failure');
+                    cms_error_log($e->getMessage(), 'error_occurred_api');
                 }
             } catch (Exception $e) {
                 require_code('failure');

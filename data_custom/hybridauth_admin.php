@@ -87,6 +87,11 @@ try {
     $message = do_lang_tempcode($success ? 'HYBRIDAUTH_ADMIN_SUCCESS' : 'HYBRIDAUTH_ADMIN_FAILURE', escape_html($provider));
 
     $admin_storage->delete($provider);
+
+    // Empty block cache
+    $GLOBALS['SITE_DB']->query_delete('cache_on');
+    $GLOBALS['SITE_DB']->query_delete('cache');
+    if (function_exists('persistent_cache_empty')) persistent_cache_empty();
 } catch (Hybridauth\Exception\AuthorizationDeniedException $e) {
     $message = do_lang_tempcode('HYBRIDAUTH_ADMIN_CANCELLED', escape_html($provider));
 } catch (Exception $e) {
