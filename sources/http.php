@@ -304,11 +304,11 @@ function _cms_http_request($url, $options = [])
 abstract class HttpDownloader
 {
     // Run priorities
-    const RUN_PRIORITY_NO = 1;
-    const RUN_PRIORITY_LOW = 2;
-    const RUN_PRIORITY_MEDIUM = 3;
-    const RUN_PRIORITY_HIGH = 4;
-    const RUN_PRIORITY_VERY_HIGH = 5;
+    protected const RUN_PRIORITY_NO = 1;
+    protected const RUN_PRIORITY_LOW = 2;
+    protected const RUN_PRIORITY_MEDIUM = 3;
+    protected const RUN_PRIORITY_HIGH = 4;
+    protected const RUN_PRIORITY_VERY_HIGH = 5;
 
     // Input parameters, coming from $options map
     protected $byte_limit = null; // ?integer. The number of bytes to download. This is not a guarantee, it is a minimum (null: all bytes)

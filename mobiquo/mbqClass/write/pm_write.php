@@ -18,9 +18,9 @@
  */
 class CMSPmWrite
 {
-    const TAPATALK_MESSAGE_NEW = 0;
-    const TAPATALK_MESSAGE_REPLY = 1;
-    const TAPATALK_MESSAGE_FORWARD = 2;
+    protected const TAPATALK_MESSAGE_NEW = 0;
+    protected const TAPATALK_MESSAGE_REPLY = 1;
+    protected const TAPATALK_MESSAGE_FORWARD = 2;
 
     /**
      * Report a private message.

@@ -651,12 +651,12 @@ abstract class CMSStatsHookBase
  */
 abstract class CMSStatsProvider extends CMSStatsHookBase
 {
-    const GRAPH_LINE_CHART = 1;
-    const GRAPH_PIE_CHART = 2;
-    const GRAPH_BAR_CHART = 3;
+    protected const GRAPH_LINE_CHART = 1;
+    protected const GRAPH_PIE_CHART = 2;
+    protected const GRAPH_BAR_CHART = 3;
 
-    const KPI_HIGH_IS_GOOD = 1;
-    const KPI_LOW_IS_GOOD = 2;
+    protected const KPI_HIGH_IS_GOOD = 1;
+    protected const KPI_LOW_IS_GOOD = 2;
 
     /**
      * Find all the feedback type codes. Useful for creating filters that are filtering by feedback type code.

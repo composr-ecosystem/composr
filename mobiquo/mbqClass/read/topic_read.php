@@ -18,9 +18,9 @@
  */
 class CMSTopicRead
 {
-    const GET_TOPICS_ALL = 0;
-    const GET_TOPICS_UNREAD_ONLY = 1;
-    const GET_TOPICS_PARTICIPATED_ONLY = 2;
+    protected const GET_TOPICS_ALL = 0;
+    protected const GET_TOPICS_UNREAD_ONLY = 1;
+    protected const GET_TOPICS_PARTICIPATED_ONLY = 2;
 
     /**
      * Get basic details of some topics.

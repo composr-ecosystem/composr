@@ -1026,7 +1026,7 @@ function memory_limit_for_max_param($max_param)
  *
  * @return boolean Whether we are
  */
-function has_low_memory()
+function has_low_memory() : bool
 {
     $ml = ini_get('memory_limit');
     return ((substr($ml, -1) == 'M') && (intval(substr($ml, 0, strlen($ml) - 1)) < 64));

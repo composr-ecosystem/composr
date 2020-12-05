@@ -112,8 +112,8 @@ class Module_admin_notifications
         return null;
     }
 
-    const NOTIFICATIONS_DEFAULT = 1;
-    const NOTIFICATIONS_LOCKDOWN = 2;
+    protected const NOTIFICATIONS_DEFAULT = 1;
+    protected const NOTIFICATIONS_LOCKDOWN = 2;
 
     /**
      * Execute the module.

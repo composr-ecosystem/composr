@@ -22,6 +22,17 @@ The code quality checker automatically parses and uses this file, to build up th
 */
 
 /**
+ * Verify that the contents of a variable is an iterable value.
+ *
+ * @param  mixed $var Variable to check
+ * @return boolean Whether it is
+ */
+function is_iterable($var)
+{
+    return false;
+}
+
+/**
  * Return the values from a single column in the input array.
  *
  * @param  array $input A multi-dimensional array or an array of objects from which to pull a column of values from
@@ -3744,9 +3755,10 @@ function tan($arg)
  *
  * @param  string $format The formatting string for unpacking
  * @param  string $data The data to unpack
+ * @param  integer $offset The offset to begin unpacking from
  * @return ~array The unpacked data (false: error)
  */
-function unpack($format, $data)
+function unpack($format, $data, $offset = 0)
 {
     return [];
 }
@@ -4497,9 +4509,10 @@ function file_put_contents($filename, $data, $flags = 0, $context = null)
  *
  * @param  URLPATH $url The target URL
  * @param  BINARY $parse Whether to parse into a map
+ * @param  ?resource $context A stream context to attach to (null: no special context)
  * @return array Result
  */
-function get_headers($url, $parse = 0)
+function get_headers($url, $parse = 0, $context = null)
 {
     return [];
 }

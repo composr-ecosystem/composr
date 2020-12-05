@@ -23,10 +23,10 @@
  */
 class Module_admin_redirects
 {
-    const URL_REDIRECT_HTACCESS_REF_LINE = "\n# RewriteRule somerule sometarget (leave this comment here!)\n";
-    const URL_REDIRECT_HTACCESS_COMMENT_LINE = '#^\#(.*)$#';
-    const URL_REDIRECT_HTACCESS_REDIRECT_LINE = '#^RewriteRule ([^ ]+) ([^ ]+) \[L,R(,NC)?(,QSA)?(,QSD)?\]$#';
-    const URL_REDIRECT_HTACCESS_QUERY_STRING_LINE = '#^RewriteCond %\{QUERY_STRING\} \^(.*)$#';
+    protected const URL_REDIRECT_HTACCESS_REF_LINE = "\n# RewriteRule somerule sometarget (leave this comment here!)\n";
+    protected const URL_REDIRECT_HTACCESS_COMMENT_LINE = '#^\#(.*)$#';
+    protected const URL_REDIRECT_HTACCESS_REDIRECT_LINE = '#^RewriteRule ([^ ]+) ([^ ]+) \[L,R(,NC)?(,QSA)?(,QSD)?\]$#';
+    protected const URL_REDIRECT_HTACCESS_QUERY_STRING_LINE = '#^RewriteCond %\{QUERY_STRING\} \^(.*)$#';
 
     /**
      * Find details of the module.

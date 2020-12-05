@@ -73,9 +73,9 @@ function spreadsheet_open_read($path, $filename = null, $algorithm = 3, $trim = 
  */
 abstract class CMS_Spreadsheet_Reader
 {
-    const ALGORITHM_RAW = 1;
-    const ALGORITHM_UNNAMED_FIELDS = 2;
-    const ALGORITHM_NAMED_FIELDS = 3;
+    public const ALGORITHM_RAW = 1;
+    public const ALGORITHM_UNNAMED_FIELDS = 2;
+    public const ALGORITHM_NAMED_FIELDS = 3;
 
     protected $algorithm = 3;
     protected $trim = true;

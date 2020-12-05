@@ -61,8 +61,7 @@ if (($shl === false) || ($shl == '') || ($shl == '0')) {
 }
 
 // Requirements check
-$phpv = PHP_VERSION;
-if ((substr($phpv, 0, 2) == '3.') || (substr($phpv, 0, 2) == '4.') || (substr($phpv, 0, 2) == '5.')) { // LEGACY
+if (version_compare(PHP_VERSION, '7.1', '<')) {
     exit(do_lang('PHP_TOO_OLD'));
 }
 

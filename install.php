@@ -148,8 +148,7 @@ require_lang('version');
 handle_self_referencing_embedment();
 
 // Requirements check
-$phpv = PHP_VERSION;
-if ((substr($phpv, 0, 2) == '3.') || (substr($phpv, 0, 2) == '4.') || (substr($phpv, 0, 4) == '5.0.') || (substr($phpv, 0, 4) == '5.1.') || (substr($phpv, 0, 4) == '5.2.') || (substr($phpv, 0, 4) == '5.3.') || (substr($phpv, 0, 4) == '5.4.') || (substr($phpv, 0, 4) == '5.5.')) {
+if (version_compare(PHP_VERSION, '7.1', '<')) {
     exit(do_lang('PHP_TOO_OLD'));
 }
 

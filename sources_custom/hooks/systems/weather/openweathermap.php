@@ -18,7 +18,7 @@
  */
 class Hook_weather_openweathermap
 {
-    const INCHES_PER_MM = 0.03937008;
+    protected const INCHES_PER_MM = 0.03937008;
 
     /**
      * Lookup weather for a location.

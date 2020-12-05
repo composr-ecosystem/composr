@@ -20,18 +20,18 @@
  */
 class CMSAccountWrite
 {
-    const SIGN_IN_OKAY_TOKEN = null;
-    const SIGN_IN_OKAY_REGISTER = null;
-    const SIGN_IN_REGISTER_USERNAME_OCCUPIED = '1';
-    const SIGN_IN_USERNAME_NEEDED_NOT_EMAIL = '2';
-    const SIGN_IN_EMAIL_WRONG = '3';
-    //const SIGN_IN_USERNAME_NO_EXIST='2'; Defined in Tapatalk API but cannot happen as we would register in this case
-    const SIGN_IN_SSO_FAILED = '4';
-    const SIGN_IN_REGISTER_NEEDS_PASSWORD = '6';
-    const SIGN_IN_USERNAME_NEEDED = '7';
-    const SIGN_IN_USERNAME_OR_EMAIL_NEEDED = '8';
-    //const SIGN_IN_ACCOUNT_DELETED='9'; Actually we'll let it carry through
-    const SIGN_IN_REGISTER_OTHER_ERROR = '10';
+    protected const SIGN_IN_OKAY_TOKEN = null;
+    protected const SIGN_IN_OKAY_REGISTER = null;
+    protected const SIGN_IN_REGISTER_USERNAME_OCCUPIED = '1';
+    protected const SIGN_IN_USERNAME_NEEDED_NOT_EMAIL = '2';
+    protected const SIGN_IN_EMAIL_WRONG = '3';
+    //protected const SIGN_IN_USERNAME_NO_EXIST='2'; Defined in Tapatalk API but cannot happen as we would register in this case
+    protected const SIGN_IN_SSO_FAILED = '4';
+    protected const SIGN_IN_REGISTER_NEEDS_PASSWORD = '6';
+    protected const SIGN_IN_USERNAME_NEEDED = '7';
+    protected const SIGN_IN_USERNAME_OR_EMAIL_NEEDED = '8';
+    //protected const SIGN_IN_ACCOUNT_DELETED='9'; Actually we'll let it carry through
+    protected const SIGN_IN_REGISTER_OTHER_ERROR = '10';
 
     /**
      * Log in via Tapatalk SSO / Join.

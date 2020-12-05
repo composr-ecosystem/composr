@@ -244,8 +244,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        $phpv = PHP_VERSION;
-        $php_too_old = (substr($phpv, 0, 2) == '3.') || (substr($phpv, 0, 2) == '4.') || (substr($phpv, 0, 2) == '5.'); // LEGACY also maintain in tut_webhosting.txt
+        $php_too_old = version_compare(PHP_VERSION, '7.1', '<'); // Also maintain in tut_webhosting.txt, install.php, restore.php.pre
         $this->assertTrue(!$php_too_old, do_lang('PHP_TOO_OLD'));
 
         $max_tested_php_version = '7.4'; // LEGACY: This needs to keep raising (also it is in tut_webhosting.txt)

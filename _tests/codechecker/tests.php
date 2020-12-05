@@ -623,7 +623,7 @@ END;
     $tests[69] = <<<END
 class Foo
 {
-    const foobar = true;
+    public const foobar = true;
 }
 END;
 

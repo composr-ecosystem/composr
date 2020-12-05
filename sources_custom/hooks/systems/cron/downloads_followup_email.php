@@ -16,7 +16,7 @@ This notification hook was created using the classifieds notification hook as a 
  */
 class Hook_cron_downloads_followup_email
 {
-    const INITIAL_BACK_TIME = 60 * 60 * 48; // 2 days back for first set of e-mails seems reasonable
+    protected const INITIAL_BACK_TIME = 60 * 60 * 48; // 2 days back for first set of e-mails seems reasonable
 
     /**
      * Get info from this hook.

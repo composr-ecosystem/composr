@@ -467,10 +467,22 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                 }
                 // no break
 
-            case 'CONST':
+            case 'CONST': // Lots flows to here, used for parsing properties, functions, constants
+                if ($next == 'CONST') {
+                    log_warning('PSR-12 says you should always specify class constant visibility');
+                    $is_const = true;
+                } else {
+                    if (pparse__parser_peek_dist(1) == 'CONST') {
+                        $is_const = true;
+                        pparse__parser_next();
+                    } else {
+                        $is_const = false;
+                    }
+                }
+
                 do {
                     pparse__parser_next();
-                    if ($next == 'CONST') {
+                    if ($is_const) {
                         $identifier = pparse__parser_expect('IDENTIFIER');
 
                         if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (@strtoupper($identifier) != $identifier)) {
@@ -480,7 +492,7 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
                         $identifier = pparse__parser_expect('variable');
                     }
 
-                    foreach ($class[($next == 'CONST') ? 'constants' : 'vars'] as $class_member) {
+                    foreach ($class[$is_const ? 'constants' : 'vars'] as $class_member) {
                         if ($class_member[0] == $identifier) {
                             log_warning('Duplicated class member: ' . $identifier);
                         }
@@ -492,9 +504,9 @@ function _parse_class_contents($class_modifiers = [], $type = 'class')
 
                         $expression =  _parse_expression();
 
-                        $class[($next == 'CONST') ? 'constants' : 'vars'][] = [$identifier, $expression];
+                        $class[$is_const ? 'constants' : 'vars'][] = [$identifier, $expression];
                     } else {
-                        $class[($next == 'CONST') ? 'constants' : 'vars'][] = [$identifier, ['SOLO', ['LITERAL', ['null']], $GLOBALS['I']]];
+                        $class[$is_const ? 'constants' : 'vars'][] = [$identifier, ['SOLO', ['LITERAL', ['null']], $GLOBALS['I']]];
                     }
 
                     $next_2 = pparse__parser_peek();
@@ -624,32 +636,75 @@ function _parse_function_def($function_modifiers = [], $is_closure = false)
 {
     $function = [];
     $function['offset'] = $GLOBALS['I'];
+
     pparse__parser_expect('FUNCTION');
     if (pparse__parser_peek() == 'REFERENCE') {
         pparse__parser_next();
     }
+
     if (!$is_closure) {
         $function['name'] = pparse__parser_expect('IDENTIFIER');
     }
+
     pparse__parser_expect('PARENTHESIS_OPEN');
-    $function['parameters'] = _parse_comma_parameters(true);
+    $function['parameters'] = _parse_comma_parameters();
     pparse__parser_expect('PARENTHESIS_CLOSE');
+
+    if (pparse__parser_peek() == 'COLON') {
+        pparse__parser_next();
+
+        $next = pparse__parser_next(true);
+
+        if ($next[0] == 'QUESTION') {
+            $is_nullable = true;
+            $next = pparse__parser_next(true);
+        } else {
+            $is_nullable = false;
+        }
+
+        switch ($next[0]) {
+            // Type hints
+            case 'ARRAY':
+            case 'BOOL':
+            case 'CALLABLE':
+            case 'FLOAT':
+            case 'INT':
+            case 'ITERABLE':
+            case 'OBJECT':
+            case 'SELF':
+            case 'STRING':
+            case 'VOID':
+                $hint = $next[0];
+                break;
+            case 'IDENTIFIER':
+                $hint = $next[1];
+                break;
+        }
+    } else {
+        $hint = null;
+        $is_nullable = null;
+    }
+
     $function['using'] = [];
     if ($is_closure) {
         if (pparse__parser_peek() == 'USE') {
             pparse__parser_next();
             pparse__parser_expect('PARENTHESIS_OPEN');
-            $function['using'] = _parse_comma_variables(true);
+            $function['using'] = _parse_comma_variables();
             pparse__parser_expect('PARENTHESIS_CLOSE');
         }
     }
+
     if (in_array('abstract', $function_modifiers)) {
         pparse__parser_expect('COMMAND_TERMINATE');
         $function['code'] = [];
     } else {
         $function['code'] = _parse_command();
     }
+
     $function['modifiers'] = $function_modifiers;
+
+    $function['hint'] = [$hint, $is_nullable];
 
     return $function;
 }
@@ -896,6 +951,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             }
             break;
 
+        case 'EXTRACT_OPEN':
         case 'LIST':
             $target = _parse_target();
             pparse__parser_expect('EQUAL');
@@ -945,7 +1001,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             if ($next == 'LIST') {
                 pparse__parser_next();
                 pparse__parser_expect('PARENTHESIS_OPEN');
-                $variable = ['LIST', _parse_comma_variables(true), $GLOBALS['I']];
+                $variable = ['LIST', _parse_target(), $GLOBALS['I']];
                 pparse__parser_expect('PARENTHESIS_CLOSE');
             } else {
                 $is_reference = ($next == 'REFERENCE');
@@ -963,10 +1019,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
                 pparse__parser_next();
                 $next = pparse__parser_peek();
                 if ($next == 'LIST') {
-                    pparse__parser_next();
-                    pparse__parser_expect('PARENTHESIS_OPEN');
-                    $_foreach = [$variable, ['LIST', _parse_comma_variables(true), $GLOBALS['I']]];
-                    pparse__parser_expect('PARENTHESIS_CLOSE');
+                    $_foreach = [$variable, _parse_target()];
                 } else {
                     $is_reference = ($next == 'REFERENCE');
                     if ($is_reference) {
@@ -1190,14 +1243,20 @@ function _parse_call_chain($command = [], $suppress_error = false)
 
 function _parse_target()
 {
-    // Choice{variable | "LIST" "PARENTHESIS_OPEN" comma_variables "PARENTHESIS_CLOSE" | "variable" "EXTRACT_OPEN" "EXTRACT_CLOSE"}
+    // Choice{variable | "EXTRACT_OPEN" comma_variables "EXTRACT_CLOSE" | "LIST" "PARENTHESIS_OPEN" comma_variables "PARENTHESIS_CLOSE" | "variable" "EXTRACT_OPEN" "EXTRACT_CLOSE"}
 
     $next = pparse__parser_peek();
     switch ($next) {
+        case 'EXTRACT_OPEN':
+            pparse__parser_expect('EXTRACT_OPEN');
+            $target = ['LIST', _parse_comma_variables_target('EXTRACT_CLOSE'), $GLOBALS['I']];
+            pparse__parser_expect('EXTRACT_CLOSE');
+            break;
+
         case 'LIST':
             pparse__parser_next();
             pparse__parser_expect('PARENTHESIS_OPEN');
-            $target = ['LIST', _parse_comma_variables(true), $GLOBALS['I']];
+            $target = ['LIST', _parse_comma_variables_target('PARENTHESIS_CLOSE'), $GLOBALS['I']];
             pparse__parser_expect('PARENTHESIS_CLOSE');
             break;
 
@@ -1981,39 +2040,51 @@ function _parse_function_call()
     return $parameters;
 }
 
-function _parse_comma_variables($allow_blanks = false)
+function _parse_comma_variables()
 {
-    // Choice{"variable" "COMMA" comma_variables | "variable"}
+    // Choice{"variable" "COMMA" comma_variables | "variable"}?
 
     $variables = [];
 
     $next = pparse__parser_peek();
-    if (($next == 'PARENTHESIS_CLOSE') || ($next == 'COMMAND_TERMINATE')) {
-        return $variables;
-    }
-
-    do {
-        $next_2 = pparse__parser_peek();
-        while (($allow_blanks) && (($next_2 == 'COMMA') || ($next_2 == 'PARENTHESIS_CLOSE'))) {
-            if ($next_2 == 'COMMA') { // ,,
-                pparse__parser_next();
-                $variables[] = ['VARIABLE', '_', []];
-            } elseif ($next_2 == 'PARENTHESIS_CLOSE') { // ,,
-                $variables[] = ['VARIABLE', '_', []];
-                return $variables;
-            }
-
-            $next_2 = pparse__parser_peek();
-        }
-
+    while ($next != 'COMMAND_TERMINATE') {
         $variable = _parse_variable(false);
         $variables[] = $variable;
 
-        $next_2 = pparse__parser_peek();
-        if ($next_2 == 'COMMA') {
-            pparse__parser_next();
+        $next = pparse__parser_peek();
+        if ($next != 'COMMAND_TERMINATE') {
+            pparse__parser_expect('COMMA');
         }
-    } while ($next_2 == 'COMMA');
+    };
+
+    return $variables;
+}
+
+function _parse_comma_variables_target($closer)
+{
+    $variables = [];
+
+    $next = pparse__parser_peek();
+    while ($next != $closer) {
+        if ($next == 'COMMA') {
+            pparse__parser_next();
+            $variables[] = ['VARIABLE', '_', []];
+        } elseif ($next == 'variable') {
+            $variable = _parse_variable(false);
+            $variables[] = $variable;
+        } else { // PHP 7.1+ key syntax
+            $literal = _parse_literal(); // We don't actually use this in our AST as we don't need it for CQC purposes
+            pparse__parser_expect('DOUBLE_ARROW');
+            $variable = _parse_variable(false);
+            $variables[] = $variable;
+        }
+
+        $next = pparse__parser_peek();
+        if ($next != $closer) {
+            pparse__parser_expect('COMMA');
+            $next = pparse__parser_peek();
+        }
+    };
 
     return $variables;
 }
@@ -2066,14 +2137,28 @@ function _parse_parameter($for_function_definition = false)
 
     $hint = null;
     $is_variadic = false;
+    $is_nullable = false;
 
     while (true) {
         $next = pparse__parser_next(true);
 
+        if ($next[0] == 'QUESTION') {
+            $is_nullable = true;
+            $next = pparse__parser_next(true);
+        }
+
         switch ($next[0]) {
             // Type hints
             case 'ARRAY':
-                $hint = 'ARRAY';
+            case 'BOOL':
+            case 'CALLABLE':
+            case 'FLOAT':
+            case 'INT':
+            case 'ITERABLE':
+            case 'OBJECT':
+            case 'SELF':
+            case 'STRING':
+                $hint = $next[0];
                 break;
             case 'IDENTIFIER':
                 $hint = $next[1];

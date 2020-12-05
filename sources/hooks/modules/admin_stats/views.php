@@ -23,17 +23,17 @@
  */
 class Hook_admin_stats_views extends CMSStatsProvider
 {
-    const USER_AGENT_TYPE__UNKNOWN = 0;
-    const USER_AGENT_TYPE__DESKTOP = 1;
-    const USER_AGENT_TYPE__MOBILE = 2;
-    const USER_AGENT_TYPE__BOT = 3;
+    protected const USER_AGENT_TYPE__UNKNOWN = 0;
+    protected const USER_AGENT_TYPE__DESKTOP = 1;
+    protected const USER_AGENT_TYPE__MOBILE = 2;
+    protected const USER_AGENT_TYPE__BOT = 3;
 
-    const REFERRER_TYPE__DIRECT = 0;
-    const REFERRER_TYPE__UNKNOWN = 1;
-    const REFERRER_TYPE__INTERNAL = 2;
-    const REFERRER_TYPE__EXTERNAL_SEARCH_ENGINE = 3;
-    const REFERRER_TYPE__EXTERNAL_SOCIAL_MEDIA = 4;
-    const REFERRER_TYPE__EXTERNAL_MISC = 5;
+    protected const REFERRER_TYPE__DIRECT = 0;
+    protected const REFERRER_TYPE__UNKNOWN = 1;
+    protected const REFERRER_TYPE__INTERNAL = 2;
+    protected const REFERRER_TYPE__EXTERNAL_SEARCH_ENGINE = 3;
+    protected const REFERRER_TYPE__EXTERNAL_SOCIAL_MEDIA = 4;
+    protected const REFERRER_TYPE__EXTERNAL_MISC = 5;
 
     protected $speed_brackets = [];
     protected $session_duration_brackets = [];

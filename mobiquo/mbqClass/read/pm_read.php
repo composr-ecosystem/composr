@@ -20,9 +20,9 @@
  */
 class CMSPmRead
 {
-    const UNREAD = 1;
-    const READ = 2;
-    const REPLIED = 3;
+    protected const UNREAD = 1;
+    protected const READ = 2;
+    protected const REPLIED = 3;
 
     /**
      * Get basic message box stats.

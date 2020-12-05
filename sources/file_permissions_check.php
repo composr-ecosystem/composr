@@ -297,11 +297,11 @@ abstract class CMSPermissionsScanner
 {
     // Constants...
 
-    const RESULT_TYPE_SUCCESS = 0;
-    const RESULT_TYPE_SUGGESTION_EXCESSIVE = 1;
-    const RESULT_TYPE_SUGGESTION_MISSING = 2;
-    const RESULT_TYPE_ERROR_EXCESSIVE = 3;
-    const RESULT_TYPE_ERROR_MISSING = 4;
+    public const RESULT_TYPE_SUCCESS = 0;
+    public const RESULT_TYPE_SUGGESTION_EXCESSIVE = 1;
+    public const RESULT_TYPE_SUGGESTION_MISSING = 2;
+    public const RESULT_TYPE_ERROR_EXCESSIVE = 3;
+    public const RESULT_TYPE_ERROR_MISSING = 4;
 
     // Options...
 

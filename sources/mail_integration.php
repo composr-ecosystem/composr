@@ -37,9 +37,9 @@ function init__mail_integration()
  */
 abstract class EmailIntegration
 {
-    const STRIP_SUBJECT = 1;
-    const STRIP_HTML = 2;
-    const STRIP_TEXT = 3;
+    protected const STRIP_SUBJECT = 1;
+    protected const STRIP_HTML = 2;
+    protected const STRIP_TEXT = 3;
 
     /**
      * Log a message, if the log has been created.

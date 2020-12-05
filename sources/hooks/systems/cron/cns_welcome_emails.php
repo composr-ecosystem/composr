@@ -26,7 +26,7 @@ class Hook_cron_cns_welcome_emails
     protected $member_sets_to_send_to;
     protected $time_now;
 
-    const INITIAL_BACK_TIME = 24 * 60 * 60 * 7; // Don't send for really old members, 7 day initial window is reasonable
+    protected const INITIAL_BACK_TIME = 24 * 60 * 60 * 7; // Don't send for really old members, 7 day initial window is reasonable
 
     /**
      * Get info from this hook.

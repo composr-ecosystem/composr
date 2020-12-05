@@ -82,6 +82,11 @@ $PTOKENS['REAL'] = 'real';
 $PTOKENS['ARRAY'] = 'array';
 $PTOKENS['OBJECT'] = 'object';
 $PTOKENS['STRING'] = 'string';
+// More types, for strict typing
+$PTOKENS['CALLABLE'] = 'callable';
+$PTOKENS['ITERABLE'] = 'iterable';
+$PTOKENS['SELF'] = 'self';
+$PTOKENS['VOID'] = 'void';
 // Unary operators
 $PTOKENS['DEC'] = '--';
 $PTOKENS['INC'] = '++';

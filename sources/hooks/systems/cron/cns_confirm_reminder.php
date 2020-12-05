@@ -25,7 +25,7 @@ class Hook_cron_cns_confirm_reminder
 {
     protected $rows;
 
-    const SECS_REMIND_AFTER = 24 * 60 * 60 * 2;
+    protected const SECS_REMIND_AFTER = 24 * 60 * 60 * 2;
 
     /**
      * Get info from this hook.

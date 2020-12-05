@@ -158,7 +158,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 if (substr($line2, 0, $depth + 9) == $_depth . 'function ') {
                     // Parse function line
                     $_line = substr($line2, $depth + 9);
-                    list($function_name, $parameters) = _read_php_function_line($_line);
+                    list($function_name, $parameters, $return_type, $return_type_nullable) = _read_php_function_line($_line);
                     $is_static = null;
                     $is_abstract = null;
                     $is_final = null;
@@ -171,7 +171,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 if (preg_match('#^' . $_depth . '(((' . implode('|', $meta_keywords_available) . ') )*)function &?(.*)#', $line2, $matches) != 0) {
                     // Parse function line
                     $_line = $matches[4];
-                    list($function_name, $parameters) = _read_php_function_line($_line);
+                    list($function_name, $parameters, $return_type, $return_type_nullable) = _read_php_function_line($_line);
 
                     // Check meta properties for sanity
                     foreach ($meta_keywords_available as $meta_keyword) {
@@ -441,6 +441,8 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             $function = [
                 'filename' => $filename,
                 'parameters' => $parameters,
+                'return_type' => $return_type,
+                'return_type_nullable' => $return_type_nullable,
                 'name' => $function_name,
                 'description' => $description,
                 'flags' => $flags,
@@ -529,38 +531,164 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
  */
 function _read_php_function_line($_line)
 {
-    $parse = 'function_name';
     $function_name = '';
     $parameters = [];
+    $return_type = null;
+    $return_type_nullable = false;
+
+    // State
+    $parse = 'function_name';
+    $post_comment_state = null; // Where to go back to after a comment is ended
+
+    // String default argument parsing
+    $in_string = null; // " or '
+    $escaping = false;
+
+    // Properties of particular arguments
     $arg_default = '';
+    $arg_type = '';
+    $arg_type_nullable = false;
     $arg_name = '';
     $ref = false;
     $is_variadic = false;
-    $in_string = null;
-    $escaping = false;
 
     for ($k = 0; $k < strlen($_line); $k++) {
         $char = $_line[$k];
 
         switch ($parse) {
-            case 'in_comment':
-                if (($char == '*') && ($_line[$k + 1] == '/')) {
+            case 'function_name':
+                if (is_alphanumeric($char, true)) {
+                    $function_name .= $char;
+                } elseif ($char == '(') {
                     $parse = 'in_args';
+
+                    $arg_default = '';
+                    $arg_type = '';
+                    $arg_type_nullable = false;
+                    $arg_name = '';
                     $ref = false;
-                    $k++;
+                    $is_variadic = false;
+                } elseif (trim($char) == '') {
+                    $parse = 'between_name_and_args';
+                } else {
+                    attach_message('Unexpected character, ' . $char . ', parsing function arguments [' . $parse . '], for ' .  rtrim($_line), 'warn');
                 }
                 break;
 
-            case 'in_comment_default':
-                if (($char == '*') && ($_line[$k + 1] == '/')) {
-                    $parse = 'in_default';
-                    $k++;
+            case 'between_name_and_args':
+                if ($char == '(') {
+                    $parse = 'in_args';
+
+                    $arg_default = '';
+                    $arg_type = '';
+                    $arg_type_nullable = false;
+                    $arg_name = '';
+                    $ref = false;
+                    $is_variadic = false;
+                } elseif (trim($char) != '') {
+                    attach_message('Unexpected character, ' . $char . ', parsing function arguments [' . $parse . '], for ' .  rtrim($_line), 'warn');
                 }
                 break;
 
-            case 'in_default':
+            case 'in_args':
+                if ($char == '$') {
+                    $parse = 'in_arg_variable';
+                } elseif ($char == '?') {
+                    $parse = 'in_arg_type';
+                    $arg_type = '';
+                    $arg_type_nullable = true;
+                } elseif (is_alphanumeric($char, true)) {
+                    $parse = 'in_arg_type';
+                    $arg_type = $char;
+                    $arg_type_nullable = false;
+                } elseif (trim($char) == '') {
+                    // Nothing
+                } elseif ($char == '&') {
+                    $ref = true;
+                } elseif (($char == '.') && ($_line[$k + 1] == '.') && ($_line[$k + 2] == '.')) {
+                    $k += 2;
+                    $is_variadic = true;
+                } elseif (($char == '/') && ($_line[$k + 1] == '*')) {
+                    $post_comment_state = $parse;
+                    $parse = 'in_comment';
+                } elseif ($char == ')') {
+                    $parse = 'after_args';
+                } else {
+                    attach_message('Unexpected character, ' . $char . ', parsing function arguments [' . $parse . '], for ' .  rtrim($_line), 'warn');
+                }
+                break;
+
+            case 'in_arg_type':
+                if (is_alphanumeric($char, true)) {
+                    $arg_type .= $char;
+                } elseif (trim($char) == '') {
+                    $parse = 'in_args';
+                } elseif (($char == '/') && ($_line[$k + 1] == '*')) {
+                    $parse = 'in_comment';
+                    $post_comment_state = 'in_args';
+                } else {
+                    attach_message('Unexpected character, ' . $char . ', parsing function arguments [' . $parse . '], for ' .  rtrim($_line), 'warn');
+                }
+                break;
+
+            case 'in_arg_variable':
+                if (is_alphanumeric($char, true)) {
+                    $arg_name .= $char;
+                } elseif ($char == ',') {
+                    $parameters[] = ['name' => $arg_name, 'type' => $arg_type, 'arg_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    $parse = 'in_args';
+
+                    $arg_default = '';
+                    $arg_type = '';
+                    $arg_type_nullable = false;
+                    $arg_name = '';
+                    $ref = false;
+                    $is_variadic = false;
+                } elseif ($char == '=') {
+                    $parse = 'in_arg_default';
+                    $arg_default = '';
+                } elseif ($char == ')') {
+                    $parameters[] = ['name' => $arg_name, 'type' => $arg_type, 'arg_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    $parse = 'after_args';
+                } elseif (($char == '/') && ($_line[$k + 1] == '*')) {
+                    $parse = 'in_comment';
+                    $post_comment_state = 'in_args';
+                } elseif (trim($char) == '') {
+                    $parse = 'in_arg_after_variable';
+                } else {
+                    attach_message('Unexpected character, ' . $char . ', parsing function arguments [' . $parse . '], for ' .  rtrim($_line), 'warn');
+                }
+                break;
+
+            case 'in_arg_after_variable':
+                if ($char == ',') {
+                    $parameters[] = ['name' => $arg_name, 'type' => $arg_type, 'arg_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    $parse = 'in_args';
+
+                    $arg_default = '';
+                    $arg_type = '';
+                    $arg_type_nullable = false;
+                    $arg_name = '';
+                    $ref = false;
+                    $is_variadic = false;
+                } elseif ($char == '=') {
+                    $parse = 'in_arg_default';
+                    $arg_default = '';
+                } elseif ($char == ')') {
+                    $parameters[] = ['name' => $arg_name, 'type' => $arg_type, 'arg_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    $parse = 'after_args';
+                } elseif (($char == '/') && ($_line[$k + 1] == '*')) {
+                    $parse = 'in_comment';
+                    $post_comment_state = 'in_args';
+                } elseif (trim($char) != '') {
+                    attach_message('Unexpected character, ' . $char . ', parsing function arguments [' . $parse . '], for ' .  rtrim($_line), 'warn');
+                }
+                break;
+
+            case 'in_arg_default':
                 if (($char == '/') && ($_line[$k + 1] == '*') && ($in_string === null) && (!$escaping)) {
-                    $parse = 'in_comment_default';
+                    $post_comment_state = $parse;
+                    $parse = 'in_comment';
                 } elseif (($char == ',') && ($in_string === null) && (!$escaping)) {
                     $default_raw = $arg_default;
                     if ($arg_default === 'true') {
@@ -574,11 +702,15 @@ function _read_php_function_line($_line)
                             $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
                         }
                     }
-                    $parameters[] = ['name' => $arg_name, 'default' => $default, 'default_raw' => $default_raw, 'ref' => $ref, 'is_variadic' => $is_variadic];
-                    $arg_name = '';
-                    $arg_default = '';
+                    $parameters[] = ['name' => $arg_name, 'type' => $arg_type, 'arg_type_nullable' => $arg_type_nullable, 'default' => $default, 'default_raw' => $default_raw, 'ref' => $ref, 'is_variadic' => $is_variadic];
                     $parse = 'in_args';
+
+                    $arg_default = '';
+                    $arg_type = '';
+                    $arg_type_nullable = false;
+                    $arg_name = '';
                     $ref = false;
+                    $is_variadic = false;
                 } elseif (($char == ')') && ($in_string === null) && (!$escaping) && (preg_match('#^\s*\[[^\]]*$#', $arg_default) == 0)) {
                     $default_raw = $arg_default;
                     if ($arg_default === 'true') {
@@ -592,8 +724,8 @@ function _read_php_function_line($_line)
                             $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
                         }
                     }
-                    $parameters[] = ['name' => $arg_name, 'default' => $default, 'default_raw' => $default_raw, 'ref' => $ref, 'is_variadic' => $is_variadic];
-                    $parse = 'done';
+                    $parameters[] = ['name' => $arg_name, 'type' => $arg_type, 'arg_type_nullable' => $arg_type_nullable, 'default' => $default, 'default_raw' => $default_raw, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    $parse = 'after_args';
                 } elseif ($in_string !== null) {
                     $arg_default .= $char;
                     if ($escaping) {
@@ -611,48 +743,40 @@ function _read_php_function_line($_line)
                 }
                 break;
 
-            case 'in_args':
-                if (($char == '.') && ($_line[$k + 1] == '.') && ($_line[$k + 2] == '.')) {
-                    $k += 2;
-                    $is_variadic = true;
-                } elseif (($char == '/') && ($_line[$k + 1] == '*')) {
-                    $parse = 'in_comment';
-                } elseif (is_alphanumeric($char)) {
-                    $arg_name .= $char;
-                } elseif ($char == '&') {
-                    $ref = true;
-                } elseif ($char == ',') {
-                    $parameters[] = ['name' => $arg_name, 'ref' => $ref, 'is_variadic' => $is_variadic];
-                    $ref = false;
-                    $arg_name = '';
-                } elseif ($char == '=') {
-                    $parse = 'in_default';
-                    $arg_default = '';
-                } elseif ($char == ')') {
-                    if ($arg_name != '') {
-                        $parameters[] = ['name' => $arg_name, 'ref' => $ref, 'is_variadic' => $is_variadic];
-                    }
+            case 'after_args':
+                if ($char == ':') {
+                    $parse = 'before_return_type';
+                } elseif (trim($char) != '') {
                     $parse = 'done';
                 }
                 break;
 
-            case 'function_name':
-                if (is_alphanumeric($char)) {
-                    $function_name .= $char;
-                } elseif ($char == '(') {
-                    $parse = 'in_args';
-                    $ref = false;
-                    $arg_name = '';
-                } else {
-                    $parse = 'between_name_and_args';
+            case 'before_return_type':
+                if ($char == '?') {
+                    $parse = 'return_type';
+                    $return_type = '';
+                    $return_type_nullable = true;
+                } elseif (is_alphanumeric($char, true)) {
+                    $parse = 'return_type';
+                    $return_type = $char;
+                    $return_type_nullable = false;
+                } elseif (trim($char) != '') {
+                    $parse = 'done';
                 }
                 break;
 
-            case 'between_name_and_args':
-                if ($char == '(') {
-                    $parse = 'in_args';
-                    $ref = false;
-                    $arg_name = '';
+            case 'return_type':
+                if (is_alphanumeric($char, true)) {
+                    $return_type .= $char;
+                } else {
+                    $parse = 'done';
+                }
+                break;
+
+            case 'in_comment':
+                if (($char == '*') && ($_line[$k + 1] == '/')) {
+                    $parse = $post_comment_state;
+                    $k++;
                 }
                 break;
 
@@ -664,7 +788,7 @@ function _read_php_function_line($_line)
         }
     }
 
-    return [$function_name, $parameters];
+    return [$function_name, $parameters, $return_type, $return_type_nullable];
 }
 
 /**
