@@ -904,7 +904,7 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
             if ($php_type_nullable != $null_allowed) {
                 attach_message('The phpdoc type and the PHP type hint conflict around nullability', 'warn');
             }
-        } else {
+        } elseif ($expected_php_type !== null) {
             // Code write-back
             $_expected_php_type = ($null_allowed ? '?' : '') . $expected_php_type;
             if ($name == '(return)') {
