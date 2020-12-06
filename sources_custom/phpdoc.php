@@ -908,9 +908,9 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
             // Code write-back
             $_expected_php_type = ($null_allowed ? '?' : '') . $expected_php_type;
             if ($name == '(return)') {
-                $funcdef_line_new .= ' : ' . $_expected_php_type;
+                $funcdef_line_new = rtrim($funcdef_line_new) . ' : ' . $_expected_php_type . "\n";
             } else {
-                $funcdef_line_new = preg_replace('#(\$' . preg_quote($name) . '[^\w])#', $_expected_php_type . ' $1', $funcdef_line_new);
+                $funcdef_line_new = preg_replace('#(&?(\.\.\.)?\$' . preg_quote($name) . '[^\w])#', $_expected_php_type . ' $1', $funcdef_line_new);
             }
         }
     }
