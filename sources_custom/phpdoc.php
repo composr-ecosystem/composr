@@ -823,99 +823,60 @@ function _cleanup_array($in)
 function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_nullable, $function_name, $name, $value, $range, $set)
 {
     $valid_types = [
-        'AUTO_LINK',
-        'SHORT_INTEGER',
-        'UINTEGER',
-        'REAL',
-        'BINARY',
-        'MEMBER',
-        'GROUP',
-        'TIME',
-        'LONG_TEXT',
-        'SHORT_TEXT',
-        'ID_TEXT',
-        'MINIID_TEXT',
-        'IP',
-        'LANGUAGE_NAME',
-        'URLPATH',
-        'PATH',
-        'EMAIL',
-        'string',
-        'integer',
-        'array',
-        'boolean',
-        'float',
-        'Tempcode',
-        'object',
-        'resource',
-        'mixed',
+        'integer' => 'int',
+        'AUTO_LINK' => 'int',
+        'SHORT_INTEGER' => 'int',
+        'UINTEGER' => 'int',
+        'BINARY' => 'int',
+        'MEMBER' => 'int',
+        'GROUP' => 'int',
+        'TIME' => 'int',
+
+        'float' => 'float',
+        'REAL' => 'float',
+
+        'string' => 'string',
+        'LONG_TEXT' => 'string',
+        'SHORT_TEXT' => 'string',
+        'ID_TEXT' => 'string',
+        'MINIID_TEXT' => 'string',
+        'IP' => 'string',
+        'LANGUAGE_NAME' => 'string',
+        'URLPATH' => 'string',
+        'PATH' => 'string',
+        'EMAIL' => 'string',
+
+        'array' => 'array',
+
+        'boolean' => 'bool',
+
+        'Tempcode' => 'object',
+        'object' => 'object',
+
+        'resource' => null, // Don't know why PHP type hints don't support resource but they don't
+        'mixed' => null,
     ];
 
     $_type = ltrim($phpdoc_type, '?~');
 
     // Check PHP type is consistent with phpdoc type
-    if ($php_type !== null) {
-        switch ($phpdoc_type) {
-            case 'integer':
-            case 'AUTO_LINK':
-            case 'SHORT_INTEGER':
-            case 'UINTEGER':
-            case 'BINARY':
-            case 'MEMBER':
-            case 'GROUP':
-            case 'TIME':
-                if ($php_type != 'int') {
+    if (($php_type !== null) && (array_key_exists($phpdoc_type, $valid_types))) {
+        $expected_php_type = $valid_types[$phpdoc_type];
+
+        if ($expected_php_type === null) {
+            if ($php_type !== null) {
+                attach_message('The phpdoc type ' . $phpdoc_type . ' implies no PHP type hint', 'warn');
+            }
+        } else {
+            if ($expected_php_type == 'object') {
+                if (in_array($php_type, ['array', 'bool', 'callable', 'float', 'int', 'iterable', 'string', 'void'])) { // If not an object or class
                     attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
                 }
-                break;
-
-            case 'float':
-            case 'REAL':
-                if ($php_type != 'float') {
+            } else {
+                if ($php_type != $expected_php_type) {
                     attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
                 }
-                break;
-
-            case 'string';
-            case 'LONG_TEXT':
-            case 'SHORT_TEXT':
-            case 'ID_TEXT':
-            case 'MINIID_TEXT':
-            case 'IP':
-            case 'LANGUAGE_NAME':
-            case 'URLPATH':
-            case 'PATH':
-            case 'EMAIL':
-                if ($php_type != 'string') {
-                    attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
-                }
-                break;
-
-            case 'array':
-                if ($php_type != 'array') {
-                    attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
-                }
-                break;
-
-            case 'boolean':
-                if ($php_type != 'bool') {
-                    attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
-                }
-                break;
-
-            case 'Tempcode':
-            case 'object':
-                if (in_array($php_type, ['array', 'bool', 'callable', 'float', 'int', 'iterable', 'string', 'void'])) {
-                    attach_message('The phpdoc type ' . $phpdoc_type . ' is inconsistent with the ' . $php_type . ' PHP type hint', 'warn');
-                }
-                break;
-
-            case 'resource': // Don't know why PHP type hints don't support this, but they don't
-            case 'mixed':
-                if ($php_type !== null) {
-                    attach_message('The phpdoc type ' . $phpdoc_type . ' implies no PHP type hint', 'warn');
-                }
-                break;
+            }
         }
 
         if ($php_type_nullable != (strpos($phpdoc_type, '?') !== false)) {
@@ -924,7 +885,7 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
     }
 
     // Check phpdoc type
-    if (!in_array($_type, $valid_types)) {
+    if (!array_key_exists($_type, $valid_types)) {
         attach_message('The phpdoc type ' . $phpdoc_type . ' used in ' . $function_name . ' is not valid', 'warn');
     }
 
