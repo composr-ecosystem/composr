@@ -48,16 +48,15 @@ function init__phpdoc()
  * @param  PATH $filename The PHP code module to get API information for
  * @param  boolean $include_code Whether to include function source code
  * @param  boolean $pedantic_warnings Whether to give warnings for non-consistent alignment of spacing
+ * @param  boolean $writeback Whether to write in PHP type hinting from the phpdoc, if it is missing
  * @return array The complex structure of API information
  */
-function get_php_file_api($filename, $include_code = true, $pedantic_warnings = false)
+function get_php_file_api($filename, $include_code = false, $pedantic_warnings = false, $writeback = false)
 {
     require_code('type_sanitisation');
 
     $classes = [];
     $class_has_comments = [];
-
-    $writeback = false; // Change to true to set PHP type hints in code based on phpdoc hints
 
     $meta_keywords_available = ['final', 'public', 'private', 'protected', 'static', 'abstract'];
 
@@ -213,8 +212,8 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 continue; // No function: probably we commented it out
             }
 
-            $funcdef_line = $_line;
-            $funcdef_line_new = $_line;
+            $funcdef_line = $line2;
+            $funcdef_line_new = $line2;
             $funcdef_line_index = $j;
 
             // Parse comment block bits
@@ -381,7 +380,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                     }
                 }
 
-                $funcdef_line_new = check_function_parameter_typing($parameter['type'], $parameter['php_type'], $parameter['php_type_nullable'], $function_name, $parameter['name'], $default, array_key_exists('range', $parameter) ? $parameter['range'] : null, array_key_exists('set', $parameter) ? $parameter['set'] : null, $funcdef_line_new);
+                $funcdef_line_new = check_function_parameter_typing($parameter['type'], $parameter['php_type'], $parameter['php_type_nullable'], $function_name, $parameter['name'], $default, array_key_exists('range', $parameter) ? $parameter['range'] : null, array_key_exists('set', $parameter) ? $parameter['set'] : null, $writeback ? $funcdef_line_new : null);
 
                 // Check that null is fully specified
                 if (strpos($parameter['type'], '?') !== false) {
@@ -405,7 +404,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             }
             if ($return !== null) {
                 $fret = $return;
-                $funcdef_line_new = check_function_parameter_typing($return['type'], $php_return_type, $php_return_type_nullable, $function_name, '(return)', null, array_key_exists('range', $return) ? $return['range'] : null, array_key_exists('set', $return) ? $return['set'] : null, $funcdef_line_new);
+                $funcdef_line_new = check_function_parameter_typing($return['type'], $php_return_type, $php_return_type_nullable, $function_name, '(return)', null, array_key_exists('range', $return) ? $return['range'] : null, array_key_exists('set', $return) ? $return['set'] : null, $writeback ? $funcdef_line_new : null);
 
                 // Check that null is fully specified
                 if (strpos($return['type'], '?') !== false) {
@@ -716,10 +715,18 @@ function _read_php_function_line($_line)
                         if ((preg_match('#^\s*[A-Z_]+\s*$#', $arg_default) != 0) && (!defined(trim($arg_default)))) {
                             $default = 0; // Cannot look it up, not currently defined
                         } else {
-                            $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                            try {
+                                $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                            } catch (Throwable $e) {
+                                $default = null;
+                            }
                         }
                     }
-                    $parameters[] = ['name' => $arg_name, 'php_type' => $arg_type, 'php_type_nullable' => $arg_type_nullable, 'default' => $default, 'default_raw' => $default_raw, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    $new_parameter = ['name' => $arg_name, 'php_type' => $arg_type, 'php_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    if ($default !== null) {
+                        $new_parameter += ['default' => $default, 'default_raw' => $default_raw];
+                    }
+                    $parameters[] = $new_parameter;
                     $parse = 'in_args';
 
                     $arg_default = '';
@@ -728,7 +735,7 @@ function _read_php_function_line($_line)
                     $arg_name = '';
                     $ref = false;
                     $is_variadic = false;
-                } elseif (($char == ')') && ($in_string === null) && (!$escaping) && (preg_match('#^\s*\[[^\]]*$#', $arg_default) == 0)) {
+                } elseif (($char == ')') && ($in_string === null) && (!$escaping) && (preg_match('#^\s*(\[[^\]]*|array\([^)]*)$#', $arg_default) == 0)) {
                     $default_raw = $arg_default;
                     if ($arg_default === 'true') {
                         $default = 'boolean-true'; // hack, to stop booleans coming out of arrays as integers
@@ -738,10 +745,18 @@ function _read_php_function_line($_line)
                         if ((preg_match('#^\s*[A-Z_]+\s*$#', $arg_default) != 0) && (!defined(trim($arg_default)))) {
                             $default = 0; // Cannot look it up, not currently defined
                         } else {
-                            $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                            try {
+                                $default = @eval('return ' . $arg_default . ';'); // Could be unprocessable by php.php in standalone mode
+                            } catch (Throwable $e) {
+                                $default = null;
+                            }
                         }
                     }
-                    $parameters[] = ['name' => $arg_name, 'php_type' => $arg_type, 'php_type_nullable' => $arg_type_nullable, 'default' => $default, 'default_raw' => $default_raw, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    $new_parameter = ['name' => $arg_name, 'php_type' => $arg_type, 'php_type_nullable' => $arg_type_nullable, 'ref' => $ref, 'is_variadic' => $is_variadic];
+                    if ($default !== null) {
+                        $new_parameter += ['default' => $default, 'default_raw' => $default_raw];
+                    }
+                    $parameters[] = $new_parameter;
                     $parse = 'after_args';
                 } elseif ($in_string !== null) {
                     $arg_default .= $char;
@@ -836,7 +851,7 @@ function _cleanup_array($in)
  * @param  ?mixed $value The parameters value (null: value actually is null)
  * @param  ?string $range The string of value range of the parameter (null: no range constraint)
  * @param  ?string $set The string of value set limitation for the parameter (null: no set constraint)
- * @param  string $funcdef_line The line of code the function was defined on
+ * @param  ?string $funcdef_line The line of code the function was defined on (null: don't do write-back)
  */
 function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_nullable, $function_name, $name, $value, $range, $set, $funcdef_line)
 {
@@ -905,14 +920,15 @@ function check_function_parameter_typing($phpdoc_type, $php_type, $php_type_null
             if ($php_type_nullable != $null_allowed) {
                 attach_message('The phpdoc type and the PHP type hint conflict around nullability', 'warn');
             }
-        } elseif ($expected_php_type !== null) {
+        } elseif (($expected_php_type !== null) && ($funcdef_line_new !== null)) {
             // Code write-back
             $_expected_php_type = ($null_allowed ? '?' : '') . $expected_php_type;
             if ($name == '(return)') {
+                $funcdef_line_new = rtrim($funcdef_line_new);
                 if (substr($funcdef_line_new, -1) == ';') {
-                    $funcdef_line_new = rtrim($funcdef_line_new, ';') . ' : ' . $_expected_php_type . ';';
+                    $funcdef_line_new = rtrim($funcdef_line_new, ';') . ' : ' . $_expected_php_type . ';' . "\n";
                 } else {
-                    $funcdef_line_new = $funcdef_line_new . ' : ' . $_expected_php_type;
+                    $funcdef_line_new = $funcdef_line_new . ' : ' . $_expected_php_type . "\n";
                 }
             } else {
                 $funcdef_line_new = preg_replace('#(&?(\.\.\.)?\$' . preg_quote($name) . '[^\w])#', $_expected_php_type . ' $1', $funcdef_line_new);

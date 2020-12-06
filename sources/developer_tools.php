@@ -393,7 +393,7 @@ function cms_verify_parameters_phpdoc(bool $dev_only = false)
     static $api = [];
     if (!isset($api[$filename])) {
         require_code('phpdoc');
-        $api[$filename] = get_php_file_api($filename, false);
+        $api[$filename] = get_php_file_api($filename);
     }
 
     if (isset($api[$filename][$class]['functions'][$function]['parameters'])) {
