@@ -335,13 +335,13 @@ if (!function_exists('is_alphanumeric')) {
     function is_alphanumeric($string, $strict = false)
     {
         if ($strict) {
-            return preg_match('#^[\w\-]*$#', $string) != 0;
+            return preg_match('#^[\w\-]*$#D', $string) != 0;
         }
 
-        $test = @preg_match('#^[\pL\w\-\.]*$#u', $string) != 0; // unicode version, may fail on some servers
+        $test = @preg_match('#^[\pL\w\-\.]*$#uD', $string) != 0; // unicode version, may fail on some servers
         if ($test !== false) {
             return $test;
         }
-        return preg_match('#^[\w\-\.]*$#', $string) != 0;
+        return preg_match('#^[\w\-\.]*$#D', $string) != 0;
     }
 }

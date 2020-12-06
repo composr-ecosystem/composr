@@ -427,7 +427,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
  * @param  array $attributes A map of attributes (name=>value) the tag has
  * @param  boolean $self_close Whether this is a self-closing tag
  * @param  boolean $close Whether this is a closing tag
- * @return ?list Array of errors (null: none)
+ * @return ?array Array of errors (null: none)
  * @ignore
  */
 function _check_blockyness($tag, $attributes, $self_close, $close)
@@ -494,7 +494,7 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
  * @param  array $attributes A map of attributes (name=>value) the tag has
  * @param  boolean $self_close Whether this is a self-closing tag
  * @param  boolean $close Whether this is a closing tag
- * @return ?list Array of errors (null: none)
+ * @return ?array Array of errors (null: none)
  * @ignore
  */
 function _check_attributes($tag, $attributes, $self_close, $close)
@@ -635,7 +635,7 @@ function check_spelling($value)
  * @param  array $attributes A map of attributes (name=>value) the tag has
  * @param  boolean $self_close Whether this is a self-closing tag
  * @param  boolean $close Whether this is a closing tag
- * @return ?list Array of errors (null: none)
+ * @return ?array Array of errors (null: none)
  * @ignore
  */
 function _check_externals($tag, $attributes, $self_close, $close)
@@ -708,7 +708,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
  * @param  array $attributes A map of attributes (name=>value) the tag has
  * @param  boolean $self_close Whether this is a self-closing tag
  * @param  boolean $close Whether this is a closing tag
- * @return ?list Array of errors (null: none)
+ * @return ?array Array of errors (null: none)
  * @ignore
  */
 function _check_link_accessibility($tag, $attributes, $self_close, $close)
@@ -768,7 +768,7 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
  * @param  array $attributes A map of attributes (name=>value) the tag has
  * @param  boolean $self_close Whether this is a self-closing tag
  * @param  boolean $close Whether this is a closing tag
- * @return ?list Array of errors (null: none)
+ * @return ?array Array of errors (null: none)
  * @ignore
  */
 function _check_labelling($tag, $attributes, $self_close, $close)
@@ -846,7 +846,7 @@ function check_css($data)
  * Checks a CSS style sheet.
  *
  * @param  string $data The data of the style sheet
- * @return ?map Error information (null: no error)
+ * @return ?array Error information (null: no error)
  * @ignore
  */
 function _webstandards_css_sheet($data)
@@ -1144,7 +1144,7 @@ function _webstandards_css_sheet($data)
  * @param  string $data The data of the CSS class
  * @param  integer $_i Current parse position
  * @param  integer $line The higher-level line number we are checking for (to give better debug output)
- * @return ?map Error information (null: no error)
+ * @return ?array Error information (null: no error)
  * @ignore
  */
 function _webstandards_css_class($data, $_i, $line = 0)
@@ -1266,7 +1266,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
  * @param  string $key The name of the attribute
  * @param  string $value The value of the attribute
  * @param  integer $_i Current parse position
- * @return ?map Error information (null: no error)
+ * @return ?array Error information (null: no error)
  * @ignore
  */
 function _check_css_value($key, $value, $_i)

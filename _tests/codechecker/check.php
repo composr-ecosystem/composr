@@ -372,9 +372,6 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
             if (in_array($t, ['Tempcode'])) {
                 $t = 'object';
             }
-            if (in_array($t, ['list', 'map'])) {
-                $t = 'array';
-            }
             if ($t != 'mixed') {
                 $observed_types[$t] = 1;
             }
@@ -2187,9 +2184,6 @@ function ensure_type($_allowed_types, $actual_type, $pos, $alt_error = null, $ex
         if (in_array($type, ['Tempcode'])) {
             $allowed_types['object'] = true;
         }
-        if (in_array($type, ['list', 'map'])) {
-            $allowed_types['array'] = true;
-        }
         $allowed_types[$type] = true;
     }
 
@@ -2229,11 +2223,6 @@ function ensure_type($_allowed_types, $actual_type, $pos, $alt_error = null, $ex
     }
     if (in_array($actual_type, ['Tempcode'])) {
         if (isset($allowed_types['object'])) {
-            return true;
-        }
-    }
-    if (in_array($actual_type, ['list', 'map'])) {
-        if (isset($allowed_types['array'])) {
             return true;
         }
     }
